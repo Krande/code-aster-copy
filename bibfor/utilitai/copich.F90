@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ subroutine copich(base, ch1z, ch2z)
             call getres(nomu, concep, cmd)
             call dismoi('NOM_LIGREL', ch2, 'CHAM_ELEM', repk=ligr)
             if (ligr(1:8) .ne. nomu .and. ligr(9:15) .ne. '.MODELE') then
-                noojb = '12345678.LIGR000000'
+                noojb = '12345678.LIGR000000.LIEL'
                 call gnomsd(' ', noojb, 14, 19)
                 ligr2 = noojb(1:19)
                 call copisd('LIGREL', base, ligr, ligr2)

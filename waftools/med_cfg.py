@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,6 +110,13 @@ def configure(self):
     else:
         self.define("ASTER_HAVE_MED", 1)
         self.env.BUILD_MED = True
+
+    try:
+        self.env.stash()
+        self.check_medcoupling()
+    except Errors.ConfigurationError:
+        self.reset_msg()
+        self.env.revert()
 
 
 ###############################################################################
@@ -242,7 +249,6 @@ def check_med(self):
     self.check_sizeof_med_idt()
     self.check_med_version()
     self.check_med_python()
-    self.check_medcoupling()
 
 
 @Configure.conf

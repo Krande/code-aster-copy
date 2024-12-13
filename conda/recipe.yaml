@@ -2,8 +2,8 @@ schema_version: 1
 
 context:
   name: code-aster
-  version: 17.1.16
-  win_build: 2
+  version: 17.1.18
+  win_build: 1
   build: 200
   mpi_prefix: nompi
   build_type: debug

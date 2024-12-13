@@ -253,41 +253,41 @@ def calc_tabpara_plaque(
     CORR_MECA22_FLEX = fields["CORR_MECA22_FLEX"]
     CORR_MECA12_FLEX = fields["CORR_MECA12_FLEX"]
 
-    ranks_meca = CORR_MECA11_MEMB.getAccessParameters()["NUME_ORDRE"]
+    insts_meca = CORR_MECA11_MEMB.getAccessParameters()["INST"]
 
-    ASSERT(len(ranks_meca) == len(ls_varc))
+    ASSERT(len(insts_meca) == len(ls_varc))
 
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAPLAQUE)
     loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma, dir_plaque)
     h = dirthick[dir_plaque]
     tda = utilities.get_temp_def_alpha(DEPLMATE)
 
-    for i, rank_meca in enumerate(ranks_meca):
+    for i, inst_meca in enumerate(insts_meca):
 
         work_meca_11_11_mm = utilities.cross_work(
-            CORR_MECA11_MEMB, CORR_MECA11_MEMB, rank_meca, ls_group_ma
+            CORR_MECA11_MEMB, CORR_MECA11_MEMB, inst_meca, ls_group_ma
         )
         work_meca_22_22_mm = utilities.cross_work(
-            CORR_MECA22_MEMB, CORR_MECA22_MEMB, rank_meca, ls_group_ma
+            CORR_MECA22_MEMB, CORR_MECA22_MEMB, inst_meca, ls_group_ma
         )
         work_meca_11_22_mm = utilities.cross_work(
-            CORR_MECA11_MEMB, CORR_MECA22_MEMB, rank_meca, ls_group_ma
+            CORR_MECA11_MEMB, CORR_MECA22_MEMB, inst_meca, ls_group_ma
         )
         work_meca_12_12_mm = utilities.cross_work(
-            CORR_MECA12_MEMB, CORR_MECA12_MEMB, rank_meca, ls_group_ma
+            CORR_MECA12_MEMB, CORR_MECA12_MEMB, inst_meca, ls_group_ma
         )
 
         work_meca_11_11_ff = utilities.cross_work(
-            CORR_MECA11_FLEX, CORR_MECA11_FLEX, rank_meca, ls_group_ma
+            CORR_MECA11_FLEX, CORR_MECA11_FLEX, inst_meca, ls_group_ma
         )
         work_meca_22_22_ff = utilities.cross_work(
-            CORR_MECA22_FLEX, CORR_MECA22_FLEX, rank_meca, ls_group_ma
+            CORR_MECA22_FLEX, CORR_MECA22_FLEX, inst_meca, ls_group_ma
         )
         work_meca_11_22_ff = utilities.cross_work(
-            CORR_MECA11_FLEX, CORR_MECA22_FLEX, rank_meca, ls_group_ma
+            CORR_MECA11_FLEX, CORR_MECA22_FLEX, inst_meca, ls_group_ma
         )
         work_meca_12_12_ff = utilities.cross_work(
-            CORR_MECA12_FLEX, CORR_MECA12_FLEX, rank_meca, ls_group_ma
+            CORR_MECA12_FLEX, CORR_MECA12_FLEX, inst_meca, ls_group_ma
         )
 
         lambda_meca_mm = loimel["LAME1_mm"][i]

@@ -160,7 +160,7 @@ class ExtendedParallelMesh:
         return MPI.ASTER_COMM_WORLD.bcast(test, root=0)
 
     def checkJoints(self):
-        comm = MPI.COMM_WORLD
+        comm = MPI.ASTER_COMM_WORLD
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
         l2G = self.getLocalToGlobalNodeIds()
         graph = CommGraph()
