@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -285,11 +285,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         end if
 !
 #ifdef ASTER_HAVE_OPENMP
-    nbomp = omp_get_max_threads()
+        nbomp = omp_get_max_threads()
 #else
-    nbomp = 1
+        nbomp = 1
 #endif
-
 ! POUR PRENDRE POTENTIEL IMPACT REDUCTION_MPI
         if (icntl(17) > 1) then
             nbomp = nbomp*icntl(17)

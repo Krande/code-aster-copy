@@ -459,14 +459,15 @@ class RunOnlyEnv(RunAster):
             logger.info(" ".join(base_cmd))
             return is_ok
 
-        _gen_cmd_file(f"cmd{idx}.sh", [" ".join(base_cmd)])
+        nbthread = self.export.get("ncpus", 1)
+        _gen_cmd_file(f"cmd{idx}.sh", [" ".join(base_cmd)], nbthread)
         shell = f"cmd{idx}.sh"
         args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1), program="proc.0/" + shell)
         cmd = CFG.get("mpiexec").format(**args_cmd)
         logger.info("    " + cmd)
 
         shell = f"ddt_cmd{idx}.sh"
-        _gen_ddt_template(shell, cmd, idx)
+        _gen_ddt_template(shell, cmd, idx, nbthread)
         logger.info("Run with DDT using:")
         logger.info("    " + "proc.0/" + shell)
 
@@ -639,9 +640,10 @@ def _ls(*paths):
     return proc.stdout
 
 
-def _gen_cmd_file(filename, lines):
+def _gen_cmd_file(filename, lines, nbthread):
     cmd = []
     cmd.append("#!/bin/bash")
+    cmd.append(f"export OMP_NUM_THREADS={nbthread}")
     cmd.append("\n".join(lines))
     cmd.append("")
     with open(filename, "w") as fobj:
@@ -649,10 +651,12 @@ def _gen_cmd_file(filename, lines):
     os.chmod(filename, 0o755)
 
 
-def _gen_ddt_template(filename, cmd, idx):
+def _gen_ddt_template(filename, cmd, idx, nbthread):
     redir = ">" if idx == 0 else ">>"
     with open(Path(RUNASTER_ROOT) / "share" / "aster" / "ddt_wrapper.tmpl") as ftmpl:
-        script = PercTemplate(ftmpl.read()).substitute(command=cmd, redirect_to=redir)
+        script = PercTemplate(ftmpl.read()).substitute(
+            command=cmd, redirect_to=redir, nbthread=nbthread
+        )
     with open(filename, "w") as fobj:
         fobj.write(script)
     os.chmod(filename, 0o755)

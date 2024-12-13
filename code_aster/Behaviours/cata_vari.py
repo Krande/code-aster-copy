@@ -843,7 +843,7 @@ DICT_NOM_VARI = {
     "XMEMB3": _("GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 3"),
     "Y1": _("coordonnée Y de la pointe de fissure après rupture par propagation,"),
     "Y2": _("coordonnée Y de la pointe de fissure 2 lors de l'amorçage,"),
-    "ZIRCALBE": _("phase métallurgique zirconium ALPHA/BETA"),
+    "ZIRCABET": _("phase métallurgique zirconium ALPHA/BETA"),
     "ZIRCALPH": _("phase métallurgique zirconium ALPHA"),
     "ZIRCBETA": _("phase métallurgique zirconium BETA"),
     "EPSIN1": _("RGI_BETON_BA Déformation axiale Renforcement 1"),
