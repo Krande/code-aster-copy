@@ -164,7 +164,8 @@ def options(self):
     self.load("scotch", tooldir="waftools")
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
-    self.recurse("msvc")
+    if platform.system() == "Windows":
+        self.recurse("msvc")
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")
@@ -535,6 +536,7 @@ def check_optimization_options(self):
         self.check_optimization_cxxflags()
         self.check_optimization_fcflags()
     else:
+        Logs.info(f"Checking optimization flags for MSVC")
         self.check_optimization_cflags_msvc()
         self.check_optimization_cxxflags_msvc()
         self.check_optimization_fcflags_msvc()

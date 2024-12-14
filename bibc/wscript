@@ -200,8 +200,6 @@ def check_c_compiler_options(self, options):
 
 @Configure.conf
 def check_optimization_cflags(self):
-    if self.env.ASTER_PLATFORM_MSVC64:
-        return
     self.setenv("debug")
     self.start_msg("Setting C debug flags")
     self.remove_optflags("CFLAGS")

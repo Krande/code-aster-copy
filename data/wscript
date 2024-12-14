@@ -202,7 +202,6 @@ def build(self):
     cfgext = self.env["CFG_EXT"]
     assert cfgext in ("yaml", "json"), cfgext
     # src/srcbin distinction exists for exec mode (644 vs 755)
-    Logs.info(f"{self.env.ASTER_PLATFORM_MINGW=}, {self.env.ASTER_PLATFORM_MSVC64=}, {self.env.ASTER_PLATFORM_WINDOWS=}")
     if self.env.ASTER_PLATFORM_MINGW or self.env.ASTER_PLATFORM_MSVC64:
         shext = ".bat"
     else:
