@@ -138,12 +138,3 @@ mv ${PREFIX}/lib/aster/libAsterMFrOff*.so "${PREFIX}/lib/"
 
 mv "${PREFIX}/lib/aster/med_aster.so" "${SP_DIR}/"
 mv ${PREFIX}/lib/aster/*.so "${SP_DIR}/"
-cp "${RECIPE_DIR}/config/__init__.py" "${SP_DIR}/code_aster/__init__.py"
-
-# copy modified shell scripts and create backups of the ones we don't want.
-cp "${PREFIX}/bin/run_aster" "${PREFIX}/bin/_run_aster_old"
-cp "${PREFIX}/bin/run_ctest" "${PREFIX}/bin/_run_ctest_old"
-
-cp "${RECIPE_DIR}/config/run_aster" "${PREFIX}/bin/run_aster"
-cp "${RECIPE_DIR}/config/run_ctest" "${PREFIX}/bin/run_ctest"
-# Update the path to python env root dir in run_aster utils.py
