@@ -3,7 +3,7 @@
 setlocal enabledelayedexpansion
 
 SET CONFIG_PARAMETERS_addmem=5000
-SET PARENT_DIR=%~dp0
+SET PARENT_DIR=%~dp0../..
 SET PARENT_DIR=%PARENT_DIR:\=/%
 
 set INCLUDE_TESTS=0
@@ -64,7 +64,7 @@ if %PIXI_BUILD% == 1 (
     set "RUNASTER_ROOT=%CONDA_PREFIX%/Library"
     REM call %PARENT_DIR%\ifx_env.bat
 ) else (
-    call %PARENT_DIR%\conda_env.bat
+    call %~dp0\conda_env.bat
 )
 
 if errorlevel 1 exit 1

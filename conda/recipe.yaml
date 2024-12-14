@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: code-aster
-  version: 17.1.18
+  version: 17.2.0
   win_build: 1
   build: 200
   mpi_prefix: nompi
@@ -47,14 +47,25 @@ requirements:
       then: openblas
     - libblas
     - liblapack
-    - "metis * *debug*"
-    - "mumps * *debug*"
-    - "mfront * *debug*"
-    - "mgis * *debug*"
-    - "libmed * *debug*"
-    - "scotch * *debug*"
-    - "medcoupling * *debug*"
-    - psutil
+    - if: win
+      then:
+      - "metis * *debug*"
+      - "mumps * *debug*"
+      - "mfront * *debug*"
+      - "mgis * *debug*"
+      - "libmed * *debug*"
+      - "scotch * *debug*"
+      - "medcoupling * *debug*"
+      - psutil
+    - if: not win
+      then:
+        - metis
+        - mumps
+        - mfront
+        - mgis
+        - libmed
+        - scotch
+        - medcoupling
   run:
     - python
     - if: win

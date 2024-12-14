@@ -32,7 +32,6 @@ Note:
 import os
 import platform
 import os.path as osp
-import pathlib
 import sys
 
 from waflib import Build, Configure, Logs, Utils
@@ -408,6 +407,7 @@ def init(self):
 
     # default to release
     for y in _all:
+
         class tmp(y):
             variant = os.environ.get("WAF_DEFAULT_VARIANT") or "release"
 
