@@ -24,7 +24,9 @@ requirements:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
     - if: not win
-      then: ${{ compiler('fortran') }}
+      then:
+        - ${{ compiler('fortran') }}
+        - libgomp
     - pyyaml
     - waf 2.0.27
     - if: win
@@ -40,16 +42,18 @@ requirements:
       then: openblas
     - libblas
     - liblapack
+    - libxml2
+    - zlib
     - if: win
       then:
-      - "metis * *debug*"
-      - "mumps * *debug*"
-      - "mfront * *debug*"
-      - "mgis * *debug*"
-      - "libmed * *debug*"
-      - "scotch * *debug*"
-      - "medcoupling * *debug*"
-      - psutil
+        - "metis * *debug*"
+        - "mumps * *debug*"
+        - "mfront * *debug*"
+        - "mgis * *debug*"
+        - "libmed * *debug*"
+        - "scotch * *debug*"
+        - "medcoupling * *debug*"
+        - psutil
     - if: not win
       then:
         - metis

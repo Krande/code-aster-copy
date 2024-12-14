@@ -62,6 +62,7 @@ metis = { version = "*", build = "*debug*" }
 mumps = { version = "*", build = "*debug*" }
 
 [feature.conda.tasks]
+cbuildn = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml"] }
 cbuild = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 ctest = {cmd = ["rattler-build", "test"]}
 

@@ -77,6 +77,7 @@ if [[ "$mpi" == "nompi" ]]; then
     --libdir="${PREFIX}/lib" \
     --install-tests \
     --disable-mpi \
+    --disable-petsc \
     --without-hg \
     configure
 
@@ -123,8 +124,6 @@ fi
 
 echo "Compilation complete"
 
-# Change the PYTHONPATH just for pybind11_stubgen to find the necessary module
-export PYTHONPATH="${PREFIX}/lib/aster:$SRC_DIR/stubgen"
 export LD_LIBRARY_PATH="${PREFIX}/lib/aster"
 
 # This is for reducing reliance on conda activation scripts.

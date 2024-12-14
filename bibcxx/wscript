@@ -148,7 +148,6 @@ def check_optimization_cxxflags(self):
     if self.options.enable_asan:
         flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
         self.env.append_unique("LINKFLAGS", ["-fsanitize=address", "-fno-omit-frame-pointer"])
-    self.env.append_unique("LINKFLAGS", ["/DEBUG:FULL", "/INCREMENTAL:NO"])
     self.env.append_unique("CXXFLAGS", flags)
     self.end_msg(flags)
 
