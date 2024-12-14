@@ -67,5 +67,11 @@ python:
 mpi:
   - nompi
 
+mpi_prefix:
+  - nompi
+
+build_type:
+  - debug
+
 clang:
   - 18

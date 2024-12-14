@@ -1,8 +1,11 @@
 #!/bin/bash
 
-echo "Beginning!"
-
 export CLICOLOR_FORCE=1
+
+echo "mpi = ${mpi}"
+echo "mpi_prefix = ${mpi_prefix}"
+echo "build_type = ${build_type}"
+mpi=${mpi_prefix}
 
 export CONFIG_PARAMETERS_addmem=2000
 export TFELHOME=${PREFIX}

@@ -17,15 +17,7 @@ source:
 
 build:
   number: ${{ build }}
-  script:
-    file: build.sh
-    env:
-      build_type: ${{ build_type }}
-      mpi: ${{ mpi_prefix }}
   string: py${{ CONDA_PY }}_${{ mpi_prefix }}_${{ build_type }}_h${{ PKG_HASH }}_${{ build }}
-  prefix_detection:
-    ignore_binary_files: true
-
 
 requirements:
   build:
