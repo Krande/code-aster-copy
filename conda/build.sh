@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Beginning!"
+
 export CLICOLOR_FORCE=1
 
 export CONFIG_PARAMETERS_addmem=2000
@@ -26,14 +28,12 @@ export INCLUDES_MEDCOUPLING="${PREFIX}/include"
 export PYPATH_MEDCOUPLING=${SP_DIR}
 
 python conda/scripts/update_version.py
-python ${RECIPE_DIR}/config/set_env_var.py ${SRC_DIR}
 
 mpi_type=std
 if [[ "$mpi" != "nompi" ]]; then
   mpi_type=mpi
 fi
 
-build_type=release
 if [[ "${build_type}" == "debug" ]]; then
     echo "Debugging Enabled"
     export CFLAGS="-g -O0 ${CFLAGS}"
@@ -61,11 +61,16 @@ fi
 
 if [[ "$mpi" == "nompi" ]]; then
   # Install for standard sequential
-  ./waf_std \
-    --use-config=wafcfg_conda \
-    --use-config-dir="$RECIPE_DIR"/config \
+  waf \
+    --use-config-dir=${SRC_DIR}/config/ \
     --prefix="${PREFIX}" \
     --med-libs="med medC medfwrap medimport" \
+    --enable-med \
+    --enable-hdf5 \
+    --enable-mumps \
+    --enable-metis \
+    --enable-scotch \
+    --enable-mfront \
     --libdir="${PREFIX}/lib" \
     --install-tests \
     --disable-mpi \
@@ -73,10 +78,10 @@ if [[ "$mpi" == "nompi" ]]; then
     configure
 
   if [[ "${build_type}" == "debug" ]]; then
-      ./waf_std install_debug -v
+      waf install_debug -v
   else
       echo "Debugging Disabled"
-      ./waf_std install
+      waf install
   fi
 else
   export PYTHONPATH="$PYTHONPATH:${PREFIX}/lib"
@@ -90,11 +95,16 @@ else
   export F90=mpif90
   export OPAL_PREFIX=${PREFIX}
 
-  ./waf_mpi configure \
-    --use-config=wafcfg_conda \
-    --use-config-dir="$RECIPE_DIR"/config \
+  waf configure \
+    --use-config-dir=${SRC_DIR}/config/ \
+    --enable-med \
+    --enable-hdf5 \
+    --enable-mumps \
+    --enable-metis \
+    --enable-scotch \
+    --enable-mfront \
+    --med-libs="med medC medfwrap medimport" \
     --prefix="${PREFIX}" \
-    --med-libs="medC" \
     --enable-mpi \
     --libdir="${PREFIX}/lib" \
     --install-tests \
@@ -102,9 +112,9 @@ else
 
 
   if [[ "${build_type}" == "debug" ]]; then
-      ./waf_mpi install_debug
+      waf install_debug
   else
-      ./waf_mpi install
+      waf install
   fi
 fi
 

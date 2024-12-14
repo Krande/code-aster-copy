@@ -64,5 +64,8 @@ vc:
 python:
   - 3.12
 
+mpi:
+  - nompi
+
 clang:
   - 18
