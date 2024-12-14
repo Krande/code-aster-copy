@@ -135,6 +135,8 @@ def check_cxx_compiler_options(self, options):
 
 @Configure.conf
 def check_optimization_cxxflags(self):
+    if self.env.ASTER_PLATFORM_MSVC64:
+        return
     self.setenv("debug")
     self.start_msg("Setting C++ debug flags")
     self.define("ASTER_DEBUG_CXX", 1)
@@ -158,6 +160,8 @@ def check_optimization_cxxflags(self):
 
 @Configure.conf
 def check_optimization_cxxflags_msvc(self):
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        return
     self.setenv("debug")
     self.start_msg("Setting C++ debug flags for MSVC")
     self.define("ASTER_DEBUG_CXX", 1)

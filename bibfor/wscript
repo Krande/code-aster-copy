@@ -453,6 +453,8 @@ def check_c_fortran_real8(self):
 @Configure.conf
 def check_optimization_fcflags(self):
     """Check for optimization FCFLAGS."""
+    if self.env.ASTER_PLATFORM_MSVC64:
+        return
     self.setenv("debug")
     self.start_msg("Setting fortran debug flags")
     self.define("ASTER_DEBUG_FC", 1)
@@ -535,6 +537,8 @@ def check_optimization_fcflags(self):
 
 @Configure.conf
 def check_optimization_fcflags_msvc(self):
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        return
     self.setenv("debug")
     self.start_msg("Setting Fortran debug flags for IFort")
     self.remove_optflags("FCFLAGS")
