@@ -130,8 +130,8 @@ export LD_LIBRARY_PATH="${PREFIX}/lib/aster"
 mv "${PREFIX}/lib/aster/code_aster" "${SP_DIR}/code_aster"
 mv "${PREFIX}/lib/aster/run_aster" "${SP_DIR}/run_aster"
 
-
-mv ${SRC_DIR}/build/${mpi_type}/${build_type}/code_aster/*.py "${SP_DIR}/code_aster/Utilities/"
+# move aster_pkginfo.py and aster_version.py
+mv ${SRC_DIR}/build/${build_type}/code_aster/*.py "${SP_DIR}/code_aster/Utilities/"
 # note to self. aster.so is symlinked to libaster.so
 mv ${PREFIX}/lib/aster/libb*.so "${PREFIX}/lib/"
 mv ${PREFIX}/lib/aster/libAsterMFrOff*.so "${PREFIX}/lib/"
