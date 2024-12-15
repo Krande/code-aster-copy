@@ -646,6 +646,9 @@ class ExecuteMacro(ExecuteCommand):
         _add_results (dict): Dict of additional results.
     """
 
+    # class attributes
+    _last_cleanup = 0
+
     _sdprods = _result_names = _add_results = None
 
     def __init__(self):
@@ -688,6 +691,10 @@ class ExecuteMacro(ExecuteCommand):
 
     def cleanup(self):
         """Clean-up function."""
+        if ExecuteCommand.level > 1:
+            if self._counter < ExecuteMacro._last_cleanup + 250:
+                return
+        ExecuteMacro._last_cleanup = self._counter
         # wrapper to collect after each macro-command
         timer = ExecutionParameter().timer
         timer.Start(" . cleanup", num=1.9e6)
