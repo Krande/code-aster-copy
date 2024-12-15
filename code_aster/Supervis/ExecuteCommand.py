@@ -55,9 +55,7 @@ Base classes
 ============
 """
 
-# aslint: disable=C4009
-# because of HELP_LEGACY_MODE string
-
+import gc
 import inspect
 import linecache
 import re
@@ -535,6 +533,7 @@ class ExecuteCommand:
             if self.hook:
                 self.hook(keywords)
         finally:
+            self.cleanup()
             self.print_result()
 
     def post_exec(self, keywords):
@@ -548,6 +547,9 @@ class ExecuteCommand:
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
+
+    def cleanup(self):
+        """Clean-up function."""
 
     def check_ds(self):
         """Check a result created by the command.
@@ -619,12 +621,6 @@ def check_jeveux():
         )
 
 
-HELP_LEGACY_MODE = """
-        from code_aster.Utilities import ExecutionParameter, Options
-        ExecutionParameter().enable(Options.UseLegacyMode)
-"""
-
-
 class ExecuteMacro(ExecuteCommand):
     """This implements an executor of *legacy* macro-commands.
 
@@ -689,6 +685,14 @@ class ExecuteMacro(ExecuteCommand):
             for name in self._result_names:
                 logger.info(command_result(self._counter, self.name, self._add_results.get(name)))
         self._print_stats()
+
+    def cleanup(self):
+        """Clean-up function."""
+        # wrapper to collect after each macro-command
+        timer = ExecutionParameter().timer
+        timer.Start(" . cleanup", num=1.9e6)
+        gc.collect()
+        timer.Stop(" . cleanup")
 
     def exec_(self, keywords):
         """Execute the command and fill the *_result* attribute.
