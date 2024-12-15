@@ -105,6 +105,7 @@ class ComputeAdditionalField(ExecuteCommand):
         """
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "RESULTAT")
+        self.remove_dependencies(keywords, "CHAM_UTIL", "FORMULE")
         if "reuse" not in keywords:
             # only if there is only one model, fieldmat...
             try:
