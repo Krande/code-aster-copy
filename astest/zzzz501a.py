@@ -76,6 +76,7 @@ test.assertTrue("Tout" in mesh2.getGroupsOfCells())
 mesh2.debugPrint(66)
 
 del coord
+
 CA.saveObjects()
 
 test.printSummary()

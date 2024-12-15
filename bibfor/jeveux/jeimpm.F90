@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,15 +71,6 @@ subroutine jeimpm(unit)
     real(kind=8) :: vusta, vudyn, vxsta, vxdyn
     aster_logical :: dbg
 ! DEB ------------------------------------------------------------------
-!
-!   dbg : une variable pour provoquer des ecritures de debug :
-    dbg = .false.
-    if (.not. dbg) then
-        valk(1) = 'dbg = .true.'
-        valk(2) = 'jeimpm.F90'
-        call utmess('A', 'JEVEUX1_24', nk=2, valk=valk)
-        goto 999
-    end if
 !
     if (unit .le. 0) goto 999
     vusta = 0.d0

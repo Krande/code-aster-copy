@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,13 +91,13 @@ subroutine op0016()
         nomcla = ' '
         call getvtx(' ', 'CLASSE', scal=nomcla, nbret=n)
         write (iuni, *) ' '
-        call jeimpd(imes, nomcla, txt)
+        call jeimpd(iuni, nomcla, txt)
         write (iuni, *) ' '
 !
     else if (noment(1:7) .eq. 'MEMOIRE') then
 !
         write (iuni, *) ' '
-        call jeimpm(imes)
+        call jeimpm(iuni)
         write (iuni, *) ' '
 !
     else if (noment .eq. 'REPERTOIRE') then
@@ -105,7 +105,7 @@ subroutine op0016()
         nomcla = ' '
         call getvtx(' ', 'CLASSE', scal=nomcla, nbret=n)
         write (iuni, *) ' '
-        call jeimpr(imes, nomcla, txt)
+        call jeimpr(iuni, nomcla, txt)
         write (iuni, *) ' '
 !
     else if (noment(1:5) .eq. 'OBJET') then
