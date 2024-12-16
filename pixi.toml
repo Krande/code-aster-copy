@@ -63,7 +63,7 @@ mumps = { version = "*", build = "*debug*" }
 
 [feature.conda.tasks]
 cbuildn = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml"] }
-cbuild = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+cbuild = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"] }
 ctest = {cmd = ["rattler-build", "test"]}
 
 [feature.local-unix.tasks]

@@ -56,12 +56,13 @@ requirements:
         - psutil
     - if: not win
       then:
-        - metis
-        - mumps
+        - "libscotch * *debug*"
+        - "scotch * *debug*"
+        - "metis * *debug*"
+        - "mumps * *debug*"
         - mfront
         - mgis
         - libmed
-        - scotch
         - medcoupling
   run:
     - python
