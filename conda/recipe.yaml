@@ -46,6 +46,7 @@ requirements:
     - zlib
     - if: win
       then:
+        - "hdf5 * *debug*"
         - "metis * *debug*"
         - "mumps * *debug*"
         - "mfront * *debug*"
