@@ -367,19 +367,22 @@ subroutine thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
 ! --------- GRADCVP - Derivative of CVP
 !
             dgcvp1(i) = dgrvp1(i)/rhog+ &
-                      (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog)*(dr12p1+dr21p1) &
-                        -(gr12(i)+gr21(i))/rhog/rhog*dr12p1-rho12/rhog/rhog*(dgrvp1(i)+dgrasp1(i))
+                        (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog) &
+                        *(dr12p1+dr21p1)-(gr12(i)+gr21(i))/rhog/rhog*dr12p1 &
+                        -rho12/rhog/rhog*(dgrvp1(i)+dgrasp1(i))
             dgcvp2(i) = dgrvp2(i)/rhog+ &
-                      (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog)*(dr12p2+dr21p2) &
-                        -(gr12(i)+gr21(i))/rhog/rhog*dr12p2-rho12/rhog/rhog*(dgrvp2(i)+dgrasp2(i))
+                        (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog) &
+                        *(dr12p2+dr21p2)-(gr12(i)+gr21(i))/rhog/rhog*dr12p2 &
+                        -rho12/rhog/rhog*(dgrvp2(i)+dgrasp2(i))
 
 !
             dgcap1(i) = mamola*dgpap1(i)/rgaz/t
             dgcap2(i) = mamola*dgpap2(i)/rgaz/t
             if (ds_thm%ds_elem%l_dof_ther) then
                 dgcvt(i) = dgrvt(i)/rhog+ &
-                        (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog)*(dr12t+dr21t) &
-                           -(gr12(i)+gr21(i))/rhog/rhog*dr12t-rho12/rhog/rhog*(dgrvt(i)+dgrast(i))
+                           (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog) &
+                           *(dr12t+dr21t)-(gr12(i)+gr21(i))/rhog/rhog*dr12t &
+                           -rho12/rhog/rhog*(dgrvt(i)+dgrast(i))
 !
                 dgcap1(i) = dgcap1(i)-mamola*1/rgaz/t/t*dp22p1*grat(i)
                 dgcap2(i) = dgcap2(i)-mamola*1/rgaz/t/t*dp22p2*grat(i)

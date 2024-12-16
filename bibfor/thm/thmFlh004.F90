@@ -51,13 +51,13 @@ subroutine thmFlh004(ds_thm, lMatr, lSigm, ndim, j_mater, &
     real(kind=8), intent(inout) :: congep(1:dimcon)
     real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
 !
-! --------------------------------------------------------------------------------------------------
+! ----------------------------------------------------------------------------------------------
 !
 ! THM
 !
 ! Compute flux and stress for hydraulic - 'LIQU_VAPE_GAZ'
 !
-! --------------------------------------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
 ! In  ds_thm           : datastructure for THM
 ! In  ndim             : dimension of space (2 or 3)
@@ -119,7 +119,7 @@ subroutine thmFlh004(ds_thm, lMatr, lSigm, ndim, j_mater, &
 ! derivative of grad_rhoas :
     real(kind=8) :: dgrasp1(3), dgrasp2(3), dgrast(3), dgrasgp1, dgrasgp2, dgrasgt
 !
-! --------------------------------------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
     lambd1 = 0.d0
     lambd2 = 0.d0
@@ -316,19 +316,21 @@ subroutine thmFlh004(ds_thm, lMatr, lSigm, ndim, j_mater, &
 !
 ! --------- GRADCVP - Derivative
             dgcvp1(i) = dgrvp1(i)/rhog+ &
-                      (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog)*(dr12p1+dr21p1) &
-                        -(gr12(i)+gr21(i))/rhog/rhog*dr12p1-rho12/rhog/rhog*(dgrvp1(i)+dgrasp1(i))
+                        (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog) &
+                        *(dr12p1+dr21p1) &
+                        -(gr12(i)+gr21(i))/rhog/rhog*dr12p1 &
+                        -rho12/rhog/rhog*(dgrvp1(i)+dgrasp1(i))
             dgcvp2(i) = dgrvp2(i)/rhog+ &
-                      (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog)*(dr12p2+dr21p2) &
-                        -(gr12(i)+gr21(i))/rhog/rhog*dr12p2-rho12/rhog/rhog*(dgrvp2(i)+dgrasp2(i))
-
+                        (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog) &
+                        *(dr12p2+dr21p2)-(gr12(i)+gr21(i))/rhog/rhog*dr12p2 &
+                        -rho12/rhog/rhog*(dgrvp2(i)+dgrasp2(i))
 !
             if (ds_thm%ds_elem%l_dof_ther) then
 !
                 dgcvt(i) = dgrvt(i)/rhog+ &
-                        (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog)*(dr12t+dr21t) &
-                           -(gr12(i)+gr21(i))/rhog/rhog*dr12t-rho12/rhog/rhog*(dgrvt(i)+dgrast(i))
-!
+                           (2*rho12*(gr12(i)+gr21(i))/rhog/rhog/rhog-gr12(i)/rhog/rhog) &
+                           *(dr12t+dr21t)-(gr12(i)+gr21(i))/rhog/rhog*dr12t &
+                           -rho12/rhog/rhog*(dgrvt(i)+dgrast(i))
             end if
             dgcgp1(1) = dgrvgp1/rhog-rho12/rhog/rhog*(dgrvgp1+dgrasgp1)
             dgcgp2(1) = dgrvgp2/rhog-rho12/rhog/rhog*(dgrvgp2+dgrasgp2)
