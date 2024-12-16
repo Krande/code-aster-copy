@@ -9,15 +9,20 @@ platforms = ["win-64", "linux-64"]
 local = ["local"]
 local-win = ["local-win", "local"]
 local-unix = ["local-unix", "local"]
-conda = ["conda"]
+conda-unix = ["conda-unix"]
+conda-win = ["conda-win"]
 
 [feature.local]
 platforms = ["win-64", "linux-64"]
 
-
-[feature.conda]
+[feature.conda-unix]
 channels = ["conda-forge"]
-platforms = ["win-64", "linux-64"]
+platforms = ["linux-64"]
+dependencies = { rattler-build = "*" }
+
+[feature.conda-win]
+channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
+platforms = ["win-64"]
 dependencies = { rattler-build = "*" }
 
 [feature.local-win]
@@ -61,9 +66,11 @@ scotch = { version = "*", build = "*debug*" }
 metis = { version = "*", build = "*debug*" }
 mumps = { version = "*", build = "*debug*" }
 
-[feature.conda.tasks]
-cbuildn = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml"] }
+[feature.conda-win.tasks]
 cbuild = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"] }
+[feature.conda-unix.tasks]
+cbuildn = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml"] }
+cbuild = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 ctest = {cmd = ["rattler-build", "test"]}
 
 [feature.local-unix.tasks]
