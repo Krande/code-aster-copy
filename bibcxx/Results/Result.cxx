@@ -141,6 +141,9 @@ void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
                                            ASTERINTEGER storageIndex ) {
     if ( !cara )
         raiseAsterError( "ValueError: ElementaryCharacteristics is empty" );
+    if ( _mapElemCara.count( storageIndex ) != 0 )
+        raiseAsterError( "ValueError: ElementaryCharacteristics already assigned at index " +
+                         std::to_string( storageIndex ) );
 
     _mapElemCara[storageIndex] = cara;
     std::string type( "CARAELEM" );
@@ -152,6 +155,9 @@ void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
 void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER storageIndex ) {
     if ( !load )
         raiseAsterError( "ValueError: Load is empty" );
+    if ( _mapLoads.count( storageIndex ) != 0 )
+        raiseAsterError( "ValueError: Load already assigned at index " +
+                         std::to_string( storageIndex ) );
 
     _mapLoads[storageIndex] = load;
     std::string type( "EXCIT" );
@@ -162,6 +168,9 @@ void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER storageInd
 void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER storageIndex ) {
     if ( !mater )
         raiseAsterError( "ValueError: MaterialField is empty" );
+    if ( _mapMaterial.count( storageIndex ) != 0 )
+        raiseAsterError( "ValueError: MaterialField already assigned at index " +
+                         std::to_string( storageIndex ) );
 
     _mapMaterial[storageIndex] = mater;
     std::string type( "CHAMPMAT" );
@@ -173,6 +182,9 @@ void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER stora
 void Result::setModel( const ModelPtr &model, ASTERINTEGER storageIndex ) {
     if ( !model )
         raiseAsterError( "ValueError: Model is empty" );
+    if ( _mapModel.count( storageIndex ) != 0 )
+        raiseAsterError( "ValueError: Model already assigned at index " +
+                         std::to_string( storageIndex ) );
 
     _mapModel[storageIndex] = model;
     std::string type( "MODELE" );

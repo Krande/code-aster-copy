@@ -81,17 +81,6 @@ class ComputeAdditionalField(ExecuteCommand):
             mesh = keywords["RESULTAT"].getMesh()
             if mesh is not None:
                 self._result.setMesh(mesh)
-        else:
-            try:
-                modele = self._result.getModel()
-            except:
-                modele = None
-
-            if modele is None:
-                modele = keywords.get("MODELE")
-
-            if modele is not None:
-                self._result.setModel(modele)
 
         self._result.build()
 
