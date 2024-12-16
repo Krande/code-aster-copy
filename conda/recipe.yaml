@@ -52,6 +52,7 @@ requirements:
         - "mfront * *debug*"
         - "mgis * *debug*"
         - "libmed * *debug*"
+        - "libscotch * *debug*"
         - "scotch * *debug*"
         - "medcoupling * *debug*"
         - psutil
