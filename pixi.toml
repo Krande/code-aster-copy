@@ -58,8 +58,8 @@ cmake = "*"
 ninja = "*"
 psutil = "*"
 clang = "18*"
-mfront = { version = "*", channel="conda-forge" }
-mgis = { version = "*", channel="conda-forge" }
+mfront = { version = "*", channel = "conda-forge" }
+mgis = { version = "*", channel = "conda-forge" }
 libmed = { version = "*", build = "*debug*" }
 medcoupling = { version = "*", build = "*debug*" }
 scotch = { version = "*", build = "*debug*" }
@@ -67,20 +67,21 @@ metis = { version = "*", build = "*debug*" }
 mumps = { version = "*", build = "*debug*" }
 
 [feature.conda-win.tasks]
-cbuildn = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml"] }
-cbuild = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
-ctest = {cmd = ["rattler-build", "test"]}
+cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+ctest = { cmd = ["rattler-build", "test", "-c","https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+
 [feature.conda-unix.tasks]
-cbuildn = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml"] }
-cbuild = {cmd = ["rattler-build", "build","-r", "conda/recipe.yaml", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"] }
-ctest = {cmd = ["rattler-build", "test"]}
+cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"] }
+ctest = { cmd = ["rattler-build", "test", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"] }
 
 [feature.local-unix.tasks]
 build = { cmd = ["waf", "configure", "build"], description = "Build the project" }
 
 [feature.local-win.tasks]
-build = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH="C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
-install = {cmd=["msvc/scripts/conda_rearrange.bat"], description="Copy the latest build files to their respective locations"}
+build = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+install = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
 test = { cmd = [
     "run_ctest",
     "--resutest=temp\\seq",
@@ -88,12 +89,12 @@ test = { cmd = [
     "-L", "sequential",
     "-LE", "need_data",
     "--timefactor=5.0",
-    "--only-failed-results"] , description = "Run the default sequential tests" }
+    "--only-failed-results"], description = "Run the default sequential tests" }
 test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "conda/test_scanner/results"], description = "Scan the test results" }
 debug = { cmd = ["python", "conda/scripts/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
 
-dumpbin = { cmd = ["dumpbin",], description = "Dump the dependencies of the aster executable" }
+dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the aster executable" }
 bibcxx_cc = { cmd = [
     "cmake", "-B", "build-cmake", "-G", "Ninja",
     "-DBUILD_BIBCXX=ON",
