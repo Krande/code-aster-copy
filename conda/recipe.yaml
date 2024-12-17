@@ -75,7 +75,9 @@ requirements:
         - "liblapack * *mkl"
     - ${{ pin_compatible('numpy', upper_bound='x.x') }}
     - if: not win
-      then: libxcrypt
+      then:
+        - libxcrypt
+        - {{ pin_compatible('mgis', max_pin='x.x') }}  # this is not given a run_export in conda-forge
   run_exports:
     - ${{ pin_subpackage(name, upper_bound='x.x') }}
   ignore_run_exports:
