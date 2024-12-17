@@ -62,6 +62,13 @@ jobs:
         shell: pixi run python {0}
 
       - name: run rattler test
+        if: ${{ runner.os == 'Windows' }}
+        continue-on-error: true # Prevent the workflow from failing
+        run: |
+          pixi run ctest --package-file ${{ env.CONDA_FILE }}
+
+      - name: run rattler test
+        if: ${{ runner.os != 'Windows' }}
         continue-on-error: true # Prevent the workflow from failing
         run: |
           pixi run ctest --package-file ${{ env.CONDA_FILE }} --channel-priority=disabled
