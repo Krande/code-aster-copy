@@ -79,6 +79,7 @@ from ..Utilities import (
     Options,
     config,
     deprecated,
+    haveMPI,
     import_object,
     logger,
     no_new_attributes,
@@ -87,7 +88,7 @@ from ..Utilities.outputs import command_text, decorate_name
 from .code_file import track_coverage
 from .CommandSyntax import CommandSyntax
 from .ctopy import check_ds_object
-from .Serializer import saveObjectsFromContext
+from .Serializer import FinalizeOptions, saveObjectsFromContext
 
 
 @contextmanager
@@ -1033,13 +1034,19 @@ class ExceptHookManager:
         except AssertionError:
             pass
         if cls._current_cmd:
+            opt = ExecutionParameter().option
+            options = FinalizeOptions.Set
+            if haveMPI() and not opt & Options.HPCMode:
+                options |= FinalizeOptions.OnlyProc0
+            if opt & Options.SaveBase:
+                options |= FinalizeOptions.SaveBase
             print("\nException: Trying to close the database after an uncaught exception...\n")
             print(
                 f"\nPublishing the result of the current command {cls._current_cmd.name}...\n",
                 flush=True,
             )
             cls._current_cmd.publish_result()
-            saveObjectsFromContext(cls._current_cmd.caller_context)
+            saveObjectsFromContext(cls._current_cmd.caller_context, options=options)
         else:
             sys.__excepthook__(type, value, traceb)
 
