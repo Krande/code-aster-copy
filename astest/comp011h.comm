@@ -74,7 +74,7 @@ def isotherme_hr_T(S, alpha, beta, Ad, T0, Temp, poro, R=8.314, Mmolaire=18.0152
     return HR
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"))
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -270,8 +270,8 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             GROUP_MA="M1",
             POINT=1,
-            NOM_CMP="V9",
-            VALE_CALC=1.4922375611128752e-08,
+            NOM_CMP="V13",
+            VALE_CALC=2.2317932964215727e-08,
         ),
         _F(
             INST=1.0,
@@ -297,8 +297,8 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             GROUP_MA="M1",
             POINT=1,
-            NOM_CMP="V9",
-            VALE_CALC=8.088417206902127e-08,
+            NOM_CMP="V13",
+            VALE_CALC=9.11185866648235e-08,
         ),
     )
 )
@@ -335,9 +335,9 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             GROUP_MA="M1",
             POINT=1,
-            NOM_CMP="V9",
-            VALE_CALC=1.4922375611128752e-08,
-            VALE_REFE=1.4922375611128752e-08,
+            NOM_CMP="V13",
+            VALE_CALC=2.2317932964215727e-08,
+            VALE_REFE=2.2317932964215727e-08,
         ),
         _F(
             INST=1.0,
@@ -368,9 +368,9 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             GROUP_MA="M1",
             POINT=1,
-            NOM_CMP="V9",
-            VALE_CALC=8.088417206902127e-08,
-            VALE_REFE=8.088417206902127e-08,
+            NOM_CMP="V13",
+            VALE_CALC=9.11185866648235e-08,
+            VALE_REFE=9.11185866648235e-08,
         ),
     )
 )
