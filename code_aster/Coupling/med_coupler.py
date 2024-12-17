@@ -21,10 +21,10 @@
 Definition of a convenient object to synchronize MEDCoupling fields.
 """
 
-from ..Objects import LoadResult, SimpleFieldOnNodesReal, SimpleFieldOnCellsReal
+from ..Objects import LoadResult, SimpleFieldOnCellsReal, SimpleFieldOnNodesReal
+from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import logger, no_new_attributes
 from ..Utilities import medcoupling as MEDC
-from ..Utilities import ParaMEDMEM as PMM
 
 
 class CoupledField(PMM.ParaFIELD):
