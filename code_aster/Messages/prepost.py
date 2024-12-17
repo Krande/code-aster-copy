@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,7 @@ PARALLELISME_TEMPS='NON'.
     ),
     3: _(
         """
- Dans le cas d'un défaut SEMI_ELLIPSE, les mots-clés suivants doivent être présents :
-
-   - EPAIS_MDB : épaisseur du métal de base
-   - MATER_MDB : matériau constituant le métal de base
+    Les tailles de tableau du module de Young du revêtement et du métal de base doivent être égales.
 """
     ),
     4: _(
@@ -47,10 +44,8 @@ PARALLELISME_TEMPS='NON'.
     ),
     5: _(
         """
- Dans le cas d'un défaut de type ELLIPSE, la longueur du défaut n'est pas en accord :
-
-   - Décalage >= 0 : avec la table coté métal de base,
-   - Décalage <  0 : avec les tables définies cote revêtement et coté métal de base.
+ Le rapport entre le module de Young du revêtement et celui du métal de base doit être compris entre 0,7 et 1. 
+ En dehors de ces bornes, l'interpolation  barycentrique n'est pas possible.
 """
     ),
     6: _(
@@ -59,24 +54,9 @@ PARALLELISME_TEMPS='NON'.
  être égale a 5.
 """
     ),
-    7: _(
-        """
-  Dans le cas d'un défaut ELLIPSE le mot-clé TABL_MECA_REV est obligatoire.
-"""
-    ),
-    8: _(
-        """
- prolongement à gauche exclu
-"""
-    ),
-    9: _(
-        """
- prolongement à droite exclu
-"""
-    ),
     10: _(
         """
- phénomène non valide
+ Phénomène non valide. Utiliser TRACTION ou ECRO_LINE pour récupérer les limites élastiques.
 """
     ),
     11: _(

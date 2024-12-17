@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,35 +21,32 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-POST_K_BETA = OPER(
-    nom="POST_K_BETA",
-    op=198,
+POST_KCP = MACRO(
+    nom="POST_KCP",
+    op=OPS("code_aster.MacroCommands.Kcp.post_kcp_ops.post_kcp_ops"),
     sd_prod=table_sdaster,
-    fr=tr("Calcul des facteurs d'intensité de contraintes par la méthode K_BETA"),
+    fr=tr("Calcul des facteurs d'intensité de contrainte par la méthode KCP correction BETA"),
     reentrant="n",
-    MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
+    MODELE=SIMP(statut="o", typ=modele_sdaster),
+    MATER_MDB=SIMP(statut="o", typ=mater_sdaster),
+    EPAIS_MDB=SIMP(statut="o", typ="R"),
     MATER_REV=SIMP(statut="o", typ=mater_sdaster),
-    EPAIS_REV=SIMP(statut="f", typ="R"),
-    MATER_MDB=SIMP(statut="f", typ=mater_sdaster),
-    EPAIS_MDB=SIMP(statut="f", typ="R"),
+    EPAIS_REV=SIMP(statut="o", typ="R"),
     FISSURE=FACT(
         statut="o",
-        FORM_FISS=SIMP(statut="f", typ="TXM", defaut="ELLIPSE", into=("ELLIPSE", "SEMI_ELLIPSE")),
-        b_fissure=BLOC(
-            condition="""equal_to("FORM_FISS", 'ELLIPSE')""",
-            DECALAGE=SIMP(statut="f", typ="R", defaut=-2.0e-04),
+        FORM_FISS=SIMP(statut="o", typ="TXM", into=("SEMI_ELLIPTIQUE", "BANDE")),
+        b_defaut_eli=BLOC(
+            condition="""(equal_to("FORM_FISS", 'SEMI_ELLIPTIQUE'))""",
+            LONGUEUR=SIMP(statut="o", typ="R"),
+            CORRECTION=SIMP(statut="f", typ="TXM", defaut="BETA_3D", into=("BETA_2D", "BETA_3D")),
         ),
         PROFONDEUR=SIMP(statut="o", typ="R"),
-        LONGUEUR=SIMP(statut="o", typ="R"),
         ORIENTATION=SIMP(statut="o", typ="TXM", into=("CIRC", "LONGI")),
     ),
     K1D=FACT(
         statut="o",
         max="**",
-        TABL_MECA_REV=SIMP(statut="f", typ=(table_sdaster)),
-        TABL_MECA_MDB=SIMP(statut="o", typ=(table_sdaster)),
+        TABL_MECA=SIMP(statut="o", typ=(table_sdaster)),
         TABL_THER=SIMP(statut="o", typ=(table_sdaster)),
-        INTITULE=SIMP(statut="o", typ="TXM"),
     ),
-    TITRE=SIMP(statut="f", typ="TXM"),
 )
