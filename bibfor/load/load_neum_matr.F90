@@ -126,7 +126,7 @@ subroutine load_neum_matr(idx_load, idx_matr, load_name, load_nume, load_type, &
 !
 ! --------- Computation
 !
-            call calcul('S', load_option, ligrel_model, nbin, lchin, &
+            call calcul('S', load_option, load_ligrel, nbin, lchin, &
                         lpain, nbout, lchout, lpaout, 'V', &
                         'OUI')
 !

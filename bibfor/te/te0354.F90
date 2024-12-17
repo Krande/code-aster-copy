@@ -87,7 +87,7 @@ subroutine te0354(option, nomte)
 !
     valQP = 0.0
     do kp = 1, FEQuadCell%nbQuadPoints
-        tg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+        tg = FEEvalFuncRScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
 !
         if (l_resi) then
             call fointe('FM', zk8(isour), 1, ['TEMP'], [tg], &

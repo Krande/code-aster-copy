@@ -77,7 +77,7 @@ subroutine te0251(option, nomte)
         call jevech('PTEMPEI', 'L', vr=tempi)
 !
         do kp = 1, FEQuad%nbQuadPoints
-            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
             call foderi(zk8(ipara), tpg, rbid, para1)
             ! - d alpha/dT
             valQP(kp) = -para1
@@ -88,7 +88,7 @@ subroutine te0251(option, nomte)
         call jevech('PTEMPEI', 'L', vr=tempi)
 !
         do kp = 1, FEQuad%nbQuadPoints
-            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
 !
             valpar(1:3) = FEQuad%points(1:3, kp)
             valpar(4) = time_curr
@@ -111,7 +111,7 @@ subroutine te0251(option, nomte)
         para2 = zr(ipara+1)
 !
         do kp = 1, FEQuad%nbQuadPoints
-            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
             ! 4*SIGM * EPS * (T+T0)^3
             valQP(kp) = 4.d0*para1*para2*(tpg+tz0)**3
         end do

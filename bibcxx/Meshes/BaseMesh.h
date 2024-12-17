@@ -280,7 +280,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
         return {};
     }
 
-    virtual VectorLong getCells( const VectorString &names ) const {
+    virtual VectorLong getCells( const VectorString &names = {} ) const {
         AS_ASSERT( false );
         return {};
     }

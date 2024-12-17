@@ -25,6 +25,7 @@ module FE_eval_module
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/fointe.h"
 #include "FE_module.h"
 #include "blas/ddot.h"
 !
@@ -36,7 +37,8 @@ module FE_eval_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: FEEvalFuncScal, FEEvalGradVec, FEEvalGradMat, FEEvalGradSymMat
+    public :: FEEvalFuncRScal, FEEvalGradVec, FEEvalGradMat, FEEvalGradSymMat
+    public :: FEEvalFuncRVec, FEEvalFuncFVec, FEEvalFuncFScal
 !    private  ::
 !
 contains
@@ -46,7 +48,7 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalFuncScal(FEBasis, val_nodes, point) result(func)
+    function FEEvalFuncRScal(FEBasis, val_nodes, point) result(func)
 !
         implicit none
 !
@@ -73,6 +75,107 @@ contains
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         func = ddot(b_n, val_nodes, b_incx, funcEF, b_incy)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function FEEvalFuncFScal(nomfunc, nbpara, nompara, valpara) result(func)
+!
+        implicit none
+!
+        character(len=8), intent(in) :: nomfunc
+        integer, intent(in) :: nbpara
+        character(len=8), intent(in) :: nompara(*)
+        real(kind=8), intent(inout) :: valpara(*)
+        real(kind=8) :: func
+! --------------------------------------------------------------------------------------------------
+!   FE
+!
+!   Evaluate scalar values from value at nodes
+!   In FEBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, v)_F term
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: iret
+!
+        call fointe('FM', nomfunc, nbpara, nompara, valpara, func, iret)
+        ASSERT(iret == 0)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function FEEvalFuncRVec(FEBasis, val_nodes, point) result(func)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: val_nodes(*)
+        real(kind=8), intent(in) :: point(3)
+        real(kind=8) :: func(3)
+! --------------------------------------------------------------------------------------------------
+!   FE
+!
+!   Evaluate vector values from value at nodes
+!   In FEBasis     : Basis function
+!   In ValuesQP    : Values of vector function f at the quadrature points
+!   Out rhs        : (f, v)_F term
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+        real(kind=8) :: funcEF(MAX_BS)
+        integer :: idim
+        blas_int :: b_incx, b_incy, b_n
+!
+        func = 0.d0
+        funcEF = FEBasis%func(point)
+        b_n = to_blas_int(FEBasis%size)
+        b_incx = to_blas_int(FEBasis%ndim)
+        b_incy = to_blas_int(1)
+        do idim = 1, FEBasis%ndim
+            func(idim) = ddot(b_n, val_nodes(idim), b_incx, funcEF, b_incy)
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function FEEvalFuncFVec(nomfunc, nbpara, nompara, valpara, ndim) result(func)
+!
+        implicit none
+!
+        character(len=8), intent(in) :: nomfunc(*)
+        integer, intent(in) :: nbpara, ndim
+        character(len=8), intent(in) :: nompara(*)
+        real(kind=8), intent(inout) :: valpara(*)
+        real(kind=8) :: func(3)
+! --------------------------------------------------------------------------------------------------
+!   FE
+!
+!   Evaluate scalar values from value at nodes
+!   In FEBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, v)_F term
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: iret, idim
+!
+        func = 0.d0
+        do idim = 1, ndim
+            call fointe('FM', nomfunc(idim), nbpara, nompara, valpara, func(idim), iret)
+            ASSERT(iret == 0)
+        end do
 !
     end function
 !

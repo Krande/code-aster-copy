@@ -69,7 +69,7 @@ subroutine te0274(option, nomte)
 !
     valQP = 0.d0
     do kp = 1, FEQuad%nbQuadPoints
-        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+        tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
 !
         call foderi(coef, tpg, alpha, dalpha)
 !

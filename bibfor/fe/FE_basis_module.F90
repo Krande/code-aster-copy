@@ -127,7 +127,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         this%typema = FESkin%typemas
-        this%ndim = FESkin%ndim
+        this%ndim = FESkin%ndim+1
         this%nbnodes = FESkin%nbnodes
         this%coorno(1:3, 1:9) = FESkin%coorno
         this%typeEF = EF_LAGRANGE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine te0501(option, nomte)
 !
     valQPK = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
-        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+        tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
         call rcfode(ifon(2), tpg, alpha, dalpha)
         valQPK(1, 1, kp) = alpha
         valQPK(2, 2, kp) = alpha

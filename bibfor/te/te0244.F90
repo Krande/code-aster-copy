@@ -108,7 +108,7 @@ subroutine te0244(option, nomte)
 !
     resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints
-        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
+        tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
         BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
@@ -116,7 +116,7 @@ subroutine te0244(option, nomte)
             call ntcomp(icomp, FECell%ndim, tpg, dtpg, &
                         FEQuadRigi%points(1:3, kp), aniso, ifon, flux, Kglo)
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
-            tpsec = FEEvalFuncScal(FEBasis, sechf, FEQuadRigi%points_param(1:3, kp))
+            tpsec = FEEvalFuncRScal(FEBasis, sechf, FEQuadRigi%points_param(1:3, kp))
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
             flux = diff*dtpg
         else
@@ -137,7 +137,7 @@ subroutine te0244(option, nomte)
     end if
 !
     do kp = 1, FEQuadMass%nbQuadPoints
-        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadMass%points_param(1:3, kp))
+        tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadMass%points_param(1:3, kp))
         if (zk16(icomp) (1:5) .eq. 'THER_') then
             call rcfode(ifon(1), tpg, beta, dbeta)
             if (lhyd) then

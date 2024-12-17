@@ -42,7 +42,7 @@ def sigelmoy(
 
     poids = CALC_CHAM_ELEM(MODELE=reswbrest.getModel(), GROUP_MA=grmapb, OPTION="COOR_ELGA")
 
-    pds, (cells, _, _) = poids.getValuesWithDescription("W", [grmapb])
+    pds, (cells, _, _, _) = poids.getValuesWithDescription("W", [grmapb])
     volume = dict()
     for maille in list(set(cells)):
         volume[maille] = 0
@@ -188,14 +188,14 @@ def sigelmoy(
                     }
                 )
 
-        sxxmoyvale, (cxx, _, _) = dsmoy["xx"].getValuesWithDescription("X1", [grmapb])
-        syymoyvale, (cyy, _, _) = dsmoy["yy"].getValuesWithDescription("X1", [grmapb])
-        szzmoyvale, (czz, _, _) = dsmoy["zz"].getValuesWithDescription("X1", [grmapb])
-        sxymoyvale, (cxy, _, _) = dsmoy["xy"].getValuesWithDescription("X1", [grmapb])
+        sxxmoyvale, (cxx, _, _, _) = dsmoy["xx"].getValuesWithDescription("X1", [grmapb])
+        syymoyvale, (cyy, _, _, _) = dsmoy["yy"].getValuesWithDescription("X1", [grmapb])
+        szzmoyvale, (czz, _, _, _) = dsmoy["zz"].getValuesWithDescription("X1", [grmapb])
+        sxymoyvale, (cxy, _, _, _) = dsmoy["xy"].getValuesWithDescription("X1", [grmapb])
 
         if dim_geom == 3:
-            sxzmoyvale, (cxz, _, _) = dsmoy["xz"].getValuesWithDescription("X1", [grmapb])
-            syzmoyvale, (cyz, _, _) = dsmoy["yz"].getValuesWithDescription("X1", [grmapb])
+            sxzmoyvale, (cxz, _, _, _) = dsmoy["xz"].getValuesWithDescription("X1", [grmapb])
+            syzmoyvale, (cyz, _, _, _) = dsmoy["yz"].getValuesWithDescription("X1", [grmapb])
 
         sxxmoyfinal = dict()
         for maille in list(set(cxx)):
@@ -256,6 +256,7 @@ def sigelmoy(
         l_mailles_total = chbid.getValuesWithDescription("SIXX", [])[1][0]
         nbrvale = len(chbid.getValues())
         champ = [0] * len(l_mailles_total) * 2 * dim_geom
+        assert nbrvale == len(champ), f"{nbrvale}, {len(champ)}"
 
         for (indice, maille) in enumerate(l_mailles_total):
             if dim_geom == 2 and maille in l_mailles_grma:
@@ -270,7 +271,6 @@ def sigelmoy(
                 champ[6 * indice + 3] = sxymoyfinal[maille]
                 champ[6 * indice + 4] = sxzmoyfinal[maille]
                 champ[6 * indice + 5] = syzmoyfinal[maille]
-        bidon = [0] * nbrvale
         chbid.setValues(champ)
 
         rmelmoy.setField(chbid, "SIEF_ELGA", nume_inst)

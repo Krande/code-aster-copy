@@ -66,7 +66,7 @@ subroutine te0069(option, nomte)
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
     do kp = 1, FEQuadCell%nbQuadPoints
-        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+        tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
         call nlcomp(phenom, famiR, kp, imate, FECell%ndim, FEQuadCell%points(1:3, kp), &
                     time, tpg, Kglo, dtpg, fluglo)

@@ -81,39 +81,31 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             self._medcpl = cpl.medcpl
             self.result = None
 
-        def run_iteration(self, i_iter, current_time, delta_t, data):
+        def run_iteration(self, i_iter, current_time, delta_t, fluid_forces):
             """Execute one iteration.
 
             Arguments:
                 i_iter (int): Iteration number if the current time_step.
                 current_time (float): Current time.
                 delta_t (float): Time step.
-                data (dict[*MEDCouplingField*]): dict of input fields.
+                fluid_forces (MEDCouplingFieldDouble): fluid forces field.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
-                dict[*MEDCouplingField*]: Output fields, on nodes.
+                dict[*MEDCouplingFieldDouble*]: Output fields, on nodes with keys "mesh_displacement"
+                and "mesh_velocity".
             """
 
-            assert len(data) == 1, "expecting one field"
-            mc_pres = data["Forces"]
+            FORCE = self._medcpl.import_fluidforces(fluid_forces, MOSOLIDE, current_time)
 
-            # MEDC field => .med => code_aster field
-            FORCE = self._medcpl.import_fluidforces(mc_pres, MOSOLIDE, current_time)
+            FORC = FORCE.getField("FSUR_3D", current_time, "INST")
 
-            FORC = FORCE.getField("FORC_NODA", current_time, "INST")
-
-            PRES = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="ELEM_PRES_R",
-                MODELE=MOSOLIDE,
-                ASSE=_F(TOUT="OUI", CHAM_GD=FORC, NOM_CMP=("FX"), NOM_CMP_RESU=("PRES",)),
-            )
+            PRES = FORC.asPhysicalQuantity("PRES_R", {"FX": "PRES"})
 
             evol_char = CREA_RESU(
                 TYPE_RESU="EVOL_CHAR",
                 OPERATION="AFFE",
-                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, MODELE=MOSOLIDE, INST=current_time),
+                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, INST=current_time),
             )
 
             CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=evol_char)
@@ -140,9 +132,13 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = self._medcpl.export_displacement(displ, "DEPL")
+            mc_displ = self._medcpl.export_displacement(displ)
 
-            return True, {"Displ": mc_displ}
+            velo = displ.copy()
+            velo.setValues(0.0)
+            mc_velo = self._medcpl.export_velocity(velo)
+
+            return {"mesh_displacement": mc_displ, "mesh_velocity": mc_velo}
 
     ################################################################################
     # loop on time steps
@@ -150,11 +146,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
 
     mech_solv = MechanicalSolver(cpl)
 
-    cpl.setup(
-        interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]),
-        input_fields=[("Forces", ["FX", "FY", "FZ"], "CELLS")],
-        output_fields=[("Displ", ["DX", "DY", "DZ"], "NODES")],
-    )
+    cpl.setup(interface=(MASOLIDE, ["Face2", "Face3", "Face4", "Face5", "Face6"]))
 
     cpl.run(mech_solv)
 
@@ -169,7 +161,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_NO="N134",
                 NOM_CMP="DX",
                 VALE_CALC=test_vale[0],
-                GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-5.0739405591730105,
                 PRECISION=0.01,
@@ -181,7 +172,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_NO="N134",
                 NOM_CMP="DX",
                 VALE_CALC=test_vale[1],
-                GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-8.003836010765115,
                 PRECISION=0.01,
@@ -193,7 +183,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_NO="N134",
                 NOM_CMP="DY",
                 VALE_CALC=test_vale[2],
-                GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-2.560446118368371,
                 PRECISION=0.03,
@@ -205,7 +194,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_NO="N134",
                 NOM_CMP="DZ",
                 VALE_CALC=test_vale[3],
-                GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-5.844174410665044,
                 PRECISION=0.01,

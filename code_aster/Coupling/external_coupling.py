@@ -81,7 +81,7 @@ class ExternalCoupling:
             prargs = kwargs.copy()
             prargs.pop("verbosity", None)
             prargs["flush"] = True
-            logger.debug(*args)
+            logger.info(*args)
         return func(*args, **kwargs)
 
     def _init_paramedmem(self, with_app, interface):
@@ -160,6 +160,7 @@ class ExternalCoupling:
                     self.MPI.COUPLING_COMM_WORLD.send(0, "STEP", times[i], self.MPI.DOUBLE)
         else:
             nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
+
             if nb_step > 0:
                 times = [self.MPI.COUPLING_COMM_WORLD.recv(0, "STEP", self.MPI.DOUBLE)]
                 for _ in range(nb_step):
@@ -190,10 +191,10 @@ class ExternalCoupling:
 
         self.log(
             f"{self._whoami!r} coupler created from #{myranks[0]}, "
-            f"{with_app!r} root proc is #{1}"
+            f"{with_app!r} root proc is #{other_ranks[0]}"
         )
 
-        self._medcpl = MEDCoupler(logfunc=self.log)
+        self._medcpl = MEDCoupler(logfunc=self.log, debug=self._debug)
 
     def setup(self, interface, input_fields, output_fields, **params):
         """Initialize the coupling.
@@ -291,21 +292,19 @@ class ExternalCoupling:
                 if converged:
                     break
 
-                self.log("end of iteration status: {}".format(exit_coupling))
+                self.log(f"end of iteration.")
 
             stepper.completed()
 
-            self.log("end of time step with status: {}".format(exit_coupling))
+            self.log(f"end of time step.")
 
         # only to avoid deadlock
         if self._starter:
             input_data = self.recv_input_fields()
 
-        self.log(
-            "coupling {0} with exit status: {1}".format(
-                "completed" if completed else "interrupted", exit_coupling
-            )
-        )
+        self.log(f"coupling completed with exit status: {stepper.isFinished()}")
+
+        return True
 
     @property
     def mesh_interface(self):
@@ -339,15 +338,44 @@ class SaturneCoupling(ExternalCoupling):
     def __init__(self, app="code_aster", debug=False):
         super().__init__(app, False, debug)
 
+    def setup(self, interface, **params):
+        """Initialize the coupling.
+
+        The input filed is the fluid forces and the output fields ate the mesh_displacement
+        and the mesh_velocity of the interface.
+
+        These names are impodes by code_saturne.
+
+        Arguments:
+            interface (tuple(Mesh, list[str])): whole mesh and groups of the interface.
+            params (dict): Parameters of the coupling scheme.
+        """
+
+        if interface[0].getDimension() != 3:
+            raise RuntimeError("The mesh has to be 3D.")
+
+        self._fields_in = [("fluid_forces", ["FX", "FY", "FZ"], "CELLS")]
+        self._fields_out = [
+            ("mesh_displacement", ["DX", "DY", "DZ"], "NODES"),
+            ("mesh_velocity", ["DX", "DY", "DZ"], "NODES"),
+        ]
+        self.set_parameters(params)
+        self._init_paramedmem(self._other_app, interface)
+
     def set_parameters(self, params):
         """Set parameters. Received values from code_saturne.
 
         Arguments:
             params (dict): Parameters of the coupling scheme (not used).
+
+        Returns:
+            (bool): True if the computation is a success else False.
         """
 
         nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
         self._params.nb_iter = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBSSIT", self.MPI.INT)
+        self._params.adapt_step = bool(self.MPI.COUPLING_COMM_WORLD.recv(0, "TADAPT", self.MPI.INT))
+
         self._params.epsilon = self.MPI.COUPLING_COMM_WORLD.recv(0, "EPSILO", self.MPI.DOUBLE)
         init_time = self.MPI.COUPLING_COMM_WORLD.recv(0, "TTINIT", self.MPI.DOUBLE)
         delta_t = self.MPI.COUPLING_COMM_WORLD.recv(0, "PDTREF", self.MPI.DOUBLE)
@@ -362,15 +390,18 @@ class SaturneCoupling(ExternalCoupling):
 
         Arguments:
             solver (object): Solver contains at least a method run_iteration.
-        """
 
-        # initial sync before the loop
-        exit_coupling = self.sync()
+        Returns:
+            (bool): True if the computation is a success else False.
+        """
 
         current_time = self._params.init_time
         delta_time = self._params.delta_t
-        completed = False
+        completed = exit_coupling = False
         istep = 0
+
+        if not self._params.adapt_step:
+            self.sync(end_coupling=False)
 
         while not completed and not exit_coupling:
             istep += 1
@@ -386,27 +417,40 @@ class SaturneCoupling(ExternalCoupling):
 
                 # recv data from code_saturne
                 input_data = self.recv_input_fields()
+                assert len(input_data) == 1
 
-                has_cvg, output_data = solver.run_iteration(
-                    i_iter, current_time, delta_time, input_data
+                output_data = solver.run_iteration(
+                    i_iter, current_time, delta_time, input_data["fluid_forces"]
                 )
 
                 # received cvg
                 converged = bool(self.MPI.COUPLING_COMM_WORLD.recv(istep, "ICVAST", self.MPI.INT))
 
                 # send results to code_saturne
-                self.send_output_fields(output_data)
+                self.send_output_fields(
+                    {
+                        "mesh_displacement": output_data["mesh_displacement"],
+                        "mesh_velocity": output_data["mesh_velocity"],
+                    }
+                )
 
                 if converged:
                     break
 
             completed = current_time >= self._params.final_time
-            exit_coupling = self.sync(end_coupling=completed)
+            if not self._params.adapt_step:
+                exit_coupling = self.sync(end_coupling=completed)
+            else:
+                exit_coupling = completed
 
-            self.log("end of time step with status: {}".format(exit_coupling))
+            self.log(f"end of time step with status: {exit_coupling}")
+
+        exit_coupling = self.sync(end_coupling=True)
 
         self.log(
             "coupling {0} with exit status: {1}".format(
                 "completed" if completed else "interrupted", exit_coupling
             )
         )
+
+        return exit_coupling

@@ -35,6 +35,13 @@ void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
         mod, "SimpleFieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string,
+                                         std::string, VectorString > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string,
+                                         std::string, VectorString, bool > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string,
+                                         std::string, VectorString, ASTERINTEGER, ASTERINTEGER > ) )
         .def( py::init(
             &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string, std::string,
                              VectorString, ASTERINTEGER, ASTERINTEGER, bool > ) )
@@ -72,7 +79,11 @@ Returns:
              NaN if the position is not allocated.
         )",
               py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) = 0 )
-        .def( "hasValue", &SimpleFieldOnCellsReal::hasValue, R"(
+        .def( "hasValue",
+              py::overload_cast< const ASTERINTEGER &, const ASTERINTEGER &, const ASTERINTEGER &,
+                                 const ASTERINTEGER & >( &SimpleFieldOnCellsReal::hasValue,
+                                                         py::const_ ),
+              R"(
 Returns True  if the value of the `icmp` component of the field on the `ima` cell,
 at the `ipt` point, at the `ispt` sub-point is affected.
 
@@ -86,6 +97,24 @@ Returns:
     bool: True  if the value is affected
         )",
               py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) = 0 )
+        .def( "hasValue",
+              py::overload_cast< const ASTERINTEGER &, const std::string &, const ASTERINTEGER &,
+                                 const ASTERINTEGER & >( &SimpleFieldOnCellsReal::hasValue,
+                                                         py::const_ ),
+              R"(
+Returns True  if the value of the `icmp` component of the field on the `ima` cell,
+at the `ipt` point, at the `ispt` sub-point is affected.
+
+Args:
+    ima  (int): Index of cells.
+    cmp (str): name of component.
+    ipt  (int): Index of point.
+    ispt (int): Index of sub-point (default = 0).
+
+Returns:
+    bool: True  if the value is affected
+        )",
+              py::arg( "ima" ), py::arg( "cmp" ), py::arg( "ipt" ), py::arg( "ispt" ) = 0 )
         .def( "setValue",
               py::overload_cast< const ASTERINTEGER &, const ASTERINTEGER &, const ASTERINTEGER &,
                                  const ASTERINTEGER &, const ASTERDOUBLE & >(
@@ -131,24 +160,55 @@ Returns:
     ndarray (float): Field values.
     ndarray (bool): Mask for the field values.
         )" )
-        .def( "getValuesWithDescription", &SimpleFieldOnCellsReal::getValuesWithDescription,
+        .def( "getValuesWithDescription",
+              py::overload_cast< const VectorString &, const VectorLong & >(
+                  &SimpleFieldOnCellsReal::getValuesWithDescription, py::const_ ),
               R"(
 Returns values and description corresponding to given cmp and given cells
 
-Args:
-    cells[list[int]]: list of nodes
-    cmp[str]: component to extract
+Arguments:
+    cmps (list[str]): components to extract.
+    cells (list[int]): list of cells.
 
 Returns:
     values[list[double],
-    tuple[cells[list[int]], points[list[int]], subpoints[list[int]]]
-        )" )
-        .def( "getCellsWithComponents", &SimpleFieldOnCellsReal::getCellsWithComponents, R"(
+    tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
+        )",
+              py::arg( "cmps" ), py::arg( "cells" ) )
+        .def( "getValuesWithDescription",
+              py::overload_cast< const VectorString &, const VectorString & >(
+                  &SimpleFieldOnCellsReal::getValuesWithDescription, py::const_ ),
+              R"(
+Returns values and description corresponding to given cmp and given cells
+
+Arguments:
+    cmps (list[str]): components to extract.
+    groupsOfCells (list[str]): list of groups of cells to use.
+
+Returns:
+    values[list[double],
+    tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
+        )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "cells" ) = VectorString() )
+        .def( "getCellsWithValues", &SimpleFieldOnCellsReal::getCellsWithValues, R"(
 Returns the list of cells where the field is defined.
 
 Returns:
     tuple (int): Indexes of cells where the field is defined.
         )" )
+        .def( "allocate", &SimpleFieldOnCellsReal::allocate,
+              R"(
+            Allocate the field.
+
+            Arguments:
+                loc [str]: localization like 'ELEM'
+                quantity [str]: physical quantity like 'DEPL_R'
+                cmps [list[str]]: list of components.
+                nbPG [int]: number of Gauss Point by cell
+                nbSP [int]: number of sub-point by point.
+            )",
+              py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "nbPG" ),
+              py::arg( "nbSP" ) = 1, py::arg( "zero" ) = false )
         .def( "getNumberOfComponents", &SimpleFieldOnCellsReal::getNumberOfComponents )
         .def( "getComponent", &SimpleFieldOnCellsReal::getComponent )
         .def( "getComponents", &SimpleFieldOnCellsReal::getComponents )
@@ -160,7 +220,34 @@ Returns:
         .def( "getNumberOfSubPointsOfCell", &SimpleFieldOnCellsReal::getNumberOfSubPointsOfCell )
         .def( "getNumberOfComponentsForSubpointsOfCell",
               &SimpleFieldOnCellsReal::getNumberOfComponentsForSubpointsOfCell )
+        .def( "setValues",
+              py::overload_cast< const VectorLong &, const VectorString &, const VectorLong &,
+                                 const VectorLong &, const VectorReal & >(
+                  &SimpleFieldOnCellsReal::setValues ),
+              R"(
+            Set values for a given list of tuple (cell, cmp, ipg, isp, value).
+            Each value of the tuple is given as a separated list.
+
+            Arguments:
+                cells (list[int]): list of cells.
+                cmps (list[str)]: list of components
+                npg (list[int]): list of point
+                spt (list[int]): list of sub-point
+                values (list[float]): list of values to set.
+            )",
+              py::arg( "cells" ), py::arg( "cmps" ), py::arg( "npg" ), py::arg( "spt" ),
+              py::arg( "values" ) )
+        .def( "setValues",
+              py::overload_cast< const VectorReal & >( &SimpleFieldOnCellsReal::setValues ), R"(
+             Set values for each cells and components as (cell_0_val_0, cell_0_val_1, ...)
+
+            Arguments:
+                values (list[float]): list of values to set.
+
+            )",
+              py::arg( "values" ) )
         .def( "getPhysicalQuantity", &SimpleFieldOnCellsReal::getPhysicalQuantity )
+        .def( "getComponentsName2Index", &SimpleFieldOnCellsReal::getComponentsName2Index )
         .def( "getLocalization", &SimpleFieldOnCellsReal::getLocalization )
         .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers )
         .def( "toFieldOnCells",

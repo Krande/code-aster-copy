@@ -25,6 +25,7 @@ subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neu
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -94,9 +95,9 @@ subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neu
 !
     integer :: iret, i_field_in, ig
     character(len=24) :: identify
-    character(len=19) :: ligrel_load, name_input
+    character(len=19) :: ligrel_load, name_input, tych, ligr_cham
     character(len=8) :: affcha, ng
-    logical :: l_constant, l_fonct_0, l_fonct_t, l_sigm_int
+    logical :: l_constant, l_fonct_0, l_fonct_t, l_sigm_int, l_find
     character(len=8), pointer :: p_vale_sigm(:) => null()
     character(len=8), pointer :: p_vect_asse(:) => null()
     integer, pointer :: desc(:) => null()
@@ -127,7 +128,7 @@ subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neu
 !
 ! - Name of option for undead load (real coefficient)
 !
-    data optsui_r/'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+    data optsui_r/'No_Load         ', 'No_Load         ', 'CHAR_MECA_FRSU23', 'No_Load         ', &
         'No_Load         ', 'No_Load         ', 'CHAR_MECA_SR1D1D', 'CHAR_MECA_PESA_R', &
         'CHAR_MECA_ROTA_R', 'CHAR_MECA_PRSU_R', 'No_Load         ', 'CHAR_MECA_SRCO3D', &
         'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
@@ -175,7 +176,7 @@ subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neu
 !
 ! - Flag if load can been undead load type
 !
-    data l_suiv/.false., .false., .false., .false., &
+    data l_suiv/.false., .false., .true., .false., &
         .false., .false., .true., .true., &
         .true., .true., .false., .true., &
         .false., .false., .false., .false., &
@@ -373,6 +374,20 @@ subroutine load_neum_spec(loadName, loadNume, loadApply, ligrel_calc, i_type_neu
 !
         if (object(i_type_neum) .eq. '.FORNO') then
             load_ligrel = ligrel_load
+        else if (present(name_inputz)) then
+            l_find = ASTER_FALSE
+            call dismoi('TYPE_CHAMP', name_input, 'CHAMP', repk=tych)
+            if (tych(1:2) == "EL") then
+                call dismoi('NOM_LIGREL', name_input, 'CHAMP', repk=ligr_cham)
+                call exisd('LIGREL', ligr_cham, iret)
+                if (iret == 1) then
+                    load_ligrel = ligr_cham
+                    l_find = ASTER_TRUE
+                end if
+            end if
+            if (.not. l_find) then
+                load_ligrel = ligrel_calc
+            end if
         else
             load_ligrel = ligrel_calc
         end if

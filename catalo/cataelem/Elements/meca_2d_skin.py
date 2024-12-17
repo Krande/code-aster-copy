@@ -191,12 +191,12 @@ class MEPLSE2(Element):
             para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR)),
         ),
         OP.CHAR_MECA_FF1D2D(
-            te=91,
+            te=305,
             para_in=((SP.PFF1D2D, LC.CFOR2DF), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FR1D2D(
-            te=90,
+            te=305,
             para_in=((SP.PFR1D2D, LC.NFOR2DR), (SP.PGEOMER, LC.EGEOM2D)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

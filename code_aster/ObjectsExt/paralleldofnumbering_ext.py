@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 
 from ..Objects import ParallelDOFNumbering
 
-from ..Utilities import injector
+from ..Utilities import injector, force_list
 import functools
 
 
@@ -58,7 +58,9 @@ class ExtendedParallelDOFNumbering:
         if component not in available_components:
             raise ValueError(f"Component {component} is not in {available_components}")
 
-        return self.getEquationNumbering().getDOFsWithDescription(component, local=local)[-1]
+        return self.getEquationNumbering().getDOFsWithDescription(
+            force_list(component), local=local
+        )[-1]
 
     def getDictComponentsToDOFs(self, local=True):
         """Return the dictionary with the available components as keys and the rows as values."""
