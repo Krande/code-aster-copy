@@ -64,7 +64,7 @@ jobs:
       - name: run rattler test
         continue-on-error: true # Prevent the workflow from failing
         run: |
-          pixi run ctest --package-file ${{ env.CONDA_FILE }} 
+          pixi run ctest --package-file ${{ env.CONDA_FILE }} --channel-priority=disabled
 
       - name: Save Run directory to artifacts
         uses: actions/upload-artifact@v4
