@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine as_allocate(size, vl, vi, vi4, vr, &
 #include "asterf_debug.h"
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
-#include "asterfort/jeimpm.h"
 #include "asterfort/jjldyn.h"
 #include "asterfort/utmess.h"
 !
@@ -158,8 +157,6 @@ subroutine as_allocate(size, vl, vi, vi4, vr, &
             ival(2) = nint(vmxdyn*lois)/unmega
             ival(3) = nint(mcdyn*lois)/unmega
             ival(4) = (ltot*lois)/unmega
-            call utmess('E', 'JEVEUX_62', ni=4, vali=ival)
-            call jeimpm(6)
             call utmess('F', 'JEVEUX_62', ni=4, vali=ival)
         end if
     end if

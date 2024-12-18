@@ -31,6 +31,8 @@
 #include "Contact/Contact.h"
 #include "Results/TransientResult.h"
 
+#include <filesystem>
+
 /**
  * @class NonLinearResult
  * @brief Cette classe correspond a un evol_noli, elle hérite de Result
@@ -65,7 +67,7 @@ class NonLinearResult : public TransientResult {
 
     static VectorReal getTangentMatrix( const std::string & );
 
-    void printMedFile( const std::string fileName, std::string medName = std::string(),
+    void printMedFile( const std::filesystem::path &fileName, std::string medName = std::string(),
                        bool local = true, bool internalVar = true ) const;
 };
 

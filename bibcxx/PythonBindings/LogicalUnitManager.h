@@ -6,7 +6,7 @@
  * @brief Fichier entete permettant de decrire un fichier sur unité logique
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,6 +29,8 @@
 
 #include "logical_unit.h"
 
+#include <filesystem>
+
 enum FileType { Ascii, Binary, Free };
 enum FileAccess { New, Append, Old };
 
@@ -40,7 +42,7 @@ enum FileAccess { New, Append, Old };
 class LogicalUnitFile {
   private:
     /** @brief Nom du fichier */
-    std::string _fileName;
+    std::filesystem::path _fileName;
     /** @brief Booleen pour savoir si un fichier est utilisable */
     bool _isUsable;
     /** @brief Associated logical unit */
@@ -61,9 +63,10 @@ class LogicalUnitFile {
      * @param type type du fichier
      * @param access Accés au fichier
      */
-    LogicalUnitFile( const std::string name, const FileType type, const FileAccess access )
-        : _fileName( name ), _isUsable( true ) {
-        _logicalUnit = openLogicalUnitFile( name.c_str(), type, access );
+    LogicalUnitFile( const std::filesystem::path &filename, const FileType type,
+                     const FileAccess access )
+        : _fileName( filename ), _isUsable( true ) {
+        _logicalUnit = openLogicalUnitFile( filename.c_str(), type, access );
     };
 
     /**
@@ -78,12 +81,13 @@ class LogicalUnitFile {
 
     LogicalUnitFile &operator=( LogicalUnitFile & ) = delete;
 
-    void openFile( const std::string name, const FileType type, const FileAccess access ) {
+    void openFile( const std::filesystem::path &filename, const FileType type,
+                   const FileAccess access ) {
         if ( _isUsable )
             releaseLogicalUnitFile( _logicalUnit );
-        _fileName = name;
+        _fileName = filename;
         _isUsable = true;
-        _logicalUnit = openLogicalUnitFile( name.c_str(), type, access );
+        _logicalUnit = openLogicalUnitFile( filename.c_str(), type, access );
     };
 
     /**

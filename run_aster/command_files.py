@@ -104,8 +104,10 @@ import rlcompleter
 
 readline.parse_and_bind('tab: complete')
 
+print("\\n# CA.basedir is the directory containing the export file")
+print(f"CA.basedir: {CA.basedir}")
 code.interact(local=locals(),
-                banner=('\\nEntering in interactive mode\\n'
+                banner=('Entering in interactive mode\\n'
                         'Use exit() or Ctrl-D (i.e. EOF) to continue '
                         'with \g<cmd>...)'),
                 exitmsg='Use exit() or Ctrl-D (i.e. EOF) to exit')

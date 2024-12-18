@@ -83,6 +83,7 @@ class RunAster:
     """
 
     _show_comm = True
+    _chg_procdir = False
 
     @classmethod
     def factory(
@@ -201,14 +202,10 @@ class RunAster:
                 self.export.get("step") + 1, self.export.get("nbsteps")
             )
         )
-        comm = self._change_comm_file(comm)
+        comm = self.change_comm_file(comm)
         status.update(self._exec_one(comm, timeout - status.times[-1]))
         self._coredump_analysis()
         return status
-
-    def _change_comm_file(self, comm):
-        """Change the comm file."""
-        return change_comm_file(comm, interact=self._interact, show=self._show_comm)
 
     def _exec_one(self, comm, timeout):
         """Show instructions for a command file.
@@ -386,6 +383,37 @@ class RunAster:
             logger.info("TITLE Copying results")
             copy_resultfiles(results, results_saved, test=self._test)
 
+    def change_comm_file(self, comm):
+        """Change a command file.
+
+        Arguments:
+            comm (str): Command file name.
+
+        Returns:
+            str: Name of the file to be executed.
+        """
+        with open(comm, "rb") as fobj:
+            text_init = fobj.read().decode(errors="replace")
+        text = text_init
+        if self._chg_procdir:
+            text = change_procdir(text)
+        text = add_import_commands(text)
+        if self._interact:
+            text = stop_at_end(text)
+        changed = text.strip() != text_init.strip()
+        if changed:
+            text = file_changed(text, comm)
+        text = add_coding_line(text)
+        if self._show_comm:
+            logger.info("\nContent of the file to execute:\n%s\n", text)
+        if not changed:
+            return comm
+
+        filename = osp.basename(comm) + ".changed.py"
+        with open(filename, "wb") as fobj:
+            fobj.write(text.encode())
+        return filename
+
     def _log_mess(self, msg):
         """Log a message into the *message* file."""
         with open(self._output, "a") as fobj:
@@ -400,6 +428,7 @@ class RunOnlyEnv(RunAster):
     """
 
     _show_comm = False
+    _chg_procdir = True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -429,12 +458,6 @@ class RunOnlyEnv(RunAster):
             logger.info("    ulimit -c unlimited")
             logger.info("    ulimit -t %.0f", timeout)
         return super().execute_study()
-
-    def _change_comm_file(self, comm):
-        """Change the comm file for manual run."""
-        return change_comm_file(
-            comm, interact=self._interact, use_procdir=True, show=self._show_comm
-        )
 
     def _exec_one(self, comm, timeout):
         """Show instructions for a command file.
@@ -504,47 +527,6 @@ def set_num_threads(value):
     # --numthreads option could be removed
     os.environ["OMP_NUM_THREADS"] = str(value)
     # mkl and openblas should used the same value if they are not defined.
-
-
-def change_comm_file(comm, interact=False, use_procdir=None, dstdir=None, show=False):
-    """Change a command file.
-
-    Arguments:
-        comm (str): Command file name.
-        interact (bool, optional): Add a stop at the end of the file for
-            interactive modifications.
-        use_procdir (bool, optional): Change to the 'proc.N' directory at the
-            beginning of the file.
-        dstdir (str, optional): Directory to write the changed file
-            if necessary (defaults: ".").
-        show (bool): Show file content if *True*.
-
-    Returns:
-        str: Name of the file to be executed (== *comm* if nothing changed)
-    """
-    with open(comm, "rb") as fobj:
-        text_init = fobj.read().decode(errors="replace")
-    text = text_init
-    if use_procdir:
-        text = change_procdir(text)
-    text = add_import_commands(text)
-    if interact:
-        text = stop_at_end(text)
-    changed = text.strip() != text_init.strip()
-    if changed:
-        text = file_changed(text, comm)
-    text = add_coding_line(text)
-    if show:
-        logger.info("\nContent of the file to execute:\n%s\n", text)
-    if not changed:
-        return comm
-
-    filename = osp.basename(comm) + ".changed.py"
-    if dstdir:
-        filename = osp.join(dstdir, filename)
-    with open(filename, "wb") as fobj:
-        fobj.write(text.encode())
-    return filename
 
 
 def copy_datafiles(files, verbose=True):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,12 +182,6 @@ Contactez le support technique.
 Le nom de l'attribut %(k1)s est invalide pour la requête.
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""
-    ),
-    24: _(
-        """
-L'impression du contenu détaillé des objets en mémoire est désactivée.
-Il faut définir '%(k1)s' dans '%(k2)s' pour l'activer.
 """
     ),
     27: _(

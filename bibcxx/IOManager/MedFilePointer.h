@@ -28,6 +28,7 @@
 
 #include "astercxx.h"
 
+#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -71,10 +72,10 @@ class MedFilePointer {
     bool isParallel() const { return _parallelOpen; };
 
     /** @brief open med file */
-    int open( const std::string &filename, const MedFileAccessType & );
+    int open( const std::filesystem::path &filename, const MedFileAccessType & );
 
     /** @brief open med file in parallel */
-    int openParallel( const std::string &filename, const MedFileAccessType & );
+    int openParallel( const std::filesystem::path &filename, const MedFileAccessType & );
 };
 
 #endif

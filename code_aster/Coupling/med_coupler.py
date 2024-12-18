@@ -22,7 +22,9 @@ Definition of a convenient object to synchronize MEDCoupling fields.
 """
 
 from ..Objects import LoadResult, SimpleFieldOnNodesReal, SimpleFieldOnCellsReal
-from ..Utilities import logger, no_new_attributes, medcoupling as MEDC, ParaMEDMEM as PMM
+from ..Utilities import logger, no_new_attributes
+from ..Utilities import medcoupling as MEDC
+from ..Utilities import ParaMEDMEM as PMM
 
 
 class CoupledField(PMM.ParaFIELD):
@@ -254,9 +256,9 @@ class MEDCoupler:
             if self.debug:
                 self.log(repr(field), verbosity=2)
             dec.attachLocalField(pfield)
-            self.log(f"sync...", verbosity=2)
+            self.log("sync...", verbosity=2)
             dec.synchronize()
-            self.log(f"sendData...")
+            self.log("sendData...")
             dec.sendData()
         self.log("pmm_send: done", verbosity=2)
 
@@ -278,15 +280,15 @@ class MEDCoupler:
             self.log(f"waiting for field {field_name!r} on {sup_name}...")
             dec.attachLocalField(pfield)
             fields[field_name] = pfield.getField()
-            self.log(f"sync...", verbosity=2)
+            self.log("sync...", verbosity=2)
             dec.synchronize()
-            self.log(f"recvData...", verbosity=2)
+            self.log("recvData...", verbosity=2)
             dec.recvData()
             self.log(f"received field {field_name!r} on {sup_name}...")
             if self.debug:
                 self.log(repr(pfield.getField()), verbosity=2)
 
-        self.log(f"pmm_recv: done", verbosity=2)
+        self.log("pmm_recv: done", verbosity=2)
         return fields
 
     def _medcfield2aster(self, mc_field):

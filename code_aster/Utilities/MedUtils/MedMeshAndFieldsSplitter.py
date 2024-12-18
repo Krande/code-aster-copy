@@ -46,7 +46,7 @@ def _splitMeshAndFieldsFromMedFile(
     """Split a MED mesh and MED fields from a filename
 
     Arguments:
-        filename (str): filename of MED file.
+        filename (Path|str): filename of MED file.
         cellBalancer (bool): True if cell balancer must be return.
         nodeBalancer (bool): True if node balancer must be return.
         outMesh (ParallelMesh): split mesh.
@@ -157,7 +157,7 @@ def splitMeshAndFieldsFromMedFile(
     """Split a MED mesh and MED fields from a filename
 
     Arguments:
-        filename (str): filename of MED file.
+        filename (Path|str): filename of MED file.
         cellBalancer (bool): True if cell balancer must be return.
         nodeBalancer (bool): True if node balancer must be return.
         outMesh (ParallelMesh): split mesh.
@@ -193,7 +193,7 @@ def _splitMedFileToResults(
     """Split a MED mesh and MED fields from a filename and return Result
 
     Arguments:
-        filename (str): filename of MED file.
+        filename (Path|str): filename of MED file.
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
@@ -318,7 +318,7 @@ def splitMedFileToResults(
     """Split a MED mesh and MED fields from a filename and return Result
 
     Arguments:
-        filename (str): filename of MED file.
+        filename (Path|str): filename of MED file.
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)
@@ -338,7 +338,7 @@ def readMedFileToResults(
     """Read a MED mesh and MED fields from a filename and return Result
 
     Arguments:
-        filename (str): filename of MED file.
+        filename (Path|str): filename of MED file.
         fieldToRead (dict): dict that matches med field name and aster name (in Result)
         resultType (class): A Result class to instanciate (child of Result)
         model (Model): Model (in case of ELGA field reading)

@@ -42,7 +42,8 @@ med_idt MedFilePointer::getFileId() const {
     return _fileId;
 };
 
-int MedFilePointer::open( const std::string &filename, const MedFileAccessType &openType ) {
+int MedFilePointer::open( const std::filesystem::path &filename,
+                          const MedFileAccessType &openType ) {
     med_access_mode medAccessMode = MED_ACC_UNDEF;
     if ( openType == MedReadOnly ) {
         medAccessMode = MED_ACC_RDONLY;
@@ -59,7 +60,8 @@ int MedFilePointer::open( const std::string &filename, const MedFileAccessType &
     return 0;
 };
 
-int MedFilePointer::openParallel( const std::string &filename, const MedFileAccessType &openType ) {
+int MedFilePointer::openParallel( const std::filesystem::path &filename,
+                                  const MedFileAccessType &openType ) {
 #ifdef ASTER_HAVE_MPI
     MPI_Info info = MPI_INFO_NULL;
     MPI_Comm comm = aster_get_comm_world()->id;

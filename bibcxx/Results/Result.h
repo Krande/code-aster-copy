@@ -38,6 +38,8 @@
 #include "Meshes/Mesh.h"
 #include "Modeling/Model.h"
 
+#include <filesystem>
+
 /**
  * @class Result
  * @brief Cette classe correspond a la sd_resultat de Code_Aster, elle stocke des champs
@@ -531,8 +533,9 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir la gestion des mot-clés par défaut (ex : TOUT_ORDRE)
      * @todo revoir la gestion des unités logiques (notamment si fort.20 existe déjà)
      */
-    virtual void printMedFile( const std::string fileName, std::string medName = std::string(),
-                               bool local = true, bool internalVar = true ) const;
+    virtual void printMedFile( const std::filesystem::path &fileName,
+                               std::string medName = std::string(), bool local = true,
+                               bool internalVar = true ) const;
 
     /**
      * @brief Get the number of steps stored in the Result

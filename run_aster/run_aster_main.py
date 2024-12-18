@@ -144,7 +144,12 @@ import sys
 from code_aster.Utilities import ExecutionParameter
 ExecutionParameter().set_argv(sys.argv)
 """
-CWD = """print(f"Working directory: {os.getcwd()}")"""
+
+CWD = r"""
+print(f"Working directory: {os.getcwd()}")
+print("# CA.basedir is the directory from which run_aster started")
+print(f"CA.basedir: {CA.basedir}\n")
+"""
 
 
 def parse_args(argv):
@@ -365,6 +370,11 @@ def main(argv=None):
     if args.no_comm:
         for comm in export.commfiles:
             export.remove_file(comm)
+    if not os.environ.get("RUNASTER_CA_BASEDIR"):
+        os.environ["RUNASTER_CA_BASEDIR"] = os.fspath(Path.cwd())
+        if export.filename:
+            os.environ["RUNASTER_CA_BASEDIR"] = os.fspath(Path(export.filename).parent)
+    print("run_aster_main:", os.environ["RUNASTER_CA_BASEDIR"])
     if direct:
         export.add_file(File(osp.abspath(args.file), filetype="comm", unit=1))
     elif not args.file or args.no_comm:
@@ -413,7 +423,7 @@ def main(argv=None):
             )
             run_aster = osp.join(RUNASTER_ROOT, "bin", "run_aster")
             try:
-                expdir = create_temporary_dir(dir=str(Path.home() / ".tmp_run_aster"))
+                expdir = create_temporary_dir(dir=os.fspath(Path.home() / ".tmp_run_aster"))
             except (OSError, KeyError):
                 expdir = create_temporary_dir(dir=CFG.get("tmpdir"))
             statfile = osp.join(expdir, "__status__")

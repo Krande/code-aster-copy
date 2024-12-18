@@ -850,7 +850,7 @@ Result::interpolateFieldOnCellsReal( const std::string name, const ASTERDOUBLE v
     return result;
 };
 
-void Result::printMedFile( const std::string fileName, std::string medName, bool local,
+void Result::printMedFile( const std::filesystem::path &fileName, std::string medName, bool local,
                            bool internalVar ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;

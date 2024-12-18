@@ -48,6 +48,7 @@
 #endif
 #include "ParallelUtilities/AsterMPI.h"
 
+#include <filesystem>
 #include <typeinfo>
 
 /**
@@ -425,7 +426,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return nullptr;
     };
 
-    bool printMedFile( const std::string fileName, bool local = true ) const;
+    bool printMedFile( const std::filesystem::path &fileName, bool local = true ) const;
 
     /**
      * @brief Import a PETSc vector into a ParallelFieldOnNodes
@@ -792,7 +793,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 };
 
 template < class ValueType >
-bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName, bool local ) const {
+bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileName,
+                                              bool local ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;

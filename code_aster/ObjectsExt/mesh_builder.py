@@ -31,6 +31,7 @@ The functions are exposed as class-method in the :py:class:`Mesh` class.
 """
 
 import math
+import os
 import traceback
 from functools import wraps
 
@@ -77,12 +78,12 @@ def buildFromMedFile(mesh, filename, meshname=None, verbose=0):
 
     Arguments:
         mesh (Mesh|ParallelMesh): The Mesh object to be filled.
-        filename (str): Path of the MED file.
+        filename (Path|str): Path of the MED file.
         meshname (str): Name of the mesh to be read from file.
         verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
     """
     mreader = MEDCouplingMeshHelper()
-    mreader.readMedFile(filename, meshname)
+    mreader.readMedFile(os.fspath(filename), meshname)
     mreader.buildMesh(mesh, verbose)
 
 

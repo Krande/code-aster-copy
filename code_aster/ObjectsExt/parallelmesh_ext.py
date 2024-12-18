@@ -79,7 +79,7 @@ class ExtendedParallelMesh:
         """Read a MED file containing a mesh and eventually partition it.
 
         Arguments:
-            filename (str): Name of the MED file.
+            filename (Path|str): Name of the MED file.
             meshname (str): Name of the mesh to be read from file.
             partitioned (bool): False if the mesh is not yet partitioned and have to
                 be partitioned before reading.
