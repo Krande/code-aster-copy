@@ -227,5 +227,5 @@ def C_RELATION(command):
             "Barcelone",
             "CSSM",
             "ELAS_HYPER_VISC",
-            "BETON_AGEING"
+            "BETON_AGEING",
         )
