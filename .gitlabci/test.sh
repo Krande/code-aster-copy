@@ -1,7 +1,14 @@
 #!/bin/bash
 
 jobs=${NPROC_MAX}
-args=( "--clean" "--timefactor=4.0" "--jobs=${jobs}" "$@" )
+args=( "--clean" "--jobs=${jobs}" "$@" )
+if [ "${BUILD}" = "debug" ]; then
+    args+=( "--timefactor=16.0" )
+else
+    args+=( "--timefactor=4.0" )
+fi
+
+
 # to be directly readable in the browser
 export MESS_EXT="mess.txt"
 
@@ -35,8 +42,8 @@ if [ -z "${changes}" ]; then
     fi
 fi
 
-# keep only outputs for failed tests, except for scheduled runs
-if [ "${CI_PIPELINE_SOURCE}" != "schedule" ]; then
+# keep only outputs for failed tests, except for nightly runs
+if [ "${BUILDTYPE}" = "ci" ]; then
     args+=( "--only-failed-results" )
 fi
 
@@ -58,8 +65,19 @@ if [ ${iret} -ne 0 ]; then
     iret=$?
 fi
 
-# scheduled runs: archive results files
-if [ "${CI_PIPELINE_SOURCE}" = "schedule" ]; then
+# archive gcov data
+if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
+    printf "\nrunning gcovr... - $(date)\n"
+    time gcovr
+
+    printf "\ncreating archive... - $(date)\n"
+    tar czf coverage.tgz -C build/mpidebug/debug \
+        $(find build/mpidebug/debug -name 'coverage*' -exec basename {} \;)
+    mv coverage.tgz results/
+fi
+
+# nightly runs: archive results files
+if [ "${BUILDTYPE}" = "nightly" ] || [ "${BUILDTYPE}" = "nightly-coverage" ]; then
     cd results
     tar czf mess_files.tar.gz *.${MESS_EXT}
     tar czf code_files.tar.gz *.code
@@ -68,10 +86,13 @@ if [ "${CI_PIPELINE_SOURCE}" = "schedule" ]; then
     wget --no-verbose --no-check-certificate -O ./mc ${MINIO_URL}/codeaster/tools/mc
     chmod 755 ./mc
     ./mc --insecure alias set minio/ ${MINIO_URL} ${MINIO_LOGIN} ${MINIO_PASSWD}
-    dest=minio/codeaster/devops/ci-debian11/results/${REFREV}/verification
+    tdir="${REFREV}"
+    [ "${BUILDTYPE}" = "nightly-coverage" ] && tdir="coverage"
+    dest=minio/codeaster/devops/ci-${OSNAME}/results/${tdir}/verification
     ./mc --insecure cp run_testcases.xml ${dest}/
     ./mc --insecure cp mess_files.tar.gz ${dest}/
     ./mc --insecure cp code_files.tar.gz ${dest}/
+    [ -f coverage.tgz ] && ./mc --insecure cp coverage.tgz ${dest}/
 
     cd ..
 fi
