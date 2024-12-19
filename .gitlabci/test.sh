@@ -77,7 +77,7 @@ if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
 fi
 
 # nightly runs: archive results files
-if [ "${BUILDTYPE}" = "nightly" || "${BUILDTYPE}" = "nightly-coverage" ]; then
+if [ "${BUILDTYPE}" = "nightly" ] || [ "${BUILDTYPE}" = "nightly-coverage" ]; then
     cd results
     tar czf mess_files.tar.gz *.${MESS_EXT}
     tar czf code_files.tar.gz *.code
