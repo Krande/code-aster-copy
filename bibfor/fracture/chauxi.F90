@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,33 +53,44 @@ subroutine chauxi(ndim, mu, ka, r, t, &
 !
     integer :: i, j, k, l
     real(kind=8) :: du1dpo(3, 2), du2dpo(3, 2), du3dpo(3, 2)
-    real(kind=8) :: du1dl(3, 3), du2dl(3, 3), du3dl(3, 3), cr1, cr2
+    real(kind=8) :: du1dl(3, 3), du2dl(3, 3), du3dl(3, 3), cr1, cr2, Rc, A, B, C, D, k1, nu
 !
 !
 !     COEFFS  DE CALCUL
     cr1 = 1.d0/(4.d0*mu*sqrt(r8depi()*r))
     cr2 = sqrt(r/r8depi())/(2.d0*mu)
 !
+!   Paramètre
+!   Rc = rayon de courbure
+    Rc = 0.2
+    nu = (3.-ka)/4.
+    A = (8.*nu-3.)/8.
+    B = (5.-8.*nu)/8.
+    C = (128.*nu**2-96.*nu+13.)/24.
+    D = (128.*nu**2-192.*nu+55.)/24.
+    k1 = 1.0
 !-----------------------------------------------------------------------
 !     DÉFINITION DU CHAMP SINGULIER AUXILIAIRE U1 ET DE SA DÉRIVÉE
 !-----------------------------------------------------------------------
 !     CHAMP SINGULIER AUXILIAIRE U1 DANS LA BASE LOCALE
-    u1l(1) = cr2*cos(t*0.5d0)*(ka-cos(t))
-    u1l(2) = cr2*sin(t*0.5d0)*(ka-cos(t))
+    u1l(1) = cr2*k1*(cos(t*0.5d0)*(ka-cos(t)))+ 0.5d0*cr2*(r/Rc)*(cos(t/2.)*(A+C-B-D)+cos(5.*t/2.)*(A+B)+cos(3.*t/2.)*(C+D))
+
+    u1l(2) = cr2*k1*(sin(t*0.5d0)*(ka-cos(t)))+ 0.5d0*cr2*(r/Rc)*(sin(t/2.)*(-A+C+B-D)+sin(5.*t/2.)*(A+B)+sin(3.*t/2.)*(C+D))
+
     u1l(3) = 0.d0
-!
-!     MATRICE DES DÉRIVÉES DE U1 DANS LA BASE POLAIRE (3X2)
-!
-!     DERIVÉES PAR RAPPORT À R (RAYON) DE U1
-    du1dpo(1, 1) = cr1*(cos(t*0.5d0)*(ka-cos(t)))
-    du1dpo(2, 1) = cr1*(sin(t*0.5d0)*(ka-cos(t)))
+
+!  DERIVÉES PAR RAPPORT À R (RAYON) DE U1
+    du1dpo(1, 1) = cr1*k1*(cos(t*0.5d0)*(ka-cos(t)))+ 0.5d0*cr2*(3./2.)*(1./Rc)*(cos(t/2.)*(A+C-B-D)+cos(5.*t/2.)*(A+B)+cos(3.*t/2.)*(C+D))
+
+    du1dpo(2, 1) = cr1*k1*(sin(t*0.5d0)*(ka-cos(t)))+  0.5d0*cr2*(3./2.)*(1./Rc)*(sin(t/2.)*(-A+C+B-D)+sin(5.*t/2.)*(A+B)+sin(3.*t/2.)*(C+D))
+
     du1dpo(3, 1) = 0.d0
-!
-!     DERIVÉES PAR RAPPORT À T (THETA) DE U1
-    du1dpo(1, 2) = cr2*(-0.5d0*sin(t*0.5d0)*(ka-cos(t))&
-     &                                 +cos(t*0.5d0)*sin(t))
-    du1dpo(2, 2) = cr2*(0.5d0*cos(t*0.5d0)*(ka-cos(t))&
-     &                                 +sin(t*0.5d0)*sin(t))
+
+!  DERIVÉES PAR RAPPORT À T (THETA) DE U1
+    du1dpo(1, 2) = cr2*k1*(-0.5d0*sin(t*0.5d0)*(ka-cos(t))+cos(t*0.5d0)*sin(t))+ 0.25d0*cr2*(r/Rc)*(sin(t/2.)*(-A-C+B+D)+sin(5.*t/2.)*(-5.*A-5.*B)+sin(3.*t/2.)*(-3.*C-3.*D))
+
+    du1dpo(2, 2) = cr2*k1*(0.5d0*cos(t*0.5d0)*(ka-cos(t))+sin(t*0.5d0)*sin(t))+ 0.25d0*cr2*(r/Rc)*(cos(t/2.)*(-A+C+B-D)+cos(5.*t/2.)*(5.*A+5.*B)+cos(3.*t/2.)*(3.*C+3.*D))
+
     du1dpo(3, 2) = 0.d0
 !
 !     MATRICE DES DÉRIVÉES DE U1 DANS LA BASE LOCALE (3X3)
