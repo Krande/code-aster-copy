@@ -43,7 +43,7 @@ if [ -z "${changes}" ]; then
 fi
 
 # keep only outputs for failed tests, except for nightly runs
-if [ "${BUILDTYPE}" != "ci" ]; then
+if [ "${BUILDTYPE}" = "ci" ]; then
     args+=( "--only-failed-results" )
 fi
 
