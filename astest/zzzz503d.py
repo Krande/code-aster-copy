@@ -78,8 +78,17 @@ affectMat2 = CA.MaterialField(pMesh)
 affectMat2.addMaterialOnMesh(acier)
 affectMat2.build()
 
-resu.setMaterialField(affectMat2)
-test.assertEqual(affectMat2, resu.getMaterialField())
+with test.assertRaisesRegex(CA.AsterError, "MaterialField already assigned"):
+    resu.setMaterialField(affectMat2)
+
+# unchanged
+test.assertEqual(affectMat, resu.getMaterialField())
+
+# does nothing, silently
+resu.setMaterialField(affectMat2, exists_ok=True)
+
+# unchanged
+test.assertEqual(affectMat, resu.getMaterialField())
 
 
 test.printSummary()

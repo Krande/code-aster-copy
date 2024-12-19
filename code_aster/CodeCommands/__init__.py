@@ -148,8 +148,6 @@ from .modi_modele_xfem import MODI_MODELE_XFEM
 from .modi_repere import MODI_REPERE
 from .norm_mode import NORM_MODE
 from .nume_ddl_gene import NUME_DDL_GENE
-
-# other commands are automatically added just using their catalog
 from .operator import define_operators
 from .post_cham_xfem import POST_CHAM_XFEM
 from .post_champ import POST_CHAMP
@@ -189,5 +187,6 @@ from .test_table import TEST_TABLE
 from .ther_non_line_mo import THER_NON_LINE_MO
 from .variable import VARIABLE
 
+# other commands are automatically added just using their catalog
 define_operators(globals())
 del define_operators

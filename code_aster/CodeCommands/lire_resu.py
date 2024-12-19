@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -82,16 +82,15 @@ class ResultsReader(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         if "MODELE" in keywords:
-            self._result.setModel(keywords["MODELE"])
-            self._result.setMesh(keywords["MODELE"].getMesh())
+            self._result.setModel(keywords["MODELE"], exists_ok=True)
         elif "MAILLAGE" in keywords:
             self._result.setMesh(keywords["MAILLAGE"])
 
         if "CHAM_MATER" in keywords:
-            self._result.setMaterialField(keywords["CHAM_MATER"])
+            self._result.setMaterialField(keywords["CHAM_MATER"], exists_ok=True)
 
         if "CARA_ELEM" in keywords:
-            self._result.setElementaryCharacteristics(keywords["CARA_ELEM"])
+            self._result.setElementaryCharacteristics(keywords["CARA_ELEM"], exists_ok=True)
 
         if "MATR_RIGI" in keywords:
             dofNum = keywords["MATR_RIGI"].getDOFNumbering()

@@ -80,7 +80,6 @@ def cached_property(method):
 
 
 class Mac3CoeurCalcul:
-
     """Base class of an analysis, intended to be inherited
 
     Its factory builds the proper object according to the passed keywords.
@@ -755,7 +754,6 @@ class Mac3CoeurCalcul:
 
 
 class Mac3CoeurDeformation(Mac3CoeurCalcul):
-
     """Compute the strain of the assemblies"""
 
     mcfact = "DEFORMATION"
@@ -1192,11 +1190,16 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             )
 
             logger.debug("<MAC3_CALCUL><DEFORMATION>: Finish vessel opening using prediction.")
+            logger.debug(
+                "%s (%s), %s",
+                self.cham_mater_free,
+                self.cham_mater_free.getName(),
+                __RESULT.getMaterialField(__RESULT.getLastIndex()),
+            )
         return __RESULT
 
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
-
     """Compute the thinkness of water from deformed assemblies"""
 
     mcfact = "LAME"
@@ -1431,7 +1434,6 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
 
 class Mac3CoeurEtatInitial(Mac3CoeurLame):
-
     """Compute Initial State"""
 
     mcfact = "LAME"

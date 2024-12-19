@@ -55,7 +55,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        if keywords.get("reuse") is not None:
+        if keywords.get("reuse"):
             self._result = keywords["reuse"]
             incr = keywords["INCREMENT"][0]
             index = incr.get("NUME_INST_INIT")
@@ -73,15 +73,15 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.setModel(keywords["MODELE"])
-        self._result.setMaterialField(keywords["CHAM_MATER"])
+        result = self._result
         caraElem = keywords.get("CARA_ELEM")
-        if caraElem is not None:
-            self._result.setElementaryCharacteristics(caraElem)
-
         contact = keywords.get("CONTACT")
-        if contact is not None:
-            self._result.setContact(contact)
+        result.setModel(keywords["MODELE"], exists_ok=True)
+        result.setMaterialField(keywords["CHAM_MATER"], exists_ok=True)
+        if caraElem:
+            result.setElementaryCharacteristics(caraElem, exists_ok=True)
+        if contact:
+            result.setContact(contact)
 
         if self.exception and self.exception.id_message in ("MECANONLINE5_2",):
             return
@@ -107,7 +107,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
                 feds += etat["EVOL_NOLI"].getFiniteElementDescriptors()
                 fnds += etat["EVOL_NOLI"].getEquationNumberings()
 
-        self._result.build(feds, fnds)
+        result.build(feds, fnds)
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
