@@ -196,15 +196,15 @@ subroutine chauxi(ndim, mu, ka, r, t, &
 !     CHAMP SINGULIER AUXILIAIRE U3 DANS LA BASE LOCALE
     u3l(1) = 0.d0
     u3l(2) = 0.d0
-    u3l(3) = 4.d0*cr2*sin(t*0.5d0)
+    u3l(3) = 4.d0*cr2*sin(t*0.5d0)+(r/Rc)*cr2*sin(t*0.5d0)
 !
 !     MATRICE DES DÉRIVÉES DE U3 DANS LA BASE POLAIRE (3X2)
     du3dpo(1, 1) = 0.d0
     du3dpo(2, 1) = 0.d0
     du3dpo(1, 2) = 0.d0
     du3dpo(2, 2) = 0.d0
-    du3dpo(3, 1) = 4.d0*cr1*sin(t*0.5d0)
-    du3dpo(3, 2) = 2.d0*cr2*cos(t*0.5d0)
+    du3dpo(3, 1) = 4.d0*cr1*sin(t*0.5d0)+cr2*(3./2.)*(1./Rc)*sin(t*0.5d0)
+    du3dpo(3, 2) = 2.d0*cr2*cos(t*0.5d0)+cr2*0.5*(r/Rc)*cos(t*0.5d0)
 !
 !     MATRICE DES DÉRIVÉES DE U3 DANS LA BASE LOCALE (3X3)
     do i = 1, 3
