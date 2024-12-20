@@ -1,6 +1,6 @@
 # coding: utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,15 +57,15 @@ def deprecate(feature, case=1, help=None, level=4):
         level (int): Level of the caller in the stack.
     """
     if case == 1:
-        msg = "This feature is obsoleted, {0!r} will be " "removed in the future."
+        msg = "This feature is obsolete, {0!r} will be removed in the future."
     elif case == 2:
-        msg = "This feature is obsoleted, {0!r} has been removed."
+        msg = "This feature is obsolete, {0!r} has been removed."
     elif case == 3:
-        msg = "This feature has a new implementation, {0!r} will be " "removed in the future."
+        msg = "This feature has a new implementation, {0!r} will be removed in the future."
     elif case == 4:
-        msg = "This feature has a new implementation, {0!r} has been " "removed."
+        msg = "This feature has a new implementation, {0!r} has been removed."
     else:
-        msg = "This feature is obsoleted: {0!r}"
+        msg = "This feature is obsolete: {0!r}"
     if help:
         msg += " " + help
     warn(msg.format(feature), DeprecationWarning, stacklevel=level)
@@ -200,7 +200,7 @@ def remove_keyword(keywords, factor_keyword, simple_keyword, warning=False):
     def _warn(container, key):
         if not warning:
             return
-        msg = "This keyword is not yet supported and are currently " "removed: {0}{1}{2}"
+        msg = "This keyword is not yet supported and are currently removed: {0}{1}{2}"
         sep = "/" if factor_keyword.strip() and simple_keyword.strip() else ""
         warn(msg.format(factor_keyword, sep, simple_keyword))
         del container[key]

@@ -217,8 +217,8 @@ IMPR_TABLE(
 )
 
 
-# validation de la commande EXTR_RESU / ARCHIVAGE (+reuse) :
-# -----------------------------------------------------------
+# validation de la commande EXTR_RESU / ARCHIVAGE
+# -----------------------------------------------
 U = CALC_CHAMP(reuse=U, RESULTAT=U, CONTRAINTE=("SIEF_ELGA"))
 U2 = EXTR_RESU(RESULTAT=U, ARCHIVAGE=_F(NUME_ORDRE=(3, 5, 7, 9)))
 # on appelle 3 fois CALC_CHAMP + MAILLE pour forcer la creation de 3 LIGREL differents
@@ -228,7 +228,6 @@ U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE=("SIGM_ELNO"), NUME_ORDRE=7, G
 U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE=("SIGM_ELNO"), NUME_ORDRE=9, GROUP_MA="M1")
 U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE="SIGM_NOEU", NUME_ORDRE=(5, 7, 9))
 
-U3 = EXTR_RESU(RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE=(5, 9), CHAM_EXCLU=("SIGM_NOEU")))
-U2 = EXTR_RESU(reuse=U2, RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE=(5, 9), CHAM_EXCLU=("SIGM_NOEU")))
+U2 = EXTR_RESU(RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE=(5, 9), CHAM_EXCLU=("SIGM_NOEU")))
 
 FIN()
