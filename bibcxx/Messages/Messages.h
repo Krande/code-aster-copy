@@ -5,7 +5,7 @@
  * @file Message.h
  * @brief Fichier entete de la class Messages
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,12 +25,14 @@
 
 #include "astercxx.h"
 
+#include "Supervis/Exceptions.h"
+
 /* Encapsulation of utmess */
 
-void UTMESS( char *error, char *message );
+void UTMESS( char *typm, char *idmess );
 
-void UTMESS( const char *error, const char *message );
+void UTMESS( const char *typm, const char *idmess );
 
-void UTMESS( const std::string &error, const std::string &message );
+void UTMESS( const std::string &typm, const std::string &idmess );
 
 #endif /* MESSAGES_H_ */
