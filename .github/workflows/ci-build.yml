@@ -71,7 +71,7 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         continue-on-error: true # Prevent the workflow from failing
         run: |
-          pixi run ctest --package-file ${{ env.CONDA_FILE }} --channel-priority=disabled
+          pixi run ctest --package-file ${{ env.CONDA_FILE }}
 
       - name: Save Run directory to artifacts
         uses: actions/upload-artifact@v4
