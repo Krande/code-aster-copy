@@ -41,12 +41,8 @@ def get_beremin_properties(resusd, group_ma):
         etttype = eltmater.getMeshEntity().getType()
         for elvema in eltmater.getVectorOfMaterial():
             if "WEIBULL" in elvema.getMaterialNames():
-                lwbmat = [
-                    elvema.getValueReal("WEIBULL", "M"),
-                    elvema.getValueReal("WEIBULL", "VOLU_REFE"),
-                    elvema.getValueReal("WEIBULL", "SEUIL_EPSP_CUMU"),
-                ]
-                nomres = ["M", "VOLU_REFE", "SEUIL_EPSP_CUMU"]
+                nomres = ["M", "VOLU_REFE", "SEUIL_EPSP_CUMU", "SIGM_SEUIL"]
+                lwbmat = [elvema.getValueReal("WEIBULL", param) for param in nomres]
                 try:
                     lwbmat += [
                         elvema.getValueReal("WEIBULL", "SIGM_CNV"),

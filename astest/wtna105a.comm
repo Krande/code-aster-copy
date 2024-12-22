@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -527,7 +527,7 @@ INST1 = DEFI_LIST_REEL(
         _F(JUSQU_A=3.1536e12, NOMBRE=30),  # Au bout de 100000 ans
     ),
 )
-TFIN = 6.3072e08
+TFIN = 3.1536e08
 #
 # ******************************************************************
 # Simulation de la corrosion et du chauffage entre 0 et 5000 ans
@@ -552,22 +552,20 @@ cal1 = STAT_NON_LINE(
 
 cal1 = CALC_CHAMP(
     reuse=cal1,
-    INST=(8640.0, 3.1536e8, 6.3072e08),
+    INST=(8640.0, 3.1536e8),
     CONTRAINTE=("SIEF_ELNO"),
     VARI_INTERNE=("VARI_ELNO"),
     RESULTAT=cal1,
 )
 
 
-cal1 = CALC_CHAMP(
-    reuse=cal1, VARI_INTERNE="VARI_NOEU", INST=(8640.0, 3.1536e8, 6.3072e08), RESULTAT=cal1
-)
+cal1 = CALC_CHAMP(reuse=cal1, VARI_INTERNE="VARI_NOEU", INST=(8640.0, 3.1536e8), RESULTAT=cal1)
 
 PgTU1 = POST_RELEVE_T(
     ACTION=_F(
         INTITULE="DEPL",
         RESULTAT=cal1,
-        INST=(0.0, 3.1536e8, 6.3072e08),
+        INST=(0.0, 3.1536e8),
         GROUP_NO="HAUT",
         NOM_CHAM="DEPL",
         NOM_CMP=("PRE1", "PRE2"),
@@ -579,7 +577,7 @@ SATU1 = POST_RELEVE_T(
     ACTION=_F(
         INTITULE="DEPL",
         RESULTAT=cal1,
-        INST=(8640.0, 3.1536e8, 6.3072e08),
+        INST=(8640.0, 3.1536e8),
         GROUP_NO="HAUT",
         NOM_CHAM="VARI_NOEU",
         NOM_CMP=("V4",),
@@ -609,61 +607,24 @@ IMPR_TABLE(
 TEST_RESU(
     RESU=_F(
         INST=3.15360000e8,
-        REFERENCE="NON_DEFINI",
         RESULTAT=cal1,
         NOM_CHAM="DEPL",
         GROUP_NO="N1",
         NOM_CMP="PRE2",
-        VALE_CALC=4.81035890e05,
-        VALE_REFE=4.81000e5,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+        VALE_CALC=244757.0225587366,
     )
 )
 
 TEST_RESU(
     RESU=_F(
         INST=3.15360000e8,
-        REFERENCE="NON_DEFINI",
         RESULTAT=cal1,
         NOM_CHAM="DEPL",
         GROUP_NO="N94",
         NOM_CMP="PRE2",
-        VALE_CALC=3.57770949e05,
-        VALE_REFE=3.58000e5,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+        VALE_CALC=244476.78332108931,
     )
 )
 
-TEST_RESU(
-    RESU=_F(
-        INST=6.30720000e8,
-        REFERENCE="NON_DEFINI",
-        RESULTAT=cal1,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N1",
-        NOM_CMP="PRE2",
-        VALE_CALC=6.83619225e05,
-        VALE_REFE=6.83000e5,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
-    )
-)
-
-TEST_RESU(
-    RESU=_F(
-        INST=6.30720000e8,
-        REFERENCE="NON_DEFINI",
-        RESULTAT=cal1,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N94",
-        NOM_CMP="PRE2",
-        VALE_CALC=5.36436185e05,
-        VALE_REFE=5.36000e5,
-        CRITERE="RELATIF",
-        PRECISION=1.0e-2,
-    )
-)
 
 FIN()

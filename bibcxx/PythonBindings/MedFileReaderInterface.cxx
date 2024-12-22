@@ -99,28 +99,24 @@ Get profile number
 Returns:
     int: profile number
             )" )
-        .def( "open",
-              py::overload_cast< const std::string &, const MedFileAccessType & >(
-                  &MedFileReader::open ),
+        .def( "open", &MedFileReader::open,
               R"(
 Open med file
 
 Arguments:
-    path (str): path to med file
+    path (Path|str): path to med file
     accessType (MedFileAccessType): med access type
 
 Returns:
     int: return code (0 if open is ok)
             )",
               py::arg( "path" ), py::arg( "accessType" ) )
-        .def( "openParallel",
-              py::overload_cast< const std::string &, const MedFileAccessType & >(
-                  &MedFileReader::openParallel ),
+        .def( "openParallel", &MedFileReader::openParallel,
               R"(
 Open med file in parallel
 
 Arguments:
-    path (str): path to med file
+    path (Path|str): path to med file
     accessType (MedFileAccessType): med access type
 
 Returns:

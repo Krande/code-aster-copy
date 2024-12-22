@@ -50,8 +50,7 @@ a Python command.
 
 import os
 import os.path as osp
-
-import libaster
+from pathlib import Path
 
 from ..Cata.Syntax import _F
 from ..Supervis import ExecuteCommand
@@ -126,7 +125,7 @@ class LogicalUnitFile:
 
     def __init__(self, unit, filename, action, typ, access, to_register=True):
         self._unit = unit
-        self._filename = filename
+        self._filename = filename and Path(filename)
         self._register(self)
         if to_register:
             self.register(self._unit, filename, action, typ, access)
@@ -136,7 +135,7 @@ class LogicalUnitFile:
         """Open a *LogicalUnitFile* by name to be available in fortran.
 
         Arguments:
-            filename (str): Path of the file.
+            filename (Path|str): Path of the file.
             typ (FileType): Type of the file.
             access (FileAccess): Type of access.
 
@@ -151,7 +150,7 @@ class LogicalUnitFile:
         """Factory that returns a new free *LogicalUnitFile* for the given name.
 
         Arguments:
-            filename (str): Path of the file. If empty, it will be automatically
+            filename (Path|str): Path of the file. If empty, it will be automatically
                 named using the unit number.
             new (bool): *True* means that this is a new file. The file is
                 removed if it exists. *False* means that the file may exist.
@@ -169,7 +168,7 @@ class LogicalUnitFile:
 
         Arguments:
             unit (int): Logical unit number.
-            filename (str): Path of the file. *None* or empty means to be named
+            filename (Path|str): Path of the file. *None* or empty means to be named
                 automatically 'fort.<unit>'.
             action (~LogicalUnit.Action): Type of action for registering.
             typ (FileType): Type of the file.
@@ -177,10 +176,11 @@ class LogicalUnitFile:
         """
         kwargs = _F(ACTION=Action.name(action), UNITE=unit)
         if action == Action.Open:
-            if filename:
+            if filename is not None and os.fspath(filename):
+                filename = os.fspath(filename)
                 kwargs["FICHIER"] = filename
                 if access == FileAccess.New and osp.exists(filename):
-                    logger.warning("remove existing file %r", filename)
+                    logger.warning("remove existing file '%s'", filename)
                     os.remove(filename)
             kwargs["TYPE"] = FileType.name(typ)
             kwargs["ACCES"] = FileAccess.name(access)
@@ -196,12 +196,12 @@ class LogicalUnitFile:
 
     @staticmethod
     def _default_filename(unit):
-        return "fort.{0}".format(unit)
+        return f"fort.{unit}"
 
     @property
     def filename(self):
         """Attributes that holds the file name"""
-        return self._filename or self._default_filename(self._unit)
+        return (self._filename and os.fspath(self._filename)) or self._default_filename(self._unit)
 
     def release(self):
         """Close and free a logical unit."""
@@ -242,7 +242,7 @@ class LogicalUnitFile:
     def _register(cls, fileobj):
         """Register a logical unit."""
         unit = fileobj._unit
-        logger.debug("LogicalUnit: register unit %d, name %r", unit, fileobj._filename)
+        logger.debug("LogicalUnit: register unit %d, name '%s'", unit, fileobj._filename)
         cls._used_unit[unit] = fileobj
         try:
             cls._free_number.remove(unit)
@@ -344,8 +344,8 @@ class DefineUnitFile(ExecuteCommand):
             action = Action.value(keywords["ACTION"])
             typ = FileType.value(keywords["TYPE"])
             access = FileAccess.value(keywords["ACCES"])
-            file_name = keywords.get("FICHIER")
-            LogicalUnitFile(keywords["UNITE"], file_name, action, typ, access, False)
+            filename = keywords.get("FICHIER")
+            LogicalUnitFile(keywords["UNITE"], filename, action, typ, access, False)
 
         if keywords["ACTION"] == "LIBERER":
             LogicalUnitFile.release_from_number(keywords["UNITE"], False)

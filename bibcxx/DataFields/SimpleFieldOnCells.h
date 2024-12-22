@@ -74,12 +74,9 @@ private:
    */
 
   void _buildComponentsName2Index() {
-    if (_name2Index.empty()) {
-
-      auto nbCmp = this->getNumberOfComponents();
-      for (ASTERINTEGER i = 0; i < nbCmp; i++) {
-        _name2Index[this->getComponent(i)] = i;
-      }
+    auto nbCmp = this->getNumberOfComponents();
+    for (ASTERINTEGER i = 0; i < nbCmp; i++) {
+      _name2Index[this->getComponent(i)] = i;
     }
   }
 
@@ -194,6 +191,25 @@ private:
     this->_checkCmpAtCellOOR(ima, icmp);
   };
 
+  bool _hasValueCells(const ASTERINTEGER &ima) const {
+
+    ASTERINTEGER npt = getNumberOfPointsOfCell(ima);
+    ASTERINTEGER nspt = getNumberOfSubPointsOfCell(ima);
+    ASTERINTEGER ncmp = getNumberOfComponents();
+
+    for (ASTERINTEGER icmp = 0; icmp < ncmp; icmp++) {
+      for (ASTERINTEGER ipt = 0; ipt < npt; ipt++) {
+        for (ASTERINTEGER ispt = 0; ispt < nspt; ispt++) {
+          if (hasValue(ima, icmp, ipt, ispt)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
 public:
   /**
    * @typedef SimpleFieldOnCellsPtr
@@ -227,25 +243,19 @@ public:
 
   SimpleFieldOnCells(const BaseMeshPtr mesh, const std::string &loc,
                      const std::string &quantity, const VectorString &comp,
+                     bool zero = false)
+      : SimpleFieldOnCells(mesh, loc, quantity, comp, 1, 1, zero) {
+
+    AS_ASSERT(loc == "ELEM");
+  }
+
+  SimpleFieldOnCells(const BaseMeshPtr mesh, const std::string &loc,
+                     const std::string &quantity, const VectorString &comp,
                      const ASTERINTEGER &nbPG, const ASTERINTEGER &nbSP,
                      bool zero = false)
       : SimpleFieldOnCells(mesh) {
 
-    const std::string base = "G";
-    ASTERINTEGER nbComp = comp.size();
-    ASTERINTEGER _npg = -nbPG;
-    ASTERINTEGER _nsp = nbSP;
-    ASTERLOGICAL _zero = zero;
-
-    char *tabNames = vectorStringAsFStrArray(comp, 8);
-
-    CALL_CESCRE_WRAP(base.c_str(), getName().c_str(), loc.c_str(),
-                     _mesh->getName().c_str(), quantity.c_str(), &nbComp,
-                     tabNames, &_npg, &_nsp, &nbComp, &_zero);
-
-    FreeStr(tabNames);
-
-    build();
+    this->allocate(loc, quantity, comp, nbPG, nbSP, zero);
   }
 
   SimpleFieldOnCells(const BaseMeshPtr mesh, const std::string &loc,
@@ -278,6 +288,26 @@ public:
 
   BaseMeshPtr getMesh() const { return _mesh; };
 
+  void allocate(const std::string &loc, const std::string &quantity,
+                const VectorString &comp, const ASTERINTEGER &nbPG,
+                ASTERINTEGER nbSP = 1, bool zero = false) {
+    const std::string base = "G";
+    ASTERINTEGER nbComp = comp.size();
+    ASTERINTEGER _npg = -nbPG;
+    ASTERINTEGER _nsp = nbSP;
+    ASTERLOGICAL _zero = zero;
+
+    char *tabNames = vectorStringAsFStrArray(comp, 8);
+
+    CALL_CESCRE_WRAP(base.c_str(), getName().c_str(), loc.c_str(),
+                     _mesh->getName().c_str(), quantity.c_str(), &nbComp,
+                     tabNames, &_npg, &_nsp, &nbComp, &_zero);
+
+    FreeStr(tabNames);
+
+    build();
+  }
+
   /**
    * @brief Surcharge de l'operateur []
    * @param i Indice dans le tableau Jeveux
@@ -305,6 +335,13 @@ public:
     return this->operator[](position);
   };
 
+  ValueType &operator()(const ASTERINTEGER &ima, const std::string &cmp,
+                        const ASTERINTEGER &ipt, const ASTERINTEGER &ispt) {
+    auto icmp = _name2Index.at(cmp);
+
+    return this->operator()(ima, icmp, ipt, ispt);
+  }
+
   const ValueType &operator()(const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
                               const ASTERINTEGER &ipt,
                               const ASTERINTEGER &ispt) const {
@@ -326,6 +363,14 @@ public:
 
     return this->operator[](position);
   };
+
+  const ValueType &operator()(const ASTERINTEGER &ima, const std::string &cmp,
+                              const ASTERINTEGER &ipt,
+                              const ASTERINTEGER &ispt) const {
+    auto icmp = _name2Index.at(cmp);
+
+    return this->operator()(ima, icmp, ipt, ispt);
+  }
 
   ValueType &operator()(const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
                         const ASTERINTEGER &ipt) {
@@ -400,6 +445,13 @@ public:
     return (*_allocated)[position];
   }
 
+  bool hasValue(const ASTERINTEGER &ima, const std::string &cmp,
+                const ASTERINTEGER &ipt, const ASTERINTEGER &ispt = 0) const {
+    auto icmp = _name2Index.at(cmp);
+
+    return this->hasValue(ima, icmp, ipt, ispt);
+  }
+
   /**
    * @brief Get number of points of the i-th cell
    */
@@ -431,7 +483,7 @@ public:
   ASTERINTEGER getNumberOfComponents() const { return _nbComp; }
 
   /**
-   * @brief Get number of nodes
+   * @brief Get number of cells
    */
   ASTERINTEGER getNumberOfCells() const { return _nbCells; }
 
@@ -488,11 +540,16 @@ public:
   /**
    * @brief Get cells holding components
    */
-  VectorLong getCellsWithComponents() const {
+  VectorLong getCellsWithValues() const {
+    auto nbCells = this->getNumberOfCells();
+
     VectorLong values;
-    for (ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++) {
-      if (this->_cmpsSptCell(ima) > 0)
+    values.reserve(nbCells);
+
+    for (ASTERINTEGER ima = 0; ima < nbCells; ima++) {
+      if (this->_hasValueCells(ima)) {
         values.push_back(ima);
+      }
     }
     return values;
   }
@@ -525,42 +582,70 @@ public:
   }
 
   std::pair<std::vector<ValueType>,
-            std::tuple<VectorLong, VectorLong, VectorLong>>
-  getValuesWithDescription(VectorLong cells, std::string cmp) {
+            std::tuple<VectorLong, VectorString, VectorLong, VectorLong>>
+  getValuesWithDescription(const VectorString &cmps,
+                           const VectorString &groupsOfCells) const {
+
+    VectorLong cells = _mesh->getCells(groupsOfCells);
+
+    return this->getValuesWithDescription(cmps, cells);
+  }
+
+  std::pair<std::vector<ValueType>,
+            std::tuple<VectorLong, VectorString, VectorLong, VectorLong>>
+  getValuesWithDescription(const VectorString &cmps,
+                           const VectorLong &cells) const {
 
     std::vector<ValueType> values;
     VectorLong v_cells;
+    VectorString v_cmps;
     VectorLong points;
     VectorLong subpoints;
 
-    ASTERINTEGER ncmp = getNumberOfComponents();
-    ASTERINTEGER icmp;
-    for (icmp = 0; icmp < ncmp; icmp++) {
-      if (getComponent(icmp) == cmp) {
-        break;
+    VectorLong cells_ = cells;
+    if (cells_.empty()) {
+      cells_ = _mesh->getCells();
+    }
+
+    VectorString list_cmp;
+    auto list_cmp_in = this->getComponents();
+    if (cmps.empty()) {
+      list_cmp = list_cmp_in;
+    } else {
+      auto set_cmps = toSet(cmps);
+
+      for (auto &cmp : list_cmp_in) {
+        if (set_cmps.count(cmp) > 0) {
+          list_cmp.push_back(cmp);
+        }
       }
     }
 
-    if (icmp != ncmp) {
+    if (list_cmp.empty()) {
+      raiseAsterError("Restriction on list of components is empty");
+    }
 
-      ASTERINTEGER size =
-          cells.size() * getMaxNumberOfPoints() * getMaxNumberOfSubPoints();
-      v_cells.reserve(size);
-      values.reserve(size);
-      points.reserve(size);
-      subpoints.reserve(size);
+    this->updateValuePointers();
 
-      for (ASTERINTEGER cell : cells) {
-        if (icmp >= getNumberOfComponentsForSubpointsOfCell(cell))
-          continue;
+    ASTERINTEGER size = cells_.size() * cmps.size() * getMaxNumberOfPoints() *
+                        getMaxNumberOfSubPoints();
+    v_cells.reserve(size);
+    v_cmps.reserve(size);
+    values.reserve(size);
+    points.reserve(size);
+    subpoints.reserve(size);
 
-        ASTERINTEGER npt = getNumberOfPointsOfCell(cell);
-        ASTERINTEGER nspt = getNumberOfSubPointsOfCell(cell);
+    for (auto &cell : cells_) {
+      ASTERINTEGER npt = getNumberOfPointsOfCell(cell);
+      ASTERINTEGER nspt = getNumberOfSubPointsOfCell(cell);
+      for (auto &cmp : list_cmp) {
+        auto icmp = _name2Index.at(cmp);
 
         for (ASTERINTEGER ipt = 0; ipt < npt; ipt++) {
           for (ASTERINTEGER ispt = 0; ispt < nspt; ispt++) {
             if (hasValue(cell, icmp, ipt, ispt)) {
               v_cells.push_back(cell);
+              v_cmps.push_back(cmp);
               values.push_back(getValue(cell, icmp, ipt, ispt));
               points.push_back(ipt);
               subpoints.push_back(ispt);
@@ -570,7 +655,7 @@ public:
       }
     }
 
-    return make_pair(values, make_tuple(v_cells, points, subpoints));
+    return make_pair(values, make_tuple(v_cells, v_cmps, points, subpoints));
   }
 
   /**
@@ -588,8 +673,6 @@ public:
   bool build() {
     updateValuePointers();
 
-    _buildComponentsName2Index();
-
     _nbCells = (*_size)[0];
     _nbComp = (*_size)[1];
     _nbPt = (*_size)[2];
@@ -597,8 +680,36 @@ public:
 
     AS_ASSERT(_values->size() == this->_nbValArray());
 
+    _buildComponentsName2Index();
+
     return true;
   };
+
+  void setValues(const VectorLong &cells, const VectorString &cmps,
+                 const VectorLong &npg, const VectorLong &spt,
+                 const std::vector<ValueType> &values) {
+
+    AS_ASSERT(cells.size() == cmps.size());
+    AS_ASSERT(cells.size() == values.size());
+    AS_ASSERT(cells.size() == npg.size());
+    AS_ASSERT(cells.size() == spt.size());
+
+    this->updateValuePointers();
+
+    const int size = values.size();
+    for (int i = 0; i < size; i++) {
+      (*this)(cells[i], cmps[i], npg[i], spt[i]) = values[i];
+    }
+  }
+
+  void setValues(const std::vector<ValueType> &values) {
+
+    AS_ASSERT(values.size() ==
+              this->getNumberOfCells() * this->getNumberOfComponents() *
+                  getMaxNumberOfPoints() * getMaxNumberOfSubPoints());
+    _allocated->assign(true);
+    *_values = values;
+  }
 
   SimpleFieldOnCellsPtr restrict(const VectorString &cmps = {},
                                  const VectorString &groupsOfCells = {}) const {
@@ -705,6 +816,8 @@ public:
     new_field->build();
     return new_field;
   };
+
+  auto getComponentsName2Index() const { return _name2Index; }
 };
 
 using SimpleFieldOnCellsReal = SimpleFieldOnCells<ASTERDOUBLE>;

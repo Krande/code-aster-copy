@@ -64,13 +64,7 @@ TEST_RESU(
     )
 )
 
-field = CREA_CHAMP(
-    TYPE_CHAM="NOEU_DEPL_R",
-    OPERATION="AFFE",
-    NUME_DDL=dofNume,
-    MODELE=model,
-    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(-1.0, 2.0, 3.0)),
-)
+field = CA.FieldOnNodesReal(mesh, "DEPL_R", {"DX": -1.0, "DY": 2.0, "DZ": 3.0})
 
 TEST_RESU(
     CHAM_NO=_F(

@@ -60,21 +60,14 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
                                                   const VectorString &groupOfCells )
     : FiniteElementDescriptor( FEDesc->getMesh() ) {
 
-    VectorLong commonCells;
-
-    for ( auto &group : groupOfCells ) {
-        auto cells = _mesh->getCells( group );
-        auto it = commonCells.end();
-        commonCells.insert( it, cells.begin(), cells.end() );
-    }
-
-    VectorLong listOfCells = unique( commonCells );
+    VectorLong listOfCells = _mesh->getCells( groupOfCells );
 
     std::string base( "G" );
     ASTERINTEGER nbCells = listOfCells.size();
     for ( auto &cell : listOfCells )
         cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
+    this->build();
 };
 
 FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
@@ -82,6 +75,30 @@ FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
     : FiniteElementDescriptor( model->getFiniteElementDescriptor(), groupOfCells ) {
     setModel( model );
 }
+
+FiniteElementDescriptor::FiniteElementDescriptorPtr
+FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
+
+    VectorLong listOfCells = _mesh->getCells( groupsOfCells );
+
+    return this->restrict( listOfCells );
+};
+
+FiniteElementDescriptor::FiniteElementDescriptorPtr
+FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
+
+    auto fed = std::make_shared< FiniteElementDescriptor >( getMesh() );
+
+    VectorLong listOfCells = cells;
+
+    std::string base( "G" );
+    ASTERINTEGER nbCells = listOfCells.size();
+    for ( auto &cell : listOfCells )
+        cell += 1;
+    CALL_EXLIM2( listOfCells.data(), &nbCells, getName(), base, fed->getName() );
+    fed->build();
+    return fed;
+};
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getVirtualCellsExplorer() const {
@@ -141,6 +158,22 @@ const JeveuxVectorLong &FiniteElementDescriptor::getPhysicalNodesComponentDescri
 const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupsOfElementsbyElement() const {
     _groupsOfCellsNumberByElement->updateValuePointer();
     return _groupsOfCellsNumberByElement;
+};
+
+ASTERINTEGER FiniteElementDescriptor::getNumberOfCells() const {
+    _groupsOfCellsNumberByElement->updateValuePointer();
+
+    auto size = _groupsOfCellsNumberByElement->size() / 2;
+    ASTERINTEGER nbCells = 0;
+
+    for ( int i = 0; i < size; i++ ) {
+        if ( ( *_groupsOfCellsNumberByElement )[2 * i] != 0 &&
+             ( *_groupsOfCellsNumberByElement )[2 * i + 1] != 0 ) {
+            nbCells += 1;
+        }
+    }
+
+    return nbCells;
 };
 
 const BaseMeshPtr FiniteElementDescriptor::getMesh() const { return _mesh; };

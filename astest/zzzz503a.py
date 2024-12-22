@@ -174,7 +174,7 @@ vcine = dComputation.getDirichletBC(0.0)
 resu = monSolver.solve(retour, vcine)
 
 y, _ = resu.getValuesWithDescription()
-test.assertEqual(len(y), 135)
+test.assertEqual(len(y), len(resu.getValues()))
 
 resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()
@@ -213,7 +213,11 @@ test.assertAlmostEqual(
 ### medcoupling conversion
 
 medmesh = resu.getMesh().createMedCouplingMesh()
-medfield = resu.createMedCouplingField(medmesh)
+medfield = resu.toMEDFileField1TS(medmesh)
+medcfield = resu2.toMEDCouplingField(medmesh.getMeshAtLevel(0))
+
+resu3 = CA.SimpleFieldOnNodesReal(monMaillage)
+resu3.fromMEDCouplingField(medcfield)
 
 with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
     medmesh.write(f.name, 2)

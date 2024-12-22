@@ -1864,15 +1864,37 @@ class EquationNumbering(DataStructure):
             dict[int, str] : dofs id for each node id and component id
         """
 
-    def getDOFsWithDescription(self, cmp, groupNames=[], local=True, same_rank=-1):
-        """Get the dofs associated to the given component restricted to the given group
-        Arguments:
-            str: component to extract
-            list[str] = []: group names to filter
-            local (bool) = True: if True use local dof index else use global index in HPC
-        Returns:
-            pair[list[int], list[str]]: list of nodes and list of components
-            list[int]: list of dofs
+    def getDOFsWithDescription(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getDOFsWithDescription(self: libaster.EquationNumbering, cmps: list[str] = [], groupNames: list[str] = [], local: bool = True, same_rank: int = <PythonBool.NONE: -1>) -> tuple[tuple[list[int], list[str]], list[int]]
+
+
+                    Get the dofs associated to the given component restricted to the given group.
+
+                    Arguments:
+                        cmps (list[str]): components to extract.
+                        groupNames (list[str]): group names to filter.
+                        local (bool): if True use local dof index else use global index in HPC.
+
+                    Returns:
+                        pair[list[int], list[str]]: list of nodes and list of components.
+                        list[int]: list of dofs.
+
+
+        2. getDOFsWithDescription(self: libaster.EquationNumbering, cmps: list[str] = [], nodes: list[int] = [], local: bool = True, same_rank: int = <PythonBool.NONE: -1>) -> tuple[tuple[list[int], list[str]], list[int]]
+
+
+                    Get the dofs associated to the given component restricted to the given nodes.
+
+                    Arguments:
+                        cmps (list[str]): components to extract.
+                        nodes (list[int]): list of nodes to filter.
+                        local (bool): if True use local dof index else use global index in HPC.
+
+                    Returns:
+                        pair[list[int], list[str]]: list of nodes and list of components.
+                        list[int]: list of dofs.
         """
 
     def getMesh(self):
@@ -2352,11 +2374,22 @@ class FiniteElementDescriptor(DataStructure):
     def getModel(self):
         pass
 
+    def getNumberOfCells(self):
+        pass
+
     def getPhysics(self):
         pass
 
     def getVirtualCellsDescriptor(self):
         pass
+
+    def restrict(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. restrict(self: libaster.FiniteElementDescriptor, arg0: list[int]) -> libaster.FiniteElementDescriptor
+
+        2. restrict(self: libaster.FiniteElementDescriptor, arg0: list[str]) -> libaster.FiniteElementDescriptor
+        """
 
     def setModel(self, arg0):
         pass
@@ -3037,6 +3070,10 @@ class FieldOnNodesReal(DataField):
         4. __init__(self: libaster.FieldOnNodesReal, arg0: Model) -> None
 
         5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
+
+        6. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str]) -> None
+
+        7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, values: dict[str, float], groupsOfNodes: list[str] = [], groupsOfCells: list[str] = []) -> None
         """
 
     def __isub__(self, arg0):
@@ -3273,6 +3310,17 @@ class FieldOnNodesReal(DataField):
 
         Returns:
             int: number of element in the field
+        """
+
+    def toFieldOnCells(self, fed, loc):
+        """Converts to FieldOnCells
+
+        Arguments:
+            fed [FiniteElementDescriptor]: finite element descriptor
+            loc [str] : name of localization like 'ELGA'.
+
+        Returns:
+            FieldOnCellsReal: field converted.
         """
 
     def toSimpleFieldOnNodes(self):
@@ -3733,13 +3781,32 @@ class SimpleFieldOnCellsReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int, arg6: bool) -> None
+        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: list[int], arg5: int, arg6: bool) -> None
+        4. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str]) -> None
+
+        5. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: bool) -> None
+
+        6. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int) -> None
+
+        7. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int, arg6: bool) -> None
+
+        8. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: list[int], arg5: int, arg6: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
         pass
+
+    def allocate(self, loc, quantity, cmps, nbPG, nbSP=1, zero=False):
+        """Allocate the field.
+
+        Arguments:
+            loc [str]: localization like 'ELEM'
+            quantity [str]: physical quantity like 'DEPL_R'
+            cmps [list[str]]: list of components.
+            nbPG [int]: number of Gauss Point by cell
+            nbSP [int]: number of sub-point by point.
+        """
 
     def asPhysicalQuantity(self, physQuantity, map_cmps):
         """Return a new field with a new physical quantity and renamed components.
@@ -3753,7 +3820,7 @@ class SimpleFieldOnCellsReal(DataField):
             SimpleFieldOnCellsReal: field with name physical quantity.
         """
 
-    def getCellsWithComponents(self):
+    def getCellsWithValues(self):
         """Returns the list of cells where the field is defined.
 
         Returns:
@@ -3764,6 +3831,9 @@ class SimpleFieldOnCellsReal(DataField):
         pass
 
     def getComponents(self):
+        pass
+
+    def getComponentsName2Index(self):
         pass
 
     def getLocalization(self):
@@ -3811,25 +3881,65 @@ class SimpleFieldOnCellsReal(DataField):
                      NaN if the position is not allocated.
         """
 
-    def getValuesWithDescription(self, arg0, arg1):
-        """Returns values and description corresponding to given cmp and given cells
+    def getValuesWithDescription(self, *args, **kwargs):
+        """Overloaded function.
 
-        Args:
-            cells[list[int]]: list of nodes
-            cmp[str]: component to extract
+        1. getValuesWithDescription(self: libaster.SimpleFieldOnCellsReal, cmps: list[str], cells: list[int]) -> tuple[list[float], tuple[list[int], list[str], list[int], list[int]]]
+
+
+        Returns values and description corresponding to given cmp and given cells
+
+        Arguments:
+            cmps (list[str]): components to extract.
+            cells (list[int]): list of cells.
 
         Returns:
             values[list[double],
-            tuple[cells[list[int]], points[list[int]], subpoints[list[int]]]
+            tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
+
+
+        2. getValuesWithDescription(self: libaster.SimpleFieldOnCellsReal, cmps: list[str] = [], cells: list[str] = []) -> tuple[list[float], tuple[list[int], list[str], list[int], list[int]]]
+
+
+        Returns values and description corresponding to given cmp and given cells
+
+        Arguments:
+            cmps (list[str]): components to extract.
+            groupsOfCells (list[str]): list of groups of cells to use.
+
+        Returns:
+            values[list[double],
+            tuple[cells[list[int]], cmps[list[int]]  points[list[int]], subpoints[list[int]]]
         """
 
-    def hasValue(self, ima, icmp, ipt, ispt=0):
-        """Returns True  if the value of the `icmp` component of the field on the `ima` cell,
+    def hasValue(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. hasValue(self: libaster.SimpleFieldOnCellsReal, ima: int, icmp: int, ipt: int, ispt: int = 0) -> bool
+
+
+        Returns True  if the value of the `icmp` component of the field on the `ima` cell,
         at the `ipt` point, at the `ispt` sub-point is affected.
 
         Args:
             ima  (int): Index of cells.
             icmp (int): Index of component.
+            ipt  (int): Index of point.
+            ispt (int): Index of sub-point (default = 0).
+
+        Returns:
+            bool: True  if the value is affected
+
+
+        2. hasValue(self: libaster.SimpleFieldOnCellsReal, ima: int, cmp: str, ipt: int, ispt: int = 0) -> bool
+
+
+        Returns True  if the value of the `icmp` component of the field on the `ima` cell,
+        at the `ipt` point, at the `ispt` sub-point is affected.
+
+        Args:
+            ima  (int): Index of cells.
+            cmp (str): name of component.
             ipt  (int): Index of point.
             ispt (int): Index of sub-point (default = 0).
 
@@ -3878,6 +3988,32 @@ class SimpleFieldOnCellsReal(DataField):
             icmp (int): Index of component.
             ipt  (int): Index of point.
             val (float) : value to set
+        """
+
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. setValues(self: libaster.SimpleFieldOnCellsReal, cells: list[int], cmps: list[str], npg: list[int], spt: list[int], values: list[float]) -> None
+
+
+                    Set values for a given list of tuple (cell, cmp, ipg, isp, value).
+                    Each value of the tuple is given as a separated list.
+
+                    Arguments:
+                        cells (list[int]): list of cells.
+                        cmps (list[str)]: list of components
+                        npg (list[int]): list of point
+                        spt (list[int]): list of sub-point
+                        values (list[float]): list of values to set.
+
+
+        2. setValues(self: libaster.SimpleFieldOnCellsReal, values: list[float]) -> None
+
+
+                     Set values for each cells and components as (cell_0_val_0, cell_0_val_1, ...)
+
+                    Arguments:
+                        values (list[float]): list of values to set.
         """
 
     def toFieldOnCells(self, fed, option="", nompar=""):
@@ -3952,7 +4088,11 @@ class SimpleFieldOnNodesReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
+        3. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh) -> None
+
+        4. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str]) -> None
+
+        5. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
         """
 
     def __setitem__(self, *args, **kwargs):
@@ -3961,6 +4101,14 @@ class SimpleFieldOnNodesReal(DataField):
         1. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, int], arg1: float) -> float
 
         2. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: tuple[int, str]) -> float
+        """
+
+    def allocate(self, quantity, cmps, zero=False):
+        """Allocate the field.
+
+        Arguments:
+            quantity [str]: physical quantity like 'DEPL_R'
+            cmps [list[str]]: list of components.
         """
 
     def asPhysicalQuantity(self, physQuantity, map_cmps):
@@ -3992,6 +4140,108 @@ class SimpleFieldOnNodesReal(DataField):
 
     def getPhysicalQuantity(self):
         pass
+
+    def getValuesWithDescription(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getValuesWithDescription(self: libaster.SimpleFieldOnNodesReal, cmps: list[str] = [], groupsOfNodes: list[str] = []) -> tuple[list[float], tuple[list[int], list[str]]]
+
+
+                    Return the values of components of the field.
+
+                    Arguments:
+                       cmps (list[str]) : Extracted components or all components if it is empty.
+                       groups (list[str]): The extraction is limited to the given groups of nodes.
+
+                    Returns:
+                       tuple( values, description ): List of values and description.
+                        The description provides a tuple with( nodes ids, components ).
+
+
+        2. getValuesWithDescription(self: libaster.SimpleFieldOnNodesReal, cmps: list[str], nodes: list[int]) -> tuple[list[float], tuple[list[int], list[str]]]
+
+
+                    Return the values of components of the field.
+
+                    Arguments:
+                       cmps (list[str]) : Extracted components or all components if it is empty.
+                       nodes (list[int]): The extraction is limited to the given nodes.
+
+                    Returns:
+                       tuple( values, description ): List of values and description.
+                        The description provides a tuple with( nodes ids, components ).
+        """
+
+    def hasComponent(self, arg0):
+        pass
+
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. setValues(self: libaster.SimpleFieldOnNodesReal, nodes: list[int], cmps: list[str], values: list[float]) -> None
+
+
+                    Set values for a given list of triplet (node, cmp, value).
+                    Each value of the triplet is given as a separated list.
+
+                    Arguments:
+                        nodes (list[int]): list of nodes.
+                        cmps (list[str]): list of comp components
+                        values (list[float]): list of values to set.
+
+
+        2. setValues(self: libaster.SimpleFieldOnNodesReal, values: list[float]) -> None
+
+
+                     Set values for each nodes and components as (node_0_val_0, node_0_val_1, ...)
+
+                    Arguments:
+                        values (list[float]): list of values to set.
+
+
+
+        3. setValues(self: libaster.SimpleFieldOnNodesReal, values: list[list[float]]) -> None
+
+
+                    Set values for each nodes and components.
+
+                    Arguments:
+                        values (list[list[float]]): list of values to set.
+                        For each node, give the values for all component is a list.
+
+
+        4. setValues(self: libaster.SimpleFieldOnNodesReal, value: dict[str, float], nodes: list[int]) -> None
+
+
+                    Set values of the field where components and values are given as a dict.
+                    If the component is not present in the field then it is discarded
+                    Example: { "X1" : 0.0, "X3" : 0.0 }
+
+                    Arguments:
+                        value (dict[str, float]): dict of values to set (key: str, value: float)
+                        nodes (list[int]): list of nodes.
+
+
+        5. setValues(self: libaster.SimpleFieldOnNodesReal, value: dict[str, float], groupsOfNodes: list[str] = []) -> None
+
+
+                    Set values of the field where components and values are given as a dict.
+                    If the component is not present in the field then it is discarded
+                    Example: { "X1" : 0.0, "X3" : 0.0 }
+
+                    Arguments:
+                        value (dict[str, float]): dict of values to set (key: str, value: float)
+                        groupsOfNodes (list[str]): list of groups. If empty, the full mesh is considered
+
+
+        6. setValues(self: libaster.SimpleFieldOnNodesReal, value: float) -> None
+
+
+                    Set the value everywhere.
+
+                    Arguments:
+                        value [float]: value to set everywhere.
+        """
 
     def toFieldOnNodes(self):
         """Convert to FieldOnNodes
@@ -4063,6 +4313,9 @@ class SimpleFieldOnNodesComplex(DataField):
         pass
 
     def getPhysicalQuantity(self):
+        pass
+
+    def hasComponent(self, arg0):
         pass
 
     def toNumpy(self):
@@ -14026,13 +14279,18 @@ class ParallelEquationNumbering(EquationNumbering):
         2. __init__(self: libaster.ParallelEquationNumbering, arg0: str) -> None
         """
 
-    def getDOFsWithDescription(self, cmp, groupNames=[], local=True, same_rank=-1):
-        """Get the dofs associated to the given component restricted to the given group
+    def getDOFsWithDescription(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getDOFsWithDescription(self: libaster.ParallelEquationNumbering, cmps: list[str] = [], groupNames: list[str] = [], local: bool = True, same_rank: int = <PythonBool.NONE: -1>) -> tuple[tuple[list[int], list[str]], list[int]]
+
+
+        Get the dofs associated to the given component restricted to the given group.
 
         Arguments:
-            str: component to extract
-            list[str] = []: group names to filter
-            local (bool) = True: if True use local dof index else use global index in HPC
+            cmps (list[str]): components to extract.
+            groupNames (list[str]): group names to filter.
+            local (bool): if True use local dof index else use global index in HPC
             same_rank : - None: keep all nodes (default: None)
                         - True: keep the nodes which are owned by the current MPI-rank
                         - False: keep the nodes which are not owned by the current MPI-rank
@@ -14040,6 +14298,24 @@ class ParallelEquationNumbering(EquationNumbering):
         Returns:
             pair[list[int], list[str]]: list of nodes and list of components
             list[int]: list of dofs
+
+
+        2. getDOFsWithDescription(self: libaster.ParallelEquationNumbering, cmps: list[str] = [], nodes: list[int] = [], local: bool = True, same_rank: int = <PythonBool.NONE: -1>) -> tuple[tuple[list[int], list[str]], list[int]]
+
+
+        Get the dofs associated to the given component restricted to the given nodes.
+
+        Arguments:
+            cmps (list[str]): components to extract.
+            nodes (list[int]): list of nodes to filter.
+            local (bool): if True use local dof index else use global index in HPC
+            same_rank : - None: keep all nodes (default: None)
+                        - True: keep the nodes which are owned by the current MPI-rank
+                        - False: keep the nodes which are not owned by the current MPI-rank
+
+        Returns:
+            pair[list[int], list[str]]: list of nodes and list of components.
+            list[int]: list of dofs.
         """
 
     def getGhostDOFs(self, local=True):

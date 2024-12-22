@@ -1,0 +1,425 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+
+INST1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=5e10, NOMBRE=10),))
+
+
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
+
+#############################################################
+# CALCUL ASTER THERMIQUE----------------------------------------------
+#############################################################
+# Maillage lineaire
+MAILLIN = CREA_MAILLAGE(MAILLAGE=MAIL, QUAD_LINE=_F(TOUT="OUI"))
+
+# DEFINITION DES CHARGEMENTS ET DU MATERIAU ------------------------
+Fick = 1.0e-12
+SAT04 = 0.4
+C = DEFI_CONSTANTE(VALE=1.0 - SAT04)
+L = DEFI_CONSTANTE(VALE=Fick)
+
+
+MATE = DEFI_MATERIAU(THER_NL=_F(RHO_CP=C, LAMBDA=L))
+#
+# AFFECTATIONS: MATERIAU  MODELE  CHARGEMENT ----------------------
+#
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLIN, AFFE=_F(TOUT="OUI", MATER=MATE))
+
+MOTH = AFFE_MODELE(MAILLAGE=MAILLIN, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="THERMIQUE"))
+
+PV_0 = 1000
+PV_F = 500
+
+
+CHTH = AFFE_CHAR_THER(MODELE=MOTH, TEMP_IMPO=(_F(GROUP_MA=("GAUCHE",), TEMP=PV_F),))
+# RESOLUTION THERMIQUE-----------------------------------------------------------
+#
+TEMPE = THER_NON_LINE(
+    MODELE=MOTH,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHTH),
+    INCREMENT=_F(LIST_INST=INST1),
+    ETAT_INIT=_F(VALE=PV_0),
+    NEWTON=_F(),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=80),
+)
+
+#
+# POST TRAITEMENT
+#
+VALE_TEMP1 = 974.3627945009544
+VALE_TEMP2 = 692.7393270575965
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=TEMPE,
+        NOM_CHAM="TEMP",
+        GROUP_NO="N16",
+        NOM_CMP="TEMP",
+        VALE_CALC=VALE_TEMP1,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        RESULTAT=TEMPE,
+        NOM_CHAM="TEMP",
+        GROUP_NO="N16",
+        NOM_CMP="TEMP",
+        VALE_CALC=VALE_TEMP2,
+    )
+)
+
+# Transforation en Pc
+PVSAT = 3450.446073
+RHOW = 1000.0
+R = 8.32
+TREF = 300.0
+MAMOLVAP = 0.01
+
+
+tresu = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="TEMPE",
+        OPERATION="EXTRACTION",
+        GROUP_NO="N16",
+        RESULTAT=TEMPE,
+        NOM_CHAM="TEMP",
+        NOM_CMP="TEMP",
+    )
+)
+KELV = FORMULE(
+    NOM_PARA=("TEMP"),
+    VALE="(-RHOW*R*TREF/MAMOLVAP * log(TEMP/PVSAT))",
+    RHOW=RHOW,
+    R=R,
+    MAMOLVAP=MAMOLVAP,
+    PVSAT=PVSAT,
+    TREF=TREF,
+)
+tresu = CALC_TABLE(
+    reuse=tresu, TABLE=tresu, ACTION=_F(OPERATION="OPER", FORMULE=KELV, NOM_PARA="PRE1_ANA")
+)
+IMPR_TABLE(
+    UNITE=33,
+    FORMAT="XMGRACE",
+    TABLE=tresu,
+    NOM_PARA=("INST", "PRE1_ANA"),
+    LEGENDE_X="Temps [s]",
+    LEGENDE_Y="Pc",
+    LEGENDE="RESU ANALYTIQUE",
+    COULEUR=2,
+    MARQUEUR=5,
+    STYLE=1,
+)
+PC_TEMP1 = -RHOW * R * TREF / MAMOLVAP * log(VALE_TEMP1 / PVSAT)
+PC_TEMP2 = -RHOW * R * TREF / MAMOLVAP * log(VALE_TEMP2 / PVSAT)
+#################################################
+## CALCULS THM
+#################################################
+
+
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_HH2MD")
+)
+#
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_MA=(_F(NOM="ROCHE", TOUT="OUI"),),
+    CREA_GROUP_NO=(
+        _F(NOM="ROCHES", CRIT_NOEUD="SOMMET", GROUP_MA="ROCHE"),
+        _F(NOM="GAUCHES", CRIT_NOEUD="SOMMET", GROUP_MA="GAUCHE"),
+    ),
+)
+#
+
+
+UN = DEFI_CONSTANTE(VALE=1.0)
+UNDEMI = DEFI_CONSTANTE(VALE=0.5)
+
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+VISCOLIQ = DEFI_CONSTANTE(VALE=1.0e-3)
+
+VISCOGAZ = DEFI_CONSTANTE(VALE=1.0e-03)
+
+DVISCOL = DEFI_CONSTANTE(VALE=0.0)
+
+DVISCOG = DEFI_CONSTANTE(VALE=0.0)
+
+LI2 = DEFI_LIST_REEL(DEBUT=-1.0e9, INTERVALLE=(_F(JUSQU_A=1.0e9, NOMBRE=500),))
+
+LI1 = DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F(JUSQU_A=0.99, PAS=1.0e-2))
+
+
+# LIMITATION DE LA SATURATION MAX (<1)
+# CONSTBO = DEFI_CONSTANTE ( VALE : 0.99)
+#
+
+
+SLO = FORMULE(VALE="SAT04", NOM_PARA="PCAP", SAT04=SAT04)
+
+SATUBO = CALC_FONC_INTERP(
+    FONCTION=SLO,
+    LIST_PARA=LI2,
+    NOM_PARA="PCAP",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    INFO=2,
+)
+
+
+DSATBO = DEFI_CONSTANTE(VALE=0.0)
+
+#
+# COEF. DE FICK
+#
+BIDON = 1.0e-10
+
+FICKAD = DEFI_CONSTANTE(VALE=BIDON)
+FICKVP = DEFI_CONSTANTE(VALE=Fick)
+
+KINTBO = DEFI_CONSTANTE(VALE=1.0e-30)
+HENRY = DEFI_CONSTANTE(VALE=1.0e30)
+
+
+THMALP1 = DEFI_CONSTANTE(VALE=BIDON)
+
+MATERBO = DEFI_MATERIAU(
+    ELAS=_F(E=5.15e8, NU=0.2, RHO=2670.0, ALPHA=0.0),  # 2670 du squelette solide
+    COMP_THM="LIQU_AD_GAZ_VAPE",
+    THM_LIQU=_F(
+        RHO=1000.0, UN_SUR_K=0.0, ALPHA=THMALP1, CP=0.0, VISC=VISCOLIQ, D_VISC_TEMP=DVISCOL
+    ),
+    THM_GAZ=_F(MASS_MOL=0.01, CP=0.0, VISC=VISCOGAZ, D_VISC_TEMP=ZERO),
+    THM_VAPE_GAZ=_F(MASS_MOL=0.01, CP=0.0, VISC=VISCOGAZ, D_VISC_TEMP=ZERO),
+    THM_AIR_DISS=_F(CP=0.0, COEF_HENRY=HENRY),
+    THM_INIT=_F(TEMP=300.0, PRE1=0.0, PRE2=1.0e5, PORO=1.0, PRES_VAPE=1000.0, DEGR_SATU=0.4),
+    THM_DIFFU=_F(
+        R_GAZ=8.32,
+        RHO=2200.0,
+        BIOT_COEF=1.0,
+        SATU_PRES=SATUBO,
+        D_SATU_PRES=DSATBO,
+        PESA_X=0.0,
+        PESA_Y=0.0,
+        PESA_Z=0.0,
+        CP=BIDON,
+        PERM_IN=KINTBO,
+        PERM_LIQU=UNDEMI,
+        D_PERM_LIQU_SATU=ZERO,
+        PERM_GAZ=UNDEMI,
+        D_PERM_SATU_GAZ=ZERO,
+        D_PERM_PRES_GAZ=ZERO,
+        FICKV_T=FICKVP,
+        FICKA_T=FICKAD,
+    ),
+)
+
+CHMAT0 = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=(_F(GROUP_MA="BO", MATER=MATERBO),))
+
+
+PVINI = PV_0
+
+
+PCINI = -RHOW * R * TREF / MAMOLVAP * log(PVINI / PVSAT)
+print("PCINI=", PCINI)
+
+CHAMNO = CREA_CHAMP(
+    MAILLAGE=MAIL,
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    AFFE=(
+        _F(
+            TOUT="OUI", NOM_CMP=("DX", "DY", "DZ", "PRE1", "PRE2"), VALE=(0.0, 0.0, 0.0, 0.0, 0.0)
+        ),  # On bloque les DEPL Partout
+        _F(TOUT="OUI", NOM_CMP="PRE2", VALE=1000.0),  # Delta Pgaz
+        # ~ _F(TOUT="OUI", NOM_CMP="PRE1", VALE=1.0e6), #PCAP = CONSTANTE
+        _F(TOUT="OUI", NOM_CMP="PRE1", VALE=PCINI),
+    ),
+)
+
+
+PCHYGRO = -RHOW * R * TREF / MAMOLVAP * log(PV_F / PVSAT)
+print("PCHYGRO=", PCHYGRO)
+
+
+DDL_IMP = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(TOUT="OUI", DX=0.0),
+        _F(TOUT="OUI", DY=0.0),
+        _F(TOUT="OUI", DZ=0.0),
+        _F(TOUT="OUI", PRE2=1000.0),  # Delta Pgaz
+        _F(GROUP_NO="GAUCHES", PRE1=PCHYGRO),  # PCAP = CONSTANTE
+    ),
+)
+
+
+U0 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT0,
+    EXCIT=(_F(CHARGE=DDL_IMP),),
+    COMPORTEMENT=_F(RELATION="KIT_HH2M", RELATION_KIT=("ELAS", "LIQU_AD_GAZ_VAPE", "HYDR_UTIL")),
+    ETAT_INIT=_F(DEPL=CHAMNO),
+    SCHEMA_THM=_F(PARM_THETA=0.6),
+    INCREMENT=_F(LIST_INST=INST1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1, ITER_LINE_MAXI=3),
+    # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=80),
+    SOLVEUR=_F(METHODE="MULT_FRONT", STOP_SINGULIER="NON"),
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=U0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N16",
+        NOM_CMP="PRE1",
+        VALE_CALC=317403392.0776704,
+        VALE_REFE=PC_TEMP1,
+        CRITERE="RELATIF",
+        PRECISION=0.05,
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=U0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N16",
+        NOM_CMP="PRE1",
+        VALE_CALC=401887802.8054746,
+        VALE_REFE=PC_TEMP2,
+        CRITERE="RELATIF",
+        PRECISION=0.05,
+    )
+)
+
+
+presu = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="PRE1_THM",
+        OPERATION="EXTRACTION",
+        GROUP_NO="N16",
+        RESULTAT=U0,
+        NOM_CHAM="DEPL",
+        NOM_CMP="PRE1",
+    )
+)
+
+IMPR_TABLE(
+    UNITE=33,
+    FORMAT="XMGRACE",
+    TABLE=presu,
+    NOM_PARA=("INST", "PRE1"),
+    LEGENDE_X="Temps [s]",
+    LEGENDE_Y="Pc",
+    LEGENDE="RESU THM",
+    COULEUR=3,
+    MARQUEUR=7,
+    STYLE=1,
+)
+# Verification en THH2M tout température bloquee on doit avoir la même chose
+MTHH2M = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_THH2MD")
+)
+DDL_THH2M = AFFE_CHAR_MECA(
+    MODELE=MTHH2M,
+    DDL_IMPO=(
+        _F(TOUT="OUI", DX=0.0),
+        _F(TOUT="OUI", DY=0.0),
+        _F(TOUT="OUI", DZ=0.0),
+        _F(TOUT="OUI", TEMP=0.0),
+        _F(TOUT="OUI", PRE2=1000.0),  # Delta Pgaz
+        _F(GROUP_NO="GAUCHES", PRE1=PCHYGRO),  # PCAP = CONSTANTE
+    ),
+)
+U_THH2M = STAT_NON_LINE(
+    MODELE=MTHH2M,
+    CHAM_MATER=CHMAT0,
+    EXCIT=(_F(CHARGE=DDL_THH2M),),
+    COMPORTEMENT=_F(RELATION="KIT_THH2M", RELATION_KIT=("ELAS", "LIQU_AD_GAZ_VAPE", "HYDR_UTIL")),
+    ETAT_INIT=_F(DEPL=CHAMNO),
+    SCHEMA_THM=_F(PARM_THETA=0.6),
+    INCREMENT=_F(LIST_INST=INST1, NUME_INST_FIN=1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1, ITER_LINE_MAXI=3),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=80),
+    SOLVEUR=_F(METHODE="MULT_FRONT", STOP_SINGULIER="NON"),
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=U_THH2M,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N16",
+        NOM_CMP="PRE1",
+        VALE_CALC=317422491.66777366,
+        VALE_REFE=PC_TEMP1,
+        CRITERE="RELATIF",
+        PRECISION=0.05,
+    )
+)
+# Verification en HH2 on doit avoir la même chose
+MHH2 = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_HH2D")
+)
+DDL_HH2 = AFFE_CHAR_MECA(
+    MODELE=MHH2,
+    DDL_IMPO=(_F(TOUT="OUI", PRE2=1000.0), _F(GROUP_NO="GAUCHES", PRE1=PCHYGRO)),  # Delta Pgaz
+)
+U_HH2 = STAT_NON_LINE(
+    MODELE=MHH2,
+    CHAM_MATER=CHMAT0,
+    EXCIT=(_F(CHARGE=DDL_HH2),),
+    COMPORTEMENT=_F(RELATION="KIT_HH2", RELATION_KIT=("LIQU_AD_GAZ_VAPE", "HYDR_UTIL")),
+    ETAT_INIT=_F(DEPL=CHAMNO),
+    SCHEMA_THM=_F(PARM_THETA=0.6),
+    INCREMENT=_F(LIST_INST=INST1, NUME_INST_FIN=1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1, ITER_LINE_MAXI=3),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=80),
+    SOLVEUR=_F(METHODE="MULT_FRONT", STOP_SINGULIER="NON"),
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=U_HH2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N16",
+        NOM_CMP="PRE1",
+        VALE_CALC=317422497.3880693,
+        VALE_REFE=PC_TEMP1,
+        CRITERE="RELATIF",
+        PRECISION=0.05,
+    )
+)
+FIN()

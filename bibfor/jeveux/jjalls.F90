@@ -25,7 +25,6 @@ subroutine jjalls(lonoi, ic, genri, typei, lty, &
 #include "jeveux_private.h"
 #include "asterc/hpalloc.h"
 #include "asterfort/assert.h"
-#include "asterfort/jeimpm.h"
 #include "asterfort/jjldyn.h"
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
@@ -133,8 +132,6 @@ subroutine jjalls(lonoi, ic, genri, typei, lty, &
             ival(2) = nint(vmxdyn*lois)/unmega
             ival(3) = nint(mcdyn*lois)/unmega
             ival(4) = (ltot*lois)/unmega
-            call utmess('E', 'JEVEUX_62', ni=4, vali=ival)
-            call jeimpm(6)
             call utmess('F', 'JEVEUX_62', ni=4, vali=ival)
         else
 !
@@ -163,8 +160,6 @@ subroutine jjalls(lonoi, ic, genri, typei, lty, &
         if (iessai .gt. 1) then
             ival(1) = lsic*lois
             ival(2) = ltot*lois
-            call utmess('E', 'JEVEUX_60', ni=2, vali=ival)
-            call jeimpm(6)
             call utmess('F', 'JEVEUX_60', ni=2, vali=ival)
         else
             call jjldyn(2, -2, ltot)

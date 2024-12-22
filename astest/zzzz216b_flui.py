@@ -39,24 +39,13 @@ def coupled_fluid(cpl, UNITE_MA):
 
     # Read the  mesh - 2 cases : 1 or several procs
     if CA.MPI.ASTER_COMM_WORLD.size > 1:
-        MAFLUIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA, PARTITIONNEUR="PTSCOTCH")
+        MAFLUIDE0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA, PARTITIONNEUR="PTSCOTCH")
     else:
-        MAFLUIDE = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA)
+        MAFLUIDE0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=UNITE_MA)
 
     MAFLUIDE = MODI_MAILLAGE(
-        reuse=MAFLUIDE,
-        MAILLAGE=MAFLUIDE,
-        ORIE_PEAU=_F(GROUP_MA_PEAU=("Face1", "Face2", "Face3", "Face4", "Face5", "Face6")),
-    )
-
-    # Assign model
-    MOFLUIDE = AFFE_MODELE(
-        MAILLAGE=MAFLUIDE,
-        AFFE=_F(
-            GROUP_MA=("Face1", "Face2", "Face3", "Face4", "Face5", "Face6"),
-            PHENOMENE="MECANIQUE",
-            MODELISATION="3D",
-        ),
+        MAILLAGE=MAFLUIDE0,
+        ORIE_PEAU=_F(GROUP_MA_PEAU=("Face2", "Face3", "Face4", "Face5", "Face6")),
     )
 
     FORM = FORMULE(VALE="1.E-4*INST*(X+Y+Z)", NOM_PARA=["X", "Y", "Z", "INST"])
@@ -64,7 +53,7 @@ def coupled_fluid(cpl, UNITE_MA):
     PRES_F = CREA_CHAMP(
         TYPE_CHAM="NOEU_NEUT_F",
         OPERATION="AFFE",
-        MODELE=MOFLUIDE,
+        MAILLAGE=MAFLUIDE,
         AFFE=_F(TOUT="OUI", NOM_CMP="X1", VALE_F=FORM),
         INFO=1,
     )
@@ -88,9 +77,18 @@ def coupled_fluid(cpl, UNITE_MA):
 
             self._medcpl = cpl.medcpl
             self.epsilon = 1e-7
-            self.mesh = MAFLUIDE
             self.depl_prev = None
             self.result = []
+
+        def extent(self, depl):
+            fns = depl.toSimpleFieldOnNodes()
+
+            val, desc = fns.getValuesWithDescription()
+
+            fns.setValues([0] * 3 * MAFLUIDE.getNumberOfNodes())
+            fns.setValues(desc[0], desc[1], val)
+
+            return fns.toFieldOnNodes()
 
         def run_iteration(self, i_iter, current_time, delta_t, data):
             """Execute one iteration.
@@ -99,7 +97,7 @@ def coupled_fluid(cpl, UNITE_MA):
                 i_iter (int): Iteration number if the current time_step.
                 current_time (float): Current time.
                 delta_t (float): Time step.
-                data (dict[*MEDCouplingField*]): dict of input fields.
+                data (dict[*MEDCouplingField*]): dict    of input fields.
 
             Returns:
                 bool: True if solver has converged at the current time step, else False.
@@ -114,19 +112,15 @@ def coupled_fluid(cpl, UNITE_MA):
                 # MEDC field => .med => code_aster field
                 depl = self._medcpl.import_displacement(mc_depl)
 
-            CHINST = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="NOEU_INST_R",
-                MAILLAGE=self.mesh,
-                AFFE=_F(TOUT="OUI", NOM_CMP=("INST",), VALE=current_time),
-            )
+            CHINST = CA.FieldOnNodesReal(MAFLUIDE, "INST_R", {"INST": current_time})
 
             CHXN = CREA_CHAMP(
-                OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=self.mesh
+                OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAFLUIDE
             )
 
             if depl:
-                CHXN += depl
+                DEPL = self.extent(depl)
+                CHXN += DEPL
 
             CHNEUT = CREA_CHAMP(
                 OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=PRES_F, CHAM_PARA=(CHXN, CHINST)
@@ -135,7 +129,7 @@ def coupled_fluid(cpl, UNITE_MA):
             pres = CREA_CHAMP(
                 OPERATION="ASSE",
                 TYPE_CHAM="NOEU_PRES_R",
-                MAILLAGE=self.mesh,
+                MAILLAGE=MAFLUIDE,
                 ASSE=_F(TOUT="OUI", CHAM_GD=CHNEUT, NOM_CMP=("X1",), NOM_CMP_RESU=("PRES",)),
             )
 
@@ -144,7 +138,7 @@ def coupled_fluid(cpl, UNITE_MA):
             else:
                 self.result[-1] = pres
 
-            mc_pres = self._medcpl.export_pressure(pres, "PRES")
+            mc_pres = self._medcpl.export_pressure(pres)
 
             # test convergence:
             has_cvg = False

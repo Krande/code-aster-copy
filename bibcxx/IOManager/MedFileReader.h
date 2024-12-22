@@ -33,6 +33,7 @@
 #include "IOManager/MedMesh.h"
 #include "IOManager/MedProfile.h"
 
+#include <filesystem>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -102,10 +103,10 @@ class MedFileReader {
     int getProfileNumber() const;
 
     /** @brief med parallel open of file */
-    int openParallel( const std::string &filename, const MedFileAccessType &openType );
+    int openParallel( const std::filesystem::path &filename, const MedFileAccessType &openType );
 
     /** @brief med open of file */
-    int open( const std::string &filename, const MedFileAccessType &openType );
+    int open( const std::filesystem::path &filename, const MedFileAccessType &openType );
 };
 
 /**

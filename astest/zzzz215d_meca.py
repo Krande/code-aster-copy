@@ -103,10 +103,15 @@ def coupled_mechanics(cpl):
             # MEDC field => .med => code_aster field
             PRES = self._medcpl.import_pressure(mc_pres)
 
+            fed = MOSOLIDE.getFiniteElementDescriptor().restrict(
+                self._medcpl.mesh_interf.getGroupsOfCells()
+            )
+            PRES_elno = PRES.toFieldOnCells(fed, "ELNO")
+
             RES_PROJ = CREA_RESU(
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_CHAR",
-                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, MODELE=MOSOLIDE, INST=current_time),
+                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES_elno, INST=current_time),
             )
 
             CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=RES_PROJ)

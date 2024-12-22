@@ -105,7 +105,7 @@ ASTERINTEGER BaseMesh::getDimension() const {
     return dimGeom;
 }
 
-bool BaseMesh::readMeshFile( const std::string &fileName, const std::string &format,
+bool BaseMesh::readMeshFile( const std::filesystem::path &fileName, const std::string &format,
                              const int verbosity ) {
     FileType type = Ascii;
     if ( format == "MED" )
@@ -172,7 +172,7 @@ const JeveuxVectorLong BaseMesh::getMedCellsTypes() const {
     return result;
 }
 
-bool BaseMesh::printMedFile( const std::string fileName, bool local ) const {
+bool BaseMesh::printMedFile( const std::filesystem::path &fileName, bool local ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;

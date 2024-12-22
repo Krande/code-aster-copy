@@ -26,7 +26,8 @@ from mpi4py import MPI
 from code_aster.Coupling import SaturneCoupling
 
 from zzzz216f_meca import coupled_mechanics
-from zzzz216f_flui import coupled_fluid, FakeSaturne
+from zzzz216f_flui import coupled_fluid
+from zzzz216f_sat import FakeSaturne
 
 
 # Tis test is normally run with:
@@ -59,5 +60,5 @@ else:
     coupled_mechanics(
         cpl_meca,
         20,
-        [-5.032306422153485, -7.948335939702334, -2.500523467361928, -5.8179321353806435],
+        [-5.084087607895538, -8.019446136721388, -2.5572311330051436, -5.866953482631801],
     )

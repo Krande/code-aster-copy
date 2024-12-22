@@ -98,7 +98,7 @@ def force_iss_vari(
             RESULTAT=resultat,
             NOM_CHAM="DEPL",
         )
-        MCMP2, description = __CHAM.getValuesWithDescription(" ", [GROUP_NO_INTER])
+        MCMP2, description = __CHAM.getValuesWithDescription(groups=[GROUP_NO_INTER])
         if mods == 0:
             NCMP2 = description[1]
             nddi = len(MCMP2)

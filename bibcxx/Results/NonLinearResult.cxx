@@ -26,6 +26,8 @@
 
 #include "Supervis/Exceptions.h"
 
+#include <filesystem>
+
 JeveuxVectorReal NonLinearResult::_mata( "PYTHON.TANGENT.MATA" );
 JeveuxVectorReal NonLinearResult::_matc( "PYTHON.TANGENT.MATC" );
 
@@ -56,8 +58,8 @@ VectorReal NonLinearResult::getTangentMatrix( const std::string &suffix ) {
         return {};
 };
 
-void NonLinearResult::printMedFile( const std::string fileName, std::string medName, bool local,
-                                    bool internalVar ) const {
+void NonLinearResult::printMedFile( const std::filesystem::path &fileName, std::string medName,
+                                    bool local, bool internalVar ) const {
     const auto indexes = getIndexes();
     bool mFront = false;
     for ( const auto &index : indexes ) {

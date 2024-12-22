@@ -35,6 +35,9 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
         mod, "SimpleFieldOnNodesReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr > ) )
+        .def( py::init(
+            &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr, std::string, VectorString > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, BaseMeshPtr, std::string,
                                          VectorString, bool > ) )
         .def( "__getitem__",
@@ -54,6 +57,15 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
               +[]( SimpleFieldOnNodesReal &v, const std::pair< ASTERINTEGER, std::string > &i ) {
                   return v.operator()( i.first, i.second );
               } )
+        .def( "allocate", &SimpleFieldOnNodesReal::allocate,
+              R"(
+            Allocate the field.
+
+            Arguments:
+                quantity [str]: physical quantity like 'DEPL_R'
+                cmps [list[str]]: list of components.
+            )",
+              py::arg( "quantity" ), py::arg( "cmps" ), py::arg( "zero" ) = false )
         .def( "toFieldOnNodes",
               []( const SimpleFieldOnNodesReal &f ) { return toFieldOnNodes( f ); },
               R"(
@@ -108,8 +120,111 @@ Returns:
         .def( "getNumberOfNodes", &SimpleFieldOnNodesReal::getNumberOfNodes )
         .def( "getComponents", &SimpleFieldOnNodesReal::getComponents )
         .def( "getComponent", &SimpleFieldOnNodesReal::getComponent )
+        .def( "hasComponent", &SimpleFieldOnNodesReal::hasComponent )
         .def( "getMesh", &SimpleFieldOnNodesReal::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesReal::getPhysicalQuantity )
+        .def( "setValues",
+              py::overload_cast< const VectorLong &, const VectorString &, const VectorReal & >(
+                  &SimpleFieldOnNodesReal::setValues ),
+              R"(
+            Set values for a given list of triplet (node, cmp, value).
+            Each value of the triplet is given as a separated list.
+
+            Arguments:
+                nodes (list[int]): list of nodes.
+                cmps (list[str]): list of comp components
+                values (list[float]): list of values to set.
+            )",
+              py::arg( "nodes" ), py::arg( "cmps" ), py::arg( "values" ) )
+        .def( "setValues",
+              py::overload_cast< const VectorReal & >( &SimpleFieldOnNodesReal::setValues ),
+              R"(
+             Set values for each nodes and components as (node_0_val_0, node_0_val_1, ...)
+
+            Arguments:
+                values (list[float]): list of values to set.
+
+            )",
+              py::arg( "values" ) )
+        .def( "setValues",
+              py::overload_cast< const std::vector< VectorReal > & >(
+                  &SimpleFieldOnNodesReal::setValues ),
+              R"(
+            Set values for each nodes and components.
+
+            Arguments:
+                values (list[list[float]]): list of values to set.
+                For each node, give the values for all component is a list.
+            )",
+              py::arg( "values" ) )
+        .def( "setValues",
+              py::overload_cast< const std::map< std::string, ASTERDOUBLE > &, const VectorLong & >(
+                  &SimpleFieldOnNodesReal::setValues ),
+              R"(
+            Set values of the field where components and values are given as a dict.
+            If the component is not present in the field then it is discarded
+            Example: { "X1" : 0.0, "X3" : 0.0 }
+
+            Arguments:
+                value (dict[str, float]): dict of values to set (key: str, value: float)
+                nodes (list[int]): list of nodes.
+            )",
+              py::arg( "value" ), py::arg( "nodes" ) )
+        .def(
+            "setValues",
+            py::overload_cast< const std::map< std::string, ASTERDOUBLE > &, const VectorString & >(
+                &SimpleFieldOnNodesReal::setValues ),
+            R"(
+            Set values of the field where components and values are given as a dict.
+            If the component is not present in the field then it is discarded
+            Example: { "X1" : 0.0, "X3" : 0.0 }
+
+            Arguments:
+                value (dict[str, float]): dict of values to set (key: str, value: float)
+                groupsOfNodes (list[str]): list of groups. If empty, the full mesh is considered
+            )",
+            py::arg( "value" ), py::arg( "groupsOfNodes" ) = VectorString() )
+        .def( "setValues",
+              py::overload_cast< const ASTERDOUBLE >( &SimpleFieldOnNodesReal::setValues ),
+              R"(
+            Set the value everywhere.
+
+            Arguments:
+                value [float]: value to set everywhere.
+            )",
+              py::arg( "value" ) )
+        .def( "getValuesWithDescription",
+              py::overload_cast< const VectorString &, const VectorString & >(
+                  &SimpleFieldOnNodesReal::getValuesWithDescription, py::const_ ),
+              R"(
+            Return the values of components of the field.
+
+            Arguments:
+               cmps (list[str]) : Extracted components or all components if it is empty.
+               groups (list[str]): The extraction is limited to the given groups of nodes.
+
+            Returns:
+               tuple( values, description ): List of values and description.
+                The description provides a tuple with( nodes ids, components ).
+                 )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
+
+        .def( "getValuesWithDescription",
+              py::overload_cast< const VectorString &, const VectorLong & >(
+                  &SimpleFieldOnNodesReal::getValuesWithDescription, py::const_ ),
+              R"(
+            Return the values of components of the field.
+
+            Arguments:
+               cmps (list[str]) : Extracted components or all components if it is empty.
+               nodes (list[int]): The extraction is limited to the given nodes.
+
+            Returns:
+               tuple( values, description ): List of values and description.
+                The description provides a tuple with( nodes ids, components ).
+                 )",
+              py::arg( "cmps" ), py::arg( "nodes" ) )
+
         .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers );
 
     py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataField >(
@@ -143,6 +258,7 @@ Returns:
         .def( "getNumberOfNodes", &SimpleFieldOnNodesComplex::getNumberOfNodes )
         .def( "getComponents", &SimpleFieldOnNodesComplex::getComponents )
         .def( "getComponent", &SimpleFieldOnNodesComplex::getComponent )
+        .def( "hasComponent", &SimpleFieldOnNodesComplex::hasComponent )
         .def( "getMesh", &SimpleFieldOnNodesComplex::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesComplex::getPhysicalQuantity )
         .def( "updateValuePointers", &SimpleFieldOnNodesComplex::updateValuePointers );

@@ -32,7 +32,7 @@ import numpy
 
 from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector, deprecated
+from ..Utilities import injector, deprecated, force_list
 
 
 class FieldOnCellsStateBuilder(InternalStateBuilder):
@@ -68,11 +68,11 @@ class ExtendedFieldOnCellsReal:
     cata_sdj = "SD.sd_champ.sd_cham_elem_class"
     internalStateBuilder = FieldOnCellsStateBuilder
 
-    def getValuesWithDescription(self, component, groups=[]):
+    def getValuesWithDescription(self, components=[], groups=[]):
         """Return the values of a component of the field.
 
         Arguments:
-            component (str): Extracted component.
+            components (list[str]): Extracted components.
             groups (list[str], optional): The extraction is limited to the given
                 groups of cells.
 
@@ -81,18 +81,8 @@ class ExtendedFieldOnCellsReal:
             The description provides a tuple with identifiers of
             (cells, points, subpoints).
         """
-        mesh = self.getMesh()
-        if groups:
-            cells = set()
-            for grp in groups:
-                if mesh.hasGroupOfCells(grp):
-                    cells.update(mesh.getCells(grp))
-                else:
-                    raise ValueError("no {} group of cell".format(grp))
-            cells = sorted(cells)
-        else:
-            cells = mesh.getCells()
-        return self.toSimpleFieldOnCells().getValuesWithDescription(cells, component)
+
+        return self.toSimpleFieldOnCells().getValuesWithDescription(force_list(components), groups)
 
     def asPhysicalQuantity(self, physQuantity, map_cmps, fed=None):
         """Return a new field with a new physical quantity and renamed components.

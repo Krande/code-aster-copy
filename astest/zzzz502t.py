@@ -106,12 +106,12 @@ test.assertListEqual(dicLag[1], ref1[rank])
 test.assertListEqual(dicLag[2], ref2[rank])
 
 nume_eq = nume_ddl.getEquationNumbering()
-localDX = nume_eq.getDOFsWithDescription("DX", local=True, same_rank=True)
+localDX = nume_eq.getDOFsWithDescription(["DX"], local=True, same_rank=True)
 ref1 = {0: [0, 1, 2, 3, 4, 5, 6, 7, 8], 1: [0, 1, 2, 3, 4, 5, 6, 7, 8]}
 ref2 = {0: [0, 4, 8, 11, 14, 16, 18, 20, 22], 1: [0, 2, 7, 12, 15, 18, 20, 22, 24]}
 test.assertListEqual(localDX[0][0], ref1[rank])
 test.assertListEqual(localDX[-1], ref2[rank])
-globalDX = nume_eq.getDOFsWithDescription("DX", local=False, same_rank=True)
+globalDX = nume_eq.getDOFsWithDescription(["DX"], local=False, same_rank=True)
 ref1 = {0: [0, 1, 2, 3, 4, 5, 6, 7, 8], 1: [9, 10, 11, 12, 13, 14, 15, 16, 17]}
 ref2 = {0: [0, 3, 6, 9, 12, 14, 16, 18, 20], 1: [24, 26, 29, 32, 35, 38, 40, 42, 44]}
 test.assertListEqual(globalDX[0][0], ref1[rank])

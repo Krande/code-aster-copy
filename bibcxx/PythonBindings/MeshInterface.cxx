@@ -3,7 +3,7 @@
  * @brief Interface python de Mesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -141,7 +141,7 @@ Returns:
 Read a mesh file from ASTER format.
 
 Arguments:
-    filename (str): Path to the file to be read.
+    filename (Path|str): Path to the file to be read.
 
 Returns:
     bool: *True* if succeeds, *False* otherwise.
@@ -151,7 +151,7 @@ Returns:
 Read a mesh file from GIBI format.
 
 Arguments:
-    filename (str): Path to the file to be read.
+    filename (Path|str): Path to the file to be read.
 
 Returns:
     bool: *True* if succeeds, *False* otherwise.
@@ -161,7 +161,7 @@ Returns:
 Read a mesh file from GMSH format.
 
 Arguments:
-    filename (str): Path to the file to be read.
+    filename (Path|str): Path to the file to be read.
 
 Returns:
     bool: *True* if succeeds, *False* otherwise.

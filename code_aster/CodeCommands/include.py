@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -21,8 +21,9 @@
 # aslint: disable=C4007
 # C4007: INCLUDE() is also discouraged
 
+import os
 import traceback
-import os.path as osp
+from pathlib import Path
 
 from ..Messages import UTMESS
 from ..Supervis import ExecuteCommand
@@ -41,12 +42,12 @@ class Include(ExecuteCommand):
         if keywords.get("ALARME", "OUI") == "OUI":
             UTMESS("A", "SUPERVIS_25", valk=("AsterStudy", "import"))
         if keywords.get("UNITE"):
-            filename = "fort.{0}".format(keywords["UNITE"])
+            filename = Path(f"fort.{keywords['UNITE']}")
         else:
-            rcdir = ExecutionParameter().get_option("rcdir")
-            filename = osp.join(rcdir, "tests_data", keywords["DONNEE"])
-        if not osp.isfile(filename):
-            UTMESS("F", "FICHIER_1", valk=filename)
+            rcdir = Path(ExecutionParameter().get_option("rcdir"))
+            filename = rcdir / "tests_data" / keywords["DONNEE"]
+        if not filename.is_file():
+            UTMESS("F", "FICHIER_1", valk=os.fspath(filename))
 
         option = ExecutionParameter().option
         show = keywords.get("INFO", 0) >= 1 and not option & Options.ShowChildCmd
@@ -57,9 +58,11 @@ class Include(ExecuteCommand):
                 exec(compile(fobj.read(), filename, "exec"), context)
         except NameError:
             help_import = "from code_aster.Commands import *"
-            UTMESS("F", "FICHIER_3", valk=(filename, traceback.format_exc(), help_import))
+            UTMESS(
+                "F", "FICHIER_3", valk=(os.fspath(filename), traceback.format_exc(), help_import)
+            )
         except Exception:
-            UTMESS("F", "FICHIER_2", valk=(filename, traceback.format_exc()))
+            UTMESS("F", "FICHIER_2", valk=(os.fspath(filename), traceback.format_exc()))
         finally:
             if show:
                 ExecutionParameter().disable(Options.ShowChildCmd)

@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -325,7 +325,15 @@ class EquationNumbering : public BaseEquationNumbering {
      * groups
      */
     std::pair< std::pair< VectorLong, VectorString >, VectorLong >
-    getDOFsWithDescription( const std::string, const VectorString, const bool local = false,
+    getDOFsWithDescription( const VectorString &, const VectorString &, const bool local = false,
+                            const ASTERINTEGER same_rank = PythonBool::None ) const;
+
+    /**
+     * @brief Get (Nodes And Components) and dofs corresponding to component name and list of node
+     * groups
+     */
+    std::pair< std::pair< VectorLong, VectorString >, VectorLong >
+    getDOFsWithDescription( const VectorString &, const VectorLong &, const bool local = false,
                             const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**

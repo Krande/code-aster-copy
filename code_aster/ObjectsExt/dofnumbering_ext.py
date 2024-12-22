@@ -78,7 +78,7 @@ class ExtendedDOFNumbering:
         available_components = self.getComponents()
         if component not in available_components:
             raise ValueError(f"Component {component} is not in {available_components}")
-        return self.getEquationNumbering().getDOFsWithDescription(component, local=local)[-1]
+        return self.getEquationNumbering().getDOFsWithDescription([component], local=local)[-1]
 
     def getDictComponentsToDOFs(self, local=True):
         """Return the dictionary with the available components as keys and the associated DOFs as values."""

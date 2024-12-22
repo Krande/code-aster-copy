@@ -83,5 +83,24 @@ class _medcouplingMeta(type):
         return getattr(cls._mod, attr)
 
 
+class _ParaMEDMEMMeta(type):
+    """Meta class for ParaMEDMEM module wrapping."""
+
+    _init = False
+    _mod = None
+
+    def __getattr__(cls, attr):
+        if not cls._init:
+            import ParaMEDMEM as origin
+
+            cls._init = True
+            cls._mod = origin
+        return getattr(cls._mod, attr)
+
+
 class medcoupling(metaclass=_medcouplingMeta):
     """Wrapper to medcoupling"""
+
+
+class ParaMEDMEM(metaclass=_ParaMEDMEMMeta):
+    """Wrapper to ParaMEDMEM"""

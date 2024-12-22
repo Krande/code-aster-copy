@@ -142,6 +142,12 @@ class FiniteElementDescriptor : public DataStructure {
 
     bool build();
 
+    ASTERINTEGER getNumberOfCells() const;
+
+    FiniteElementDescriptorPtr restrict( const VectorString &groupsOfCells ) const;
+
+    FiniteElementDescriptorPtr restrict( const VectorLong &cells ) const;
+
     /** @brief Get index of elem type */
     ASTERINTEGER getElemTypeNume( const std::string elemTypeName ) const;
 

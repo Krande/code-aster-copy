@@ -6,7 +6,7 @@
  * @brief Fichier entete des outils
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -73,6 +73,26 @@ void vectorStringToFStrArray( char *tabFStr, const int flen, const VectorString 
  */
 char *vectorStringAsFStrArray( const VectorString &vector, const int flen );
 
+template < typename T >
+std::vector< T > concatenate( const std::vector< std::vector< T > > &vec ) {
+
+    ASTERINTEGER total_size = 0;
+    for ( auto &v : vec ) {
+        total_size += v.size();
+    }
+
+    std::vector< T > ret;
+    ret.reserve( total_size );
+
+    for ( auto &v : vec ) {
+        for ( auto &elem : v ) {
+            ret.push_back( elem );
+        }
+    }
+
+    return ret;
+}
+
 // Set and sort a vector
 template < typename T >
 std::vector< T > unique( const std::vector< T > &vec ) {
@@ -126,6 +146,11 @@ std::vector< T > set_intersection( std::vector< T > &vec1, std::vector< T > &vec
     return common;
 }
 
+template < typename T >
+std::vector< T > set_union( std::vector< T > &vec1, std::vector< T > &vec2 ) {
+    return unique( concatenate( std::vector< std::vector< T > >( { vec1, vec2 } ) ) );
+}
+
 /**
  * @brief Return all elements in vect1 that are not in vect2.
  */
@@ -155,26 +180,6 @@ void print( T &vec ) {
         std::cout << e << ", ";
     }
     std::cout << std::endl;
-}
-
-template < typename T >
-std::vector< T > concatenate( const std::vector< std::vector< T > > &vec ) {
-
-    ASTERINTEGER total_size = 0;
-    for ( auto &v : vec ) {
-        total_size += v.size();
-    }
-
-    std::vector< T > ret;
-    ret.reserve( total_size );
-
-    for ( auto &v : vec ) {
-        for ( auto &elem : v ) {
-            ret.push_back( elem );
-        }
-    }
-
-    return ret;
 }
 
 template < typename T >

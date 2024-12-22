@@ -3,7 +3,7 @@
  * @brief Interface python de FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,6 +40,11 @@ void exportFiniteElementDescriptorToPython( py::module_ &mod ) {
         .def( "getMesh", &FiniteElementDescriptor::getMesh )
         .def( "getModel", &FiniteElementDescriptor::getModel )
         .def( "setModel", &FiniteElementDescriptor::setModel )
+        .def( "getNumberOfCells", &FiniteElementDescriptor::getNumberOfCells )
+        .def( "restrict", py::overload_cast< const VectorLong & >(
+                              &FiniteElementDescriptor::restrict, py::const_ ) )
+        .def( "restrict", py::overload_cast< const VectorString & >(
+                              &FiniteElementDescriptor::restrict, py::const_ ) )
         .def( "getVirtualCellsDescriptor", &FiniteElementDescriptor::getVirtualCellsDescriptor )
         .def( "getListOfGroupsOfElements", &FiniteElementDescriptor::getListOfGroupsOfElements )
 #ifdef ASTER_HAVE_MPI

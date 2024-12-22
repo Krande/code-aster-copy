@@ -368,7 +368,7 @@ contains
         aster_logical :: lSuivLoad, lPiloLoad
         aster_logical, parameter :: l_suiv(LOAD_NEUM_NBTYPE) = (/ &
                                                                .false._1, .false._1, &
-                                                               .false._1, .false._1, &
+                                                               .true._1, .false._1, &
                                                                .false._1, .false._1, &
                                                                .true._1, .true._1, &
                                                                .true._1, .true._1, &

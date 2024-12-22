@@ -146,7 +146,7 @@ def compute_mecmode(NOM_CMP, GROUP_NO_INTER, resultat, nbmods, nbmodd):
         )
         MCMP, _ = __CHAM.getValuesWithDescription(NOM_CMP, [GROUP_NO_INTER])
         # on recupere la composante COMP (dx,dy,dz) des modes
-        MCMP2, description = __CHAM.getValuesWithDescription(" ", [GROUP_NO_INTER])
+        MCMP2, description = __CHAM.getValuesWithDescription(groups=[GROUP_NO_INTER])
         if mods == 0:
             NCMP2 = description[1]
             nddi = len(MCMP2)

@@ -60,7 +60,7 @@ from .ExecutionParameter import ExecutionParameter
 from .general import initial_context
 from .i18n import localization
 from .i18n import translate as _
-from .import_helper import PETSc, SLEPc, medcoupling
+from .import_helper import PETSc, SLEPc, medcoupling, ParaMEDMEM
 from .injector import injector
 from .logger import DEBUG, ERROR, INFO, WARNING, logger, loglevel, with_loglevel
 from .misc import get_shared_tmpdir, shared_tmpdir

@@ -158,6 +158,13 @@ public:
   SimpleFieldOnNodes(const BaseMeshPtr mesh, const std::string quantity,
                      const VectorString &comp, bool zero = false)
       : SimpleFieldOnNodes(mesh) {
+    this->allocate(quantity, comp, zero);
+  }
+
+  BaseMeshPtr getMesh() const { return _mesh; };
+
+  void allocate(const std::string quantity, const VectorString &comp,
+                bool zero = false) {
     ASTERINTEGER nbComp = comp.size();
     std::string base = "G";
 
@@ -171,8 +178,6 @@ public:
 
     build();
   }
-
-  BaseMeshPtr getMesh() const { return _mesh; };
 
   /**
    * @brief Surcharge de l'operateur []
@@ -348,6 +353,77 @@ public:
     return strip((*_descriptor)[1].toString());
   }
 
+  bool hasComponent(const std::string &cmp) const {
+    if (_name2Index.count(cmp) > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  void setValues(const VectorLong &nodes, const VectorString &cmps,
+                 const std::vector<ValueType> &values) {
+
+    AS_ASSERT(nodes.size() == cmps.size());
+    AS_ASSERT(nodes.size() == values.size());
+
+    this->updateValuePointers();
+
+    const int size = values.size();
+    for (int i = 0; i < size; i++) {
+      (*this)(nodes[i], cmps[i]) = values[i];
+    }
+  }
+
+  void setValues(const std::vector<std::vector<ValueType>> &values) {
+
+    AS_ASSERT(values.size() == this->getNumberOfNodes());
+    this->updateValuePointers();
+
+    for (int ino = 0; ino < this->getNumberOfNodes(); ino++) {
+      auto &row = values[ino];
+#ifdef ASTER_DEBUG_CXX
+      if (this->getNumberOfComponents() != row.size())
+        throw std::runtime_error("Incompatible size");
+#endif
+      for (int icmp = 0; icmp < this->getNumberOfComponents(); icmp++) {
+        (*this)(ino, icmp) = row[icmp];
+      }
+    }
+  }
+
+  void setValues(const std::vector<ValueType> &values) {
+
+    AS_ASSERT(values.size() ==
+              this->getNumberOfNodes() * this->getNumberOfComponents());
+    _allocated->assign(true);
+    *_values = values;
+  }
+
+  void setValues(const ValueType value) {
+
+    _allocated->assign(true);
+    _values->assign(value);
+  }
+
+  void setValues(const std::map<std::string, ValueType> &values,
+                 const VectorLong &nodes) {
+    this->updateValuePointers();
+
+    for (auto &[cmp, val] : values) {
+      if (this->hasComponent(cmp)) {
+        const auto icmp = _name2Index[cmp];
+        for (auto &node : nodes) {
+          (*this)(node, cmp) = val;
+        }
+      }
+    }
+  }
+
+  void setValues(const std::map<std::string, ValueType> &values,
+                 const VectorString &groupsOfNodes = {}) {
+    setValues(values, this->getMesh()->getNodes(groupsOfNodes));
+  }
+
   /**
    * @brief Mise a jour des pointeurs Jeveux
    * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
@@ -479,6 +555,66 @@ public:
     new_field->build();
     return new_field;
   };
+
+  std::pair<std::vector<ValueType>, std::pair<VectorLong, VectorString>>
+  getValuesWithDescription(const VectorString &cmps,
+                           const VectorString &groupsOfNodes) const {
+
+    VectorLong nodes = _mesh->getNodes(groupsOfNodes, true, PythonBool::None);
+
+    return this->getValuesWithDescription(cmps, nodes);
+  }
+
+  std::pair<std::vector<ValueType>, std::pair<VectorLong, VectorString>>
+  getValuesWithDescription(const VectorString &cmps,
+                           const VectorLong &nodes) const {
+
+    this->updateValuePointers();
+
+    VectorLong nodes_ = nodes;
+    if (nodes_.empty()) {
+      nodes_ = _mesh->getNodes();
+    }
+
+    VectorString list_cmp;
+    auto list_cmp_in = this->getComponents();
+    if (cmps.empty()) {
+      list_cmp = list_cmp_in;
+    } else {
+      auto set_cmps = toSet(cmps);
+
+      for (auto &cmp : list_cmp_in) {
+        if (set_cmps.count(cmp) > 0) {
+          list_cmp.push_back(cmp);
+        }
+      }
+    }
+
+    if (list_cmp.empty()) {
+      raiseAsterError("Restriction on list of components is empty");
+    }
+
+    std::vector<ValueType> values;
+    VectorLong v_nodes;
+    VectorString v_cmps;
+
+    values.reserve(nodes_.size() * list_cmp.size());
+    v_nodes.reserve(nodes_.size() * list_cmp.size());
+    v_cmps.reserve(nodes_.size() * list_cmp.size());
+
+    for (auto &node : nodes_) {
+      for (auto &cmp : list_cmp) {
+        auto icmp = (*this)._name2Index.at(cmp);
+        if (this->hasValue(node, icmp)) {
+          values.push_back((*this)(node, icmp));
+          v_nodes.push_back(node);
+          v_cmps.push_back(cmp);
+        }
+      }
+    }
+
+    return std::make_pair(values, std::make_pair(v_nodes, v_cmps));
+  }
 };
 
 /** @typedef SimpleFieldOnNodesReal Class d'une champ simple de doubles */

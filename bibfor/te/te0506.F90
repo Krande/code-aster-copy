@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine te0506(option, nomte)
 !
     valQP = 0.d0
     do kp = 1, FEQuad%nbQuadPoints
-        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+        tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
 !
         call foderi(coef, tpg, alpha, dalpha)
 !

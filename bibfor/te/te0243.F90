@@ -101,7 +101,7 @@ subroutine te0243(option, nomte)
     resi = 0.0
     rigi = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
-        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+        tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
         BGSEval = FEBasis%grad(FEQuadCell%points_param(1:3, kp), FEQuadCell%jacob(1:3, 1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp), BGSEval)
 !
@@ -112,7 +112,7 @@ subroutine te0243(option, nomte)
                 flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
             end if
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
-            tpsec = FEEvalFuncScal(FEBasis, sechf, FEQuadCell%points_param(1:3, kp))
+            tpsec = FEEvalFuncRScal(FEBasis, sechf, FEQuadCell%points_param(1:3, kp))
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
             fluglo = diff*dtpg
             Kglo = 0.d0

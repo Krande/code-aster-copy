@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,8 @@ module fe_topo_module
         procedure, public, pass :: func => func_face
         procedure, public, pass :: init => init_face
         procedure, public, pass :: normal => normal_face
+        procedure, public, pass :: updateCoordinates => updateCoordinatesFace
+
     end type FE_Skin
 !
 !===================================================================================================
@@ -431,6 +433,43 @@ contains
         do inode = 1, this%nbnodes
             do idim = 1, this%ndim
                 this%coorno(idim, inode) = this%coorno(idim, inode)+disp((inode-1)*this%ndim+idim)
+            end do
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine updateCoordinatesFace(this, disp)
+!
+        implicit none
+!
+        class(FE_Skin), intent(inout) :: this
+        real(kind=8), intent(in) :: disp(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - generic tools
+!
+! Update coordinates with displacement
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out FECell           : a FE cell
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: inode, idim
+! --------------------------------------------------------------------------------------------------
+!
+!
+! - Update coordinates
+!
+        do inode = 1, this%nbnodes
+            do idim = 1, this%ndim+1
+                this%coorno(idim, inode) = this%coorno(idim, inode)+ &
+                                           disp((inode-1)*(this%ndim+1)+idim)
             end do
         end do
 !

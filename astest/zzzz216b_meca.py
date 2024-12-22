@@ -99,12 +99,17 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             mc_pres = data["PRES"]
 
             # MEDC field => .med => code_aster field
-            PRES = self._medcpl.import_pressure(mc_pres)
+            PRES_noeu = self._medcpl.import_pressure(mc_pres)
+
+            fed = MOSOLIDE.getFiniteElementDescriptor().restrict(
+                self._medcpl.mesh_interf.getGroupsOfCells()
+            )
+            PRES_elno = PRES_noeu.toFieldOnCells(fed, "ELNO")
 
             RES_PROJ = CREA_RESU(
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_CHAR",
-                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES, INST=current_time),
+                AFFE=_F(NOM_CHAM="PRES", CHAM_GD=PRES_elno, INST=current_time),
             )
 
             CHA_PROJ = AFFE_CHAR_MECA(MODELE=MOSOLIDE, EVOL_CHAR=RES_PROJ)
@@ -131,7 +136,7 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
             )
 
             displ = self.result.getField("DEPL", self.result.getLastIndex())
-            mc_displ = self._medcpl.export_displacement(displ, "Displ")
+            mc_displ = self._medcpl.export_displacement(displ)
 
             return True, {"DEPL": mc_displ}
 
@@ -160,7 +165,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_NO="N134",
                 NOM_CMP="DX",
                 VALE_CALC=test_vale[0],
-                GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-5.0739405591730105,
                 PRECISION=0.01,
@@ -172,7 +176,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_NO="N134",
                 NOM_CMP="DX",
                 VALE_CALC=test_vale[1],
-                GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-8.003836010765115,
                 PRECISION=0.01,
@@ -184,7 +187,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_NO="N134",
                 NOM_CMP="DY",
                 VALE_CALC=test_vale[2],
-                GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-2.560446118368371,
                 PRECISION=0.01,
@@ -196,7 +198,6 @@ def coupled_mechanics(cpl, UNITE_MA, test_vale):
                 GROUP_NO="N134",
                 NOM_CMP="DZ",
                 VALE_CALC=test_vale[3],
-                GROUP_MA="M81",
                 REFERENCE="AUTRE_ASTER",
                 VALE_REFE=-5.844174410665044,
                 PRECISION=0.01,

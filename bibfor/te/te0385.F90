@@ -79,8 +79,8 @@ subroutine te0385(nomopt, nomte)
 !
         do kp = 1, FEQuadCell%nbQuadPoints
             hydrgp(kp) = 0.d0
-            tpgm = FEEvalFuncScal(FEBasis, tempm, FEQuadCell%points_param(1:3, kp))
-            tpgp = FEEvalFuncScal(FEBasis, tempp, FEQuadCell%points_param(1:3, kp))
+            tpgm = FEEvalFuncRScal(FEBasis, tempm, FEQuadCell%points_param(1:3, kp))
+            tpgp = FEEvalFuncRScal(FEBasis, tempp, FEQuadCell%points_param(1:3, kp))
 !
             call runge6(ifon(3), deltat, tpgp, tpgm, hydrgm(kp), &
                         hydrgp(kp), err)

@@ -123,7 +123,7 @@ subroutine te0075(option, nomte)
         call jevech('PTEMPER', 'L', vr=tempi)
 !
         do kp = 1, FEQuad%nbQuadPoints
-            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
 !
             valpar(1:3) = FEQuad%points(1:3, kp)
             valpar(4) = time_curr
@@ -156,7 +156,7 @@ subroutine te0075(option, nomte)
         call jevech('PTEMPER', 'L', vr=tempi)
 !
         do kp = 1, FEQuad%nbQuadPoints
-            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
             ! SIGM
             para1 = zr(ipara)
             ! EPS
@@ -179,7 +179,7 @@ subroutine te0075(option, nomte)
         call jevech('PTEMPER', 'L', vr=tempi)
 !
         do kp = 1, FEQuad%nbQuadPoints
-            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
 !
             valpar(1:3) = FEQuad%points(1:3, kp)
             valpar(4) = time_curr
@@ -209,7 +209,7 @@ subroutine te0075(option, nomte)
         call jevech('PTEMPER', 'L', vr=tempi)
 !
         do kp = 1, FEQuad%nbQuadPoints
-            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
             ! TEXT
             para1 = zr(ipara)
             ! COEFH
