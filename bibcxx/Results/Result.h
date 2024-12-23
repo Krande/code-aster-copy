@@ -214,7 +214,11 @@ class Result : public DataStructure, public ListOfTables {
      * @param storageIndex
      */
     void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &elemCara,
-                                       ASTERINTEGER storageIndex );
+                                       ASTERINTEGER storageIndex, bool exists_ok );
+    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &elemCara,
+                                       ASTERINTEGER storageIndex ) {
+        return setElementaryCharacteristics( elemCara, storageIndex, false );
+    };
 
     /**
      * @brief Add a existing EquationNumbering in _fieldBuilder
@@ -233,13 +237,20 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add material definition
      * @param storageIndex
      */
-    void setMaterialField( const MaterialFieldPtr &mate, ASTERINTEGER storageIndex );
+    void setMaterialField( const MaterialFieldPtr &mate, ASTERINTEGER storageIndex,
+                           bool exists_ok );
+    void setMaterialField( const MaterialFieldPtr &mate, ASTERINTEGER storageIndex ) {
+        return setMaterialField( mate, storageIndex, false );
+    }
 
     /**
      * @brief Add model
      * @param storageIndex
      */
-    void setModel( const ModelPtr &model, ASTERINTEGER storageIndex );
+    void setModel( const ModelPtr &model, ASTERINTEGER storageIndex, bool exists_ok );
+    void setModel( const ModelPtr &model, ASTERINTEGER storageIndex ) {
+        return setModel( model, storageIndex, false );
+    };
 
     /**
      * @brief Set model
@@ -282,19 +293,20 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Append a elementary characteristics on all index of Result
      * @param ElementaryCharacteristicsPtr
      */
-    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara );
+    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
+                                       bool exists_ok = false );
 
     /**
      * @brief Append a material on all index of Result
      * @param MaterialFieldPtr
      */
-    void setMaterialField( const MaterialFieldPtr &mate );
+    void setMaterialField( const MaterialFieldPtr &mate, bool exists_ok = false );
 
     /**
      * @brief Append a model on all index of Result
      * @param ModelPtr
      */
-    void setModel( const ModelPtr &model );
+    void setModel( const ModelPtr &model, bool exists_ok = false );
 
     /**
      * @brief Get list of loads at index

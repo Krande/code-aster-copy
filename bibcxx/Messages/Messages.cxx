@@ -2,7 +2,7 @@
  * @file Message.cxx
  * @brief Fichier entete de la class Messages
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,10 +24,13 @@
 
 #include "aster_fort_utils.h"
 
-void UTMESS( char *error, char *message ) { CALL_UTMESS( error, message ); }
-
-void UTMESS( const char *error, const char *message ) { UTMESS( (char *)error, (char *)message ); }
-
-void UTMESS( const std::string &error, const std::string &message ) {
-    UTMESS( &error[0], &message[0] );
+void UTMESS( const std::string &typm, const std::string &idmess ) {
+    if ( typm == "A" || typm == "I" ) {
+        CALL_UTMESS( (char *)typm.c_str(), (char *)idmess.c_str() );
+    } else {
+        raiseAsterError( idmess );
+    }
 }
+void UTMESS( char *typm, char *idmess ) { UTMESS( std::string( typm ), std::string( idmess ) ); }
+
+void UTMESS( const char *typm, const char *idmess ) { UTMESS( (char *)typm, (char *)idmess ); }

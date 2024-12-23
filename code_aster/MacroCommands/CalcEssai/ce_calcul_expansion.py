@@ -52,7 +52,7 @@ from .cata_ce import DynaHarmo
 
 
 def extract_mac_array(mac_mode, nom_table="MAC"):
-    """!Reconstruit un tableau numpy de modes MAC
+    """Reconstruit un tableau numpy de modes MAC
 
     /param mac_mode concept Table aster
     """
@@ -69,8 +69,7 @@ def extract_mac_array(mac_mode, nom_table="MAC"):
 
 
 class CalcEssaiExpansion:
-
-    """!Classe qui s'occupe des calculs de l'interface correlation
+    """Classe qui s'occupe des calculs de l'interface correlation
 
     Cette classe un peu fourre-tout a pour but de separer les calculs
     specifique aster de l'interface graphique. L'objectif etant de pouvoir
@@ -79,7 +78,7 @@ class CalcEssaiExpansion:
     """
 
     def __init__(self, macro, mess, objects):
-        """!Constructeur
+        """Constructeur
 
         macro: le self de l'objet macro provenant de calc_essai_ops
         """
@@ -96,7 +95,7 @@ class CalcEssaiExpansion:
         self.mess = mess
 
     def __setitem__(self, n, val):
-        """!Emulation d'un dictionnaire
+        """Emulation d'un dictionnaire
 
         On implemente __setitem__
         pour faire croire au superviseur qu'on cree
@@ -104,7 +103,7 @@ class CalcEssaiExpansion:
         self.concepts[n] = val
 
     def __getitem__(self, n):
-        """!Emulation d'un dictionnaire
+        """Emulation d'un dictionnaire
 
         On implemente __getitem__ pour les meme raison, et pour
         faire de l'allocation dynamique de numero de concept
@@ -124,7 +123,6 @@ class CalcEssaiExpansion:
         4 resultats sont crees, nommes basename + suffix, ou
         suffix = ['_NX','_EX','_ET','_RD']"""
         self.mess.disp_mess("Debut de MACRO_EXPANS")
-        mdo = self.ce_objects
 
         # Preparation des donnees de mesure
         nume = None
@@ -178,7 +176,7 @@ class CalcEssaiExpansion:
         return result
 
     def calc_mac_mode(self, resu1, resu2, norme):
-        """!Calcul de MAC entre deux bases modales compatibles"""
+        """Calcul de MAC entre deux bases modales compatibles"""
         try:
             __MAC = MAC_MODES(BASE_1=resu1, BASE_2=resu2, MATR_ASSE=norme, INFO=1)
         except AsterError as err:

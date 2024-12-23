@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine op0176()
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dyarc0.h"
-#include "asterfort/extrs1.h"
 #include "asterfort/extrs2.h"
 #include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
@@ -140,15 +139,9 @@ subroutine op0176()
         call rscrsd('G', resultOutName, typcon, nbarch)
     end if
 !
-    if (resultInName .eq. resultOutName) then
-        if (lrest) call utmess('F', 'PREPOST2_5')
-        call extrs1(resultInName, storeNb, storeIndx, paraNb, paraName, &
-                    nbarch, archi, nbexcl, zk16(jexcl), nbnosy)
-    else
-        call extrs2(resultInName, resultOutName, typcon, lrest, noma, &
-                    nomo, nocara, nochmat, storeNb, storeIndx, paraNb, paraName, &
-                    nbarch, archi, nbexcl, zk16(jexcl), nbnosy)
-    end if
+    call extrs2(resultInName, resultOutName, typcon, lrest, noma, &
+                nomo, nocara, nochmat, storeNb, storeIndx, paraNb, paraName, &
+                nbarch, archi, nbexcl, zk16(jexcl), nbnosy)
 
     AS_DEALLOCATE(vi=storeIndx)
 !
@@ -173,12 +166,9 @@ subroutine op0176()
 !
 999 continue
 !
-!
-!
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
     call refdcp(resultInName, resultOutName)
-!
 !
     call jedema()
 !

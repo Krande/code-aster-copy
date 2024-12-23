@@ -6,7 +6,7 @@
  * @brief Header of class FieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,176 +40,174 @@
  * @author Nicolas Sellenet
  */
 class FieldBuilder {
-private:
-  std::map<std::string, EquationNumberingPtr> _mapGlobNume;
-  std::map<std::string, FiniteElementDescriptorPtr> _mapLigrel;
+  private:
+    std::map< std::string, EquationNumberingPtr > _mapGlobNume;
+    std::map< std::string, FiniteElementDescriptorPtr > _mapLigrel;
 
-  // I use them to debug easily mutiple creation
-  // I don't use map directly to avoid to keep in memory unnecessary objects
-  static std::set<std::string> _setGlobNume;
-  static std::set<std::string> _setLigrel;
+    // I use them to debug easily mutiple creation
+    // I don't use map directly to avoid to keep in memory unnecessary objects
+    static std::set< std::string > _setGlobNume;
+    static std::set< std::string > _setLigrel;
 
-  /**
-   * @brief Add a existing FiniteElementDescriptor in FieldBuilder
-   */
-  FiniteElementDescriptorPtr
-  newFiniteElementDescriptor(const std::string &name, const BaseMeshPtr mesh) {
-    if (_setLigrel.count(strip(name)) > 0) {
-      raiseAsterError("LIGREL already exists: " + name);
-    }
+    /**
+     * @brief Add a existing FiniteElementDescriptor in FieldBuilder
+     */
+    FiniteElementDescriptorPtr newFiniteElementDescriptor( const std::string &name,
+                                                           const BaseMeshPtr mesh ) {
+        if ( _setLigrel.count( strip( name ) ) > 0 ) {
+            raiseAsterError( "LIGREL already exists: " + name );
+        }
 
-    auto curDesc = std::make_shared<FiniteElementDescriptor>(name, mesh);
+        auto curDesc = std::make_shared< FiniteElementDescriptor >( name, mesh );
 
-    addFiniteElementDescriptor(curDesc);
+        addFiniteElementDescriptor( curDesc );
 
-    return curDesc;
-  };
+        return curDesc;
+    };
 
-  /**
-   * @brief Add a existing EquationNumbering in FieldBuilder
-   */
-  EquationNumberingPtr newEquationNumbering(const std::string &name,
-                                            const BaseMeshPtr mesh) {
-    if (_setGlobNume.count(strip(name)) > 0) {
-      raiseAsterError("NUME_EQUA already exists: " + name);
-    }
+    /**
+     * @brief Add a existing EquationNumbering in FieldBuilder
+     */
+    EquationNumberingPtr newEquationNumbering( const std::string &name, const BaseMeshPtr mesh ) {
+        if ( _setGlobNume.count( strip( name ) ) > 0 ) {
+            raiseAsterError( "NUME_EQUA already exists: " + name );
+        }
 
-    auto curDesc = std::make_shared<EquationNumbering>(name);
-    curDesc->setMesh(mesh);
+        auto curDesc = std::make_shared< EquationNumbering >( name );
+        curDesc->setMesh( mesh );
 
-    addEquationNumbering(curDesc);
+        addEquationNumbering( curDesc );
 
-    return curDesc;
-  };
+        return curDesc;
+    };
 
-  /**
-   * @brief Add a existing generalizedEquationNumbering in FieldBuilder
-   */
-  GeneralizedEquationNumberingPtr
-  newGeneralizedEquationNumbering(const std::string &name) {
-    AS_ABORT(name);
-    if (_setGlobNume.count(strip(name)) > 0) {
-      raiseAsterError("nume_equa_gene already exists: " + name);
-    }
+    /**
+     * @brief Add a existing generalizedEquationNumbering in FieldBuilder
+     */
+    GeneralizedEquationNumberingPtr newGeneralizedEquationNumbering( const std::string &name ) {
+        AS_ABORT( name );
+        if ( _setGlobNume.count( strip( name ) ) > 0 ) {
+            raiseAsterError( "NUME_EQUA_GENE already exists: " + name );
+        }
 
-    auto curDesc = std::make_shared<GeneralizedEquationNumbering>(name);
+        auto curDesc = std::make_shared< GeneralizedEquationNumbering >( name );
 
-    return curDesc;
-  };
+        return curDesc;
+    };
 
-public:
-  /**
-   * @brief Constructor
-   */
-  FieldBuilder(){};
+  public:
+    /**
+     * @brief Constructor
+     */
+    FieldBuilder() {};
 
-  /**
-   * @brief Add a existing EquationNumbering in FieldBuilder
-   */
-  void addEquationNumbering(const EquationNumberingPtr &fond) {
-    AS_ASSERT(fond);
+    /**
+     * @brief Add a existing EquationNumbering in FieldBuilder
+     */
+    void addEquationNumbering( const EquationNumberingPtr &fond ) {
+        AS_ASSERT( fond );
 
-    _mapGlobNume[strip(fond->getName())] = fond;
-    _setGlobNume.insert(strip(fond->getName()));
-  };
+        _mapGlobNume[strip( fond->getName() )] = fond;
+        _setGlobNume.insert( strip( fond->getName() ) );
+    };
 
-  /**
-   * @brief Add a existing FiniteElementDescriptor in FieldBuilder
-   */
-  void addFiniteElementDescriptor(const FiniteElementDescriptorPtr &fed) {
-    AS_ASSERT(fed);
+    /**
+     * @brief Add a existing FiniteElementDescriptor in FieldBuilder
+     */
+    void addFiniteElementDescriptor( const FiniteElementDescriptorPtr &fed ) {
+        AS_ASSERT( fed );
 
-    _mapLigrel[strip(fed->getName())] = fed;
-    _setLigrel.insert(strip(fed->getName()));
-  };
+        _mapLigrel[strip( fed->getName() )] = fed;
+        _setLigrel.insert( strip( fed->getName() ) );
+    };
 
-  void clear() {
-    _mapGlobNume.clear();
-    _mapLigrel.clear();
-  };
+    void clear() {
+        _mapGlobNume.clear();
+        _mapLigrel.clear();
+    };
 
-  /**
-   * @brief Build a FieldOnCells with a FiniteElementDescriptor
-   */
-  template <typename ValueType>
-  std::shared_ptr<FieldOnCells<ValueType>>
-  buildFieldOnCells(const std::string &name, const BaseMeshPtr mesh) {
-    std::shared_ptr<FieldOnCells<ValueType>> field =
-        std::make_shared<FieldOnCells<ValueType>>(name);
-    field->updateValuePointers();
+    /**
+     * @brief Build a FieldOnCells with a FiniteElementDescriptor
+     */
+    template < typename ValueType >
+    std::shared_ptr< FieldOnCells< ValueType > > buildFieldOnCells( const std::string &name,
+                                                                    const BaseMeshPtr mesh ) {
+        std::shared_ptr< FieldOnCells< ValueType > > field =
+            std::make_shared< FieldOnCells< ValueType > >( name );
+        field->updateValuePointers();
 
-    const std::string ligrel = strip((*(*field)._reference)[0].toString());
+        const std::string ligrel = strip( ( *( *field )._reference )[0].toString() );
 
-    if (!ligrel.empty()) {
-      auto curIter = _mapLigrel.find(ligrel);
-      FiniteElementDescriptorPtr curDesc;
-      if (curIter != _mapLigrel.end()) {
-        curDesc = curIter->second;
-      } else {
-        curDesc = newFiniteElementDescriptor(ligrel, mesh);
-      }
+        if ( !ligrel.empty() ) {
+            auto curIter = _mapLigrel.find( ligrel );
+            FiniteElementDescriptorPtr curDesc;
+            if ( curIter != _mapLigrel.end() ) {
+                curDesc = curIter->second;
+            } else {
+                curDesc = newFiniteElementDescriptor( ligrel, mesh );
+            }
 
-      field->setDescription(curDesc);
-    }
-    return field;
-  };
+            field->setDescription( curDesc );
+        }
+        return field;
+    };
 
-  /**
-   * @brief Build a ConstantFieldOnCells with a FiniteElementDescriptor
-   */
-  template <typename ValueType>
-  std::shared_ptr<ConstantFieldOnCells<ValueType>>
-  buildConstantFieldOnCells(const std::string &name, const BaseMeshPtr mesh) {
+    /**
+     * @brief Build a ConstantFieldOnCells with a FiniteElementDescriptor
+     */
+    template < typename ValueType >
+    std::shared_ptr< ConstantFieldOnCells< ValueType > >
+    buildConstantFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
 
-    std::shared_ptr<ConstantFieldOnCells<ValueType>> field =
-        std::make_shared<ConstantFieldOnCells<ValueType>>(name, mesh);
-    field->updateValuePointers();
+        std::shared_ptr< ConstantFieldOnCells< ValueType > > field =
+            std::make_shared< ConstantFieldOnCells< ValueType > >( name, mesh );
+        field->updateValuePointers();
 
-    return field;
-  };
+        return field;
+    };
 
-  /**
-   * @brief Build a FieldOnNodes with a EquationNumbering
-   */
-  template <typename ValueType>
-  std::shared_ptr<FieldOnNodes<ValueType>>
-  buildFieldOnNodes(std::string name, const BaseMeshPtr mesh) {
-    std::shared_ptr<FieldOnNodes<ValueType>> field =
-        std::make_shared<FieldOnNodes<ValueType>>(name);
-    field->updateValuePointers();
+    /**
+     * @brief Build a FieldOnNodes with a EquationNumbering
+     */
+    template < typename ValueType >
+    std::shared_ptr< FieldOnNodes< ValueType > > buildFieldOnNodes( std::string name,
+                                                                    const BaseMeshPtr mesh ) {
+        std::shared_ptr< FieldOnNodes< ValueType > > field =
+            std::make_shared< FieldOnNodes< ValueType > >( name );
+        field->updateValuePointers();
 
-    const std::string globNume = strip((*(*field)._reference)[1].toString());
-    AS_ASSERT(!globNume.empty());
+        const std::string globNume = strip( ( *( *field )._reference )[1].toString() );
+        AS_ASSERT( !globNume.empty() );
 
-    auto curIter = _mapGlobNume.find(globNume);
-    EquationNumberingPtr curDesc;
-    if (curIter != _mapGlobNume.end())
-      curDesc = curIter->second;
-    else {
-      curDesc = newEquationNumbering(globNume, mesh);
-    }
-    field->setDescription(curDesc);
+        auto curIter = _mapGlobNume.find( globNume );
+        EquationNumberingPtr curDesc;
+        if ( curIter != _mapGlobNume.end() )
+            curDesc = curIter->second;
+        else {
+            curDesc = newEquationNumbering( globNume, mesh );
+        }
+        field->setDescription( curDesc );
 
-    return field;
-  };
+        return field;
+    };
 
-  std::vector<FiniteElementDescriptorPtr> getFiniteElementDescriptors() const {
-    std::vector<FiniteElementDescriptorPtr> ret;
+    std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const {
+        std::vector< FiniteElementDescriptorPtr > ret;
 
-    for (auto &[name, fed] : _mapLigrel)
-      ret.push_back(fed);
+        for ( auto &[name, fed] : _mapLigrel )
+            ret.push_back( fed );
 
-    return ret;
-  };
+        return ret;
+    };
 
-  std::vector<EquationNumberingPtr> getEquationNumberings() const {
-    std::vector<EquationNumberingPtr> ret;
+    std::vector< EquationNumberingPtr > getEquationNumberings() const {
+        std::vector< EquationNumberingPtr > ret;
 
-    for (auto &[name, fnd] : _mapGlobNume)
-      ret.push_back(fnd);
+        for ( auto &[name, fnd] : _mapGlobNume )
+            ret.push_back( fnd );
 
-    return ret;
-  };
+        return ret;
+    };
 };
 
 #endif /* FIELDBUILDER_H_ */

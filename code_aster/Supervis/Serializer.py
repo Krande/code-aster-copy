@@ -314,7 +314,7 @@ def saveObjectsFromContext(context, delete=True, options=0):
         saved = pickler.save()
     else:
         saved = []
-        logger.info("Objects not saved on processor #%d", rank)
+        logger.info("No database in results, objects not saved on processor #%d", rank)
 
     # close Jeveux files (should not be done before pickling)
     libaster.jeveux_finalize(options)

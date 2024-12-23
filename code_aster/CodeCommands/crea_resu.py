@@ -21,24 +21,23 @@
 
 from ..Helpers import adapt_for_mgis_behaviour
 from ..Objects import (
-    LoadResult,
-    ThermalResult,
+    ElasticFourierResult,
+    ElasticResult,
+    ExternalStateVariablesResult,
+    FieldOnCellsComplex,
+    FieldOnCellsLong,
+    FieldOnCellsReal,
+    FieldOnNodesChar8,
     FieldOnNodesComplex,
     FieldOnNodesReal,
-    FieldOnNodesChar8,
-    FieldOnCellsComplex,
-    FieldOnCellsReal,
-    FieldOnCellsLong,
-    ElasticFourierResult,
-    ThermalFourierResult,
     FullHarmonicResult,
     FullTransientResult,
-    ExternalStateVariablesResult,
-    ElasticResult,
-    ModeResultComplex,
+    LoadResult,
     ModeResult,
+    ModeResultComplex,
     MultipleElasticResult,
     NonLinearResult,
+    ThermalResult,
 )
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
@@ -89,69 +88,100 @@ class ResultCreator(ExecuteCommand):
                 raise NotImplementedError("Type of result {0!r} not yet " "implemented".format(typ))
 
     def post_exec(self, keywords):
-        """Execute the command.
+        """Hook called after the execution of the command.
 
         Arguments:
             keywords (dict): User's keywords.
         """
-        fkw = force_list(keywords.get("AFFE", []))
+        result = self._result
+        get_ = keywords.get
 
-        for occ in fkw:
-            if occ.get("MODELE"):
-                self._result.setModel(occ["MODELE"])
-                break
-            chamGd = occ.get("CHAM_GD")
-            if chamGd is not None:
-                if isinstance(chamGd, (FieldOnNodesReal, FieldOnNodesComplex, FieldOnNodesChar8)):
-                    mesh = chamGd.getMesh()
-                    if mesh is not None:
-                        self._result.setMesh(mesh)
-                        break
+        new_model = None
+        new_mater = None
+        new_elemcara = None
+        for kw in (
+            "AFFE",
+            "ASSE",
+            "PERM_CHAM",
+            "PROL_RTZ",
+            "PREP_VARC",
+            "KUCV",
+            "CONV_CHAR",
+            "CONV_RESU",
+        ):
+            if kw in keywords:
+                fkw = force_list(keywords[kw])
 
-        # find caraelem
-        for occ in fkw:
-            if occ.get("CARA_ELEM"):
-                self._result.setElementaryCharacteristics(occ["CARA_ELEM"])
-                break
+        if "ASSE" in keywords:
+            src = fkw[0]["RESULTAT"]
+            new_model = src.getModel()
+            new_mater = src.getMaterialField()
+            new_elemcara = src.getElementaryCharacteristics()
+
+        # Model, MaterialField... can not change between occurrences,
+        # the first found is used.
+        if not new_model:
+            new_model = [occ["MODELE"] for occ in fkw if occ.get("MODELE")]
+            new_model = new_model and new_model[0]
+        if not new_mater:
+            new_mater = [occ["CHAM_MATER"] for occ in fkw if occ.get("CHAM_MATER")]
+            new_mater = new_mater and new_mater[0]
+        if not new_elemcara:
+            new_elemcara = [occ["CARA_ELEM"] for occ in fkw if occ.get("CARA_ELEM")]
+            new_elemcara = new_elemcara and new_elemcara[0]
+
+        matr = get_("MATR_RIGI", get_("MATR_MASS"))
+        if matr:
+            result.setDOFNumbering(matr.getDOFNumbering())
+            if not new_model:
+                new_model = matr.getDOFNumbering().getModel()
+        if not new_model and get_("ECLA_PG"):
+            new_model = keywords["ECLA_PG"]["MODELE_INIT"]
+        if not new_model and get_("CONV_CHAR"):
+            matr_rigi = keywords["CONV_CHAR"]["MATR_RIGI"]
+            new_model = matr_rigi.getDOFNumbering().getModel()
+        if not new_model and get_("CONV_RESU"):
+            new_model = keywords["CONV_RESU"]["RESU_INIT"].getModel()
+        if not new_model and get_("KUCV"):
+            new_model = keywords["KUCV"]["RESU_INIT"].getModel()
+
+        if new_model:
+            result.setModel(new_model, exists_ok=True)
+        elif "reuse" not in keywords:
+            # not reuse, at least set the mesh support from AFFE/CHAM_GD or PROL_RTZ
+            if get_("PROL_RTZ"):
+                result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
+            elif fkw[0].get("CHAM_GD"):
+                mesh = fkw[0]["CHAM_GD"].getMesh()
+                result.setMesh(mesh)
+        if new_elemcara:
+            result.setElementaryCharacteristics(new_elemcara, exists_ok=True)
+        if new_mater:
+            result.setMaterialField(new_mater, exists_ok=True)
 
         # find ligrel and nume_equa
         feds = []
         fnds = []
         for occ in fkw:
-            chamGd = occ.get("CHAM_GD")
-            if chamGd is not None:
-                if isinstance(chamGd, (FieldOnNodesReal, FieldOnNodesComplex, FieldOnNodesChar8)):
-                    fnd = chamGd.getDescription()
-                    if fnd is not None:
-                        fnds.append(fnd)
-                elif isinstance(chamGd, (FieldOnCellsReal, FieldOnCellsComplex, FieldOnCellsLong)):
-                    fed = chamGd.getDescription()
-                    if fed is not None:
-                        feds.append(fed)
+            chamGd = occ["CHAM_GD"]
+            if isinstance(chamGd, (FieldOnNodesReal, FieldOnNodesComplex, FieldOnNodesChar8)):
+                fnd = chamGd.getDescription()
+                if fnd is not None:
+                    fnds.append(fnd)
+            elif isinstance(chamGd, (FieldOnCellsReal, FieldOnCellsComplex, FieldOnCellsLong)):
+                fed = chamGd.getDescription()
+                if fed is not None:
+                    feds.append(fed)
 
-        if keywords.get("MATR_RIGI"):
-            self._result.setModel(keywords["MATR_RIGI"].getDOFNumbering().getModel())
-            self._result.setMesh(keywords["MATR_RIGI"].getMesh())
-            self._result.setDOFNumbering(keywords["MATR_RIGI"].getDOFNumbering())
-        elif keywords.get("MATR_MASS"):
-            self._result.setModel(keywords["MATR_MASS"].getDOFNumbering().getModel())
-            self._result.setMesh(keywords["MATR_MASS"].getMesh())
-            self._result.setDOFNumbering(keywords["MATR_MASS"].getDOFNumbering())
-
-        if keywords.get("ECLA_PG"):
-            self._result.setModel(keywords["ECLA_PG"]["MODELE_INIT"])
-        if keywords.get("CONV_CHAR"):
+        if get_("CONV_CHAR"):
             matr_rigi = keywords["CONV_CHAR"]["MATR_RIGI"]
-            self._result.setModel(matr_rigi.getDOFNumbering().getModel())
-            self._result.setMesh(matr_rigi.getMesh())
             dofNum = matr_rigi.getDOFNumbering()
             if dofNum:
                 if keywords["TYPE_RESU"] == "DYNA_TRANS":
-                    self._result.setDOFNumbering(dofNum)
+                    result.setDOFNumbering(dofNum)
                 else:
                     fnds.append(dofNum.getEquationNumbering())
-        if keywords.get("CONV_RESU"):
-            self._result.setModel(keywords["CONV_RESU"]["RESU_INIT"].getModel())
+        if get_("CONV_RESU"):
             matr_rigi = keywords["CONV_RESU"].get("MATR_RIGI")
             if matr_rigi is not None:
                 dofNum = matr_rigi.getDOFNumbering()
@@ -159,45 +189,13 @@ class ResultCreator(ExecuteCommand):
                 dofNum = keywords["CONV_RESU"]["NUME_DDL"]
             if dofNum:
                 if keywords["TYPE_RESU"] == "DYNA_TRANS":
-                    self._result.setDOFNumbering(dofNum)
+                    result.setDOFNumbering(dofNum)
                 else:
                     fnds.append(dofNum.getEquationNumbering())
-        if keywords.get("KUCV"):
-            self._result.setModel(keywords["KUCV"]["RESU_INIT"].getModel())
+        if get_("KUCV"):
             dofNum = keywords["KUCV"]["MATR_AMOR"].getDOFNumbering()
             if dofNum:
                 fnds.append(dofNum.getEquationNumbering())
-        if keywords.get("PROL_RTZ"):
-            self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
-
-        if not fkw:
-            fkw = keywords.get("ASSE")
-        if not fkw:
-            fkw = keywords.get("PREP_VARC")
-
-        if fkw:
-            chamMater = fkw[0].get("CHAM_MATER")
-            if chamMater is not None:
-                self._result.setMaterialField(chamMater)
-
-            model = fkw[0].get("MODELE")
-            chamGd = fkw[0].get("CHAM_GD")
-            result = fkw[0].get("RESULTAT")
-
-            if model is not None:
-                self._result.setModel(model)
-            elif result is not None:
-                model = result.getModel()
-                if model is not None:
-                    self._result.setModel(model)
-
-                mesh = result.getMesh()
-                if mesh is not None:
-                    self._result.setMesh(mesh)
-            elif chamGd is not None:
-                mesh = chamGd.getMesh()
-                if mesh is not None:
-                    self._result.setMesh(mesh)
 
         self._result.build(feds, fnds)
 

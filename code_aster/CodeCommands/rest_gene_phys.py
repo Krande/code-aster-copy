@@ -79,57 +79,55 @@ class RestGenePhys(ExecuteCommand):
                 for fED in resu_gene.getFiniteElementDescriptors():
                     self._result.addFiniteElementDescriptor(fED)
 
-            if dofNum is not None:
+            if dofNum:
                 self._result.setDOFNumbering(dofNum)
-                modele = dofNum.getModel()
-                if modele is not None:
-                    self._result.setModel(modele)
+                model = dofNum.getModel()
+                if model:
+                    self._result.setModel(model)
                 for i in dofNum.getFiniteElementDescriptors():
                     self._result.addFiniteElementDescriptor(i)
-                self._result.setModel(dofNum.getModel())
             else:
                 geneDofNum = resu_gene.getGeneralizedDOFNumbering()
                 mesh = None
-                if geneDofNum is not None:
+                if geneDofNum:
                     basis = geneDofNum.getModalBasis()
-                    if basis is not None:
+                    if basis:
                         dofNum = basis.getDOFNumbering()
                         if mesh is None:
                             mesh = basis.getMesh()
-                        if dofNum is not None:
+                        if dofNum:
                             self._result.setDOFNumbering(dofNum)
-                            modele = dofNum.getModel()
-                            if modele is not None:
-                                self._result.setModel(modele)
-                            elif mesh is None:
+                            model = dofNum.getModel()
+                            if model:
+                                self._result.setModel(model)
+                            elif not mesh:
                                 mesh = dofNum.getMesh()
                             for i in dofNum.getFiniteElementDescriptors():
                                 self._result.addFiniteElementDescriptor(i)
 
-                if mesh is None:
+                if not mesh:
                     if "MODE_MECA" in keywords:
                         mesh = keywords["MODE_MECA"].getMesh()
-
-                if mesh is not None:
+                if mesh:
                     self._result.setMesh(mesh)
 
         elif isinstance(resu_gene, GeneralizedModeResult):
             self._result.setMesh(resu_gene.getMesh())
             matrRigi = resu_gene.getStiffnessMatrix()
-            if matrRigi is not None:
+            if matrRigi:
                 modalBasis = matrRigi.getModalBasis()
                 if modalBasis is None:
                     dofNum = matrRigi.getGeneralizedDOFNumbering()
                     if dofNum:
                         modalBasis = dofNum.getModalBasis()
-                if modalBasis is not None:
+                if modalBasis:
                     dofNum = modalBasis.getDOFNumbering()
-                    if dofNum is not None:
+                    if dofNum:
                         self._result.setDOFNumbering(dofNum)
             else:
                 # resultat issue de proj_mesu_modal
                 dofNum = resu_gene.getDOFNumbering()
-                if dofNum is not None:
+                if dofNum:
                     self._result.setDOFNumbering(dofNum)
         elif isinstance(resu_gene, ModeResult):
             matrRigiElim = resu_gene.getDependencies()[0]
@@ -145,9 +143,10 @@ class RestGenePhys(ExecuteCommand):
         else:
             raise Exception("Unknown result type")
 
-        if self._result.getMesh() is None:
+        if not self._result.getMesh():
             for fed in feds:
                 self._result.setMesh(fed.getMesh())
+                break
 
         if self._result.getMesh():
             self._result.build(feds, fnds)
