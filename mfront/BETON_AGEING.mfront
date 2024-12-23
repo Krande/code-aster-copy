@@ -1,0 +1,150 @@
+@Parser Default;
+@Behaviour BETON_AGEING;
+@Author Goustan Bacquaert;
+@Date 06/11/2024;
+
+/// >>>>>>>>>>>>>>>>>>>
+/// Material properties
+/// <<<<<<<<<<<<<<<<<<<
+
+@MaterialProperty stress young;   // Young modulus [Pa]                   
+@MaterialProperty stress nu;      // Poisson coefficient [-]
+@MaterialProperty stress Kv_vt;   // Volumetric stiffness in the Voigt element [Pa]
+@MaterialProperty stress Kd_vt;   // Deviatoric stiffness in the Voigt element [Pa]
+@MaterialProperty real Etav_vt;   // Volumetric viscosity in the Voigt element [Pa.s]
+@MaterialProperty real Etad_vt;   // Deviatoric viscosity in the Voigt element [Pa.s]
+@MaterialProperty stress Kv_mx;   // Stress slope of the time-dependent volumetric viscosity in the Maxwell element [Pa]
+@MaterialProperty stress Kd_mx;   // Stress slope of the time-dependent deviatoric viscosity in the Maxwell element [Pa]
+@MaterialProperty real t0;        // Concrete pouring instant [s]
+@MaterialProperty real Ea_R;      // Molar activation energy / universal gas constant [K]
+@MaterialProperty real M_RhoR;    // Steam molar mass / (water mass density x universal gas constant) [Pa^-1]
+@MaterialProperty real Tref;      // Reference temperature [K]
+@MaterialProperty real K_fd;      // Modulus of the dessiccation creep [Pa]
+
+young.setGlossaryName("YoungModulus");
+nu.setGlossaryName("PoissonRatio");
+Kv_vt.setEntryName("VoigtSphModulus");
+Kd_vt.setEntryName("VoigtDevModulus");
+Etav_vt.setEntryName("VoigtSphViscosity");
+Etad_vt.setEntryName("VoigtDevViscosity");
+Kv_mx.setEntryName("MaxwellSphModulus");
+Kd_mx.setEntryName("MaxwellDevModulus");
+t0.setEntryName("ConcreteInitTime");
+K_fd.setEntryName("DessiccationModulus");
+Tref.setEntryName("ReferenceTemperature");
+Ea_R.setEntryName("ArrheniusIndex");
+M_RhoR.setEntryName("KelvinIndex");
+
+/// >>>>>>>>>>>>>>>
+/// Local variables
+/// <<<<<<<<<<<<<<<
+
+@LocalVariable Stensor4 id4;         // Identity or order 4
+@LocalVariable Stensor4 k4;          // Deviatoric projector of order 4
+@LocalVariable Stensor4 j4;          // Spheric projector of order 4 
+@LocalVariable Stensor4 C_el;        // Elastic stiffness
+@LocalVariable Stensor4 C_vt;        // Stiffness in the Voigt element
+@LocalVariable Stensor4 V_vt;        // Viscosity in the Voigt element
+@LocalVariable Stensor4 V_mx;        // Viscosity tensor in the Maxwell element
+@LocalVariable real rH;              // Relative humidity
+@LocalVariable real drH;             // Relative humidity increment
+@LocalVariable real VrH;             // = -drH iff drH < 0 and rH < rHmin+1
+
+/// >>>>>>>>>>>>>>>>>>>>>>>>
+/// External state variables
+/// <<<<<<<<<<<<<<<<<<<<<<<<
+
+@ExternalStateVariable real PCAP;      // Capillary pressure at !!previous!! time-step
+@ExternalStateVariable real TIME;      // Time at !!current!! time-step
+
+PCAP.setEntryName("CapillaryPressure");
+TIME.setEntryName("Time");
+
+/// >>>>>>>>>>>>>>>>>>>>>>>>>
+/// Auxiliary state variables
+/// <<<<<<<<<<<<<<<<<<<<<<<<<
+
+@AuxiliaryStateVariable Stensor efr;   // Reversible creep strain
+@AuxiliaryStateVariable Stensor efi;   // Irreversible creep strain
+@AuxiliaryStateVariable Stensor efd;   // Dessiccation creep strain
+@AuxiliaryStateVariable real rHmin;    // Shifted historical minimum relative humidity
+
+efr.setEntryName("RevCreepStrain");
+efi.setEntryName("IrrCreepStrain");
+efd.setEntryName("DesCreepStrain");
+rHmin.setEntryName("ShiftMiniRelaHumi");
+
+/// >>>>>>>>>>>>>>>>>>>>
+/// Init local variables
+/// <<<<<<<<<<<<<<<<<<<<
+
+@InitLocalVariables{
+	// Initialize invariant projection tensors
+	k4 = Stensor4::K();
+	j4 = Stensor4::J();
+	id4 = Stensor4::Id();
+
+	// Initialize the Arrhenius coefficient
+	const real expT = exp(Ea_R*((1./(T+dT/2.)-1./(Tref))));
+
+	// Initialize the relative humiditidy
+	rH = exp(-(PCAP+0.5*dPCAP)*M_RhoR/(T+dT/2.));
+	drH = exp(-(PCAP+dPCAP)*M_RhoR/(T+dT))-exp(-PCAP*M_RhoR/T);
+
+    // Compute the dessiccation creep strain source term
+    if ((drH <= 0.) && (rH <= rHmin+1.)){
+        VrH = -drH;
+        rHmin = rH-1.;
+    }
+    else{
+        VrH = 0.;
+    }
+
+    // Initialize the elastic stiffness
+    C_el = young/(1.-2.*nu)*j4+young/(1.+nu)*k4;
+
+    // Initialize the stiffness and the viscosity in the Voigt element, taken into account the temperature and relative humidity influence
+    C_vt = expT*(3.*Kv_vt*j4+2.*Kd_vt*k4)/rH;
+    V_vt = expT*(3.*Etav_vt*j4+2.*Etad_vt*k4)/rH;
+
+    // Initialize viscosity in the Maxwell element, taken into account the temperature and relative humidity influence
+    V_mx = expT*(3.*Kv_mx*j4+2.*Kd_mx*k4)/rH*max(TIME-0.5*dt-t0,0.);
+}
+
+/// >>>>>>>>>>>>>>>>>>
+/// Elastic prediction
+/// <<<<<<<<<<<<<<<<<<
+
+@PredictionOperator{
+    Dt = C_el;
+}
+
+/// >>>>>>>>>>>
+/// Integration
+/// <<<<<<<<<<<
+
+@Integrator{
+    // Compute the tangent compliance
+    const Stensor4 St = invert(C_el)+dt*invert(dt*C_vt+V_vt)+dt*invert(V_mx)+VrH/K_fd*id4;
+
+    // Compute the stress
+    sig = invert(St)*(eto+deto-invert(dt*C_vt+V_vt)*V_vt*efr-efi-efd);
+}
+
+/// <<<<<<<<<<<<<<<<
+/// Tangent operator
+/// >>>>>>>>>>>>>>>>
+
+@TangentOperator{ 
+  	Dt = invert(invert(C_el)+dt*invert(dt*C_vt+V_vt)+dt*invert(V_mx)+VrH/K_fd*id4);   
+}
+
+/// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/// Update auxiliary state variables
+/// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@UpdateAuxiliaryStateVariables {
+    efr += dt*invert(dt*C_vt+V_vt)*(sig-C_vt*efr);
+    efi += dt*invert(V_mx)*sig;
+    efd += VrH/K_fd*sig;
+}
