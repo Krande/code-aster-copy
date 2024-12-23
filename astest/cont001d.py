@@ -109,7 +109,7 @@ try:
 except CA.AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
-    if err.id_message == "CONTACT1_3":
+    if err.id_message == "CONTACT1_1":
         is_ok = 1
 
 test.assertEqual(is_ok, 1)

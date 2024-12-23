@@ -1082,6 +1082,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MeshPairing` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MeshPairing
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.MeshesMapping` object
 ********************************************************************************
 

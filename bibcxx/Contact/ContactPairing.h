@@ -26,6 +26,7 @@
 #include "Contact/ContactZone.h"
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
+#include "Meshes/MeshEnum.h"
 
 // Description of a virtual contact cell
 struct contCellType {
@@ -93,32 +94,26 @@ const struct contCellType contCellNits[contNitsType] = {
 class ContactPairing : public DataStructure {
     /** Datastructure for pairing */
   private:
+    /** @brief Mesh */
+    BaseMeshPtr _mesh;
+
     /** @brief Current coordinates of nodes */
     MeshCoordinatesFieldPtr _currentCoordinates;
 
     /** @brief Contact definition */
     ContactNewPtr _contDefi;
 
-    /** @brief Mesh */
-    BaseMeshPtr _mesh;
+    /** @brief Finite element descriptor for virtual elements of contact */
+    FiniteElementDescriptorPtr _fed;
 
-    /** @brief Vector of number of pairs */
-    VectorLong _nbPairs;
-
-    /** @brief Vector of pairs */
-    std::vector< VectorLong > _listOfPairs;
-
-    /** @brief Vector of number of intersection points  */
-    std::vector< VectorLong > _nbIntersectionPoints;
-
-    /** @brief Vector of coordinates for intersection points */
-    std::vector< VectorReal > _slaveIntersectionPoints;
+    /** @brief Level of verbosity */
+    ASTERINTEGER _verbosity;
 
     /** @brief Map between pair and zone */
     MapLong _pair2Zone;
 
-    /** @brief Finite element descriptor for virtual elements of contact */
-    FiniteElementDescriptorPtr _fed;
+    /** @brief Map between index of global pair and index of local pair in zone */
+    MapLong _globPairToLocaPair;
 
   private:
     /** @brief Resize pairing quantities */
@@ -151,14 +146,15 @@ class ContactPairing : public DataStructure {
                                   const bool lAxis, const bool lFric );
 
   public:
-    using VectorLongPairs = std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >;
+    /** @brief No default constructor */
+    ContactPairing() = delete;
 
     /** @brief Constructor with given name */
-    ContactPairing( const std::string name, const ContactNewPtr cont );
+    ContactPairing( const std::string name, const ContactNewPtr contDefi );
 
     /** @brief Constructor with automatic name */
-    ContactPairing( const ContactNewPtr cont )
-        : ContactPairing( ResultNaming::getNewResultName(), cont ) {};
+    ContactPairing( const ContactNewPtr contDefi )
+        : ContactPairing( ResultNaming::getNewResultName(), contDefi ) {};
 
     /** @brief Get coordinates */
     MeshCoordinatesFieldPtr getCoordinates() const { return _currentCoordinates; }
@@ -167,57 +163,66 @@ class ContactPairing : public DataStructure {
     BaseMeshPtr getMesh() const { return _mesh; };
 
     /** @brief Update coordinates */
-    void updateCoordinates( FieldOnNodesRealPtr &disp ) {
+    void updateCoordinates( const FieldOnNodesRealPtr disp ) {
         *_currentCoordinates = *( _mesh->getCoordinates() ) + *disp;
+        for ( auto indexZone = 0; indexZone < _contDefi->getNumberOfContactZones(); indexZone++ ) {
+            _contDefi->updateCoordinates( disp );
+        }
     };
 
     /** @brief Set coordinates */
-    void setCoordinates( MeshCoordinatesFieldPtr &coor ) { _currentCoordinates = coor; };
+    void setCoordinates( const MeshCoordinatesFieldPtr coor ) {
+        _currentCoordinates = coor;
+        for ( auto indexZone = 0; indexZone < _contDefi->getNumberOfContactZones(); indexZone++ ) {
+            _contDefi->setCoordinates( coor );
+        }
+    };
 
     /** @brief Compute pairing quantities of zone */
-    ASTERBOOL computeZone( ASTERINTEGER indexZone );
+    ASTERBOOL compute( ASTERINTEGER &indexZone );
 
     /** @brief Compute pairing quantities of all zones */
     ASTERBOOL compute();
 
     /** @brief Clear pairing quantities of zone */
-    void clearZone( ASTERINTEGER indexZone );
+    void clearPairing( const ASTERINTEGER &indexZone );
 
     /** @brief Clear pairing quantities for all zones */
-    void clear() {
+    void clearPairing() {
         for ( auto indexZone = 0; indexZone < _contDefi->getNumberOfContactZones(); indexZone++ ) {
-            clearZone( indexZone );
+            clearPairing( indexZone );
         }
     };
 
-    /** @brief Get number of all pairs  */
-    ASTERINTEGER getNumberOfPairs() const {
-        return std::accumulate( _nbPairs.begin(), _nbPairs.end(), 0 );
-    };
+    /** @brief Get number of zones  */
+    ASTERINTEGER getNumberOfZones() const;
 
     /** @brief Get number of pairs of zone  */
-    ASTERINTEGER getNumberOfPairsOfZone( ASTERINTEGER indexZone ) const {
-        return _nbPairs[indexZone];
-    }
+    ASTERINTEGER getNumberOfPairs( const ASTERINTEGER &indexZone ) const;
 
-    /** @brief Get all list of pairs */
-    VectorLongPairs getListOfPairs() const;
+    /** @brief Get number of pairs of all zones */
+    ASTERINTEGER getNumberOfPairs() const;
 
     /** @brief Get list of pairs of zone  */
-    VectorLongPairs getListOfPairsOfZone( ASTERINTEGER indexZone ) const;
+    VectorPairLong getListOfPairs( const ASTERINTEGER &indexZone ) const;
 
-    /** @brief Get slave intersection points of zone */
-    std::vector< VectorReal > getSlaveIntersectionPoints( ASTERINTEGER indexZone ) const;
+    /** @brief Get list of pairs of all zones */
+    VectorPairLong getListOfPairs() const;
 
-    /** @brief Get vector of number of intersection points on all zones */
-    std::vector< VectorLong > getNumberOfIntersectionPoints() const {
-        return _nbIntersectionPoints;
-    };
+    /** @brief Get slave intersection points on all zones */
+    std::vector< VectorOfVectorsReal >
+    getIntersectionPoints( const CoordinatesSpace = CoordinatesSpace::Global ) const;
 
-    /** @brief Get vector of slave intersection points on all zones */
-    std::vector< VectorReal > getSlaveIntersectionPoints() const {
-        return _slaveIntersectionPoints;
-    };
+    /** @brief Get slave intersection points on contact zone */
+    VectorOfVectorsReal
+    getIntersectionPoints( ASTERINTEGER &indexZone,
+                           const CoordinatesSpace = CoordinatesSpace::Global ) const;
+
+    /** @brief Get number of intersection points on all zones */
+    VectorLong getNumberOfIntersectionPoints() const;
+
+    /** @brief Get number of intersection points on contact zone */
+    VectorLong getNumberOfIntersectionPoints( ASTERINTEGER &indexZone ) const;
 
     /** @brief Build Finite Element Descriptor from pairing */
     void buildFiniteElementDescriptor();
@@ -227,6 +232,15 @@ class ContactPairing : public DataStructure {
 
     /** @brief Get map between pair and zone */
     MapLong pairsToZones() const { return _pair2Zone; };
+
+    /** @brief Get map between index of global pair and index of local pair in zone */
+    MapLong globPairToLocaPair() const { return _globPairToLocaPair; };
+
+    /** @brief Set verbosity */
+    void setVerbosity( const ASTERINTEGER &level );
+
+    /** @brief Get verbosity */
+    ASTERINTEGER getVerbosity() const { return _verbosity; }
 };
 
 using ContactPairingPtr = std::shared_ptr< ContactPairing >;

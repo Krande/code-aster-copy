@@ -31,23 +31,24 @@ DEBUT(
 
 test = CA.TestCase()
 
-Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", INFO=2)
 
-Mail = MODI_MAILLAGE(
-    reuse=Mail,
-    MAILLAGE=Mail,
+mesh = MODI_MAILLAGE(
+    reuse=mesh,
+    MAILLAGE=mesh,
     ORIE_PEAU=_F(GROUP_MA_PEAU=("Group_2", "Group_1", "Group_3", "Group_4")),
+    INFO=2,
 )
 
 
 MODI = AFFE_MODELE(
-    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"), PHENOMENE="MECANIQUE", MODELISATION="DKT")
+    MAILLAGE=mesh, AFFE=_F(GROUP_MA=("Haut", "Bas"), PHENOMENE="MECANIQUE", MODELISATION="DKT")
 )
 
 CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
 
 MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3, ALPHA=0.01))
-CHMAT = AFFE_MATERIAU(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", MATER=MAT))
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 DF1 = DEFI_FONCTION(
     NOM_PARA="INST",
@@ -108,41 +109,57 @@ DEFICO = DEFI_CONT(
     ),
 )
 
-# some checks for the  first zone :
-zone = DEFICO.getContactZone(0)
-test.assertEqual(zone.getMasterCellsFromNode(19), [12, 13])
-test.assertEqual(zone.getSlaveCellsFromNode(64), [61, 62])
-test.assertEqual(zone.getMasterCellNeighbors(14), [13, 15])
-test.assertEqual(zone.getSlaveCellNeighbors(54), [55, 53])
-
+# Global checks
 test.assertEqual(DEFICO.getNumberOfContactZones(), 2)
 test.assertEqual(DEFICO.getVerbosity(), 2)
 test.assertEqual(DEFICO.getModel(), MODI)
-test.assertEqual(DEFICO.getMesh(), Mail)
+test.assertEqual(DEFICO.getMesh(), mesh)
 test.assertFalse(DEFICO.hasFriction)
 test.assertFalse(DEFICO.hasSmoothing)
 
-# Pairing checks
+# Some checks for the first zone
+zone = DEFICO.getContactZone(0)
+test.assertEqual(zone.getVerbosity(), 2)
+test.assertEqual(zone.getMesh(), mesh)
 
+# Some checks for geometric pairing
+pairGeom = zone.getMeshPairing()
+test.assertEqual(pairGeom.getVerbosity(), 2)
+test.assertEqual(pairGeom.getMesh(), mesh)
+test.assertEqual(pairGeom.getMasterCellsFromNode(19), [12, 13])
+test.assertEqual(pairGeom.getSlaveCellsFromNode(64), [61, 62])
+test.assertEqual(pairGeom.getMasterCellNeighbors(14), [13, 15])
+test.assertEqual(pairGeom.getSlaveCellNeighbors(54), [55, 53])
+
+# Create a displacement field
 study = CA.PhysicalProblem(MODI, CHMAT, CARAMECA)
 study.computeDOFNumbering()
 dofNumbering = study.getDOFNumbering()
-
 disp = CA.FieldOnNodesReal(dofNumbering)
 disp.setValues(4)
-pair = CA.ContactPairing(DEFICO)
-pair.updateCoordinates(disp)
+
+# Contact pairing
+contPair = CA.ContactPairing(DEFICO)
+zone = DEFICO.getContactZone(0)
+test.assertEqual(zone.getVerbosity(), 2)
+test.assertEqual(zone.getMesh(), mesh)
+contPair.updateCoordinates(disp)
 test.assertEqual(
-    pair.getCoordinates().getValues()[:10], [54.0, 54.0, 4.0, 54.0, 4.0, 4.0, 4.0, 54.0, 4.0, 4.0]
+    contPair.getCoordinates().getValues()[:10],
+    [54.0, 54.0, 4.0, 54.0, 4.0, 4.0, 4.0, 54.0, 4.0, 4.0],
 )
 
+# Checks on all zones
 nb_zones = DEFICO.getNumberOfContactZones()
-for i in range(nb_zones):
-    pair.computeZone(i)
+for iZone in range(nb_zones):
+    contPair.compute(iZone)
+    zone = DEFICO.getContactZone(iZone)
+    test.assertEqual(zone.getMesh(), mesh)
+    test.assertEqual(DEFICO.getVerbosity(), 2)
 
-
+# Some checks for the second zone
 test.assertEqual(
-    pair.getListOfPairsOfZone(1),
+    contPair.getListOfPairs(1),
     [
         (77, 30),
         (78, 31),
@@ -157,19 +174,10 @@ test.assertEqual(
     ],
 )
 
-test.assertEqual([pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)], [26, 10])
+test.assertEqual([contPair.getNumberOfPairs(i) for i in range(nb_zones)], [26, 10])
 
-nbPairs = pair.getNumberOfPairs()
-test.assertEqual(nbPairs, sum(pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)))
-
-
-# Testing AsterErrorMessage
-pair.clear()
-try:
-    pair.getListOfPairsOfZone(0)
-except Exception as e:
-    test.assertIn("List of pairs is empty or has an odd size", e.message)
-
+nbPairs = contPair.getNumberOfPairs()
+test.assertEqual(nbPairs, sum(contPair.getNumberOfPairs(i) for i in range(nb_zones)))
 
 algo_cont = [CA.ContactAlgo.Lagrangian, CA.ContactAlgo.Nitsche]
 vari_cont = [CA.ContactVariant.Empty, CA.ContactVariant.Fast]
@@ -185,7 +193,7 @@ for i in range(DEFICO.getNumberOfContactZones()):
     test.assertFalse(zone.checkNormals)
 
     test.assertEqual(zone.getModel(), MODI)
-    test.assertEqual(zone.getMesh(), Mail)
+    test.assertEqual(zone.getMesh(), mesh)
 
     contParam = zone.getContactParameter()
     test.assertEqual(contParam.getAlgorithm(), algo_cont[i])
@@ -206,9 +214,6 @@ for i in range(DEFICO.getNumberOfContactZones()):
 
 zone.setSlaveGroupOfCells("Group_4")
 zone.setMasterGroupOfCells("Group_3")
-
-# zone1 = DEFICO.getContactZone(0)
-# test.assertEqual(zone1.getExcludedSlaveGroupOfCells(), ['Group_0'])
 
 DEFICO.hasFriction = True
 test.assertTrue(DEFICO.hasFriction)

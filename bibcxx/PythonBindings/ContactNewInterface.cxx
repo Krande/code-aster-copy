@@ -2,7 +2,7 @@
  * @file ContactNewInterface.cxx
  * @brief Interface python de ContactNew
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,25 +33,25 @@ void exportContactNewToPython( py::module_ &mod ) {
 Return the model used in the contact definition
 
 Returns:
-    Model: model.
+    Model: model
         )" )
         .def( "getMesh", &ContactNew::getMesh, R"(
 Return the mesh used in the contact definition
 
 Returns:
-    Mesh: mesh.
+    BaseMesh: mesh.
         )" )
         .def( "getFiniteElementDescriptor", &ContactNew::getFiniteElementDescriptor, R"(
 Return the finite element descriptor to define virtual cells for Lagrange multipliers
 
 Returns:
-    FiniteElementDescriptor: fed.
+    FiniteElementDescriptor: finite element descriptor
         )" )
         .def( "getNumberOfContactZones", &ContactNew::getNumberOfContactZones, R"(
 Return the number of contact zones used
 
 Returns:
-    inter: number of contact zones.
+    int: number of contact zones.
         )" )
         .def( "getContactZone", &ContactNew::getContactZone, R"(
 Return the specified contact zone

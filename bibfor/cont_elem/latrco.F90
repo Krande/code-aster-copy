@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine latrco(i_tria, nb_poin_inte, poin_inte, tria_coor)
+!
+subroutine latrco(iTria, nbPoinInte, poinInte, triaCoorPara)
 !
     implicit none
 !
 #include "asterfort/assert.h"
+#include "asterfort/mesh_pairing_type.h"
 !
-!
-    integer, intent(in) :: i_tria
-    integer, intent(in) :: nb_poin_inte
-    real(kind=8), intent(in) :: poin_inte(2, 8)
-    real(kind=8), intent(out) :: tria_coor(2, 3)
+    integer, intent(in) :: iTria
+    integer, intent(in) :: nbPoinInte
+    real(kind=8), intent(in) :: poinInte(2, MAX_NB_INTE)
+    real(kind=8), intent(out) :: triaCoorPara(2, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -36,34 +36,34 @@ subroutine latrco(i_tria, nb_poin_inte, poin_inte, tria_coor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  i_tria           : index of current triangle
-! In  tria_node        : list of triangles (defined by index of intersection points)
-! In  poin_inte        : list (sorted) of intersection points
-! Out tria_coor        : coordinates of current triangle
+! In  iTria            : index of current triangle
+! In  nbPoinInte       : number of intersection points
+! In  poinInte         : coordinates of intersection points (in cell parametric space)
+! Out triaCoorPara     : coordinates of current triangle (in cell parametric space)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, i_node1, i_node2
+    integer :: iPoinInte, iPoinInte1, iPoinInte2
     real(kind=8) ::  barycenter(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (nb_poin_inte == 3) then
-        tria_coor(1:2, 1:3) = poin_inte(1:2, 1:3)
+    if (nbPoinInte == 3) then
+        triaCoorPara(1:2, 1:3) = poinInte(1:2, 1:3)
     else
         barycenter = 0.d0
-        do i_node = 1, nb_poin_inte
-            barycenter(1:2) = barycenter(1:2)+poin_inte(1:2, i_node)
+        do iPoinInte = 1, nbPoinInte
+            barycenter(1:2) = barycenter(1:2)+poinInte(1:2, iPoinInte)
         end do
-        barycenter = barycenter/real(nb_poin_inte, kind=8)
-!
-        i_node1 = i_tria
-        i_node2 = i_tria+1
-        if (i_tria == nb_poin_inte) i_node2 = 1
-
-        tria_coor(1:2, 1) = poin_inte(1:2, i_node1)
-        tria_coor(1:2, 2) = poin_inte(1:2, i_node2)
-        tria_coor(1:2, 3) = barycenter
+        barycenter = barycenter/real(nbPoinInte, kind=8)
+        iPoinInte1 = iTria
+        iPoinInte2 = iTria+1
+        if (iTria == nbPoinInte) then
+            iPoinInte2 = 1
+        end if
+        triaCoorPara(1:2, 1) = poinInte(1:2, iPoinInte1)
+        triaCoorPara(1:2, 2) = poinInte(1:2, iPoinInte2)
+        triaCoorPara(1:2, 3) = barycenter
     end if
 !
 end subroutine

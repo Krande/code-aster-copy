@@ -213,9 +213,13 @@ class BaseMesh : public DataStructure, public ListOfTables {
 
     JeveuxVectorLong getCellsType() const;
 
+    ASTERINTEGER getCellDime( const ASTERINTEGER &index ) const;
+
     std::string getCellTypeName( const ASTERINTEGER &index ) const;
 
     bool hasCellsOfType( const std::string ) const;
+
+    bool isSkin( const std::string groupName ) const;
 
     /**
      * @brief Recuperation de la dimension du maillage

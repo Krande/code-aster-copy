@@ -19,13 +19,14 @@
 subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
     use contact_module
-    use contact_type
     use contact_nitsche_module
+    use contact_type
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/niElemCont.h"
 #include "blas/daxpy.h"
@@ -51,7 +52,7 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
     type(ContactNitsche) :: nits
     aster_logical :: l_cont_qp, l_fric_qp
-    integer :: i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
+    integer ::  i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
@@ -60,6 +61,8 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), dStress_nn(MAX_NITS_DOFS)
     real(kind=8) :: jump_t(MAX_LAGA_DOFS, 3)
     integer :: dofsMap(54)
+    integer :: nbPoinInte
+    real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m
 !
@@ -67,18 +70,22 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
     vect_cont = 0.d0
     vect_fric = 0.d0
-!
+
 ! - Mapping of dofs
-!
     dofsMap = dofsMapping(geom)
-!
+
+! - Get intersection points
+    call getInterCont(nbPoinInte, poinInteSlav)
+
 ! - Get quadrature (slave side)
-!
-    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
-                     geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
-!
+    call getQuadCont(geom%elem_dime, &
+                     geom%elem_slav_code, geom%elem_mast_code, &
+                     nbPoinInte, poinInteSlav, &
+                     nb_qp, coor_qp, &
+                     geom%l_axis, geom%nb_node_slav, geom%coor_slav_init, &
+                     weight_qp)
+
 ! - Diameter of slave side
-!
     hF = diameter(geom%nb_node_slav, geom%coor_slav_init)
 !
     call nbDofsNitsche(geom, total_dofs, face_dofs, slav_dofs)

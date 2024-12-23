@@ -249,6 +249,8 @@
      - ``maillage_sdaster``
    * - :py:class:`~code_aster.Objects.MeshCoordinatesField`
      - 
+   * - :py:class:`~code_aster.Objects.MeshPairing`
+     - 
    * - :py:class:`~code_aster.Objects.MeshesMapping`
      - ``corresp_2_mailla``
    * - :py:class:`~code_aster.Objects.ModeResult`

@@ -138,6 +138,9 @@ class Mesh : public BaseMesh {
 
     bool isQuadratic() const;
 
+    /** @brief Test if all cells in group are skin cells */
+    bool isSkin( const std::string groupName ) const;
+
     /**
      * @brief Read a Aster Mesh file
      * @return retourne true si tout est ok

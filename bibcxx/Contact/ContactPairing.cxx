@@ -24,62 +24,47 @@
 
 #include "Messages/Messages.h"
 
-void ContactPairing::resizePairing( const int nbZoneCont ) {
-    if ( nbZoneCont == 0 )
-        raiseAsterError( "ContactZone vector is empty " );
-    _nbPairs.resize( nbZoneCont );
-    _listOfPairs.resize( nbZoneCont );
-    _nbIntersectionPoints.resize( nbZoneCont );
-    _slaveIntersectionPoints.resize( nbZoneCont );
-}
-
-ContactPairing::ContactPairing( const std::string name, const ContactNewPtr cont )
-    : DataStructure( name, 8, "PAIRING_SD" ), _contDefi( cont ), _mesh( cont->getMesh() ) {
+ContactPairing::ContactPairing( const std::string name, const ContactNewPtr contDefi )
+    : DataStructure( name, 8, "PAIRING_SD" ),
+      _contDefi( contDefi ),
+      _mesh( contDefi->getMesh() ),
+      _verbosity( 1 ) {
     if ( !_mesh || _mesh->isParallel() )
         raiseAsterError( "Mesh is empty or is parallel " );
 
+    // Set verbosity
+    setVerbosity( contDefi->getVerbosity() );
+
+    // Create object for mesh coordinates
     _currentCoordinates = std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
 
-    // be sure that zones is not empty and get size of zones and resize
+    // Be sure that zones is not empty and get size of zones
     int nbZoneCont = _contDefi->getNumberOfContactZones();
     if ( nbZoneCont == 0 )
         raiseAsterError( "ContactZone vector is empty " );
-
-    // Resize pairing quantities
-    resizePairing( nbZoneCont );
 };
 
-ASTERBOOL ContactPairing::computeZone( ASTERINTEGER indexZone ) {
+void ContactPairing::setVerbosity( const ASTERINTEGER &level ) {
+    _verbosity = level;
+    _contDefi->setVerbosity( getVerbosity() );
+}
+
+ASTERBOOL ContactPairing::compute( ASTERINTEGER &indexZone ) {
 
     if ( indexZone < 0 || indexZone >= _contDefi->getNumberOfContactZones() ) {
         throw std::out_of_range( "The zone index should be between 0  and " +
                                  std::to_string( _contDefi->getNumberOfContactZones() - 1 ) );
     }
 
-    CALL_JEMARQ();
+    ASTERBOOL returnValue;
 
+    // Get current zone
     auto zone = _contDefi->getContactZone( indexZone );
     AS_ASSERT( !zone->hasSmoothing() );
 
-    // Get and define some input parameters
-    VectorLong masterCells = zone->getMasterCells();
-    VectorLong masterNodes = zone->getMasterNodes();
-    VectorLong slaveCells = zone->getSlaveCells();
-    ASTERINTEGER nbCellMaster = masterCells.size();
-    ASTERINTEGER nbNodeMaster = masterNodes.size();
-    ASTERINTEGER nbCellSlave = slaveCells.size();
-    std::string pair_method;
-
-    // Update the numbering for fortran
-    std::for_each( masterCells.begin(), masterCells.end(), []( ASTERINTEGER &d ) { d += 1; } );
-    std::for_each( masterNodes.begin(), masterNodes.end(), []( ASTERINTEGER &d ) { d += 1; } );
-    std::for_each( slaveCells.begin(), slaveCells.end(), []( ASTERINTEGER &d ) { d += 1; } );
-
     // Get pairing method
     auto variant = zone->getPairingParameter()->getAlgorithm();
-    if ( variant == PairingAlgo::Mortar ) {
-        pair_method = ljust( "RAPIDE", 24, ' ' );
-    } else {
+    if ( variant != PairingAlgo::Mortar ) {
         AS_ABORT( "Not expected" );
     }
 
@@ -89,43 +74,18 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER indexZone ) {
     // Tolerance for pairing
     ASTERDOUBLE pair_tole = 1e-8;
 
-    // Set pairs numbers to 0
-    ASTERINTEGER nb_pairs = 0;
+    // Pairing
+    zone->setVerbosity( getVerbosity() );
+    returnValue = zone->pairing( dist_pairing, pair_tole );
 
-    // Main routine for pairing
-    auto pairs = JeveuxVectorLong( "&&LISTPAIRS" );
-    auto nbInterPoints = JeveuxVectorLong( "&&NBPAIRS" );
-    auto interSlavePoints = JeveuxVectorReal( "&&INTERSLPTS" );
-
-    CALLO_APLCPGN( _mesh->getName(), _currentCoordinates->getName(), zone->getName(), pair_method,
-                   &pair_tole, &dist_pairing, &nbCellMaster, masterCells.data(), &nbCellSlave,
-                   slaveCells.data(), masterNodes.data(), &nbNodeMaster, &nb_pairs,
-                   ljust( pairs->getName(), 19, ' ' ), ljust( nbInterPoints->getName(), 19, ' ' ),
-                   ljust( interSlavePoints->getName(), 19, ' ' ) );
-
-    // clearZone
-    this->clearZone( indexZone );
-
-    // fill the pairing quantities
-    _nbPairs[indexZone] = nb_pairs;
-    _listOfPairs[indexZone] = pairs->toVector();
-    _nbIntersectionPoints[indexZone] = nbInterPoints->toVector();
-    _slaveIntersectionPoints[indexZone] = interSlavePoints->toVector();
-
-    // update numerotation
-    std::transform( _listOfPairs[indexZone].begin(), _listOfPairs[indexZone].end(),
-                    _listOfPairs[indexZone].begin(),
-                    []( ASTERINTEGER &indexZone ) -> ASTERINTEGER { return --indexZone; } );
-
-    CALL_JEDEMA();
-
-    return true;
+    return returnValue;
 }
 
 ASTERBOOL ContactPairing::compute() {
+
     // Pairing
-    for ( int i = 0; i < _contDefi->getNumberOfContactZones(); i++ ) {
-        computeZone( i );
+    for ( ASTERINTEGER i = 0; i < _contDefi->getNumberOfContactZones(); i++ ) {
+        AS_ASSERT( compute( i ) );
     }
 
     // Build FED
@@ -134,60 +94,118 @@ ASTERBOOL ContactPairing::compute() {
     return true;
 }
 
-void ContactPairing::clearZone( ASTERINTEGER indexZone ) {
-
-    _listOfPairs[indexZone].clear();
-    _nbIntersectionPoints[indexZone].clear();
-    _slaveIntersectionPoints[indexZone].clear();
-    _nbPairs.at( indexZone ) = 0;
-}
-
-std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >
-ContactPairing::getListOfPairsOfZone( ASTERINTEGER indexZone ) const {
-
-    std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > tmp;
-    ASTERINTEGER nbPairs = getNumberOfPairsOfZone( indexZone );
-    tmp.reserve( nbPairs );
-
-    for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
-        tmp.push_back( std::make_pair( _listOfPairs[indexZone][2 * iPair],
-                                       _listOfPairs[indexZone][2 * iPair + 1] ) );
+void ContactPairing::clearPairing( const ASTERINTEGER &indexZone ) {
+    if ( indexZone < 0 || indexZone >= _contDefi->getNumberOfContactZones() ) {
+        throw std::out_of_range( "The zone index should be between 0  and " +
+                                 std::to_string( _contDefi->getNumberOfContactZones() - 1 ) );
     }
 
-    return tmp;
+    _contDefi->clearPairing( indexZone );
 }
 
-std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > ContactPairing::getListOfPairs() const {
+VectorPairLong ContactPairing::getListOfPairs( const ASTERINTEGER &indexZone ) const {
 
-    std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > tmp;
+    if ( indexZone < 0 || indexZone >= _contDefi->getNumberOfContactZones() ) {
+        throw std::out_of_range( "The zone index should be between 0  and " +
+                                 std::to_string( _contDefi->getNumberOfContactZones() - 1 ) );
+    }
+
+    auto zone = _contDefi->getContactZone( indexZone );
+
+    return ( zone->getMeshPairing()->getListOfPairs() );
+}
+
+ASTERINTEGER ContactPairing::getNumberOfPairs( const ASTERINTEGER &indexZone ) const {
+    if ( indexZone < 0 || indexZone >= _contDefi->getNumberOfContactZones() ) {
+        throw std::out_of_range( "The zone index should be between 0  and " +
+                                 std::to_string( _contDefi->getNumberOfContactZones() - 1 ) );
+    }
+    return ( _contDefi->getContactZone( indexZone )->getMeshPairing()->getNumberOfPairs() );
+}
+
+ASTERINTEGER ContactPairing::getNumberOfPairs() const {
+    ASTERINTEGER returnValue;
+    returnValue = 0;
+    for ( auto indexZone = 0; indexZone < _contDefi->getNumberOfContactZones(); indexZone++ ) {
+        returnValue += _contDefi->getMeshPairing( indexZone )->getNumberOfPairs();
+    }
+
+    return returnValue;
+};
+
+ASTERINTEGER ContactPairing::getNumberOfZones() const {
+    return _contDefi->getNumberOfContactZones();
+}
+
+VectorPairLong ContactPairing::getListOfPairs() const {
+
+    VectorPairLong returnValue;
     ASTERINTEGER nbPairs = getNumberOfPairs();
-    tmp.reserve( nbPairs );
 
-    for ( int indexZone = 0; indexZone < _contDefi->getNumberOfContactZones(); indexZone++ ) {
-        auto nbPairs = getNumberOfPairsOfZone( indexZone );
+    if ( nbPairs == 0 ) {
+        raiseAsterError( "No contact pairs: was the pairing performed correctly? " );
+    }
 
-        for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
-            tmp.push_back( std::make_pair( _listOfPairs[indexZone][2 * iPair],
-                                           _listOfPairs[indexZone][2 * iPair + 1] ) );
+    returnValue.reserve( nbPairs );
+
+    for ( ASTERINTEGER indexZone = 0; indexZone < _contDefi->getNumberOfContactZones();
+          indexZone++ ) {
+        VectorPairLong pairsOnZone = getListOfPairs( indexZone );
+        auto nbPairsZone = pairsOnZone.size();
+
+        for ( auto iPairZone = 0; iPairZone < nbPairsZone; iPairZone++ ) {
+            returnValue.push_back( pairsOnZone[iPairZone] );
+        };
+    }
+
+    return returnValue;
+}
+
+VectorOfVectorsReal
+ContactPairing::getIntersectionPoints( ASTERINTEGER &indexZone,
+                                       const CoordinatesSpace coorSpace ) const {
+
+    VectorOfVectorsReal returnValue;
+    ASTERINTEGER nbPairs = getNumberOfPairs( indexZone );
+    if ( nbPairs == 0 ) {
+        raiseAsterError( "No contact pairs: was the pairing performed correctly? " );
+    }
+    returnValue.reserve( nbPairs );
+    for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
+        VectorOfVectorsReal interOnZone = _contDefi->getContactZone( indexZone )
+                                              ->getMeshPairing()
+                                              ->getIntersectionPoints( iPair, coorSpace );
+        ASTERINTEGER nbInter = _contDefi->getContactZone( indexZone )
+                                   ->getMeshPairing()
+                                   ->getNumberOfIntersectionPoints( iPair );
+        if ( nbInter != 0 ) {
+            VectorReal vectVale;
+            for ( auto iInter = 0; iInter < nbInter; iInter++ ) {
+                vectVale.insert( vectVale.end(), interOnZone[iInter].begin(),
+                                 interOnZone[iInter].end() );
+            };
+            returnValue.push_back( vectVale );
+            vectVale.clear();
         }
     }
-
-    return tmp;
+    return returnValue;
 }
 
-std::vector< VectorReal >
-ContactPairing::getSlaveIntersectionPoints( ASTERINTEGER indexZone ) const {
+std::vector< VectorOfVectorsReal >
+ContactPairing::getIntersectionPoints( const CoordinatesSpace coorSpace ) const {
 
-    std::vector< VectorReal > ret;
-    ASTERINTEGER nbPairs = getNumberOfPairsOfZone( indexZone );
-    ret.reserve( nbPairs );
+    std::vector< VectorOfVectorsReal > returnValue;
+    const ASTERINTEGER nbZoneCont = _contDefi->getNumberOfContactZones();
+    if ( nbZoneCont == 0 )
+        raiseAsterError( "ContactZone vector is empty " );
+    returnValue.reserve( nbZoneCont );
 
-    auto iter = _slaveIntersectionPoints[indexZone].begin();
-    for ( auto i = 0; i < nbPairs; i++ ) {
-        ret.push_back( VectorReal( iter + 16 * i, iter + 16 * ( i + 1 ) ) );
+    for ( ASTERINTEGER iZone = 0; iZone < nbZoneCont; iZone++ ) {
+        VectorOfVectorsReal interSlave;
+        interSlave = ContactPairing::getIntersectionPoints( iZone, coorSpace );
+        returnValue.push_back( interSlave );
     }
-
-    return ret;
+    return returnValue;
 }
 
 ASTERINTEGER ContactPairing::getContCellIndx( const ContactAlgo contAlgo,
@@ -279,18 +297,17 @@ void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, cons
 
         // Get pairing for this zone
         auto surf2Volu = zone->getSlaveCellsSurfToVolu();
-        auto iZonePairing = this->getListOfPairsOfZone( iZone );
-        auto nbContPairZone = this->getNumberOfPairsOfZone( iZone );
+        auto listOfPairsZone = this->getListOfPairs( iZone );
+        auto nbPairsZone = this->getNumberOfPairs( iZone );
 
         // Create vector of (virtual) contact cells for this zone
         VectorPairLong listContTypeZone;
-        listContTypeZone.reserve( nbContPairZone );
+        listContTypeZone.reserve( nbPairsZone );
 
         // Loop on pairs in zone
-        for ( int iPair = 0; iPair < nbContPairZone; iPair++ ) {
-
+        for ( int iPair = 0; iPair < nbPairsZone; iPair++ ) {
             // Get pairing of current zone
-            auto [slavCellNume, mastCellNume] = iZonePairing[iPair];
+            auto [slavCellNume, mastCellNume] = listOfPairsZone[iPair];
 
             // Get cell slave to construct (is volumic cell for Nitsche)
             auto slavCellUsedNume = slavCellNume;
@@ -374,8 +391,8 @@ void ContactPairing::createVirtualElemForOrphelanNodes(
         auto lFric = zone->getFrictionParameter()->hasFriction();
 
         // Get pairing for this zone
-        auto iZonePairing = this->getListOfPairsOfZone( iZone );
-        auto nbContPairZone = this->getNumberOfPairsOfZone( iZone );
+        auto listOfPairsZone = this->getListOfPairs( iZone );
+        auto nbPairsZone = this->getNumberOfPairs( iZone );
 
         // Get slave cells on this zone
         auto slaveCells = zone->getSlaveCells();
@@ -493,9 +510,6 @@ void ContactPairing::buildFiniteElementDescriptor() {
     const ASTERINTEGER nbZoneCont = _contDefi->getNumberOfContactZones();
     const ASTERINTEGER nbContPairTot = this->getNumberOfPairs();
 
-    // Number of cells for each type of contact cell
-    MapLong contactElemType;
-
     // Create objets for nodes and cells
     VectorOfVectorsLong listContElem;
     listContElem.reserve( nbContPairTot );
@@ -508,6 +522,9 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     // Index of current contact pair
     ASTERINTEGER iContPair = 0;
+
+    // Object for number of cells for each type of contact cell
+    MapLong contactElemType;
 
     // Create virtual elements for contact
     createVirtualElemForContact( lAxis, nbZoneCont, contactElemType, meshConnectivity, listContElem,
@@ -544,6 +561,9 @@ void ContactPairing::buildFiniteElementDescriptor() {
     // Clear map between zone and contact elements
     _pair2Zone.clear();
 
+    // Clear map between index of global pair and index of local pair in zone
+    _globPairToLocaPair.clear();
+
     // Add virtual element
     for ( auto &[type, size] : contactElemType ) {
         VectorLong contactElemZone;
@@ -562,6 +582,16 @@ void ContactPairing::buildFiniteElementDescriptor() {
         }
         contactElemZone.push_back( type );
         ContactResFEDLiel->push_back( contactElemZone );
+    }
+
+    for ( ASTERINTEGER indexZone = 0; indexZone < nbZoneCont; indexZone++ ) {
+        if ( indexZone == 0 ) {
+            _globPairToLocaPair[indexZone] = 0;
+        } else {
+            auto zone = _contDefi->getContactZone( indexZone - 1 );
+            ASTERINTEGER nbPairs = zone->getMeshPairing()->getNumberOfPairs();
+            _globPairToLocaPair[indexZone] = _globPairToLocaPair[indexZone - 1] + nbPairs;
+        }
     }
 
     // Get parameters from standard model
@@ -592,3 +622,23 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     CALL_JEDEMA();
 };
+
+VectorLong ContactPairing::getNumberOfIntersectionPoints() const {
+    VectorLong returnValue;
+    const ASTERINTEGER nbZoneCont = _contDefi->getNumberOfContactZones();
+    for ( ASTERINTEGER iZone = 0; iZone < nbZoneCont; iZone++ ) {
+        VectorLong nbInter;
+        nbInter = ContactPairing::getNumberOfIntersectionPoints( iZone );
+        returnValue.insert( returnValue.end(), nbInter.begin(), nbInter.end() );
+    }
+    return returnValue;
+}
+
+VectorLong ContactPairing::getNumberOfIntersectionPoints( ASTERINTEGER &indexZone ) const {
+
+    VectorLong returnValue;
+
+    returnValue = _contDefi->getMeshPairing( indexZone )->getNumberOfIntersectionPoints();
+
+    return returnValue;
+}

@@ -44,30 +44,41 @@ ContactNew::ContactNew( const std::string name, const ModelPtr model, const std:
         UTMESS( "F", "CONTACT1_2" );
 };
 
+void ContactNew::appendContactZone( const ContactZonePtr zone ) {
+    _zones.push_back( zone );
+    _zones.back()->setVerbosity( getVerbosity() );
+}
+
+ASTERINTEGER ContactNew::getSpaceDime() const {
+
+    ASTERINTEGER spaceDime = 0;
+    ASTERINTEGER spaceDime_ = getModel()->getGeometricDimension();
+    if ( spaceDime_ > 3 ) {
+        UTMESS( "A", "CONTACT_84" );
+        if ( spaceDime_ == 1003 ) {
+            spaceDime = 3;
+        } else if ( spaceDime_ == 1002 ) {
+            spaceDime = 2;
+        } else if ( spaceDime_ == 23 ) {
+            spaceDime = 2;
+        } else {
+            UTMESS( "F", "CONTACT1_4" );
+        }
+    } else {
+        spaceDime = spaceDime_;
+    }
+    return spaceDime;
+}
+
 bool ContactNew::build() {
     CALL_JEMARQ();
 
     auto mesh = getMesh();
 
-    // calico
-    ASTERINTEGER nb_dim = 0;
-    ASTERINTEGER nb_dim_ = getModel()->getGeometricDimension();
-    if ( nb_dim_ > 3 ) { // general ? dans model ?
-        UTMESS( "A", "CONTACT_84" );
-        if ( nb_dim_ == 1003 ) {
-            nb_dim = 3;
-        } else if ( nb_dim_ == 1002 ) {
-            nb_dim = 2;
-        } else if ( nb_dim_ == 23 ) {
-            nb_dim = 2;
-        } else {
-            UTMESS( "F", "CONTACT1_4" );
-        }
-    } else {
-        nb_dim = nb_dim_;
-    }
+    // Space dimension
+    ASTERINTEGER spaceDime = this->getSpaceDime();
 
-    // define name of catalogue
+    // Define name of catalogue
     std::map< std::tuple< ASTERINTEGER, ContactAlgo, bool >, std::string > cata;
 
     cata[std::make_tuple( 2, ContactAlgo::Lagrangian, false )] = "CONT_LAG_SL_2D";
@@ -88,8 +99,10 @@ bool ContactNew::build() {
 
     ASTERINTEGER nb_slave_cells = 0;
 
-    // sdcont_defi.CONTACT.MAILCO/NOEUCO/ssnoco
+    // List of all contact cells
     std::vector< std::pair< VectorLong, std::string > > mailco;
+
+    // List of all contact nodes
     std::vector< VectorLong > noeuco;
 
     for ( auto &zone_i : _zones ) {
@@ -101,12 +114,12 @@ bool ContactNew::build() {
         nb_slave_cells += l_slave_cells.size();
         mailco.push_back( std::make_pair(
             l_slave_cells,
-            cata[std::make_tuple( nb_dim, zone_i->getContactParameter()->getAlgorithm(),
+            cata[std::make_tuple( spaceDime, zone_i->getContactParameter()->getAlgorithm(),
                                   zone_i->hasFriction() )] ) );
         noeuco.push_back( l_slave_nodes );
     }
 
-    // check the common slave nodes between zones (or cells ?)
+    // Check the common slave nodes between zones (or cells ?)
     VectorLong doublNodes;
     for ( auto it = noeuco.begin(); it != noeuco.end(); ++it ) {
         VectorLong l_a = *it;
@@ -130,12 +143,12 @@ bool ContactNew::build() {
             }
 #endif
             if ( nb_doublNodes > 0 ) {
-                UTMESS( "F", "CONTACT1_3" );
+                UTMESS( "F", "CONTACT1_1" );
             }
         }
     }
 
-    // create slave elements in model : routine mmprel
+    // Sreate slave elements in model : routine mmprel
     std::string ligret = ljust( "&&OP0030.LIGRET", 19, ' ' );
     std::string phenom = ljust( "MECANIQUE", 16, ' ' );
     std::string modeli;
@@ -211,7 +224,6 @@ VectorLong ContactNew::getSlaveCells() const {
 
         cells.insert( l_slave_cells.begin(), l_slave_cells.end() );
     }
-
     return VectorLong( cells.begin(), cells.end() );
 };
 
@@ -227,7 +239,6 @@ bool ContactNew::hasFriction() const {
             return true;
         }
     }
-
     return false;
 };
 
@@ -243,6 +254,24 @@ bool ContactNew::hasSmoothing() const {
             return true;
         }
     }
-
     return false;
 };
+
+void ContactNew::setVerbosity( const ASTERINTEGER &level ) {
+    _verbosity = level;
+    for ( auto &zone : _zones ) {
+        zone->setVerbosity( level );
+    }
+}
+
+VectorLong ContactNew::getNumberOfIntersectionPoints() const {
+    VectorLong returnValue;
+
+    return returnValue;
+}
+
+VectorLong ContactNew::getNumberOfIntersectionPoints( const ASTERINTEGER &indexZone ) const {
+    VectorLong returnValue;
+
+    return returnValue;
+}

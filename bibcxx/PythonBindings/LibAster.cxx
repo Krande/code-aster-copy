@@ -123,6 +123,7 @@
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
 #include "PythonBindings/MeshEntitiesInterface.h"
 #include "PythonBindings/MeshInterface.h"
+#include "PythonBindings/MeshPairingInterface.h"
 #include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/ModalBasisInterface.h"
 #include "PythonBindings/ModeResultInterface.h"
@@ -234,6 +235,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportContactParameterToPython( mod );
     exportContactNewToPython( mod );
     exportContactZoneToPython( mod );
+    exportMeshPairingToPython( mod );
     exportContactPairingToPython( mod );
     exportContactComputationToPython( mod );
     exportBaseAssemblyMatrixToPython( mod );

@@ -6226,28 +6226,28 @@ class ContactNew(DataStructure):
         """Return the finite element descriptor to define virtual cells for Lagrange multipliers
 
         Returns:
-            FiniteElementDescriptor: fed.
+            FiniteElementDescriptor: finite element descriptor
         """
 
     def getMesh(self):
         """Return the mesh used in the contact definition
 
         Returns:
-            Mesh: mesh.
+            BaseMesh: mesh.
         """
 
     def getModel(self):
         """Return the model used in the contact definition
 
         Returns:
-            Model: model.
+            Model: model
         """
 
     def getNumberOfContactZones(self):
         """Return the number of contact zones used
 
         Returns:
-            inter: number of contact zones.
+            int: number of contact zones.
         """
 
     def getVerbosity(self):
@@ -6310,7 +6310,7 @@ class FrictionNew(ContactNew):
 
 
 class ContactZone(DataStructure):
-    pass
+    """Object to define a zone of contact."""
 
     # Method resolution order:
     #     ContactZone
@@ -6329,20 +6329,17 @@ class ContactZone(DataStructure):
         """
 
     def build(self):
-        """Build and check internal objects"""
+        """Build and check internal objects
+
+        Returns:
+            bool: success or failure
+        """
 
     def getContactParameter(self):
         """Get contact parameters defining method, coefficient...
 
         Returns:
             ContactParameter: contact parameters
-        """
-
-    def getExcludedSlaveCells(self):
-        """Get excluded groups of cells on slave side
-
-        Returns:
-            str: excluded groups' names
         """
 
     def getFrictionParameter(self):
@@ -6352,32 +6349,25 @@ class ContactZone(DataStructure):
             FrictionParameter: friction parameters
         """
 
-    def getMasterCellNeighbors(self, cell_number):
-        """Get the master cells in the neighbor of a given master cell number
-
-        Arguments:
-            int: master cell number
-        """
-
-    def getMasterCellsFromNode(self, node_number):
-        """Get the master cells associtaed with a node number
-
-        Arguments:
-            int: node number
-        """
-
     def getMesh(self):
         """Return the mesh used in the contact zone definition
 
         Returns:
-            BaseMesh: mesh.
+            BaseMesh: mesh
+        """
+
+    def getMeshPairing(self):
+        """Get pairing of surface meshes
+
+        Returns:
+            MeshPairing: mesh pairing
         """
 
     def getModel(self):
         """Return the model used in the contact zone definition
 
         Returns:
-            Model: model.
+            Model: model
         """
 
     def getPairingParameter(self):
@@ -6387,25 +6377,11 @@ class ContactZone(DataStructure):
             PairingParameter: pairing parameters
         """
 
-    def getSlaveCellNeighbors(self, cell_number):
-        """Get the slave cells in the neighbor of a given slave cell number
-
-        Arguments:
-            int: slave cell number
-        """
-
     def getSlaveCells(self):
         """Get slave's cells index
 
         Returns:
             list[int]: slave's cells index
-        """
-
-    def getSlaveCellsFromNode(self, node_number):
-        """Get the slave cells associtaed with a node number
-
-        Arguments:
-            int: node number
         """
 
     def getSlaveNodes(self):
@@ -6416,20 +6392,276 @@ class ContactZone(DataStructure):
         """
 
     def getVerbosity(self):
-        """Get level of verbosity:
-              0- without
-              1- normal
-              2- detailled
+        """Get level of verbosity
+        0- without
+        1- normal
+        2- detailled
 
         Returns:
-            integer: level of verbosity
+            int: level of verbosity
         """
 
-    def setContactParameter(self, contact):
+    def setContactParameter(self, contParam):
         """Set contact parameters defining method, coefficient...
 
         Arguments:
-            ContactParameter: contact parameters
+            contParam (ContactParameter) : contact parameters
+        """
+
+    def setExcludedSlaveGroupOfCells(self, cellGroupsName):
+        """Set excluded groups of cells on slave side
+
+        Arguments:
+            cellGroupsName (str) : excluded groups' names
+        """
+
+    def setExcludedSlaveGroupOfNodes(self, nodeGroupsName):
+        """Set excluded groups of nodes on slave side
+
+        Arguments:
+            nodeGroupsName (str) : excluded groups' names
+        """
+
+    def setFrictionParameter(self, fricParam):
+        """Set friction parameters defining method, coefficient...
+
+        Arguments:
+            fricParam (FrictionParameter) : friction parameters
+        """
+
+    def setMasterGroupOfCells(self, master_name):
+        """Set master's name of group of cells
+
+        Arguments:
+            master_name (str) : name of group for master cells
+        """
+
+    def setPairingParameter(self, pairParam):
+        """Set pairing parameters defining algorithm, distance...
+
+        Arguments:
+            pairParam (PairingParameter) : pairing parameters
+        """
+
+    def setSlaveGroupOfCells(self, slave_name):
+        """Set slave's name of group of cells
+
+        Arguments:
+            slave_name (str) : name of group for slave cells
+        """
+
+    def setVerbosity(self, level):
+        """Set level of verbosity
+        0- without
+        1- normal (default)
+        2- detailled
+
+        Arguments:
+            level (int) : level of verbosity
+        """
+
+    # ----------------------------------------------------------------------
+    # Data descriptors defined here:
+
+    @property
+    def checkNormals(self):
+        """bool: attribute that holds the checking of outwards normals."""
+
+    @property
+    def hasFriction(self):
+        """Get status of friction
+
+        Returns:
+            bool: friction or not
+        """
+
+    @property
+    def hasSmoothing(self):
+        """Smoothing of normals
+
+        Returns:
+            bool: smoothing or not
+        """
+
+
+# class MeshPairing in libaster
+
+
+class MeshPairing(DataStructure):
+    """Object to create a pairing operator between two meshed surfaces."""
+
+    # Method resolution order:
+    #     MeshPairing
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.MeshPairing, arg0: str, arg1: libaster.BaseMesh) -> None
+
+        2. __init__(self: libaster.MeshPairing, arg0: libaster.BaseMesh) -> None
+        """
+
+    def checkNormals(self, model):
+        """Check orientation of normals
+
+        Arguments:
+            ModelPtr: a pointer to the model
+
+        Returns:
+            nothing
+        """
+
+    def compute(self, dist_pairing=-1.0, pair_tole=1e-08):
+        """Compute pairing
+
+        Arguments:
+            dist_pairing (real): tolerance from DIST_RATIO (projection outside cell)
+            pair_tole (real): tolerance for pairing
+        """
+
+    def getIntersectionArea(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getIntersectionArea(self: libaster.MeshPairing, indexPair: int) -> float
+
+
+        Compute intersection of area
+
+        Arguments:
+            indexPair (integer): index of pair
+
+        Returns:
+            double: area of intersection
+
+
+        2. getIntersectionArea(self: libaster.MeshPairing, indexPair: int) -> float
+
+
+        Get area of intersection for a given pair
+
+        Arguments:
+            indexPair (integer): index of pair
+
+        Returns:
+            real: area of intersection
+        """
+
+    def getIntersectionPoints(self, indexPair, CoordinatesSpace=1):
+        """Get coordinates of intersection points for a given pair
+
+        Arguments:
+            indexPair (integer): index of pair
+            CoordinatesSpace (CoordinatesSpace): space to describe coordinates
+
+        Returns:
+            list[list]: coordinates in given space
+        """
+
+    def getListOfPairs(self):
+        """Get pairs
+
+        Returns:
+            list: pairs (slave-master)
+        """
+
+    def getMasterCellNeighbors(self, cell_number):
+        """Get the master cells in the neighbor of a given master cell number
+
+        Arguments:
+            int: master cell number
+
+        Returns:
+            list: master neighbors cells
+        """
+
+    def getMasterCellsFromNode(self, node_number):
+        """Get the master cells associated with a node number
+
+        Arguments:
+            int: node number
+
+        Returns:
+            list: master cells associated
+        """
+
+    def getMesh(self):
+        """Return the mesh
+
+        Returns:
+            Mesh: mesh.
+        """
+
+    def getNumberOfIntersectionPoints(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getNumberOfIntersectionPoints(self: libaster.MeshPairing, indexPair: int) -> int
+
+
+        Get number of intersection points
+
+        Arguments:
+            indexPair (integer): index of pair
+
+        Returns:
+            integer: number of intersection points
+
+
+        2. getNumberOfIntersectionPoints(self: libaster.MeshPairing) -> list[int]
+
+
+                Get number of intersection points of all pairs
+
+                Returns:
+                    list: number of intersection points
+        """
+
+    def getNumberOfPairs(self):
+        """Get number of pairs
+
+        Returns:
+            integer: number of pairs
+        """
+
+    def getQuadraturePoints(self, indexPair):
+        """Get coordinates of quadrature points for a given pair in global space
+
+        Arguments:
+            indexPair (integer): index of pair
+
+        Returns:
+            list: quadrature points
+        """
+
+    def getSlaveCellNeighbors(self, cell_number):
+        """Get the slave cells in the neighbor of a given slave cell number
+
+        Arguments:
+            int: slave cell number
+
+        Returns:
+            list: slave neighbors cells
+        """
+
+    def getSlaveCellsFromNode(self, node_number):
+        """Get the slave cells associated with a node number
+
+        Arguments:
+            int: node number
+
+        Returns:
+            list: slave cells associated
+        """
+
+    def getVerbosity(self):
+        """Get level of verbosity
+
+        Returns:
+            integer: level of verbosity
         """
 
     def setExcludedSlaveGroupOfCells(self, groups):
@@ -6446,65 +6678,178 @@ class ContactZone(DataStructure):
             str: excluded groups' names
         """
 
-    def setFrictionParameter(self, friction):
-        """Set friction parameters defining method, coefficient...
+    def setMethod(self, method):
+        """Set method of pairing
 
         Arguments:
-            FrictionParameter: friction parameters
+            method (PairingMethod): method ("OLD", "Fast", "Robust)
         """
 
-    def setMasterGroupOfCells(self, master_name):
-        """Set master's name of group of cells
+    def setPair(self, groupNameSlav, groupNameMast):
+        """Set pair of meshed surfaces
 
         Arguments:
-            str: master's name
-        """
-
-    def setPairingParameter(self, pairing):
-        """Set pairing parameters defining algorithm, distance...
-
-        Arguments:
-            PairingParameter: pairing parameters
-        """
-
-    def setSlaveGroupOfCells(self, slave_name):
-        """Set slave's name of group of cells
-
-        Arguments:
-            str: slave's name
+            groupNameSlav (str): slave's name
+            groupNameMast (str): master's name
         """
 
     def setVerbosity(self, level):
-        """Set level of verbosity:
-              0- without
-              1- normal (default)
-              2- detailled
+        """Set level of verbosity
+              0 - without
+              1 - normal (default)
+              2 - detailled (text)
 
         Arguments:
-            integer: level of verbosity
+            level (integer): level of verbosity
         """
+
+    def updateCoordinates(self, disp):
+        """Update coordinates of nodes
+
+        Arguments:
+            disp (FieldOnNodesReal): nodal field of displacement
+        """
+
+
+# class CoordinatesSpace in libaster
+
+
+class CoordinatesSpace:
+    """Type of coordinates: Slave or Global."""
+
+    # Method resolution order:
+    #     CoordinatesSpace
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def __str__(self):
+        pass
 
     # ----------------------------------------------------------------------
     # Data descriptors defined here:
 
     @property
-    def checkNormals(self):
-        """bool: Attribute that holds the checking of outwards normals."""
+    def __members__(self):
+        pass
 
     @property
-    def hasFriction(self):
-        """bool: enable or disable the use of friction."""
+    def name(self):
+        """name(self: object) -> str"""
 
     @property
-    def hasSmoothing(self):
-        """bool: enable or disable  the use of smoothing."""
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Global = 1
+
+    Slave = 0
+
+
+# class PairingMethod in libaster
+
+
+class PairingMethod:
+    """Type of pairing: Fast, BrutForce and Legacy."""
+
+    # Method resolution order:
+    #     PairingMethod
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def __str__(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data descriptors defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: object) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    BrutForce = 2
+
+    Fast = 0
+
+    Legacy = 1
 
 
 # class ContactPairing in libaster
 
 
 class ContactPairing(DataStructure):
-    pass
+    """Object to create contact pairing."""
 
     # Method resolution order:
     #     ContactPairing
@@ -6522,31 +6867,50 @@ class ContactPairing(DataStructure):
         2. __init__(self: libaster.ContactPairing, arg0: libaster.ContactNew) -> None
         """
 
-    def clear(self):
-        """clean all the paring quantities of all zones
+    def clearPairing(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. clearPairing(self: libaster.ContactPairing) -> None
+
+
+        Clean pairing for all zones
+
         Returns:
             bool: true if the pairing quantities are cleared
-        """
 
-    def clearZone(self, zone_index):
-        """clean all the paring quantities of zone zonde_index
+
+        2. clearPairing(self: libaster.ContactPairing, zone_index: int) -> None
+
+
+        Clean pairing for a zone
+
         Arguments:
-            zone_index(int)
+            zone_index(int) : index of zone
+
         Returns:
             bool: true if the pairing quantities are cleared
         """
 
-    def compute(self):
-        """Compute the pairing quantities associated with the zones
+    def compute(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. compute(self: libaster.ContactPairing) -> bool
+
+
+        Compute the pairing quantities on all zones
 
         Returns:
             bool: True if the pairing quantities are updated appropriately
-        """
 
-    def computeZone(self, zone_index):
-        """Compute the pairing quantities associated with the zone zone_index
+
+        2. compute(self: libaster.ContactPairing, zone_index: int) -> bool
+
+
+        Compute the pairing quantities on a zone
+
         Arguments:
             zone_index(int)
+
         Returns:
             bool: True if the pairing quantities are updated appropriately
         """
@@ -6555,7 +6919,7 @@ class ContactPairing(DataStructure):
         """Coordinates of nodes used for pairing (almost always different from the intial mesh).
 
         Returns:
-            MeshCoordinatesFieldPtr: the coordinates field
+            MeshCoordinatesField: the coordinates field
         """
 
     def getFiniteElementDescriptor(self):
@@ -6565,37 +6929,93 @@ class ContactPairing(DataStructure):
             FiniteElementDescriptor: finite element for virtual cells
         """
 
-    def getListOfPairsOfZone(self, zone_index):
-        """return list of pairs associated with the zone izone
+    def getIntersectionPoints(self, zone_index, CoordinatesSpace=1):
+        """Get the intersection points between master and slave cells
+
+        Arguments:
+            zone_index(int) : index of zone
+            CoordinatesSpace (CoordinatesSpace): space to describe coordinates
+
+        Returns:
+            list[pair]: list of pair of coordinates of intersection points
+        """
+
+    def getListOfPairs(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getListOfPairs(self: libaster.ContactPairing, zone_index: int) -> list[tuple[int, int]]
+
+
+        Get list of contact pairs for a contact zone
+
         Arguments:
             zone_index(int)
+
         Returns:
-            List[List[int]]: List of pairs
+            list[tuple[int, int]]: list of contact pairs
+
+
+        2. getListOfPairs(self: libaster.ContactPairing) -> list[tuple[int, int]]
+
+
+        Get list of contact pairs on all zones
+
+        Returns:
+            list[tuple[int, int]]: list of contact pairs
         """
 
-    def getNumberOfPairs(self):
-        """return the total number of pairs
+    def getMesh(self):
+        """Mesh
+
         Returns:
-            int: Total number of pairs
+            BaseMesh: the mesh
         """
 
-    def getNumberOfPairsOfZone(self, zone_index):
-        """return number of  pairs associated with the zone zone_index
+    def getNumberOfIntersectionPoints(self, zone_index):
+        """Get list of the number of intersection points beetween a master and slave cells.
+
+        Arguments:
+            zone_index(int) : index of zone
+
+        Returns:
+            list: list of number of intersection points
+        """
+
+    def getNumberOfPairs(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getNumberOfPairs(self: libaster.ContactPairing) -> int
+
+
+        Return number of pairs on all zones
+
+        Returns:
+            int: number of pairs
+
+
+        2. getNumberOfPairs(self: libaster.ContactPairing, zone_index: int) -> int
+
+
+        Return the number of pairs on a zone
+
         Arguments:
             zone_index(int)
         Returns:
             int: number of pairs
         """
 
-    def getSlaveIntersectionPoints(self, zone_index):
-        """Get the intersection points beetween a master and slave cells in the parametric
-        slave space. The maximum number of points is 8.
-
-        Arguments:
-            zone_index(int) : index of zone
+    def getNumberOfZones(self):
+        """Return the number of zones
 
         Returns:
-            list[list]: list of list of intersection points (each intersection is of size 16)
+            int: number of zones
+        """
+
+    def getVerbosity(self):
+        """Get level of verbosity
+
+        Returns:
+            integer: level of verbosity
         """
 
     def setCoordinates(self, coordinates):
@@ -6605,8 +7025,22 @@ class ContactPairing(DataStructure):
             coordinates (MeshCoordinatesField) : coordinates to use for pairing
         """
 
+    def setVerbosity(self, verbosity):
+        """Set level of verbosity
+              0 - without
+              1 - normal (default)
+              2 - detailled (text)
+
+        Arguments:
+            level (integer): level of verbosity
+        """
+
     def updateCoordinates(self, disp):
-        """Update the mesh coordinates given a displacement field"""
+        """Update the mesh coordinates given a displacement field
+
+        Arguments:
+            disp (FieldOnNodes) : field for displacement
+        """
 
 
 # class ContactComputation in libaster
@@ -6632,16 +7066,15 @@ class ContactComputation:
         pass
 
     def contactCoefficient(self):
-        """Compute contact coefficient at the nodes of the slave surface based on values of COEF_CONT
+        """Compute contact coefficients at the nodes of the slave surface based on values of COEF_CONT
         and COEF_FROT
 
         Returns:
-            FieldOnNodesReal: contact coefficient (= COEF_CONT)
-            FieldOnNodesReal: friction coefficient (= COEF_FROT)
+            list[FieldOnNodesReal]: coefficients (COEF_CONT and COEF_FROT)
         """
 
     def contactData(self, pairing, material, initial_contact):
-        """Compute contact data (cf. MMCHML) as input to compute contact forces and matrices.
+        """Compute contact data as input to compute contact forces and matrices.
 
         Arguments:
             pairing (ContactPairing): pairing object
@@ -6650,6 +7083,26 @@ class ContactComputation:
 
         Returns:
             FieldOnCellsReal: contact data
+        """
+
+    def getVerbosity(self):
+        """Get level of verbosity
+        0- without
+        1- normal
+        2- detailled
+
+        Returns:
+            int: level of verbosity
+        """
+
+    def setVerbosity(self, level):
+        """Set level of verbosity
+        0- without
+        1- normal (default)
+        2- detailled
+
+        Arguments:
+            level (int) : level of verbosity
         """
 
 
