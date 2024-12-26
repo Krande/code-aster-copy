@@ -3,7 +3,7 @@
  * @brief Implementation des fonctions membres de DataStructure
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,7 +35,7 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
     : _name( name ), _sdj( py::none() ) {
     _name.resize( nameLength, ' ' );
 
-    // #ifdef ASTER_DEBUG_CXX
+    // #ifdef ASTER_DEBUG_CXX_OBJECTS
     //     std::cout << "Creating " << strip( this->getName() )
     //             << " <" << type << "> "
     //             << this->getUserName() << std::endl;
@@ -118,7 +118,7 @@ DataStructure::~DataStructure() {
     // Destruction
     _tco->deallocate();
     _title->deallocate();
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
     std::string base( " " );
     ASTERINTEGER pos = 1;
     ASTERINTEGER nbval2 = 0;

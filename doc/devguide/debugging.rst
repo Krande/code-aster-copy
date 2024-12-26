@@ -13,8 +13,12 @@ This section gives some tips about debugging code_aster.
 .. note::
 
     ``waf_debug install`` turns on ``ASTER_DEBUG_CXX`` flag that prints some
-    informations about objects live-cycle.
-    Please ask a guru before adding new blocks under this flag!
+    debugging informations.
+    Additional details about objects live-cycle can be printed by defining
+    environment variables ``CXXFLAGS=-DASTER_DEBUG_CXX_OBJECTS`` or
+    ``CXXFLAGS=-DASTER_DEBUG_CXX_LOW_LEVEL``, or both
+    ``CXXFLAGS='-DASTER_DEBUG_CXX_OBJECTS -DASTER_DEBUG_CXX_LOW_LEVEL''``.
+    Please ask a guru before adding new blocks under these flags!
 
     Detailed informations about the command syntax checker can be printed using
     the debug level of the :py:class:`~code_aster.Utilities.logger`.
