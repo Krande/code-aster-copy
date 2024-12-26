@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ class Options(IntFlag):
     - *TestMode*: Testcase mode.
     - *SlaveMode*: Execution embedded by another program (do not abort, do not
       exit in case of time limit...).
+    - *InteractiveInterpreter*: Indicates an interactive execution.
     - *LastStep*: Last step of a study, database won't be reloaded from the
       temporary directory.
     - *SaveBase*: The database will be copied at the end of the calculation.
@@ -64,6 +65,7 @@ class Options(IntFlag):
     ShowChildCmd = auto()
     TestMode = auto()
     SlaveMode = auto()
+    InteractiveInterpreter = auto()
     LastStep = auto()
     SaveBase = auto()
     HPCMode = auto()
