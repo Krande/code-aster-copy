@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ class ExtendedDataStructure:
     @property
     def sdj(self):
         """Return the DataStructure catalog."""
-        if self.ptr_sdj is None:
+        if self._ptr_sdj is None:
             cata_sdj = getattr(self, "cata_sdj", None)
             if not cata_sdj:
                 cata_sdj = DICT_SDJ.get(self.__class__.__name__)
@@ -101,8 +101,8 @@ class ExtendedDataStructure:
                 self.__class__.__name__
             )
             ptr_class_sdj = import_object("code_aster." + cata_sdj)
-            self.ptr_sdj = ptr_class_sdj(nomj=self.getName())
-        return self.ptr_sdj
+            self._ptr_sdj = ptr_class_sdj(nomj=self.getName())
+        return self._ptr_sdj
 
     def use_count(self):
         """Return the number of reference to the DataStructure.

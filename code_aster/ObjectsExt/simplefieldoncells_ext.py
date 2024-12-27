@@ -45,9 +45,105 @@ class SFoCStateBuilder(InternalStateBuilder):
         field.build()
 
 
+class CFValue:
+    """Represents the values of a component of a field on cells."""
+
+    def __init__(self, values, mask):
+        self._values = values
+        self._mask = mask
+
+    def size(self):
+        """Return the size of the vector."""
+        return len(self._values)
+
+    def __repr__(self):
+        lines = repr(self._values).splitlines()
+        if len(lines) > 6:
+            lines = lines[:3] + ["..."] + lines[-3:]
+        return "\n".join(lines)
+
+    def _check_consistency(self, other):
+        """Check consistency between the both masks. A float is returned as is."""
+        if isinstance(other, CFValue):
+            if not np.all(self._mask == other._mask):
+                raise IndexError("inconsistent description")
+            other = other._values
+        return other
+
+    def apply(self, func):
+        """Apply a function of the values."""
+        if not isinstance(func, np.ufunc):
+            func = np.vectorize(func)
+        return CFValue(func(self._values), self._mask.copy())
+
+    def __add__(self, other):
+        other = self._check_consistency(other)
+        return CFValue(self._values + other, self._mask.copy())
+
+    def __radd__(self, other):
+        return self + other
+
+    def __sub__(self, other):
+        return self + (-other)
+
+    def __neg__(self):
+        return CFValue(-self._values, self._mask.copy())
+
+    def __mul__(self, other):
+        other = self._check_consistency(other)
+        return CFValue(self._values * other, self._mask.copy())
+
+    def __rmul__(self, other):
+        return self * other
+
+    def __truediv__(self, other):
+        other = self._check_consistency(other)
+        if np.any(other == 0.0):
+            raise ZeroDivisionError()
+        return CFValue(self._values / other, self._mask.copy())
+
+    def __rtruediv__(self, other):
+        if np.any(self._values == 0.0):
+            raise ZeroDivisionError()
+        return CFValue(1.0 / self._values * other, self._mask.copy())
+
+    def __abs__(self):
+        return CFValue(np.abs(self._values), self._mask.copy())
+
+    def __pow__(self, other):
+        other = self._check_consistency(other)
+        return CFValue(np.power(self._values, other), self._mask.copy())
+
+    def min(self):
+        return self._values.min()
+
+    def max(self):
+        return self._values.max()
+
+    def sum(self):
+        return self._values.sum()
+
+    def mean(self):
+        return self._values.mean()
+
+
 @injector(SimpleFieldOnCellsReal)
 class ExtendedSimpleFieldOnCellsReal:
     internalStateBuilder = SFoCStateBuilder
+
+    @property
+    def _cache(self):
+        if self._ptr_cache is None:
+            self._ptr_cache = dict.fromkeys("vmc")
+        if self._ptr_cache["c"] is None:
+            self._ptr_cache["c"] = self.getComponents()
+        if self._ptr_cache["v"] is None:
+            self._ptr_cache["v"], self._ptr_cache["m"] = self.toNumpy()
+        return self._ptr_cache
+
+    def __getattr__(self, component):
+        idx = self._cache["c"].index(component)
+        return CFValue(self._cache["v"][:, idx].copy(), self._cache["m"][:, idx].copy())
 
     def getValues(self, copy=False):
         """
@@ -64,7 +160,7 @@ class ExtendedSimpleFieldOnCellsReal:
             ndarray (float): Field values.
             ndarray (bool): Mask for the field values.
         """
-        values, mask = self.toNumpy()
+        values, mask = self._cache["v"], self._cache["m"]
         if copy:
             return values.copy(), mask.copy()
 
@@ -166,8 +262,7 @@ class ExtendedSimpleFieldOnCellsReal:
             msg = "toMEDCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
             raise TypeError(msg.format(type(medmesh).__name__))
 
-        # Aster values
-        values, mask = self.toNumpy()
+        values, mask = self._cache["v"], self._cache["m"]
 
         # Restrict field based on mask
         restricted_cells = np.where(np.any(mask, axis=1))[0]

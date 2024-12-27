@@ -3,7 +3,7 @@
  * @brief Interface python de DataStructure
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,7 +34,8 @@ void exportDataStructureToPython( py::module_ &mod ) {
     py::class_< DataStructure, DataStructurePtr >( mod, "DataStructure" )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
-        .def_property( "ptr_sdj", &DataStructure::getSDJ, &DataStructure::setSDJ )
+        .def_property( "_ptr_sdj", &DataStructure::getSDJ, &DataStructure::setSDJ )
+        .def_property( "_ptr_cache", &DataStructure::getCache, &DataStructure::setCache )
         .def( "id", &DataStructure::id,
               R"(
 Return the identity of the object.
