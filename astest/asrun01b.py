@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -472,6 +472,15 @@ class TestExport(unittest.TestCase):
         self.assertSequenceEqual([i.path for i in comm], ["filename.comm", "filename.com1"])
         savdb = bool([i for i in export.resultfiles if i.filetype == "base"])
         self.assertTrue(savdb)
+
+    def test_filenames_with_spaces(self):
+        text = "F comm /path/Temporay Folder/My Commands file.comm D 1"
+        export = Export(from_string=text)
+        self.assertEqual(len(export.commfiles), 1)
+        comm = export.commfiles[0]
+        self.assertEqual(comm.unit, 1)
+        self.assertTrue(comm.data)
+        self.assertEqual(osp.basename(comm.path), "My Commands file.comm")
 
 
 class TestCommandFiles(unittest.TestCase):
