@@ -77,7 +77,7 @@ Text.setEntryName("ReferenceTemperature");
     real stresP = trace( sig ) / 3.;
     real Vsech = fabs( dC );
     real coefverif =
-        ( 2. - 0.25 * h1 - 0.75 * h + log( tt / tt ) + log( Text / Text ) );
+        ( 2. - 0.25 * h1 - 0.75 * h + log( (tt + dt) / (tt + dt) ) + log( Text / Text ) );
     // Coefverif is to validate h1/h/tt/Text using - Non-physical sense
     Stensor stresD = coefverif * sig - stresP * Stensor::Id();
     real Tmoy = ( 2. * T + dT ) / 2.;
