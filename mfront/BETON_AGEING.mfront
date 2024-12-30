@@ -55,7 +55,7 @@ M_RhoR.setEntryName("KelvinIndex");
 /// <<<<<<<<<<<<<<<<<<<<<<<<
 
 @ExternalStateVariable real PCAP;      // Capillary pressure at !!previous!! time-step
-@ExternalStateVariable real TIME;      // Time at !!current!! time-step
+@ExternalStateVariable real TIME;      // Time at !!previous!! time-step
 
 PCAP.setEntryName("CapillaryPressure");
 TIME.setEntryName("Time");
@@ -108,7 +108,7 @@ rHmin.setEntryName("ShiftMiniRelaHumi");
     V_vt = expT*(3.*Etav_vt*j4+2.*Etad_vt*k4)/rH;
 
     // Initialize viscosity in the Maxwell element, taken into account the temperature and relative humidity influence
-    V_mx = expT*(3.*Kv_mx*j4+2.*Kd_mx*k4)/rH*max(TIME-0.5*dt-t0,0.);
+    V_mx = expT*(3.*Kv_mx*j4+2.*Kd_mx*k4)/rH*max(TIME+0.5*dt-t0,0.);
 }
 
 /// >>>>>>>>>>>>>>>>>>

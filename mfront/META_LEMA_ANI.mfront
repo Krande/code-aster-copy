@@ -109,7 +109,7 @@ seq.setGlossaryName( "HillStress" );
 @LocalVariable real M3[6];
 
 // Variables d'état issues d'aster
-@ExternalStateVariable real inst; // instant courant
+@ExternalStateVariable real inst; // instant précédent
 @ExternalStateVariable real Tref; // T_REF en °C car donné par Aster, température à laquelle il
                                   // n'y a pas deformations thermiques
 inst.setEntryName("Time");
@@ -177,13 +177,13 @@ Tref.setEntryName("ReferenceTemperature");
     if ( pch == 0.0 ) { // Tc ou Tr ne sont à chercher que si on n'est pas en changement de phase
         if ( Zb == 0.0 ) { // cas Zb=0 : on cherche Tc pour initier un chauffage
             if ( ( T + 273.00 < TDEQ_K ) && ( T_ >= TDEQ_K ) ) {
-                tdeq = inst + ( dt / dT ) * ( TDEQ_K - T_ );
+                tdeq = inst + dt + ( dt / dT ) * ( TDEQ_K - T_ );
             }
             if ( T > TFEQ ) {
                 Zb = 1.0; // pour les cas où on commence à chaud
             } else if ( T_ > TDEQ_K ) {
-                if ( inst != tdeq ) {
-                    const real Vch = ( T_ - TDEQ_K ) / ( inst - tdeq );
+                if ( inst + dt != tdeq ) {
+                    const real Vch = ( T_ - TDEQ_K ) / ( inst + dt - tdeq );
                     // température de début de changement de phase au chauffage en °C
                     const real Tc = ( Vch < 0.1 ) ? TDEQ : T1C * pow( Vch, T2C );
                     // température de début de changement de phase au chauffage en °K
@@ -198,10 +198,10 @@ Tref.setEntryName("ReferenceTemperature");
 
         if ( Zb == 1.0 ) { // cas Z=1 : on cherche Tr pour initier un refroidissement
             if ( ( T + 273.00 > TFEQ_K ) && ( T_ <= TFEQ_K ) ) {
-                tfeq = inst + ( dt / dT ) * ( TFEQ_K - T_ );
+                tfeq = inst + dt + ( dt / dT ) * ( TFEQ_K - T_ );
             }
             if ( T_ < TFEQ_K ) {
-                const real Vref = fabs( T_ - TFEQ_K ) / ( inst - tfeq );
+                const real Vref = fabs( T_ - TFEQ_K ) / ( inst + dt - tfeq );
                 // température de début de changement de phase au refroidissement en °C
                 const real Tr = ( Vref < 0.1 ) ? TFEQ : T1R + T2R * log( Vref );
                 // température de début de changement de phase au refroidissement en °K
