@@ -37,6 +37,10 @@ MA = DEFI_GROUP(
     CREA_GROUP_NO=(_F(NOEUD=("NO2", "NO4"), NOM="DROITE"), _F(NOEUD=("NO1", "NO3"), NOM="GAUCHE")),
 )
 
+MA = CREA_MAILLAGE(MAILLAGE=MA, LINE_QUAD=_F(TOUT="OUI"))
+
+MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_FISSURE=_F(GROUP_MA="CUBEDEG"))
+
 ### >>>>>>>>>>>>>>>>>
 ### Model affectation
 ### <<<<<<<<<<<<<<<<<
