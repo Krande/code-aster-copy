@@ -54,7 +54,13 @@ int MedFilePointer::open( const std::filesystem::path &filename,
     } else {
         throw std::runtime_error( "Med file access type not allowed" );
     }
-    _fileId = MEDfileOpen( filename.c_str(), medAccessMode );
+    #ifdef ASTER_PLATFORM_MSVC64
+        // Convert wide string to narrow
+        const std::string narrow = filename.string();
+        _fileId = MEDfileOpen( narrow.c_str(), medAccessMode );
+    #else
+        _fileId = MEDfileOpen( filename.c_str(), medAccessMode );
+    #endif
     _isOpen = true;
     _parallelOpen = false;
     return 0;

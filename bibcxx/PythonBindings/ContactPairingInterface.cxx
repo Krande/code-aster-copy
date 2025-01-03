@@ -67,7 +67,11 @@ Compute the pairing quantities on all zones
 Returns:
     bool: True if the pairing quantities are updated appropriately
 )" );
+    #ifdef ASTER_PLATFORM_MSVC64
+    class_.def( "compute", py::overload_cast<>( &ContactPairing::compute ),
+    #else
     class_.def( "compute", py::overload_cast< long int & >( &ContactPairing::compute ),
+    #endif
                 R"(
 Compute the pairing quantities on a zone
 
@@ -93,7 +97,11 @@ Returns:
 )" );
     class_.def(
         "getNumberOfPairs",
-        py::overload_cast< const long int & >( &ContactPairing::getNumberOfPairs, py::const_ ),
+        #ifdef ASTER_PLATFORM_MSVC64
+            py::overload_cast<>( &ContactPairing::getNumberOfPairs, py::const_ ),
+        #else
+            py::overload_cast< const long int & >( &ContactPairing::getNumberOfPairs, py::const_ ),
+        #endif
         R"(
 Return the number of pairs on a zone
 
@@ -105,7 +113,11 @@ Returns:
         ( py::arg( "zone_index" ) ) );
     class_.def(
         "getListOfPairs",
-        py::overload_cast< const long int & >( &ContactPairing::getListOfPairs, py::const_ ),
+        #ifdef ASTER_PLATFORM_MSVC64
+            py::overload_cast<>( &ContactPairing::getListOfPairs, py::const_ ),
+        #else
+            py::overload_cast< const long int & >( &ContactPairing::getListOfPairs, py::const_ ),
+        #endif
         R"(
 Get list of contact pairs for a contact zone
 

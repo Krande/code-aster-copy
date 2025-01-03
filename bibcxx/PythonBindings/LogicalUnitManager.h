@@ -66,7 +66,13 @@ class LogicalUnitFile {
     LogicalUnitFile( const std::filesystem::path &filename, const FileType type,
                      const FileAccess access )
         : _fileName( filename ), _isUsable( true ) {
-        _logicalUnit = openLogicalUnitFile( filename.c_str(), type, access );
+        #ifdef ASTER_PLATFORM_MSVC64
+            // Convert wide string to narrow
+            const std::string narrow = filename.string();
+            _logicalUnit = openLogicalUnitFile(narrow.c_str(), type, access);
+        #else
+            _logicalUnit = openLogicalUnitFile(filename.c_str(), type, access);
+        #endif
     };
 
     /**
@@ -87,7 +93,13 @@ class LogicalUnitFile {
             releaseLogicalUnitFile( _logicalUnit );
         _fileName = filename;
         _isUsable = true;
-        _logicalUnit = openLogicalUnitFile( filename.c_str(), type, access );
+        #ifdef ASTER_PLATFORM_MSVC64
+            // Convert wide string to narrow
+            const std::string narrow = filename.string();
+            _logicalUnit = openLogicalUnitFile(narrow.c_str(), type, access);
+        #else
+            _logicalUnit = openLogicalUnitFile(filename.c_str(), type, access);
+        #endif
     };
 
     /**
