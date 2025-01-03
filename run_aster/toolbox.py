@@ -22,10 +22,10 @@
 ------------------------------------------------
 """
 
-
+import pathlib
 from .config import CFG
 from .utils import run_command
-
+import os
 
 def make_shared(lib, src, *args):
     """Build a shared library from a fortran source file.
@@ -38,7 +38,11 @@ def make_shared(lib, src, *args):
     Returns:
         int: exit code.
     """
-    cmd = [CFG.get("FC")]
+    fc = CFG.get("FC")
+    fcp = pathlib.Path(fc)
+    if not fcp.exists():
+        fcp = pathlib.Path(os.getenv("FC"))
+    cmd = [fcp.as_posix()]
     cmd.extend(CFG.get("FCFLAGS"))
     cmd.extend(["-shared", "-o", lib, src])
     cmd.extend(args)
