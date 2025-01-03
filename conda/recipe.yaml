@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: code-aster
-  version: 17.2.0
+  version: 17.2.1
   win_build: 1
   build: 200
   mpi_prefix: nompi
@@ -17,7 +17,7 @@ source:
 
 build:
   number: ${{ build }}
-  string: py${{ CONDA_PY }}_${{ mpi_prefix }}_${{ build_type }}_h${{ PKG_HASH }}_${{ build }}
+  string: py${{ python | replace('.', '') }}_${{ mpi_prefix }}_${{ build_type }}_h${{ hash }}_${{ build }}
 
 requirements:
   build:
