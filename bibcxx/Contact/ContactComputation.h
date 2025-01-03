@@ -33,35 +33,39 @@ class ContactComputation {
     // Contact Definition
     ContactNewPtr _contact;
 
-    /**
-     * @brief Convert ELNO -> NOEU for virtual nodes
-     */
+    /** @brief Convert ELNO -> NOEU for virtual nodes */
     FieldOnNodesRealPtr convertVirtualField( const FieldOnCellsRealPtr field ) const;
 
+    /** @brief Level of verbosity */
+    ASTERINTEGER _verbosity;
+
   public:
+    /** @brief Main constructor */
     ContactComputation( const ContactNewPtr contact ) : _contact( contact ) {};
 
-    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    /** @brief Restricted constructor (Set) to support pickling */
     ContactComputation( const py::tuple &tup )
         : ContactComputation( tup[0].cast< ContactNewPtr >() ) {};
+
+    /** @brief Method (Get) to support pickling */
     py::tuple _getState() const { return py::make_tuple( _contact ); };
 
-    /**
-     * @brief Compute contact mortar matrix
-     */
+    /** @brief Compute contact mortar matrix  */
     ElementaryMatrixDisplacementRealPtr contactMortarMatrix() const;
 
-    FieldOnCellsRealPtr contactData( const ContactPairingPtr pairing, const MaterialFieldPtr mater,
+    /** @brief Compute field for input data in elementary computations of contact  */
+    FieldOnCellsRealPtr contactData( const ContactPairingPtr contPairing,
+                                     const MaterialFieldPtr mater,
                                      const bool &initial_contact ) const;
 
-    /**
-     * @brief Compute contact coefficient field (COEF_CONT)
-     */
+    /** @brief Compute contact coefficient field (COEF_CONT) */
     std::pair< FieldOnNodesRealPtr, FieldOnNodesRealPtr > contactCoefficient() const;
+
+    /** @brief Set verbosity */
+    void setVerbosity( const ASTERINTEGER &level ) { _verbosity = level; }
+
+    /** @brief Get verbosity */
+    ASTERINTEGER getVerbosity() const { return _verbosity; }
 };
 
-/**
- * @typedef ContactComputationPtr
- * @brief Pointeur intelligent vers un ContactComputation
- */
-typedef std::shared_ptr< ContactComputation > ContactComputationPtr;
+using ContactComputationPtr = std::shared_ptr< ContactComputation >;

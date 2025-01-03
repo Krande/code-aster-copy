@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,15 +22,11 @@
 # Fichier comprenant une procédure de test de CALC_ESSAI avec les différentes
 # options de calcul.
 
-from numpy import take
-
-import aster
 from .ce_calcul_modifstruct import CalcEssaiModifStruct
 from ...Cata.Syntax import _F
-from ...Messages import UTMESS
 
 from .ce_calcul_expansion import CalcEssaiExpansion
-from .ce_calcul_identification import CalcEssaiIdentification, CalculInverse
+from .ce_calcul_identification import CalcEssaiIdentification
 
 
 def TestCalcEssai(
@@ -134,7 +130,6 @@ def TestCalcEssai(
 
 
 class MessageBox:
-
     """!Classe qui permet d'ecrire dans un .mess separe"""
 
     def __init__(self, unite):

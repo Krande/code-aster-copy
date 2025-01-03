@@ -22,7 +22,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
-from libaster import ContactPairing, ContactComputation
+from libaster import ContactPairing, ContactComputation, CoordinatesSpace
 import numpy
 
 
@@ -32,18 +32,19 @@ DEBUT(
 
 test = CA.TestCase()
 
-Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+meshLine = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
-Mail = MODI_MAILLAGE(
-    reuse=Mail, MAILLAGE=Mail, ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS"))
+meshLine = MODI_MAILLAGE(
+    reuse=meshLine, MAILLAGE=meshLine, ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS"))
 )
 
-
-MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
+modelLine = AFFE_MODELE(
+    MAILLAGE=meshLine, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
 
 # Slave side - CONT_BAS
-DEFICO_BAS = DEFI_CONT(
-    MODELE=MODI,
+contactLine = DEFI_CONT(
+    MODELE=modelLine,
     INFO=2,
     ZONE=(
         _F(
@@ -57,101 +58,49 @@ DEFICO_BAS = DEFI_CONT(
 )
 
 # Pairing checks
-
-pair = ContactPairing(DEFICO_BAS)
+pair = ContactPairing(contactLine)
 pair.compute()
 
-test.assertSequenceEqual(pair.getListOfPairsOfZone(0), [(18, 3), (18, 4), (19, 4), (19, 5)])
-ref = [
-    [
-        0.5999999999999999,
-        -0.7333333333333334,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    [
-        -0.7333333333333334,
-        -1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    [
-        1.0,
-        -0.06666666666666687,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    [
-        -0.06666666666666687,
-        -1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ],
-]
+# One zone
+test.assertEqual(pair.getNumberOfZones(), 1)
+indexZone = 0
 
-test.assertEqual(len(pair.getSlaveIntersectionPoints(0)), 4)
-print(pair.getSlaveIntersectionPoints(0))
-test.assertSequenceEqual(pair.getSlaveIntersectionPoints(0), ref)
+# Get number of pairs on first zone
+test.assertEqual(pair.getNumberOfPairs(indexZone), 4)
 
+# Get list of pairs on first zone
+test.assertSequenceEqual(pair.getListOfPairs(indexZone), [(18, 3), (18, 4), (19, 4), (19, 5)])
 
-MailQ = CREA_MAILLAGE(MAILLAGE=Mail, LINE_QUAD=_F(TOUT="OUI"))
+# Get intersection points: 4 paires de points d'intersection
+test.assertEqual(len(pair.getNumberOfIntersectionPoints(indexZone)), 4)
 
+# For each pair: two points of intersections
+iPair = 0
+test.assertEqual(pair.getNumberOfIntersectionPoints(indexZone)[iPair], 2)
+test.assertEqual(pair.getNumberOfIntersectionPoints(indexZone)[iPair + 1], 2)
+test.assertEqual(pair.getNumberOfIntersectionPoints(indexZone)[iPair + 2], 2)
+test.assertEqual(pair.getNumberOfIntersectionPoints(indexZone)[iPair + 3], 2)
 
-MODIQ = AFFE_MODELE(
-    MAILLAGE=MailQ, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+# Values of intersections
+iPair = 0
+test.assertSequenceEqual(
+    pair.getIntersectionPoints(indexZone, CoordinatesSpace.Slave)[iPair],
+    (0.5999999999999999, 0.0, -0.7333333333333334, 0.0),
+)
+test.assertSequenceEqual(
+    pair.getIntersectionPoints(indexZone, CoordinatesSpace.Slave)[iPair + 1],
+    (-0.7333333333333334, 0.0, -1.0, 0.0),
+)
+
+meshQuad = CREA_MAILLAGE(MAILLAGE=meshLine, LINE_QUAD=_F(TOUT="OUI"))
+
+modelQuad = AFFE_MODELE(
+    MAILLAGE=meshQuad, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
 )
 
 # Slave side - CONT_BAS
-DEFICOQ_BAS = DEFI_CONT(
-    MODELE=MODIQ,
+contactQuad = DEFI_CONT(
+    MODELE=modelQuad,
     INFO=2,
     ZONE=(
         _F(
@@ -165,90 +114,39 @@ DEFICOQ_BAS = DEFI_CONT(
 )
 
 # Pairing checks
-
-pair = ContactPairing(DEFICOQ_BAS)
+pair = ContactPairing(contactQuad)
 pair.compute()
 
+# One zone
+test.assertEqual(pair.getNumberOfZones(), 1)
+indexZone = 0
 
-test.assertSequenceEqual(pair.getListOfPairsOfZone(0), [(18, 3), (18, 4), (19, 4), (19, 5)])
-ref = [
-    [
-        0.5999999999999999,
-        -0.7333333333333334,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    [
-        -0.7333333333333334,
-        -1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    [
-        1.0,
-        -0.06666666666666687,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    [
-        -0.06666666666666687,
-        -1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ],
-]
+# Get number of pairs on first zone
+test.assertEqual(pair.getNumberOfPairs(indexZone), 4)
 
-test.assertEqual(len(pair.getSlaveIntersectionPoints(0)), 4)
-test.assertEqual(len(pair.getSlaveIntersectionPoints(0)[0]), 16)
-print(pair.getSlaveIntersectionPoints(0))
-test.assertSequenceEqual(pair.getSlaveIntersectionPoints(0), ref)
+# Get list of pairs on first zone
+test.assertSequenceEqual(pair.getListOfPairs(indexZone), [(18, 3), (18, 4), (19, 4), (19, 5)])
+
+# Get intersection points
+test.assertEqual(len(pair.getNumberOfIntersectionPoints(indexZone)), 4)
+
+# For each pair: two points of intersections
+iPair = 0
+test.assertEqual(pair.getNumberOfIntersectionPoints(indexZone)[iPair], 2)
+test.assertEqual(pair.getNumberOfIntersectionPoints(indexZone)[iPair + 1], 2)
+test.assertEqual(pair.getNumberOfIntersectionPoints(indexZone)[iPair + 2], 2)
+test.assertEqual(pair.getNumberOfIntersectionPoints(indexZone)[iPair + 3], 2)
+
+# Values of intersections
+iPair = 0
+test.assertSequenceEqual(
+    pair.getIntersectionPoints(indexZone, CoordinatesSpace.Slave)[iPair],
+    (0.5999999999999999, 0.0, -0.7333333333333334, 0.0),
+)
+test.assertSequenceEqual(
+    pair.getIntersectionPoints(indexZone, CoordinatesSpace.Slave)[iPair + 1],
+    (-0.7333333333333334, 0.0, -1.0, 0.0),
+)
+
 
 FIN()

@@ -100,13 +100,14 @@ Returns
               py::arg( "index" ) )
         .def( "addEquationNumbering", &Result::addEquationNumbering )
         .def( "setMaterialField",
-              py::overload_cast< const MaterialFieldPtr & >( &Result::setMaterialField ), R"(
+              py::overload_cast< const MaterialFieldPtr &, bool >( &Result::setMaterialField ), R"(
 Set material field on all indexs
 
 Arguments:
     mater (MaterialField): material field to set.
+    exists_ok (bool): If *True*, pass silently if a Model is already defined. *False* by default.
         )",
-              py::arg( "mater" ) )
+              py::arg( "mater" ), py::arg( "exists_ok" ) = false )
         .def( "setMaterialField",
               py::overload_cast< const MaterialFieldPtr &, ASTERINTEGER >(
                   &Result::setMaterialField ),
@@ -126,13 +127,14 @@ Arguments:
     index (int): index to set
         )",
               py::arg( "load" ), py::arg( "index" ) )
-        .def( "setModel", py::overload_cast< const ModelPtr & >( &Result::setModel ), R"(
+        .def( "setModel", py::overload_cast< const ModelPtr &, bool >( &Result::setModel ), R"(
 Set model on all indexs
 
 Arguments:
-    model (Model): model to set.
+    model (Model): Model to be assigned.
+    exists_ok (bool): If *True*, pass silently if a Model is already defined. *False* by default.
         )",
-              py::arg( "model" ) )
+              py::arg( "model" ), py::arg( "exists_ok" ) = false )
         .def( "setModel", py::overload_cast< const ModelPtr &, ASTERINTEGER >( &Result::setModel ),
               R"(
 Set model on the specified index
@@ -143,15 +145,16 @@ Arguments:
         )",
               py::arg( "model" ), py::arg( "index" ) )
         .def( "setElementaryCharacteristics",
-              py::overload_cast< const ElementaryCharacteristicsPtr & >(
+              py::overload_cast< const ElementaryCharacteristicsPtr &, bool >(
                   &Result::setElementaryCharacteristics ),
               R"(
 Set elementary characterictics on all indexs
 
 Arguments:
     cara_elem (ElementaryCharacteristics): elementary characterictics to set.
+    exists_ok (bool): If *True*, pass silently if a Model is already defined. *False* by default.
         )",
-              py::arg( "cara_elem" ) )
+              py::arg( "cara_elem" ), py::arg( "exists_ok" ) = false )
         .def( "setElementaryCharacteristics",
               py::overload_cast< const ElementaryCharacteristicsPtr &, ASTERINTEGER >(
                   &Result::setElementaryCharacteristics ),

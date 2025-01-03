@@ -18,6 +18,7 @@
    * - :py:class:`~code_aster.Objects.ContactParameter`
    * - :py:class:`~code_aster.Objects.ContactType`
    * - :py:class:`~code_aster.Objects.ContactVariant`
+   * - :py:class:`~code_aster.Objects.CoordinatesSpace`
    * - :py:class:`~code_aster.Objects.CrackShape`
    * - :py:class:`~code_aster.Objects.DiscreteComputation`
    * - :py:class:`~code_aster.Objects.DisplacementReal`
@@ -58,6 +59,7 @@
    * - :py:class:`~code_aster.Objects.NormalSpeedReal`
    * - :py:class:`~code_aster.Objects.ObjectBalancer`
    * - :py:class:`~code_aster.Objects.PairingAlgo`
+   * - :py:class:`~code_aster.Objects.PairingMethod`
    * - :py:class:`~code_aster.Objects.PairingParameter`
    * - :py:class:`~code_aster.Objects.ParMetisPartitioner`
    * - :py:class:`~code_aster.Objects.PartOfMaterialField`

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -116,6 +116,31 @@ extern void DEFSSPSSSSPS( AJELLT, ajellt, const char *, STRING_SIZE, const char 
                           const ASTERINTEGER *, const char *, STRING_SIZE, const char *,
                           STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
                           const ASTERINTEGER *, const char *, STRING_SIZE );
+
+#define CALLO_PAIRWRAP( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )                        \
+    CALLPOOOOOPPPPPPPPPPO( PAIRWRAP, pairwrap, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
+extern void DEFPSSSSSPPPPPPPPPPS( PAIRWRAP, pairwrap, ASTERINTEGER *, const char *, STRING_SIZE,
+                                  const char *, STRING_SIZE, const char *, STRING_SIZE,
+                                  const char *, STRING_SIZE, const char *, STRING_SIZE,
+                                  ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER *, ASTERINTEGER *,
+                                  ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                                  ASTERINTEGER *, ASTERINTEGER *, const char *, STRING_SIZE );
+
+#define CALLO_INTECELLAREAWRAP( a, b, c, d )                                                       \
+    CALLOPPP( INTECELLAREAWRAP, intecellareawrap, a, b, c, d )
+extern void DEFSPPP( INTECELLAREAWRAP, intecellareawrap, const char *, STRING_SIZE, ASTERINTEGER *,
+                     ASTERDOUBLE *, ASTERDOUBLE * );
+
+#define CALLO_INTEPOINCOORWRAP( a, b, c, d, e )                                                    \
+    CALLOOOPP( INTEPOINCOORWRAP, intepoincoorwrap, a, b, c, d, e )
+extern void DEFSSSPP( INTEPOINCOORWRAP, intepoincoorwrap, const char *, STRING_SIZE, const char *,
+                      STRING_SIZE, const char *, STRING_SIZE, const ASTERINTEGER *, ASTERDOUBLE * );
+
+#define CALLO_QUADPOINCOORWRAP( a, b, c, d, e, f )                                                 \
+    CALLOOOPPP( QUADPOINCOORWRAP, quadpoincoorwrap, a, b, c, d, e, f )
+extern void DEFSSSPPP( QUADPOINCOORWRAP, quadpoincoorwrap, const char *, STRING_SIZE, const char *,
+                       STRING_SIZE, const char *, STRING_SIZE, const ASTERINTEGER *, ASTERINTEGER *,
+                       ASTERDOUBLE * );
 
 #ifdef __cplusplus
 }

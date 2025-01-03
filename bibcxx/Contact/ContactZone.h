@@ -3,9 +3,9 @@
 
 /**
  * @file ContactZone.h
- * @brief Fichier entete de la class ContactZone
+ * @brief Header of class ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,191 +29,150 @@
 #include "Contact/ContactParameter.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Meshes/MeshPairing.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
 class ContactZone : public DataStructure {
   private:
-    /** @brief Modele */
+    /** @brief Model */
     ModelPtr _model;
     /** @brief Level of verbosity */
     ASTERINTEGER _verbosity;
-    /** @brief Parameter for contact only */
+    /** @brief Parameters for contact */
     ContactParameterPtr _contParam;
-    /** @brief Parameter for friction only */
+    /** @brief Parameters for friction  */
     FrictionParameterPtr _fricParam;
-    /** @brief Parameter for pairing only */
+    /** @brief Parameters for pairing */
     PairingParameterPtr _pairParam;
-    /** @brief  Check direction of normal */
+    /** @brief Definition of pairing of two surfaces */
+    MeshPairingPtr _meshPairing;
+    /** @brief Check direction of normal */
     bool _checkNormal;
     /** @brief  Smoothing of normal */
     bool _smoothing;
-    /** @brief  List of master Cells */
-    VectorLong _masterCells;
-    /** @brief List of slave cells */
-    VectorLong _slaveCells;
-    /** @brief  List of master nodes */
-    VectorLong _masterNodes;
-    /** @brief List of slave nodes */
-    VectorLong _slaveNodes;
-    /** @brief excluded elements of slave side for LAGRANGIEN */
-    VectorLong _slaveCellsExcluded;
-    /** @brief  Master inverse connectivity */
-    JeveuxCollectionLong _masterInverseConnectivity;
-    /** @brief  Slave inverse connectivity */
-    JeveuxCollectionLong _slaveInverseConnectivity;
-    /** @brief  Master cells neighbors */
-    JeveuxCollectionLong _masterNeighbors;
-    /** @brief  slave cells neighbors */
-    JeveuxCollectionLong _slaveNeighbors;
-    /** @brief Map between slave surfaciv and volumic cell */
-    MapLong _slavSurf2Volu;
-    /** @brief name of slave side */
-    std::string _slaveGrp;
-    /** @brief name of master side */
-    std::string _masterGrp;
-
-    /**
-     * @brief Construct the inverse connectivity
-     */
-    ASTERBOOL buildInverseConnectivity();
-    /**
-     * @brief construct master/slave cells neighbors
-     */
-    ASTERBOOL buildCellsNeighbors();
-
-    /**
-     * @brief construct surface->volume slave cell
-     */
-    void buildSlaveCellsVolu();
 
   public:
-    /**
-     * @typedef ContactZonePt
-     * @brief Pointeur intelligent vers un ContactZone
-     */
-    typedef std::shared_ptr< ContactZone > ContactZonePtr;
-    /**
-     * @brief Constructeur
-     */
+    using ContactZonePtr = std::shared_ptr< ContactZone >;
+
+    /** @brief No default constructor */
     ContactZone() = delete;
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with given name */
     ContactZone( const std::string name, const ModelPtr model );
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with automatic name */
     ContactZone( const ModelPtr model ) : ContactZone( ResultNaming::getNewResultName(), model ) {};
 
+    /** @brief Get model */
     ModelPtr getModel() const { return _model; }
 
+    /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _model->getMesh(); }
 
-    void setVerbosity( const ASTERINTEGER &level ) { _verbosity = level; }
+    /** @brief Set verbosity */
+    void setVerbosity( const ASTERINTEGER &level );
 
+    /** @brief Get verbosity */
     ASTERINTEGER getVerbosity() const { return _verbosity; }
 
-    bool build();
-
+    /** @brief Get parameters for contact */
     ContactParameterPtr getContactParameter() const { return _contParam; };
 
+    /** @brief Get parameters for friction */
     FrictionParameterPtr getFrictionParameter() const { return _fricParam; };
 
+    /** @brief Get parameters for pairing */
     PairingParameterPtr getPairingParameter() const { return _pairParam; };
 
+    /** @brief Set parameters for contact */
     void setContactParameter( const ContactParameterPtr contParam ) { _contParam = contParam; };
 
+    /** @brief Set parameters for friction */
     void setFrictionParameter( const FrictionParameterPtr fricParam ) { _fricParam = fricParam; };
 
+    /** @brief Set parameters for pairing */
     void setPairingParameter( const PairingParameterPtr pairParam ) { _pairParam = pairParam; };
 
-    void setSlaveGroupOfCells( const std::string &slave );
-
-    void setMasterGroupOfCells( const std::string &master );
-
-    void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave );
-
-    void setExcludedSlaveGroupOfNodes( const VectorString &excluded_slave );
-
-    VectorLong getExcludedSlaveCells() const { return _slaveCellsExcluded; };
-
-    void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
-
-    bool checkNormals() const { return _checkNormal; }
-
-    /**
-     * @brief get master nodes
-     */
-    const VectorLong &getMasterNodes() const { return _masterNodes; };
-
-    VectorLong &getMasterNodes() {
-        return const_cast< VectorLong & >( std::as_const( *this ).getMasterNodes() );
+    /** @brief Set group of slave cells */
+    void setSlaveGroupOfCells( const std::string &groupName ) {
+        _meshPairing->setSlaveGroupOfCells( groupName );
     }
 
-    VectorLong getSlaveNodes() const { return _slaveNodes; }
+    /** @brief Set group of master cells */
+    void setMasterGroupOfCells( const std::string &groupName ) {
+        _meshPairing->setMasterGroupOfCells( groupName );
+    }
 
-    /**
-     * @brief get master cells
-     */
-    const VectorLong &getMasterCells() const { return _masterCells; };
-
+    /** @brief Get master cells */
+    const VectorLong &getMasterCells() const { return _meshPairing->getMasterCells(); };
     VectorLong &getMasterCells() {
         return const_cast< VectorLong & >( std::as_const( *this ).getMasterCells() );
     }
 
-    /**
-     * @brief get slave cells
-     */
-    VectorLong getSlaveCells() const { return _slaveCells; }
+    /** @brief Get slave cells */
+    VectorLong getSlaveCells() const { return _meshPairing->getSlaveCells(); }
 
-    VectorLong getMasterCellsFromNode( const ASTERINTEGER &i ) const;
+    /** @brief Set excluded groups of slave cells */
+    void setExcludedSlaveGroupOfCells( const VectorString &groupsName ) {
+        _meshPairing->setExcludedSlaveGroupOfCells( groupsName );
+    }
 
-    VectorLong getSlaveCellsFromNode( const ASTERINTEGER &i ) const;
+    /** @brief Set excluded groups of slave nodes */
+    void setExcludedSlaveGroupOfNodes( const VectorString &groupsName ) {
+        _meshPairing->setExcludedSlaveGroupOfNodes( groupsName );
+    }
 
-    VectorLong getMasterCellNeighbors( const ASTERINTEGER &i ) const;
+    /** @brief Set/get check normals */
+    void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
+    bool checkNormals() const { return _checkNormal; }
 
-    VectorLong getSlaveCellNeighbors( const ASTERINTEGER &i ) const;
+    /** @brief Get master nodes */
+    VectorLong getMasterNodes() const { return _meshPairing->getMasterNodes(); };
 
-    auto getSlaveCellsSurfToVolu() const { return _slavSurf2Volu; };
+    /** @brief Get slave nodes */
+    VectorLong getSlaveNodes() const { return _meshPairing->getSlaveNodes(); };
 
-    ASTERINTEGER getSlaveCellSurfToVolu( const ASTERINTEGER &i ) const {
-        return _slavSurf2Volu.at( i );
+    /** @brief Get volume slave cells linked to all surfacic slave cells */
+    MapLong getSlaveCellsSurfToVolu() const { return _meshPairing->getSlaveCellsSurfToVolu(); };
+
+    /** @brief Get volume slave cell linked to a surfacic slave cells */
+    ASTERINTEGER getSlaveCellSurfToVolu( const ASTERINTEGER &cellIndex ) const {
+        return _meshPairing->getSlaveCellSurfToVolu( cellIndex );
     };
 
-    /**
-     * @brief get master inverse connectivity as JeVeuxCollection
-     */
-    JeveuxCollectionLong getMasterInverseConnectivity() const { return _masterInverseConnectivity; }
-    /**
-     * @brief get slave inverse connectivity as JeVeuxCollection
-     */
-    JeveuxCollectionLong getSlaveInverseConnectivity() const { return _slaveInverseConnectivity; }
+    /** @brief Set coordinates */
+    void setCoordinates( const MeshCoordinatesFieldPtr &coor ) {
+        _meshPairing->setCoordinates( coor );
+    };
 
-    /**
-     * @brief get master neighbors
-     */
-    JeveuxCollectionLong getMasterNeighbors() const { return _masterNeighbors; }
-    /**
-     * @brief get slave neighbors
-     */
-    JeveuxCollectionLong getSlaveNeighbors() const { return _slaveNeighbors; }
+    /** @brief Update coordinates */
+    void updateCoordinates( const FieldOnNodesRealPtr &disp ) {
+        _meshPairing->updateCoordinates( disp );
+    };
 
+    /** @brief Set/unset friction for this zone */
     void enableFriction( const bool &friction ) { _fricParam->enableFriction( friction ); };
 
+    /** @brief Detect if friction for this zone */
     bool hasFriction() const { return _fricParam->hasFriction(); };
 
+    /** @brief Set/unset normal smoothing for this zone */
     void enableSmoothing( const bool &smoothing ) { _smoothing = smoothing; };
 
+    /** @brief Detect if normal smoothing for this zone */
     bool hasSmoothing() const { return _smoothing; };
+
+    /** @brief Compute pairing of zone */
+    bool pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole );
+
+    /** @brief Get pairing of surface meshes */
+    MeshPairingPtr getMeshPairing() { return _meshPairing; };
+
+    /** @brief Builder from Fortran part */
+    bool build();
 };
 
-/**
- * @typedef ContactZonePtr
- * @brief Pointeur intelligent vers un ContactZone
- */
-typedef std::shared_ptr< ContactZone > ContactZonePtr;
+using ContactZonePtr = std::shared_ptr< ContactZone >;
 
 #endif /* CONTACT_ZONE_H_ */

@@ -138,9 +138,15 @@ void Result::setMesh( const BaseMeshPtr &mesh ) {
 };
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
-                                           ASTERINTEGER storageIndex ) {
+                                           ASTERINTEGER storageIndex, bool exists_ok ) {
     if ( !cara )
         raiseAsterError( "ValueError: ElementaryCharacteristics is empty" );
+    if ( _mapElemCara.count( storageIndex ) != 0 ) {
+        if ( exists_ok || _mapElemCara[storageIndex] == cara )
+            return;
+        raiseAsterError( "ValueError: ElementaryCharacteristics already assigned at index " +
+                         std::to_string( storageIndex ) );
+    }
 
     _mapElemCara[storageIndex] = cara;
     std::string type( "CARAELEM" );
@@ -152,6 +158,12 @@ void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
 void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER storageIndex ) {
     if ( !load )
         raiseAsterError( "ValueError: Load is empty" );
+    if ( _mapLoads.count( storageIndex ) != 0 ) {
+        if ( _mapLoads[storageIndex] == load )
+            return;
+        raiseAsterError( "ValueError: Load already assigned at index " +
+                         std::to_string( storageIndex ) );
+    }
 
     _mapLoads[storageIndex] = load;
     std::string type( "EXCIT" );
@@ -159,9 +171,16 @@ void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER storageInd
     CALLO_RSADPA_ZK24_WRAP( getName(), &storageIndex, load->getName(), type, cel );
 };
 
-void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER storageIndex ) {
+void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER storageIndex,
+                               bool exists_ok ) {
     if ( !mater )
         raiseAsterError( "ValueError: MaterialField is empty" );
+    if ( _mapMaterial.count( storageIndex ) != 0 ) {
+        if ( exists_ok || _mapMaterial[storageIndex] == mater )
+            return;
+        raiseAsterError( "ValueError: MaterialField already assigned at index " +
+                         std::to_string( storageIndex ) );
+    }
 
     _mapMaterial[storageIndex] = mater;
     std::string type( "CHAMPMAT" );
@@ -170,9 +189,15 @@ void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER stora
     setMesh( mater->getMesh() );
 };
 
-void Result::setModel( const ModelPtr &model, ASTERINTEGER storageIndex ) {
+void Result::setModel( const ModelPtr &model, ASTERINTEGER storageIndex, bool exists_ok ) {
     if ( !model )
         raiseAsterError( "ValueError: Model is empty" );
+    if ( _mapModel.count( storageIndex ) != 0 ) {
+        if ( exists_ok || _mapModel[storageIndex] == model )
+            return;
+        raiseAsterError( "ValueError: Model already assigned at index " +
+                         std::to_string( storageIndex ) );
+    }
 
     _mapModel[storageIndex] = model;
     std::string type( "MODELE" );
@@ -280,24 +305,25 @@ void Result::_listOfParameters() {
     }
 }
 
-void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
+void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
+                                           bool exists_ok ) {
     auto allStorageIndexes = getIndexes();
     for ( auto &storageIndex : allStorageIndexes ) {
-        setElementaryCharacteristics( cara, storageIndex );
+        setElementaryCharacteristics( cara, storageIndex, exists_ok );
     }
 };
 
-void Result::setMaterialField( const MaterialFieldPtr &mater ) {
+void Result::setMaterialField( const MaterialFieldPtr &mater, bool exists_ok ) {
     auto allStorageIndexes = getIndexes();
     for ( auto &storageIndex : allStorageIndexes ) {
-        setMaterialField( mater, storageIndex );
+        setMaterialField( mater, storageIndex, exists_ok );
     }
 };
 
-void Result::setModel( const ModelPtr &model ) {
+void Result::setModel( const ModelPtr &model, bool exists_ok ) {
     auto allStorageIndexes = getIndexes();
     for ( auto &storageIndex : allStorageIndexes ) {
-        setModel( model, storageIndex );
+        setModel( model, storageIndex, exists_ok );
     }
 };
 
@@ -307,7 +333,9 @@ std::vector< ElementaryCharacteristicsPtr > Result::getAllElementaryCharacterist
 
 ElementaryCharacteristicsPtr Result::getElementaryCharacteristics() const {
     const auto cara = getAllElementaryCharacteristics();
-    AS_ASSERT( cara.size() <= 1 );
+    if ( cara.size() > 1 ) {
+        UTMESS( "F", "RESULT2_8" );
+    }
 
     if ( cara.size() == 1 )
         return cara[0];
@@ -342,7 +370,9 @@ std::vector< MaterialFieldPtr > Result::getMaterialFields() const {
 
 MaterialFieldPtr Result::getMaterialField() const {
     const auto mate = getMaterialFields();
-    AS_ASSERT( mate.size() <= 1 );
+    if ( mate.size() > 1 ) {
+        UTMESS( "F", "RESULT2_7" );
+    };
 
     if ( mate.size() == 1 )
         return mate[0];
@@ -387,7 +417,7 @@ std::vector< ModelPtr > Result::getModels() const { return unique( _mapModel ); 
 
 ModelPtr Result::getModel() const {
     if ( hasMultipleModel() ) {
-        raiseAsterError( "Error: multiple models" );
+        UTMESS( "F", "RESULT2_6" );
     }
 
     const auto models = getModels();

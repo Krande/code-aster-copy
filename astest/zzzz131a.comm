@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -604,16 +604,6 @@ TEST_RESU(
 RESU11 = EXTR_RESU(RESULTAT=RESU1, ARCHIVAGE=_F(LIST_INST=LINST11))
 
 RESU11 = CALC_CHAMP(reuse=RESU11, DEFORMATION=("DEGE_ELNO"), RESULTAT=RESU11)
-
-
-# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU11))
-
-# POUR COMPLETER LA VALIDATION INFORMATIQUE DE EXTR_RESU : EXTRACTION EN PLACE
-
-RESU12 = EXTR_RESU(RESULTAT=RESU1, ARCHIVAGE=_F(LIST_INST=LINST11))
-RESU12 = EXTR_RESU(reuse=RESU12, RESULTAT=RESU12, ARCHIVAGE=_F(LIST_INST=LINST11))
-
-DETRUIRE(NOM=RESU12)
 
 
 DETRUIRE(NOM=RESU1)

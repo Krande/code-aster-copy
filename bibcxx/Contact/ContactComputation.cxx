@@ -29,36 +29,34 @@
 #include "Numbering/DOFNumbering.h"
 #include "Utilities/Tools.h"
 
-/**
- * @brief Compute contact mortar matrix
- */
-FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pairing,
+FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr contPairing,
                                                      const MaterialFieldPtr mater,
                                                      const bool &initial_contact ) const {
     CALL_JEMARQ();
 
-    auto fed = pairing->getFiniteElementDescriptor();
+    // Get finite element descriptor
+    auto fed = contPairing->getFiniteElementDescriptor();
 
     // Field for intersection points and other thing ...
     auto data = FieldOnCellsPtrBuilder< ASTERDOUBLE >( fed, "CHAR_MECA_CONT", "PCONFR" );
 
-    ASTERINTEGER nbContPair = pairing->getNumberOfPairs();
-    auto nbInter = concatenate( pairing->getNumberOfIntersectionPoints() );
-    auto inter = concatenate( pairing->getSlaveIntersectionPoints() );
-    auto listPairs = pairing->getListOfPairs();
+    // Get pairing
+    ASTERINTEGER nbContPair = contPairing->getNumberOfPairs();
+    VectorLong nbInter = contPairing->getNumberOfIntersectionPoints();
+    std::vector< VectorOfVectorsReal > inter =
+        contPairing->getIntersectionPoints( CoordinatesSpace::Slave );
+    VectorPairLong listPairs = contPairing->getListOfPairs();
+    MapLong globPairToLocaPair = contPairing->globPairToLocaPair();
+
     AS_ASSERT( nbContPair == nbInter.size() );
-    AS_ASSERT( 16 * nbContPair == inter.size() );
 
-    auto pair2Zone = pairing->pairsToZones();
-
+    // Acces to list of cells
+    const JeveuxCollectionLong meshConnex = contPairing->getMesh()->getConnectivity();
+    MapLong pair2Zone = contPairing->pairsToZones();
     auto grel = fed->getListOfGroupsOfElements();
     auto nbGrel = data->getNumberOfGroupOfElements();
 
-    auto meshConnectivty = pairing->getMesh()->getConnectivity();
-
-    ASTERINTEGER nbPair = 0;
-
-    // create local mapping
+    // Create local mapping (for Nitsche)
     auto mapping = []( const VectorLong &surf_nodes, const VectorLong &volu_nodes ) {
         VectorLong mapping;
         mapping.reserve( surf_nodes.size() );
@@ -77,34 +75,44 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
         return mapping;
     };
 
-    // get Material
+    // Get material (for Nitsche)
     auto listMaterial = mater->getVectorOfMaterial();
 
-    // Loop on Grel
+    // Loop on groups of elements
+    ASTERINTEGER nbPair = 0;
     for ( ASTERINTEGER iGrel = 0; iGrel < nbGrel; iGrel++ ) {
         auto nbElem = data->getNumberOfElements( iGrel );
-        // size from catalogue
         AS_ASSERT( data->getSizeOfFieldOfElement( iGrel ) == 60 );
         auto liel = ( *grel )[iGrel + 1];
         liel->updateValuePointer();
+        // Loop on elements
         for ( ASTERINTEGER iElem = 0; iElem < nbElem; iElem++ ) {
+            // Get mesh cell index
             auto iPair = -( *liel )[iElem];
 
             if ( iPair <= nbContPair ) {
+                // Current contact zone
                 auto iZone = pair2Zone[iPair - 1];
                 auto zone = _contact->getContactZone( iZone );
+
                 // Adress in field
                 auto shift = data->getShifting( iGrel, iElem );
 
-                // Number of intersection points
+                // Set number of intersection points
                 ( *data )[shift + 0] = nbInter[iPair - 1];
-                // Parametric coordinates
-                for ( ASTERINTEGER i = 0; i < 16; i++ ) {
-                    ( *data )[shift + 1 + i] = inter[16 * ( iPair - 1 ) + i];
-                }
+                AS_ASSERT( nbInter[iPair - 1] <= 8 );
 
-                /// Contact parameter
+                // Set coordinates of slave intersection points
+                for ( ASTERINTEGER iInter = 0; iInter < 8; iInter++ ) {
+                    if ( iInter < nbInter[iPair - 1] ) {
+                        auto iLocaPair = iPair - 1 - globPairToLocaPair[iZone];
+                        ( *data )[shift + 1 + iInter] = inter[iZone][iLocaPair][2 * iInter];
+                        ( *data )[shift + 9 + iInter] = inter[iZone][iLocaPair][2 * iInter + 1];
+                    }
+                }
+                // Contact parameter
                 auto cont = zone->getContactParameter();
+
                 //  Value for ALGO_CONT
                 ( *data )[shift + 23] = double( cont->getAlgorithm() );
                 //  Value for TYPE_CONT
@@ -131,8 +139,10 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
 
                 /// Other
                 auto pair = zone->getPairingParameter();
+
                 // Value for projection tolerancetolerance
                 ( *data )[shift + 40] = 1.e-8;
+
                 // Status to impose to contact
                 if ( initial_contact ) {
                     ( *data )[shift + 41] = double( pair->getInitialState() );
@@ -140,15 +150,17 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                     ( *data )[shift + 41] = double( InitialState::Interpenetrated );
                 }
 
-                /// Nitsche
+                // Nitsche
                 if ( cont->getAlgorithm() == ContactAlgo::Nitsche ) {
                     auto [slavCellNume, mastCellNume] = listPairs[iPair - 1];
-                    auto slav_surf_con = ( *meshConnectivty )[slavCellNume + 1]->toVector();
+                    auto slav_surf_con = ( *meshConnex )[slavCellNume + 1]->toVector();
                     auto slavVoluNume = zone->getSlaveCellSurfToVolu( slavCellNume );
-                    auto slav_volu_con = ( *meshConnectivty )[slavVoluNume + 1]->toVector();
+                    auto slav_volu_con = ( *meshConnex )[slavVoluNume + 1]->toVector();
+
                     auto mapLoc = mapping( slav_surf_con, slav_volu_con );
                     // Number of nodes
                     ( *data )[shift + 50] = double( mapLoc.size() );
+
                     // Mapping
                     auto i = 0;
                     for ( auto &nodeId : mapLoc ) {
@@ -159,7 +171,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                     AS_ASSERT( listMaterial.size() == 1 );
                     // Young modulus
                     ( *data )[shift + 45] = listMaterial[0]->getValueReal( "ELAS", "E" );
-                    // Poisson ration
+                    // Poisson ratio
                     ( *data )[shift + 46] = listMaterial[0]->getValueReal( "ELAS", "NU" );
                 }
 
@@ -174,22 +186,19 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
     return data;
 };
 
-/**
- * @brief Compute contact mortar matrix
- */
 std::pair< FieldOnNodesRealPtr, FieldOnNodesRealPtr >
 ContactComputation::contactCoefficient() const {
 
     // Create FieldOnNodes
-    auto ccont =
+    auto fieldCont =
         std::make_shared< FieldOnNodesReal >( _contact->getFiniteElementDescriptor(), "ECCONT" );
-    ccont->updateValuePointers();
+    fieldCont->updateValuePointers();
 
-    auto cfrot =
+    auto fieldFric =
         std::make_shared< FieldOnNodesReal >( _contact->getFiniteElementDescriptor(), "ECFROT" );
-    cfrot->updateValuePointers();
+    fieldFric->updateValuePointers();
 
-    auto dof2nodes = ccont->getDescription()->getNodeAndComponentIdFromDOF();
+    auto dof2nodes = fieldCont->getDescription()->getNodeAndComponentIdFromDOF();
     MapLong nodes2dof;
     for ( ASTERINTEGER i_eq = 0; i_eq < dof2nodes.size(); i_eq++ ) {
         auto [node, cmp] = dof2nodes[i_eq];
@@ -201,14 +210,13 @@ ContactComputation::contactCoefficient() const {
 
     for ( auto &zone : zones ) {
         auto coef_cont = zone->getContactParameter()->getCoefficient();
-
         auto coef_frot = zone->getFrictionParameter()->getCoefficient();
         auto nodes = zone->getSlaveNodes();
         for ( auto &node : nodes ) {
-            ( *ccont )[nodes2dof[node]] = coef_cont;
-            ( *cfrot )[nodes2dof[node]] = coef_frot;
+            ( *fieldCont )[nodes2dof[node]] = coef_cont;
+            ( *fieldFric )[nodes2dof[node]] = coef_frot;
         }
     }
 
-    return std::make_pair( ccont, cfrot );
+    return std::make_pair( fieldCont, fieldFric );
 };

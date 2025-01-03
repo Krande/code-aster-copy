@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,28 @@ cata_msg = {
     4: _("""Ce champ n'est pas autorisé dans le résultat."""),
     5: _(
         """le numéro d'archivage est inférieur au numéro précédent. Il doit être strictement croissant."""
+    ),
+    6: _(
+        """Cette opération n'est pas possible si le modèle varie.
+
+Risques & Conseils :
+    Limiter le traitement sur des numéros d'ordre où le modèle ne change pas.
+         """
+    ),
+    7: _(
+        """Cette opération n'est pas possible si le champ de matériau varie.
+
+Risques & Conseils :
+    Limiter le traitement sur des numéros d'ordre où le champ de matériau ne change pas.
+         """
+    ),
+    8: _(
+        """Cette opération n'est pas possible si les caractéristiques élémentaires varient.
+
+Risques & Conseils :
+    Limiter le traitement sur des numéros d'ordre où les caractéristiques élémentaires
+     ne changent pas.
+         """
     ),
     14: _("""Le NUME_DDL a été déterminé à partir de la matrice de rigidité %(k1)s."""),
     15: _("""Les NUME_DDL associés aux matrices MATR_RIGI et MATR_MASS sont différents."""),

@@ -31,15 +31,6 @@ Il y a des noeuds en commun entre les surfaces esclave et maître. Ceci est inte
 Le modèle n'est pas de type mécanique, ce n'est pas possible.
 """
     ),
-    3: _(
-        """
-Il existe des noeuds communs aux surfaces esclaves entre les zones de contact : c'est interdit.
-Conseil :
- - changez vos surfaces de contact,
- - définissez alternativement les zones possédant un noeud commun comme maître et esclave,
- - A MODIFIER pour la méthode LAC, il faut désactiver le lissage.
-"""
-    ),
     4: _(
         """
 Il y a un problème de dimension lié au modèle.

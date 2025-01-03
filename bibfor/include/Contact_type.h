@@ -16,21 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! Contact data structure : Parameters <-> integer definitions
-! -------------------------------------------------------------------------
+! ==================================================================================================
 !
+! Algorithm
+!
+! ==================================================================================================
 #define ALGO_FIXE       0
 #define ALGO_NEWT       1
 #define NB_DATA_CYCL    75
 
+! Total number of coordinates for intersection points (old one, to suppress)
 #define SIZE_MAX_INTE_SL 16
-
-! Projection type
-! -------------------------------------------------------------------------
-#define PROJ_TYPE_NODE  0
-#define PROJ_TYPE_FIXE  1
-
-! Projection algo parameters
-! -------------------------------------------------------------------------
-#define PROJ_ALGO_NONE  0
-#define PROJ_ALGO_GAPI  1

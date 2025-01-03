@@ -32,7 +32,7 @@ void exportContactComputationToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ContactComputation, ContactNewPtr > ) )
         .def( define_pickling< ContactComputation >() )
         .def( "contactData", &ContactComputation::contactData, R"(
-Compute contact data (cf. MMCHML) as input to compute contact forces and matrices.
+Compute contact data as input to compute contact forces and matrices.
 
 Arguments:
     pairing (ContactPairing): pairing object
@@ -43,12 +43,30 @@ Returns:
     FieldOnCellsReal: contact data
         )",
               py::arg( "pairing" ), py::arg( "material" ), py::arg( "initial_contact" ) )
+        .def( "setVerbosity", &ContactComputation::setVerbosity, R"(
+Set level of verbosity
+0- without
+1- normal (default)
+2- detailled
+
+Arguments:
+    level (int) : level of verbosity
+)",
+              py::arg( "level" ) )
+        .def( "getVerbosity", &ContactComputation::getVerbosity, R"(
+Get level of verbosity
+0- without
+1- normal
+2- detailled
+
+Returns:
+    int: level of verbosity
+)" )
         .def( "contactCoefficient", &ContactComputation::contactCoefficient, R"(
-Compute contact coefficient at the nodes of the slave surface based on values of COEF_CONT
+Compute contact coefficients at the nodes of the slave surface based on values of COEF_CONT
 and COEF_FROT
 
 Returns:
-    FieldOnNodesReal: contact coefficient (= COEF_CONT)
-    FieldOnNodesReal: friction coefficient (= COEF_FROT)
+    list[FieldOnNodesReal]: coefficients (COEF_CONT and COEF_FROT)
         )" );
 };

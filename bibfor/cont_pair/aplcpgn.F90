@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
-subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
+subroutine aplcpgn(mesh, newgeo, &
+                   mastConxInvName, mastNeighName, slavNeighName, &
+                   pair_tole, dist_ratio, &
                    nb_elem_mast, list_elem_mast, nb_elem_slav, list_elem_slav, list_node_mast, &
-                   nb_node_mast, nb_pair_zone, list_pair_zone, list_nbptit_zone, list_ptitsl_zone)
+                   nb_node_mast, meshPairing)
+!
+    use mesh_type
+    use mesh_cell_module
+    use MeshPairing_module
 !
     implicit none
 !
-!#include "asterfort/ap_infast.h"
 #include "asterc/r8nnem.h"
 #include "asterf_types.h"
 #include "asterfort/ap_infast_n.h"
@@ -52,10 +56,10 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 #include "jeveux.h"
 #include "Contact_type.h"
 !
-!
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
-    character(len=19), intent(in) :: zone
+    character(len=24), intent(in) :: mastConxInvName
+    character(len=24), intent(in) :: mastNeighName, slavNeighName
     real(kind=8), intent(in) :: pair_tole, dist_ratio
     integer, intent(in) :: nb_elem_slav
     integer, intent(in) :: nb_elem_mast
@@ -63,10 +67,7 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
     integer, intent(in) :: list_elem_mast(nb_elem_mast)
     integer, intent(in) :: list_elem_slav(nb_elem_slav)
     integer, intent(in) :: list_node_mast(nb_node_mast)
-    integer, intent(out) :: nb_pair_zone
-    character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone
-    character(len=19), intent(in) :: list_ptitsl_zone
-    character(len=24), intent(in) :: pair_method
+    type(MESH_PAIRING), intent(inout) :: meshPairing
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,11 +75,13 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 !
 ! Pairing by PANG method
 !
+! NO OUTPUT (only for verbose debug)
+!
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
 ! In  newgeo           : name of field for geometry update from initial coordinates of nodes
-! In  zone          : name of contactzone sd
+! In  zone             : name of contact zone sd
 ! In  pair_tole        : tolerance for pairing
 ! In  nb_elem_mast     : number of master elements on current zone
 ! In  nb_elem_slav     : number of slave elements on current zone
@@ -106,13 +109,12 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
     real(kind=8) :: poin_inte_ma(SIZE_MAX_INTE_SL)
     character(len=8) :: elem_slav_name, elem_name
     integer :: nb_slav_start, nb_find_mast, nb_mast_start
-    integer :: elem_start, elem_nume, jtab
+    integer :: elem_start, elem_nume
     integer :: slav_indx_mini, mast_indx_mini, slav_indx_maxi, mast_indx_maxi
     integer :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
     aster_logical :: l_recup, debug, pair_exist
     integer, pointer :: mast_find_flag(:) => null()
     integer, pointer :: elem_slav_flag(:) => null()
-    character(len=24) :: sdappa_slne, sdappa_mane
     integer, pointer :: v_sdappa_slne(:) => null()
     integer, pointer :: v_sdappa_mane(:) => null()
     integer :: list_slav_master(4)
@@ -130,8 +132,6 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
     integer, pointer :: list_find_mast(:) => null()
     integer, pointer :: elem_slav_start(:) => null()
     integer, pointer :: elem_mast_start(:) => null()
-!
-! --------------------------------------------------------------------------------------------------
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -173,27 +173,26 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
     AS_ALLOCATE(vi=elem_slav_start, size=nb_elem_slav)
     AS_ALLOCATE(vi=elem_mast_start, size=nb_elem_slav)
     list_find_mast = 0
-!
+
 ! - Object for neighbours (inverse connectivity)
-!
-    sdappa_mane = zone(1:8)//'.MN'
-    sdappa_slne = zone(1:8)//'.SN'
-    call jeveuo(sdappa_mane, 'L', vi=v_sdappa_mane)
-    call jeveuo(sdappa_slne, 'L', vi=v_sdappa_slne)
-!
+    call jeveuo(mastNeighName, 'L', vi=v_sdappa_mane)
+    call jeveuo(slavNeighName, 'L', vi=v_sdappa_slne)
+
 ! - while loop on the existence of a pair slave-master
-!
     do while (pair_exist)
-        if (pair_method == "RAPIDE") then
-            ! - Search by computing the minimum distance between the barycenters
-            call ap_infast_n(mesh, newgeo, pair_tole, dist_ratio, nb_elem_mast, &
-                             list_elem_mast, nb_elem_slav, list_elem_slav, elem_slav_flag, &
-                             nb_mast_start, elem_mast_start, nb_slav_start, elem_slav_start, &
-                             zone, list_node_mast, nb_node_mast)
-        elseif (pair_method == "ROBUSTE") then
-            call apprin_n(mesh, newgeo, pair_tole, dist_ratio, nb_elem_mast, &
-                          list_elem_mast, nb_elem_slav, list_elem_slav, elem_slav_flag, &
-                          nb_mast_start, elem_mast_start, nb_slav_start, elem_slav_start)
+        if (debug) then
+            WRITE (6, *) "Get cells for starting search"
+            WRITE (6, *) "============================="
+        end if
+
+! ----- Search by computing the minimum distance between the barycenters
+        call ap_infast_n(mesh, newgeo, pair_tole, dist_ratio, nb_elem_mast, &
+                         list_elem_mast, nb_elem_slav, list_elem_slav, elem_slav_flag, &
+                         nb_mast_start, elem_mast_start, nb_slav_start, elem_slav_start, &
+                         mastConxInvName, list_node_mast, nb_node_mast)
+        if (debug) then
+            WRITE (6, *) "  Starting points (Master): ", nb_mast_start, elem_mast_start
+            WRITE (6, *) "  Starting points (Slave) : ", nb_slav_start, elem_slav_start
         end if
 
         if (nb_slav_start == 0) then
@@ -229,9 +228,9 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 
             if (debug) then
                 call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
-                write (*, *) "Current slave element: ", elem_slav_nume, elem_slav_name, &
-                    '(type : ', elem_slav_code, ')'
-                write (*, *) elem_slav_coor(1:3*elem_slav_nbnode)
+                write (*, *) "Current slave element      : ", elem_slav_nume
+                write (6, *) " Coordinates (global frame): ", &
+                    elem_slav_coor(1:3*elem_slav_nbnode)
             end if
 !
 ! ----- Number of neighbours
@@ -251,6 +250,7 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
             end if
 !
             if (debug) then
+                write (6, *) "Potential number of neighbours: ", nb_slav_neigh
                 do i_slav_neigh = 1, nb_slav_neigh
                     elem_nume = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh)
                     if (elem_nume .ne. 0) then
@@ -258,7 +258,7 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
                     else
                         elem_name = 'None'
                     end if
-                    write (*, *) "Current slave element neighbours: ", elem_name
+                    write (6, *) "Neighbour (", i_slav_neigh, "): ", elem_nume
                 end do
             end if
 !
@@ -269,19 +269,30 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 !
             elem_start = elem_mast_start(1)
             mast_find_indx = elem_start+1-mast_indx_mini
-!
+            if (debug) then
+                WRITE (6, *) "Avant décalage"
+                WRITE (6, *) " => ", nb_mast_start, elem_mast_start(1:nb_mast_start)
+            end if
+
 ! ----- Shift list of master element start
 !
             do i_mast_start = 1, nb_mast_start-1
                 elem_mast_start(i_mast_start) = elem_mast_start(i_mast_start+1)
             end do
             nb_mast_start = nb_mast_start-1
+            if (debug) then
+                WRITE (6, *) "Après décalage"
+                WRITE (6, *) " => ", nb_mast_start, elem_mast_start(1:nb_mast_start)
+            end if
 !
 ! ----- Management of list of master elements: first element to seek
 !
             list_find_mast(1) = elem_start
             nb_find_mast = 1
             mast_find_flag(mast_find_indx) = 1
+            if (debug) then
+                write (6, *) "Master cell to start: ", elem_start
+            end if
 !
 ! ----- Initialization list of contact pairs
 !
@@ -304,8 +315,8 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 !
                 if (debug) then
                     call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_name)
-                    write (*, *) ". Current master element: ", elem_mast_nume, elem_name, &
-                        '(type : ', elem_mast_type, ')'
+                    write (*, *) "Current master element: ", elem_mast_nume
+                    write (6, *) " Coordinates (global frame): "
                 end if
 !
 ! ------------- Shift list of master elements (on supprime de la liste)
@@ -352,6 +363,13 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 !
                 if (inte_weight > pair_tole .and. iret == 0) then
                     nb_pair = nb_pair+1
+                    if (debug) then
+                        WRITE (6, *) "Add pair: ", nb_pair, &
+                            "(", elem_slav_nume, "-", elem_mast_nume, ")"
+                        WRITE (6, *) "  Nb points integrations    : ", nb_poin_inte
+                        WRITE (6, *) "  Coef. points integrations : ", poin_inte_sl
+                    end if
+
                     ASSERT(nb_pair .le. nb_elem_slav*nb_elem_mast)
                     list_pair(2*(nb_pair-1)+1) = elem_slav_nume
                     list_pair(2*(nb_pair-1)+2) = elem_mast_nume
@@ -363,12 +381,15 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
                                   (nb_pair-1)*SIZE_MAX_INTE_SL+SIZE_MAX_INTE_SL) = poin_inte_ma
                     !print*,"LIPTMA_APLC", li_pt_inte_ma((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
                     !            (nb_pair-1)*SIZE_MAX_INTE_SL+2)
+
+                    call pairAdd(elem_slav_nume, elem_mast_nume, &
+                                 nb_poin_inte, li_pt_inte_sl, &
+                                 meshPairing)
                 end if
 
                 if (debug) then
                     write (*, *) ". Contact pair: ", elem_slav_nume, elem_mast_nume, &
                         " (weight: ", inte_weight, ", nb point inter: ", nb_poin_inte, ")"
-
                 end if
 !
 ! --------- Find neighbour of current master element
@@ -393,6 +414,7 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 !
 ! ------------- Prepare next master element
 !
+                    ! WRITE (6, *) "Prepare next master element"
                     do i_mast_neigh = 1, nb_mast_neigh
                         elem_mast_neigh = v_sdappa_mane((elem_mast_indx-1)*4+i_mast_neigh)
                         elem_neigh_indx = elem_mast_neigh+1-mast_indx_mini
@@ -400,15 +422,30 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
                             mast_find_flag(elem_neigh_indx) == 0) then
                             list_find_mast(nb_find_mast+1) = elem_mast_neigh
                             nb_find_mast = nb_find_mast+1
+                            if (debug) then
+                                WRITE (6, *) " => added: ", nb_find_mast, &
+                                    list_find_mast(nb_find_mast)
+                            end if
                             mast_find_flag(elem_neigh_indx) = 1
                         end if
                     end do
+
 !
 ! ------------- Prepare next slave element: higher weight
 !
+                    if (debug) then
+                        WRITE (6, *) "Prepare next slave element"
+                    end if
                     do i_slav_neigh = 1, nb_slav_neigh
                         elem_slav_neigh = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh)
                         elem_neigh_indx = elem_slav_neigh+1-slav_indx_mini
+                        if (debug) then
+                            WRITE (6, *) " < Index:", i_slav_neigh
+                            WRITE (6, *) " < cellNeighNume:", elem_slav_neigh
+                            WRITE (6, *) " < cellNeighIndx: ", elem_neigh_indx
+                            WRITE (6, *) " < cellSlavFlag: ", elem_slav_flag(elem_neigh_indx)
+                            WRITE (6, *) " < inteNeigh: ", inte_neigh(i_slav_neigh)
+                        end if
                         if (elem_slav_neigh .ne. 0 .and. &
                             inte_neigh(i_slav_neigh) == 1 &
                             .and. elem_slav_flag(elem_neigh_indx) .ne. 1 &
@@ -422,6 +459,9 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
                             !if (weight_test > list_slav_weight(i_slav_neigh).and.&
                             !    weight_test > pair_tole) then
                             list_slav_master(i_slav_neigh) = elem_mast_nume
+                            if (debug) then
+                                WRITE (6, *) " => added: ", elem_mast_nume
+                            end if
                             !   list_slav_weight(i_slav_neigh) = weight_test
                             !end if
                         end if
@@ -434,7 +474,7 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 ! ----- Next elements
 !
             if (debug) then
-                write (*, *) 'Next elements - Nb: ', nb_slav_neigh
+                write (*, *) 'Prepare next elements - Nb: ', nb_slav_neigh
             end if
             do i_slav_neigh = 1, nb_slav_neigh
                 elem_slav_neigh = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh)
@@ -459,21 +499,8 @@ subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
 
         !pair_exist = ASTER_FALSE
     end do
-!
-!----- save results
-!
-    nb_pair_zone = nb_pair
-    if (nb_pair_zone > 0) then
-        call wkvect(list_pair_zone, 'G V I', 2*nb_pair_zone, jtab)
-        zi(jtab-1+1:jtab-1+2*nb_pair_zone) = list_pair(1:2*nb_pair_zone)
-        call wkvect(list_nbptit_zone, 'G V I', nb_pair_zone, jtab)
-        zi(jtab-1+1:jtab-1+nb_pair_zone) = li_nb_pt_inte_sl(1:nb_pair_zone)
-        call wkvect(list_ptitsl_zone, 'G V R', 16*nb_pair_zone, jtab)
-        zr(jtab-1+1:jtab-1+16*nb_pair_zone) = li_pt_inte_sl(1:16*nb_pair_zone)
-    end if
-!
-!--- DEALLOCATE
-!
+
+! - DEALLOCATE
     AS_DEALLOCATE(vi=mast_find_flag)
     AS_DEALLOCATE(vi=elem_slav_flag)
     AS_DEALLOCATE(vr=li_pt_inte_sl)

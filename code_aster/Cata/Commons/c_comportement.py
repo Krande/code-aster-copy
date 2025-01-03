@@ -316,6 +316,7 @@ def C_COMPORTEMENT(command):
                         "JOINT_BANDIS",
                         "NLH_CSRM",
                         "MCC",
+                        "BETON_AGEING",
                         "Barcelone",
                         "CSSM",
                         "LAIGLE",

@@ -55,9 +55,7 @@ Base classes
 ============
 """
 
-# aslint: disable=C4009
-# because of HELP_LEGACY_MODE string
-
+import gc
 import inspect
 import linecache
 import re
@@ -81,6 +79,7 @@ from ..Utilities import (
     Options,
     config,
     deprecated,
+    haveMPI,
     import_object,
     logger,
     no_new_attributes,
@@ -89,7 +88,7 @@ from ..Utilities.outputs import command_text, decorate_name
 from .code_file import track_coverage
 from .CommandSyntax import CommandSyntax
 from .ctopy import check_ds_object
-from .Serializer import saveObjectsFromContext
+from .Serializer import FinalizeOptions, saveObjectsFromContext
 
 
 @contextmanager
@@ -535,6 +534,7 @@ class ExecuteCommand:
             if self.hook:
                 self.hook(keywords)
         finally:
+            self.cleanup()
             self.print_result()
 
     def post_exec(self, keywords):
@@ -548,6 +548,9 @@ class ExecuteCommand:
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
+
+    def cleanup(self):
+        """Clean-up function."""
 
     def check_ds(self):
         """Check a result created by the command.
@@ -619,12 +622,6 @@ def check_jeveux():
         )
 
 
-HELP_LEGACY_MODE = """
-        from code_aster.Utilities import ExecutionParameter, Options
-        ExecutionParameter().enable(Options.UseLegacyMode)
-"""
-
-
 class ExecuteMacro(ExecuteCommand):
     """This implements an executor of *legacy* macro-commands.
 
@@ -649,6 +646,9 @@ class ExecuteMacro(ExecuteCommand):
         _result_names (list[str]): List of expected results names.
         _add_results (dict): Dict of additional results.
     """
+
+    # class attributes
+    _last_cleanup = 0
 
     _sdprods = _result_names = _add_results = None
 
@@ -689,6 +689,18 @@ class ExecuteMacro(ExecuteCommand):
             for name in self._result_names:
                 logger.info(command_result(self._counter, self.name, self._add_results.get(name)))
         self._print_stats()
+
+    def cleanup(self):
+        """Clean-up function."""
+        if ExecuteCommand.level > 1:
+            if self._counter < ExecuteMacro._last_cleanup + 250:
+                return
+        ExecuteMacro._last_cleanup = self._counter
+        # wrapper to collect after each macro-command
+        timer = ExecutionParameter().timer
+        timer.Start(" . cleanup", num=1.9e6)
+        gc.collect()
+        timer.Stop(" . cleanup")
 
     def exec_(self, keywords):
         """Execute the command and fill the *_result* attribute.
@@ -1022,13 +1034,19 @@ class ExceptHookManager:
         except AssertionError:
             pass
         if cls._current_cmd:
+            opt = ExecutionParameter().option
+            options = FinalizeOptions.Set
+            if haveMPI() and not opt & Options.HPCMode:
+                options |= FinalizeOptions.OnlyProc0
+            if opt & Options.SaveBase:
+                options |= FinalizeOptions.SaveBase
             print("\nException: Trying to close the database after an uncaught exception...\n")
             print(
                 f"\nPublishing the result of the current command {cls._current_cmd.name}...\n",
                 flush=True,
             )
             cls._current_cmd.publish_result()
-            saveObjectsFromContext(cls._current_cmd.caller_context)
+            saveObjectsFromContext(cls._current_cmd.caller_context, options=options)
         else:
             sys.__excepthook__(type, value, traceb)
 

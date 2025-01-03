@@ -2,7 +2,7 @@
  * @file ContactZoneInterface.cxx
  * @brief Interface python de ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,166 +26,150 @@
 
 void exportContactZoneToPython( py::module_ &mod ) {
 
-    py::class_< ContactZone, ContactZone::ContactZonePtr, DataStructure >( mod, "ContactZone" )
+    py::class_< ContactZone, ContactZone::ContactZonePtr, DataStructure >( mod, "ContactZone", R"(
+Object to define a zone of contact.)" )
         .def( py::init( &initFactoryPtr< ContactZone, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ContactZone, ModelPtr > ) )
         .def( "getModel", &ContactZone::getModel, R"(
 Return the model used in the contact zone definition
 
 Returns:
-    Model: model.
-        )" )
+    Model: model
+)" )
         .def( "getMesh", &ContactZone::getMesh, R"(
 Return the mesh used in the contact zone definition
 
 Returns:
-    BaseMesh: mesh.
-        )" )
+    BaseMesh: mesh
+)" )
         .def( "setVerbosity", &ContactZone::setVerbosity, R"(
-Set level of verbosity:
-      0- without
-      1- normal (default)
-      2- detailled
+Set level of verbosity
+0- without
+1- normal (default)
+2- detailled
 
 Arguments:
-    integer: level of verbosity
-        )",
+    level (int) : level of verbosity
+)",
               py::arg( "level" ) )
         .def( "getVerbosity", &ContactZone::getVerbosity, R"(
-Get level of verbosity:
-      0- without
-      1- normal
-      2- detailled
+Get level of verbosity
+0- without
+1- normal
+2- detailled
 
 Returns:
-    integer: level of verbosity
-        )" )
-        .def_property( "hasFriction", &ContactZone::hasFriction, &ContactZone::enableFriction, R"(
-bool: enable or disable the use of friction.
+    int: level of verbosity
+)" )
+        .def_property( "hasFriction", &ContactZone::hasFriction, &ContactZone::enableFriction,
+                       R"(
+Get status of friction
+
+Returns:
+    bool: friction or not
         )" )
         .def_property( "hasSmoothing", &ContactZone::hasSmoothing, &ContactZone::enableSmoothing,
                        R"(
-bool: enable or disable  the use of smoothing.
-        )" )
+Smoothing of normals
+
+Returns:
+    bool: smoothing or not
+            )" )
         .def( "build", &ContactZone::build, R"(
 Build and check internal objects
-        )" )
+
+Returns:
+    bool: success or failure
+            )" )
         .def( "setContactParameter", &ContactZone::setContactParameter, R"(
 Set contact parameters defining method, coefficient...
 
 Arguments:
-    ContactParameter: contact parameters
-        )",
-              py::arg( "contact" ) )
+    contParam (ContactParameter) : contact parameters
+)",
+              py::arg( "contParam" ) )
         .def( "getContactParameter", &ContactZone::getContactParameter, R"(
 Get contact parameters defining method, coefficient...
 
 Returns:
     ContactParameter: contact parameters
-        )" )
+)" )
         .def( "setFrictionParameter", &ContactZone::setFrictionParameter, R"(
 Set friction parameters defining method, coefficient...
 
 Arguments:
-    FrictionParameter: friction parameters
-        )",
-              py::arg( "friction" ) )
+    fricParam (FrictionParameter) : friction parameters
+)",
+              py::arg( "fricParam" ) )
         .def( "getFrictionParameter", &ContactZone::getFrictionParameter, R"(
 Get friction parameters defining method, coefficient...
 
 Returns:
     FrictionParameter: friction parameters
-        )" )
+)" )
         .def( "setPairingParameter", &ContactZone::setPairingParameter, R"(
 Set pairing parameters defining algorithm, distance...
 
 Arguments:
-    PairingParameter: pairing parameters
-        )",
-              py::arg( "pairing" ) )
+    pairParam (PairingParameter) : pairing parameters
+)",
+              py::arg( "pairParam" ) )
         .def( "getPairingParameter", &ContactZone::getPairingParameter, R"(
 Get pairing parameters defining algorithm, distance...
 
 Returns:
     PairingParameter: pairing parameters
-        )" )
+)" )
         .def( "getSlaveNodes", &ContactZone::getSlaveNodes, R"(
 Get slave's nodes index
 
 Returns:
     list[int]: slave's nodes index
-        )" )
+)" )
         .def( "getSlaveCells", &ContactZone::getSlaveCells, R"(
 Get slave's cells index
 
 Returns:
     list[int]: slave's cells index
-        )" )
+)" )
         .def( "setSlaveGroupOfCells", &ContactZone::setSlaveGroupOfCells, R"(
 Set slave's name of group of cells
 
 Arguments:
-    str: slave's name
-        )",
+    slave_name (str) : name of group for slave cells
+)",
               py::arg( "slave_name" ) )
         .def( "setMasterGroupOfCells", &ContactZone::setMasterGroupOfCells, R"(
 Set master's name of group of cells
 
 Arguments:
-    str: master's name
-        )",
+    master_name (str) : name of group for master cells
+)",
               py::arg( "master_name" ) )
-        .def( "setExcludedSlaveGroupOfNodes", &ContactZone::setExcludedSlaveGroupOfNodes, R"(
+        .def( "setExcludedSlaveGroupOfNodes", &ContactZone::setExcludedSlaveGroupOfNodes,
+              R"(
 Set excluded groups of nodes on slave side
 
 Arguments:
-    str: excluded groups' names
-        )",
-              py::arg( "groups" ) )
+    nodeGroupsName (str) : excluded groups' names
+                )",
+              py::arg( "nodeGroupsName" ) )
         .def( "setExcludedSlaveGroupOfCells", &ContactZone::setExcludedSlaveGroupOfCells, R"(
 Set excluded groups of cells on slave side
 
 Arguments:
-    str: excluded groups' names
-        )",
-              py::arg( "groups" ) )
-        .def( "getExcludedSlaveCells", &ContactZone::getExcludedSlaveCells, R"(
-Get excluded groups of cells on slave side
+    cellGroupsName (str) : excluded groups' names
+                )",
+              py::arg( "cellGroupsName" ) )
+        .def( "getMeshPairing", &ContactZone::getMeshPairing, R"(
+Get pairing of surface meshes
 
 Returns:
-    str: excluded groups' names
+    MeshPairing: mesh pairing
         )" )
         .def_property( "checkNormals",
                        py::overload_cast<>( &ContactZone::checkNormals, py::const_ ),
                        py::overload_cast< const bool & >( &ContactZone::checkNormals ), R"(
-        bool: Attribute that holds the checking of outwards normals.
-                )" )
-        .def( "getMasterCellsFromNode", &ContactZone::getMasterCellsFromNode, R"(
-Get the master cells associtaed with a node number
-
-Arguments:
-    int: node number
-        )",
-              py::arg( "node_number" ) )
-        .def( "getSlaveCellsFromNode", &ContactZone::getSlaveCellsFromNode, R"(
-Get the slave cells associtaed with a node number
-
-Arguments:
-    int: node number
-        )",
-              py::arg( "node_number" ) )
-        .def( "getMasterCellNeighbors", &ContactZone::getMasterCellNeighbors, R"(
-Get the master cells in the neighbor of a given master cell number
-
-Arguments:
-    int: master cell number
-        )",
-              py::arg( "cell_number" ) )
-        .def( "getSlaveCellNeighbors", &ContactZone::getSlaveCellNeighbors, R"(
-Get the slave cells in the neighbor of a given slave cell number
-
-Arguments:
-    int: slave cell number
-        )",
-              py::arg( "cell_number" ) );
+bool: attribute that holds the checking of outwards normals.
+        )" );
 };

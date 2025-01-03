@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterfort/mesh_pairing_type.h"
 !
 interface
-    subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
-                      nbarch, nuarch, nbexcl, chexcl, nbnosy)
-        character(len=*) :: resu0
-        integer :: nbrang
-        integer :: nuordr(*)
-        integer :: nbpara
-        character(len=16) :: nompar(*)
-        integer :: nbarch
-        integer :: nuarch(*)
-        integer :: nbexcl
-        character(len=16) :: chexcl(*)
-        integer :: nbnosy
-    end subroutine extrs1
+    subroutine inteCellAreaWrap(spaceDime, nbPoinInte, poinInteSlav, &
+                                inteArea)
+        integer, intent(in) :: spaceDime, nbPoinInte
+        real(kind=8), intent(in) :: poinInteSlav(2, MAX_NB_INTE)
+        real(kind=8), intent(out) :: inteArea
+    end subroutine inteCellAreaWrap
 end interface

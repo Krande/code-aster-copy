@@ -46,28 +46,24 @@ class ComputeAdditionalField(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        if "reuse" not in keywords:
-            modele = keywords.get("MODELE")
-            if modele is None:
-                try:
-                    modele = keywords["RESULTAT"].getModel()
-                except:
-                    modele = None
-            if modele is None:
-                try:
-                    modele = keywords["RESULTAT"].getDOFNumbering().getModel()
-                except:
-                    modele = None
-            if modele is not None:
-                self._result.setModel(modele)
+        new_model = keywords.get("MODELE")
+        if not new_model:
+            previous = keywords["RESULTAT"].getModels()
+            new_model = previous[-1] if previous else None
+        if not new_model:
+            try:
+                new_model = keywords["RESULTAT"].getDOFNumbering().getModel()
+            except AttributeError:
+                pass
+        if new_model:
+            self._result.setModel(new_model, exists_ok=True)
 
+        if "reuse" not in keywords:
             try:
                 dofNume = keywords["RESULTAT"].getDOFNumbering()
-            except:
-                dofNume = None
-
-            if dofNume is not None:
                 self._result.setDOFNumbering(dofNume)
+            except AttributeError:
+                pass
 
             for rank in self._result.getIndexes():
                 if keywords["RESULTAT"].hasListOfLoads(rank):
@@ -79,19 +75,8 @@ class ComputeAdditionalField(ExecuteCommand):
             for fOND in keywords["RESULTAT"].getEquationNumberings():
                 self._result.addEquationNumbering(fOND)
             mesh = keywords["RESULTAT"].getMesh()
-            if mesh is not None:
+            if mesh:
                 self._result.setMesh(mesh)
-        else:
-            try:
-                modele = self._result.getModel()
-            except:
-                modele = None
-
-            if modele is None:
-                modele = keywords.get("MODELE")
-
-            if modele is not None:
-                self._result.setModel(modele)
 
         self._result.build()
 
@@ -105,27 +90,25 @@ class ComputeAdditionalField(ExecuteCommand):
         """
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "RESULTAT")
+        self.remove_dependencies(keywords, "CHAM_UTIL", "FORMULE")
         if "reuse" not in keywords:
             # only if there is only one model, fieldmat...
             try:
                 models = keywords["RESULTAT"].getModels()
                 for model in models:
-                    if model:
-                        self._result.addDependency(model)
+                    self._result.addDependency(model)
             except RuntimeError:
                 pass
             try:
                 fieldmats = keywords["RESULTAT"].getMaterialFields()
                 for fieldmat in fieldmats:
-                    if fieldmat:
-                        self._result.addDependency(fieldmat)
+                    self._result.addDependency(fieldmat)
             except RuntimeError:
                 pass
             try:
                 elems = keywords["RESULTAT"].getAllElementaryCharacteristics()
                 for elem in elems:
-                    if elem:
-                        self._result.addDependency(elem)
+                    self._result.addDependency(elem)
             except RuntimeError:
                 pass
 
