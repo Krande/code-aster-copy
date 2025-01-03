@@ -676,9 +676,12 @@ class SimpleFieldOnCells : public DataField {
     }
 
     void setValues( const std::vector< ValueType > &values ) {
+        if ( values.size() != _values->size() ) {
+            raiseAsterError( "Incompatible size in setValues, expecting " +
+                             std::to_string( _values->size() ) + ", got " +
+                             std::to_string( values.size() ) );
+        }
 
-        AS_ASSERT( values.size() == this->getNumberOfCells() * this->getNumberOfComponents() *
-                                        getMaxNumberOfPoints() * getMaxNumberOfSubPoints() );
         _allocated->assign( true );
         *_values = values;
     }

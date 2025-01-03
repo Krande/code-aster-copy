@@ -28,7 +28,7 @@ import numpy as np
 from libaster import SimpleFieldOnCellsReal
 
 from ..Utilities import ParaMEDMEM as PMM
-from ..Utilities import force_list, injector, no_new_attributes
+from ..Utilities import force_list, injector, logger, no_new_attributes
 from ..Utilities import medcoupling as medc
 from ..Objects.Serialization import InternalStateBuilder
 
@@ -160,7 +160,7 @@ class ComponentOnCells:
 
     def copy(self):
         """Return a copy of the component."""
-        return __class__(self._values, self._descr)
+        return __class__(self._values.copy(), self._descr.copy())
 
     def getValues(self):
         """Returns the vector values."""
@@ -208,6 +208,8 @@ class ComponentOnCells:
         """Check consistency between the both signatures. A float is returned as is."""
         if isinstance(other, ComponentOnCells):
             if self.sign != other.sign:
+                logger.warning("lhs: idx.shape: %s, %s", self._idx.shape, self._idx[:5])
+                logger.warning("rhs: idx.shape: %s, %s", other._idx.shape, other._idx[:5])
                 raise IndexError("inconsistent description")
             other = other._values
         return other
@@ -332,7 +334,8 @@ class ExtendedSimpleFieldOnCellsReal:
     @property
     def _cache(self):
         if self._ptr_cache is None:
-            self._ptr_cache = dict.fromkeys(["val", "msk", "cmp", "idx", "nbpt"])
+            self._ptr_cache = dict.fromkeys(["readonly", "val", "msk", "cmp", "idx", "nbpt"])
+            self._ptr_cache["readonly"] = None
         if self._ptr_cache["cmp"] is None:
             self._ptr_cache["cmp"] = self.getComponents()
         if self._ptr_cache["val"] is None:
@@ -361,9 +364,12 @@ class ExtendedSimpleFieldOnCellsReal:
             component (str): Component name. Raises ValueError if the component
                 does not exist in the field.
         """
+        if self._cache["readonly"]:
+            self._ptr_cache = None
         icmp = self._cache["cmp"].index(component)
+        self._cache["readonly"] = False
         return ComponentOnCells(
-            self._cache["val"][:, icmp],
+            self._cache["val"][:, icmp].copy(),
             ComponentOnCells.Description(
                 self._cache["idx"], self._cache["nbpt"], self._cache["msk"][:, icmp]
             ),
@@ -378,9 +384,10 @@ class ExtendedSimpleFieldOnCellsReal:
             cfvalue (ComponentOnCells): Previously extracted component.
         """
         icmp = self._cache["cmp"].index(component)
+        # it directly overwrites '.CESV' vector in place
         self._cache["val"][:, icmp] = cfvalue.expand().getValues()
 
-    def getValues(self, copy=False):
+    def getValues(self, copy=True):
         """
         Returns two numpy arrays containing the field values on specific cells.
 
@@ -389,19 +396,19 @@ class ExtendedSimpleFieldOnCellsReal:
         Array shape is ( number_of_cells_with_components, number_of_components ).
 
         Args:
-            copy (bool): If True copy the data, default: *False*
+            copy (bool): If *True* the data are copied, the is the default.
 
         Returns:
             ndarray (float): Field values.
             ndarray (bool): Mask for the field values.
         """
         values, mask = self._cache["val"], self._cache["msk"]
-        if copy:
+        if copy or self._cache["readonly"] is False:
             return values.copy(), mask.copy()
 
+        self._cache["readonly"] = True
         values.setflags(write=False)
         mask.setflags(write=False)
-
         return values, mask
 
     def getValuesOnCell(self, idcell):
