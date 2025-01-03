@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = CA.TestCase()
 
-monMaillage = CA.Mesh()
-monMaillage.readMedFile("zzzz503a.mmed")
+refinement = 1
+monMaillage = CA.Mesh.buildCube(refine=refinement)
 
 coords = monMaillage.getCoordinates()
 npcoords = coords.toNumpy()
@@ -82,7 +82,7 @@ test.assertEqual(acier.getType(), "MATER_SDASTER")
 
 affectMat = CA.MaterialField(monMaillage)
 affectMat.addMaterialOnMesh(acier)
-affectMat.addMaterialOnGroupOfCells(acier, ["Haut", "Bas"])
+affectMat.addMaterialOnGroupOfCells(acier, ["TOP", "BOTTOM"])
 affectMat.build()
 test.assertEqual(affectMat.getType(), "CHAM_MATER")
 
@@ -91,14 +91,14 @@ imposedDof1.setValue(CA.PhysicalQuantityComponent.Dx, 0.0)
 imposedDof1.setValue(CA.PhysicalQuantityComponent.Dy, 0.0)
 imposedDof1.setValue(CA.PhysicalQuantityComponent.Dz, 0.0)
 CharMeca1 = CA.ImposedDisplacementReal(monModel)
-CharMeca1.setValue(imposedDof1, "Bas")
+CharMeca1.setValue(imposedDof1, "BOTTOM")
 CharMeca1.build()
 test.assertEqual(CharMeca1.getType(), "CHAR_MECA")
 
 imposedPres1 = CA.PressureReal()
 imposedPres1.setValue(CA.PhysicalQuantityComponent.Pres, 1000.0)
 CharMeca2 = CA.DistributedPressureReal(monModel)
-CharMeca2.setValue(imposedPres1, "Haut")
+CharMeca2.setValue(imposedPres1, "TOP")
 CharMeca2.build()
 test.assertEqual(CharMeca2.getType(), "CHAR_MECA")
 
@@ -178,7 +178,9 @@ test.assertEqual(len(y), len(resu.getValues()))
 
 resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()
-test.assertAlmostEqual(resu2[6, "DX"], 0.000757555469653289)
+# point at (1., 1., 1.)
+corner = monMaillage.getNumberOfNodes() - 1
+test.assertAlmostEqual(resu2[corner, "DX"], 0.000757555469653289)
 
 resu.printMedFile("fort.med")
 
@@ -189,7 +191,7 @@ monSolver.factorize(matrAsse)
 resu = monSolver.solve(retour)
 resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()
-test.assertAlmostEqual(resu2[6, 0], 0.000757555469653289 / 10.0)
+test.assertAlmostEqual(resu2[corner, 0], 0.000757555469653289 / 10.0)
 
 # Test conversions
 fnodes0 = CA.SimpleFieldOnNodesReal(monMaillage, "DEPL_R", ["DX", "DY", "DZ"], True)
@@ -202,7 +204,7 @@ test.assertAlmostEqual(
 )
 
 fcells0 = CA.SimpleFieldOnCellsReal(monMaillage, "ELEM", "DEPL_R", ["DX", "DY", "DZ"], 1, 1, True)
-cval, cma = fcells0.toNumpy()
+cval, cma, _ = fcells0.toNumpy()
 cma[:, :] = True
 cval[:, 1] = 2.5
 full_nodes1 = fcells0.toFieldOnNodes()
@@ -250,6 +252,29 @@ monSolver = CA.GcpcSolver()
 test.assertEqual(monSolver.getSolverName(), "GCPC")
 test.assertFalse(monSolver.supportParallelMesh(), "support of ParallelMesh")
 
+# Test Component
+elas = CA.ElasticResult()
+elas.allocate(1)
+elas.setField(resu, "DEPL", para="NUME_ORDRE", value=1)
+elas.setTime(1.0, 1)
+elas.setModel(monModel)
+elas.setMaterialField(affectMat)
+
+elas = CALC_CHAMP(reuse=elas, RESULTAT=elas, CONTRAINTE="SIEF_ELGA")
+chcoor = CALC_CHAM_ELEM(MODELE=monModel, OPTION="COOR_ELGA")
+coor = chcoor.toSimpleFieldOnCells()
+
+sief = elas.getField("SIEF_ELGA", 1).toSimpleFieldOnCells()
+sixx = sief.SIXX
+
+# where sixx is defined (=3D)
+cells = sixx.getCells()
+cells = cells[(sixx._idx >= 0).sum(axis=1) != 0]
+test.assertTrue(np.all(cells == np.array(monMaillage.getCells("VOLUME"))))
+
+weight = coor.W.on_support_of(sixx)
+integr = (sixx * weight).getValuesByCells().sum(axis=1)
+print(integr[cells])
 
 test.printSummary()
 
