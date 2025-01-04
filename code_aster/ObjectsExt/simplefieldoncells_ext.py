@@ -17,12 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte@edf.fr
 """
 :py:class:`SimpleFieldOnCellsReal`
 Simple Fields defined on cells of elements
 ********************************************************************
 """
+
+import pickle
+from functools import wraps
 
 import numpy as np
 from libaster import SimpleFieldOnCellsReal
@@ -47,6 +49,41 @@ class SFoCStateBuilder(InternalStateBuilder):
         field.build()
 
 
+class Debug:
+    """Debugging helper"""
+
+    raised = False
+
+    @classmethod
+    def error_trace(cls, method):
+        """decorator to show the args in case of error."""
+
+        @wraps(method)
+        def wrapper(inst, *args, **kwds):
+            """wrapper"""
+            try:
+                arg0 = inst.copy()
+                retvalue = method(inst, *args, **kwds)
+            except Exception:
+                if not cls.raised:
+                    with open("/tmp/debug_trace.pick", "wb") as pick:
+                        print(f"# --- trace arguments of '{method.__name__}':")
+                        print(repr(arg0))
+                        pickle.dump(arg0, pick)
+                        print("--- changed ---")
+                        print(repr(inst))
+                        pickle.dump(inst, pick)
+                        for obj in args:
+                            if isinstance(obj, (ComponentOnCells, np.ndarray)):
+                                pickle.dump(obj, pick)
+                            print(repr(obj))
+                cls.raised = True
+                raise
+            return retvalue
+
+        return wrapper
+
+
 class ComponentOnCells:
     r"""Represents the values of a component of a field on cells.
 
@@ -58,6 +95,9 @@ class ComponentOnCells:
             dimension \Sum_i(nbcells_i * nbval_i).
         descr (*Description*): Description of the component.
     """
+
+    # WARNING: _idx must be used to access values only a not restricted component.
+    # FIXME '_mask' toujours True, '_discr' non utilisé
 
     class Description:
         """Internal description of a component.
@@ -82,14 +122,40 @@ class ComponentOnCells:
             # number of values stored for the component before any restriction
             self._nbval = None  # = indexes.max() + 1 may be greater, assigned with values.
 
+        def set_values_shape(self, shape):
+            """Register shape of values if needed."""
+            if self._nbval is None:
+                self._nbval = shape[0]
+
+        def __repr__(self):
+            idx = self._idx[self._idx >= 0]
+            if len(idx) == 0:
+                idx = np.zeros(1, dtype=int)
+            lines = [f"- indexes shape {self._idx.shape!r}, range {idx.min()} to {idx.max()}"]
+            if self._cells is None:
+                lines.append(f"- on all the {self._nbcells} cells")
+            else:
+                limit = 20
+                ndef = len(self._cells)
+                lines.append(
+                    f"- on {ndef}/{self._nbcells} cells: {tuple(self._cells[:limit])}"
+                    + ("..." if ndef > limit else "")
+                )
+            uniq, numb = np.unique(self._discr, return_counts=True, axis=0)
+            discr = [f"{n} x {tuple(d)}" for n, d in zip(numb, uniq)]
+            lines.append(
+                f"- {len(self._discr)} points/subpoints discretization: " + ", ".join(discr)
+            )
+            return "\n".join(lines)
+
         def copy(self):
             """Copy of the current description.
 
             Returns:
                 *Decription*: copy of the current description.
             """
-            new = __class__(self._idx, self._discr, self._mask)
-            new._cells = self._cells
+            new = __class__(self._idx.copy(), self._discr.copy(), self._mask.copy())
+            new._cells = None if self._cells is None else self._cells.copy()
             new._nbcells = self._nbcells
             new._nbval = self._nbval
             return new
@@ -103,6 +169,7 @@ class ComponentOnCells:
             Returns:
                 ndarray[int]: Indexes restricted on the cells list.
             """
+            assert self._cells is None, "must be expanded first"
             if isinstance(cells_ids, int):
                 cells_ids = force_list(cells_ids)
             idx = self._idx[cells_ids].ravel()
@@ -134,9 +201,6 @@ class ComponentOnCells:
             new_mask[idx] = self._mask
             return new_values, ComponentOnCells.Description(new_idx, new_discr, new_mask)
 
-    # WARNING: _idx must be used to access values only a not restricted component.
-    # FIXME '_mask' toujours True ?
-
     _values = _descr = _sign = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -147,7 +211,7 @@ class ComponentOnCells:
         """Initialize content."""
         self._values = values
         self._descr = description
-        self._descr._nbval = len(values)
+        self._descr.set_values_shape(values.shape)
         self._sign = None
 
     @property
@@ -195,22 +259,24 @@ class ComponentOnCells:
         lines = repr(self._values).splitlines()
         if len(lines) > 6:
             lines = lines[:3] + ["..."] + lines[-3:]
+        lines.insert(0, f"- {self.size} values:")
+        lines.append(repr(self._descr))
         return "\n".join(lines)
 
     @property
     def sign(self):
         """int: Attribute that holds the signature of the component."""
         if self._sign is None:
-            self._sign = (self._idx.ravel() * np.arange(self._idx.size)).sum()
+            self._sign = len(self._values)
         return self._sign
 
     def _check_consistency(self, other):
         """Check consistency between the both signatures. A float is returned as is."""
         if isinstance(other, ComponentOnCells):
             if self.sign != other.sign:
-                logger.warning("lhs: idx.shape: %s, %s", self._idx.shape, self._idx[:5])
-                logger.warning("rhs: idx.shape: %s, %s", other._idx.shape, other._idx[:5])
-                raise IndexError("inconsistent description")
+                logger.warning("lhs: %s", repr(self))
+                logger.warning("rhs: %s", repr(other))
+                raise IndexError("inconsistent shapes")
             other = other._values
         return other
 
@@ -218,45 +284,72 @@ class ComponentOnCells:
         """Apply a function of the values."""
         if not isinstance(func, np.ufunc):
             func = np.vectorize(func)
-        return ComponentOnCells(func(self._values), self._descr)
+        return ComponentOnCells(func(self._values), self._descr.copy())
+
+    def __iadd__(self, other):
+        other = self._check_consistency(other)
+        self._values += other
+        return self
 
     def __add__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(self._values + other, self._descr)
+        return ComponentOnCells(self._values + other, self._descr.copy())
 
     def __radd__(self, other):
         return self + other
+
+    def __isub__(self, other):
+        other = self._check_consistency(other)
+        self._values -= other
+        return self
 
     def __sub__(self, other):
         return self + (-other)
 
     def __neg__(self):
-        return ComponentOnCells(-self._values, self._descr)
+        return ComponentOnCells(-self._values, self._descr.copy())
+
+    def __imul__(self, other):
+        other = self._check_consistency(other)
+        self._values *= other
+        return self
 
     def __mul__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(self._values * other, self._descr)
+        return ComponentOnCells(self._values * other, self._descr.copy())
 
     def __rmul__(self, other):
         return self * other
+
+    def __itruediv__(self, other):
+        other = self._check_consistency(other)
+        if np.any(other == 0.0):
+            raise ZeroDivisionError()
+        self._values /= other
+        return self
 
     def __truediv__(self, other):
         other = self._check_consistency(other)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(self._values / other, self._descr)
+        return ComponentOnCells(self._values / other, self._descr.copy())
 
     def __rtruediv__(self, other):
         if np.any(self._values == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(1.0 / self._values * other, self._descr)
+        return ComponentOnCells(1.0 / self._values * other, self._descr.copy())
 
     def __abs__(self):
-        return ComponentOnCells(np.abs(self._values), self._descr)
+        return ComponentOnCells(np.abs(self._values), self._descr.copy())
+
+    def __ipow__(self, other):
+        other = self._check_consistency(other)
+        self._values **= other
+        return self
 
     def __pow__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(np.power(self._values, other), self._descr)
+        return ComponentOnCells(np.power(self._values, other), self._descr.copy())
 
     def min(self):
         return self._values.min()
@@ -270,14 +363,20 @@ class ComponentOnCells:
     def mean(self):
         return self._values.mean()
 
+    @Debug.error_trace
     def restrict(self, cells_ids):
-        """Restrict the component on given cells."""
+        """Restrict the component on given cells.
+
+        Args:
+            cells_ids (list[int]): Cells ids to be used.
+        """
         if self._cells is not None:
             exp = self.expand()
             self.init_from(exp._values, exp._descr)
         idx = self._descr.restrict(cells_ids)
         self._values = self._values[idx]
 
+    @Debug.error_trace
     def expand(self):
         """Expand the component by adding 0. where it not defined.
 
@@ -288,6 +387,7 @@ class ComponentOnCells:
             return self.copy()
         return ComponentOnCells(*self._descr.expand(self._values))
 
+    @Debug.error_trace
     def on_support_of(self, other, strict=False):
         """Move the component onto the same support of another.
 
@@ -302,14 +402,10 @@ class ComponentOnCells:
         Returns:
             *ComponentOnCells*: A new component.
         """
-        if other._cells is not None and self._cells is None:
-            same = self.copy()
-            same.restrict(other._cells)
-            return same.on_support_of(other)
+        if self._cells is None and other._cells is not None:
+            return self.on_support_of(other.expand())
         if self._cells is not None and other._cells is None:
-            other = other.copy()
-            other.restrict(self._cells)
-            return self.on_support_of(other)
+            return self.expand().on_support_of(other)
         if self._cells is not None:
             if np.any(self._cells != other._cells):
                 raise IndexError("components must be defined on the same cells")
@@ -317,13 +413,17 @@ class ComponentOnCells:
             if self._cells is not None:
                 homo.restrict(self._cells)
             return homo
+        assert self._descr._nbcells == other._descr._nbcells, (
+            self._descr._nbcells == other._descr._nbcells
+        )
+        assert self._cells is None and other._cells is None, (self._cells, other._cells)
         new = other.copy()
         keep = self._idx[other._idx >= 0]
         if strict and np.any(keep < 0):
             raise IndexError("no value on all the support")
         prol = np.append(self._values, [0.0])
         new._values = np.take(prol, keep)
-        new._descr._idx = other._idx
+        new._descr._idx = other._idx.copy()
         return new
 
 
