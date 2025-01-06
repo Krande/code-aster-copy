@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -323,6 +323,15 @@ class ExecutionParameter(metaclass=Singleton):
             const=1,
             default=0,
             help="slave mode, try not to exit in case of error",
+        )
+        parser.add_argument(
+            "--interactive_interpreter",
+            dest="InteractiveInterpreter",
+            action="store_const",
+            const=1,
+            default=0,
+            help="interactive execution, do not automatically try to close the "
+            "database in case of exception",
         )
 
         parser.add_argument(

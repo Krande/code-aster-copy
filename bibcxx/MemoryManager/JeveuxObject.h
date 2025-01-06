@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxObject
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,7 +42,7 @@ enum JeveuxMemory { Permanent, Temporary };
  * @def JeveuxMemoryTypesNames
  * @brief To give memory space of Jeveux object (string)
  */
-static const std::string JeveuxMemoryTypesNames[2] = {"G", "V"};
+static const std::string JeveuxMemoryTypesNames[2] = { "G", "V" };
 
 /**
  * @def JeveuxMemoryTypesNames

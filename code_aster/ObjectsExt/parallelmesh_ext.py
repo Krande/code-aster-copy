@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,10 @@
 ************************************************************************
 """
 
+import os
 import os.path as osp
+import subprocess
+import tempfile
 
 import numpy as np
 
@@ -40,8 +43,8 @@ from ..Objects import (
 )
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, shared_tmpdir
-from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
+from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
 from . import mesh_builder
 
 
@@ -72,6 +75,35 @@ class ExtendedParallelMesh:
         if not ExecutionParameter().option & Options.HPCMode:
             UTMESS("I", "SUPERVIS_1")
             ExecutionParameter().enable(Options.HPCMode)
+
+    def plot(self, command="gmsh", local=False):
+        """Plot the mesh.
+
+        Arguments:
+            command (str): Program to be executed to plot the mesh.
+            local (bool): Only the local mesh is plotted if *True*. Otherwise
+                all parts are plotted together.
+        """
+        if local:
+            # will be removed when 'tmpf' object will be deleted
+            tmpf = tempfile.NamedTemporaryFile(suffix=".med")
+            filename = tmpf.name
+            # to avoid then warning on existing file
+            os.remove(filename)
+            self.printMedFile(filename)
+            subprocess.run([ExecutionParameter().get_option(f"prog:{command}"), filename])
+        else:
+            with shared_tmpdir("meshplot") as tmpdir:
+                rank = MPI.ASTER_COMM_WORLD.Get_rank()
+                size = MPI.ASTER_COMM_WORLD.Get_size()
+                filename = osp.join(tmpdir, f"{rank}.med")
+                self.printMedFile(filename, local=True)
+                MPI.ASTER_COMM_WORLD.Barrier()
+                if rank == 0:
+                    files = [osp.join(tmpdir, f"{i}.med") for i in range(size)]
+                    subprocess.run([ExecutionParameter().get_option(f"prog:{command}")] + files)
+        print("waiting for all plotting processes...")
+        MPI.ASTER_COMM_WORLD.Barrier()
 
     def readMedFile(
         self, filename, meshname=None, partitioned=False, deterministic=False, verbose=0
