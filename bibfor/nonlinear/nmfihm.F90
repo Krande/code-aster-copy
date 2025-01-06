@@ -30,6 +30,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
 !
     implicit none
 !
+#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/ejcine.h"
@@ -106,6 +107,10 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
     codret = 0
     cod = 0
     axi = .false.
+
+! - Don't use orientation (not to enter the anisotropic case in lc7058)
+    angmas = r8vide()
+!
 !
 ! IFHYME = TRUE  : CALCUL COUPLE HYDRO-MECA
 ! IFHYME = FALSE : CALCUL MECA SANS HYDRO ET ELIMINATION DES DDL DE PRES
