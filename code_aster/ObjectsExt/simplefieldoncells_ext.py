@@ -96,7 +96,7 @@ class ComponentOnCells:
         descr (*Description*): Description of the component.
     """
 
-    # WARNING: _idx must be used to access values only a not restricted component.
+    # WARNING: _idx must be used to access values only on a not restricted component.
     # FIXME '_mask' toujours True, '_discr' non utilisé
 
     class Description:
@@ -109,10 +109,11 @@ class ComponentOnCells:
             mask (ndarray[bool]): Indicator that tells a value exist, same dimension.
         """
 
-        _idx = _mask = _discr = _cells = _nbcells = _nbval = None
+        _parent = _idx = _mask = _discr = _cells = _nbcells = _nbval = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
-        def __init__(self, indexes, discr, mask):
+        def __init__(self, parent, indexes, discr, mask):
+            self._parent = parent  # parent SimpleFieldOnCells
             self._idx = indexes
             self._discr = discr
             self._mask = mask
@@ -131,7 +132,10 @@ class ComponentOnCells:
             idx = self._idx[self._idx >= 0]
             if len(idx) == 0:
                 idx = np.zeros(1, dtype=int)
-            lines = [f"- indexes shape {self._idx.shape!r}, range {idx.min()} to {idx.max()}"]
+            lines = [
+                f"- indexes shape {self._idx.shape!r}, range {idx.min()} to {idx.max()}, "
+                f"{len(idx)} indexes defined"
+            ]
             if self._cells is None:
                 lines.append(f"- on all the {self._nbcells} cells")
             else:
@@ -142,10 +146,18 @@ class ComponentOnCells:
                     + ("..." if ndef > limit else "")
                 )
             uniq, numb = np.unique(self._discr, return_counts=True, axis=0)
+            nbv = (uniq.prod(axis=1) * numb).sum()
             discr = [f"{n} x {tuple(d)}" for n, d in zip(numb, uniq)]
             lines.append(
-                f"- {len(self._discr)} points/subpoints discretization: " + ", ".join(discr)
+                f"- {len(self._discr)} points/subpoints defs: "
+                + ", ".join(discr)
+                + f", {nbv} values"
             )
+            max = self._idx.max(axis=1)
+            undef = max[max < 0]
+            nundef = undef.shape[0]
+            nb = self._idx.shape[0]
+            lines.append(f"- {nb-nundef}/{nb} cells with values")
             return "\n".join(lines)
 
         def copy(self):
@@ -154,7 +166,7 @@ class ComponentOnCells:
             Returns:
                 *Decription*: copy of the current description.
             """
-            new = __class__(self._idx.copy(), self._discr.copy(), self._mask.copy())
+            new = __class__(self._parent, self._idx.copy(), self._discr.copy(), self._mask.copy())
             new._cells = None if self._cells is None else self._cells.copy()
             new._nbcells = self._nbcells
             new._nbval = self._nbval
@@ -199,7 +211,9 @@ class ComponentOnCells:
             new_discr[self._cells] = self._discr
             new_mask = np.zeros(self._nbval, dtype=bool)
             new_mask[idx] = self._mask
-            return new_values, ComponentOnCells.Description(new_idx, new_discr, new_mask)
+            return new_values, ComponentOnCells.Description(
+                self._parent, new_idx, new_discr, new_mask
+            )
 
     _values = _descr = _sign = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -259,7 +273,7 @@ class ComponentOnCells:
         lines = repr(self._values).splitlines()
         if len(lines) > 6:
             lines = lines[:3] + ["..."] + lines[-3:]
-        lines.insert(0, f"- {self.size} values:")
+        lines.insert(0, f"- {self.size} values in vector:")
         lines.append(repr(self._descr))
         return "\n".join(lines)
 
@@ -363,7 +377,7 @@ class ComponentOnCells:
     def mean(self):
         return self._values.mean()
 
-    @Debug.error_trace
+    # @Debug.error_trace
     def restrict(self, cells_ids):
         """Restrict the component on given cells.
 
@@ -376,7 +390,7 @@ class ComponentOnCells:
         idx = self._descr.restrict(cells_ids)
         self._values = self._values[idx]
 
-    @Debug.error_trace
+    # @Debug.error_trace
     def expand(self):
         """Expand the component by adding 0. where it not defined.
 
@@ -387,7 +401,7 @@ class ComponentOnCells:
             return self.copy()
         return ComponentOnCells(*self._descr.expand(self._values))
 
-    @Debug.error_trace
+    # @Debug.error_trace
     def on_support_of(self, other, strict=False):
         """Move the component onto the same support of another.
 
@@ -403,26 +417,28 @@ class ComponentOnCells:
             *ComponentOnCells*: A new component.
         """
         if self._cells is None and other._cells is not None:
-            return self.on_support_of(other.expand())
+            changed = self.on_support_of(other.expand())
+            changed.restrict(other._cells)
+            return changed
         if self._cells is not None and other._cells is None:
             return self.expand().on_support_of(other)
         if self._cells is not None:
             if np.any(self._cells != other._cells):
                 raise IndexError("components must be defined on the same cells")
-            homo = self.expand().on_support_of(other.expand())
-            if self._cells is not None:
-                homo.restrict(self._cells)
-            return homo
+            return self.expand().on_support_of(other)
         assert self._descr._nbcells == other._descr._nbcells, (
             self._descr._nbcells == other._descr._nbcells
         )
         assert self._cells is None and other._cells is None, (self._cells, other._cells)
+        assert self._idx.shape == other._idx.shape
         new = other.copy()
-        keep = self._idx[other._idx >= 0]
+        bools = other._idx >= 0
+        idx = other._idx[bools]
+        keep = self._idx[bools]
         if strict and np.any(keep < 0):
             raise IndexError("no value on all the support")
         prol = np.append(self._values, [0.0])
-        new._values = np.take(prol, keep)
+        new._values[idx] = np.take(prol, keep)
         new._descr._idx = other._idx.copy()
         return new
 
@@ -471,7 +487,7 @@ class ExtendedSimpleFieldOnCellsReal:
         return ComponentOnCells(
             self._cache["val"][:, icmp].copy(),
             ComponentOnCells.Description(
-                self._cache["idx"], self._cache["nbpt"], self._cache["msk"][:, icmp]
+                self, self._cache["idx"], self._cache["nbpt"], self._cache["msk"][:, icmp]
             ),
         )
 
