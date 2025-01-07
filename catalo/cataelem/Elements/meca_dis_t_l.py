@@ -36,7 +36,7 @@ CABSCUR = LocatedComponents(phys=PHY.ABSC_R, type="ELEM", components=("ABSC[2]",
 CCADISA = LocatedComponents(phys=PHY.CADISA_R, type="ELEM", components=("A[36]",))
 
 
-CCADISK = LocatedComponents(phys=PHY.CADISK, type="ELEM", components=("K[36]",))
+CCADISK = LocatedComponents(phys=PHY.CADISK_R, type="ELEM", components=("K[36]",))
 
 
 CCADISM = LocatedComponents(phys=PHY.CADISM, type="ELEM", components=("M[36]",))

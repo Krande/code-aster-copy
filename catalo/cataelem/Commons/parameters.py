@@ -85,7 +85,7 @@ PCACOQU = InputParameter(
 PCADISA = InputParameter(phys=PHY.CADISA_R, comment="""""")
 
 PCADISK = InputParameter(
-    phys=PHY.CADISK,
+    phys=PHY.CADISK_R,
     container="CARA!.CARDISCK",
     comment="""  PCADISK : CARACTERISTIQUE DE DISCRET,
            NECESSITE DE FOURNIR LE CONCEPT PRODUIT PAR AFFE_CARA_ELEM

@@ -153,10 +153,10 @@ CADISA_R = PhysicalQuantity(
 )
 
 
-CADISK = PhysicalQuantity(
+CADISK_R = PhysicalQuantity(
     type="R",
     components=("K[144]",),
-    comment="""  CADISK Type:R  Matrice de rigidite des elements discrets
+    comment="""  CADISK_R Type:R  Matrice de rigidite des elements discrets
        K[144] : coefficients de la matrice de rigidite
 """,
 )
