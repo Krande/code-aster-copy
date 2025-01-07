@@ -35,7 +35,7 @@ PCAORIE = InputParameter(
 )
 
 
-PCACO3D = InputParameter(phys=PHY.CACO3D)
+PCACO3D = InputParameter(phys=PHY.CACO3D_R)
 
 
 PCONTMR = InputParameter(phys=PHY.SIEF_R)

@@ -85,10 +85,10 @@ CACABL_R = PhysicalQuantity(
 )
 
 
-CACO3D = PhysicalQuantity(
+CACO3D_R = PhysicalQuantity(
     type="R",
     components=("CRF",),
-    comment="""  CACO3D  Type:R  Une "CARACTERISTIQUE" des elements de COQUE_3D
+    comment="""  CACO3D_R  Type:R  Une "CARACTERISTIQUE" des elements de COQUE_3D
        CRF : coefficient de rotation fictive
 """,
 )

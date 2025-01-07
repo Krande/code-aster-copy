@@ -30,7 +30,7 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-CCACO3D = LocatedComponents(phys=PHY.CACO3D, type="ELEM", components=("CRF",))
+CCACO3D = LocatedComponents(phys=PHY.CACO3D_R, type="ELEM", components=("CRF",))
 
 CCACOQU = LocatedComponents(
     phys=PHY.CACOQU_R,

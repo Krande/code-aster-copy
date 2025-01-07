@@ -52,7 +52,7 @@ PCAORIE = InputParameter(
 )
 
 
-PCACO3D = OutputParameter(phys=PHY.CACO3D, type="ELEM", comment=""" NE SERT QUE POUR COQUE_3D """)
+PCACO3D = OutputParameter(phys=PHY.CACO3D_R, type="ELEM", comment=""" NE SERT QUE POUR COQUE_3D """)
 
 
 RIGI_MECA_ELAS = Option(

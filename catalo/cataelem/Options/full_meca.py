@@ -105,7 +105,7 @@ PVARIPR = OutputParameter(phys=PHY.VARI_R, type="ELGA", comment=""" VARIABLES IN
 
 
 PCACO3D = OutputParameter(
-    phys=PHY.CACO3D, type="ELEM", comment=""" COQUE_3D (ROTATION FICTIVE AUTOUR DE LA NORMALE) """
+    phys=PHY.CACO3D_R, type="ELEM", comment=""" COQUE_3D (ROTATION FICTIVE AUTOUR DE LA NORMALE) """
 )
 
 # For HHO

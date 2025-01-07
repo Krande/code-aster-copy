@@ -85,7 +85,7 @@ PFISNO = InputParameter(
 )
 
 PCACO3D = OutputParameter(
-    phys=PHY.CACO3D, type="ELEM", comment=""" Field of normals for COQUE_3D elements """
+    phys=PHY.CACO3D_R, type="ELEM", comment=""" Field of normals for COQUE_3D elements """
 )
 
 # For HHO
