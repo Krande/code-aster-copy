@@ -41,7 +41,10 @@ def make_shared(lib, src, *args):
     fc = CFG.get("FC")
     fcp = pathlib.Path(fc)
     if not fcp.exists():
-        fcp = pathlib.Path(os.getenv("FC"))
+        fc_env = os.environ.get("FC")
+        if fc_env is None:
+            raise FileNotFoundError(f"Fortran compiler not found: {fc}")
+        fcp = pathlib.Path(fc_env)
     cmd = [fcp.as_posix()]
     cmd.extend(CFG.get("FCFLAGS"))
     cmd.extend(["-shared", "-o", lib, src])
