@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmprof(model, result, list_load, nume_ddl, &
                   sd_iden_relaz)
 !
@@ -24,8 +24,6 @@ subroutine nmprof(model, result, list_load, nume_ddl, &
 #include "asterfort/gnomsd.h"
 #include "asterfort/numero.h"
 #include "asterfort/rsnume.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(out) :: nume_ddl
@@ -58,9 +56,8 @@ subroutine nmprof(model, result, list_load, nume_ddl, &
     if (present(sd_iden_relaz)) then
         sd_iden_rela = sd_iden_relaz
     end if
-!
+
 ! - Generate name of numbering object (nume_ddl)
-!
     nume_ddl = '12345678.NUMED'
     noojb = '12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)

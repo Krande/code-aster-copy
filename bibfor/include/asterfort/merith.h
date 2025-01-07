@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_,&
-                      time_, matr_elem_, nh, base_)
-        character(len=*) :: model_
-        integer :: nb_load
-        character(len=*) :: list_name_(*)
-        character(len=*) :: mate, mateco
-        character(len=*) :: cara_elem_
-        character(len=*) :: time_
-        character(len=*) :: matr_elem_
-        integer :: nh
-        character(len=*) :: base_
+    subroutine merith(modelZ, loadNameZ, matecoZ, caraElemZ, &
+                      timeMapZ, matrElemZ, jvBaseZ)
+        character(len=*), intent(in) :: modelZ, loadNameZ, matecoZ, caraElemZ, jvBaseZ, timeMapZ
+        character(len=*), intent(inout) :: matrElemZ
     end subroutine merith
 end interface

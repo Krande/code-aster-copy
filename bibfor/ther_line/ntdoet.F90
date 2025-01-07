@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,7 @@ subroutine ntdoet(model, nume_dof, l_stat, ds_inout)
 #include "asterfort/ntetl3.h"
 #include "asterfort/utmess.h"
 !
-!
-    character(len=24), intent(in) :: model
+    character(len=8), intent(in) :: model
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_InOut), intent(inout) :: ds_inout
     aster_logical, intent(out) :: l_stat

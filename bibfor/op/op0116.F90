@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,9 +67,9 @@ subroutine op0116()
     character(len=8) :: rigthe, modmec, nomres, potentiel
     character(len=8) :: mailla, maflui, nume
     character(len=19) :: chamno, vectas, solve1, solve2, resuas, nomch(3)
-    character(len=19) :: tmpmod, infcha
+    character(len=19) :: tmpmod
     character(len=24) :: typres, nomcom, mateco, metres, arcinf, inflis, mater
-    character(len=24) :: chcmb2, vesolx, vesoly, vesolz, vect2
+    character(len=24) :: chcmb2, vesolx, vesoly, vesolz, vect2, listLoadResu
     character(len=24) :: liditr, nuddl, modele, bl24, chcomb, chamnx, chamny, chamnz
     complex(kind=8) :: c16b
     type(NL_DS_InOut) :: ds_inout
@@ -137,8 +137,8 @@ subroutine op0116()
     call nonlinDSInOutRead('THER', nomres, ds_inout)
 !
     vect2 = '&&OP0116.2ND.MEMBRE'
-    call chflch(rigthe, vect2, infcha)
-    ds_inout%list_load_resu = infcha
+    call chflch(rigthe, vect2, listLoadResu)
+    ds_inout%listLoadResu = listLoadResu
 !
 !---------------------------------------------------------------------
 !---------- APPEL A CALFLU -------------------------------------------
@@ -162,10 +162,8 @@ subroutine op0116()
         call getvr8(' ', 'COEF_MULT', iocc=1, nbval=nbcoefs, vect=zr(jcoef))
 !
         do i = 1, nbmod
-            call rsexch('F', modmec, 'DEPL', i, chamno, &
-                        ib)
-            call rsadpa(modmec, 'L', 1, 'FREQ', i, &
-                        0, sjv=j1)
+            call rsexch('F', modmec, 'DEPL', i, chamno, ib)
+            call rsadpa(modmec, 'L', 1, 'FREQ', i, 0, sjv=j1)
             freq = zr(j1)
 !
             constant = 1

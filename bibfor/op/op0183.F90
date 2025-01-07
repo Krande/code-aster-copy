@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,19 @@
 !
 subroutine op0183()
 !
+    use listLoad_type
     implicit none
 !
 !-----------------------------------------------------------------------
 !     COMMANDE :  CALC_FORC_NONL
 !-----------------------------------------------------------------------
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterf_types.h"
 #include "asterfort/asasve.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/comp_info.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -47,8 +48,9 @@ subroutine op0183()
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/medomm.h"
+#include "asterfort/nmdoch.h"
 #include "asterfort/nmdocc.h"
-#include "asterfort/nmdome.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/refdcp.h"
@@ -61,7 +63,7 @@ subroutine op0183()
 #include "asterfort/vefnme.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/comp_info.h"
+#include "jeveux.h"
     integer :: ibid
     integer :: i, iad
     integer :: iordr, iret, iret2, j
@@ -71,15 +73,15 @@ subroutine op0183()
     integer :: nbddl, nbordr, nc, nh, np
     integer :: ltps, ltps2
     real(kind=8) :: time, prec
-!
+    character(len=1), parameter :: jvBase = "V"
     character(len=2) :: codret
     character(len=6) :: nompro
-    character(len=8) :: ctyp, crit, materi
+    character(len=8) :: ctyp, crit, materField
     character(len=8) :: kiord
-    character(len=16) :: type, oper, k16bid
+    character(len=16) :: resultType, oper, k16bid
     character(len=16) :: compex
-    character(len=19) :: resuco, knum, ligrel, resuc1, chdep2
-    character(len=19), parameter :: list_load = '&&OP0183.LIST_LOAD'
+    character(len=19) :: resultIn, knum, ligrel, resultOut, chdep2
+    character(len=19), parameter :: listLoad = '&&OP0183.LIST_LOAD'
     character(len=16), parameter :: option = 'FONL_NOEU'
     character(len=24) :: model, caraElem, chamno, mateco
     character(len=24) :: nume, vafono, sigma, chdepl, k24bid
@@ -88,6 +90,7 @@ subroutine op0183()
     character(len=24) :: chvarc
     character(len=24) :: numref, valk(3)
     aster_logical :: l_etat_init
+    type(ListLoad_Prep) :: listLoadPrep
 !     ------------------------------------------------------------------
     parameter(nompro='OP0183')
 !     ------------------------------------------------------------------
@@ -111,24 +114,22 @@ subroutine op0183()
     call onerrf('EXCEPTION+VALID', k16bid, ibid)
 !
     call infmue()
-!
-! --- OPTIONS A CALCULER
-!
-    call getres(resuc1, type, oper)
-    ASSERT(type .eq. 'DYNA_TRANS')
-    call getvid(' ', 'RESULTAT', scal=resuco, nbret=n0)
-    ASSERT(resuco .ne. resuc1)
-!
-!
+
+! - Get result datastructures
+    call getres(resultOut, resultType, oper)
+    ASSERT(resultType .eq. 'DYNA_TRANS')
+    call getvid(' ', 'RESULTAT', scal=resultIn, nbret=n0)
+    ASSERT(resultIn .ne. resultOut)
+
 !
     knum = '&&'//nompro//'.NUME_ORDRE'
 
     call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
-    call rsutnu(resuco, ' ', 0, knum, nbordr, &
+    call rsutnu(resultIn, ' ', 0, knum, nbordr, &
                 prec, crit, iret)
     if (iret .eq. 10) then
-        call utmess('F', 'CALCULEL4_8', sk=resuco)
+        call utmess('F', 'CALCULEL4_8', sk=resultIn)
         goto 60
     end if
     if (iret .ne. 0) then
@@ -138,28 +139,23 @@ subroutine op0183()
     call jeveuo(knum, 'L', jordr)
 !
     exitim = .true.
-    mateco = ' '
-    call rscrsd('G', resuc1, type, nbordr)
-    call getvid(' ', 'MODELE', scal=model, nbret=n0)
+    call rscrsd('G', resultOut, resultType, nbordr)
+
+! - Get main parameters from user
+    call medomm(model, materField, mateco, caraElem)
+    ASSERT(model .ne. ' ')
     ligrel = model(1:8)//'.MODELE'
-    ASSERT(n0 .eq. 1)
-    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n0)
-    if (n0 .gt. 0) then
-        call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
-    else
-        mateco = ' '
-    end if
-    caraElem = ' '
-    call getvid(' ', 'CARA_ELEM', scal=caraElem, nbret=n0)
-!
-!
+
+! - Get loads/BC and create list of loads datastructure
+    listLoadPrep%model = model(1:8)
+    call nmdoch(listLoadPrep, listLoad, jvBase)
 !
     time = 0.d0
     l_etat_init = .false.
 !
     numref = ' '
-    call refdcp(resuco, resuc1)
-    call dismoi('REF_RIGI_PREM', resuc1, 'RESU_DYNA', repk=raide, arret='C')
+    call refdcp(resultIn, resultOut)
+    call dismoi('REF_RIGI_PREM', resultOut, 'RESU_DYNA', repk=raide, arret='C')
     if (raide .ne. ' ') then
         call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numref)
     end if
@@ -170,10 +166,10 @@ subroutine op0183()
         vafono = ' '
         nh = 0
 !
-        call rsexch(' ', resuco, 'SIEF_ELGA', iordr, sigma, &
+        call rsexch(' ', resultIn, 'SIEF_ELGA', iordr, sigma, &
                     iret)
         if (iret .ne. 0) then
-            call rsexch(' ', resuco, 'SIEF_ELGA', iordr, sigma, &
+            call rsexch(' ', resultIn, 'SIEF_ELGA', iordr, sigma, &
                         iret2)
             if (iret2 .ne. 0 .and. option .ne. 'FONL_NOEU') then
                 call codent(iordr, 'G', kiord)
@@ -188,7 +184,7 @@ subroutine op0183()
             end if
         end if
 !
-        call rsexch(' ', resuco, 'DEPL', iordr, chdepl, &
+        call rsexch(' ', resultIn, 'DEPL', iordr, chdepl, &
                     iret)
         if (iret .ne. 0) then
             call codent(iordr, 'G', kiord)
@@ -209,7 +205,7 @@ subroutine op0183()
 !       -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
         nume = numref(1:14)//'.NUME'
 !
-        call rsexch(' ', resuco, 'VITE', iordr, chvive, &
+        call rsexch(' ', resultIn, 'VITE', iordr, chvive, &
                     iret)
         if (iret .eq. 0) then
             chvive = '&&'//nompro//'.CHVIT_NUL'
@@ -217,7 +213,7 @@ subroutine op0183()
             call jelira(chvive(1:19)//'.VALE', 'LONMAX', nbddl)
             call jerazo(chvive(1:19)//'.VALE', nbddl, 1)
         end if
-        call rsexch(' ', resuco, 'ACCE', iordr, chacve, &
+        call rsexch(' ', resultIn, 'ACCE', iordr, chacve, &
                     iret)
         if (iret .eq. 0) then
             chacve = '&&'//nompro//'.CHACC_NUL'
@@ -227,18 +223,18 @@ subroutine op0183()
         end if
 !
         if (exitim) then
-            call rsadpa(resuco, 'L', 1, 'INST', iordr, &
+            call rsadpa(resultIn, 'L', 1, 'INST', iordr, &
                         0, sjv=iad, styp=ctyp)
             time = zr(iad)
         end if
 !
-        call vrcins(model, materi, caraElem, time, chvarc(1:19), &
+        call vrcins(model, materField, caraElem, time, chvarc(1:19), &
                     codret)
 !
 !       --- CALCUL DES VECTEURS ELEMENTAIRES ---
         if (i .eq. 1) then
             compor = '&&OP0183.COMPOR'
-            call nmdocc(model(1:8), materi, l_etat_init, compor, 'V')
+            call nmdocc(model(1:8), materField, l_etat_init, compor, 'V')
             if (niv .ge. 2) then
                 call comp_info(model(1:8), compor)
             end if
@@ -252,10 +248,10 @@ subroutine op0183()
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
         call asasve(vefnod, nume, 'R', vafono)
 !
-        call rsexch(' ', resuc1, 'DEPL', iordr, chamno, &
+        call rsexch(' ', resultOut, 'DEPL', iordr, chamno, &
                     iret)
-        call rsadpa(resuc1, 'E', 1, 'INST', iordr, 0, sjv=ltps2)
-        call rsadpa(resuco, 'L', 1, 'INST', iordr, 0, sjv=ltps)
+        call rsadpa(resultOut, 'E', 1, 'INST', iordr, 0, sjv=ltps2)
+        call rsadpa(resultIn, 'L', 1, 'INST', iordr, 0, sjv=ltps)
         zr(ltps2) = zr(ltps)
 !
 !
@@ -279,10 +275,7 @@ subroutine op0183()
             noch(1+j) = fono(1+j)
         end do
 !
-        call rsnoch(resuc1, 'DEPL', iordr)
-        call nmdome(model, materi, mateco, caraElem, list_load, resuc1(1:8), &
-                    iordr)
-!
+        call rsnoch(resultOut, 'DEPL', iordr)
         call detrsd('CHAMP_GD', '&&'//nompro//'.SIEF')
         call detrsd('VECT_ELEM', vefnod)
 40      continue

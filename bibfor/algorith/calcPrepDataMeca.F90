@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine calcPrepDataMeca(model, mate, mateco, cara_elem, &
+subroutine calcPrepDataMeca(modelZ, materFieldZ, matecoZ, caraElemZ, &
                             disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
                             time_prev, time_curr, &
                             ds_constitutive, ds_material, ds_system, &
@@ -46,7 +45,7 @@ subroutine calcPrepDataMeca(model, mate, mateco, cara_elem, &
 #include "asterfort/nmvcre.h"
 #include "asterfort/sgcomp.h"
 !
-    character(len=24), intent(in) :: model, mate, mateco, cara_elem
+    character(len=*), intent(in) :: modelZ, materFieldZ, matecoZ, caraElemZ
     character(len=19), intent(in) :: disp_prev, disp_cumu_inst
     character(len=19), intent(in) :: vari_prev, sigm_prev
     real(kind=8), intent(in) :: time_prev, time_curr
@@ -66,8 +65,8 @@ subroutine calcPrepDataMeca(model, mate, mateco, cara_elem, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of model
-! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
+! In  materField       : name of material characteristics (field)
+! In  caraElem         : name of elementary characteristics (field)
 ! In  disp_prev        : displacement at beginning of current step
 ! In  disp_cumu_inst   : displacement increment from beginning of step
 ! In  vari_prev        : internal variables at beginning of step
@@ -103,7 +102,7 @@ subroutine calcPrepDataMeca(model, mate, mateco, cara_elem, &
 !
 ! - Get LIGREL
 !
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=modelLigrel)
 !
 ! - Put displacements in "hat-variables"
 !
@@ -142,9 +141,9 @@ subroutine calcPrepDataMeca(model, mate, mateco, cara_elem, &
 !
 ! - Prepare command variables
 !
-    call nmvcle(model, mate, cara_elem, time_curr, varc_curr)
-    call nmvcle(model, mate, cara_elem, time_prev, varc_prev)
-    call nmvcre(model, mate, cara_elem, varc_refe)
+    call nmvcle(modelZ, materFieldZ, caraElemZ, time_curr, varc_curr)
+    call nmvcle(modelZ, materFieldZ, caraElemZ, time_prev, varc_prev)
+    call nmvcre(modelZ, materFieldZ, caraElemZ, varc_refe)
 !
 ! - Checking number of internal variables
 !
@@ -178,8 +177,8 @@ subroutine calcPrepDataMeca(model, mate, mateco, cara_elem, &
 !
 ! - Prepare datastructures
 !
-    ds_material%mater = mate
-    ds_material%mateco = mateco
+    ds_material%mater = materFieldZ
+    ds_material%mateco = matecoZ
     ds_material%varc_refe = varc_refe
     ds_system%merigi = merigi
     ds_system%veinte = veinte

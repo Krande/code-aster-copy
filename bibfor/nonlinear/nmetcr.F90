@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,28 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
-                  ds_contact, cara_elem, list_load)
+                  ds_contact, cara_elem, listLoad)
 !
     use NonLin_Datastructure_type
+    use listLoad_module
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/GetIOField.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/liscpy.h"
 #include "asterfort/nmetac.h"
 #include "asterfort/nmetc0.h"
 #include "asterfort/nmetcc.h"
 #include "asterfort/rscrsd.h"
-#include "asterfort/GetIOField.h"
 #include "asterfort/SetIOField.h"
 !
     type(NL_DS_InOut), intent(inout) :: ds_inout
@@ -46,7 +45,7 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
     character(len=24), intent(in) :: compor
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: cara_elem
-    character(len=19), intent(in) :: list_load
+    character(len=19), intent(in) :: listLoad
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,22 +66,24 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_field, nb_field_resu
+    character(len=4), parameter :: phenom = "MECA"
+    integer :: nb_field, nb_field_resu, nbLoad
     integer :: i_field, i_field_resu
     integer, pointer :: xfem_cont(:) => null()
     aster_logical :: l_find, l_xfem_cohe
-    character(len=19) :: result, list_load_resu
-    character(len=24) :: field_resu, field_type, algo_name, init_name
+    character(len=19) :: result
+    character(len=24) :: field_resu, field_type, algo_name, init_name, listLoadResu
 !
 ! --------------------------------------------------------------------------------------------------
 !
     result = '&&NMETCR'
     nb_field = ds_inout%nb_field
-    list_load_resu = ds_inout%list_load_resu
-!
+    listLoadResu = ds_inout%listLoadResu
+
 ! - Special copy of list of loads for save in results datastructure
-!
-    call liscpy(list_load, list_load_resu, 'G')
+    call getNbLoadsFromList(listLoad, nbLoad)
+    call creaListLoad(phenom, 'G', nbLoad, listLoadResu)
+    call copyListLoad(phenom, listLoad, listLoadResu)
 !
 ! - Select fields depending on active functionnalities
 !

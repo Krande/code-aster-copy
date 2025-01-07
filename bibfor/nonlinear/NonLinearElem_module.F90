@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,10 +66,10 @@ contains
 ! In  superElem        : name of elementary matrices for super elements
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine elemSuper(model, materialField, caraElem, superElem)
+    subroutine elemSuper(model, superElem)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=24), intent(in) :: model, materialField, caraElem
+        character(len=24), intent(in) :: model
         character(len=24), intent(in) :: superElem
 ! - Local
         character(len=1), parameter :: jvBase = "V"
@@ -436,10 +436,12 @@ contains
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_84')
         end if
-        call mecgme(model, caraElem, &
-                    materialField, materialCoding, &
-                    listLoad, timeCurr, &
-                    dispPrev, dispCumu, timePrev, behaviourField, neumElem)
+        call mecgme("S", &
+                    model, caraElem, materialField, materialCoding, behaviourField, &
+                    listLoad, &
+                    timePrev, timeCurr, &
+                    dispPrev, dispCumu, &
+                    neumElem)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

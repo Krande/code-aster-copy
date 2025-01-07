@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine romAlgoNLInit(phenom, model, mesh, numeDof, resultName, paraAlgo, lLineSearch_)
 !
@@ -33,8 +32,7 @@ subroutine romAlgoNLInit(phenom, model, mesh, numeDof, resultName, paraAlgo, lLi
 #include "asterfort/wkvect.h"
 !
     character(len=4), intent(in) :: phenom
-    character(len=24), intent(in) :: model
-    character(len=8), intent(in) :: mesh, resultName
+    character(len=8), intent(in) :: model, mesh, resultName
     character(len=24), intent(in) :: numeDof
     type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
     aster_logical, intent(in), optional :: lLineSearch_

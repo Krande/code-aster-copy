@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,23 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine merit1(modele, nchar, lchar, mate, mateco, cara,&
-                      time, matel, nh, prefch, numero,&
-                      base)
-        character(len=8) :: modele
-        integer :: nchar
-        character(len=*) :: lchar(*)
-        character(len=*) :: mate, mateco
-        character(len=8) :: cara
-        character(len=24) :: time
-        character(len=19) :: matel
-        integer :: nh
-        character(len=19) :: prefch
-        integer :: numero
-        character(len=1) :: base
+    subroutine merit1(modelZ, caraElemZ, matecoZ, &
+                      loadNameZ, &
+                      timeMap, matrElem, resuElemPref, &
+                      indxMatrElem, jvBase)
+        character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
+        character(len=*), intent(in) :: loadNameZ
+        character(len=24), intent(in) :: timeMap
+        character(len=19), intent(in) :: matrElem, resuElemPref
+        integer, intent(in) :: indxMatrElem
+        character(len=1), intent(in)  :: jvBase
     end subroutine merit1
 end interface

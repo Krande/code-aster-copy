@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine resuSaveParameters(resultName   , resultType ,&
-                                  model        , caraElem   , fieldMate     , listLoad,&
+    subroutine resuSaveParameters(resultName, resultType, &
+                                  model, caraElem, materField, listLoadResu, &
                                   empiNumePlan_, empiSnapNb_, empiFieldType_)
         character(len=8), intent(in) :: resultName
         character(len=16), intent(in) :: resultType
-        character(len=8), intent(in) :: model, caraElem, fieldMate
-        character(len=19), intent(in) :: listLoad
+        character(len=8), intent(in) :: model, caraElem, materField
+        character(len=24), intent(in) :: listLoadResu
         integer, optional, intent(in) :: empiNumePlan_, empiSnapNb_
         character(len=24), optional, intent(in) :: empiFieldType_
     end subroutine resuSaveParameters

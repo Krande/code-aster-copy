@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vethbt(model, lload_name, lload_info, cara_elem, mate, &
-                  temp_iter, vect_elem, base)
+subroutine vethbt(model, loadNameJv, loadInfoJv, &
+                  temp_iter, vect_elem, jvBase)
 !
     implicit none
 !
@@ -31,14 +31,11 @@ subroutine vethbt(model, lload_name, lload_info, cara_elem, mate, &
 #include "asterfort/reajre.h"
 #include "asterfort/detrsd.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: lload_name
-    character(len=24), intent(in) :: lload_info
-    character(len=24), intent(in) :: cara_elem
-    character(len=24), intent(in) :: mate
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: loadNameJv, loadInfoJv
     character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: vect_elem
-    character(len=1), intent(in) :: base
+    character(len=1), intent(in) :: jvBase
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,13 +46,11 @@ subroutine vethbt(model, lload_name, lload_info, cara_elem, mate, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of the model
-! In  lload_name       : name of object for list of loads name
-! In  lload_info       : name of object for list of loads info
-! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
+! In  loadNameJv       : name of object for list of loads name
+! In  loadInfoJv       : name of object for list of loads info
 ! In  temp_iter        : temperature field at current Newton iteration
 ! In  vect_elem        : name of vect_elem result
-! In  base             : JEVEUX base for object
+! In  jvBase           : JEVEUX base for object
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,8 +65,8 @@ subroutine vethbt(model, lload_name, lload_info, cara_elem, mate, &
     integer :: load_nume
     aster_logical :: load_empty
     integer :: i_load, nb_load
-    character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
+    character(len=24), pointer :: listLoadName(:) => null()
+    integer, pointer :: listLoadInfo(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,14 +80,14 @@ subroutine vethbt(model, lload_name, lload_info, cara_elem, mate, &
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        lload_name, lload_info)
+    call load_list_info(load_empty, nb_load, listLoadName, listLoadInfo, &
+                        loadNameJv, loadInfoJv)
 !
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, 'CHAR_THER')
-    call reajre(vect_elem, ' ', base)
+    call memare(jvBase, vect_elem, model, 'CHAR_THER')
+    call reajre(vect_elem, ' ', jvBase)
 !
 ! - Input fields
 !
@@ -107,8 +102,8 @@ subroutine vethbt(model, lload_name, lload_info, cara_elem, mate, &
 !
     if (nb_load .gt. 0) then
         do i_load = 1, nb_load
-            load_name = v_load_name(i_load) (1:8)
-            load_nume = v_load_info(i_load+1)
+            load_name = listLoadName(i_load) (1:8)
+            load_nume = listLoadInfo(i_load+1)
             if (load_nume .gt. 0) then
                 ligrch = load_name//'.CHTH.LIGRE'
 ! ------------- Input field
@@ -121,7 +116,7 @@ subroutine vethbt(model, lload_name, lload_info, cara_elem, mate, &
                 lchout(1) = resu_elem
 ! ------------- Computation
                 call calcul('S', option, ligrch, nbin, lchin, &
-                            lpain, nbout, lchout, lpaout, base, &
+                            lpain, nbout, lchout, lpaout, jvBase, &
                             'OUI')
 ! ------------- Copying output field
                 call reajre(vect_elem, lchout(1), 'V')

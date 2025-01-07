@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine calcPrepDataMeca(model          , mate          , mateco,  cara_elem,&
-                                disp_prev      , disp_cumu_inst, vari_prev, sigm_prev,&
-                                time_prev      , time_curr     ,&
-                                ds_constitutive, ds_material   , ds_system,&
-                                hval_incr      , hval_algo     ,&
-                                vediri         , vefnod        ,&
-                                vevarc_prev    , vevarc_curr   )
+    subroutine calcPrepDataMeca(modelZ, materFieldZ, matecoZ, caraElemZ, &
+                                disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
+                                time_prev, time_curr, &
+                                ds_constitutive, ds_material, ds_system, &
+                                hval_incr, hval_algo, &
+                                vediri, vefnod, &
+                                vevarc_prev, vevarc_curr)
         use NonLin_Datastructure_type
-        character(len=24), intent(in) :: model, mate, cara_elem, mateco
+        character(len=*), intent(in) :: modelZ, materFieldZ, caraElemZ, matecoZ
         character(len=19), intent(in) :: disp_prev, disp_cumu_inst
         character(len=19), intent(in) :: vari_prev, sigm_prev
         real(kind=8), intent(in) :: time_prev, time_curr

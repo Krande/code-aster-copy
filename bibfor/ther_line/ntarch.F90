@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ntarch(numins, modele, mate, carele, para, &
+!
+subroutine ntarch(numins, model, materField, caraElem, para, &
                   sddisc, ds_inout, force, ds_algorom_)
 !
     use NonLin_Datastructure_type
@@ -36,11 +36,8 @@ subroutine ntarch(numins, modele, mate, carele, para, &
 #include "asterfort/uttcpg.h"
 #include "asterfort/romAlgoNLTableSave.h"
 !
-!
     integer, intent(in) :: numins
-    character(len=24), intent(in) :: modele
-    character(len=24), intent(in) :: mate
-    character(len=24), intent(in) :: carele
+    character(len=8), intent(in) :: model, materField, caraElem
     real(kind=8), intent(in) :: para(*)
     character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(in) :: ds_inout
@@ -63,13 +60,14 @@ subroutine ntarch(numins, modele, mate, carele, para, &
     real(kind=8) :: instan
     integer :: iret
     integer :: nume_store
-    character(len=19) :: k19bid, list_load_resu
+    character(len=19) :: k19bid
     character(len=8) :: result
+    character(len=24) :: listLoadResu
 !
 ! --------------------------------------------------------------------------------------------------
 !
     result = ds_inout%result
-    list_load_resu = ds_inout%list_load_resu
+    listLoadResu = ds_inout%listLoadResu
 !
 ! - Print timer
 !
@@ -108,7 +106,7 @@ subroutine ntarch(numins, modele, mate, carele, para, &
 !
 ! ----- Storing parameters
 !
-        call ntarc0(result, modele, mate, carele, list_load_resu, &
+        call ntarc0(result, model, materField, caraElem, listLoadResu, &
                     para, nume_store, instan)
 !
 ! ----- Storing fields

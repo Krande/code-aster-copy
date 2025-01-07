@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine metnth(modele, lchar, cara, mate, mateco, time, &
+subroutine metnth(model, loadNameJv, caraElem, mateco, time, &
                   chtni, metrnl)
 !
 !
@@ -38,8 +38,9 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: lchar, mate, mateco
-    character(len=24) :: modele, cara, metrnl, time, chtni
+    character(len=*) :: loadNameJv, mateco
+    character(len=8) :: model, caraElem
+    character(len=24) :: metrnl, time, chtni
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DES MATRICES ELEMENTAIRES DE CONVECTION NATURELLE
@@ -68,7 +69,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
     character(len=8) :: vitess
     character(len=16), parameter :: option = 'RIGI_THER_CONV'
     character(len=24) :: lchin(6), lchout(1), chgeom, chcara(18)
-    character(len=24) :: chvite, ligrmo, convch, carele
+    character(len=24) :: chvite, ligrmo, convch
     integer :: iret, ilires
     integer :: nchar, jchar
 !
@@ -79,25 +80,25 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
 !-----------------------------------------------------------------------
     call jemarq()
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
-    if (modele(1:1) .eq. ' ') then
+    if (model(1:1) .eq. ' ') then
         call utmess('F', 'CALCULEL3_50')
     end if
 !
-    call jeexin(lchar, iret)
+    call jeexin(loadNameJv, iret)
     if (iret .ne. 0) then
-        call jelira(lchar, 'LONMAX', nchar)
-        call jeveuo(lchar, 'L', jchar)
+        call jelira(loadNameJv, 'LONMAX', nchar)
+        call jeveuo(loadNameJv, 'L', jchar)
     else
         nchar = 0
     end if
 !
-    call megeom(modele, chgeom)
-    call mecara(cara, chcara)
+    call megeom(model, chgeom)
+    call mecara(caraElem, chcara)
 !
     call jeexin(metrnl, iret)
     if (iret .eq. 0) then
         metrnl = '&&METNTH           .RELR'
-        call memare('V', metrnl, modele(1:8), 'RIGI_THER')
+        call memare('V', metrnl, model(1:8), 'RIGI_THER')
     else
         call jedetr(metrnl)
     end if
@@ -119,7 +120,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
             end if
 !
 
-            call memare('V', metrnl, modele(1:8), option)
+            call memare('V', metrnl, model(1:8), option)
 !
             call jeveuo(convch, 'L', jvites)
             vitess = zk8(jvites)
@@ -138,7 +139,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
             lchin(6) = chtni
 !
 !
-            ligrmo = modele(1:8)//'.MODELE'
+            ligrmo = model(1:8)//'.MODELE'
             ilires = 0
             ilires = ilires+1
             call codent(ilires, 'D0', lchout(1) (12:14))

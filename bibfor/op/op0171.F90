@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine op0171()
 !
+    use listLoad_module
+    use loadTherCompute_module
+!
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/cresol.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getMainPara.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -43,8 +45,6 @@ subroutine op0171()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/load_neut_excl.h"
-#include "asterfort/ntdoth.h"
 #include "asterfort/nttain.h"
 #include "asterfort/nttcmv.h"
 #include "asterfort/numero.h"
@@ -60,6 +60,7 @@ subroutine op0171()
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,6 +68,7 @@ subroutine op0171()
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=4), parameter :: phenom = "THER"
     aster_logical :: matcst, coecst, prem, reasmt, reasvt
     integer :: parcri(9), iifm, jlagp, jvPara
     integer :: k, iret
@@ -80,13 +82,15 @@ subroutine op0171()
     character(len=1) :: ci1, ci2, creas, ce1, ce2
     character(len=8) :: k8bid, answer
     character(len=16) :: k16bid, nomcvg
-    character(len=19) :: listLoad, solver, maprec, listLoadResu
-    character(len=24) :: model, mateco, caraElem, mater
+    character(len=19) :: solver, maprec
+    character(len=24) :: listLoad, listLoadResu
+    character(len=8) :: model, caraElem, materField
+    character(len=24) :: mateco
     character(len=24) :: fieldInResult, vtemp, vtempm, vtempp, vec2nd
     character(len=24) :: result, ligrmo, tempev, tempin
-    character(len=24) :: time, matass, noojb, nume_dof
+    character(len=24) :: timeMap, matass, nume_dof, noojb
     character(len=24) :: cndirp, cnchci, cnchtp
-    character(len=24) :: chlapm, chlapp, cnresi, noobj
+    character(len=24) :: chlapm, chlapp, cnresi
     character(len=76) :: fmt
     integer :: vali(2)
     real(kind=8) :: valr(2)
@@ -111,23 +115,16 @@ subroutine op0171()
     ce1 = ' '
     ce2 = ' '
     solver = '&&OP0171.SOLVER'
-    listLoad = '&&OP0171.LISCHA'
-!
+
 ! - Get datastructure for results
-!
     call getres(result, k16bid, k8bid)
 
 ! - Read main parameters
-    call ntdoth(model, mater, mateco, caraElem, listLoad, &
-                matcst_=matcst, coecst_=coecst)
-
-! - EVOL_CHAR is prohibden
-    call load_neut_excl('THER_NON_LINE_MO', list_load_=listLoad)
+    call getMainPara(phenom, &
+                     model, materField, mateco, caraElem, listLoad)
 
 ! - Save list of loads in results datastructure
-    noobj = '12345678.1234.EXCIT'
-    call gnomsd(' ', noobj, 10, 13)
-    listLoadResu = noobj(1:19)
+    call nameListLoad(listLoadResu)
     call copisd('LISTE_CHARGES', 'G', listLoad, listLoadResu)
 
 ! - No structural elements for this command
@@ -136,6 +133,13 @@ subroutine op0171()
     if (answer .eq. 'OUI') then
         call utmess('F', 'THERNONLINE4_2')
     end if
+
+! - Detect non-constant material parameters
+    call dismoi('THER_F_INST', materField, 'CHAM_MATER', repk=answer)
+    matcst = answer .eq. 'NON'
+
+! - Detect non-constant loads
+    call hasFuncLoad(listLoad, coecst)
 
 ! - Solver parameters
     call cresol(solver)
@@ -164,7 +168,7 @@ subroutine op0171()
 !
 ! ======================================================================
 !
-    time = result(1:8)//'.CHTPS'
+    timeMap = result(1:8)//'.CHTPS'
 !
 ! --- NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
     noojb = '12345678.00000.NUME.PRNO'
@@ -249,8 +253,8 @@ subroutine op0171()
 !
 ! --- ACTUALISATION EVENTUELLE DES VECTEURS ET DES MATRICES
 !
-    call nttcmv(model, mater, mateco, caraElem, listLoad, nume_dof, &
-                solver, time, tpsthe, tpsnp1, reasvt, &
+    call nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
+                solver, timeMap, tpsthe, tpsnp1, reasvt, &
                 reasmt, creas, vtemp, vtempm, vec2nd, &
                 matass, maprec, cndirp, cnchci, cnchtp)
     reasmt = .true.
@@ -267,7 +271,7 @@ subroutine op0171()
 ! - ITERATIONS INTERNES
 !
         call nttain(model, mateco, caraElem, listLoad, nume_dof, &
-                    solver, time, epsr, lonch, matass, &
+                    solver, timeMap, epsr, lonch, matass, &
                     maprec, cnchci, cnresi, vtemp, vtempm, &
                     vtempp, vec2nd, chlapm, chlapp, ci1, &
                     ci2, testi)
@@ -355,7 +359,7 @@ subroutine op0171()
     zr(jvPara) = 0.d0
     call copisd('CHAMP_GD', 'G', vtempp, fieldInResult)
     call rsnoch(result, 'TEMP', 0)
-    call rssepa(result, 0, model, mater, caraElem, listLoadResu)
+    call rssepa(result, 0, model, materField, caraElem, listLoadResu)
 !
     call titre()
 !

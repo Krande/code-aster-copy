@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmdoch_wrap(list_load0, l_load_user0, l_calc_user0, list_load_resu0, base, &
+!
+subroutine nmdoch_wrap(listLoadZ, jvBaseZ, &
                        ligrel_slav0, ligrel_cont0)
+!
+    use listLoad_type
+    use listLoad_module
 !
     implicit none
 !
@@ -25,12 +28,9 @@ subroutine nmdoch_wrap(list_load0, l_load_user0, l_calc_user0, list_load_resu0, 
 #include "jeveux.h"
 #include "asterfort/nmdoch.h"
 !
-! person_in_charge: nicolas.sellenet at edf.fr
-!
-    character(len=*), intent(in) :: list_load0
-    integer, intent(in) :: l_load_user0, l_calc_user0
-    character(len=*), intent(in) :: list_load_resu0, ligrel_slav0, ligrel_cont0
-    character(len=*), intent(in) :: base
+    character(len=*), intent(in) :: listLoadZ
+    character(len=*), intent(in) :: jvBaseZ
+    character(len=*), intent(in) :: ligrel_slav0, ligrel_cont0
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,24 +40,47 @@ subroutine nmdoch_wrap(list_load0, l_load_user0, l_calc_user0, list_load_resu0, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_load_resu : name of datastructure for list of loads from result datastructure
-! In  l_load_user    : .true. if loads come from user (EXCIT)
-! In  list_load      : name of datastructure for list of loads
+! In  listLoad          : name of datastructure for list of loads
+! In  jvBase            : JEVEUX base where to create objects
+! In  ligrel_slav0      : late elements for slave side (contact)
+! In  ligrel_cont0      : late elements for contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: list_load
-    aster_logical :: l_load_user, l_calc_user
-    character(len=19) :: list_load_resu, ligrel_slav, ligrel_cont
+    character(len=1) :: jvBase
+    character(len=24) :: listLoad
+    integer :: nbLoadContact
+    character(len=19) :: ligrel_slav, ligrel_cont
+    type(ListLoad_Prep) :: listLoadPrep
+    character(len=8), parameter :: funcCste = '&&NMDOME'
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_load_user = int_to_logical(l_load_user0)
-    l_calc_user = int_to_logical(l_calc_user0)
-    list_load = list_load0
-    list_load_resu = list_load_resu0
+    listLoad = listLoadZ
     ligrel_slav = ligrel_slav0
     ligrel_cont = ligrel_cont0
-    call nmdoch(list_load, l_load_user, list_load_resu, base, l_calc_user, &
-                ligrel_slav, ligrel_cont)
+    jvBase = jvBaseZ
+    nbLoadContact = 0
+    if (ligrel_slav .ne. ' ') then
+        nbLoadContact = nbLoadContact+1
+    end if
+    if (ligrel_cont .ne. ' ') then
+        nbLoadContact = nbLoadContact+1
+    end if
+
+! - Standard loads
+    call nmdoch(listLoadPrep, listLoad, jvBase)
+
+! - "Loads" for contact
+    if (nbLoadContact .ne. 0) then
+        listLoadPrep%contactLigrelDefi = ligrel_slav
+        listLoadPrep%contactLigrelSolv = ligrel_cont
+        call addContactElements(listLoadPrep, &
+                                jvBase, funcCste, &
+                                listLoad)
+    end if
+
+! - Debug
+    !call listLoadDebug(listLoad)
+!
 end subroutine

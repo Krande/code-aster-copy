@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
+subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
                   para, sddisc, ds_inout, ds_algorom)
 !
     use NonLin_Datastructure_type
@@ -33,13 +33,8 @@ subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
 #include "asterfort/rsrusd.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: mate
-    character(len=24), intent(in) :: cara_elem
-    aster_logical, intent(in) :: l_stat
-    aster_logical, intent(in) :: l_evol
+    character(len=8), intent(in) :: model, materField, caraElem
+    aster_logical, intent(in) :: l_stat, l_evol
     real(kind=8), intent(in) :: para(*)
     character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(inout) :: ds_inout
@@ -54,8 +49,8 @@ subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of model
-! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
+! In  materField       : name of material characteristics (field)
+! In  caraElem        : name of elementary characteristics (field)
 ! In  l_stat           : .true. is stationnary
 ! In  l_evol           : .true. if transient
 ! In  para             : parameters for time
@@ -115,7 +110,7 @@ subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
 !
     if ((.not. lreuse) .and. (.not. l_stat) .and. l_evol) then
         call utmess('I', 'ARCHIVAGE_4')
-        call ntarch(nume_inst, model, mate, cara_elem, para, &
+        call ntarch(nume_inst, model, materField, caraElem, para, &
                     sddisc, ds_inout, force, ds_algorom)
     end if
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,24 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nttcmv(model , mate  , mateco   , cara_elem, list_load, nume_dof,&
-                      solver, time  , tpsthe   , tpsnp1   , reasvt  ,&
-                      reasmt, creas , vtemp    , vtempm   , vec2nd  ,&
-                      matass, maprec, cndirp   , cnchci   , cnchtp)
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: mate, mateco
-        character(len=24), intent(in) :: cara_elem
-        character(len=19), intent(in) :: list_load
+    subroutine nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
+                      solver, timeMap, tpsthe, tpsnp1, reasvt, &
+                      reasmt, creas, vtemp, vtempm, vec2nd, &
+                      matass, maprec, cndirp, cnchci, cnchtp)
+        character(len=8), intent(in) :: model, caraElem
+        character(len=24), intent(in) :: mateco, listLoad
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: solver
-        character(len=24), intent(in) :: time
+        character(len=24), intent(in) :: timeMap
         real(kind=8) :: tpsthe(6)
         real(kind=8) :: tpsnp1
         aster_logical :: reasvt

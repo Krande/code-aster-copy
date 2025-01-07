@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,34 +16,30 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ther_mtan(model, cara_elem, mate, para, varc_curr, &
-                     compor, temp_iter, dry_prev, dry_curr, resu_elem, &
-                     matr_elem, base, l_stat)
+subroutine ther_mtan(l_stat, &
+                     modelZ, caraElemZ, matecoZ, &
+                     timePara, varcCurrZ, &
+                     comporTherZ, tempIterZ, dryCurrZ, &
+                     resuElemZ, matrElemZ, jvBase)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gcnco2.h"
-#include "asterfort/megeom.h"
 #include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
 #include "asterfort/multResuElem.h"
 #include "asterfort/reajre.h"
-#include "asterfort/inical.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: cara_elem
-    real(kind=8), intent(in) :: para(2)
-    character(len=24), intent(in) :: mate
-    character(len=24), intent(in) :: temp_iter
-    character(len=24), intent(in) :: dry_prev
-    character(len=24), intent(in) :: dry_curr
-    character(len=24), intent(in) :: compor
-    character(len=19), intent(in) :: varc_curr
-    character(len=19), intent(inout) :: resu_elem
-    character(len=24), intent(in) :: matr_elem
-    character(len=1), intent(in) :: base
     aster_logical, intent(in) :: l_stat
+    character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
+    real(kind=8), intent(in) :: timePara(2)
+    character(len=*), intent(in) :: tempIterZ, dryCurrZ, comporTherZ, varcCurrZ
+    character(len=*), intent(inout) :: resuElemZ
+    character(len=*), intent(in) :: matrElemZ
+    character(len=1), intent(in) :: jvBase
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,126 +49,102 @@ subroutine ther_mtan(model, cara_elem, mate, para, varc_curr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  l_stat           : flag for stationnary computation (no mass term)
 ! In  model            : name of the model
-! In  cara_elem        : name of elementary characteristics (field)
-! In  mate             : name of material characteristics (field)
-! In  para             : para(1) = theta
-!                        para(2) = deltat
-! In  varc_curr        : command variable for current time
-! In  compor           : name of comportment definition (field)
-! In  temp_iter        : temperature field at current Newton iteration
-! In  dry_prev         : previous drying
-! In  dry_curr         : current drying
-! In  resu_elem        : name of resu_elem
-! In  matr_elem        : name of matr_elem result
-! In  base             : JEVEUX base for object
+! In  caraElem         : name of elementary characteristics (field)
+! In  mateco           : name of codeing material characteristics (field)
+! In  timePara         : timePara(1) = theta
+!                        timePara(2) = deltat
+! In  varcCurr         : command variable for current time
+! In  comporTher       : name of comportment definition (field)
+! In  tempIter         : temperature field at current Newton iteration
+! In  dryCurr          : current drying
+! IO  resuElem         : name of resu_elem
+! In  matrElem         : name of matr_elem result
+! In  jvBase           : JEVEUX base for object
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_in_maxi, nbout
-    parameter(nb_in_maxi=9, nbout=1)
-    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout), newnom
-    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
-!
-    character(len=1) :: stop_calc
-    character(len=16) :: option1, option2
+    character(len=16), parameter :: optionRigi = 'RIGI_THER_TANG', optionMass = 'MASS_THER_TANG'
+    integer, parameter :: nbIn = 7, nbout = 1
+    character(len=8) :: lpain(nbIn), lpaout(nbout)
+    character(len=24) :: lchin(nbIn), lchout(nbout)
     character(len=24) :: ligrel_model
     character(len=24) :: chgeom, chcara(18)
-    integer :: nbin
+    character(len=19) :: resuElem
     real(kind=8) :: theta, deltat
-
+    character(len=8) :: newnom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    stop_calc = 'S'
-    option1 = 'RIGI_THER_TANG'
-    option2 = 'MASS_THER_TANG'
-    ligrel_model = model(1:8)//'.MODELE'
-    theta = para(1)
-    deltat = para(2)
-!
-! - Init fields
-!
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
-                lchout)
-!
+    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=ligrel_model)
+    theta = timePara(1)
+    deltat = timePara(2)
+    lpain = " "
+    lchin = " "
+    lpaout = " "
+    lchout = " "
+    resuElem = resuElemZ(1:19)
+
 ! - Geometry field
-!
-    call megeom(model, chgeom)
-!
+    call megeom(modelZ, chgeom)
+
 ! - Elementary characteristics field
-!
-    call mecara(cara_elem, chcara)
-!
+    call mecara(caraElemZ, chcara)
+
 ! - Input fields
-!
     lpain(1) = 'PGEOMER'
-    lchin(1) = chgeom(1:19)
+    lchin(1) = chgeom
     lpain(2) = 'PMATERC'
-    lchin(2) = mate(1:19)
+    lchin(2) = matecoZ
     lpain(3) = 'PTEMPEI'
-    lchin(3) = temp_iter(1:19)
+    lchin(3) = tempIterZ
     lpain(4) = 'PCOMPOR'
-    lchin(4) = compor(1:19)
+    lchin(4) = comporTherZ
     lpain(5) = 'PTMPCHF'
-    lchin(5) = dry_curr(1:19)
+    lchin(5) = dryCurrZ
     lpain(6) = 'PVARCPR'
-    lchin(6) = varc_curr(1:19)
+    lchin(6) = varcCurrZ
     lpain(7) = 'PCAMASS'
-    lchin(7) = chcara(12) (1:19)
-    nbin = 7
-!
-! - Rigidity term
-!
+    lchin(7) = chcara(12)
 
-!
 ! - Output fields
-!
     lpaout(1) = 'PMATTTR'
-    lchout(1) = resu_elem
-!
-! - Compute
-!
-    call calcul(stop_calc, option1, ligrel_model, nbin, lchin, &
-                lpain, nbout, lchout, lpaout, base, &
+    lchout(1) = resuElemZ
+
+! - Compute rigidity term
+    call calcul("S", optionRigi, ligrel_model, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, jvBase, &
                 'OUI')
-!
+
 ! - Multiply values by theta
-!
-    call multResuElem(resu_elem, theta)
-!
+    call multResuElem(resuElem, theta)
+
 ! - Add RESU_ELEM in MATR_ELEM
-!
-    call reajre(matr_elem, resu_elem, base)
-!
-! - Mass term
-!
+    call reajre(matrElemZ, resuElem, jvBase)
+
+! - Compute mass term
     if (.not. l_stat) then
-!
 ! - --- Output fields
-!
-        newnom = resu_elem(9:16)
+        newnom = resuElem(9:16)
         call gcnco2(newnom)
-        resu_elem(10:16) = newnom(2:8)
-
+        resuElem(10:16) = newnom(2:8)
         lpaout(1) = 'PMATTTR'
-        lchout(1) = resu_elem
-!
-! - --- Compute
-!
-        call calcul(stop_calc, option2, ligrel_model, nbin, lchin, &
-                    lpain, nbout, lchout, lpaout, base, &
-                    'OUI')
-!
-! - --- Multiply values by 1/dt
-!
-        call multResuElem(resu_elem, 1.d0/deltat)
+        lchout(1) = resuElem
 
-!
+! - --- Compute
+        call calcul("S", optionMass, ligrel_model, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, jvBase, &
+                    'OUI')
+
+! - --- Multiply values by 1/dt
+        call multResuElem(resuElem, 1.d0/deltat)
+
 ! - --- Add RESU_ELEM in MATR_ELEM
-!
-        call reajre(matr_elem, resu_elem, base)
-!
+        call reajre(matrElemZ, resuElem, jvBase)
+
     end if
+!
+    resuElemZ = resuElem
 !
 end subroutine

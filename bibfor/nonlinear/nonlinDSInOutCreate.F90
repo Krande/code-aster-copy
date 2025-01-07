@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nonlinDSInOutCreate(phenom, ds_inout)
 !
     use NonLin_Datastructure_type
+    use listLoad_module
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/licrsd_save.h"
 #include "asterfort/CreateInOutDS_M.h"
 #include "asterfort/CreateInOutDS_T.h"
 !
@@ -46,7 +45,7 @@ subroutine nonlinDSInOutCreate(phenom, ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: list_load_resu
+    character(len=24) :: listLoadResu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,11 +69,10 @@ subroutine nonlinDSInOutCreate(phenom, ds_inout)
     ds_inout%l_init_stat = ASTER_FALSE
     ds_inout%l_init_vale = ASTER_FALSE
     ds_inout%temp_init = r8vide()
-!
+
 ! - Generate name of list of loads saved in results datastructure
-!
-    call licrsd_save(list_load_resu)
-    ds_inout%list_load_resu = list_load_resu
+    call nameListLoad(listLoadResu)
+    ds_inout%listLoadResu = listLoadResu
 !
 ! - Specific parameters
 !

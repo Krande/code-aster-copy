@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
-interface
-    subroutine loadGetNeumannType(l_stat      , load_name   , ligrch        ,&
-                                  load_apply  , load_type   ,&
-                                  nb_info_type, nb_info_maxi, list_info_type)
-        aster_logical, intent(in) :: l_stat
-        character(len=8), intent(in) :: load_name
-        character(len=19), intent(in) :: ligrch
-        character(len=16), intent(in) :: load_apply
-        character(len=8), intent(in) :: load_type
-        integer, intent(inout) :: nb_info_type
-        integer, intent(in) :: nb_info_maxi
-        character(len=24), intent(inout)  :: list_info_type(nb_info_maxi)
-    end subroutine loadGetNeumannType
-end interface
+module loadAcouCompute_type
+!
+    implicit none
+!
+#include "asterf_types.h"
+#include "LoadTypes_type.h"
+! ==================================================================================================
+!
+! Global variables - General
+!
+! Definition of parameters for all AFFE_CHAR_Acou loads
+!
+! ==================================================================================================
+
+! - Keyword to define load in AFFE_CHAR_ACOU
+    character(len=24), parameter :: acouLoadKeyword(LOAD_NEUA_NBTYPE) = (/ &
+                                    'VITE_FACE               '/)
+
+! - Name of field to define load in AFFE_CHAR_ACOU
+    character(len=6), parameter :: acouLoadField(LOAD_NEUA_NBTYPE) = (/ &
+                                   '.VFACE'/)
+!
+end module loadAcouCompute_type

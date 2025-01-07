@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_info(model, compor)
+subroutine comp_info(modelZ, compor)
 !
     use BehaviourPrepare_type
 !
@@ -28,7 +27,7 @@ subroutine comp_info(model, compor)
 #include "asterfort/jedetc.h"
 #include "asterfort/imvari.h"
 !
-    character(len=8), intent(in) :: model
+    character(len=*), intent(in) :: modelZ
     character(len=19), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,9 +44,11 @@ subroutine comp_info(model, compor)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19), parameter :: comporInfo = '&&NMDOCC.INFO'
+    character(len=8) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    model = modelZ(1:8)
 
 ! - Prepare informations about internal variables
     call comp_meca_pvar(model_=model, comporMap_=compor, comporInfo=comporInfo)

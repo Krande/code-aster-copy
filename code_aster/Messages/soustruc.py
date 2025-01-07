@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,17 +111,23 @@ cata_msg = {
 """
     ),
     17: _(
-        """ 
+        """
  noeud %(k1)s trop éloigné de la normale au segment
  distance = %(r1)12.5e
- 
+
  Cette alarme est associée au mot-clé PREC_NORM de la commande DEFI_FOND_FISS.
- Elle n'a de sens que dans un calcul 3D de K avec POST_K1_K2_K3. 
- Elle indique que l’appariement des nœuds pour le calcul des sauts de déplacement 
+ Elle n'a de sens que dans un calcul 3D de K avec POST_K1_K2_K3.
+ Elle indique que l’appariement des nœuds pour le calcul des sauts de déplacement
  manque de précision, ce qui peut dégrader la précision du K calculé.
 
  Plus d'information dans la documentation de DEFI_FOND_FISS et POST_K1_K2_K3.
 """
+    ),
+    18: _(
+        """Le matériau contient d'autres variables de commande que la température, c'est interdit pour les macro-éléments."""
+    ),
+    19: _(
+        """Les chargements de type onde, onde plane et vitesse sont interdits pour les macro-éléments."""
     ),
     20: _(
         """
@@ -134,14 +140,14 @@ cata_msg = {
 """
     ),
     22: _(
-        """ 
+        """
  noeud %(k1)s trop éloigné de la normale au segment
  distance = %(r1)12.5e
- 
- si vous rencontrez cette alarme dans le cadre de l'utilisation de la 
- commande DEFI_GROUP, elle est associée au mot-clé PRECISION de 
+
+ si vous rencontrez cette alarme dans le cadre de l'utilisation de la
+ commande DEFI_GROUP, elle est associée au mot-clé PRECISION de
  l'option SEGM_DROI_ORDO.
- si vous rencontrez cette alarme dans le cadre de l'utilisation de la 
+ si vous rencontrez cette alarme dans le cadre de l'utilisation de la
  commande POST_RELEVE_T, elle est associée au mot-clé PRECISION.
 """
     ),
@@ -242,7 +248,7 @@ cata_msg = {
     ),
     40: _(
         """
- liste de charges trop longue
+Il y a trop de cas de charges par rapport à la définition du macro-élément.
 """
     ),
     41: _(

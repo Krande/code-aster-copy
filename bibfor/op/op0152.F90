@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,27 +69,22 @@ subroutine op0152()
     integer :: jsmdi, jsmde, jsmhc, n1bloc, n2bloc
     integer :: nbid, nbloc, nterm
     integer :: n1, n2, n3, n4, n5, n6, n7, n9, n10, n12, n13, n14
-    integer :: ifm, niv, tmod(1)
-    real(kind=8) :: tps(6), mij, cij, kij
+    integer :: ifm, niv, tmod(1), nbLoad
+    real(kind=8) :: mij, cij, kij
     real(kind=8) :: bid, ebid
     character(len=2) :: model
     character(len=3) :: nd
-    character(len=8) :: nomres, k8bid, modmec, phibar
-    character(len=8) :: moflui, moint, ma, materi, nomcmp(6)
-    character(len=8) :: char, numgen, modgen
+    character(len=8) :: nomres, k8bid, modeMeca, phibar
+    character(len=8) :: modelFluid, moint, matrAsse, materField
+    character(len=8) :: loadName, numgen, modgen
     character(len=9) :: option
-    character(len=14) :: nu, num, nugene
+    character(len=14) :: numeDof, num, nugene
     character(len=16) :: typres, nomcom
     character(len=19) :: max, may, maz, chamno
     character(len=19) :: stomor, solveu, nomr19
-    character(len=24) :: nomcha, time, nocham
+    character(len=24) :: nomcha, nocham
     character(len=24) :: mateco, phib24
     complex(kind=8) :: cbid
-! -----------------------------------------------------------------
-    data nomcmp/'INST    ', 'DELTAT  ', 'THETA   ',&
-     &             'KHI     ', 'R       ', 'RHO     '/
-    data tps/0.0d0, 2*1.0d0, 3*0.0d0/
-    data solveu/'&&OP0152.SOLVEUR'/
 !
 !-----------------------------------------------------------------
 !
@@ -98,8 +93,8 @@ subroutine op0152()
     call infmaj()
     call infniv(ifm, niv)
 !
-    time = '&TIME'
     vrai = .true.
+    solveu = '&&OP0152.SOLVEUR'
 !
     call getres(nomres, typres, nomcom)
     nomr19 = nomres
@@ -107,13 +102,13 @@ subroutine op0152()
 !----------RECUPERATION DES ARGUMENTS DE LA COMMANDE--------------
 !
 !
-    materi = ' '
-    call getvid(' ', 'MODELE_FLUIDE', scal=moflui, nbret=n1)
-    call getvid(' ', 'CHARGE', scal=char, nbret=n2)
+    materField = ' '
+    call getvid(' ', 'MODELE_FLUIDE', scal=modelFluid, nbret=n1)
+    call getvid(' ', 'CHARGE', scal=loadName, nbret=nbLoad)
     call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=n3)
-    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n4)
-    modmec = ' '
-    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
+    call getvid(' ', 'CHAM_MATER', scal=materField, nbret=n4)
+    modeMeca = ' '
+    call getvid(' ', 'MODE_MECA', scal=modeMeca, nbret=n5)
     call getvid(' ', 'CHAM_NO', nbval=0, nbret=n6)
     call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n9)
     call getvid(' ', 'MODELE_GENE', scal=modgen, nbret=n10)
@@ -127,7 +122,7 @@ subroutine op0152()
 !
 ! VERIFICATIONS SUPPLEMENTAIRES
 !
-    call ver152(option, moflui, moint, n12, model)
+    call ver152(option, modelFluid, moint, n12, model)
 !
 ! EXTRACTION DU POTENTIEL PERMANENT DES VITESSES
 !
@@ -185,16 +180,16 @@ subroutine op0152()
 !
 !--------- RECUPERATION DU MATERIAU FLUIDE----------------------------
     if (n4 .ne. 0) then
-        call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
+        call rcmfmc(materField, mateco, l_ther_=ASTER_FALSE)
     else
         mateco = ' '
     end if
 !
 !--------CALCUL DE LA MATRICE ASSEMBLEE DE RIGIDITE DU FLUIDE---------
 !
-    call rigflu(moflui, time, nomcmp, tps, n2, &
-                char, materi, mateco, solveu, ma, &
-                nu)
+    call rigflu(modelFluid, mateco, &
+                nbLoad, loadName, &
+                solveu, numeDof, matrAsse)
 !
 !=====================================================================
 !---------------- ALTERNATIVE CHAMNO OU MODE_MECA OU---------
@@ -203,12 +198,12 @@ subroutine op0152()
 !
 !----------------------------------------------------------------
     if (n5 .gt. 0) then
-        call rsorac(modmec, 'LONUTI', ibid, bid, k8bid, &
+        call rsorac(modeMeca, 'LONUTI', ibid, bid, k8bid, &
                     cbid, ebid, 'ABSOLU', tmod, 1, &
                     nbid)
         nbmode = tmod(1)
         nbmo = nbmode
-        call rsexch(' ', modmec, 'DEPL', 1, nomcha, &
+        call rsexch(' ', modeMeca, 'DEPL', 1, nomcha, &
                     iret)
         nocham = nomcha
     else
@@ -246,8 +241,8 @@ subroutine op0152()
 ! ET AUX EFFETS D'AMORTISSEMENT ET DE RAIDEUR DU FLUIDE
 ! SUR LA STRUCTURE
 !================================================================
-    call phi152(model, option, materi, mateco, phib24, &
-                ma, nu, num, nbmode, solveu, &
+    call phi152(model, option, materField, mateco, phib24, &
+                matrAsse, numeDof, num, nbmode, solveu, &
                 indice, tabad)
 !
 ! VERIFICATION D EXISTENCE DE VECTEUR DE CHAMPS AUX NOEUDS CREES
@@ -275,7 +270,7 @@ subroutine op0152()
 !----------- CONTENANT LA MASSE AJOUTEE RESULTAT   --------------
 !================================================================
 !
-    call mag152(n9, n10, nomres, nugene, modmec, &
+    call mag152(n9, n10, nomres, nugene, modeMeca, &
                 modgen, nbloc, indice)
 !
 !=====================================================================
@@ -290,8 +285,8 @@ subroutine op0152()
         else
             ndble = 0
         end if
-        call calmdg(model, modgen, nugene, num, nu, &
-                    ma, materi, mateco, moint, ndble, &
+        call calmdg(model, modgen, nugene, num, numeDof, &
+                    matrAsse, materField, mateco, moint, ndble, &
                     itxsto, itysto, itzsto, iprsto, nbmo, &
                     iadirg)
 !
@@ -381,7 +376,7 @@ subroutine op0152()
                     end if
 !
                     call cal152(option, max, may, maz, model, &
-                                phib24, iphi1, iphi2, imade, modmec, &
+                                phib24, iphi1, iphi2, imade, modeMeca, &
                                 chamno, num, vrai, i, j, &
                                 mij, cij, kij)
 !

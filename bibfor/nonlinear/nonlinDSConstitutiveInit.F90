@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
+subroutine nonlinDSConstitutiveInit(modelZ, caraElemZ, ds_constitutive, verbose_)
 !
     use NonLin_Datastructure_type
 !
@@ -35,8 +34,7 @@ subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
 #include "asterfort/cesvar.h"
 #include "asterfort/Behaviour_type.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: cara_elem
+    character(len=*), intent(in) :: modelZ, caraElemZ
     type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
     aster_logical, intent(in), optional :: verbose_
 !
@@ -49,7 +47,7 @@ subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of the model
-! In  cara_elem        : name of elementary characteristics (field)
+! In  caraElem         : name of elementary characteristics (field)
 ! IO  ds_constitutive  : datastructure for constitutive laws management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,7 +73,7 @@ subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
 !
 ! - Construct CHAM_ELEM_S
 !
-    call nmdoco(model, cara_elem, ds_constitutive%compor)
+    call nmdoco(modelZ, caraElemZ, ds_constitutive%compor)
 !
 ! - Some functionnalities
 !
@@ -129,11 +127,12 @@ subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
 !
 ! - Print informations about COMPORTEMENT keyword
 !
-    if (verbose) call comp_info(model, ds_constitutive%compor)
+    if (verbose) call comp_info(modelZ, ds_constitutive%compor)
 !
 ! - Preallocation of output stress field for prediction
 !
-    call cesvar(cara_elem, ds_constitutive%compor, model(1:8)//'.MODELE', ds_constitutive%sigm_pred)
+    call cesvar(caraElemZ, ds_constitutive%compor, modelZ(1:8)//'.MODELE', &
+                ds_constitutive%sigm_pred)
 
 !
 end subroutine

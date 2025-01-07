@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,12 @@
 from ..Utilities import _
 
 cata_msg = {
+    1: _(
+        """
+Problème lors du traitement du chargement de type EVOL_CHAR.
+On a trouvé aucun chargement utilisable pour l'instant %(r1)f.
+"""
+    ),
     2: _(
         """
 Problème lors du traitement du chargement de type EVOL_CHAR.
@@ -27,7 +33,32 @@ L'extraction du chargement de type %(k1)s a échoué pour l'instant %(r1)f.
 Le chargement n'a pas été trouvé pour cet instant.
 """
     ),
+    3: _(
+        """
+Un chargement de type %(k1)s a été déclaré comme étant suiveur alors que ce n'est pas possible.
+Si votre chargement contient plusieurs types dont certains ne peuvent être suiveurs, il faut les séparer.
+Certains chargements ne peuvent être suiveurs s'ils sont dépendants du temps.
+"""
+    ),
+    4: _(
+        """
+Un chargement de type %(k1)s a été déclaré comme étant pilotable alors que ce n'est pas possible.
+Si votre chargement contient plusieurs types dont certains ne peuvent être pilotables, il faut les séparer.
+"""
+    ),
     10: _("""Les composantes dans le champ de vent doivent être exactement DX, DY et DZ."""),
+    12: _(
+        """
+Problème lors du traitement du chargement de type EVOL_CHAR.
+L'extraction du chargement a échoué pour l'instant %(r1)f.
+Le chargement est mal défini:
+- soit il n'est pas indexé par l'instant;
+- soit le chargement n'a pas été trouvé pour cet instant;
+- soit il manque un champ nécessaire :
+    - COEF_H et (simultanément) T_EXT pour ECHANGE
+    - FLUN pour FLUX_REP
+"""
+    ),
     13: _(
         """
 Le chargement EVOL_CHAR contient des chargements s'appliquant simultanément sur des modèles de dimensions différentes. Ce n'est pas possible.

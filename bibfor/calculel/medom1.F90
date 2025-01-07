@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
+subroutine medom1(modele, mater, mateco, cara, kcha, nbLoad, &
                   result, nuord)
 !
     implicit none
@@ -37,7 +37,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
 #include "asterfort/rslesd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ncha, nuord
+    integer :: nbLoad, nuord
     character(len=8) :: modele, cara, result
     character(len=24) :: mater, mateco
     character(len=19) :: kcha
@@ -56,7 +56,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
 ! ----------------------------------------------------------------------
     integer :: iret
     integer :: iexcit, i, icha, ie, ikf, in
-    integer ::    n, n1, n2, n3, n5
+    integer :: n, n1, n2, n3, n5, nbLoadEff
 !-----------------------------------------------------------------------
     character(len=8) :: k8b, nomo, materi, loadType
     character(len=4) :: phen
@@ -71,7 +71,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
     call jemarq()
 !
     blan8 = ' '
-    ncha = 0
+    nbLoad = 0
     modele = ' '
     cara = ' '
     materi = ' '
@@ -82,7 +82,8 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
     call getres(k8b, concep, nomcmd)
 !
     if ((nomcmd .eq. 'CALC_CHAMP') .or. (nomcmd .eq. 'CALC_ERREUR') .or. &
-      (nomcmd .eq. 'CALC_META  ') .or. (nomcmd .eq. 'CALC_G_XFEM') .or. (nomcmd .eq. 'CALC_G')) then
+        (nomcmd .eq. 'CALC_META') .or. (nomcmd .eq. 'CALC_G_XFEM') .or. &
+        (nomcmd .eq. 'CALC_G')) then
 !
 !        RECUPERATION DU MODELE, MATERIAU, CARA_ELEM et EXCIT
 !        POUR LE NUMERO d'ORDRE NUORD
@@ -140,7 +141,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
         end if
 !
         if (n5 .ne. 0) then
-            ncha = n5
+            nbLoad = n5
             call jeexin(kcha//'.LCHA', iret)
             if (iret .ne. 0) then
                 call jedetr(kcha//'.LCHA')
@@ -165,10 +166,10 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
             call wkvect(kcha//'.FCHA', 'V V K8', 1, ikf)
         end if
 !
-        if (ncha .gt. 0) then
+        if (nbLoad .gt. 0) then
 !           VERIFICATION QUE LES CHARGES PORTENT SUR LE MEME MODELE.
             call dismoi('NOM_MODELE', zk8(icha), 'CHARGE', repk=nomo)
-            do i = 1, ncha
+            do i = 1, nbLoad
                 call dismoi('NOM_MODELE', zk8(icha-1+i), 'CHARGE', repk=k8b)
                 if (k8b .ne. nomo) then
                     call utmess('F', 'CALCULEL3_41')
@@ -187,18 +188,24 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
         call jeveuo(excit//'.INFC', 'L', vi=infc)
         call jeveuo(excit//'.LCHA', 'L', vk24=lcha)
         call jeveuo(excit//'.FCHA', 'L', vk24=fcha)
-        ncha = infc(1)
+        nbLoad = infc(1)
+
+        if (nbLoad .eq. 0) then
+            nbLoadEff = 1
+        else
+            nbLoadEff = nbLoad
+        end if
 !
         call jeexin(kcha//'.LCHA', iret)
         if (iret .ne. 0) then
             call jedetr(kcha//'.LCHA')
             call jedetr(kcha//'.FCHA')
         end if
-        call wkvect(kcha//'.LCHA', 'V V K8', ncha, icha)
-        call wkvect(kcha//'.FCHA', 'V V K8', ncha, ikf)
+        call wkvect(kcha//'.LCHA', 'V V K8', nbLoadEff, icha)
+        call wkvect(kcha//'.FCHA', 'V V K8', nbLoadEff, ikf)
         call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom)
         in = 0
-        do i = 1, ncha
+        do i = 1, nbLoad
             call dismoi('TYPE_CHARGE', lcha(i), 'CHARGE', repk=loadType, arret='C', ier=ie)
             if ((ie .eq. 0) .and. (phenom(1:4) .eq. loadType(1:4))) then
                 zk8(icha+in) = lcha(i) (1:8)
@@ -206,7 +213,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
                 in = in+1
             end if
         end do
-        ncha = in
+        nbLoad = in
 !
     end if
 !

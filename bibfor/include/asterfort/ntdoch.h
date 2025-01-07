@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 #include "asterf_types.h"
 !
 interface
-    subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
-        character(len=19), intent(in) :: list_load
-        aster_logical, optional, intent(in) :: l_load_user_
-        character(len=19), optional, intent(in) :: list_load_resu
-        character(len=1), optional, intent(in) :: basez
+    subroutine ntdoch(listLoadPrep, listLoadZ, jvBase)
+        use listLoad_type
+        type(ListLoad_Prep), intent(in) :: listLoadPrep
+        character(len=*), intent(in) :: listLoadZ
+        character(len=1), intent(in) :: jvBase
     end subroutine ntdoch
 end interface

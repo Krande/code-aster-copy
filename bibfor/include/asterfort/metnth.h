@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine metnth(modele, lchar, cara, mate, mateco, time,&
+    subroutine metnth(model, loadNameJv, caraElem, mateco, time, &
                       chtni, metrnl)
-        character(len=24) :: modele
-        character(len=*) :: lchar
-        character(len=24) :: cara
-        character(len=*) :: mate, mateco
-        character(len=24) :: time
-        character(len=24) :: chtni
-        character(len=24) :: metrnl
+        character(len=*) :: loadNameJv, mateco
+        character(len=8) :: model, caraElem
+        character(len=24) :: metrnl, time, chtni
     end subroutine metnth
 end interface

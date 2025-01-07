@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,11 @@
 !
 interface
     subroutine nminmc(listFuncActi, &
-                  model, caraElem, ds_material,&
-                  listLoad, numfix,&
-                  meelem, measse)
+                      model, listLoad, numfix, &
+                      meelem, measse)
         use NonLin_Datastructure_type
         integer, intent(in) :: listFuncActi(*)
-        character(len=24), intent(in) :: model, caraElem
-        type(NL_DS_Material), intent(in) :: ds_material
+        character(len=24), intent(in) :: model
         character(len=19), intent(in) :: listLoad
         character(len=24), intent(in) :: numfix
         character(len=19), intent(in) :: meelem(*), measse(*)

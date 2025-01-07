@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vetrth(modele, charge, infcha, carele, mate, &
+subroutine vetrth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
                   inst, chtn, chti, chlapm, chlapp, &
                   veres)
 !
@@ -35,8 +35,9 @@ subroutine vetrth(modele, charge, infcha, carele, mate, &
 #include "asterfort/megeom.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
-    character(len=24) :: modele, charge, infcha, carele, inst, chtn, chti
-    character(len=24) :: chlapm, chlapp, veres, mate
+    character(len=8), intent(in) :: model, caraElem
+    character(len=24) :: loadNameJv, loadInfoJv, inst, chtn, chti
+    character(len=24) :: chlapm, chlapp, veres, mateco
 ! ----------------------------------------------------------------------
 ! CALCUL DES VECTEURS ELEMENTAIRES - SECOND MEMBRE DU PROBLEME TRANSPORT
 !                                    EN THERMIQUE NON LINEAIRE -
@@ -65,18 +66,18 @@ subroutine vetrth(modele, charge, infcha, carele, mate, &
 !-----------------------------------------------------------------------
     call jemarq()
     newnom = '.0000000'
-    ligrmo = modele(1:8)//'.MODELE'
-    call jeexin(charge, iret)
+    ligrmo = model(1:8)//'.MODELE'
+    call jeexin(loadNameJv, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar)
-        call jeveuo(charge, 'L', jchar)
-        call jeveuo(infcha, 'L', jinf)
+        call jelira(loadNameJv, 'LONMAX', nchar)
+        call jeveuo(loadNameJv, 'L', jchar)
+        call jeveuo(loadInfoJv, 'L', jinf)
     else
         nchar = 0
     end if
 !
-    call megeom(modele, chgeom)
-    call mecara(carele, chcara)
+    call megeom(model, chgeom)
+    call mecara(caraElem, chcara)
 !
     lpaout(1) = 'PVECTTR'
     lpaout(2) = 'PLAGRP '
@@ -84,7 +85,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate, &
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     lpain(2) = 'PMATERC'
-    lchin(2) = mate
+    lchin(2) = mateco
     lpain(3) = 'PINSTR'
     lchin(3) = inst
     lpain(4) = 'PTEMPER'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
+subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
                        temp_iter, varc_curr, &
                        vect_elem_l, vect_elem_nl, base, &
                        dry_prev_, dry_curr_, hydr_prev_)
@@ -36,9 +36,8 @@ subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: cara_elem
-    character(len=24), intent(in) :: mate, mateco
+    character(len=8), intent(in) :: model, caraElem
+    character(len=24), intent(in) :: mateco
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: compor
     character(len=24), intent(in) :: temp_iter
@@ -59,8 +58,7 @@ subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of the model
-! In  cara_elem        : name of elementary characteristics (field)
-! In  mate             : name of material characteristics (field)
+! In  caraElem         : name of elementary characteristics (field)
 ! In  time             : time (<CARTE>)
 ! In  compor           : name of <CARTE> COMPOR
 ! In  temp_iter        : temperature field at current Newton iteration
@@ -133,7 +131,7 @@ subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
 !
 ! - Elementary characteristics field
 !
-    call mecara(cara_elem, chcara)
+    call mecara(caraElem, chcara)
 !
 ! - Input fields
 !

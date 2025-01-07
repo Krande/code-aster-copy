@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,7 @@ cata_msg = {
     1: _(
         """
 Erreur utilisateur dans la commande CREA_RESU / AFFE :
- Le maillage associé au mot clé CHAM_GD           : %(k1)s
- est différent de celui associé au mot clé MODELE : %(k2)s
+ Le maillage associé au mot clé CHAM_GD est différent de celui associé au mot clé MODELE.
 """
     ),
     2: _(
@@ -53,7 +52,7 @@ Cette grandeur n'est pas traitée par le type %(k2)s.
     ),
     6: _(
         """
-Commande MODI_REPERE : La valeur de TYPE_CHAM %(k1)s n'est pas disponible 
+Commande MODI_REPERE : La valeur de TYPE_CHAM %(k1)s n'est pas disponible
 pour les champs aux noeuds.
 """
     ),
@@ -84,7 +83,7 @@ pour les champs aux noeuds.
     ),
     12: _(
         """
-Commande MODI_REPERE : le champ %(k1)s ne possèdent pas toutes les composantes attendues 
+Commande MODI_REPERE : le champ %(k1)s ne possèdent pas toutes les composantes attendues
 pour le cas %(k2)s. La composante %(k3)s est manquante.
 """
     ),
@@ -100,7 +99,7 @@ pour le cas %(k2)s. La composante %(k3)s est manquante.
     ),
     14: _(
         """
-Commande MODI_REPERE : La valeur de TYPE_CHAM %(k1)s n'est pas disponible 
+Commande MODI_REPERE : La valeur de TYPE_CHAM %(k1)s n'est pas disponible
 pour les champs par éléments.
 """
     ),
@@ -311,8 +310,7 @@ Contactez le support technique.
     ),
     80: _(
         """
- le champ %(k1)s associé à la grandeur de type %(k2)s ne peut pas être utilisé dans une
- structure de données de type %(k3)s
+Le champ est associé à la grandeur de type %(k1)s. Il ne peut pas être utilisé dans une structure de données de type %(k2)s.
 """
     ),
     81: _(

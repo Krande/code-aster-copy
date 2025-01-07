@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmlect(result, model, mater, mateco, cara_elem, list_load, solver_)
-        character(len=*), intent(out) :: result
-        character(len=*), intent(out) :: model
-        character(len=*), intent(out) :: mater
-        character(len=*), intent(out) :: mateco
-        character(len=*), intent(out) :: cara_elem
-        character(len=*), intent(out) :: list_load
+    subroutine nmlect(result, model, materField, mateco, caraElem, solver_)
+        character(len=*), intent(out) :: result, model, materField, mateco, caraElem
         character(len=*), optional, intent(out) :: solver_
     end subroutine nmlect
 end interface

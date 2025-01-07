@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 ! --------------------------------------------------------------------
 !
 subroutine crcoch()
+!
+    use listLoad_module
+!
     implicit none
 !
 !     COMMANDE:  CREA_RESU /CONV_CHAR
@@ -60,8 +63,6 @@ subroutine crcoch()
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/crcoch_getloads.h"
-#include "asterfort/licrsd_save.h"
-#include "asterfort/liscpy.h"
 #include "blas/dcopy.h"
 !
     integer :: ibid, ier, icompt, iret, numini, numfin
@@ -69,7 +70,7 @@ subroutine crcoch()
     integer :: iad, jinst, jchout
     integer :: nbv(1), jrefe
     integer :: jcpt, nbr, ivmx, k, iocc, nboini
-    integer :: nb_ondp, nb_load, tnum(1)
+    integer :: nb_ondp, nbLoad, tnum(1)
     integer :: nbordr1, nbordr2
     integer :: neq, jchou1, jchou2
     real(kind=8) :: rbid, tps, prec, partps(3)
@@ -77,18 +78,20 @@ subroutine crcoch()
     character(len=1) :: typmat
     character(len=4) :: typabs
     character(len=8) :: k8b, resu, criter, matr
-    character(len=8) :: materi, carele, blan8
+    character(len=8) :: materField, caraElem, blan8
     character(len=16) :: type, oper
-    character(len=19) :: nomch, listr8, list_load, list_load_resu, resu19, profch
-    character(len=24) :: lload_name, lload_info, lload_func
+    character(len=19) :: nomch, listr8, resu19, profch
+    character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
+    character(len=24) :: listLoad, listLoadResu
     character(len=19) :: nomch1, nomch2
     character(len=24) :: linst, nsymb, typres, lcpt, londp
     character(len=24) :: matric(3)
-    character(len=24) :: modele, mate, numedd, vecond
+    character(len=24) :: model, mate, numedd, vecond
     character(len=24) :: veonde, vaonde
     character(len=24) :: vechmp, vachmp, cnchmp, chargt
     real(kind=8), pointer :: val(:) => null()
     character(len=8), pointer :: v_ondp(:) => null()
+    character(len=4), parameter :: phenom = "MECA"
 !
     data linst, listr8, lcpt, londp/'&&CRCOCH_LINST', '&&CRCOCH_LISR8',&
      &     '&&CPT_CRCOCH', '&&CRCOCH_LONDP'/
@@ -97,14 +100,14 @@ subroutine crcoch()
 !
     blan8 = ' '
     nboini = 10
-    modele = ' '
-    carele = ' '
-    materi = ' '
+    model = ' '
+    caraElem = ' '
+    materField = ' '
     vecond = '&&CRCOCH_VECOND'
     veonde = '&&CRCOCH_VEONDE'
     vaonde = '&&CRCOCH_VAONDE'
-    list_load = '&&CRCOCH.LISCHA'
-    list_load_resu = ' '
+    listLoad = '&&CRCOCH.LISCHA'
+    listLoadResu = ' '
     vechmp = '&&CRCOCH_VECHMP'
     vachmp = '&&CRCOCH_VACHMP'
     cnchmp = '&&CRCOCH_CNCHMP'
@@ -115,20 +118,20 @@ subroutine crcoch()
     icompt = -1
     profch = ' '
     iocc = 1
-    nb_load = 0
+    nbLoad = 0
 !
     call getres(resu, type, oper)
     resu19 = resu
     call getvtx(' ', 'TYPE_RESU', scal=typres)
-!
+
 ! - Get loads
-!
     call getvid('CONV_CHAR', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
 ! ----- Create datastructure for list of loads
-        call crcoch_getloads(list_load, nb_load, nb_ondp, v_ondp)
+        call crcoch_getloads(listLoad, nbLoad, nb_ondp, v_ondp)
+
 ! ----- Generate name of list of loads to save in results datastructure
-        call licrsd_save(list_load_resu)
+        call nameListLoad(listLoadResu)
     end if
 !
 ! - Create output datastructure
@@ -230,13 +233,13 @@ subroutine crcoch()
         call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
     end if
 !
-    call dismoi('NOM_MODELE', matr, 'MATR_ASSE', repk=modele)
+    call dismoi('NOM_MODELE', matr, 'MATR_ASSE', repk=model)
     call dismoi('NUME_EQUA', matr, 'MATR_ASSE', repk=profch)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call getvid('CONV_CHAR', 'CHAM_MATER', iocc=iocc, scal=materi, nbret=n1)
-    carele = '        '
-    call getvid('CONV_CHAR', 'CARA_ELEM', iocc=iocc, scal=carele, nbret=n1)
-    call rcmfmc(materi, mate, l_ther_=ASTER_FALSE)
+    call getvid('CONV_CHAR', 'CHAM_MATER', iocc=iocc, scal=materField, nbret=n1)
+    caraElem = '        '
+    call getvid('CONV_CHAR', 'CARA_ELEM', iocc=iocc, scal=caraElem, nbret=n1)
+    call rcmfmc(materField, mate, l_ther_=ASTER_FALSE)
     typmat = 'R'
     if (typres(1:10) .eq. 'DYNA_TRANS') then
         nsymb = 'DEPL'
@@ -278,17 +281,17 @@ subroutine crcoch()
             do ie = 1, neq
                 zr(jchou1+ie-1) = 0.d0
             end do
-            call fondpl(modele, materi, mate, numedd, neq, &
+            call fondpl(model, materField, mate, numedd, neq, &
                         v_ondp, nb_ondp, vecond, veonde, vaonde, &
                         tps, zr(jchou1))
             do ie = 1, neq
                 zr(jchout+ie-1) = zr(jchout+ie-1)-zr(jchou1+ie-1)
             end do
         end if
-        if (nb_load .ne. 0) then
-            lload_name = list_load(1:19)//'.LCHA'
-            lload_info = list_load(1:19)//'.INFC'
-            lload_func = list_load(1:19)//'.FCHA'
+        if (nbLoad .ne. 0) then
+            loadNameJv = listLoad(1:19)//'.LCHA'
+            loadInfoJv = listLoad(1:19)//'.INFC'
+            loadFuncJv = listLoad(1:19)//'.FCHA'
             call jeexin(nomch2//'.VALE', iret)
             if (iret .eq. 0) then
                 call vtcreb(nomch2, 'V', 'R', nume_ddlz=numedd)
@@ -297,10 +300,13 @@ subroutine crcoch()
             do ie = 1, neq
                 zr(jchou2+ie-1) = 0.d0
             end do
-            call vechme('S', modele, lload_name, lload_info, partps, &
-                        carele, materi, mate, vechmp)
+            call vechme('S', &
+                        model, caraElem, materField, mate, &
+                        loadNameJv, loadInfoJv, &
+                        partps, &
+                        vechmp)
             call asasve(vechmp, numedd, 'R', vachmp)
-            call ascova('D', vachmp, lload_func, 'INST', tps, &
+            call ascova('D', vachmp, loadFuncJv, 'INST', tps, &
                         'R', nomch2)
             call jeveuo(nomch2//'.VALE', 'L', jchou2)
             do ie = 1, neq
@@ -316,11 +322,13 @@ subroutine crcoch()
         call rsadpa(resu, 'E', 1, typabs, icompt, &
                     0, sjv=iad)
         zr(iad) = tps
-! ----- Special copy of list of loads for save in results datastructure
-        call liscpy(list_load, list_load_resu, 'G')
+
+! ----- Copy of list of loads for save in results datastructure
+        call creaListLoad(phenom, 'G', nbLoad, listLoadResu)
+        call copyListLoad(phenom, listLoad, listLoadResu)
+
 ! ----- Save parameters in results datastructure
-        call rssepa(resu, icompt, modele(1:8), materi, carele, &
-                    list_load_resu)
+        call rssepa(resu, icompt, model, materField, caraElem, listLoadResu)
         if (j .ge. 2) call jedema()
 !
     end do

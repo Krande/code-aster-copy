@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -234,9 +234,6 @@
 #define DEFSPPSSSP(UN,LN,a,la,b,c,d,ld,e,le,f,lf,g)               STDCALL(UN,LN)(a,b,c,d,e,f,g,la,ld,le,lf)
 #define CALLSPPSSSP(UN,LN,a,b,c,d,e,f,g)                          F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(d),strlen(e),strlen(f))
 #define CALLOPPOOOP(UN,LN,a,b,c,d,e,f,g)                          F_FUNC(UN,LN)((a).c_str(),b,c,(d).c_str(),(e).c_str(),(f).c_str(),g,(a).size(),(d).size(),(e).size(),(f).size())
-#define DEFSPPSSSS(UN,LN,a,la,b,c,d,ld,e,le,f,lf,g,lg)               STDCALL(UN,LN)(a,b,c,d,e,f,g,la,ld,le,lf,lg)
-#define CALLSPPSSSS(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(d),strlen(e),strlen(f),strlen(g))
-#define CALLOPPOOOO(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)((a).c_str(),b,c,(d).c_str(),(e).c_str(),(f).c_str(),(g).c_str(),(a).size(),(d).size(),(e).size(),(f).size(),(g).size())
 #define DEFSPSPPPS(UN,LN,a,la,b,c,lc,d,e,f,g,lg)               STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lc,lg)
 #define CALLSPSPPPS(UN,LN,a,b,c,d,e,f,g)                       F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(c),strlen(g))
 #define CALLOPOPPPO(UN,LN,a,b,c,d,e,f,g)                       F_FUNC(UN,LN)((a).c_str(),b,(c).c_str(),d,e,f,(g).c_str(),(a).size(),(c).size(),(g).size())
@@ -505,9 +502,6 @@
 #define DEFSPPSSSP(UN,LN,a,la,b,c,d,ld,e,le,f,lf,g)               STDCALL(UN,LN)(a,la,b,c,d,ld,e,le,f,lf,g)
 #define CALLSPPSSSP(UN,LN,a,b,c,d,e,f,g)                          F_FUNC(UN,LN)(a,strlen(a),b,c,d,strlen(d),e,strlen(e),f,strlen(f),g)
 #define CALLOPPOOOP(UN,LN,a,b,c,d,e,f,g)                          F_FUNC(UN,LN)((a).c_str(),(a).size(),b,c,(d).c_str(),(d).size(),(e).c_str(),(e).size(),(f).c_str(),(f).size(),g)
-#define DEFSPPSSSS(UN,LN,a,la,b,c,d,ld,e,le,f,lf,g,lg)               STDCALL(UN,LN)(a,la,b,c,d,ld,e,le,f,lf,g,lg)
-#define CALLSPPSSSS(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)(a,strlen(a),b,c,d,strlen(d),e,strlen(e),f,strlen(f),g,strlen(g))
-#define CALLOPPOOOO(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)((a).c_str(),(a).size(),b,c,(d).c_str(),(d).size(),(e).c_str(),(e).size(),(f).c_str(),(f).size(),(g).c_str(),(g).size())
 #define DEFSPSPPPS(UN,LN,a,la,b,c,lc,d,e,f,g,lg)               STDCALL(UN,LN)(a,la,b,c,lc,d,e,f,g,lg)
 #define CALLSPSPPPS(UN,LN,a,b,c,d,e,f,g)                       F_FUNC(UN,LN)(a,strlen(a),b,c,strlen(c),d,e,f,g,strlen(g))
 #define CALLOPOPPPO(UN,LN,a,b,c,d,e,f,g)                       F_FUNC(UN,LN)((a).c_str(),(a).size(),b,(c).c_str(),(c).size(),d,e,f,(g).c_str(),(g).size())

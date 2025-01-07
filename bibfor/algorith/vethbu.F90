@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vethbu(modele, matasz, charge, infcha, carele, &
-                  mate, chtni, vebtem)
+subroutine vethbu(model, matasz, loadNameJv, loadInfoJv, &
+                  chtni, vebtem)
     implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"
@@ -34,7 +34,9 @@ subroutine vethbu(modele, matasz, charge, infcha, carele, &
 #include "asterfort/memare.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=24) :: modele, charge, infcha, carele, mate, chtni, vebtem
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: loadNameJv, loadInfoJv
+    character(len=24) :: chtni, vebtem
     character(len=*) :: matasz
 ! ----------------------------------------------------------------------
 ! CALCUL DES VECTEURS ELEMENTAIRES B * TEMPERATURE
@@ -68,10 +70,10 @@ subroutine vethbu(modele, matasz, charge, infcha, carele, &
 !
 ! --- ACCES AUX CHARGES
 !
-    call jeexin(charge, iret)
+    call jeexin(loadNameJv, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar)
-        call jeveuo(charge, 'L', jchar)
+        call jelira(loadNameJv, 'LONMAX', nchar)
+        call jeveuo(loadNameJv, 'L', jchar)
     else
         nchar = 0
     end if
@@ -82,7 +84,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele, &
     vecel = '&&VEBUEE           '
     if (iret .eq. 0) then
         vebtem = vecel//'.RELR'
-        call memare('V', vecel, modele(1:8), 'CHAR_THER')
+        call memare('V', vecel, model(1:8), 'CHAR_THER')
         call wkvect(vebtem, 'V V K24', nchar, jdir)
     else
         call jeveuo(vebtem, 'E', jdir)
@@ -94,14 +96,14 @@ subroutine vethbu(modele, matasz, charge, infcha, carele, &
     matass = matasz
     call conlag(matass, alpha)
     chalph = '&&VETHBU.CH_NEUT_R'
-    call mecact('V', chalph, 'MODELE', modele, 'NEUT_R  ', &
+    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ', &
                 ncmp=1, nomcmp='X1', sr=alpha)
 !
 ! --- CALCUL DE L'OPTION B.T
 !
     option = 'THER_BU_R'
     if (nchar .gt. 0) then
-        call jeveuo(infcha, 'L', jinf)
+        call jeveuo(loadInfoJv, 'L', jinf)
         do icha = 1, nchar
             ndir = 0
             if (zi(jinf+icha) .gt. 0) then
@@ -127,7 +129,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele, &
             call jeecra(vebtem, 'LONUTI', ndir)
 !
         end do
-!
+!-
     end if
 ! FIN ------------------------------------------------------------------
     call jedema()

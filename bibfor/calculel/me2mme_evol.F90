@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,31 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine me2mme_evol(modelZ, caraElemZ, mateZ, matecoZ, nharm, jvBase, &
-                       iLoad, loadName, ligrel_calcZ, inst_prev, inst_curr, &
-                       inst_theta, resuElem, vectElem)
+subroutine me2mme_evol(modelZ, caraElemZ, materFieldZ, matecoZ, nharm, jvBase, &
+                       iLoad, loadName, ligrelCalcZ, timePrev, timeCurr, &
+                       timeTheta, resuElem, vectElem)
 !
-    use loadCompute_module
-!
+    use loadMecaCompute_module
+    use loadMecaCompute_type
+    !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/load_neum_prep.h"
 #include "LoadTypes_type.h"
 !
-    character(len=*), intent(in) :: modelZ
-    character(len=*), intent(in) :: caraElemZ
-    character(len=*), intent(in) :: mateZ
-    character(len=*), intent(in) :: matecoZ
+    character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, matecoZ
     integer, intent(in) :: nharm
     character(len=1), intent(in) :: jvBase
     integer, intent(in) :: iLoad
     character(len=8), intent(in) :: loadName
-    character(len=*), intent(in) :: ligrel_calcZ
-    real(kind=8), intent(in) :: inst_prev
-    real(kind=8), intent(in) :: inst_curr
-    real(kind=8), intent(in) :: inst_theta
+    character(len=*), intent(in) :: ligrelCalcZ
+    real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
     character(len=19), intent(inout) :: resuElem
     character(len=19), intent(in) :: vectElem
 !
@@ -55,31 +50,44 @@ subroutine me2mme_evol(modelZ, caraElemZ, mateZ, matecoZ, nharm, jvBase, &
     integer, parameter :: nbout = 1
     character(len=8) :: lpain(LOAD_NEUM_NBMAXIN), lpaout(nbout)
     character(len=19) :: lchin(LOAD_NEUM_NBMAXIN), lchout(nbout)
-    character(len=4), parameter :: loadApply = "Dead"
-    integer :: nb_in_prep
-    character(len=24) :: model, caraElem, mate, mateco, ligrel_calc
+    aster_logical, parameter :: applySuiv = ASTER_FALSE
+    integer :: nbFieldIn
+    character(len=13) :: loadPreObject
+    character(len=24) :: loadLigrel
+    character(len=24) :: varcCurr
+    character(len=24) :: dispPrev, dispCumuInst, strxPrev, viteCurr, acceCurr
+    character(len=24) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model = modelZ
-    caraElem = caraElemZ
-    mate = mateZ
-    mateco = matecoZ
-    ligrel_calc = ligrel_calcZ
     lpain = " "
     lchin = " "
     lpaout = " "
     lchout = " "
 
+! - Input fields (useless)
+    dispPrev = " "
+    dispCumuInst = " "
+    strxPrev = " "
+    viteCurr = " "
+    acceCurr = " "
+    compor = " "
+
 ! - Preparing input fields
-    call load_neum_prep(model, caraElem, mate, mateco, 'Dead', inst_prev, &
-                        inst_curr, inst_theta, LOAD_NEUM_NBMAXIN, nb_in_prep, lchin, &
-                        lpain, nharm=nharm)
+    call prepGeneralFields(modelZ, caraElemZ, materFieldZ, matecoZ, &
+                           applySuiv, &
+                           timePrev, timeCurr, timeTheta, nharm, &
+                           varcCurr, dispPrev, dispCumuInst, &
+                           compor, strxPrev, viteCurr, acceCurr, &
+                           nbFieldIn, lpain, lchin)
 
 ! - Composite dead Neumann loads (EVOL_CHAR)
-    call compEvolChar(model, caraElem, inst_prev, jvBase, &
-                      iLoad, loadName, loadApply, ligrel_calc, &
-                      nb_in_prep, lpain, lchin, &
-                      resuElem, vectElem)
+    loadPreObject = loadName(1:8)//'.CHME'
+    loadLigrel = loadPreObject(1:13)//'.LIGRE'
+    call compLoadEvolVect(modelZ, caraElemZ, timePrev, jvBase, &
+                          applySuiv, iLoad, loadPreObject, &
+                          loadLigrel, ligrelCalcZ, &
+                          nbFieldIn, lpain, lchin, &
+                          resuElem, vectElem)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,25 +17,19 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine resi_ther(model    , cara_elem, mate     , time     , compor    ,&
-                         temp_prev, temp_iter, hydr_prev, hydr_curr, &
-                         dry_curr , varc_curr, resu_elem, vect_elem, base,&
-                         l_stat, para)
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: cara_elem
-        character(len=24), intent(in) :: time
-        character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: temp_prev
-        character(len=24), intent(in) :: temp_iter
-        character(len=24), intent(in) :: hydr_prev
-        character(len=24), intent(in) :: hydr_curr
-        character(len=24), intent(in) :: dry_curr
-        character(len=24), intent(in) :: compor
-        character(len=19), intent(in) :: varc_curr
-        character(len=19), intent(inout) :: resu_elem
-        character(len=24), intent(in) :: vect_elem
-        character(len=1), intent(in) :: base
+    subroutine resi_ther(l_stat, &
+                         modelZ, caraElemZ, matecoZ, &
+                         timePara, timeMapZ, varcCurrZ, &
+                         comporTherZ, tempIterZ, dryCurrZ, &
+                         tempPrevZ, hydrPrevZ, hydrCurrZ, &
+                         resuElemZ, vectElemZ, jvBase)
         aster_logical, intent(in) :: l_stat
-        real(kind=8), intent(in) :: para(2)
+        character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
+        real(kind=8), intent(in) :: timePara(2)
+        character(len=*), intent(in) :: tempIterZ, dryCurrZ, comporTherZ, varcCurrZ
+        character(len=*), intent(in) :: tempPrevZ, hydrPrevZ, hydrCurrZ, timeMapZ
+        character(len=*), intent(inout) :: resuElemZ
+        character(len=*), intent(in) :: vectElemZ
+        character(len=1), intent(in) :: jvBase
     end subroutine resi_ther
 end interface

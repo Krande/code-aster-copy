@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
-                  solver, l_stat, tpsthe, time, matass, &
+subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
+                  solver, l_stat, tpsthe, timeMap, matass, &
                   lonch, maprec, varc_curr, temp_prev, temp_iter, &
-                  cn2mbr, hydr_prev, hydr_curr, dry_prev, dry_curr, &
-                  compor, cndirp, cnchci, vec2nd, vec2ni, &
+                  cn2mbr, hydr_prev, hydr_curr, dry_curr, &
+                  comporTher, cndirp, cnchci, vec2nd, vec2ni, &
                   ds_algorom)
 !
     use ROM_Datastructure_type
@@ -44,20 +43,19 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
 #include "asterfort/vethbt.h"
 #include "asterfort/vethbu.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: mate, mateco
-    character(len=24), intent(in) :: cara_elem
-    character(len=19), intent(in) :: list_load
+    character(len=8), intent(in) :: model, caraElem
+    character(len=24), intent(in) :: mateco
+    character(len=24), intent(in) :: listLoad
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
     real(kind=8), intent(in) :: tpsthe(6)
-    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: varc_curr
     integer :: lonch
     character(len=19) :: maprec
     character(len=24) :: matass, cndirp, cnchci, cnresi
     character(len=24) :: temp_iter, temp_prev, vec2nd, vec2ni
-    character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
+    character(len=24) :: hydr_prev, hydr_curr, comporTher, dry_curr
     aster_logical :: l_stat
     character(len=24), intent(in) :: cn2mbr
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
@@ -81,7 +79,7 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla
     character(len=24) :: vebuem, vabuem, cnvabt, cnvabu
-    character(len=24) :: lload_name, lload_info
+    character(len=24) :: loadNameJv, loadInfoJv
     real(kind=8), pointer :: v_vec2ni(:) => null()
     real(kind=8), pointer :: v_vec2nd(:) => null()
     real(kind=8), pointer :: v_cn2mbr(:) => null()
@@ -107,8 +105,10 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
     vabuem = ' '
     cnresi = ' '
     time_curr = tpsthe(1)
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
+
+! - Access to datastructure of list of loads
+    loadNameJv = listLoad(1:19)//'.LCHA'
+    loadInfoJv = listLoad(1:19)//'.INFC'
 !
 ! --- RECUPERATION D'ADRESSES
 !
@@ -122,16 +122,14 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !=======================================================================
 !  INITIALISATION POUR LE PREMIER PAS DE CALCUL
 !=======================================================================
-!
-! ----- Neumann loads elementary vectors (residuals)
-!
-        call verstp(model, lload_name, lload_info, cara_elem, mateco, &
-                    tpsthe, time, compor, temp_prev, temp_iter, &
-                    varc_curr, veresi, 'V', l_stat, &
-                    hydr_prev, hydr_curr, dry_prev, dry_curr)
-!
-! ----- Neumann loads vector (residuals)
-!
+! ----- Compute residual vector (non-linear) - Material and loads
+        call verstp(l_stat, &
+                    model, caraElem, mateco, &
+                    loadNameJv, loadInfoJv, &
+                    tpsthe, timeMap, temp_prev, temp_iter, &
+                    varc_curr, comporTher, &
+                    hydr_prev, hydr_curr, dry_curr, &
+                    veresi, "V")
         call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', rbid, &
                     typres, cnresi)
@@ -139,7 +137,7 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! ----- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
-        call vethbt(model, lload_name, lload_info, cara_elem, mate, &
+        call vethbt(model, loadNameJv, loadInfoJv, &
                     temp_prev, vebtla, 'V')
         call asasve(vebtla, nume_dof, typres, vabtla)
         call ascova('D', vabtla, bidon, 'INST', rbid, &
@@ -148,8 +146,8 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! ----- B . TEMPERATURE - CALCUL ET ASSEMBLAGE
 !
-        call vethbu(model, matass, lload_name, lload_info, cara_elem, &
-                    mate, temp_prev, vebuem)
+        call vethbu(model, matass, loadNameJv, loadInfoJv, &
+                    temp_prev, vebuem)
         call asasve(vebuem, nume_dof, typres, vabuem)
         call ascova('D', vabuem, bidon, 'INST', rbid, &
                     typres, cnvabu)

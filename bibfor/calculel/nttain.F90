@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nttain(model, mateco, cara_elem, list_load, nume_dof, &
+! aslint: disable=W1504
+subroutine nttain(model, mateco, caraElem, listLoad, nume_dof, &
                   solver, time, epsr, lonch, matass, &
                   maprec, cnchci, cnresi, vtemp, vtempm, &
                   vtempp, vec2nd, chlapm, chlapp, ci1, &
@@ -36,12 +36,8 @@ subroutine nttain(model, mateco, cara_elem, list_load, nume_dof, &
 #include "asterfort/resoud.h"
 #include "asterfort/vetrth.h"
 !
-! aslint: disable=W1504
-!
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: mateco
-    character(len=24), intent(in) :: cara_elem
-    character(len=19), intent(in) :: list_load
+    character(len=8), intent(in) :: model, caraElem
+    character(len=24), intent(in) :: mateco, listLoad
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: time
@@ -70,7 +66,7 @@ subroutine nttain(model, mateco, cara_elem, list_load, nume_dof, &
     character(len=1) :: typres
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, criter
-    character(len=24) :: lload_name, lload_info
+    character(len=24) :: loadNameJv, loadInfoJv
     integer :: iret
     real(kind=8), pointer :: tempm(:) => null()
     real(kind=8), pointer :: temp(:) => null()
@@ -89,8 +85,10 @@ subroutine nttain(model, mateco, cara_elem, list_load, nume_dof, &
 !
     ci1 = ' '
     ci2 = ' '
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
+
+! - Access to datastructure of list of loads
+    loadNameJv = listLoad(1:19)//'.LCHA'
+    loadInfoJv = listLoad(1:19)//'.INFC'
 !
 ! --- RECUPERATION D'ADRESSES
 !
@@ -100,7 +98,7 @@ subroutine nttain(model, mateco, cara_elem, list_load, nume_dof, &
 !
 ! --- VECTEURS ELEMENTAIRES DU SEGOND MEMBRE
 !
-    call vetrth(model, lload_name, lload_info, cara_elem, mateco, &
+    call vetrth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
                 time, vtemp, vtempm, chlapm, chlapp, &
                 veresi)
 !

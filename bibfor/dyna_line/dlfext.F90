@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dlfext(nveca, nchar, temps, neq, liad, &
-                  lifo, charge, infoch, fomult, modele, &
-                  mate, mateco, carele, numedd, f)
+subroutine dlfext(nbVectAsse, nbLoad, temps, neq, liad, &
+                  lifo, loadNameJv, loadInfoJv, loadFuncJv, model, &
+                  materField, mateco, caraElem, numedd, f)
 !
     implicit none
 !
@@ -35,16 +35,16 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vechme.h"
 #include "asterfort/vedime.h"
 #include "blas/daxpy.h"
 !
-    integer :: nveca, nchar, neq, liad(*)
-    real(kind=8) :: temps, f(*)
-    character(len=24) :: lifo(*), infoch, fomult
-    character(len=24) :: modele, carele, charge, mate, mateco, numedd
+    integer, intent(in) :: nbVectAsse, nbLoad, neq, liad(*)
+    real(kind=8), intent(in) :: temps
+    character(len=24), intent(in) :: lifo(*), loadInfoJv, loadFuncJv
+    character(len=24), intent(in) :: model, caraElem, loadNameJv, materField, mateco, numedd
+    real(kind=8), intent(out) :: f(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,13 +74,10 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jinf, lonch
-    integer :: iret, ieq
-    integer :: n1
+    character(len=4), parameter :: typmat = "R", para = 'INST'
+    integer :: iret, ieq, n1
     real(kind=8) :: partps(3)
-    character(len=4) :: typmat, para
     character(len=16) :: method
-    character(len=19) :: lischa
     character(len=24) :: vechmp, vachmp, cnchmp
     real(kind=8), pointer :: f1(:) => null()
     real(kind=8), pointer :: f2(:) => null()
@@ -90,78 +87,57 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
 !
     call jemarq()
 !
-    typmat = 'R'
-    para = 'INST'
-    lischa = charge(1:19)
-    ASSERT(lischa .eq. infoch(1:19))
-!
     partps(1:3) = [temps, r8vide(), r8vide()]
-!
     vechmp = ' '
     vachmp = ' '
     cnchmp = ' '
-!
-! --- METHODE D'INTEGRATION
-!
     call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
-!
-    call r8inir(neq, 0.d0, f, 1)
-!
-! 2.1. ==> --- CAS D'UN CHARGEMENT DEFINI PAR VECT_ASSE ---
-!
-    if (nveca .ne. 0) then
-!
-        call fext(temps, neq, nveca, liad, lifo, &
-                  f)
-!
+
+! - Load from VECT_ASSE
+    f(1:neq) = 0.d0
+    if (nbVectAsse .ne. 0) then
+        call fext(temps, neq, nbVectAsse, liad, lifo, f)
     end if
 !
-! 2.2. ==> --- CAS D'UN CHARGEMENT DEFINI PAR CHARGE ---
-!
-    if (nchar .ne. 0) then
-!
-! 2.2.1 ==>
-!
-        call jeveuo(infoch, 'L', jinf)
-        nchar = zi(jinf)
-        call vechme('S', modele, charge, infoch, partps, &
-                    carele, mate, mateco, vechmp)
+    if (nbLoad .ne. 0) then
+! ----- Neumann loads
+        call vechme('S', &
+                    model, caraElem, materField, mateco, &
+                    loadNameJv, loadInfoJv, &
+                    partps, &
+                    vechmp)
         call asasve(vechmp, numedd, typmat, vachmp)
-        call ascova('D', vachmp, fomult, 'INST', temps, &
+        call ascova('D', vachmp, loadFuncJv, 'INST', temps, &
                     typmat, cnchmp)
-        call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
         call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=f1)
 !
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, f1, b_incx, f, &
-                   b_incy)
+        call daxpy(b_n, 1.d0, f1, b_incx, f, b_incy)
 !
 ! 2.2.2. ==> -- LES DIRICHLETS
 !
-        call vedime(modele, charge, infoch, temps, typmat, &
+        call vedime(model, loadNameJv, loadInfoJv, temps, typmat, &
                     vechmp)
         call asasve(vechmp, numedd, typmat, vachmp)
-        call ascova('D', vachmp, fomult, para, temps, &
+        call ascova('D', vachmp, loadFuncJv, para, temps, &
                     typmat, cnchmp)
-        call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
         call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=f2)
 !
 ! -- TEST DE PRESENCE DE CHARGEMENT DIRICHLET (DEPL IMPOSE NON NUL)
         iret = 0
-        do ieq = 1, lonch
+        do ieq = 1, neq
             if (abs(f2(ieq)) .gt. r8prem()) iret = 1
         end do
         if ((iret .eq. 1) .and. (method .ne. 'NEWMARK')) then
             call utmess('F', 'DYNALINE1_20')
         end if
 !
-        b_n = to_blas_int(lonch)
+        b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, f2, b_incx, f, &
-                   b_incy)
+        call daxpy(b_n, 1.d0, f2, b_incx, f, b_incy)
     end if
 !
     call jedetr(cnchmp)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,31 +15,34 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vedime(model, lload_name, lload_info, curr_time, typres, vect_elemz)
+!
+subroutine vedime(modelZ, loadNameJvZ, loadInfoJvZ, &
+                  timeCurr, scalarType, vectElemZ, &
+                  lCumul_, jvBase_)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcnco2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/inical.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/detrsd.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/megeom.h"
-#include "asterfort/mecact.h"
-#include "asterfort/gcnco2.h"
-#include "asterfort/corich.h"
-#include "asterfort/calcul.h"
 !
-!
-    character(len=24), intent(in) :: model, lload_name, lload_info
-    real(kind=8), intent(in) :: curr_time
-    character(len=1), intent(in) :: typres
-    character(len=24), intent(inout) :: vect_elemz
+    character(len=*), intent(in) :: modelZ
+    character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
+    real(kind=8), intent(in) :: timeCurr
+    character(len=1), intent(in) :: scalarType
+    character(len=24), intent(inout) :: vectElemZ
+    aster_logical, optional, intent(in) :: lCumul_
+    character(len=1), optional, intent(in) :: jvBase_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,146 +52,141 @@ subroutine vedime(model, lload_name, lload_info, curr_time, typres, vect_elemz)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model          : name of model
-! In  lload_name     : name of object for list of loads name
-! In  lload_info     : name of object for list of loads info
-! In  curr_time      : current time
-! In  typres         : type of coefficeitns (real or complex)
-! IO  vect_elem      : name of vect_elem result
+! In  model             : name of model
+! In  loadNameJv        : name of object for list of loads name
+! In  loadInfoJv        : name of object for list of loads info
+! In  timeCurr          : current time
+! In  scalarType        : type of coefficients (real or complex)
+! IO  vectElem          : name of vectElem result
+! In  jvBase            : JEVEUX base to create vector
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 3
-    integer, parameter :: nbout = 1
+    integer, parameter :: nbin = 3, nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=24) :: lchin(nbin), lchout(nbout)
-!
-    character(len=8) :: load_name, newnom
+    character(len=8) :: loadName, newnom
     character(len=16) :: option
-    character(len=19) :: vect_elem
-    character(len=24) :: ligrch, chgeom, resu_elem, chtime
-    integer :: load_nume, nb_load, i_load
-    character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
-    aster_logical :: load_empty
-    character(len=1) :: base
+    character(len=24) :: vectElem, resuElem
+    character(len=24), parameter :: chtime = '&&VEDIME.CH_INST_R'
+    character(len=24) :: loadLigrel, chgeom
+    integer :: loadNume, nbLoad, iLoad
+    character(len=24), pointer :: listLoadName(:) => null()
+    integer, pointer :: listLoadInfo(:) => null()
+    aster_logical :: noLoadInList, lCumul
+    character(len=1) :: jvBase
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
     newnom = '.0000000'
-    chtime = '&&VEDIME.CH_INST_R'
-    resu_elem = '&&VEDIME.???????'
-    base = 'V'
-!
-! - Init fields
-!
-    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
-!
-! - Result name for vect_elem
-!
-    vect_elem = vect_elemz(1:19)
-    if (vect_elem .eq. ' ') then
-        vect_elem = '&&VEDIME'
+    resuElem = '&&VEDIME.???????'
+    jvBase = 'V'
+    if (present(jvBase_)) then
+        jvBase = jvBase_
     end if
-!
-! - Loads
-!
-    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        lload_name, lload_info)
-!
+    lCumul = ASTER_FALSE
+    if (present(lCumul_)) then
+        lCumul = lCumul_
+    end if
+    lpain = " "
+    lchin = " "
+    lpaout = " "
+    lchout = " "
+
+! - Result name for vectElem
+    vectElem = vectElemZ(1:19)
+    if (vectElem .eq. ' ') then
+        vectElem = '&&VEDIME'
+    end if
+
+! - Get loads
+    call load_list_info(noLoadInList, nbLoad, listLoadName, listLoadInfo, &
+                        loadNameJvZ, loadInfoJvZ)
+
 ! - Allocate result
-!
-    call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, 'CHAR_MECA')
-    call reajre(vect_elem, ' ', base)
-    if (load_empty) then
+    if (.not. lCumul) then
+        call detrsd('VECT_ELEM', vectElem)
+        call memare(jvBase, vectElem, modelZ, 'CHAR_MECA')
+        call reajre(vectElem, ' ', jvBase)
+    end if
+    if (noLoadInList) then
         goto 99
     end if
-!
+
 ! - Geometry field
-!
-    call megeom(model, chgeom)
-!
+    call megeom(modelZ, chgeom)
+
 ! - Time field
-!
-    call mecact('V', chtime, 'MODELE', model, 'INST_R  ', &
-                ncmp=1, nomcmp='INST', sr=curr_time)
-!
+    call mecact('V', chtime, 'MODELE', modelZ, 'INST_R  ', &
+                ncmp=1, nomcmp='INST', sr=timeCurr)
+
 ! - Input fields
-!
     lpain(1) = 'PGEOMER'
-    lchin(1) = chgeom(1:19)
+    lchin(1) = chgeom
     lpain(2) = 'PINSTR'
-    lchin(2) = chtime(1:19)
-!
+    lchin(2) = chtime
+
 ! - Output field
-!
-    if (typres .eq. 'R') then
+    if (scalarType .eq. 'R') then
         lpaout(1) = 'PVECTUR'
     else
         lpaout(1) = 'PVECTUC'
     end if
-!
+
 ! - Computation
-!
-    do i_load = 1, nb_load
-        load_name = v_load_name(i_load) (1:8)
-        load_nume = v_load_info(i_load+1)
-        if ((load_nume .gt. 0) .and. (load_nume .le. 4)) then
-            ligrch = load_name//'.CHME.LIGRE'
-!
+    do iLoad = 1, nbLoad
+        loadName = listLoadName(iLoad) (1:8)
+        loadNume = listLoadInfo(iLoad+1)
+        if ((loadNume .gt. 0) .and. (loadNume .le. 4)) then
+            loadLigrel = loadName//'.CHME.LIGRE'
+
 ! --------- Input field
-!
-            lchin(3) = load_name//'.CHME.CIMPO'
-            if (load_nume .eq. 1) then
-                if (typres .eq. 'R') then
+            lchin(3) = loadName//'.CHME.CIMPO'
+            if (loadNume .eq. 1) then
+                if (scalarType .eq. 'R') then
                     option = 'MECA_DDLI_R'
                     lpain(3) = 'PDDLIMR'
                 else
                     option = 'MECA_DDLI_C'
                     lpain(3) = 'PDDLIMC'
                 end if
-            else if (load_nume .eq. 2) then
+            else if (loadNume .eq. 2) then
                 option = 'MECA_DDLI_F'
                 lpain(3) = 'PDDLIMF'
-            else if (load_nume .eq. 3) then
+            else if (loadNume .eq. 3) then
                 option = 'MECA_DDLI_F'
                 lpain(3) = 'PDDLIMF'
-            else if (load_nume .eq. 4) then
-                ASSERT(typres .eq. 'R')
+            else if (loadNume .eq. 4) then
+                ASSERT(scalarType .eq. 'R')
                 option = 'MECA_DDLI_R'
                 lpain(3) = 'PDDLIMR'
             else
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             end if
-!
+
 ! --------- Generate new RESU_ELEM name
-!
             call gcnco2(newnom)
-            resu_elem(10:16) = newnom(2:8)
-            call corich('E', resu_elem, ichin_=i_load)
-            lchout(1) = resu_elem
-!
+            resuElem(10:16) = newnom(2:8)
+            call corich('E', resuElem, ichin_=iLoad)
+            lchout(1) = resuElem
+
 ! --------- Computation
-!
-            call calcul('S', option, ligrch, nbin, lchin, &
-                        lpain, nbout, lchout, lpaout, base, &
-                        'OUI')
-!
+            call calcul('S', option, loadLigrel, &
+                        nbin, lchin, lpain, &
+                        nbout, lchout, lpaout, &
+                        jvBase, 'OUI')
+
 ! --------- Copying output field
-!
-            call reajre(vect_elem, lchout(1), base)
-!
+            call reajre(vectElem, lchout(1), jvBase)
         end if
     end do
 !
 99  continue
 !
-    vect_elemz = vect_elem//'.RELR'
+    vectElemZ = vectElem(1:19)//'.RELR'
 !
     call jedema()
 end subroutine

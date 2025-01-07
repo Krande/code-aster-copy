@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ Erreur utilisateur dans la commande AFFE_MATERIAU / AFFE_VARC
     60: _(
         """
 Erreur utilisateur dans la commande AFFE_MATERIAU / CHAM_MATER
-  Le maillage %(k1)s sur lequel repose le champ matériau %(k2)s est différent du maillage 
+  Le maillage %(k1)s sur lequel repose le champ matériau %(k2)s est différent du maillage
   %(k3)s transmis dans AFFE_MATERIAU
 """
     ),

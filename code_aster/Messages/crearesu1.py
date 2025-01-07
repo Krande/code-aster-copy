@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,7 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _("""Les chargements de Dirichlet de type AFFE_CHAR_CINE sont ignorés pour CONV_CHAR."""),
-    2: _("""Les chargements de Dirichlet de type AFFE_CHAR_MECA sont ignorés pour CONV_CHAR."""),
     48: _(
         """Plusieurs instants correspondent à celui spécifié dans la liste d'instants pour CONV_CHAR."""
-    ),
+    )
 }

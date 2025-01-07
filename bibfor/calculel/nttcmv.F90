@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
 !
-subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
-                  solver, time, tpsthe, tpsnp1, reasvt, &
+subroutine nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
+                  solver, timeMap, tpsthe, tpsnp1, reasvt, &
                   reasmt, creas, vtemp, vtempm, vec2nd, &
                   matass, maprec, cndirp, cnchci, cnchtp)
 !
@@ -43,13 +42,11 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: mate, mateco
-    character(len=24), intent(in) :: cara_elem
-    character(len=19), intent(in) :: list_load
+    character(len=8), intent(in) :: model, caraElem
+    character(len=24), intent(in) :: mateco, listLoad
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
-    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: timeMap
     aster_logical :: reasvt, reasmt
     real(kind=8) :: tpsthe(6), tpsnp1
     character(len=1) :: creas
@@ -82,7 +79,7 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=24), pointer :: v_resu_elem(:) => null()
     real(kind=8), pointer :: chtp(:) => null()
     real(kind=8), pointer :: dirp(:) => null()
-    character(len=24) :: lload_name, lload_info, lload_func
+    character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
 !
     data typres/'R'/
     data nomcmp/'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ', &
@@ -102,9 +99,11 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     merigi = '&&METRIG'
     creas = ' '
     time_curr = tpsthe(1)
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
-    lload_func = list_load(1:19)//'.FCHA'
+
+! - Access to datastructure of list of loads
+    loadNameJv = listLoad(1:19)//'.LCHA'
+    loadInfoJv = listLoad(1:19)//'.INFC'
+    loadFuncJv = listLoad(1:19)//'.FCHA'
 !
 ! ======================================================================
 !         VECTEURS (CHARGEMENTS) CONTRIBUANT AU SECOND MEMBRE
@@ -112,13 +111,13 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
     if (reasvt) then
 !
-! ----- Field for time
+! ----- Field for timeMap
 !
         ligrmo = model(1:8)//'.MODELE'
-        call mecact('V', time, 'MODELE', ligrmo, 'INST_R', &
+        call mecact('V', timeMap, 'MODELE', ligrmo, 'INST_R', &
                     ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
-! ----- Field for shifted time with 1-THETA
+! ----- Field for shifted timeMap with 1-THETA
 !
         tpsthe(3) = 1.d0
         call mecact('V', time_move, 'MODELE', ligrmo, 'INST_R', &
@@ -130,27 +129,30 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! ----- TEMPERATURES IMPOSEES                                  ---> CNDIRP
 !
-        call vedith(model, lload_name, lload_info, time, vediri)
+        call vedith(model, loadNameJv, loadInfoJv, timeMap, vediri)
         call asasve(vediri, nume_dof, typres, vadirp)
-        call ascova('D', vadirp, lload_func, 'INST', tpsthe(1), &
+        call ascova('D', vadirp, loadFuncJv, 'INST', time_curr, &
                     typres, cndirp)
         call jeveuo(cndirp(1:19)//'.VALE', 'E', vr=dirp)
 !
 ! --- CHARGES CINEMATIQUES                                   ---> CNCHCI
 !
         cnchci = ' '
-        call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsnp1, &
+        call ascavc(loadNameJv, loadInfoJv, loadFuncJv, nume_dof, tpsnp1, &
                     cnchci, l_hho_=ASTER_FALSE)
 !
 ! --- CHARGEMENTS THERMIQUES                                 ---> CNCHTP
 !            RQ : POUR LE CALCUL THERMIQUE, LES ARGUMENTS VTEMPP,
 !                 VTEMPD ET THETA SONT INUTILISES.
 !
-        call vechth('MOVE', model, lload_name, lload_info, cara_elem, &
-                    mate, mateco, time_curr, time, vtemp, vechtp, &
-                    time_move_=time_move)
+        call vechth('MOVE', &
+                    model, mateco, &
+                    loadNameJv, loadInfoJv, &
+                    time_curr, &
+                    vechtp, &
+                    timeMapZ_=timeMap, tempPrevZ_=vtemp, timeMoveZ_=time_move)
         call asasve(vechtp, nume_dof, typres, vachtp)
-        call ascova('D', vachtp, lload_func, 'INST', tpsthe(1), &
+        call ascova('D', vachtp, loadFuncJv, 'INST', time_curr, &
                     typres, cnchtp)
         call jeveuo(cnchtp(1:19)//'.VALE', 'E', vr=chtp)
         call jelira(cnchtp(1:19)//'.VALE', 'LONMAX', lonch)
@@ -172,17 +174,17 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! --- (RE)CALCUL DE LA MATRICE DES DIRICHLET POUR L'ASSEMBLER
 !
-        call medith('V', 'ZERO', model, list_load, mediri)
+        call medith('V', 'ZERO', model, listLoad, mediri)
 !
 ! ----- Elementary matrix for transport (volumic and surfacic terms)
 !
         creas = 'M'
-        call mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
+        call mertth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
                     time_matr, time_move, vtemp, vtempm, merigi)
 !
 ! ----- Elementary matrix for boundary conditions
 !
-        call metnth(model, lload_name, cara_elem, mate, mateco, time, &
+        call metnth(model, loadNameJv, caraElem, mateco, timeMap, &
                     vtempm, metrnl)
 !
         nbmat = 0
@@ -214,7 +216,7 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 ! --- ASSEMBLAGE DE LA MATRICE
 !
         call asmatr(nbmat, tlimat, ' ', nume_dof, &
-                    list_load, 'ZERO', 'V', 1, matass)
+                    listLoad, 'ZERO', 'V', 1, matass)
 !
 ! --- DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT
 !

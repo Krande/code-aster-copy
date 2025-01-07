@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,22 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine ntarc0(result, model     , mate     , cara_elem   , list_load_resu,&
-                      para  , nume_store, time_curr, sdcrit_nonl_)
-        character(len=8), intent(in) :: result
+    subroutine ntarc0(result, model, materfield, caraElem, listLoadResu, &
+                      para, nume_store, time_curr)
+        character(len=8), intent(in) :: result, model, materfield, caraElem
         integer, intent(in) :: nume_store
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: para(*)
-        character(len=19), intent(in) :: list_load_resu
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: cara_elem
-        character(len=19), optional, intent(in) :: sdcrit_nonl_
+        character(len=24), intent(in) :: listLoadResu
     end subroutine ntarc0
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vedith(model, lload_name, lload_info, time, vect_elemz)
+!
+subroutine vedith(model, loadNameJv, loadInfoJv, time, vect_elemz)
 !
     implicit none
 !
@@ -35,8 +35,8 @@ subroutine vedith(model, lload_name, lload_info, time, vect_elemz)
 #include "asterfort/corich.h"
 #include "asterfort/calcul.h"
 !
-!
-    character(len=24), intent(in) :: model, time, lload_name, lload_info
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: time, loadNameJv, loadInfoJv
     character(len=24), intent(inout) :: vect_elemz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,8 +48,8 @@ subroutine vedith(model, lload_name, lload_info, time, vect_elemz)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model          : name of model
-! In  lload_name     : name of object for list of loads name
-! In  lload_info     : name of object for list of loads info
+! In  loadNameJv     : name of object for list of loads name
+! In  loadInfoJv     : name of object for list of loads info
 ! In  time           : time (<CARTE>)
 ! IO  vect_elem      : name of vect_elem result
 !
@@ -94,7 +94,7 @@ subroutine vedith(model, lload_name, lload_info, time, vect_elemz)
 ! - Loads
 !
     call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        lload_name, lload_info)
+                        loadNameJv, loadInfoJv)
 !
 ! - Allocate result
 !

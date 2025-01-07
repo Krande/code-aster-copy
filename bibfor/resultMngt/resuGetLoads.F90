@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,22 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuGetLoads(resultType, listLoad)
+subroutine resuGetLoads(model, resultType, listLoadResu)
 !
+    use listLoad_type
+    use listLoad_module
     implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterfort/gnomsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmdoch.h"
 #include "asterfort/ntdoch.h"
 #include "asterfort/copisd.h"
 !
+    character(len=8), intent(in) :: model
     character(len=16), intent(in) :: resultType
-    character(len=19), intent(out) :: listLoad
+    character(len=24), intent(out) :: listLoadResu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,35 +41,36 @@ subroutine resuGetLoads(resultType, listLoad)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  model            : model
 ! In  resultType       : type of results datastructure (EVOL_NOLI, EVOL_THER, )
-! Out listLoad         : name of datastructure for loads
+! Out listLoadResu     : name of datastructure for loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: loadFromUser
-    character(len=24) :: noobj
+    character(len=24), parameter :: jvBase = "V"
     integer :: nbOcc
-    character(len=19), parameter :: listLoadIn = '&&LRCOMM.LISTLOAD'
+    character(len=24), parameter :: listLoad = '&&LRCOMM.LISTLOAD'
+    type(ListLoad_Prep) :: listLoadPrep
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    listLoad = ' '
-    loadFromUser = ASTER_TRUE
+    listLoadResu = ' '
     call getfac('EXCIT', nbOcc)
     if (nbOcc .gt. 0) then
-! ----- Generate name of datastructure
-        noobj = '12345678.1234.EXCIT.INFC'
-        call gnomsd(' ', noobj, 10, 13)
-        listLoad = noobj(1:19)
+
 ! ----- Read from command file
+        listLoadPrep%model = model
         if (resultType .eq. 'EVOL_ELAS' .or. resultType .eq. 'EVOL_NOLI') then
-            call nmdoch(listLoadIn, loadFromUser)
+            call nmdoch(listLoadPrep, listLoad, jvBase)
         else if (resultType .eq. 'EVOL_THER') then
-            call ntdoch(listLoadIn)
+            call ntdoch(listLoadPrep, listLoad, jvBase)
         else
             call utmess('A', 'RESULT2_16', sk=resultType)
         end if
-        call copisd(' ', 'G', listLoadIn, listLoad)
+
+! ----- Generate name of datastructure to save in result datastructure
+        call nameListLoad(listLoadResu)
+        call copisd('LISTE_CHARGES', 'G', listLoad, listLoadResu)
     end if
 !
 end subroutine

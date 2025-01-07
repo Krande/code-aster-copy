@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,43 +15,48 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mecgme(modelz, cara_elemz, matez, matecoz, list_load, inst_curr, &
-                  disp_prev, disp_cumu_inst, inst_prev, compor, matr_elem)
+!
+subroutine mecgme(stop, &
+                  modelZ, caraElemZ, materFieldZ, matecoZ, comporZ, &
+                  listLoadZ, &
+                  timePrev, timeCurr, &
+                  dispPrevZ, dispCumuInstZ, &
+                  matrElemZ, &
+                  varcCurrZ_, nharm_, &
+                  ligrelCalcZ_, jvBase_)
+!
+    use loadMecaCompute_module
+    use loadMecaCompute_type
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/inical.h"
+#include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/lxliis.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/load_neum_prep.h"
-#include "asterfort/load_neum_matr.h"
-#include "asterfort/load_neum_evcm.h"
+#include "asterfort/lxliis.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/fointe.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
+#include "LoadTypes_type.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=*), intent(in) :: modelz
-    character(len=*), intent(in) :: cara_elemz
-    character(len=*), intent(in) :: matez, matecoz
-    character(len=19), intent(in) :: list_load
-    real(kind=8), intent(in) :: inst_prev
-    real(kind=8), intent(in) :: inst_curr
-    character(len=19), intent(in) :: disp_prev
-    character(len=19), intent(in) :: disp_cumu_inst
-    character(len=24), intent(in) :: compor
-    character(len=19), intent(in) :: matr_elem
+    character(len=1), intent(in) :: stop
+    character(len=*), intent(in) :: modelZ, caraElemZ
+    character(len=*), intent(in) :: materFieldZ, matecoZ, comporZ
+    character(len=*), intent(in) :: listLoadZ
+    real(kind=8), intent(in) :: timePrev, timeCurr
+    character(len=*), intent(in) :: dispPrevZ, dispCumuInstZ
+    character(len=*), intent(in) :: matrElemZ
+    character(len=*), optional, intent(in) :: varcCurrZ_
+    integer, optional, intent(in) :: nharm_
+    character(len=*), optional, intent(in) :: ligrelCalcZ_
+    character(len=1), optional, intent(in) :: jvBase_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,171 +66,199 @@ subroutine mecgme(modelz, cara_elemz, matez, matecoz, list_load, inst_curr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model          : name of model
-! In  mate           : name of material characteristics (field)
-! In  mateco         : mane of coded material
-! In  cara_elem      : name of elementary characteristics (field)
-! In  inst_prev      : previous time
-! In  inst_curr      : current time
-! In  list_load      : list of loads
-! In  disp_prev      : displacement at beginning of current time
-! In  disp_cumu_inst : displacement increment from beginning of current time
-! In  compor         : name of comportment definition (field)
-! In  matr_elem      : name of matr_elem result
+! In  stop              : continue or stop computation if no loads on elements
+! In  model             : name of model
+! In  caraElem          : name of elementary characteristics (field)
+! In  materField        : name of material characteristics (field)
+! In  mateco            : name of coded material
+! In  compor            : name of non-linear behaviour definition (field)
+! In  listLoad          : name of object for list of loads! In  timePrev          : previous time
+! In  timePrev          : previous time
+! In  timeCurr          : current time
+! In  dispPrev          : displacement at beginning of current time
+! In  dispCumuInst      : displacement increment from beginning of current time
+! In  matrElem          : name of elementary matrix
+! In  varcCurr          : external state variables for current time
+! In  nharm             : Fourier mode
+! In  ligrelCalc        : LIGREL to compute loads
+! In  jvBase            : JEVEUX base to create objects
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_in_maxi, nbout
-    parameter(nb_in_maxi=42, nbout=1)
-    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
-    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
-!
-    character(len=24) :: model, cara_elem, mate, mateco
-    character(len=24), pointer :: v_relr(:) => null()
-    character(len=24), pointer :: v_load_name(:) => null()
-    character(len=24), pointer :: v_load_func(:) => null()
-    integer, pointer :: v_load_info(:) => null()
-    character(len=8) :: load_name, load_func
-    integer :: load_nume
-    character(len=24) :: list_coef
-    real(kind=8), pointer :: v_list_coef(:) => null()
-    real(kind=8) :: inst_theta, vale
-    character(len=19) :: ligrel_model
-    integer :: iret, ier, ichme, i_load, idx_matr, icha
-    aster_logical :: l_first_matr, load_empty, l_func
-    integer :: nb_load, nbchme, nb_in_prep
+    character(len=8) :: lpain(LOAD_NEUM_NBMAXIN)
+    character(len=24) :: lchin(LOAD_NEUM_NBMAXIN)
+    aster_logical, parameter :: applyPilo = ASTER_FALSE, applySuiv = ASTER_TRUE
+    integer :: nbLoad, iLoad, loadNume, nbFieldIn
+    integer :: nharm
+    real(kind=8), parameter :: timeTheta = 0.d0
+    aster_logical :: noLoadInList
+    character(len=24), pointer :: listLoadName(:) => null(), listLoadFunc(:) => null()
+    character(len=24) :: loadFuncJv
+    integer, pointer :: listLoadInfo(:) => null()
+    character(len=8) :: loadName, loadFunc
+    character(len=13) :: loadPreObject
+    character(len=24) :: matrCoefJv
+    real(kind=8), pointer :: matrCoef(:) => null()
+    real(kind=8) :: coefVale
+    character(len=24) :: ligrelCalc, loadLigrel
+    integer :: iret, ier, iResuElem, iMatr
+    aster_logical :: l_first_matr, hasLoadFunc
+    integer ::  nbResuElem
+    character(len=24), pointer :: listResuElem(:) => null()
+    character(len=1) :: jvBase
+    character(len=24) :: varcCurr
+    character(len=24) :: dispPrev, dispCumuInst, strxPrev, viteCurr, acceCurr
+    character(len=24) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
-    model = modelz
-    cara_elem = cara_elemz
-    mate = matez
-    mateco = matecoz
-    ligrel_model = model(1:8)//'.MODELE'
-    nb_load = 0
-    list_coef = matr_elem(1:15)//'.COEF'
-!
-! - Init fields
-!
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
-                lchout)
-!
-! - Loads
-!
-    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        list_load_=list_load)
-    if (load_empty) then
+    ligrelCalc = modelZ(1:8)//'.MODELE'
+    if (present(ligrelCalcZ_)) then
+        ligrelCalc = ligrelCalcZ_
+    end if
+    jvBase = 'V'
+    if (present(jvBase_)) then
+        jvBase = jvBase_
+    end if
+    lpain = " "
+    lchin = " "
+
+! - Input fields (optional)
+    varcCurr = ' '
+    if (present(varcCurrZ_)) then
+        varcCurr = varcCurrZ_
+    end if
+    nharm = -1
+    if (present(nharm_)) then
+        nharm = nharm_
+    end if
+
+! - Input fields (required)
+    dispPrev = dispPrevZ
+    dispCumuInst = dispCumuInstZ
+    compor = comporZ
+
+! - Input fields (useless)
+    strxPrev = " "
+    viteCurr = " "
+    acceCurr = " "
+
+! - Get loads
+    call load_list_info(noLoadInList, nbLoad, listLoadName, listLoadInfo, &
+                        list_load_=listLoadZ)
+    if (noLoadInList) then
         goto 99
     end if
-!
+    loadFuncJv = listLoadZ(1:19)//'.FCHA'
+
 ! - Allocate result
-!
-    call jeexin(matr_elem//'.RELR', iret)
+    call jeexin(matrElemZ(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        l_first_matr = .true.
-        call memare('V', matr_elem, model(1:8), 'CHAR_MECA')
-        call reajre(matr_elem, ' ', 'V')
+        l_first_matr = ASTER_TRUE
+        call memare(jvBase, matrElemZ, modelZ, 'CHAR_MECA')
+        call reajre(matrElemZ, ' ', jvBase)
     else
-        l_first_matr = .false.
-        call jelira(matr_elem//'.RELR', 'LONUTI', nbchme)
-        if (nbchme .gt. 0) then
-            call jeveuo(matr_elem//'.RELR', 'L', vk24=v_relr)
+        l_first_matr = ASTER_FALSE
+        call jelira(matrElemZ(1:19)//'.RELR', 'LONUTI', nbResuElem)
+        if (nbResuElem .gt. 0) then
+            call jeveuo(matrElemZ(1:19)//'.RELR', 'L', vk24=listResuElem)
         end if
     end if
-!
-! - Preparing input fields
-!
-    call load_neum_prep(model, cara_elem, mate, matecoz, 'Suiv', inst_prev, &
-                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
-                        lpain, disp_prev=disp_prev, disp_cumu_inst=disp_cumu_inst, &
-                        compor=compor)
-!
-! - Computation
-!
-    if (l_first_matr) then
-        do i_load = 1, nb_load
-            idx_matr = 0
-            load_name = v_load_name(i_load) (1:8)
-            load_nume = v_load_info(nb_load+i_load+1)
-            if (load_nume .eq. 4) then
-                call load_neum_matr(i_load, idx_matr, load_name, load_nume, 'Suiv', &
-                                    ligrel_model, nb_in_maxi, nb_in_prep, lpain, lchin, &
-                                    matr_elem)
 
-                call load_neum_evcm(inst_curr, load_name, i_load, ligrel_model, &
-                                    nb_in_maxi, nb_in_prep, lpain, lchin, &
-                                    idx_matr, matr_elem)
+! - Preparing input fields
+    call prepGeneralFields(modelZ, caraElemZ, materFieldZ, matecoZ, &
+                           applySuiv, &
+                           timePrev, timeCurr, timeTheta, nharm, &
+                           varcCurr, dispPrev, dispCumuInst, &
+                           compor, strxPrev, viteCurr, acceCurr, &
+                           nbFieldIn, lpain, lchin)
+
+! - Computation
+    if (l_first_matr) then
+        do iLoad = 1, nbLoad
+            iMatr = 0
+            loadName = listLoadName(iLoad) (1:8)
+            loadNume = listLoadInfo(nbLoad+iLoad+1)
+            loadPreObject = loadName(1:8)//'.CHME'
+            loadLigrel = loadPreObject(1:13)//'.LIGRE'
+
+            if (loadNume .eq. 4) then
+                call compLoadMatr(applyPilo, &
+                                  iLoad, iMatr, loadNume, &
+                                  loadLigrel, loadPreObject, &
+                                  stop, nbFieldIn, lpain, lchin, &
+                                  ligrelCalc, jvBase, matrElemZ)
+                call compLoadEvolMatr(timeCurr, jvBase, &
+                                      applySuiv, iLoad, iMatr, loadPreObject, &
+                                      loadLigrel, ligrelCalc, &
+                                      nbFieldIn, lpain, lchin, &
+                                      matrElemZ)
             end if
         end do
     else
-        do ichme = 1, nbchme
-            if (v_relr(ichme) (10:10) .eq. 'G') then
-                call lxliis(v_relr(ichme) (7:8), i_load, ier)
-                idx_matr = -ichme
-                load_name = v_load_name(i_load) (1:8)
-                load_nume = v_load_info(nb_load+i_load+1)
+        do iResuElem = 1, nbResuElem
+            if (listResuElem(iResuElem) (10:10) .eq. 'G') then
+                call lxliis(listResuElem(iResuElem) (7:8), iLoad, ier)
+                iMatr = -iResuElem
+                loadName = listLoadName(iLoad) (1:8)
+                loadNume = listLoadInfo(nbLoad+iLoad+1)
+                loadPreObject = loadName(1:8)//'.CHME'
+                loadLigrel = loadPreObject(1:13)//'.LIGRE'
 
-                if (load_nume .eq. 4) then
-                    call load_neum_matr(i_load, idx_matr, load_name, load_nume, 'Suiv', &
-                                        ligrel_model, nb_in_maxi, nb_in_prep, lpain, lchin, &
-                                        matr_elem)
-
-                    call load_neum_evcm(inst_curr, load_name, i_load, ligrel_model, &
-                                        nb_in_maxi, nb_in_prep, lpain, lchin, &
-                                        idx_matr, matr_elem)
+                if (loadNume .eq. 4) then
+                    call compLoadMatr(applyPilo, &
+                                      iLoad, iMatr, loadNume, &
+                                      loadLigrel, loadPreObject, &
+                                      stop, nbFieldIn, lpain, lchin, &
+                                      ligrelCalc, jvBase, matrElemZ)
+                    call compLoadEvolMatr(timeCurr, jvBase, &
+                                          applySuiv, iLoad, iMatr, loadPreObject, &
+                                          loadLigrel, ligrelCalc, &
+                                          nbFieldIn, lpain, lchin, &
+                                          matrElemZ)
                 end if
             end if
         end do
     end if
-!
+
 ! - Get number of resu_elem for undead loads
-!
-    call jeexin(matr_elem(1:19)//'.RELR', iret)
-    if (iret .ne. 0) then
-        call jelira(matr_elem(1:19)//'.RELR', 'LONUTI', nbchme)
-        if (nbchme .eq. 0) then
+    call jeexin(matrElemZ(1:19)//'.RELR', iret)
+    ASSERT(iret .ne. 0)
+    call jelira(matrElemZ(1:19)//'.RELR', 'LONUTI', nbResuElem)
+    if (nbResuElem .eq. 0) then
+        goto 99
+    else
+        call jeveuo(matrElemZ(1:19)//'.RELR', 'L', vk24=listResuElem)
+        if (listResuElem(1) (7:8) .eq. '00') then
             goto 99
-        else
-            call jeveuo(matr_elem(1:19)//'.RELR', 'L', vk24=v_relr)
-            if (v_relr(1) (7:8) .eq. '00') then
-                goto 99
-            end if
         end if
-    else
-        ASSERT(.false.)
     end if
-!
+
 ! - Access to function
-!
-    call jeexin(list_load(1:19)//'.FCHA', iret)
-    if (iret .eq. 0) then
-        l_func = .false.
-    else
-        l_func = .true.
-        call jeveuo(list_load(1:19)//'.FCHA', 'L', vk24=v_load_func)
+    matrCoefJv = matrElemZ(1:15)//'.COEF'
+    call jeexin(loadFuncJv, iret)
+    hasLoadFunc = ASTER_FALSE
+    if (iret .gt. 0) then
+        hasLoadFunc = .true.
+        call jeveuo(loadFuncJv, 'L', vk24=listLoadFunc)
     end if
-!
+
 ! - Create list of coefficients
-!
-    call jedetr(list_coef)
-    call wkvect(list_coef, 'V V R', nbchme, vr=v_list_coef)
-    do i_load = 1, nbchme
-        if (l_func) then
-            call lxliis(v_relr(i_load) (7:8), icha, iret)
-            load_func = v_load_func(icha) (1:8)
-            if (icha .gt. 0) then
-                call fointe('F ', load_func, 1, ['INST'], [inst_curr], vale, iret)
-            else
-                ASSERT(.false.)
-            end if
+    call jedetr(matrCoefJv)
+    call wkvect(matrCoefJv, 'V V R', nbResuElem, vr=matrCoef)
+    do iResuElem = 1, nbResuElem
+        if (hasLoadFunc) then
+            call lxliis(listResuElem(iResuElem) (7:8), iLoad, iret)
+            loadFunc = listLoadFunc(iLoad) (1:8)
+            ASSERT(iLoad .gt. 0)
+            call fointe('F ', loadFunc, 1, ['INST'], [timeCurr], coefVale, iret)
         else
-            vale = 1.d0
+            coefVale = 1.d0
         end if
-        v_list_coef(i_load) = vale
+        matrCoef(iResuElem) = coefVale
     end do
 !
 99  continue
