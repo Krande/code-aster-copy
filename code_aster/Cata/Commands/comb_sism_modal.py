@@ -120,7 +120,7 @@ COMB_SISM_MODAL = MACRO(
         max=1,
         TYPE=SIMP(
             statut="f", typ="TXM", into=("SRSS", "CQC", "DSC", "ABS", "DPC", "GUPTA",
-                                         "NRC_GROUPING", "NRC_DSA"), defaut="CQC"
+                                         "NRC_GROUPING", "NRC_DSA", "NRC_TEN_PERCENT"), defaut="CQC"
         ),
         b_gupta=BLOC(
             condition="""equal_to("TYPE", 'GUPTA') """,

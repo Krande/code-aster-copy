@@ -417,6 +417,31 @@ def dsc_array(amors, freqs, s):
     return H
 
 
+def nrc_ten_percent_array(freqs):
+    """Matrix des coefficients DPC (selon NRC_TEN_PERCENT)
+
+    Arguments:
+        freqs           : list of frequencies
+
+    Returns:
+        H: matrix of correlation between modes for NRC_TEN_PERCENT rule
+    """
+
+    nbmode = len(freqs)
+    H = np.zeros((nbmode, nbmode))
+    # correlation coefficients for DSC rule
+    for i in range(nbmode):
+        for j in range(nbmode):
+            if freqs[i] <= freqs[j] :
+                if freqs[j] <= 1.1*freqs[i]:
+                    H[i, j] = 1
+            else:
+                if freqs[i] <= 1.1*freqs[j]:
+                    H[i, j] = 1
+    # return
+    return H
+
+
 def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
     """Combines modals responses
 
@@ -461,6 +486,14 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
         if COMB_MODE["DUREE"] is None:
             raise Exception("Il faut renseigner DUREE")
         H = dsc_array(amors, freqs, COMB_MODE["DUREE"])
+        H[np.diag_indices_from(H)] /= 2
+        for i, r_i in enumerate(R_mi):
+            for j, r_j in enumerate(R_mi[i:], i):
+                R_m2 += 2 * H[i, j] * np.abs(r_i * r_j)
+        R_m2 = np.maximum(R_m2, 0)
+    
+    elif type_comb == "NRC_TEN_PERCENT" :  # Méthode dix pourcent (D) selon NRC
+        H = nrc_dpc_array(freqs)
         H[np.diag_indices_from(H)] /= 2
         for i, r_i in enumerate(R_mi):
             for j, r_j in enumerate(R_mi[i:], i):
