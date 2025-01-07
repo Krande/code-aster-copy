@@ -291,7 +291,7 @@ CCARCRI = LocatedComponents(
 CCDTAU = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0",))
 
 CCINFDI = LocatedComponents(
-    phys=PHY.CINFDI,
+    phys=PHY.CINFDI_R,
     type="ELEM",
     components=(
         "REPK",

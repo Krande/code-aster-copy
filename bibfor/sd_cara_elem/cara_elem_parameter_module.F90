@@ -95,7 +95,7 @@ module cara_elem_parameter_module
     integer, parameter :: ACE_NB_CARTE = 4
     integer, parameter :: ACE_NB_CARTE_CMP = 3
     character(len=10), parameter :: ACE_CARTE(ACE_NB_CARTE*ACE_NB_CARTE_CMP) = [ &
-                                    '.CARDINFO ', 'CINFDI    ', 'DISCRET   ', &
+                                    '.CARDINFO ', 'CINFDI_R  ', 'DISCRET   ', &
                                     '.CARDISCK ', 'CADISK_R  ', 'DISCRET   ', &
                                     '.CARDISCM ', 'CADISM_R  ', 'DISCRET   ', &
                                     '.CARDISCA ', 'CADISA_R  ', 'DISCRET   ']

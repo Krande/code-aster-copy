@@ -492,7 +492,7 @@ CHLI_R = PhysicalQuantity(
 )
 
 
-CINFDI = PhysicalQuantity(
+CINFDI_R = PhysicalQuantity(
     type="R",
     components=(
         "REPK",
@@ -507,7 +507,7 @@ CINFDI = PhysicalQuantity(
         "ETAK",
         "TYDI",
     ),
-    comment="""  CINFDI Type:R : Informations pour les elements discrets
+    comment="""  CINFDI_R Type:R : Informations pour les elements discrets
       REP(K;M;A) si =1 repere global,  si =2 repere local
          REPK  : Type de repere pour les raideurs
          REPM  : Type de repere pour les masses

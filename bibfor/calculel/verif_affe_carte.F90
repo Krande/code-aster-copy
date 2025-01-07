@@ -208,8 +208,8 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
         if (nomgd .eq. 'CACOQU_R' .and. nocmp .eq. 'CTOR') verif_coef_drz = ASTER_TRUE
         if (nomgd .eq. 'CAORIE_R' .and. nocmp .eq. 'ALPHA') cycle
         !
-        if (nomgd .eq. 'CINFDI' .and. nocmp(1:3) .eq. 'REP') cycle
-        if (nomgd .eq. 'CINFDI' .and. nocmp(1:3) .eq. 'SYM') cycle
+        if (nomgd .eq. 'CINFDI_R' .and. nocmp(1:3) .eq. 'REP') cycle
+        if (nomgd .eq. 'CINFDI_R' .and. nocmp(1:3) .eq. 'SYM') cycle
         !
         if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'TSEC') cycle
         if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HY1') cycle
