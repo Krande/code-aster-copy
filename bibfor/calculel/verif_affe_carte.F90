@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -206,7 +206,7 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
         if (nomgd .eq. 'CAMA_R' .and. nocmp .eq. 'C') cycle
         if (nomgd .eq. 'CACOQU_R' .and. nocmp .eq. 'KAPPA') cycle
         if (nomgd .eq. 'CACOQU_R' .and. nocmp .eq. 'CTOR') verif_coef_drz = ASTER_TRUE
-        if (nomgd .eq. 'CAORIE' .and. nocmp .eq. 'ALPHA') cycle
+        if (nomgd .eq. 'CAORIE_R' .and. nocmp .eq. 'ALPHA') cycle
         !
         if (nomgd .eq. 'CINFDI' .and. nocmp(1:3) .eq. 'REP') cycle
         if (nomgd .eq. 'CINFDI' .and. nocmp(1:3) .eq. 'SYM') cycle

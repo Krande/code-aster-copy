@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ PACCPLU = InputParameter(phys=PHY.DEPL_R, comment=""" Acceleration at end of cur
 PALPHAR = InputParameter(phys=PHY.NEUT_R, comment="""""")
 
 PANGREP = InputParameter(
-    phys=PHY.CAORIE,
+    phys=PHY.CAORIE_R,
     comment="""  PANGREP : ANGLES DEFINISSANT LE NOUVEAU REPERE
 """,
 )

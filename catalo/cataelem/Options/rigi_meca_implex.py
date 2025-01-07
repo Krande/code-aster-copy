@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import cataelem.Commons.attributes as AT
 PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  Informations for non-linear comportment """)
 
 PCAORIE = InputParameter(
-    phys=PHY.CAORIE,
+    phys=PHY.CAORIE_R,
     container="CARA!.CARORIEN",
     comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
 )

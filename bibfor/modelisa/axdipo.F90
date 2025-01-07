@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,9 +120,9 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !
     iasmax = zi(idesc+1)
 !
-!    DETERMINATION DES RANGS DES COMPOSANTES DE LA GRANDEUR <CAORIE>
+!    DETERMINATION DES RANGS DES COMPOSANTES DE LA GRANDEUR <CAORIE_R>
 !        <ALPHA>  <BETA>  <GAMMA>
-    kexnom = jexnom('&CATA.GD.NOMCMP', 'CAORIE')
+    kexnom = jexnom('&CATA.GD.NOMCMP', 'CAORIE_R')
     call jelira(kexnom, 'LONMAX', ncmpor)
     call jeveuo(kexnom, 'L', icaori)
     ialpha = 0
@@ -136,7 +136,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
         call utmess('F', 'MODELISA2_25')
     end if
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('NB_EC', 'CAORIE', 'GRANDEUR', repi=nbec)
+    call dismoi('NB_EC', 'CAORIE_R', 'GRANDEUR', repi=nbec)
 !
 !     EXTENSION DE LA CARTE D'ORIENTATION DES ELEMENTS : CREATION DE
 !     VECTEURS D'ADRESSES DES CARACTERISTIQUES POINTES PAR LE NUMERO

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ CCADISK = LocatedComponents(phys=PHY.CADISK, type="ELEM", components=("K[9]",))
 CCADISM = LocatedComponents(phys=PHY.CADISM, type="ELEM", components=("M[9]",))
 
 
-CCAORIE = LocatedComponents(phys=PHY.CAORIE, type="ELEM", components=("ALPHA", "BETA", "GAMMA"))
+CCAORIE = LocatedComponents(phys=PHY.CAORIE_R, type="ELEM", components=("ALPHA", "BETA", "GAMMA"))
 
 
 NDEPLAC = LocatedComponents(phys=PHY.DEPL_C, type="ELNO", components=("DX", "DY", "DZ"))

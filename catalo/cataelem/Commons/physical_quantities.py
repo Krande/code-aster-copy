@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -327,7 +327,7 @@ CAMA_R = PhysicalQuantity(
 )
 
 
-CAORIE = PhysicalQuantity(
+CAORIE_R = PhysicalQuantity(
     type="R",
     components=(
         "ALPHA",
@@ -355,7 +355,7 @@ CAORIE = PhysicalQuantity(
         "O_Y",
         "O_Z",
     ),
-    comment="""  CAORIE Type:R Orientation d'un segment en 3D. Angles nautiques
+    comment="""  CAORIE_R Type:R Orientation d'un segment en 3D. Angles nautiques
        ALPHA : 1er angle nautique pour la maille SEG2 (ou le 1er noeud
        d'une maille SEG3 ou SEG4)
        BETA : 2eme angle nautique pour la maille SEG2 (ou le 1er noeud

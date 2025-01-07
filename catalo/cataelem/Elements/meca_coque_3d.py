@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ CCACOQU = LocatedComponents(
     components=("EP", "ALPHA", "BETA", "KAPPA", "CTOR", "EXCENT", "INERTIE"),
 )
 
-CCAORIE = LocatedComponents(phys=PHY.CAORIE, type="ELEM", components=("ALPHA", "BETA", "REP"))
+CCAORIE = LocatedComponents(phys=PHY.CAORIE_R, type="ELEM", components=("ALPHA", "BETA", "REP"))
 
 NDEPLAC = LocatedComponents(
     phys=PHY.DEPL_C,
