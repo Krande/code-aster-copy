@@ -237,7 +237,7 @@ CCACABL = LocatedComponents(phys=PHY.CACABL_R, type="ELEM", components=("SECT", 
 CCAGNBA = LocatedComponents(phys=PHY.CAGNBA_R, type="ELEM", components=("A1",))
 
 CCAGNP1 = LocatedComponents(
-    phys=PHY.CAGNPO,
+    phys=PHY.CAGNPO_R,
     type="ELEM",
     components=("A1", "IY1", "IZ1", "AY1", "AZ1", "EY1", "EZ1", "JX1", "JG1", "IYR21", "IZR21"),
 )

@@ -37,7 +37,7 @@ CCAGEPO = LocatedComponents(phys=PHY.CAGEPO_R, type="ELEM", components=("R1", "E
 
 
 CCAGNPO = LocatedComponents(
-    phys=PHY.CAGNPO,
+    phys=PHY.CAGNPO_R,
     type="ELEM",
     components=(
         "A1",
@@ -70,7 +70,7 @@ CCAGNPO = LocatedComponents(
 
 
 CCAGNP2 = LocatedComponents(
-    phys=PHY.CAGNPO,
+    phys=PHY.CAGNPO_R,
     type="ELEM",
     components=(
         "A1",

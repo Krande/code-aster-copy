@@ -31,7 +31,7 @@ from cataelem.Options.options import OP
 
 
 CCAGNPO = LocatedComponents(
-    phys=PHY.CAGNPO,
+    phys=PHY.CAGNPO_R,
     type="ELEM",
     components=(
         "A1",

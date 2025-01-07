@@ -465,7 +465,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 203 format(/, 1p, 3x, a8, 1x, 4(1pd12.5, 1x), 2(/, 12x, 4(1pd12.5, 1x)), i6)
 !
 ! --- ALLOCATION DES CARTES
-    call alcart('G', cartpo, noma, 'CAGNPO')
+    call alcart('G', cartpo, noma, 'CAGNPO_R')
     call alcart('G', cartge, noma, 'CAGEPO_R')
     call jeveuo(tmpnpo, 'E', jdcpo)
     call jeveuo(tmpvpo, 'E', jdvpo)

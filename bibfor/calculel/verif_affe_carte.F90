@@ -195,7 +195,7 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
         ! E1) PESA_R / ROTA_R sont en général utilisés sans préciser les mailles
         if (nomgd .eq. 'PESA_R') cycle
         if (nomgd .eq. 'ROTA_R') cycle
-        if (nomgd .eq. 'CAGNPO') cycle
+        if (nomgd .eq. 'CAGNPO_R') cycle
         !
         ! E2) Valeurs fournies par le code d'AFFE_CHAR_MECA
         if (nomgd(1:5) .eq. 'FORC_' .and. nocmp .eq. 'REP') cycle

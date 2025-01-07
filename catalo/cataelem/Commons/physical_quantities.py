@@ -233,7 +233,7 @@ CAGNBA_R = PhysicalQuantity(
 )
 
 
-CAGNPO = PhysicalQuantity(
+CAGNPO_R = PhysicalQuantity(
     type="R",
     components=(
         "A1",
@@ -268,7 +268,7 @@ CAGNPO = PhysicalQuantity(
         "IZR22",
         "TVAR",
     ),
-    comment="""  CAGNPO Type:R Caracteristiques mecaniques d'une section de poutre
+    comment="""  CAGNPO_R Type:R Caracteristiques mecaniques d'une section de poutre
       A1 : aire de la section (noeud 1)
       IY1 : moment d'inertie principal par rapport a GZ (noeud 1)
       IZ1 : moment d'inertie principal par rapport a GY (noeud 1)
