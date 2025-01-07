@@ -75,10 +75,10 @@ CAARPO_R = PhysicalQuantity(
 )
 
 
-CACABL = PhysicalQuantity(
+CACABL_R = PhysicalQuantity(
     type="R",
     components=("SECT", "TENS"),
-    comment="""  CACABL  Type:R  Caracteristiques des cables
+    comment="""  CACABL_R  Type:R  Caracteristiques des cables
        SECT : section du cable
        TENS : tension initiale
 """,

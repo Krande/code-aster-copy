@@ -67,7 +67,7 @@ PCAARPO = InputParameter(
 )
 
 PCACABL = InputParameter(
-    phys=PHY.CACABL,
+    phys=PHY.CACABL_R,
     comment=""" CARACTERISTIQUES DES ELEMENTS DE CABLE
 """,
 )

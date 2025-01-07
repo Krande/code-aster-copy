@@ -106,7 +106,7 @@ module cara_elem_parameter_module
     integer, parameter :: ACE_CAR_DISCA = 4
 
 ! #define ACE_NB_CARTE  14
-!         '.CARCABLE', 'CACABL   ', 'CABLE     ',
+!         '.CARCABLE', 'CACABL_R ', 'CABLE     ',
 !         '.CARGENBA', 'CAGNBA   ', 'BARRE     ',
 !         '.CARMASSI', 'CAMA_R   ', 'MASSIF    ',
 !         '.CARCOQUE', 'CACOQU_R ', 'COQUE     ',

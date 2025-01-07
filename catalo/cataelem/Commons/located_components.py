@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -232,7 +232,7 @@ CCHCKPR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
 
-CCACABL = LocatedComponents(phys=PHY.CACABL, type="ELEM", components=("SECT", "TENS"))
+CCACABL = LocatedComponents(phys=PHY.CACABL_R, type="ELEM", components=("SECT", "TENS"))
 
 CCAGNBA = LocatedComponents(phys=PHY.CAGNBA, type="ELEM", components=("A1",))
 
