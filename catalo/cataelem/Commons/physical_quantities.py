@@ -144,10 +144,10 @@ CACOQU_F = PhysicalQuantity(
 )
 
 
-CADISA = PhysicalQuantity(
+CADISA_R = PhysicalQuantity(
     type="R",
     components=("A[144]",),
-    comment="""  CADISA  Type:R  Matrice d'amortissement des elements discrets
+    comment="""  CADISA_R  Type:R  Matrice d'amortissement des elements discrets
         A[144] : coefficients de la matrice d'amortissement
 """,
 )

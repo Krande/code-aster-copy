@@ -82,7 +82,7 @@ PCACOQU = InputParameter(
 """,
 )
 
-PCADISA = InputParameter(phys=PHY.CADISA, comment="""""")
+PCADISA = InputParameter(phys=PHY.CADISA_R, comment="""""")
 
 PCADISK = InputParameter(
     phys=PHY.CADISK,

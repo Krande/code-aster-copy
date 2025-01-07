@@ -98,7 +98,7 @@ module cara_elem_parameter_module
                                     '.CARDINFO ', 'CINFDI    ', 'DISCRET   ', &
                                     '.CARDISCK ', 'CADISK    ', 'DISCRET   ', &
                                     '.CARDISCM ', 'CADISM    ', 'DISCRET   ', &
-                                    '.CARDISCA ', 'CADISA    ', 'DISCRET   ']
+                                    '.CARDISCA ', 'CADISA_R  ', 'DISCRET   ']
 !
     integer, parameter :: ACE_CAR_DINFO = 1
     integer, parameter :: ACE_CAR_DISCK = 2

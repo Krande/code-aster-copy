@@ -30,7 +30,7 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-CCADISA = LocatedComponents(phys=PHY.CADISA, type="ELEM", components=("A[4]",))
+CCADISA = LocatedComponents(phys=PHY.CADISA_R, type="ELEM", components=("A[4]",))
 
 
 CCADISK = LocatedComponents(phys=PHY.CADISK, type="ELEM", components=("K[4]",))
