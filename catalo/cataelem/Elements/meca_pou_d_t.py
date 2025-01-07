@@ -34,7 +34,7 @@ CABSCUR = LocatedComponents(phys=PHY.ABSC_R, type="ELEM", components=("ABSC[2]",
 
 
 CCAARPO = LocatedComponents(
-    phys=PHY.CAARPO, type="ELEM", components=("C_FLEX_Y", "I_SIGM_Y", "C_FLEX_Z", "I_SIGM_Z")
+    phys=PHY.CAARPO_R, type="ELEM", components=("C_FLEX_Y", "I_SIGM_Y", "C_FLEX_Z", "I_SIGM_Z")
 )
 
 

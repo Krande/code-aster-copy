@@ -111,7 +111,7 @@ module cara_elem_parameter_module
 !         '.CARMASSI', 'CAMA_R   ', 'MASSIF    ',
 !         '.CARCOQUE', 'CACOQU_R ', 'COQUE     ',
 !         '.CARCOQUF', 'CACOQU_F ', 'COQUE    ',
-!         '.CARARCPO', 'CAARPO   ', 'POUTRE    ',
+!         '.CARARCPO', 'CAARPO_R ', 'POUTRE    ',
 !         '.CARGENPO', 'CAGNPO   ', 'POUTRE    ',
 !         '.CARGEOPO', 'CAGEPO   ', 'POUTRE    ',
 !         '.CARPOUFL', 'CAPOUF   ', 'POUTREFLUI',

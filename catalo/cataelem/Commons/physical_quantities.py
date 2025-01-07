@@ -59,10 +59,10 @@ ADRSJEVN = PhysicalQuantity(
 )
 
 
-CAARPO = PhysicalQuantity(
+CAARPO_R = PhysicalQuantity(
     type="R",
     components=("C_FLEX_Y", "I_SIGM_Y", "C_FLEX_Z", "I_SIGM_Z"),
-    comment="""  CAARPO  Type:R  Caracteristiques des poutres courbes
+    comment="""  CAARPO_R  Type:R  Caracteristiques des poutres courbes
         Coefficient de flexibilite anisotrope
             C_FLEX_Y : dans le plan (X,Y)
             C_FLEX_Z : dans le plan (X,Z)

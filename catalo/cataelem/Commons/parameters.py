@@ -58,7 +58,7 @@ PANGREP = InputParameter(
 PBORNPI = InputParameter(phys=PHY.PILO_R, comment="""""")
 
 PCAARPO = InputParameter(
-    phys=PHY.CAARPO,
+    phys=PHY.CAARPO_R,
     container="CARA!.CARARCPO",
     comment="""  PCAARPO : CARACTERISTIQUE DE COUDE (POUTRE),
            NECESSITE DE FOURNIR LE CONCEPT PRODUIT PAR AFFE_CARA_ELEM
