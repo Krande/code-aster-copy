@@ -115,7 +115,7 @@ PCAGEPO = InputParameter(
 )
 
 PCAGNBA = InputParameter(
-    phys=PHY.CAGNBA,
+    phys=PHY.CAGNBA_R,
     container="CARA!.CARGENBA",
     comment=""" CARACTERISTIQUES GEOMETRIQUES D UNE SECTION DE BARRE
   PCAGNBA : CARACTERISTIQUE DE BARRE,

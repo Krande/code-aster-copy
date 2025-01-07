@@ -224,10 +224,10 @@ CAGEPO_R = PhysicalQuantity(
 )
 
 
-CAGNBA = PhysicalQuantity(
+CAGNBA_R = PhysicalQuantity(
     type="R",
     components=("A1",),
-    comment="""  CAGNBA Type:R Caracteristiques geometriques d'une section de barre
+    comment="""  CAGNBA_R Type:R Caracteristiques geometriques d'une section de barre
        A1 : aire de la section transversale
 """,
 )

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -309,7 +309,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 222 format(3x, a8, 1x, 2(1pd12.5, 1x), i6)
 !
 !   ALLOCATION DE LA CARTE
-    call alcart('G', cartba, noma, 'CAGNBA')
+    call alcart('G', cartba, noma, 'CAGNBA_R')
     call jeveuo(tmpnba, 'E', jdcba)
     call jeveuo(tmpvba, 'E', jdvba)
     call jeveuo(tmpnbf, 'E', jdcbaf)

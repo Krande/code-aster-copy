@@ -234,7 +234,7 @@ CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"
 
 CCACABL = LocatedComponents(phys=PHY.CACABL_R, type="ELEM", components=("SECT", "TENS"))
 
-CCAGNBA = LocatedComponents(phys=PHY.CAGNBA, type="ELEM", components=("A1",))
+CCAGNBA = LocatedComponents(phys=PHY.CAGNBA_R, type="ELEM", components=("A1",))
 
 CCAGNP1 = LocatedComponents(
     phys=PHY.CAGNPO,
