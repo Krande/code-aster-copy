@@ -503,7 +503,7 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
     elif type_comb == "DPC":
         # neighbor modes (frequence close until 10%) will be combined by abs
         f0, r_r = freqs[0], R_mi[0]
-        l_abs_R_r = [r_r]
+        l_abs_R_r = [np.abs(r_r)]
         for i_freq in range(1, len(freqs)):
             freq = freqs[i_freq]
             r_r = R_mi[i_freq]
