@@ -162,10 +162,10 @@ CADISK_R = PhysicalQuantity(
 )
 
 
-CADISM = PhysicalQuantity(
+CADISM_R = PhysicalQuantity(
     type="R",
     components=("M[144]",),
-    comment="""  CADISM Type:R Matrice de masse des elements discrets 12 x 12
+    comment="""  CADISM_R Type:R Matrice de masse des elements discrets 12 x 12
                   (MODELISATION='DIS_XXXX')
        M[144] : coefficients de la matrice masse des elements
 

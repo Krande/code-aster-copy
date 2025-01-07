@@ -39,7 +39,7 @@ CCADISA = LocatedComponents(phys=PHY.CADISA_R, type="ELEM", components=("A[144]"
 CCADISK = LocatedComponents(phys=PHY.CADISK_R, type="ELEM", components=("K[144]",))
 
 
-CCADISM = LocatedComponents(phys=PHY.CADISM, type="ELEM", components=("M[144]",))
+CCADISM = LocatedComponents(phys=PHY.CADISM_R, type="ELEM", components=("M[144]",))
 
 
 CCAORIE = LocatedComponents(phys=PHY.CAORIE_R, type="ELEM", components=("ALPHA", "BETA", "GAMMA"))
