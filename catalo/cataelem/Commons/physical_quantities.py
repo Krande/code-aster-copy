@@ -397,10 +397,10 @@ CAORIE_R = PhysicalQuantity(
 )
 
 
-CAPOUF = PhysicalQuantity(
+CAPOUF_R = PhysicalQuantity(
     type="R",
     components=("B_T", "B_N", "B_TN", "A_FLUI", "A_CELL", "COEF_ECH"),
-    comment="""  CAPOUF Type:R Caracteristiques geometriques des elements poutre fluide
+    comment="""  CAPOUF_R Type:R Caracteristiques geometriques des elements poutre fluide
        B_T : terme correcteur transverse
        B_N : terme correcteur normal
        B_TN : terme correcteur couple

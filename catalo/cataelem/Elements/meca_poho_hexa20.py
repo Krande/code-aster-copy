@@ -65,7 +65,9 @@ CCAORIE = LocatedComponents(phys=PHY.CAORIE_R, type="ELEM", components=("ALPHA",
 
 
 CCAPOUF = LocatedComponents(
-    phys=PHY.CAPOUF, type="ELEM", components=("B_T", "B_N", "B_TN", "A_FLUI", "A_CELL", "COEF_ECH")
+    phys=PHY.CAPOUF_R,
+    type="ELEM",
+    components=("B_T", "B_N", "B_TN", "A_FLUI", "A_CELL", "COEF_ECH"),
 )
 
 

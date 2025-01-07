@@ -163,7 +163,7 @@ PCAMASS = InputParameter(
 """,
 )
 
-PCAPOUF = InputParameter(phys=PHY.CAPOUF, comment="""""")
+PCAPOUF = InputParameter(phys=PHY.CAPOUF_R, comment="""""")
 
 PCARCRI = InputParameter(phys=PHY.CARCRI, comment=""" Convergence criteria for behaviours""")
 
