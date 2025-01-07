@@ -31,7 +31,7 @@ from cataelem.Options.options import OP
 
 
 CCAGEPO = LocatedComponents(
-    phys=PHY.CAGEPO,
+    phys=PHY.CAGEPO_R,
     type="ELEM",
     components=(
         "HY1",

@@ -33,7 +33,7 @@ from cataelem.Options.options import OP
 CABSCUR = LocatedComponents(phys=PHY.ABSC_R, type="ELEM", components=("ABSC[2]",))
 
 
-CCAGEPO = LocatedComponents(phys=PHY.CAGEPO, type="ELEM", components=("R1", "EP1"))
+CCAGEPO = LocatedComponents(phys=PHY.CAGEPO_R, type="ELEM", components=("R1", "EP1"))
 
 
 CCAGNPO = LocatedComponents(

@@ -113,7 +113,7 @@ module cara_elem_parameter_module
 !         '.CARCOQUF', 'CACOQU_F ', 'COQUE    ',
 !         '.CARARCPO', 'CAARPO_R ', 'POUTRE    ',
 !         '.CARGENPO', 'CAGNPO   ', 'POUTRE    ',
-!         '.CARGEOPO', 'CAGEPO   ', 'POUTRE    ',
+!         '.CARGEOPO', 'CAGEPO_R ', 'POUTRE    ',
 !         '.CARPOUFL', 'CAPOUF   ', 'POUTREFLUI',
 !         '.CVENTCXF', 'VENTCX_F ', 'VENT     ',
 !         '.CARORIEN', 'CAORIE_R ', 'ORIENT   ',

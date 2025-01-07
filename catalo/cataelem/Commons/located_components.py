@@ -243,7 +243,7 @@ CCAGNP1 = LocatedComponents(
 )
 
 CCAGRPO = LocatedComponents(
-    phys=PHY.CAGEPO,
+    phys=PHY.CAGEPO_R,
     type="ELEM",
     components=(
         "HY1",

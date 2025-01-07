@@ -26,7 +26,7 @@ import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
 
-CCAGEPO = LocatedComponents(phys=PHY.CAGEPO, type="ELEM", components=("R1", "EP1"))
+CCAGEPO = LocatedComponents(phys=PHY.CAGEPO_R, type="ELEM", components=("R1", "EP1"))
 
 
 EDEFONC = LocatedComponents(

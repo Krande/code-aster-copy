@@ -188,7 +188,7 @@ CAFI_R = PhysicalQuantity(
 )
 
 
-CAGEPO = PhysicalQuantity(
+CAGEPO_R = PhysicalQuantity(
     type="R",
     components=(
         "HY1",
@@ -205,7 +205,7 @@ CAGEPO = PhysicalQuantity(
         "EP2",
         "TSEC",
     ),
-    comment="""  CAGEPO Type:R Caracteristiques geometriques des poutres a section
+    comment="""  CAGEPO_R Type:R Caracteristiques geometriques des poutres a section
     rectangulaire ou circulaire
        HY1 : dimension suivant GY du rectangle (noeud 1)
        HZ1 : dimension suivant GZ du rectangle (noeud 1)

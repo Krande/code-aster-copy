@@ -211,19 +211,19 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
         if (nomgd .eq. 'CINFDI' .and. nocmp(1:3) .eq. 'REP') cycle
         if (nomgd .eq. 'CINFDI' .and. nocmp(1:3) .eq. 'SYM') cycle
         !
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'TSEC') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'HY1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'HZ1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'HY2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'HZ2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EPY1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EPY2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EPZ1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EPZ2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EP1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EP2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'R1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'R2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'TSEC') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HY1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HZ1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HY2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HZ2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EPY1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EPY2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EPZ1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EPZ2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EP1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EP2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'R1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'R2') cycle
         !
         nbmapb = 0
         do kma = 1, nbma_verif

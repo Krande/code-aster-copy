@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -158,7 +158,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot, &
         call jeveuo(carsd//'.CESV', 'L', vr=cesv)
 !
         call jeveuo(carte//'.DESC', 'L', vi=desc)
-        call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO'), 'L', icmp)
+        call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO_R'), 'L', icmp)
 !
         call jelira(jexnum('&CATA.GD.NOMCMP', desc(1)), 'LONMAX', npmax)
 !
