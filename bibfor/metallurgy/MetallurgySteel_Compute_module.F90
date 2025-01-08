@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,18 +27,21 @@ module MetallurgySteel_Compute_module
     public :: metaSteelCheckFieldSize
     public :: metaSteelGetParameters, metaSteelTemperGetParameters, metaSteelTRCGetParameters
     public :: metaHardnessGetParameters
+    public :: metaSteelCooling, metaSteelHeating, metaSteelCheckPhases
 ! ==================================================================================================
     private
-#include "jeveux.h"
-#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
+#include "asterfort/Metallurgy_type.h"
+#include "asterfort/metaSteelGrainSize.h"
 #include "asterfort/rcadma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/smcarc.h"
 #include "asterfort/utmess.h"
-#include "asterfort/Metallurgy_type.h"
+#include "jeveux.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -515,6 +518,165 @@ contains
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! metaSteelCooling
+!
+! Effect of cooling on steel phases (austenite => ferrite)
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine metaSteelCooling(metaSteelPara, &
+                                temp0, temp1, temp2, &
+                                nbStep, deltaTime01, deltaTime12, &
+                                nbVari, nbPhase, nbHist, &
+                                metaPrev, metaCurr)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        integer, intent(in) :: nbStep
+        real(kind=8), intent(in) :: temp0, temp1, temp2
+        real(kind=8), intent(in) :: deltaTime01, deltaTime12
+        integer, intent(in) :: nbVari, nbPhase, nbHist
+        type(META_SteelParameters), intent(in) :: metaSteelPara
+        real(kind=8), intent(in) :: metaPrev(nbVari)
+        real(kind=8), intent(out) :: metaCurr(nbVari)
+! ----- Local
+        real(kind=8) :: tempStep, metaDumm(9), deltaTimeStep, tPoint
+        integer :: iStep
+!   ------------------------------------------------------------------------------------------------
+!
+        ASSERT(nbVari .eq. 9)
+        metaDumm = metaPrev
+        deltaTimeStep = deltaTime12/dble(nbStep)
 
+        do iStep = 1, nbStep
+            tempStep = temp1+(temp2-temp1)*dble(iStep-1)/dble(nbStep)
+            metaCurr(nbPhase+STEEL_TEMP) = temp1+ &
+                                           (dble(iStep)*(temp2-temp1))/dble(nbStep)
+            if (nbStep .eq. 1) then
+                tPoint = (temp1-temp0)/deltaTime01
+            else
+                tPoint = (metaCurr(nbPhase+STEEL_TEMP)-tempStep)/deltaTimeStep
+            end if
+            call smcarc(nbHist, nbPhase, &
+                        zr(metaSteelPara%trc%jv_ftrc), &
+                        zr(metaSteelPara%trc%jv_trc), &
+                        zr(metaSteelPara%trc%iadtrc+3), &
+                        zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadexp), &
+                        metaSteelPara, &
+                        tempStep, tPoint, deltaTime01, &
+                        metaDumm, metaCurr)
+            metaDumm(:) = metaCurr(:)
+        end do
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! metaSteelHeating
+!
+! Effect of heating on steel phases (austenite <= ferrite)
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine metaSteelHeating(metaSteelPara, &
+                                temp0, temp1, temp2, &
+                                nbStep, deltaTime01, deltaTime12, &
+                                zAustPrev, &
+                                dPrev, dCurr, zAustCurr)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        integer, intent(in) :: nbStep
+        real(kind=8), intent(in) :: temp0, temp1, temp2
+        real(kind=8), intent(in) :: deltaTime01, deltaTime12
+        real(kind=8), intent(inout) :: zAustPrev
+        type(META_SteelParameters), intent(in) :: metaSteelPara
+        real(kind=8), intent(in) :: dPrev
+        real(kind=8), intent(out) :: dCurr, zAustCurr
+! ----- Local
+        real(kind=8) :: ti1, ti2, deltaTimeStep, tPoint
+        real(kind=8) :: zeq1, zeq2, taux, coef_phase, dStep
+        integer :: iStep
+        real(kind=8), parameter :: un = 1.d0, zero = 0.d0
+        real(kind=8), parameter :: epsi = 1.d-10
+!   ------------------------------------------------------------------------------------------------
+!
+        deltaTimeStep = deltaTime12/dble(nbStep)
+
+        dStep = dPrev
+        do iStep = 1, nbStep
+            if (nbStep .eq. 1) then
+                ti1 = temp1
+                ti2 = temp2
+                tPoint = (temp1-temp0)/deltaTime01
+            else
+                ti1 = temp1+(temp2-temp1)*dble(iStep-1)/dble(nbStep)
+                ti2 = temp1+(temp2-temp1)*dble(iStep)/dble(nbStep)
+                tpoint = (ti2-ti1)/deltaTimeStep
+            end if
+            zeq1 = min((ti1-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
+            zeq2 = min((ti2-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
+            taux = metaSteelPara%taux_1+(metaSteelPara%taux_3-metaSteelPara%taux_1)*zeq1
+
+            if ((ti1 .lt. (metaSteelPara%ac1-epsi)) .or. (zAustPrev .ge. un)) then
+                zAustCurr = zAustPrev
+            else
+                if (zeq2 .ge. (un-epsi)) then
+                    tpoint = zero
+                end if
+                if (zAustPrev .gt. zeq1) then
+                    zAustCurr = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))
+                    zAustCurr = zAustCurr*exp(-deltaTimeStep/taux)
+                    zAustCurr = ((-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+ &
+                                 zeq2+zAustCurr-zeq1)* &
+                                (un-zAustPrev)/(un-zeq1)
+                    zAustCurr = zAustCurr+zAustPrev
+                else
+                    zAustCurr = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))-zeq1+zAustPrev
+                    zAustCurr = zAustCurr*exp(-deltaTimeStep/taux)
+                    zAustCurr = (-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+zeq2+zAustCurr
+                end if
+            end if
+
+! --------- Compute size of grain
+            coef_phase = 1.d0
+            if (abs(zAustCurr) .ge. epsi) then
+                coef_phase = (1.d0-(zAustCurr-zAustPrev)/zAustCurr)
+            end if
+            call metaSteelGrainSize(metaSteelPara, &
+                                    ti1, deltaTime01, deltaTime12, &
+                                    zAustCurr, coef_phase, &
+                                    dStep, dCurr)
+            if (metaSteelPara%l_grain_size .and. nbStep .gt. 1) then
+                zAustPrev = zAustCurr
+                dStep = dCurr
+            end if
+        end do
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! metaSteelCheckPhases
+!
+! Check domain of definition of phases
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine metaSteelCheckPhases(nbVari, metaCurr)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        integer, intent(in) :: nbVari
+        real(kind=8), intent(in) :: metaCurr(nbVari)
+! ----- Local
+        integer :: iPhase
+!   ------------------------------------------------------------------------------------------------
+!
+        ASSERT(nbVari .ge. PSTEEL_NB)
+        do iPhase = 1, PSTEEL_NB
+            if (metaCurr(iPhase) .lt. 0.d0 .or. metaCurr(iPhase) .gt. 1.d0) then
+                call utmess('F', 'META1_52', si=iPhase, sr=metaCurr(iPhase))
+            end if
+        end do
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
 !
 end module MetallurgySteel_Compute_module
