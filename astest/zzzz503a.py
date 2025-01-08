@@ -272,7 +272,7 @@ cells = sixx.getCells()
 cells = cells[(sixx._idx >= 0).sum(axis=1) != 0]
 test.assertTrue(np.all(cells == np.array(monMaillage.getCells("VOLUME"))))
 
-weight = coor.W.on_support_of(sixx)
+weight = coor.W.onSupportOf(sixx)
 integr = (sixx * weight).getValuesByCells().sum(axis=1)
 print(integr[cells])
 

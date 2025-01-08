@@ -23,12 +23,10 @@ Simple Fields defined on cells of elements
 ********************************************************************
 """
 
-import pickle
-from functools import wraps
-
 import numpy as np
 from libaster import SimpleFieldOnCellsReal
 
+# from ..Helpers.debugging import DebugArgs
 from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import force_list, injector, logger, no_new_attributes
 from ..Utilities import medcoupling as medc
@@ -47,41 +45,6 @@ class SFoCStateBuilder(InternalStateBuilder):
         """
         super().restore(field)
         field.build()
-
-
-class Debug:
-    """Debugging helper"""
-
-    raised = False
-
-    @classmethod
-    def error_trace(cls, method):
-        """decorator to show the args in case of error."""
-
-        @wraps(method)
-        def wrapper(inst, *args, **kwds):
-            """wrapper"""
-            try:
-                arg0 = inst.copy()
-                retvalue = method(inst, *args, **kwds)
-            except Exception:
-                if not cls.raised:
-                    with open("/tmp/debug_trace.pick", "wb") as pick:
-                        print(f"# --- trace arguments of '{method.__name__}':")
-                        print(repr(arg0))
-                        pickle.dump(arg0, pick)
-                        print("--- changed ---")
-                        print(repr(inst))
-                        pickle.dump(inst, pick)
-                        for obj in args:
-                            if isinstance(obj, (ComponentOnCells, np.ndarray)):
-                                pickle.dump(obj, pick)
-                            print(repr(obj))
-                cls.raised = True
-                raise
-            return retvalue
-
-        return wrapper
 
 
 class ComponentOnCells:
@@ -123,10 +86,10 @@ class ComponentOnCells:
             # number of cells in this object before restriction
             self._nbcells = indexes.shape[0]
             # number of values stored for the component before any restriction
-            self._nbval = None  # = indexes.max() + 1 may be greater, assigned with values.
+            self._nbval = None
             self._sign = None
 
-        def set_values_shape(self, shape):
+        def setValuesShape(self, shape):
             """Register shape of values if needed."""
             if self._nbval is None:
                 self._nbval = shape[0]
@@ -157,7 +120,7 @@ class ComponentOnCells:
                 )
             uniq, numb = np.unique(self._discr, return_counts=True, axis=0)
             nbv = (uniq.prod(axis=1) * numb).sum()
-            discr = [f"{n} x {tuple(d)}" for n, d in zip(numb, uniq)]
+            discr = [f"{n}x{tuple(d)}" for n, d in zip(numb, uniq)]
             lines.append(
                 f"- {len(self._discr)} points/subpoints defs: "
                 + ", ".join(discr)
@@ -237,7 +200,7 @@ class ComponentOnCells:
         """Initialize content."""
         self._values = values
         self._descr = description
-        self._descr.set_values_shape(values.shape)
+        self._descr.setValuesShape(values.shape)
         self._sign = None
 
     @property
@@ -276,6 +239,15 @@ class ComponentOnCells:
             return np.arange(self._descr._nbcells)
         return self._cells
 
+    def getNumberOfCells(self):
+        """Return the total number of cells (even if the current component is
+        currently restricted).
+
+        Returns:
+            int: Number of cells the field is defined on.
+        """
+        return self._descr._nbcells
+
     @property
     def size(self):
         """Return the size of the vector."""
@@ -310,6 +282,10 @@ class ComponentOnCells:
         """Apply a function of the values."""
         if not isinstance(func, np.ufunc):
             func = np.vectorize(func)
+        return ComponentOnCells(func(self._values), self._descr.copy())
+
+    def applyOnArray(self, func):
+        """Apply a function of the array of values."""
         return ComponentOnCells(func(self._values), self._descr.copy())
 
     def __iadd__(self, other):
@@ -427,7 +403,7 @@ class ComponentOnCells:
         other = self._check_consistency(other)
         self._values = np.maximum(self._values, other)
 
-    # @Debug.error_trace
+    # @DebugArgs.error_trace
     def restrict(self, cells_ids):
         """Restrict the component on given cells.
 
@@ -440,7 +416,34 @@ class ComponentOnCells:
         idx = self._descr.restrict(cells_ids)
         self._values = self._values[idx]
 
-    # @Debug.error_trace
+    def filterByValues(self, mini, maxi, strict_mini=True, strict_maxi=True):
+        """Returns the cells ids where values are in the interval.
+
+        Args:
+            mini (float): minimum value.
+            maxi (float): maximum value.
+            strict_mini (bool): Use strict comparison (the default) for the minimum.
+            strict_maxi (bool): Use strict comparison (the default) for the maximum.
+
+        Returns:
+            list[int]: Cells ids.
+        """
+        assert self._cells is None, "must be expanded first"
+        if strict_mini:
+            filter = mini < self._values
+        else:
+            filter = mini <= self._values
+        if strict_maxi:
+            filter &= self._values < maxi
+        else:
+            filter &= self._values <= maxi
+
+        idx_filt = filter[self._idx]
+        cells_filt = idx_filt.max(axis=1)
+        cells = list(np.arange(self.getNumberOfCells(), dtype=int)[cells_filt])
+        return cells
+
+    # @DebugArgs.error_trace
     def expand(self):
         """Expand the component by adding 0. where it not defined.
 
@@ -451,8 +454,8 @@ class ComponentOnCells:
             return self.copy()
         return ComponentOnCells(*self._descr.expand(self._values))
 
-    # @Debug.error_trace
-    def on_support_of(self, other, strict=False):
+    # @DebugArgs.error_trace
+    def onSupportOf(self, other, strict=False):
         """Move the component onto the same support of another.
 
         NB: The both components must be defined on the same cells.
@@ -467,15 +470,15 @@ class ComponentOnCells:
             *ComponentOnCells*: A new component.
         """
         if self._cells is None and other._cells is not None:
-            changed = self.on_support_of(other.expand())
+            changed = self.onSupportOf(other.expand())
             changed.restrict(other._cells)
             return changed
         if self._cells is not None and other._cells is None:
-            return self.expand().on_support_of(other)
+            return self.expand().onSupportOf(other)
         if self._cells is not None:
             if np.any(self._cells != other._cells):
                 raise IndexError("components must be defined on the same cells")
-            return self.expand().on_support_of(other)
+            return self.expand().onSupportOf(other)
         assert self._descr._nbcells == other._descr._nbcells, (
             self._descr._nbcells == other._descr._nbcells
         )

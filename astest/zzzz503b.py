@@ -90,7 +90,7 @@ chcoor = CALC_CHAM_ELEM(MODELE=MO, CARA_ELEM=COQUE, OPTION="COOR_ELGA")
 coor = chcoor.toSimpleFieldOnCells()
 
 weight = coor.W
-weight_sigm = weight.on_support_of(s1)
+weight_sigm = weight.onSupportOf(s1)
 # \int { PRIN_1 } : sous-points ?
 s1xw_c = s1 * weight_sigm
 # nbcells = len(s1xw_c.getCells())
