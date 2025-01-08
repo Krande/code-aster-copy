@@ -23,14 +23,23 @@ Simple Fields defined on cells of elements
 ********************************************************************
 """
 
+try:
+    import matplotlib.cm as cm
+    import matplotlib.pyplot as plt
+
+    HAS_MATPLOTLIB = True
+except ImportError:
+    HAS_MATPLOTLIB = False
+
+import warnings
+
 import numpy as np
 from libaster import SimpleFieldOnCellsReal
 
-# from ..Helpers.debugging import DebugArgs
+from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import force_list, injector, logger, no_new_attributes
 from ..Utilities import medcoupling as medc
-from ..Objects.Serialization import InternalStateBuilder
 
 
 class SFoCStateBuilder(InternalStateBuilder):
@@ -62,7 +71,8 @@ class ComponentOnCells:
     """
 
     # WARNING: _idx must be used to access values only on a not restricted component.
-    # FIXME '_mask' toujours True, '_discr' non utilisé
+    # FIXME '_mask' toujours True
+    # '_discr' is not used but interesting in `Description.__repr__`.
 
     class Description:
         """Internal description of a component.
@@ -88,6 +98,20 @@ class ComponentOnCells:
             # number of values stored for the component before any restriction
             self._nbval = None
             self._sign = None
+
+        def __sizeof__(self):
+            """Return the size of the data in bytes."""
+            # for sys.getsizeof(obj)
+            return self.sizeof()
+
+        def sizeof(self):
+            """Return the size of the data in bytes."""
+            return (
+                self._idx.nbytes
+                + self._discr.nbytes
+                + self._mask.nbytes
+                + len(list(self._cells if self._cells is not None else [])) * 8
+            )
 
         def setValuesShape(self, shape):
             """Register shape of values if needed."""
@@ -215,6 +239,15 @@ class ComponentOnCells:
         """Return a copy of the component."""
         return __class__(self._values.copy(), self._descr.copy())
 
+    def __sizeof__(self):
+        """Return the size of the data in bytes."""
+        # for sys.getsizeof(obj)
+        return self.sizeof()
+
+    def sizeof(self):
+        """Return the size of the data in bytes."""
+        return self._values.nbytes + self._descr.sizeof()
+
     def getValues(self):
         """Returns the vector values."""
         return self._values
@@ -262,6 +295,25 @@ class ComponentOnCells:
         lines.insert(0, f"- {self.size} values in vector:")
         lines.append(repr(self._descr))
         return "\n".join(lines)
+
+    def plot_descr(self, filename=None):
+        """Plot the description of values by cells.
+
+        A matplotlib GUI backend should be enabled, for example with:
+        ``matplotlib.use("TkAgg")``.
+
+        Args:
+            filename (str|Path, optional): Save the image to this file if provided.
+                Otherwise plot interactively the figure.
+        """
+        if not HAS_MATPLOTLIB:
+            warnings.warn("matplotlib is not available")
+            return
+        plt.imshow(self._idx < 0, interpolation="nearest", cmap=cm.Greys_r, aspect="auto")
+        if filename:
+            plt.savefig(filename)
+        else:
+            plt.show()
 
     @property
     def sign(self):
@@ -420,6 +472,7 @@ class ComponentOnCells:
             self.init_from(exp._values, exp._descr)
         idx = self._descr.restrict(cells_ids)
         self._values = self._values[idx]
+        self._sign = None
 
     def filterByValues(self, mini, maxi, strict_mini=True, strict_maxi=True):
         """Returns the cells ids where at least one value of the cell is in
@@ -502,6 +555,7 @@ class ComponentOnCells:
         prol = np.append(self._values, [0.0])
         new._values[idx] = np.take(prol, keep)
         new._descr._idx = other._idx.copy()
+        self._sign = None
         return new
 
 

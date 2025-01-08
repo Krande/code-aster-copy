@@ -20,6 +20,7 @@
 import os
 import time
 from contextlib import contextmanager
+from pathlib import Path
 
 import numpy as np
 
@@ -211,24 +212,11 @@ cells = vz.filterByValues(maxi, 1.0, strict_mini=False)
 expect = (2**refinement + (2**refinement - 1)) * 2**refinement  # last term for x direction
 test.assertEqual(len(cells), expect, msg="number filtered cells")
 
+# check for description plot
+dest = Path("weight_descr.png")
+weight.plot_descr(dest)
+test.assertTrue(dest.exists(), msg="figure png")
+
 test.printSummary()
-
-"""
-# Example to visualize values by cells:
-
-import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-
-matplotlib.use("TkAgg")
-
-
-def plot_idx(cmp):
-    matr = cmp._idx < 0
-    plt.imshow(matr, interpolation="nearest", cmap=cm.Greys_r, aspect="auto")
-    plt.show()
-
-plot_idx(weight)
-"""
 
 CA.close()
