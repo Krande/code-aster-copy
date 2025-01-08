@@ -48,7 +48,7 @@ class SFoCStateBuilder(InternalStateBuilder):
 
 
 class ComponentOnCells:
-    """Represents the values of a component of a field on cells.
+    r"""Represents the values of a component of a field on cells.
 
     The input arrays will not be modified. The caller should not change them
     during the existence of the *ComponentOnCells* object.
@@ -56,44 +56,70 @@ class ComponentOnCells:
     Args:
         values (ndarray[float]): Values of the component,
             dimension \Sum_i(nbcells_i * nbval_i).
-        mask (ndarray[bool]): Indicator that tells a value exist, same dimension.
-        indexes (ndarray[int]): Indexes in *values* by cells and points on cells.
-        discr (ndarray[int]): Local dicretization: number of points and subpoints
-            by cell.
+        descr (*Description*): Description of the component.
     """
+
+    class Description:
+        """Internal description of a component.
+
+        Args:
+            indexes (ndarray[int]): Indexes in *values* by cells and points on cells.
+            discr (ndarray[int]): Local dicretization: number of points and subpoints
+                by cell.
+            mask (ndarray[bool]): Indicator that tells a value exist, same dimension.
+        """
+
+        _idx = _mask = _discr = _cells = _nbcells = _nbval = None
+        __setattr__ = no_new_attributes(object.__setattr__)
+
+        def __init__(self, indexes, discr, mask):
+            self._idx = indexes
+            self._discr = discr
+            self._mask = mask
+            self._cells = None
+            # number of cells in this object before restriction
+            self._nbcells = indexes.shape[0]
+            # number of values stored for the component without restriction
+            self._nbval = None
+
+        def copy(self):
+            new = __class__(self._idx, self._discr, self._mask)
+            new._cells = self._cells
+            new._nbcells = self._nbcells
+            new._nbval = self._nbval
+            return new
 
     # WARNING: _idx must be used to access values only a not restricted component.
     # FIXME '_mask' toujours True ?
 
-    _values = _mask = _idx = _discr = _cells = _nbcells = _ntot = _sign = None
+    _values = _descr = _sign = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, values, mask, indexes, discr):
-        self.init_from(values, mask, indexes, discr)
+    def __init__(self, values, description: Description):
+        self.init_from(values, description)
 
-    def init_from(self, values, mask, indexes, discr):
+    def init_from(self, values, description: Description):
         """Initialize content."""
         self._values = values
-        self._mask = mask
-        self._idx = indexes
-        self._discr = discr
-        self._cells = None
-        # number of cells in this object after restriction
-        self._nbcells = indexes.shape[0]
-        # number of values stored for the component without restriction
-        self._ntot = len(values)
+        self._descr = description
+        self._descr._nbval = len(values)
         self._sign = None
 
     @property
-    def _topo(self):
-        return self._mask, self._idx, self._discr
+    def _idx(self):
+        return self._descr._idx
+
+    @property
+    def _discr(self):
+        return self._descr._discr
+
+    @property
+    def _cells(self):
+        return self._descr._cells
 
     def copy(self):
         """Return a copy of the component."""
-        obj = __class__(self._values, *self._topo)
-        obj._cells = self._cells
-        obj._ntot = self._ntot
-        return obj
+        return __class__(self._values, self._descr)
 
     def getValues(self):
         """Returns the vector values."""
@@ -116,7 +142,7 @@ class ComponentOnCells:
     def getCells(self):
         """Return the cells id."""
         if self._cells is None:
-            return np.arange(self._nbcells)
+            return np.arange(self._descr._nbcells)
         return self._cells
 
     def getDiscr(self):
@@ -153,11 +179,11 @@ class ComponentOnCells:
         """Apply a function of the values."""
         if not isinstance(func, np.ufunc):
             func = np.vectorize(func)
-        return ComponentOnCells(func(self._values), *self._topo)
+        return ComponentOnCells(func(self._values), self._descr)
 
     def __add__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(self._values + other, *self._topo)
+        return ComponentOnCells(self._values + other, self._descr)
 
     def __radd__(self, other):
         return self + other
@@ -166,11 +192,11 @@ class ComponentOnCells:
         return self + (-other)
 
     def __neg__(self):
-        return ComponentOnCells(-self._values, *self._topo)
+        return ComponentOnCells(-self._values, self._descr)
 
     def __mul__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(self._values * other, *self._topo)
+        return ComponentOnCells(self._values * other, self._descr)
 
     def __rmul__(self, other):
         return self * other
@@ -179,19 +205,19 @@ class ComponentOnCells:
         other = self._check_consistency(other)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(self._values / other, *self._topo)
+        return ComponentOnCells(self._values / other, self._descr)
 
     def __rtruediv__(self, other):
         if np.any(self._values == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(1.0 / self._values * other, *self._topo)
+        return ComponentOnCells(1.0 / self._values * other, self._descr)
 
     def __abs__(self):
-        return ComponentOnCells(np.abs(self._values), *self._topo)
+        return ComponentOnCells(np.abs(self._values), self._descr)
 
     def __pow__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(np.power(self._values, other), *self._topo)
+        return ComponentOnCells(np.power(self._values, other), self._descr)
 
     def min(self):
         return self._values.min()
@@ -209,15 +235,19 @@ class ComponentOnCells:
         """Restrict the component on given cells."""
         if self._cells is not None:
             exp = self.expand()
-            self.init_from(exp._values, exp._mask, exp._idx, exp._discr)
+            self.init_from(exp._values, exp._descr)
         cells_ids = force_list(cells_ids)
-        self._cells = np.array(cells_ids, dtype=int)
+        nbcells = self._descr._nbcells
+        nbval = self._descr._nbval
         idx = self._idx[cells_ids].ravel()
         idx = idx[idx >= 0]
         self._values = self._values[idx]
-        self._mask = self._mask[idx]
-        self._idx = self._idx[cells_ids]
-        self._discr = self._discr[cells_ids]
+        self._descr = ComponentOnCells.Description(
+            self._idx[cells_ids], self._discr[cells_ids], self._descr._mask[idx]
+        )
+        self._descr._nbcells = nbcells
+        self._descr._nbval = nbval
+        self._descr._cells = np.array(cells_ids, dtype=int)
 
     def expand(self):
         """Expand the component by adding 0. where it not defined.
@@ -227,17 +257,21 @@ class ComponentOnCells:
         """
         if self._cells is None:
             return self.copy()
+        nbcells = self._descr._nbcells
+        nbval = self._descr._nbval
         idx = self._idx
         idx = idx[idx >= 0]
-        new_values = np.zeros(self._ntot, dtype=float)
+        new_values = np.zeros(nbval, dtype=float)
         new_values[idx] = self._values
-        new_mask = np.zeros(self._ntot, dtype=bool)
-        new_mask[idx] = self._mask
-        new_idx = np.ones((self._nbcells, self._idx.shape[1]), dtype=int) * -1
+        new_mask = np.zeros(nbval, dtype=bool)
+        new_mask[idx] = self._descr._mask
+        new_idx = np.ones((nbcells, self._idx.shape[1]), dtype=int) * -1
         new_idx[self._cells] = self._idx
-        new_discr = np.zeros((self._nbcells, 2), dtype=int)
+        new_discr = np.zeros((nbcells, 2), dtype=int)
         new_discr[self._cells] = self._discr
-        return ComponentOnCells(new_values, new_mask, new_idx, new_discr)
+        return ComponentOnCells(
+            new_values, ComponentOnCells.Description(new_idx, new_discr, new_mask)
+        )
 
     def on_support_of(self, other, strict=False):
         """Move the component onto the same support of another.
@@ -274,7 +308,7 @@ class ComponentOnCells:
             raise IndexError("no value on all the support")
         prol = np.append(self._values, [0.0])
         new._values = np.take(prol, keep)
-        new._idx = other._idx
+        new._descr._idx = other._idx
         return new
 
 
@@ -317,9 +351,9 @@ class ExtendedSimpleFieldOnCellsReal:
         icmp = self._cache["cmp"].index(component)
         return ComponentOnCells(
             self._cache["val"][:, icmp],
-            self._cache["msk"][:, icmp],
-            self._cache["idx"],
-            self._cache["nbpt"],
+            ComponentOnCells.Description(
+                self._cache["idx"], self._cache["nbpt"], self._cache["msk"][:, icmp]
+            ),
         )
 
     def setComponentValues(self, component: str, cfvalue: ComponentOnCells):
