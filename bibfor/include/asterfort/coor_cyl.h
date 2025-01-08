@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 interface
     subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
                         p_g, invp_g, rg, tg, l_not_zero,&
-                        courb, dfdi, lcourb)
+                        lcourb, pfond)
         integer :: nnop
         integer :: ndim
         real(kind=8) :: ff(*)
@@ -34,7 +34,6 @@ interface
         real(kind=8) :: tg
         aster_logical :: l_not_zero
         aster_logical, optional :: lcourb
-        real(kind=8), optional :: dfdi(:,:)
-        real(kind=8), optional :: courb(3,3,3)
+        real(kind=8), optional :: pfond(3)
     end subroutine coor_cyl
 end interface

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -165,6 +165,9 @@ GLOC1_C = CALC_G(
 
 G1_C_LI = CALC_G(
     RESULTAT=CHAMDEPL,
+    FORM_FISS="ELLIPSE",
+    DEMI_GRAND_AXE=25,
+    DEMI_PETIT_AXE=6,
     OPTION=("G", "K"),
     THETA=_F(FISSURE=FISS1, NB_COUCHE_INF=2, NB_COUCHE_SUP=5, DISCRETISATION="LINEAIRE"),
 )
@@ -323,7 +326,7 @@ TEST_TABLE(
 TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     PRECISION=0.01,
-    VALE_CALC=4.06197e00,
+    VALE_CALC=4.058176305432571,
     VALE_REFE=4.06798003172,
     NOM_PARA="K1",
     TABLE=G1_C_LI,
@@ -333,7 +336,7 @@ TEST_TABLE(
 TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     PRECISION=0.01,
-    VALE_CALC=7.14982e-05,
+    VALE_CALC=7.136477801255575e-05,
     VALE_REFE=7.1710000000000003e-05,
     NOM_PARA="G_IRWIN",
     TABLE=G1_C_LI,
@@ -490,7 +493,7 @@ TEST_TABLE(
 TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     PRECISION=0.06,
-    VALE_CALC=1.81183075198144e-05,
+    VALE_CALC=1.6980128867653006e-05,
     VALE_REFE=1.721e-05,
     NOM_PARA="G_IRWIN",
     TABLE=G1_C_LI,
@@ -501,7 +504,7 @@ TEST_TABLE(
 TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     PRECISION=0.05,
-    VALE_CALC=2.044785536233065,
+    VALE_CALC=1.979517940598341,
     VALE_REFE=1.99287191298,
     NOM_PARA="K1",
     TABLE=G1_C_LI,

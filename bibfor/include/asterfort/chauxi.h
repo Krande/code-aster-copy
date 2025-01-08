@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 interface
     subroutine chauxi(ndim, mu, ka, r, t,&
                       invp, lcour, courb, du1dm, du2dm,&
-                      du3dm, u1l, u2l, u3l)
+                      du3dm, u1l, u2l, u3l, r_courb)
         integer :: ndim
         real(kind=8) :: mu
         real(kind=8) :: ka
@@ -38,5 +38,6 @@ interface
         real(kind=8) :: u1l(3)
         real(kind=8) :: u2l(3)
         real(kind=8) :: u3l(3)
+        real(kind=8), optional :: r_courb
     end subroutine chauxi
 end interface

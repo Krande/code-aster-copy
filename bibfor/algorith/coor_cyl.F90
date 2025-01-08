@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine coor_cyl(ndim, nnop, basloc, geom, ff, &
-                    p_g, invp_g, rg, tg, l_not_zero, &
-                    courb, dfdi, lcourb)
+                    p_g, invp_g, rg, tg, l_not_zero, lcourb, pfond)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -36,7 +35,7 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff, &
     real(kind=8) :: p_g(3, 3), invp_g(3, 3), rg, tg
     aster_logical :: l_not_zero
     aster_logical, optional :: lcourb
-    real(kind=8), optional :: courb(3, 3, 3), dfdi(:, :)
+    real(kind=8), optional :: pfond(3)
 !
 !
 !     BUT:  CALCUL DES COORDONNEES CYLINDRIQUES EN FOND DE FISSURE
@@ -71,6 +70,8 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff, &
     end do
 !
     call xbasgl(ndim, baslog, 1, p_g, invp_g)
+!
+    if (present(pfond)) pfond(1:3) = baslog(1:3)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   * SI ON DISPOSAIT DU PROJETE DU POINT DE GAUSS SUR LE FOND
