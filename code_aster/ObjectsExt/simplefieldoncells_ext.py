@@ -27,7 +27,9 @@ Simple Fields defined on cells of elements
 import numpy as np
 from libaster import SimpleFieldOnCellsReal
 
-from ..Utilities import injector, medcoupling as medc, ParaMEDMEM as PMM
+from ..Utilities import ParaMEDMEM as PMM
+from ..Utilities import force_list, injector, no_new_attributes
+from ..Utilities import medcoupling as medc
 from ..Objects.Serialization import InternalStateBuilder
 
 
@@ -45,12 +47,55 @@ class SFoCStateBuilder(InternalStateBuilder):
         field.build()
 
 
-class CFValue:
-    """Represents the values of a component of a field on cells."""
+class ComponentOnCells:
+    """Represents the values of a component of a field on cells.
 
-    def __init__(self, values, mask):
+    The input arrays will not be modified. The caller should not change them
+    during the existence of the *ComponentOnCells* object.
+
+    Args:
+        values (ndarray[float]): Values of the component,
+            dimension \Sum_i(nbcells_i * nbval_i).
+        mask (ndarray[bool]): Indicator that tells a value exist, same dimension.
+        indexes (ndarray[int]): Indexes in *values* by cells and points on cells.
+    """
+
+    # FIXME '_mask' toujours True ?
+
+    _values = _mask = _idx = _cells = _ntot = _nbcells = _sign = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self, values, mask, indexes):
+        self.init_from(values, mask, indexes)
+
+    def init_from(self, values, mask, indexes):
+        """Initialize content."""
         self._values = values
         self._mask = mask
+        self._idx = indexes
+        self._cells = None
+        self._nbcells = indexes.shape[0]
+        self._ntot = len(values)
+        self._sign = None
+
+    def getValues(self):
+        """Returns the vector values."""
+        return self._values
+
+    def setValues(self, values):
+        """Set the vector values.
+
+        Args:
+            values (ndarray[float]): New values.
+        """
+        assert values.shape == self._values.shape
+        self._values = values
+
+    def getCells(self):
+        """Return the cells id."""
+        if not self._cells:
+            return np.arange(self._nbcells)
+        return self._cells
 
     def size(self):
         """Return the size of the vector."""
@@ -62,10 +107,17 @@ class CFValue:
             lines = lines[:3] + ["..."] + lines[-3:]
         return "\n".join(lines)
 
+    @property
+    def sign(self):
+        """int: Attribute that holds the signature of the component."""
+        if self._sign is None:
+            self._sign = (self._idx.ravel() * np.arange(self._idx.size)).sum()
+        return self._sign
+
     def _check_consistency(self, other):
-        """Check consistency between the both masks. A float is returned as is."""
-        if isinstance(other, CFValue):
-            if not np.all(self._mask == other._mask):
+        """Check consistency between the both signatures. A float is returned as is."""
+        if isinstance(other, ComponentOnCells):
+            if self.sign != other.sign:
                 raise IndexError("inconsistent description")
             other = other._values
         return other
@@ -74,11 +126,11 @@ class CFValue:
         """Apply a function of the values."""
         if not isinstance(func, np.ufunc):
             func = np.vectorize(func)
-        return CFValue(func(self._values), self._mask.copy())
+        return ComponentOnCells(func(self._values), self._mask, self._idx)
 
     def __add__(self, other):
         other = self._check_consistency(other)
-        return CFValue(self._values + other, self._mask.copy())
+        return ComponentOnCells(self._values + other, self._mask, self._idx)
 
     def __radd__(self, other):
         return self + other
@@ -87,11 +139,11 @@ class CFValue:
         return self + (-other)
 
     def __neg__(self):
-        return CFValue(-self._values, self._mask.copy())
+        return ComponentOnCells(-self._values, self._mask, self._idx)
 
     def __mul__(self, other):
         other = self._check_consistency(other)
-        return CFValue(self._values * other, self._mask.copy())
+        return ComponentOnCells(self._values * other, self._mask, self._idx)
 
     def __rmul__(self, other):
         return self * other
@@ -100,19 +152,19 @@ class CFValue:
         other = self._check_consistency(other)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
-        return CFValue(self._values / other, self._mask.copy())
+        return ComponentOnCells(self._values / other, self._mask, self._idx)
 
     def __rtruediv__(self, other):
         if np.any(self._values == 0.0):
             raise ZeroDivisionError()
-        return CFValue(1.0 / self._values * other, self._mask.copy())
+        return ComponentOnCells(1.0 / self._values * other, self._mask, self._idx)
 
     def __abs__(self):
-        return CFValue(np.abs(self._values), self._mask.copy())
+        return ComponentOnCells(np.abs(self._values), self._mask, self._idx)
 
     def __pow__(self, other):
         other = self._check_consistency(other)
-        return CFValue(np.power(self._values, other), self._mask.copy())
+        return ComponentOnCells(np.power(self._values, other), self._mask, self._idx)
 
     def min(self):
         return self._values.min()
@@ -126,6 +178,33 @@ class CFValue:
     def mean(self):
         return self._values.mean()
 
+    def restrict(self, cells_ids):
+        """Restrict the component on given cells."""
+        if self._cells is not None:
+            exp = self.expand()
+            self.init_from(exp._values, exp._mask, exp._idx)
+        cells_ids = force_list(cells_ids)
+        self._cells = np.array(cells_ids, dtype=int)
+        idx = self._idx[cells_ids].ravel()
+        idx = idx[idx >= 0]
+        self._values = self._values[idx]
+        self._mask = self._mask[idx]
+        self._idx = self._idx[cells_ids]
+
+    def expand(self):
+        """Return a new object expanded by adding 0."""
+        if self._cells is None:
+            return ComponentOnCells(self._values, self._mask, self._idx)
+        idx = self._idx
+        idx = idx[idx >= 0]
+        new_values = np.zeros(self._ntot, dtype=float)
+        new_values[idx] = self._values
+        new_mask = np.zeros(self._ntot, dtype=bool)
+        new_mask[idx] = self._mask
+        new_idx = np.ones((self._nbcells, self._idx.shape[1]), dtype=int) * -1
+        new_idx[self._cells] = self._idx
+        return ComponentOnCells(new_values, new_mask, new_idx)
+
 
 @injector(SimpleFieldOnCellsReal)
 class ExtendedSimpleFieldOnCellsReal:
@@ -134,16 +213,49 @@ class ExtendedSimpleFieldOnCellsReal:
     @property
     def _cache(self):
         if self._ptr_cache is None:
-            self._ptr_cache = dict.fromkeys("vmc")
-        if self._ptr_cache["c"] is None:
-            self._ptr_cache["c"] = self.getComponents()
-        if self._ptr_cache["v"] is None:
-            self._ptr_cache["v"], self._ptr_cache["m"] = self.toNumpy()
+            self._ptr_cache = dict.fromkeys(["val", "msk", "cmp", "idx"])
+        if self._ptr_cache["cmp"] is None:
+            self._ptr_cache["cmp"] = self.getComponents()
+        if self._ptr_cache["val"] is None:
+            self._ptr_cache["val"], self._ptr_cache["msk"], addr = self.toNumpy()
+            nbcells = addr[0]
+            dims = addr[5:]
+            dims.shape = nbcells, 4
+            nbval = dims[:, 0] * dims[:, 1]  # nbval by cells (for one component)
+            start = np.append([0], nbval.cumsum()[:-1])
+            end = start + nbval
+            indexes = np.ones((nbcells, nbval.max()), dtype=int) * -1
+            for iv in range(nbcells):
+                indexes[iv, : nbval[iv]] = np.arange(start[iv], end[iv])
+            self._ptr_cache["idx"] = indexes
         return self._ptr_cache
 
     def __getattr__(self, component):
-        idx = self._cache["c"].index(component)
-        return CFValue(self._cache["v"][:, idx].copy(), self._cache["m"][:, idx].copy())
+        """Convenient shortcut to `getComponentValues()`."""
+        return self.getComponentValues(component)
+
+    def getComponentValues(self, component: str):
+        """Extract the values of a component.
+
+        Args:
+            component (str): Component name. Raises ValueError if the component
+                does not exist in the field.
+        """
+        icmp = self._cache["cmp"].index(component)
+        return ComponentOnCells(
+            self._cache["val"][:, icmp], self._cache["msk"][:, icmp], self._cache["idx"]
+        )
+
+    def setComponentValues(self, component: str, cfvalue: ComponentOnCells):
+        """Assign the values of a component.
+
+        Args:
+            component (str): Component name. Raises ValueError if the component
+                does not exist in the field.
+            cfvalue (ComponentOnCells): Previously extracted component.
+        """
+        icmp = self._cache["cmp"].index(component)
+        self._cache["val"][:, icmp] = cfvalue.expand().getValues()
 
     def getValues(self, copy=False):
         """
@@ -160,7 +272,7 @@ class ExtendedSimpleFieldOnCellsReal:
             ndarray (float): Field values.
             ndarray (bool): Mask for the field values.
         """
-        values, mask = self._cache["v"], self._cache["m"]
+        values, mask = self._cache["val"], self._cache["msk"]
         if copy:
             return values.copy(), mask.copy()
 
@@ -262,7 +374,7 @@ class ExtendedSimpleFieldOnCellsReal:
             msg = "toMEDCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
             raise TypeError(msg.format(type(medmesh).__name__))
 
-        values, mask = self._cache["v"], self._cache["m"]
+        values, mask = self._cache["val"], self._cache["msk"]
 
         # Restrict field based on mask
         restricted_cells = np.where(np.any(mask, axis=1))[0]

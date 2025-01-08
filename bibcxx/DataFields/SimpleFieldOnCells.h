@@ -531,21 +531,26 @@ class SimpleFieldOnCells : public DataField {
     py::object toNumpy() {
         this->updateValuePointers();
 
-        PyObject *resu_tuple = PyTuple_New( 2 );
+        PyObject *resu_tuple = PyTuple_New( 3 );
 
         npy_intp dims[2] = { _values->size() / this->getNumberOfComponents(),
                              this->getNumberOfComponents() };
+        npy_intp dim1[1] = { _size->size() };
 
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );
         PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL, _allocated->getDataPtr() );
+        PyObject *size = PyArray_SimpleNewFromData( 1, dim1, NPY_LONG, _size->getDataPtr() );
         AS_ASSERT( values != NULL );
         AS_ASSERT( mask != NULL );
+        AS_ASSERT( size != NULL );
 
         PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
         PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
+        PyArray_CLEARFLAGS( (PyArrayObject *)size, NPY_ARRAY_OWNDATA );
         PyTuple_SetItem( resu_tuple, 0, values );
         PyTuple_SetItem( resu_tuple, 1, mask );
+        PyTuple_SetItem( resu_tuple, 2, size );
 
         py::object tuple = py::reinterpret_steal< py::object >( resu_tuple );
         tuple.inc_ref();
