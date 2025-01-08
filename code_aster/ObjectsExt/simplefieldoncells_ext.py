@@ -90,6 +90,8 @@ class ComponentOnCells:
     The input arrays will not be modified. The caller should not change them
     during the existence of the *ComponentOnCells* object.
 
+    Use *in place* operators (`+=`, `*=`...) when possible for performance reasons.
+
     Args:
         values (ndarray[float]): Values of the component,
             dimension \Sum_i(nbcells_i * nbval_i).
@@ -109,7 +111,7 @@ class ComponentOnCells:
             mask (ndarray[bool]): Indicator that tells a value exist, same dimension.
         """
 
-        _parent = _idx = _mask = _discr = _cells = _nbcells = _nbval = None
+        _parent = _idx = _mask = _discr = _cells = _nbcells = _nbval = _sign = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         def __init__(self, parent, indexes, discr, mask):
@@ -122,11 +124,19 @@ class ComponentOnCells:
             self._nbcells = indexes.shape[0]
             # number of values stored for the component before any restriction
             self._nbval = None  # = indexes.max() + 1 may be greater, assigned with values.
+            self._sign = None
 
         def set_values_shape(self, shape):
             """Register shape of values if needed."""
             if self._nbval is None:
                 self._nbval = shape[0]
+
+        @property
+        def sign(self):
+            """int: Attribute that holds the signature of the description."""
+            if self._sign is None:
+                self._sign = (self._idx.ravel() * np.arange(self._idx.size)).sum()
+            return self._sign
 
         def __repr__(self):
             idx = self._idx[self._idx >= 0]
@@ -170,6 +180,7 @@ class ComponentOnCells:
             new._cells = None if self._cells is None else self._cells.copy()
             new._nbcells = self._nbcells
             new._nbval = self._nbval
+            new._sign = self._sign
             return new
 
         def restrict(self, cells_ids):
@@ -190,6 +201,7 @@ class ComponentOnCells:
             self._discr = self._discr[cells_ids]
             self._mask = self._mask[idx]
             self._cells = np.array(cells_ids, dtype=int)
+            self._sign = None
             return idx
 
         def expand(self, values):
@@ -281,7 +293,7 @@ class ComponentOnCells:
     def sign(self):
         """int: Attribute that holds the signature of the component."""
         if self._sign is None:
-            self._sign = len(self._values)
+            self._sign = self._descr.sign + len(self._values)
         return self._sign
 
     def _check_consistency(self, other):
@@ -366,16 +378,54 @@ class ComponentOnCells:
         return ComponentOnCells(np.power(self._values, other), self._descr.copy())
 
     def min(self):
+        """Return the minimum value.
+
+        Returns:
+            float: minimum of the values.
+        """
         return self._values.min()
 
     def max(self):
+        """Return the maximum value.
+
+        Returns:
+            float: maximum of the values.
+        """
         return self._values.max()
 
     def sum(self):
+        """Return the sum of the values.
+
+        Returns:
+            float: sum of the values.
+        """
         return self._values.sum()
 
     def mean(self):
+        """Return the mean value.
+
+        Returns:
+            float: mean of the values.
+        """
         return self._values.mean()
+
+    def minimum(self, other):
+        """Compare the component with another one and keep the element-wise minima.
+
+        Args:
+            other (*ComponentOnCells*): Another component.
+        """
+        other = self._check_consistency(other)
+        self._values = np.minimum(self._values, other)
+
+    def maximum(self, other):
+        """Compare the component with another one and keep the element-wise maxima.
+
+        Args:
+            other (*ComponentOnCells*): Another component.
+        """
+        other = self._check_consistency(other)
+        self._values = np.maximum(self._values, other)
 
     # @Debug.error_trace
     def restrict(self, cells_ids):
