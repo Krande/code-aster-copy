@@ -430,13 +430,14 @@ def nrc_ten_percent_array(freqs):
     nbmode = len(freqs)
     H = np.zeros((nbmode, nbmode))
     # correlation coefficients for DSC rule
+    # using round() to invoid approximated values of frequencies
     for i in range(nbmode):
         for j in range(nbmode):
             if freqs[i] <= freqs[j] :
-                if freqs[j] <= 1.1*freqs[i]:
+                if freqs[j] <= round(1.1*freqs[i], 5):
                     H[i, j] = 1
             else:
-                if freqs[i] <= 1.1*freqs[j]:
+                if freqs[i] <= round(1.1*freqs[j], 5):
                     H[i, j] = 1
     # return
     return H
@@ -493,7 +494,7 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
         R_m2 = np.maximum(R_m2, 0)
     
     elif type_comb == "NRC_TEN_PERCENT" :  # Méthode dix pourcent (D) selon NRC
-        H = nrc_dpc_array(freqs)
+        H = nrc_ten_percent_array(freqs)
         H[np.diag_indices_from(H)] /= 2
         for i, r_i in enumerate(R_mi):
             for j, r_j in enumerate(R_mi[i:], i):
