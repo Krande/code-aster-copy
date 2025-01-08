@@ -221,6 +221,8 @@ class ComponentOnCells:
 
     def getValuesByCells(self):
         """Returns the values by cells, expanded by 0.0 where undefined."""
+        if self._cells is not None:
+            return self.expand().getValuesByCells()[self._cells]
         values = np.append(self._values, [0.0])
         return np.take(values, self._idx)
 
@@ -307,6 +309,9 @@ class ComponentOnCells:
 
     def __sub__(self, other):
         return self + (-other)
+
+    def __rsub__(self, other):
+        return -self + other
 
     def __neg__(self):
         return ComponentOnCells(-self._values, self._descr.copy())
@@ -403,7 +408,7 @@ class ComponentOnCells:
         other = self._check_consistency(other)
         self._values = np.maximum(self._values, other)
 
-    # @DebugArgs.error_trace
+    # @DebugArgs.pickle_on_error
     def restrict(self, cells_ids):
         """Restrict the component on given cells.
 
@@ -417,7 +422,8 @@ class ComponentOnCells:
         self._values = self._values[idx]
 
     def filterByValues(self, mini, maxi, strict_mini=True, strict_maxi=True):
-        """Returns the cells ids where values are in the interval.
+        """Returns the cells ids where at least one value of the cell is in
+        the interval.
 
         Args:
             mini (float): minimum value.
@@ -428,7 +434,9 @@ class ComponentOnCells:
         Returns:
             list[int]: Cells ids.
         """
-        assert self._cells is None, "must be expanded first"
+        if self._cells is not None:
+            cells = self.expand().filterByValues(mini, maxi, strict_mini, strict_maxi)
+            return list(set(self._cells).intersection(cells))
         if strict_mini:
             filter = mini < self._values
         else:
@@ -438,12 +446,13 @@ class ComponentOnCells:
         else:
             filter &= self._values <= maxi
 
+        filter = np.append(filter, [False])  # not defined (-1): not in interval
         idx_filt = filter[self._idx]
         cells_filt = idx_filt.max(axis=1)
         cells = list(np.arange(self.getNumberOfCells(), dtype=int)[cells_filt])
         return cells
 
-    # @DebugArgs.error_trace
+    # @DebugArgs.pickle_on_error
     def expand(self):
         """Expand the component by adding 0. where it not defined.
 
@@ -454,7 +463,7 @@ class ComponentOnCells:
             return self.copy()
         return ComponentOnCells(*self._descr.expand(self._values))
 
-    # @DebugArgs.error_trace
+    # @DebugArgs.pickle_on_error
     def onSupportOf(self, other, strict=False):
         """Move the component onto the same support of another.
 

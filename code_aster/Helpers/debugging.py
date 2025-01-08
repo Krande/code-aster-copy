@@ -44,6 +44,8 @@ import os
 import pickle
 from functools import wraps
 
+import numpy as np
+
 from ..Cata.Language.SyntaxUtils import force_list
 from ..Objects import DataStructure
 from ..Utilities import get_caller_context
@@ -265,10 +267,12 @@ class DebugArgs:
 
     #: bool: to be raised only once
     raised = False
+    #: name of the pickle file
+    filename = "debug_trace.pick"
 
     @classmethod
-    def error_trace(cls, method):
-        """decorator to save the args in case of error."""
+    def pickle_on_error(cls, method):
+        """Decorator to pickle the args in case of error."""
 
         @wraps(method)
         def wrapper(inst, *args, **kwds):
@@ -278,7 +282,8 @@ class DebugArgs:
                 retvalue = method(inst, *args, **kwds)
             except Exception:
                 if not cls.raised:
-                    with open("/tmp/debug_trace.pick", "wb") as pick:
+                    print(f"pickling traces into {cls.filename}")
+                    with open(cls.filename, "wb") as pick:
                         print(f"# --- trace arguments of '{method.__name__}':")
                         print(repr(arg0))
                         pickle.dump(arg0, pick)
@@ -286,11 +291,15 @@ class DebugArgs:
                         print(repr(inst))
                         pickle.dump(inst, pick)
                         for obj in args:
-                            if isinstance(obj, (ComponentOnCells, np.ndarray)):
-                                pickle.dump(obj, pick)
+                            pickle.dump(obj, pick)
                             print(repr(obj))
                 cls.raised = True
                 raise
             return retvalue
 
         return wrapper
+
+    @classmethod
+    def reset(cls):
+        """Reset state"""
+        cls.raised = False
