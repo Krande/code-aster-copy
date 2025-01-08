@@ -79,15 +79,60 @@ class ComponentOnCells:
             self._cells = None
             # number of cells in this object before restriction
             self._nbcells = indexes.shape[0]
-            # number of values stored for the component without restriction
-            self._nbval = None
+            # number of values stored for the component before any restriction
+            self._nbval = None  # = indexes.max() + 1 may be greater, assigned with values.
 
         def copy(self):
+            """Copy of the current description.
+
+            Returns:
+                *Decription*: copy of the current description.
+            """
             new = __class__(self._idx, self._discr, self._mask)
             new._cells = self._cells
             new._nbcells = self._nbcells
             new._nbval = self._nbval
             return new
+
+        def restrict(self, cells_ids):
+            """Restrict the description on given cells.
+
+            Args:
+                cells_ids (list[int]): sublist of the existing cells.
+
+            Returns:
+                ndarray[int]: Indexes restricted on the cells list.
+            """
+            if isinstance(cells_ids, int):
+                cells_ids = force_list(cells_ids)
+            idx = self._idx[cells_ids].ravel()
+            idx = idx[idx >= 0]
+            self._idx = self._idx[cells_ids]
+            self._discr = self._discr[cells_ids]
+            self._mask = self._mask[idx]
+            self._cells = np.array(cells_ids, dtype=int)
+            return idx
+
+        def expand(self, values):
+            """Expand the description to the initial shape.
+
+            Args:
+                values (ndarray[float]): values to be accordingly expanded.
+
+            Returns:
+                *Description*: expanded description.
+            """
+            idx = self._idx
+            idx = idx[idx >= 0]
+            new_values = np.zeros(self._nbval, dtype=float)
+            new_values[idx] = values
+            new_idx = np.ones((self._nbcells, self._idx.shape[1]), dtype=int) * -1
+            new_idx[self._cells] = self._idx
+            new_discr = np.zeros((self._nbcells, 2), dtype=int)
+            new_discr[self._cells] = self._discr
+            new_mask = np.zeros(self._nbval, dtype=bool)
+            new_mask[idx] = self._mask
+            return new_values, ComponentOnCells.Description(new_idx, new_discr, new_mask)
 
     # WARNING: _idx must be used to access values only a not restricted component.
     # FIXME '_mask' toujours True ?
@@ -108,10 +153,6 @@ class ComponentOnCells:
     @property
     def _idx(self):
         return self._descr._idx
-
-    @property
-    def _discr(self):
-        return self._descr._discr
 
     @property
     def _cells(self):
@@ -144,10 +185,6 @@ class ComponentOnCells:
         if self._cells is None:
             return np.arange(self._descr._nbcells)
         return self._cells
-
-    def getDiscr(self):
-        """Return the number of points and subpoints."""
-        return self._discr
 
     @property
     def size(self):
@@ -236,18 +273,8 @@ class ComponentOnCells:
         if self._cells is not None:
             exp = self.expand()
             self.init_from(exp._values, exp._descr)
-        cells_ids = force_list(cells_ids)
-        nbcells = self._descr._nbcells
-        nbval = self._descr._nbval
-        idx = self._idx[cells_ids].ravel()
-        idx = idx[idx >= 0]
+        idx = self._descr.restrict(cells_ids)
         self._values = self._values[idx]
-        self._descr = ComponentOnCells.Description(
-            self._idx[cells_ids], self._discr[cells_ids], self._descr._mask[idx]
-        )
-        self._descr._nbcells = nbcells
-        self._descr._nbval = nbval
-        self._descr._cells = np.array(cells_ids, dtype=int)
 
     def expand(self):
         """Expand the component by adding 0. where it not defined.
@@ -257,21 +284,7 @@ class ComponentOnCells:
         """
         if self._cells is None:
             return self.copy()
-        nbcells = self._descr._nbcells
-        nbval = self._descr._nbval
-        idx = self._idx
-        idx = idx[idx >= 0]
-        new_values = np.zeros(nbval, dtype=float)
-        new_values[idx] = self._values
-        new_mask = np.zeros(nbval, dtype=bool)
-        new_mask[idx] = self._descr._mask
-        new_idx = np.ones((nbcells, self._idx.shape[1]), dtype=int) * -1
-        new_idx[self._cells] = self._idx
-        new_discr = np.zeros((nbcells, 2), dtype=int)
-        new_discr[self._cells] = self._discr
-        return ComponentOnCells(
-            new_values, ComponentOnCells.Description(new_idx, new_discr, new_mask)
-        )
+        return ComponentOnCells(*self._descr.expand(self._values))
 
     def on_support_of(self, other, strict=False):
         """Move the component onto the same support of another.
