@@ -58,29 +58,51 @@ class ComponentOnCells:
             dimension \Sum_i(nbcells_i * nbval_i).
         mask (ndarray[bool]): Indicator that tells a value exist, same dimension.
         indexes (ndarray[int]): Indexes in *values* by cells and points on cells.
+        discr (ndarray[int]): Local dicretization: number of points and subpoints
+            by cell.
     """
 
+    # WARNING: _idx must be used to access values only a not restricted component.
     # FIXME '_mask' toujours True ?
 
-    _values = _mask = _idx = _cells = _ntot = _nbcells = _sign = None
+    _values = _mask = _idx = _discr = _cells = _nbcells = _ntot = _sign = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, values, mask, indexes):
-        self.init_from(values, mask, indexes)
+    def __init__(self, values, mask, indexes, discr):
+        self.init_from(values, mask, indexes, discr)
 
-    def init_from(self, values, mask, indexes):
+    def init_from(self, values, mask, indexes, discr):
         """Initialize content."""
         self._values = values
         self._mask = mask
         self._idx = indexes
+        self._discr = discr
         self._cells = None
+        # number of cells in this object after restriction
         self._nbcells = indexes.shape[0]
+        # number of values stored for the component without restriction
         self._ntot = len(values)
         self._sign = None
+
+    @property
+    def _topo(self):
+        return self._mask, self._idx, self._discr
+
+    def copy(self):
+        """Return a copy of the component."""
+        obj = __class__(self._values, *self._topo)
+        obj._cells = self._cells
+        obj._ntot = self._ntot
+        return obj
 
     def getValues(self):
         """Returns the vector values."""
         return self._values
+
+    def getValuesByCells(self):
+        """Returns the values by cells, expanded by 0.0 where undefined."""
+        values = np.append(self._values, [0.0])
+        return np.take(values, self._idx)
 
     def setValues(self, values):
         """Set the vector values.
@@ -93,10 +115,15 @@ class ComponentOnCells:
 
     def getCells(self):
         """Return the cells id."""
-        if not self._cells:
+        if self._cells is None:
             return np.arange(self._nbcells)
         return self._cells
 
+    def getDiscr(self):
+        """Return the number of points and subpoints."""
+        return self._discr
+
+    @property
     def size(self):
         """Return the size of the vector."""
         return len(self._values)
@@ -126,11 +153,11 @@ class ComponentOnCells:
         """Apply a function of the values."""
         if not isinstance(func, np.ufunc):
             func = np.vectorize(func)
-        return ComponentOnCells(func(self._values), self._mask, self._idx)
+        return ComponentOnCells(func(self._values), *self._topo)
 
     def __add__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(self._values + other, self._mask, self._idx)
+        return ComponentOnCells(self._values + other, *self._topo)
 
     def __radd__(self, other):
         return self + other
@@ -139,11 +166,11 @@ class ComponentOnCells:
         return self + (-other)
 
     def __neg__(self):
-        return ComponentOnCells(-self._values, self._mask, self._idx)
+        return ComponentOnCells(-self._values, *self._topo)
 
     def __mul__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(self._values * other, self._mask, self._idx)
+        return ComponentOnCells(self._values * other, *self._topo)
 
     def __rmul__(self, other):
         return self * other
@@ -152,19 +179,19 @@ class ComponentOnCells:
         other = self._check_consistency(other)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(self._values / other, self._mask, self._idx)
+        return ComponentOnCells(self._values / other, *self._topo)
 
     def __rtruediv__(self, other):
         if np.any(self._values == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(1.0 / self._values * other, self._mask, self._idx)
+        return ComponentOnCells(1.0 / self._values * other, *self._topo)
 
     def __abs__(self):
-        return ComponentOnCells(np.abs(self._values), self._mask, self._idx)
+        return ComponentOnCells(np.abs(self._values), *self._topo)
 
     def __pow__(self, other):
         other = self._check_consistency(other)
-        return ComponentOnCells(np.power(self._values, other), self._mask, self._idx)
+        return ComponentOnCells(np.power(self._values, other), *self._topo)
 
     def min(self):
         return self._values.min()
@@ -182,7 +209,7 @@ class ComponentOnCells:
         """Restrict the component on given cells."""
         if self._cells is not None:
             exp = self.expand()
-            self.init_from(exp._values, exp._mask, exp._idx)
+            self.init_from(exp._values, exp._mask, exp._idx, exp._discr)
         cells_ids = force_list(cells_ids)
         self._cells = np.array(cells_ids, dtype=int)
         idx = self._idx[cells_ids].ravel()
@@ -190,11 +217,16 @@ class ComponentOnCells:
         self._values = self._values[idx]
         self._mask = self._mask[idx]
         self._idx = self._idx[cells_ids]
+        self._discr = self._discr[cells_ids]
 
     def expand(self):
-        """Return a new object expanded by adding 0."""
+        """Expand the component by adding 0. where it not defined.
+
+        Returns:
+            *ComponentOnCells*: expanded component.
+        """
         if self._cells is None:
-            return ComponentOnCells(self._values, self._mask, self._idx)
+            return self.copy()
         idx = self._idx
         idx = idx[idx >= 0]
         new_values = np.zeros(self._ntot, dtype=float)
@@ -203,7 +235,47 @@ class ComponentOnCells:
         new_mask[idx] = self._mask
         new_idx = np.ones((self._nbcells, self._idx.shape[1]), dtype=int) * -1
         new_idx[self._cells] = self._idx
-        return ComponentOnCells(new_values, new_mask, new_idx)
+        new_discr = np.zeros((self._nbcells, 2), dtype=int)
+        new_discr[self._cells] = self._discr
+        return ComponentOnCells(new_values, new_mask, new_idx, new_discr)
+
+    def on_support_of(self, other, strict=False):
+        """Move the component onto the same support of another.
+
+        NB: The both components must be defined on the same cells.
+
+        Args:
+            other (*ComponentOnCells*): Use the support of this component.
+            strict (bool): If *True* it raises an *IndexError* exception if
+                the component is not defined on the support of `other`.
+                By default, it is *True* and the values are expanded with 0.0.
+
+        Returns:
+            *ComponentOnCells*: A new component.
+        """
+        if other._cells is not None and self._cells is None:
+            same = self.copy()
+            same.restrict(other._cells)
+            return same.on_support_of(other)
+        if self._cells is not None and other._cells is None:
+            other = other.copy()
+            other.restrict(self._cells)
+            return self.on_support_of(other)
+        if self._cells is not None:
+            if np.any(self._cells != other._cells):
+                raise IndexError("components must be defined on the same cells")
+            homo = self.expand().on_support_of(other.expand())
+            if self._cells is not None:
+                homo.restrict(self._cells)
+            return homo
+        new = other.copy()
+        keep = self._idx[other._idx >= 0]
+        if strict and np.any(keep < 0):
+            raise IndexError("no value on all the support")
+        prol = np.append(self._values, [0.0])
+        new._values = np.take(prol, keep)
+        new._idx = other._idx
+        return new
 
 
 @injector(SimpleFieldOnCellsReal)
@@ -213,7 +285,7 @@ class ExtendedSimpleFieldOnCellsReal:
     @property
     def _cache(self):
         if self._ptr_cache is None:
-            self._ptr_cache = dict.fromkeys(["val", "msk", "cmp", "idx"])
+            self._ptr_cache = dict.fromkeys(["val", "msk", "cmp", "idx", "nbpt"])
         if self._ptr_cache["cmp"] is None:
             self._ptr_cache["cmp"] = self.getComponents()
         if self._ptr_cache["val"] is None:
@@ -221,7 +293,8 @@ class ExtendedSimpleFieldOnCellsReal:
             nbcells = addr[0]
             dims = addr[5:]
             dims.shape = nbcells, 4
-            nbval = dims[:, 0] * dims[:, 1]  # nbval by cells (for one component)
+            self._ptr_cache["nbpt"] = dims[:, 0:2]  # number of points, subpoints
+            nbval = self._ptr_cache["nbpt"].prod(axis=1)  # nbval by cells (for one component)
             start = np.append([0], nbval.cumsum()[:-1])
             end = start + nbval
             indexes = np.ones((nbcells, nbval.max()), dtype=int) * -1
@@ -243,7 +316,10 @@ class ExtendedSimpleFieldOnCellsReal:
         """
         icmp = self._cache["cmp"].index(component)
         return ComponentOnCells(
-            self._cache["val"][:, icmp], self._cache["msk"][:, icmp], self._cache["idx"]
+            self._cache["val"][:, icmp],
+            self._cache["msk"][:, icmp],
+            self._cache["idx"],
+            self._cache["nbpt"],
         )
 
     def setComponentValues(self, component: str, cfvalue: ComponentOnCells):
