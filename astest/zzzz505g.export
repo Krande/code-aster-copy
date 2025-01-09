@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm zzzz505g.py D 1
+F comm zzzz505g_1.py D 1
 #F mmed sslx100a.mmed D 20
