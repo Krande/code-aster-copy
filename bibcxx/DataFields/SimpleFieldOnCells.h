@@ -529,6 +529,7 @@ class SimpleFieldOnCells : public DataField {
      * @brief Get values on cells holding components, with mask
      */
     py::object toNumpy() {
+        this->updateValuePointers();
 
         PyObject *resu_tuple = PyTuple_New( 2 );
 
