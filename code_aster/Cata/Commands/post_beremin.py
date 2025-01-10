@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,12 @@ from ..Language.Syntax import *
 
 def post_beremin_prod(self, SIGM_MAXI, **args):
     if args.get("__all__"):
-        return ([table_container], [table_container, resultat_sdaster])
+        return ([table_sdaster], [table_sdaster, evol_noli])
 
     if SIGM_MAXI is not None:
-        if SIGM_MAXI.is_typco():
-            return [table_container, resultat_sdaster]
+        self.type_sdprod(SIGM_MAXI, evol_noli)
 
-    return table_container
+    return table_sdaster
 
 
 POST_BEREMIN = MACRO(
@@ -87,5 +86,14 @@ POST_BEREMIN = MACRO(
     ),
     COEF_MULT=SIMP(
         statut="f", typ="R", defaut=1.0, fr=tr("Coefficient à renseigner selon u4.81.22")
+    ),
+    WEIBULL=FACT(
+        statut="o",
+        M=SIMP(statut="o", typ="R"),
+        VOLU_REFE=SIMP(statut="o", typ="R"),
+        SIGM_CNV=SIMP(statut="f", typ="R"),
+        SIGM_REFE=SIMP(statut="o", typ="R"),
+        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
+        SEUIL_EPSP_CUMU=SIMP(statut="f", typ="R", defaut=1.0e-6),
     ),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,23 +34,20 @@ Integral must be computed on the initial configuration
 
 _biblio : CR-T66-2017-132, Lorentz
 """
+from math import exp
+import os
 import numpy as np
+from libaster import EntityType
 
 from ..Cata.Syntax import _F
-from ..CodeCommands import (
-    CALC_TABLE,
-    CALC_CHAMP,
-    CREA_CHAMP,
-    CALC_CHAM_ELEM,
-    CREA_TABLE,
-    DEFI_GROUP,
-)
-from ..Messages import UTMESS
-from .Fracture.post_beremin_utils import get_beremin_properties, get_resu_from_deftype
-from ..Objects import NonLinearResult, ExternalVariableTraits, FieldOnCellsReal, Formula
+from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, DEFI_GROUP
+from ..Objects import ExternalVariableTraits, FieldOnCellsReal, NonLinearResult
+from ..Utilities import logger, no_new_attributes
+
+DEBUG = bool(os.environ.get("DEBUG_POST_BEREMIN", ""))
 
 
-def post_beremin_ops(self, **args):
+class PostBeremin:
     """
     Beremin post-processor
 
@@ -78,791 +75,446 @@ def post_beremin_ops(self, **args):
           Result of type ELGA (apply ElgaFieldToSurface filter in
           Paraview to see it)
     """
-    resupb = args.get("RESULTAT")
-    grmapb = args.get("GROUP_MA")
-    deformation = args.get("DEFORMATION")
-    numvs = {"vari": args.get("LIST_NUME_VARI")}
 
-    if deformation == "GDEF_LOG":
-        numvs.update({"sief": args.get("LIST_NUME_SIEF")})
+    # data
+    _result = _zone = _zone_ids = _stress_option = _strain_type = None
+    _intvar_idx = _stress_idx = None
+    _use_hist = _use_function = None
+    _coef_mult = None
+    _weib_params = None
+    # result to compute weibull stress
+    _reswb = _rsieq = _rout = None
+    _group_name = "__plast__"
+    __setattr__ = no_new_attributes(object.__setattr__)
 
-    data_resu = get_resu_from_deftype(resupb, grmapb, deformation, numvs)
+    def __init__(self, result: NonLinearResult, strain_type: str, stress_option: str) -> None:
+        """Initialization and definition of main arguments.
 
-    if len(tuple(elt[1] for elt in data_resu[1])) == 0:
-        lentable = len(resupb.getAccessParameters()["INST"])
-        liste_r = [0] * lentable
-        table = CREA_TABLE(
-            LISTE=(
-                _F(PARA="NUME_ORDRE", LISTE_I=resupb.getAccessParameters()["NUME_ORDRE"]),
-                _F(PARA="INST", LISTE_R=resupb.getAccessParameters()["INST"]),
-                _F(PARA="GROUP_MA", LISTE_K=[grmapb] * lentable),
-                _F(PARA="SIGMA_WEIBULL", LISTE_R=liste_r),
-                _F(PARA="SIGMA_WEIBULL**M", LISTE_R=liste_r),
-                _F(PARA="PROBA_WEIBULL", LISTE_R=liste_r),
-            )
-        )
+        Args:
+            result (*Result*): Result object of the calculation.
+            strain_type (str): Type of strain.
+            stress_option (str): Type of stress to be used or calculated.
+        """
+        self._result = result
+        assert stress_option in ("SIGM_ELGA", "SIGM_ELMOY"), f"unknown value: {stress_option}"
+        self._stress_option = stress_option
+        self._strain_type = strain_type
 
-    else:
-        table = compute_pb(self, resupb, grmapb, numvs["vari"], data_resu, **args)
+    def set_zone(self, group: str) -> None:
+        """Define the location where the calculation will be done.
 
-    return table
+        Args:
+            group (str): Mesh group of cells to be used.
+        """
+        self._zone = group
+        self._zone_ids = self._result.getMesh().getCells(group)
 
+    def set_indexes(self, intvar_idx: list[int] = None, stress_idx: list[int] = None) -> None:
+        """Define the indexes used to extract the relevant components depending
+        of the behaviour.
 
-def compute_pb(self, resupb, grmapb, numvi, data_resu, **args):
-    """
-    Core function of POST_BEREMIN
+        Args:
+            intvar_idx (list[int], optional): Indexes to access to EPSPEQ and
+                INDIPLAS internal variables.
+            stress_idx (list[int], optional): Indexes to extract log stresses
+                tensor components.
+        """
+        if intvar_idx:
+            self._intvar_idx = intvar_idx
+        if stress_idx:
+            assert len(stress_idx) in (4, 6), stress_idx
+            self._stress_idx = stress_idx
 
-    Arguments:
-        resupb (NonLinearResult): Resultat input of POST_BEREMIN
-        grmapb (str): Mesh cells group given in POST_BEREMIN
-        numvi (tuple): Indices of EPSPEQ and INDIPLAS
-        data_resu (tuple): (result to consider for Weibull stress,
-                            list of time steps (nume_ordre, time step) in plasticity only,
-                            list of values of maximum of plasticity, if strictly greater than 0)
+    def use_history(self, value: bool) -> None:
+        """Enable the use of history or just the current timestep.
 
-    Returns:
-        Table: Final table with Weibull stress and failure probability
-    """
-    resanpb = args.get("SIGM_MAXI")
+        Args:
+            value (bool): *True* to use the history since the beginning,
+              or *False* to use values on the current timestep.
+        """
+        self._use_hist = value
 
-    dwb = get_beremin_properties(resupb, grmapb)
+    def set_coef_mult(self, value: float = 1.0) -> None:
+        """Define the multiplicative factor to take symmetric into account.
 
-    mawbrest = make_plasticity_groups(data_resu, grmapb, numvi[0], dwb[grmapb]["SEUIL_EPSP_CUMU"])
+        Args:
+            value (float): Multiplicative factor (see documentation).
+        """
+        self._coef_mult = value
 
-    if args.get("FILTRE_SIGM") == "SIGM_ELGA":
+    def set_weibull_parameters(self, params):
+        """Define Weibull parameters.
 
-        rsieq = CALC_CHAMP(
-            RESULTAT=data_resu[0],
-            GROUP_MA="mgrplasfull",
-            INST=tuple(elt[1] for elt in data_resu[1]),
-            CRITERES="SIEQ_ELGA",
-        )
+        Args:
+            params (dict): Keywords for WEIBULL.
+        """
+        # FIXME may vary per groups on cells, but only one group for the moment
+        self._use_function = not isinstance(params["SIGM_REFE"], (int, float))
+        assert not self._use_function or "SIGM_CNV" in params, "SIGM_CNV is required!"
+        self._weib_params = params.copy()
 
-        (sigw, resimpr) = tps_maxsigm(
-            rsieq,
-            data_resu[1],
-            sig1plasac(data_resu[0], rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
-            resanpb,
-            dwb[grmapb]["M"],
-            args.get("HIST_MAXI"),
-        )
+    def setup_calc_result(self):
+        """Setup the result object to be used to compute the Beremin stress."""
+        if self._strain_type == "GDEF_LOG":
+            result = self._result
+            indexes = result.getIndexes()
+            # store VARI_ELGA + log stresses (from VARI_ELGA) as SIEF_ELGA
+            dim = result.getMesh().getDimension()
+            varn = [f"V{i}" for i in self._stress_idx]
+            cmps = ("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ")
+            if dim == 2:
+                cmps = ("SIXX", "SIYY", "SIZZ", "SIXY")
+            dconv = dict(zip(varn, cmps))
 
-    elif args.get("FILTRE_SIGM") == "SIGM_ELMOY":
+            rvga = self._reswb = NonLinearResult()
+            rvga.allocate(len(indexes))
+            rvga.userName = "rvga____"
 
-        (sigw, resimpr) = compute_sigm_elmoy(
-            data_resu, numvi, dwb, resupb, grmapb, resanpb, args.get("HIST_MAXI")
-        )
-
-    else:
-        assert False
-
-    if resanpb is not None:
-        self.register_result(resimpr, resanpb)
-
-    table = compute_beremin_integral(args.get("COEF_MULT"), sigw, dwb, grmapb, resupb)
-
-    itlist = [elt[0] for elt in data_resu[1]]
-
-    mawbrest = DEFI_GROUP(
-        reuse=mawbrest,
-        MAILLAGE=mawbrest,
-        DETR_GROUP_NO=_F(
-            NOM=tuple(
-                ["ngrmapb"]
-                + [f"vale_{iteration}" for iteration in itlist]
-                + [f"ngrplas_{iteration}" for iteration in itlist]
-            )
-        ),
-    )
-
-    mawbrest = DEFI_GROUP(
-        reuse=mawbrest,
-        MAILLAGE=mawbrest,
-        DETR_GROUP_MA=_F(
-            NOM=tuple(
-                [f"mgrplas_{iteration}" for iteration in itlist]
-                + [f"ngrplas_{iteration}" for iteration in itlist]
-                + ["mgrplasfull"]
-            )
-        ),
-    )
-
-    mawbrest.resetDependencies()
-
-    return table
-
-
-def compute_sigm_elmoy(data_resu, numvi, dwb, resupb, grmapb, resanpb, mtpb):
-    """
-    Compute POST_BEREMIN/SIGM_ELMOY
-
-    Arguments:
-        data_resu (tuple): (result to consider for Weibull stress,
-                            list of time steps (nume_ordre, time step) in plasticity only,
-                            list of values of maximum of plasticity, if strictly greater than 0)
-        numvi (tuple): Indices of EPSPEQ and INDIPLAS
-        dwb (dict): Beremin parameters
-        resupb (NonLinearResult): Resultat input of POST_BEREMIN
-        grmapb (str): Mesh cells group given in POST_BEREMIN
-        resanpb (NonLinearResult): Name of auxiliary result
-        mtpb (str): {"OUI", "NON"} Value of keyword HIST_MAXI
-
-    Returns:
-        (NonLinearResult, NonLinearResult): (
-            ELGA_DEPL_R filled by PRIN_3,
-            informative MED file: where the plasticity is active: maximum of major principal stress,
-                                            )
-    """
-    rmelmoy = CALC_CHAMP(
-        RESULTAT=data_resu[0],
-        GROUP_MA="mgrplasfull",
-        INST=tuple(elt[1] for elt in data_resu[1]),
-        CONTRAINTE="SIMY_ELGA",
-    )
-
-    relmoysief = NonLinearResult()
-    relmoysief.allocate(rmelmoy.getNumberOfIndexes())
-
-    for nume_inst in rmelmoy.getIndexes():
-        relmoysief.setField(rmelmoy.getField("SIMY_ELGA", nume_inst), "SIEF_ELGA", nume_inst)
-        for field in ("COMPORTEMENT", "VARI_ELGA"):
-            relmoysief.setField(data_resu[0].getField(field, nume_inst), field, nume_inst)
-            relmoysief.setModel(rmelmoy.getModel(nume_inst), nume_inst)
-            relmoysief.setTime(rmelmoy.getTime(nume_inst), nume_inst)
-
-    rsieq = CALC_CHAMP(
-        RESULTAT=relmoysief,
-        GROUP_MA="mgrplasfull",
-        INST=tuple(elt[1] for elt in data_resu[1]),
-        CRITERES="SIEQ_ELGA",
-    )
-
-    (sigw, resimpr) = tps_maxsigm(
-        rsieq,
-        data_resu[1],
-        sig1plasac(relmoysief, rsieq, numvi, dwb, resupb, grmapb, data_resu[1]),
-        resanpb,
-        dwb[grmapb]["M"],
-        mtpb,
-    )
-
-    return (sigw, resimpr)
-
-
-def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
-    """
-    Major principal stress
-
-    Arguments:
-        rsieq (NonLinearResult): SIEQ_ELGA field
-        nume_inst (int): Rank of instant
-        stress depends of temperature
-        dwb (dict): Beremin parameters
-        reswbrest (NonLinearResult): result restricted where plasticity is
-            greater than 0
-        grwb (str): name of mesh cells group given in POST_BEREMIN
-
-    Returns:
-        FieldOnCells: ELGA_DEPL_R filled by PRIN_3
-    """
-    modele = reswbrest.getModel()
-    if modele.getMesh().hasGroupOfCells(f"mgrplas_{nume_inst}"):
-
-        if "SIGM_CNV" not in dwb[grwb]:
-
-            sg1 = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
-            sg1.setValues(
-                (
-                    rsieq.getField("SIEQ_ELGA", nume_inst)
-                    .asPhysicalQuantity("DEPL_R", {"PRIN_3": "DX"})
-                    .toSimpleFieldOnCells()
-                )
-                .restrict(["DX"], [f"mgrplas_{nume_inst}"])
-                .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
-                .getValues()
-            )
-
+            for idx in indexes:
+                chvari = result.getField("VARI_ELGA", idx)
+                rvga.setField(chvari.asPhysicalQuantity("SIEF_R", dconv), "SIEF_ELGA", idx)
+                # FIXME rvga.setMaterialField(result.getMaterialField(idx), idx)
+                rvga.setField(result.getField("COMPORTEMENT", idx), "COMPORTEMENT", idx)
+                rvga.setTime(result.getTime(idx), idx)
         else:
+            self._reswb = self._result
 
-            sg1 = sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb)
+    def add_plast_group(self, idx):
+        """Add a temporary group where plastic strain exists.
 
-    else:
-        sg1 = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
-        sg1.setValues(0)
+        Args:
+            idx (int): Storage index to be extracted.
+        """
+        epseq, _ = self.get_internal_variables(idx)
+        cells = self.get_plast_cells(epseq, epseq.max())
+        mesh = self._result.getMesh()
+        mesh.setGroupOfCells(self._group_name, cells)
 
-    if "SIGM_SEUIL" in dwb[grwb]:
+    def get_plast_cells(self, epseq, epsmax):
+        """Return the cells ids where EPSPEQ is greater than a threshold.
 
-        def crit_sigm(sigma):
-            return max(sigma - dwb[grwb]["SIGM_SEUIL"], 0.0)
+        Args:
+            epseq (*ComponentOnCells*): EPSPEQ component (on all cells).
+            epsmax (float):
 
-        sg1 = sg1.transform(crit_sigm)
+        Returns:
+            list[int]: List of cells ids.
+        """
+        eps_thr = self._weib_params["SEUIL_EPSP_CUMU"]
+        mini = 0.0 if epsmax < eps_thr else eps_thr
+        cells = epseq.filterByValues(mini, epsmax, strict_maxi=False)
+        return list(set(cells).intersection(self._zone_ids))
 
-    return sg1
+    def get_internal_variables(self, idx):
+        """Return internal variables.
 
+        Args:
+            idx (int): storage index.
 
-def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
-    """
-    Major principal stress (WEIBULL_FO)
+        Returns:
+            tuple: *ComponentOnCells* objects for EPSPEQ and INDIPLAS.
+        """
+        v1 = f"V{self._intvar_idx[0]}"
+        v2 = f"V{self._intvar_idx[1]}"
+        chvari = self._result.getField("VARI_ELGA", idx)
+        chvari = chvari.toSimpleFieldOnCells()
+        epseq = chvari.getComponentValues(v1)
+        indip = chvari.getComponentValues(v2)
+        return epseq, indip
 
-    Arguments:
-        rsieq (NonLinearResult): SIEQ_ELGA field
-        nume_inst (int): Rank of instant
-        stress depends of temperature
-        dwb (dict): Beremin parameters
-        reswbrest (NonLinearResult): result restricted where plasticity is
-            greater than 0
-        grwb (str): name of mesh cells group given in POST_BEREMIN
+    def get_major_stress(self, idx):
+        """Return the major principal stress.
 
-    Returns:
-        FieldOnCells: ELGA_DEPL_R filled by PRIN_3
-    """
-    grmacalc = f"mgrplas_{nume_inst}"
-    modele = reswbrest.getModel()
+        Args:
+            idx (int): storage index.
 
-    chf = CREA_CHAMP(
-        AFFE=_F(NOM_CMP="X1", GROUP_MA=grmacalc, VALE_F=dwb[grwb]["SIGM_REFE"]),
-        TYPE_CHAM="NOEU_NEUT_F",
-        MODELE=modele,
-        OPERATION="AFFE",
-    )
+        Returns:
+            *ComponentOnCells*: Major principal stress.
+        """
+        if not self._rsieq:
+            self._rsieq = self.compute_sieq()
+        sieq = self._rsieq.getField("SIEQ_ELGA", idx)
+        sieq = sieq.toSimpleFieldOnCells()
+        return sieq.PRIN_3
 
-    for curiter in reswbrest.getMaterialField().getExtStateVariablesOnMeshEntities():
-        extvari = curiter[0]
-        nom_varc = ExternalVariableTraits.getExternVarTypeStr(extvari.getType())
-        if nom_varc == "TEMP":
-            inputfield = extvari.getField()
-            evolparam = extvari.getEvolutionParameter()
-
-            if inputfield:
-                chamchpar = inputfield
-            if evolparam:
-                chamchpar = evolparam.getTransientResult().getField("TEMP", nume_inst)
-
-    sgrefeno = CREA_CHAMP(
-        OPERATION="EVAL",
-        TYPE_CHAM="NOEU_NEUT_R",
-        CHAM_F=chf,
-        CHAM_PARA=CREA_CHAMP(
-            OPERATION="ASSE",
-            TYPE_CHAM="NOEU_TEMP_R",
-            MODELE=modele,
-            ASSE=_F(GROUP_MA=grmacalc, CHAM_GD=chamchpar, NOM_CMP="TEMP", NOM_CMP_RESU="TEMP"),
-        ),
-    )
-
-    chno = CREA_CHAMP(
-        OPERATION="ASSE",
-        TYPE_CHAM="NOEU_DEPL_R",
-        MODELE=modele,
-        ASSE=_F(GROUP_MA=grmacalc, CHAM_GD=sgrefeno, NOM_CMP="X1", NOM_CMP_RESU="DX"),
-    )
-
-    sgrefega = CREA_CHAMP(
-        TYPE_CHAM="ELGA_DEPL_R", OPERATION="DISC", MODELE=modele, PROL_ZERO="OUI", CHAM_GD=chno
-    )
-
-    sqsursgrefe = CREA_CHAMP(
-        OPERATION="ASSE",
-        TYPE_CHAM="ELGA_DEPL_R",
-        MODELE=modele,
-        PROL_ZERO="OUI",
-        ASSE=(
-            _F(
-                GROUP_MA=grmacalc,
-                CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
-                NOM_CMP="PRIN_3",
-                NOM_CMP_RESU="DX",
-            ),
-            _F(GROUP_MA=grmacalc, CHAM_GD=sgrefega, NOM_CMP="DX", NOM_CMP_RESU="DY"),
-        ),
-    )
-
-    rdivaux = NonLinearResult()
-    rdivaux.allocate(1)
-    rdivaux.setField(sqsursgrefe, "DEPL_ELGA", 0)
-    rdivaux.setModel(modele, 0)
-
-    formule = Formula()
-    formule.setExpression("DX/DY*sigm_cnv")
-    formule.setVariables(["DX", "DY"])
-    formule.setContext({"sigm_cnv": dwb[grwb]["SIGM_CNV"]})
-
-    rdiv1 = CALC_CHAMP(
-        RESULTAT=rdivaux,
-        GROUP_MA=grmacalc,
-        CHAM_UTIL=_F(NOM_CHAM="DEPL_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
-    )
-
-    return rdiv1.getField("UT01_ELGA", 0).asPhysicalQuantity("DEPL_R", {"X1": "DX"})
-
-
-def sig1plasac(resultat, rsieq, numvi, dwb, reswbrest, grmapb, l_instplas):
-    """
-    Major principal stress where the plasticity is active
-
-    Arguments:
-        resultat (NonLinearResult): Result to consider to compute Weibull
-            stress
-        rsieq (NonLinearResult): SIEQ_ELGA field
-        numvi (tuple): Indices of internal variables EPSPEQ and INDIPLAS
-        dwb (dict): Weibull parameters
-        reswbrest (NonLinearResult): Result where plasticity is strictly
-            positive
-        grmapb (str): Mesh cells group given in POST_BEREMIN
-        l_instplas (list): List of time steps (order, time step) where there is plasticity
-
-    Returns:
-        NonLinearResult: ELGA_DEPL_R filled by PRIN_3
-    """
-    modele = resultat.getModel()
-    if grmapb not in dwb:
-        UTMESS("F", "RUPTURE1_88", valk=(grmapb))
-
-    maxsig = NonLinearResult()
-    maxsig.allocate(rsieq.getNumberOfIndexes())
-    seuil = dwb[grmapb]["SEUIL_EPSP_CUMU"]
-    indice = 0
-    for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
-        inst = rsieq.getTime(nume_inst)
-
-        if inst in [elt[1] for elt in l_instplas]:
-
-            tronque = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
-            tronque.setValues(
-                [
-                    np.sign(max(_v1 - seuil, 0) * _v2)
-                    for (_v1, _v2) in zip(
-                        (
-                            resultat.getField("VARI_ELGA", nume_inst)
-                            .asPhysicalQuantity("DEPL_R", {f"V{numvi[0]}": "DX"})
-                            .toSimpleFieldOnCells()
-                        )
-                        .restrict(["DX"])
-                        .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
-                        .getValues(),
-                        (
-                            resultat.getField("VARI_ELGA", nume_inst)
-                            .asPhysicalQuantity("DEPL_R", {f"V{numvi[1]}": "DX"})
-                            .toSimpleFieldOnCells()
-                        )
-                        .restrict(["DX"])
-                        .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
-                        .getValues(),
-                    )
-                ]
+    def compute_sieq(self):
+        """Compute the Beremin stress."""
+        logger.info("starting computation...")
+        # compute fields on all timesteps, add INST/NUME_ORDRE to be limited
+        self.add_plast_group(self._reswb.getLastIndex())
+        input = self._reswb
+        if self._stress_option == "SIGM_ELMOY":
+            input = CALC_CHAMP(
+                RESULTAT=self._reswb, GROUP_MA=self._group_name, CONTRAINTE="SIMY_ELGA"
             )
-
-            sigtyp = FieldOnCellsReal(modele, "ELGA", "DEPL_R")
-
-            sigtyp.setValues(
-                [
-                    vxx * vyy
-                    for (vxx, vyy) in zip(
-                        (sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb).toSimpleFieldOnCells())
-                        .restrict(["DX"])
-                        .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
-                        .getValues(),
-                        (tronque.toSimpleFieldOnCells())
-                        .restrict(["DX"])
-                        .toFieldOnCells(modele.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
-                        .getValues(),
-                    )
-                ]
-            )
-
-            maxsig.setField(sigtyp, "DEPL_ELGA", indice)
-            maxsig.setTime(resultat.getTime(nume_inst), indice)
-            indice = indice + 1
-
-    maxsig.setModel(modele)
-
-    return maxsig
-
-
-def tps_maxsigm(rsieq, l_instplas, maxsig, resanpb, bere_m, mtpb):
-    """
-    Compute temporal maximum for each Gauss point and elevation to power m
-
-    Arguments:
-        rsieq (NonLinearResult): SIEQ_ELGA field
-        l_instplas (list): List of time steps (order, time step) where there is plasticity
-        maxsig (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
-        resanpb (NonLinearResult): Name of auxiliary result
-        bere_m (float): Value of Beremin parameter M
-        mtpb (str): {"OUI", "NON"} Value of keyword HIST_MAXI
-
-    Returns:
-        (NonLinearResult, NonLinearResult): (
-            ELGA_DEPL_R filled by PRIN_3,
-            informative MED file: where the plasticity is active: maximum of major principal stress,
-                                            )
-    """
-    if mtpb == "OUI":
-
-        (sigw, resimpr) = maxi_tps_oui(rsieq, l_instplas, maxsig, resanpb, bere_m)
-
-    elif mtpb == "NON":
-
-        (sigw, resimpr) = maxi_tps_non(rsieq, l_instplas, maxsig, resanpb, bere_m)
-
-    sigw.setModel(maxsig.getModel())
-
-    return (sigw, resimpr)
-
-
-def maxi_tps_oui(rsieq, l_instplas, maxsig, resanpb, bere_m):
-    """
-    Compute temporal maximum for each Gauss point and elevation to power m
-
-    Arguments:
-        rsieq (NonLinearResult): SIEQ_ELGA field
-        l_instplas (list): List of time steps (order, time step) where there is plasticity
-        maxsig (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
-        resanpb (NonLinearResult): Name of auxiliary result
-        bere_m (float): Value of Beremin parameter M
-
-    Returns:
-        (NonLinearResult, NonLinearResult): (
-            ELGA_DEPL_R filled by PRIN_3,
-            informative MED file: where the plasticity is active: maximum of major principal stress,
-                                            )
-
-    if SIGM_MAXI in command file, MED file containing:
-
-        - where the plasticity is active: maximum of major principal stress
-        - where the plasticity is not active: 0
-    """
-    resimpr = None
-    if resanpb is not None:
-        if resanpb.is_typco():
-            resimpr = NonLinearResult()
-            resimpr.allocate(rsieq.getNumberOfIndexes())
-
-    sigw = NonLinearResult()
-    sigw.allocate(rsieq.getNumberOfIndexes())
-
-    def puiss_m(valsixx):
-        return valsixx**bere_m
-
-    indice = 0
-    for nume_inst, inst in enumerate(rsieq.getAccessParameters()["INST"]):
-
-        if inst in [elt[1] for elt in l_instplas]:
-
-            if inst == maxsig.getTime(0):
-                chmaxsig = maxsig.getField("DEPL_ELGA", 0)
-                maxsig_r = NonLinearResult()
-                maxsig_r.allocate(2)
-                maxsig_r.setField(chmaxsig, "DEPL_ELGA", 0)
-            elif inst > maxsig.getTime(0):
-
-                maxsig_r.setField(maxsig.getField("DEPL_ELGA", indice), "DEPL_ELGA", 1)
-
-                chmaxsig = CREA_CHAMP(
-                    TYPE_CHAM="ELGA_DEPL_R",
-                    OPERATION="EXTR",
-                    RESULTAT=maxsig_r,
-                    NOM_CHAM="DEPL_ELGA",
-                    TYPE_MAXI="MAXI",
-                    TYPE_RESU="VALE",
-                    NUME_ORDRE=(0, 1),
-                )
-
-                maxsig_r.setField(chmaxsig, "DEPL_ELGA", 0)
-
-            chsixxm = chmaxsig.transform(puiss_m)
-
-            if resanpb is not None:
-                resimpr.setField(
-                    chsixxm.asPhysicalQuantity("SIEF_R", {"DX": "SIXX"}), "SIEF_ELGA", nume_inst
-                )
-                resimpr.setTime(inst, nume_inst)
-
-            indice = indice + 1
-
-        else:
-
-            if resanpb is not None:
-
-                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
-                chsixxm.setValues(0)
-                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
-                resimpr.setTime(inst, nume_inst)
-
-        sigw.setField(chsixxm, "DEPL_ELGA", nume_inst)
-        sigw.setTime(inst, nume_inst)
-
-    return (sigw, resimpr)
-
-
-def maxi_tps_non(rsieq, l_instplas, maxsig, resanpb, bere_m):
-    """
-    Compute instantaneous maximum for each Gauss point and elevation to power m
-
-    Arguments:
-        rsieq (NonLinearResult): SIEQ_ELGA field
-        l_instplas (list): List of time steps (order, time step) where there is plasticity
-        maxsig (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
-        resanpb (NonLinearResult): Name of auxiliary result
-        bere_m (float): Value of Beremin parameter M
-
-    Returns:
-        (NonLinearResult, NonLinearResult): (
-            ELGA_DEPL_R filled by PRIN_3,
-            informative MED file: where the plasticity is active: maximum of major principal stress,
-                                            )
-
-    if SIGM_MAXI in command file, MED file containing:
-
-        - where the plasticity is active: maximum of major principal stress
-        - where the plasticity is not active: 0
-    """
-    resimpr = None
-    if resanpb is not None:
-        if resanpb.is_typco():
-            resimpr = NonLinearResult()
-            resimpr.allocate(rsieq.getNumberOfIndexes())
-
-    sigw = NonLinearResult()
-    sigw.allocate(rsieq.getNumberOfIndexes())
-
-    def puiss_m(valsixx):
-        return valsixx**bere_m
-
-    indice = 0
-    for nume_inst, inst in enumerate(rsieq.getAccessParameters()["INST"]):
-
-        if inst in [elt[1] for elt in l_instplas]:
-
-            if inst == maxsig.getTime(0):
-
-                chmaxsig = maxsig.getField("DEPL_ELGA", 0)
-
-            elif inst > maxsig.getTime(0):
-
-                chmaxsig = maxsig.getField("DEPL_ELGA", indice)
-
-            chsixxm = chmaxsig.transform(puiss_m)
-
-            if resanpb is not None:
-                resimpr.setField(
-                    chsixxm.asPhysicalQuantity("SIEF_R", {"DX": "SIXX"}), "SIEF_ELGA", nume_inst
-                )
-                resimpr.setTime(inst, nume_inst)
-
-            indice = indice + 1
-
-        else:
-
-            if resanpb is not None:
-
-                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
-                chsixxm.setValues(0)
-                resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
-                resimpr.setTime(inst, nume_inst)
-
-        sigw.setField(chsixxm, "DEPL_ELGA", nume_inst)
-        sigw.setTime(inst, nume_inst)
-
-    return (sigw, resimpr)
-
-
-def compute_beremin_integral(coefmultpb, sigw, dwb, grmapb, resupb):
-    """
-    Integral computation for Weibull stress
-    Produces also sigw**m and probability of failure
-
-    Arguments:
-        coefmultpb (float): Value of COEF_MULT in POST_BEREMIN
-        sigw (NonLinearResult): ELGA_DEPL_R filled by PRIN_3
-        dwb (dict): POST_BEREMIN keywords
-        grmapb (str): Mesh cells group given in POST_BEREMIN
-        resupb (NonLinearResult): Resultat input of POST_BEREMIN
-
-    Returns:
-        Table: POST_BEREMIN final table
-    """
-    sigwinst = sigw.getAccessParameters()["NUME_ORDRE"]
-    poids = CALC_CHAM_ELEM(MODELE=sigw.getModel(), OPTION="COOR_ELGA").getValuesWithDescription(
-        "W", ["mgrplasfull"]
-    )[0]
-    valinte_sixx = [
-        np.sum(
-            np.array(
-                (
-                    [
-                        elt_poids * elt_sigw
-                        for (elt_poids, elt_sigw) in zip(
-                            poids,
-                            sigw.getField("DEPL_ELGA", nume_inst).getValuesWithDescription(
-                                "DX", ["mgrplasfull"]
-                            )[0],
-                        )
-                    ]
-                )
-            )
-        )
-        for nume_inst in sigwinst
-    ]
-
-    sigwaux = CREA_TABLE(
-        LISTE=(_F(PARA="NUME_ORDRE", LISTE_I=sigwinst), _F(PARA="INTE_SIXX", LISTE_R=valinte_sixx))
-    )
-
-    if "SIGM_CNV" in dwb[grmapb]:
-        sigma_u = dwb[grmapb]["SIGM_CNV"]
-    else:
-        sigma_u = dwb[grmapb]["SIGM_REFE"]
-
-    d_form = defi_formule(dwb, grmapb, coefmultpb, sigma_u)
-
-    sigwaux = CALC_TABLE(
-        TABLE=sigwaux,
-        reuse=sigwaux,
-        ACTION=(
-            _F(OPERATION="OPER", FORMULE=d_form["intfin"], NOM_PARA="SIGMA_WEIBULL"),
-            _F(OPERATION="OPER", FORMULE=d_form["sigwm"], NOM_PARA="SIGMA_WEIBULL**M"),
-            _F(OPERATION="OPER", FORMULE=d_form["probaw"], NOM_PARA="PROBA_WEIBULL"),
-        ),
-    )
-
-    tab_aux = {
-        clef: (sigwaux.EXTR_TABLE()).values()[clef]
-        for clef in ("SIGMA_WEIBULL", "SIGMA_WEIBULL**M", "PROBA_WEIBULL")
-    }
-
-    lentable = len(resupb.getAccessParameters()["INST"])
-    liste_zero = [0] * (lentable - len(tab_aux["SIGMA_WEIBULL"]))
-    tab_final = CREA_TABLE(
-        LISTE=(
-            _F(PARA="NUME_ORDRE", LISTE_I=resupb.getAccessParameters()["NUME_ORDRE"]),
-            _F(PARA="INST", LISTE_R=resupb.getAccessParameters()["INST"]),
-            _F(PARA="GROUP_MA", LISTE_K=[grmapb] * lentable),
-            _F(PARA="SIGMA_WEIBULL", LISTE_R=liste_zero + tab_aux["SIGMA_WEIBULL"]),
-            _F(PARA="SIGMA_WEIBULL**M", LISTE_R=liste_zero + tab_aux["SIGMA_WEIBULL**M"]),
-            _F(PARA="PROBA_WEIBULL", LISTE_R=liste_zero + tab_aux["PROBA_WEIBULL"]),
-        )
-    )
-
-    return tab_final
-
-
-def defi_formule(dwb, grmapb, coefmultpb, sigma_u):
-    """
-    Define final formulae.
-
-    Arguments:
-        dwb (dict): POST_BEREMIN keywords
-        grmapb (str): Mesh cells group given in POST_BEREMIN
-        coefmultpb (float): Value of COEF_MULT in POST_BEREMIN
-        sigma_u (float): fracture stress
-
-    Returns:
-        Table: POST_BEREMIN final table
-
-    """
-    t_clef = ("intfin", "sigwm", "probaw")
-    t_expr = (
-        "(COEF_MULT/v_0*INTE_SIXX)**(1/bere_m)",
-        "SIGMA_WEIBULL**bere_m",
-        "1-exp(-SIGMA_WEIBULL**bere_m/sigma_u**bere_m)",
-    )
-    t_var = (["INTE_SIXX"], ["SIGMA_WEIBULL"], ["SIGMA_WEIBULL"])
-    t_context = (
-        {"COEF_MULT": coefmultpb, "v_0": dwb[grmapb]["VOLU_REFE"], "bere_m": dwb[grmapb]["M"]},
-        {"bere_m": dwb[grmapb]["M"]},
-        {"sigma_u": sigma_u, "bere_m": dwb[grmapb]["M"], "exp": np.exp},
-    )
-
-    d_form = {clef: Formula() for clef in t_clef}
-
-    for (clef, expression, variable, context) in zip(t_clef, t_expr, t_var, t_context):
-        d_form[clef].setExpression(expression)
-        d_form[clef].setVariables(variable)
-        d_form[clef].setContext(context)
-
-    return d_form
-
-
-def make_plasticity_groups(data_resu, grmapb, numv1, seuil):
-    """
-    Construct groups of plasticity for each time step when there is plasticity
-
-    Arguments:
-        data_resu (tuple): (result to consider for Weibull stress,
-                            list of time steps (nume_ordre, time step) in plasticity only,
-                            list of values of maximum of plasticity, if strictly greater than 0)
-        numv1 (int): Indice of internal variable EPSPEQ
-        seuil (float): value of SEUIL_EPSP_CUMU
-
-    Returns:
-        mawbrest (Mesh): Initial mesh with groups useful for BEREMIN computation
-    """
-    mawbrest = data_resu[0].getModel().getMesh()
-    mawbrest.setGroupOfNodes("ngrmapb", mawbrest.getNodesFromCells(grmapb))
-
-    liter = [elt[0] for elt in data_resu[1]]
-    dval = {}
-    l_inte_vale = []
-
-    for indice, iteration in enumerate(liter):
-
-        if data_resu[2][indice] < seuil:
-            dval[f"min{indice}"] = 0
-            dval[f"max{indice}"] = data_resu[2][indice]
-        else:
-            dval[f"min{indice}"] = seuil
-            dval[f"max{indice}"] = data_resu[2][indice]
-
-    for (indice, iteration) in enumerate(liter):
-        cham_gd = data_resu[0].getField("VARI_ELGA", iteration).toFieldOnNodes()
-        np_cham_gd = np.array(cham_gd.getValuesWithDescription(f"V{numv1}", [])[0])
-
-        if np.any((np_cham_gd > dval[f"min{indice}"]) & (np_cham_gd < dval[f"max{indice}"])):
-            l_inte_vale.append(
-                _F(
-                    NOM=f"vale_{iteration}",
-                    OPTION="INTERVALLE_VALE",
-                    CHAM_GD=cham_gd,
-                    NOM_CMP=f"V{numv1}",
-                    VALE=(dval[f"min{indice}"], dval[f"max{indice}"]),
-                )
-            )
-
-    mawbrest = DEFI_GROUP(reuse=mawbrest, MAILLAGE=mawbrest, CREA_GROUP_NO=tuple(l_inte_vale))
-
-    d_gr = {"l_ngrplas": [], "l_mgrplas": [], "l_union": []}
-    for iteration in liter:
-        if mawbrest.hasGroupOfNodes(f"vale_{iteration}"):
-            d_gr["l_ngrplas"].append(
-                _F(NOM=f"ngrplas_{iteration}", INTERSEC=(f"vale_{iteration}", "ngrmapb"))
-            )
-            d_gr["l_mgrplas"].append(
-                _F(
-                    NOM=f"mgrplas_{iteration}",
-                    OPTION="APPUI",
-                    TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
-                    GROUP_NO=f"ngrplas_{iteration}",
-                    TYPE_APPUI="AU_MOINS_UN",
-                )
-            )
-            d_gr["l_union"].append(f"mgrplas_{iteration}")
-
-    mawbrest = DEFI_GROUP(reuse=mawbrest, MAILLAGE=mawbrest, CREA_GROUP_NO=tuple(d_gr["l_ngrplas"]))
-
-    mawbrest = DEFI_GROUP(
-        reuse=mawbrest,
-        MAILLAGE=mawbrest,
-        CREA_GROUP_MA=tuple(d_gr["l_mgrplas"])
-        + tuple(
-            [
-                _F(
-                    NOM="mgrplasfull",
-                    TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
-                    UNION=tuple(d_gr["l_union"]),
-                )
-            ]
-        ),
-    )
-
-    return mawbrest
+            for idx in input.getIndexes():
+                simy = input.getField("SIMY_ELGA", idx)
+                input.setField(simy, "SIEF_ELGA", idx)
+
+        rsieq = CALC_CHAMP(RESULTAT=input, GROUP_MA=self._group_name, CRITERES="SIEQ_ELGA")
+        self.clean_group()
+        if DEBUG:
+            for i in rsieq.getIndexes():
+                print("NEW: rsieq:", i, np.sum(rsieq.getField("SIEQ_ELGA", i).getValues()))
+
+        return rsieq
+
+    def clean_group(self):
+        """Remove temporary added group."""
+        mesh = self._result.getMesh()
+        DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, DETR_GROUP_MA=_F(NOM=self._group_name))
+
+    def apply_stress_correction(self, sig1, idx, cells_ids):
+        """Compute the major principal stress, eventually apply SIGM_CNV/SIGM_REFE
+        correction and threshold by SIGM_SEUIL.
+
+        *The values are changed in place.*
+
+        Args:
+            sig1 (*ComponentOnCells*): PRIN_3 component of SIEQ_ELGA, changed in place.
+            idx (int): Timestep index
+            cells_ids (list[int]): Cells list.
+        """
+        logger.info("adjusting sigma1 at index %d...", idx)
+
+        if self._use_function:
+            # PRIN_3 / SIGM_REFE(TEMP) * SIGM_CNV
+            temp = self.get_temperature_field(idx)
+            temp.restrict(cells_ids)
+            sigref = temp.apply(self._weib_params["SIGM_REFE"])
+            assert sigref.abs().min() > 0.0
+            sig1 /= sigref
+            sig1 *= self._weib_params["SIGM_CNV"]
+
+        if self._weib_params["SIGM_SEUIL"] > 0.0:
+            # apply threshold
+            valsig = sig1.getValues() - self._weib_params["SIGM_SEUIL"]
+            valsig = np.where(valsig < 0.0, 0.0, valsig)
+            sig1.setValues(valsig)
+
+    def apply_threshold(self, sig1, epseq, indiplas):
+        """Apply plastic strain threshold onto major stress.
+
+        NB: *ComponentOnCells* changed in place.
+
+        Args:
+            sig1 (*ComponentOnCells*): Major stress.
+            epspeq (*ComponentOnCells*): Plastic strain.
+            indiplas (*ComponentOnCells*): Plastic indicator.
+        """
+        valthr = epseq.onSupportOf(sig1)
+        indip = indiplas.onSupportOf(sig1)
+        epsthr_ar = valthr.getValues() - self._weib_params["SEUIL_EPSP_CUMU"]
+        epsthr_ar = np.where(epsthr_ar < 0.0, 0.0, 1.0)
+        valthr.setValues(epsthr_ar)
+
+        # * (1 if indip != 0 else 0)
+        def toint_sign(array):
+            return np.sign(np.array(array, dtype=int))
+
+        indip = indip.applyOnArray(toint_sign)
+        valthr *= indip
+        sig1 *= valthr
+
+    def get_temperature_field(self, idx):
+        """Return the temperature field.
+
+        Args:
+            idx (idx): storage index.
+
+        Returns:
+            *ComponentOnCells*: Temperature values.
+        """
+        field = None
+        for extvar, where in self._result.getMaterialField().getExtStateVariablesOnMeshEntities():
+            varname = ExternalVariableTraits.getExternVarTypeStr(extvar.getType())
+            if varname != "TEMP":
+                continue
+            assert where == EntityType.AllMeshEntitiesType
+            field = extvar.getField()
+            if not field:
+                evol = extvar.getEvolutionParameter()
+                assert evol, "expecting an evolution or a field, what else?!"
+                field = evol.getTransientResult().getField("TEMP", idx)
+            break
+        assert field, "TEMP not found in VARC"
+        fed = self._result.getModel().getFiniteElementDescriptor()
+        field = field.toFieldOnCells(fed, "ELGA").toSimpleFieldOnCells()
+        return field.TEMP
+
+    def main(self):
+        """Compute the Beremin stress."""
+        result = self._reswb
+        model = result.getModel()
+        params = result.getAccessParameters()
+        logger.info("extracting integration scheme...")
+        coor_elga = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
+        coor_elga = coor_elga.toSimpleFieldOnCells()
+
+        logger.info("starting computation...")
+        previous = None
+        table = TableBeremin()
+
+        id_store = 0
+        for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
+            epseq, indip = self.get_internal_variables(idx)
+            epseq_r = epseq.copy()
+            epseq_r.restrict(self._zone_ids)
+            maxepsp = epseq_r.max()
+            if maxepsp <= 0.0:
+                if id_store == 0:
+                    # add initial state
+                    table.append(0, self._result.getTime(0), self._zone, 0.0, 0.0, 0.0)
+                    id_store += 1
+                continue
+
+            logger.info("getting plastified zone...")
+            cells_ids = self.get_plast_cells(epseq, maxepsp)
+            logger.info("computing major stress...")
+            sig1 = self.get_major_stress(idx)
+            sig1.restrict(cells_ids)
+            self.apply_stress_correction(sig1, idx, cells_ids)
+            self.apply_threshold(sig1, epseq, indip)
+
+            if self._use_hist == "OUI":
+                logger.info("computing maxi at index %d...", idx)
+                if previous is None:
+                    previous = sig1 * 0.0
+                sig1 = sig1.maximum(previous)
+                previous = sig1
+            if DEBUG:
+                print("NEW: sigmax:", id_store, idx, sig1.sum())
+
+            sig1 **= self._weib_params["M"]
+            self.store_sigm_maxi(id_store, time, sig1, model)
+
+            # create a new ComponentOnCells object since it is restricted on a different group
+            strwb, strwb_pm, proba = self.compute_table_values(sig1, coor_elga.W)
+
+            table.append(id_store, time, self._zone, strwb, strwb_pm, proba)
+            id_store += 1
+
+        if id_store == 0:
+            # no plastification
+            table.append(id_store, 0.0, self._zone, 0.0, 0.0, 0.0)
+
+        return table
+
+    def compute_table_values(self, sig1, weight):
+        """Compute the values to be added into the result table.
+
+        Args:
+            sig1 (*ComponentOnCells*): Major stress ^ M.
+            weight (*ComponentOnCells*): Weight of each integration point,
+                **changed in place**.
+
+        Returns:
+            tuple: Values for each column.
+        """
+        coef_volu = self._coef_mult / self._weib_params["VOLU_REFE"]
+        pow_m = self._weib_params["M"]
+        inv_m = 1 / pow_m
+        sigma_u = self._weib_params["SIGM_CNV" if self._use_function else "SIGM_REFE"]
+
+        logger.info("computing table values...")
+        if DEBUG:
+            print("NEW: sigpm:", sig1.sum())
+
+        weight = weight.onSupportOf(sig1)
+        # colonne INTE_SIXX
+        intsig1pm = (sig1 * weight).sum()
+
+        # intfin(INTE_SIXX) = (COEF_MULT/VOLU_REFE*INTE_SIXX)**(1/bere_m)
+        sigma_weibull = (coef_volu * intsig1pm) ** inv_m
+
+        # sigwm(SIGMA_WEIBULL) = SIGMA_WEIBULL**bere_m
+        sigma_weibullpm = sigma_weibull**pow_m
+
+        # probaw(SIGMA_WEIBULL) = 1-exp(-SIGMA_WEIBULL**bere_m/sigma_u**bere_m)
+        #  avec sigma_u=SIMG_CNV ou SIGM_REFE
+        proba_weibull = 1.0 - exp(-((sigma_weibull / sigma_u) ** pow_m))
+
+        return sigma_weibull, sigma_weibullpm, proba_weibull
+
+    def store_sigm_maxi(self, idx, time, sig1, model):
+        """Store the major stress ^M into the output result.
+
+        Args:
+            idx (int): Storage index.
+            time (float): Time value.
+            sig1 (*ComponentOnCells*): Major stress ^ M.
+            model (*Model*): Model object.
+        """
+        if not self._rout:
+            return
+        if idx == 0:
+            self._rout.allocate(self._rsieq.getNumberOfIndexes())
+        sigmax = FieldOnCellsReal(model, "ELGA", "SIEF_R")
+        sigmax.setValues(0.0)
+        sfield = sigmax.toSimpleFieldOnCells()
+        sixx = sfield.SIXX
+        sixx += sig1.expand()
+        sfield.setComponentValues(sixx)
+        fed = model.getFiniteElementDescriptor()
+        sigmax = sfield.toFieldOnCells(fed, "RAPH_MECA", "PCONTPR")
+        self._rout.setField(sigmax, "SIEF_ELGA", idx)
+        self._rout.setModel(model, idx)
+        self._rout.setTime(time, idx)
+
+
+def post_beremin_ops(self, RESULTAT, GROUP_MA, DEFORMATION, FILTRE_SIGM, **args):
+    """Main of POST_BEREMIN command."""
+    post = PostBeremin(result=RESULTAT, strain_type=DEFORMATION, stress_option=FILTRE_SIGM)
+    post.set_zone(GROUP_MA)
+    post.set_indexes(intvar_idx=args["LIST_NUME_VARI"])
+    if DEFORMATION == "GDEF_LOG":
+        post.set_indexes(stress_idx=args["LIST_NUME_SIEF"])
+    post.use_history(args["HIST_MAXI"] == "OUI")
+    post.set_coef_mult(args["COEF_MULT"])
+    post.set_weibull_parameters(args["WEIBULL"])
+
+    post.setup_calc_result()
+    if args.get("SIGM_MAXI"):
+        self._rout = NonLinearResult()
+        self.register(self._rout, args["SIGM_MAXI"])
+
+    table = post.main()
+    sdtable = table.create_table()
+
+    return sdtable
+
+
+class TableBeremin:
+    """Helper object to build the result table."""
+
+    types = "IRKRRR"
+    cols = ["NUME_ORDRE", "INST", "GROUP_MA", "SIGMA_WEIBULL", "SIGMA_WEIBULL**M", "PROBA_WEIBULL"]
+    data = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self):
+        self.data = {}
+        for col in self.cols:
+            self.data.setdefault(col, [])
+
+    def append(self, *values):
+        """Append the values of a row (columns order must match the definition).
+
+        Args:
+            values (list[misc]): Values of the row for each parameter.
+        """
+        assert len(values) == len(self.cols)
+        for col, value in zip(self.cols, values):
+            self.data[col].append(value)
+
+    def create_table(self):
+        """Create and return the Table datastructure.
+
+        Returns:
+            Table/table_sdaster: Table datastructure.
+        """
+        list_kws = []
+        for col, typ in zip(self.cols, self.types):
+            list_kws.append({"PARA": col, "LISTE_" + typ: self.data[col]})
+        tab = CREA_TABLE(LISTE=list_kws)
+        return tab

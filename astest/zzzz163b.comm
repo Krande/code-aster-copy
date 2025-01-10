@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,7 @@ PBSGMT = POST_BEREMIN(
     GROUP_MA="s_tout",
     FILTRE_SIGM="SIGM_ELGA",
     LIST_NUME_VARI=(5, 6),
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
 )
 
 PBSMMT = POST_BEREMIN(
@@ -84,6 +85,7 @@ PBSMMT = POST_BEREMIN(
     GROUP_MA="s_tout",
     FILTRE_SIGM="SIGM_ELMOY",
     LIST_NUME_VARI=(5, 6),
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
 )
 
 PBSGNOMT = POST_BEREMIN(
@@ -94,6 +96,7 @@ PBSGNOMT = POST_BEREMIN(
     FILTRE_SIGM="SIGM_ELGA",
     LIST_NUME_VARI=(5, 6),
     HIST_MAXI="NON",
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
 )
 
 PBSENOMT = POST_BEREMIN(
@@ -104,6 +107,7 @@ PBSENOMT = POST_BEREMIN(
     FILTRE_SIGM="SIGM_ELMOY",
     LIST_NUME_VARI=(5, 6),
     HIST_MAXI="NON",
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
 )
 
 TEST_TABLE(
@@ -176,9 +180,10 @@ PBSMNOMT = POST_BEREMIN(
     FILTRE_SIGM="SIGM_ELMOY",
     LIST_NUME_VARI=(5, 6),
     HIST_MAXI="NON",
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_SEUIL=1300, SIGM_REFE=2630.0e0),
 )
 
-PBSMMT = POST_BEREMIN(
+PBSMHMT = POST_BEREMIN(
     RESULTAT=RESU_CS,
     COEF_MULT=1,
     DEFORMATION="PETIT",
@@ -186,6 +191,7 @@ PBSMMT = POST_BEREMIN(
     FILTRE_SIGM="SIGM_ELMOY",
     LIST_NUME_VARI=(5, 6),
     HIST_MAXI="OUI",
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_SEUIL=1300, SIGM_REFE=2630.0e0),
 )
 
 TEST_TABLE(
@@ -206,7 +212,7 @@ TEST_TABLE(
     PRECISION=0.01,
     REFERENCE="AUTRE_ASTER",
     NOM_PARA="SIGMA_WEIBULL",
-    TABLE=PBSMMT,
+    TABLE=PBSMHMT,
     FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_tout")),
 )
 
