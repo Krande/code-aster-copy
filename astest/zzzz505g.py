@@ -166,7 +166,7 @@ test.assertEqual(valx._descr._nbcells, valy._descr._nbcells, msg="restrict: nbce
 
 with chrono("expand"):
     xe = valx.expand()
-test.assertAlmostEqual(sum(xe.getValues()), sum(valx.getValues()), 8, msg="expand")
+test.assertAlmostEqual(sum(xe.values), sum(valx.values), 8, msg="expand")
 cumsize += xe.sizeof()
 del xe
 
@@ -189,14 +189,14 @@ with test.assertRaises(IndexError):
 with chrono("onSupportOf, prol needed"):
     zerone = one.onSupportOf(weight, strict=False)  # 1.0 on VOLUME, 0.0 elsewhere
 test.assertEqual(zerone.size, weight.size, msg="onSupportOf: extended by zero")
-test.assertAlmostEqual(sum(zerone.getValues()), sum(one.getValues()), 8, msg="onSupportOf: values")
+test.assertAlmostEqual(sum(zerone.values), sum(one.values), 8, msg="onSupportOf: values")
 cumsize += zerone.sizeof()
 del zerone
 
 with chrono("onSupportOf"):
     hexa_weight = weight.onSupportOf(one)
 test.assertEqual(hexa_weight.size, one.size, msg="onSupportOf")
-test.assertAlmostEqual(sum(hexa_weight.getValues()), 1.0, 8, msg="onSupportOf: values")
+test.assertAlmostEqual(sum(hexa_weight.values), 1.0, 8, msg="onSupportOf: values")
 cumsize += one.sizeof()
 del one_s, one
 
@@ -239,7 +239,7 @@ del vz
 
 # check for description plot
 dest = Path("weight_descr.png")
-weight.plot_descr(dest)
+weight.plot_descr(filename=dest)
 test.assertTrue(dest.exists(), msg="figure png")
 
 test.printSummary()

@@ -24,8 +24,8 @@ Simple Fields defined on cells of elements
 """
 
 try:
-    import matplotlib.cm as cm
     import matplotlib.pyplot as plt
+    from matplotlib.colors import ListedColormap
 
     HAS_MATPLOTLIB = True
 except ImportError:
@@ -131,7 +131,7 @@ class ComponentOnCells:
                 idx = np.zeros(1, dtype=int)
             lines = [
                 f"- indexes shape {self._idx.shape!r}, range {idx.min()} to {idx.max()}, "
-                f"{len(idx)} indexes defined"
+                f"{len(idx)} indexes defined, {(self._mask == False).sum()} masked"
             ]
             if self._cells is None:
                 lines.append(f"- on all the {self._nbcells} cells")
@@ -232,6 +232,10 @@ class ComponentOnCells:
         return self._descr._idx
 
     @property
+    def _mask(self):
+        return self._descr._mask
+
+    @property
     def _cells(self):
         return self._descr._cells
 
@@ -248,25 +252,30 @@ class ComponentOnCells:
         """Return the size of the data in bytes."""
         return self._values.nbytes + self._descr.sizeof()
 
-    def getValues(self):
-        """Returns the vector values."""
-        return self._values
+    def _masked_values(self, values, undefined=0.0):
+        return np.where(self._mask == True, values, undefined)
 
-    def getValuesByCells(self):
-        """Returns the values by cells, expanded by 0.0 where undefined."""
-        if self._cells is not None:
-            return self.expand().getValuesByCells()[self._cells]
-        values = np.append(self._values, [0.0])
-        return np.take(values, self._idx)
+    @property
+    def values(self):
+        """Returns the vector of values (undefined values set to zero)."""
+        return self._masked_values(self._values, undefined=0.0)
 
-    def setValues(self, values):
-        """Set the vector values.
+    @values.setter
+    def values(self, values):
+        """Set the vector values (undefined values are forced to zero).
 
         Args:
             values (ndarray[float]): New values.
         """
         assert values.shape == self._values.shape
-        self._values = values
+        self._values = self._masked_values(values)
+
+    def getValuesByCells(self):
+        """Returns the values by cells, expanded by 0.0 where undefined."""
+        if self._cells is not None:
+            return self.expand().getValuesByCells()[self._cells]
+        values = np.append(self.values, [0.0])
+        return np.take(values, self._idx)
 
     def getCells(self):
         """Return the cells id."""
@@ -309,7 +318,15 @@ class ComponentOnCells:
         if not HAS_MATPLOTLIB:
             warnings.warn("matplotlib is not available")
             return
-        plt.imshow(self._idx < 0, interpolation="nearest", cmap=cm.Greys_r, aspect="auto")
+        idx = np.where(self._idx >= 0, 1, 0)
+        undef = np.where(self._mask[self._idx] == False, -2, 0)
+        idx = np.where(undef == 0, idx, undef * idx)
+        fig, ax = plt.subplots()
+        ax.grid(True, linestyle="--")
+        ax.set_xlabel("numbers of points")
+        ax.set_ylabel("cells id")
+        cmap = ListedColormap([(0.6, 0.6, 0.6), "white", (0.0, 0.4, 0.8)], "indexed")
+        plt.imshow(idx, interpolation="nearest", cmap=cmap, aspect="auto", vmin=-1, vmax=1)
         if filename:
             plt.savefig(filename)
         else:
@@ -382,6 +399,7 @@ class ComponentOnCells:
 
     def __itruediv__(self, other):
         other = self._check_consistency(other)
+        other = self._values(other, 1.0)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
         self._values /= other
@@ -389,14 +407,16 @@ class ComponentOnCells:
 
     def __truediv__(self, other):
         other = self._check_consistency(other)
+        other = self._masked_values(other, 1.0)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
         return ComponentOnCells(self._values / other, self._descr.copy())
 
     def __rtruediv__(self, other):
-        if np.any(self._values == 0.0):
+        values = self._masked_values(self._values, 1.0)
+        if np.any(values == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(1.0 / self._values * other, self._descr.copy())
+        return ComponentOnCells(1.0 / values * other, self._descr.copy())
 
     def __abs__(self):
         return ComponentOnCells(np.abs(self._values), self._descr.copy())
@@ -416,7 +436,7 @@ class ComponentOnCells:
         Returns:
             float: minimum of the values.
         """
-        return self._values.min()
+        return self._values[self._mask].min()
 
     def max(self):
         """Return the maximum value.
@@ -424,7 +444,7 @@ class ComponentOnCells:
         Returns:
             float: maximum of the values.
         """
-        return self._values.max()
+        return self._values[self._mask].max()
 
     def sum(self):
         """Return the sum of the values.
@@ -432,7 +452,7 @@ class ComponentOnCells:
         Returns:
             float: sum of the values.
         """
-        return self._values.sum()
+        return self._values[self._mask].sum()
 
     def mean(self):
         """Return the mean value.
@@ -440,7 +460,7 @@ class ComponentOnCells:
         Returns:
             float: mean of the values.
         """
-        return self._values.mean()
+        return self._values[self._mask].mean()
 
     def minimum(self, other):
         """Compare the component with another one and keep the element-wise minima.
@@ -617,7 +637,7 @@ class ExtendedSimpleFieldOnCellsReal:
         """
         icmp = self._cache["cmp"].index(component)
         # it directly overwrites '.CESV' vector in place
-        self._cache["val"][:, icmp] = cfvalue.expand().getValues()
+        self._cache["val"][:, icmp] = cfvalue.expand().values
 
     def getValues(self, copy=True):
         """
