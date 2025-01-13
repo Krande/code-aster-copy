@@ -64,7 +64,7 @@ from .import_helper import PETSc, SLEPc, medcoupling, ParaMEDMEM
 from .injector import injector
 from .logger import DEBUG, ERROR, INFO, WARNING, logger, loglevel, with_loglevel
 from .misc import get_shared_tmpdir, shared_tmpdir
-from .mpi_utils import MPI, haveMPI
+from .mpi_utils import MPI, haveMPI, useHPCMode
 from .options import Options
 from .petsc_utils import petscFinalize, petscInitialize
 from .report import CR

@@ -26,17 +26,31 @@ Need only mpi4py package.
 """
 
 import warnings
+from functools import wraps
 
-from .base_utils import force_list, config
+from .base_utils import config, force_list
+from .ExecutionParameter import ExecutionParameter
+from .options import Options
 
 
 def haveMPI():
     """Tell if the library is built with MPI support.
 
     Returns:
-    bool: *True* if use MPI librairies, *False* else
+        bool: *True* if use MPI librairies, *False* else
     """
     return config.get("ASTER_HAVE_MPI", 0) == 1
+
+
+def useHPCMode():
+    """Tell if the HPC mode is enabled.
+
+    It is relevant *after* the *ParallelMesh* has been created.
+
+    Returns:
+        bool: *True* if MPI is used and HPC mode is enabled.
+    """
+    return haveMPI() and ExecutionParameter().option & Options.HPCMode
 
 
 try:
@@ -148,3 +162,25 @@ except ImportError:
         Intracomm = FAKE_COMM_WORLD
         ASTER_COMM_WORLD = COMM_WORLD = FAKE_COMM_WORLD()
         ASTER_COMM_SELF = COMM_SELF = FAKE_COMM_WORLD()
+
+
+def _generator(mpi_op):
+    def decorator(func):
+        """Decorator that sums the value returned by each processor."""
+        comm = MPI.ASTER_COMM_WORLD
+        if comm.size <= 1:
+            return func
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            """Wrapper"""
+            return comm.allreduce(func(*args, **kwargs), op=mpi_op)
+
+        return wrapper
+
+    return decorator
+
+
+mpi_min = _generator(MPI.MIN)
+mpi_max = _generator(MPI.MAX)
+mpi_sum = _generator(MPI.SUM)
