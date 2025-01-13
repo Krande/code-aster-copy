@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,27 @@ import numpy as np
 from libaster import SimpleFieldOnCellsReal
 
 from ..Utilities import injector, medcoupling as medc, ParaMEDMEM as PMM
+from ..Objects.Serialization import InternalStateBuilder
+
+
+class SFoCStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *SimpleFieldOnCells*."""
+
+    def restore(self, field):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            field (*DataStructure*): The *DataStructure* object to be restored.
+        """
+        super().restore(field)
+        field.build()
 
 
 @injector(SimpleFieldOnCellsReal)
 class ExtendedSimpleFieldOnCellsReal:
+    internalStateBuilder = SFoCStateBuilder
+
     def getValues(self, copy=False):
         """
         Returns two numpy arrays containing the field values on specific cells.
@@ -106,7 +123,7 @@ class ExtendedSimpleFieldOnCellsReal:
             cmps_red = []
             all_cmps = self.getComponents()
             for cmp in cmps:
-                if cmp in self.getComponents():
+                if cmp in all_cmps:
                     cmps_red.append(cmp)
             cmps = cmps_red
 
@@ -153,7 +170,7 @@ class ExtendedSimpleFieldOnCellsReal:
         values, mask = self.toNumpy()
 
         # Restrict field based on mask
-        restricted_cells = np.where(np.any(mask, axis=1) == True)[0]
+        restricted_cells = np.where(np.any(mask, axis=1))[0]
         restricted_values = values[restricted_cells, :]
 
         # Medcoupling field

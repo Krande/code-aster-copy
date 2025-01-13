@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,30 @@ import numpy as np
 from libaster import SimpleFieldOnNodesComplex, SimpleFieldOnNodesReal
 
 from ..Objects import PythonBool
-from ..Utilities import injector, force_list, medcoupling as medc, ParaMEDMEM as PMM
+from ..Objects.Serialization import InternalStateBuilder
+from ..Utilities import ParaMEDMEM as PMM
+from ..Utilities import force_list, injector
+from ..Utilities import medcoupling as medc
+
+
+class SFoNStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *SimpleFieldOnNodes*."""
+
+    def restore(self, field):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            field (*DataStructure*): The *DataStructure* object to be restored.
+        """
+        super().restore(field)
+        field.build()
 
 
 @injector(SimpleFieldOnNodesReal)
 class ExtendedSimpleFieldOnNodesReal:
+    internalStateBuilder = SFoNStateBuilder
+
     def restrict(self, cmps=[], groupsOfNodes=[], same_rank=None):
         """Return a new field restricted to the list of components and groups of nodes given
 
