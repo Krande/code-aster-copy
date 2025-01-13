@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,12 @@ Il y a des noeuds en commun entre les surfaces esclave et maître. Ceci est inte
     2: _(
         """
 Le modèle n'est pas de type mécanique, ce n'est pas possible.
+"""
+    ),
+    3: _(
+        """
+Le maillage est incorrect pour la méthode de contact utilisée. On a besoin d'avoir accès aux mailles sous-jacentes aux mailles de contact, ce n'est pas possible sur ce maillage.
+Soit il manque les mailles volumiques sous les mailles de peau, soit le groupe de mailles de peau est inséré dans un volume.
 """
     ),
     4: _(

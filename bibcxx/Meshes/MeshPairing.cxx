@@ -2,7 +2,7 @@
  * @file MeshPairing.cxx
  * @brief Implementation of MeshPairing class
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -221,27 +221,31 @@ ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tol
                     &nbCellMaster, masterCells.data(), &nbCellSlave, slaveCells.data(),
                     &nbNodeMaster, masterNodes.data(), &nb_pairs, getBasename() );
 
-    // Output JEVEUX objects
-    if ( !_jvPairs.exists() ) {
-        _jvPairs = JeveuxVectorLong( getPairsName() );
-    }
-    if ( !_jvNbInterPoints.exists() ) {
-        _jvNbInterPoints = JeveuxVectorLong( getNbInterName() );
-    }
-    if ( !_jvInterSlavePoints.exists() ) {
-        _jvInterSlavePoints = JeveuxVectorReal( getCoorInterName() );
-    }
-    _jvPairs->updateValuePointer();
-    _jvNbInterPoints->updateValuePointer();
-    _jvInterSlavePoints->updateValuePointer();
-
-    // Set output values
+    // Get number of pairs
     _nbPairs = nb_pairs;
-    _pairs = _jvPairs->toVector();
-    std::transform( _pairs.begin(), _pairs.end(), _pairs.begin(),
-                    []( ASTERINTEGER &indexCell ) -> ASTERINTEGER { return --indexCell; } );
-    _nbPoinInte = _jvNbInterPoints->toVector();
-    _poinInteSlav = _jvInterSlavePoints->toVector();
+
+    // Output JEVEUX objects
+    if ( _nbPairs != 0 ) {
+        if ( !_jvPairs.exists() ) {
+            _jvPairs = JeveuxVectorLong( getPairsName() );
+        }
+        if ( !_jvNbInterPoints.exists() ) {
+            _jvNbInterPoints = JeveuxVectorLong( getNbInterName() );
+        }
+        if ( !_jvInterSlavePoints.exists() ) {
+            _jvInterSlavePoints = JeveuxVectorReal( getCoorInterName() );
+        }
+        _jvPairs->updateValuePointer();
+        _jvNbInterPoints->updateValuePointer();
+        _jvInterSlavePoints->updateValuePointer();
+
+        // Set output values
+        _pairs = _jvPairs->toVector();
+        std::transform( _pairs.begin(), _pairs.end(), _pairs.begin(),
+                        []( ASTERINTEGER &indexCell ) -> ASTERINTEGER { return --indexCell; } );
+        _nbPoinInte = _jvNbInterPoints->toVector();
+        _poinInteSlav = _jvInterSlavePoints->toVector();
+    }
 
     CALL_JEDEMA();
 
@@ -452,14 +456,14 @@ ASTERBOOL MeshPairing::hasCommonNodes() const {
     VectorLong commonNodes;
     VectorLong masterNodes = _masterNodes;
     VectorLong slaveNodes = _slaveNodes;
-    std::cout << "Master SIze<" << masterNodes.size() << ">" << std::endl;
-    for ( long int iNode = 0; iNode < masterNodes.size(); iNode++ ) {
-        std::cout << "Master node: " << masterNodes[iNode] << std::endl;
-    }
-    std::cout << "Slave SIze<" << slaveNodes.size() << ">" << std::endl;
-    for ( long int iNode = 0; iNode < slaveNodes.size(); iNode++ ) {
-        std::cout << "Slave node: " << slaveNodes[iNode] << std::endl;
-    }
+    // std::cout << "Master SIze<" << masterNodes.size() << ">" << std::endl;
+    // for ( long int iNode = 0; iNode < masterNodes.size(); iNode++ ) {
+    //     std::cout << "Master node: " << masterNodes[iNode] << std::endl;
+    // }
+    // std::cout << "Slave SIze<" << slaveNodes.size() << ">" << std::endl;
+    // for ( long int iNode = 0; iNode < slaveNodes.size(); iNode++ ) {
+    //     std::cout << "Slave node: " << slaveNodes[iNode] << std::endl;
+    // }
 
     if ( mesh->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
@@ -567,15 +571,16 @@ ASTERBOOL MeshPairing::buildSlaveCellsVolu() {
             }
         }
 
-        AS_ASSERT( candidat.size() == 2 );
-        ASTERINTEGER cellVolu;
-        if ( candidat[0] == cellId ) {
-            cellVolu = candidat[1];
-        } else {
-            cellVolu = candidat[0];
-        }
+        if ( candidat.size() == 2 ) {
+            ASTERINTEGER cellVolu;
+            if ( candidat[0] == cellId ) {
+                cellVolu = candidat[1];
+            } else {
+                cellVolu = candidat[0];
+            }
 
-        _slavSurf2Volu[cellId] = cellVolu;
+            _slavSurf2Volu[cellId] = cellVolu;
+        }
     }
 
     return true;
