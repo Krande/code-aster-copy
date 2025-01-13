@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -39,11 +38,38 @@ def chrono(title):
 
 CA.init("--test")
 
+refinement = 1
+create_mesh = False
+
 test = CA.TestCase()
+MPI = CA.MPI
+comm = MPI.ASTER_COMM_WORLD
 
-refinement = int(os.environ.get("ZZZZ505G_REFINEMENT", 0))
+workdir = Path("/local00/tmp")
+workdir.mkdir(exist_ok=True, parents=True)
+meshdir = workdir / f"cube_refined_x{refinement}"
+meshdir.mkdir(exist_ok=True)
 
-mesh = CA.Mesh.buildCube(refine=refinement)
+filename = workdir / f"cube_refined_x{refinement}.med"
+local_file = meshdir / f"{comm.rank}.med"
+
+if create_mesh:
+    if comm.rank == 0:
+        mesh = CA.Mesh.buildCube(refine=refinement)
+        mesh.printMedFile(filename)
+    comm.Barrier()
+
+    mesh = CA.ParallelMesh()
+    mesh.readMedFile(filename, partitioned=False, deterministic=True, verbose=1)
+
+    mesh.printMedFile(local_file, local=True)
+    CA.close(exit=True)
+
+test.assertTrue(local_file.exists())
+
+mesh = CA.ParallelMesh()
+mesh.readMedFile(local_file, partitioned=True, verbose=1)
+
 model = CA.Model(mesh)
 model.addModelingOnMesh(CA.Physics.Mechanics, CA.Modelings.Tridimensional)
 model.build()
@@ -66,7 +92,7 @@ with chrono("chs.X"):
 with chrono("chs.Y"):
     valy = chs.Y
 
-size = valx.size
+size = comm.allreduce(valx.size, op=MPI.SUM)
 
 with chrono("1 add"):
     xp1 = 1.0 + valx
@@ -145,7 +171,9 @@ with chrono("setComponentValues"):
     chs.setComponentValues("X", xp1)
 
 after = chs.getValues()[0]
-test.assertAlmostEqual(np.sum(after), np.sum(copied) + x0.size, 8, msg="setComponentValues values")
+
+added = len(x0.values)  # 'getValues()' returns all values (inner and outer cells)
+test.assertAlmostEqual(np.sum(after), np.sum(copied) + added, 8, msg="setComponentValues values")
 # 'before' points on the same data, so it now contains 'xp1' as first component
 test.assertAlmostEqual(np.sum(after), np.sum(before), 8, msg="setComponentValues: unchanged origin")
 cumsize += x0.sizeof() + x2.sizeof() + xp1.sizeof()
@@ -154,14 +182,16 @@ del after, before, copied
 
 test.assertIsNone(valx._cells, msg="on all cells")
 faces = mesh.getCells(["TOP", "FRONT", "RIGHT", "S68", "S26"])
-test.assertEqual(len(faces), 3 * 2 ** (refinement * 2) + 2 * 2**refinement, msg="getCells")
+faces = list(set(faces).intersection(mesh.getInnerCells()))
+nbfaces = comm.allreduce(len(faces), op=MPI.SUM)
+test.assertEqual(nbfaces, 3 * 2 ** (refinement * 2) + 2 * 2**refinement, msg="getCells")
 
 with chrono("restrict"):
     valx.restrict(faces)
 
 test.assertTrue(np.all(faces == valx._cells), msg="restrict: cells")
 test.assertEqual(valx.size, valx._descr._discr.prod(axis=1).sum(), msg="restrict: values")
-test.assertEqual(valx._descr._nbval, valy.size, msg="restrict: nbval")
+test.assertEqual(valx._descr._nbval, len(valy.values), msg="restrict: nbval")
 test.assertEqual(valx._descr._nbcells, valy._descr._nbcells, msg="restrict: nbcells")
 
 with chrono("expand"):
@@ -233,7 +263,8 @@ vz.maximum(vy)
 maxi = vz.max() * 0.99999
 cells = vz.filterByValues(maxi, 1.0, strict_mini=False)
 expect = (2**refinement + (2**refinement - 1)) * 2**refinement  # last term for x direction
-test.assertEqual(len(cells), expect, msg="number filtered cells")
+filtered = comm.allreduce(len(cells), op=MPI.SUM)
+test.assertEqual(filtered, expect, msg="number filtered cells")
 cumsize += vz.sizeof()
 del vz
 
