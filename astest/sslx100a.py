@@ -38,9 +38,7 @@ vy = sief_s.VY
 mfz = sief_s.MFZ
 
 cmps = sief_s.getComponents()
-values = sief_s._cache["val"]
-idx = sief_s._cache["idx"]
-mask = sief_s._cache["msk"]
+test.assertEqual(len(cmps), 12, msg="cmps")
 
 test.assertAlmostEqual(vy.min(), -1.0, 8, msg="min")
 test.assertAlmostEqual(vy.max(), -1.0, 8, msg="max")

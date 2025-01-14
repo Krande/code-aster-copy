@@ -31,6 +31,7 @@ try:
 except ImportError:
     HAS_MATPLOTLIB = False
 
+import sys
 import warnings
 
 import numpy as np
@@ -220,6 +221,9 @@ class ComponentOnCells:
             Args:
                 values (ndarray): Vector of values, restricted or not.
                 undefined (float: Value used for undefined components.
+
+            Returns:
+                ndarray: Vector of values on all cells (extended with 'undefined')
             """
             return np.where(self._mask == True, values, undefined)
 
@@ -246,12 +250,18 @@ class ComponentOnCells:
                 values (ndarray): Vector of values, consistent with mask and idx.
 
             Returns:
-                ndarray: Vector of values on inner cells only (extended with 0.
-                    if necessary).
+                ndarray: Vector of values on inner cells.
             """
-            values = self.expanded_values(self.masked_values(values, undefined=0.0))
+            values = self.expanded_values(values)
             idx = self._idx[self._inner].ravel()
             idx = idx[idx >= 0]
+            if self._cells is not None:
+                mask = np.zeros(self._nbval, dtype=bool)
+                m_idx = self._idx[self._idx >= 0]
+                mask[m_idx] = self._mask
+            else:
+                mask = self._mask
+            idx = idx[mask[idx]]
             return values[idx]
 
         def expand(self, values):
@@ -298,6 +308,12 @@ class ComponentOnCells:
     def _cells(self):
         return self._descr._cells
 
+    def _inner_values(self, values):
+        return self._descr.inner_values(values)
+
+    def _masked_values(self, values, undefined):
+        return self._descr.masked_values(values, undefined)
+
     def copy(self):
         """Return a copy of the component."""
         return __class__(self._values.copy(), self._descr.copy())
@@ -316,12 +332,12 @@ class ComponentOnCells:
     def innerValues(self):
         """Returns the vector of local values (its shape is inconsistent
         with the internal description)."""
-        return self._descr.inner_values(self.values)
+        return self._inner_values(self.values)
 
     @property
     def values(self):
         """Returns the vector of values (undefined values set to zero)."""
-        return self._descr.masked_values(self._values, undefined=0.0)
+        return self._masked_values(self._values, undefined=0.0)
 
     @values.setter
     def values(self, values):
@@ -332,7 +348,7 @@ class ComponentOnCells:
             values (ndarray[float]): New values.
         """
         assert values.shape == self._values.shape
-        self._values = self._descr.masked_values(values)
+        self._values = self._masked_values(values, undefined=0.0)
 
     def getValuesByCells(self):
         """Returns the values by cells, expanded by 0.0 where undefined."""
@@ -369,6 +385,7 @@ class ComponentOnCells:
         lines.append(repr(self._descr))
         return "\n".join(lines)
 
+    # TODO plot on restricted
     def plot_descr(self, filename=None):
         """Plot the description of values by cells.
 
@@ -471,13 +488,13 @@ class ComponentOnCells:
 
     def __truediv__(self, other):
         other = self._check_consistency(other)
-        other = self._descr.masked_values(other, 1.0)
+        other = self._masked_values(other, 1.0)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
         return ComponentOnCells(self._values / other, self._descr.copy())
 
     def __rtruediv__(self, other):
-        values = self._descr.masked_values(self._values, 1.0)
+        values = self._masked_values(self._values, 1.0)
         if np.any(values == 0.0):
             raise ZeroDivisionError()
         return ComponentOnCells(1.0 / values * other, self._descr.copy())
@@ -501,7 +518,8 @@ class ComponentOnCells:
         Returns:
             float: minimum of the values.
         """
-        return self.innerValues.min()
+        masked = self._masked_values(self._values, undefined=sys.float_info.max)
+        return self._inner_values(masked).min()
 
     @mpi_max
     def max(self):
@@ -510,7 +528,8 @@ class ComponentOnCells:
         Returns:
             float: maximum of the values.
         """
-        return self.innerValues.max()
+        masked = self._masked_values(self._values, undefined=-sys.float_info.max)
+        return self._inner_values(masked).max()
 
     @mpi_sum
     def sum(self):
