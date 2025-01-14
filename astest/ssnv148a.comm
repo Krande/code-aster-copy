@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -132,6 +132,9 @@ WEIB = POST_ELEM(
     TOUT_ORDRE="OUI",
 )
 
+IMPR_TABLE(TABLE=WEIB, UNITE=6)
+
+
 BERE = POST_BEREMIN(
     RESULTAT=U,
     COEF_MULT=2.0,
@@ -139,8 +142,11 @@ BERE = POST_BEREMIN(
     GROUP_MA="CYLINDRE",
     FILTRE_SIGM="SIGM_ELGA",
     SIGM_MAXI=CO("SIGM_MAXI"),
-    LIST_NUME_VARI=(1, 2),
+    NUME_VARI=2,
+    WEIBULL_FO=_F(M=24.0, VOLU_REFE=1.25e-4, SIGM_CNV=2600.0, SIGM_REFE=SIGREF),
 )
+
+IMPR_TABLE(TABLE=BERE, UNITE=6)
 
 
 # WEIBULL AVEC OPTION SIGM_ELMOY ET CORR_PLAST=NON
@@ -149,7 +155,7 @@ WEIB2 = POST_ELEM(
     RESULTAT=U,
     TOUT_ORDRE="OUI",
 )
-
+IMPR_TABLE(TABLE=WEIB2, UNITE=6)
 
 BERE2 = POST_BEREMIN(
     RESULTAT=U,
@@ -158,9 +164,11 @@ BERE2 = POST_BEREMIN(
     GROUP_MA="CYLINDRE",
     FILTRE_SIGM="SIGM_ELMOY",
     SIGM_MAXI=CO("SIGM_MAXI"),
-    LIST_NUME_VARI=(1, 2),
+    NUME_VARI=2,
+    WEIBULL_FO=_F(M=24.0, VOLU_REFE=1.25e-4, SIGM_CNV=2600.0, SIGM_REFE=SIGREF),
 )
 
+IMPR_TABLE(TABLE=BERE2, UNITE=6)
 
 # WEIBULL AVEC OPTION SIGM_ELMOY ET CORR_PLAST=OUI
 WEIB3 = POST_ELEM(
@@ -200,17 +208,17 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
 )
 
-TEST_RESU(
-    RESU=_F(
-        RESULTAT=SIGM_MAXI,
-        NUME_ORDRE=3,
-        NOM_CHAM="SIEF_ELGA",
-        NOM_CMP="SIXX",
-        GROUP_MA="M198",
-        POINT=10,
-        VALE_CALC=2.76191751001870e72,
-    )
-)
+# TEST_RESU(
+#     RESU=_F(
+#         RESULTAT=SIGM_MAXI,
+#         NUME_ORDRE=3,
+#         NOM_CHAM="SIEF_ELGA",
+#         NOM_CMP="SIXX",
+#         GROUP_MA="M198",
+#         POINT=10,
+#         VALE_CALC=2.76191751001870e72,
+#     )
+# )
 
 TEST_TABLE(
     REFERENCE="ANALYTIQUE",

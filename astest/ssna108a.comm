@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,7 +198,6 @@ WEIB = POST_ELEM(
 IMPR_TABLE(TABLE=WEIB)
 F_WEIB = RECU_FONCTION(TABLE=WEIB, PARA_X="INST", PARA_Y="SIGMA_WEIBULL")
 
-LIST_NUME_VARI = (1, 2)
 LIST_NUME_SIEF = (3, 4, 5, 6)
 
 BERE = POST_BEREMIN(
@@ -206,7 +205,8 @@ BERE = POST_BEREMIN(
     DEFORMATION="PETIT",
     GROUP_MA="COUL_7",
     FILTRE_SIGM="SIGM_ELGA",
-    LIST_NUME_VARI=LIST_NUME_VARI,
+    NUME_VARI=2,
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.0e-3, SIGM_REFE=2630.0e0),
 )
 IMPR_TABLE(TABLE=BERE)
 F_BERE = RECU_FONCTION(TABLE=BERE, PARA_X="INST", PARA_Y="SIGMA_WEIBULL")
@@ -251,8 +251,9 @@ BERELOG = POST_BEREMIN(
     DEFORMATION="GDEF_LOG",
     GROUP_MA="COUL_7",
     FILTRE_SIGM="SIGM_ELGA",
-    LIST_NUME_VARI=LIST_NUME_VARI,
+    NUME_VARI=2,
     LIST_NUME_SIEF=LIST_NUME_SIEF,
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.0e-3, SIGM_REFE=2630.0e0),
 )
 
 IMPR_TABLE(TABLE=BERELOG)
@@ -289,7 +290,8 @@ BERE2 = POST_BEREMIN(
     DEFORMATION="PETIT",
     GROUP_MA="COUL_7",
     FILTRE_SIGM="SIGM_ELMOY",
-    LIST_NUME_VARI=LIST_NUME_VARI,
+    NUME_VARI=2,
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.0e-3, SIGM_REFE=2630.0e0),
 )
 
 IMPR_TABLE(TABLE=BERE2)

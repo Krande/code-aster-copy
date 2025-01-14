@@ -59,13 +59,13 @@ POST_BEREMIN = MACRO(
         into=("SIGM_ELGA", "SIGM_ELMOY"),
         fr=tr("Option de moyennation des contraintes"),
     ),
-    LIST_NUME_VARI=SIMP(
+    NUME_VARI=SIMP(
         statut="o",
         typ="I",
-        fr=tr("Numéros des variables EPSPEQ et INDIPLAS"),
+        fr=tr("Numéro de la variable interne INDIPLAS"),
         val_min=1,
-        min=2,
-        max=2,
+        min=1,
+        max=1,
     ),
     b_gdeflog=BLOC(
         condition="""equal_to("DEFORMATION", 'GDEF_LOG')""",
@@ -88,12 +88,18 @@ POST_BEREMIN = MACRO(
         statut="f", typ="R", defaut=1.0, fr=tr("Coefficient à renseigner selon u4.81.22")
     ),
     WEIBULL=FACT(
-        statut="o",
+        statut="f",
         M=SIMP(statut="o", typ="R"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
-        SIGM_CNV=SIMP(statut="f", typ="R"),
         SIGM_REFE=SIMP(statut="o", typ="R"),
         SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
-        SEUIL_EPSP_CUMU=SIMP(statut="f", typ="R", defaut=1.0e-6),
+    ),
+    WEIBULL_FO=FACT(
+        statut="f",
+        M=SIMP(statut="o", typ="R"),
+        VOLU_REFE=SIMP(statut="o", typ="R"),
+        SIGM_CNV=SIMP(statut="o", typ="R"),
+        SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
     ),
 )
