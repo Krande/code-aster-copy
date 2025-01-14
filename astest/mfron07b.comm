@@ -1,0 +1,227 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Compilation of the MFront behaviour
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="ORTHO_PLAS", UNITE_MFRONT=38)
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+MA = LIRE_MAILLAGE(FORMAT="MED")
+
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
+
+### >>>>>>>>>>>>>>>>>
+### Model affectation
+### <<<<<<<<<<<<<<<<<
+
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D")))
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+E = 1000
+NU = 0.3
+YieldStrength = 1
+HillCoefF = 0.5
+HillCoefG = 0.1
+HillCoefH = 0.3
+HillCoefL = 0.5
+HillCoefM = 0.1
+HillCoefN = 0.8
+
+MAT_VOLUME = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=NU),
+    MFRONT=_F(
+        LISTE_COEF=(
+            E / (3 * (1 - 2 * NU)),
+            E / (2 * (1 + NU)),
+            YieldStrength,
+            HillCoefF,
+            HillCoefG,
+            HillCoefH,
+            HillCoefL,
+            HillCoefM,
+            HillCoefN,
+        )
+    ),
+)
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+CM_F = AFFE_MATERIAU(MAILLAGE=MA, AFFE=(_F(TOUT="OUI", MATER=MAT_VOLUME)))
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+EZZ = 1e-2
+
+CL_BAS = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="BAS", DZ=0))
+
+CL_FRONT = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="DEVANT", DX=0))
+
+CL_GAUCHE = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="GAUCHE", DY=0))
+
+CL_HAUT = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="HAUT", DZ=1))
+
+CO_HAUT = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, EZZ))
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+L_INST = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=20)))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Uniaxial loading parallel to the 1st-direction
+### of the material orthotropic coordinate system
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+ALPHA = 0
+BETA = 90
+GAMMA = 0
+
+ELEMPRO1 = AFFE_CARA_ELEM(MASSIF=_F(ANGL_REP=(ALPHA, BETA, GAMMA), GROUP_MA="VOLUME"), MODELE=MO)
+
+RESU1 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM_F,
+    CARA_ELEM=ELEMPRO1,
+    EXCIT=(
+        _F(CHARGE=CL_BAS),
+        _F(CHARGE=CL_FRONT),
+        _F(CHARGE=CL_GAUCHE),
+        _F(CHARGE=CL_HAUT, FONC_MULT=CO_HAUT),
+    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, TOUT="OUI"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-8),
+)
+
+RESU1 = CALC_CHAMP(reuse=RESU1, RESULTAT=RESU1, CONTRAINTE="SIEF_NOEU", DEFORMATION="EPSI_NOEU")
+
+TEST_RESU(
+    RESU=_F(
+        INST=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU1,
+        NOM_CHAM="SIEF_NOEU",
+        GROUP_NO="NO1",
+        NOM_CMP="SIZZ",
+        VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefH) ** 0.5),
+        VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefH) ** 0.5),
+    )
+)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Uniaxial loading parallel to the 2nd-direction
+### of the material orthotropic coordinate system
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+ALPHA = 0
+BETA = 0
+GAMMA = 90
+
+ELEMPRO2 = AFFE_CARA_ELEM(MASSIF=_F(ANGL_REP=(ALPHA, BETA, GAMMA), GROUP_MA="VOLUME"), MODELE=MO)
+
+RESU2 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM_F,
+    CARA_ELEM=ELEMPRO2,
+    EXCIT=(
+        _F(CHARGE=CL_BAS),
+        _F(CHARGE=CL_FRONT),
+        _F(CHARGE=CL_GAUCHE),
+        _F(CHARGE=CL_HAUT, FONC_MULT=CO_HAUT),
+    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, TOUT="OUI"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-8),
+)
+
+RESU2 = CALC_CHAMP(reuse=RESU2, RESULTAT=RESU2, CONTRAINTE="SIEF_NOEU", DEFORMATION="EPSI_NOEU")
+
+TEST_RESU(
+    RESU=_F(
+        INST=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU2,
+        NOM_CHAM="SIEF_NOEU",
+        GROUP_NO="NO1",
+        NOM_CMP="SIZZ",
+        VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefG) ** 0.5),
+        VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefG) ** 0.5),
+    )
+)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Uniaxial loading parallel to the 3rd-direction
+### of the material orthotropic coordinate system
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+ALPHA = 0
+BETA = 0
+GAMMA = 0
+
+ELEMPRO3 = AFFE_CARA_ELEM(MASSIF=_F(ANGL_REP=(ALPHA, BETA, GAMMA), GROUP_MA="VOLUME"), MODELE=MO)
+
+RESU3 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM_F,
+    CARA_ELEM=ELEMPRO3,
+    EXCIT=(
+        _F(CHARGE=CL_BAS),
+        _F(CHARGE=CL_FRONT),
+        _F(CHARGE=CL_GAUCHE),
+        _F(CHARGE=CL_HAUT, FONC_MULT=CO_HAUT),
+    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, TOUT="OUI"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-8),
+)
+
+RESU3 = CALC_CHAMP(reuse=RESU3, RESULTAT=RESU3, CONTRAINTE="SIEF_NOEU", DEFORMATION="EPSI_NOEU")
+
+TEST_RESU(
+    RESU=_F(
+        INST=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU3,
+        NOM_CHAM="SIEF_NOEU",
+        GROUP_NO="NO1",
+        NOM_CMP="SIZZ",
+        VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefG + HillCoefH) ** 0.5),
+        VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefG + HillCoefH) ** 0.5),
+    )
+)
+
+FIN()

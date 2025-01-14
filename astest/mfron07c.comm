@@ -1,0 +1,157 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Compilation of the MFront behaviour
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="ORTHO_ELAS", UNITE_MFRONT=38)
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+MA = LIRE_MAILLAGE(FORMAT="MED")
+
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(_F(TOUT_GROUP_MA="OUI"), _F(NOM="NO1", GROUP_NO="A")),
+    CREA_GROUP_MA=(
+        _F(NOM="GAUCHE", GROUP_MA="DA"),
+        _F(NOM="HAUT", GROUP_MA="CD"),
+        _F(NOM="BAS", GROUP_MA="AB"),
+        _F(NOM="SURFACE", GROUP_MA="S1"),
+    ),
+)
+
+### >>>>>>>>>>>>>>>>>
+### Model affectation
+### <<<<<<<<<<<<<<<<<
+
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS")))
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+# rk: parameters are defined consistently for transverse isotropy with respect to the 1st-direction of the material orthotropic coordinate system (2nd and 3rd-directions are thus equivalent)
+
+YoungModulus1 = 100
+YoungModulus2 = 300
+YoungModulus3 = YoungModulus2
+PoissonRatio12 = 0.1
+PoissonRatio23 = 0.2
+PoissonRatio13 = PoissonRatio12
+ShearModulus12 = 200
+
+MAT_SURFACE = DEFI_MATERIAU(
+    ELAS=_F(E=YoungModulus1, NU=PoissonRatio12),
+    MFRONT=_F(
+        LISTE_COEF=(
+            YoungModulus1,
+            YoungModulus2,
+            YoungModulus3,
+            PoissonRatio12,
+            PoissonRatio23,
+            PoissonRatio13,
+            ShearModulus12,
+        )
+    ),
+)
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+CM_F = AFFE_MATERIAU(MAILLAGE=MA, AFFE=(_F(TOUT="OUI", MATER=MAT_SURFACE)))
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+EYY = 1e-2
+
+CL_BAS = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="BAS", DY=0))
+
+CL_GAUCHE = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="GAUCHE", DX=0))
+
+CL_HAUT = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="HAUT", DY=1))
+
+CO_HAUT = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, EYY))
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+L_INST = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=5)))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Uniaxial loading parallel to the 1st-direction
+### of the material orthotropic coordinate system
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# rk: Note that since 2nd and 3rd-directions are equivalent, the axisymmetrical modelisation is correct
+
+ALPHA = 90
+
+ELEMPRO1 = AFFE_CARA_ELEM(MASSIF=_F(ANGL_REP=(ALPHA), GROUP_MA="SURFACE"), MODELE=MO)
+
+RESU1 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM_F,
+    CARA_ELEM=ELEMPRO1,
+    EXCIT=(_F(CHARGE=CL_BAS), _F(CHARGE=CL_GAUCHE), _F(CHARGE=CL_HAUT, FONC_MULT=CO_HAUT)),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, TOUT="OUI"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-8),
+)
+
+RESU1 = CALC_CHAMP(reuse=RESU1, RESULTAT=RESU1, CONTRAINTE="SIEF_NOEU", DEFORMATION="EPSI_NOEU")
+
+TEST_RESU(
+    RESU=_F(
+        INST=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU1,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO1",
+        NOM_CMP="EPXX",
+        VALE_REFE=-PoissonRatio12 * EYY,
+        VALE_CALC=-0.0010000000000000005,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU1,
+        NOM_CHAM="SIEF_NOEU",
+        GROUP_NO="NO1",
+        NOM_CMP="SIYY",
+        VALE_REFE=YoungModulus1 * EYY,
+        VALE_CALC=0.9999999999999996,
+    )
+)
+
+FIN()

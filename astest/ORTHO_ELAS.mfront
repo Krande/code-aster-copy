@@ -1,0 +1,24 @@
+@Parser Implicit;
+@Behaviour ORTHO_ELAS;
+@Author Goustan Bacquaert;
+@Date 09/01/2025;
+
+@Algorithm NewtonRaphson;
+@CompareToNumericalJacobian false;
+@Theta 1;
+@Epsilon 1e-14;
+
+@OrthotropicBehaviour;
+@RequireStiffnessOperator;
+
+@ComputeStress{
+	sig = D*eel;
+}
+
+@Integrator{
+    feel = deel-deto;
+}
+
+@TangentOperator{
+    Dt = D;
+}
