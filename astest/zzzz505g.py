@@ -41,7 +41,7 @@ CA.init("--test")
 
 test = CA.TestCase()
 
-refinement = int(os.environ.get("ZZZZ505G_REFINEMENT", 0))
+refinement = int(os.environ.get("ZZZZ505_REFINEMENT", 0))
 
 mesh = CA.Mesh.buildCube(refine=refinement)
 model = CA.Model(mesh)

@@ -546,6 +546,8 @@ class ComponentOnCells:
         Returns:
             float: mean of the values.
         """
+        if len(self.innerValues) == 0:
+            return 0.0
         return self.innerValues.mean()
 
     def minimum(self, other):

@@ -17,6 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -38,7 +39,7 @@ def chrono(title):
 
 CA.init("--test")
 
-refinement = 1
+refinement = int(os.environ.get("ZZZZ505_REFINEMENT", 1))
 create_mesh = False
 
 test = CA.TestCase()
@@ -47,7 +48,7 @@ comm = MPI.ASTER_COMM_WORLD
 
 workdir = Path("/local00/tmp")
 workdir.mkdir(exist_ok=True, parents=True)
-meshdir = workdir / f"cube_refined_x{refinement}"
+meshdir = workdir / f"cube_refined_x{refinement}-{comm.size}p"
 meshdir.mkdir(exist_ok=True)
 
 filename = workdir / f"cube_refined_x{refinement}.med"
@@ -61,8 +62,9 @@ if create_mesh:
 
     mesh = CA.ParallelMesh()
     mesh.readMedFile(filename, partitioned=False, deterministic=True, verbose=1)
-
     mesh.printMedFile(local_file, local=True)
+
+    test.assertTrue(local_file.exists())
     CA.close(exit=True)
 
 test.assertTrue(local_file.exists())
@@ -234,13 +236,13 @@ with chrono("getValuesByCells"):
     cells_sizes = weight.getValuesByCells().sum(axis=1)
 
 quad_size = 1.0 / 2 ** (refinement * 2)
-test.assertAlmostEqual(
-    (cells_sizes[mesh.getCells("FRONT")]).mean(), quad_size, 8, msg="size of quad"
-)
+cells_front = mesh.getCells("FRONT")
+if cells_front:
+    test.assertAlmostEqual(cells_sizes[cells_front].mean(), quad_size, 8, msg="size of quad")
 hexa_size = 1.0 / 2 ** (refinement * 3)
-test.assertAlmostEqual(
-    (cells_sizes[mesh.getCells("VOLUME")]).mean(), hexa_size, 8, msg="size of hexa"
-)
+cells_vol = mesh.getCells("VOLUME")
+if cells_vol:
+    test.assertAlmostEqual(cells_sizes[vol].mean(), hexa_size, 8, msg="size of hexa")
 
 # \int_{0}^{1} y.dy = 0.5
 vy = chs.Y
