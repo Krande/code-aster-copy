@@ -6,3 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit verification parallel
 
 F comm zzzz505h.py D 1
+R nom cube_refined_x1-2p D 0

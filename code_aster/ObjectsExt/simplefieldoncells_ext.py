@@ -323,7 +323,7 @@ class ComponentOnCells:
         # for sys.getsizeof(obj)
         return self.sizeof()
 
-    @mpi_sum
+    @mpi_sum(hpc=True)
     def sizeof(self):
         """Return the size of the data in bytes."""
         return self._values.nbytes + self._descr.sizeof()
@@ -373,8 +373,9 @@ class ComponentOnCells:
         return self._descr._nbcells
 
     @property
+    @mpi_sum(hpc=True)
     def size(self):
-        """Return the number of inner values of the vector."""
+        """Return the number of values of the component."""
         return len(self.innerValues)
 
     def __repr__(self):
@@ -511,7 +512,7 @@ class ComponentOnCells:
         other = self._check_consistency(other)
         return ComponentOnCells(np.power(self._values, other), self._descr.copy())
 
-    @mpi_min
+    @mpi_min(hpc=True)
     def min(self):
         """Return the minimum value.
 
@@ -521,7 +522,7 @@ class ComponentOnCells:
         masked = self._masked_values(self._values, undefined=sys.float_info.max)
         return self._inner_values(masked).min()
 
-    @mpi_max
+    @mpi_max(hpc=True)
     def max(self):
         """Return the maximum value.
 
@@ -531,7 +532,7 @@ class ComponentOnCells:
         masked = self._masked_values(self._values, undefined=-sys.float_info.max)
         return self._inner_values(masked).max()
 
-    @mpi_sum
+    @mpi_sum(hpc=True)
     def sum(self):
         """Return the sum of the values.
 
@@ -676,10 +677,8 @@ class ExtendedSimpleFieldOnCellsReal:
     @property
     def _cache(self):
         if self._ptr_cache is None:
-            self._ptr_cache = dict.fromkeys(["readonly", "val", "msk", "cmp", "idx", "nbpt"])
+            self._ptr_cache = dict.fromkeys(["readonly", "val", "msk", "idx", "nbpt"])
             self._ptr_cache["readonly"] = None
-        if self._ptr_cache["cmp"] is None:
-            self._ptr_cache["cmp"] = self.getComponents()
         if self._ptr_cache["val"] is None:
             self._ptr_cache["val"], self._ptr_cache["msk"], addr = self.toNumpy()
             nbcells = addr[0]
@@ -696,10 +695,12 @@ class ExtendedSimpleFieldOnCellsReal:
         return self._ptr_cache
 
     def __getattr__(self, component):
-        """Convenient shortcut to `getComponentValues()`."""
-        return self.getComponentValues(component)
+        """Convenient shortcut to `getComponentOnCells()`."""
+        if component not in self.getComponents():
+            raise AttributeError(f"'ComponentOnCells' object has no attribute {component!r}")
+        return self.getComponentOnCells(component)
 
-    def getComponentValues(self, component: str):
+    def getComponentOnCells(self, component: str):
         """Extract the values of a component.
 
         Args:
@@ -708,7 +709,7 @@ class ExtendedSimpleFieldOnCellsReal:
         """
         if self._cache["readonly"]:
             self._ptr_cache = None
-        icmp = self._cache["cmp"].index(component)
+        icmp = self.getComponents().index(component)
         self._cache["readonly"] = False
         return ComponentOnCells(
             self._cache["val"][:, icmp].copy(),
@@ -725,7 +726,7 @@ class ExtendedSimpleFieldOnCellsReal:
                 does not exist in the field.
             cfvalue (ComponentOnCells): Previously extracted component.
         """
-        icmp = self._cache["cmp"].index(component)
+        icmp = self.getComponents().index(component)
         # it directly overwrites '.CESV' vector in place
         self._cache["val"][:, icmp] = cfvalue.expand().values
 

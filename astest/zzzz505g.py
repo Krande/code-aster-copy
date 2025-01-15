@@ -57,12 +57,12 @@ with chrono("toSimpleFieldOnCells"):
 
 cumsize = 0
 
-# use False to force 'getComponentValues' to reset the cache
+# use False to force 'getComponentOnCells' to reset the cache
 before = chs.getValues(copy=False)[0]
 copied = before.copy()
 
 with chrono("chs.X"):
-    valx = chs.getComponentValues("X")
+    valx = chs.getComponentOnCells("X")
 with chrono("chs.Y"):
     valy = chs.Y
 

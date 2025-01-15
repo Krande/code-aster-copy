@@ -42,6 +42,8 @@ For example: use in the ``.export`` file:
 
 import os
 import pickle
+import time
+from contextlib import contextmanager
 from functools import wraps
 
 import numpy as np
@@ -303,3 +305,25 @@ class DebugArgs:
     def reset(cls):
         """Reset state"""
         cls.raised = False
+
+
+class DebugChrono:
+    """Helper to measure elapsed time."""
+
+    data = []
+
+    @classmethod
+    @contextmanager
+    def measure(cls, title):
+        """Measure elapsed time."""
+        t0 = time.time()
+        yield
+        elapsed = time.time() - t0
+        cls.data.append([title, elapsed])
+        print(f"elapsed time: {title}: {elapsed:.6f}", flush=True)
+
+    @classmethod
+    def save(cls, filename):
+        """Save data into a pickle file."""
+        with open(filename, "wb") as pick:
+            pickle.dump(cls.data, pick)

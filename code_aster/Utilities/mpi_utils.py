@@ -165,18 +165,28 @@ except ImportError:
 
 
 def _generator(mpi_op):
-    def decorator(func):
-        """Decorator that sums the value returned by each processor."""
-        comm = MPI.ASTER_COMM_WORLD
-        if comm.size <= 1:
-            return func
+    def decorator(hpc):
+        """Decorator that executes a MPI operator on the value returned
+        by each processor.
 
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            """Wrapper"""
-            return comm.allreduce(func(*args, **kwargs), op=mpi_op)
+        Args:
+            hpc (bool): Tells in which HPC mode the decorator is enabled.
+        """
 
-        return wrapper
+        def dec_mode(func):
+            """Second level wrapper"""
+            comm = MPI.ASTER_COMM_WORLD
+            if comm.size <= 1 or hpc == useHPCMode():
+                return func
+
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                """Wrapper"""
+                return comm.allreduce(func(*args, **kwargs), op=mpi_op)
+
+            return wrapper
+
+        return dec_mode
 
     return decorator
 
