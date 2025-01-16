@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,8 @@ interface
                       nbPhase, nbVari, &
                       deltaTime01, deltaTime12, time2, &
                       tempInit, temp1, temp2, &
-                      metaPrev, metaCurr)
+                      metaPrev, metaCurr, &
+                      lNodeDebug_)
         use Metallurgy_type
         integer, intent(in) :: jvMaterCode
         type(META_MaterialParameters), intent(in) :: metaPara
@@ -30,5 +31,6 @@ interface
         real(kind=8), intent(in) :: tempInit, temp1, temp2
         real(kind=8), intent(in) :: metaPrev(nbVari)
         real(kind=8), intent(out) :: metaCurr(nbVari)
+        aster_logical, optional, intent(in) :: lNodeDebug_
     end subroutine nzcomp
 end interface

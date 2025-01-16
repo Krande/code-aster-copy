@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine te0067(option, nomte)
 #include "asterfort/nzcomp.h"
 #include "asterfort/nzcompTemper.h"
 #include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
 #include "MeshTypes_type.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -64,11 +65,18 @@ subroutine te0067(option, nomte)
     integer :: jvComporMeta, itab(7), iret, jvComporMetaTemper
     aster_logical :: hasTemper, prevMetaIsTemper
     type(META_MaterialParameters) :: metaPara
+    aster_logical, parameter :: lNodeDebug = ASTER_FALSE
+    integer :: iadzi, iazk24
+    character(len=8) :: cellName
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', nno=nbNode)
     ASSERT(nbNode .le. MT_NNOMAX2D)
+
+! - Current cell
+    call tecael(iadzi, iazk24)
+    cellName = zk24(iazk24-1+3) (1:8)
 
 ! - Input/Output fields
     call jevech('PMATERC', 'L', jvMater)
@@ -145,6 +153,7 @@ subroutine te0067(option, nomte)
                               zr(jvPhaseOut+nbVariTemper*(iNode-1)))
 
         else
+
             deltaTime01 = zr(jvTime+1)
             tempInit = zr(jvTempInit+iNode-1)
             call nzcomp(jvMaterCode, metaPara, numeComp, &
@@ -152,7 +161,8 @@ subroutine te0067(option, nomte)
                         deltaTime01, deltaTime12, time2, &
                         tempInit, temp1, temp2, &
                         zr(jvPhaseIn+nbVari*(iNode-1)), &
-                        zr(jvPhaseOut+nbVari*(iNode-1)))
+                        zr(jvPhaseOut+nbVari*(iNode-1)), &
+                        lNodeDebug)
         end if
     end do
 !
