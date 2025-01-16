@@ -79,7 +79,7 @@ class PostBeremin:
     # data
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
     _intvar_idx = _stress_idx = None
-    _use_hist = _use_function = None
+    _use_hist = _use_indiplas = _use_function = None
     _coef_mult = None
     _weib_params = None
     # result to compute weibull stress
@@ -113,13 +113,17 @@ class PostBeremin:
         of the behaviour.
 
         Args:
-            intvar_idx (list[int], optional): Indexes to access to EPSPEQ and
-                INDIPLAS internal variables.
+            intvar_idx (list[int], optional): Indexes to access to
+                INDIPLAS internal variable.
             stress_idx (list[int], optional): Indexes to extract log stresses
                 tensor components.
         """
         if intvar_idx:
-            self._intvar_idx = intvar_idx
+            if intvar_idx > 0:
+                self._use_indiplas = True
+                self._intvar_idx = intvar_idx
+            else:
+                self._use_indiplas = False
         if stress_idx:
             assert len(stress_idx) in (4, 6), stress_idx
             self._stress_idx = stress_idx
@@ -320,12 +324,14 @@ class PostBeremin:
 
         id_store = 0
         for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
-            indip = self.get_internal_variables(idx)
+            if self._use_indiplas:
+                indip = self.get_internal_variables(idx)
 
             logger.info("computing major stress...")
             sig1 = self.get_major_stress(idx)
             sig1 = self.apply_stress_correction(sig1, idx)
-            sig1 = self.apply_threshold(sig1, indip)
+            if self._use_indiplas:
+                sig1 = self.apply_threshold(sig1, indip)
 
             if self._use_hist:
                 logger.info("computing maxi at index %d...", idx)
@@ -383,7 +389,7 @@ class PostBeremin:
 
         return sigma_weibull, sigma_weibullpm, proba_weibull
 
-    def store_sigm_maxi(self, idx, time, sig1, model):  # , cells_ids):
+    def store_sigm_maxi(self, idx, time, sig1, model):
         """Store the major stress ^M into the output result.
 
         Args:

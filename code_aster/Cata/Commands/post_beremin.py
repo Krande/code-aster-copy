@@ -60,12 +60,7 @@ POST_BEREMIN = MACRO(
         fr=tr("Option de moyennation des contraintes"),
     ),
     NUME_VARI=SIMP(
-        statut="o",
-        typ="I",
-        fr=tr("Numéro de la variable interne INDIPLAS"),
-        val_min=1,
-        min=1,
-        max=1,
+        statut="f", typ="I", fr=tr("Numéro de la variable interne INDIPLAS"), min=1, max=1, defaut=0
     ),
     b_gdeflog=BLOC(
         condition="""equal_to("DEFORMATION", 'GDEF_LOG')""",
