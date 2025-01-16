@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine smcarc(nb_hist, nb_phase, ftrc, trc, &
 !
     implicit none
 !
+#include "asterfort/assert.h"
 #include "asterfort/smcaba.h"
 #include "asterfort/smcavo.h"
 #include "asterfort/smcomo.h"
@@ -197,6 +198,15 @@ subroutine smcarc(nb_hist, nb_phase, ftrc, trc, &
             end if
         end if
     end if
+
+    ! if (vari_curr(PFERRITE) .gt. 1.d0) then
+    !     WRITE (6, *) "zcold0: ", zcold0
+    !     WRITE (6, *) "tmf: ", tmf
+    !     WRITE (6, *) "temp_curr: ", temp_curr
+    !     WRITE (6, *) "metaSteelPara%ar3: ", metaSteelPara%ar3
+    !     WRITE (6, *) "PFERRITe: ", vari_prev(PFERRITE), dz(PFERRITE), vari_curr(PFERRITE)
+    !     ASSERT(ASTER_FALSE)
+    ! end if
 
 ! - Compute "hot" phase
     zaust = un-vari_curr(PFERRITE)+vari_curr(PPERLITE)+ &
