@@ -172,7 +172,7 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
     dtime = instap-instam
 
 ! - Anisotropic case
-    if (use_orient(angmas, 3, -1.d0)) then
+    if (use_orient(angmas, 3)) then
         call matrot(angmas, drot)
         call mgis_set_rotation_matrix(extern_addr, drot)
     end if

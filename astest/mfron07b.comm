@@ -99,6 +99,48 @@ CO_HAUT = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, EZZ))
 L_INST = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=20)))
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Uniaxial loading parallel to the 3rd-direction
+### of the material orthotropic coordinate system
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+ALPHA = 0
+BETA = 0
+GAMMA = 0
+
+ELEMPRO3 = AFFE_CARA_ELEM(MASSIF=_F(ANGL_REP=(ALPHA, BETA, GAMMA), GROUP_MA="VOLUME"), MODELE=MO)
+
+RESU3 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM_F,
+    CARA_ELEM=ELEMPRO3,
+    EXCIT=(
+        _F(CHARGE=CL_BAS),
+        _F(CHARGE=CL_FRONT),
+        _F(CHARGE=CL_GAUCHE),
+        _F(CHARGE=CL_HAUT, FONC_MULT=CO_HAUT),
+    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, TOUT="OUI"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-8),
+)
+
+RESU3 = CALC_CHAMP(reuse=RESU3, RESULTAT=RESU3, CONTRAINTE="SIEF_NOEU", DEFORMATION="EPSI_NOEU")
+
+TEST_RESU(
+    RESU=_F(
+        INST=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU3,
+        NOM_CHAM="SIEF_NOEU",
+        GROUP_NO="NO1",
+        NOM_CMP="SIZZ",
+        VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefG + HillCoefH) ** 0.5),
+        VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefG + HillCoefH) ** 0.5),
+    )
+)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### Uniaxial loading parallel to the 1st-direction
 ### of the material orthotropic coordinate system
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -179,48 +221,6 @@ TEST_RESU(
         NOM_CMP="SIZZ",
         VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefG) ** 0.5),
         VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefG) ** 0.5),
-    )
-)
-
-### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-### Uniaxial loading parallel to the 3rd-direction
-### of the material orthotropic coordinate system
-### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-ALPHA = 0
-BETA = 0
-GAMMA = 0
-
-ELEMPRO3 = AFFE_CARA_ELEM(MASSIF=_F(ANGL_REP=(ALPHA, BETA, GAMMA), GROUP_MA="VOLUME"), MODELE=MO)
-
-RESU3 = STAT_NON_LINE(
-    MODELE=MO,
-    CHAM_MATER=CM_F,
-    CARA_ELEM=ELEMPRO3,
-    EXCIT=(
-        _F(CHARGE=CL_BAS),
-        _F(CHARGE=CL_FRONT),
-        _F(CHARGE=CL_GAUCHE),
-        _F(CHARGE=CL_HAUT, FONC_MULT=CO_HAUT),
-    ),
-    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, TOUT="OUI"),
-    INCREMENT=_F(LIST_INST=L_INST),
-    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-8),
-)
-
-RESU3 = CALC_CHAMP(reuse=RESU3, RESULTAT=RESU3, CONTRAINTE="SIEF_NOEU", DEFORMATION="EPSI_NOEU")
-
-TEST_RESU(
-    RESU=_F(
-        INST=1,
-        REFERENCE="ANALYTIQUE",
-        RESULTAT=RESU3,
-        NOM_CHAM="SIEF_NOEU",
-        GROUP_NO="NO1",
-        NOM_CMP="SIZZ",
-        VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefG + HillCoefH) ** 0.5),
-        VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefG + HillCoefH) ** 0.5),
     )
 )
 
