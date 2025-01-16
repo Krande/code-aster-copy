@@ -73,7 +73,6 @@ class ComponentOnCells:
     """
 
     # WARNING: _idx must be used to access values only on a not restricted component.
-    # FIXME '_mask' toujours True
     # '_discr' is not used but interesting in `Description.__repr__`.
 
     class Description:
