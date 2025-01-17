@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,8 @@ try:
     import med_aster
     import libaster
 
+    # compatibility
+    aster_core.matfpe = libaster.matfpe
     # setup, do not keep references here...
     del aster, aster_core, aster_fonctions, med_aster, libaster
 

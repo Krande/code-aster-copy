@@ -36,12 +36,13 @@ object.
 import json
 import os
 import os.path as osp
-import shutil
 import platform
 import re
+import shutil
 import sys
 import warnings
 from argparse import SUPPRESS, Action, ArgumentParser
+from contextlib import contextmanager
 
 try:
     import yaml
@@ -644,3 +645,11 @@ def get_program_path(program):
     if not value or not osp.isfile(value):
         value = program
     return value
+
+
+@contextmanager
+def disable_fpe():
+    """Context manager to locally disable FPE interception."""
+    libaster.matfpe(-1)
+    yield
+    libaster.matfpe(1)

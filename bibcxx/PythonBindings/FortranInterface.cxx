@@ -3,7 +3,7 @@
  * @brief Python bindings for Fortran interface.
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -121,6 +121,18 @@ Returns:
     str: Current value
     )",
              py::arg( "value" ) = "" );
+
+    mod.def( "matfpe", &call_matfpe,
+             R"(
+Enable or disable floating point exceptions.
+
+Arguments:
+    value (int): -1 to disable the FPE interception, 1 to enable FPE detection.
+
+Returns:
+    str: Current value
+    )",
+             py::arg( "value" ) );
 
     mod.def( "set_option", &set_option, R"(
 Set an option value to be used from Fortran operators.

@@ -6,7 +6,7 @@
  * @brief Definition of interface functions between C++ and Fortran
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,6 +53,8 @@ bool deleteTemporaryObjects( void );
 bool deleteCachedObjects( void );
 
 std::string onFatalError( const std::string value = "" );
+
+void call_matfpe( const int value );
 
 void set_option( const std::string &option, ASTERDOUBLE value );
 
