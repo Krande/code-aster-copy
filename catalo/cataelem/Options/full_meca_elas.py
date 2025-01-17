@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ PVARCPR = InputParameter(phys=PHY.VARI_R, comment=""" PVARCPR : VARIABLES DE COM
 
 
 PCAORIE = InputParameter(
-    phys=PHY.CAORIE, comment=""" CHAMP DE CARACTERISTIQUES D'ORIENTATION. CONCEPT CARA_ELEM """
+    phys=PHY.CAORIE_R, comment=""" CHAMP DE CARACTERISTIQUES D'ORIENTATION. CONCEPT CARA_ELEM """
 )
 
 
@@ -52,7 +52,7 @@ PCONTPR = OutputParameter(phys=PHY.SIEF_R, type="ELGA")
 PVARIPR = OutputParameter(phys=PHY.VARI_R, type="ELGA")
 
 
-PCACO3D = OutputParameter(phys=PHY.CACO3D, type="ELEM", comment=""" NE SERT QUE POUR COQUE_3D """)
+PCACO3D = OutputParameter(phys=PHY.CACO3D_R, type="ELEM", comment=""" NE SERT QUE POUR COQUE_3D """)
 
 
 FULL_MECA_ELAS = Option(

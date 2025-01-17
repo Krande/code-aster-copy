@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl, &
 !  IN     : CAELEM : CHARACTER*8 , SCALAIRE
 !                    NOM DU CONCEPT CARA_ELEM ASSOCIE A L'ETUDE
 !  IN     : IRANA1 : INTEGER , SCALAIRE
-!                    RANG DE LA COMPOSANTE <A1> DE LA GRANDEUR <CAGNBA>
+!                    RANG DE LA COMPOSANTE <A1> DE LA GRANDEUR <CAGNBA_R>
 !  IN     : ICABL  : INTEGER , SCALAIRE
 !                    NUMERO DU CABLE
 !  IN     : NBNOCA : INTEGER , VECTEUR DE DIMENSION NBCABL
@@ -353,9 +353,9 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl, &
     call jeveuo(captma, 'L', jptma)
 !
     iasmax = zi(jdesc+1)
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'LONMAX', ncaba)
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA_R'), 'LONMAX', ncaba)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('NB_EC', 'CAGNBA', 'GRANDEUR', repi=nbec)
+    call dismoi('NB_EC', 'CAGNBA_R', 'GRANDEUR', repi=nbec)
 !
 !.... EXTRACTION DE LA VALEUR DE L'AIRE DE LA SECTION DROITE AFFECTEE
 !.... A LA PREMIERE MAILLE APPARTENANT AU CABLE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,10 +95,10 @@ module cara_elem_parameter_module
     integer, parameter :: ACE_NB_CARTE = 4
     integer, parameter :: ACE_NB_CARTE_CMP = 3
     character(len=10), parameter :: ACE_CARTE(ACE_NB_CARTE*ACE_NB_CARTE_CMP) = [ &
-                                    '.CARDINFO ', 'CINFDI    ', 'DISCRET   ', &
-                                    '.CARDISCK ', 'CADISK    ', 'DISCRET   ', &
-                                    '.CARDISCM ', 'CADISM    ', 'DISCRET   ', &
-                                    '.CARDISCA ', 'CADISA    ', 'DISCRET   ']
+                                    '.CARDINFO ', 'CINFDI_R  ', 'DISCRET   ', &
+                                    '.CARDISCK ', 'CADISK_R  ', 'DISCRET   ', &
+                                    '.CARDISCM ', 'CADISM_R  ', 'DISCRET   ', &
+                                    '.CARDISCA ', 'CADISA_R  ', 'DISCRET   ']
 !
     integer, parameter :: ACE_CAR_DINFO = 1
     integer, parameter :: ACE_CAR_DISCK = 2
@@ -106,17 +106,17 @@ module cara_elem_parameter_module
     integer, parameter :: ACE_CAR_DISCA = 4
 
 ! #define ACE_NB_CARTE  14
-!         '.CARCABLE', 'CACABL   ', 'CABLE     ',
-!         '.CARGENBA', 'CAGNBA   ', 'BARRE     ',
+!         '.CARCABLE', 'CACABL_R ', 'CABLE     ',
+!         '.CARGENBA', 'CAGNBA_R ', 'BARRE     ',
 !         '.CARMASSI', 'CAMA_R   ', 'MASSIF    ',
 !         '.CARCOQUE', 'CACOQU_R ', 'COQUE     ',
 !         '.CARCOQUF', 'CACOQU_F ', 'COQUE    ',
-!         '.CARARCPO', 'CAARPO   ', 'POUTRE    ',
-!         '.CARGENPO', 'CAGNPO   ', 'POUTRE    ',
-!         '.CARGEOPO', 'CAGEPO   ', 'POUTRE    ',
-!         '.CARPOUFL', 'CAPOUF   ', 'POUTREFLUI',
+!         '.CARARCPO', 'CAARPO_R ', 'POUTRE    ',
+!         '.CARGENPO', 'CAGNPO_R ', 'POUTRE    ',
+!         '.CARGEOPO', 'CAGEPO_R ', 'POUTRE    ',
+!         '.CARPOUFL', 'CAPOUF_R ', 'POUTREFLUI',
 !         '.CVENTCXF', 'VENTCX_F ', 'VENT     ',
-!         '.CARORIEN', 'CAORIE   ', 'ORIENT   ',
+!         '.CARORIEN', 'CAORIE_R ', 'ORIENT   ',
 !
 ! --------------------------------------------------------------------------------------------------
 !

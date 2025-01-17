@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -195,7 +195,7 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
         ! E1) PESA_R / ROTA_R sont en général utilisés sans préciser les mailles
         if (nomgd .eq. 'PESA_R') cycle
         if (nomgd .eq. 'ROTA_R') cycle
-        if (nomgd .eq. 'CAGNPO') cycle
+        if (nomgd .eq. 'CAGNPO_R') cycle
         !
         ! E2) Valeurs fournies par le code d'AFFE_CHAR_MECA
         if (nomgd(1:5) .eq. 'FORC_' .and. nocmp .eq. 'REP') cycle
@@ -206,24 +206,24 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
         if (nomgd .eq. 'CAMA_R' .and. nocmp .eq. 'C') cycle
         if (nomgd .eq. 'CACOQU_R' .and. nocmp .eq. 'KAPPA') cycle
         if (nomgd .eq. 'CACOQU_R' .and. nocmp .eq. 'CTOR') verif_coef_drz = ASTER_TRUE
-        if (nomgd .eq. 'CAORIE' .and. nocmp .eq. 'ALPHA') cycle
+        if (nomgd .eq. 'CAORIE_R' .and. nocmp .eq. 'ALPHA') cycle
         !
-        if (nomgd .eq. 'CINFDI' .and. nocmp(1:3) .eq. 'REP') cycle
-        if (nomgd .eq. 'CINFDI' .and. nocmp(1:3) .eq. 'SYM') cycle
+        if (nomgd .eq. 'CINFDI_R' .and. nocmp(1:3) .eq. 'REP') cycle
+        if (nomgd .eq. 'CINFDI_R' .and. nocmp(1:3) .eq. 'SYM') cycle
         !
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'TSEC') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'HY1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'HZ1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'HY2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'HZ2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EPY1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EPY2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EPZ1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EPZ2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EP1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'EP2') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'R1') cycle
-        if (nomgd .eq. 'CAGEPO' .and. nocmp .eq. 'R2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'TSEC') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HY1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HZ1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HY2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'HZ2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EPY1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EPY2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EPZ1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EPZ2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EP1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'EP2') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'R1') cycle
+        if (nomgd .eq. 'CAGEPO_R' .and. nocmp .eq. 'R2') cycle
         !
         nbmapb = 0
         do kma = 1, nbma_verif

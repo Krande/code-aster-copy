@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -236,7 +236,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, &
 ! --------------------------------------------------------------------------------------------------
 !   Affectation des valeurs du tampon dans la carte orientation :
     if (nocaor .gt. 0) then
-        call alcart('G', cartor, noma, 'CAORIE')
+        call alcart('G', cartor, noma, 'CAORIE_R')
         call jeveuo(tmpnor, 'E', jdcmpo)
         call jeveuo(tmpvor, 'E', jdvlvo)
         zk8(jdcmpo) = 'ALPHA'

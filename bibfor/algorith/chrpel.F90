@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -592,7 +592,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
         licmp(7) = 'O_X'
         licmp(8) = 'O_Y'
         licmp(9) = 'O_Z'
-        call mecact('V', carte, 'MODELE', model, 'CAORIE', &
+        call mecact('V', carte, 'MODELE', model, 'CAORIE_R', &
                     ncmp=9, lnomcmp=licmp, vr=valecarte)
 !
 !       CREATION D UN CHAM_ELEM D'ANGLES EN LISANT LES ANGL_REP

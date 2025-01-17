@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ PACCPLU = InputParameter(phys=PHY.DEPL_R, comment=""" Acceleration at end of cur
 PALPHAR = InputParameter(phys=PHY.NEUT_R, comment="""""")
 
 PANGREP = InputParameter(
-    phys=PHY.CAORIE,
+    phys=PHY.CAORIE_R,
     comment="""  PANGREP : ANGLES DEFINISSANT LE NOUVEAU REPERE
 """,
 )
@@ -58,7 +58,7 @@ PANGREP = InputParameter(
 PBORNPI = InputParameter(phys=PHY.PILO_R, comment="""""")
 
 PCAARPO = InputParameter(
-    phys=PHY.CAARPO,
+    phys=PHY.CAARPO_R,
     container="CARA!.CARARCPO",
     comment="""  PCAARPO : CARACTERISTIQUE DE COUDE (POUTRE),
            NECESSITE DE FOURNIR LE CONCEPT PRODUIT PAR AFFE_CARA_ELEM
@@ -67,7 +67,7 @@ PCAARPO = InputParameter(
 )
 
 PCACABL = InputParameter(
-    phys=PHY.CACABL,
+    phys=PHY.CACABL_R,
     comment=""" CARACTERISTIQUES DES ELEMENTS DE CABLE
 """,
 )
@@ -82,10 +82,10 @@ PCACOQU = InputParameter(
 """,
 )
 
-PCADISA = InputParameter(phys=PHY.CADISA, comment="""""")
+PCADISA = InputParameter(phys=PHY.CADISA_R, comment="""""")
 
 PCADISK = InputParameter(
-    phys=PHY.CADISK,
+    phys=PHY.CADISK_R,
     container="CARA!.CARDISCK",
     comment="""  PCADISK : CARACTERISTIQUE DE DISCRET,
            NECESSITE DE FOURNIR LE CONCEPT PRODUIT PAR AFFE_CARA_ELEM
@@ -95,7 +95,7 @@ PCADISK = InputParameter(
 )
 
 PCADISM = InputParameter(
-    phys=PHY.CADISM,
+    phys=PHY.CADISM_R,
     container="CARA!.CARDISCM",
     comment=""" PCADISM : CARACTERISTIQUES DE DISCRET, FOURNIES PAR AFFE_CARA_ELEM
   PCADISM : CARACTERISTIQUE DE DISCRET,
@@ -104,7 +104,7 @@ PCADISM = InputParameter(
 )
 
 PCAGEPO = InputParameter(
-    phys=PHY.CAGEPO,
+    phys=PHY.CAGEPO_R,
     container="CARA!.CARGEOPO",
     comment=""" RAYON ET EPAISSAUR POUR LES TUYAUX
  CARACTERISTIQUES DES SECTIONS DE POUTRE CERCLE OU RECTANGLE
@@ -115,7 +115,7 @@ PCAGEPO = InputParameter(
 )
 
 PCAGNBA = InputParameter(
-    phys=PHY.CAGNBA,
+    phys=PHY.CAGNBA_R,
     container="CARA!.CARGENBA",
     comment=""" CARACTERISTIQUES GEOMETRIQUES D UNE SECTION DE BARRE
   PCAGNBA : CARACTERISTIQUE DE BARRE,
@@ -129,7 +129,7 @@ PCAGNBA = InputParameter(
 )
 
 PCAGNPO = InputParameter(
-    phys=PHY.CAGNPO,
+    phys=PHY.CAGNPO_R,
     container="CARA!.CARGENPO",
     comment=""" BEAMS: CARACTERISTIQUES GEOMETRIQUES D'UNE SECTION DE POUTRE
   PCAGNPO : CARACTERISTIQUES SECTION DE POUTRE
@@ -163,7 +163,7 @@ PCAMASS = InputParameter(
 """,
 )
 
-PCAPOUF = InputParameter(phys=PHY.CAPOUF, comment="""""")
+PCAPOUF = InputParameter(phys=PHY.CAPOUF_R, comment="""""")
 
 PCARCRI = InputParameter(phys=PHY.CARCRI, comment=""" Convergence criteria for behaviours""")
 
@@ -216,7 +216,7 @@ PCHDYNR = InputParameter(
 )
 
 PCINFDI = InputParameter(
-    phys=PHY.CINFDI,
+    phys=PHY.CINFDI_R,
     container="CARA!.CARDINFO",
     comment=""" PCINFDI : INFORMATIONS SUR LES DISCRETS, PAR AFFE_CARA_ELEM
   PCINFDI : INFORMATIONS SUR LES DISCRETS, PAR AFFE_CARA_ELEM

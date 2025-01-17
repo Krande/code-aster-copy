@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
     cartpf = nomu//'.CARPOUFL'
     tmpnpf = cartpf//'.NCMP'
     tmpvpf = cartpf//'.VALV'
-    call alcart('G', cartpf, noma, 'CAPOUF')
+    call alcart('G', cartpf, noma, 'CAPOUF_R')
     call jeveuo(tmpnpf, 'E', jdcc)
     call jeveuo(tmpvpf, 'E', jdvc)
 !

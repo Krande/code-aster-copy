@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
         '2D_DIS_T_D_N ', '2D_DIS_TR_D_N', '2D_DIS_T_D_L ', '2D_DIS_TR_D_L'/
     data lenmdd/10, 11, 10, 11, 12, 13, 12, 13/
 ! --------------------------------------------------------------------------------------------------
-!     Ordre de stockage dans la carte : CINFDI
+!     Ordre de stockage dans la carte : CINFDI_R
 !     0     1     2     3     4     5     6     7     8     9     10
 !     REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK  TYDI
 ! --------------------------------------------------------------------------------------------------
