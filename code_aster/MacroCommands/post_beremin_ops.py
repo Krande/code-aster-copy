@@ -40,8 +40,9 @@ import numpy as np
 from libaster import EntityType
 
 from ..Cata.Syntax import _F
-from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE
-from ..Objects import ExternalVariableTraits, FieldOnCellsReal, NonLinearResult
+from ..Cata.Language.DataStructure import table_sdaster
+from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE
+from ..Objects import ExternalVariableTraits, FieldOnCellsReal, NonLinearResult, Table
 from ..Utilities import logger, no_new_attributes
 
 DEBUG = bool(os.environ.get("DEBUG_POST_BEREMIN", ""))
@@ -108,7 +109,7 @@ class PostBeremin:
         self._zone = group
         self._zone_ids = self._result.getMesh().getCells(group)
 
-    def set_indexes(self, intvar_idx: list[int] = None, stress_idx: list[int] = None) -> None:
+    def set_indexes(self, intvar_idx: list = None, stress_idx: list = None) -> None:
         """Define the indexes used to extract the relevant components depending
         of the behaviour.
 
@@ -157,11 +158,19 @@ class PostBeremin:
 
         if "WEIBULL" in args:
             params = args["WEIBULL"]
+            self._weib_params = params.copy()
         else:
             params = args["WEIBULL_FO"]
             self._use_function = True
+            self._weib_params = params.copy()
+            self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
 
-        self._weib_params = params.copy()
+        if self._rout:
+            for param in ["SIGM_REFE", "M", "SIGM_SEUIL"]:
+                assert len(self._weib_params[param]) in [
+                    0,
+                    1,
+                ], "SIGM_MAXI can only be used with one set of WEIBULL parameter"
 
     def setup_calc_result(self):
         """Setup the result object to be used to compute the Beremin stress."""
@@ -198,7 +207,8 @@ class PostBeremin:
         v1 = f"V{self._intvar_idx}"
         chvari = self._result.getField("VARI_ELGA", idx)
         chvari = chvari.toSimpleFieldOnCells()
-        indip = chvari.getComponentValues(v1)
+        indip = chvari.getComponentOnCells(v1)
+
         return indip
 
     def get_major_stress(self, idx):
@@ -217,7 +227,7 @@ class PostBeremin:
         return sieq.PRIN_3
 
     def compute_sieq(self):
-        """Compute the Beremin stress."""
+        """Compute SIEQ_ELGA stress."""
         logger.info("starting computation...")
         # compute fields on all timesteps, add INST/NUME_ORDRE to be limited
         input = self._reswb
@@ -240,7 +250,7 @@ class PostBeremin:
 
         return rsieq
 
-    def apply_stress_correction(self, sig1, idx):
+    def apply_stress_correction(self, sig1, idx, sigma_thr, sigma_refe):
         """Compute the major principal stress, eventually apply SIGM_CNV/SIGM_REFE
         correction and threshold by SIGM_SEUIL.
 
@@ -250,25 +260,27 @@ class PostBeremin:
             sig1 (*ComponentOnCells*): PRIN_3 component of SIEQ_ELGA, changed in place.
             idx (int): Timestep index
             cells_ids (list[int]): Cells list.
+            sigma_thr (float): Stress threshold
+            sigma_refe (float): sigm_refe parameter
         """
         logger.info("adjusting sigma1 at index %d...", idx)
 
         if self._use_function and sig1.size > 0:
             # PRIN_3 / SIGM_REFE(TEMP) * SIGM_CNV
             temp = self.get_temperature_field(idx)
-            sigref = temp.apply(self._weib_params["SIGM_REFE"])
+            sigref = temp.apply(sigma_refe)
             assert abs(sigref).min() > 0.0
             sig1 /= sigref
             sig1 *= self._weib_params["SIGM_CNV"]
 
-        if self._weib_params["SIGM_SEUIL"] > 0.0:
+        if sigma_thr > 0.0:
             # apply threshold
-            sig1 = sig1 - self._weib_params["SIGM_SEUIL"]
+            sig1 = sig1 - sigma_thr
 
             def sig_filter(array):
                 return np.where(array < 0.0, 0.0, array)
 
-            sig1 = sig1.applyOnArray(sig_filter)
+            sig1 = sig1.apply(sig_filter)
 
         return sig1
 
@@ -287,7 +299,7 @@ class PostBeremin:
         def toint_sign(array):
             return np.sign(np.array(array, dtype=int))
 
-        indip = indip.applyOnArray(toint_sign)
+        indip = indip.apply(toint_sign)
         sig1 *= indip
 
         return sig1
@@ -310,7 +322,7 @@ class PostBeremin:
         return varc_elga.TEMP
 
     def main(self):
-        """Compute the Beremin stress."""
+        """Compute Weibull stress and failure probability."""
         result = self._reswb
         model = result.getModel()
         params = result.getAccessParameters()
@@ -319,55 +331,94 @@ class PostBeremin:
         coor_elga = coor_elga.toSimpleFieldOnCells()
 
         logger.info("starting computation...")
-        previous = None
-        table = TableBeremin()
 
-        id_store = 0
-        for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
-            if self._use_indiplas:
-                indip = self.get_internal_variables(idx)
+        table = TableBeremin(self._use_function)
 
-            logger.info("computing major stress...")
-            sig1 = self.get_major_stress(idx)
-            sig1 = self.apply_stress_correction(sig1, idx)
-            if self._use_indiplas:
-                sig1 = self.apply_threshold(sig1, indip)
+        for sigma_thr in self._weib_params["SIGM_SEUIL"]:
+            for sigma_refe in self._weib_params["SIGM_REFE"]:
+                for pow_m in self._weib_params["M"]:
 
-            if self._use_hist:
-                logger.info("computing maxi at index %d...", idx)
-                if previous is None:
-                    previous = sig1.copy()
-                else:
-                    sig1.maximum(previous)
-                    previous = sig1.copy()
+                    logger.info("M = " + str(pow_m))
+                    logger.info("SIGM_REFE = " + str(sigma_refe))
+                    logger.info("SIGM_SEUIL = " + str(sigma_thr))
 
-            if DEBUG:
-                print("NEW: sigmax:", id_store, idx, sig1.sum())
-            sig1 **= self._weib_params["M"]
-            self.store_sigm_maxi(id_store, time, sig1, model)
+                    id_store = 0
+                    previous = None
 
-            strwb, strwb_pm, proba = self.compute_table_values(sig1, coor_elga.W)
+                    for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
 
-            table.append(id_store, time, self._zone, strwb, strwb_pm, proba)
-            id_store += 1
+                        if self._use_indiplas:
+                            indip = self.get_internal_variables(idx)
+
+                        logger.info("computing major stress at index %d...", idx)
+                        sig1 = self.get_major_stress(idx)
+                        if self._use_indiplas:
+                            sig1 = self.apply_threshold(sig1, indip)
+
+                        sig1 = self.apply_stress_correction(sig1, idx, sigma_thr, sigma_refe)
+
+                        if self._use_hist:
+                            logger.info("computing maxi at index %d...", idx)
+                            if previous is None:
+                                previous = sig1.copy()
+                            else:
+                                sig1.maximum(previous)
+                                previous = sig1.copy()
+
+                        if DEBUG:
+                            print("NEW: sigmax:", id_store, idx, sig1.sum())
+
+                        sig1 **= pow_m
+                        self.store_sigm_maxi(id_store, time, sig1, model)
+
+                        strwb, strwb_pm, proba = self.compute_table_values(
+                            sig1, coor_elga.W, pow_m, sigma_refe
+                        )
+                        if self._use_function:
+                            table.append(
+                                id_store,
+                                time,
+                                self._zone,
+                                pow_m,
+                                "FONCTION",
+                                sigma_thr,
+                                strwb,
+                                strwb_pm,
+                                proba,
+                            )
+                        else:
+                            table.append(
+                                id_store,
+                                time,
+                                self._zone,
+                                pow_m,
+                                sigma_refe,
+                                sigma_thr,
+                                strwb,
+                                strwb_pm,
+                                proba,
+                            )
+
+                        id_store += 1
 
         return table
 
-    def compute_table_values(self, sig1, weight):
+    def compute_table_values(self, sig1, weight, pow_m, sigma_refe):
         """Compute the values to be added into the result table.
 
         Args:
             sig1 (*ComponentOnCells*): Major stress ^ M.
             weight (*ComponentOnCells*): Weight of each integration point,
                 **changed in place**.
+            pow_m (float): M weibull parameter
+            sigma_refe (float): sigm_refe parameter
 
         Returns:
             tuple: Values for each column.
         """
         coef_volu = self._coef_mult / self._weib_params["VOLU_REFE"]
-        pow_m = self._weib_params["M"]
         inv_m = 1 / pow_m
-        sigma_u = self._weib_params["SIGM_CNV" if self._use_function else "SIGM_REFE"]
+        sigma_u = self._weib_params["SIGM_CNV"] if self._use_function else sigma_refe
 
         logger.info("computing table values...")
         if DEBUG:
@@ -375,7 +426,10 @@ class PostBeremin:
 
         weight = weight.onSupportOf(sig1)
         # colonne INTE_SIXX
-        intsig1pm = (sig1 * weight).sum()
+        # Restrict to GROUP_MA
+        integ = sig1 * weight
+        integ.restrict(self._zone_ids)
+        intsig1pm = integ.sum()
 
         # intfin(INTE_SIXX) = (COEF_MULT/VOLU_REFE*INTE_SIXX)**(1/bere_m)
         sigma_weibull = (coef_volu * intsig1pm) ** inv_m
@@ -425,31 +479,57 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA, DEFORMATION, FILTRE_SIGM, **args)
         post.set_indexes(stress_idx=args["LIST_NUME_SIEF"])
     post.use_history(args["HIST_MAXI"] == "OUI")
     post.set_coef_mult(args["COEF_MULT"])
-    post.set_weibull_parameters(args)
 
-    post.setup_calc_result()
     if args.get("SIGM_MAXI"):
         post._rout = NonLinearResult()
         self.register_result(post._rout, args["SIGM_MAXI"])
 
+    post.set_weibull_parameters(args)
+    post.setup_calc_result()
+
     table = post.main()
     sdtable = table.create_table()
+
+    sdtable = CALC_TABLE(
+        reuse=sdtable,
+        TABLE=sdtable,
+        ACTION=_F(
+            OPERATION="TRI",
+            NOM_PARA=("NUME_ORDRE", "M", "SIGM_REFE", "SIGM_SEUIL"),
+            ORDRE="CROISSANT",
+        ),
+    )
 
     return sdtable
 
 
-class TableBeremin:
+class TableBeremin(Table):
     """Helper object to build the result table."""
 
-    types = "IRKRRR"
-    cols = ["NUME_ORDRE", "INST", "GROUP_MA", "SIGMA_WEIBULL", "SIGMA_WEIBULL**M", "PROBA_WEIBULL"]
+    types = None
+    cols = [
+        "NUME_ORDRE",
+        "INST",
+        "GROUP_MA",
+        "M",
+        "SIGM_REFE",
+        "SIGM_SEUIL",
+        "SIGMA_WEIBULL",
+        "SIGMA_WEIBULL**M",
+        "PROBA_WEIBULL",
+    ]
     data = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self):
+    def __init__(self, use_function):
+        Table.__init__(self)
         self.data = {}
         for col in self.cols:
             self.data.setdefault(col, [])
+        if use_function:
+            self.types = "IRKRKRRRR"
+        else:
+            self.types = "IRKRRRRRR"
 
     def append(self, *values):
         """Append the values of a row (columns order must match the definition).

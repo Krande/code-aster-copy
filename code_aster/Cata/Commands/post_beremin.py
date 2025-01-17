@@ -84,17 +84,17 @@ POST_BEREMIN = MACRO(
     ),
     WEIBULL=FACT(
         statut="f",
-        M=SIMP(statut="o", typ="R"),
+        M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
-        SIGM_REFE=SIMP(statut="o", typ="R"),
-        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
+        SIGM_REFE=SIMP(statut="o", typ="R", max="**"),
+        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0, max="**"),
     ),
     WEIBULL_FO=FACT(
         statut="f",
-        M=SIMP(statut="o", typ="R"),
+        M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_CNV=SIMP(statut="o", typ="R"),
         SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
+        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0, max="**"),
     ),
 )
