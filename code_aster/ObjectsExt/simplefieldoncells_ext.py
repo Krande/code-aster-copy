@@ -31,17 +31,17 @@ try:
 except ImportError:
     HAS_MATPLOTLIB = False
 
-import sys
 import warnings
 
 import numpy as np
+import numpy.ma as ma
 from libaster import SimpleFieldOnCellsReal
 
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import ParaMEDMEM as PMM
-from ..Utilities import force_list, injector, logger, no_new_attributes
+from ..Utilities import disable_fpe, force_list, injector, logger, no_new_attributes
 from ..Utilities import medcoupling as medc
-from ..Utilities.mpi_utils import mpi_min, mpi_max, mpi_sum, useHPCMode
+from ..Utilities.mpi_utils import mpi_max, mpi_min, mpi_sum, useHPCMode
 
 
 class SFoCStateBuilder(InternalStateBuilder):
@@ -82,20 +82,18 @@ class ComponentOnCells:
             indexes (ndarray[int]): Indexes in *values* by cells and points on cells.
             discr (ndarray[int]): Local dicretization: number of points and subpoints
                 by cell.
-            mask (ndarray[bool]): Indicator that tells a value exist, same dimension.
             inner (ndarray[bool], optional): Indicator for inner cells
                 (only pass for restricted object).
         """
 
-        _parent = _idx = _mask = _discr = _cells = _nbcells = _nbval = _sign = None
+        _parent = _idx = _discr = _cells = _nbcells = _nbval = _sign = None
         _inner = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
-        def __init__(self, parent, indexes, discr, mask, inner=None):
+        def __init__(self, parent, indexes, discr, inner=None):
             self._parent = parent  # parent SimpleFieldOnCells
             self._idx = indexes
             self._discr = discr
-            self._mask = mask
             self._cells = None
             # number of cells in this object before restriction
             self._nbcells = indexes.shape[0]
@@ -121,7 +119,6 @@ class ComponentOnCells:
             return (
                 self._idx.nbytes
                 + self._discr.nbytes
-                + self._mask.nbytes
                 + self._inner.nbytes
                 + len(list(self._cells if self._cells is not None else [])) * 8
             )
@@ -144,7 +141,7 @@ class ComponentOnCells:
                 idx = np.zeros(1, dtype=int)
             lines = [
                 f"- indexes shape {self._idx.shape!r}, range {idx.min()} to {idx.max()}, "
-                f"{len(idx)} indexes defined, {(self._mask == False).sum()} masked"
+                f"{len(idx)} indexes defined"
             ]
             nbinn = self._inner.sum()
             if self._cells is None:
@@ -178,13 +175,7 @@ class ComponentOnCells:
             Returns:
                 *Decription*: copy of the current description.
             """
-            new = __class__(
-                self._parent,
-                self._idx.copy(),
-                self._discr.copy(),
-                self._mask.copy(),
-                self._inner.copy(),
-            )
+            new = __class__(self._parent, self._idx.copy(), self._discr.copy(), self._inner.copy())
             new._cells = None if self._cells is None else self._cells.copy()
             new._nbcells = self._nbcells
             new._nbval = self._nbval
@@ -208,29 +199,16 @@ class ComponentOnCells:
             idx = self._idx.ravel()
             idx = idx[idx >= 0]
             self._discr = self._discr[cells_ids]
-            self._mask = self._mask[idx]
             self._cells = np.array(cells_ids, dtype=int)
             self._inner = self._inner[cells_ids]
             self._sign = None
             return idx
 
-        def masked_values(self, values, undefined=0.0):
-            """Returns the vector of masked values.
-
-            Args:
-                values (ndarray): Vector of values, restricted or not.
-                undefined (float: Value used for undefined components.
-
-            Returns:
-                ndarray: Vector of values on all cells (extended with 'undefined')
-            """
-            return np.where(self._mask == True, values, undefined)
-
         def expanded_values(self, values):
             """Expands the vector of values.
 
             Args:
-                values (ndarray): Vector of values, consistent with mask and idx.
+                values (ndarray): Vector of values, consistent with idx.
 
             Returns:
                 ndarray: Vector of values on all cells (extended with 0.)
@@ -246,7 +224,7 @@ class ComponentOnCells:
             """Returns the vector of inner values.
 
             Args:
-                values (ndarray): Vector of values, consistent with mask and idx.
+                values (ndarray): Vector of values, consistent with idx.
 
             Returns:
                 ndarray: Vector of values on inner cells.
@@ -254,13 +232,6 @@ class ComponentOnCells:
             values = self.expanded_values(values)
             idx = self._idx[self._inner].ravel()
             idx = idx[idx >= 0]
-            if self._cells is not None:
-                mask = np.zeros(self._nbval, dtype=bool)
-                m_idx = self._idx[self._idx >= 0]
-                mask[m_idx] = self._mask
-            else:
-                mask = self._mask
-            idx = idx[mask[idx]]
             return values[idx]
 
         def expand(self, values):
@@ -274,17 +245,13 @@ class ComponentOnCells:
             """
             idx = self._idx
             idx = idx[idx >= 0]
-            new_values = np.zeros(self._nbval, dtype=float)
+            new_values = ma.zeros(self._nbval, dtype=float)
             new_values[idx] = values
             new_idx = np.ones((self._nbcells, self._idx.shape[1]), dtype=int) * -1
             new_idx[self._cells] = self._idx
             new_discr = np.zeros((self._nbcells, 2), dtype=int)
             new_discr[self._cells] = self._discr
-            new_mask = np.zeros(self._nbval, dtype=bool)
-            new_mask[idx] = self._mask
-            return new_values, ComponentOnCells.Description(
-                self._parent, new_idx, new_discr, new_mask
-            )
+            return new_values, ComponentOnCells.Description(self._parent, new_idx, new_discr)
 
     _values = _descr = _sign = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -294,6 +261,7 @@ class ComponentOnCells:
 
     def init_from(self, values, description: Description):
         """Initialize content."""
+        assert isinstance(values, ma.MaskedArray)
         self._values = values
         self._descr = description
         self._descr.setValuesShape(values.shape)
@@ -306,12 +274,6 @@ class ComponentOnCells:
     @property
     def _cells(self):
         return self._descr._cells
-
-    def _inner_values(self, values):
-        return self._descr.inner_values(values)
-
-    def _masked_values(self, values, undefined):
-        return self._descr.masked_values(values, undefined)
 
     def copy(self):
         """Return a copy of the component."""
@@ -331,12 +293,12 @@ class ComponentOnCells:
     def innerValues(self):
         """Returns the vector of local values (its shape is inconsistent
         with the internal description)."""
-        return self._inner_values(self.values)
+        return self._descr.inner_values(self._values)
 
     @property
     def values(self):
         """Returns the vector of values (undefined values set to zero)."""
-        return self._masked_values(self._values, undefined=0.0)
+        return self._values
 
     @values.setter
     def values(self, values):
@@ -347,7 +309,9 @@ class ComponentOnCells:
             values (ndarray[float]): New values.
         """
         assert values.shape == self._values.shape
-        self._values = self._masked_values(values, undefined=0.0)
+        if not isinstance(values, ma.MaskedArray):
+            values = ma.array(values, mask=self._values.mask)
+        self._values = values
 
     def getValuesByCells(self):
         """Returns the values by cells, expanded by 0.0 where undefined."""
@@ -400,7 +364,8 @@ class ComponentOnCells:
             warnings.warn("matplotlib is not available")
             return
         idx = np.where(self._idx >= 0, 1, 0)
-        undef = np.where(self._descr._mask[self._idx] == False, -2, 0)
+        # undef = np.where(self._descr._mask[self._idx] == False, -2, 0)
+        undef = np.where(self._values.mask[self._idx], -2, 0)
         idx = np.where(undef == 0, idx, undef * idx)
         fig, ax = plt.subplots()
         ax.grid(True, linestyle="--")
@@ -480,24 +445,26 @@ class ComponentOnCells:
 
     def __itruediv__(self, other):
         other = self._check_consistency(other)
-        other = self._values(other, 1.0)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
-        self._values /= other
+        with disable_fpe():
+            self._values /= other
         return self
 
     def __truediv__(self, other):
         other = self._check_consistency(other)
-        other = self._masked_values(other, 1.0)
         if np.any(other == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(self._values / other, self._descr.copy())
+        with disable_fpe():
+            values = self._values / other
+        return ComponentOnCells(values, self._descr.copy())
 
     def __rtruediv__(self, other):
-        values = self._masked_values(self._values, 1.0)
-        if np.any(values == 0.0):
+        if np.any(self._values == 0.0):
             raise ZeroDivisionError()
-        return ComponentOnCells(1.0 / values * other, self._descr.copy())
+        with disable_fpe():
+            values = 1.0 / self._values
+        return ComponentOnCells(values * other, self._descr.copy())
 
     def __abs__(self):
         return ComponentOnCells(np.abs(self._values), self._descr.copy())
@@ -518,8 +485,7 @@ class ComponentOnCells:
         Returns:
             float: minimum of the values.
         """
-        masked = self._masked_values(self._values, undefined=sys.float_info.max)
-        return self._inner_values(masked).min()
+        return self.innerValues.min()
 
     @mpi_max(hpc=True)
     def max(self):
@@ -528,8 +494,7 @@ class ComponentOnCells:
         Returns:
             float: maximum of the values.
         """
-        masked = self._masked_values(self._values, undefined=-sys.float_info.max)
-        return self._inner_values(masked).max()
+        return self.innerValues.max()
 
     @mpi_sum(hpc=True)
     def sum(self):
@@ -608,7 +573,8 @@ class ComponentOnCells:
             filter &= self._values <= maxi
 
         filter = np.append(filter, [False])  # not defined (-1): not in interval...
-        idx = np.where(self._descr._mask[self._idx] == False, -1, self._idx)  # or masked
+        # idx = np.where(self._descr._mask[self._idx] == False, -1, self._idx)  # or masked
+        idx = np.where(self._values.mask, -1, self._idx)  # or masked
         idx_filt = filter[idx]
         cells_filt = idx_filt.max(axis=1)
         cells_filt &= self._descr._inner
@@ -710,11 +676,11 @@ class ExtendedSimpleFieldOnCellsReal:
             self._ptr_cache = None
         icmp = self.getComponents().index(component)
         self._cache["readonly"] = False
+        mvalues = ma.array(
+            self._cache["val"][:, icmp], mask=np.logical_not(self._cache["msk"][:, icmp])
+        )
         return ComponentOnCells(
-            self._cache["val"][:, icmp].copy(),
-            ComponentOnCells.Description(
-                self, self._cache["idx"], self._cache["nbpt"], self._cache["msk"][:, icmp]
-            ),
+            mvalues, ComponentOnCells.Description(self, self._cache["idx"], self._cache["nbpt"])
         )
 
     def setComponentValues(self, component: str, cfvalue: ComponentOnCells):

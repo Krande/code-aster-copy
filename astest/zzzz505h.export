@@ -7,3 +7,4 @@ P testlist submit verification parallel
 
 F comm zzzz505g.py D 1
 R nom cube_refined_x1-2p D 0
+R nom cube_refined_x2-4p D 0

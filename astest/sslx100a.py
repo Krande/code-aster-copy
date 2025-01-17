@@ -22,6 +22,7 @@ from code_aster import CA
 
 import matplotlib
 import numpy as np
+import numpy.ma as ma
 
 matplotlib.use("TkAgg")
 
@@ -53,9 +54,6 @@ test.assertAlmostEqual(vy.sum(), -6.0, 8, msg="sum: -1.0 * 6")
 
 m_one = np.ones(values.shape, dtype=float) * -1.0
 test.assertAlmostEqual(m_one.sum(), -69.0, 8, msg="-1.0 * 69")
-vy._values = m_one  # never do that!
-test.assertAlmostEqual(vy._values.sum(), -69.0, 8, msg="sum: -1.0 everywhere")
-test.assertAlmostEqual(vy.sum(), -6.0, 8, msg="sum: only 6 effective values")
 
 vy.values = m_one
 test.assertAlmostEqual(vy._values.sum(), -6.0, 8, msg="sum: only 6 values assigned, other 0.0")
