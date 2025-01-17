@@ -75,8 +75,6 @@ try:
     import med_aster
     import libaster
 
-    # compatibility
-    aster_core.matfpe = libaster.matfpe
     # setup, do not keep references here...
     del aster, aster_core, aster_fonctions, med_aster, libaster
 
