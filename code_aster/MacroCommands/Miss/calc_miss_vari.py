@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 from math import pi, sqrt
 
+import aster
 import numpy as NP
 from numpy import linalg
 
-import aster
-import aster_core
-from ...Messages import UTMESS
-
 from ...Cata.Syntax import _F
 from ...CodeCommands import COMB_MATR_ASSE, CREA_CHAMP, DYNA_VIBRA, LIRE_FORC_MISS, LIRE_IMPE_MISS
+from ...Messages import UTMESS
+from ...Utilities import disable_fpe
 from ..Utils.signal_correlation_utils import CALC_COHE
 
 
@@ -92,10 +90,9 @@ def compute_POD(COHE, PRECISION, INFO):
     # EIGENVALUE DECOMP
     # nbno = self.interf_params['NBNO']
     # On desactive temporairement les FPE
-    aster_core.matfpe(-1)
-    eig, vec = linalg.eig(COHE)
-    vec = NP.transpose(vec)  # les vecteurs sont en colonne dans numpy
-    aster_core.matfpe(1)
+    with disable_fpe():
+        eig, vec = linalg.eig(COHE)
+        vec = NP.transpose(vec)  # les vecteurs sont en colonne dans numpy
     eig = eig.real
     vec = vec.real
     # on rearrange selon un ordre decroissant

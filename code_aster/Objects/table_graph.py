@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,15 @@ __all__ = ["Graph", "AjoutParaCourbe"]
 
 import os
 import os.path
-import shutil
 import re
+import shutil
 import sys
 import time
 
-import aster_core
 import numpy as np
 
 from ..Messages import UTMESS
-from ..Utilities import ExecutionParameter, value_is_sequence
+from ..Utilities import ExecutionParameter, disable_fpe, value_is_sequence
 
 try:
     import matplotlib
@@ -1308,9 +1307,8 @@ class TraceMatplotlib(TraceGraph):
         legend.set_fontsize(40)
         legend.scale(1.3, 1.3)
 
-        aster_core.matfpe(-1)
-        plt.savefig(fichier[0], format="png", bbox_inches="tight")
-        aster_core.matfpe(1)
+        with disable_fpe():
+            plt.savefig(fichier[0], format="png", bbox_inches="tight")
 
 
 def ValCycl(val, vmin, vmax, vdef):

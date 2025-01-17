@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,13 +36,14 @@
 # ----------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
-
-import aster_core
 import numpy as NP
 import numpy.linalg as LA
-from math import pi, acos, atan2
+from math import pi, atan2
 
+from code_aster.Commands import *
+from code_aster import CA
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -155,41 +156,38 @@ print("nb = ", nb)
 
 # on desactive temporairement l'interception des floating point exceptions
 # levees par blas/lapack (bug libMKL)
-aster_core.matfpe(-1)
+with CA.disable_fpe():
+    tenseurD = NP.zeros((2, 2))
+    tenseurD[0, 0] = D_xx[0][0]
+    tenseurD[0, 1] = D_xy[0][0]
+    tenseurD[1, 0] = D_xy[0][0]
+    tenseurD[1, 1] = D_yy[0][0]
 
-tenseurD = NP.zeros((2, 2))
-tenseurD[0, 0] = D_xx[0][0]
-tenseurD[0, 1] = D_xy[0][0]
-tenseurD[1, 0] = D_xy[0][0]
-tenseurD[1, 1] = D_yy[0][0]
+    tenseurE = NP.zeros((2, 2))
+    tenseurE[0, 0] = EPSI_xx[0][0]
+    tenseurE[0, 1] = EPSI_xy[0][0]
+    tenseurE[1, 0] = EPSI_xy[0][0]
+    tenseurE[1, 1] = EPSI_yy[0][0]
 
-tenseurE = NP.zeros((2, 2))
-tenseurE[0, 0] = EPSI_xx[0][0]
-tenseurE[0, 1] = EPSI_xy[0][0]
-tenseurE[1, 0] = EPSI_xy[0][0]
-tenseurE[1, 1] = EPSI_yy[0][0]
+    print(tenseurE)
+    evalues_epsi, evectors_epsi = LA.eig(tenseurE)
+    evalues_endo, evectors_endo = LA.eig(tenseurD)
 
-print(tenseurE)
-evalues_epsi, evectors_epsi = LA.eig(tenseurE)
-evalues_endo, evectors_endo = LA.eig(tenseurD)
+    print("evalues_epsi,evectors_epsi :", evalues_epsi, evectors_epsi)
+    print("evalues_endo,evectors_endo :", evalues_endo, evectors_endo)
 
-print("evalues_epsi,evectors_epsi :", evalues_epsi, evectors_epsi)
-print("evalues_endo,evectors_endo :", evalues_endo, evectors_endo)
+    v1_epsi = evectors_epsi[:, 0]
+    angle_defi = 180 / pi * atan2(v1_epsi[1], v1_epsi[0])
 
-v1_epsi = evectors_epsi[:, 0]
-angle_defi = 180 / pi * atan2(v1_epsi[1], v1_epsi[0])
+    v1_endo = evectors_endo[:, 0]
+    angle_endo = 180 / pi * atan2(v1_endo[1], v1_endo[0])
 
-v1_endo = evectors_endo[:, 0]
-angle_endo = 180 / pi * atan2(v1_endo[1], v1_endo[0])
+    print(angle_defi)
+    print(angle_endo)
 
-print(angle_defi)
-print(angle_endo)
+    refe_defi = 135.7160
+    refe_endo = 23.0825
 
-refe_defi = 135.7160
-refe_endo = 23.0825
-
-# on reactive
-aster_core.matfpe(1)
 
 ROT_EPSI = DEFI_FONCTION(NOM_PARA="INST", VALE=(1.0, angle_defi), PROL_DROITE="CONSTANT")
 

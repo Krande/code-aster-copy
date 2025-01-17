@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,12 @@ COHE_DATA_POINTS  ---  evaluate distances from nodal coordinates for coherency
 DSP2ACCE_ND        ---   simulation of vector valued random process
 gene_traj_gauss_evol_ND        ---   simulation of vector valued random process
 """
-from cmath import exp as cexp
-from cmath import sqrt as csqrt
-from math import exp, log, pi, sqrt, tanh
+
+from math import log, pi, sqrt, tanh
 
 import numpy as NP
 
-import aster
-import aster_core
+from ...Utilities import disable_fpe
 from ...Messages import UTMESS
 
 from ...Objects.function_py import t_fonction
@@ -217,9 +215,8 @@ def DSP2ACCE_ND(f_dsp, data_cohe, rv=None):
     for iifr in range(nbfreq2):
         if data_cohe["TYPE"] != "COEF_CORR":
             cohec = CALC_COHE(lw2[iifr], **data_cohe)
-            aster_core.matfpe(-1)
-            eigv, vec = NP.linalg.eig(cohec)
-            aster_core.matfpe(1)
+            with disable_fpe():
+                eigv, vec = NP.linalg.eig(cohec)
             vec = NP.transpose(vec).real
             eigv = NP.sqrt(NP.where(eigv.real < 1.0e-10, 0.0, eigv.real))
             vale_xp = 0.0 + 0.0j
@@ -267,9 +264,8 @@ def gene_traj_gauss_evol_ND(self, data_cohe, rv=None, **kwargs):
         cohec = data_cohe["MAT_COHE"]
     else:
         cohec = CALC_COHE(DW * 10.0, **data_cohe)
-        aster_core.matfpe(-1)
-        Mat_cohe = NP.linalg.cholesky(cohec)
-        aster_core.matfpe(1)
+        with disable_fpe():
+            Mat_cohe = NP.linalg.cholesky(cohec)
 
     dim = cohec.shape[0]
     Xt = NP.array([0.0] * dim * nbfreq)

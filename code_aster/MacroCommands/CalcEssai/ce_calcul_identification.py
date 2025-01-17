@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,12 @@
 # person_in_charge: albert.alarcon at edf.fr
 
 import numpy.linalg as linalg
-from numpy import arctan, array, conjugate, dot, identity, log, pi, transpose, zeros
+from numpy import array, conjugate, dot, identity, pi, transpose, zeros
 
-import aster
-import aster_core
-from .cata_ce import InterSpectre, nume_ddl_gene, nume_ddl_phy
 from ...Cata.Syntax import _F
 from ...Messages import UTMESS
+from ...Utilities import disable_fpe
+from .cata_ce import InterSpectre, nume_ddl_gene, nume_ddl_phy
 
 
 class CalcEssaiIdentification:
@@ -134,26 +133,25 @@ class CalcEssaiIdentification:
         # NB : on ne devrait avoir a les desactiver que pour les
         # operations "sensibles", type SVD, mais en calibre 5, on observe
         # des plantages sur de simples multiplications.
-        aster_core.matfpe(-1)
-        self.SQQ, self.val_sing, self.regul = resultat.calc_SQQ()
-        self.SQQ.nume_gene = nume_ddl_gene(self.res_base)
-        self.is_SQQ = 1
-        self.Syy_R = resultat.verif_Syy()
-        self.is_Syy_R = 1
-        self.Syy_R.set_model(self.res_obs)
-        self.Syy_R.nume_phy = self.Syy.nume_phy
-        self.Sff = resultat.calc_Sff()
-        self.is_Sff = 1
-        self.Sff.set_model(self.res_com)
-        self.Sff.nume_phy = nume_ddl_phy(self.res_com)
-        self.SQQ_R = resultat.verif_SQQ()
-        self.is_SQQ_R = 1
-        self.SQQ_R.nume_gene = nume_ddl_gene(self.res_base)
-        self.Syy_S = resultat.synthes_Syy()
-        self.is_Syy_S = 1
-        self.Syy_S.set_model(self.res_obs)
-        self.Syy_S.nume_phy = self.Syy.nume_phy
-        aster_core.matfpe(1)
+        with disable_fpe():
+            self.SQQ, self.val_sing, self.regul = resultat.calc_SQQ()
+            self.SQQ.nume_gene = nume_ddl_gene(self.res_base)
+            self.is_SQQ = 1
+            self.Syy_R = resultat.verif_Syy()
+            self.is_Syy_R = 1
+            self.Syy_R.set_model(self.res_obs)
+            self.Syy_R.nume_phy = self.Syy.nume_phy
+            self.Sff = resultat.calc_Sff()
+            self.is_Sff = 1
+            self.Sff.set_model(self.res_com)
+            self.Sff.nume_phy = nume_ddl_phy(self.res_com)
+            self.SQQ_R = resultat.verif_SQQ()
+            self.is_SQQ_R = 1
+            self.SQQ_R.nume_gene = nume_ddl_gene(self.res_base)
+            self.Syy_S = resultat.synthes_Syy()
+            self.is_Syy_S = 1
+            self.Syy_S.set_model(self.res_obs)
+            self.Syy_S.nume_phy = self.Syy.nume_phy
 
         # except TypeError:
         # self.mess.disp_mess("Calcul inverse non complete")
@@ -223,10 +221,10 @@ class CalculInverse:
         for ind_freq in range(self.nb_freq):
             omega = 2 * pi * self.f[ind_freq]
             for ind_mod in range(self.nb_mod):
-                Zm1[ind_freq, ind_mod, ind_mod] = omega ** exp / (
+                Zm1[ind_freq, ind_mod, ind_mod] = omega**exp / (
                     l_mass_i[ind_mod]
                     * complex(
-                        -(omega ** 2) + l_omega_i[ind_mod] ** 2,
+                        -(omega**2) + l_omega_i[ind_mod] ** 2,
                         2 * omega * l_omega_i[ind_mod] * l_xsi_i[ind_mod],
                     )
                 )
@@ -234,10 +232,10 @@ class CalculInverse:
                     omega = 2 * pi * self.f[ind_freq + 1]  # eviter la division par 0
                 Z[ind_freq, ind_mod, ind_mod] = (
                     1
-                    / (omega ** exp)
+                    / (omega**exp)
                     * l_mass_i[ind_mod]
                     * complex(
-                        -(omega ** 2) + l_omega_i[ind_mod] ** 2,
+                        -(omega**2) + l_omega_i[ind_mod] ** 2,
                         2 * omega * l_omega_i[ind_mod] * l_xsi_i[ind_mod],
                     )
                 )

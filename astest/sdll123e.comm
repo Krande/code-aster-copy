@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 #
 import numpy as NP
 import numpy.linalg as LA
-from math import pi, sqrt
+from math import pi
 
 from code_aster.Commands import *
-import aster_core
+from code_aster import CA
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
@@ -123,20 +123,20 @@ HPRIME = NP.zeros((nddl * 2, nddl * 2))
 HPRIME[0:nddl, 0:nddl] = NP.dot(gyro, masI)
 HPRIME[0:nddl, nddl : 2 * nddl] = NP.dot(rig, masI)
 HPRIME[nddl : 2 * nddl, 0:nddl] = -NP.identity(nddl)
-aster_core.matfpe(-1)
-print("valeurs propres primes")
-vprime = LA.eigvals(HPRIME) / 2.0 / NP.pi
-vpreal = list(vprime.imag)
-vpreal.sort()
-i = 1
-j = 0
-for vp in vpreal:
-    if vp > 5.0e-3:
-        print("vp %4d : %6.6f" % (i, vp))
-        i = i + 1
-    j = j + 1
-    dij = j - i
-aster_core.matfpe(+1)
+
+with CA.disable_fpe():
+    print("valeurs propres primes")
+    vprime = LA.eigvals(HPRIME) / 2.0 / NP.pi
+    vpreal = list(vprime.imag)
+    vpreal.sort()
+    i = 1
+    j = 0
+    for vp in vpreal:
+        if vp > 5.0e-3:
+            print("vp %4d : %6.6f" % (i, vp))
+            i = i + 1
+        j = j + 1
+        dij = j - i
 
 
 FREQROT = CREA_TABLE(
