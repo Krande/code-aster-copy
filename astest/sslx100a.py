@@ -20,11 +20,8 @@
 from code_aster.Commands import *
 from code_aster import CA
 
-import matplotlib
 import numpy as np
-import numpy.ma as ma
 
-matplotlib.use("TkAgg")
 
 CA.init("--test", "--continue")
 

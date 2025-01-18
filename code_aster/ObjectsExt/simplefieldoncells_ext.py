@@ -362,7 +362,7 @@ class ComponentOnCells:
         """
         if not HAS_MATPLOTLIB:
             warnings.warn("matplotlib is not available")
-            return
+            return False
         idx = np.where(self._idx >= 0, 1, 0)
         # undef = np.where(self._descr._mask[self._idx] == False, -2, 0)
         undef = np.where(self._values.mask[self._idx], -2, 0)
@@ -377,6 +377,7 @@ class ComponentOnCells:
             plt.savefig(filename)
         else:
             plt.show()
+        return True
 
     @property
     def sign(self):

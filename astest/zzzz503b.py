@@ -26,7 +26,6 @@ CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 test = CA.TestCase()
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
-MA = MA.refine(1)
 
 MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="COQUE_AXIS"))
 
@@ -42,7 +41,6 @@ CHARGE = AFFE_CHAR_MECA(MODELE=MO, FORCE_NODALE=(_F(GROUP_NO="CHA", FX=0, FY=-10
 FOFO = DEFI_FONCTION(
     NOM_PARA="INST", VALE=(0.0, 0.0, 3.5, 3.5), PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU"
 )
-
 
 LINST = DEFI_LIST_REEL(
     DEBUT=0.0,
@@ -68,15 +66,15 @@ last = U2.getLastIndex()
 sigm = U2.getField("SIEF_ELGA", last).toSimpleFieldOnCells()
 sieq = U2.getField("SIEQ_ELGA", last).toSimpleFieldOnCells()
 
-# test.assertAlmostEqual(sigm.getValue(0, 0, 0, 0), -326.7820449754335, 8)
+test.assertAlmostEqual(sigm.getValue(0, 0, 0, 0), -326.7820449754335, 8)
 test.assertIn(sigm.getPhysicalQuantity(), ("SIEF_R",))
 test.assertIn(sigm.getLocalization(), ("ELGA",))
 test.assertSequenceEqual(sigm.getComponents(), ["SIXX", "SIYY", "SIZZ", "SIXZ"])
 test.assertEqual(sigm.getMaxNumberOfPoints(), 4)
 test.assertEqual(sigm.getNumberOfPointsOfCell(0), 4)
-# test.assertEqual(sigm.getNumberOfCells(), 1)
-# test.assertEqual(sigm.getNumberOfComponents(), 4)
-# test.assertEqual(sigm.getNumberOfSubPointsOfCell(0), 12)
+test.assertEqual(sigm.getNumberOfCells(), 1)
+test.assertEqual(sigm.getNumberOfComponents(), 4)
+test.assertEqual(sigm.getNumberOfSubPointsOfCell(0), 12)
 
 s1 = sieq.PRIN_1
 s2 = sieq.PRIN_2
@@ -91,12 +89,10 @@ coor = chcoor.toSimpleFieldOnCells()
 
 weight = coor.W
 weight_sigm = weight.onSupportOf(s1)
-# \int { PRIN_1 } : sous-points ?
+# \int { PRIN_1 }
 s1xw_c = s1 * weight_sigm
-# nbcells = len(s1xw_c.getCells())
-# s1xw = s1xw_c.getValues()
-# s1xw.shape = (nbcells * 12, -1)
-# int_s1 = s1xw.sum(axis=1)
+print(repr(s1xw_c))
+test.assertAlmostEqual(s1xw_c.sum(), -2482.24915, 4)
 
 test.printSummary()
 

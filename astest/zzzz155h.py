@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 import numpy as np
 
 from code_aster.Commands import *
@@ -45,7 +44,7 @@ def buildCompleteFieldOnCells(field):
     maxCells = MPI.ASTER_COMM_WORLD.allreduce(maxCells, MPI.MAX)
 
     innerCellsSet = set(mesh.getInnerCells())
-    values, mask = field.toNumpy()
+    values = field.toNumpy()[0]
     nbCmp = field.getNumberOfComponents()
     nbPt = field.getMaxNumberOfPoints()
     nbSPt = field.getMaxNumberOfSubPoints()

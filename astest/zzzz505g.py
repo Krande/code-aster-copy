@@ -276,8 +276,8 @@ with DebugChrono.measure("global"):
 
 # check for description plot
 dest = Path("weight_descr.png")
-weight.plot_descr(filename=dest)
-test.assertTrue(dest.exists(), msg="figure png")
+ret = weight.plot_descr(filename=dest)
+test.assertTrue(not ret or dest.exists(), msg="figure png")
 
 test.printSummary()
 print(f"cumulative size of created ComponentOnCells objects: {cumsize:,.0f} bytes")
