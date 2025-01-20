@@ -17,25 +17,24 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster.Commands import *
 from code_aster import CA
 
+CA.init("--test", "--continue")
 
-try:
-    # Import du module de calcul symbolique Sympy
-    with CA.disable_fpe():
-        import sympy
+test = CA.TestCase()
 
-    sympy_available = True
-except ImportError:
-    sympy_available = False
+# same as done for Y to check the pickling of:
+# - chs (SimpleFieldOnCellsReal),
+# - vol (ndarray),
+# - weight (ComponentOnCells)
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("MODELE1_63",))
+# \int_{0}^{1} z.dz = 0.5
+vz = chs.Z
+vz.restrict(vol)
+wvol = weight.onSupportOf(vz)
+integr = (vz * wvol).sum()
+test.assertAlmostEqual(integr, 0.5, msg="integr")
 
-# ================================================================================================
-# Definition des caracteristiques du materiau
-# ================================================================================================
-E = 1
-NU = 0.15
+test.printSummary()
 
-FIN()
+CA.close()

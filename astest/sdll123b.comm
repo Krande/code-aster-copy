@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,12 +39,9 @@ import numpy.linalg as LA
 from math import pi, sqrt
 
 from code_aster.Commands import *
-import aster
-import aster_core
 from code_aster import CA
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
-aster_core.matfpe(-1)
 
 test = CA.TestCase()
 
@@ -167,7 +164,8 @@ nnolag = len(ind_nolag)
 
 Z = NP.zeros((nnolag - nlag1, nnolag))
 C = NP.vstack((rigF[ind_lag1][:, ind_nolag], Z))
-Q, R = NP.linalg.qr(NP.transpose(C))
+with CA.disable_fpe():
+    Q, R = NP.linalg.qr(NP.transpose(C))
 
 dR = []
 for i1 in range(len(R)):
@@ -189,7 +187,8 @@ variante = 2
 if variante == 1:
     masI = LA.inv(rig)
     HPRIME = NP.dot(masI, mas)
-    frequence = LA.eigvals(HPRIME)
+    with CA.disable_fpe():
+        frequence = LA.eigvals(HPRIME)
     fr = list(frequence)
     i = 0
     for vp in fr:
@@ -210,7 +209,8 @@ else:
     # variante 2 : M-1*K U = lambda * U
     masI = LA.inv(mas)
     HPRIME = NP.dot(masI, rig)
-    frequence = LA.eigvals(HPRIME)
+    with CA.disable_fpe():
+        frequence = LA.eigvals(HPRIME)
     fr = list(frequence)
     i = 0
     for vp in fr:
@@ -415,7 +415,8 @@ if variante == 1:
     HPRIME[0:nddl, 0:nddl] = NP.dot(amor, masI)
     HPRIME[0:nddl, nddl : 2 * nddl] = NP.dot(rig, masI)
     HPRIME[nddl : 2 * nddl, 0:nddl] = -NP.identity(nddl)
-    frequence = LA.eigvals(HPRIME)
+    with CA.disable_fpe():
+        frequence = LA.eigvals(HPRIME)
     fr = list(frequence)
     i = 0
     for vp in fr:
@@ -427,7 +428,6 @@ if variante == 1:
             vp1i = vp.imag / 2 / pi
             print(i, vp1i, -vp1r / abs(vp))
 
-aster_core.matfpe(+1)
 
 TEST_RESU(
     RESU=(

@@ -401,7 +401,7 @@ class RunAster:
             text = change_procdir(text)
         text = add_import_commands(text)
         if self._interact:
-            text = stop_at_end(text)
+            text = stop_at_end(text, last=self._last)
         changed = text.strip() != text_init.strip()
         if changed:
             text = file_changed(text, comm)

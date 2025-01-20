@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -374,7 +374,6 @@ def main(argv=None):
         os.environ["RUNASTER_CA_BASEDIR"] = os.fspath(Path.cwd())
         if export.filename:
             os.environ["RUNASTER_CA_BASEDIR"] = os.fspath(Path(export.filename).parent)
-    print("run_aster_main:", os.environ["RUNASTER_CA_BASEDIR"])
     if direct:
         export.add_file(File(osp.abspath(args.file), filetype="comm", unit=1))
     elif not args.file or args.no_comm:

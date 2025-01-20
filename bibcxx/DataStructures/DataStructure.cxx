@@ -32,7 +32,7 @@
 
 // Constructor
 DataStructure::DataStructure( const std::string name, const int nameLength, const std::string type )
-    : _name( name ), _sdj( py::none() ) {
+    : _name( name ), _sdj( py::none() ), _cache( py::none() ) {
     _name.resize( nameLength, ' ' );
 
     // #ifdef ASTER_DEBUG_CXX_OBJECTS

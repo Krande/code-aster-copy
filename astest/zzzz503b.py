@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-
+from math import sqrt
 from code_aster.Commands import *
 from code_aster import CA
 
@@ -42,7 +42,6 @@ FOFO = DEFI_FONCTION(
     NOM_PARA="INST", VALE=(0.0, 0.0, 3.5, 3.5), PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU"
 )
 
-
 LINST = DEFI_LIST_REEL(
     DEBUT=0.0,
     INTERVALLE=(
@@ -61,19 +60,39 @@ U2 = MECA_STATIQUE(
     LIST_INST=LINST,
 )
 
-fieldOnElem = U2.getField("SIEF_ELGA", 31)
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CRITERES="SIEQ_ELGA")
 
-sfon = fieldOnElem.toSimpleFieldOnCells()
+last = U2.getLastIndex()
+sigm = U2.getField("SIEF_ELGA", last).toSimpleFieldOnCells()
+sieq = U2.getField("SIEQ_ELGA", last).toSimpleFieldOnCells()
 
-test.assertAlmostEqual(sfon.getValue(0, 0, 0, 0), -325.03920740223253)
-test.assertIn(sfon.getPhysicalQuantity(), ("SIEF_R",))
-test.assertIn(sfon.getLocalization(), ("ELGA",))
-test.assertSequenceEqual(sfon.getComponents(), ["SIXX", "SIYY", "SIZZ", "SIXZ"])
-test.assertEqual(sfon.getMaxNumberOfPoints(), 4)
-test.assertEqual(sfon.getNumberOfPointsOfCell(0), 4)
-test.assertEqual(sfon.getNumberOfCells(), 1)
-test.assertEqual(sfon.getNumberOfComponents(), 4)
-test.assertEqual(sfon.getNumberOfSubPointsOfCell(0), 12)
+test.assertAlmostEqual(sigm.getValue(0, 0, 0, 0), -326.7820449754335, 8)
+test.assertIn(sigm.getPhysicalQuantity(), ("SIEF_R",))
+test.assertIn(sigm.getLocalization(), ("ELGA",))
+test.assertSequenceEqual(sigm.getComponents(), ["SIXX", "SIYY", "SIZZ", "SIXZ"])
+test.assertEqual(sigm.getMaxNumberOfPoints(), 4)
+test.assertEqual(sigm.getNumberOfPointsOfCell(0), 4)
+test.assertEqual(sigm.getNumberOfCells(), 1)
+test.assertEqual(sigm.getNumberOfComponents(), 4)
+test.assertEqual(sigm.getNumberOfSubPointsOfCell(0), 12)
+
+s1 = sieq.PRIN_1
+s2 = sieq.PRIN_2
+s3 = sieq.PRIN_3
+vmis = sieq.VMIS
+calc = (1.0 / sqrt(2.0)) * ((s1 - s2) ** 2 + (s2 - s3) ** 2 + (s1 - s3) ** 2) ** 0.5
+
+test.assertAlmostEqual(abs(vmis - calc).max(), 0.0, 8)
+
+chcoor = CALC_CHAM_ELEM(MODELE=MO, CARA_ELEM=COQUE, OPTION="COOR_ELGA")
+coor = chcoor.toSimpleFieldOnCells()
+
+weight = coor.W
+weight_sigm = weight.onSupportOf(s1)
+# \int { PRIN_1 }
+s1xw_c = s1 * weight_sigm
+print(repr(s1xw_c))
+test.assertAlmostEqual(s1xw_c.sum(), -2482.24915, 4)
 
 test.printSummary()
 
