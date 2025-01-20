@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -83,7 +83,7 @@ ASTERDOUBLE BaseAssemblyMatrix::getLagrangeScaling() const {
         ASTERDOUBLE scaling0, scaling;
 #ifdef ASTER_HAVE_MPI
         CALLO_CONLAG( getName(), &scaling0 );
-        AsterMPI::all_reduce( scaling0, scaling, MPI_MIN );
+        AsterMPI::all_reduce( scaling0, scaling, MPI_MAX );
 #endif
         return scaling;
     } else {

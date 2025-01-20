@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
 !
     implicit none
 !
+#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/ejcine.h"
@@ -98,7 +99,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
     real(kind=8) :: dsidep(6, 6), b(2*ndim-1, ndim+1, 2*nno1+nno2)
     real(kind=8) :: sigmo(6), sigma(6), epsm(6), deps(6), wg
     real(kind=8) :: coopg(ndim+1, npg), rot(ndim*ndim)
-    real(kind=8) :: rbid(1), presgm, presgd, temp
+    real(kind=8) :: angmas(3), presgm, presgd, temp
     type(Behaviour_Integ) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
@@ -106,6 +107,10 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
     codret = 0
     cod = 0
     axi = .false.
+
+! - Don't use orientation (not to enter the anisotropic case in lc7058)
+    angmas = r8vide()
+!
 !
 ! IFHYME = TRUE  : CALCUL COUPLE HYDRO-MECA
 ! IFHYME = FALSE : CALCUL MECA SANS HYDRO ET ELIMINATION DES DDL DE PRES
@@ -189,7 +194,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
                     'RIGI', kpg, 1, ndim, typmod, &
                     mate, compor, carcri, tm, tp, &
                     6, epsm, deps, 6, sigmo, &
-                    vim(1, kpg), option, rbid, &
+                    vim(1, kpg), option, angmas, &
                     sigma, vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999

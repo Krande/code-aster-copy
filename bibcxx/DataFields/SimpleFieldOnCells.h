@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe SimpleFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -446,6 +446,7 @@ class SimpleFieldOnCells : public DataField {
      * @brief Get values on cells holding components, with mask
      */
     py::object toNumpy() {
+        this->updateValuePointers();
 
         PyObject *resu_tuple = PyTuple_New( 2 );
 
