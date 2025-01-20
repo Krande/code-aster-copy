@@ -274,36 +274,6 @@ VectorPairLong MeshPairing::getListOfPairs() const {
     return returnValue;
 }
 
-// VectorOfVectorsReal MeshPairing::getIntersectionPoints( const ASTERINTEGER &indexPair,
-//                                                         const CoordinatesSpace coorSpace ) const
-//                                                         {
-
-//     ASTERINTEGER nbPairs = getNumberOfPairs();
-//     VectorOfVectorsReal returnValue;
-
-//     if ( indexPair < 0 || indexPair >= nbPairs ) {
-//         throw std::out_of_range( "The pair index should be between 0  and " +
-//                                  std::to_string( nbPairs ) );
-//     }
-
-//     ASTERINTEGER nbInter = getNumberOfIntersectionPoints( indexPair );
-//     VectorReal coorParaPoint;
-//     coorParaPoint.reserve( 2 );
-//     coorParaPoint.push_back( 0.0 );
-//     coorParaPoint.push_back( 0.0 );
-
-//     if ( nbInter != 0 ) {
-//         returnValue.reserve( nbInter );
-//         for ( auto iInter = 0; iInter < nbInter; iInter++ ) {
-//             coorParaPoint[0] = _poinInteSlav[16 * ( indexPair ) + iInter];
-//             coorParaPoint[1] = _poinInteSlav[16 * ( indexPair ) + iInter + 8];
-//             returnValue.push_back( coorParaPoint );
-//         }
-//     }
-
-//     return returnValue;
-// }
-
 ASTERINTEGER MeshPairing::getNumberOfIntersectionPoints( const ASTERINTEGER &indexPair ) const {
 
     ASTERINTEGER nbPairs = getNumberOfPairs();
@@ -456,14 +426,6 @@ ASTERBOOL MeshPairing::hasCommonNodes() const {
     VectorLong commonNodes;
     VectorLong masterNodes = _masterNodes;
     VectorLong slaveNodes = _slaveNodes;
-    // std::cout << "Master SIze<" << masterNodes.size() << ">" << std::endl;
-    // for ( long int iNode = 0; iNode < masterNodes.size(); iNode++ ) {
-    //     std::cout << "Master node: " << masterNodes[iNode] << std::endl;
-    // }
-    // std::cout << "Slave SIze<" << slaveNodes.size() << ">" << std::endl;
-    // for ( long int iNode = 0; iNode < slaveNodes.size(); iNode++ ) {
-    //     std::cout << "Slave node: " << slaveNodes[iNode] << std::endl;
-    // }
 
     if ( mesh->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
