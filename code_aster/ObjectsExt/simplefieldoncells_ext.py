@@ -256,10 +256,10 @@ class ComponentOnCells:
     _values = _descr = _sign = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, values, description: Description):
+    def __init__(self, values, description):
         self.init_from(values, description)
 
-    def init_from(self, values, description: Description):
+    def init_from(self, values, description):
         """Initialize content."""
         assert isinstance(values, ma.MaskedArray)
         self._values = values
@@ -666,7 +666,7 @@ class ExtendedSimpleFieldOnCellsReal:
             raise AttributeError(f"'ComponentOnCells' object has no attribute {component!r}")
         return self.getComponentOnCells(component)
 
-    def getComponentOnCells(self, component: str):
+    def getComponentOnCells(self, component):
         """Extract the values of a component.
 
         Args:
@@ -684,7 +684,7 @@ class ExtendedSimpleFieldOnCellsReal:
             mvalues, ComponentOnCells.Description(self, self._cache["idx"], self._cache["nbpt"])
         )
 
-    def setComponentValues(self, component: str, cfvalue: ComponentOnCells):
+    def setComponentValues(self, component, cfvalue):
         """Assign the values of a component.
 
         Args:
