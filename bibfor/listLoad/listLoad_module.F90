@@ -1703,7 +1703,7 @@ contains
         integer :: iTypeNeut
         character(len=8) :: answer
         character(len=24) :: loadIden, loadField
-        aster_logical :: paraIsTime, loadExist
+        aster_logical :: paraIsTime, paraIsTemp, loadExist
 !   ------------------------------------------------------------------------------------------------
 !
         call jemarq()
@@ -1717,11 +1717,14 @@ contains
 
             if (loadExist) then
 ! ------------- Parameter dependence
-                answer = "NON"
+                paraIsTime = ASTER_FALSE
+                paraIsTemp = ASTER_FALSE
                 if (loadIsFunc) then
                     call dismoi('PARA_INST', loadField, 'CARTE', repk=answer)
+                    paraIsTime = answer .eq. 'OUI'
+                    call dismoi('PARA_TEMP', loadField, 'CARTE', repk=answer)
+                    paraIsTemp = answer .eq. 'OUI'
                 end if
-                paraIsTime = answer .eq. 'OUI'
 
 ! ------------- Get identifier of load
                 call getLoadIdenNeum(loadApply, loadIsFunc, paraIsTime, &
@@ -1730,9 +1733,9 @@ contains
 ! ------------- Automatic checks
                 if (hasMultFunc) then
                     ! Débranchement provisoire (issue34322)
-                    !if (therLoadVectF(iTypeNeut) .eq. "NoVector") then
-                    !    call utmess('F', 'CHARGES9_38')
-                    !end if
+                    if (therLoadVectF(iTypeNeut) .ne. "NoVector" .and. paraIsTemp) then
+                        call utmess('F', 'CHARGES9_43')
+                    end if
                     if (iTypeNeut .eq. LOAD_NEUT_ECHANGE) then
                         call utmess('F', 'CHARGES9_39')
                     end if

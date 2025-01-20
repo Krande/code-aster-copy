@@ -77,6 +77,7 @@ Si votre chargement contient plusieurs types dont certains ne peuvent être suiv
     42: _(
         """Un des chargements contient une condition de type %(k1)s impossible dans cet opérateur linéaire."""
     ),
+    43: _("""Un chargement qui dépend de la température n'est pas compatible avec FONC_MULT."""),
     49: _(
         """
 Vous avez fourni %(i1)d charges alors qu'il n'y a %(i2)d dans la structure de données résultat.

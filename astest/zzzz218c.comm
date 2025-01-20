@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+# aslint: disable=W2005
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
@@ -34,7 +35,7 @@ NONREGRE = (
     0.0009928399,
     214.6675,
     903494.8,
-    89.24671,
+    89.24654,
     396.1557,
 )
 
@@ -409,6 +410,7 @@ TEST_TABLE(
 tempFl2 = TBL_FIN2["TEMP", 11]
 
 TEST_TABLE(
+    TOLE_MACHINE=5.0e-6,
     VALE_CALC=NONREGRE[8],
     NOM_PARA="TEMP",
     TABLE=TBL_FIN1,

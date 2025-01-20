@@ -2,7 +2,7 @@
  * @file ContactPairing.cxx
  * @brief Implementation de Contact
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -312,6 +312,9 @@ void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, cons
             // Get cell slave to construct (is volumic cell for Nitsche)
             auto slavCellUsedNume = slavCellNume;
             if ( contAlgo == ContactAlgo::Nitsche ) {
+                if ( surf2Volu.size() == 0 ) {
+                    UTMESS( "F", "CONTACT1_3" );
+                }
                 slavCellUsedNume = surf2Volu[slavCellNume];
             }
 

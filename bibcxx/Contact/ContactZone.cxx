@@ -2,7 +2,7 @@
  * @file ContactZone.cxx
  * @brief Implementation de Contact
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -57,12 +57,20 @@ bool ContactZone::build() {
 
     _meshPairing->initObjects();
 
+    // Some checks
     auto hasCommonNodes = _meshPairing->hasCommonNodes();
     if ( hasCommonNodes ) {
         UTMESS( "F", "CONTACT1_1" );
     }
 
-    // check mesh orientation (normals)
+    if ( getContactParameter()->getAlgorithm() == ContactAlgo::Nitsche ) {
+        auto surf2Volu = getSlaveCellsSurfToVolu();
+        if ( surf2Volu.size() == 0 ) {
+            UTMESS( "F", "CONTACT1_3" );
+        }
+    }
+
+    // Check mesh orientation (normals)
     if ( checkNormals() ) {
         _meshPairing->checkNormals( _model );
     }
