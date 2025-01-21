@@ -114,31 +114,8 @@ class SymmetryManager:
 
         return ret
 
-    def build_symmetry(self, resuin):
-        """Return a new result containing the symmetric result merged with the current one.
+    def build_symmetry_mesh(self, meshin):
 
-        Data is mirrored along the stored `axis`. Only nodal fields are taken into account.
-
-        Arguments
-        ---------
-            resuin (MEDFileData): Input corrector fields.
-
-        Returns
-        -------
-            resuout (MEDFileData): Output corrector fields.
-        """
-
-        meshesin = resuin.getMeshes()
-        assert len(meshesin) == 1
-        meshin = meshesin[0]
-
-        fmtsin = resuin.getFields()
-
-        result = medc.MEDFileData()
-        meshes = medc.MEDFileMeshes()
-        fields = medc.MEDFileFields()
-        result.setMeshes(meshes)
-        result.setFields(fields)
         if not isinstance(meshin, medc.MEDFileUMesh):
             raise RuntimeError("Input mesh is not MEDFileUMesh as expected !")
         if meshin.getMeshDimension() != 3:
@@ -194,8 +171,43 @@ class SymmetryManager:
 
         l0grp = [mesh_fused.getGroupArr(0, grp) for grp in mesh_fused.getGroupsOnSpecifiedLev(0)]
         volume_ver, dirthick, mesh_merged = rebuild_with_groups(mesh_fused[0], l0grp)
-        meshes.pushMesh(mesh_merged)
 
+        return mesh_merged, point_ids_to_keep_sym, point_ids_to_merge
+
+    def build_symmetry(self, resuin, meshout=None, keep_ids=None, merge_ids=None):
+        """Return a new result containing the symmetric result merged with the current one.
+
+        Data is mirrored along the stored `axis`. Only nodal fields are taken into account.
+
+        Arguments
+        ---------
+            resuin (MEDFileData): Input corrector fields.
+
+        Returns
+        -------
+            resuout (MEDFileData): Output corrector fields.
+        """
+
+        meshesin = resuin.getMeshes()
+        assert len(meshesin) == 1
+        meshin = meshesin[0]
+
+        fmtsin = resuin.getFields()
+
+        result = medc.MEDFileData()
+        meshes = medc.MEDFileMeshes()
+        fields = medc.MEDFileFields()
+        result.setMeshes(meshes)
+        result.setFields(fields)
+
+        if meshout is None:
+            mesh_merged, point_ids_to_keep_sym, point_ids_to_merge = self.build_symmetry_mesh(
+                meshin
+            )
+        else:
+            mesh_merged, point_ids_to_keep_sym, point_ids_to_merge = meshout, keep_ids, merge_ids
+
+        meshes.pushMesh(mesh_merged)
         m0_merged = mesh_merged[0]
 
         for fmts in fmtsin:

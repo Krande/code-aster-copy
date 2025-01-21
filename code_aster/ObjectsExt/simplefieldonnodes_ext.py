@@ -23,7 +23,6 @@
 Simple Fields defined on nodes of elements
 ********************************************************************
 """
-
 import numpy as np
 import numpy.ma as ma
 from libaster import SimpleFieldOnNodesComplex, SimpleFieldOnNodesReal
@@ -34,6 +33,7 @@ from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import force_list, injector
 from ..Utilities import medcoupling as medc
 from .component import ComponentOnNodes
+from ..Utilities.MedUtils import MEDConverter
 
 
 class SFoNStateBuilder(InternalStateBuilder):
@@ -142,133 +142,55 @@ class ExtendedSimpleFieldOnNodesReal:
 
         return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
 
-    def fromMEDCouplingField(self, mc_field):
+    @classmethod
+    def fromMEDCouplingField(cls, mc_field, astermesh):
         """Import the field to a new MEDCoupling field. Set values in place.
 
-            It assumes that the DataArray contains the list of components and
-            its names is the physical quantity.
+           It assumes that the DataArray contains the list of components and
+           its name ends with the physical quantity.
 
         Arguments:
             field (*MEDCouplingFieldDouble*): The medcoupling field.
+            mesh (Mesh) : field support mesh.
+
+        Returns:
+            field (*MEDCouplingFieldDouble*): The medcoupling field.
         """
 
-        if not isinstance(mc_field, (medc.MEDCouplingFieldDouble, PMM.MEDCouplingFieldDouble)):
-            msg = "fromMEDCouplingField() argument must be a MEDCouplingFieldDouble, not '{}'"
-            raise TypeError(msg.format(type(mc_field).__name__))
+        phys, cmps, values = MEDConverter.fromMEDFileField1TSNodes(mc_field, astermesh)
 
-        if mc_field.getTypeOfField() != medc.ON_NODES:
-            raise RuntimeError("Field is not defined on nodes.")
+        field = cls(astermesh)
+        field.allocate(phys, cmps)
+        field.setValues(values)
 
-        mesh = mc_field.getMesh()
-        if mesh.getNumberOfNodes() != self.getMesh().getNumberOfNodes():
-            raise RuntimeError("Meshes have an incompatible number of nodes.")
+        return field
 
-        # mc values
-        arr = mc_field.getArray()
-
-        cmps = arr.getInfoOnComponents()
-        phys = arr.getName()
-
-        self.allocate(phys, cmps)
-
-        self.setValues(arr.getValues())
-
-    def toMEDCouplingField(self, medmesh):
+    def toMEDCouplingField(self, medmesh, prefix=""):
         """Export the field to a new MEDCoupling field
 
         Arguments:
             medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
+            prefix,  optional (str): Prefix for field names.
 
         Returns:
             field ( MEDCouplingFieldDouble ) : The field medcoupling format.
         """
 
-        if not isinstance(medmesh, (medc.MEDCouplingUMesh, PMM.MEDCouplingUMesh)):
-            msg = "toMEDCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
-            raise TypeError(msg.format(type(medmesh).__name__))
+        return MEDConverter.toMEDCouplingField(self, medmesh, prefix)
 
-        # Aster values
-        values, mask = self.toNumpy()
-
-        # Restrict field based on mask
-        restricted_nodes = np.where(np.any(mask, axis=1) == True)[0]
-        restricted_values = values[restricted_nodes, :]
-
-        # Medcoupling field
-        field_values = medc.DataArrayDouble(restricted_values)
-        field_values.setInfoOnComponents(self.getComponents())
-        field_values.setName(self.getPhysicalQuantity())
-        medc_node_field = medc.MEDCouplingFieldDouble(medc.ON_NODES, medc.ONE_TIME)
-        medc_node_field.setName(self.getPhysicalQuantity())
-        medc_node_field.setArray(field_values)
-        medc_node_field.setNature(medc.IntensiveMaximum)
-
-        if len(restricted_nodes) == medmesh.getNumberOfNodes():
-            medc_node_field.setMesh(medmesh)
-        else:
-            # Med profile
-            field_profile = medc.DataArrayInt(restricted_nodes)
-            field_profile.setName("NodesProfile")
-
-            # Med support mesh for field ( restricted to profile nodes ) without cells
-            field_mesh = medc.MEDCouplingUMesh()
-            field_mesh.setName("")
-            field_mesh.setMeshDimension(medmesh.getMeshDimension())
-            field_mesh.setCoords(medmesh.getCoords()[field_profile])
-            field_mesh.allocateCells()
-            medc_node_field.setMesh(field_mesh)
-
-        medc_node_field.checkConsistencyLight()
-
-        return medc_node_field
-
-    def toMEDFileField1TS(self, medmesh):
+    def toMEDFileField1TS(self, medmesh, profile=False, prefix=""):
         """Export the field to a new MED field
 
         Arguments:
             medmesh (*MEDFileUMesh*): The medcoupling support mesh.
+            profile, optional (bool): True to create a MED profile from field mask.
+            prefix,  optional (str): Prefix for field names.
 
         Returns:
             field ( MEDFileField1TS ) : The field in med format ( medcoupling ).
         """
 
-        if not isinstance(medmesh, medc.MEDFileUMesh):
-            msg = "toMEDFileField1TS() argument must be a MEDFileUMesh, not '{}'"
-            raise TypeError(msg.format(type(medmesh).__name__))
-
-        # Aster values
-        values, mask = self.toNumpy()
-
-        # Restrict field based on mask
-        restricted_nodes = np.where(np.any(mask, axis=1) == True)[0]
-        restricted_values = values[restricted_nodes, :]
-
-        # Med profile
-        field_profile = medc.DataArrayInt(restricted_nodes)
-        field_profile.setName("NodesProfile")
-
-        # Med support mesh for field ( restricted to profile nodes ) without cells
-        field_mesh = medc.MEDCouplingUMesh()
-        field_mesh.setName("")
-        field_mesh.setMeshDimension(medmesh.getMeshDimension())
-        field_mesh.setCoords(medmesh.getCoords()[field_profile])
-        field_mesh.allocateCells()
-
-        # Medcoupling field
-        field_values = medc.DataArrayDouble(restricted_values)
-        field_values.setInfoOnComponents(self.getComponents())
-        field_values.setName(self.getPhysicalQuantity())
-        medc_node_field = medc.MEDCouplingFieldDouble(medc.ON_NODES, medc.ONE_TIME)
-        medc_node_field.setMesh(field_mesh)
-        medc_node_field.setName(self.getPhysicalQuantity())
-        medc_node_field.setArray(field_values)
-        medc_node_field.checkConsistencyLight()
-
-        # Med field with profile
-        medfield = medc.MEDFileField1TS()
-        medfield.setFieldProfile(medc_node_field, medmesh, 1, field_profile)
-
-        return medfield
+        return MEDConverter.toMEDFileField1TS(self, medmesh, profile, prefix)
 
     def transfert(self, mesh, cmps=[]):
         """Tranfert the field to an other mesh. One of the mesh has to be a restriction

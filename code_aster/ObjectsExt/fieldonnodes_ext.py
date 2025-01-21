@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,25 +111,6 @@ class ExtendedFieldOnNodesReal:
         """
 
         return self.toSimpleFieldOnNodes().transfert(mesh, cmps).toFieldOnNodes()
-
-    def toMEDFileField1TS(self, medmesh):
-        """Export the field to a new MED field
-
-        Arguments:
-            medmesh (*MEDFileUMesh*): The medcoupling support mesh.
-
-        Returns:
-            field ( MEDFileField1TS ) : The field in med format ( medcoupling ).
-        """
-
-        if not isinstance(medmesh, medc.MEDFileUMesh):
-            msg = "toMEDFileField1TS() argument must be a MEDFileUMesh, not '{}'"
-            raise TypeError(msg.format(type(medmesh).__name__))
-
-        # Aster values
-        sfield = self.toSimpleFieldOnNodes()
-
-        return sfield.toMEDFileField1TS(medmesh)
 
     def getValuesWithDescription(self, components=[], groups=[]):
         """Return the values of a component of the field.

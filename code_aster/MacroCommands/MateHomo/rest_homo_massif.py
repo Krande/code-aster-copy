@@ -53,7 +53,7 @@ def createLocalTherResult(rmanager, resuglob):
 
     resuloc = ThermalResult()
     resuloc.allocate(len(indexes))
-    shiftidx = 1
+    shiftidx = 0
     for i, no in enumerate(indexes):
         time = resuglob.getTime(no)
         idxresu = i + shiftidx
@@ -109,7 +109,7 @@ def createLocalElasResult(rmanager, resuglob):
 
     resuloc = ElasticResult()
     resuloc.allocate(len(indexes))
-    shiftidx = 0
+    shiftidx = 1
     for i, no in enumerate(indexes):
         time = resuglob.getTime(no)
         idxresu = i + shiftidx

@@ -44,7 +44,7 @@ class RelocManager:
     """
 
     _x0 = _y0 = _z0 = _shift = None
-    _elas_dict = _ther_dict = None
+    _elas_dict = _ther_dict = _full = None
     _temp_ref = _temp_ref_field = _pres_int = None
     _crit = _prec = None
     _subinsts = _meshver = _meshp0 = _fevol_tp0 = None
@@ -164,9 +164,9 @@ class RelocManager:
 
         self._x0, self._y0, self._z0 = kwargs.get("POSITION")
         self._shift = kwargs.get("TRAN") == "OUI"
-        self._import_correctors(
-            kwargs.get("CORR_MECA"), kwargs.get("CORR_THER", {}), kwargs.get("SYME") == "OUI"
-        )
+
+        self._elas_dict = kwargs.get("CORR_MECA")
+        self._ther_dict = kwargs.get("CORR_THER")
         self._temp_ref = kwargs.get("TEMP_REF", 20.0)
         self._pres_int = kwargs.get("PRESSION", 0.0)
         self._crit = kwargs.get("CRITERE")
@@ -176,38 +176,64 @@ class RelocManager:
         self._meshp0 = None
         self._fevol_tp0 = None
         self._temp_ref_field = None
+        self._full = False
+        if kwargs.get("SYME") == "OUI":
+            self._make_full_correctors()
 
-    def _import_correctors(self, elas, ther, full):
+    def _make_full_correctors(self):
         """
-        Import correctors eventually creating the full results.
-
         CALC_MATE_HOMO computes the corrector fields on a symmetric and periodic mesh.
         When performing relocalisation it is possible to rebuild the full corrector field.
 
-
-        Arguments
-        ---------
-        elas (ElasticResultDict): The elastic corrector fields collection.
-        ther (ThermalResultDict): The thermal corrector fields collection.
-        full (bool): True to build the full corrector fields.
-
         """
+        assert not self._full
+        astermesh = None
+        mod_ther = None
+        mod_elas = None
 
-        if full:
-            unit = 99
-            fname = "fort.%d" % unit
-            print_med_file(unit, elas, ther)
-            resuin = medc.MEDFileData(fname)
-            resuout = BuildFullSymmetryMassif(resuin)
-            resuout.write(fname, 2)
-            tabpara, corr_meca, corr_ther = load_fields(unit)
+        elas = self._elas_dict
+        if elas is not None:
+            corr_meca = ElasticResultDict()
+            for name in elas.keys():
+                corr_sym = elas[name]
+                medcresu = corr_sym.createMedCouplingResult(prefix=f"{name}")
+                resuout = BuildFullSymmetryMassif(medcresu)
+                if astermesh is None:
+                    astermesh = Mesh()
+                    astermesh.buildFromMedCouplingMesh(resuout.getMeshes()[0])
 
-        else:
-            corr_meca = elas
-            corr_ther = ther
+                if mod_elas is None:
+                    mod_elas = Model(astermesh)
+                    mod_elas.addModelingOnMesh(Physics.Mechanics, Modelings.Tridimensional)
+                    mod_elas.build()
 
-        self._elas_dict = corr_meca
-        self._ther_dict = corr_ther
+                corr_meca[name] = ElasticResult.fromMedCouplingResult(resuout, astermesh)
+                corr_meca[name].setModel(mod_elas)
+
+            self._elas_dict = corr_meca
+
+        ther = self._ther_dict
+        if ther is not None:
+            corr_ther = ThermalResultDict()
+            for name in ther.keys():
+                corr_sym = ther[name]
+                medcresu = corr_sym.createMedCouplingResult(prefix=f"{name}")
+                resuout = BuildFullSymmetryMassif(medcresu)
+                if astermesh is None:
+                    astermesh = Mesh()
+                    astermesh.buildFromMedCouplingMesh(resuout.getMeshes()[0])
+
+                if mod_ther is None:
+                    mod_ther = Model(astermesh)
+                    mod_ther.addModelingOnMesh(Physics.Thermal, Modelings.Tridimensional)
+                    mod_ther.build()
+
+                corr_ther[name] = ThermalResult.fromMedCouplingResult(resuout, astermesh)
+                corr_ther[name].setModel(mod_ther)
+
+            self._ther_dict = corr_ther
+
+        self._full = True
 
     def getCorrectorMesh(self):
         """Assert that VER mesh is unique and get it from correctors.
