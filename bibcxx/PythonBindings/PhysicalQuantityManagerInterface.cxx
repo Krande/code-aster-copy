@@ -2,7 +2,7 @@
  * @file PhysicalQuantityManagerInterface.cxx
  * @brief Interface python de PhysicalQuantityManager
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,6 +32,7 @@ void exportPhysicalQuantityManagerToPython( py::module_ &mod ) {
         mod, "PhysicalQuantityManager" )
         .def( "hasQuantityOfName", &PhysicalQuantityManager::hasQuantityOfName )
         .def( "getPhysicalQuantityName", &PhysicalQuantityManager::getPhysicalQuantityName )
+        .def( "getAllPhysicalQuantityNames", &PhysicalQuantityManager::getAllPhysicalQuantityNames )
         .def( "getComponentNames", &PhysicalQuantityManager::getComponentNames )
         .def( "getNumberOfEncodedInteger", &PhysicalQuantityManager::getNumberOfEncodedInteger );
 };

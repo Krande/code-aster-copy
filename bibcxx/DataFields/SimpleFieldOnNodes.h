@@ -341,6 +341,11 @@ class SimpleFieldOnNodes : public DataField {
      */
     std::string getPhysicalQuantity() const { return strip( ( *_descriptor )[1].toString() ); }
 
+    /**
+     * @brief Get field location
+     */
+    std::string getLocalization() const { return "NOEU"; }
+
     bool hasComponent( const std::string &cmp ) const {
         if ( _name2Index.count( cmp ) > 0 ) {
             return true;

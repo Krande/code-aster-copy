@@ -3,7 +3,7 @@
  * @brief Implementation de PhysicalQuantityManager
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,6 +36,15 @@ std::string PhysicalQuantityManager::getPhysicalQuantityName( const ASTERINTEGER
     if ( quantityNumber <= 0 || quantityNumber > _nameOfPhysicalQuantity->size() )
         throw std::runtime_error( "Not a known physical quantity" );
     return _nameOfPhysicalQuantity->getStringFromIndex( quantityNumber );
+};
+
+const VectorString PhysicalQuantityManager::getAllPhysicalQuantityNames() {
+    VectorString result;
+    auto sz = _nameOfPhysicalQuantity->size();
+    result.reserve( sz );
+    for ( int i = 0; i < sz; i++ )
+        result.push_back( strip( _nameOfPhysicalQuantity->getStringFromIndex( i + 1 ) ) );
+    return result;
 };
 
 ASTERINTEGER
