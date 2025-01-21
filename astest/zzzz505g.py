@@ -176,7 +176,7 @@ with DebugChrono.measure("global"):
     del x0, x2, xp1
     del after, before, copied
 
-    test.assertIsNone(valx._cells, msg="on all cells")
+    test.assertIsNone(valx.restr, msg="on all cells")
     faces = mesh.getCells(["TOP", "FRONT", "RIGHT", "S68", "S26"])
     if useHPCMode():
         faces = list(set(faces).intersection(mesh.getInnerCells()))
@@ -188,7 +188,7 @@ with DebugChrono.measure("global"):
     with DebugChrono.measure("restrict"):
         valx.restrict(faces)
 
-    test.assertTrue(np.all(faces == valx._cells), msg="restrict: cells")
+    test.assertTrue(np.all(faces == valx.restr), msg="restrict: cells")
     test.assertEqual(
         len(valx.values), valx._descr._discr.prod(axis=1).sum(), msg="restrict: values"
     )
