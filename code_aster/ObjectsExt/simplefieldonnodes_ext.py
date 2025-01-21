@@ -241,7 +241,7 @@ class ExtendedSimpleFieldOnNodesReal:
             cmps_red = []
             all_cmps = self.getComponents()
             for cmp in cmps:
-                if cmp in self.getComponents():
+                if cmp in all_cmps:
                     cmps_red.append(cmp)
             cmps = cmps_red
 
