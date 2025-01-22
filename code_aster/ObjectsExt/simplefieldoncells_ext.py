@@ -90,7 +90,7 @@ class ExtendedSimpleFieldOnCellsReal:
         icmp = self.getComponents().index(component)
         self._cache["readonly"] = False
         mvalues = ma.array(
-            self._cache["val"][:, icmp], mask=np.logical_not(self._cache["msk"][:, icmp])
+            self._cache["val"][:, icmp].copy(), mask=np.logical_not(self._cache["msk"][:, icmp])
         )
         return ComponentOnCells(
             mvalues, ComponentOnCells.Description(self, self._cache["idx"], self._cache["nbpt"])

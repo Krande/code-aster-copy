@@ -80,6 +80,8 @@ with DebugChrono.measure("global"):
 
     with DebugChrono.measure("chs.X"):
         valx = chs.getComponentOnCells("X")
+    print(repr(valx))
+
     with DebugChrono.measure("chs.Y"):
         valy = chs.Y
 
@@ -159,7 +161,6 @@ with DebugChrono.measure("global"):
     test.assertAlmostEqual(x2.max(), valx.max() ** 2, 8, msg="pow int")
     test.assertAlmostEqual(abs(x0 - valx).max(), 0.0, 8, msg="pow float")
 
-    # NB: this will change values of 'valx' that points on the same array.
     with DebugChrono.measure("setComponentValues"):
         chs.setComponentValues("X", xp1)
 
