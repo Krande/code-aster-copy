@@ -7,7 +7,10 @@ P testlist need_data verification sequential
 
 F comm hplv109a.comm D 1
 F comm hplv109b.com1 D 1
+F comm hplv109a.com2 D 1
+F comm hplv109a.com3 D 1
 F mmed hplv109a.med D 20
 F mmed hplv109a.21 D 21
 F mmed hplv109a.22 D 22
-F mmed hplv109a.30 D 30
+F mmed hplv109b.30 D 30
+F mmed hplv109b.31 D 31

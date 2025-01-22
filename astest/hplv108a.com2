@@ -37,13 +37,13 @@ MA_CORR = LIRE_MAILLAGE(UNITE=80)
 CORR_MECA_FULL = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_ELAS", MAILLAGE=MA_CORR)
 CORR_THER_FULL = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_THER", MAILLAGE=MA_CORR)
 
-MAFULL = CORR_MECA_FULL["CORR_MECA11"].getMesh()
+MESH_FULL = CORR_MECA_FULL["CORR_MECA11"].getMesh()
 
 LSTEMP = [20]
 DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_alpha_calc = setup_calcul(
-    "MASSIF", MAFULL, ("plaque"), (_F(GROUP_MA="plaque", MATER=MATEUNI),), "TEMP", LSTEMP
+    "MASSIF", MESH_FULL, ("plaque"), (_F(GROUP_MA="plaque", MATER=MATEUNI),), "TEMP", LSTEMP
 )
-(xmin, xmax), (ymin, ymax), (zmin, zmax) = MAFULL.createMedCouplingMesh()[0].getBoundingBox()
+(xmin, xmax), (ymin, ymax), (zmin, zmax) = MESH_FULL.createMedCouplingMesh()[0].getBoundingBox()
 volume_ver = (xmax - xmin) * (ymax - ymin) * (zmax - zmin)
 
 for n in CORR_MECA_FULL.keys():
@@ -77,8 +77,8 @@ for para, value in testrefe.items():
     )
 
 test = CA.TestCase()
-test.assertEqual(MAFULL.getNumberOfNodes(), 6269, msg="Number of nodes after symmetry")
-test.assertEqual(MAFULL.getNumberOfCells(), 2120, msg="Number of cells after symmetry")
+test.assertEqual(MESH_FULL.getNumberOfNodes(), 6269, msg="Number of nodes after symmetry")
+test.assertEqual(MESH_FULL.getNumberOfCells(), 2120, msg="Number of cells after symmetry")
 
 test.printSummary()
 

@@ -118,7 +118,6 @@ class RelocManager:
     def type_homo(self):
         """Holds the homogenisation type."""
 
-        ASSERT(self.corr_meca is not None)
         htype = HomoType.Bulk
         if any("FLEX" in name for name in self.corr_meca.keys()):
             ASSERT(self.corr_ther is None)
@@ -161,10 +160,10 @@ class RelocManager:
         """
 
         self._x0, self._y0, self._z0 = kwargs.get("POSITION")
-        self._shift = kwargs.get("TRAN") == "OUI"
+        self._shift = kwargs.get("TRANSLATION") == "OUI"
 
-        self._elas_dict = kwargs.get("CORR_MECA")
-        self._ther_dict = kwargs.get("CORR_THER")
+        self._elas_dict = kwargs.get("CORR_MECA", {})
+        self._ther_dict = kwargs.get("CORR_THER", {})
         self._temp_ref = kwargs.get("TEMP_REF", 20.0)
         self._pres_int = kwargs.get("PRESSION", 0.0)
         self._crit = kwargs.get("CRITERE")
@@ -175,13 +174,15 @@ class RelocManager:
         self._fevol_tp0 = None
         self._temp_ref_field = None
         self._full = False
-        if kwargs.get("SYME") == "OUI":
+        if kwargs.get("COMPLET") == "OUI":
             self._make_full_correctors()
 
     def _make_full_correctors(self):
         """
+        Build the full field of correctors.
+
         CALC_MATE_HOMO computes the corrector fields on a symmetric and periodic mesh.
-        When performing relocalisation it is possible to rebuild the full corrector field.
+        When performing relocalisation it is possible to build the full corrector field.
 
         """
         assert not self._full
@@ -240,16 +241,24 @@ class RelocManager:
         -------
             mesh (Mesh) : The VER mesh.
         """
+        mmeca = None
+        mther = None
+        mesh = None
 
-        mmeca = list(set(self.corr_meca[key].getMesh() for key in self.corr_meca.keys()))
-        ASSERT(len(mmeca) == 1)
+        if self.corr_meca:
+            mmeca = list(set(self.corr_meca[key].getMesh() for key in self.corr_meca.keys()))
+            ASSERT(len(mmeca) == 1)
+            mesh = mmeca[0]
 
         if self.corr_ther:
             mther = list(set(self.corr_ther[key].getMesh() for key in self.corr_ther.keys()))
             ASSERT(len(mther) == 1)
+            mesh = mther[0]
+
+        if mmeca is not None and mther is not None:
             ASSERT(mther[0] is mmeca[0])
 
-        return mmeca[0]
+        return mesh
 
     def _createVerMesh(self):
         """Internal function. Creates the VER mesh used for field localisation.

@@ -17,44 +17,41 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import math
 from code_aster.CodeCommands import *
 from code_aster.Objects import *
 from code_aster import CA
 
 POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = CA.TestCase()
-
-RELOC_RESU_1 = REST_HOMO_LOCAL(
-    TYPE_HOMO="MASSIF",
-    POSITION=(x0, y0, z0),
-    AFFE=(_F(GROUP_MA=("plaque",), MATER=ACIER), _F(GROUP_MA=("tube1",), MATER=INCONEL)),
-    CORR_MECA=CORR_MECA_RELOAD,
-    PRESSION=1.0,
-    EVOL_ELAS=RESU_GLOB_HOMO_MECA,
-    TOUT_INST="OUI",
+MA1 = RELOC_RESU_1.getMesh()
+MA1 = DEFI_GROUP(
+    reuse=MA1,
+    MAILLAGE=MA1,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="face_int"),
+        _F(
+            NOM="plan_xoy", OPTION="PLAN", POINT=(0, 0, 0), VECT_NORMALE=(0, 0, 1.0), PRECISION=1e-6
+        ),
+        _F(NOM="ANALYSE", INTERSEC=("face_int", "plan_xoy")),
+    ),
 )
 
-test.assertSetEqual(set(RELOC_RESU_1.getFieldsNames()), set(["DEPL"]))
-test.assertSequenceEqual(RELOC_RESU_1.getAccessParameters()["INST"], INSTS)
-
-RELOC_RESU_2 = REST_HOMO_LOCAL(
-    TYPE_HOMO="MASSIF",
-    POSITION=(x0, y0, z0),
-    AFFE=(_F(GROUP_MA=("plaque",), MATER=ACIER), _F(GROUP_MA=("tube1",), MATER=INCONEL)),
-    CORR_MECA=CORR_MECA,
-    TEMP_REF=20,
-    PRESSION=1.0,
-    EVOL_ELAS=RESU_GLOB_HOMO_MECA,
-    OPTION="SIEF_ELGA",
-    TRANSLATION="OUI",
-    INST=INSTS,
-    COMPLET="OUI",
+MA2 = RELOC_RESU_2.getMesh()
+MA2 = DEFI_GROUP(
+    reuse=MA2,
+    MAILLAGE=MA2,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="face_int"),
+        _F(
+            NOM="plan_xoy",
+            OPTION="PLAN",
+            POINT=(x0, y0, z0),
+            VECT_NORMALE=(0, 0, 1.0),
+            PRECISION=1e-6,
+        ),
+        _F(NOM="ANALYSE", INTERSEC=("face_int", "plan_xoy")),
+    ),
 )
-
-test.assertSetEqual(set(RELOC_RESU_2.getFieldsNames()), set(["DEPL", "SIEF_ELGA"]))
-test.assertSequenceEqual(RELOC_RESU_2.getAccessParameters()["INST"], INSTS)
-
-test.printSummary()
 
 FIN()

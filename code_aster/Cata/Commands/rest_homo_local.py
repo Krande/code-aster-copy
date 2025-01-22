@@ -23,30 +23,42 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-REST_HOMO_LOCA = MACRO(
-    nom="REST_HOMO_LOCA",
+
+def rest_homo_sdprod(self, CORR_MECA, CORR_THER, **kwargs):
+    if kwargs.get("__all__"):
+        return [evol_elas, evol_ther]
+
+    if CORR_THER is not None and CORR_MECA is None:
+        return evol_ther
+    else:
+        return evol_elas
+
+
+REST_HOMO_LOCAL = MACRO(
+    nom="REST_HOMO_LOCAL",
     op=OPS("code_aster.MacroCommands.MateHomo.rest_homo_ops.rest_homo_ops"),
-    sd_prod=evol_elas,
+    sd_prod=rest_homo_sdprod,
     docu="UX.YZ.AB",
     reentrant="n",
     fr=tr("Calcul des champs locaux à partir de la solution homogénéisée."),
     TYPE_HOMO=SIMP(statut="o", typ="TXM", into=("MASSIF",)),
     POSITION=SIMP(statut="o", typ="R", min=3, max=3),
-    CORR_MECA=SIMP(statut="o", typ=evol_elas_dict),
+    CORR_MECA=SIMP(statut="f", typ=evol_elas_dict),
     CORR_THER=SIMP(statut="f", typ=evol_ther_dict),
     TEMP_REF=SIMP(statut="f", typ="R", defaut=20.0),
     PRESSION=SIMP(statut="f", typ="R", defaut=0.0),
-    EVOL_ELAS=SIMP(statut="o", typ=evol_elas),
+    EVOL_ELAS=SIMP(statut="f", typ=evol_elas),
     EVOL_THER=SIMP(statut="f", typ=evol_ther),
-    RESU_THER=SIMP(statut="f", typ=CO),
-    TOUT_ORDRE=SIMP(statut="f", typ="TXM", into=("OUI",)),
     INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
+    TOUT_INST=SIMP(statut="f", typ="TXM", into=("OUI",)),
     CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
-    PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6, min=0.0),
+    PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6, val_min=0.0),
     regles=(
+        AU_MOINS_UN("CORR_MECA", "CORR_THER"),
+        AU_MOINS_UN("EVOL_ELAS", "EVOL_THER"),
         ENSEMBLE("EVOL_THER", "CORR_THER"),
         PRESENT_PRESENT("RESU_THER", "CORR_THER", "EVOL_THER"),
-        UN_PARMI("TOUT_ORDRE", "INST"),
+        EXCLUS("TOUT_INST", "INST"),
     ),
     AFFE=FACT(
         statut="o",
@@ -56,8 +68,21 @@ REST_HOMO_LOCA = MACRO(
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         MATER=SIMP(statut="o", typ=mater_sdaster, max=1),
     ),
-    OPTION=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON", max=1),
-    SYME=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON", max=1),
-    TRAN=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON", max=1),
+    COMPLET=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON", max=1),
+    TRANSLATION=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON", max=1),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    b_onlyther=BLOC(
+        condition="""exists("CORR_THER") and not exists("CORR_MECA")""",
+        OPTION=SIMP(statut="f", typ="TXM", into=("FLUX_ELGA", "SANS"), defaut="SANS", max=1),
+    ),
+    b_onlymeca=BLOC(
+        condition="""exists("CORR_MECA") and not exists("CORR_THER")""",
+        OPTION=SIMP(statut="f", typ="TXM", into=("SIEF_ELGA", "SANS"), defaut="SANS", max=1),
+    ),
+    b_therandmeca=BLOC(
+        condition="""exists("CORR_MECA") and exists("CORR_THER")""",
+        OPTION=SIMP(
+            statut="f", typ="TXM", into=("SIEF_ELGA", "FLUX_ELGA", "SANS"), defaut="SANS", max=2
+        ),
+    ),
 )

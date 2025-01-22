@@ -49,11 +49,10 @@ def rest_homo_ops(self, **kwargs):
     if not (user_type_homo == rmanager.type_homo):
         UTMESS("F", "HOMO1_16", valk=user_type_homo)
 
-    # The global thermal result is not mandatory
+    resu_ther = None
     if resu_glob_ther is not None:
         resu_ther = createLocalTherResult(rmanager, resu_glob_ther)
 
-        # If it exists it is used as state variable to further compute FLUX and SIEF
         varckw = {
             "NOM_VARC": "TEMP",
             "EVOL": resu_ther,
@@ -69,11 +68,8 @@ def rest_homo_ops(self, **kwargs):
         resu_ther.setModel(mod_ther)
         resu_ther.setMaterialField(fmat_ther)
 
-        if kwargs.get("RESU_THER") is not None:
-            if option:
-                resu_ther = CALC_CHAMP(reuse=resu_ther, RESULTAT=resu_ther, THERMIQUE=("FLUX_ELGA"))
-
-            self.register_result(resu_ther, kwargs.get("RESU_THER"))
+        if "FLUX_ELGA" in kwargs.get("OPTION"):
+            resu_ther = CALC_CHAMP(reuse=resu_ther, RESULTAT=resu_ther, THERMIQUE=("FLUX_ELGA"))
 
     else:
         # If missing create a constant field at reference temperature
@@ -84,18 +80,26 @@ def rest_homo_ops(self, **kwargs):
             "VALE_REF": rmanager.temp_ref,
         }
 
-    resu_meca = createLocalElasResult(rmanager, resu_glob_meca)
+    resu_meca = None
+    if resu_glob_meca is not None:
 
-    mod_meca = Model(rmanager.ver_mesh)
-    mod_meca.addModelingOnMesh(Physics.Mechanics, Modelings.Tridimensional)
-    mod_meca.build()
+        resu_meca = createLocalElasResult(rmanager, resu_glob_meca)
 
-    fmat_meca = AFFE_MATERIAU(MODELE=mod_meca, AFFE=kwaffemat, AFFE_VARC=_F(**varckw))
+        mod_meca = Model(rmanager.ver_mesh)
+        mod_meca.addModelingOnMesh(Physics.Mechanics, Modelings.Tridimensional)
+        mod_meca.build()
 
-    resu_meca.setModel(mod_meca)
-    resu_meca.setMaterialField(fmat_meca)
+        fmat_meca = AFFE_MATERIAU(MODELE=mod_meca, AFFE=kwaffemat, AFFE_VARC=_F(**varckw))
 
-    if option:
-        resu_meca = CALC_CHAMP(reuse=resu_meca, RESULTAT=resu_meca, CONTRAINTE=("SIEF_ELGA"))
+        resu_meca.setModel(mod_meca)
+        resu_meca.setMaterialField(fmat_meca)
 
-    return resu_meca
+        if "SIEF_ELGA" in kwargs.get("OPTION"):
+            resu_meca = CALC_CHAMP(reuse=resu_meca, RESULTAT=resu_meca, CONTRAINTE=("SIEF_ELGA"))
+
+        result = resu_meca
+    else:
+        result = resu_ther
+
+    ASSERT(result is not None)
+    return result

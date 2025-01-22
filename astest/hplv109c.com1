@@ -30,35 +30,30 @@ RELOC_RESU_1 = REST_HOMO_LOCAL(
     TYPE_HOMO="MASSIF",
     POSITION=(x0, y0, z0),
     AFFE=(_F(GROUP_MA=("plaque",), MATER=ACIER), _F(GROUP_MA=("tube1",), MATER=INCONEL)),
-    CORR_MECA=CORR_MECA_RELOAD,
     CORR_THER=CORR_THER_RELOAD,
-    PRESSION=1.0,
-    EVOL_ELAS=RESU_GLOB_HOMO_MECA,
+    TEMP_REF=20,
     EVOL_THER=RESU_GLOB_HOMO_THER,
     TOUT_INST="OUI",
 )
 
-test.assertSetEqual(set(RELOC_RESU_1.getFieldsNames()), set(["DEPL"]))
+test.assertSetEqual(set(RELOC_RESU_1.getFieldsNames()), set(["TEMP"]))
 test.assertSequenceEqual(RELOC_RESU_1.getAccessParameters()["INST"], INSTS)
 
 RELOC_RESU_2 = REST_HOMO_LOCAL(
     TYPE_HOMO="MASSIF",
     POSITION=(x0, y0, z0),
     AFFE=(_F(GROUP_MA=("plaque",), MATER=ACIER), _F(GROUP_MA=("tube1",), MATER=INCONEL)),
-    CORR_MECA=CORR_MECA,
-    CORR_THER=CORR_THER,
+    CORR_THER=CORR_THER_RELOAD,
     TEMP_REF=20,
-    PRESSION=1.0,
-    EVOL_ELAS=RESU_GLOB_HOMO_MECA,
     EVOL_THER=RESU_GLOB_HOMO_THER,
-    OPTION="SIEF_ELGA",
+    OPTION="FLUX_ELGA",
     TRANSLATION="OUI",
     INST=INSTS,
     COMPLET="OUI",
 )
-test.assertSetEqual(set(RELOC_RESU_2.getFieldsNames()), set(["DEPL", "SIEF_ELGA"]))
-test.assertSequenceEqual(RELOC_RESU_2.getAccessParameters()["INST"], INSTS)
 
+test.assertSetEqual(set(RELOC_RESU_2.getFieldsNames()), set(["TEMP", "FLUX_ELGA"]))
+test.assertSequenceEqual(RELOC_RESU_2.getAccessParameters()["INST"], INSTS)
 
 test.printSummary()
 

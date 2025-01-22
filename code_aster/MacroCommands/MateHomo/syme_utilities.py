@@ -115,6 +115,18 @@ class SymmetryManager:
         return ret
 
     def build_symmetry_mesh(self, meshin):
+        """Return the full mesh.
+
+        Arguments
+        ---------
+            meshin (MEDFileUMesh): The symmetric mesh of corrector fields.
+
+        Returns
+        -------
+            meshout (MEDFileUMesh): The full mesh of corrector fields.
+            keep_ids (DataArrayInt) : Node ids of non-merged nodes.
+            merge_ids (DataArrayInt) : Node ids of merged nodes.
+        """
 
         if not isinstance(meshin, medc.MEDFileUMesh):
             raise RuntimeError("Input mesh is not MEDFileUMesh as expected !")
@@ -174,7 +186,7 @@ class SymmetryManager:
 
         return mesh_merged, point_ids_to_keep_sym, point_ids_to_merge
 
-    def build_symmetry(self, resuin, meshout=None, keep_ids=None, merge_ids=None):
+    def build_symmetry(self, resuin, meshfull=None, keep_ids=None, merge_ids=None):
         """Return a new result containing the symmetric result merged with the current one.
 
         Data is mirrored along the stored `axis`. Only nodal fields are taken into account.
@@ -182,6 +194,9 @@ class SymmetryManager:
         Arguments
         ---------
             resuin (MEDFileData): Input corrector fields.
+            meshfull (MEDFileUMesh, optional): The full mesh of corrector fields.
+            keep_ids (DataArrayInt, optional) : Node ids of non-merged nodes.
+            merge_ids (DataArrayInt, optional) : Node ids of merged nodes.
 
         Returns
         -------
@@ -200,12 +215,12 @@ class SymmetryManager:
         result.setMeshes(meshes)
         result.setFields(fields)
 
-        if meshout is None:
+        if meshfull is None:
             mesh_merged, point_ids_to_keep_sym, point_ids_to_merge = self.build_symmetry_mesh(
                 meshin
             )
         else:
-            mesh_merged, point_ids_to_keep_sym, point_ids_to_merge = meshout, keep_ids, merge_ids
+            mesh_merged, point_ids_to_keep_sym, point_ids_to_merge = meshfull, keep_ids, merge_ids
 
         meshes.pushMesh(mesh_merged)
         m0_merged = mesh_merged[0]

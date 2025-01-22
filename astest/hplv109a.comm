@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,17 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"))
 
 ACIER = INCLUDE_MATERIAU(
     NOM_AFNOR="16MND5",
+    TYPE_MODELE="REF",
+    VARIANTE="A",
+    TYPE_VALE="NOMI",
+    UNITE_LONGUEUR="MM",
+    PROL_GAUCHE="EXCLU",
+    PROL_DROITE="CONSTANT",
+    INFO=1,
+)
+
+INCONEL = INCLUDE_MATERIAU(
+    NOM_AFNOR="NC15FE",
     TYPE_MODELE="REF",
     VARIANTE="A",
     TYPE_VALE="NOMI",
@@ -66,8 +77,30 @@ RESU_GLOB_HOMO_MECA = LIRE_RESU(
     INST=INSTS,
 )
 
+pitch = 27.43
+diam = 19.4
 x0 = 221.005
 y0 = -68.575
 z0 = 595.0
+
+MAVER = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+
+TEMPERATURES = [20, 343]
+
+PARA_HOMO_CARRE = CALC_MATE_HOMO(
+    MAILLAGE=MAVER,
+    AFFE=(_F(GROUP_MA=("plaque",), MATER=ACIER), _F(GROUP_MA=("tube1",), MATER=INCONEL)),
+    VARC=_F(NOM_VARC="TEMP", VALE=[20, 343]),
+    TYPE_HOMO="MASSIF",
+    CORR_MECA=CO("CORR_MECA"),
+    CORR_THER=CO("CORR_THER"),
+)
+
+IMPR_CORR_HOMO(UNITE=80, CORR_MECA=CORR_MECA)
+IMPR_CORR_HOMO(UNITE=80, CORR_THER=CORR_THER)
+
+MA_CORR_RELOAD = LIRE_MAILLAGE(FORMAT="MED", UNITE=80)
+CORR_THER_RELOAD = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_THER", MAILLAGE=MA_CORR_RELOAD)
+CORR_MECA_RELOAD = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_ELAS", MAILLAGE=MA_CORR_RELOAD)
 
 FIN()
