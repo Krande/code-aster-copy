@@ -233,7 +233,7 @@ class OnNodesDescription:
         # number of values stored for the component before any restriction
         self._nbval = None
         # mask for inner nodes (applied on '_nodes')
-        self._inner = inner
+        self._inner_c = inner
         self._sign = None
 
     @property
@@ -246,10 +246,6 @@ class OnNodesDescription:
             else:
                 self._inner_c = np.ones(self._nbnodes, dtype=bool)
         return self._inner_c
-
-    @_inner.setter
-    def _inner(self, value):
-        self._inner_c = value
 
     def __sizeof__(self):
         """Return the size of the data in bytes."""
@@ -315,7 +311,7 @@ class OnNodesDescription:
         if isinstance(nodes_ids, int):
             nodes_ids = force_list(nodes_ids)
         self._nodes = np.array(nodes_ids, dtype=int)
-        self._inner = self._inner[nodes_ids]
+        self._inner_c = self._inner[nodes_ids]
         self._sign = None
         return nodes_ids
 

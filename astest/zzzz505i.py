@@ -195,7 +195,7 @@ with DebugChrono.measure("global"):
         valx.restrict(facez0)
 
     test.assertTrue(np.all(facez0 == valx.restr), msg="restrict: nodes")
-    test.assertEqual(len(valx.values), 4, msg="restrict: values")
+    test.assertEqual(len(valx.values), len(facez0), msg="restrict: values")
     test.assertEqual(valx._descr._nbval, len(valy.values), msg="restrict: nbval")
     test.assertEqual(valx._descr._nbnodes, valy._descr._nbnodes, msg="restrict: nbnodes")
 
