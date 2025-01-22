@@ -80,7 +80,7 @@ class OnCellsDescription:
             self._idx.nbytes
             + self._discr.nbytes
             + self._inner.nbytes
-            + len(list(self._cells if self._cells is not None else [])) * 8
+            + (self._cells.nbytes if self._cells is not None else 0)
         )
 
     def setValuesShape(self, shape):
@@ -222,7 +222,7 @@ class OnNodesDescription:
     """
 
     _parent = _nodes = _nbnodes = _nbval = _sign = None
-    _inner = None
+    _inner_c = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, parent, inner=None):
@@ -233,14 +233,23 @@ class OnNodesDescription:
         # number of values stored for the component before any restriction
         self._nbval = None
         # mask for inner nodes (applied on '_nodes')
-        if inner is not None:
-            self._inner = inner
-        elif useHPCMode():
-            self._inner = np.zeros(self._nbnodes, dtype=bool)
-            self._inner[parent.getMesh().getInnerCells()] = True
-        else:
-            self._inner = np.ones(self._nbnodes, dtype=bool)
+        self._inner = inner
         self._sign = None
+
+    @property
+    def _inner(self):
+        """ndarray: delayed initialization, waiting for the size of values"""
+        if self._inner_c is None:
+            if useHPCMode():
+                self._inner_c = np.zeros(self._nbnodes, dtype=bool)
+                self._inner[self._parent.getMesh().getInnerNodes()] = True
+            else:
+                self._inner_c = np.ones(self._nbnodes, dtype=bool)
+        return self._inner_c
+
+    @_inner.setter
+    def _inner(self, value):
+        self._inner_c = value
 
     def __sizeof__(self):
         """Return the size of the data in bytes."""
@@ -249,23 +258,18 @@ class OnNodesDescription:
 
     def sizeof(self):
         """Return the size of the data in bytes."""
-        return (
-            self._idx.nbytes
-            + self._discr.nbytes
-            + self._inner.nbytes
-            + len(list(self._nodes if self._nodes is not None else [])) * 8
-        )
+        return self._inner.nbytes + (self._nodes.nbytes if self._nodes is not None else 0)
 
     def setValuesShape(self, shape):
         """Register shape of values if needed."""
         if self._nbval is None:
-            self._nbval = shape[0]
+            self._nbval = self._nbnodes = shape[0]
 
     @property
     def sign(self):
         """int: Attribute that holds the signature of the description."""
         if self._sign is None:
-            self._sign = (self._idx.ravel() * np.arange(self._idx.size)).sum()
+            self._sign = self._nbval
         return self._sign
 
     def __repr__(self):
@@ -401,13 +405,13 @@ class Component:
 
     @property
     def innerValues(self):
-        """Returns the vector of local values (its shape is inconsistent
+        """ndarray[float]: Vector of local values (its shape is inconsistent
         with the internal description)."""
         return self._descr.inner_values(self._values)
 
     @property
     def values(self):
-        """Returns the vector of values (undefined values set to zero)."""
+        """ndarray[float]: Vector of values."""
         return self._values
 
     @values.setter
@@ -430,10 +434,12 @@ class Component:
         return len(self.innerValues)
 
     def __repr__(self):
-        lines = repr(self._values).splitlines()
+        lines = repr(self._values.data).splitlines()
         if len(lines) > 6:
             lines = lines[:3] + ["..."] + lines[-3:]
-        lines.insert(0, f"- {len(self._values)} values in vector:")
+        lines.insert(
+            0, f"- {len(self._values.data)} values in vector ({self._values.count()} non-masked):"
+        )
         lines.append(repr(self._descr))
         return "\n".join(lines)
 
@@ -571,7 +577,7 @@ class Component:
         """Compare the component with another one and keep the element-wise minima.
 
         Args:
-            other (*type(self)*): Another component.
+            other (*Component*): Another component.
         """
         other = self._check_consistency(other)
         self._values = np.minimum(self._values, other)
@@ -580,7 +586,7 @@ class Component:
         """Compare the component with another one and keep the element-wise maxima.
 
         Args:
-            other (*type(self)*): Another component.
+            other (*Component*): Another component.
         """
         other = self._check_consistency(other)
         self._values = np.maximum(self._values, other)
@@ -611,11 +617,11 @@ class Component:
         """Expand the component by adding 0. where it not defined.
 
         Returns:
-            *ComponentOnCells*: expanded component.
+            *Component*: expanded component.
         """
         if self.restr is None:
             return self.copy()
-        return ComponentOnCells(*self._descr.expand(self._values))
+        return self.__class__(*self._descr.expand(self._values))
 
     # @DebugArgs.pickle_on_error
     def onSupportOf(self, other, strict=False):
@@ -624,13 +630,13 @@ class Component:
         NB: The both components must be defined on the same cells/nodes.
 
         Args:
-            other (*type(self)*): Use the support of this component.
+            other (*Component*): Use the support of this component.
             strict (bool): If *True* it raises an *IndexError* exception if
                 the component is not defined on the support of `other`.
                 By default, it is *True* and the values are expanded with 0.0.
 
         Returns:
-            *type(self)*: A new component.
+            *Component*: A new component.
         """
         if self.restr is None and other.restr is not None:
             changed = self.onSupportOf(other.expand())
@@ -665,12 +671,6 @@ class ComponentOnNodes(Component):
     def restr(self):
         return self._descr._nodes
 
-    # def getValuesByNodes(self):
-    #     """Returns the values by nodes, expanded by 0.0 where undefined."""
-    #     if self.restr is not None:
-    #         return self.expand().getValuesByNodes()[self.restr]
-    #     return self.values
-
     def getNodes(self):
         """Return the nodes id."""
         if self.restr is None:
@@ -686,7 +686,6 @@ class ComponentOnNodes(Component):
         """
         return self._descr._nbnodes
 
-    # TODO plot on restricted
     def plot_descr(self, filename=None):
         """Plot the description of values by nodes.
 
@@ -696,8 +695,11 @@ class ComponentOnNodes(Component):
         Args:
             filename (str|Path, optional): Save the image to this file if provided.
                 Otherwise plot interactively the figure.
+
+        Returns:
+            bool: *True* if the plot was done, *False* otherwise.
         """
-        raise NotImplementedError("not yet available for ComponentOnNodes")
+        return False
 
     def filterByValues(self, mini, maxi, strict_mini=True, strict_maxi=True):
         """Returns the nodes ids where at least one value of the node is in
@@ -724,11 +726,7 @@ class ComponentOnNodes(Component):
         else:
             filter &= self._values <= maxi
 
-        filter = np.append(filter, [False])  # not defined (-1): not in interval...
-        idx = np.where(self._values.mask, -1, self.restr)  # or masked
-        idx_filt = filter[idx]
-        nodes_filt = idx_filt.max(axis=1)
-        nodes_filt &= self._descr._inner
+        filter &= self._descr._inner
         nodes = list(np.arange(self.getNumberOfNodes(), dtype=int)[filter])
         return nodes
 
@@ -738,14 +736,12 @@ class ComponentOnNodes(Component):
             self._descr._nbnodes == other._descr._nbnodes
         )
         assert self.restr is None and other.restr is None, (self.restr, other.restr)
-        assert self._idx.shape == other._idx.shape
-        new = other.copy()
-        bools = other._values.mask & self._values.mask
-        undef = other._values.mask ^ bools
+        assert self._values.shape == other._values.shape
+        undef = np.logical_not(self._values.mask | other._values.mask)
         if strict and np.any(undef):
             raise IndexError("no value on all the support")
-        new._values = np.zeros(self._values.shape, dtype=float)
-        new._values[other._values.mask] = self._values[other._values.mask]
+        new = other.copy()
+        new._values = ma.array(self._values, mask=other._values.mask, dtype=float)
         self._sign = None
         return new
 
@@ -808,6 +804,9 @@ class ComponentOnCells(Component):
         Args:
             filename (str|Path, optional): Save the image to this file if provided.
                 Otherwise plot interactively the figure.
+
+        Returns:
+            bool: *True* if the plot was done, *False* otherwise.
         """
         if not HAS_MATPLOTLIB:
             warnings.warn("matplotlib is not available")

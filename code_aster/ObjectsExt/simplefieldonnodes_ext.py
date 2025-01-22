@@ -33,6 +33,7 @@ from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import force_list, injector
 from ..Utilities import medcoupling as medc
+from .component import ComponentOnNodes
 
 
 class SFoNStateBuilder(InternalStateBuilder):
@@ -83,6 +84,18 @@ class ExtendedSimpleFieldOnNodesReal:
             self._cache["val"][:, icmp], mask=np.logical_not(self._cache["msk"][:, icmp])
         )
         return ComponentOnNodes(mvalues, ComponentOnNodes.Description(self))
+
+    def setComponentValues(self, component, cfvalue):
+        """Assign the values of a component.
+
+        Args:
+            component (str): Component name. Raises ValueError if the component
+                does not exist in the field.
+            cfvalue (ComponentOnNodes): Previously extracted component.
+        """
+        icmp = self.getComponents().index(component)
+        # it directly overwrites '.CNSV' vector in place
+        self._cache["val"][:, icmp] = cfvalue.expand().values
 
     def getValues(self, copy=True):
         """
