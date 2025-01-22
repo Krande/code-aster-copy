@@ -41,7 +41,7 @@ LIRE_CORR_HOMO = MACRO(
     sd_prod=lire_corr_homo_sdprod,
     reentrant="n",
     fr=tr("Lecture des correcteurs d'homogénéisation au format MED."),
-    UNITE=SIMP(statut="o", typ=UnitType(), inout="in"),
+    UNITE=SIMP(statut="o", typ=UnitType("med"), inout="in"),
     TYPE_RESU=SIMP(statut="o", typ="TXM", into=("EVOL_THER", "EVOL_ELAS")),
     MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
 )

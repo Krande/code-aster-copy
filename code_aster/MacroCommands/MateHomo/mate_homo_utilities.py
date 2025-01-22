@@ -64,28 +64,6 @@ def get_temp_def_alpha(resu):
     return temp_def_alpha
 
 
-def print_med_file(unit, elas, ther):
-    """
-    Save corrector fields as med file.
-
-    Arguments
-    ---------
-        unit (int): Logical unit.
-        elas (ElasticResultDict): The elastic corrector fields collection.
-        ther (ThermalResultDict): The thermal corrector fields collection.
-    """
-
-    save_fields = dict(**elas, **ther)
-    IMPR_RESU(
-        FORMAT="MED",
-        RESU=[
-            _F(RESULTAT=fld, NOM_RESU_MED=NameConverter.toMed(fldname))
-            for fldname, fld in save_fields.items()
-        ],
-        UNITE=unit,
-    )
-
-
 def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
     """
     Cette fonction sert à :

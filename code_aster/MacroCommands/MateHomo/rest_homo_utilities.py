@@ -32,8 +32,6 @@ from ...Objects import (
 from ...Messages import ASSERT, UTMESS
 from ...Utilities import SearchList, no_new_attributes, medcoupling as medc
 from ...CodeCommands import PROJ_CHAMP
-from .mate_homo_utilities import print_med_file
-from .lire_corr_homo_ops import load_fields
 from .syme_homo_corr import BuildFullSymmetryMassif
 from . import MESH_TOL, HomoType
 

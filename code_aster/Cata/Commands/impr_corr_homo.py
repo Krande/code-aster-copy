@@ -29,7 +29,7 @@ IMPR_CORR_HOMO = MACRO(
     op=OPS("code_aster.MacroCommands.MateHomo.io_corr_homo_ops.impr_corr_ops"),
     reentrant="n",
     fr=tr("Impression des correcteurs d'homogénéisation au format MED."),
-    UNITE=SIMP(statut="o", typ=UnitType(), inout="out"),
+    UNITE=SIMP(statut="o", typ=UnitType("med"), inout="out"),
     CORR_MECA=SIMP(statut="f", typ=evol_elas_dict),
     CORR_THER=SIMP(statut="f", typ=evol_ther_dict),
     regles=(UN_PARMI("CORR_MECA", "CORR_THER"),),
