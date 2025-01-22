@@ -24,24 +24,13 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def lire_corr_homo_sdprod(self, TYPE_RESU, **kwargs):
-    if kwargs.get("__all__"):
-        return [evol_elas_dict, evol_ther_dict]
-    if TYPE_RESU == "EVOL_THER":
-        return evol_ther_dict
-    elif TYPE_RESU == "EVOL_ELAS":
-        return evol_elas_dict
-    else:
-        assert False
-
-
-LIRE_CORR_HOMO = MACRO(
-    nom="LIRE_CORR_HOMO",
-    op=OPS("code_aster.MacroCommands.MateHomo.io_corr_homo_ops.lire_corr_ops"),
-    sd_prod=lire_corr_homo_sdprod,
+IMPR_CORR_HOMO = MACRO(
+    nom="IMPR_CORR_HOMO",
+    op=OPS("code_aster.MacroCommands.MateHomo.io_corr_homo_ops.impr_corr_ops"),
     reentrant="n",
-    fr=tr("Lecture des correcteurs d'homogénéisation au format MED."),
-    UNITE=SIMP(statut="o", typ=UnitType(), inout="in"),
-    TYPE_RESU=SIMP(statut="o", typ="TXM", into=("EVOL_THER", "EVOL_ELAS")),
-    MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
+    fr=tr("Impression des correcteurs d'homogénéisation au format MED."),
+    UNITE=SIMP(statut="o", typ=UnitType(), inout="out"),
+    CORR_MECA=SIMP(statut="f", typ=evol_elas_dict),
+    CORR_THER=SIMP(statut="f", typ=evol_ther_dict),
+    regles=(UN_PARMI("CORR_MECA", "CORR_THER"),),
 )

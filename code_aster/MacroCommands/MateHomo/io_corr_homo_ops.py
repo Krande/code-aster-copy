@@ -22,7 +22,7 @@ Calcul de proprietés homo
 """
 from libaster import Physics, Modelings
 from ...Cata.Syntax import _F
-from ...CodeCommands import LIRE_MAILLAGE, LIRE_RESU, CREA_TABLE
+from ...CodeCommands import LIRE_RESU, IMPR_RESU
 from ...Objects import Model, ThermalResultDict, ElasticResultDict
 from ...Messages import ASSERT, UTMESS
 from ...Helpers.LogicalUnit import LogicalUnitFile
@@ -47,20 +47,13 @@ def parse_med(unit):
     fname = LogicalUnitFile.filename_from_unit(unit)
     mdata = medc.MEDFileData(fname)
     mednames = [i.getName() for i in mdata.getFields()]
-    ASSERT(all(n.startswith("Z") for n in mednames))
+    if not all(n.startswith("Z") for n in mednames):
+        UTMESS("F", "HOMO1_17")
 
     meca = {n: NameConverter.fromMed(n) for n in mednames if n.endswith("DEPL")}
     ther = {n: NameConverter.fromMed(n) for n in mednames if n.endswith("TEMP")}
 
-    astnames = [NameConverter.fromMed(n) for n in mednames]
-    tabpara = CREA_TABLE(
-        LISTE=(
-            _F(PARA="NOM_MED", TYPE_K="K24", LISTE_K=mednames),
-            _F(PARA="NOM_AST", TYPE_K="K24", LISTE_K=astnames),
-        )
-    )
-
-    return meca, ther, tabpara
+    return meca, ther
 
 
 def load_elas_fields(fnames, mesh, unit):
@@ -78,7 +71,8 @@ def load_elas_fields(fnames, mesh, unit):
         meca (ElasticResultDict) : The elastic corrector fields.
     """
 
-    ASSERT(len(fnames) > 0)
+    if not len(fnames) > 0:
+        UTMESS("F", "HOMO1_17")
     mod_meca = Model(mesh)
     mod_meca.addModelingOnMesh(Physics.Mechanics, Modelings.Tridimensional)
     mod_meca.build()
@@ -110,7 +104,8 @@ def load_ther_fields(fnames, mesh, unit):
     -------
        ther (ThermalResultDict) : The thermal corrector fields.
     """
-    ASSERT(len(fnames) > 0)
+    if not len(fnames) > 0:
+        UTMESS("F", "HOMO1_17")
     mod_ther = Model(mesh)
     mod_ther.addModelingOnMesh(Physics.Thermal, Modelings.Tridimensional)
     mod_ther.build()
@@ -128,47 +123,42 @@ def load_ther_fields(fnames, mesh, unit):
     return ther
 
 
-def load_fields(unit):
-    """Read corrector fields from med file
-
-    Arguments
-    ---------
-        unit (int) : Logical unit associated to the MED file.
-
-    Returns
-    -------
-       tabpara (Table) : List of MED fields found.
-       meca (ElasticResultDict) : The elastic corrector fields.
-       ther (ThermalResultDict) : The thermal corrector fields or None.
-    """
-
-    fnames_depl, fnames_ther, tabpara = parse_med(unit)
-    mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=unit)
-
-    corr_meca = None
-    if fnames_depl:
-        corr_meca = load_elas_fields(fnames_depl, mesh, unit)
-
-    corr_ther = None
-    if fnames_ther:
-        corr_ther = load_ther_fields(fnames_ther, mesh, unit)
-
-    return tabpara, corr_meca, corr_ther
-
-
 def lire_corr_ops(self, **kwargs):
     """
     Main function for reading correctors from MED.
 
     """
+    unit = kwargs.get("UNITE")
+    mesh = kwargs.get("MAILLAGE")
+    type_calcul = kwargs.get("TYPE_RESU")
+
+    fnames_depl, fnames_ther = parse_med(unit)
+    if type_calcul == "EVOL_ELAS":
+        corr = load_elas_fields(fnames_depl, mesh, unit)
+    elif type_calcul == "EVOL_THER":
+        corr = load_ther_fields(fnames_ther, mesh, unit)
+    else:
+        ASSERT(False)
+
+    return corr
+
+
+def impr_corr_ops(self, **kwargs):
+    """
+    Main function for printing correctors from MED.
+
+    """
 
     unit = kwargs.get("UNITE")
-    tabpara, corr_meca, corr_ther = load_fields(unit)
+    elas = kwargs.get("CORR_MECA", {})
+    ther = kwargs.get("CORR_THER", {})
 
-    if kwargs.get("CORR_MECA") and corr_meca:
-        self.register_result(corr_meca, kwargs.get("CORR_MECA"))
-
-    if kwargs.get("CORR_THER") and corr_ther:
-        self.register_result(corr_ther, kwargs.get("CORR_THER"))
-
-    return tabpara
+    save_fields = dict(**elas, **ther)
+    IMPR_RESU(
+        FORMAT="MED",
+        RESU=[
+            _F(RESULTAT=fld, NOM_RESU_MED=NameConverter.toMed(fldname))
+            for fldname, fld in save_fields.items()
+        ],
+        UNITE=unit,
+    )

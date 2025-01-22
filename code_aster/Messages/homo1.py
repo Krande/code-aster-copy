@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,6 +99,11 @@ L'origine du maillage ('%(r1)s', '%(r2)s', '%(r3)s') ne coïncide pas avec l'ori
     16: _(
         """
 Les correcteurs fournis ne respectent pas le type d'homogénéisation '%(k1)s'.
+"""
+    ),
+    17: _(
+        """
+Le fichier fourni ne contient pas de correcteurs.
 """
     ),
 }
