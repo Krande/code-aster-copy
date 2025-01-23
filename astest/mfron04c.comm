@@ -136,7 +136,7 @@ TEST_RESU(
         GROUP_NO="NO1",
         NOM_CMP="SIZZ",
         VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefG + HillCoefH) ** 0.5),
-        VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefG + HillCoefH) ** 0.5),
+        VALE_CALC=1.5811388304030307,
     )
 )
 
@@ -178,7 +178,7 @@ TEST_RESU(
         GROUP_NO="NO1",
         NOM_CMP="SIZZ",
         VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefH) ** 0.5),
-        VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefH) ** 0.5),
+        VALE_CALC=1.118033988774534,
     )
 )
 
@@ -220,7 +220,7 @@ TEST_RESU(
         GROUP_NO="NO1",
         NOM_CMP="SIZZ",
         VALE_REFE=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefG) ** 0.5),
-        VALE_CALC=min(E * EZZ, YieldStrength / (HillCoefF + HillCoefG) ** 0.5),
+        VALE_CALC=1.2909944494337249,
     )
 )
 
