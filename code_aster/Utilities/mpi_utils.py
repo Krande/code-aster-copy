@@ -50,7 +50,7 @@ def useHPCMode():
     Returns:
         bool: *True* if MPI is used and HPC mode is enabled.
     """
-    return haveMPI() and ExecutionParameter().option & Options.HPCMode
+    return bool(haveMPI() and ExecutionParameter().option & Options.HPCMode)
 
 
 try:
@@ -175,13 +175,15 @@ def _generator(mpi_op):
 
         def dec_mode(func):
             """Second level wrapper"""
-            comm = MPI.ASTER_COMM_WORLD
-            if comm.size <= 1 or hpc == useHPCMode():
-                return func
 
+            # It is important to test 'useHPCMode()' value inside the wrapper because
+            # its value may be not defined during the definition of the function.
             @wraps(func)
             def wrapper(*args, **kwargs):
                 """Wrapper"""
+                comm = MPI.ASTER_COMM_WORLD
+                if comm.size <= 1 or useHPCMode() is not hpc:
+                    return func(*args, **kwargs)
                 return comm.allreduce(func(*args, **kwargs), op=mpi_op)
 
             return wrapper

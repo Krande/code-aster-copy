@@ -27,10 +27,27 @@ from code_aster import CA
 from code_aster.CA import MPI
 from code_aster.Helpers.debugging import DebugChrono
 from code_aster.Utilities import useHPCMode
+from code_aster.Utilities.mpi_utils import mpi_sum
+
+
+@mpi_sum(hpc=True)
+def do_sum_in_hpc(value):
+    return value
+
+
+@mpi_sum(hpc=False)
+def do_sum_in_legacy(value):
+    return value
+
 
 CA.init("--test")
 comm = MPI.ASTER_COMM_WORLD
 test = CA.TestCase()
+
+# Unittests for mpi decorators:
+# 1. here we are in legacy parallelism mode:
+test.assertEqual(do_sum_in_hpc(1), 1)
+test.assertEqual(do_sum_in_legacy(1), comm.size)
 
 refinement = int(os.environ.get("ZZZZ505_REFINEMENT", 1))
 create_mesh = False
@@ -63,6 +80,11 @@ else:
 model = CA.Model(mesh)
 model.addModelingOnMesh(CA.Physics.Mechanics, CA.Modelings.Tridimensional)
 model.build()
+
+# 2. here we are in HPC parallelism mode:
+test.assertEqual(do_sum_in_hpc(1), comm.size)
+test.assertEqual(do_sum_in_legacy(1), 1)
+
 
 ch0 = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
 names = ch0.getComponents()
