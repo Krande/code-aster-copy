@@ -418,6 +418,8 @@ class Component:
         Args:
             values (ndarray[float]): New values.
         """
+        if isinstance(values, float):
+            values = np.full(self._values.shape, values, dtype=float)
         assert values.shape == self._values.shape
         if not isinstance(values, ma.MaskedArray):
             values = ma.array(values, mask=self._values.mask)

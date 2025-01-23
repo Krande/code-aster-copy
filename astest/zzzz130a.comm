@@ -33,10 +33,6 @@
 #   pouvant servir de champ de variables internes initiales pour STAT_NON_LINE
 # ----------------------------------------------------------------
 
-from code_aster.Commands import *
-from code_aster import CA
-from code_aster.Helpers.debugging import DebugChrono
-
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
     IGNORE_ALARM=("MECANONLINE5_37", "MECANONLINE2_37"),
@@ -46,67 +42,59 @@ DEBUT(
 # IGNORE_ALARME: ARRET='NON' AUTORISE POUR VALIDATION CREA_RESU
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
-MA = MA.refine(6)
 
 MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 
 # ---------------------------------------------------------
 # CHXN = CHAMP DE GEOMETRIE AUX NOEUDS :
+CHXN = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MA, INFO=1
+)
 
-with DebugChrono.measure("using CREA_CHAMP"):
-    CHXN = CREA_CHAMP(
-        OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MA, INFO=1
-    )
+# CHXG = CHAMP DE GEOMETRIE AUX POINTS DE GAUSS :
+CHXG = CREA_CHAMP(OPERATION="DISC", TYPE_CHAM="ELGA_GEOM_R", MODELE=MO, CHAM_GD=CHXN, INFO=1)
 
-    # CHXG = CHAMP DE GEOMETRIE AUX POINTS DE GAUSS :
-    CHXG = CREA_CHAMP(OPERATION="DISC", TYPE_CHAM="ELGA_GEOM_R", MODELE=MO, CHAM_GD=CHXN, INFO=1)
+# ==============================================================
+# 1) Fabrication de SIGINI en utilisation CREA_CHAMP et FORMULE
+# ==============================================================
+# SIG1 = CHAMP DE FONCTIONS AUX POINTS DE GAUSS (SIXX,SIYY,SIZZ) :
 
-    # ==============================================================
-    # 1a) Fabrication de SIGINI en utilisation CREA_CHAMP et FORMULE
-    # ==============================================================
-    # SIG1 = CHAMP DE FONCTIONS AUX POINTS DE GAUSS (SIXX,SIYY,SIZZ) :
+# ----------------------------------------------------------------
 
-    # ----------------------------------------------------------------
+RHO = 1000.0
+G = 10.0
+KP = 3.0
 
-    RHO = 1000.0
-    G = 10.0
-    KP = 3.0
+SIZZ = FORMULE(VALE="RHO*G*Z", RHO=RHO, G=G, NOM_PARA="Z")
+SIXX = FORMULE(VALE="KP*SIZZ(Z)", KP=KP, SIZZ=SIZZ, NOM_PARA="Z")
+SIYY = FORMULE(VALE="KP*SIZZ(Z)", KP=KP, SIZZ=SIZZ, NOM_PARA="Z")
 
-    SIZZ = FORMULE(VALE="RHO*G*Z", RHO=RHO, G=G, NOM_PARA="Z")
-    SIXX = FORMULE(VALE="KP*SIZZ(Z)", KP=KP, SIZZ=SIZZ, NOM_PARA="Z")
-    SIYY = FORMULE(VALE="KP*SIZZ(Z)", KP=KP, SIZZ=SIZZ, NOM_PARA="Z")
+SIG1 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="ELGA_NEUT_F",
+    MODELE=MO,
+    PROL_ZERO="OUI",
+    INFO=1,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("X1", "X2", "X3"), VALE_F=(SIXX, SIYY, SIZZ)),
+)
 
-    SIG1 = CREA_CHAMP(
-        OPERATION="AFFE",
-        TYPE_CHAM="ELGA_NEUT_F",
-        MODELE=MO,
-        PROL_ZERO="OUI",
-        INFO=1,
-        AFFE=_F(TOUT="OUI", NOM_CMP=("X1", "X2", "X3"), VALE_F=(SIXX, SIYY, SIZZ)),
-    )
+# SIG2 = EVALUATION DE SIG1 (GRANDEUR : NEUT_R)
+# -----------------------------------------------
+SIG2 = CREA_CHAMP(OPERATION="EVAL", TYPE_CHAM="ELGA_NEUT_R", INFO=1, CHAM_F=SIG1, CHAM_PARA=(CHXG,))
 
-    # SIG2 = EVALUATION DE SIG1 (GRANDEUR : NEUT_R)
-    # -----------------------------------------------
-    SIG2 = CREA_CHAMP(
-        OPERATION="EVAL", TYPE_CHAM="ELGA_NEUT_R", INFO=1, CHAM_F=SIG1, CHAM_PARA=(CHXG,)
-    )
+# TRANSFORMATION DU CHAMP DE NEUT_R EN SIEF_R :
 
-    # TRANSFORMATION DU CHAMP DE NEUT_R EN SIEF_R :
-
-    # -----------------------------------------------
-    SIGINI = CREA_CHAMP(
-        OPERATION="ASSE",
-        TYPE_CHAM="ELGA_SIEF_R",
-        MODELE=MO,
-        PROL_ZERO="OUI",
-        ASSE=_F(
-            TOUT="OUI",
-            CHAM_GD=SIG2,
-            NOM_CMP=("X1", "X2", "X3"),
-            NOM_CMP_RESU=("SIXX", "SIYY", "SIZZ"),
-        ),
-    )
+# -----------------------------------------------
+SIGINI = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="ELGA_SIEF_R",
+    MODELE=MO,
+    PROL_ZERO="OUI",
+    ASSE=_F(
+        TOUT="OUI", CHAM_GD=SIG2, NOM_CMP=("X1", "X2", "X3"), NOM_CMP_RESU=("SIXX", "SIYY", "SIZZ")
+    ),
+)
 
 DETRUIRE(NOM=(SIG1, SIG2))
 
@@ -115,74 +103,28 @@ DETRUIRE(NOM=(SIG1, SIG2))
 # => SIZZ= 1000.*10.A    =  5773.5
 # => SIYY= 3.*1000.*10.A = 17320.5
 
-# TEST_RESU(
-#     CHAM_ELEM=(
-#         _F(
-#             REFERENCE="ANALYTIQUE",
-#             POINT=2,
-#             NOM_CMP="SIZZ",
-#             GROUP_MA="CUBE",
-#             CHAM_GD=SIGINI,
-#             VALE_CALC=5.77350269e03,
-#             VALE_REFE=5773.5,
-#         ),
-#         _F(
-#             REFERENCE="ANALYTIQUE",
-#             POINT=2,
-#             NOM_CMP="SIYY",
-#             GROUP_MA="CUBE",
-#             CHAM_GD=SIGINI,
-#             VALE_CALC=1.73205081e04,
-#             VALE_REFE=1.73205e4,
-#         ),
-#     )
-# )
-
-# ===========================================================
-# 1b) Fabrication de sigm_init en passant par un champ simple
-# ===========================================================
-
-with DebugChrono.measure("using ComponentOnCells"):
-    coor = CALC_CHAM_ELEM(MODELE=MO, OPTION="COOR_ELGA").toSimpleFieldOnCells()
-    valz = coor.Z
-
-    stress = CA.FieldOnCellsReal(MO, "ELGA", "SIEF_R").toSimpleFieldOnCells()
-    sixx = stress.SIXX
-
-    valz = valz.onSupportOf(sixx)
-    vz = RHO * G * valz
-    vx = KP * vz
-    vy = vx
-    stress.setComponentValues("SIXX", vx)
-    stress.setComponentValues("SIYY", vy)
-    stress.setComponentValues("SIZZ", vz)
-    fed = MO.getFiniteElementDescriptor()
-    sigm_init = stress.toFieldOnCells(fed)
-
-# TEST_RESU(
-#     CHAM_ELEM=(
-#         _F(
-#             REFERENCE="ANALYTIQUE",
-#             POINT=2,
-#             NOM_CMP="SIZZ",
-#             GROUP_MA="CUBE",
-#             CHAM_GD=sigm_init,
-#             VALE_CALC=5.77350269e03,
-#             VALE_REFE=5773.5,
-#         ),
-#         _F(
-#             REFERENCE="ANALYTIQUE",
-#             POINT=2,
-#             NOM_CMP="SIYY",
-#             GROUP_MA="CUBE",
-#             CHAM_GD=sigm_init,
-#             VALE_CALC=1.73205081e04,
-#             VALE_REFE=1.73205e4,
-#         ),
-#     )
-# )
-
-FIN()
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            POINT=2,
+            NOM_CMP="SIZZ",
+            GROUP_MA="CUBE",
+            CHAM_GD=SIGINI,
+            VALE_CALC=5.77350269e03,
+            VALE_REFE=5773.5,
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            POINT=2,
+            NOM_CMP="SIYY",
+            GROUP_MA="CUBE",
+            CHAM_GD=SIGINI,
+            VALE_CALC=1.73205081e04,
+            VALE_REFE=1.73205e4,
+        ),
+    )
+)
 
 # ============================
 # 2) FABRICATION DE  TEMP0 :

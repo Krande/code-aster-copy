@@ -75,7 +75,7 @@ class ExtendedSimpleFieldOnCellsReal:
     def __getattr__(self, component):
         """Convenient shortcut to `getComponentOnCells()`."""
         if component not in self.getComponents():
-            raise AttributeError(f"'ComponentOnCells' object has no attribute {component!r}")
+            raise AttributeError(f"'SimpleFieldOnCells' object has no attribute {component!r}")
         return self.getComponentOnCells(component)
 
     def getComponentOnCells(self, component):
@@ -106,7 +106,9 @@ class ExtendedSimpleFieldOnCellsReal:
         """
         icmp = self.getComponents().index(component)
         # it directly overwrites '.CESV' vector in place
-        self._cache["val"][:, icmp] = cfvalue.expand().values
+        expanded = cfvalue.expand().values
+        self._cache["val"][:, icmp] = expanded.data
+        self._cache["msk"][:, icmp] = np.logical_not(expanded.mask)
 
     def getValues(self, copy=True):
         """

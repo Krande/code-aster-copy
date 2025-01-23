@@ -54,6 +54,14 @@ class ExtendedMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
     internalStateBuilder = MeshStateBuilder
 
+    def getCoordinatesAsSimpleFieldOnNodes(self):
+        """Same as :py:meth:`getCoordinates` with a conversion into a *SimpleFieldOnNodes*.
+
+        Returns:
+            *SimpleFieldOnNodesReal*: Coordinates as a *SimpleFieldOnNodes*.
+        """
+        return self.getCoordinates().toFieldOnNodes(self).toSimpleFieldOnNodes()
+
     @classmethod
     def buildRectangle(cls, lx=1.0, ly=1.0, nx=1, ny=1, refine=0, info=1):
         """Build the quadrilateral mesh of a rectangle.

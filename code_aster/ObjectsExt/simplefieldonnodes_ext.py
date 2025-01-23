@@ -66,7 +66,7 @@ class ExtendedSimpleFieldOnNodesReal:
     def __getattr__(self, component):
         """Convenient shortcut to `getComponentOnNodes()`."""
         if component not in self.getComponents():
-            raise AttributeError(f"'ComponentOnNodes' object has no attribute {component!r}")
+            raise AttributeError(f"'SimpleFieldOnNodes' object has no attribute {component!r}")
         return self.getComponentOnNodes(component)
 
     def getComponentOnNodes(self, component):
@@ -95,7 +95,9 @@ class ExtendedSimpleFieldOnNodesReal:
         """
         icmp = self.getComponents().index(component)
         # it directly overwrites '.CNSV' vector in place
-        self._cache["val"][:, icmp] = cfvalue.expand().values
+        expanded = cfvalue.expand().values
+        self._cache["val"][:, icmp] = expanded.data
+        self._cache["msk"][:, icmp] = np.logical_not(expanded.mask)
 
     def getValues(self, copy=True):
         """
