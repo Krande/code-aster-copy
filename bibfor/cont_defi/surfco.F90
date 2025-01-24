@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine surfco(sdcont, mesh)
 !
     implicit none
@@ -26,11 +26,8 @@ subroutine surfco(sdcont, mesh)
 #include "asterfort/infniv.h"
 #include "asterfort/surfc1.h"
 #include "asterfort/surfc2.h"
-#include "asterfort/surfc3.h"
 #include "asterfort/surfcl.h"
 #include "asterfort/surfcp.h"
-!
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
@@ -74,8 +71,6 @@ subroutine surfco(sdcont, mesh)
         else if (cont_form .eq. 2) then
             call surfcl(sdcont, mesh, unit_msg)
             call surfc2(sdcont, mesh)
-        else if (cont_form .eq. 3) then
-            call surfc3(sdcont, mesh, unit_msg)
         end if
     end if
 !

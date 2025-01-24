@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -487,13 +487,6 @@ Utilisez ELIM_ARETE='DUAL'.
 
 """
     ),
-    62: _(
-        """
-Le modèle X-FEM utilise la formulation mortier pour le contact (CONTACT='MORTAR').
-Il est interdit d'utiliser ELIM_ARETE='ELIM' avec cette formulation.
-Utilisez ELIM_ARETE='DUAL'.
-"""
-    ),
     63: _(
         """
       -> ---Éléments XFEM quadratiques ---
@@ -721,20 +714,6 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne doit pas être utilisée si
     89: _(
         """
 L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les éléments HM."
-"""
-    ),
-    90: _(
-        """
-  -> Le mot-clé ALGO_LAGR de DEFI_CONTACT vaut 'VERSION3' et le maillage est composé d'éléments linéaires.
-  -> Risque & Conseil:
-     Le choix ALGO_LAGR='VERSION3' n'est utilisable qu'avec un maillage composé d'éléments quadratiques.
-"""
-    ),
-    93: _(
-        """
-     --> La loi cohésive CZM_LIN_MIX est utilisable uniquement avec un contact de type mortier
-         dans le modèle %(k1)s. En revanche, les autres lois cohésives et de contact-frottement
-         doivent être définies avec un contact STANDARD.
 """
     ),
     94: _(
