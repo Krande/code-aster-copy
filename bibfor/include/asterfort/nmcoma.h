@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,24 +17,23 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmcoma(listFuncActi,&
-                      mesh, modelz, caraElem,&
-                      ds_material, ds_constitutive,&
-                      listLoad, sddyna, nlDynaDamping,&
-                      sddisc, numeTime, iterNewt,&
-                      ds_algopara, ds_contact, ds_algorom,&
-                      ds_print, ds_measure ,&
+    subroutine nmcoma(listFuncActi, &
+                      modelz, caraElem, &
+                      ds_material, ds_constitutive, &
+                      listLoad, sddyna, nlDynaDamping, &
+                      sddisc, numeTime, iterNewt, &
+                      ds_algopara, ds_contact, ds_algorom, &
+                      ds_print, ds_measure, &
                       hval_incr, hval_algo, &
-                      hval_meelem, hval_measse,&
-                      numeDof, numeDofFixe, sdnume,&
-                      solveu, ds_system,&
-                      maprec, matrAsse,&
+                      hval_meelem, hval_measse, &
+                      numeDof, numeDofFixe, sdnume, &
+                      solveu, ds_system, &
+                      maprec, matrAsse, &
                       faccvg, ldccvg)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         use Rom_Datastructure_type
         integer, intent(in) :: listFuncActi(*)
-        character(len=8), intent(in) :: mesh
         character(len=*), intent(in) :: modelz
         character(len=24), intent(in) :: caraElem
         type(NL_DS_Material), intent(in) :: ds_material

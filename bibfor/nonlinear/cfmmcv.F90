@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,6 @@ subroutine cfmmcv(mesh, model_, list_func_acti, iter_newt, nume_inst, &
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
-! IO  ds_contact       : datastructure for contact management
 ! In  sderro           : datastructure for errors during algorithm
 ! In  hval_algo        : hat-variable for algorithms fields
 ! IO  ds_print         : datastructure for printing parameters
@@ -88,21 +87,18 @@ subroutine cfmmcv(mesh, model_, list_func_acti, iter_newt, nume_inst, &
 !
     r8bid = 0.d0
     model = model_(1:8)
-!
+
 ! - Get parameters
-!
     l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
     l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
     l_newt_cont = isfonc(list_func_acti, 'CONT_NEWTON')
     l_all_verif = isfonc(list_func_acti, 'CONT_ALL_VERIF')
-!
+
 ! - Values in convergence table: not affected
-!
     call nmimck(ds_print, 'BOUC_NOEU', ' ', .false._1)
     call nmimcr(ds_print, 'BOUC_VALE', r8bid, .false._1)
-!
+
 ! - Convergence for contact discrete methods
-!
     if (l_cont_disc) then
         call cfconv(mesh, ds_measure, sderro, hval_algo, ds_print, &
                     ds_contact)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -222,15 +222,6 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
                 list_func_acti(10) = 1
                 list_func_acti(27) = 1
             end if
-        else if (i_cont_form .eq. 3) then
-            list_func_acti(9) = 1
-            list_func_acti(26) = 1
-            l_frot = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
-            if (l_frot) then
-                list_func_acti(25) = 1
-                list_func_acti(27) = 1
-            end if
-            list_func_acti(27) = 1
         else if (i_cont_form .eq. 1) then
             list_func_acti(4) = 1
             l_frot = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
@@ -409,12 +400,7 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     if (repk .eq. 'OUI') then
         list_func_acti(37) = 1
     end if
-!
-! - THM + XFEM/CONTACT
-!
-    if (l_cont .and. (repk .eq. 'OUI')) then
-        list_func_acti(65) = 1
-    end if
+
 !
 ! - Elemesnt with STRX field (multifibers for instantce)
 !
@@ -522,12 +508,6 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
         if (isfonc(list_func_acti, 'CONT_CONTINU')) then
             call utmess('I', 'MECANONLINE14_14')
         end if
-        if (isfonc(list_func_acti, 'CONT_XFEM')) then
-            call utmess('I', 'MECANONLINE14_15')
-        end if
-        if (isfonc(list_func_acti, 'CONT_XFEM_THM')) then
-            call utmess('I', 'MECANONLINE14_16')
-        end if
         if (isfonc(list_func_acti, 'CONT_LAC')) then
             call utmess('I', 'MECANONLINE14_17')
         end if
@@ -566,9 +546,6 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
         end if
         if (isfonc(list_func_acti, 'FROT_CONTINU')) then
             call utmess('I', 'MECANONLINE14_29')
-        end if
-        if (isfonc(list_func_acti, 'FROT_XFEM')) then
-            call utmess('I', 'MECANONLINE14_30')
         end if
         if (isfonc(list_func_acti, 'EXIS_PENA')) then
             call utmess('I', 'MECANONLINE14_64')

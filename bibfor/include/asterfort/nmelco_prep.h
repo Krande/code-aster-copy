@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmelco_prep(calc_type,&
-                           mesh     , model    , ds_material, ds_contact,&
-                           disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
-                           nbin     , lpain    , lchin    ,&
-                           option   , time_prev, time_curr , ds_constitutive,&
-                           ccohes_  , xcohes_)
+    subroutine nmelco_prep(calc_type, &
+                           model, ds_material, ds_contact, &
+                           disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst, &
+                           nbin, lpain, lchin, &
+                           option, time_prev, time_curr, ds_constitutive)
         use NonLin_Datastructure_type
         character(len=4), intent(in) :: calc_type
-        character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Contact), intent(in) :: ds_contact
@@ -41,7 +39,5 @@ interface
         character(len=19), intent(in) :: time_prev
         character(len=19), intent(in) :: time_curr
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-        character(len=19), optional, intent(out) :: ccohes_
-        character(len=19), optional, intent(out) :: xcohes_
     end subroutine nmelco_prep
 end interface

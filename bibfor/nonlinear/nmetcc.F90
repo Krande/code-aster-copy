@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,32 +63,17 @@ subroutine nmetcc(field_type, algo_name, init_name, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: xindco, xcohes, xseuco
-    character(len=24) :: sdcont_solv
     character(len=19) :: depabs, vitabs, accabs
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_solv = ' '
-    if (present(ds_contact)) then
-        sdcont_solv = ds_contact%sdcont_solv
-    end if
-!
-! - Special fields
-!
-    if (present(ds_contact)) then
-        xindco = sdcont_solv(1:14)//'.XFIN'
-        xcohes = sdcont_solv(1:14)//'.XCOP'
-        xseuco = sdcont_solv(1:14)//'.XFSE'
-    end if
     if (present(sddyna)) then
         call ndynkk(sddyna, 'DEPABS', depabs)
         call ndynkk(sddyna, 'VITABS', vitabs)
         call ndynkk(sddyna, 'ACCABS', accabs)
     end if
-!
+
 ! - Standard fields
-!
     if (field_type .eq. 'COMPORTEMENT') then
         algo_name = compor
         init_name = ' '
@@ -98,15 +83,6 @@ subroutine nmetcc(field_type, algo_name, init_name, &
     else if (field_type .eq. 'CONT_ELEM') then
         algo_name = ds_contact%field_cont_elem
         init_name = ' '
-    else if (field_type .eq. 'INDC_ELEM') then
-        algo_name = xindco
-        init_name = sdcont_solv(1:14)//'.XFI0'
-    else if (field_type .eq. 'SECO_ELEM') then
-        algo_name = xseuco
-        init_name = sdcont_solv(1:14)//'.XFS0'
-    else if (field_type .eq. 'COHE_ELEM') then
-        algo_name = xcohes
-        init_name = sdcont_solv(1:14)//'.XCO0'
     else if (field_type .eq. 'DEPL_ABSOLU') then
         algo_name = depabs
         init_name = '&&CNPART.ZERO'

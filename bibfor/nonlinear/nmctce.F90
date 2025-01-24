@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmctce(model, mesh, ds_contact, sddyna, sddisc, &
-                  nume_inst)
+subroutine nmctce(mesh, ds_contact, sddyna, sddisc, nume_inst)
 !
     use NonLin_Datastructure_type
 !
@@ -30,22 +29,19 @@ subroutine nmctce(model, mesh, ds_contact, sddyna, sddisc, &
 #include "asterfort/cfdisl.h"
 #include "asterfort/mmchml.h"
 !
-    character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in)  :: sddyna
-    character(len=19), intent(in)  :: sddisc
+    character(len=19), intent(in) :: sddyna, sddisc
     integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Continue/XFEM method
+! MECA_NON_LINE - Continue method
 !
 ! Create elements for contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of model
 ! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
 ! In  sddyna           : dynamic parameters datastructure
@@ -59,13 +55,12 @@ subroutine nmctce(model, mesh, ds_contact, sddyna, sddisc, &
 ! --------------------------------------------------------------------------------------------------
 !
     cont_form = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
-!
+
 ! - Create input fields for contact
-!
     if (cont_form .eq. 2 .or. cont_form .eq. 5) then
         call mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
     elseif (cont_form .ne. 3) then
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

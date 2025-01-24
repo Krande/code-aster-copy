@@ -196,10 +196,9 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 ! - Initialisations
 !
     lacc0 = ASTER_FALSE
-!
+
 ! - Initializations for contact parameters
-!
-    call nonlinDSContactInit(mesh, model, ds_contact)
+    call nonlinDSContactInit(mesh, ds_contact)
 !
 ! - Initializations for constitutive laws
 !
@@ -258,7 +257,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Prepare contact solving datastructure
     if (ds_contact%l_meca_cont) then
-        call cfmxsd(mesh, model, numedd, listFuncActi, sddyna, ds_contact)
+        call cfmxsd(mesh, model, numedd, sddyna, ds_contact)
     end if
     if (ds_contact%l_meca_unil) then
         call cucrsd(mesh, numedd, ds_contact)
@@ -289,7 +288,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Create vectors
     call nmcrch(numedd, listFuncActi, sddyna, nlDynaDamping, &
-                ds_contact, valinc, solalg, veasse)
+                valinc, solalg, veasse)
 
 ! - Initializations for dynamic
     call nonlinDSDynamicInit(valinc, sddyna, nlDynaDamping, ds_constitutive)

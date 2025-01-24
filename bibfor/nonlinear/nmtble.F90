@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmtble(loop_exte, model, mesh, ds_material, ds_contact, &
+subroutine nmtble(loop_exte, model, mesh, ds_contact, &
                   list_func_acti, ds_print, &
                   sderro, ds_conv, sddisc, nume_inst, hval_incr, &
-                  hval_algo, ds_constitutive, ds_algorom)
+                  hval_algo, ds_algorom)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -43,7 +43,6 @@ subroutine nmtble(loop_exte, model, mesh, ds_material, ds_contact, &
     integer, intent(inout) :: loop_exte
     character(len=24), intent(in) :: model
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in) :: list_func_acti(*)
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -53,7 +52,6 @@ subroutine nmtble(loop_exte, model, mesh, ds_material, ds_contact, &
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
-    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
@@ -126,9 +124,9 @@ subroutine nmtble(loop_exte, model, mesh, ds_material, ds_contact, &
         if (loop_exte .le. 1) then
             if (l_loop_cont) then
                 loop_exte = 1
-                call nmctcc(mesh, model, ds_material, nume_inst, &
+                call nmctcc(mesh, model, nume_inst, &
                             sderro, sddisc, hval_incr, hval_algo, &
-                            ds_contact, ds_constitutive, list_func_acti)
+                            ds_contact)
                 call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_=loop_cont_conv)
                 call mmbouc(ds_contact, 'Cont', 'Get_Vale', loop_vale_=loop_cont_vale)
                 loop_cont_vali = nint(loop_cont_vale)
@@ -144,7 +142,7 @@ subroutine nmtble(loop_exte, model, mesh, ds_material, ds_contact, &
         if (loop_exte .le. 2) then
             if (l_loop_frot) then
                 loop_exte = 2
-                call nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
+                call nmctcf(mesh, sderro, hval_incr, ds_print, ds_contact)
                 call mmbouc(ds_contact, 'Fric', 'Is_Convergence', loop_state_=loop_fric_conv)
                 if (.not. loop_fric_conv) then
                     loop_exte = 2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcg(model, mesh, ds_contact, ds_measure)
+    subroutine nmctcg(mesh, ds_contact, ds_measure)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: model
         type(NL_DS_Contact), intent(inout) :: ds_contact
         type(NL_DS_Measure), intent(inout) :: ds_measure
     end subroutine nmctcg

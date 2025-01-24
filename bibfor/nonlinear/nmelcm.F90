@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmelcm(mesh, model, &
+subroutine nmelcm(model, &
                   ds_material, ds_contact, &
                   ds_constitutive, ds_measure, &
                   hval_incr, hval_algo, &
@@ -31,22 +31,19 @@ subroutine nmelcm(mesh, model, &
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/memare.h"
-#include "asterfort/nmelco_prep.h"
-#include "asterfort/reajre.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nmvcex.h"
+#include "asterfort/nmelco_prep.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -63,7 +60,6 @@ subroutine nmelcm(mesh, model, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  ds_material      : datastructure for material parameters
 ! In  ds_contact       : datastructure for contact management
@@ -76,15 +72,13 @@ subroutine nmelcm(mesh, model, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer, parameter :: nbout = 3
-    integer, parameter :: nbin = 36
+    integer, parameter :: nbout = 2, nbin = 36
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
-    character(len=1) :: base
+    character(len=1), parameter :: base = 'V'
     character(len=19) :: ligrel
-    character(len=19) :: xcohes, ccohes
     character(len=16) :: option
-    aster_logical :: l_cont_lac, l_all_verif, l_xfem_czm, l_xthm
+    aster_logical :: l_cont_lac, l_all_verif
     character(len=19) :: disp_prev, vite_prev, acce_prev, vite_curr, varc_prev, varc_curr
     character(len=19) :: disp_cumu_inst
     character(len=19) :: time_prev, time_curr
@@ -93,18 +87,12 @@ subroutine nmelcm(mesh, model, &
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! - Initializations
-!
-    base = 'V'
-!
+
 ! - Begin measure
-!
     call nmtime(ds_measure, 'Init', 'Cont_Elem')
     call nmtime(ds_measure, 'Launch', 'Cont_Elem')
-!
+
 ! - Get hat variables
-!
     call nmchex(hval_algo, 'SOLALG', 'DEPDEL', disp_cumu_inst)
     call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
     call nmchex(hval_incr, 'VALINC', 'VITMOI', vite_prev)
@@ -114,56 +102,54 @@ subroutine nmelcm(mesh, model, &
     call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
     call nmvcex('INST', varc_prev, time_prev)
     call nmvcex('INST', varc_curr, time_curr)
-!
+
 ! - Get contact parameters
-!
     l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
-    l_xfem_czm = cfdisl(ds_contact%sdcont_defi, 'EXIS_XFEM_CZM')
     l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-    l_xthm = ds_contact%l_cont_thm
 
     if (.not. l_all_verif .and. ((.not. l_cont_lac) .or. ds_contact%nb_cont_pair .ne. 0)) then
 ! ----- Display
         if (niv .ge. 2) then
             call utmess('I', 'CONTACT5_27')
         end if
+
 ! ----- Init fields
-        call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
+        lpain = " "
+        lchin = " "
+        lpaout = " "
+        lchout = " "
+
 ! ----- Prepare input fields
         call nmelco_prep('MATR', &
-                         mesh, model, ds_material, ds_contact, &
+                         model, ds_material, ds_contact, &
                          disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst, &
                          nbin, lpain, lchin, &
-                         option, time_prev, time_curr, ds_constitutive, &
-                         ccohes, xcohes)
+                         option, time_prev, time_curr, ds_constitutive)
+
 ! ----- <LIGREL> for contact elements
         ligrel = ds_contact%ligrel_elem_cont
+
 ! ----- Preparation of elementary matrix
         call detrsd('MATR_ELEM', matr_elem)
         call memare('V', matr_elem, model, 'RIGI_MECA')
+
 ! ----- Prepare output fields
         lpaout(1) = 'PMATUNS'
         lchout(1) = matr_elem(1:15)//'.M01'
         lpaout(2) = 'PMATUUR'
         lchout(2) = matr_elem(1:15)//'.M02'
-        if (l_xthm .or. l_xfem_czm) then
-            lpaout(3) = 'PCOHESO'
-            lchout(3) = ccohes
-        end if
+
 ! ----- Computation
         call calcul('S', option, ligrel, nbin, lchin, &
                     lpain, nbout, lchout, lpaout, base, &
                     'OUI')
+
 ! ----- Copy output fields
         call reajre(matr_elem, lchout(1), base)
         call reajre(matr_elem, lchout(2), base)
-        if (l_xthm .or. l_xfem_czm) then
-            call copisd('CHAMP_GD', 'V', lchout(3), xcohes)
-        end if
     end if
-!
+
 ! - End measure
-!
     call nmtime(ds_measure, 'Stop', 'Cont_Elem')
     call nmrinc(ds_measure, 'Cont_Elem')
 !

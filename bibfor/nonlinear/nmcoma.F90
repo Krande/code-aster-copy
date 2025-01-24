@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 ! aslint: disable=W1504
 !
 subroutine nmcoma(listFuncActi, &
-                  mesh, modelz, caraElem, &
+                  modelz, caraElem, &
                   ds_material, ds_constitutive, &
                   listLoad, sddyna, nlDynaDamping, &
                   sddisc, numeTime, iterNewt, &
@@ -61,7 +61,6 @@ subroutine nmcoma(listFuncActi, &
 #include "asterfort/utmess.h"
 !
     integer, intent(in) :: listFuncActi(*)
-    character(len=8), intent(in) :: mesh
     character(len=*), intent(in) :: modelz
     character(len=24), intent(in) :: caraElem
     type(NL_DS_Material), intent(in) :: ds_material
@@ -217,7 +216,7 @@ subroutine nmcoma(listFuncActi, &
 ! ----- Compute contact elementary matrices
         if (lContCompute) then
             call nmchex(hval_meelem, 'MEELEM', 'MEELTC', contElem)
-            call nmelcm(mesh, modelZ, &
+            call nmelcm(modelZ, &
                         ds_material, ds_contact, &
                         ds_constitutive, ds_measure, &
                         hval_incr, hval_algo, &

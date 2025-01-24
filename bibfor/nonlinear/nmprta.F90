@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
+subroutine nmprta(model, nume_dof, numfix, ds_material, cara_elem, &
                   ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
                   list_func_acti, ds_print, ds_measure, ds_algorom, sddisc, &
                   nume_inst, hval_incr, hval_algo, matass, maprec, &
@@ -50,7 +50,6 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 #include "asterfort/utmess.h"
 !
     integer :: list_func_acti(*)
-    character(len=8), intent(in) :: mesh
     integer :: nume_inst, faccvg, rescvg, ldccvg
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
@@ -172,7 +171,7 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 
 ! - Compute matrix
     call nmprma(list_func_acti, &
-                mesh, model, cara_elem, &
+                model, cara_elem, &
                 ds_material, ds_constitutive, &
                 list_load, sddyna, nlDynaDamping, &
                 sddisc, nume_inst, &

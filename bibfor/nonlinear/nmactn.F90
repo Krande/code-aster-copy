@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -14,8 +14,9 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
-! ----------------------------------------------------------crit----------
-
+! --------------------------------------------------------------------
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine nmactn(ds_print, sddisc, sderro, ds_contact, &
                   ds_conv, iterat, numins)
 !
@@ -31,8 +32,6 @@ subroutine nmactn(ds_print, sddisc, sderro, ds_contact, &
 #include "asterfort/nmevac.h"
 #include "asterfort/nmleeb.h"
 #include "asterfort/utmess.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=24), intent(in) :: sderro
@@ -133,7 +132,8 @@ subroutine nmactn(ds_print, sddisc, sderro, ds_contact, &
 !
             call utmess('A', 'MECANONLINE2_39', nr=4, valr=[ &
                         ds_contact%calculated_penetration/ds_contact%arete_min, &
-                      ds_contact%arete_min, ds_contact%estimated_coefficient, ds_contact%arete_max])
+                        ds_contact%arete_min, &
+                        ds_contact%estimated_coefficient, ds_contact%arete_max])
 !
 ! ------- ARRET DU CALCUL
 !
