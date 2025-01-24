@@ -35,6 +35,8 @@
 
 from code_aster.Commands import *
 from code_aster import CA
+from code_aster.Helpers.debugging import DebugChrono
+
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
@@ -53,34 +55,36 @@ MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELIS
 # 1) Construction de sigm_init en passant par un champ simple
 # ===========================================================
 
-RHO = 1000.0
-G = 10.0
-KP = 3.0
+with DebugChrono.measure("sigma"):
+    RHO = 1000.0
+    G = 10.0
+    KP = 3.0
 
-# Récupération des coordonnées aux points de Gauss
-coor_elga = CALC_CHAM_ELEM(MODELE=MO, OPTION="COOR_ELGA").toSimpleFieldOnCells()
-valz = coor_elga.Z
+    # Récupération des coordonnées aux points de Gauss
+    coor_elga = CALC_CHAM_ELEM(MODELE=MO, OPTION="COOR_ELGA").toSimpleFieldOnCells()
+    valz = coor_elga.Z
 
-# Initialisation pour avoir la description de SIEF_ELGA
-stress = CA.FieldOnCellsReal(MO, "ELGA", "SIEF_R").toSimpleFieldOnCells()
-sixx = stress.SIXX
+    # Initialisation pour avoir la description de SIEF_ELGA
+    stress = CA.FieldOnCellsReal(MO, "ELGA", "SIEF_R").toSimpleFieldOnCells()
+    sixx = stress.SIXX
 
-# COOR_ELGA est défini sur toutes les mailles du modèle, pas SIEF_ELGA
-valz = valz.onSupportOf(sixx)
+    # COOR_ELGA est défini sur toutes les mailles du modèle, pas SIEF_ELGA
+    valz = valz.onSupportOf(sixx)
 
-# Calcul des composantes
-vz = RHO * G * valz
-vx = KP * vz
-vy = vx
+    # Calcul des composantes
+    vz = RHO * G * valz
+    vx = KP * vz
+    vy = vx
 
-# Affectation des composantes
-stress.setComponentValues("SIXX", vx)
-stress.setComponentValues("SIYY", vy)
-stress.setComponentValues("SIZZ", vz)
+    # Affectation des composantes
+    stress.setComponentValues("SIXX", vx)
+    stress.setComponentValues("SIYY", vy)
+    stress.setComponentValues("SIZZ", vz)
+    del vx, vy, vz, sixx
 
-# Conversion en FieldOnCells
-fed = MO.getFiniteElementDescriptor()
-sigm_init = stress.toFieldOnCells(fed)
+    # Conversion en FieldOnCells
+    fed = MO.getFiniteElementDescriptor()
+    sigm_init = stress.toFieldOnCells(fed)
 
 TEST_RESU(
     CHAM_ELEM=(
@@ -109,23 +113,25 @@ TEST_RESU(
 # 2) Construction du champ de température
 # =======================================
 
-# Récupération des coordonnées aux noeuds
-coor = MA.getCoordinatesAsSimpleFieldOnNodes()
-valx = coor.X
-valy = coor.Y
-valz = coor.Z
+with DebugChrono.measure("temp"):
+    # Récupération des coordonnées aux noeuds
+    coor = MA.getCoordinatesAsSimpleFieldOnNodes()
+    valx = coor.X
+    valy = coor.Y
+    valz = coor.Z
 
-inst = 1.0
-temp0 = 2.0 * valx + 3.0 * valy + 4.0 * valz + 5.0 * inst
+    inst = 1.0
+    temp0 = 2.0 * valx + 3.0 * valy + 4.0 * valz + 5.0 * inst
 
-# Création du champ simple
-tempf = CA.SimpleFieldOnNodesReal(MA, "TEMP_R", ["TEMP"], prol_zero=True)
+    # Création du champ simple
+    tempf = CA.SimpleFieldOnNodesReal(MA, "TEMP_R", ["TEMP"], prol_zero=True)
 
-# Affectation de la composante TEMP
-tempf.setComponentValues("TEMP", temp0)
+    # Affectation de la composante TEMP
+    tempf.setComponentValues("TEMP", temp0)
 
-# Conversion en FieldOnNodes
-temp_init = tempf.toFieldOnNodes()
+    # Conversion en FieldOnNodes
+    temp_init = tempf.toFieldOnNodes()
+    del valx, valy, valz, temp0
 
 TEST_RESU(
     CHAM_NO=_F(
@@ -179,78 +185,87 @@ CHMAT = AFFE_MATERIAU(
     MAILLAGE=MA, AFFE=(_F(GROUP_MA="MASSIF", MATER=MASSIF), _F(GROUP_MA="BETON", MATER=BETON))
 )
 
-
-TEMPS1 = DEFI_LIST_REEL(VALE=(0.0, 1.0))
-CHAR_U1 = AFFE_CHAR_MECA(
-    MODELE=MO, DDL_IMPO=_F(GROUP_NO=("N1", "N2", "N3"), DX=0.0, DY=0.0, DZ=0.0)
-)
-
-UBID = STAT_NON_LINE(
-    MODELE=MO,
-    CHAM_MATER=CHMAT,
-    EXCIT=_F(CHARGE=CHAR_U1),
-    COMPORTEMENT=(
-        _F(GROUP_MA="MASSIF", RELATION="CJS"),
-        _F(GROUP_MA="BETON", RELATION="ENDO_ISOT_BETON"),
-    ),
-    NEWTON=_F(MATRICE="ELASTIQUE"),
-    CONVERGENCE=_F(ARRET="NON", ITER_GLOB_MAXI=1),  # pour continuer sans convergence
-    INCREMENT=_F(LIST_INST=TEMPS1),
-)
-
 # 3.2 Définition du champ de variables internes
 # ---------------------------------------------
 
-# On ne peut pas créer un champ de variables internes sans le comportement.
-# On le récupère du résultat initialisé par STAT_NON_LINE pour en avoir la description
-vari_elga = UBID.getField("VARI_ELGA", 1)
-# Mise à zero de toutes les composantes
-vari_elga.setValues(0.0)
-# Conversion en champ simple
-vari_elga = vari_elga.toSimpleFieldOnCells()
+with DebugChrono.measure("create behaviour"):
+    # On ne peut pas créer un champ de variables internes sans le comportement.
+    # Définition du problème et affectation des comportements
+    phys_pb = CA.PhysicalProblem(MO, CHMAT)
+    phys_pb.computeBehaviourProperty(
+        COMPORTEMENT=(
+            _F(GROUP_MA="MASSIF", RELATION="CJS"),
+            _F(GROUP_MA="BETON", RELATION="ENDO_ISOT_BETON"),
+        )
+    )
 
-# Liste des mailles pour chaque zone d'intérêt
-beton = MA.getCells("BETON")
-massif = MA.getCells("MASSIF")
+with DebugChrono.measure("vari.init"):
+    vari_elga = CA.FieldOnCellsReal(MO, "ELGA", "VARI_R", phys_pb.getBehaviourProperty())
+    # Mise à zero de toutes les composantes
+    vari_elga.setValues(0.0)
 
-# On affecte la même valeur sur la zone considérée
-v1 = vari_elga.V1
-v1.restrict(massif)
-v1.values = 1.0
+with DebugChrono.measure("build vari_elga"):
 
-v9 = vari_elga.V9
-v9.restrict(massif)
-v9.values = 9.0
+    with DebugChrono.measure("vari.toSimple"):
+        # Conversion en champ simple
+        vari_elga = vari_elga.toSimpleFieldOnCells()
 
-v2 = vari_elga.V2
-v2.restrict(beton)
-v2.values = 2.0
+    with DebugChrono.measure("vari.oper"):
+        # Liste des mailles pour chaque zone d'intérêt
+        beton = MA.getCells("BETON")
+        massif = MA.getCells("MASSIF")
 
-vari_elga.setComponentValues("V1", v1)
-vari_elga.setComponentValues("V2", v2)
-vari_elga.setComponentValues("V9", v9)
+        # On affecte la même valeur sur la zone considérée
+        v1 = vari_elga.V1
+        v1.restrict(massif)
+        v1.values = 1.0
 
-# Conversion en FieldOnCells
-fed = MO.getFiniteElementDescriptor()
-vari_init = vari_elga.toFieldOnCells(fed)
+        v9 = vari_elga.V9
+        v9.restrict(massif)
+        v9.values = 9.0
 
+        v2 = vari_elga.V2
+        v2.restrict(beton)
+        v2.values = 2.0
 
-# À titre d'exemple, on montre comment affecter une valeur sur "BETON" et une autre sur "MASSIF"
-v2 = vari_elga.V2
-# On crée deux objets Component indépendants car restrict modifie l'objet en place
-v2b = v2.copy()
-v2b.restrict(beton)
-v2b.values = 2.0
+    with DebugChrono.measure("vari.assign"):
+        vari_elga.setComponentValues("V1", v1)
+        vari_elga.setComponentValues("V2", v2)
+        vari_elga.setComponentValues("V9", v9)
 
-v2m = v2.copy()
-v2m.restrict(massif)
-v2m.values = 1.0e-6
+    with DebugChrono.measure("vari.toField"):
+        # Conversion en FieldOnCells
+        fed = MO.getFiniteElementDescriptor()
+        vari_init = vari_elga.toFieldOnCells(fed)
 
-# v2b et v2m ne sont pas définies sur les mêmes mailles,
-# il faut donc les transposer sur le même support, celui de v2
-v2tot = v2b.onSupportOf(v2) + v2m.onSupportOf(v2)
-# On affecterait 'v2tot'
-# vari_elga.setComponentValues("V2", v2tot)
+with DebugChrono.measure("example"):
+    # À titre d'exemple, on montre comment affecter une valeur sur "BETON" et une autre sur "MASSIF"
+    v2 = vari_elga.V2
+    # On crée deux objets Component indépendants car restrict modifie l'objet en place
+    v2b = v2.copy()
+    v2b.restrict(beton)
+    v2b.values = 2.0
+
+    v2m = v2.copy()
+    v2m.restrict(massif)
+    v2m.values = 1.0e-6
+
+    # v2b et v2m ne sont pas définies sur les mêmes mailles,
+    # il faut donc les transposer sur le même support, celui de v2
+    v2tot = v2b.onSupportOf(v2) + v2m.onSupportOf(v2)
+    # On affecterait 'v2tot'
+    # vari_elga.setComponentValues("V2", v2tot)
+
+    VAIN2 = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="CART_NEUT_R",
+        MODELE=MO,
+        INFO=1,
+        AFFE=(
+            _F(GROUP_MA="BETON", NOM_CMP=("X2",), VALE=(2.0,)),
+            _F(GROUP_MA="MASSIF", NOM_CMP=("X1", "X3"), VALE=(1.0, 9.0)),
+        ),
+    )
 
 
 # 3.3 test des valeurs obtenues

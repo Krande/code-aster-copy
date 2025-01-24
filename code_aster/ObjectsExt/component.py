@@ -684,6 +684,7 @@ class ComponentOnNodes(Component):
         """
         return self._descr._nbnodes
 
+    # TODO
     def plot_descr(self, filename=None):
         """Plot the description of values by nodes.
 
@@ -792,7 +793,6 @@ class ComponentOnCells(Component):
         """
         return self._descr._nbcells
 
-    # TODO plot on restricted
     def plot_descr(self, filename=None):
         """Plot the description of values by cells.
 
@@ -809,6 +809,9 @@ class ComponentOnCells(Component):
         if not HAS_MATPLOTLIB:
             warnings.warn("matplotlib is not available")
             return False
+        if self.restr is not None:
+            return self.expand().plot_descr(filename)
+
         idx = np.where(self._idx >= 0, 1, 0)
         # undef = np.where(self._descr._mask[self._idx] == False, -2, 0)
         undef = np.where(self._values.mask[self._idx], -2, 0)

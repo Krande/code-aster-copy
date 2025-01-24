@@ -63,16 +63,14 @@ model = CA.Model(mesh)
 model.addModelingOnMesh(CA.Physics.Mechanics, CA.Modelings.Tridimensional)
 model.build()
 
-# extract coordinates field and convert it into a FieldOnNodes
-ch0 = mesh.getCoordinates().toFieldOnNodes(mesh)
+# extract coordinates as a SimpleFieldOnNodes
+with DebugChrono.measure("getCoordinates"):
+    chs = mesh.getCoordinatesAsSimpleFieldOnNodes()
 
-names = ch0.getComponents()
+names = chs.getComponents()
 print("components:", names)
 
 with DebugChrono.measure("global"):
-    with DebugChrono.measure("toSimpleFieldOnNodes"):
-        chs = ch0.toSimpleFieldOnNodes()
-
     cumsize = 0
 
     # use False to force 'getComponentOnNodes' to reset the cache
