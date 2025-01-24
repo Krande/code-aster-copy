@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine affori(typ, nomt, cara, val, jad, jin, &
     real(kind=8) :: val(6)
     real(kind=8), intent(in), optional  :: lseuil
     integer, intent(inout), optional    :: nbseuil
-    real(kind=8), intent(in), optional  :: alphayz
+    real(kind=8), intent(in), optional  :: alphayz(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -230,7 +230,7 @@ subroutine affori(typ, nomt, cara, val, jad, jin, &
             call utmess('F', 'MODELISA_89', nk=2, valk=vmessk)
         end if
 ! --------------------------------------------------------------------------------------------------
-    else if ((affcar .eq. 'VECT_GEOM_Y') .or. (affcar .eq. 'VECT_GEOM_Z')) then
+    else if ((affcar .eq. 'VECT_MAIL_Y') .or. (affcar .eq. 'VECT_MAIL_Z')) then
         if (typ(1:6) .eq. 'MAILLE') then
 !           Si Maille : si ce n'est pas un SEG2 <F>
             if (nutyma .ne. ntseg) then
@@ -241,16 +241,16 @@ subroutine affori(typ, nomt, cara, val, jad, jin, &
                 call utmess('F', 'MODELISA_88', nk=2, valk=vmessk)
             end if
 !           si longueur(SEG2)<>0
-            if (affcar .eq. 'VECT_GEOM_Y') then
+            if (affcar .eq. 'VECT_MAIL_Y') then
                 call angvxy(x3, val(1), angl)
             else
                 call angvxz(x3, val(1), angl)
             end if
-            gamma = angl(3)
+            gamma = angl(3)+alphayz(1)*r8dgrd()
 !           Impression message si surcharge
             call messsurcharge(affcar, nom, 'gamma', zi(jin+2), zr(jad+2), gamma)
 !           Affectation de gamma
-            zr(jad+2) = gamma+alphayz*r8dgrd()
+            zr(jad+2) = gamma
             zi(jin+2) = zi(jin+2)+1
         else
 !           Noeud : pas d'affectation sur un POI1 <F>

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine angvxz(gx, gn, angl)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!   Calcul des 3 angles nautiques a partir du vecteur Gx et d'un vecteur Gn dont la projection
-!   normale sur le plan normal a Gx donne le vecteur Gz
+!   Calcul des 3 angles nautiques à partir du vecteur Gx et d'un vecteur Gn dont la projection
+!   normale sur le plan normal à Gx donne le vecteur Gz
 !
 ! --------------------------------------------------------------------------------------------------
 !

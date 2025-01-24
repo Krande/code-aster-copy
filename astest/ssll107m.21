@@ -1,0 +1,65 @@
+TITRE
+    POUTRES DROITES
+FINSF
+%
+COOR_3D
+Ptx0        0.1 0.0 0.0
+Pty0        0.0 0.1 0.0
+Ptz0        0.0 0.0 0.1
+Ptx0y0z0    0.1 0.1 0.1
+
+Ptx1        0.3 0.0 0.0
+Pty1        0.0 0.3 0.0
+Ptz1        0.0 0.0 0.3
+Ptx1y1z1    0.3 0.3 0.3
+
+Ptx2        0.5 0.0 0.0
+Pty2        0.0 0.5 0.0
+Ptz2        0.0 0.0 0.5
+Ptx2y2z2    0.5 0.5 0.5
+
+Ptx3        0.7 0.0 0.0
+Pty3        0.0 0.7 0.0
+Ptz3        0.0 0.0 0.7
+Ptx3y3z3    0.7 0.7 0.7
+%
+FINSF
+%
+SEG2
+  Sx1          Ptx0        Ptx1
+  Sy1          Pty0        Pty1
+  Sz1          Ptz0        Ptz1
+  Sx1y1z1      Ptx0y0z0    Ptx1y1z1
+
+  Sx2          Ptx2        Ptx3
+  Sy2          Pty2        Pty3
+  Sz2          Ptz2        Ptz3
+  Sx2y2z2      Ptx2y2z2    Ptx3y3z3
+FINSF
+%
+GROUP_MA
+    S0x1        Sx1
+FINSF
+GROUP_MA
+    S0y1        Sy1
+FINSF
+GROUP_MA
+    S0z1        Sz1
+FINSF
+GROUP_MA
+    S0x1y1z1    Sx1y1z1
+FINSF
+GROUP_MA
+    S0x2        Sx2
+FINSF
+GROUP_MA
+    S0y2        Sy2
+FINSF
+GROUP_MA
+    S0z2        Sz2
+FINSF
+GROUP_MA
+    S0x2y2z2    Sx2y2z2
+FINSF
+%
+FIN

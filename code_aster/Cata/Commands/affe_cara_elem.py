@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,8 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+import numpy as NP
+
 
 def force_tuple(obj):
     """Force *obj* to be a tuple."""
@@ -31,7 +33,9 @@ def force_tuple(obj):
     return tuple(obj)
 
 
-def affe_cara_elem_prod(POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D, GRILLE, MASS_REP, **args):
+def affe_cara_elem_prod(
+    POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D, GRILLE, MASS_REP, ORIENTATION, **args
+):
     """Fonction sdprod de AFFE_CARA_ELEM"""
     # phase de typage seul
     if args.get("__only_type__"):
@@ -277,8 +281,18 @@ def affe_cara_elem_prod(POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D, GRILLE
             if mclf["VALE"] is not None:
                 vale = mclf["VALE"]
                 check(vale >= 0.0, defErr, "MASS_REP", i1, "VALE")
+    # - - - - - - - - - - - - - - -
+    if ORIENTATION is not None:
+        for i in range(len(ORIENTATION)):
+            i1 = i + 1
+            mclf = ORIENTATION[i]
+            cara = mclf["CARA"]
+            if cara in ["VECT_MAIL_Y", "VECT_MAIL_Z", "VECT_Y", "VECT_Z"]:
+                vale = NP.array(mclf["VALE"])
+                vv = NP.sum(vale * vale)
+                check(vv > 0.0, defErr, "ORIENTATION", i1, "VALE")
     #
-    # Tout est ok
+    # Pour l'instant Tout est ok
     return cara_elem
 
 
@@ -329,7 +343,7 @@ AFFE_CARA_ELEM = OPER(
                     PRESENT_PRESENT("CARA", "VALE"),
                 ),
                 TABLE_CARA=SIMP(statut="f", typ=table_sdaster),
-                NOM_SEC=SIMP(statut="f", typ="TXM"),
+                NOM_SEC=SIMP(statut="f", typ="TXM", validators=LongStr(1, 8)),
                 CARA=SIMP(
                     statut="f",
                     typ="TXM",
@@ -566,7 +580,7 @@ AFFE_CARA_ELEM = OPER(
                 PRESENT_PRESENT("CARA", "VALE"),
             ),
             TABLE_CARA=SIMP(statut="f", typ=table_sdaster),
-            NOM_SEC=SIMP(statut="f", typ="TXM", validators=LongStr(1, 24)),
+            NOM_SEC=SIMP(statut="f", typ="TXM", validators=LongStr(1, 8)),
             CARA=SIMP(statut="f", typ="TXM", into=("A",)),
             VALE=SIMP(statut="f", typ="R", min=1, max=1),
         ),
@@ -1008,8 +1022,8 @@ AFFE_CARA_ELEM = OPER(
                 "VECT_X_Y",
                 "ANGL_NAUT",
                 "GENE_TUYAU",
-                "VECT_GEOM_Y",
-                "VECT_GEOM_Z",
+                "VECT_MAIL_Y",
+                "VECT_MAIL_Z",
             ),
         ),
         b_cara_vect_y=BLOC(
@@ -1050,13 +1064,13 @@ AFFE_CARA_ELEM = OPER(
                 fr=tr("valeur en-dessous de laquelle la maille est considérée de longueur nulle"),
             ),
         ),
-        # VECT_GEOM_Y et VECT_GEOM_Z
-        b_cara_vect_geom_y=BLOC(
-            condition="""(equal_to("CARA", 'VECT_GEOM_Y'))""",
+        # VECT_MAIL_Y et VECT_MAIL_Z
+        b_cara_vect_mail_y=BLOC(
+            condition="""(equal_to("CARA", 'VECT_MAIL_Y'))""",
             fr=tr("Maille de longueur non nulle."),
             GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
             TABLE_CARA=SIMP(statut="o", typ=table_sdaster),
-            NOM_SEC=SIMP(statut="o", typ="TXM"),
+            NOM_SEC=SIMP(statut="o", typ="TXM", validators=LongStr(1, 8)),
             VALE=SIMP(
                 statut="o",
                 typ="R",
@@ -1073,12 +1087,12 @@ AFFE_CARA_ELEM = OPER(
                 fr=tr("valeur en-dessous de laquelle la maille est considérée de longueur nulle"),
             ),
         ),
-        b_cara_vect_geom_z=BLOC(
-            condition="""(equal_to("CARA", 'VECT_GEOM_Z'))""",
+        b_cara_vect_mail_z=BLOC(
+            condition="""(equal_to("CARA", 'VECT_MAIL_Z'))""",
             fr=tr("Maille de longueur non nulle."),
             GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
             TABLE_CARA=SIMP(statut="o", typ=table_sdaster),
-            NOM_SEC=SIMP(statut="o", typ="TXM"),
+            NOM_SEC=SIMP(statut="o", typ="TXM", validators=LongStr(1, 8)),
             VALE=SIMP(
                 statut="o",
                 typ="R",

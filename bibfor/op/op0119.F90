@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,7 @@ subroutine op0119()
 #include "asterfort/maillagefibre.h"
 #include "asterfort/pmfsce.h"
 #include "asterfort/reliem.h"
+#include "asterfort/tbcarapou.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -104,6 +105,12 @@ subroutine op0119()
     real(kind=8), pointer ::         gxgrfibreass(:) => null()
     character(len=24), pointer ::    nomgrfibreass(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
+    real(kind=8)        :: valcara(3)
+    integer             :: okcara(3)
+    character(len=8)    :: nomsec, nomcara(3)
+    character(len=19)   :: tabcar
+! --------------------------------------------------------------------------------------------------
     data limcls/'MAILLE_SECT', 'GROUP_MA_SECT', 'TOUT_SECT'/
     data ltymcl/'MAILLE', 'GROUP_MA', 'TOUT'/
 !
@@ -237,14 +244,31 @@ subroutine op0119()
     do ioc = 1, nboccsec
         call getvtx('SECTION', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
         if (niv .eq. 2) write (ifm, 800) nomgf
-!       On récupère le nom du maillage
+        ! On récupère le nom du maillage
         call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
-!       Récupération des coordonnées de l'axe de la poutre
-        call getvr8('SECTION', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep, nbret=iret)
-        if (iret .ne. 2) axep(1:2) = 0.0d0
-!       Récupération de l'angle de rotation autour de l'origine
-        call getvr8('SECTION', 'ANGLE', iocc=ioc, nbval=1, scal=angle, nbret=iangle)
-        if (iangle .ne. 1) angle = 0.0d0
+        !
+        ! Dans le catalogue : TABLE_CARA et NOM_SEC OU COOR_AXE_POUTRE
+        iangle = 0
+        call getvid('SECTION', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=iret)
+        if (iret .eq. 1) then
+            call getvtx('SECTION', 'NOM_SEC', iocc=ioc, scal=nomsec, nbret=iret)
+            !
+            nomcara(1) = 'ALPHA'
+            nomcara(2) = 'CDG_Y'
+            nomcara(3) = 'CDG_Z'
+            call tbcarapou(tabcar, nomsec, 3, nomcara, valcara, okcara)
+            angle = -valcara(1)
+            axep(1) = valcara(2)
+            axep(2) = valcara(3)
+            iangle = 1
+        else
+            ! Récupération des coordonnées de l'axe de la poutre
+            call getvr8('SECTION', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep, nbret=iret)
+            if (iret .ne. 2) axep(1:2) = 0.0d0
+            ! Récupération de l'angle de rotation autour de l'origine
+            call getvr8('SECTION', 'ANGLE', iocc=ioc, nbval=1, scal=angle, nbret=iangle)
+            if (iangle .ne. 1) angle = 0.0d0
+        end if
 !       Concept maillage associé
         mlgtms = nomas//'.TYPMAIL'
         mlgcnx = nomas//'.CONNEX'
@@ -265,7 +289,10 @@ subroutine op0119()
         end if
         iinbgf = iinbgf+1
         vngroup(iinbgf) = nomgf
-!
+        !
+        cc = cos(angle*r8dgrd())
+        ss = sin(angle*r8dgrd())
+        !
         nbmagr = 0
         do jdo = 1, nbmaills
             nummai = zi(jmaill+jdo-1)
@@ -277,8 +304,6 @@ subroutine op0119()
             nno = 3
             if (nutyma .eq. ntqua4) nno = 4
             if (iangle .eq. 1) then
-                cc = cos(angle*r8dgrd())
-                ss = sin(angle*r8dgrd())
                 do in = 1, nno
                     no = zi(jdno-1+in)
                     xx = zr(jdco+(no-1)*3)-axep(1)
@@ -336,8 +361,6 @@ subroutine op0119()
         vmailgrp(iinbgf) = nbmagr
 !       Les nouveaux noeuds dans la SD MAILLAGE
         if (iangle .eq. 1) then
-            cc = cos(angle*r8dgrd())
-            ss = sin(angle*r8dgrd())
             do ii = iidepnoeud, iinbnoeuds
                 numno = vinoeud(ii)
                 xx = zr(jdco+(numno-1)*3)-axep(1)
@@ -367,30 +390,48 @@ subroutine op0119()
     do ioc = 1, nboccfib
         call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
         if (niv .eq. 2) write (ifm, 820) nomgf
-!       Surface ou diametre
+        ! Surface ou diametre
         call getvtx('FIBRE', 'CARA', iocc=ioc, scal=ksudi, nbret=iret)
         if (iret .eq. 0) ksudi = 'SURFACE '
         call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=maxfibre1, vect=valfibre, nbret=nbvfibre)
-!       Récupération des coordonnées de l'axe de la poutre
-        call getvr8('FIBRE', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep, nbret=iret)
-        if (iret .ne. 2) axep(1:2) = 0.0d0
-!       Récupération de l'angle de rotation autour de l'origine
-        call getvr8('FIBRE', 'ANGLE', iocc=ioc, nbval=1, scal=angle, nbret=iangle)
-        if (iangle .ne. 1) angle = 0.0d0
-!       Nom du groupe de mailles
+        !
+        ! Dans le catalogue : TABLE_CARA et NOM_SEC OU COOR_AXE_POUTRE
+        iangle = 0
+        call getvid('FIBRE', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=iret)
+        if (iret .eq. 1) then
+            call getvtx('FIBRE', 'NOM_SEC', iocc=ioc, scal=nomsec, nbret=iret)
+            !
+            nomcara(1) = 'ALPHA'
+            nomcara(2) = 'CDG_Y'
+            nomcara(3) = 'CDG_Z'
+            call tbcarapou(tabcar, nomsec, 3, nomcara, valcara, okcara)
+            angle = -valcara(1)
+            axep(1) = valcara(2)
+            axep(2) = valcara(3)
+            iangle = 1
+        else
+            ! Récupération des coordonnées de l'axe de la poutre
+            call getvr8('FIBRE', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep, nbret=iret)
+            if (iret .ne. 2) axep(1:2) = 0.0d0
+            ! Récupération de l'angle de rotation autour de l'origine
+            call getvr8('FIBRE', 'ANGLE', iocc=ioc, nbval=1, scal=angle, nbret=iangle)
+            if (iangle .ne. 1) angle = 0.0d0
+        end if
+        !
+        ! Nom du groupe de mailles
         call jenonu(jexnom(vnmfig, nomgf), iret)
         if (iret .ne. 0) then
             call utmess('F', 'MODELISA6_19', sk=nomgf)
         end if
         iinbgf = iinbgf+1
         vngroup(iinbgf) = nomgf
-!
-!       Si diamètre ==> calcul de la surface
+        !
+        cc = cos(angle*r8dgrd())
+        ss = sin(angle*r8dgrd())
+        ! Si diamètre ==> calcul de la surface
         nbmagr = 0
         do ido = 1, nbvfibre/ncarfi1
             if (iangle .eq. 1) then
-                cc = cos(angle*r8dgrd())
-                ss = sin(angle*r8dgrd())
                 xx = valfibre(ncarfi1*(ido-1)+1)-axep(1)
                 yy = valfibre(ncarfi1*(ido-1)+2)-axep(2)
                 ! On tourne
