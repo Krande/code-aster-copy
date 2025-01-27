@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,9 @@ from ..MacroCommands.macr_lign_coupe_ops import crea_mail_lig_coup
 from ..MacroCommands.Fracture.post_endo_fiss_utils import crea_sd_mail
 
 try:
+    import matplotlib
+
+    matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     HAS_MATPLOTLIB = True
@@ -949,11 +952,15 @@ def macPlot(
             v0_left = (
                 np.concatenate(
                     [
-                        rhof
-                        * (2 * np.pi * _lFreq[_idx]) ** 2
-                        * np.array(_res.getField("DEPL", _imode).getValuesWithDescription(d)[0])
-                        if d in ["DX", "DY", "DZ"]
-                        else np.array(_res.getField("DEPL", _imode).getValuesWithDescription(d)[0])
+                        (
+                            rhof
+                            * (2 * np.pi * _lFreq[_idx]) ** 2
+                            * np.array(_res.getField("DEPL", _imode).getValuesWithDescription(d)[0])
+                            if d in ["DX", "DY", "DZ"]
+                            else np.array(
+                                _res.getField("DEPL", _imode).getValuesWithDescription(d)[0]
+                            )
+                        )
                         for d in _dof
                     ]
                 )
@@ -965,9 +972,11 @@ def macPlot(
                 if _dof
                 else np.array(
                     [
-                        rhof * (2 * np.pi * _lFreq[_idx]) ** 2 * vectot[id]
-                        if d in ["DX", "DY", "DZ"]
-                        else vectot[id]
+                        (
+                            rhof * (2 * np.pi * _lFreq[_idx]) ** 2 * vectot[id]
+                            if d in ["DX", "DY", "DZ"]
+                            else vectot[id]
+                        )
                         for id, d in enumerate(cmps)
                     ]
                 )
