@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ from ..Messages import UTMESS
 import numpy as np
 import time
 from ..Utilities.version import get_version
+from ..Helpers import LogicalUnitFile
 
 
 class OAR_EF:
@@ -270,8 +271,7 @@ def impr_oar_ops(self, **args):
     except:
         UTMESS("F", "OAR0_1")
 
-    name = "fort." + str(unite)
-    resultat.ficsortie = name
+    resultat.ficsortie = LogicalUnitFile.filename_from_unit(unite)
     open(resultat.ficsortie, "w").close()  # on vide le fichier
 
     if (TABL_MECA is not None) and (TABL_THER is not None):
