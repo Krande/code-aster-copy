@@ -24,7 +24,7 @@ import sys
 
 from waflib import Configure, Errors, Logs, Utils
 
-from waftools.wafutils import exec_pyaster, pyenv_abspath
+from waftools.wafutils import compare_versions, exec_pyaster, pyenv_abspath
 
 """
 Build code_aster documentation using Sphinx.
@@ -80,13 +80,20 @@ def check_sphinx(self):
     self.start_msg("Checking for sphinx version")
     python = self.env["CONFIG_PARAMETERS"]["python"] or "python3"
     cmd = [python] + self.env.SPHINX_BUILD + ["--version"]
+    vers = "not found"
     try:
         res = self.cmd_and_log(cmd)
+        vers = res.strip().split()[-1]
     except Errors.WafError as exc:
         del self.env["SPHINX_BUILD"]
-        self.end_msg("no, 'sphinx-build' disabled", "YELLOW")
+        self.end_msg(f"{vers}, 'sphinx-build' disabled", "YELLOW")
         raise Errors.ConfigurationError from exc
-    self.end_msg(res.strip())
+    if compare_versions(vers, "7.0") >= 0:
+        # sphinx_rtd_theme should be consistent
+        # TODO: prefer move this doc into docaster
+        self.end_msg(f"{vers}, 'sphinx < 7' is required", "YELLOW")
+        raise Errors.ConfigurationError
+    self.end_msg(vers)
 
 
 def _setup_doc(self):
