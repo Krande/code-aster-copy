@@ -22,32 +22,14 @@ from pathlib import Path
 
 import numpy as np
 
-from code_aster.Commands import CALC_CHAM_ELEM
 from code_aster import CA
 from code_aster.CA import MPI
 from code_aster.Helpers.debugging import DebugChrono
 from code_aster.Utilities import useHPCMode
-from code_aster.Utilities.mpi_utils import mpi_sum
-
-
-@mpi_sum(hpc=True)
-def do_sum_in_hpc(value):
-    return value
-
-
-@mpi_sum(hpc=False)
-def do_sum_in_legacy(value):
-    return value
-
 
 CA.init("--test")
 comm = MPI.ASTER_COMM_WORLD
 test = CA.TestCase()
-
-# Unittests for mpi decorators:
-# 1. here we are in legacy parallelism mode:
-test.assertEqual(do_sum_in_hpc(1), 1)
-test.assertEqual(do_sum_in_legacy(1), comm.size)
 
 refinement = int(os.environ.get("ZZZZ505_REFINEMENT", 1))
 create_mesh = False
@@ -81,27 +63,22 @@ model = CA.Model(mesh)
 model.addModelingOnMesh(CA.Physics.Mechanics, CA.Modelings.Tridimensional)
 model.build()
 
-# 2. here we are in HPC parallelism mode:
-test.assertEqual(do_sum_in_hpc(1), comm.size)
-test.assertEqual(do_sum_in_legacy(1), 1)
+# extract coordinates as a SimpleFieldOnNodes
+with DebugChrono.measure("getCoordinates"):
+    chs = mesh.getCoordinatesAsSimpleFieldOnNodes()
 
-
-ch0 = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
-names = ch0.getComponents()
+names = chs.getComponents()
 print("components:", names)
 
 with DebugChrono.measure("global"):
-    with DebugChrono.measure("toSimpleFieldOnCells"):
-        chs = ch0.toSimpleFieldOnCells()
-
     cumsize = 0
 
-    # use False to force 'getComponentOnCells' to reset the cache
+    # use False to force 'getComponentOnNodes' to reset the cache
     before = chs.getValues(copy=False)[0]
     copied = before.copy()
 
     with DebugChrono.measure("chs.X"):
-        valx = chs.getComponentOnCells("X")
+        valx = chs.getComponentOnNodes("X")
     print(repr(valx))
 
     with DebugChrono.measure("chs.Y"):
@@ -188,7 +165,7 @@ with DebugChrono.measure("global"):
 
     after = chs.getValues()[0]
 
-    added = len(x0.values)  # 'getValues()' returns all values (inner and outer cells)
+    added = len(x0.values)  # 'getValues()' returns all values (inner and outer nodes)
     test.assertAlmostEqual(
         np.sum(after), np.sum(copied) + added, 8, msg="setComponentValues values"
     )
@@ -197,27 +174,28 @@ with DebugChrono.measure("global"):
         np.sum(after), np.sum(before), 8, msg="setComponentValues: unchanged origin"
     )
     cumsize += x0.sizeof() + x2.sizeof() + xp1.sizeof()
-    del x0, x2, xp1
+    del x2, xp1
     del after, before, copied
 
-    test.assertIsNone(valx.restr, msg="on all cells")
-    faces = mesh.getCells(["TOP", "FRONT", "RIGHT", "S68", "S26"])
+    # restore initial values
+    chs.setComponentValues("X", x0)
+
+    test.assertIsNone(valx.restr, msg="on all nodes")
+    facez0 = mesh.getNodes(["N1", "N2", "N3", "N4"])
     if useHPCMode():
-        faces = list(set(faces).intersection(mesh.getInnerCells()))
-        nbfaces = comm.allreduce(len(faces), op=MPI.SUM)
+        facez0 = list(set(facez0).intersection(mesh.getInnerNodes()))
+        nbnodes = comm.allreduce(len(facez0), op=MPI.SUM)
     else:
-        nbfaces = len(faces)
-    test.assertEqual(nbfaces, 3 * 2 ** (refinement * 2) + 2 * 2**refinement, msg="getCells")
+        nbnodes = len(facez0)
+    test.assertEqual(nbnodes, 4, msg="getNodes")
 
     with DebugChrono.measure("restrict"):
-        valx.restrict(faces)
+        valx.restrict(facez0)
 
-    test.assertTrue(np.all(faces == valx.restr), msg="restrict: cells")
-    test.assertEqual(
-        len(valx.values), valx._descr._discr.prod(axis=1).sum(), msg="restrict: values"
-    )
+    test.assertTrue(np.all(facez0 == valx.restr), msg="restrict: nodes")
+    test.assertEqual(len(valx.values), len(facez0), msg="restrict: values")
     test.assertEqual(valx._descr._nbval, len(valy.values), msg="restrict: nbval")
-    test.assertEqual(valx._descr._nbcells, valy._descr._nbcells, msg="restrict: nbcells")
+    test.assertEqual(valx._descr._nbnodes, valy._descr._nbnodes, msg="restrict: nbnodes")
 
     with DebugChrono.measure("expand"):
         xe = valx.expand()
@@ -228,83 +206,46 @@ with DebugChrono.measure("global"):
     with DebugChrono.measure("setComponentValues"):
         chs.setComponentValues("X", valx)
     cumsize += valx.sizeof() + valy.sizeof()
-    del valx, valy
+    del valx
 
-    one_f = CA.FieldOnCellsReal(model, "ELGA", "SIEF_R")
+    # create a field with 1.0 on corners, 0.0 elsewhere
+    one_f = CA.FieldOnNodesReal(mesh, "GEOM_R", ("X", "Y", "Z"))
     one_f.setValues(1.0)
-    one_s = one_f.toSimpleFieldOnCells()
-    one = one_s.SIXX  # only assigned on VOLUME
-    weight = chs.W
-    zone = mesh.getCells(["VOLUME", "FRONT"])
-    vol = np.array(mesh.getCells(["VOLUME"]))
+    one_s = one_f.toSimpleFieldOnNodes()
+    one = one_s.X
+    # change mask to test different supports
+    mask = np.ones(one.size, dtype=bool)
+    mask[facez0] = False
+    one.values.mask = mask
+    test.assertAlmostEqual(one.sum(), 4.0, 6, msg="sum of non-masked values")
 
     with test.assertRaises(IndexError):
-        one.onSupportOf(weight, strict=True)
+        one.onSupportOf(valy, strict=True)
 
     with DebugChrono.measure("onSupportOf, prol needed"):
-        zerone = one.onSupportOf(weight, strict=False)  # 1.0 on VOLUME, 0.0 elsewhere
-    test.assertEqual(zerone.size, weight.size, msg="onSupportOf: extended by zero")
-    test.assertAlmostEqual(sum(zerone.values), sum(one.values), 8, msg="onSupportOf: values")
-    cumsize += zerone.sizeof()
-    del zerone
+        vy = valy.onSupportOf(one, strict=False)
 
-    with DebugChrono.measure("onSupportOf"):
-        hexa_weight = weight.onSupportOf(one)
-    test.assertEqual(hexa_weight.size, one.size, msg="onSupportOf")
-    test.assertAlmostEqual(hexa_weight.sum(), 1.0, 8, msg="onSupportOf: values")
-    cumsize += one.sizeof()
-    del one_s, one
-
-    with DebugChrono.measure("getValuesByCells"):
-        cells_sizes = weight.getValuesByCells().sum(axis=1)
-
-    quad_size = 1.0 / 2 ** (refinement * 2)
-    cells_front = mesh.getCells("FRONT")
-    if cells_front:
-        test.assertAlmostEqual(cells_sizes[cells_front].mean(), quad_size, 8, msg="size of quad")
-    hexa_size = 1.0 / 2 ** (refinement * 3)
-    cells_vol = mesh.getCells("VOLUME")
-    if cells_vol:
-        test.assertAlmostEqual(cells_sizes[vol].mean(), hexa_size, 8, msg="size of hexa")
-
-    with DebugChrono.measure("integral"):
-        # \int_{0}^{1} y.dy = 0.5
-        vy = chs.Y
-        vy.restrict(vol)
-        wvol = weight.onSupportOf(vy)
-        integr = (vy * wvol).sum()
-        test.assertAlmostEqual(integr, 0.5, msg="integr")
-
-    with DebugChrono.measure("by cells"):
-        # check for getValuesByCells on a restricted component
-        restr = wvol.getValuesByCells()
-        v_all = hexa_weight.getValuesByCells()
-        test.assertAlmostEqual(restr.sum(), v_all.sum(), 8, msg="getValuesByCells/restrict")
-        test.assertEqual(
-            wvol.getNumberOfCells(), hexa_weight.getNumberOfCells(), msg="getNumberOfCells"
-        )
-        del hexa_weight, restr, v_all
+    test.assertEqual(vy.sum(), 2.0, msg="onSupportOf: only 4 non-masked values")
+    cumsize += vy.sizeof()
+    del valy, vy
 
     with DebugChrono.measure("filtering"):
-        # only relevant with refinement > 0
         vz = chs.Z
-        vz.restrict(vol)
-        vz.maximum(vy)
         maxi = vz.max() * 0.99999
-        cells = vz.filterByValues(maxi, 1.0, strict_mini=False)
-        expect = (2**refinement + (2**refinement - 1)) * 2**refinement
-        filtered = comm.allreduce(len(cells), op=MPI.SUM)
-        test.assertEqual(filtered, expect, msg="number filtered cells")
+        nodes = vz.filterByValues(maxi, 1.0, strict_maxi=False)
+        expect = (2**refinement + 1) ** 2
+        filtered = comm.allreduce(len(nodes), op=MPI.SUM)
+        test.assertEqual(filtered, expect, msg="number filtered nodes")
         cumsize += vz.sizeof()
         del vz
 
 # check for description plot
-dest = Path("weight_descr.png")
-ret = weight.plot_descr(filename=dest)
+dest = Path("one_descr.png")
+ret = one.plot_descr(filename=dest)
 test.assertTrue(not ret or dest.exists(), msg="figure png")
 
 test.printSummary()
-print(f"cumulative size of created ComponentOnCells objects: {cumsize:,.0f} bytes")
+print(f"cumulative size of created ComponentOnNodes objects: {cumsize:,.0f} bytes")
 
 # for perf statistics
 fpick = os.environ.get("ZZZZ505_PICKLE")

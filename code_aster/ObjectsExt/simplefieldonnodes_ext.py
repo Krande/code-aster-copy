@@ -25,6 +25,7 @@ Simple Fields defined on nodes of elements
 """
 
 import numpy as np
+import numpy.ma as ma
 from libaster import SimpleFieldOnNodesComplex, SimpleFieldOnNodesReal
 
 from ..Objects import PythonBool
@@ -32,6 +33,7 @@ from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import force_list, injector
 from ..Utilities import medcoupling as medc
+from .component import ComponentOnNodes
 
 
 class SFoNStateBuilder(InternalStateBuilder):
@@ -52,6 +54,74 @@ class SFoNStateBuilder(InternalStateBuilder):
 class ExtendedSimpleFieldOnNodesReal:
     internalStateBuilder = SFoNStateBuilder
 
+    @property
+    def _cache(self):
+        if self._ptr_cache is None:
+            self._ptr_cache = dict.fromkeys(["readonly", "val", "msk"])
+            self._ptr_cache["readonly"] = None
+        if self._ptr_cache["val"] is None:
+            self._ptr_cache["val"], self._ptr_cache["msk"] = self.toNumpy()
+        return self._ptr_cache
+
+    def __getattr__(self, component):
+        """Convenient shortcut to `getComponentOnNodes()`."""
+        if component not in self.getComponents():
+            raise AttributeError(f"'SimpleFieldOnNodes' object has no attribute {component!r}")
+        return self.getComponentOnNodes(component)
+
+    def getComponentOnNodes(self, component):
+        """Extract the values of a component.
+
+        Args:
+            component (str): Component name. Raises ValueError if the component
+                does not exist in the field.
+        """
+        if self._cache["readonly"]:
+            self._ptr_cache = None
+        icmp = self.getComponents().index(component)
+        self._cache["readonly"] = False
+        mvalues = ma.array(
+            self._cache["val"][:, icmp].copy(), mask=np.logical_not(self._cache["msk"][:, icmp])
+        )
+        return ComponentOnNodes(mvalues, ComponentOnNodes.Description(self))
+
+    def setComponentValues(self, component, cfvalue):
+        """Assign the values of a component.
+
+        Args:
+            component (str): Component name. Raises ValueError if the component
+                does not exist in the field.
+            cfvalue (ComponentOnNodes): Previously extracted component.
+        """
+        icmp = self.getComponents().index(component)
+        # it directly overwrites '.CNSV' vector in place
+        expanded = cfvalue.expand().values
+        self._cache["val"][:, icmp] = expanded.data
+        self._cache["msk"][:, icmp] = np.logical_not(expanded.mask)
+
+    def getValues(self, copy=True):
+        """
+        Returns two numpy arrays containing the field values on specific nodes.
+        The first array contains the field values while the second one is a mask
+        which is `True` if the corresponding value exists, `False` otherwise.
+        Array shape is ( number_of_nodes, number_of_components ).
+
+        Args:
+            copy (bool): If *True* copy the data, this is the default.
+
+        Returns:
+            ndarray (float): Field values.
+            ndarray (bool): Mask for the field values.
+        """
+        values, mask = self._cache["val"], self._cache["msk"]
+        if copy or self._cache["readonly"] is False:
+            return values.copy(), mask.copy()
+
+        self._cache["readonly"] = True
+        values.setflags(write=False)
+        mask.setflags(write=False)
+        return values, mask
+
     def restrict(self, cmps=[], groupsOfNodes=[], same_rank=None):
         """Return a new field restricted to the list of components and groups of nodes given
 
@@ -71,29 +141,6 @@ class ExtendedSimpleFieldOnNodesReal:
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
         return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
-
-    def getValues(self, copy=False):
-        """
-        Returns two numpy arrays containing the field values on specific nodes.
-        The first array contains the field values while the second one is a mask
-        which is `True` if the corresponding value exists, `False` otherwise.
-        Array shape is ( number_of_nodes, number_of_components ).
-
-        Args:
-            copy (bool): If True copy the data, default: *False*
-
-        Returns:
-            ndarray (float): Field values.
-            ndarray (bool): Mask for the field values.
-        """
-        values, mask = self.toNumpy()
-        if copy:
-            return values.copy(), mask.copy()
-
-        values.setflags(write=False)
-        mask.setflags(write=False)
-
-        return values, mask
 
     def fromMEDCouplingField(self, mc_field):
         """Import the field to a new MEDCoupling field. Set values in place.
@@ -241,7 +288,7 @@ class ExtendedSimpleFieldOnNodesReal:
             cmps_red = []
             all_cmps = self.getComponents()
             for cmp in cmps:
-                if cmp in self.getComponents():
+                if cmp in all_cmps:
                     cmps_red.append(cmp)
             cmps = cmps_red
 

@@ -76,6 +76,14 @@ class ExtendedParallelMesh:
             UTMESS("I", "SUPERVIS_1")
             ExecutionParameter().enable(Options.HPCMode)
 
+    def getCoordinatesAsSimpleFieldOnNodes(self):
+        """Same as :py:meth:`getCoordinates` with a conversion into a *SimpleFieldOnNodes*.
+
+        Returns:
+            *SimpleFieldOnNodesReal*: Coordinates as a *SimpleFieldOnNodes*.
+        """
+        return self.getCoordinates().toFieldOnNodes(self).toSimpleFieldOnNodes()
+
     def plot(self, command="gmsh", local=False):
         """Plot the mesh.
 
@@ -84,6 +92,7 @@ class ExtendedParallelMesh:
             local (bool): Only the local mesh is plotted if *True*. Otherwise
                 all parts are plotted together.
         """
+        comm = MPI.ASTER_COMM_WORLD
         if local:
             # will be removed when 'tmpf' object will be deleted
             tmpf = tempfile.NamedTemporaryFile(suffix=".med")
@@ -94,16 +103,14 @@ class ExtendedParallelMesh:
             subprocess.run([ExecutionParameter().get_option(f"prog:{command}"), filename])
         else:
             with shared_tmpdir("meshplot") as tmpdir:
-                rank = MPI.ASTER_COMM_WORLD.Get_rank()
-                size = MPI.ASTER_COMM_WORLD.Get_size()
-                filename = osp.join(tmpdir, f"{rank}.med")
+                filename = osp.join(tmpdir, f"{comm.rank}.med")
                 self.printMedFile(filename, local=True)
-                MPI.ASTER_COMM_WORLD.Barrier()
-                if rank == 0:
-                    files = [osp.join(tmpdir, f"{i}.med") for i in range(size)]
+                comm.Barrier()
+                if comm.rank == 0:
+                    files = [osp.join(tmpdir, f"{i}.med") for i in range(comm.size)]
                     subprocess.run([ExecutionParameter().get_option(f"prog:{command}")] + files)
         print("waiting for all plotting processes...")
-        MPI.ASTER_COMM_WORLD.Barrier()
+        comm.Barrier()
 
     def readMedFile(
         self, filename, meshname=None, partitioned=False, deterministic=False, verbose=0
@@ -138,19 +145,16 @@ class ExtendedParallelMesh:
         Returns:
             bool: True if the partitioned mesh is consistent
         """
-
+        comm = MPI.ASTER_COMM_WORLD
         # read std mesh
-        rank = MPI.ASTER_COMM_WORLD.Get_rank()
-
         nb_nodes_lc = len(self.getInnerNodes())
-        nb_nodes_gl = MPI.ASTER_COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
+        nb_nodes_gl = comm.allreduce(nb_nodes_lc, MPI.SUM)
 
         nb_cells_lc = len(self.getInnerCells())
-        nb_cells_gl = MPI.ASTER_COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
+        nb_cells_gl = comm.allreduce(nb_cells_lc, MPI.SUM)
 
         test = True
-
-        if rank == 0:
+        if comm.rank == 0:
             mesh = Mesh()
             mesh.readMedFile(filename)
 
@@ -189,11 +193,10 @@ class ExtendedParallelMesh:
             if not test1:
                 print(f"FAILED {filename} Number of cells differs:", nb_cells_std, nb_cells_gl)
 
-        return MPI.ASTER_COMM_WORLD.bcast(test, root=0)
+        return comm.bcast(test, root=0)
 
     def checkJoints(self):
         comm = MPI.ASTER_COMM_WORLD
-        rank = MPI.ASTER_COMM_WORLD.Get_rank()
         l2G = self.getLocalToGlobalNodeIds()
         graph = CommGraph()
 
@@ -237,11 +240,13 @@ class ExtendedParallelMesh:
                 gSJ.append(l2G[nId - 1])
                 curCoordsSJ.append(coords[(nId - 1)])
 
-            if proc < rank:
+            if proc < comm.rank:
                 comm.send(gFJ, dest=proc, tag=tag)
                 data1 = comm.recv(source=proc, tag=tag)
                 if data1 != gFJ:
-                    print("Rank", rank, "Opposite domain", proc, "Joint number", numJoint, "NOOK")
+                    print(
+                        f"Rank {comm.rank}: Opposite domain {proc}, Joint number {numJoint}: NOOK"
+                    )
                     toReturn = False
                 comm.send(curCoordsFJ, dest=proc, tag=tag)
                 data2 = comm.recv(source=proc, tag=tag)
@@ -254,7 +259,9 @@ class ExtendedParallelMesh:
                 data1 = comm.recv(source=proc, tag=tag)
                 comm.send(gSJ, dest=proc, tag=tag)
                 if data1 != gSJ:
-                    print("Rank", rank, "Opposite domain", proc, "Joint number", numJoint, "NOOK")
+                    print(
+                        f"Rank {comm.rank}: Opposite domain {proc}, Joint number {numJoint}: NOOK"
+                    )
                     toReturn = False
                 comm.send(curCoordsSJ, dest=proc, tag=tag)
                 data2 = comm.recv(source=proc, tag=tag)
@@ -311,15 +318,14 @@ class ExtendedParallelMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (1 or 2). (default 1).
         """
-
-        ### Refine some levels on whole mesh, the remaining after partitioning
+        # Refine some levels on whole mesh, the remaining after partitioning
         min_level = 6
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
         with shared_tmpdir("buildSquare") as tmpdir:
             filename = osp.join(tmpdir, "buildSquare.med")
-            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+            if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildSquare(l=l, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
@@ -341,15 +347,14 @@ class ExtendedParallelMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (0|1|2). (default 1).
         """
-
-        ### Refine some levels on whole mesh, the remaining after partitioning
+        # Refine some levels on whole mesh, the remaining after partitioning
         min_level = 6
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
         with shared_tmpdir("buildRectangle") as tmpdir:
             filename = osp.join(tmpdir, "buildRectangle.med")
-            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+            if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildRectangle(lx=lx, ly=ly, nx=nx, ny=ny, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
@@ -368,15 +373,14 @@ class ExtendedParallelMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (1 or 2). (default 1).
         """
-
-        ### Refine some levels on whole mesh, the remaining after partitioning
-        min_level = 7 if MPI.ASTER_COMM_WORLD.Get_size() > 512 else 6
+        # Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 7 if MPI.ASTER_COMM_WORLD.size > 512 else 6
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
         with shared_tmpdir("buildCube") as tmpdir:
             filename = osp.join(tmpdir, "buildCube.med")
-            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+            if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildCube(l=l, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
@@ -395,15 +399,14 @@ class ExtendedParallelMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (1 or 2). (default 1).
         """
-
-        ### Refine some levels on whole mesh, the remaining after partitioning
+        # Refine some levels on whole mesh, the remaining after partitioning
         min_level = 6
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
         with shared_tmpdir("buildDisk") as tmpdir:
             filename = osp.join(tmpdir, "buildDisk.med")
-            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+            if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildDisk(radius=radius, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
@@ -423,15 +426,14 @@ class ExtendedParallelMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (1 or 2). (default 1).
         """
-
-        ### Refine some levels on whole mesh, the remaining after partitioning
+        # Refine some levels on whole mesh, the remaining after partitioning
         min_level = 6
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
         with shared_tmpdir("buildCylinder") as tmpdir:
             filename = osp.join(tmpdir, "buildCylinder.med")
-            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+            if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildCylinder(height=height, radius=radius, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()

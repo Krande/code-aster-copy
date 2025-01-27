@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ CHXN = CREA_CHAMP(
 # CHXG = CHAMP DE GEOMETRIE AUX POINTS DE GAUSS :
 CHXG = CREA_CHAMP(OPERATION="DISC", TYPE_CHAM="ELGA_GEOM_R", MODELE=MO, CHAM_GD=CHXN, INFO=1)
 
-# ============================
-# 1) FABRICATION DE  SIGINI :
-# ============================
+# ==============================================================
+# 1) Fabrication de SIGINI en utilisation CREA_CHAMP et FORMULE
+# ==============================================================
 # SIG1 = CHAMP DE FONCTIONS AUX POINTS DE GAUSS (SIXX,SIYY,SIZZ) :
 
 # ----------------------------------------------------------------

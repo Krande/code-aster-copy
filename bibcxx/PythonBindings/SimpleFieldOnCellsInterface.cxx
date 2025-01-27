@@ -3,7 +3,7 @@
  * @brief Interface python de SimpleFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,35 +35,47 @@ void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
         mod, "SimpleFieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )
-        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr > ),
+              py::arg( "mesh" ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string,
-                                         std::string, VectorString > ) )
+                                         std::string, VectorString > ),
+              py::arg( "mesh" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string,
-                                         std::string, VectorString, bool > ) )
+                                         std::string, VectorString, bool > ),
+              py::arg( "mesh" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ),
+              py::arg( "prol_zero" ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string,
-                                         std::string, VectorString, ASTERINTEGER, ASTERINTEGER > ) )
+                                         std::string, VectorString, ASTERINTEGER, ASTERINTEGER > ),
+              py::arg( "mesh" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ),
+              py::arg( "nbPoints" ), py::arg( "nbSubPoints" ) )
         .def( py::init(
-            &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string, std::string,
-                             VectorString, ASTERINTEGER, ASTERINTEGER, bool > ) )
+                  &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string, std::string,
+                                   VectorString, ASTERINTEGER, ASTERINTEGER, bool > ),
+              py::arg( "mesh" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ),
+              py::arg( "nbPoints" ), py::arg( "nbSubPoints" ), py::arg( "prol_zero" ) )
         .def( py::init(
-            &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string, std::string,
-                             VectorString, const VectorInt &, ASTERINTEGER, bool > ) )
-        .def( "__getitem__",
-              +[]( const SimpleFieldOnCellsReal &v, const VectorLong &i ) {
-                  if ( i.size() == 3 ) {
-                      return v( i[0], i[1], i[2] );
-                  }
+                  &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string, std::string,
+                                   VectorString, const VectorInt &, ASTERINTEGER, bool > ),
+              py::arg( "mesh" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "cmps" ),
+              py::arg( "nbPoints" ), py::arg( "nbSubPoints" ), py::arg( "prol_zero" ) )
+        .def(
+            "__getitem__",
+            +[]( const SimpleFieldOnCellsReal &v, const VectorLong &i ) {
+                if ( i.size() == 3 ) {
+                    return v( i[0], i[1], i[2] );
+                }
 
-                  return v( i[0], i[1], i[2], i[3] );
-              } )
-        .def( "__setitem__",
-              +[]( SimpleFieldOnCellsReal &v, const VectorLong &i, ASTERDOUBLE f ) {
-                  if ( i.size() == 3 ) {
-                      return v( i[0], i[1], i[2] ) = f;
-                  }
+                return v( i[0], i[1], i[2], i[3] );
+            } )
+        .def(
+            "__setitem__",
+            +[]( SimpleFieldOnCellsReal &v, const VectorLong &i, ASTERDOUBLE f ) {
+                if ( i.size() == 3 ) {
+                    return v( i[0], i[1], i[2] ) = f;
+                }
 
-                  return v( i[0], i[1], i[2], i[3] ) = f;
-              } )
+                return v( i[0], i[1], i[2], i[3] ) = f;
+            } )
         .def( "getValue", &SimpleFieldOnCellsReal::getValue, py::return_value_policy::copy, R"(
 Returns the value of the `icmp` component of the field on the `ima` cell,
 at the `ipt` point, at the `ispt` sub-point.
@@ -250,11 +262,12 @@ Returns:
         .def( "getComponentsName2Index", &SimpleFieldOnCellsReal::getComponentsName2Index )
         .def( "getLocalization", &SimpleFieldOnCellsReal::getLocalization )
         .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers )
-        .def( "toFieldOnCells",
-              []( const SimpleFieldOnCellsReal &f, const FiniteElementDescriptorPtr fed,
-                  const std::string option,
-                  const std::string nompar ) { return toFieldOnCells( f, fed, option, nompar ); },
-              R"(
+        .def(
+            "toFieldOnCells",
+            []( const SimpleFieldOnCellsReal &f, const FiniteElementDescriptorPtr fed,
+                const std::string option,
+                const std::string nompar ) { return toFieldOnCells( f, fed, option, nompar ); },
+            R"(
             Converts to FieldOnCells
 
             Arguments:
@@ -265,19 +278,20 @@ Returns:
             Returns:
                 FieldOnCellsReal: field converted.
             )",
-              py::arg( "fed" ), py::arg( "option" ) = std::string(),
-              py::arg( "nompar" ) = std::string() )
-        .def( "toFieldOnNodes",
-              []( const SimpleFieldOnCellsReal &f ) { return toFieldOnNodes( f ); },
-              R"(
+            py::arg( "fed" ), py::arg( "option" ) = std::string(),
+            py::arg( "nompar" ) = std::string() )
+        .def(
+            "toFieldOnNodes", []( const SimpleFieldOnCellsReal &f ) { return toFieldOnNodes( f ); },
+            R"(
 Convert to FieldOnNodes
 
 Returns:
     FieldOnNodesReal: field converted
         )" )
-        .def( "toSimpleFieldOnNodes",
-              []( const SimpleFieldOnCellsReal &f ) { return toSimpleFieldOnNodes( f ); },
-              R"(
+        .def(
+            "toSimpleFieldOnNodes",
+            []( const SimpleFieldOnCellsReal &f ) { return toSimpleFieldOnNodes( f ); },
+            R"(
 Convert to SimpleFieldOnNodes
 
 Returns:
