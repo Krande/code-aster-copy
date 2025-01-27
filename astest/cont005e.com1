@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ TEST_RESU(
             LEGENDE="DZ_MIN",
             NOM_CMP="DZ",
             REFERENCE="AUTRE_ASTER",
-            VALE_CALC=-0.7715350949447439,
+            VALE_CALC=-0.7715196205919419,
             VALE_REFE=-0.77059296485,
             PRECISION=0.02,
         ),
@@ -43,7 +43,7 @@ TEST_RESU(
             LEGENDE="DZ_MAX",
             NOM_CMP="DZ",
             REFERENCE="AUTRE_ASTER",
-            VALE_CALC=2.4588405948627208,
+            VALE_CALC=2.4584736872960136,
             VALE_REFE=2.59493897883,
             PRECISION=0.06,
         ),
@@ -55,7 +55,7 @@ TEST_RESU(
             LEGENDE="MIN LAGS_C",
             NOM_CMP="LAGS_C",
             REFERENCE="AUTRE_ASTER",
-            VALE_CALC=-31.271942675682233,
+            VALE_CALC=-31.263455966361875,
             VALE_REFE=-31.227105691463898,
             PRECISION=0.02,
         ),

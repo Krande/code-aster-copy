@@ -23,6 +23,7 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -45,10 +46,9 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
 
     aster_logical :: l_parallel_matrix, lmd, lsym
     character(len=1) :: ktyp
-    character(len=3) :: mathpc
     character(len=14) :: nonu
     character(len=19) :: matass, kstoc
-    integer :: n, n1, nz, kterm, jnlogl, neq, nterms, ierr, nsmdi, jsmhc, nsmhc, jcolg
+    integer :: n, n1, nz, kterm, jnlogl, nsmdi, jsmhc, nsmhc, jcolg
     integer :: jprddl, nvale, jvale, nlong, coltmp, ier, iligg, jcoll, iligl, jval2
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: smdi(:) => null()
@@ -57,8 +57,16 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
 !
     matass = matasz
 !
-    call jeveuo(matass//'.REFA', 'L', vk24=refa)
+    call jeveuo(matass//'.REFA', 'E', vk24=refa)
     nonu = refa(2) (1:14)
+!
+    ! force to recompute the blocks to account for BCs
+    if (refa(3) .eq. 'ELIMF') then
+        refa(3) = 'ELIML'
+        call jedetr(matass//'.CCLL')
+        call jedetr(matass//'.CCVA')
+        call jedetr(matass//'.CCII')
+    end if
 !
     ! storage of the matrix
     kstoc = nonu//'.SMOS'

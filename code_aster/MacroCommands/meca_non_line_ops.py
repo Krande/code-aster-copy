@@ -50,9 +50,6 @@ def _contact_check(CONTACT):
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
 
-            if zone.hasFriction:
-                assert zone.getFrictionParameter().getType() == FrictionType.Without
-
         if defi.hasFriction:
             assert CONTACT[0]["ALGO_RESO_FROT"] == "NEWTON"
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "blas/dcopy.h"
+#include "blas/daxpy.h"
 #include "jeveux.h"
 !
 !
@@ -47,28 +48,25 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jv_matr_out, j, ij, i
-    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_1, b_j
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    b_1 = 1
     call jevech(name, 'E', jv_matr_out)
 !
     if (l_sym) then
         ASSERT(ncols == nrows)
         do j = 1, ncols
             ij = (j-1)*j/2
-            b_n = to_blas_int(j)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, mat(:, j), b_incx, zr(jv_matr_out+ij), b_incy)
+            b_j = to_blas_int(j)
+            call daxpy(b_j, 1.d0, mat(:, j), b_1, zr(jv_matr_out+ij), b_1)
         end do
     else
         do i = 1, nrows
             ij = (i-1)*ncols
-            b_n = to_blas_int(ncols)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, mat(i, :), b_incx, zr(jv_matr_out+ij), b_incy)
+            b_j = to_blas_int(ncols)
+            call daxpy(b_j, 1.d0, mat(i, :), b_1, zr(jv_matr_out+ij), b_1)
         end do
     end if
 !

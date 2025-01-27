@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@
 import copy
 import re
 from math import sqrt
+
+import numpy as np
 
 from ...Objects import DiscreteComputation
 from ...Utilities import MPI, logger, no_new_attributes, profile
@@ -410,6 +412,10 @@ class ConvergenceManager(SolverFeature):
         resi_rela = self.setdefault("RESI_GLOB_RELA")
 
         resi_maxi.value = residual.norm("NORM_INFINITY")
+
+        # idx = np.abs(np.asarray(residual.getValues())).argmax()
+        # info = residual.getValuesWithDescription()[1]
+        # print(f"MaxAbs for node {info[0][idx]+1} dof {info[1][idx]}")
         scaling = self.getRelativeScaling(residuals)
         residual_rela = residual.copy()
         if scaling == 0.0:

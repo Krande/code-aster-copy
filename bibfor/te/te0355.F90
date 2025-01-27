@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine te0355(nomopt, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/laelem.h"
 #include "asterfort/laMatr.h"
+#include "asterfort/laMatr_diff.h"
 #include "asterfort/laParam.h"
 #include "asterfort/laVect.h"
 #include "asterfort/utmess.h"
@@ -48,6 +49,7 @@ subroutine te0355(nomopt, nomte)
     real(kind=8) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
     real(kind=8) :: matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     real(kind=8) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    aster_logical :: diff_num, l_vari
 !
 ! - Informations about finite element
 !
@@ -56,12 +58,23 @@ subroutine te0355(nomopt, nomte)
 ! - Get Parameters
 !
     call laParam(parameters)
+
+! - Hack to treat unpaired elements in case of friction
+    if (nomte(1:1) == 'F') then
+        parameters%l_fric = ASTER_TRUE
+    end if
+!
+! - Use finite difference Jacobian
+!
+    diff_num = (parameters%jac_type .gt. 0)
 !
 ! - Verif
 !
     ASSERT(parameters%algo_cont == CONT_ALGO_LAGR)
-    ASSERT(parameters%vari_cont == CONT_VARI_NONE)
-    ASSERT(parameters%type_fric == FRIC_TYPE_NONE)
+    l_vari = ((parameters%vari_cont == CONT_VARI_ROBU) .or. &
+              (parameters%vari_cont == CONT_VARI_CLAS) .or. &
+              (parameters%vari_cont == CONT_VARI_NONE))
+    ASSERT(l_vari)
 !
 ! - Computation
 !
@@ -83,13 +96,21 @@ subroutine te0355(nomopt, nomte)
 !
 ! --- Compute contact matrix
 !
-        call laMatr(parameters, geom, matr_cont, matr_fric)
+        if (diff_num) then
+            call laMatr_diff(parameters, geom, matr_cont, matr_fric)
+        else
+            call laMatr(parameters, geom, matr_cont, matr_fric)
+        end if
 !
-! - Write matrix
+! --- Write matrix
 !
-        call writeMatrix('PMATUUR', geom%nb_dofs, geom%nb_dofs, ASTER_TRUE, matr_cont)
+        if (.not. parameters%l_fric) then
+            ! Contact only
+            call writeMatrix('PMATUNS', geom%nb_dofs, geom%nb_dofs, ASTER_FALSE, matr_cont)
+        else
+            ! Contact with friction
+            call writeMatrix('PMATUNS', geom%nb_dofs, geom%nb_dofs, ASTER_FALSE, matr_cont)
 !
-        if (parameters%l_fric) then
             call writeMatrix('PMATUNS', geom%nb_dofs, geom%nb_dofs, ASTER_FALSE, matr_fric)
         end if
 !

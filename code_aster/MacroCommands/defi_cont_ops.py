@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -29,6 +29,7 @@ from ..Objects import (
     FrictionParameter,
     FrictionType,
     InitialState,
+    JacobianType,
     PairingAlgo,
     PairingParameter,
 )
@@ -68,6 +69,7 @@ def defi_cont_ops(self, **keywords):
         "RAPIDE": ContactVariant.Fast,
         "ROBUSTE": ContactVariant.Robust,
         "SYMETRIC": ContactVariant.Symetric,
+        "CLASSIQUE": ContactVariant.Classic,
     }
     _algo_frot = {
         "LAGRANGIEN": FrictionAlgo.Lagrangian,
@@ -86,6 +88,7 @@ def defi_cont_ops(self, **keywords):
         "NON": InitialState.No,
         "OUI": InitialState.Yes,
     }
+    _jac_type = {"ANALYTIQUE": JacobianType.Analytical, "PERTURBATION": JacobianType.Perturbation}
 
     # add global informations
     result.setVerbosity(verbosity)
@@ -112,13 +115,17 @@ def defi_cont_ops(self, **keywords):
         contParam = ContactParameter()
         contParam.setAlgorithm(_algo_cont[zone["ALGO_CONT"]])
 
+        contParam.setVariant(ContactVariant.Empty)
+        if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Lagrangian:
+            contParam.setJacobianType(_jac_type[zone["TYPE_MATR_TANG"]])
+            variante = zone["VARIANTE"]
+            contParam.setVariant(_vari_cont[variante])
+
         if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Nitsche:
             if zone["SYME"] == "OUI":
                 contParam.setVariant(_vari_cont["SYMETRIC"])
             else:
                 contParam.setVariant(_vari_cont[zone["VARIANTE"]])
-        else:
-            contParam.setVariant(ContactVariant.Empty)
 
         contParam.setType(_type_cont[zone["TYPE_CONT"]])
         contParam.setCoefficient(zone["COEF_CONT"])
@@ -136,7 +143,8 @@ def defi_cont_ops(self, **keywords):
             elif fricParam.getType() == FrictionType.Coulomb:
                 fricParam.setCoulomb(zone["COULOMB"])
 
-            fricParam.setCoefficient(zone["COEF_FROT"])
+            # in the case of undefined COEF_FROT, set it to the default value (100.)
+            fricParam.setCoefficient(zone["COEF_FROT"] or 100.0)
             contZone.setFrictionParameter(fricParam)
 
         # pairing parameters

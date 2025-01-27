@@ -2,7 +2,7 @@
  * @file ContactEnumInterface.cxx
  * @brief Interface python de ContactEnum
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,6 +37,7 @@ void exportContactEnumToPython( py::module_ &mod ) {
         .value( "Fast", ContactVariant::Fast )
         .value( "Robust", ContactVariant::Robust )
         .value( "Symetric", ContactVariant::Symetric )
+        .value( "Classic", ContactVariant::Classic )
         .export_values();
 
     py::enum_< ContactType >( mod, "ContactType" )
@@ -65,5 +66,10 @@ void exportContactEnumToPython( py::module_ &mod ) {
         .value( "Interpenetrated", InitialState::Interpenetrated )
         .value( "Yes", InitialState::Yes )
         .value( "No", InitialState::No )
+        .export_values();
+
+    py::enum_< JacobianType >( mod, "JacobianType" )
+        .value( "Analytical", JacobianType::Analytical )
+        .value( "Perturbation", JacobianType::Perturbation )
         .export_values();
 };

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine apnorm(elem_nbnode, elem_code, elem_dime, elem_coor, &
 !
 ! Contact - Pairing segment to segment
 !
-! Compute _exterior_ normal at fiven parametric cooordinates
+! Compute _exterior_ normal at given parametric cooordinates
 !
 ! --------------------------------------------------------------------------------------------------
 !

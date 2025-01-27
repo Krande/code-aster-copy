@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -165,6 +165,9 @@ subroutine laelem(nomte, geom, param)
         mult = 1
     end if
 !
+! - indi_lagc indicates how many Lagrange multipliers are held by the current node
+! - Since we use P1 interpolation for these dof *and* we number cell vertices first,
+! - they are only held by the first nb_lagr_c dof
     geom%indi_lagc(1:geom%nb_lagr_c) = mult
     geom%nb_dofs = geom%nb_node_mast*geom%elem_dime+geom%nb_node_slav*geom%elem_dime &
                    +geom%nb_lagr_c*mult

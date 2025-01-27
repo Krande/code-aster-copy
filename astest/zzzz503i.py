@@ -94,15 +94,28 @@ test.assertEqual(numeDDL.getPhysicalQuantity(), "DEPL_R")
 # test.assertListEqual(physicalRows,  [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15],
 #                                      [8, 9, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15]][rank])
 
+# -------------------------------------------
+# MatrixScaler verification section
 
 from code_aster.LinearAlgebra import MatrixScaler
 from code_aster.Utilities import logger
 import numpy as np
 from scipy.linalg import norm
 
+# Compute reference solution
+rhs = CA.FieldOnNodesReal(numeDDL)
+rhs.setValues(1)
+
+mySolver = CA.MumpsSolver()
+mySolver.factorize(matrAsse)
+
+sol_ref = mySolver.solve(rhs)
+
+# Compute scaled solution
 logger.setLevel(2)
 
 S = MatrixScaler.MatrixScaler()
+
 nt = PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(matrAsse.norm("NORM_INFINITY"), 1527.7777777794063)
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.toNumpy(), np.inf))
@@ -114,6 +127,16 @@ test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1.0977480819609067)
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.toNumpy(), np.inf))
 
 logger.setLevel(0)
+S.scaleRHS(rhs)
+
+mySolver.factorize(matrAsse)
+
+solution = mySolver.solve(rhs)
+
+S.unscaleSolution(solution)
+
+test.assertAlmostEqual(solution.toPetsc().norm(nt), sol_ref.toPetsc().norm(nt))
+
 
 test.printSummary()
 

@@ -5,7 +5,7 @@
  * @file ContactEnum.h
  * @brief Fichier entete de la class ContactEnum
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,7 +32,7 @@
 
 enum class ContactAlgo { Lagrangian, Nitsche, Penalization };
 
-enum class ContactVariant { Empty, Fast, Robust, Symetric };
+enum class ContactVariant { Empty, Fast, Robust, Symetric, Classic };
 
 enum class ContactType { Unilateral, Bilateral };
 
@@ -43,5 +43,7 @@ enum class FrictionType { Without, Tresca, Coulomb, Stick };
 enum class PairingAlgo { Mortar };
 
 enum class InitialState { Interpenetrated, No, Yes };
+
+enum class JacobianType { Analytical, Perturbation };
 
 #endif /* CONTACT_ENUM_H_ */

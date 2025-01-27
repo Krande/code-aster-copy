@@ -57,6 +57,19 @@ Arguments:
     ContactType: contact type.
         )",
               py::arg( "type" ) )
+        .def( "getJacobianType", &ContactParameter::getJacobianType, R"(
+Return how the Jacobian is computed. It is a value of an enum
+
+Returns:
+    JacobianType: Jacobian type.
+        )" )
+        .def( "setJacobianType", &ContactParameter::setJacobianType, R"(
+Set how the Jacobian is computed. It is a value of an enum
+
+Arguments:
+    JacobianType: Jacobian type.
+        )",
+              py::arg( "type" ) )
         .def( "getVariant", &ContactParameter::getVariant, R"(
 Return the contact variant used. It is a value of an enum
 

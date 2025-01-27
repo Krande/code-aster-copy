@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,22 @@
 ! aslint: disable=W1306
 !
 subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
-                  xg)
+                  xg, dxg)
 !
     implicit none
 !
 #include "asterfort/elrfvf.h"
+#include "asterfort/elrfdf.h"
 !
-    integer :: ndim, nnop
-    real(kind=8) :: xe(ndim), xg(ndim), tabar(*)
-    character(len=8) :: elrefp
+    integer, intent(in) :: ndim, nnop
+    real(kind=8), intent(in) :: xe(ndim), tabar(*)
+    character(len=8), intent(in) :: elrefp
+    real(kind=8), intent(out) :: xg(ndim)
+    real(kind=8), intent(out), optional :: dxg(ndim)
 !
 !
-!                      TROUVER LES COORDONNEES REELLES D'UN POINT
-!                      A PARTIR DE SES COORDONNEES DE REFERENCE
+!         TROUVER LES COORDONNEES REELLES D'UN POINT
+!         A PARTIR DE SES COORDONNEES DE REFERENCE
 !
 !     ENTREE
 !       NDIM    : DIMENSION TOPOLOGIQUE DU MAILLAGE
@@ -40,14 +43,18 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
 !
 !     SORTIE
 !       XG       : COORDONNES REELLES DU POINT
+!       DXG      : DERIVEES DES COORDONNES REELLES DU POINT
 !......................................................................
 !
-    real(kind=8) :: ff(nnop)
+    real(kind=8) :: ff(nnop), dff(nnop)
     integer :: i, j
 !
 !......................................................................
 !
     xg = 0.d0
+    if (present(dxg)) then
+        dxg = 0.d0
+    end if
 !
 ! --- VALEURS DES FONCTIONS DE FORME EN XE: FF
 !
@@ -55,6 +62,13 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
         call elrfvf(elrefp, xe(1), ff)
     else
         call elrfvf(elrefp, xe, ff)
+    end if
+    if (present(dxg)) then
+        if (elrefp(1:2) .eq. 'SE') then
+            call elrfdf(elrefp, xe(1), dff)
+        else
+            call elrfdf(elrefp, xe, dff)
+        end if
     end if
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
@@ -64,5 +78,13 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
             xg(j) = xg(j)+tabar(ndim*(i-1)+j)*ff(i)
         end do
     end do
+!
+    if (present(dxg)) then
+        do j = 1, ndim
+            do i = 1, nnop
+                dxg(j) = dxg(j)+tabar(ndim*(i-1)+j)*dff(i)
+            end do
+        end do
+    end if
 !
 end subroutine
