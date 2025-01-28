@@ -23,6 +23,7 @@ from ...Objects import DiscreteComputation
 from ...Utilities import no_new_attributes, profile
 from ..Basics import EventSource, SolverFeature
 from ..Basics import SolverOptions as SOP
+from ...LinearAlgebra import MatrixScaler
 
 USE_SCALING = False  # for testing only
 PERTURB_JAC = False  # for checking only (sloooow)
@@ -138,9 +139,6 @@ class IncrementalSolver(SolverFeature, EventSource):
             # Solve linear system
             linear_solver = self.get_feature(SOP.LinearSolver)
             if USE_SCALING:
-                # cannot import before due to PETSc dependency
-                from ...LinearAlgebra import MatrixScaler
-
                 S = MatrixScaler.MatrixScaler()
                 S.computeScaling(jacobian, merge_dof=[["DX", "DY"], ["LAGS_C", "LAGS_F1"]])
                 S.scaleMatrix(jacobian)

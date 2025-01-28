@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm cont013a.comm D 1
+F datg cont013a.datg D 16
 F mmed cont013a.mmed D 20

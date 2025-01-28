@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=C9992
 !
 subroutine laMatr_ct_pr(parameters, geom, matr_cont, matr_fric)
 !

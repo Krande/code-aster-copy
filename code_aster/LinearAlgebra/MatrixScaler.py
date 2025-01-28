@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ from ..Utilities import logger
 from ..Supervis import AsterError
 
 
-def _busymscalinf(A: PETSc.Mat, niter, atol):
+def _busymscalinf(A, niter, atol):
     """
     Compute the scaling of the matrix to have all rows and cols in
     the scaled matrix As to have inf-norm equal to 1
