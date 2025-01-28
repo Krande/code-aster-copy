@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
+! person_in_charge: mickael.abbas at edf.fr
+!
+subroutine nmctcf(mesh, sderro, hval_incr, ds_print, ds_contact)
 !
     use NonLin_Datastructure_type
 !
@@ -37,12 +38,8 @@ subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
-#include "asterfort/xreacl.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
     character(len=24), intent(in) :: sderro
     character(len=19), intent(in) :: hval_incr(*)
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -57,7 +54,6 @@ subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  model            : name of model
 ! In  sderro           : datastructure for errors during algorithm
 ! In  hval_incr        : hat-variable for incremental values fields
 ! IO  ds_print         : datastructure for printing parameters
@@ -66,7 +62,6 @@ subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: l_cont_cont, l_cont_xfem
     aster_logical :: loop_fric_error
     integer :: iter_fric_maxi
     integer :: loop_fric_count
@@ -92,26 +87,15 @@ subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 ! - Get fields
 !
     call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
-!
-! - Get contact parameters
-!
-    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
-!
+
 ! - Get friction loop parameters
-!
     loop_fric_disp = ds_contact%sdcont_solv(1:14)//'.DEPF'
     iter_fric_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_FROT_MAXI')
 !
 ! - Update triggers
 !
-    if (l_cont_xfem) then
-        call xreacl(mesh, model, hval_incr, ds_contact)
-    else if (l_cont_cont) then
-        call mmreas(mesh, ds_contact, hval_incr)
-    else
-        ASSERT(.false.)
-    end if
+    call mmreas(mesh, ds_contact, hval_incr)
+
 !
 ! - Compute friction criterion
 !

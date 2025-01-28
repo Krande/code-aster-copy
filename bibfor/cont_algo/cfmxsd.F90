@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine cfmxsd(mesh_, model_, nume_dof, list_func_acti, sddyna, &
-                  ds_contact)
+subroutine cfmxsd(mesh_, model_, nume_dof, sddyna, ds_contact)
 !
     use NonLin_Datastructure_type
 !
@@ -31,17 +30,15 @@ subroutine cfmxsd(mesh_, model_, nume_dof, list_func_acti, sddyna, &
 #include "asterfort/cfmmap.h"
 #include "asterfort/cfmmma.h"
 #include "asterfort/cfmxme.h"
-#include "asterfort/cfmxr0.h"
 #include "asterfort/cfmxr0_lac.h"
+#include "asterfort/cfmxr0.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/lac_crsd.h"
-#include "asterfort/xxmxme.h"
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: mesh_
     character(len=*), intent(in) :: model_
     character(len=24), intent(in) :: nume_dof
-    integer, intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddyna
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
@@ -65,7 +62,7 @@ subroutine cfmxsd(mesh_, model_, nume_dof, list_func_acti, sddyna, &
     integer :: ifm, niv
     character(len=8) :: model, mesh
     integer :: nb_cont_zone
-    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_cont_allv, l_cont_lac
+    aster_logical :: l_cont_disc, l_cont_cont, l_cont_allv, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,23 +76,19 @@ subroutine cfmxsd(mesh_, model_, nume_dof, list_func_acti, sddyna, &
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     model = model_
     mesh = mesh_
-!
+
 ! - Contact method
-!
-    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
     l_cont_disc = cfdisl(ds_contact%sdcont_defi, 'FORMUL_DISCRETE')
     l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
     l_cont_allv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-!
+
 ! - Create CONT_NOEU datastructure
-!
-    if (l_cont_cont .or. l_cont_disc .or. l_cont_xfem) then
+    if (l_cont_cont .or. l_cont_disc) then
         call cfmxr0(mesh, ds_contact)
     end if
-!
+
 ! - Create pairing datastructure
-!
     if (l_cont_cont .or. l_cont_disc .or. l_cont_lac) then
         call cfmmap(mesh, ds_contact)
     end if
@@ -103,40 +96,30 @@ subroutine cfmxsd(mesh_, model_, nume_dof, list_func_acti, sddyna, &
 ! - Create datastructures for solving
 !
     if (.not. l_cont_allv) then
-!
+
 ! ----- Create datastructures for DISCRETE/CONTINUE methods
-!
         if (l_cont_cont .or. l_cont_disc) then
             call cfmmma(ds_contact)
         end if
-!
+
 ! ----- Create datastructures for DISCRETE method
-!
         if (l_cont_disc) then
             call cfcrsd(mesh, nume_dof, ds_contact)
         end if
-!
+
 ! ----- Create datastructures for CONTINUE method
-!
         if (l_cont_cont) then
             call cfmxme(nume_dof, sddyna, ds_contact)
         end if
-!
+
 ! ----- Create datastructures for LAC method
-!
         if (l_cont_lac) then
             call lac_crsd(nume_dof, ds_contact)
         end if
-!
-! ----- Create datastructures for XFEM method
-!
-        if (l_cont_xfem) then
-            call xxmxme(mesh, model, nume_dof, list_func_acti, ds_contact)
-        end if
+
     end if
-!
+
 ! - Create CONT_ELEM datastructure
-!
     if (l_cont_lac) then
         call cfmxr0_lac(mesh, ds_contact)
     end if

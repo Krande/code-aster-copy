@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-subroutine cazocp(sdcont, model)
+subroutine cazocp(sdcont)
 !
     implicit none
 !
@@ -32,7 +31,6 @@ subroutine cazocp(sdcont, model)
 #include "Contact_type.h"
 !
     character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,14 +54,12 @@ subroutine cazocp(sdcont, model)
     real(kind=8) :: resi_abso, gcp_coef_resi
     real(kind=8) :: geom_resi, frot_resi, cont_resi
     aster_logical :: l_cont_gcp
-    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_frot, l_cont_lac
-    aster_logical :: l_xfem_mortar
+    aster_logical :: l_cont_disc, l_cont_cont, l_frot, l_cont_lac
     character(len=16) :: lissage
     character(len=24) :: sdcont_paracr
     real(kind=8), pointer :: v_sdcont_paracr(:) => null()
     character(len=24) :: sdcont_paraci
     integer, pointer :: v_sdcont_paraci(:) => null()
-    integer, pointer :: v_xfem_cont(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,7 +86,6 @@ subroutine cazocp(sdcont, model)
 !
     l_cont_disc = cfdisl(sdcont_defi, 'FORMUL_DISCRETE')
     l_cont_cont = cfdisl(sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_xfem = cfdisl(sdcont_defi, 'FORMUL_XFEM')
     l_cont_lac = cfdisl(sdcont_defi, 'FORMUL_LAC')
     l_cont_gcp = cfdisl(sdcont_defi, 'CONT_GCP')
     l_frot = cfdisl(sdcont_defi, 'FROTTEMENT')
@@ -99,8 +94,6 @@ subroutine cazocp(sdcont, model)
 !
     if (l_cont_cont) then
         call getvtx(' ', 'ALGO_RESO_GEOM', scal=algo_reso_geom)
-    else if (l_cont_xfem) then
-        algo_reso_geom = 'POINT_FIXE'
     else if (l_cont_disc) then
         algo_reso_geom = 'POINT_FIXE'
     else if (l_cont_lac) then
@@ -153,12 +146,6 @@ subroutine cazocp(sdcont, model)
     if (l_frot) then
         if (l_cont_cont) then
             call getvtx(' ', 'ALGO_RESO_FROT', scal=algo_reso_frot)
-        else if (l_cont_xfem) then
-            if (v_sdcont_paraci(1) .eq. 0) then
-                algo_reso_frot = 'POINT_FIXE'
-            else
-                algo_reso_frot = 'NEWTON'
-            end if
         else if (l_cont_disc) then
             algo_reso_frot = 'POINT_FIXE'
         else if (l_cont_lac) then
@@ -192,11 +179,6 @@ subroutine cazocp(sdcont, model)
                 call getvr8(' ', 'RESI_FROT', scal=frot_resi)
                 v_sdcont_paracr(2) = frot_resi
             end if
-        else if (l_cont_xfem) then
-            call getvis(' ', 'ITER_FROT_MAXI', scal=frot_maxi)
-            v_sdcont_paraci(7) = frot_maxi
-            call getvr8(' ', 'RESI_FROT', scal=frot_resi)
-            v_sdcont_paracr(2) = frot_resi
         end if
         ASSERT(.not. l_cont_lac)
     end if
@@ -205,8 +187,6 @@ subroutine cazocp(sdcont, model)
 !
     if (l_cont_cont) then
         call getvtx(' ', 'ALGO_RESO_CONT', scal=algo_reso_cont)
-    else if (l_cont_xfem) then
-        algo_reso_cont = 'POINT_FIXE'
     else if (l_cont_disc) then
         algo_reso_cont = 'POINT_FIXE'
     else if (l_cont_lac) then
@@ -239,7 +219,7 @@ subroutine cazocp(sdcont, model)
 ! - Contact parameters
 !
     if (algo_reso_cont .eq. 'POINT_FIXE') then
-        if (l_cont_xfem .or. l_cont_cont) then
+        if (l_cont_cont) then
             call getvtx(' ', 'ITER_CONT_TYPE', scal=cont_type)
             if (cont_type .eq. 'MULT') then
                 cont_mult = 4
@@ -254,7 +234,7 @@ subroutine cazocp(sdcont, model)
             else
                 ASSERT(ASTER_FALSE)
             end if
-            if (l_cont_cont) v_sdcont_paracr(7) = -1
+            v_sdcont_paracr(7) = -1
         else if (l_cont_disc) then
             call getvis(' ', 'ITER_CONT_MULT', scal=cont_mult)
             v_sdcont_paraci(5) = cont_mult
@@ -334,27 +314,8 @@ subroutine cazocp(sdcont, model)
             ASSERT(ASTER_FALSE)
         end if
     end if
-!
-! - XFEM formulation
-!
-    if (l_cont_xfem) then
-        call jeveuo(model//'.XFEM_CONT', 'L', vi=v_xfem_cont)
-        l_xfem_mortar = v_xfem_cont(1) .eq. 2
-        call getvtx(' ', 'ELIM_ARETE', scal=elim_edge)
-        if (elim_edge .eq. 'DUAL') then
-            v_sdcont_paraci(29) = 0
-        else if (elim_edge .eq. 'ELIM') then
-            if (l_xfem_mortar) then
-                call utmess('F', 'XFEM_62')
-            end if
-            v_sdcont_paraci(29) = 1
-        else
-            ASSERT(ASTER_FALSE)
-        end if
-    end if
-!
+
 ! - Verification method
-!
     if (l_cont_disc .or. l_cont_cont) then
         call getvtx(' ', 'STOP_INTERP', scal=stop_singular)
         if (stop_singular .eq. 'OUI') then

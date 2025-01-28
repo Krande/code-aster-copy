@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
+subroutine nmprca(modele, numedd, numfix, ds_material, carele, &
                   ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                   fonact, ds_print, ds_measure, ds_algorom, sddisc, numins, &
                   valinc, solalg, matass, maprec, ds_contact, &
@@ -51,7 +51,6 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
 #include "asterfort/romCoefComputeFromField.h"
 !
     integer :: fonact(*)
-    character(len=8), intent(in) :: mesh
     integer :: numins, ldccvg, faccvg, rescvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Material), intent(in) :: ds_material
@@ -170,7 +169,7 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
     call nmprma(fonact, &
-                mesh, modele, carele, &
+                modele, carele, &
                 ds_material, ds_constitutive, &
                 lischa, sddyna, nlDynaDamping, &
                 sddisc, numins, &

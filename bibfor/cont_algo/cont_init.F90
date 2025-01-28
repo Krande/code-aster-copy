@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine cont_init(mesh, model, ds_contact, nume_inst, ds_measure, &
+subroutine cont_init(mesh, ds_contact, nume_inst, ds_measure, &
                      sddyna, hval_incr, sdnume, list_func_acti)
 !
     use NonLin_Datastructure_type
@@ -26,14 +26,12 @@ subroutine cont_init(mesh, model, ds_contact, nume_inst, ds_measure, &
 !
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/xminit.h"
 #include "asterfort/mminit.h"
 #include "asterfort/mminit_lac.h"
 #include "asterfort/cfinit.h"
 #include "asterfort/ndynlo.h"
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: model
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
     integer, intent(in) :: nume_inst
@@ -62,13 +60,12 @@ subroutine cont_init(mesh, model, ds_contact, nume_inst, ds_measure, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_disc, l_cont_allv, l_cont_cont, l_cont_xfem, l_cont_lac
+    aster_logical :: l_cont_disc, l_cont_allv, l_cont_cont, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
     l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
-    l_cont_xfem = isfonc(list_func_acti, 'CONT_XFEM')
     l_cont_lac = isfonc(list_func_acti, 'CONT_LAC')
     l_cont_allv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
 !
@@ -86,11 +83,6 @@ subroutine cont_init(mesh, model, ds_contact, nume_inst, ds_measure, &
         if (l_cont_lac) then
             call mminit_lac(mesh, ds_contact, hval_incr, ds_measure, &
                             sdnume, nume_inst)
-        end if
-! ----- For XFEM contact
-        if (l_cont_xfem) then
-            call xminit(mesh, model, ds_contact, nume_inst, ds_measure, &
-                        sddyna, hval_incr, list_func_acti)
         end if
     end if
 !

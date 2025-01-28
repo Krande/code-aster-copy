@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -206,16 +206,6 @@ Utilisez NORMALE='FIXE' ou NORMALE='VECT_Y' dans DEFI_CONTACT.
         """
 La maille %(k1)s est de type 'POI1', elle ne peut pas être une maille maître.
 """
-    ),
-    86: _(
-        """
-Contact méthode continue.
-  -> Il y a convergence forcée sur la boucle des contraintes actives lors du traitement du contact.
-  -> Risque & conseil :
-     La convergence forcée sur les statuts de contact se déclenche lorsque le problème a du mal à converger.
-     Il y a des risques que le problème soit un peu moins bien traité.
-     Vérifiez bien que vous n'avez pas d'interpénétration au niveau des zones de contact.
-     S'il y a des interpénétrations intempestives, découpez plus finement le pas de temps."""
     ),
     96: _(
         """

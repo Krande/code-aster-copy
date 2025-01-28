@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,24 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdesc(mesh           , modele     , numedd    ,&
-                      numfix         , ds_material, carele    ,&
-                      ds_constitutive, lischa     , ds_contact,&
-                      ds_algopara    , ds_system  , solveu    ,&
-                      fonact         , numins     , iterat    ,&
-                      sddisc         , ds_print   , ds_measure,&
-                      ds_algorom, sddyna, nlDynaDamping, sdnume,&
-                      sderro         , matass     , maprec    ,&
-                      valinc         , solalg     , hhoField  , meelem,&
-                      measse         , veasse     , lerrit)
+    subroutine nmdesc(modele, numedd, &
+                      numfix, ds_material, carele, &
+                      ds_constitutive, lischa, ds_contact, &
+                      ds_algopara, ds_system, solveu, &
+                      fonact, numins, iterat, &
+                      sddisc, ds_print, ds_measure, &
+                      ds_algorom, sddyna, nlDynaDamping, sdnume, &
+                      sderro, matass, maprec, &
+                      valinc, solalg, meelem, &
+                      measse, veasse, lerrit)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         use ROM_Datastructure_type
         use HHO_type
-        character(len=8), intent(in) :: mesh
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: numfix
         type(NL_DS_Material), intent(in) :: ds_material
-        type(HHO_Field), intent(in) :: hhoField
         character(len=24) :: carele
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19), intent(in) :: lischa, sddyna

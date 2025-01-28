@@ -264,7 +264,7 @@ module NonLin_Datastructure_type
     type NL_DS_Contact
 ! ----- Flag for contact (CONTACT keyword is present)
         aster_logical     :: l_contact = ASTER_FALSE
-! ----- Flag for contact XFEM/CONTINUE/DISCRET
+! ----- Flag for contact CONTINUE/DISCRET
         aster_logical     :: l_meca_cont = ASTER_FALSE
 ! ----- Flag for contact LIAISON_UNIL
         aster_logical     :: l_meca_unil = ASTER_FALSE
@@ -272,8 +272,6 @@ module NonLin_Datastructure_type
         aster_logical     :: l_form_cont = ASTER_FALSE
 ! ----- Flag for contact DISCRET
         aster_logical     :: l_form_disc = ASTER_FALSE
-! ----- Flag for contact XFEM
-        aster_logical     :: l_form_xfem = ASTER_FALSE
 ! ----- Flag for contact LAC
         aster_logical     :: l_form_lac = ASTER_FALSE
 ! ----- Flag if create CONT_NOEU

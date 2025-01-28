@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmelcm(mesh           , model     ,&
-                      ds_material    , ds_contact,&
-                      ds_constitutive, ds_measure,&
-                      hval_incr      , hval_algo ,&
+    subroutine nmelcm(model, &
+                      ds_material, ds_contact, &
+                      ds_constitutive, ds_measure, &
+                      hval_incr, hval_algo, &
                       matr_elem)
         use NonLin_Datastructure_type
-        character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Contact), intent(in) :: ds_contact

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine check_model(mesh, model, cont_form)
+subroutine check_model(mesh, cont_form)
 !
     implicit none
 !
@@ -24,19 +24,18 @@ subroutine check_model(mesh, model, cont_form)
 #include "asterfort/exipat.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8), intent(in) :: mesh, model
+    character(len=8), intent(in) :: mesh
     integer, intent(in) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_CONTACT
 !
-! Check if exist XFEM in model or PATCH in mesh
+! Check if  PATCH in mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  model            : name of model
 ! In  cont_form        : formulation of contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,14 +44,6 @@ subroutine check_model(mesh, model, cont_form)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-! - Check if exist XFEM in model
-    if (cont_form .eq. 3) then
-        call exixfe(model, iret)
-        if (iret .eq. 0) then
-            call utmess('F', 'XFEM2_8')
-        end if
-    end if
 
 ! - Check if exist PATCH in mesh (LAC method)
     if (cont_form .eq. 5) then

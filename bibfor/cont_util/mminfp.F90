@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
                   vale_l_)
 !
@@ -26,9 +26,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/jeveuo.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
-! aslint: disable=W1501
 !
     character(len=24), intent(in) :: sdcont_defi
     character(len=*), intent(in) :: question_
@@ -55,13 +52,12 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: cont_form, nb_cont_zone
-    integer :: zcmcf, zmeth, ztole, zexcl, zdirn, zcmdf, zcmxf
-    character(len=24) :: sdcont_caracf, sdcont_caradf, sdcont_caraxf, sdcont_dirnor, sdcont_methco
+    integer :: zcmcf, zmeth, ztole, zexcl, zdirn, zcmdf
+    character(len=24) :: sdcont_caracf, sdcont_caradf, sdcont_dirnor, sdcont_methco
     real(kind=8), pointer :: v_sdcont_dirnor(:) => null()
     integer, pointer :: v_sdcont_methco(:) => null()
     real(kind=8), pointer :: v_sdcont_caracf(:) => null()
     real(kind=8), pointer :: v_sdcont_caradf(:) => null()
-    real(kind=8), pointer :: v_sdcont_caraxf(:) => null()
     character(len=24) :: sdcont_toleco, sdcont_dirapp, sdcont_exclfr
     real(kind=8), pointer :: v_sdcont_toleco(:) => null()
     real(kind=8), pointer :: v_sdcont_dirapp(:) => null()
@@ -86,7 +82,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
 !
     sdcont_caracf = sdcont_defi(1:16)//'.CARACF'
     sdcont_caradf = sdcont_defi(1:16)//'.CARADF'
-    sdcont_caraxf = sdcont_defi(1:16)//'.CARAXF'
     sdcont_dirapp = sdcont_defi(1:16)//'.DIRAPP'
     sdcont_dirnor = sdcont_defi(1:16)//'.DIRNOR'
     sdcont_methco = sdcont_defi(1:16)//'.METHCO'
@@ -98,7 +93,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
     ztole = cfmmvd('ZTOLE')
     zcmcf = cfmmvd('ZCMCF')
     zcmdf = cfmmvd('ZCMDF')
-    zcmxf = cfmmvd('ZCMXF')
     zexcl = cfmmvd('ZEXCL')
     zdirn = cfmmvd('ZDIRN')
 !
@@ -308,13 +302,10 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         call jeveuo(sdcont_methco, 'L', vi=v_sdcont_methco)
         vale_i = v_sdcont_methco(zmeth*(i_zone-1)+23)
     else if (question .eq. 'TOLE_PROJ_EXT') then
-        if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+15)
-        else
-            call jeveuo(sdcont_toleco, 'L', vr=v_sdcont_toleco)
-            vale_r = v_sdcont_toleco(ztole*(i_zone-1)+1)
-        end if
+
+        call jeveuo(sdcont_toleco, 'L', vr=v_sdcont_toleco)
+        vale_r = v_sdcont_toleco(ztole*(i_zone-1)+1)
+
     else if (question .eq. 'DIST_APPA') then
         call jeveuo(sdcont_toleco, 'L', vr=v_sdcont_toleco)
         vale_r = v_sdcont_toleco(ztole*(i_zone-1)+2)
@@ -329,10 +320,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_r = v_sdcont_caracf(zcmcf*(i_zone-1)+3)
             vale_i = nint(vale_r)
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+11)
-            vale_i = nint(vale_r)
         end if
     else if (question .eq. 'ALGO_CONT_PENA') then
         if (cont_form .eq. 2) then
@@ -342,23 +329,11 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
             else
                 vale_l = .false.
             end if
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+11)
-            if (nint(vale_r) .eq. 2) then
-                vale_l = .true.
-            else
-                vale_l = .false.
-            end if
         end if
     else if (question .eq. 'ALGO_FROT') then
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_r = v_sdcont_caracf(zcmcf*(i_zone-1)+5)
-            vale_i = nint(vale_r)
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+13)
             vale_i = nint(vale_r)
         else
             ASSERT(.false.)
@@ -371,40 +346,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
             else
                 vale_l = .false.
             end if
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+13)
-            if (nint(vale_r) .eq. 2) then
-                vale_l = .true.
-            else
-                vale_l = .false.
-            end if
-        end if
-    else if (question .eq. 'RELATION') then
-        if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+16)
-        else
-            ASSERT(.false.)
-        end if
-    else if (question .eq. 'XFEM_ALGO_LAGR') then
-        if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_i = nint(v_sdcont_caraxf(zcmxf*(i_zone-1)+9))
-        else
-            ASSERT(.false.)
-        end if
-    else if (question .eq. 'CONT_XFEM_CZM') then
-        if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+11)
-            if (nint(vale_r) .eq. 3) then
-                vale_l = .true.
-            else
-                vale_l = .false.
-            end if
-        else
-            ASSERT(.false.)
         end if
     else if (question .eq. 'GLISSIERE_ZONE') then
         vale_l = .false.
@@ -414,9 +355,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         else if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_l = nint(v_sdcont_caracf(zcmcf*(i_zone-1)+9)) .eq. 1
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_l = nint(v_sdcont_caraxf(zcmxf*(i_zone-1)+10)) .eq. 1
         else
             ASSERT(.false.)
         end if
@@ -424,9 +362,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_i = nint(v_sdcont_caracf(zcmcf*(i_zone-1)+1))
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_i = nint(v_sdcont_caraxf(zcmxf*(i_zone-1)+1))
         else if (cont_form .eq. 5) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_i = nint(v_sdcont_caracf(zcmcf*(i_zone-1)+1))
@@ -437,9 +372,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_r = v_sdcont_caracf(zcmcf*(i_zone-1)+6)
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+4)
         else if (cont_form .eq. 1) then
             call jeveuo(sdcont_caradf, 'L', vr=v_sdcont_caradf)
             vale_r = v_sdcont_caradf(zcmdf*(i_zone-1)+4)
@@ -450,9 +382,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_r = v_sdcont_caracf(zcmcf*(i_zone-1)+2)
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+2)
         else
             ASSERT(.false.)
         end if
@@ -460,9 +389,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_r = v_sdcont_caracf(zcmcf*(i_zone-1)+4)
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+3)
         else
             ASSERT(.false.)
         end if
@@ -472,10 +398,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
             vale_r = v_sdcont_caracf(zcmcf*(i_zone-1)+5)
             vale_i = nint(vale_r)
             vale_l = vale_i .ne. 0
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_i = nint(v_sdcont_caraxf(zcmxf*(i_zone-1)+5))
-            vale_l = (nint(v_sdcont_caraxf(zcmxf*(i_zone-1)+5)) .eq. 3)
         else
             ASSERT(.false.)
         end if
@@ -483,9 +405,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_r = v_sdcont_caracf(zcmcf*(i_zone-1)+7)
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+6)
         else
             ASSERT(.false.)
         end if
@@ -493,13 +412,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_l = (nint(v_sdcont_caracf(zcmcf*(i_zone-1)+13)) .eq. 1)
-        else
-            ASSERT(.false.)
-        end if
-    else if (question .eq. 'COEF_PENA_CONT') then
-        if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+12)
         else
             ASSERT(.false.)
         end if
@@ -530,13 +442,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         else
             ASSERT(.false.)
         end if
-    else if (question .eq. 'COEF_PENA_FROT') then
-        if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+14)
-        else
-            ASSERT(.false.)
-        end if
     else if (question .eq. 'CONTACT_INIT') then
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
@@ -544,9 +449,6 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         else if (cont_form .eq. 5) then
             call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
             vale_i = nint(v_sdcont_caracf(zcmcf*(i_zone-1)+8))
-        else if (cont_form .eq. 3) then
-            call jeveuo(sdcont_caraxf, 'L', vr=v_sdcont_caraxf)
-            vale_i = nint(v_sdcont_caraxf(zcmxf*(i_zone-1)+7))
         else
             ASSERT(.false.)
         end if

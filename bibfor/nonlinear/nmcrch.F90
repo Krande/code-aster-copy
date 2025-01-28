@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
-                  ds_contact, hval_incr, hval_algo, hval_veasse)
+                  hval_incr, hval_algo, hval_veasse)
 !
     use NonLin_Datastructure_type
     use NonLinearDyna_type
@@ -27,7 +27,6 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -40,7 +39,6 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
     integer, intent(in) :: listFuncActi(*)
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
-    type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*), hval_veasse(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,7 +51,6 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
 !
 ! In  sddyna           : name of datastructure for dynamic parameters
 ! In  nlDynaDamping    : damping parameters
-! In  ds_contact       : datastructure for contact management
 ! IN  NUMEDD : NUME_DDL
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -61,7 +58,6 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdcont_defi
     aster_logical :: ldyna, lDampModal, lmpas, lrefe, lSuperElement, lmuap, lviss
     aster_logical :: lsstf, limpe
     aster_logical :: ldidi, lpilo, lener
@@ -88,9 +84,6 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-
-! - Initializations
-    sdcont_defi = ds_contact%sdcont_defi
 
 ! - Active functionnalities
     lSuperElement = isfonc(listFuncActi, 'MACR_ELEM_STAT')

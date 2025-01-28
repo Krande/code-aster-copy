@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-subroutine cazoco(sdcont, model, keywf, cont_form, i_zone, &
+subroutine cazoco(sdcont, keywf, cont_form, i_zone, &
                   nb_cont_zone)
 !
     implicit none
@@ -27,10 +26,8 @@ subroutine cazoco(sdcont, model, keywf, cont_form, i_zone, &
 #include "asterfort/cazocc.h"
 #include "asterfort/cazocd.h"
 #include "asterfort/cazocm.h"
-#include "asterfort/cazocx.h"
 !
     character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keywf
     integer, intent(in) :: nb_cont_zone
     integer, intent(in) :: cont_form
@@ -45,7 +42,6 @@ subroutine cazoco(sdcont, model, keywf, cont_form, i_zone, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  model            : name of model
 ! In  keywf            : factor keyword to read
 ! In  nb_cont_zone     : number of zones of contact
 ! In  cont_form        : formulation of contact
@@ -59,8 +55,6 @@ subroutine cazoco(sdcont, model, keywf, cont_form, i_zone, &
     else if (cont_form .eq. 2) then
         call cazocm(sdcont, keywf, i_zone)
         call cazocc(sdcont, keywf, i_zone, nb_cont_zone=nb_cont_zone)
-    else if (cont_form .eq. 3) then
-        call cazocx(sdcont, model, keywf, i_zone)
     else if (cont_form .eq. 5) then
         call cazocm(sdcont, keywf, i_zone)
         call cazocc(sdcont, keywf, i_zone)

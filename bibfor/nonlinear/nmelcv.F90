@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmelcv(mesh, model, &
+subroutine nmelcv(model, &
                   ds_material, ds_contact, ds_constitutive, &
                   disp_prev, vite_prev, &
                   acce_prev, vite_curr, &
@@ -35,7 +35,6 @@ subroutine nmelcv(mesh, model, &
 #include "asterfort/cfdisl.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -44,7 +43,6 @@ subroutine nmelcv(mesh, model, &
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -62,7 +60,6 @@ subroutine nmelcv(mesh, model, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  ds_material      : datastructure for material parameters
 ! In  ds_contact       : datastructure for contact management
@@ -80,63 +77,65 @@ subroutine nmelcv(mesh, model, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer, parameter :: nbout = 2
-    integer, parameter :: nbin = 36
+    integer, parameter :: nbout = 2, nbin = 36
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
-    character(len=1) :: base
+    character(len=1), parameter :: base = 'V'
     character(len=19) :: ligrel
     character(len=16) :: option
-    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_lac
+    aster_logical :: l_cont_cont, l_cont_lac
     aster_logical :: l_all_verif
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
-!
-! - Initializations
-!
-    base = 'V'
-!
+
 ! - Get contact parameters
-!
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
     l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
     l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-!
-! --- TYPE DE CONTACT
-!
+
+! - TYPE DE CONTACT
     if (.not. l_all_verif .and. ((.not. l_cont_lac) .or. ds_contact%nb_cont_pair .ne. 0)) then
 ! ----- Display
         if (niv .ge. 2) then
             call utmess('I', 'CONTACT5_28')
         end if
+
 ! ----- Init fields
-        call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
+        lpain = " "
+        lchin = " "
+        lpaout = " "
+        lchout = " "
+
 ! ----- Prepare input fields
         call nmelco_prep('VECT', &
-                         mesh, model, ds_material, ds_contact, &
+                         model, ds_material, ds_contact, &
                          disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst, &
                          nbin, lpain, lchin, &
                          option, time_prev, time_curr, ds_constitutive)
+
 ! ----- <LIGREL> for contact elements
         ligrel = ds_contact%ligrel_elem_cont
+
 ! ----- Preparation of elementary vectors
         call detrsd('VECT_ELEM', vect_elem_cont)
         call memare('V', vect_elem_cont, model, 'CHAR_MECA')
         call detrsd('VECT_ELEM', vect_elem_fric)
         call memare('V', vect_elem_fric, model, 'CHAR_MECA')
+
 ! ----- Prepare output fields
         lpaout(1) = 'PVECTCR'
         lchout(1) = vect_elem_cont
         lpaout(2) = 'PVECTFR'
         lchout(2) = vect_elem_fric
 ! ----- Computation
+
         call calcul('S', option, ligrel, nbin, lchin, &
                     lpain, nbout, lchout, lpaout, base, &
                     'OUI')
+
 ! ----- Copy output fields
         call reajre(vect_elem_cont, lchout(1), base)
         call reajre(vect_elem_fric, lchout(2), base)

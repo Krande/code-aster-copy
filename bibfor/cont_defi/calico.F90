@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,6 @@ subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
 #include "asterfort/surfco.h"
 #include "asterfort/caramx.h"
 #include "asterfort/utmess.h"
-!
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
@@ -85,22 +83,18 @@ subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
         else
             model_ndim = model_ndim_
         end if
-!
+
 ! ----- Creation of datastructures
-!
         call caramx(sdcont, cont_form, nb_cont_zone)
-!
+
 ! ----- Get parameters of contact
-!
-        call caraco(sdcont, model, keywf, cont_form, nb_cont_zone)
-!
+        call caraco(sdcont, keywf, cont_form, nb_cont_zone)
+
 ! ----- Get elements and nodes of contact, checkings
-!
         call limaco(sdcont, keywf, mesh, model, model_ndim, &
                     nb_cont_zone, ligret)
-!
+
 ! ----- Debug print
-!
         call surfco(sdcont, mesh)
     end if
 !

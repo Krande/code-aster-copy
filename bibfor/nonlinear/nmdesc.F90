@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmdesc(mesh, modele, numedd, &
+subroutine nmdesc(modele, numedd, &
                   numfix, ds_material, carele, &
                   ds_constitutive, lischa, ds_contact, &
                   ds_algopara, ds_system, solveu, &
@@ -26,7 +26,7 @@ subroutine nmdesc(mesh, modele, numedd, &
                   sddisc, ds_print, ds_measure, &
                   ds_algorom, sddyna, nlDynaDamping, sdnume, &
                   sderro, matass, maprec, &
-                  valinc, solalg, hhoField, meelem, &
+                  valinc, solalg, meelem, &
                   measse, veasse, lerrit)
 !
     use NonLin_Datastructure_type
@@ -51,7 +51,6 @@ subroutine nmdesc(mesh, modele, numedd, &
 #include "asterfort/vtzero.h"
 !
     integer :: numins, iterat
-    character(len=8), intent(in) :: mesh
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -68,7 +67,6 @@ subroutine nmdesc(mesh, modele, numedd, &
     character(len=24) :: sderro
     integer :: fonact(*)
     character(len=19) :: meelem(*)
-    type(HHO_Field), intent(in) :: hhoField
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: measse(*), veasse(*)
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -147,7 +145,7 @@ subroutine nmdesc(mesh, modele, numedd, &
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
     call nmcoma(fonact, &
-                mesh, modele, carele, &
+                modele, carele, &
                 ds_material, ds_constitutive, &
                 lischa, sddyna, nlDynaDamping, &
                 sddisc, numins, iterat, &
