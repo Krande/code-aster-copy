@@ -103,6 +103,10 @@ subroutine laVect_cf_std(parameters, geom, vect_cont, vect_fric, k_diff)
         go to 999
     end if
 !
+! - Get intersection points
+!
+    call getInterCont(nbPoinInte, poinInteSlav)
+!
 ! - Get quadrature (slave side)
 !
     call getQuadCont(geom%elem_dime, &

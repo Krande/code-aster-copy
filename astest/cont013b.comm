@@ -214,7 +214,7 @@ contact_new = DEFI_CONT(
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=TZ, NOMBRE=1), _F(JUSQU_A=TX, NOMBRE=4)))
 listinst = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(SUBD_PAS=2.0, SUBD_NIVEAU=2))
 
-"""
+
 evol = MECA_NON_LINE(
     MODELE=modele,
     CHAM_MATER=affe_mat,
@@ -310,5 +310,5 @@ TEST_RESU(
         ),
     )
 )
-"""
+
 FIN()
