@@ -53,7 +53,7 @@ DEFICO = DEFI_CONT(
         APPARIEMENT="MORTAR",
         GROUP_MA_MAIT="Group_2",
         GROUP_MA_ESCL="Group_1",
-        COEF_CONT=200.0,
+        COEF_CONT=20.0,
         ALGO_CONT="LAGRANGIEN",
     ),
 )
