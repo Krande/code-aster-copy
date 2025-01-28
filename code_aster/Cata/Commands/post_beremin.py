@@ -97,4 +97,9 @@ POST_BEREMIN = MACRO(
         SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0, max="**"),
     ),
+    METHODE_2D=FACT(
+        statut="f",
+        MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
+        PRECISION=SIMP(statut="f", typ="R", defaut=0.01, val_min=0.0),
+    ),
 )

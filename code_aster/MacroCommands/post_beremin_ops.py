@@ -37,13 +37,12 @@ _biblio : CR-T66-2017-132, Lorentz
 from math import exp
 import os
 import numpy as np
-from libaster import EntityType
 
 from ..Cata.Syntax import _F
-from ..Cata.Language.DataStructure import table_sdaster
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE
-from ..Objects import ExternalVariableTraits, FieldOnCellsReal, NonLinearResult, Table
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Mesh
 from ..Utilities import logger, no_new_attributes
+from .Fracture.post_beremin_utils import CELL_TO_POINT
 
 DEBUG = bool(os.environ.get("DEBUG_POST_BEREMIN", ""))
 
@@ -79,6 +78,7 @@ class PostBeremin:
 
     # data
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
+    _method_2D = _proj_3D_2D = _mesh_proj = _prec_proj = None
     _intvar_idx = _stress_idx = None
     _use_hist = _use_indiplas = _use_function = None
     _coef_mult = None
@@ -108,6 +108,19 @@ class PostBeremin:
         """
         self._zone = group
         self._zone_ids = self._result.getMesh().getCells(group)
+
+    def set_projection_parameters(self, args):
+        """Define projection parameters when METHODE_2D is used.
+
+        Args:
+            args (dict): Keywords for POST_BEREMIN.
+        """
+        if "METHODE_2D" in args:
+            self._method_2D = True
+            self._mesh_proj = args["METHODE_2D"]["MAILLAGE"]
+            self._prec_proj = args["METHODE_2D"]["PRECISION"]
+
+            ##ToFIX : ajout d'une verification que le résultat donné en entrée est bien 3D
 
     def set_indexes(self, intvar_idx: list = None, stress_idx: list = None) -> None:
         """Define the indexes used to extract the relevant components depending
@@ -321,6 +334,22 @@ class PostBeremin:
 
         return varc_elga.TEMP
 
+    def build_projector(self):
+        """Return the 3D -> 2D projector when METHODE_2D is used
+
+        Returns:
+            *CELL_TO_POINT*: 3D -> 2D projector
+        """
+        umesh_3D_mc = self._result.getMesh().createMedCouplingMesh()
+        umesh_2D_mc = self._mesh_proj.createMedCouplingMesh()
+
+        if umesh_3D_mc[0].getMeshDimension() != 3:
+            logger.error("To apply METHODE_2D, input result has to be 3D")
+        if umesh_2D_mc[0].getMeshDimension() != 2:
+            logger.error("In METHODE_2D keyword, input MAILLAGE has to be a 2D mesh")
+
+        self._proj_3D_2D = CELL_TO_POINT(umesh_3D_mc[0], umesh_2D_mc[0], prec_rel=self._prec_proj)
+
     def main(self):
         """Compute Weibull stress and failure probability."""
         result = self._reswb
@@ -329,6 +358,10 @@ class PostBeremin:
         logger.info("extracting integration scheme...")
         coor_elga = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
         coor_elga = coor_elga.toSimpleFieldOnCells()
+
+        if self._method_2D:
+            logger.info("building projector ...")
+            self.build_projector()
 
         logger.info("starting computation...")
 
@@ -479,6 +512,7 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA, DEFORMATION, FILTRE_SIGM, **args)
         post.set_indexes(stress_idx=args["LIST_NUME_SIEF"])
     post.use_history(args["HIST_MAXI"] == "OUI")
     post.set_coef_mult(args["COEF_MULT"])
+    post.set_projection_parameters(args)
 
     if args.get("SIGM_MAXI"):
         post._rout = NonLinearResult()
