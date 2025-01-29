@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ cata_msg = {
     1: _(
         """
 Résultat du test faux pour le produit vectoriel %(r1)f.
-Il s'agit d'un test purement informatique. 
-On continue le calcul. 
+Il s'agit d'un test purement informatique.
+On continue le calcul.
 """
     ),
     5: _(
@@ -70,6 +70,16 @@ Le nombre de contours (NB_COUCHES) doit être inférieur à 10.
     13: _(
         """
 Le nombre de contours (NB_COUCHES) doit  être supérieur ou égal à 2.
+"""
+    ),
+    14: _(
+        """
+Pour utiliser METHODE_2D, le résultat mécanique doit être de dimension 3.
+"""
+    ),
+    15: _(
+        """
+Pour utiliser METHODE_2D, le maillage cible doit être de dimension 2.
 """
     ),
 }

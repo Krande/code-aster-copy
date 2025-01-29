@@ -301,14 +301,17 @@ class ExtendedParallelMesh:
 
         return CREA_MAILLAGE(MAILLAGE=self, RESTREINT=_F(GROUP_MA=groupsOfCells), INFO=info)
 
-    def createMedCouplingMesh(self):
+    def createMedCouplingMesh(self, spacedim=None):
         """Returns the MEDCoupling unstructured mesh associated to the current mesh.
+
+        Arguments:
+            spacedim [int] : Space dimension of the mesh to be created
 
         Returns:
             Mesh: The MEDCoupling unstructured mesh associated to the current mesh.
         """
 
-        return convertMesh2MedCoupling(self)
+        return convertMesh2MedCoupling(self, spacedim)
 
     @classmethod
     def buildSquare(cls, l=1, refine=0, info=1, deterministic=False):

@@ -40,19 +40,16 @@ class CELL_TO_POINT:
 
     def __init__(self, mesh_3D, mesh_2D, prec_rel=None, prec_abs=None, ampl=1.5):
         """
-        mesh    : maillage de cellules 3D (celui sur lequel seront aussi définis les champs à projeter)
-        points  : liste des points à échantillonner sous la forme [x0, y0, z0, x1, y1, z1, ..., xn, yn, zn]
+        mesh_3D    : maillage de cellules 3D (celui sur lequel seront aussi définis les champs à projeter)
+        mesh_2D  : maillage 2D sur lequel les champs seront projetés
         prec_abs: précision absolue minimale
         ampl    : facteur d'amplification de la précision lorsqu'on ne trouve pas de cellules correspondant à un point
         """
-        # assert len(points) % 3 == 0
         assert type(prec_rel) != type(None) or type(prec_abs) != type(None)
-        self.mesh_3D = mesh_3D
 
-        points = mesh_2D.computeIsoBarycenterOfNodesPerCell()
-        # logger.info(points)
-        # self.nbr    = len(points) // 3
-        # self.coor   = mc.DataArrayDouble(np.array(points).reshape((self.nbr,3)).tolist())    # DataArrayDouble (3,nbr)
+        self.mesh = mesh_3D
+        self.coor = mesh_2D.computeIsoBarycenterOfNodesPerCell()
+        self.nbr = len(self.coor)
 
         self.prec = None
         self.cells = None
@@ -60,7 +57,7 @@ class CELL_TO_POINT:
         self.pt_idx = None
 
         self.ComputeRelativePrecision(prec_rel, prec_abs)
-        # self.Build(ampl)
+        self.Build(ampl)
 
     def ComputeRelativePrecision(self, prec_rel, prec_abs):
         """
@@ -94,7 +91,7 @@ class CELL_TO_POINT:
             (meshT4, transfer, ibid) = meshT4.tetrahedrize(
                 mc.PLANAR_FACE_6
             )  # ne respecte pas la conformité, ce qui explique tout le développement
-            assert ibid == 0
+            # assert ibid == 0
         else:
             transfer = mc.DataArrayInt(np.arange(meshT4.getNumberOfCells()).tolist())
         meshT4 = meshT4.buildUnstructured()  # Bug medcoupling si on ne fait rien

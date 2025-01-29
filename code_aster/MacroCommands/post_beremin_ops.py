@@ -37,12 +37,17 @@ _biblio : CR-T66-2017-132, Lorentz
 from math import exp
 import os
 import numpy as np
+import tempfile
 
-from ..Cata.Syntax import _F
-from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE
-from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Mesh
-from ..Utilities import logger, no_new_attributes
+import medcoupling as mc
+
 from .Fracture.post_beremin_utils import CELL_TO_POINT
+from ..Cata.Syntax import _F
+from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
+from ..CodeCommands import IMPR_RESU, PROJ_CHAMP, AFFE_MODELE
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table
+from ..Utilities import logger, disable_fpe, no_new_attributes
+from ..Messages import UTMESS
 
 DEBUG = bool(os.environ.get("DEBUG_POST_BEREMIN", ""))
 
@@ -79,6 +84,7 @@ class PostBeremin:
     # data
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
     _method_2D = _proj_3D_2D = _mesh_proj = _prec_proj = None
+    _medfilename_temp = _unite_temp = None
     _intvar_idx = _stress_idx = None
     _use_hist = _use_indiplas = _use_function = None
     _coef_mult = None
@@ -237,11 +243,10 @@ class PostBeremin:
             self._rsieq = self.compute_sieq()
         sieq = self._rsieq.getField("SIEQ_ELGA", idx)
         sieq = sieq.toSimpleFieldOnCells()
-        return sieq.PRIN_3
+        return sieq
 
     def compute_sieq(self):
         """Compute SIEQ_ELGA stress."""
-        logger.info("starting computation...")
         # compute fields on all timesteps, add INST/NUME_ORDRE to be limited
         input = self._reswb
 
@@ -256,6 +261,25 @@ class PostBeremin:
                 input.setField(simy, "SIEF_ELGA", idx)
 
         rsieq = CALC_CHAMP(RESULTAT=input, CRITERES="SIEQ_ELGA", **d_group_ma)
+
+        if self._method_2D:
+
+            self._medfilename_temp = tempfile.NamedTemporaryFile(dir=".", suffix=".med").name
+            self._unite_temp = DEFI_FICHIER(
+                FICHIER=self._medfilename_temp, ACTION="ASSOCIER", TYPE="LIBRE", ACCES="NEW"
+            )
+            IMPR_RESU(
+                UNITE=self._unite_temp,
+                PROC0="NON",
+                RESU=_F(
+                    RESULTAT=rsieq,
+                    NOM_CHAM="SIEQ_ELGA",
+                    NOM_CMP="PRIN_3",
+                    NOM_CHAM_MED="TMP",
+                    NUME_ORDRE=1,
+                ),
+            )
+            DEFI_FICHIER(ACTION="LIBERER", UNITE=self._unite_temp)
 
         if DEBUG:
             for i in rsieq.getIndexes():
@@ -276,7 +300,6 @@ class PostBeremin:
             sigma_thr (float): Stress threshold
             sigma_refe (float): sigm_refe parameter
         """
-        logger.info("adjusting sigma1 at index %d...", idx)
 
         if self._use_function and sig1.size > 0:
             # PRIN_3 / SIGM_REFE(TEMP) * SIGM_CNV
@@ -334,21 +357,32 @@ class PostBeremin:
 
         return varc_elga.TEMP
 
-    def build_projector(self):
+    def build_projector(self, sieq):
         """Return the 3D -> 2D projector when METHODE_2D is used
 
         Returns:
             *CELL_TO_POINT*: 3D -> 2D projector
         """
-        umesh_3D_mc = self._result.getMesh().createMedCouplingMesh()
-        umesh_2D_mc = self._mesh_proj.createMedCouplingMesh()
 
-        if umesh_3D_mc[0].getMeshDimension() != 3:
-            logger.error("To apply METHODE_2D, input result has to be 3D")
-        if umesh_2D_mc[0].getMeshDimension() != 2:
-            logger.error("In METHODE_2D keyword, input MAILLAGE has to be a 2D mesh")
+        ##Get 3D mesh (gauss to cells)
+        timeStamps = mc.GetAllFieldIterations(self._medfilename_temp, "TMP")
+        filefield_tmp = mc.MEDFileFieldMultiTS.New(self._medfilename_temp, "TMP")
+        f_on_gauss = filefield_tmp.getFieldAtLevel(
+            mc.ON_GAUSS_PT, timeStamps[-1][0], timeStamps[-1][1], 0
+        )
+        with disable_fpe():
+            f_on_cells = f_on_gauss.voronoize(1e-12)
+        mesh_3d_mc = f_on_cells.getMesh()
+        if mesh_3d_mc.getMeshDimension() != 3:
+            UTMESS("F", "RUPTURE4_14")
 
-        self._proj_3D_2D = CELL_TO_POINT(umesh_3D_mc[0], umesh_2D_mc[0], prec_rel=self._prec_proj)
+        ##Get 2D mesh
+        mesh_2D_mc = self._mesh_proj.createMedCouplingMesh(spacedim=3)[0]
+        if mesh_2D_mc.getMeshDimension() != 2:
+            UTMESS("F", "RUPTURE4_15")
+
+        ##Build projector 3D -> points (points = barycenters of 2D cells)
+        self._proj_3D_2D = CELL_TO_POINT(mesh_3d_mc, mesh_2D_mc, prec_rel=self._prec_proj)
 
     def main(self):
         """Compute Weibull stress and failure probability."""
@@ -359,10 +393,6 @@ class PostBeremin:
         coor_elga = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
         coor_elga = coor_elga.toSimpleFieldOnCells()
 
-        if self._method_2D:
-            logger.info("building projector ...")
-            self.build_projector()
-
         logger.info("starting computation...")
 
         table = TableBeremin(self._use_function)
@@ -370,10 +400,6 @@ class PostBeremin:
         for sigma_thr in self._weib_params["SIGM_SEUIL"]:
             for sigma_refe in self._weib_params["SIGM_REFE"]:
                 for pow_m in self._weib_params["M"]:
-
-                    logger.info("M = " + str(pow_m))
-                    logger.info("SIGM_REFE = " + str(sigma_refe))
-                    logger.info("SIGM_SEUIL = " + str(sigma_thr))
 
                     id_store = 0
                     previous = None
@@ -383,15 +409,19 @@ class PostBeremin:
                         if self._use_indiplas:
                             indip = self.get_internal_variables(idx)
 
-                        logger.info("computing major stress at index %d...", idx)
-                        sig1 = self.get_major_stress(idx)
+                        sieq = self.get_major_stress(idx)
+                        sig1 = sieq.PRIN_3
+
+                        if self._method_2D and not self._proj_3D_2D:
+                            logger.info("building projector ...")
+                            self.build_projector(sieq)
+
                         if self._use_indiplas:
                             sig1 = self.apply_threshold(sig1, indip)
 
                         sig1 = self.apply_stress_correction(sig1, idx, sigma_thr, sigma_refe)
 
                         if self._use_hist:
-                            logger.info("computing maxi at index %d...", idx)
                             if previous is None:
                                 previous = sig1.copy()
                             else:
