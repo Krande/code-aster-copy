@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ ForceInt = AFFE_CHAR_MECA_F(MODELE=Modele, FORCE_INTERNE=_F(GROUP_MA="SURFACE", 
 # Affectation des conditions limites
 Contact = DEFI_CONT(
     MODELE=Modele,
-    ZONE=_F(GROUP_MA_MAIT="MAITRE", GROUP_MA_ESCL="BAS", COEF_CONT=E, ALGO_CONT="LAGRANGIEN"),
+    ZONE=_F(GROUP_MA_MAIT="MAITRE", GROUP_MA_ESCL="BAS", COEF_CONT=E / 100, ALGO_CONT="LAGRANGIEN"),
 )
 
 BlocBase = AFFE_CHAR_CINE(MODELE=Modele, MECA_IMPO=_F(GROUP_MA="MAITRE", DX=0, DY=0))
@@ -182,7 +182,7 @@ DIFF = CREA_CHAMP(
 #          Verifications
 # ========================================================================================
 
-TEST_RESU(CHAM_NO=_F(TYPE_TEST="SOMM_ABS", CHAM_GD=DIFF, VALE_CALC=4.028299825426722e-05))
+TEST_RESU(CHAM_NO=_F(TYPE_TEST="SOMM_ABS", CHAM_GD=DIFF, VALE_CALC=4.028257477230182e-05))
 
 IMPR_RESU(FORMAT="MED", UNITE=80, RESU=(_F(CHAM_GD=DIFF), _F(CHAM_GD=Uana), _F(CHAM_GD=Ucalc)))
 

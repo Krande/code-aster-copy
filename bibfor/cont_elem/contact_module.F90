@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 module contact_module
 !
     use contact_type
-    use contact_algebra_module
+!     use contact_algebra_module
 !
     implicit none
 !
@@ -61,7 +61,7 @@ module contact_module
     public :: projQpSl2Ma, shapeFuncDisp, shapeFuncLagr, evalPoly
     public :: diameter, testLagrC, gapEval, testLagrF, barycenter
     public :: speedEval, thresEval, shapeFuncDispVolu, projQpSl2Vo
-    public :: gradFuncDispVolu
+    public :: gradFuncDispVolu, evalDtestM
 !
 contains
 !
@@ -313,6 +313,7 @@ contains
                     else
                         thres_qp = THRES_STICK
                     end if
+                    if (thres_qp == 0.d0) l_fric_qp = ASTER_FALSE
                 else
                     thres_qp = 0.d0
                 end if
@@ -336,7 +337,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   Compute speed for raytracing v = -(x^s(t_prev) - x^m(t_prev) + gap * n^s(t_prev))
-!                                     /(t_curr - t_prev)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -359,8 +359,15 @@ contains
         call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_prev, &
                     coor_qp_slav(1), coor_qp_slav(2), norm_slav_prev)
 !
-        speedEval = -(coor_qp_sl_prev-coor_qp_ma_prev+gap*norm_slav_prev)/(geom%time_curr-geom%ti&
-                    &me_prev)
+        speedEval = -(coor_qp_sl_prev-coor_qp_ma_prev+gap*norm_slav_prev)
+        ! write (6, *) 'coor_qp_slav=', coor_qp_slav
+        ! write (6, *) 'coor_qp_sl_prev=', coor_qp_sl_prev
+        ! write (6, *) 'coor_qp_ma_prev=', coor_qp_ma_prev
+        ! write (6, *) 'gap=', gap
+        ! write (6, *) 'norm_slav_prev=', norm_slav_prev
+        ! write (6, *) 'geom%time_curr=', geom%time_curr
+        ! write (6, *) 'geom%time_prev=', geom%time_prev
+        ! write (6, *) 'speedEval=', speedEval
 !
     end function
 !
@@ -662,6 +669,42 @@ contains
         end do
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function evalDtestM(geom, dfunc_ma)
+!
+        implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dfunc_ma(2, 9)
+        real(kind=8) :: evalDtestM(3, MAX_LAGA_DOFS, 2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate the first derivative of the master test function
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: j_node, index, k_zeta
+!
+        evalDtestM = 0.d0
+        do k_zeta = 1, 2
+            ! start at the first master dof (displ only)
+            index = geom%nb_node_slav*geom%elem_dime+geom%nb_lagr_c*geom%indi_lagc(1)
+            do j_node = 1, geom%nb_node_mast
+                evalDtestM(1, index+1, k_zeta) = dfunc_ma(k_zeta, j_node)
+                evalDtestM(2, index+2, k_zeta) = dfunc_ma(k_zeta, j_node)
+                if (geom%elem_dime == 3) then
+                    evalDtestM(3, index+3, k_zeta) = dfunc_ma(k_zeta, j_node)
+                end if
+                index = index+geom%elem_dime
+            end do
+        end do
+!
+    end function
 !
 !===================================================================================================
 !

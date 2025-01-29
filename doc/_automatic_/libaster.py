@@ -1044,8 +1044,8 @@ class DiscreteComputation:
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
             data (FieldOnCellsReal): contact data
-            coef_cont (FeildOnNodesReal) : contact coefficient
-            coef_frot (FeildOnNodesReal) : friction coefficient
+            coef_cont (FieldOnNodesReal) : contact coefficient
+            coef_frot (FieldOnNodesReal) : friction coefficient
 
         Returns:
             FieldOnNodesReal: contact and friction forces
@@ -1063,8 +1063,8 @@ class DiscreteComputation:
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
             data (FieldOnCellsReal): contact data
-            coef_cont (FeildOnNodesReal) : contact coefficient
-            coef_frot (FeildOnNodesReal) : friction coefficient
+            coef_cont (FieldOnNodesReal) : contact coefficient
+            coef_frot (FieldOnNodesReal) : friction coefficient
 
         Returns:
             ElementaryMatrixDisplacementReal: contact and friction elementary matrix
@@ -5555,6 +5555,8 @@ class ContactVariant:
     # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
+    Classic = 4
+
     Empty = 0
 
     Fast = 1
@@ -5900,6 +5902,72 @@ class InitialState:
     Yes = 2
 
 
+# class JacobianType in libaster
+
+
+class JacobianType:
+    pass
+
+    # Method resolution order:
+    #     JacobianType
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def __str__(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Readonly properties defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: object) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Analytical = 0
+
+    Perturbation = 1
+
+
 # class ContactParameter in libaster
 
 
@@ -5936,6 +6004,13 @@ class ContactParameter:
             float: contact coefficient.
         """
 
+    def getJacobianType(self):
+        """Return how the Jacobian is computed. It is a value of an enum
+
+        Returns:
+            JacobianType: Jacobian type.
+        """
+
     def getType(self):
         """Return the contact type used. It is a value of an enum
 
@@ -5962,6 +6037,13 @@ class ContactParameter:
 
         Arguments:
             float: contact coefficient.
+        """
+
+    def setJacobianType(self, type):
+        """Set how the Jacobian is computed. It is a value of an enum
+
+        Arguments:
+            JacobianType: Jacobian type.
         """
 
     def setType(self, type):

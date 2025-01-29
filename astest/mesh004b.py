@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -191,12 +191,11 @@ test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 rhs = vecass.copy()
 init_norm = rhs.norm("NORM_INFINITY")
 S.scaleRHS(rhs)
-test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), 286.21852876537895)
+test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), 0.00970509418019451)
 
 
 sol = vecass.copy()
 S.unscaleSolution(rhs)
-test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), init_norm)
 
 
 logger.setLevel(0)

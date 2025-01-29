@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,12 @@
 
 !
 interface
-    subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
-                      xg)
-        integer :: ndim
-        integer :: nnop
-        character(len=8) :: elrefp
-        real(kind=8) :: tabar(*)
-        real(kind=8) :: xe(ndim)
-        real(kind=8) :: xg(ndim)
+    subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
+                      xg, dxg)
+        integer, intent(in) :: ndim, nnop
+        real(kind=8), intent(in) :: xe(ndim), tabar(*)
+        character(len=8), intent(in) :: elrefp
+        real(kind=8), intent(out) :: xg(ndim)
+        real(kind=8), intent(out), optional :: dxg(ndim)
     end subroutine reerel
 end interface

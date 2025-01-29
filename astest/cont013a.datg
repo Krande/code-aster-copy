@@ -1,0 +1,47 @@
+//================================================
+//    Maillage du cube
+//
+//    Utilisation :
+//    gmsh -2 -format med -o carre.med carre.geo
+//================================================
+
+d=0.1;
+eps=0;
+Point(1) = {-d/2, 0, 0, 0.5};
+Point(2) = {+d/2, eps, 0, 0.5};
+Line (1) = {1, 2};
+
+Nb_Elem=3;
+
+Transfinite Line{1} = Nb_Elem+1;
+
+
+// Extrude Line {Num. de la ligne , {Dx,Dy,Dz}}
+//              {Layers{Nb de couche, Numero donné à la couche, épaisseur relative de la couche};};
+
+Extrude {-eps,d,0}{
+	     Line{1}; Layers{Nb_Elem}; Recombine;
+}
+
+
+
+Physical Line("Escl") = {1};
+Physical Line("Depl") = {2};
+Physical Surface("Cube") = {5};
+
+
+//================================================
+//    Maillage de la base
+//================================================
+
+theta = 0.05;
+Point(15) = {-2*d,-2*d*Sin(theta),0,0.1};
+Point(16) = {+2*d,-2*d*Sin(theta),0,0.1};
+Point(17) = {0,0,0,0.1};
+Line(28) = {16,17};
+Line(29) = {17,15};
+Transfinite Line{28,29} = 2;
+
+
+
+Physical Line("Mait")={28,29};

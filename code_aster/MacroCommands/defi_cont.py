@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ DEFI_CONT_CATA = MACRO(
             into=("OUI", "NON"),
             fr=tr("Lissage des normales par moyennation aux noeuds"),
         ),
-        # VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
+        # VERIFICATION DE L"ORIENTATION ET DE LA COHERENCE DES NORMALES
         VERI_NORM=SIMP(
             statut="f",
             typ="TXM",
@@ -70,8 +70,8 @@ DEFI_CONT_CATA = MACRO(
             defaut="LAGRANGIEN",
             into=("LAGRANGIEN", "NITSCHE", "PENALISATION"),
         ),
-        b_algo_cont=BLOC(
-            condition="""is_in("ALGO_CONT", ('NITSCHE'))""",
+        b_algo_cont_nitsche=BLOC(
+            condition="""is_in("ALGO_CONT", ("NITSCHE",))""",
             SYME=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
             b_vari_syme=BLOC(
                 condition="""equal_to("SYME", "NON")""",
@@ -81,6 +81,46 @@ DEFI_CONT_CATA = MACRO(
                     defaut="ROBUSTE",
                     into=("RAPIDE", "ROBUSTE"),
                     fr=tr("Choix de la variante des formulations du contact"),
+                ),
+            ),
+        ),
+        b_algo_cont_lag=BLOC(
+            condition="""is_in("ALGO_CONT", ("LAGRANGIEN",))""",
+            VARIANTE=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="ROBUSTE",
+                into=("CLASSIQUE", "ROBUSTE"),
+                fr=tr("Choix de la variante des formulations du contact"),
+            ),
+            # Managing tangent matrix for LAGRANGE
+            b_mat_robu=BLOC(
+                condition="""equal_to("VARIANTE", 'ROBUSTE')""",
+                TYPE_MATR_TANG=SIMP(
+                    statut="f", typ="TXM", defaut="ANALYTIQUE", into=("PERTURBATION", "ANALYTIQUE")
+                ),
+            ),
+            b_mat_clas=BLOC(
+                condition="""equal_to("VARIANTE", 'CLASSIQUE')""",
+                TYPE_MATR_TANG=SIMP(
+                    statut="f", typ="TXM", defaut="PERTURBATION", into=("PERTURBATION",)
+                ),
+            ),
+            b_zone_fric_vari=BLOC(
+                condition="""equal_to("FROTTEMENT", "OUI") """,
+                # FROTTEMENT
+                b_zone_lagr=BLOC(
+                    condition="""equal_to("ALGO_CONT", 'LAGRANGIEN') and equal_to("VARIANTE",'ROBUSTE') """,
+                    ALGO_FROT=SIMP(
+                        statut="f", typ="TXM", defaut="LAGRANGIEN", into=("LAGRANGIEN",)
+                    ),
+                ),
+                b_zone_lagr_std=BLOC(
+                    condition="""equal_to("ALGO_CONT", 'LAGRANGIEN') and equal_to("VARIANTE",'CLASSIQUE') """,
+                    ALGO_FROT=SIMP(
+                        statut="f", typ="TXM", defaut="LAGRANGIEN", into=("LAGRANGIEN",)
+                    ),
+                    COEF_FROT=SIMP(statut="f", typ="R", defaut=100.0, val_min=0.0),
                 ),
             ),
         ),
@@ -95,22 +135,23 @@ DEFI_CONT_CATA = MACRO(
         # coefficient de nitche, pénalisation ou augmentation en fonction de la méthode de contact
         COEF_CONT=SIMP(statut="f", typ="R", defaut=100.0, val_min=0.0),
         # Pairing options (for segment to segment contact)
-        APPARIEMENT=SIMP(statut="f", typ="TXM", defaut="MORTAR", into=("MORTAR")),
+        APPARIEMENT=SIMP(statut="f", typ="TXM", defaut="MORTAR", into=("MORTAR",)),
         COEF_MULT_APPA=SIMP(statut="f", typ="R", defaut=-1.0),
         GROUP_MA_MAIT=SIMP(statut="o", typ=grma, max=1),
         GROUP_MA_ESCL=SIMP(statut="o", typ=grma, max=1),
         # Managing boundary conditions with contact (slave side) que pour la méthode LAGRANGE
         b_cl=BLOC(
-            condition="""is_in("ALGO_CONT", ('LAGRANGIEN',))""",
+            condition="""equal_to("ALGO_CONT", "LAGRANGIEN")""",
             SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         ),
+        # Initial contact
         CONTACT_INIT=SIMP(
             statut="f", typ="TXM", defaut="INTERPENETRE", into=("OUI", "INTERPENETRE", "NON")
         ),
         # Add suppl. gaps
         DIST_SUPP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        # À vérifier si l'algo marche pour POUTRE
+        # À vérifier si l"algo marche pour POUTRE
         CARA_ELEM=SIMP(statut="f", typ=cara_elem),
         b_zone_cara=BLOC(
             condition="""exists("CARA_ELEM")""",
@@ -127,18 +168,14 @@ DEFI_CONT_CATA = MACRO(
         ),
         # ----- définition mot-clé facteur avec frottement
         b_zone_fric=BLOC(
-            condition="""equal_to("FROTTEMENT", 'OUI') """,
+            condition="""equal_to("FROTTEMENT", "OUI") """,
             # FROTTEMENT
-            b_zone_lagr=BLOC(
-                condition="""equal_to("ALGO_CONT", 'LAGRANGIEN')""",
-                ALGO_FROT=SIMP(statut="f", typ="TXM", defaut="LAGRANGIEN", into=("LAGRANGIEN",)),
-            ),
             b_cont_nits=BLOC(
-                condition="""equal_to("ALGO_CONT", 'NITSCHE')""",
+                condition="""equal_to("ALGO_CONT", "NITSCHE")""",
                 ALGO_FROT=SIMP(statut="f", typ="TXM", defaut="NITSCHE", into=("NITSCHE",)),
             ),
             b_cont_pena=BLOC(
-                condition="""equal_to("ALGO_CONT", 'PENALISATION')""",
+                condition="""equal_to("ALGO_CONT", "PENALISATION")""",
                 ALGO_FROT=SIMP(
                     statut="f", typ="TXM", defaut="PENALISATION", into=("PENALISATION",)
                 ),
@@ -156,7 +193,6 @@ DEFI_CONT_CATA = MACRO(
             b_coulomb=BLOC(
                 condition="""equal_to("TYPE_FROT", "COULOMB")""", COULOMB=SIMP(statut="o", typ="R")
             ),
-            COEF_FROT=SIMP(statut="f", typ="R", defaut=100.0, val_min=0.0),
         ),  # fin BLOC
     ),  # fin ZONE
 )

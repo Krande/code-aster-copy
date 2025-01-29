@@ -2,7 +2,7 @@
  * @file DiscreteComputationInterface.cxx
  * @brief Interface python de DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -708,7 +708,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
                 internVar (FieldOnCells): field of internal state variables at begin of current time
-                internVarIter (FieldOnCells): field of internal state variables at begin of 
+                internVarIter (FieldOnCells): field of internal state variables at begin of
                                               current newton iteration
                 time_prev (float): time at begin of the step
                 time_step (float): delta time between begin and end of the step
@@ -775,7 +775,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
                 internVar (FieldOnCells): internal state variables at begin of current time
-                internVarIter (FieldOnCells): field of internal state variables 
+                internVarIter (FieldOnCells): field of internal state variables
                                               at begin of current newton iteration
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
@@ -828,8 +828,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
                 data (FieldOnCellsReal): contact data
-                coef_cont (FeildOnNodesReal) : contact coefficient
-                coef_frot (FeildOnNodesReal) : friction coefficient
+                coef_cont (FieldOnNodesReal) : contact coefficient
+                coef_frot (FieldOnNodesReal) : friction coefficient
 
             Returns:
                 FieldOnNodesReal: contact and friction forces
@@ -849,8 +849,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
                 data (FieldOnCellsReal): contact data
-                coef_cont (FeildOnNodesReal) : contact coefficient
-                coef_frot (FeildOnNodesReal) : friction coefficient
+                coef_cont (FieldOnNodesReal) : contact coefficient
+                coef_frot (FieldOnNodesReal) : friction coefficient
 
             Returns:
                 ElementaryMatrixDisplacementReal: contact and friction elementary matrix

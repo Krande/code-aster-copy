@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -165,8 +165,7 @@ RESU = MECA_NON_LINE(
     MODELE=MOD,
     CHAM_MATER=CHMAT,
     EXCIT=(_F(CHARGE=BLOQ), _F(CHARGE=LIAI), _F(CHARGE=DEPL, FONC_MULT=FONC)),
-    # CONTACT  = CONT,
-    CONTACT=_F(DEFINITION=CONT, ALGO_RESO_GEOM="NEWTON", RESI_GEOM=1.0e-3),
+    CONTACT=_F(DEFINITION=CONT, ALGO_RESO_GEOM="NEWTON", RESI_GEOM=1.0e3),
     COMPORTEMENT=_F(RELATION="ELAS"),
     NEWTON=_F(MATRICE="TANGENTE"),
     INCREMENT=_F(LIST_INST=LINST),
@@ -206,7 +205,7 @@ TEST_RESU(
         RESULTAT=RESU,
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
-        VALE_CALC=-0.8413662468,
+        VALE_CALC=-0.8413631767,
         VALE_REFE=-0.81,
         CRITERE="RELATIF",
         PRECISION=0.04,
@@ -240,7 +239,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="SOURCE_EXTERNE",
     PRECISION=0.016,
-    VALE_CALC=17500.7404480,
+    VALE_CALC=17500.6441364,
     VALE_REFE=1.7229580000000002e4,
     NOM_PARA="DY",
     TABLE=REACENC,

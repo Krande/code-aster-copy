@@ -30,6 +30,7 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/lccsst.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"

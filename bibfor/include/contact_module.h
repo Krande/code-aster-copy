@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@
 #define CONT_VARI_RAPI 1
 #define CONT_VARI_ROBU 2
 #define CONT_VARI_SYME 3
+#define CONT_VARI_CLAS 4
 
 #define CONT_TYPE_UNIL 0
 #define CONT_TYPE_BILA 1
@@ -47,6 +48,7 @@
 #define FRIC_ALGO_LAGR 0
 #define FRIC_ALGO_NITS 1
 #define FRIC_ALGO_PENA 2
+#define FRIC_ALGO_LAGR_STD 3
 
 #define FRIC_TYPE_NONE 0
 #define FRIC_TYPE_TRES 1
