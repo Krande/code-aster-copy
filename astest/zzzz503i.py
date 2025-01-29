@@ -109,33 +109,30 @@ rhs.setValues(1)
 mySolver = CA.MumpsSolver()
 mySolver.factorize(matrAsse)
 
-sol_ref = mySolver.solve(rhs)
+ref_sol = mySolver.solve(rhs)
 
 # Compute scaled solution
-logger.setLevel(2)
-
 S = MatrixScaler.MatrixScaler()
 
 nt = PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(matrAsse.norm("NORM_INFINITY"), 1527.7777777794063)
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.toNumpy(), np.inf))
 
-S.computeScaling(matrAsse)
+S.computeScaling(matrAsse, verbose=True)
 S.scaleMatrix(matrAsse)
 
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1.0977480819609067)
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.toNumpy(), np.inf))
 
-logger.setLevel(0)
 S.scaleRHS(rhs)
 
 mySolver.factorize(matrAsse)
+scaled_sol = mySolver.solve(rhs)
 
-solution = mySolver.solve(rhs)
+# The solution *must* be unscaled !
+S.unscaleSolution(scaled_sol)
 
-S.unscaleSolution(solution)
-
-test.assertAlmostEqual(solution.toPetsc().norm(nt), sol_ref.toPetsc().norm(nt))
+test.assertAlmostEqual(scaled_sol.toPetsc().norm(nt), ref_sol.toPetsc().norm(nt))
 
 
 test.printSummary()

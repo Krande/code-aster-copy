@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine matass2petsc(matasz, local, petscMatz, iret)
 #include "asterfort/crsvfm.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/mtmchc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
@@ -117,12 +118,17 @@ subroutine matass2petsc(matasz, local, petscMatz, iret)
         ASSERT(ierr .eq. 0)
 !
 !   -- Nettoyage
-!   Destruction des objets petsc
+!       Destruction des objets petsc
         call apetsc('DETR_MAT', solvbd, matas, [0.d0], ' ', &
                     0, ibid, ierror)
-!   Destruction du solveur bidon
+!       Destruction du solveur bidon
         call detrsd('SOLVEUR', solvbd)
     end if
+!
+!   -- Suppression de la trace de gestion de l'élimination des Dirichlet
+    ! call mtmchc(matas, 'ELIML')
+    call jeveuo(matas//'.REFA', 'E', vk24=refa)
+    refa(3) = ' '
 !
     iret = 0
 !
