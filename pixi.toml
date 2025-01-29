@@ -102,7 +102,7 @@ bibcxx_cc = { cmd = [
     "-DCMAKE_BUILD_TYPE=release",
     "--fresh"
 ], description = "Configure the project for building bibcxx", env = { CC = "clang-cl", CXX = "clang-cl" } }
-bibcxx_ci = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibcxx", depends_on = ["bibcxx_cc"] }
+bibcxx_ci = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibcxx", depends-on = ["bibcxx_cc"] }
 
 bibfor_cmake_configure = { cmd = [
     "cmake", "-B", "build-cmake", "-G", "Ninja",
@@ -111,7 +111,7 @@ bibfor_cmake_configure = { cmd = [
     "-DCMAKE_BUILD_TYPE=release",
     "--fresh"
 ], description = "Configure the project for building bibfor", env = { FC = "ifx.exe", CC = "clang-cl", CXX = "clang-cl" } }
-cmake_bibfor = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends_on = ["bibfor_cmake_configure"] }
+cmake_bibfor = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends-on = ["bibfor_cmake_configure"] }
 
 [feature.local-win.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]

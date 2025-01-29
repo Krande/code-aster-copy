@@ -28,7 +28,7 @@ requirements:
         - ${{ compiler('fortran') }}
         - libgomp
     - pyyaml
-    - waf 2.0.27
+    - waf ==2.0.27
     - if: win
       then: clang
     - setuptools
