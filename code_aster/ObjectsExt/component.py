@@ -871,14 +871,23 @@ class ComponentOnCells(Component):
             self._descr._nbcells == other._descr._nbcells
         )
         assert self.restr is None and other.restr is None, (self.restr, other.restr)
-        assert self._idx.shape == other._idx.shape
-        new = other.copy()
+        nbc0, nbp0 = self._idx.shape
+        nbco, nbpo = other._idx.shape
+        assert nbc0 == nbco == self._descr._nbcells
         bools = other._idx >= 0
         idx = other._idx[bools]
-        keep = self._idx[bools]
+        bself = np.zeros((nbc0, nbp0), dtype=bool)
+        if nbp0 > nbpo:
+            bself[:nbco, :nbpo] = bools
+        else:
+            bself = bools[:nbc0, :nbp0]
+        keep = self._idx[bself]
         if strict and np.any(keep < 0):
             raise IndexError("no value on all the support")
+        if nbp0 < nbpo:
+            keep = np.append(keep, np.ones(nbpo - nbp0, dtype=int) * -1)
         prol = np.append(self._values, [0.0])
+        new = other.copy()
         new._values[idx] = np.take(prol, keep)
         new._descr._idx = other._idx.copy()
         self._sign = None
