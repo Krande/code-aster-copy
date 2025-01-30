@@ -81,14 +81,18 @@ class PostBeremin:
           Paraview to see it)
     """
 
-    # data
+    # data 2D and 3D
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
-    _method_2D = _proj_3D_2D = _mesh_proj_mc = _mesh_proj = _mesh_3D_cells = _prec_proj = None
-    _medfilename_temp = _unite_temp = None
     _intvar_idx = _stress_idx = None
     _use_hist = _use_indiplas = _use_function = None
     _coef_mult = None
     _weib_params = None
+    # data 2D
+    _method_2D = _prec_proj = None
+    _proj_3D_2D = _mesh_proj = _name_mesh_med = None
+    _mesh_proj_mc = _mesh_3D_cells = None
+    _medfilename_temp = _unite_temp = None
+
     # result to compute weibull stress
     _reswb = _rsieq = _rout = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -125,8 +129,12 @@ class PostBeremin:
             self._method_2D = True
             self._mesh_proj = args["METHODE_2D"]["MAILLAGE"]
             self._prec_proj = args["METHODE_2D"]["PRECISION"]
+            self._name_mesh_med = args["METHODE_2D"]["NOM_MAIL_MED"]
 
-            ##ToFIX : ajout d'une verification que le résultat donné en entrée est bien 3D
+            if (self._mesh_proj and not self._name_mesh_med) or (
+                not self._mesh_proj and self._name_mesh_med
+            ):
+                UTMESS("F", "RUPTURE4_17")
 
     def set_indexes(self, intvar_idx: list = None, stress_idx: list = None) -> None:
         """Define the indexes used to extract the relevant components depending
@@ -145,7 +153,8 @@ class PostBeremin:
             else:
                 self._use_indiplas = False
         if stress_idx:
-            assert len(stress_idx) in (4, 6), stress_idx
+            if len(stress_idx) not in [4, 6]:
+                UTMESS("F", "RUPTURE4_18")
             self._stress_idx = stress_idx
 
     def use_history(self, value: bool) -> None:
@@ -509,30 +518,17 @@ class PostBeremin:
                                 sig1, coor_elga.W, pow_m, sigma_refe
                             )
 
-                        if self._use_function:
-                            table.append(
-                                id_store,
-                                time,
-                                self._zone,
-                                pow_m,
-                                "FONCTION",
-                                sigma_thr,
-                                strwb,
-                                strwb_pm,
-                                proba,
-                            )
-                        else:
-                            table.append(
-                                id_store,
-                                time,
-                                self._zone,
-                                pow_m,
-                                sigma_refe,
-                                sigma_thr,
-                                strwb,
-                                strwb_pm,
-                                proba,
-                            )
+                        table.append(
+                            id_store,
+                            time,
+                            self._zone if not self._method_2D else self._name_mesh_med,
+                            pow_m,
+                            sigma_refe if not self._use_function else "FONCTION",
+                            sigma_thr,
+                            strwb,
+                            strwb_pm,
+                            proba,
+                        )
 
                         id_store += 1
 

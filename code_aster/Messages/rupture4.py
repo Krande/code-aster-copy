@@ -74,7 +74,7 @@ Le nombre de contours (NB_COUCHES) doit  être supérieur ou égal à 2.
     ),
     14: _(
         """
-Pour utiliser METHODE_2D, le résultat mécanique doit être de dimension 3.
+Pour utiliser METHODE_2D, le résultat mécanique donné en entrée doit être de dimension 3.
 """
     ),
     15: _(
@@ -86,5 +86,14 @@ Pour utiliser METHODE_2D, le maillage cible doit être de dimension 2.
         """
 Erreur dans la projection 3D vers 2D : incohérence dans le nombre de mailles.
 """
+    ),
+    17: _(
+        """
+Incohérence dans les paramètres d'entrée pour METHODE_2D : il faut donner autant de MAILLAGE que de NOM_MAIL_MED
+"""
+    ),
+    18: _(
+        """
+Dans le cas DEFORMATION = GDEF_LOG, le paramètre LIST_NUME_SIEF doit être de dimension 4 en 2D ou de dimension 6 en 3D"""
     ),
 }
