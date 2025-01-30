@@ -150,7 +150,7 @@ def build_libbibc(self, env):
     get_srcs = self.path.get_src().ant_glob
     # compile *.c
     self(
-        features="c cshlib",
+        features=("c cstlib" if self.env.ASTER_PLATFORM_MINGW else "c cshlib"),
         name="asterbibc",
         source=get_srcs("**/*.c", excl=[PYMAIN]),
         target="bibc",
@@ -166,6 +166,12 @@ def build_libaster(self, env):
     if env.BUILD_MFRONT:
         use.append("astermfront")
     # {bibfor, bibc, bibcxx}/*.o
+    if self.env.ASTER_PLATFORM_MINGW:
+        # fix circular dependencies betw bibc.a and bibfor.a
+        env=env.derive()
+        env.detach()
+        env.append_value("STLIB_MARKER", "-Wl,--start-group")
+        env.append_value("SHLIB_MARKER", "-Wl,--end-group")
     self(
         features="cxx cxxshlib",
         name="asterlib",
