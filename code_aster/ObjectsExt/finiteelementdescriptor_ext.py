@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,41 @@
 from libaster import FiniteElementDescriptor
 
 from ..Utilities import injector
+from ..Objects.Serialization import InternalStateBuilder
+
+
+class FEDStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *FiniteElementDescriptor*."""
+
+    def save(self, fed):
+        """Return the internal state of a *FiniteElementDescriptor* to be pickled.
+
+        Arguments:
+            fed (*FiniteElementDescriptor*): The *FiniteElementDescriptor* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(fed)
+        self._st["model"] = fed.getModel()
+        return self
+
+    def restore(self, fed):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            field (*DataStructure*): The *DataStructure* object to be restored.
+        """
+        super().restore(fed)
+        if self._st["model"]:
+            fed.setModel(self._st["model"])
 
 
 @injector(FiniteElementDescriptor)
 class ExtendedFiniteElementDescriptor:
     cata_sdj = "SD.sd_ligrel.sd_ligrel"
+    internalStateBuilder = FEDStateBuilder
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a

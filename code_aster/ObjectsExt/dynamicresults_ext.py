@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,11 @@
 **************************************************
 """
 
-import numpy
-
-import aster
 from libaster import TransientGeneralizedResult
 
-from ..Cata.Syntax import AsException
 from ..Utilities import injector
+
+# aslint: disable=C4014
 
 
 @injector(TransientGeneralizedResult)
@@ -197,30 +195,9 @@ class ExtendedTransientGeneralizedResult:
                 sst1 = "-"
             if len(sst2.strip()) == 0:
                 sst2 = "-"
-            title = title.strip().center(25)
-            no1 = no1.strip().center(9)
-            no2 = no2.strip().center(9)
-            sst1 = sst1.strip().center(9)
-            sst2 = sst2.strip().center(9)
-            sep = " | "
             print(
-                "%s%s%s%s%s%s%s%s%s%s%s%s%s%s"
-                % (
-                    sep,
-                    str(i + 1).center(5),
-                    sep,
-                    nltypes[i].center(17),
-                    sep,
-                    no1,
-                    sep,
-                    no2,
-                    sep,
-                    sst1,
-                    sep,
-                    sst2,
-                    sep,
-                    title,
-                )
+                f" | {i+1:^5} | {nltypes[i]:^17} | {no1.strip():^9} | {no2.strip():^9}"
+                f" | {sst1.strip():^9} | {sst2.strip():^9} | {title:^25}"
             )
             add = [nltypes[i]] + list(inti[(i - 1) * 5 : (i - 1) * 5 + 5])
             Output[i] = add

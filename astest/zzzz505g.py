@@ -303,6 +303,8 @@ dest = Path("weight_descr.png")
 ret = weight.plot_descr(filename=dest)
 test.assertTrue(not ret or dest.exists(), msg="figure png")
 
+test.assertIsNotNone(ch0.getModel(), msg="chs has a model")
+
 test.printSummary()
 print(f"cumulative size of created ComponentOnCells objects: {cumsize:,.0f} bytes")
 
