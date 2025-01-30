@@ -3,7 +3,7 @@
  * @brief Implementation de MedFilePointer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -54,7 +54,7 @@ int MedFilePointer::open( const std::filesystem::path &filename,
     } else {
         throw std::runtime_error( "Med file access type not allowed" );
     }
-    _fileId = MEDfileOpen( filename.c_str(), medAccessMode );
+    _fileId = MEDfileOpen( filename.string().c_str(), medAccessMode );
     _isOpen = true;
     _parallelOpen = false;
     return 0;
@@ -75,7 +75,7 @@ int MedFilePointer::openParallel( const std::filesystem::path &filename,
     } else {
         throw std::runtime_error( "Med file access type not allowed" );
     }
-    _fileId = MEDparFileOpen( filename.c_str(), medAccessMode, comm, MPI_INFO_NULL );
+    _fileId = MEDparFileOpen( filename.string().c_str(), medAccessMode, comm, MPI_INFO_NULL );
     _isOpen = true;
     _parallelOpen = true;
     return 0;
