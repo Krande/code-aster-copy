@@ -54,7 +54,9 @@ def configure(self):
     self.load("compiler_c")
     opts = self.options
     # preserve symbols in the dyn table for stdcalls
-    if sys.platform != "darwin":
+    if self.env.ASTER_PLATFORM_MINGW:
+        self.add_linkflags(["-Wl,--export-all-symbols"])
+    elif sys.platform != "darwin":
         self.add_linkflags("-Wl,--export-dynamic")
     else:
         # '--export-dynamic' is '-export_dynamic' in OS X linker
