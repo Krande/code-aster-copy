@@ -26,9 +26,6 @@ Compute:
       - "PETIT"      -> "SIEF"
       - "PETIT_REAC" -> "SIEF"
       - "GDEF_LOG"   -> "VARI_ELGA"
-      - "SIMO_MIEHE" -> To retrieve Kirchhof stresses ? Not obvious ...
-                        Normally, we can do without
-                        Use of HHO models instead ?
 
 Integral must be computed on the initial configuration
 
@@ -136,6 +133,9 @@ class PostBeremin:
             ):
                 UTMESS("F", "RUPTURE4_17")
 
+            if self._rout and len(self._mesh_proj) != 1:
+                UTMESS("F", "RUPTURE4_19")
+
     def set_indexes(self, intvar_idx: list = None, stress_idx: list = None) -> None:
         """Define the indexes used to extract the relevant components depending
         of the behaviour.
@@ -195,10 +195,8 @@ class PostBeremin:
 
         if self._rout:
             for param in ["SIGM_REFE", "M", "SIGM_SEUIL"]:
-                assert len(self._weib_params[param]) in [
-                    0,
-                    1,
-                ], "SIGM_MAXI can only be used with one set of WEIBULL parameter"
+                if len(self._weib_params[param]) not in [0, 1]:
+                    UTMESS("F", "RUPTURE4_19")
 
     def setup_calc_result(self):
         """Setup the result object to be used to compute the Beremin stress."""
@@ -366,6 +364,30 @@ class PostBeremin:
 
         return varc_elga.TEMP
 
+    def compute_intsig1_3D(self, sig1, pow_m, weight):
+        """Compute the values to be added into the result table.
+
+        Args:
+            sig1 (*ComponentOnCells*): Major stress ^ M.
+            pow_m (float): current M coefficient
+            weight (*ComponentOnCells*): Weight of each integration point,
+                **changed in place**.
+
+        Returns:
+            intsig1pm: integral of major stress ^ M.
+        """
+        if DEBUG:
+            print("NEW: sigpm:", sig1.sum())
+
+        sig1 **= pow_m
+        weight = weight.onSupportOf(sig1)
+        integ = sig1 * weight
+        # Restrict to GROUP_MA
+        integ.restrict(self._zone_ids)
+        intsig1pm = integ.sum()
+
+        return intsig1pm
+
     def build_projector(self):
         """Return the 3D -> 2D projector when METHODE_2D is used
 
@@ -396,8 +418,9 @@ class PostBeremin:
             self._mesh_3D_cells, self._mesh_proj_mc, prec_rel=self._prec_proj
         )
 
-    def compute_sig1_2D(self, sig1, pow_m, sigma_refe):
+    def compute_intsig1_2D(self, sig1, pow_m):
         """Projection of sig1 from 3D cells to barycenter of 2D cells
+        and computation of 2D integral
 
         Args:
             sig1 (*ComponentOnCells*): Major stress on 3D cells
@@ -440,25 +463,10 @@ class PostBeremin:
         medc_cell_field.setName("SIEF_ELGA")
         medc_cell_field.checkConsistencyLight()
 
-        ##Compute table values
-        coef_volu = self._coef_mult / self._weib_params["VOLU_REFE"]
-        inv_m = 1 / pow_m
-        sigma_u = self._weib_params["SIGM_CNV"] if self._use_function else sigma_refe
-
-        ##INTESIXX
+        ##Compute integral
         intsig1pm = medc_cell_field.integral(0, True)
 
-        # intfin(INTE_SIXX) = (COEF_MULT/VOLU_REFE*INTE_SIXX)**(1/bere_m)
-        sigma_weibull = (coef_volu * intsig1pm) ** inv_m
-
-        # sigwm(SIGMA_WEIBULL) = SIGMA_WEIBULL**bere_m
-        sigma_weibullpm = sigma_weibull**pow_m
-
-        # probaw(SIGMA_WEIBULL) = 1-exp(-SIGMA_WEIBULL**bere_m/sigma_u**bere_m)
-        #  avec sigma_u=SIMG_CNV ou SIGM_REFE
-        proba_weibull = 1.0 - exp(-((sigma_weibull / sigma_u) ** pow_m))
-
-        return sigma_weibull, sigma_weibullpm, proba_weibull
+        return intsig1pm
 
     def main(self):
         """Compute Weibull stress and failure probability."""
@@ -508,15 +516,16 @@ class PostBeremin:
                             print("NEW: sigmax:", id_store, idx, sig1.sum())
 
                         if self._method_2D:
-                            strwb, strwb_pm, proba = self.compute_sig1_2D(sig1, pow_m, sigma_refe)
+                            intsig1pm = self.compute_intsig1_2D(sig1, pow_m)
 
                         else:
-                            sig1 **= pow_m
-                            self.store_sigm_maxi(id_store, time, sig1, model)
+                            intsig1pm = self.compute_intsig1_3D(sig1, pow_m, coor_elga.W)
 
-                            strwb, strwb_pm, proba = self.compute_table_values(
-                                sig1, coor_elga.W, pow_m, sigma_refe
-                            )
+                        self.store_sigm_maxi(id_store, time, sig1, model)
+
+                        strwb, strwb_pm, proba = self.compute_table_values(
+                            intsig1pm, pow_m, sigma_refe
+                        )
 
                         table.append(
                             id_store,
@@ -534,13 +543,11 @@ class PostBeremin:
 
         return table
 
-    def compute_table_values(self, sig1, weight, pow_m, sigma_refe):
+    def compute_table_values(self, intsig1pm, pow_m, sigma_refe):
         """Compute the values to be added into the result table.
 
         Args:
-            sig1 (*ComponentOnCells*): Major stress ^ M.
-            weight (*ComponentOnCells*): Weight of each integration point,
-                **changed in place**.
+            intsig1pm (float): integral of major stress ^ M.
             pow_m (float): M weibull parameter
             sigma_refe (float): sigm_refe parameter
 
@@ -552,15 +559,6 @@ class PostBeremin:
         sigma_u = self._weib_params["SIGM_CNV"] if self._use_function else sigma_refe
 
         logger.info("computing table values...")
-        if DEBUG:
-            print("NEW: sigpm:", sig1.sum())
-
-        weight = weight.onSupportOf(sig1)
-        # colonne INTE_SIXX
-        # Restrict to GROUP_MA
-        integ = sig1 * weight
-        integ.restrict(self._zone_ids)
-        intsig1pm = integ.sum()
 
         # intfin(INTE_SIXX) = (COEF_MULT/VOLU_REFE*INTE_SIXX)**(1/bere_m)
         sigma_weibull = (coef_volu * intsig1pm) ** inv_m

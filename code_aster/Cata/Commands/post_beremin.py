@@ -100,7 +100,7 @@ POST_BEREMIN = MACRO(
     METHODE_2D=FACT(
         statut="f",
         MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
-        NOM_MAIL_MED=SIMP(statut="f", typ="TXM"),
+        NOM_MAIL_MED=SIMP(statut="o", typ="TXM"),
         PRECISION=SIMP(statut="f", typ="R", defaut=0.01, val_min=0.0),
     ),
 )
