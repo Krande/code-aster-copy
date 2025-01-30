@@ -82,4 +82,9 @@ Pour utiliser METHODE_2D, le résultat mécanique doit être de dimension 3.
 Pour utiliser METHODE_2D, le maillage cible doit être de dimension 2.
 """
     ),
+    16: _(
+        """
+Erreur dans la projection 3D vers 2D : incohérence dans le nombre de mailles.
+"""
+    ),
 }

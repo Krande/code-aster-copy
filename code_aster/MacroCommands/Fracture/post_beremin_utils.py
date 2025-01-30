@@ -108,6 +108,7 @@ class CELL_TO_POINT:
 
         # boucle sur la précision de recherche
         while 1:
+            logger.info("Projector build, prec =" + str(prec))
             coor_nook = self.coor[nook_idx].toNumPyArray().ravel().tolist()
             (cells_prec, pos_prec) = meshT4.getCellsContainingPoints(coor_nook, prec)
             nbCells = pos_prec[1:] - pos_prec[:-1]
@@ -192,49 +193,3 @@ class CELL_TO_POINT:
         values = values[self.pt_idx]
 
         return values
-
-
-def ComputeDistanceToMesh(mesh, p):
-    """
-    Attention: fonctionnement lent (boucles Python) mais utile en debug
-    Calcul de la distance du point p (numpy.array) aux cellules du maillage mesh (tétraèdres)
-    Retourne la liste des distances pour chaque cellule
-    """
-    assert mesh.getAllGeoTypes() == [mc.NORM_TETRA4]  # uniquement des tétraèdres
-
-    nds = mesh.getNodalConnectivity()
-    dist = []
-    for nc in range(mesh.getNumberOfCells()):
-
-        # Liste des sommets (xyz) dans l'ordre de numérotation de la maille
-        xyz = mesh.getCoords()[nds[nc * 5 + 1 : nc * 5 + 5]].toNumPyArray()
-
-        dmax = 0.0
-        for face in [
-            np.array((0, 1, 2, 3)),
-            np.array((0, 1, 3, 2)),
-            np.array((1, 2, 3, 0)),
-            np.array((2, 0, 3, 1)),
-        ]:
-
-            vertices = xyz[face]
-            u = vertices[1, :] - vertices[0, :]
-            v = vertices[2, :] - vertices[0, :]
-            w = vertices[3, :] - vertices[0, :]
-            m = p - vertices[0, :]
-
-            # normale rentrante pour la face considérée
-            n = np.cross(u, v)
-            n = n / np.dot(n, n) ** 0.5
-            n = math.copysign(1, np.dot(n, w)) * n
-
-            # distance signée à la face (positive si coté intérieur)
-            d = np.dot(m, n)
-
-            # On ne considère que les distances extérieures à la maille
-            ext = 0.5 * (abs(d) - d)
-            dmax = max(ext, dmax)
-
-        dist.append(dmax)
-
-    return dist

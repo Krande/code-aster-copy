@@ -44,7 +44,7 @@ import medcoupling as mc
 from .Fracture.post_beremin_utils import CELL_TO_POINT
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
-from ..CodeCommands import IMPR_RESU, PROJ_CHAMP, AFFE_MODELE
+from ..CodeCommands import IMPR_RESU, AFFE_MODELE
 from ..Objects import FieldOnCellsReal, NonLinearResult, Table
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..Messages import UTMESS
@@ -83,7 +83,7 @@ class PostBeremin:
 
     # data
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
-    _method_2D = _proj_3D_2D = _mesh_proj = _prec_proj = None
+    _method_2D = _proj_3D_2D = _mesh_proj_mc = _mesh_proj = _mesh_3D_cells = _prec_proj = None
     _medfilename_temp = _unite_temp = None
     _intvar_idx = _stress_idx = None
     _use_hist = _use_indiplas = _use_function = None
@@ -357,7 +357,7 @@ class PostBeremin:
 
         return varc_elga.TEMP
 
-    def build_projector(self, sieq):
+    def build_projector(self):
         """Return the 3D -> 2D projector when METHODE_2D is used
 
         Returns:
@@ -372,17 +372,84 @@ class PostBeremin:
         )
         with disable_fpe():
             f_on_cells = f_on_gauss.voronoize(1e-12)
-        mesh_3d_mc = f_on_cells.getMesh()
-        if mesh_3d_mc.getMeshDimension() != 3:
+        self._mesh_3D_cells = f_on_cells.getMesh()
+        if self._mesh_3D_cells.getMeshDimension() != 3:
             UTMESS("F", "RUPTURE4_14")
 
         ##Get 2D mesh
-        mesh_2D_mc = self._mesh_proj.createMedCouplingMesh(spacedim=3)[0]
-        if mesh_2D_mc.getMeshDimension() != 2:
+        ##TOFIX : découper le maillage 2D en cellules par points de Gauss
+        self._mesh_proj_mc = self._mesh_proj.createMedCouplingMesh(spacedim=3)[0]
+        if self._mesh_proj_mc.getMeshDimension() != 2:
             UTMESS("F", "RUPTURE4_15")
 
-        ##Build projector 3D -> points (points = barycenters of 2D cells)
-        self._proj_3D_2D = CELL_TO_POINT(mesh_3d_mc, mesh_2D_mc, prec_rel=self._prec_proj)
+        ##Build projector 3D -> points (points = barycenters of 2D mesh cells)
+        self._proj_3D_2D = CELL_TO_POINT(
+            self._mesh_3D_cells, self._mesh_proj_mc, prec_rel=self._prec_proj
+        )
+
+    def compute_sig1_2D(self, sig1, pow_m, sigma_refe):
+        """Projection of sig1 from 3D cells to barycenter of 2D cells
+
+        Args:
+            sig1 (*ComponentOnCells*): Major stress on 3D cells
+
+        """
+
+        ##TOFIX : aller récupérer les modèles affectés à _zone plutôt que de les inventer
+        modele_tmp = AFFE_MODELE(
+            MAILLAGE=self._result.getMesh().restrict(self._zone),
+            AFFE=(
+                _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+                _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D_SI"),
+            ),
+        )
+
+        ##3D ComponentOnCells to 3D medcoupling array
+        sigmax = FieldOnCellsReal(modele_tmp, "ELGA", "SIEF_R")
+        sigmax.setValues(0.0)
+        sfield = sigmax.toSimpleFieldOnCells()
+        sixx = sfield.SIXX
+        sig1.restrict(self._zone_ids)
+        sixx += sig1
+        sfield.setComponentValues("SIXX", sixx.expand())
+        sfield_mc = sfield.toMEDCouplingField(self._mesh_3D_cells)
+        sfield_ar = sfield_mc.getArray()[:, 0]
+
+        ##Projection 3D -> points
+        sfield_ar_points = self._proj_3D_2D.Eval(sfield_ar)
+        sfield_ar_points.setName("SIXX")
+
+        ##Create 2D medcoupling field
+        medc_cell_field = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
+        medc_cell_field.setName("SIXX")
+        if len(sfield_ar_points) == self._mesh_proj_mc.getNumberOfCells():
+            medc_cell_field.setMesh(self._mesh_proj_mc)
+        else:
+            UTMESS("F", "RUPTURE4_16")
+        medc_cell_field.setArray(sfield_ar_points**pow_m)
+        medc_cell_field.setNature(mc.IntensiveConservation)
+        medc_cell_field.setName("SIEF_ELGA")
+        medc_cell_field.checkConsistencyLight()
+
+        ##Compute table values
+        coef_volu = self._coef_mult / self._weib_params["VOLU_REFE"]
+        inv_m = 1 / pow_m
+        sigma_u = self._weib_params["SIGM_CNV"] if self._use_function else sigma_refe
+
+        ##INTESIXX
+        intsig1pm = medc_cell_field.integral(0, True)
+
+        # intfin(INTE_SIXX) = (COEF_MULT/VOLU_REFE*INTE_SIXX)**(1/bere_m)
+        sigma_weibull = (coef_volu * intsig1pm) ** inv_m
+
+        # sigwm(SIGMA_WEIBULL) = SIGMA_WEIBULL**bere_m
+        sigma_weibullpm = sigma_weibull**pow_m
+
+        # probaw(SIGMA_WEIBULL) = 1-exp(-SIGMA_WEIBULL**bere_m/sigma_u**bere_m)
+        #  avec sigma_u=SIMG_CNV ou SIGM_REFE
+        proba_weibull = 1.0 - exp(-((sigma_weibull / sigma_u) ** pow_m))
+
+        return sigma_weibull, sigma_weibullpm, proba_weibull
 
     def main(self):
         """Compute Weibull stress and failure probability."""
@@ -414,7 +481,7 @@ class PostBeremin:
 
                         if self._method_2D and not self._proj_3D_2D:
                             logger.info("building projector ...")
-                            self.build_projector(sieq)
+                            self.build_projector()
 
                         if self._use_indiplas:
                             sig1 = self.apply_threshold(sig1, indip)
@@ -431,12 +498,17 @@ class PostBeremin:
                         if DEBUG:
                             print("NEW: sigmax:", id_store, idx, sig1.sum())
 
-                        sig1 **= pow_m
-                        self.store_sigm_maxi(id_store, time, sig1, model)
+                        if self._method_2D:
+                            strwb, strwb_pm, proba = self.compute_sig1_2D(sig1, pow_m, sigma_refe)
 
-                        strwb, strwb_pm, proba = self.compute_table_values(
-                            sig1, coor_elga.W, pow_m, sigma_refe
-                        )
+                        else:
+                            sig1 **= pow_m
+                            self.store_sigm_maxi(id_store, time, sig1, model)
+
+                            strwb, strwb_pm, proba = self.compute_table_values(
+                                sig1, coor_elga.W, pow_m, sigma_refe
+                            )
+
                         if self._use_function:
                             table.append(
                                 id_store,
