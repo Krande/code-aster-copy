@@ -1,0 +1,155 @@
+digraph MNL {
+    compound = "true";
+    // rankdir = LR;
+    labelloc = "t";
+    fontname = "Helvetica,Arial,sans-serif";
+    node [fontname = "Helvetica,Arial,sans-serif"; shape = "box";];
+    edge [fontname = "Helvetica,Arial,sans-serif";];
+    
+    subgraph {
+        keywords [label = "Keywords";];
+        problem [label = "PhysicalProblem";shape = "ellipse";];
+        state [label = "PhysicalState";shape = "ellipse";];
+    }
+    
+    mnl [label = "meca_non_line_ops";];
+    pbsolv [label = "ProblemSolver";];
+    main [label = "NonLinearSolver";];
+    timestepper [label = "TimeStepper";];
+    storage [label = "StorageManager";];
+    linsolv [label = "LinearSolver";];
+    linesearch [label = "LineSearch";];
+    conv_manager [label = "ConvergenceManager";];
+    contact [label = "Contact";];
+    hook [label = "PostStepHook";];
+    incr_solv [label = "IncrementalSolver";];
+    
+    observ [label = "Observer";];
+    event [label = "EventSource";];
+    // Notifier or Emitter
+    opers [label = OperatorsManager;style = "dashed";];
+    
+    subgraph cluster_stepsolv {
+        label = "StepSolver";
+        style = "dashed";
+        subgraph {
+            rank = "same";
+            stepsolv [label = "BaseStepSolver";];
+            dispatch [label = "ProblemDispatcher";style = "dashed";];
+            stepsolv -> dispatch [xlabel = "factory"; arrowhead = "empty";];
+        }
+        subgraph {
+            rank = "same";
+            mecastat [label = "MecaStatStepSolver";];
+            mecadyn [label = "MecaDynaStepSolver";];
+            ther [label = "ThermalStepSolver";];
+        }
+        // subclasses
+        stepsolv -> mecastat [dir = "back"; arrowtail = "empty";];
+        stepsolv -> mecadyn [dir = "back"; arrowtail = "empty";];
+        stepsolv -> ther [dir = "back"; arrowtail = "empty";];
+        
+        statopers [label = "MecaStatOperatorsManager";style = "dashed";];
+        theropers [label = "ThermalOperatorsManager";style = "dashed";];
+        dynopers [label = "MecaDynaOperatorsManager";style = "dashed";];
+        mecastat -> statopers [xlabel = "use"; dir = "back"; arrowtail = "diamond";];
+        ther -> theropers [xlabel = "use"; dir = "back"; arrowtail = "diamond";];
+        
+        implicit [label = "ImplicitStepSolver";];
+        explicit [label = "ExplicitStepSolver";];
+        multi [label = "MultiStepSolver";];
+        
+        // mecadyn -> dynopers[dir="back", arrowtail="empty"]
+        // ther -> theropers[dir="back", arrowtail="empty"]
+        
+        integr [label = BaseIntegrator;];
+        newmark [label = NewmarkIntegrator;];
+        
+        // subclasses
+        mecadyn -> implicit [dir = "back"; arrowtail = "empty";];
+        mecadyn -> explicit [dir = "back"; arrowtail = "empty";];
+        mecadyn -> multi [dir = "back"; arrowtail = "empty";];
+        
+        implicit -> integr;
+        explicit -> integr;
+        multi -> integr;
+        
+        // composition
+        subgraph {
+            rank = "same";
+            dynopers -> integr [dir = "back"; arrowtail = "diamond";];
+        }
+        integr -> newmark [dir = "back"; arrowtail = "empty";];
+    }
+    
+    subgraph cluster_iter_solv {
+        label = ConvergenceCriteria;
+        style = "dashed";
+        
+        conv_criteria [label = "IterationsSolver*";];
+        // [style = invis]
+        newton [label = "NewtonSolver";];
+        snes [label = "SNESSolver";];
+        raspen [label = "RaspenSolver";];
+        
+        conv_criteria -> newton [dir = "back"; arrowtail = "empty"; style = "dotted";];
+        conv_criteria -> snes [dir = "back"; arrowtail = "empty"; style = "dotted";];
+        conv_criteria -> raspen [dir = "back"; arrowtail = "empty"; style = "dotted";];
+    }
+    
+    mnl -> pbsolv;
+    mnl -> keywords [xlabel = "init"; style = "bold";];
+    mnl -> problem [xlabel = "creates"; style = "bold";];
+    
+    pbsolv -> main [xlabel = "wraps";];
+    pbsolv -> state [xlabel = "creates"; style = "bold";];
+    
+    main -> keywords [xlabel = ".param"; style = "dotted";];
+    main -> problem [style = "dotted";];
+    main -> state [style = "dotted";];
+    main -> timestepper;
+    main -> storage;
+    main -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];
+    main -> hook [label = opt; style = "dashed";];
+    
+    stepsolv -> problem [style = "dotted"; ltail = cluster_stepsolv;];
+    
+    stepsolv -> state [ltail = cluster_stepsolv;];
+    stepsolv -> linsolv [ltail = cluster_stepsolv;];
+    stepsolv -> conv_criteria [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
+    
+    conv_criteria -> linsolv [ltail = cluster_iter_solv;];
+    conv_criteria -> opers [xlabel = "use"; dir = "back"; arrowtail = "diamond"; ltail = cluster_iter_solv;];
+    snes -> incr_solv [style = "invis";];
+    
+    newton -> incr_solv;
+    newton -> conv_manager;
+    incr_solv -> contact;
+    incr_solv -> opers [xlabel = "use"; dir = "back"; arrowtail = "diamond";];
+    incr_solv -> linsolv;
+    incr_solv -> linesearch;
+    incr_solv -> conv_manager;
+    incr_solv -> event [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
+    incr_solv -> problem [style = "dotted";];
+    incr_solv -> state [style = "dotted";];
+    // integr -> state[style="dotted"];
+    linesearch -> state [style = "dotted";];
+    
+    opers -> contact;
+    // opers -> statopers [dir = "back"; arrowtail = "empty";];
+    // opers -> dynopers [dir = "back"; arrowtail = "empty";];
+    // opers -> theropers [dir = "back"; arrowtail = "empty";];
+    opers -> problem [style = "dotted";];
+    opers -> state [style = "dotted";];
+    
+    contact -> problem [style = "dotted";];
+    conv_manager -> problem [style = "dotted";];
+    conv_manager -> state [style = "dotted";];
+    snes -> problem [style = "dotted";];
+    raspen -> problem [style = "dotted";];
+    
+    timestepper -> observ [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
+    
+    // placement
+    timestepper -> stepsolv [style = "invis";];
+}
