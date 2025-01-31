@@ -26,7 +26,6 @@
 import os
 import subprocess
 import tempfile
-
 from ..CodeCommands import CREA_MAILLAGE
 from ..Objects import Mesh, PythonBool
 from ..Objects.Serialization import InternalStateBuilder
@@ -102,6 +101,30 @@ class ExtendedMesh:
             info [int] : verbosity mode (0|1|2). (default 1).
         """
         return cls.buildRectangle(lx=l, ly=l, refine=refine, info=info)
+
+    @classmethod
+    def buildArc(cls, radius=1, angle=1, refine=0, info=1):
+        """Build the mesh of an arc.
+
+        Arguments:
+            radius [float] : Arc radius (default 1).
+            angle [float] : Arc angle in radians (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+        assert info in (0, 1, 2), "Invalid parameter"
+        assert isinstance(refine, int), "Invalid parameter"
+
+        # Take into account refine level before creating mesh
+        nb_seg_orth = 2 * (2**refine)
+
+        mcmesh = mesh_builder.arc(radius=radius, angle=angle, no=nb_seg_orth)
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
 
     @classmethod
     def buildRing(cls, rint=0.1, rext=1, refine=0, info=1):
