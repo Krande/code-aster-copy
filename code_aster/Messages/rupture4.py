@@ -74,7 +74,8 @@ Le nombre de contours (NB_COUCHES) doit  être supérieur ou égal à 2.
     ),
     14: _(
         """
-Pour utiliser METHODE_2D, le résultat mécanique donné en entrée doit être de dimension 3.
+Pour utiliser METHODE_2D, le résultat mécanique donné en entrée
+doit être de dimension 3.
 """
     ),
     15: _(
@@ -89,26 +90,38 @@ Erreur dans la projection 3D vers 2D : incohérence dans le nombre de mailles.
     ),
     17: _(
         """
-Incohérence dans les paramètres d'entrée pour METHODE_2D : il faut donner autant de MAILLAGE que de NOM_MAIL_MED
+Incohérence dans les paramètres d'entrée pour METHODE_2D : il faut donner
+autant de MAILLAGE que de NOM_MAIL_MED
 """
     ),
     18: _(
         """
-Dans le cas DEFORMATION = "GDEF_LOG", le paramètre LIST_NUME_SIEF doit être de dimension 4 en 2D ou de dimension 6 en 3D"""
+Dans le cas DEFORMATION = "GDEF_LOG", le paramètre LIST_NUME_SIEF doit être
+de dimension 4 en 2D ou de dimension 6 en 3D"""
     ),
     19: _(
         """
-L'impression de SIGM_MAXI au format .med n'est pas compatible avec l'utilisation de plusieurs paramètres matériaux, ou dans le cas METHODE_2D la projection sur plusieurs plans.
+L'impression de SIGM_MAXI au format .med n'est pas compatible avec
+l'utilisation de plusieurs paramètres matériaux,
+ou dans le cas METHODE_2D la projection sur plusieurs plans.
         """
     ),
     20: _(
         """
-Incohérence dans les maillages donnés en entrée : si le maillage 3D de la structure résultat est quadratique (ou linéaire), alors le maillage 2D pour METHODE_2D doit aussi être quadratique (ou linéaire).
+Incohérence dans les maillages donnés en entrée : si le maillage 3D de la
+structure résultat est quadratique (ou linéaire),
+alors le maillage 2D pour METHODE_2D doit aussi être quadratique (ou linéaire).
         """
     ),
     21: _(
         """
 METHODE_2D doit nécessairement être utilisée avec FILTRE_SIGM = "SIGM_ELMOY"
+        """
+    ),
+    22: _(
+        """
+Plus de 5 itérations ont été nécessaires pour construire le projecteur
+utilisé dans METHODE_2D. Vérifiez la cohérence des maillages 2D et 3D.
         """
     ),
 }

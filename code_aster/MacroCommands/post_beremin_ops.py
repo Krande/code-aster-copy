@@ -42,7 +42,7 @@ from .Fracture.post_beremin_utils import CELL_TO_POINT
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
 from ..CodeCommands import IMPR_RESU, AFFE_MODELE
-from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..Messages import UTMESS
 from ..Helpers.LogicalUnit import LogicalUnitFile
@@ -415,6 +415,7 @@ class PostBeremin:
         f_on_gauss = filefield_tmp.getFieldAtLevel(
             mc.ON_GAUSS_PT, timeStamps[-1][0], timeStamps[-1][1], 0
         )
+        d_max_3d = f_on_gauss.getMesh().computeDiameterField().getArray().getMaxValueInArray()
         with disable_fpe():
             f_on_cells = f_on_gauss.voronoize(1e-12)
         self._mesh_3D_cells_mc = f_on_cells.getMesh()
@@ -428,7 +429,7 @@ class PostBeremin:
 
         ##Build projector 3D -> points (points = barycenters of 2D mesh gauss cells)
         self._proj_3D_2D = CELL_TO_POINT(
-            self._mesh_3D_cells_mc, self._mesh_proj_2D_mc, prec_rel=self._prec_proj
+            self._mesh_3D_cells_mc, self._mesh_proj_2D_mc, self._prec_proj, d_max_3d
         )
 
     def compute_intsig1_2D(self, sig1, pow_m, idx, time):

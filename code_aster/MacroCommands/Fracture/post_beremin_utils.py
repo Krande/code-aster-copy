@@ -25,6 +25,7 @@ import numpy as np
 import medcoupling as mc
 
 from ...Utilities import logger
+from ...Messages import UTMESS
 
 
 class CELL_TO_POINT:
@@ -38,14 +39,13 @@ class CELL_TO_POINT:
     Si le point n'appartient à aucune cellule, on augmente la précision jusqu'à trouver au moins une cellule
     """
 
-    def __init__(self, mesh_3D, mesh_2D, prec_rel=None, prec_abs=None, ampl=1.5):
+    def __init__(self, mesh_3D, mesh_2D, prec_rel, d_max_3d, ampl=1.5):
         """
         mesh_3D    : maillage de cellules 3D (celui sur lequel seront aussi définis les champs à projeter)
         mesh_2D  : maillage 2D sur lequel les champs seront projetés
-        prec_abs: précision absolue minimale
+        prec_rel : précision relative minimale par rapport à la taille de maille du maillage 2D
         ampl    : facteur d'amplification de la précision lorsqu'on ne trouve pas de cellules correspondant à un point
         """
-        assert type(prec_rel) != type(None) or type(prec_abs) != type(None)
 
         self.mesh = mesh_3D
         self.coor = mesh_2D.computeIsoBarycenterOfNodesPerCell()
@@ -56,22 +56,16 @@ class CELL_TO_POINT:
         self.pos = None
         self.pt_idx = None
 
-        self.ComputeRelativePrecision(prec_rel, prec_abs)
+        self.ComputeRelativePrecision(mesh_2D, prec_rel, d_max_3d)
         self.Build(ampl)
 
-    def ComputeRelativePrecision(self, prec_rel, prec_abs):
+    def ComputeRelativePrecision(self, mesh_2D, prec_rel, d_max_3D):
         """
         Estime la précision relative de l'identification des cellules correspondant aux points
-        en s'appuyant sur la taille des mailles (leur diamètre) et la précision absolue prec_abs
+        en s'appuyant sur la taille des mailles 2D et la précision relative donnée en entrée
         """
-        if type(prec_abs) != type(None):
-            dmax = self.mesh.computeDiameterField().getArray().getMaxValueInArray()
-            self.prec = prec_abs / dmax
-        if type(prec_rel) != type(None):
-            if type(self.prec) != type(None):
-                self.prec = min(self.prec, prec_rel)
-            else:
-                self.prec = prec_rel
+        prec_abs = prec_rel * mesh_2D.computeDiameterField().getArray().getMinValueInArray()
+        self.prec = prec_abs / d_max_3D
 
     def Build(self, ampl):
         """
@@ -91,7 +85,6 @@ class CELL_TO_POINT:
             (meshT4, transfer, ibid) = meshT4.tetrahedrize(
                 mc.PLANAR_FACE_6
             )  # ne respecte pas la conformité, ce qui explique tout le développement
-            # assert ibid == 0
         else:
             transfer = mc.DataArrayInt(np.arange(meshT4.getNumberOfCells()).tolist())
         meshT4 = meshT4.buildUnstructured()  # Bug medcoupling si on ne fait rien
@@ -107,14 +100,29 @@ class CELL_TO_POINT:
         nook_idx = mc.DataArrayInt(np.arange(self.nbr).tolist())
 
         # boucle sur la précision de recherche
+        nb_iter = 0
         while 1:
-            logger.info("Projector build, prec =" + str(prec))
+
+            logger.info("Projector build ... ")
+            logger.info("Precision courante = " + str(prec))
+
             coor_nook = self.coor[nook_idx].toNumPyArray().ravel().tolist()
             (cells_prec, pos_prec) = meshT4.getCellsContainingPoints(coor_nook, prec)
             nbCells = pos_prec[1:] - pos_prec[:-1]
 
+            logger.info(
+                "Nombre maximal de nouvelles cellules (points de Gauss transformés en TETRA) 3D trouvées = "
+                + str(nbCells.getMaxValueInArray())
+            )
+            logger.info(
+                "Nombre minimal de nouvelles cellules (points de Gauss transformés en TETRA) 3D trouvées = "
+                + str(nbCells.getMinValueInArray())
+            )
+            logger.info("")
+
             # Amplification de la précision
             prec = ampl * prec
+            nb_iter += 1
 
             # S'il n'y a pas de nouveaux points OK, on continue avec une précision dégradée
             if nbCells.getMaxValueInArray() == 0:
@@ -123,6 +131,7 @@ class CELL_TO_POINT:
             # Index des nouveaux points pour lesquels des cellules sont identifiées
             found = nbCells.findIdsNotEqual(0)
             ok_idx = nook_idx[found]
+            logger.info("On a trouvé " + str(len(ok_idx)) + str(" nouveaux points."))
 
             # Concaténation des points et des cellules
             pt_idx_inv.aggregate(ok_idx)
@@ -138,6 +147,10 @@ class CELL_TO_POINT:
             # Points résiduels qui n'ont toujours pas trouvé leurs cellules d'appartenance
             notFound = nbCells.findIdsEqual(0)
             nook_idx = nook_idx[notFound]
+            logger.info("Il reste " + str(len(nook_idx)) + str(" points à trouver."))
+
+        if nb_iter > 5:
+            UTMESS("A", "RUPTURE4_22")
 
         # Interversion de l'indexation des points : numéro du point utilisateur -> numéro du point du projecteur
         self.pt_idx = mc.DataArrayInt([-1] * self.nbr)
