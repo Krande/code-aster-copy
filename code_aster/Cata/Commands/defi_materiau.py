@@ -1512,8 +1512,6 @@ DEFI_MATERIAU = MACRO(
         FT=SIMP(statut="o", typ="R", val_min=0.0),
         SIG0=SIMP(statut="o", typ="R", val_min=0.0),
         FC=SIMP(statut="o", typ="R", val_min=1.0),
-        CRIT_REGU=SIMP(statut="o", typ="R", val_min=1.0),
-        REST_RIGIDITE=SIMP(statut="o", typ="R", val_min=0.0),
         TAU_REGU_VISC=SIMP(statut="f", typ="R", val_min=0.0, defaut=0.0),
     ),
     ENDO_LOCA_TC_FO=FACT(
@@ -1523,8 +1521,6 @@ DEFI_MATERIAU = MACRO(
         FT=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         SIG0=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         FC=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        CRIT_REGU=SIMP(statut="o", typ="R", val_min=1.0),
-        REST_RIGIDITE=SIMP(statut="o", typ="R", val_min=0.0),
         TAU_REGU_VISC=SIMP(statut="f", typ="R", val_min=0.0, defaut=0.0),
     ),
     ENDO_FISS_EXP=FACT(

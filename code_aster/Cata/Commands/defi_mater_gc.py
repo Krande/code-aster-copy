@@ -342,22 +342,6 @@ DEFI_MATER_GC = MACRO(
         DIST_FISSURE=SIMP(
             statut="o", typ="R", val_min=0.0e0, fr=tr("Distance moyenne inter-fissures")
         ),
-        REST_RIGI_FC=SIMP(
-            statut="f",
-            typ="R",
-            val_min=0.0,
-            val_max=1.0,
-            defaut=0.99,
-            fr=tr("Restauration de rigidité pour eps=fc/E (0=sans)"),
-        ),
-        COEF_REDU_SEUIL=SIMP(
-            statut="f",
-            typ="R",
-            val_min=0.0,
-            val_max=1.0,
-            defaut=0.95,
-            fr=tr("Coefficient de réduction du seuil par régularisation"),
-        ),
         TAU_REGU_VISC=SIMP(
             statut="f",
             typ="R",

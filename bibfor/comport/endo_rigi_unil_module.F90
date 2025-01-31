@@ -35,7 +35,7 @@ module endo_rigi_unil_module
     ! Material characteristics
 
     type MATERIAL
-        real(kind=8) :: lambda, deuxmu, regam
+        real(kind=8) :: lambda, deuxmu, regbet
     end type MATERIAL
 
     ! Unilateral treatment
@@ -60,7 +60,7 @@ contains
     function Init(mat, eps, prece) result(self)
 
         implicit none
-        type(MATERIAL), intent(in)   :: mat
+        type(MATERIAL), intent(in)  :: mat
         real(kind=8), intent(in)    :: eps(:)
         real(kind=8), intent(in)    :: prece
         type(UNILATERAL)            :: self
@@ -84,7 +84,7 @@ contains
         allocate (self%dereps(self%ndimsi, self%ndimsi))
 
         ! Initialisation
-        para(1) = mat%regam
+        para(1) = mat%regbet
         para(2) = 0.d0
 
         self%mat = mat
@@ -125,7 +125,7 @@ contains
 ! ---------------------------------------------------------------------
 
 !   Initialisation
-        para(1) = self%mat%regam
+        para(1) = self%mat%regbet
 
 !   Total energy
         wall = 0.5d0*(self%mat%lambda*self%treps**2+self%mat%deuxmu*sum(self%eigeps**2))
@@ -202,7 +202,7 @@ contains
 ! =====================================================================
 !   SMOOTHED NEGATIVE HALF SQUARE FUNCTION
 !   f(x) approximate 0.5 * <-x>**2
-!     f(x) = 0.5 * x**2 * exp(1/(gamma*x)) if x<0
+!     f(x) = 0.5 * x**2 * exp(beta/x)) if x<0
 !     f(x) = 0                             if x>0
 ! =====================================================================
 
@@ -214,24 +214,24 @@ contains
 ! ---------------------------------------------------------------------
 ! x:   array argument (the function is applied to each x(i))
 ! p:   additional parameters
-!        p(1) = gamma (smoothing parameter)
+!        p(1) = beta (smoothing parameter)
 ! ---------------------------------------------------------------------
-        real(kind=8) :: ga
+        real(kind=8) :: beta
 ! ---------------------------------------------------------------------
 
         ASSERT(size(p) .eq. 1)
-        ga = p(1)
-        if (ga*x .ge. -1.d-3) then
+        beta = p(1)
+        if (x .ge. -1.d-3*beta) then
             nhs = 0.d0
         else
-            nhs = 0.5d0*x**2*exp(1/(ga*x))
+            nhs = 0.5d0*x**2*exp(beta/x)
         end if
 
     end function NegHalfSquare
 
 ! =====================================================================
 !   SMOOTHED UNILATERAL FUNCTION AND ITS DERIVATIVE
-!     f(x) = (x - 0.5/gamma) * exp(1/(gamma*x)) if x<0
+!     f(x) = (x - 0.5*beta) * exp(beta/x)) if x<0
 !     f(x) = 0                                  if x>0
 ! =====================================================================
 
@@ -243,25 +243,26 @@ contains
 ! ---------------------------------------------------------------------
 ! x:   argument
 ! p:   additional parameters
-!        p(1) = gamma (smoothing parameter)
+!        p(1) = beta (smoothing parameter)
 !        p(2) = 0 si secant, 1 si tangent
 ! fct: f(x)
 ! der: f'(x) ou f(x)/x si secant
 ! ---------------------------------------------------------------------
         aster_logical:: elas
-        real(kind=8) :: regam
+        real(kind=8) :: beta,u
 ! ---------------------------------------------------------------------
 
         ASSERT(size(p) .eq. 2)
-        regam = p(1)
+        beta = p(1)
         elas = p(2) .gt. 0.5d0
 
-        if (x*regam .ge. -1.d-3) then
+        if (x .ge. -1.d-3*beta) then
             fct = 0
             der = 0
         else
-            fct = (x-0.5d0/regam)*exp(1/(regam*x))
-            der = merge(fct/x, (1-(regam*x-0.5d0)/(regam*x)**2)*exp(1/(regam*x)), elas)
+            u = - beta/x
+            fct = (x-0.5d0*beta)*exp(beta/x)
+            der = merge(fct/x, (1+u*(1+0.5d0*u))*exp(-u), elas)
         end if
 
     end subroutine NegPart

@@ -568,7 +568,6 @@ def Endo_Loca_TC(DMATER, args):
       GF             = Energie de fissuration
       P              = Parametre dominant de la loi cohésive asymptotique
       DIST_FISSURE   = Distance moyenne inter-fissure
-      REST_RIGI_FC   = Restauration de rigidité pour eps=fc/E (0=sans)
       REGU_REDU_SEUIL= Facteur de reduction du seuil par regularisation
       TAU_REGU_VISC  = Temps caractéristique de la régularisation visqueuse
     """
@@ -583,9 +582,7 @@ def Endo_Loca_TC(DMATER, args):
     fc = float(MATER["FC"])
     p = float(MATER["P"])
     lf = float(MATER["DIST_FISSURE"])
-    rrc = float(MATER["REST_RIGI_FC"])
     sig0 = float(MATER["SIG0"])
-    eta = float(MATER["COEF_REDU_SEUIL"])
     tauv = float(MATER["TAU_REGU_VISC"])
 
     # Paramètres internes au modèle
@@ -603,12 +600,6 @@ def Endo_Loca_TC(DMATER, args):
     # Paramètres pour DEFI_MATERIAU
 
     prms = dict(FT=ft, KAPPA=kappa, P=p, SIG0=sig0, FC=fc)
-
-    gamma = young / (fc * 2.0 * (1 - rrc))
-    prms["REST_RIGIDITE"] = gamma
-
-    regu_p = math.log(3.0) / math.log(1.0 / eta + (1.0 / eta - 1) * 3 * nu / (1 - 2 * nu))
-    prms["CRIT_REGU"] = regu_p
 
     prms["TAU_REGU_VISC"] = tauv
 

@@ -197,17 +197,17 @@ contains
 ! ksp       Layer number (for structure elements)
 ! imate     material pointer
 ! ---------------------------------------------------------------------
-        integer, parameter:: nbel = 2, nben = 5, nbrg = 3
+        integer, parameter:: nbel = 2, nben = 5, nbrg = 1
 ! ----------------------------------------------------------------------
         integer :: iokel(nbel), ioken(nben), iokrg(nbrg)
         real(kind=8) :: valel(nbel), valen(nben), valrg(nbrg)
         character(len=16) :: nomel(nbel), nomen(nben), nomrg(nbrg)
         real(kind=8):: pi
-        real(kind=8):: lambda, deuxmu, nu
+        real(kind=8):: lambda, deuxmu, nu, cvsig, coef_trac, coef_comp
 ! ----------------------------------------------------------------------
         data nomel/'E', 'NU'/
         data nomen/'KAPPA', 'P', 'FT', 'SIG0', 'FC'/
-        data nomrg/'CRIT_REGU', 'REST_RIGIDITE', 'TAU_REGU_VISC'/
+        data nomrg/'TAU_REGU_VISC'/
 ! ----------------------------------------------------------------------
 
         pi = r8pi()
@@ -236,17 +236,16 @@ contains
         mat%sig0 = valen(4)
         mat%fc = valen(5)
         mat%beta = mat%fc/mat%sig0
-        mat%crit_p = valrg(1)
 
         mat%coef_v = 0.d0
-        if (valrg(3) .gt. 0.d0) mat%coef_v = valrg(3)/self%deltat
+        if (valrg(1) .gt. 0.d0) mat%coef_v = valrg(1)/self%deltat
 
         mat%unil%lambda = mat%lambda
         mat%unil%deuxmu = mat%deuxmu
-        mat%unil%regam = valrg(2)
+
 
         ! Admissibilite du jeu de parametres
-        if (mat%kappa*mat%m0 .lt. 2) call utmess('F', 'COMPOR1_98', sr=mat%m0)
+        if (mat%kappa*mat%m0 .le. 2) call utmess('F', 'COMPOR1_98', sr=mat%m0)
         ASSERT(mat%ft .gt. 0.d0)
         ASSERT(mat%kappa .gt. 0.d0)
         ASSERT(mat%m0 .gt. 0.d0)
@@ -256,6 +255,13 @@ contains
         ASSERT(mat%sig0 .gt. mat%ft)
         ASSERT(mat%beta .gt. 1.d0)
         ASSERT(mat%coef_v .ge. 0.d0)
+        
+        ! Calcul des parametres de regularisation en fonction de la precision souhaitee
+        cvsig = mat%ft*self%cvuser
+        mat%unil%regbet = cvsig/(mat%lambda + mat%deuxmu)
+        coef_trac = (mat%m0*mat%kappa-2)/(mat%m0*mat%kappa)*(cvsig/mat%ft)
+        coef_comp = cvsig/mat%fc
+        mat%crit_p = log(3.d0)*max((1+coef_trac)/coef_trac, (1+coef_comp)/coef_comp)
 
     end function GetMaterial
 

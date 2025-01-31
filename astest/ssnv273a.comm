@@ -65,7 +65,6 @@ b_max = 0.2  # endommagement asymptotique (essai à déformation imposée)
 
 
 # Parametres de regularisation numerique
-rrc = 0.95  # rest_rigi_rc
 tauv = 2.0
 
 
@@ -120,9 +119,7 @@ MATE = DEFI_MATER_GC(
         GF=GF,
         P=p,
         DIST_FISSURE=Lf,
-        REST_RIGI_FC=rrc,
         SIG0=sig0,
-        COEF_REDU_SEUIL=0.95,  # sans influence en uniaxial
         TAU_REGU_VISC=tauv,
     )
 )
@@ -175,7 +172,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=0.09979142548663907,
+    VALE_CALC = 0.09979140733546707,
     VALE_REFE=b_cib,
     NOM_PARA=vi_num["HISTTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t_cib, CRITERE="RELATIF", PRECISION=1.0e-08),

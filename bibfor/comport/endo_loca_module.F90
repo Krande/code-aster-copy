@@ -248,7 +248,7 @@ contains
 !   Storage
         mat%unil%lambda = lambda
         mat%unil%deuxmu = deuxmu
-        mat%unil%regam = valen(6)
+        mat%unil%regbet = 1.d0/valen(6)
 
         mat%cmat%lambda = lambda
         mat%cmat%deuxmu = deuxmu

@@ -40,7 +40,7 @@ d_fiss_B = 5.0e-2  # distance moyenne inter-fissure (m)
 fcm = 48.0e6  # résistance en compression simple
 gf = 146.5  # énergie de fissuration (N/m)
 p = 2.0  # paramètre d´écrouissage
-TAUB = 0.0  # tau de régularisation visqueuse par endommagement
+TAUB = 0.01  # tau de régularisation visqueuse par endommagement
 KB = 0.01 * EB  # rigidité de la régularisation visqueuse
 
 # Same case for both test on mat_sym = 'OUI'
@@ -73,9 +73,7 @@ BETON_E = DEFI_MATER_GC(
         FT=FTM,
         GF=gf,
         P=p,
-        REST_RIGI_FC=0.99,
         SIG0=(fcm / 3),
-        COEF_REDU_SEUIL=0.95,
         TAU_REGU_VISC=TAUB,
     ),
     RHO=RHOB,
