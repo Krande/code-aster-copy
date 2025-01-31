@@ -70,6 +70,8 @@ MECA_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
     # -------------------------------------------------------------------
+    ARCHIVAGE=C_ARCHIVAGE(),
+    # -------------------------------------------------------------------
     b_newton_solveur=BLOC(
         condition="""equal_to("METHODE", 'NEWTON')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE")
     ),

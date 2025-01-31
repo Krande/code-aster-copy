@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -195,7 +195,7 @@ U_M = MECA_NON_LINE(
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
     CONVERGENCE=_F(ITER_GLOB_MAXI=12, RESI_GLOB_RELA=1e-5),
     SOLVEUR=_F(METHODE="MUMPS"),
-    ARCHIVAGE=_F(LIST_INST=LR),
+    ARCHIVAGE=(_F(LIST_INST=LR),),
 )
 
 # CALCUL MECANIQUE AVEC PRESSION DE FLUIDE DANS LES JOINTS

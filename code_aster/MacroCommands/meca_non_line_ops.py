@@ -90,6 +90,7 @@ def meca_non_line_ops(self, **args):
 
     # Add parameters
     param = {
+        "ARCHIVAGE": args["ARCHIVAGE"][0],
         "COMPORTEMENT": args["COMPORTEMENT"],
         "CONTACT": args["CONTACT"],
         "CONVERGENCE": args["CONVERGENCE"][0],
@@ -102,8 +103,6 @@ def meca_non_line_ops(self, **args):
         "REUSE": args["reuse"],
         "INCREMENT": args["INCREMENT"][0],
     }
-
-    print('coucou param["NEWTON"]',param["NEWTON"])
 
     if param["SOLVEUR"]["METHODE"] == "PETSC":
         if param["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
