@@ -102,5 +102,6 @@ POST_BEREMIN = MACRO(
         MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
         NOM_MAIL_MED=SIMP(statut="o", typ="TXM"),
         PRECISION=SIMP(statut="f", typ="R", defaut=0.01, val_min=0.0),
+        UNITE_RESU=SIMP(statut="f", typ="I", defaut=0),
     ),
 )

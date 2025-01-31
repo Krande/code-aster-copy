@@ -101,4 +101,9 @@ Dans le cas DEFORMATION = GDEF_LOG, le paramètre LIST_NUME_SIEF doit être de d
 L'impression de SIGM_MAXI au format .med n'est pas compatible avec l'utilisation de plusieurs paramètres matériaux, ou dans le cas METHODE_2D la projection sur plusieurs plans.
         """
     ),
+    20: _(
+        """
+Incohérence dans les maillages donnés en entrée : si le maillage 3D de la structure résultat est quadratique (ou linéaire), alors le maillage 2D pour METHODE_2D doit aussi être quadratique (ou linéaire).
+        """
+    ),
 }

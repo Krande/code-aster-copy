@@ -42,9 +42,10 @@ from .Fracture.post_beremin_utils import CELL_TO_POINT
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
 from ..CodeCommands import IMPR_RESU, AFFE_MODELE
-from ..Objects import FieldOnCellsReal, NonLinearResult, Table
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..Messages import UTMESS
+from ..Helpers.LogicalUnit import LogicalUnitFile
 
 DEBUG = bool(os.environ.get("DEBUG_POST_BEREMIN", ""))
 
@@ -84,11 +85,12 @@ class PostBeremin:
     _use_hist = _use_indiplas = _use_function = None
     _coef_mult = None
     _weib_params = None
-    # data 2D
+    # data 2D only
     _method_2D = _prec_proj = None
-    _proj_3D_2D = _mesh_proj = _name_mesh_med = None
-    _mesh_proj_mc = _mesh_3D_cells = None
+    _proj_3D_2D = _mesh_proj_2D = _name_mesh_2D = None
+    _mesh_proj_2D_mc = _mesh_3D_cells_mc = None
     _medfilename_temp = _unite_temp = None
+    _rout_2D = None
 
     # result to compute weibull stress
     _reswb = _rsieq = _rout = None
@@ -124,17 +126,25 @@ class PostBeremin:
         """
         if "METHODE_2D" in args:
             self._method_2D = True
-            self._mesh_proj = args["METHODE_2D"]["MAILLAGE"]
+            self._mesh_proj_2D = args["METHODE_2D"]["MAILLAGE"]
             self._prec_proj = args["METHODE_2D"]["PRECISION"]
-            self._name_mesh_med = args["METHODE_2D"]["NOM_MAIL_MED"]
+            self._name_mesh_2D = args["METHODE_2D"]["NOM_MAIL_MED"]
 
-            if (self._mesh_proj and not self._name_mesh_med) or (
-                not self._mesh_proj and self._name_mesh_med
+            if args["METHODE_2D"]["UNITE_RESU"] != 0:
+                self._rout_2D = args["METHODE_2D"]["UNITE_RESU"]
+
+            if (self._mesh_proj_2D and not self._name_mesh_2D) or (
+                not self._mesh_proj_2D and self._name_mesh_2D
             ):
                 UTMESS("F", "RUPTURE4_17")
 
-            if self._rout and len(self._mesh_proj) != 1:
-                UTMESS("F", "RUPTURE4_19")
+            if (self._mesh_proj_2D.isQuadratic() and not self._result.getMesh().isQuadratic()) or (
+                not self._mesh_proj_2D.isQuadratic() and self._result.getMesh().isQuadratic()
+            ):
+                UTMESS("F", "RUPTURE4_20")
+
+            # if self._rout_2D and len(self._mesh_proj_2D) != 1:
+            #     UTMESS("F", "RUPTURE4_19")
 
     def set_indexes(self, intvar_idx: list = None, stress_idx: list = None) -> None:
         """Define the indexes used to extract the relevant components depending
@@ -250,7 +260,7 @@ class PostBeremin:
             self._rsieq = self.compute_sieq()
         sieq = self._rsieq.getField("SIEQ_ELGA", idx)
         sieq = sieq.toSimpleFieldOnCells()
-        return sieq
+        return sieq.PRIN_3
 
     def compute_sieq(self):
         """Compute SIEQ_ELGA stress."""
@@ -258,7 +268,7 @@ class PostBeremin:
         input = self._reswb
 
         d_group_ma = {}
-        if not self._rout:
+        if not self._rout or self._method_2D:
             d_group_ma["GROUP_MA"] = self._zone
 
         if self._stress_option == "SIGM_ELMOY":
@@ -403,22 +413,22 @@ class PostBeremin:
         )
         with disable_fpe():
             f_on_cells = f_on_gauss.voronoize(1e-12)
-        self._mesh_3D_cells = f_on_cells.getMesh()
-        if self._mesh_3D_cells.getMeshDimension() != 3:
+        self._mesh_3D_cells_mc = f_on_cells.getMesh()
+        if self._mesh_3D_cells_mc.getMeshDimension() != 3:
             UTMESS("F", "RUPTURE4_14")
 
         ##Get 2D mesh
         ##TOFIX : découper le maillage 2D en cellules par points de Gauss
-        self._mesh_proj_mc = self._mesh_proj.createMedCouplingMesh(spacedim=3)[0]
-        if self._mesh_proj_mc.getMeshDimension() != 2:
+        self._mesh_proj_2D_mc = self._mesh_proj_2D.createMedCouplingMesh(spacedim=3)[0]
+        if self._mesh_proj_2D_mc.getMeshDimension() != 2:
             UTMESS("F", "RUPTURE4_15")
 
         ##Build projector 3D -> points (points = barycenters of 2D mesh cells)
         self._proj_3D_2D = CELL_TO_POINT(
-            self._mesh_3D_cells, self._mesh_proj_mc, prec_rel=self._prec_proj
+            self._mesh_3D_cells_mc, self._mesh_proj_2D_mc, prec_rel=self._prec_proj
         )
 
-    def compute_intsig1_2D(self, sig1, pow_m):
+    def compute_intsig1_2D(self, sig1, pow_m, idx, time):
         """Projection of sig1 from 3D cells to barycenter of 2D cells
         and computation of 2D integral
 
@@ -444,7 +454,7 @@ class PostBeremin:
         sig1.restrict(self._zone_ids)
         sixx += sig1
         sfield.setComponentValues("SIXX", sixx.expand())
-        sfield_mc = sfield.toMEDCouplingField(self._mesh_3D_cells)
+        sfield_mc = sfield.toMEDCouplingField(self._mesh_3D_cells_mc)
         sfield_ar = sfield_mc.getArray()[:, 0]
 
         ##Projection 3D -> points
@@ -454,8 +464,9 @@ class PostBeremin:
         ##Create 2D medcoupling field
         medc_cell_field = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
         medc_cell_field.setName("SIXX")
-        if len(sfield_ar_points) == self._mesh_proj_mc.getNumberOfCells():
-            medc_cell_field.setMesh(self._mesh_proj_mc)
+        medc_cell_field.setTime(time, idx, 0)
+        if len(sfield_ar_points) == self._mesh_proj_2D_mc.getNumberOfCells():
+            medc_cell_field.setMesh(self._mesh_proj_2D_mc)
         else:
             UTMESS("F", "RUPTURE4_16")
         medc_cell_field.setArray(sfield_ar_points**pow_m)
@@ -463,85 +474,14 @@ class PostBeremin:
         medc_cell_field.setName("SIEF_ELGA")
         medc_cell_field.checkConsistencyLight()
 
+        if self._rout_2D:
+            filename = LogicalUnitFile.filename_from_unit(self._rout_2D)
+            mc.WriteField(filename, medc_cell_field, True if idx == 0 else False)
+
         ##Compute integral
         intsig1pm = medc_cell_field.integral(0, True)
 
         return intsig1pm
-
-    def main(self):
-        """Compute Weibull stress and failure probability."""
-        result = self._reswb
-        model = result.getModel()
-        params = result.getAccessParameters()
-        logger.info("extracting integration scheme...")
-        coor_elga = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
-        coor_elga = coor_elga.toSimpleFieldOnCells()
-
-        logger.info("starting computation...")
-
-        table = TableBeremin(self._use_function)
-
-        for sigma_thr in self._weib_params["SIGM_SEUIL"]:
-            for sigma_refe in self._weib_params["SIGM_REFE"]:
-                for pow_m in self._weib_params["M"]:
-
-                    id_store = 0
-                    previous = None
-
-                    for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
-
-                        if self._use_indiplas:
-                            indip = self.get_internal_variables(idx)
-
-                        sieq = self.get_major_stress(idx)
-                        sig1 = sieq.PRIN_3
-
-                        if self._method_2D and not self._proj_3D_2D:
-                            logger.info("building projector ...")
-                            self.build_projector()
-
-                        if self._use_indiplas:
-                            sig1 = self.apply_threshold(sig1, indip)
-
-                        sig1 = self.apply_stress_correction(sig1, idx, sigma_thr, sigma_refe)
-
-                        if self._use_hist:
-                            if previous is None:
-                                previous = sig1.copy()
-                            else:
-                                sig1.maximum(previous)
-                                previous = sig1.copy()
-
-                        if DEBUG:
-                            print("NEW: sigmax:", id_store, idx, sig1.sum())
-
-                        if self._method_2D:
-                            intsig1pm = self.compute_intsig1_2D(sig1, pow_m)
-
-                        else:
-                            intsig1pm = self.compute_intsig1_3D(sig1, pow_m, coor_elga.W)
-
-                        self.store_sigm_maxi(id_store, time, sig1, model)
-
-                        strwb, strwb_pm, proba = self.compute_table_values(
-                            intsig1pm, pow_m, sigma_refe
-                        )
-
-                        table.append(
-                            id_store,
-                            time,
-                            self._zone if not self._method_2D else self._name_mesh_med,
-                            pow_m,
-                            sigma_refe if not self._use_function else "FONCTION",
-                            sigma_thr,
-                            strwb,
-                            strwb_pm,
-                            proba,
-                        )
-
-                        id_store += 1
-
-        return table
 
     def compute_table_values(self, intsig1pm, pow_m, sigma_refe):
         """Compute the values to be added into the result table.
@@ -572,7 +512,7 @@ class PostBeremin:
 
         return sigma_weibull, sigma_weibullpm, proba_weibull
 
-    def store_sigm_maxi(self, idx, time, sig1, model):
+    def store_sigm_maxi_3D(self, idx, time, sig1, model):
         """Store the major stress ^M into the output result.
 
         Args:
@@ -582,7 +522,7 @@ class PostBeremin:
             model (*Model*): Model object.
             cells_ids (list[int]): Cells list.
         """
-        if not self._rout:
+        if not self._rout or self._method_2D:
             return
         if idx == 0:
             self._rout.allocate(self._rsieq.getNumberOfIndexes())
@@ -597,6 +537,79 @@ class PostBeremin:
         self._rout.setField(sigmax, "SIEF_ELGA", idx)
         self._rout.setModel(model, idx)
         self._rout.setTime(time, idx)
+
+    def main(self):
+        """Compute Weibull stress and failure probability."""
+        result = self._reswb
+        model = result.getModel()
+        params = result.getAccessParameters()
+        logger.info("extracting integration scheme...")
+        coor_elga = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
+        coor_elga = coor_elga.toSimpleFieldOnCells()
+
+        logger.info("starting computation...")
+
+        table = TableBeremin(self._use_function)
+
+        for sigma_thr in self._weib_params["SIGM_SEUIL"]:
+            for sigma_refe in self._weib_params["SIGM_REFE"]:
+                for pow_m in self._weib_params["M"]:
+
+                    id_store = 0
+                    previous = None
+
+                    for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
+
+                        if self._use_indiplas:
+                            indip = self.get_internal_variables(idx)
+
+                        sig1 = self.get_major_stress(idx)
+
+                        if self._method_2D and not self._proj_3D_2D:
+                            logger.info("building projector ...")
+                            self.build_projector()
+
+                        if self._use_indiplas:
+                            sig1 = self.apply_threshold(sig1, indip)
+
+                        sig1 = self.apply_stress_correction(sig1, idx, sigma_thr, sigma_refe)
+
+                        if self._use_hist:
+                            if previous is None:
+                                previous = sig1.copy()
+                            else:
+                                sig1.maximum(previous)
+                                previous = sig1.copy()
+
+                        if DEBUG:
+                            print("NEW: sigmax:", id_store, idx, sig1.sum())
+
+                        if self._method_2D:
+                            intsig1pm = self.compute_intsig1_2D(sig1, pow_m, idx, time)
+
+                        else:
+                            intsig1pm = self.compute_intsig1_3D(sig1, pow_m, coor_elga.W)
+                            self.store_sigm_maxi_3D(id_store, time, sig1, model)
+
+                        strwb, strwb_pm, proba = self.compute_table_values(
+                            intsig1pm, pow_m, sigma_refe
+                        )
+
+                        table.append(
+                            id_store,
+                            time,
+                            self._zone if not self._method_2D else self._name_mesh_2D,
+                            pow_m,
+                            sigma_refe if not self._use_function else "FONCTION",
+                            sigma_thr,
+                            strwb,
+                            strwb_pm,
+                            proba,
+                        )
+
+                        id_store += 1
+
+        return table
 
 
 def post_beremin_ops(self, RESULTAT, GROUP_MA, DEFORMATION, FILTRE_SIGM, **args):
