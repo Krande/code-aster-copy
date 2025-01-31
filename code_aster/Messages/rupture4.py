@@ -94,7 +94,7 @@ Incohérence dans les paramètres d'entrée pour METHODE_2D : il faut donner aut
     ),
     18: _(
         """
-Dans le cas DEFORMATION = GDEF_LOG, le paramètre LIST_NUME_SIEF doit être de dimension 4 en 2D ou de dimension 6 en 3D"""
+Dans le cas DEFORMATION = "GDEF_LOG", le paramètre LIST_NUME_SIEF doit être de dimension 4 en 2D ou de dimension 6 en 3D"""
     ),
     19: _(
         """
@@ -104,6 +104,11 @@ L'impression de SIGM_MAXI au format .med n'est pas compatible avec l'utilisation
     20: _(
         """
 Incohérence dans les maillages donnés en entrée : si le maillage 3D de la structure résultat est quadratique (ou linéaire), alors le maillage 2D pour METHODE_2D doit aussi être quadratique (ou linéaire).
+        """
+    ),
+    21: _(
+        """
+METHODE_2D doit nécessairement être utilisée avec FILTRE_SIGM = "SIGM_ELMOY"
         """
     ),
 }

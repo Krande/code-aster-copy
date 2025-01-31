@@ -86,7 +86,7 @@ class PostBeremin:
     _coef_mult = None
     _weib_params = None
     # data 2D only
-    _method_2D = _prec_proj = None
+    _method_2D = _prec_proj = _model_2D = None
     _proj_3D_2D = _mesh_proj_2D = _name_mesh_2D = None
     _mesh_proj_2D_mc = _mesh_3D_cells_mc = None
     _medfilename_temp = _unite_temp = None
@@ -129,9 +129,13 @@ class PostBeremin:
             self._mesh_proj_2D = args["METHODE_2D"]["MAILLAGE"]
             self._prec_proj = args["METHODE_2D"]["PRECISION"]
             self._name_mesh_2D = args["METHODE_2D"]["NOM_MAIL_MED"]
+            self._model_2D = args["METHODE_2D"]["MODELISATION"]
 
             if args["METHODE_2D"]["UNITE_RESU"] != 0:
                 self._rout_2D = args["METHODE_2D"]["UNITE_RESU"]
+
+            if self._stress_option != "SIGM_ELMOY":
+                UTMESS("F", "RUPTURE4_21")
 
             if (self._mesh_proj_2D and not self._name_mesh_2D) or (
                 not self._mesh_proj_2D and self._name_mesh_2D
@@ -279,7 +283,7 @@ class PostBeremin:
 
         rsieq = CALC_CHAMP(RESULTAT=input, CRITERES="SIEQ_ELGA", **d_group_ma)
 
-        if self._method_2D:
+        if self._method_2D and not self._medfilename_temp:
 
             self._medfilename_temp = tempfile.NamedTemporaryFile(dir=".", suffix=".med").name
             self._unite_temp = DEFI_FICHIER(
@@ -418,12 +422,11 @@ class PostBeremin:
             UTMESS("F", "RUPTURE4_14")
 
         ##Get 2D mesh
-        ##TOFIX : découper le maillage 2D en cellules par points de Gauss
         self._mesh_proj_2D_mc = self._mesh_proj_2D.createMedCouplingMesh(spacedim=3)[0]
         if self._mesh_proj_2D_mc.getMeshDimension() != 2:
             UTMESS("F", "RUPTURE4_15")
 
-        ##Build projector 3D -> points (points = barycenters of 2D mesh cells)
+        ##Build projector 3D -> points (points = barycenters of 2D mesh gauss cells)
         self._proj_3D_2D = CELL_TO_POINT(
             self._mesh_3D_cells_mc, self._mesh_proj_2D_mc, prec_rel=self._prec_proj
         )
@@ -437,14 +440,15 @@ class PostBeremin:
 
         """
 
-        ##TOFIX : aller récupérer les modèles affectés à _zone plutôt que de les inventer
-        modele_tmp = AFFE_MODELE(
-            MAILLAGE=self._result.getMesh().restrict(self._zone),
-            AFFE=(
+        if self._model_2D == "D_PLAN_SI":
+            l_affe = [
                 _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D"),
                 _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D_SI"),
-            ),
-        )
+            ]
+        else:
+            l_affe = [_F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D")]
+
+        modele_tmp = AFFE_MODELE(MAILLAGE=self._result.getMesh().restrict(self._zone), AFFE=l_affe)
 
         ##3D ComponentOnCells to 3D medcoupling array
         sigmax = FieldOnCellsReal(modele_tmp, "ELGA", "SIEF_R")
