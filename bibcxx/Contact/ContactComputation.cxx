@@ -52,7 +52,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
 
     // Acces to list of cells
     const JeveuxCollectionLong meshConnex = contPairing->getMesh()->getConnectivity();
-    MapLong pair2Zone = contPairing->pairsToZones();
+    MapLong cellsToZones = contPairing->cellsToZones();
     auto grel = fed->getListOfGroupsOfElements();
     auto nbGrel = data->getNumberOfGroupOfElements();
 
@@ -90,14 +90,23 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
             // Get mesh cell index
             auto iPair = -( *liel )[iElem];
 
+            // Current contact zone
+            auto iZone = cellsToZones[iPair - 1];
+            auto zone = _contact->getContactZone( iZone );
+
+            // Adress in field
+            auto shift = data->getShifting( iGrel, iElem );
+
+            // Contact parameters
+            auto cont = zone->getContactParameter();
+
+            // Friction parameters
+            auto fric = zone->getFrictionParameter();
+
+            // Pairing parameters
+            auto pair = zone->getPairingParameter();
+
             if ( iPair <= nbContPair ) {
-                // Current contact zone
-                auto iZone = pair2Zone[iPair - 1];
-                auto zone = _contact->getContactZone( iZone );
-
-                // Adress in field
-                auto shift = data->getShifting( iGrel, iElem );
-
                 // Set number of intersection points
                 ( *data )[shift + 0] = nbInter[iPair - 1];
                 AS_ASSERT( nbInter[iPair - 1] <= 8 );
@@ -110,49 +119,8 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
                         ( *data )[shift + 9 + iInter] = inter[iZone][iLocaPair][2 * iInter + 1];
                     }
                 }
-                // Contact parameter
-                auto cont = zone->getContactParameter();
 
-                //  Value for ALGO_CONT
-                ( *data )[shift + 23] = double( cont->getAlgorithm() );
-                //  Value for TYPE_CONT
-                ( *data )[shift + 24] = double( cont->getType() );
-                //  Value for VARIANTE
-                ( *data )[shift + 25] = double( cont->getVariant() );
-                //  Value for TYPE_MATR_TANG
-                ( *data )[shift + 26] = double( cont->getJacobianType() );
-
-                /// Friction parameter
-                auto fric = zone->getFrictionParameter();
-                //  Value for FROTTEMENT
-                ( *data )[shift + 30] = fric->hasFriction();
-                //  Value for ALGO_FROT
-                ( *data )[shift + 31] = double( fric->getAlgorithm() );
-                //  Value for TYPE_FROT
-                ( *data )[shift + 32] = double( fric->getType() );
-                // Value for coefficient of friction
-                if ( fric->getType() == FrictionType::Tresca ) {
-                    //  Value for TRESCA
-                    ( *data )[shift + 34] = fric->getTresca();
-                } else if ( fric->getType() == FrictionType::Coulomb ) {
-                    //  Value for COULOMB
-                    ( *data )[shift + 34] = fric->getCoulomb();
-                }
-
-                /// Other
-                auto pair = zone->getPairingParameter();
-
-                // Value for projection tolerancetolerance
-                ( *data )[shift + 40] = 1.e-8;
-
-                // Status to impose to contact
-                if ( initial_contact ) {
-                    ( *data )[shift + 41] = double( pair->getInitialState() );
-                } else {
-                    ( *data )[shift + 41] = double( InitialState::Interpenetrated );
-                }
-
-                /// Material parameters
+                // For Nitsche
                 if ( cont->getAlgorithm() == ContactAlgo::Nitsche ) {
                     auto [slavCellNume, mastCellNume] = listPairs[iPair - 1];
                     auto slav_surf_con = ( *meshConnex )[slavCellNume + 1]->toVector();
@@ -177,11 +145,44 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
                     ( *data )[shift + 46] = listMaterial[0]->getValueReal( "ELAS", "NU" );
                 }
 
-                nbPair++;
+                // Value for projection tolerance
+                ( *data )[shift + 40] = 1.e-8;
+
+                // Status to impose to contact
+                if ( initial_contact ) {
+                    ( *data )[shift + 41] = double( pair->getInitialState() );
+                } else {
+                    ( *data )[shift + 41] = double( InitialState::Interpenetrated );
+                }
             }
+
+            //  Value for ALGO_CONT
+            ( *data )[shift + 23] = double( cont->getAlgorithm() );
+            //  Value for TYPE_CONT
+            ( *data )[shift + 24] = double( cont->getType() );
+            //  Value for VARIANTE
+            ( *data )[shift + 25] = double( cont->getVariant() );
+            //  Value for TYPE_MATR_TANG
+            ( *data )[shift + 26] = double( cont->getJacobianType() );
+
+            //  Value for FROTTEMENT
+            ( *data )[shift + 30] = fric->hasFriction();
+            //  Value for ALGO_FROT
+            ( *data )[shift + 31] = double( fric->getAlgorithm() );
+            //  Value for TYPE_FROT
+            ( *data )[shift + 32] = double( fric->getType() );
+            // Value for coefficient of friction
+            if ( fric->getType() == FrictionType::Tresca ) {
+                //  Value for TRESCA
+                ( *data )[shift + 34] = fric->getTresca();
+            } else if ( fric->getType() == FrictionType::Coulomb ) {
+                //  Value for COULOMB
+                ( *data )[shift + 34] = fric->getCoulomb();
+            }
+
+            nbPair++;
         }
     }
-    AS_ASSERT( nbPair == nbContPair );
 
     CALL_JEDEMA();
 
