@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -158,7 +158,7 @@ IMPR_TABLE(TABLE=TAB_T)
 
 # Tests de la force normale
 TEST_TABLE(
-    VALE_CALC=-55536086.36144244, NOM_PARA="DY", TABLE=TAB_N, FILTRE=_F(NOM_PARA="INST", VALE=0.4)
+    VALE_CALC=-55599108.59848473, NOM_PARA="DY", TABLE=TAB_N, FILTRE=_F(NOM_PARA="INST", VALE=0.4)
 )
 """
 TEST_TABLE(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -230,7 +230,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 !
 ! - External loop management - BEGIN
 !
-    call nmible(niveau, model, mesh, ds_contact, &
+    call nmible(niveau, model, ds_contact, &
                 fonact, ds_measure, ds_print, ds_algorom)
 !
 ! - External loop management - Initializations for new loop
@@ -250,7 +250,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call nmpred(mesh, model, numedd, numfix, ds_material, cara_elem, &
+    call nmpred(model, numedd, numfix, ds_material, cara_elem, &
                 ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
                 fonact, ds_print, ds_measure, ds_algorom, sddisc, &
                 sdnume, sderro, numins, valinc, solalg, &
@@ -340,7 +340,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 !
 320 continue
 !
-    call nmdesc(mesh, model, numedd, &
+    call nmdesc(model, numedd, &
                 numfix, ds_material, cara_elem, &
                 ds_constitutive, list_load, ds_contact, &
                 ds_algopara, ds_system, solveu, &
@@ -348,7 +348,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
                 sddisc, ds_print, ds_measure, &
                 ds_algorom, sddyna, nlDynaDamping, sdnume, &
                 sderro, matass, maprec, &
-                valinc, solalg, hhoField, meelem, &
+                valinc, solalg, meelem, &
                 measse, veasse, lerrit)
 !
     if (lerrit) goto 315
@@ -412,10 +412,10 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 !
 ! - External loop management - END
 !
-    call nmtble(niveau, model, mesh, ds_material, ds_contact, &
+    call nmtble(niveau, model, mesh, ds_contact, &
                 fonact, ds_print, &
                 sderro, ds_conv, sddisc, numins, valinc, &
-                solalg, ds_constitutive, ds_algorom)
+                solalg, ds_algorom)
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
 !

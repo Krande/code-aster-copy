@@ -1,0 +1,163 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Compilation of the mfront source file
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="elasticCZMimplicit", UNITE_MFRONT=38)
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+MA0 = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
+
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(NOEUD=("NO2", "NO4", "NO10", "NO8", "NS2", "NS6", "NS10", "NS7"), NOM="DROITE"),
+        _F(NOEUD=("NO1", "NO3", "NO9", "NO7", "NS4", "NS5", "NS12", "NS8"), NOM="GAUCHE"),
+        _F(NOEUD=("NS17"), NOM="NS17"),
+        _F(NOEUD=("NS18"), NOM="NS18"),
+    ),
+)
+
+MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_FISSURE=_F(GROUP_MA="G_CUBE_D"), INFO=2)
+
+### >>>>>>>>>>>>>>>>>
+### Model affectation
+### <<<<<<<<<<<<<<<<<
+
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="G_CUBE", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="G_CUBE_D", PHENOMENE="MECANIQUE", MODELISATION="3D_JOINT"),
+    ),
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+E = 50.0e9
+NU = 0.3
+KN = 30.0e9
+KT = 30.0e9
+
+MAT_CUBE = DEFI_MATERIAU(ELAS=_F(E=E, NU=NU))
+
+MAT_JOINT = DEFI_MATERIAU(ELAS=_F(E=E, NU=NU), MFRONT=_F(LISTE_COEF=(KN, KT)))
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+CM_F = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=(_F(GROUP_MA="G_CUBE", MATER=MAT_CUBE), _F(GROUP_MA="G_CUBE_D", MATER=MAT_JOINT)),
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+from math import cos, sin, pi
+
+# Joint inclination
+angle = 30 / 180 * pi
+
+# Opening
+delta = 0.1
+
+CL_ENCAS = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="GAUCHE2", DX=0, DY=0, DZ=0))
+
+COEF_DX = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, -delta * sin(angle)))
+
+COEF_DY = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, delta * cos(angle)))
+
+COEF_DZ = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 0))
+
+CL_TANGE = AFFE_CHAR_MECA_F(
+    MODELE=MO, DDL_IMPO=(_F(GROUP_NO=("GAUCHE", "DROITE"), DX=COEF_DX, DY=COEF_DY, DZ=COEF_DZ))
+)
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=10)))
+
+### >>>>>>>>
+### Solution
+### <<<<<<<<
+
+U_F = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM_F,
+    EXCIT=(_F(CHARGE=CL_ENCAS), _F(CHARGE=CL_TANGE)),
+    COMPORTEMENT=(
+        _F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, GROUP_MA="G_CUBE_D"),
+        _F(RELATION="ELAS", GROUP_MA="G_CUBE"),
+    ),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1.0e-8),
+)
+
+### >>>>>>>>>>>>>>>
+### Post-processing
+### <<<<<<<<<<<<<<<
+
+IMPR_RESU(FORMAT="RESULTAT", UNITE=80, RESU=(_F(RESULTAT=U_F, NOM_CHAM="DEPL")))
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="TOUTSEUL",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U_F,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=-0.05,
+            VALE_REFE=-delta * sin(angle),
+            PRECISION=0.01,
+        ),
+        _F(
+            GROUP_NO="TOUTSEUL",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U_F,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=0.08660254037844388,
+            VALE_REFE=delta * cos(angle),
+            PRECISION=0.01,
+        ),
+    )
+)
+FIN()

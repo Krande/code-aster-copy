@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vechnl(model    , lload_name, lload_info, time,&
-                      temp_iter, vect_elem , base)
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: lload_name
-        character(len=24), intent(in) :: lload_info
+    subroutine vechnl(model, loadNameJv, loadInfoJv, time, &
+                      temp_iter, vect_elem, base)
+        character(len=8), intent(in) :: model
+        character(len=24), intent(in) :: loadNameJv
+        character(len=24), intent(in) :: loadInfoJv
         character(len=24), intent(in) :: time
         character(len=24), intent(in) :: temp_iter
         character(len=24), intent(in) :: vect_elem

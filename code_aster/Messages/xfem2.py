@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,22 +26,9 @@ cata_msg = {
     3: _(
         """On ne peut pas définir du contact X-FEM sur un maillage contenant à la fois des mailles linéaires et quadratiques."""
     ),
-    4: _(
-        """
-Nombre d'arêtes vitales : %(i1)d
-"""
-    ),
     6: _("""Le nombre de fissures est limité à %(i1)d, or vous en avez définies %(i2)d."""),
     7: _(
         """La fissure %(k1)s est de type CZM. On ne peut pas appliquer de chargement de pression ou de condition d'échange thermique sur ses lèvres."""
-    ),
-    8: _(
-        """Le modèle transmis dans DEFI_CONTACT n'est pas un modèle XFEM.
-Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à DEFI_CONTACT un modèle XFEM."""
-    ),
-    9: _(
-        """Le modèle transmis dans DEFI_CONTACT n'est pas un modèle XFEM avec contact.
-Veuillez activer CONTACT dans MODI_MODELE_XFEM."""
     ),
     10: _(
         """

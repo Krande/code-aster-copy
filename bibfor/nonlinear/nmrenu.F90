@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: l_cont, l_cont_cont, l_cont_xfem, l_cont_elem
+    aster_logical :: l_cont, l_cont_cont, l_cont_elem
     character(len=24) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,7 +76,6 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
 !
     l_cont = isfonc(list_func_acti, 'CONTACT')
     l_cont_elem = isfonc(list_func_acti, 'ELT_CONTACT')
-    l_cont_xfem = isfonc(list_func_acti, 'CONT_XFEM')
     l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
 !
 ! - To change numbering
@@ -88,12 +87,8 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
         sd_iden_rela = ds_contact%iden_rela
 ! ----- Numbering to change ?
         if (l_cont_elem) then
-            if (l_cont_xfem) then
-                l_renumber = ASTER_FALSE
-            else
-                l_renumber = ds_contact%l_renumber
-                ds_contact%l_renumber = ASTER_FALSE
-            end if
+            l_renumber = ds_contact%l_renumber
+            ds_contact%l_renumber = ASTER_FALSE
         end if
 ! ----- Re-numbering
         if (l_renumber) then

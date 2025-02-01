@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmlect(result, model, mater, mateco, cara_elem, list_load, solver_)
+!
+subroutine nmlect(result, model, materField, mateco, caraElem, solver_)
 !
     implicit none
 !
@@ -25,14 +25,11 @@ subroutine nmlect(result, model, mater, mateco, cara_elem, list_load, solver_)
 #include "asterfort/medomm.h"
 #include "asterfort/nmdoch.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
     character(len=*), intent(out) :: result
     character(len=*), intent(out) :: model
-    character(len=*), intent(out) :: mater
+    character(len=*), intent(out) :: materField
     character(len=*), intent(out) :: mateco
-    character(len=*), intent(out) :: cara_elem
-    character(len=*), intent(out) :: list_load
+    character(len=*), intent(out) :: caraElem
     character(len=*), optional, intent(out) :: solver_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,10 +42,9 @@ subroutine nmlect(result, model, mater, mateco, cara_elem, list_load, solver_)
 !
 ! Out result           : name of results datastructure
 ! Out model            : name of model
-! Out mater            : name of material
+! Out materField       : name of material
 ! Out mateco           : name of material characteristics (field)
-! Out cara_elem        : name of elementary characteristics (field)
-! Out list_load        : name of datastructure for list of loads
+! Out caraElem         : name of elementary characteristics (field)
 ! Out solver           : name of datastructure for solver
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,22 +53,14 @@ subroutine nmlect(result, model, mater, mateco, cara_elem, list_load, solver_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    list_load = '&&OP00XX.LIST_LOAD'
-!
+
 ! - Get results
-!
     call getres(result, k16dummy, k16dummy)
-!
+
 ! - Get parameters from command file
-!
-    call medomm(model, mater, mateco, cara_elem)
-!
-! - Get loads information and create datastructure
-!
-    call nmdoch(list_load, l_load_user=.true._1)
-!
+    call medomm(model, materField, mateco, caraElem)
+
 ! - Get parameters for solver
-!
     if (present(solver_)) then
         solver_ = '&&OP00XX.SOLVER'
         call cresol(solver_, 'V')

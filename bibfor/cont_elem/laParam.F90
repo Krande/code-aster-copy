@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine laParam(parameters)
     parameters%algo_cont = nint(zr(jcont+23))
     parameters%type_cont = nint(zr(jcont+24))
     parameters%vari_cont = nint(zr(jcont+25))
+    parameters%jac_type = nint(zr(jcont+26))
 !
     select case (parameters%vari_cont)
     case (CONT_VARI_NONE)
@@ -54,6 +55,8 @@ subroutine laParam(parameters)
     case (CONT_VARI_RAPI)
         parameters%vari_cont_coef = 0.d0
     case (CONT_VARI_ROBU)
+        parameters%vari_cont_coef = -1.d0
+    case (CONT_VARI_CLAS)
         parameters%vari_cont_coef = -1.d0
     case (CONT_VARI_SYME)
         parameters%vari_cont_coef = 1.d0
@@ -72,5 +75,6 @@ subroutine laParam(parameters)
 !
     parameters%proj_tole = zr(jcont+40)
     parameters%cont_init = nint(zr(jcont+41))
+    parameters%E = zr(jcont+45)
 !
 end subroutine

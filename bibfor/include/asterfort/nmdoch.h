@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
-                  ligrel_slav, ligrel_cont)
-        aster_logical, intent(in) :: l_load_user
-        aster_logical, intent(in), optional :: l_calc_user
-        character(len=19), intent(in) :: list_load
-        character(len=19), optional, intent(in) :: list_load_resu_, ligrel_slav, ligrel_cont
-        character(len=1), optional, intent(in) :: base
+    subroutine nmdoch(listLoadPrep, listLoadZ, jvBase)
+        use listLoad_type
+        type(ListLoad_Prep), intent(in) :: listLoadPrep
+        character(len=*), intent(in) :: listLoadZ
+        character(len=1), intent(in) :: jvBase
     end subroutine nmdoch
 end interface

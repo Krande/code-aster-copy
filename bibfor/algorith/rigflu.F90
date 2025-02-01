@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine rigflu(modele, time, nomcmp, tps, nbchar, &
-                  char, mate, mateco, solvez, ma, nu)
+!
+subroutine rigflu(modelZ, matecoZ, &
+                  nbLoad, loadNameZ, &
+                  solverZ, numeDof, matrAsse)
+!
+    use listLoad_module
+!
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/getvid.h"
 #include "asterfort/mecact.h"
@@ -27,9 +32,11 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar, &
 #include "asterfort/numero.h"
 #include "asterfort/preres.h"
 #include "asterfort/wkvect.h"
-    integer :: nbchar
-    character(len=*) :: mate, mateco, solvez
 !
+    integer, intent(in) :: nbLoad
+    character(len=*), intent(in) :: modelZ, loadNameZ, matecoZ, solverZ
+    character(len=14), intent(out) :: numeDof
+    character(len=8), intent(out) :: matrAsse
 !
 !
 ! BUT : CETTE ROUTINE CALCULE LA MATRICE ASSEMBLEE DE RIGIDITE
@@ -43,52 +50,57 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar, &
 !     OUT: MA     : MATRICE ASSEMBLEE DE RIGIDITE FLUIDE
 !        : NU     : NUMEROTATION ASSOCIEE
 !----------------------------------------------------------------------
-    integer :: ibid, ialich, jinf, ierr, nchar, ialifc, nh
-    real(kind=8) :: tps(6)
-    character(len=14) :: nu
-    character(len=8) :: modele, nomcmp(6), char, ma, mel
-    character(len=24) :: time, fomult
-    character(len=19) :: solveu, list_load, maprec, mel19
+    integer :: ibid, ierr
+    character(len=8) :: matrElem, model, loadName
+    character(len=24) :: fomult, mateco
+    character(len=19) :: solver, maprec, mel19
+    character(len=24), parameter :: listLoad = '&&OP0152.INFCHA'
+    character(len=24), parameter :: timeMap = '&TIME'
     data maprec/'&&OP0152.MAPREC'/
-    data list_load/'&&OP0152.INFCHA'/
     data fomult/'&&OP0152.LIFCTS'/
+    integer, parameter :: nbCmp = 6
+    character(len=8), parameter :: cmpName(nbCmp) = (/ &
+                                   'INST    ', 'DELTAT  ', 'THETA   ', &
+                                   'KHI     ', 'R       ', 'RHO     '/)
+    real(kind=8), parameter :: cmpVale(nbCmp) = (/ &
+                               0.d0, 1.d0, 1.d0, &
+                               0.d0, 0.d0, 0.d0/)
 !   ------------------------------------------------------------------
 !
-    ma = '&MATAS'
-    nu = '&&RIGFLU.NUM'
-    mel = '&MATEL'
-    solveu = solvez
-!
-!-----  CALCUL DE LA MATRICE ELEMENTAIRE DE RAIDEUR DU FLUIDE
-!
-    call mecact('V', time, 'MODELE', modele//'.MODELE', 'INST_R', &
-                ncmp=6, lnomcmp=nomcmp, vr=tps)
-!
-    call merith(modele, nbchar, char, mate, mateco, ' ', &
-                time, mel, nh, 'V')
-!
-    call getvid(' ', 'CHARGE', scal=char, nbret=nchar)
-    call wkvect(list_load//'.LCHA', 'V V K24', nchar, ialich)
-    call wkvect(list_load//'.INFC', 'V V IS', 4*nchar+5, jinf)
-    zi(jinf) = nchar
-    zk24(ialich) = char
-    call wkvect(fomult, 'V V K24', nchar, ialifc)
-!
+    matrAsse = '&MATAS'
+    numeDof = '&&RIGFLU.NUM'
+    matrElem = '&MATEL'
+    solver = solverZ
+    model = modelZ
+    mateco = matecoZ
+    loadName = loadNameZ
+
+! - Create list of loads (based on thermal phenomen)
+    call creaListLoadFSIOne(model, nbLoad, loadName, listLoad)
+
+! - Create map for time parameters
+    call mecact('V', timeMap, 'MODELE', model//'.MODELE', 'INST_R', &
+                ncmp=nbCmp, lnomcmp=cmpName, vr=cmpVale)
+
+! - CALCUL DE LA MATRICE ELEMENTAIRE DE RAIDEUR DU FLUIDE
+    call merith(model, loadName, mateco, " ", &
+                timeMap, matrElem, "V")
+
 !----------------  NUMEROTATION
 !
-    call numero(nu, 'VV', &
-                modelz=modele, list_loadz=list_load)
+    call numero(numeDof, 'VV', &
+                modelz=model, list_loadz=listLoad)
 
 !
 !---------------- ASSEMBLAGE
 !
-    mel19 = mel
-    call asmatr(1, mel19, ' ', nu, &
-                list_load, 'ZERO', 'V', 1, ma)
+    mel19 = matrElem
+    call asmatr(1, mel19, ' ', numeDof, &
+                listLoad, 'ZERO', 'V', 1, matrAsse)
 !
 !------- FACTORISATION LDLT DE LA MATRICE DE RAIDEUR
 !
-    call preres(solveu, 'V', ierr, maprec, ma, &
+    call preres(solver, 'V', ierr, maprec, matrAsse, &
                 ibid, -9999)
 !
 !

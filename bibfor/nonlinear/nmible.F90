@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmible(loop_exte, model, mesh, ds_contact, &
+subroutine nmible(loop_exte, model, ds_contact, &
                   list_func_acti, ds_measure, ds_print, ds_algorom)
 !
     use NonLin_Datastructure_type
@@ -27,6 +27,7 @@ subroutine nmible(loop_exte, model, mesh, ds_contact, &
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/nmctcg.h"
@@ -35,7 +36,6 @@ subroutine nmible(loop_exte, model, mesh, ds_contact, &
 !
     integer, intent(inout) :: loop_exte
     character(len=24), intent(in) :: model
-    character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in):: list_func_acti(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -57,7 +57,6 @@ subroutine nmible(loop_exte, model, mesh, ds_contact, &
 !                        3 - Loop for geometry
 !                       10 - External loop for HROM
 ! In  model            : name of model
-! In  mesh             : name of mesh
 ! IO  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
 ! IO  ds_measure       : datastructure for measure and statistics management
@@ -69,9 +68,11 @@ subroutine nmible(loop_exte, model, mesh, ds_contact, &
     integer :: loop_geom_count, loop_cont_count, loop_fric_count
     aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont
     aster_logical :: l_pair, l_geom_sans
+    character(len=8) :: mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     if ((loop_exte .ge. 1) .and. (loop_exte .le. 3)) then
 !
 ! ----- Print geometric loop iteration
@@ -96,7 +97,7 @@ subroutine nmible(loop_exte, model, mesh, ds_contact, &
             if (l_loop_geom) then
                 loop_exte = 3
                 if (l_pair) then
-                    call nmctcg(model, mesh, ds_contact, ds_measure)
+                    call nmctcg(mesh, ds_contact, ds_measure)
                 end if
             end if
             call mmbouc(ds_contact, 'Fric', 'Init_Counter')

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,10 +78,7 @@ def check_numpy_headers(self):
         self.fatal("load python tool first")
     self.start_msg("Checking for numpy include")
     # retrieve includes dir from numpy module
-    numpy_includes = self.get_python_variables(
-        ['"\\n".join([np.get_include()])'],
-        ["import numpy as np"],
-    )
+    numpy_includes = self.get_python_variables(["numpy.get_include()"], ["import numpy"])
     extra_flags = dict()
     if platform.system() == "Windows":
         library_prefix_ = pathlib.Path(self.env.PREFIX)

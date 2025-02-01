@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmible(loop_exte     , model   , mesh      , ds_contact,&
+    subroutine nmible(loop_exte, model, ds_contact, &
                       list_func_acti, ds_measure, ds_print, ds_algorom)
         use NonLin_Datastructure_type
-        use Rom_Datastructure_type     
+        use Rom_Datastructure_type
         integer, intent(inout) :: loop_exte
         character(len=24), intent(in) :: model
-        character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in):: list_func_acti(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure

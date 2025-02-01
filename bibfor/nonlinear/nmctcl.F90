@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,12 @@ subroutine nmctcl(model, mesh, ds_contact)
 #include "asterfort/cfdisl.h"
 #include "asterfort/mmligr.h"
 !
-    character(len=8), intent(in) :: model
-    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model, mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Continue/XFEM method
+! MECA_NON_LINE - Continue method
 !
 ! Create elements for contact
 !
@@ -52,13 +51,12 @@ subroutine nmctcl(model, mesh, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     cont_form = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
-!
+
 ! - Create elements for contact
-!
     if (cont_form .eq. 2 .or. cont_form .eq. 5) then
         call mmligr(mesh, model, ds_contact)
     elseif (cont_form .ne. 3) then
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,3 +103,15 @@
 #define ZMETALAW         3
 #define ZNUMECOMP        4
 #define ZNBPHASE         5
+
+! --------------------------------------------------------------------------------------------------
+!
+! Parameters for integration of metallurgical laws in CALC_META
+!
+! --------------------------------------------------------------------------------------------------
+! - Bound to cut
+#define STEEL_MIN_CUT 1.d-3
+! - Maximum temperature step
+#define STEEL_MAX_TEMP_STEP 5.d0
+! - Maximum number of sub-steps
+#define STEEL_MAX_NB_STEP 10

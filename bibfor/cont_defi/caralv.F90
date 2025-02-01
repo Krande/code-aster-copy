@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
 subroutine caralv(sdcont, nb_cont_zone, cont_form)
 !
@@ -49,7 +48,6 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
     integer :: i_zone
     aster_logical :: l_all, l_exist
     aster_logical :: l_verif, l_newt_geom, l_geom_hpp, l_pena, l_node, l_glis_zone
-    aster_logical :: l_cont_xczm
     integer :: i_cont_init
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_paraci
@@ -111,7 +109,7 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
 !
 ! - Penalization ? (non-symmetric matrix)
 !
-    if ((cont_form .eq. 2) .or. (cont_form .eq. 3)) then
+    if (cont_form .eq. 2) then
         l_exist = ASTER_FALSE
         do i_zone = 1, nb_cont_zone
             l_pena = ( &
@@ -138,8 +136,6 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
         end if
     else if (cont_form .eq. 1) then
         v_sdcont_paraci(24) = 1
-    else if (cont_form .eq. 3) then
-        v_sdcont_paraci(24) = 1
     end if
 !
 ! - Bilateral contact ?
@@ -154,22 +150,8 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
             v_sdcont_paraci(26) = 1
         end if
     end if
-!
-! - At least one zone with XFEM+CZM ?
-!
-    if (cont_form .eq. 3) then
-        l_exist = ASTER_FALSE
-        do i_zone = 1, nb_cont_zone
-            l_cont_xczm = mminfl(sdcont_defi, 'CONT_XFEM_CZM', i_zone)
-            l_exist = l_exist .or. l_cont_xczm
-        end do
-        if (l_exist) then
-            v_sdcont_paraci(21) = 1
-        end if
-    end if
-!
+
 ! - All zones ares CONTACT_INIT INTERPENETRE ?
-!
     if (cont_form .eq. 2) then
         l_all = ASTER_TRUE
         do i_zone = 1, nb_cont_zone

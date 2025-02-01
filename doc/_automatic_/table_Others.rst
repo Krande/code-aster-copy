@@ -40,6 +40,7 @@
    * - :py:class:`~code_aster.Objects.ImpedanceReal`
    * - :py:class:`~code_aster.Objects.InitialState`
    * - :py:class:`~code_aster.Objects.InterfaceType`
+   * - :py:class:`~code_aster.Objects.JacobianType`
    * - :py:class:`~code_aster.Objects.Loads`
    * - :py:class:`~code_aster.Objects.LocalBeamForceReal`
    * - :py:class:`~code_aster.Objects.LocalShellForceReal`

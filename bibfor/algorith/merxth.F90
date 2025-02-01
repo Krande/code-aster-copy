@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,149 +16,155 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
-                  tpsthe, time, temp_iter, compor_ther, varc_curr, &
-                  matr_elem, base, l_stat, &
-                  dry_prev_, dry_curr_)
+subroutine merxth(l_stat, &
+                  modelZ, caraElemZ, matecoZ, &
+                  loadNameJvZ, loadInfoJvZ, &
+                  tpsthe, timeMapZ, &
+                  tempIterZ, comporTherZ, varcCurrZ, dryCurrZ, &
+                  matrElemZ, jvBase)
+!
+    use loadTherCompute_module
+    use loadTherCompute_type
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/ther_mtan.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/gcnco2.h"
-#include "asterfort/inical.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/memare.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/load_neut_comp.h"
-#include "asterfort/load_neut_prep.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
+#include "asterfort/ther_mtan.h"
+#include "LoadTypes_type.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: lload_name
-    character(len=24), intent(in) :: lload_info
-    character(len=24), intent(in) :: cara_elem
-    character(len=24), intent(in) :: mate, mateco
-    real(kind=8), intent(in) :: tpsthe(6)
-    character(len=24), intent(in) :: time
-    character(len=24), intent(in) :: temp_iter
-    character(len=24), intent(in) :: compor_ther
-    character(len=19), intent(in) :: varc_curr
-    character(len=24), intent(in) :: matr_elem
-    character(len=1), intent(in) :: base
     aster_logical, intent(in) :: l_stat
-    character(len=24), optional, intent(in) :: dry_prev_
-    character(len=24), optional, intent(in) :: dry_curr_
+    character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
+    character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
+    real(kind=8), intent(in) :: tpsthe(6)
+    character(len=*), intent(in) :: comporTherZ, timeMapZ
+    character(len=*), intent(in) :: tempIterZ, varcCurrZ, dryCurrZ
+    character(len=*), intent(in) :: matrElemZ
+    character(len=1), intent(in) :: jvBase
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Thermic
 !
-! Tangent matrix (non-linear) - Volumic and surfacic terms
+! Tangent matrix (non-linear) - Material and loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of the model
-! In  lload_name       : name of object for list of loads name
-! In  lload_info       : name of object for list of loads info
-! In  cara_elem        : name of elementary characteristics (field)
-! In  mate             : name of material characteristics (field)
-! In  tpsthe           : parameters for time
-! In  time             : time (<CARTE>)
-! In  temp_iter        : temperature field at current Newton iteration
-! In  compor_ther      : name of comportment definition (field)
-! In  varc_curr        : command variable for current time
-! In  matr_elem        : name of matr_elem result
-! In  base             : JEVEUX base for object
-! In  dry_prev         : previous drying
-! In  dry_curr         : current drying
-! In  l_stat           : .true. if stationnary
+! In  l_stat            : .true. if stationnary
+! In  model             : name of the model
+! In  caraElem          : name of elementary characteristics (field)
+! In  mateco            : name of coded material
+! In  loadNameJv        : name of object for list of loads name
+! In  loadInfoJv        : name of object for list of loads info
+! In  tpsthe            : parameters for time
+! In  timeMap           : time (<CARTE>)
+! In  tempIter          : temperature field at current Newton iteration
+! In  comporTher        : name of comportment definition (field)
+! In  varcCurr          : command variable for current time
+! In  dryCurr           : current drying
+! In  matrElem          : name of matrElem result
+! In  jvBase            : JEVEUX base for object
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_in_maxi = 10
-    integer, parameter :: nbout = 1
-    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
-    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
-    integer :: iret
-    character(len=1) :: stop_calc
-    character(len=8) :: load_name, newnom
-    character(len=19) :: resu_elem
-    integer :: load_nume
-    aster_logical :: load_empty
-    integer :: i_load, nb_load, nb_in_prep
-    character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
-    character(len=24) :: dry_prev, dry_curr
-    real(kind=8) :: time_curr, para(2)
+    character(len=8) :: lpain(LOAD_NEUT_NBMAXIN)
+    character(len=24) :: lchin(LOAD_NEUT_NBMAXIN)
+    integer :: nbLoad, iLoad, loadNume, nbFieldInGene
+    character(len=8) :: loadName, newnom
+    aster_logical :: noLoadInList
+    character(len=24), pointer :: listLoadName(:) => null()
+    integer, pointer :: listLoadInfo(:) => null()
+    character(len=24) :: matrElem, resuElem
+    real(kind=8) :: timeCurr, timePara(2), theta
+    character(len=24) :: timeMap, tempPrev, tempIter, varcCurr, dryCurr
+    character(len=13) :: loadPreObject
+    character(len=24) :: loadLigrel
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    resu_elem = matr_elem(1:8)//'.0000000'
-    stop_calc = 'S'
-    time_curr = tpsthe(1)
-!   theta
-    para(1) = tpsthe(3)
-!   deltat
-    para(2) = tpsthe(2)
-!
-! - Get fields
-!
-    dry_prev = ' '
-    if (present(dry_prev_)) then
-        dry_prev = dry_prev_
-    end if
-    dry_curr = ' '
-    if (present(dry_curr_)) then
-        dry_curr = dry_curr_
-    end if
-!
-! - Prepare MATR_ELEM
-!
-    call jeexin(matr_elem(1:19)//'.RELR', iret)
-    if (iret .eq. 0) then
-        call memare(base, matr_elem, model, 'MTAN_THER')
-    else
-        call jedetr(matr_elem(1:19)//'.RELR')
-    end if
-!
-! - Generate new RESU_ELEM name
-!
-    newnom = resu_elem(9:16)
-    call gcnco2(newnom)
-    resu_elem(10:16) = newnom(2:8)
-!
-! - Tangent matrix - Volumic terms
-!
-    call ther_mtan(model, cara_elem, mateco, para, varc_curr, &
-                   compor_ther, temp_iter, dry_prev, dry_curr, resu_elem, &
-                   matr_elem, base, l_stat)
-!
-! - Init fields
-!
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, lchout)
-!
-! - Loads
-!
-    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        lload_name, lload_info)
+    call jemarq()
 
-!
+! - Initializations
+    lpain = " "
+    lchin = " "
+
+! - Get fields
+    timeMap = timeMapZ
+    tempIter = tempIterZ
+    varcCurr = varcCurrZ
+    dryCurr = dryCurrZ
+    tempPrev = " "
+
+! - Get time parameters
+    timeCurr = tpsthe(1)
+    timePara(1) = tpsthe(3)
+    timePara(2) = tpsthe(2)
+    theta = timePara(1)
+
+! - Name of elementary matrices
+    matrElem = matrElemZ
+    if (matrElem .eq. ' ') then
+        matrElem = '&&MERXTH'
+    end if
+
+! - Allocate result
+    call detrsd('MATR_ELEM', matrElem)
+    call memare(jvBase, matrElem, modelZ, 'MTAN_THER')
+    call reajre(matrElem, ' ', jvBase)
+
+! - Generate new RESU_ELEM name
+    resuElem = matrElem(1:8)//'.0000000'
+    newnom = resuElem(9:16)
+    call gcnco2(newnom)
+    resuElem(10:16) = newnom(2:8)
+
+! - Tangent matrix - Compute material part (rigidity and mass)
+    call ther_mtan(l_stat, &
+                   modelZ, caraElemZ, matecoZ, &
+                   timePara, varcCurr, &
+                   comporTherZ, tempIter, dryCurr, resuElem, &
+                   matrElem, jvBase)
+
+! - Get loads
+    call load_list_info(noLoadInList, nbLoad, listLoadName, listLoadInfo, &
+                        loadNameJvZ, loadInfoJvZ)
+
 ! - Preparing input fields
-!
-    call load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain, &
-                        varc_curr_=varc_curr, temp_iter_=temp_iter)
-!
+    call prepGeneralFields(modelZ, matecoZ, &
+                           varcCurr, tempPrev, tempIter, &
+                           nbFieldInGene, lpain, lchin)
+
 ! - Computation
-!
-    do i_load = 1, nb_load
-        load_name = v_load_name(i_load) (1:8)
-        load_nume = v_load_info(nb_load+i_load+1)
-        if (load_nume .gt. 0) then
-            call load_neut_comp('MTAN', stop_calc, model, time_curr, time, &
-                                load_name, load_nume, nb_in_maxi, nb_in_prep, lpain, &
-                                lchin, base, resu_elem, matr_elem, l_stat)
+    do iLoad = 1, nbLoad
+        loadName = listLoadName(iLoad) (1:8)
+        loadNume = listLoadInfo(nbLoad+iLoad+1)
+        loadPreObject = loadName(1:8)//'.CHTH'
+        loadLigrel = loadPreObject(1:13)//'.LIGRE'
+
+        if (loadNume .gt. 0) then
+! --------- Standard Neumann loads
+            call compLoadMatr(l_stat, theta, &
+                              modelZ, timeMap, &
+                              loadNume, &
+                              loadPreObject, loadLigrel, &
+                              nbFieldInGene, lpain, lchin, &
+                              jvBase, resuElem, matrElem)
+
+! --------- Composite Neumann loads (EVOL_CHAR)
+            call compLoadEvolMatr(l_stat, theta, timeCurr, &
+                                  modelZ, timeMap, &
+                                  loadPreObject, loadLigrel, &
+                                  nbFieldInGene, lpain, lchin, &
+                                  jvBase, resuElem, matrElem)
         end if
     end do
+
+    call jedema()
 !
 end subroutine

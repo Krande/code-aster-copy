@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1023,18 +1023,19 @@ class ExceptHookManager:
             value (BaseException): Exception instance.
             traceb (traceback): Exception traceback.
         """
+        opt = ExecutionParameter().option
         traceback.print_exception(type, value, traceb, file=sys.stderr)
         sys.stderr.flush()
         if config["ASTER_PLATFORM_MINGW"]:
             time.sleep(1)
-        try:
-            assert sys.flags.interactive or "__IPYTHON__" in globals()
+        if (
+            sys.flags.interactive
+            or opt & Options.InteractiveInterpreter
+            or "__IPYTHON__" in globals()
+        ):
             print("An exception occurred! Return to interactive session.")
             return
-        except AssertionError:
-            pass
         if cls._current_cmd:
-            opt = ExecutionParameter().option
             options = FinalizeOptions.Set
             if haveMPI() and not opt & Options.HPCMode:
                 options |= FinalizeOptions.OnlyProc0

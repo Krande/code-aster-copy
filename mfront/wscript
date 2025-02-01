@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,13 @@
 import os
 import os.path as osp
 import pathlib
+import re
 import shutil
 from functools import partial
-import re
-from distutils.version import LooseVersion
 
-from waflib import Configure, TaskGen, Task, Utils, Errors, Logs
+from waflib import Configure, Errors, Logs, Task, TaskGen, Utils
+
+from waftools.wafutils import compare_versions
 
 
 def options(self):
@@ -183,7 +184,7 @@ def check_mfront_version(self, minver=None):
         self.msg("Checking for mfront version", mfrver)
         return
     minver_str = ".".join(map(str, minver))
-    result = LooseVersion(mfrver) >= LooseVersion(minver_str)
+    result = compare_versions(mfrver, minver_str) >= 0
     self.msg(
         "Checking for mfront version >= %s" % minver_str, mfrver, result and "GREEN" or "YELLOW"
     )
@@ -198,9 +199,9 @@ def check_mfront_version(self, minver=None):
 @Configure.conf
 def check_mfront_libs(self):
     _check = partial(self.check_cxx, mandatory=True, uselib_store="MFRONT", use="MFRONT")
-    check_lib = lambda lib: _check(lib=lib)
     libs = ["TFELSystem" + self.env.TFELSUFFIX]
-    list(map(check_lib, Utils.to_list(libs)))
+    for lib in Utils.to_list(libs):
+        _check(lib=lib)
 
 
 @Configure.conf
@@ -360,6 +361,6 @@ int main(void){
 @Configure.conf
 def check_mgis_libs(self):
     _check = partial(self.check_cxx, mandatory=True, uselib_store="MGIS", use="MGIS")
-    check_lib = lambda lib: _check(lib=lib)
     libs = ["MFrontGenericInterface"]
-    list(map(check_lib, Utils.to_list(libs)))
+    for lib in Utils.to_list(libs):
+        _check(lib=lib)

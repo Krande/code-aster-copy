@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/lccsst.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
@@ -76,8 +77,6 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
 !
     integer :: ifm, niv
     aster_logical :: l_cont_elem, l_fric, l_all_verif, l_newt_cont, l_newt_geom, l_cont_lac
-    aster_logical :: l_xthm
-    character(len=8) :: mesh
     character(len=19) :: vect_elem_cont, vect_elem_fric
     character(len=19) :: vect_asse_cont, vect_asse_fric
     character(len=19) :: disp_prev, disp_cumu_inst, vite_prev, acce_prev, vite_curr
@@ -86,20 +85,16 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
-!
+
 ! - Active functionnalities
-!
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     l_cont_elem = isfonc(list_func_acti, 'ELT_CONTACT')
     l_fric = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
     l_all_verif = isfonc(list_func_acti, 'CONT_ALL_VERIF')
     l_newt_cont = isfonc(list_func_acti, 'CONT_NEWTON')
     l_newt_geom = isfonc(list_func_acti, 'GEOM_NEWTON')
     l_cont_lac = isfonc(list_func_acti, 'CONT_LAC')
-    l_xthm = isfonc(list_func_acti, 'CONT_XFEM_THM')
-!
+
 ! - Get fields
-!
     call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
     call nmchex(hval_incr, 'VALINC', 'VITMOI', vite_prev)
     call nmchex(hval_incr, 'VALINC', 'ACCMOI', acce_prev)
@@ -113,15 +108,13 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
     call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
     call nmvcex('INST', varc_prev, time_prev)
     call nmvcex('INST', varc_curr, time_curr)
-!
+
 ! - Generalized Newton: contact status evaluate before
-!
     if ((phase .eq. 'CONVERGENC') .and. (l_newt_cont .or. l_newt_geom)) then
         goto 999
     end if
-!
+
 ! - Compute contact forces
-!
     if (l_cont_elem .and. (.not. l_all_verif) .and. &
         ((.not. l_cont_lac) .or. ds_contact%nb_cont_pair .ne. 0)) then
         call nmtime(ds_measure, 'Init', 'Cont_Elem')
@@ -129,7 +122,7 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE11_30')
         end if
-        call nmelcv(mesh, model, &
+        call nmelcv(model, &
                     ds_material, ds_contact, ds_constitutive, &
                     disp_prev, vite_prev, &
                     acce_prev, vite_curr, &
@@ -149,9 +142,8 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
             end if
         end if
     end if
-!
+
 ! - Special post-treatment for LAC contact method
-!
     if (l_cont_lac) then
         call lccsst(ds_contact, vect_asse_cont)
     end if

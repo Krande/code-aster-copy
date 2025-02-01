@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,6 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/load_neut_excl.h"
 #include "asterfort/mecara.h"
 #include "asterfort/mecham.h"
 #include "asterfort/medom1.h"
@@ -130,10 +129,6 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
     call jeveuo(lesopt, 'L', jopt)
 !
     call jeveuo(lload_name//'.LCHA', 'L', jcha)
-!
-! - EVOL_CHAR is prohibiden
-!
-    call load_neut_excl('CALC_ERREUR', lload_name_=lload_name)
 
     call jeveuo(knum, 'L', jordr)
 !

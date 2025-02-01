@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine chrpan(modele, carte, option, chelem)
 #include "asterfort/reliem.h"
     character(len=*), intent(in) :: modele, carte, chelem, option
 !     COMMANDE MODI_REPERE :
-!     SURCHARGE ALPHA, BETA, AXE, ORIG  DANS LA CARTE '.CAORIE'
+!     SURCHARGE ALPHA, BETA, AXE, ORIG  DANS LA CARTE '.CARORIEN'
 !     ------------------------------------------------------------------
 ! IN  : MODELE : MODELE
 ! IN  : CARTE  : CARTE A TRANSFORMER EN CHAM ELEM
@@ -185,7 +185,7 @@ subroutine chrpan(modele, carte, option, chelem)
 !
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 ! Création d'un cham_elem à partir du champ simple
-! Attention les modes locaux de CAORIE dans les catalogues de REPE_TENS et
+! Attention les modes locaux de CAORIE_R dans les catalogues de REPE_TENS et
 ! REPE_GENE sont différents
     call cescel(chelms, ligrmo, option, 'PANGREP', 'NON', &
                 nncp, 'V', chelem, 'F', ibid)

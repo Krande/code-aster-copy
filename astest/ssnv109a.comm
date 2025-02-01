@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 import numpy as np
 
-import aster_core
+import libaster
 
 
 def int_fct(x, f):
@@ -37,7 +37,8 @@ def int_fct(x, f):
 
 # désactivation de l'interception des erreurs numeriques
 # necéssaire pour ne pas planter en cas de nan
-aster_core.matfpe(-1)
+# TODO utiliser CA.disable_fpe() context manager autour des lignes qui en ont besoin
+libaster.matfpe(-1)
 
 cote_plaque = 100
 u_impo = cote_plaque * 0.001

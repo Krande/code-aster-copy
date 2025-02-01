@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ subroutine nmnble(mesh, model, list_func_acti, sddisc, nume_inst, &
 ! ----- Create elements for contact
         call nmctcl(model, mesh, ds_contact)
 ! ----- Create input fields for contact
-        call nmctce(model, mesh, ds_contact, sddyna, sddisc, nume_inst)
+        call nmctce(mesh, ds_contact, sddyna, sddisc, nume_inst)
 ! ----- Stop timer for preparation of contact
         call nmtime(ds_measure, 'Stop', 'Cont_Prep')
         call nmrinc(ds_measure, 'Cont_Prep')

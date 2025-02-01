@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -118,9 +118,9 @@ subroutine deelpo(caelem, noma, numail, phie)
 !
     igrand = zi(icad)
     call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO'), 'L', inomcp)
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO_R'), 'L', inomcp)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('NB_EC', 'CAGEPO', 'GRANDEUR', repi=nbec)
+    call dismoi('NB_EC', 'CAGEPO_R', 'GRANDEUR', repi=nbec)
     irang1 = indik8(zk8(inomcp), nomcmp(1), 1, nbcmp)
     irang2 = indik8(zk8(inomcp), nomcmp(2), 1, nbcmp)
     if (irang1 .eq. 0 .or. irang2 .eq. 0) then

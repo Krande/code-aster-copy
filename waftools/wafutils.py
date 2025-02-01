@@ -99,6 +99,7 @@ def remove_previous(install_node, patterns):
         for i in install_node.ant_glob(pattern):
             os.remove(i.abspath())
 
+
 def pyenv_abspath(self, program):
     """Return abspath to program, even if pyenv is used.
 
@@ -114,3 +115,14 @@ def pyenv_abspath(self, program):
     except:
         pass
     return program
+
+
+def compare_versions(vers1, vers2):
+    """Simple comparison of versions of the form "N.M[.P]".
+
+    Returns:
+        int: -1 if vers1 < vers2, 0 si vers1 == vers2, +1 if vers1 > vers2.
+    """
+    v1 = vers1.split(".")
+    v2 = vers2.split(".")
+    return (v1 > v2) - (v1 < v2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,12 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vethbt(model    , lload_name, lload_info, cara_elem, mate,&
-                      temp_iter, vect_elem , base)
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: lload_name
-        character(len=24), intent(in) :: lload_info
-        character(len=24), intent(in) :: cara_elem
-        character(len=24), intent(in) :: mate
+    subroutine vethbt(model, loadNameJv, loadInfoJv, &
+                      temp_iter, vect_elem, jvBase)
+        character(len=8), intent(in) :: model
+        character(len=24), intent(in) :: loadNameJv, loadInfoJv
         character(len=24), intent(in) :: temp_iter
         character(len=24), intent(in) :: vect_elem
-        character(len=1), intent(in) :: base
+        character(len=1), intent(in) :: jvBase
     end subroutine vethbt
 end interface

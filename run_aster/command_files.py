@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,20 +87,23 @@ def add_coding_line(text):
     return text
 
 
-def stop_at_end(text):
-    """Stop execution raising *EOFError* instead of calling ``FIN()``.
+def stop_at_end(text, last=True):
+    """Stop execution for interactive commands instead of calling ``FIN()``.
 
     Arguments:
         text (str): Text of a command file.
+        last (bool): Tell if this is the last file to be executed.
+            If *False*, 'FIN()' must be preserved.
 
     Returns:
         str: Changed content.
     """
-    refin = re.compile(r"^(?P<cmd>(FIN|CA\.close) *\()", re.M)
+    refin = re.compile(r"^(?P<cmd>(?:FIN|CA\.close) *\()", re.M)
     subst = r"""
 import code
 import readline
 import rlcompleter
+from code_aster import CA
 
 readline.parse_and_bind('tab: complete')
 
@@ -113,6 +116,13 @@ code.interact(local=locals(),
                 exitmsg='Use exit() or Ctrl-D (i.e. EOF) to exit')
 
 \g<cmd>"""
+    if last:
+        spl = refin.split(text)
+        if len(spl) <= 1:
+            return text
+        if len(spl) == 3:  # start, splitter, cmd, end
+            if not spl[2][1:].strip():  # starts with ')\n'
+                return spl[0]
     text = refin.sub(subst, text)
     return text
 

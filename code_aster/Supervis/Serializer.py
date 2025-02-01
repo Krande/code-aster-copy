@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ from functools import partial
 from hashlib import sha256
 from io import IOBase
 
-import aster_core
 import libaster
 import numpy
 
@@ -55,6 +54,7 @@ from ..Utilities import (
     MPI,
     ExecutionParameter,
     Options,
+    disable_fpe,
     get_caller_context,
     logger,
     no_new_attributes,
@@ -234,34 +234,33 @@ class Serializer:
         should_fail = ExecutionParameter().option & Options.StrictUnpickling
         pool = objList[:]
         logger.debug("Objects pool: %s", pool)
-        aster_core.matfpe(-1)
-        with open(self._pick_filename, "rb") as pick:
-            unpickler = pickle.Unpickler(pick)
-            # load all the objects
-            names = []
-            try:
-                while True:
-                    name = pool.pop(0) if pool else None
-                    logger.debug("loading: %s...", name)
-                    try:
-                        record = unpickler.load()
-                        key, obj = list(record.items())[0]
-                        logger.debug("object restored: %s %s...", key, type(obj))
-                        assert key == name, f"expecting {name}, got {key}"
-                        self._ctxt.update(record)
-                    except Exception as exc:
-                        if isinstance(exc, EOFError):
-                            raise
-                        logger.info(traceback.format_exc())
-                        logger.info("can not restore object: %s", name)
-                        if should_fail:
-                            raise
-                        continue
-                    logger.info("%-24s %s", name, type(obj))
-                    names.append(name)
-            except EOFError:
-                pass
-        aster_core.matfpe(+1)
+        with disable_fpe():
+            with open(self._pick_filename, "rb") as pick:
+                unpickler = pickle.Unpickler(pick)
+                # load all the objects
+                names = []
+                try:
+                    while True:
+                        name = pool.pop(0) if pool else None
+                        logger.debug("loading: %s...", name)
+                        try:
+                            record = unpickler.load()
+                            key, obj = list(record.items())[0]
+                            logger.debug("object restored: %s %s...", key, type(obj))
+                            assert key == name, f"expecting {name}, got {key}"
+                            self._ctxt.update(record)
+                        except Exception as exc:
+                            if isinstance(exc, EOFError):
+                                raise
+                            logger.info(traceback.format_exc())
+                            logger.info("can not restore object: %s", name)
+                            if should_fail:
+                                raise
+                            continue
+                        logger.info("%-24s %s", name, type(obj))
+                        names.append(name)
+                except EOFError:
+                    pass
 
         not_read = set(objList).difference(names)
         if not_read:
@@ -440,8 +439,10 @@ def _filteringContext(context):
         if getattr(numpy, name, None) is obj:  # see issue29282
             continue
         # check attr needed for python<=3.6
-        if hasattr(obj, "__class__") and isinstance(obj, IOBase):
+        if hasattr(obj, "__class__") and isinstance(obj, (IOBase, MPI.Intracomm)):
             continue
+        # if hasattr(obj, "__pickling_disabled__"):
+        #     continue
         if ipython and name in ("_", "__", "___", "_ih", "_oh", "_dh", "In", "Out", "exit", "quit"):
             continue
         if type(obj) in (

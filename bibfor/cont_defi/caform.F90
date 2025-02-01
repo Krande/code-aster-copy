@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,6 @@ subroutine caform(cont_form)
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
 #include "asterfort/getvtx.h"
-!
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     integer, intent(out) :: cont_form
 !
@@ -66,8 +64,6 @@ subroutine caform(cont_form)
         else
             cont_form = 2
         end if
-    else if (s_formul .eq. 'XFEM') then
-        cont_form = 3
     else if (s_formul .eq. 'LIAISON_UNIL') then
         cont_form = 4
     else

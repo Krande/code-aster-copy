@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
+subroutine calcGetDataMeca(listLoad, model, materField, mateco, caraElem, &
                            disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
                            ds_constitutive, l_elem_nonl, nume_harm)
 !
     use NonLin_Datastructure_type
+    use listLoad_type
 !
     implicit none
 !
@@ -32,15 +32,14 @@ subroutine calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/isOptionPossible.h"
+#include "asterfort/nmdoch.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/nmlect.h"
 #include "asterfort/nonlinDSConstitutiveInit.h"
 #include "asterfort/utmess.h"
 !
-    character(len=19), intent(out) :: list_load
-    character(len=24), intent(out) :: model
-    character(len=24), intent(out) :: mateco, mate
-    character(len=24), intent(out) :: cara_elem
+    character(len=24), intent(out) :: listLoad, mateco
+    character(len=8), intent(out) :: model, materField, caraElem
     character(len=19), intent(out) :: disp_prev
     character(len=19), intent(out) :: disp_cumu_inst
     character(len=19), intent(out) :: vari_prev
@@ -57,10 +56,10 @@ subroutine calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out list_load        : name of datastructure for list of loads
+! Out listLoad         : name of datastructure for list of loads
 ! Out model            : name of model
 ! Out mateco           : name of coded material
-! Out cara_elem        : name of elementary characteristics (field)
+! Out caraElem         : name of elementary characteristics (field)
 ! Out disp_prev        : displacement at beginning of step
 ! Out disp_cumu_inst   : displacement increment from beginning of step
 ! Out vari_prev        : internal variables at beginning of step
@@ -75,11 +74,12 @@ subroutine calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
     aster_logical :: l_etat_init, verbose
     integer :: nocc, ier
     character(len=19) :: ligrmo
+    type(ListLoad_Prep) :: listLoadPrep
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    list_load = '&&OP0026.LISCHA'
-    cara_elem = '&&OP0026.CARELE'
+    listLoad = '&&OP0026.LISCHA'
+    caraElem = ' '
     model = ' '
     mateco = ' '
     vari_prev = ' '
@@ -87,15 +87,22 @@ subroutine calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
     disp_prev = ' '
     disp_cumu_inst = ' '
     l_elem_nonl = ASTER_FALSE
-!
+
 ! - Get parameters from command file
-!
-    call nmlect(result, model, mate, mateco, cara_elem, list_load)
-!
+    call nmlect(result, model, materField, mateco, caraElem)
+
+! - Get loads/BC and create list of loads datastructure
+    listLoad = '&&OP0026.LIST_LOAD'
+    listLoadPrep%model = model
+    listLoadPrep%lHasPilo = ASTER_FALSE
+    listLoadPrep%funcIsCplx = ASTER_FALSE
+    listLoadPrep%staticOperator = ASTER_TRUE
+    call nmdoch(listLoadPrep, listLoad, "V")
+
 ! - Can have internal variables ?
-!
     call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     call isOptionPossible(ligrmo, 'TOU_INI_ELGA', 'PVARI_R', l_some_=l_elem_nonl)
+
 ! - Does option FULL_MECA exist ?
     if (l_elem_nonl) then
         call isOptionPossible(ligrmo, 'FULL_MECA', 'PDEPLPR', l_some_=l_elem_nonl)
@@ -160,11 +167,11 @@ subroutine calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
             ASSERT(nocc == 1)
             verbose = ASTER_FALSE
         else
-            call nmdorc(model, mate, l_etat_init, &
+            call nmdorc(model, materField, l_etat_init, &
                         ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
             verbose = ASTER_TRUE
         end if
-        call nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose)
+        call nonlinDSConstitutiveInit(model, caraElem, ds_constitutive, verbose)
     end if
 !
 end subroutine

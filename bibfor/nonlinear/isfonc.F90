@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,12 +51,10 @@ function isfonc(list_func_acti, func_name_z)
 !       CONTACT            :  CONTACT DISCRET OU CONTINU OU XFEM OU LAC
 !       CONT_DISCRET       :  CONTACT DISCRET
 !       CONT_CONTINU       :  CONTACT CONTINU
-!       CONT_XFEM          :  CONTACT XFEM
 !       CONT_LAC           :  CONTACT LAC
 !       CONTACT_INIT       :  CONTACT INITIAL
 !       FROT_DISCRET       :  FROTTEMENT DISCRET
 !       FROT_CONTINU       :  FROTTEMENT CONTINU
-!       FROT_XFEM          :  FROTTEMENT XFEM
 !       BOUCLE_EXTERNE     :  PRESENCE D'UNE BOUCLE EXTERNE
 !       BOUCLE_EXT_GEOM    :  PRESENCE D'UNE BOUCLE EXTERNE POUR
 !                             LA GEOMETRIE
@@ -134,10 +132,6 @@ function isfonc(list_func_acti, func_name_z)
         isfonc = list_func_acti(4) .eq. 1
     else if (func_name .eq. 'CONT_CONTINU') then
         isfonc = list_func_acti(5) .eq. 1
-    else if (func_name .eq. 'CONT_XFEM') then
-        isfonc = list_func_acti(9) .eq. 1
-    else if (func_name .eq. 'CONT_XFEM_THM') then
-        isfonc = list_func_acti(65) .eq. 1
     else if (func_name .eq. 'CONT_LAC') then
         isfonc = list_func_acti(63) .eq. 1
     else if (func_name .eq. 'CONTACT_INIT') then
@@ -148,8 +142,6 @@ function isfonc(list_func_acti, func_name_z)
         isfonc = list_func_acti(3) .eq. 1
     else if (func_name .eq. 'FROT_CONTINU') then
         isfonc = list_func_acti(10) .eq. 1
-    else if (func_name .eq. 'FROT_XFEM') then
-        isfonc = list_func_acti(25) .eq. 1
     else if (func_name .eq. 'BOUCLE_EXT_GEOM') then
         isfonc = list_func_acti(31) .eq. 1
     else if (func_name .eq. 'BOUCLE_EXT_FROT') then

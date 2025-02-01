@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -393,7 +393,12 @@ for Raff in range(0, Nb_Raffinement):
 
     Contact = DEFI_CONT(
         MODELE=modl,
-        ZONE=_F(GROUP_MA_MAIT=("MAITRE",), GROUP_MA_ESCL=("BAS",), ALGO_CONT="LAGRANGIEN"),
+        ZONE=_F(
+            GROUP_MA_MAIT=("MAITRE",),
+            GROUP_MA_ESCL=("BAS",),
+            ALGO_CONT="LAGRANGIEN",
+            COEF_CONT=E / 100,
+        ),
     )
 
     BlocBase = AFFE_CHAR_CINE(MODELE=modl, MECA_IMPO=_F(GROUP_MA="MAITRE", DX=0, DY=0))
@@ -585,7 +590,7 @@ BIDONP = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 1.0, 1.0, PenteL2P))
 
 TEST_FONCTION(
     VALEUR=_F(
-        VALE_CALC=2.803565754347,
+        VALE_CALC=2.803546983063,
         VALE_REFE=2.5,
         VALE_PARA=1.0,
         REFERENCE="ANALYTIQUE",

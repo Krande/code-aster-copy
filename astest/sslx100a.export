@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm sslx100a.comm D 1
+F comm sslx100a.py D 1
 F mmed sslx100a.mmed D 20

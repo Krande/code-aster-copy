@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,52 +47,42 @@ subroutine nonlinDSContactCreate(ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
 
-!
 ! - Main parameters
-!
     ds_contact%l_contact = ASTER_FALSE
     ds_contact%l_meca_cont = ASTER_FALSE
     ds_contact%l_meca_unil = ASTER_FALSE
     ds_contact%sdcont = ' '
     ds_contact%l_form_cont = ASTER_FALSE
     ds_contact%l_form_disc = ASTER_FALSE
-    ds_contact%l_form_xfem = ASTER_FALSE
     ds_contact%l_form_lac = ASTER_FALSE
-!
+
 ! - Name of datastructures
-!
     ds_contact%sdcont_defi = '&&OP0070.DEFIC'
     ds_contact%sdunil_defi = '&&OP0070.DEFIU'
     ds_contact%sdcont_solv = '&&OP0070.RESOC'
     ds_contact%sdunil_solv = '&&OP0070.RESUC'
-!
+
 ! - Name of <LIGREL> - Slave and contact elements
-!
     ds_contact%ligrel_elem_slav = ' '
     ds_contact%l_elem_slav = ASTER_FALSE
     ds_contact%ligrel_elem_cont = ' '
     ds_contact%l_elem_cont = ASTER_FALSE
-!
+
 ! - Name of <CHELEM> - Input field
-!
     ds_contact%field_input = ' '
-!
+
 ! - Name of NUME_DOF for discrete friction methods
-!
     ds_contact%nume_dof_frot = ' '
-!
+
 ! - Identity relations between dof
-!
     ds_contact%l_iden_rela = ASTER_FALSE
     ds_contact%iden_rela = ' '
-!
+
 ! - Relations between dof (QUAD8 in discrete methods or XFEM)
-!
     ds_contact%l_dof_rela = ASTER_FALSE
     ds_contact%ligrel_dof_rela = ' '
-!
+
 ! - Management of loops
-!
     ds_contact%nb_loop = nb_loop_defi
     ASSERT(ds_contact%nb_loop .le. ds_contact%nb_loop_maxi)
     do i_loop = 1, nb_loop_defi
@@ -103,54 +93,43 @@ subroutine nonlinDSContactCreate(ds_contact)
         ds_contact%loop(i_loop)%vale_calc = 0
         ds_contact%loop(i_loop)%locus_calc = ' '
     end do
-!
+
 ! - Field for CONT_NODE
-!
     ds_contact%field_cont_node = ' '
     ds_contact%fields_cont_node = ' '
     ds_contact%field_cont_perc = ' '
-!
+
 ! - Field for CONT_ELEM
-!
     ds_contact%field_cont_elem = ' '
-!
+
 ! - Flag for (re) numbering
-!
     ds_contact%l_renumber = ASTER_FALSE
-!
+
 ! - Geometric loop control
-!
     ds_contact%geom_maxi = -1.d0
-!
+
 ! - Penalization loop control
-!
     ds_contact%estimated_coefficient = 100.d0
     ds_contact%calculated_penetration = 1.d0
     ds_contact%update_init_coefficient = 0.d0
     ds_contact%continue_pene = 0.d0
-!
+
 ! - Get-off indicator
-!
     ds_contact%l_getoff = ASTER_FALSE
-!
+
 ! - First geometric loop
-!
     ds_contact%l_first_geom = ASTER_FALSE
-!
+
 ! - Flag for pairing
-!
     ds_contact%l_pair = ASTER_FALSE
-!
+
 ! - Total number of patches (for LAC method)
-!
     ds_contact%nt_patch = 0
-!
+
 ! - Total number of contact pairs
-!
     ds_contact%nb_cont_pair = 0
-!
+
 ! - Force for DISCRETE contact
-!
     ds_contact%l_cnctdf = ASTER_FALSE
     ds_contact%cnctdf = '&&OP0070.CNCTDF'
     ds_contact%l_cnctdc = ASTER_FALSE

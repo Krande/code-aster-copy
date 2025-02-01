@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
 
-CCAGEPO = LocatedComponents(phys=PHY.CAGEPO, type="ELEM", components=("R1", "EP1"))
+CCAGEPO = LocatedComponents(phys=PHY.CAGEPO_R, type="ELEM", components=("R1", "EP1"))
 
 
 EDEFONC = LocatedComponents(
@@ -183,7 +183,7 @@ ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", compo
 CABSCUR = LocatedComponents(phys=PHY.ABSC_R, type="ELEM", components=("ABSC[3]",))
 
 CCAORIE = LocatedComponents(
-    phys=PHY.CAORIE,
+    phys=PHY.CAORIE_R,
     type="ELEM",
     components=(
         "ALPHA",

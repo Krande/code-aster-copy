@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine medomm(model, mater, mateco, cara_elem)
+subroutine medomm(model, materField, mateco, caraElem)
 !
     implicit none
 !
@@ -28,9 +28,9 @@ subroutine medomm(model, mater, mateco, cara_elem)
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(out) :: model
-    character(len=*), intent(out) :: mater
+    character(len=*), intent(out) :: materField
     character(len=*), intent(out) :: mateco
-    character(len=*), intent(out) :: cara_elem
+    character(len=*), intent(out) :: caraElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,9 +41,9 @@ subroutine medomm(model, mater, mateco, cara_elem)
 ! --------------------------------------------------------------------------------------------------
 !
 ! Out model            : name of model
-! Out mater            : name of material
+! Out materField       : name of material field
 ! Out mateco           : name of material characteristics (field)
-! Out cara_elem        : name of elementary characteristics (field)
+! Out caraElem         : name of elementary characteristics (field)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,20 +55,21 @@ subroutine medomm(model, mater, mateco, cara_elem)
 !
     model = ' '
     mateco = ' '
-    cara_elem = ' '
-    mater = ' '
-!
+    caraElem = ' '
+    materField = ' '
+
 ! - Get model
-!
     concept = ' '
     call getvid(' ', 'MODELE', scal=concept, nbret=nocc)
     ASSERT(nocc .ne. 0)
+    if (nocc .eq. 0) then
+        call utmess('F', 'CALCULEL3_50')
+    end if
     model = concept
     call dismoi('EXI_THM', model, 'MODELE', repk=answer)
     l_thm = answer .eq. 'OUI'
-!
+
 ! - Get material characteristics field
-!
     concept = ' '
     call getvid(' ', 'CHAM_MATER', scal=concept, nbret=nocc)
     call dismoi('BESOIN_MATER', model, 'MODELE', repk=answer)
@@ -76,21 +77,20 @@ subroutine medomm(model, mater, mateco, cara_elem)
         call utmess('A', 'MECHANICS1_40')
     end if
     if (nocc .ne. 0) then
-        mater = concept
-        call rcmfmc(mater, mateco, l_thm_=l_thm, l_ther_=ASTER_FALSE)
+        materField = concept
+        call rcmfmc(materField, mateco, l_thm_=l_thm, l_ther_=ASTER_FALSE)
     else
-        mater = ' '
+        materField = ' '
         mateco = ' '
     end if
-!
+
 ! - Get elementary characteristics
-!
     concept = ' '
     call getvid(' ', 'CARA_ELEM', scal=concept, nbret=nocc)
     call dismoi('EXI_RDM', model, 'MODELE', repk=answer)
     if ((nocc .eq. 0) .and. (answer .eq. 'OUI')) then
         call utmess('A', 'MECHANICS1_39')
     end if
-    cara_elem = concept
+    caraElem = concept
 !
 end subroutine

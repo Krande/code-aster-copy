@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ DEFI_CONTACT = OPER(
         typ="TXM",
         fr=tr("Choix d'une formulation de contact ou de liaisons unilatérales"),
         defaut="DISCRETE",
-        into=("DISCRETE", "CONTINUE", "XFEM", "LIAISON_UNIL"),
+        into=("DISCRETE", "CONTINUE", "LIAISON_UNIL"),
     ),
     # PARAMETRE GENERAL : FROTTEMENT
     FROTTEMENT=SIMP(
@@ -127,12 +127,6 @@ DEFI_CONTACT = OPER(
             ),
         ),
     ),
-    # PARAMETRE GENERAL : BOUCLE DE GEOMETRIE - Cas XFEM
-    b_bouc_geom_xfem=BLOC(
-        condition="""equal_to("FORMULATION", 'XFEM') """,
-        ALGO_RESO_GEOM=SIMP(statut="f", typ="TXM", into=("POINT_FIXE",), defaut="POINT_FIXE"),
-        REAC_GEOM=SIMP(statut="f", typ="TXM", into=("SANS",), defaut="SANS"),
-    ),
     # PARAMETRE GENERAL : BOUCLE DE CONTACT
     b_bouc_cont_disc=BLOC(
         condition="""equal_to("FORMULATION", 'DISCRETE') """,
@@ -155,18 +149,6 @@ DEFI_CONTACT = OPER(
             ),
         ),
     ),
-    b_bouc_cont_xfem=BLOC(
-        condition="""equal_to("FORMULATION", 'XFEM') """,
-        ITER_CONT_TYPE=SIMP(statut="f", typ="TXM", defaut="MAXI", into=("MULT", "MAXI")),
-        b_bouc_cont_mult=BLOC(
-            condition="""equal_to("ITER_CONT_TYPE", 'MULT')""",
-            ITER_CONT_MULT=SIMP(statut="f", typ="I", defaut=4),
-        ),
-        b_bouc_cont_maxi=BLOC(
-            condition="""equal_to("ITER_CONT_TYPE", 'MAXI')""",
-            ITER_CONT_MAXI=SIMP(statut="f", typ="I", defaut=30),
-        ),
-    ),
     # PARAMETRE GENERAL : BOUCLE DE FROTTEMENT - Cas continu
     b_bouc_frot_cont=BLOC(
         condition="""equal_to("FROTTEMENT", 'COULOMB') and equal_to("FORMULATION", 'CONTINUE') """,
@@ -181,17 +163,6 @@ DEFI_CONTACT = OPER(
             RESI_FROT=SIMP(statut="f", typ="R", defaut=0.0001),
         ),
     ),
-    # PARAMETRE GENERAL : BOUCLE DE FROTTEMENT - Cas XFEM
-    b_bouc_frot_xfem=BLOC(
-        condition="""equal_to("FROTTEMENT", 'COULOMB') and equal_to("FORMULATION", 'XFEM')""",
-        ITER_FROT_MAXI=SIMP(statut="f", typ="I", defaut=10),
-        RESI_FROT=SIMP(statut="f", typ="R", defaut=0.0001),
-    ),
-    # Automatic elimination for non-vital edges
-    b_arete_xfem=BLOC(
-        condition="""equal_to("FORMULATION", 'XFEM') """,
-        ELIM_ARETE=SIMP(statut="f", typ="TXM", defaut="DUAL", into=("DUAL", "ELIM")),
-    ),  # fin b_arete_xfem
     # PARAMETRES GENERAUX : METHODES DISCRETES
     b_para_discret=BLOC(
         condition="""equal_to("FORMULATION", 'DISCRETE') """,
@@ -675,22 +646,6 @@ DEFI_CONTACT = OPER(
                 fr=tr("Direction de frottement à exclure (uniquement dans le cas 3D)"),
                 DIRE_EXCL_FROT=SIMP(statut="f", typ="R", min=3, max=3),
             ),
-            # b_frotpena = BLOC(condition = """equal_to("ALGO_FROT", 'PENALISATION') """,
-            # fr=tr("Paramètres de la formulation Lagrangienne"),
-            ##COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-            # GLIS_MAXI  =SIMP(statut='f',typ='R',defaut=1.0E-2),
-            # b_frotpena_noadapt1=BLOC(condition = """(equal_to("ALGO_FROT", 'PENALISATION') and equal_to("ADAPTATION", 'NON'))  """, fr=tr("Paramètres de la méthode pénalisée"),
-            # COEF_PENA_FROT  =SIMP(statut='o',typ='R',),
-            # ),
-            # b_frotpena_adapt1=BLOC(condition = """(equal_to("ALGO_FROT", 'PENALISATION') and equal_to("ADAPTATION", 'ADAPT_COEF'))   """, fr=tr("Paramètres de la méthode pénalisée"),
-            # COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=1.E+7),
-            # ),
-            # ),
-            # b_frot_pena_adapt=BLOC(condition = """(equal_to("ALGO_FROT", 'PENALISATION') and equal_to("ADAPTATION", 'ADAPT_COEF')) or (equal_to("ALGO_FROT", 'PENALISATION') and equal_to("ADAPTATION", 'TOUT'))  """, fr=tr("Paramètres de la méthode pénalisée"),
-            # COEF_PENA_FROT  =SIMP(statut='o',typ='R'),
-            ##COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.0E+0),
-            # PENE_MAXI  =SIMP(statut='f',typ='R',defaut=1.0E-2),
-            # ),
         ),  # fin mot-clé facteur ZONE
     ),  # fin bloc b_affe_continue_frot
     # AFFECTATION - CAS CONTINUE et FROTTEMENT != COULOMB
@@ -851,162 +806,4 @@ DEFI_CONTACT = OPER(
             ),
         ),  # fin mot-clé facteur ZONE
     ),  # fin bloc b_affe_continue
-    # AFFECTATION - CAS XFEM
-    b_affe_xfem=BLOC(
-        condition="""equal_to("FORMULATION", 'XFEM') and equal_to("FROTTEMENT", 'COULOMB') and  not equal_to("ALGO_CONT", 'CZM')""",
-        ZONE=FACT(
-            statut="o",
-            max="**",
-            # --- Fissure
-            FISS_MAIT=SIMP(statut="o", typ=fiss_xfem, max=1),
-            TOLE_PROJ_EXT=SIMP(statut="f", typ="R", defaut=0.50),
-            # --- Fonctionnalités spécifiques 'XFEM'
-            INTEGRATION=SIMP(
-                statut="f", typ="TXM", defaut="GAUSS", into=("NOEUD", "GAUSS", "SIMPSON", "NCOTES")
-            ),
-            b_gauss=BLOC(
-                condition="""equal_to("INTEGRATION", 'GAUSS') """,
-                fr=tr("Dégré du polynôme de Legendre donnant les points de Gauss"),
-                ORDRE_INT=SIMP(statut="f", typ="I", defaut=6, val_min=1, val_max=6),
-            ),
-            b_simpson=BLOC(
-                condition="""equal_to("INTEGRATION", 'SIMPSON') """,
-                fr=tr("Nombre de subdivisions du domaine"),
-                ORDRE_INT=SIMP(statut="f", typ="I", defaut=1, val_min=1, val_max=4),
-            ),
-            b_ncotes=BLOC(
-                condition="""equal_to("INTEGRATION", 'NCOTES') """,
-                fr=tr("Dégré du polynôme interpolateur"),
-                ORDRE_INT=SIMP(statut="f", typ="I", defaut=3, val_min=3, val_max=8),
-            ),
-            ALGO_LAGR=SIMP(
-                statut="f",
-                typ="TXM",
-                defaut="AUTO",
-                into=("AUTO", "NON", "VERSION1", "VERSION2", "VERSION3"),
-            ),
-            ALGO_CONT=SIMP(
-                statut="f", typ="TXM", defaut="STANDARD", into=("STANDARD", "PENALISATION", "CZM")
-            ),
-            b_cont_nczm=BLOC(
-                condition="""not equal_to("ALGO_CONT", 'CZM')""",
-                CONTACT_INIT=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
-                GLISSIERE=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
-            ),
-            b_cont_std=BLOC(
-                condition="""equal_to("ALGO_CONT", 'STANDARD')""",
-                fr=tr("Parametres de la formulation Lagrangienne"),
-                COEF_CONT=SIMP(statut="f", typ="R", defaut=100.0e0),
-                ADAPTATION=SIMP(
-                    statut="f",
-                    typ="TXM",
-                    defaut="CYCLAGE",
-                    into=("ADAPT_COEF", "CYCLAGE", "TOUT", "NON"),
-                ),
-            ),
-            b_cont_pen=BLOC(
-                condition="""equal_to("ALGO_CONT", 'PENALISATION') """,
-                fr=tr("Paramètre de la méthode pénalisée"),
-                COEF_PENA_CONT=SIMP(statut="o", typ="R"),
-            ),
-            b_cont_czm=BLOC(
-                condition="""equal_to("ALGO_CONT", 'CZM')""",
-                fr=tr("Parametres de la formulation cohesive"),
-                RELATION=SIMP(
-                    statut="o",
-                    typ="TXM",
-                    into=(
-                        "CZM_EXP_REG",
-                        "CZM_LIN_REG",
-                        "CZM_TAC_MIX",
-                        "CZM_OUV_MIX",
-                        "CZM_LIN_MIX",
-                    ),
-                ),
-            ),
-            COULOMB=SIMP(statut="o", typ="R"),
-            SEUIL_INIT=SIMP(statut="f", typ="R", defaut=0.0e0),
-            ALGO_FROT=SIMP(
-                statut="f", typ="TXM", defaut="STANDARD", into=("STANDARD", "PENALISATION")
-            ),
-            b_frot_std=BLOC(
-                condition="""equal_to("ALGO_FROT", 'STANDARD') """,
-                fr=tr("Parametres de la formulation Lagrangienne"),
-                COEF_FROT=SIMP(statut="f", typ="R", defaut=100.0e0),
-            ),
-            b_frot_pen=BLOC(
-                condition="""equal_to("ALGO_FROT", 'PENALISATION') """,
-                fr=tr("Paramètre de la méthode pénalisée"),
-                COEF_PENA_FROT=SIMP(statut="o", typ="R"),
-            ),
-        ),  # fin mot-clé facteur ZONE
-    ),  # fin bloc b_affe_xfem
-    b_affe_xfem_frot=BLOC(
-        condition="""equal_to("FORMULATION", 'XFEM') and equal_to("FROTTEMENT", 'SANS')""",
-        ZONE=FACT(
-            statut="o",
-            max="**",
-            # --- Fissure
-            FISS_MAIT=SIMP(statut="o", typ=fiss_xfem, max=1),
-            TOLE_PROJ_EXT=SIMP(statut="f", typ="R", defaut=0.50),
-            # --- Fonctionnalités spécifiques 'XFEM'
-            INTEGRATION=SIMP(
-                statut="f", typ="TXM", defaut="GAUSS", into=("NOEUD", "GAUSS", "SIMPSON", "NCOTES")
-            ),
-            b_gauss=BLOC(
-                condition="""equal_to("INTEGRATION", 'GAUSS') """,
-                fr=tr("Degré du polynôme de Legendre donnant les points de Gauss"),
-                ORDRE_INT=SIMP(statut="f", typ="I", defaut=6, val_min=1, val_max=6),
-            ),
-            b_simpson=BLOC(
-                condition="""equal_to("INTEGRATION", 'SIMPSON') """,
-                fr=tr("Nombre de subdivisions du domaine"),
-                ORDRE_INT=SIMP(statut="f", typ="I", defaut=1, val_min=1, val_max=4),
-            ),
-            b_ncotes=BLOC(
-                condition="""equal_to("INTEGRATION", 'NCOTES') """,
-                fr=tr("Dégré du polynôme interpolateur"),
-                ORDRE_INT=SIMP(statut="f", typ="I", defaut=3, val_min=3, val_max=8),
-            ),
-            ALGO_LAGR=SIMP(
-                statut="f",
-                typ="TXM",
-                defaut="AUTO",
-                into=("AUTO", "NON", "VERSION1", "VERSION2", "VERSION3"),
-            ),
-            ALGO_CONT=SIMP(
-                statut="f", typ="TXM", defaut="STANDARD", into=("STANDARD", "PENALISATION", "CZM")
-            ),
-            b_cont_nczm=BLOC(
-                condition="""not equal_to("ALGO_CONT", 'CZM')""",
-                CONTACT_INIT=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
-                GLISSIERE=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
-            ),
-            b_cont_std=BLOC(
-                condition="""equal_to("ALGO_CONT", 'STANDARD')""",
-                fr=tr("Parametres de la formulation Lagrangienne"),
-                COEF_CONT=SIMP(statut="f", typ="R", defaut=100.0e0),
-            ),
-            b_cont_pen=BLOC(
-                condition="""equal_to("ALGO_CONT", 'PENALISATION') """,
-                fr=tr("Paramètre de la méthode pénalisée"),
-                COEF_PENA_CONT=SIMP(statut="o", typ="R"),
-            ),
-            b_cont_czm=BLOC(
-                condition="""equal_to("ALGO_CONT", 'CZM')""",
-                fr=tr("Parametres de la formulation cohesive"),
-                RELATION=SIMP(
-                    statut="o",
-                    typ="TXM",
-                    into=(
-                        "CZM_EXP_REG",
-                        "CZM_LIN_REG",
-                        "CZM_TAC_MIX",
-                        "CZM_OUV_MIX",
-                        "CZM_LIN_MIX",
-                    ),
-                ),
-            ),
-        ),  # fin mot-clé facteur ZONE
-    ),  # fin bloc b_affe_xfem_frot
 )  # fin OPER

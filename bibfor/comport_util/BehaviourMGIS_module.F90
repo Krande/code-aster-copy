@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ contains
             ASSERT(nsig .eq. 6)
             ASSERT(ndsde .eq. 36)
         elseif (lCZM) then
-            ASSERT(neps .le. 3)
+            ASSERT(neps .le. 6)
             ASSERT(nsig .le. 6)
             ASSERT(ndsde .le. 36)
         else
@@ -96,7 +96,7 @@ contains
                 ASSERT(ASTER_FALSE)
             end if
         elseif (lCZM) then
-            nstran = neps
+            nstran = ndim
         else
             nstran = 2*ndim
         end if
@@ -105,7 +105,7 @@ contains
         if (lGreenLagr) then
             nforc = 2*ndim
         elseif (lCZM) then
-            nforc = 2*ndim
+            nforc = ndim
         else
             nforc = 2*ndim
         end if

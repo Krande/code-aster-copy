@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nxcvci(model, &
-                  charge, infoch, fomult, numedd, tempmoi, &
+subroutine nxcvci(loadNameJv, loadInfoJv, loadFuncJv, numedd, tempmoi, &
                   instap, cncine)
 !
 !
@@ -46,11 +45,11 @@ subroutine nxcvci(model, &
 #include "asterfort/vtcmbl.h"
 #include "asterfort/vtcreb.h"
 
-    character(len=24), intent(in) :: model
-    character(len=24) :: charge, infoch, fomult, numedd
+    character(len=24), intent(in) :: loadNameJv, loadInfoJv, loadFuncJv
+    character(len=24) :: numedd
     character(len=19) :: tempmoi, cncine
     character(len=24) :: l2cnci(2), cncinm, cncinp, dlci
-    character(len=8) :: char1, answer
+    character(len=8) :: char1
     real(kind=8) :: instap, coefr(2)
     integer :: neq, ieq, neq2, iret, jinfc, ichar
     integer :: nbchar, jlchar
@@ -80,15 +79,15 @@ subroutine nxcvci(model, &
 !     -- Y-A-T-IL DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
     lvcine = .false.
-    call jeveuo(infoch, 'L', jinfc)
+    call jeveuo(loadInfoJv, 'L', jinfc)
     do ichar = 1, zi(jinfc)
         if (zi(jinfc+ichar) .lt. 0) lvcine = .true.
     end do
 !
 !     -- Y-A-T-IL DES CHARGES CONTENANT DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
-    call jeveuo(charge, 'L', jlchar)
-    call jelira(charge, 'LONMAX', ival=nbchar)
+    call jeveuo(loadNameJv, 'L', jlchar)
+    call jelira(loadNameJv, 'LONMAX', ival=nbchar)
     do ichar = 1, nbchar
         char1 = zk24(jlchar-1+ichar) (1:8)
     end do
@@ -107,7 +106,7 @@ subroutine nxcvci(model, &
 !
 !     CALCUL DE TIMP+ :
 !     ---------------------
-    call ascavc(charge, infoch, fomult, numedd, instap, cncinp, dlci_=dlci)
+    call ascavc(loadNameJv, loadInfoJv, loadFuncJv, numedd, instap, cncinp, dlci_=dlci)
     call jeveuo(dlci, 'L', vi=v_dlci)
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vechnl(model, lload_name, lload_info, time, &
+subroutine vechnl(model, loadNameJv, loadInfoJv, time, &
                   temp_iter, vect_elem, base)
 !
     implicit none
@@ -33,9 +33,9 @@ subroutine vechnl(model, lload_name, lload_info, time, &
 #include "asterfort/memare.h"
 #include "asterfort/detrsd.h"
 !
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: lload_name
-    character(len=24), intent(in) :: lload_info
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: loadNameJv
+    character(len=24), intent(in) :: loadInfoJv
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: vect_elem
@@ -50,8 +50,8 @@ subroutine vechnl(model, lload_name, lload_info, time, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of the model
-! In  lload_name       : name of object for list of loads name
-! In  lload_info       : name of object for list of loads info
+! In  loadNameJv       : name of object for list of loads name
+! In  loadInfoJv       : name of object for list of loads info
 ! In  time             : time (<CARTE>)
 ! In  temp_iter        : temperature field at current Newton iteration
 ! In  vect_elem        : name of vect_elem result
@@ -87,7 +87,7 @@ subroutine vechnl(model, lload_name, lload_info, time, &
 ! - Loads
 !
     call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
-                        lload_name, lload_info)
+                        loadNameJv, loadInfoJv)
 !
 ! - Prepare fields
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,24 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vechth(type_ther , model_   , lload_name_, lload_info_, cara_elem_, mate_, &
-                      mateco_     , time_curr, time_      , temp_prev_ , vect_elem_,&
-                      varc_curr_, time_move_)
-        character(len=4), intent(in) :: type_ther
-        character(len=*), intent(in) :: model_
-        character(len=*), intent(in) :: lload_name_
-        character(len=*), intent(in) :: lload_info_
-        character(len=*), intent(in) :: cara_elem_
-        real(kind=8), intent(in) :: time_curr
-        character(len=*), intent(in) :: time_
-        character(len=*), intent(in) :: temp_prev_
-        character(len=*), intent(inout) :: vect_elem_
-        character(len=*), intent(in) :: mateco_, mate_
-        character(len=*), optional, intent(in) :: varc_curr_
-        character(len=*), optional, intent(in) :: time_move_
+    subroutine vechth(typeTher, &
+                      modelZ, matecoZ, &
+                      loadNameJvZ, loadInfoJvZ, &
+                      timeCurr, &
+                      vectElemZ, &
+                      varcCurrZ_, timeMapZ_, tempPrevZ_, timeMoveZ_, &
+                      jvBase_)
+        character(len=4), intent(in) :: typeTher
+        character(len=*), intent(in) :: modelZ, matecoZ
+        character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
+        real(kind=8), intent(in) :: timeCurr
+        character(len=*), intent(inout) :: vectElemZ
+        character(len=*), optional, intent(in) :: varcCurrZ_, timeMapZ_, tempPrevZ_, timeMoveZ_
+        character(len=1), optional, intent(in) :: jvBase_
     end subroutine vechth
 end interface

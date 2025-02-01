@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,10 +59,10 @@ ADRSJEVN = PhysicalQuantity(
 )
 
 
-CAARPO = PhysicalQuantity(
+CAARPO_R = PhysicalQuantity(
     type="R",
     components=("C_FLEX_Y", "I_SIGM_Y", "C_FLEX_Z", "I_SIGM_Z"),
-    comment="""  CAARPO  Type:R  Caracteristiques des poutres courbes
+    comment="""  CAARPO_R  Type:R  Caracteristiques des poutres courbes
         Coefficient de flexibilite anisotrope
             C_FLEX_Y : dans le plan (X,Y)
             C_FLEX_Z : dans le plan (X,Z)
@@ -75,20 +75,20 @@ CAARPO = PhysicalQuantity(
 )
 
 
-CACABL = PhysicalQuantity(
+CACABL_R = PhysicalQuantity(
     type="R",
     components=("SECT", "TENS"),
-    comment="""  CACABL  Type:R  Caracteristiques des cables
+    comment="""  CACABL_R  Type:R  Caracteristiques des cables
        SECT : section du cable
        TENS : tension initiale
 """,
 )
 
 
-CACO3D = PhysicalQuantity(
+CACO3D_R = PhysicalQuantity(
     type="R",
     components=("CRF",),
-    comment="""  CACO3D  Type:R  Une "CARACTERISTIQUE" des elements de COQUE_3D
+    comment="""  CACO3D_R  Type:R  Une "CARACTERISTIQUE" des elements de COQUE_3D
        CRF : coefficient de rotation fictive
 """,
 )
@@ -144,28 +144,28 @@ CACOQU_F = PhysicalQuantity(
 )
 
 
-CADISA = PhysicalQuantity(
+CADISA_R = PhysicalQuantity(
     type="R",
     components=("A[144]",),
-    comment="""  CADISA  Type:R  Matrice d'amortissement des elements discrets
+    comment="""  CADISA_R  Type:R  Matrice d'amortissement des elements discrets
         A[144] : coefficients de la matrice d'amortissement
 """,
 )
 
 
-CADISK = PhysicalQuantity(
+CADISK_R = PhysicalQuantity(
     type="R",
     components=("K[144]",),
-    comment="""  CADISK Type:R  Matrice de rigidite des elements discrets
+    comment="""  CADISK_R Type:R  Matrice de rigidite des elements discrets
        K[144] : coefficients de la matrice de rigidite
 """,
 )
 
 
-CADISM = PhysicalQuantity(
+CADISM_R = PhysicalQuantity(
     type="R",
     components=("M[144]",),
-    comment="""  CADISM Type:R Matrice de masse des elements discrets 12 x 12
+    comment="""  CADISM_R Type:R Matrice de masse des elements discrets 12 x 12
                   (MODELISATION='DIS_XXXX')
        M[144] : coefficients de la matrice masse des elements
 
@@ -188,7 +188,7 @@ CAFI_R = PhysicalQuantity(
 )
 
 
-CAGEPO = PhysicalQuantity(
+CAGEPO_R = PhysicalQuantity(
     type="R",
     components=(
         "HY1",
@@ -205,7 +205,7 @@ CAGEPO = PhysicalQuantity(
         "EP2",
         "TSEC",
     ),
-    comment="""  CAGEPO Type:R Caracteristiques geometriques des poutres a section
+    comment="""  CAGEPO_R Type:R Caracteristiques geometriques des poutres a section
     rectangulaire ou circulaire
        HY1 : dimension suivant GY du rectangle (noeud 1)
        HZ1 : dimension suivant GZ du rectangle (noeud 1)
@@ -224,16 +224,16 @@ CAGEPO = PhysicalQuantity(
 )
 
 
-CAGNBA = PhysicalQuantity(
+CAGNBA_R = PhysicalQuantity(
     type="R",
     components=("A1",),
-    comment="""  CAGNBA Type:R Caracteristiques geometriques d'une section de barre
+    comment="""  CAGNBA_R Type:R Caracteristiques geometriques d'une section de barre
        A1 : aire de la section transversale
 """,
 )
 
 
-CAGNPO = PhysicalQuantity(
+CAGNPO_R = PhysicalQuantity(
     type="R",
     components=(
         "A1",
@@ -268,7 +268,7 @@ CAGNPO = PhysicalQuantity(
         "IZR22",
         "TVAR",
     ),
-    comment="""  CAGNPO Type:R Caracteristiques mecaniques d'une section de poutre
+    comment="""  CAGNPO_R Type:R Caracteristiques mecaniques d'une section de poutre
       A1 : aire de la section (noeud 1)
       IY1 : moment d'inertie principal par rapport a GZ (noeud 1)
       IZ1 : moment d'inertie principal par rapport a GY (noeud 1)
@@ -327,7 +327,7 @@ CAMA_R = PhysicalQuantity(
 )
 
 
-CAORIE = PhysicalQuantity(
+CAORIE_R = PhysicalQuantity(
     type="R",
     components=(
         "ALPHA",
@@ -355,7 +355,7 @@ CAORIE = PhysicalQuantity(
         "O_Y",
         "O_Z",
     ),
-    comment="""  CAORIE Type:R Orientation d'un segment en 3D. Angles nautiques
+    comment="""  CAORIE_R Type:R Orientation d'un segment en 3D. Angles nautiques
        ALPHA : 1er angle nautique pour la maille SEG2 (ou le 1er noeud
        d'une maille SEG3 ou SEG4)
        BETA : 2eme angle nautique pour la maille SEG2 (ou le 1er noeud
@@ -397,10 +397,10 @@ CAORIE = PhysicalQuantity(
 )
 
 
-CAPOUF = PhysicalQuantity(
+CAPOUF_R = PhysicalQuantity(
     type="R",
     components=("B_T", "B_N", "B_TN", "A_FLUI", "A_CELL", "COEF_ECH"),
-    comment="""  CAPOUF Type:R Caracteristiques geometriques des elements poutre fluide
+    comment="""  CAPOUF_R Type:R Caracteristiques geometriques des elements poutre fluide
        B_T : terme correcteur transverse
        B_N : terme correcteur normal
        B_TN : terme correcteur couple
@@ -492,7 +492,7 @@ CHLI_R = PhysicalQuantity(
 )
 
 
-CINFDI = PhysicalQuantity(
+CINFDI_R = PhysicalQuantity(
     type="R",
     components=(
         "REPK",
@@ -507,7 +507,7 @@ CINFDI = PhysicalQuantity(
         "ETAK",
         "TYDI",
     ),
-    comment="""  CINFDI Type:R : Informations pour les elements discrets
+    comment="""  CINFDI_R Type:R : Informations pour les elements discrets
       REP(K;M;A) si =1 repere global,  si =2 repere local
          REPK  : Type de repere pour les raideurs
          REPM  : Type de repere pour les masses

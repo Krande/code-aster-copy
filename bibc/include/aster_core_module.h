@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -55,8 +55,6 @@ extern void DEFSSP( CHEKSD, cheksd, _IN char *, _IN STRING_SIZE, _IN char *, _IN
                     _OUT ASTERINTEGER * );
 
 extern void DEFP( PRHEAD, prhead, _IN ASTERINTEGER * );
-
-extern PyObject *aster_matfpe( PyObject *, PyObject * );
 
 /* FIN ASTER_CORE_H */
 #endif

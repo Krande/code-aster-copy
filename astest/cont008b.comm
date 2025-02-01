@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -167,7 +167,7 @@ TEST_TABLE(
     NOM_PARA="PRES",
     TYPE_TEST="MIN",
     LEGENDE="CALC_PRESSION maitre",
-    VALE_CALC=-4.8994067090,
+    VALE_CALC=-4.899422290180888,
     VALE_REFE=-4.894178,
     PRECISION=0.01,
     REFERENCE="ANALYTIQUE",
@@ -178,7 +178,7 @@ TEST_TABLE(
     NOM_PARA="PRES",
     TYPE_TEST="MAX",
     LEGENDE="CALC_PRESSION maitre",
-    VALE_CALC=-4.8706126097,
+    VALE_CALC=-4.870580440865079,
     VALE_REFE=-4.894178,
     PRECISION=0.01,
     REFERENCE="ANALYTIQUE",
@@ -194,7 +194,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             LEGENDE="LAGS_C",
             NOM_CMP="LAGS_C",
-            VALE_CALC=-4.9137638373,
+            VALE_CALC=-4.913756764032692,
             VALE_REFE=-4.894178,
             PRECISION=0.01,
             REFERENCE="ANALYTIQUE",

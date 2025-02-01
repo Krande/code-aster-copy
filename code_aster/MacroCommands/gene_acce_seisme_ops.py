@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,17 +25,16 @@
 import sys
 import traceback
 from datetime import datetime
-from math import ceil, exp, log, pi, sqrt
+from math import ceil, pi, sqrt
 
 import numpy as NP
 
-import aster_core
-from ..Messages import UTMESS
-
 from ..Cata.Syntax import _F
 from ..CodeCommands import CREA_TABLE, DEFI_FONCTION
+from ..Messages import UTMESS
 from ..Objects.function_py import t_fonction
 from ..Objects.table_py import Table
+from ..Utilities import disable_fpe
 from .Utils.optimize import fmin
 from .Utils.random_signal_utils import (
     DSP2ACCE1D,
@@ -45,7 +44,6 @@ from .Utils.random_signal_utils import (
     SRO2DSP,
     Rice2,
     acce_filtre_CP,
-    butterfilter,
     calc_dsp_KT,
     calc_phase_delay,
     corrcoefmodel,
@@ -206,7 +204,6 @@ class GeneAcceParameters:
 
 
 class Generator:
-
     """Base class Generator"""
 
     @staticmethod
@@ -298,7 +295,6 @@ class Generator:
 
 
 class GeneratorDSP(Generator):
-
     """DSP class"""
 
     def prepare_data(self):
@@ -364,7 +360,6 @@ class GeneratorDSP(Generator):
 
 
 class GeneratorSpectrum(Generator):
-
     """Response Spectra class"""
 
     def prepare_data(self):
@@ -478,7 +473,6 @@ class GeneratorSpectrum(Generator):
 
 
 class Sampler:
-
     """class Sampling: common task for all cases"""
 
     def __init__(self, modul_params, method_params):
@@ -565,7 +559,6 @@ class Sampler:
 
 
 class Modulator:
-
     """class Modulator: common task for all cases"""
 
     @staticmethod
@@ -621,7 +614,6 @@ class Modulator:
 
 
 class ModulatorGamma(Modulator):
-
     """Modulator type Gamma"""
 
     def run(self, sample_time, DUREE_SIGNAL):
@@ -645,7 +637,6 @@ class ModulatorGamma(Modulator):
 
 
 class ModulatorJH(Modulator):
-
     """Modulator type JH"""
 
     def run(self, sample_time, DUREE_SIGNAL):
@@ -673,7 +664,6 @@ class ModulatorJH(Modulator):
 
 
 class ModulatorConstant(Modulator):
-
     """Modulator type Constant"""
 
     def run(self, sample_time, DUREE_SIGNAL):
@@ -702,7 +692,6 @@ class ModulatorConstant(Modulator):
 
 
 class Simulator:
-
     """class Simulation"""
 
     @staticmethod
@@ -797,9 +786,8 @@ class SimulatorDSPVector(Simulator):
         if self.TYPE == "COEF_CORR":
             rho = self.DEFI_COHE["COEF_CORR"]
             dim = 2
-            aster_core.matfpe(-1)
-            Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
-            aster_core.matfpe(1)
+            with disable_fpe():
+                Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
             Data_cohe = self.DEFI_COHE
             Data_cohe.update({"MAT_COHE": Mat_cohe})
         else:
@@ -850,7 +838,6 @@ class SimulatorDSPVector(Simulator):
 
 
 class SimulatorSPECVector(Simulator):
-
     """Construct vector valued signal with correlation matrix for SPEC class"""
 
     def run(self, generator):
@@ -904,15 +891,14 @@ class SimulatorSPECVector(Simulator):
 
         if self.TYPE == "COEF_CORR":
             rho = self.DEFI_COHE["COEF_CORR"]
-            aster_core.matfpe(-1)
-            if self.DEFI_COHE["RATIO_HV"] is not None:
-                dim = 3
-                RS = (1.0 / self.DEFI_COHE["RATIO_HV"]) ** 2
-                Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim, RS))
-            else:
-                dim = 2
-                Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
-            aster_core.matfpe(1)
+            with disable_fpe():
+                if self.DEFI_COHE["RATIO_HV"] is not None:
+                    dim = 3
+                    RS = (1.0 / self.DEFI_COHE["RATIO_HV"]) ** 2
+                    Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim, RS))
+                else:
+                    dim = 2
+                    Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
             Data_cohe = self.DEFI_COHE
             Data_cohe.update({"MAT_COHE": Mat_cohe, "DIM": dim})
         else:
@@ -976,9 +962,8 @@ class SimulatorSPECVector(Simulator):
             dim = 2
             #        Mat_cor = NP.array([[1.0 , rho ],[rho ,1.0]])
             #             Mat_cor = CALC_CORRE(rho, dim)
-            aster_core.matfpe(-1)
-            Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
-            aster_core.matfpe(1)
+            with disable_fpe():
+                Mat_cohe = NP.linalg.cholesky(CALC_CORRE(rho, dim))
             Data_cohe = self.DEFI_COHE
             Data_cohe.update({"MAT_COHE": Mat_cohe, "DIM": dim})
         else:
@@ -1061,7 +1046,6 @@ class SimulatorSPECVector(Simulator):
 
 
 class SimulatorSPECScalar(Simulator):
-
     """Construct scalar signal for SPEC class"""
 
     def run(self, generator):
@@ -1173,7 +1157,6 @@ class SimulatorSPECScalar(Simulator):
 
 
 class SimulatorSPECPhase(Simulator):
-
     """Construct vector valued signal with phase delay for SPEC class"""
 
     def run(self, generator):

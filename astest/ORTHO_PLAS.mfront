@@ -1,0 +1,117 @@
+@Parser Implicit;
+@Behaviour ORTHO_PLAS;
+@Author Goustan Bacquaert;
+@Date 09/01/2025;
+
+@Algorithm NewtonRaphson;
+@CompareToNumericalJacobian false;
+@Theta 1;
+@Epsilon 1e-14;
+
+@OrthotropicBehaviour;
+
+/// >>>>>>>>>>>>>>>>>>>
+/// Material properties
+/// <<<<<<<<<<<<<<<<<<<
+
+@MaterialProperty stress k;
+@MaterialProperty stress mu;
+@MaterialProperty stress s0;
+@MaterialProperty real F_Hill;
+@MaterialProperty real G_Hill;
+@MaterialProperty real H_Hill;
+@MaterialProperty real L_Hill;
+@MaterialProperty real M_Hill;
+@MaterialProperty real N_Hill;
+
+k.setGlossaryName("BulkModulus");
+mu.setGlossaryName("ShearModulus");
+s0.setGlossaryName("YieldStrength");
+F_Hill.setEntryName("HillCoefF");
+G_Hill.setEntryName("HillCoefG");
+H_Hill.setEntryName("HillCoefH");
+L_Hill.setEntryName("HillCoefL");
+M_Hill.setEntryName("HillCoefM");
+N_Hill.setEntryName("HillCoefN");
+
+/// >>>>>>>>>>>>>>>
+/// Local variables
+/// <<<<<<<<<<<<<<<
+
+@LocalVariable bool b;               // If b=True, plastic loading
+@LocalVariable Stensor id2;          // Identity of order 2
+@LocalVariable Stensor4 id4;         // Identity or order 4
+@LocalVariable Stensor4 k4;          // Deviatoric projector of order 4
+@LocalVariable Stensor4 j4;          // Spheric projector of order 4
+@LocalVariable Stensor4 De;          // Elastic tensor (isotropic)
+@LocalVariable Stensor4 Hill;        // Hill anisotropic tensor
+
+/// >>>>>>>>>>>>>>>
+/// State variables
+/// <<<<<<<<<<<<<<<
+
+@StateVariable real lam;
+
+lam.setEntryName("CumPlastStrain");
+
+/// >>>>>>>>>>>>>>>>>>>>
+/// Init Local Variables
+/// <<<<<<<<<<<<<<<<<<<<
+
+@InitLocalVariables{
+	id2 = Stensor::Id();
+	k4 = Stensor4::K();
+	j4 = Stensor4::J();
+	id4 = Stensor4::Id();
+	De = 3*k*j4+2*mu*k4;
+	Hill = hillTensor< N, real >(F_Hill, G_Hill, H_Hill, L_Hill, M_Hill, N_Hill);
+}
+
+/// >>>>>>>>>>>>>>>>>>>>>>>>>>
+/// Stress-strain relationship
+/// <<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@ComputeStress{
+	sig = De*eel;
+}
+
+/// >>>>>>>>>>>>>>>>>>
+/// Elastic Prediction
+/// <<<<<<<<<<<<<<<<<<
+
+@Predictor{
+	const Stensor sigel = De*(eel+deto);
+	b = sqrt(sigel|Hill*sigel)-s0>0;
+}
+
+/// >>>>>>>>>>>
+/// Integration
+/// <<<<<<<<<<<
+
+@Integrator{
+	if(b){
+		const stress seq = sqrt(sig|Hill*sig);
+		const stress fP = seq-s0;
+		const Stensor nP = Hill*sig/max(seq, 1e-12*k);
+		feel = deel-deto+dlam*nP;
+		flam = fP/k;
+		dfeel_ddeel = id4+dlam*((Hill-(nP^nP))/max(seq, 1e-12*k))*De;
+		dfeel_ddlam = nP;
+		dflam_ddeel = nP*De/k;
+		dflam_ddlam = 0;
+	}
+	else{
+		feel = deel-deto;
+		flam = dlam;
+	}
+}
+
+/// <<<<<<<<<<<<<<<<
+/// Tangent operator
+/// >>>>>>>>>>>>>>>>
+
+@TangentOperator{
+	Stensor4 Je;
+	getPartialJacobianInvert(Je);
+	Dt = De*Je;
+}

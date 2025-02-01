@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine resuSaveParameters(resultName, resultType, &
-                              model, caraElem, fieldMate, listLoad, &
+                              model, caraElem, materField, listLoadResu, &
                               empiNumePlan_, empiSnapNb_, empiFieldType_)
 !
     implicit none
@@ -32,8 +32,8 @@ subroutine resuSaveParameters(resultName, resultType, &
 !
     character(len=8), intent(in) :: resultName
     character(len=16), intent(in) :: resultType
-    character(len=8), intent(in) :: model, caraElem, fieldMate
-    character(len=19), intent(in) :: listLoad
+    character(len=8), intent(in) :: model, caraElem, materField
+    character(len=24), intent(in) :: listLoadResu
     integer, optional, intent(in) :: empiNumePlan_, empiSnapNb_
     character(len=24), optional, intent(in) :: empiFieldType_
 !
@@ -49,8 +49,8 @@ subroutine resuSaveParameters(resultName, resultType, &
 ! In  resultType       : type of results datastructure (EVOL_NOLI, EVOL_THER, )
 ! In  model            : name of model
 ! In  caraElem         : name of elementary characteristics field
-! In  fieldMate        : name of material field
-! In  listLoad         : name of datastructure for loads
+! In  materField       : name of material field
+! In  listLoadResu     : name of datastructure for loads
 ! In  empiNumeplan     : index of plane for empiric modes
 ! In  empiSnapNb       : number of snapshots for empiric modes
 ! In  empiFieldType    : type of field for empiric modes
@@ -63,31 +63,26 @@ subroutine resuSaveParameters(resultName, resultType, &
 ! --------------------------------------------------------------------------------------------------
 !
 
-!
 ! - Get number of storing slots in results datastructure
-!
     call rs_get_liststore(resultName, storeNb)
     if (storeNb .le. 0) then
         call utmess('F', 'RESULT2_97')
     end if
-!
+
 ! - Get list of storing slots in results datastructure
-!
     AS_ALLOCATE(vi=storeList, size=storeNb)
     call rs_get_liststore(resultName, storeNb, storeList)
-!
+
 ! - Save material field
-!
-    if (fieldMate .ne. ' ') then
+    if (materField .ne. ' ') then
         do iStore = 1, storeNb
             storeNume = storeList(iStore)
             call rsadpa(resultName, 'E', 1, 'CHAMPMAT', storeNume, 0, sjv=jvPara)
-            zk8(jvPara) = fieldMate
+            zk8(jvPara) = materField
         end do
     end if
-!
+
 ! - Save elementary characteristics field
-!
     if (caraElem .ne. ' ') then
         do iStore = 1, storeNb
             storeNume = storeList(iStore)
@@ -95,9 +90,8 @@ subroutine resuSaveParameters(resultName, resultType, &
             zk8(jvPara) = caraElem
         end do
     end if
-!
+
 ! - Save model
-!
     if (model .ne. ' ') then
         do iStore = 1, storeNb
             storeNume = storeList(iStore)
@@ -105,19 +99,17 @@ subroutine resuSaveParameters(resultName, resultType, &
             zk8(jvPara) = model
         end do
     end if
-!
-! - Save loads
-!
-    if (listLoad .ne. ' ') then
+
+! - Save list of loads
+    if (listLoadResu .ne. ' ') then
         do iStore = 1, storeNb
             storeNume = storeList(iStore)
             call rsadpa(resultName, 'E', 1, 'EXCIT', storeNume, 0, sjv=jvPara)
-            zk24(jvPara) = listLoad
+            zk24(jvPara) = listLoadResu
         end do
     end if
-!
+
 ! - Save parameters for MODE_EMPI
-!
     if (resultType .eq. 'MODE_EMPI') then
         do iStore = 1, storeNb
             storeNume = storeList(iStore)
@@ -129,9 +121,8 @@ subroutine resuSaveParameters(resultName, resultType, &
             zk24(jvPara) = empiFieldType_
         end do
     end if
-!
+
 ! - Clean
-!
     AS_DEALLOCATE(vi=storeList)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,33 +16,28 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine chflch(rigthe, vec2nd, infcha)
+subroutine chflch(rigthe, vec2nd, listLoad)
+!
+    use listLoad_module
+    use listLoad_type
+!
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
-!
-#include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
-#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/lisccr.h"
-#include "asterfort/lxlgut.h"
-#include "asterfort/utmess.h"
+#include "asterfort/ntdoch.h"
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
 !   ------------------------------------------------------------------------------------
 !   *** Subroutine arguments
 !   ------------------------------------------------------------------------------------
@@ -50,180 +45,74 @@ subroutine chflch(rigthe, vec2nd, infcha)
     character(len=8) :: rigthe
 !       <-- Output variables
     character(len=24) :: vec2nd
-    character(len=19) :: infcha
+    character(len=24), intent(out) :: listLoad
 !
 !   ------------------------------------------------------------------------------------
 !   *** Definition of local variables
 !   ------------------------------------------------------------------------------------
-    integer :: neq, nchar, ialich, jinf, ialifc, nchci, ich, iret, jnchtp, j2nd, lonch, k
-    integer :: n1, jpro, jval, loncm1, jndirp
-    real(kind=8) :: tpsthe(1)
-    logical :: fmult, coecst
-    character(len=8) :: typch, parcha, mate, carele, numedd
-    character(len=19) :: nomcha
-    character(len=24) :: charge, fomult, vechtp, vechtn, infoch, ligrch, lchin, cnchci, modele
-    character(len=24) :: vachtp, cnchtp, nomfct, vediri, vadirp, cndirp, inst
-!   ------------------------------------------------------------------------------------
-    integer :: nbtych
-    parameter(nbtych=12)
-    character(len=6) :: nomlig(nbtych)
-    nomlig = ['.CIMPO', '.SOURE', '.SOURC', '.FLURE', '.FLUR2',&
-     &     '.T_EXT', '.COEFH', '.HECHP', '.GRAIN', '.FLUNL',&
-     &     '.SOUNL', '.RAYO ']
+    integer :: neq, jnchtp, j2nd, nbEqua, iEqua, jndirp
+    real(kind=8) :: timeCurr
+    character(len=8) :: numedd, model
+    character(len=24) :: vechtp, cncine
+    character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
+    character(len=24) :: vachtp, cnchtp, vediri, vadirp, cndirp, timeMap
+    character(len=24), parameter :: mateco = " "
+    type(ListLoad_Prep) :: listLoadPrep
+
 !   ------------------------------------------------------------------------------------
     vediri = '&&VETDIR           .RELR'
     vechtp = '&&VETCHA           .RELR'
-    vechtn = '&&VENCHA           .RELR'
-    infcha = '&&OP0116_INF_CHARGE'
+    listLoad = '&&OP0116_INF_CHARGE'
     cndirp = '    '
     cnchtp = '    '
-    tpsthe(1) = 0.0d0
-    inst = ' '
+    timeCurr = 0.d0
+    timeMap = ' '
 !
     call jemarq()
 !
-    call dismoi('NOM_MODELE', rigthe, 'MATR_ASSE', repk=modele)
-!    call dismoi('CHAM_MATER', rigthe, 'MATR_ASSE', repk=mate)
-!    call dismoi('CARA_ELEM', rigthe, 'MATR_ASSE', repk=carele)
-
-    mate = '        '
-    carele = '        '
-
+    call dismoi('NOM_MODELE', rigthe, 'MATR_ASSE', repk=model)
     call dismoi('NOM_NUME_DDL', rigthe, 'MATR_ASSE', repk=numedd)
 !
     call vtcreb(vec2nd, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
+
+! - Create list of loads
+    listLoadPrep%model = model
+    call ntdoch(listLoadPrep, listLoad, "G")
+    loadNameJv = listLoad(1:19)//'.LCHA'
+    loadInfoJv = listLoad(1:19)//'.INFC'
+    loadFuncJv = listLoad(1:19)//'.FCHA'
+
+! - Compute dirichlet RHS
+    call vedith(model, loadNameJv, loadInfoJv, timeMap, vediri)
+    call asasve(vediri, numedd, 'R', vadirp)
+    call ascova('D', vadirp, loadFuncJv, 'INST', timeCurr, &
+                'R', cndirp)
+    call jeveuo(cndirp(1:19)//'.VALE', 'L', jndirp)
+
+! - Compute dirichlet kinematic elimination
+    cncine = ' '
+    call ascavc(loadNameJv, loadInfoJv, loadFuncJv, numedd, timeCurr, &
+                cncine, l_hho_=ASTER_FALSE)
+
+! - Compute Neumann RHS
+    call vechth('STAT', &
+                model, mateco, &
+                loadNameJv, loadInfoJv, &
+                timeCurr, &
+                vechtp)
+    call asasve(vechtp, numedd, 'R', vachtp)
+    call ascova('D', vachtp, loadFuncJv, 'INST', timeCurr, &
+                'R', cnchtp)
+    call jeveuo(cnchtp(1:19)//'.VALE', 'L', jnchtp)
+    call jedetr(vechtp)
+
+! - Final RHS
+    call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
+    call jelira(vec2nd(1:19)//'.VALE', 'LONMAX', nbEqua)
+    do iEqua = 1, nbEqua
+        zr(j2nd+iEqua-1) = zr(jnchtp+iEqua-1)+zr(jndirp+iEqua-1)
+    end do
 !
-    charge = infcha//'.LCHA'
-    infoch = infcha//'.INFC'
-    fomult = infcha//'.FCHA'
+    call jedema()
 !
-    call getfac('EXCIT', nchar)
-    call lisccr('THER', infcha, nchar, 'G')
-!
-    if (nchar .ne. 0) then
-! call wkvect(charge, 'V V K24', nchar, ialich)
-! call wkvect(infoch, 'V V IS', 2*nchar+1, jinf)
-! call wkvect(fomult, 'V V K24', nchar, ialifc)
-        call jeveuo(charge, 'E', ialich)
-        call jeveuo(infoch, 'E', jinf)
-        call jeveuo(fomult, 'E', ialifc)
-        zi(jinf) = nchar
-        nchci = 0
-        do 32, ich = 1, nchar
-            call getvid('EXCIT', 'CHARGE', iocc=ich, scal=nomcha)
-            zk24(ialich+ich-1) = nomcha
-!
-            call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=typch)
-            if ((typch(1:5) .ne. 'THER_') .and. (typch(1:5) .ne. 'CITH_')) then
-                call utmess('E', 'CHARGES_21', sk=nomcha(1:8))
-            end if
-!
-            ligrch = nomcha(1:8)//'.CHTH.LIGRE'
-!
-            if (typch(1:5) .eq. 'CITH_') then
-                call jeexin(nomcha(1:19)//'.AFCK', iret)
-                ASSERT(iret .ne. 0)
-                if (typch(5:7) .eq. '_FT') then
-                    zi(jinf+ich) = -3
-                else if (typch(5:7) .eq. '_FO') then
-                    zi(jinf+ich) = -2
-                else
-                    zi(jinf+ich) = -1
-                end if
-            end if
-!
-            lchin = ligrch(1:13)//'.CIMPO.DESC'
-            call jeexin(lchin, iret)
-            if (iret .ne. 0) then
-                if (typch(5:7) .eq. '_FO') then
-                    zi(jinf+ich) = 2
-                    call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
-                    if (parcha(1:3) .eq. 'OUI') then
-                        zi(jinf+ich) = 3
-                    end if
-                else
-                    zi(jinf+ich) = 1
-                end if
-            end if
-!
-            fmult = .false.
-            call getvid('EXCIT', 'FONC_MULT', iocc=ich, scal=zk24(ialifc+ich-1), nbret=n1)
-!
-            if (n1 .eq. 0) then
-                nomfct = '&&OP0116'
-                call jeexin(nomfct(1:19)//'.PROL', iret)
-                if (iret .eq. 0) then
-                    ASSERT(lxlgut(nomfct) .le. 24)
-                    call wkvect(nomfct(1:19)//'.PROL', 'V V K24', 6, jpro)
-                    zk24(jpro) = 'CONSTANT'
-                    zk24(jpro+1) = 'CONSTANT'
-                    zk24(jpro+2) = 'TOUTPARA'
-                    zk24(jpro+3) = 'TOUTRESU'
-                    zk24(jpro+4) = 'CC      '
-                    zk24(jpro+5) = nomfct
-!
-                    call wkvect(nomfct(1:19)//'.VALE', 'V V R', 2, jval)
-                    zr(jval) = 1.0d0
-                    zr(jval+1) = 1.0d0
-                end if
-                zk24(ialifc+ich-1) = '&&OP0116'
-            else
-                fmult = .true.
-            end if
-!
-            do 326, k = 2, nbtych
-                lchin = ligrch(1:13)//nomlig(k)//'.DESC'
-                call exisd('CHAMP_GD', lchin, iret)
-                if (iret .ne. 0) then
-                    if ((k .ge. 7) .and. fmult) then
-                        call utmess('F', 'CHARGES_20', sk=nomcha(1:8))
-                    end if
-                    if (typch(5:7) .eq. '_FO') then
-                        zi(jinf+nchar+ich) = max(2, zi(jinf+nchar+ich))
-                        call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
-                        if (parcha(1:3) .eq. 'OUI') then
-                            if (nomlig(k) .ne. '.T_EXT') then
-                                coecst = .false.
-                            end if
-                            zi(jinf+nchar+ich) = max(3, zi(jinf+nchar+ich))
-                        end if
-                    else
-                        zi(jinf+nchar+ich) = max(1, zi(jinf+nchar+ich))
-                    end if
-                end if
-326             continue
-32              continue
-                end if
-!
-!
-!   --- Dirichlet
-                call vedith(modele, charge, infoch, inst, vediri)
-                call asasve(vediri, numedd, 'R', vadirp)
-                call ascova('D', vadirp, fomult, 'INST', tpsthe(1), &
-                            'R', cndirp)
-                call jeveuo(cndirp(1:19)//'.VALE', 'L', jndirp)
-!   --- Cinematique
-                cnchci = ' '
-                call ascavc(charge, infoch, fomult, numedd, tpsthe(1), &
-                            cnchci, l_hho_=ASTER_FALSE)
-!   --- Other
-                call vechth('STAT', modele, charge, infoch, carele, &
-                            mate, ' ', tpsthe(1), ' ', ' ', &
-                            vechtp)
-                call asasve(vechtp, numedd, 'R', vachtp)
-                call ascova('D', vachtp, fomult, 'INST', tpsthe(1), &
-                            'R', cnchtp)
-                call jeveuo(cnchtp(1:19)//'.VALE', 'L', jnchtp)
-                call jedetr(vechtp)
-                call jedetr(vechtn)
-!
-                call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
-                call jelira(vec2nd(1:19)//'.VALE', 'LONMAX', lonch)
-                loncm1 = lonch-1
-                do k = 0, loncm1
-                    zr(j2nd+k) = zr(jnchtp+k)+zr(jndirp+k)
-                end do
-!
-                call jedema()
-!
-                end subroutine
+end subroutine

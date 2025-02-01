@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,6 @@ cata_msg = {
     12: _("""  Activation du contact."""),
     13: _("""  Activation du contact discret."""),
     14: _("""  Activation du contact continu."""),
-    15: _("""  Activation du contact XFEM."""),
-    16: _("""  Activation du contact XFEM avec THM."""),
     17: _("""  Activation du contact LAC."""),
     18: _("""  Activation du contact avec boucle de point fixe pour la géométrie."""),
     19: _("""  Activation du contact avec boucle de point fixe pour les statuts de contact."""),
@@ -53,7 +51,6 @@ cata_msg = {
     27: _("""  Activation de liaisons unilatérales."""),
     28: _("""  Activation du frottement discret."""),
     29: _("""  Activation du frottement continu."""),
-    30: _("""  Activation du frottement XFEM."""),
     31: _("""  Activation d'éléments de contact."""),
     32: _("""  Activation des éléments HHO."""),
     33: _("""  Activation d'éléments de type DIS_CHOC."""),

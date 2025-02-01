@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,6 @@ cata_msg = {
         """   Nombre total de macro-éléments pour le contact: %(i1)d soit %(i2)d éléments en contact."""
     ),
     8: _("""   Nombre total de noeuds esclaves pour le contact: %(i1)d."""),
-    9: _(
-        """  Création des structures de données spécifiques pour le contact en formulation XFEM."""
-    ),
     10: _("""  Création du champ CONT_ELEM pour le post-traitement."""),
     11: _("""  Création du champ CONT_NOEU pour le post-traitement."""),
     12: _("""  Initialisations du contact en formulation DISCRETE."""),

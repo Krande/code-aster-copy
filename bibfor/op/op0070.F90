@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -169,9 +169,8 @@ subroutine op0070()
                 ds_energy, ds_errorindic, ds_print, ds_algopara, &
                 ds_inout, ds_contact, ds_measure, ds_algorom, &
                 nlDynaDamping)
-!
+
 ! - Initializations of datastructures
-!
     call nminit(mesh, model, mater, mateco, cara_elem, list_load, &
                 numedd, numfix, ds_algopara, ds_constitutive, maprec, &
                 solver, numins, sddisc, sdnume, sdcrit, &

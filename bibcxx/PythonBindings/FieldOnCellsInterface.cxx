@@ -3,7 +3,7 @@
  * @brief Python interface for FieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,18 +42,24 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init( []( const ModelPtr model, const std::string &loc,
                             const std::string &quantity, const BehaviourPropertyPtr behaviour,
                             const ElementaryCharacteristicsPtr carael ) {
-            return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, behaviour, carael );
-        } ) )
+                  return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, behaviour,
+                                                                carael );
+              } ),
+              py::arg( "model" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "behaviour" ),
+              py::arg( "elem_char" ) )
         .def( py::init( []( const ModelPtr model, const std::string &loc,
                             const std::string &quantity, const BehaviourPropertyPtr behaviour ) {
-            return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, behaviour,
-                                                          nullptr );
-        } ) )
-        .def( py::init( []( const ModelPtr model, const std::string &loc,
-                            const std::string &quantity,
-                            const ElementaryCharacteristicsPtr carael ) {
-            return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, nullptr, carael );
-        } ) )
+                  return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, behaviour,
+                                                                nullptr );
+              } ),
+              py::arg( "model" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "behaviour" ) )
+        .def(
+            py::init( []( const ModelPtr model, const std::string &loc, const std::string &quantity,
+                          const ElementaryCharacteristicsPtr carael ) {
+                return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, nullptr,
+                                                              carael );
+            } ),
+            py::arg( "model" ), py::arg( "loc" ), py::arg( "quantity" ), py::arg( "elem_char" ) )
         .def( "copy", &FieldOnCellsReal::copy, R"(
             Return a duplicated FieldOnCellsReal as a copy
 

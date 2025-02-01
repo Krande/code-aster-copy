@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte@edf.fr
 """
 :py:class:`SimpleFieldOnCellsReal`
 Simple Fields defined on cells of elements
@@ -25,14 +24,93 @@ Simple Fields defined on cells of elements
 """
 
 import numpy as np
+import numpy.ma as ma
 from libaster import SimpleFieldOnCellsReal
 
-from ..Utilities import injector, medcoupling as medc, ParaMEDMEM as PMM
+from ..Objects.Serialization import InternalStateBuilder
+from ..Utilities import ParaMEDMEM as PMM
+from ..Utilities import injector
+from ..Utilities import medcoupling as medc
+from .component import ComponentOnCells
+
+
+class SFoCStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *SimpleFieldOnCells*."""
+
+    def restore(self, field):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            field (*DataStructure*): The *DataStructure* object to be restored.
+        """
+        super().restore(field)
+        field.build()
 
 
 @injector(SimpleFieldOnCellsReal)
 class ExtendedSimpleFieldOnCellsReal:
-    def getValues(self, copy=False):
+    internalStateBuilder = SFoCStateBuilder
+
+    @property
+    def _cache(self):
+        if self._ptr_cache is None:
+            self._ptr_cache = dict.fromkeys(["readonly", "val", "msk", "idx", "nbpt"])
+            self._ptr_cache["readonly"] = None
+        if self._ptr_cache["val"] is None:
+            self._ptr_cache["val"], self._ptr_cache["msk"], addr = self.toNumpy()
+            nbcells = addr[0]
+            dims = addr[5:]
+            dims.shape = nbcells, 4
+            self._ptr_cache["nbpt"] = dims[:, 0:2]  # number of points, subpoints
+            nbval = self._ptr_cache["nbpt"].prod(axis=1)  # nbval by cells (for one component)
+            start = np.append([0], nbval.cumsum()[:-1])
+            end = start + nbval
+            indexes = np.ones((nbcells, nbval.max()), dtype=int) * -1
+            for iv in range(nbcells):
+                indexes[iv, : nbval[iv]] = np.arange(start[iv], end[iv])
+            self._ptr_cache["idx"] = indexes
+        return self._ptr_cache
+
+    def __getattr__(self, component):
+        """Convenient shortcut to `getComponentOnCells()`."""
+        if component not in self.getComponents():
+            raise AttributeError(f"'SimpleFieldOnCells' object has no attribute {component!r}")
+        return self.getComponentOnCells(component)
+
+    def getComponentOnCells(self, component):
+        """Extract the values of a component.
+
+        Args:
+            component (str): Component name. Raises ValueError if the component
+                does not exist in the field.
+        """
+        if self._cache["readonly"]:
+            self._ptr_cache = None
+        icmp = self.getComponents().index(component)
+        self._cache["readonly"] = False
+        mvalues = ma.array(
+            self._cache["val"][:, icmp].copy(), mask=np.logical_not(self._cache["msk"][:, icmp])
+        )
+        return ComponentOnCells(
+            mvalues, ComponentOnCells.Description(self, self._cache["idx"], self._cache["nbpt"])
+        )
+
+    def setComponentValues(self, component, cfvalue):
+        """Assign the values of a component.
+
+        Args:
+            component (str): Component name. Raises ValueError if the component
+                does not exist in the field.
+            cfvalue (ComponentOnCells): Previously extracted component.
+        """
+        icmp = self.getComponents().index(component)
+        # it directly overwrites '.CESV' vector in place
+        expanded = cfvalue.expand().values
+        self._cache["val"][:, icmp] = expanded.data
+        self._cache["msk"][:, icmp] = np.logical_not(expanded.mask)
+
+    def getValues(self, copy=True):
         """
         Returns two numpy arrays containing the field values on specific cells.
 
@@ -41,19 +119,19 @@ class ExtendedSimpleFieldOnCellsReal:
         Array shape is ( number_of_cells_with_components, number_of_components ).
 
         Args:
-            copy (bool): If True copy the data, default: *False*
+            copy (bool): If *True* the data are copied, the is the default.
 
         Returns:
             ndarray (float): Field values.
             ndarray (bool): Mask for the field values.
         """
-        values, mask = self.toNumpy()
-        if copy:
+        values, mask = self._cache["val"], self._cache["msk"]
+        if copy or self._cache["readonly"] is False:
             return values.copy(), mask.copy()
 
+        self._cache["readonly"] = True
         values.setflags(write=False)
         mask.setflags(write=False)
-
         return values, mask
 
     def getValuesOnCell(self, idcell):
@@ -106,7 +184,7 @@ class ExtendedSimpleFieldOnCellsReal:
             cmps_red = []
             all_cmps = self.getComponents()
             for cmp in cmps:
-                if cmp in self.getComponents():
+                if cmp in all_cmps:
                     cmps_red.append(cmp)
             cmps = cmps_red
 
@@ -149,11 +227,10 @@ class ExtendedSimpleFieldOnCellsReal:
             msg = "toMEDCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
             raise TypeError(msg.format(type(medmesh).__name__))
 
-        # Aster values
-        values, mask = self.toNumpy()
+        values, mask = self._cache["val"], self._cache["msk"]
 
         # Restrict field based on mask
-        restricted_cells = np.where(np.any(mask, axis=1) == True)[0]
+        restricted_cells = np.where(np.any(mask, axis=1))[0]
         restricted_values = values[restricted_cells, :]
 
         # Medcoupling field

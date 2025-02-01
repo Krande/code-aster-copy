@@ -6,7 +6,7 @@
  * @brief Definition d'une chaine a la maniere Fortran (sans \0 a la fin)
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -194,7 +194,7 @@ class JeveuxString {
     };
 
     inline const char &operator[]( const ASTERINTEGER &i ) const {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         if ( i < 0 && i >= this->size() ) {
             std::string error = "Out of range of JeveuxString, index = " + std::to_string( i ) +
                                 " ( size = " + std::to_string( this->size() ) + " )";
@@ -210,7 +210,7 @@ class JeveuxString {
      * @return la valeur du tableau Jeveux a la position i
      */
     inline char &operator[]( const ASTERINTEGER &i ) {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         if ( i < 0 && i >= this->size() ) {
             std::string error = "Out of range of JeveuxString, index = " + std::to_string( i ) +
                                 " ( size = " + std::to_string( this->size() ) + " )";

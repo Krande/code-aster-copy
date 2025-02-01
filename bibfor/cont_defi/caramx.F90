@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,6 @@ subroutine caramx(sdcont, cont_form, nb_cont_zone)
 #include "asterfort/caracd.h"
 #include "asterfort/caracm.h"
 #include "asterfort/caracp.h"
-#include "asterfort/caracx.h"
-!
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     integer, intent(in) :: cont_form
@@ -60,13 +57,11 @@ subroutine caramx(sdcont, cont_form, nb_cont_zone)
     else if (cont_form .eq. 2) then
         call caracm(sdcont, nb_cont_zone)
         call caracc(sdcont, nb_cont_zone)
-    else if (cont_form .eq. 3) then
-        call caracx(sdcont, nb_cont_zone)
     else if (cont_form .eq. 5) then
         call caracm(sdcont, nb_cont_zone)
         call caracc(sdcont, nb_cont_zone)
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

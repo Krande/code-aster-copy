@@ -2,7 +2,7 @@
 
 
 class AsterError(Exception):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     AsterError
@@ -17,7 +17,7 @@ class AsterError(Exception):
 
 
 class ConvergenceError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     ConvergenceError
@@ -31,7 +31,7 @@ class ConvergenceError(AsterError):
 
 
 class IntegrationError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     IntegrationError
@@ -45,7 +45,7 @@ class IntegrationError(AsterError):
 
 
 class SolverError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     SolverError
@@ -59,7 +59,7 @@ class SolverError(AsterError):
 
 
 class ContactError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     ContactError
@@ -73,7 +73,7 @@ class ContactError(AsterError):
 
 
 class TimeLimitError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     TimeLimitError
@@ -140,7 +140,7 @@ class PythonBool:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -177,7 +177,7 @@ class DataStructure:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def addDependency(self, ds):
@@ -259,10 +259,6 @@ class DataStructure:
     # Data descriptors defined here:
 
     @property
-    def ptr_sdj(self):
-        pass
-
-    @property
     def userName(self):
         """str: Name of the user variable that holds this object."""
 
@@ -328,7 +324,7 @@ class PhysicalQuantityManager:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getComponentNames(self):
@@ -363,7 +359,7 @@ class Node:
     def __getstate__(self):
         pass
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __setitem__(self, arg0, arg1):
@@ -452,7 +448,7 @@ class EntityType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -525,7 +521,7 @@ class AllMeshEntities(MeshEntity):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -543,7 +539,7 @@ class BaseMesh(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
@@ -733,8 +729,8 @@ class BaseMesh(DataStructure):
         """Print the mesh in the MED format
 
         Arguments:
-            filename (str): Name of the file
-            local (bool=True) : print local values only (relevant for BaseMesh only)
+            filename (Path|str): Name of the file
+            local (bool=True) : print local values only (relevant for a ParallelMesh only)
 
         Returns:
             Bool: True if of
@@ -893,7 +889,7 @@ class Mesh(BaseMesh):
         """Read a mesh file from ASTER format.
 
         Arguments:
-            filename (str): Path to the file to be read.
+            filename (Path|str): Path to the file to be read.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -903,7 +899,7 @@ class Mesh(BaseMesh):
         """Read a mesh file from GIBI format.
 
         Arguments:
-            filename (str): Path to the file to be read.
+            filename (Path|str): Path to the file to be read.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -913,7 +909,7 @@ class Mesh(BaseMesh):
         """Read a mesh file from GMSH format.
 
         Arguments:
-            filename (str): Path to the file to be read.
+            filename (Path|str): Path to the file to be read.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -1048,8 +1044,8 @@ class DiscreteComputation:
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
             data (FieldOnCellsReal): contact data
-            coef_cont (FeildOnNodesReal) : contact coefficient
-            coef_frot (FeildOnNodesReal) : friction coefficient
+            coef_cont (FieldOnNodesReal) : contact coefficient
+            coef_frot (FieldOnNodesReal) : friction coefficient
 
         Returns:
             FieldOnNodesReal: contact and friction forces
@@ -1067,8 +1063,8 @@ class DiscreteComputation:
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
             data (FieldOnCellsReal): contact data
-            coef_cont (FeildOnNodesReal) : contact coefficient
-            coef_frot (FeildOnNodesReal) : friction coefficient
+            coef_cont (FieldOnNodesReal) : contact coefficient
+            coef_frot (FieldOnNodesReal) : friction coefficient
 
         Returns:
             ElementaryMatrixDisplacementReal: contact and friction elementary matrix
@@ -2037,7 +2033,7 @@ class MorseStorage(MatrixStorage):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getDiagonalPositions(self):
@@ -2061,7 +2057,7 @@ class BaseDOFNumbering(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def computeNumbering(self, *args, **kwargs):
@@ -2492,11 +2488,11 @@ class FieldOnCellsReal(DataField):
 
         5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
 
-        6. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: BehaviourProperty, arg4: libaster.ElementaryCharacteristics) -> None
+        6. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty, elem_char: libaster.ElementaryCharacteristics) -> None
 
-        7. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: BehaviourProperty) -> None
+        7. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, behaviour: BehaviourProperty) -> None
 
-        8. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: libaster.ElementaryCharacteristics) -> None
+        8. __init__(self: libaster.FieldOnCellsReal, model: Model, loc: str, quantity: str, elem_char: libaster.ElementaryCharacteristics) -> None
         """
 
     def __isub__(self, arg0):
@@ -2628,7 +2624,7 @@ class FieldOnCellsReal(DataField):
         """Print the field in MED format.
 
         Arguments:
-            filename (str): Path to the file to be printed.
+            filename (Path|str): Path to the file to be printed.
             local (bool): Print local values only (relevant for ParallelMesh only,
                 default: *True*)
 
@@ -2799,7 +2795,7 @@ class FieldOnCellsComplex(DataField):
         """Print the field in MED format.
 
         Arguments:
-            filename (str): Path to the file to be printed.
+            filename (Path|str): Path to the file to be printed.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -2940,7 +2936,7 @@ class FieldOnCellsLong(DataField):
         """Print the field in MED format.
 
         Arguments:
-            filename (str): Path to the file to be printed.
+            filename (Path|str): Path to the file to be printed.
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
@@ -3071,7 +3067,7 @@ class FieldOnNodesReal(DataField):
 
         5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
 
-        6. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str]) -> None
+        6. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
 
         7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, values: dict[str, float], groupsOfNodes: list[str] = [], groupsOfCells: list[str] = []) -> None
         """
@@ -3647,7 +3643,7 @@ class ConstantFieldValuesReal:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getValues(self):
@@ -3781,17 +3777,17 @@ class SimpleFieldOnCellsReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh) -> None
+        3. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str]) -> None
+        4. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str]) -> None
 
-        5. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: bool) -> None
+        5. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], prol_zero: bool) -> None
 
-        6. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int) -> None
+        6. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int) -> None
 
-        7. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: int, arg5: int, arg6: bool) -> None
+        7. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: int, nbSubPoints: int, prol_zero: bool) -> None
 
-        8. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: list[str], arg4: list[int], arg5: int, arg6: bool) -> None
+        8. __init__(self: libaster.SimpleFieldOnCellsReal, mesh: libaster.BaseMesh, loc: str, quantity: str, cmps: list[str], nbPoints: list[int], nbSubPoints: int, prol_zero: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -4088,11 +4084,11 @@ class SimpleFieldOnNodesReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh) -> None
+        3. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh) -> None
 
-        4. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str]) -> None
+        4. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
 
-        5. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: list[str], arg3: bool) -> None
+        5. __init__(self: libaster.SimpleFieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str], prol_zero: bool) -> None
         """
 
     def __setitem__(self, *args, **kwargs):
@@ -4672,7 +4668,7 @@ class GenericFunction(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getProperties(self):
@@ -4917,7 +4913,7 @@ class BaseFunction(GenericFunction):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getValues(self):
@@ -5261,6 +5257,20 @@ def onFatalError(value=""):
     """
 
 
+# built-in function matfpe in libaster
+
+
+def matfpe(value):
+    """Enable or disable floating point exceptions.
+
+    Arguments:
+        value (int): -1 to disable the FPE interception, 1 to enable FPE detection.
+
+    Returns:
+        str: Current value
+    """
+
+
 # built-in function set_option in libaster
 
 
@@ -5460,7 +5470,7 @@ class ContactAlgo:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5528,7 +5538,7 @@ class ContactVariant:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5544,6 +5554,8 @@ class ContactVariant:
 
     # ----------------------------------------------------------------------
     # Data and other attributes defined here:
+
+    Classic = 4
 
     Empty = 0
 
@@ -5598,7 +5610,7 @@ class ContactType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5664,7 +5676,7 @@ class FrictionAlgo:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5732,7 +5744,7 @@ class FrictionType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5802,7 +5814,7 @@ class PairingAlgo:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5866,7 +5878,7 @@ class InitialState:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5888,6 +5900,72 @@ class InitialState:
     No = 1
 
     Yes = 2
+
+
+# class JacobianType in libaster
+
+
+class JacobianType:
+    pass
+
+    # Method resolution order:
+    #     JacobianType
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def __str__(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Readonly properties defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: object) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Analytical = 0
+
+    Perturbation = 1
 
 
 # class ContactParameter in libaster
@@ -5926,6 +6004,13 @@ class ContactParameter:
             float: contact coefficient.
         """
 
+    def getJacobianType(self):
+        """Return how the Jacobian is computed. It is a value of an enum
+
+        Returns:
+            JacobianType: Jacobian type.
+        """
+
     def getType(self):
         """Return the contact type used. It is a value of an enum
 
@@ -5952,6 +6037,13 @@ class ContactParameter:
 
         Arguments:
             float: contact coefficient.
+        """
+
+    def setJacobianType(self, type):
+        """Set how the Jacobian is computed. It is a value of an enum
+
+        Arguments:
+            JacobianType: Jacobian type.
         """
 
     def setType(self, type):
@@ -6755,7 +6847,7 @@ class CoordinatesSpace:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -6821,7 +6913,7 @@ class PairingMethod:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -7931,7 +8023,7 @@ class BaseElementaryMatrix(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getElementaryCharacteristics(self):
@@ -8412,7 +8504,7 @@ class GeneralizedAssemblyMatrix(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def exists(self):
@@ -8593,7 +8685,7 @@ class GeneralizedAssemblyVector(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -8731,7 +8823,7 @@ class LinearSolver(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
@@ -8953,7 +9045,7 @@ class GenericModalBasis(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -9049,7 +9141,7 @@ class InterfaceType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -9146,7 +9238,7 @@ class DirichletBC(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
@@ -9492,7 +9584,7 @@ class Loads:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -10180,7 +10272,7 @@ class PhysicalQuantityComponent:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -11510,7 +11602,7 @@ class Physics:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -11578,7 +11670,7 @@ class Modelings:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -12008,7 +12100,7 @@ class Formulation:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -12086,7 +12178,7 @@ class ModelSplitingMethod:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -12154,7 +12246,7 @@ class GraphPartitioner:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -12977,7 +13069,7 @@ class Result(DataStructure):
         """Print the result in a MED file.
 
         Args:
-            filename (str): Path to the output file.
+            filename (Path|str): Path to the output file.
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
         """
@@ -12993,13 +13085,14 @@ class Result(DataStructure):
     def setElementaryCharacteristics(self, *args, **kwargs):
         """Overloaded function.
 
-        1. setElementaryCharacteristics(self: libaster.Result, cara_elem: libaster.ElementaryCharacteristics) -> None
+        1. setElementaryCharacteristics(self: libaster.Result, cara_elem: libaster.ElementaryCharacteristics, exists_ok: bool = False) -> None
 
 
         Set elementary characterictics on all indexs
 
         Arguments:
             cara_elem (ElementaryCharacteristics): elementary characterictics to set.
+            exists_ok (bool): If *True*, pass silently if a Model is already defined. *False* by default.
 
 
         2. setElementaryCharacteristics(self: libaster.Result, cara_elem: libaster.ElementaryCharacteristics, index: int) -> None
@@ -13023,13 +13116,14 @@ class Result(DataStructure):
     def setMaterialField(self, *args, **kwargs):
         """Overloaded function.
 
-        1. setMaterialField(self: libaster.Result, mater: libaster.MaterialField) -> None
+        1. setMaterialField(self: libaster.Result, mater: libaster.MaterialField, exists_ok: bool = False) -> None
 
 
         Set material field on all indexs
 
         Arguments:
             mater (MaterialField): material field to set.
+            exists_ok (bool): If *True*, pass silently if a Model is already defined. *False* by default.
 
 
         2. setMaterialField(self: libaster.Result, mater: libaster.MaterialField, index: int) -> None
@@ -13052,13 +13146,14 @@ class Result(DataStructure):
     def setModel(self, *args, **kwargs):
         """Overloaded function.
 
-        1. setModel(self: libaster.Result, model: libaster.Model) -> None
+        1. setModel(self: libaster.Result, model: libaster.Model, exists_ok: bool = False) -> None
 
 
         Set model on all indexs
 
         Arguments:
-            model (Model): model to set.
+            model (Model): Model to be assigned.
+            exists_ok (bool): If *True*, pass silently if a Model is already defined. *False* by default.
 
 
         2. setModel(self: libaster.Result, model: libaster.Model, index: int) -> None
@@ -13306,7 +13401,7 @@ class NonLinearResult(TransientResult):
         """Print the result in a MED file.
 
         Args:
-            filename (str): Path to the output file.
+            filename (Path|str): Path to the output file.
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
         """
@@ -13617,7 +13712,7 @@ class Glossary:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getComponent(self, arg0):
@@ -13895,7 +13990,7 @@ class GeneralizedResultReal(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -13913,7 +14008,7 @@ class GeneralizedResultComplex(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -15305,7 +15400,7 @@ class ResultNaming:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     # ----------------------------------------------------------------------
@@ -15341,7 +15436,7 @@ class ListOfFloats(DataStructure):
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def size(self):
@@ -15377,7 +15472,7 @@ class ListOfIntegers(DataStructure):
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def size(self):
@@ -15573,7 +15668,7 @@ class ExternalVariableTraits:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getExternVarTypeStr(self):
@@ -15624,7 +15719,7 @@ class externVarEnumInt:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -16533,7 +16628,7 @@ class MedFileAccessType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -16648,7 +16743,7 @@ class MedFileReader:
         """Open med file
 
         Arguments:
-            path (str): path to med file
+            path (Path|str): path to med file
             accessType (MedFileAccessType): med access type
 
         Returns:
@@ -16659,7 +16754,7 @@ class MedFileReader:
         """Open med file in parallel
 
         Arguments:
-            path (str): path to med file
+            path (Path|str): path to med file
             accessType (MedFileAccessType): med access type
 
         Returns:
@@ -16680,7 +16775,7 @@ class MedField:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):
@@ -16777,7 +16872,7 @@ class MedMesh:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):
@@ -16972,7 +17067,7 @@ class MedFamily:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):

@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -171,7 +171,7 @@ toSimpleFieldOnCells( const std::shared_ptr< ConstantFieldOnCells< ValueType > >
 
 template < typename ValueType >
 std::shared_ptr< SimpleFieldOnCells< ValueType > >
-toSimpleFieldOnCells( const FieldOnCells< ValueType > field ) {
+toSimpleFieldOnCells( const FieldOnCells< ValueType > &field ) {
     auto toReturn = std::make_shared< SimpleFieldOnCells< ValueType > >( field.getMesh() );
     const std::string resultName = toReturn->getName();
     const std::string inName = field.getName();

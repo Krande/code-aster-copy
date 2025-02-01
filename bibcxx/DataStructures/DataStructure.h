@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DataStructure
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -57,6 +57,8 @@ class DataStructure {
     std::vector< DataStructurePtr > _depsVector;
     /** @brief Python attributes for sdj/sdveri */
     py::object _sdj;
+    /** @brief Python attributes to support values caching */
+    py::object _cache;
 
   protected:
     /** @brief Object that stores the title of the DataStructure */
@@ -162,6 +164,16 @@ class DataStructure {
      * @brief Setter for SDJ property
      */
     void setSDJ( py::object &sdj ) { _sdj = sdj; }
+
+    /**
+     * @brief Getter for the cache property
+     */
+    const py::object &getCache() const { return _cache; }
+
+    /**
+     * @brief Setter for the cache property
+     */
+    void setCache( py::object &cache ) { _cache = cache; }
 
     /**
      * @brief Virtual function to update DataStructure

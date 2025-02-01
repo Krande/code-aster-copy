@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,13 +70,6 @@ cata_msg = {
     9: _(
         """
  erreurs de cohérence dans les catalogues d'éléments finis.
-"""
-    ),
-    20: _(
-        """
- Erreur lors de l'accès à la composante %(i1)d dans le champ de nom %(k1)s et de type %(k2)s.
- Les arguments sont hors bornes ou la composante est déjà affectée (écrasement).
- Contactez le support.
 """
     ),
 }

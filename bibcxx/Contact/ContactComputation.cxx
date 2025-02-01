@@ -1,7 +1,7 @@
 
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -119,6 +119,8 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
                 ( *data )[shift + 24] = double( cont->getType() );
                 //  Value for VARIANTE
                 ( *data )[shift + 25] = double( cont->getVariant() );
+                //  Value for TYPE_MATR_TANG
+                ( *data )[shift + 26] = double( cont->getJacobianType() );
 
                 /// Friction parameter
                 auto fric = zone->getFrictionParameter();
@@ -150,7 +152,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
                     ( *data )[shift + 41] = double( InitialState::Interpenetrated );
                 }
 
-                // Nitsche
+                /// Material parameters
                 if ( cont->getAlgorithm() == ContactAlgo::Nitsche ) {
                     auto [slavCellNume, mastCellNume] = listPairs[iPair - 1];
                     auto slav_surf_con = ( *meshConnex )[slavCellNume + 1]->toVector();

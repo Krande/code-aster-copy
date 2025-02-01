@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,11 +63,11 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef, &
     call jeveuo(carav, 'L', icarv)
     call jeveuo(carad, 'L', icard)
 !
-    kexnom = jexnom('&CATA.GD.NOMCMP', 'CAGEPO')
+    kexnom = jexnom('&CATA.GD.NOMCMP', 'CAGEPO_R')
     call jelira(kexnom, 'LONMAX', nbcmp)
     call jeveuo(kexnom, 'L', icmp)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('NB_EC', 'CAGEPO', 'GRANDEUR', repi=nbec)
+    call dismoi('NB_EC', 'CAGEPO_R', 'GRANDEUR', repi=nbec)
 !     TOUTES LES COMPOSANTES DOIVENT ETRE DANS LA GRANDEUR
     do jj = 1, nbgd
         irang = indik8(zk8(icmp), nomcmp(jj), 1, nbcmp)

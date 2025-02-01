@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine op0026()
 !
@@ -57,8 +56,9 @@ subroutine op0026()
     character(len=8) :: table_new, table_old
     type(NL_DS_Constitutive) :: ds_constitutive
     character(len=16) :: phenom
-    character(len=19) :: list_load, list_inst
-    character(len=24) :: model, mate, cara_elem, mateco
+    character(len=19) :: list_inst
+    character(len=8) :: model, materField, caraElem
+    character(len=24) :: mateco, listLoad
     character(len=19) :: disp_prev, disp_cumu_inst, vari_prev, sigm_prev
     character(len=19) :: vediri, vefnod, vevarc_prev, vevarc_curr
     aster_logical :: l_elem_nonl
@@ -78,7 +78,7 @@ subroutine op0026()
                      nume_inst, list_inst, &
                      phenom, l_pred)
     if (phenom .eq. 'MECANIQUE') then
-        call calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
+        call calcGetDataMeca(listLoad, model, materField, mateco, caraElem, &
                              disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
                              ds_constitutive, l_elem_nonl, nume_harm)
     else
@@ -102,7 +102,7 @@ subroutine op0026()
 ! - Prepare data
 !
     if (phenom .eq. 'MECANIQUE') then
-        call calcPrepDataMeca(model, mate, mateco, cara_elem, &
+        call calcPrepDataMeca(model, materField, mateco, caraElem, &
                               disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
                               time_prev, time_curr, &
                               ds_constitutive, ds_material, ds_system, &
@@ -118,7 +118,7 @@ subroutine op0026()
     if (phenom .eq. 'MECANIQUE') then
         call calcCalcMeca(nb_option, list_option, &
                           l_elem_nonl, nume_harm, &
-                          list_load, model, cara_elem, &
+                          listLoad, model, caraElem, &
                           ds_constitutive, ds_material, ds_system, &
                           hval_incr, hval_algo, &
                           vediri, vefnod, &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ subroutine reseci(carele, nummai, ai1, ai2)
 !**********************************************************************C
 !***        ON RECHERCHE LES NUMERO DE AI1 ET AI2 DANS LA GD***********C
 !**********************************************************************C
-    call jenonu(jexnom('&CATA.GD.NOMGD', 'CAGNPO'), numgd)
+    call jenonu(jexnom('&CATA.GD.NOMGD', 'CAGNPO_R'), numgd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', iad1)
     do icmp = 1, igdncm
         k8bid1 = zk8(iad1-1+icmp)

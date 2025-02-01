@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -60,7 +60,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         : JeveuxObjectClass( nom ),
           _valuePtr( nullptr ),
           _jeveuxAdress( 0 ) {
-              // #ifdef ASTER_DEBUG_CXX
+              // #ifdef ASTER_DEBUG_CXX_OBJECTS
               //         std::cout << "DEBUG: JeveuxVector.create: " << _name << std::endl;
               // #endif
           };
@@ -69,7 +69,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Destructeur
      */
     ~JeveuxVectorClass() {
-        // #ifdef ASTER_DEBUG_CXX
+        // #ifdef ASTER_DEBUG_CXX_OBJECTS
         //         std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
         // #endif
         this->deallocate();
@@ -186,7 +186,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @return la valeur du tableau Jeveux a la position i
      */
     inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
         AS_ASSERT( !this->hasMoved() );
         if ( i < 0 && i >= this->size() ) {
@@ -205,7 +205,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @return la valeur du tableau Jeveux a la position i
      */
     inline ValueType &operator[]( const ASTERINTEGER &i ) {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
         AS_ASSERT( !this->hasMoved() );
         if ( i < 0 && i >= this->size() ) {
@@ -471,7 +471,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param elem element to add
      */
     void emplace_back( const ValueType &elem ) {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
 #endif
 
@@ -500,7 +500,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
     /** @brief access the last element */
     ValueType back() const {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
         AS_ASSERT( this->size() > 0 );
 #endif
@@ -509,7 +509,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
     /** @brief access the first element */
     ValueType front() const {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
         AS_ASSERT( this->size() > 0 );
 #endif
@@ -518,7 +518,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
     /** @brief assign the vector with a given value */
     void assign( const ValueType &val ) {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
 #endif
         const auto size = this->size();
@@ -580,7 +580,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     iterator begin() {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
 #endif
 
@@ -588,7 +588,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     iterator end() {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
 #endif
 
@@ -626,7 +626,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     const_iterator cbegin() {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
 #endif
 
@@ -634,7 +634,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     }
 
     const_iterator cend() {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
 #endif
 
@@ -798,7 +798,7 @@ class JeveuxVector {
     };
 
     const JeveuxVectorTypePtr &operator->() const {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         if ( !_jeveuxVectorPtr ) {
             AS_ABORT( "Null Jeveux vector" );
         }
@@ -808,7 +808,7 @@ class JeveuxVector {
     };
 
     JeveuxVectorClass< ValueType > &operator*() const {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         if ( !_jeveuxVectorPtr ) {
             AS_ABORT( "Null Jeveux vector" );
         }

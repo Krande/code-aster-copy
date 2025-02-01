@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             LEGENDE="DY_MIN",
             NOM_CMP="DY",
-            VALE_CALC=-0.620015773775702,
+            VALE_CALC=-0.6200361526290781,
         ),
         _F(
             INST=1.0,
@@ -40,7 +40,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             LEGENDE="DY_MAX",
             NOM_CMP="DY",
-            VALE_CALC=1.0113048987248596,
+            VALE_CALC=1.013100604842441,
         ),
         _F(
             INST=1.0,
@@ -49,7 +49,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             LEGENDE="MIN LAGS_C",
             NOM_CMP="LAGS_C",
-            VALE_CALC=-31.212623800612796,
+            VALE_CALC=-31.213631609946173,
         ),
     )
 )

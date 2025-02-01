@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -647,34 +647,6 @@ void DEFSSPPPPPPPPPPPP( TESTRESU_PRINT, testresu_print, _IN char *refer, _IN STR
 }
 
 /*
- * General functions - wrapper to fortran subroutines.
- */
-static char matfpe_doc[] = "Interface d'appel a la routine C matfpe.\n"
-                           "   usage: matfpe(actif)\n"
-                           "     matfpe(-1) : on desactive l'interception des erreurs numeriques,\n"
-                           "     matfpe(1)  : on active l'interception des erreurs numeriques.\n";
-
-PyObject *asterc_matfpe( PyObject *self, PyObject *args ) {
-    /*
-     * Interface Python d'appel à la routine matfpe.
-     */
-    int iactif;
-    ASTERINTEGER actif;
-
-    if ( !PyArg_ParseTuple( args, "i:matfpe", &iactif ) )
-        return NULL;
-
-    if ( iactif >= -1 && iactif <= 1 ) {
-        actif = (ASTERINTEGER)iactif;
-        CALL_MATFPE( &actif );
-    } else {
-        MYABORT( "Valeur incorrecte : seuls -1 et 1 sont valides." );
-    }
-    Py_INCREF( Py_None );
-    return Py_None;
-}
-
-/*
  * Functions to communicate the execution status in parallel
  */
 
@@ -695,7 +667,6 @@ static PyObject *aster_mpi_warn( PyObject *self, PyObject *args ) {
  */
 static PyMethodDef methods[] = {
     { "register", register_jdc, METH_VARARGS, register_jdc_doc },
-    { "matfpe", asterc_matfpe, METH_VARARGS, matfpe_doc },
     { "get_mem_stat", asterc_get_mem_stat, METH_VARARGS, get_mem_stat_doc },
     { "set_mem_stat", asterc_set_mem_stat, METH_VARARGS, set_mem_stat_doc },
     { "MPI_Warn", aster_mpi_warn, METH_VARARGS },

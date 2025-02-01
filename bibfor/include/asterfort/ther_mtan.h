@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,25 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
 #include "asterf_types.h"
-
+!
 interface
-    subroutine ther_mtan(model    , cara_elem, mate    , para     , varc_curr,&
-                         compor   , temp_iter, dry_prev , dry_curr, resu_elem,&
-                         matr_elem, base, l_stat)
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: cara_elem
-        real(kind=8), intent(in) :: para(2)
-        character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: temp_iter
-        character(len=24), intent(in) :: dry_prev   
-        character(len=24), intent(in) :: dry_curr
-        character(len=24), intent(in) :: compor
-        character(len=19), intent(in) :: varc_curr
-        character(len=19), intent(inout) :: resu_elem
-        character(len=24), intent(in) :: matr_elem
-        character(len=1), intent(in) :: base
+    subroutine ther_mtan(l_stat, &
+                         modelZ, caraElemZ, matecoZ, &
+                         timePara, varcCurrZ, &
+                         comporTherZ, tempIterZ, dryCurrZ, resuElemZ, &
+                         matrElemZ, jvBase)
         aster_logical, intent(in) :: l_stat
+        character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
+        real(kind=8), intent(in) :: timePara(2)
+        character(len=*), intent(in) :: tempIterZ, dryCurrZ, comporTherZ, varcCurrZ
+        character(len=*), intent(inout) :: resuElemZ
+        character(len=*), intent(in) :: matrElemZ
+        character(len=1), intent(in) :: jvBase
     end subroutine ther_mtan
 end interface

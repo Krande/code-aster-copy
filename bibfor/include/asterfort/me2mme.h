@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz,&
-                  time, vect_elem_, nharm, basez)
-        character(len=*) :: modelz
-        integer :: nb_load
-        character(len=*) :: lchar(*)
-        character(len=*) :: mate, mateco
-        character(len=*) :: caraz
-        real(kind=8) :: time
-        character(len=*) :: vect_elem_
-        integer ::nharm
-        character(len=*) :: basez
+    subroutine me2mme(modelZ, listLoadZ, &
+                      materFieldZ, matecoZ, caraElemZ, &
+                      timeCurr, vectElemZ, numeHarm, jvBaseZ)
+        character(len=*) :: modelZ, caraElemZ, vectElemZ, listLoadZ, materFieldZ, matecoZ, jvBaseZ
+        real(kind=8) :: timeCurr
+        integer :: numeHarm
     end subroutine me2mme
 end interface

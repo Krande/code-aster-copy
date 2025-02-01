@@ -3,7 +3,7 @@
  * @brief Initialisation des renumeroteurs autorises pour les solvers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -50,9 +50,6 @@ LinearSolver::LinearSolver( const std::string name )
 void LinearSolver::setKeywords( py::object &user_keywords ) {
     _isBuilt = false;
     _keywords = user_keywords;
-#ifdef ASTER_DEBUG_CXX
-    PYDBG( "setKeywords:", _keywords.ptr() );
-#endif
 }
 
 py::dict LinearSolver::getKeywords() const {

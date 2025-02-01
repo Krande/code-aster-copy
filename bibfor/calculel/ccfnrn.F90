@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1501
 !
-subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
+subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                   resultType)
 !
     implicit none
@@ -52,8 +52,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 #include "asterfort/memam2.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/nmdome.h"
-#include "asterfort/ntdoth.h"
+#include "asterfort/rsGetMainPara.h"
 #include "asterfort/numecn.h"
 #include "asterfort/pcptcc.h"
 #include "asterfort/pteddl.h"
@@ -76,15 +75,15 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 #include "asterfort/lislec.h"
 #include "asterfort/isParallelMesh.h"
     integer :: nbordr
-    character(len=8) :: resuin, resuou
+    character(len=8) :: resuin, resultOut
     character(len=16) :: option, resultType
     character(len=19) :: lisord
 !  CALC_CHAMP - CALCUL DES FORCES NODALES ET DES REACTIONS NODALES
 !  -    -                  -      -              -         -
 ! ----------------------------------------------------------------------
     mpi_int :: mpicou, mpibid
-    integer :: jordr, iret, iordr, i, jinfc, nbchar, ic, jref, ifm, niv, ibid
-    integer :: iachar, ichar, ii, nuord, nh, jnmo, nbddl, lmat, jvPara, ind, iordk
+    integer :: jordr, iret, iordr, i, ic, jref, ifm, niv, ibid
+    integer :: nuord, nh, jnmo, nbddl, lmat, jvPara, ind, iordk
     integer :: neq, jfo, lonch, lonnew, jfr, jfi, rang, nbproc, nbpas, nbordi
     integer :: lonc2, ltrav, j, inume, jddl, jddr, lacce, p, irelat, jordi
     integer :: cret, jldist, iaux1, k, jcnoch, ideb, ifin, ipas, jvcham, iaux2
@@ -93,17 +92,19 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     character(len=6) :: nompro
     character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para, mesh, blanc8
     character(len=16) :: typmo, optio2, motfac, typrep, typmat
-    character(len=19) :: ligrel, vebid, k19bid, listLoad, partsd, massgen
-    character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
+    character(len=19) :: listLoad
+    character(len=19) :: ligrel, vebid, k19bid, partsd, massgen
+    character(len=24) :: numref, loadFuncJv, loadNameJv, loadInfoJv, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
-    character(len=24) :: carac, cnchmpc, rigi
+    character(len=24) :: caraElem, cnchmpc
     character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), nume, chdepk, numk
-    character(len=24) :: mateco, mater, vafonr, vafoni, k24b, numnew, basemo
+    character(len=24) :: mateco, materField, vafonr, vafoni, k24b, numnew, basemo
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno, chamnk
     character(len=24) :: strx, vldist, vcnoch, vcham, lisori
-    character(len=24) :: bidon, chacce, modele, kstr, modnew
+    character(len=24) :: bidon, chacce, kstr
+    character(len=8) :: model, modelNew
     aster_logical :: exitim, lstr, lstr2, ldist, dbg_ob, dbgv_ob, ltest, lsdpar, lcpu, lbid
-    aster_logical :: lPilo1, lPilo2, l_pmesh, l_complex
+    aster_logical :: lPilo1, lPilo2, l_pmesh, l_complex, noLoads
     real(kind=8) :: etan, time, partps(3), omega2, coef(3), raux
     real(kind=8) :: rctfin, rctdeb, rctfini, rctdebi, freq
     real(kind=8), pointer :: cgmp(:) => null()
@@ -151,12 +152,12 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     l_pmesh = ASTER_FALSE
 !
     bidon = '&&'//nompro//'.BIDON'
+    listLoad = '&&CCFNRN.LISTLOAD'
 !
     if ((option .eq. 'REAC_NODA') .and. &
         ((resultType .eq. 'DYNA_TRANS') .or. (resultType .eq. 'DYNA_HARMO'))) then
         call utmess('A', 'CALCCHAMP_4')
     end if
-    listLoad = '&&CCFNRN.LISTLOAD'
 !
     call jeveuo(lisord, 'L', jordr)
 !
@@ -235,29 +236,35 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
         end if
         call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numref)
     end if
-    carac = ' '
-    charge = ' '
+    caraElem = ' '
+    loadNameJv = ' '
     mateco = ' '
-    mater = ' '
-    modele = ' '
+    materField = ' '
     nuord = zi(jordr)
-    k24b = ' '
+    model = ' '
     if (resultType .eq. 'EVOL_THER') then
-        call ntdoth(k24b, mater, mateco, carac, listLoad, &
-                    result=resuou, nume_store=nuord)
+        call rsGetMainPara("THER", resultOut, nuord, &
+                           listLoad, model, materField, mateco, caraElem, &
+                           noLoads)
+        if (option .eq. "REAC_NODA" .and. noLoads) then
+            call utmess('I', 'CALCCHAMP_54')
+        end if
     else
-        call nmdome(k24b, mater, mateco, carac, listLoad, &
-                    resuou(1:8), nuord)
+        call rsGetMainPara("MECA", resultOut, nuord, &
+                           listLoad, model, materField, mateco, caraElem, &
+                           noLoads)
+        if (option .eq. "REAC_NODA" .and. noLoads) then
+            call utmess('I', 'CALCCHAMP_54')
+        end if
     end if
-    modele = ' '
-    modele = trim(adjustl(k24b))
-    if (modele(1:2) .eq. '&&') call utmess('F', 'CALCULEL3_50')
+
+    if (model(1:2) .eq. '&&') call utmess('F', 'CALCULEL3_50')
 !
 ! SI PARALLELISME EN TEMPS: ON DEBRANCHE L'EVENTUEL PARALLELISME EN ESPACE
     call pcptcc(2, ldist, dbg_ob, lbid, lbid, &
                 lbid, rang, ibid, mpibid, ibid, &
                 ibid, k24b, k24b, k24b, ibid, &
-                k19bid, modele, partsd, lsdpar, ibid, &
+                k19bid, model, partsd, lsdpar, ibid, &
                 ibid, ibid, ibid, ibid, k24b, &
                 ibid, ibid, kbid, k24b, prbid, &
                 pcbid)
@@ -278,34 +285,17 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
         end if
     end if
 !
-    fomult = listLoad//'.FCHA'
-    charge = listLoad//'.LCHA'
-    infoch = listLoad//'.INFC'
-    call jeexin(infoch, iret)
-    if (iret .ne. 0) then
-        call jeveuo(infoch, 'L', jinfc)
-        nbchar = zi(jinfc)
-        if (nbchar .ne. 0) then
-            call jeveuo(charge, 'L', iachar)
-            call jedetr('&&'//nompro//'.L_CHARGE')
-            call wkvect('&&'//nompro//'.L_CHARGE', 'V V K8', nbchar, ichar)
-            do ii = 1, nbchar
-                zk8(ichar-1+ii) = zk24(iachar-1+ii) (1:8)
-            end do
-        else
-            ichar = 1
-        end if
-    else
-        nbchar = 0
-        ichar = 1
-    end if
-    call exlima(' ', 0, 'V', modele, ligrel)
+    loadFuncJv = listLoad//'.FCHA'
+    loadNameJv = listLoad//'.LCHA'
+    loadInfoJv = listLoad//'.INFC'
+
+    call exlima(' ', 0, 'V', model, ligrel)
 ! ON REGARDE S'IL Y A DES ELEMENTS DE STRUCTURE UTILISANT LE CHAMP STRX_ELGA
     strx = ' '
-    call dismoi('EXI_STRX', modele, 'MODELE', repk=kstr)
+    call dismoi('EXI_STRX', model, 'MODELE', repk=kstr)
     lstr = (kstr(1:3) .eq. 'OUI')
 ! Y A-T-IL DES ELEMENTS SACHANT CALCULER L'OPTION STRX_ELGA
-    call dismoi('EXI_STR2', modele, 'MODELE', repk=kstr)
+    call dismoi('EXI_STR2', model, 'MODELE', repk=kstr)
     lstr2 = (kstr(1:3) .eq. 'OUI')
 !
 !
@@ -363,28 +353,25 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 !
             nh = 0
             if (resultType(1:8) .eq. 'FOURIER_') then
-                call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr, &
-                            0, sjv=jnmo)
+                call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr, 0, sjv=jnmo)
                 nh = zi(jnmo)
             end if
 !
-            call rsexch(' ', resuin, 'SIEF_ELGA', iordr, sigma, &
-                        iret)
+            call rsexch(' ', resuin, 'SIEF_ELGA', iordr, sigma, iret)
 !
             if (iret .ne. 0) then
-                call rsexch(' ', resuou, 'SIEF_ELGA', iordr, sigma, &
-                            iret2)
+                call rsexch(' ', resultOut, 'SIEF_ELGA', iordr, sigma, iret2)
 !
                 if (iret2 .ne. 0) then
                     optio2 = 'SIEF_ELGA'
                     if (ldist) then
-                        call calcop(optio2, ' ', resuin, resuou, lisori, &
+                        call calcop(optio2, ' ', resuin, resultOut, lisori, &
                                     nbordi, resultType, cret, 'V')
                     else
-                        call calcop(optio2, ' ', resuin, resuou, lisord, &
+                        call calcop(optio2, ' ', resuin, resultOut, lisord, &
                                     nbordr, resultType, cret, 'V')
                     end if
-                    call rsexch(' ', resuou, 'SIEF_ELGA', iordr, sigma, &
+                    call rsexch(' ', resultOut, 'SIEF_ELGA', iordr, sigma, &
                                 iret)
                 end if
             end if
@@ -395,13 +382,13 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                 if (iret .ne. 0 .and. lstr2) then
                     optio2 = 'STRX_ELGA'
                     if (ldist) then
-                        call calcop(optio2, ' ', resuin, resuou, lisori, &
+                        call calcop(optio2, ' ', resuin, resultOut, lisori, &
                                     nbordi, resultType, cret, 'V')
                     else
-                        call calcop(optio2, ' ', resuin, resuou, lisord, &
+                        call calcop(optio2, ' ', resuin, resultOut, lisord, &
                                     nbordr, resultType, cret, 'V')
                     end if
-                    call rsexch(' ', resuou, 'STRX_ELGA', iordr, strx, &
+                    call rsexch(' ', resultOut, 'STRX_ELGA', iordr, strx, &
                                 iret)
                 end if
             end if
@@ -424,7 +411,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 ! NUME_DDL QUI PEUT CHANGER AVEC LE PAS DE TEMPS: DONC ON TESTE CET EVENTUEL CHANGEMENT
 ! SI PARALLELISME EN TEMPS ACTIVE ET PAS DE TEMPS PARALLELISES: NUME
                 k24b = ' '
-                call numecn(modele, chdepl, k24b)
+                call numecn(model, chdepl, k24b)
                 numnew = ' '
                 numnew = trim(adjustl(k24b))
                 if ((ldist) .and. (ideb .ne. ifin)) then
@@ -435,7 +422,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                         call rsexch(' ', resuin, 'DEPL', iordk, chdepk, &
                                     iret)
                         k24b = ' '
-                        call numecn(modele, chdepk, k24b)
+                        call numecn(model, chdepk, k24b)
                         numk = ' '
                         numk = trim(adjustl(k24b))
                         if (dbg_ob) then
@@ -482,10 +469,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                 time = zr(jvPara)
             end if
 !
-            call vrcins(modele, mater, carac, time, chvarc(1:19), &
-                        codret)
-            call rsexch(' ', resuin, 'COMPORTEMENT', iordr, compor, &
-                        iret)
+            call vrcins(model, materField, caraElem, time, chvarc(1:19), codret)
+            call rsexch(' ', resuin, 'COMPORTEMENT', iordr, compor, iret)
 !
             if (lcpu) then
                 call cpu_time(rctfin)
@@ -495,7 +480,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 !
 !
 ! separation reel imag si dyna_harmo
-            call vefnme_cplx(option, 'V', modele, mateco, carac, &
+            call vefnme_cplx(option, 'V', model, mateco, caraElem, &
                              compor, nh, ligrel, chvarc, sigma, &
                              strx, chdepl, vfono)
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
@@ -519,7 +504,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                 p = 1
                 do k = ideb, ifin
                     iordk = zi(jordr+k-1)
-                    call rsexch(' ', resuou, option, iordk, chamnk, &
+                    call rsexch(' ', resultOut, option, iordk, chamnk, &
                                 iret)
 ! CAR LA VARIABLE CHAMNO DOIT ETRE CONNUE POUR L'IORDR COURANT
                     if (iordk .eq. iordr) chamno = chamnk
@@ -541,8 +526,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 ! SINON, 1 SEUL A LA FOIS
 ! SI PARALLELISME EN TEMPS et NPAS ATTEINT (RELIQUAT DE PAS DE TEMPS)
 ! OU SI NON PARALLELISME EN TEMPS
-                call rsexch(' ', resuou, option, iordr, chamno, &
-                            iret)
+                call rsexch(' ', resultOut, option, iordr, chamno, iret)
                 call jeexin(chamno(1:19)//'.REFE', iret)
                 if (iret .ne. 0) then
                     call codent(iordr, 'G', kiord)
@@ -624,46 +608,54 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 !
 !       --- CALCUL DES FORCES NODALES DE REACTION
 !
-            if (charge .ne. ' ') then
+            if (loadNameJv .ne. ' ') then
                 partps(1) = time
 !
 ! --- CHARGES NON PILOTEES (TYPE_CHARGE: 'FIXE_CSTE')
 ! --- SI LDIST, ON NE VERIFIE QU'AU PREMIER PAS
                 if ((.not. ldist) .or. (ldist .and. (ipas .eq. 1))) then
-                    if (ligrel(1:8) .ne. modele) then
+                    if (ligrel(1:8) .ne. model) then
                         stop = 'C'
 !               -- on verifie que le ligrel contient bien les mailles de bord
-                        call verif_bord(modele, ligrel)
+                        call verif_bord(model, ligrel)
                     else
                         stop = 'S'
                     end if
                 end if
 !
                 if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
-                    call vechme(stop, modele, charge, infoch, partps, &
-                                carac, mater, mateco, vechmp, varc_currz=chvarc, &
-                                ligrel_calcz=ligrel, nharm=nh)
+                    call vechme(stop, &
+                                model, caraElem, materField, mateco, &
+                                loadNameJv, loadInfoJv, &
+                                partps, &
+                                vechmp, varcCurrZ_=chvarc, &
+                                ligrelCalcZ_=ligrel, nharm_=nh)
                     call asasve(vechmp, nume, 'R', vachmp)
-                    call ascova('D', vachmp, fomult, 'INST', time, &
+                    call ascova('D', vachmp, loadFuncJv, 'INST', time, &
                                 'R', cnchmp)
 !
 ! --- CHARGES SUIVEUSE (TYPE_CHARGE: 'SUIV')
                     call detrsd('CHAMP_GD', bidon)
                     call vtcreb(bidon, 'G', 'R', nume_ddlz=nume, nb_equa_outz=neq)
-                    call vecgme(modele, carac, mater, mateco, charge, &
-                                infoch, partps(1), chdepl, bidon, vecgmp, &
-                                partps(1), compor, ligrel, chvive, chacve, &
-                                strx)
+                    call vecgme('S', &
+                                model, caraElem, materField, mateco, compor, &
+                                loadNameJv, loadInfoJv, &
+                                partps(1), partps(1), &
+                                chdepl, bidon, &
+                                chvive, chacve, strx, &
+                                vecgmp, &
+                                ligrelCalcZ_=ligrel)
+
                     call asasve(vecgmp, nume, 'R', vacgmp)
-                    call ascova('D', vacgmp, fomult, 'INST', time, &
+                    call ascova('D', vacgmp, loadFuncJv, 'INST', time, &
                                 'R', cncgmp)
                 else
                     call rsadpa(resuin, 'L', 1, 'FREQ', iordr, &
                                 0, sjv=jvPara, styp=ctyp)
                     freq = zr(jvPara)
-                    if (ligrel(1:8) .ne. modele) then
+                    if (ligrel(1:8) .ne. model) then
 !pour les DYNA_HARMO
-!pour l instant je ne fais le calcul de REAC_NODA que sur le modele en entier
+!pour l instant je ne fais le calcul de REAC_NODA que sur le model en entier
 !(gestion FONC_MULT_C : fastidieuse)
                         call utmess('F', 'PREPOST3_96')
                     end if
@@ -677,7 +669,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                     end if
                     vebid = '&&VEBIDON'
                     vechmp = '&&VECHMP'
-                    call dylach(modele, mater, mateco, carac, listLoad, &
+                    call dylach(model, materField, mateco, caraElem, listLoad, &
                                 nume, vebid, vechmp, vebid, vebid)
                     para = 'FREQ'
                     cnchmpc = '&&'//nompro//'.CHARGE'
@@ -690,11 +682,15 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 ! --- POUR UN EVOL_NOLI, PRISE EN COMPTE DES FORCES PILOTEES
                 if (resultType .eq. 'EVOL_NOLI') then
 ! - CHARGES PILOTEES (TYPE_CHARGE: 'FIXE_PILO')
-                    call vefpme(modele, carac, mater, mateco, charge, &
-                                infoch, partps, k24bid, vefpip, ligrel, &
-                                chdepl, bidon)
+                    call vefpme('S', &
+                                model, caraElem, materField, mateco, &
+                                loadNameJv, loadInfoJv, &
+                                partps, &
+                                chdepl, bidon, &
+                                bidon, &
+                                vefpip, ligrel)
                     call asasve(vefpip, nume, 'R', vafpip)
-                    call ascova('D', vafpip, fomult, 'INST', time, &
+                    call ascova('D', vafpip, loadFuncJv, 'INST', time, &
                                 'R', cnfpip)
 !
 ! ------------- Loads with continuation method
@@ -871,7 +867,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                     optio2 = 'M_GAMMA'
 !
 !           --- CALCUL DES MATRICES ELEMENTAIRES DE MASSE
-                    call memam2(optio2, modele, mater, mateco, carac, &
+                    call memam2(optio2, model, materField, mateco, caraElem, &
                                 compor, time, chacce, vreno, 'V', &
                                 ligrel)
 !
@@ -923,51 +919,63 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 ! SI PARALLELISME EN TEMPS ET NPAS NON ATTEINT: NBPROC CHAM_NOS SIMULTANES
                 do k = ideb, ifin
                     iordk = zi(jordr+k-1)
-                    call rsnoch(resuou, option, iordk)
-                    k24b = ' '
+                    call rsnoch(resultOut, option, iordk)
+                    modelNew = ' '
                     if (resultType .eq. 'EVOL_THER') then
-                        call ntdoth(k24b, mater, mateco, carac, listLoad, &
-                                    result=resuou, nume_store=iordk)
+                        call rsGetMainPara("THER", resultOut, iordk, &
+                                           listLoad, modelNew, materField, mateco, caraElem, &
+                                           noLoads)
+                        if (option .eq. "REAC_NODA" .and. noLoads) then
+                            call utmess('I', 'CALCCHAMP_54')
+                        end if
                     else
-                        call nmdome(k24b, mater, mateco, carac, listLoad, &
-                                    resuou(1:8), iordk)
+                        call rsGetMainPara("MECA", resultOut, iordk, &
+                                           listLoad, modelNew, materField, mateco, caraElem, &
+                                           noLoads)
+                        if (option .eq. "REAC_NODA" .and. noLoads) then
+                            call utmess('I', 'CALCCHAMP_54')
+                        end if
                     end if
-                    modnew = ' '
-                    modnew = trim(adjustl(k24b))
                     if (dbg_ob) then
                         write (ifm, *) '< ', rang, &
-                            'ccfnrn> modele_avant/modele_apres=', modele, modnew
+                            'ccfnrn> modele_avant/modele_apres=', model, modelNew
                     end if
-                    if (modele .ne. modnew) then
+                    if (model .ne. modelNew) then
                         call utmess('F', 'PREPOST_1')
                     else
-                        modele = modnew
+                        model = modelNew
                     end if
                 end do
             else
 ! EN SIMPLE
 ! SI PARALLELISME EN TEMPS et NPAS ATTEINT (RELIQUAT DE PAS DE TEMPS)
 ! ET SI NON PARALLELISME EN TEMPS
-                call rsnoch(resuou, option, iordr)
-                k24b = ' '
+                call rsnoch(resultOut, option, iordr)
+                modelNew = ' '
                 if (resultType .eq. 'EVOL_THER') then
-                    call ntdoth(k24b, mater, mateco, carac, listLoad, &
-                                result=resuou, nume_store=iordr)
+                    call rsGetMainPara("THER", resultOut, iordr, &
+                                       listLoad, modelNew, materField, mateco, caraElem, &
+                                       noLoads)
+                    if (option .eq. "REAC_NODA" .and. noLoads) then
+                        call utmess('I', 'CALCCHAMP_54')
+                    end if
                 else
-                    call nmdome(k24b, mater, mateco, carac, listLoad, &
-                                resuou(1:8), iordr)
+                    call rsGetMainPara("MECA", resultOut, iordr, &
+                                       listLoad, modelNew, materField, mateco, caraElem, &
+                                       noLoads)
+                    if (option .eq. "REAC_NODA" .and. noLoads) then
+                        call utmess('I', 'CALCCHAMP_54')
+                    end if
                 end if
-                modnew = ' '
-                modnew = trim(adjustl(k24b))
 ! CAS DE FIGURE DU RELIQUAT DE PAS DE TEMPS
                 if (ldist) then
                     if (dbg_ob) then
                         write (ifm, *) '< ', rang, &
-                            'ccfnrn> modele_avant/modele_apres=', modele, modnew
+                            'ccfnrn> modele_avant/modele_apres=', model, modelNew
                     end if
-                    if (modele .ne. modnew) call utmess('F', 'PREPOST_1')
+                    if (model .ne. modelNew) call utmess('F', 'PREPOST_1')
                 end if
-                modele = modnew
+                model = modelNew
             end if
             if (lcpu) then
                 call cpu_time(rctfin)
@@ -1037,7 +1045,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     call pcptcc(3, ldist, dbg_ob, lbid, lbid, &
                 lbid, rang, ibid, mpibid, ibid, &
                 ibid, vldist, vcham, lisori, ibid, &
-                k19bid, modele, partsd, lsdpar, ibid, &
+                k19bid, model, partsd, lsdpar, ibid, &
                 ibid, ibid, ibid, ibid, k24b, &
                 ibid, ibid, kbid, vcnoch, prbid, &
                 pcbid)

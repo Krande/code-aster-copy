@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,23 +19,22 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxnewt(model    , mate       , mateco     , cara_elem  , list_load, nume_dof  ,&
-                      solver   , tpsthe     , time       , matass   , cn2mbr    ,&
-                      maprec   , cnchci     , varc_curr  , temp_prev, temp_iter ,&
-                      vtempp   , vec2nd     , mediri     , conver   , hydr_prev ,&
-                      hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt    ,&
-                      cnresi   , ther_crit_i, ther_crit_r, reasma   , ds_algorom,&
-                      ds_print , sddisc     , iter_newt  , l_stat)
+    subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
+                      solver, tpsthe, timeMap, matass, cn2mbr, &
+                      maprec, cnchci, varc_curr, temp_prev, temp_iter, &
+                      vtempp, vec2nd, mediri, conver, hydr_prev, &
+                      hydr_curr, dry_curr, comporTher, cnvabt, &
+                      cnresi, ther_crit_i, ther_crit_r, reasma, ds_algorom, &
+                      ds_print, sddisc, iter_newt, l_stat)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: mate, mateco
-        character(len=24), intent(in) :: cara_elem
-        character(len=19), intent(in) :: list_load
+        character(len=8), intent(in) :: model, caraElem
+        character(len=24), intent(in) :: mateco
+        character(len=24), intent(in) :: listLoad
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: solver
         real(kind=8) :: tpsthe(6)
-        character(len=24), intent(in) :: time
+        character(len=24), intent(in) :: timeMap
         character(len=19), intent(in) :: varc_curr, sddisc
         integer, intent(in) :: iter_newt
         character(len=24) :: matass
@@ -50,9 +49,8 @@ interface
         aster_logical, intent(out) :: conver
         character(len=24) :: hydr_prev
         character(len=24) :: hydr_curr
-        character(len=24) :: dry_prev
         character(len=24) :: dry_curr
-        character(len=24) :: compor
+        character(len=24) :: comporTher
         character(len=24) :: cnvabt
         character(len=24) :: cnresi
         integer :: ther_crit_i(*)

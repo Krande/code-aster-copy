@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,6 @@ cata_msg = {
         """
  Pour le chargement thermique ECHANGE_PAROI, le modèle fourni doit être homogène
  en dimension : 3D, 2D ou AXIS.
-"""
-    ),
-    3: _(
-        """
- Les chargements thermiques de type EVOL_CHAR ne sont pas pris en compte dans cet opérateur.
 """
     ),
     5: _(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 ! aslint: disable=W0413
 !
 subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
@@ -76,30 +75,25 @@ subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
         s_formul = 'DISCRETE'
     else if (cont_form .eq. 2) then
         s_formul = 'CONTINUE'
-    else if (cont_form .eq. 3) then
-        s_formul = 'XFEM'
     else if (cont_form .eq. 5) then
         s_formul = 'LAC'
     else
         ASSERT(ASTER_FALSE)
     end if
-!
+
 ! - Datastructure for contact definition
-!
     sdcont_paraci = sdcont(1:8)//'.PARACI'
     call jeveuo(sdcont_paraci, 'E', vi=v_sdcont_paraci)
 !
 ! - Formulation
 !
     v_sdcont_paraci(4) = cont_form
-!
+
 ! - Friction ?
-!
     call getvtx(' ', 'FROTTEMENT', scal=s_frott)
     l_frot = s_frott .eq. 'COULOMB'
-!
+
 ! - Get methods
-!
     call getvtx(keywf, 'ALGO_CONT', iocc=1, scal=s_algo_cont)
     if (cont_form .eq. 1) then
         call cazouu(keywf, cont_nbzone, 'ALGO_CONT', 'T')
@@ -140,21 +134,13 @@ subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
         else
             algo_frot = 0
         end if
-    else if (cont_form .eq. 3) then
-        algo_cont = 7
-        if (l_frot) then
-            algo_frot = 7
-        else
-            algo_frot = 0
-        end if
     else if (cont_form .eq. 5) then
         algo_cont = 8
     else
         ASSERT(ASTER_FALSE)
     end if
-!
+
 ! - Save methods
-!
     v_sdcont_paraci(17) = algo_cont
     v_sdcont_paraci(18) = algo_frot
 !

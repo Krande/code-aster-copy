@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,6 +90,9 @@ Contactez le support technique.
     24: _(
         """Le chargement doit être le même sur tous les pas de temps pour ce post-traitement.
       Conseil : il faut séparer le post-traitement en le découpant pour garder le même chargement"""
+    ),
+    54: _(
+        """Il n'y a aucun chargement défini pour ce post-traitement. Si le résultat est issu d'un calcul dynamique, pensez à renseigner les chargements dans la commande de post-traitement."""
     ),
     89: _(
         """

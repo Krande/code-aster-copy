@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine calcCalcMeca(nb_option, list_option, &
                         l_elem_nonl, nume_harm, &
-                        list_load, model, cara_elem, &
+                        listLoadZ, modelZ, caraElemZ, &
                         ds_constitutive, ds_material, ds_system, &
                         hval_incr, hval_algo, &
                         vediri, vefnod, &
@@ -53,8 +53,7 @@ subroutine calcCalcMeca(nb_option, list_option, &
     character(len=16), intent(in) :: list_option(:)
     aster_logical, intent(in) :: l_elem_nonl
     integer, intent(in) :: nume_harm
-    character(len=19), intent(in) :: list_load
-    character(len=24), intent(in) :: model, cara_elem
+    character(len=*), intent(in) :: listLoadZ, modelZ, caraElemZ
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_System), intent(in) :: ds_system
@@ -77,9 +76,9 @@ subroutine calcCalcMeca(nb_option, list_option, &
 !
 ! In  nb_option        : number of options to compute
 ! In  list_option      : list of options to compute
-! In  list_load        : name of datastructure for list of loads
+! In  listLoad         : name of datastructure for list of loads
 ! In  model            : name of model
-! In  cara_elem        : name of elementary characteristics (field)
+! In  caraElem         : name of elementary characteristics (field)
 ! In  l_elem_nonl      : .true. if all elements can compute non-linear options
 ! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_material      : datastructure for material parameters
@@ -105,14 +104,17 @@ subroutine calcCalcMeca(nb_option, list_option, &
     integer :: iter_newt, ixfem, nb_subs_stat
     aster_logical :: l_meta_zirc, l_meta_acier, l_xfem, l_macr_elem
     integer :: ldccvg
-    character(len=19) :: ligrmo, caco3d
-    character(len=1) :: base
+    character(len=19) :: ligrmo, caco3d, listLoad
+    character(len=1), parameter :: jvBase = "G"
+    character(len=24) :: model, caraElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nb_obje = 0
-    base = 'G'
     caco3d = '&&MERIMO.CARA_ROTAF'
+    model = modelZ
+    caraElem = caraElemZ
+    listLoad = listLoadZ
 !
 ! - Get LIGREL
 !
@@ -196,9 +198,9 @@ subroutine calcCalcMeca(nb_option, list_option, &
 !
     if (l_nonl .or. l_matr) then
         iter_newt = 1
-        call merimo(base, &
+        call merimo(jvBase, &
                     l_xfem, l_macr_elem, &
-                    model, cara_elem, iter_newt, &
+                    model, caraElem, iter_newt, &
                     ds_constitutive, ds_material, ds_system, &
                     hval_incr, hval_algo, &
                     option, ldccvg)
@@ -208,9 +210,9 @@ subroutine calcCalcMeca(nb_option, list_option, &
 ! - Lagrange dof computation
 !
     if (l_lagr) then
-        call medime(base, 'CUMU', model, list_load, ds_system%merigi)
-        call vebtla(base, model, ds_material%mater, cara_elem, disp_curr, &
-                    list_load, vediri)
+        call medime(jvBase, 'CUMU', model, listLoad, ds_system%merigi)
+        call vebtla(jvBase, model, ds_material%mater, caraElem, disp_curr, &
+                    listLoad, vediri)
     end if
 !
 ! - Nodal forces
@@ -225,15 +227,15 @@ subroutine calcCalcMeca(nb_option, list_option, &
             call vtaxpy(1.0, disp_cumu_inst, disp)
             ! calcul avec sigma init (sans integration de comportement)
             call copisd('CHAMP_GD', 'V', sigm_prev, sigm_curr)
-            call vefnme(option, model, ds_material%mateco, cara_elem, &
+            call vefnme(option, model, ds_material%mateco, caraElem, &
                         ds_constitutive%compor, 0, ligrmo, &
                         varc_curr, sigm_curr, ' ', disp, &
-                        base, vefnod)
+                        jvBase, vefnod)
         else
             ! t(i) => t(i+1) : depplu => depmoi, depdel = 0
-            call vefnme(option, model, ds_material%mateco, cara_elem, &
+            call vefnme(option, model, ds_material%mateco, caraElem, &
                         ds_constitutive%compor, 0, ligrmo, &
-                        varc_curr, sigm_curr, ' ', disp_curr, base, vefnod)
+                        varc_curr, sigm_curr, ' ', disp_curr, jvBase, vefnod)
         end if
     end if
 !
@@ -241,17 +243,17 @@ subroutine calcCalcMeca(nb_option, list_option, &
 !
     if (l_varc_prev) then
         call nmvcpr_elem(model, ds_material%mater, ds_material%mateco, &
-                         cara_elem, &
+                         caraElem, &
                          nume_harm, '-', hval_incr, &
                          ds_material%varc_refe, ds_constitutive%compor, &
-                         base, vevarc_prev)
+                         jvBase, vevarc_prev)
     end if
     if (l_varc_curr) then
         call nmvcpr_elem(model, ds_material%mater, ds_material%mateco, &
-                         cara_elem, &
+                         caraElem, &
                          nume_harm, '+', hval_incr, &
                          ds_material%varc_refe, ds_constitutive%compor, &
-                         base, vevarc_curr)
+                         jvBase, vevarc_curr)
     end if
 !
 ! - New objects in table

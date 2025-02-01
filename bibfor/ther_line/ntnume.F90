@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ntnume(model, list_load, result, nume_dof)
+subroutine ntnume(model, listLoad, result, nume_dof)
 !
     implicit none
 !
@@ -25,10 +25,8 @@ subroutine ntnume(model, list_load, result, nume_dof)
 #include "asterfort/numero.h"
 #include "asterfort/rsnume.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=24), intent(in) :: model
-    character(len=19), intent(in) :: list_load
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: listLoad
     character(len=8), intent(in) :: result
     character(len=24), intent(out) :: nume_dof
 !
@@ -41,7 +39,7 @@ subroutine ntnume(model, list_load, result, nume_dof)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of model
-! In  list_load        : name of datastructure for list of loads
+! In  listLoad         : name of datastructure for list of loads
 ! In  result           : name of result datastructure (EVOL_THER)
 ! Out nume_dof         : name of numbering object (NUME_DDL)
 !
@@ -59,6 +57,6 @@ subroutine ntnume(model, list_load, result, nume_dof)
     call rsnume(result, 'TEMP', nuposs)
     call numero(nume_dof, 'VG', &
                 old_nume_ddlz=nuposs, &
-                modelz=model, list_loadz=list_load)
+                modelz=model, list_loadz=listLoad)
 !
 end subroutine

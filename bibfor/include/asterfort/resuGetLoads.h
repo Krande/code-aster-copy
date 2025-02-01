@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine resuGetLoads(resultType, listLoad)
+    subroutine resuGetLoads(model, resultType, listLoadResu)
+        character(len=8), intent(in) :: model
         character(len=16), intent(in) :: resultType
-        character(len=19), intent(out) :: listLoad
+        character(len=24), intent(out) :: listLoadResu
     end subroutine resuGetLoads
 end interface

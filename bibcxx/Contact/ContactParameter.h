@@ -5,7 +5,7 @@
  * @file ContactZone.h
  * @brief Fichier entete de la class ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -41,6 +41,8 @@ class ContactParameter {
     ContactVariant _vari;
     /** @brief Contact coefficient = COEF_CONT */
     ASTERDOUBLE _coeff;
+    /** @brief Jacobian computation = TYPE_MATR_TANG */
+    JacobianType _jacType;
 
   public:
     /**
@@ -56,7 +58,8 @@ class ContactParameter {
         : _algo( ContactAlgo::Lagrangian ),
           _type( ContactType::Unilateral ),
           _vari( ContactVariant::Empty ),
-          _coeff( 100. ) {};
+          _coeff( 100. ),
+          _jacType( JacobianType::Analytical ) {};
 
     /** @brief restricted constructor (Set) and method (Get) to support pickling */
     ContactParameter( const py::tuple &tup ) : ContactParameter() {
@@ -64,6 +67,7 @@ class ContactParameter {
         _type = tup[1].cast< ContactType >();
         _vari = tup[2].cast< ContactVariant >();
         _coeff = tup[3].cast< ASTERDOUBLE >();
+        _jacType = tup[4].cast< JacobianType >();
     };
     py::tuple _getState() const { return py::make_tuple( _algo, _type, _vari, _coeff ); };
 
@@ -75,6 +79,8 @@ class ContactParameter {
 
     ASTERDOUBLE getCoefficient() const { return _coeff; };
 
+    JacobianType getJacobianType() const { return _jacType; };
+
     void setAlgorithm( const ContactAlgo &algo ) { _algo = algo; };
 
     void setType( const ContactType &type ) { _type = type; };
@@ -82,6 +88,8 @@ class ContactParameter {
     void setVariant( const ContactVariant &variant ) { _vari = variant; };
 
     void setCoefficient( const ASTERDOUBLE &coeff ) { _coeff = coeff; };
+
+    void setJacobianType( const JacobianType &type ) { _jacType = type; };
 };
 
 /**

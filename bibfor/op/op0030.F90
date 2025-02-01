@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,8 +100,8 @@ subroutine op0030()
 ! - Get contact formulation
     call caform(cont_form)
 
-! - Check model/mesh
-    call check_model(mesh, model, cont_form)
+! - Check mesh
+    call check_model(mesh, cont_form)
 
 ! - Create general datastructure
     call defContactCreateObjects(sdcont)

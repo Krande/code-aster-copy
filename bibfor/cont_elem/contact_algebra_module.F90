@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 module contact_algebra_module
 !
     use contact_type
+    use contact_module
 !
     implicit none
 !
@@ -26,6 +27,8 @@ module contact_algebra_module
 !
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
+#include "asterfort/apnorm.h"
+#include "asterfort/mmtang.h"
 #include "asterfort/assert.h"
 #include "asterfort/matinv.h"
 #include "blas/dgemm.h"
@@ -43,9 +46,10 @@ module contact_algebra_module
     public :: dGap_du, d2Gap_du2, dZetaM_du, dPi_du
     public :: dTs_du_ns, dTs_du_nm, dTm_du_nm, dTs_du, dTm_du
     public :: dNs_du, d2Ns_du2_ns, d2Ns_du2_nm
-    public :: projBs, projRm, projTn, otimes, Iden3
-    public :: dProjBs_dx, dprojBs_ds, dprojBs_dn
+    public :: projBs, projRm, projTn, otimes, Iden3, dvT_du
+    public :: dProjBs_dx, dprojBs_ds, dprojBs_dn, dv_du
     public :: metricTensor, invMetricTensor, cmpTang, secondFundForm
+    public :: dprojCoulomb_du, dprojCoulomb_dlc, dprojCoulomb_dlf
 !
 contains
 !
@@ -171,6 +175,38 @@ contains
 !
 !===================================================================================================
 !
+!===================================================================================================
+!
+    function dProjTn_du(geom, tau_slav, dTs_ns, norm_slav)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: norm_slav(3)
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: tau_slav(3, 2)
+        real(kind=8), intent(in) :: dTs_ns(MAX_LAGA_DOFS, 2)
+        real(kind=8) :: dProjTn_du(MAX_LAGA_DOFS, 3, 3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   First derivative of the projection operator onto the tangent plane
+!   dTn_du =  -dNs_du \otimes n - n \otimes dNs_du
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: dns_du_(MAX_LAGA_DOFS, 3)
+        integer :: i_dof
+!
+        dns_du_ = dNs_du(geom, tau_slav, dTs_ns)
+!
+        do i_dof = 1, MAX_LAGA_DOFS
+            dProjTn_du(i_dof, 1:3, 1:3) = -otimes(dns_du_(i_dof, 1:3), norm_slav) &
+                                          -otimes(norm_slav, dns_du_(i_dof, 1:3))
+        end do
+!
+    end function
+!
+!===================================================================================================
 !===================================================================================================
 !
     function metricTensor(tau)
@@ -316,7 +352,7 @@ contains
 !
         real(kind=8) :: norm_xT, Tn(3, 3), xT(3)
 !
-        projBs = 0
+        projBs = 0.d0
         if (param%type_fric .ne. FRIC_TYPE_NONE) then
             if (abs(s) > r8prem()) then
                 Tn = projTn(norm_slav)
@@ -354,7 +390,7 @@ contains
 !
         real(kind=8) :: norm_xT, Tn(3, 3), xT_uni(3), xT(3)
 !
-        dprojBs_dx = 0
+        dprojBs_dx = 0.d0
         if (param%type_fric .ne. FRIC_TYPE_NONE) then
             if (abs(s) > r8prem()) then
                 Tn = projTn(norm_slav)
@@ -453,6 +489,181 @@ contains
 !
 !===================================================================================================
 !
+    function dprojCoulomb_du(geom, param, gamma_f, x, s, ds_du, dv_du_, norm_slav, &
+                             tau_slav, dts_ns)
+!
+        implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        type(ContactParameters), intent(in) :: param
+        real(kind=8), intent(in) :: x(3), ds_du(MAX_LAGA_DOFS), gamma_f, tau_slav(3, 2)
+        real(kind=8), intent(in) :: s, norm_slav(3), dv_du_(MAX_LAGA_DOFS, 3)
+        real(kind=8), intent(in) ::  dts_ns(MAX_LAGA_DOFS, 2)
+        real(kind=8) :: dprojCoulomb_du(MAX_LAGA_DOFS, 3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Derivative of the projection of the friction augmented Lagrange multiplier
+!   on the Coulomb cone with respect to the displacement
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_dof
+        real(kind=8) :: norm_xT, Tn(3, 3), xT_uni(3), xT(3), coeff, TnoT(3, 3)
+        real(kind=8) :: dTn(MAX_LAGA_DOFS, 3, 3)
+        blas_int :: b_MAX_LAGA_DOFS, b_3, b_1
+!
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_3 = 3
+        b_1 = 1
+!
+        dprojCoulomb_du = 0
+        if (param%type_fric .ne. FRIC_TYPE_NONE) then
+            if (abs(s) > r8prem()) then
+                Tn = projTn(norm_slav)
+                dTn = dProjTn_du(geom, tau_slav, dts_ns, norm_slav)
+                xT = matmul(Tn, x)
+                norm_xT = norm2(xT)
+                !
+                if (norm_xT <= s) then
+                    ! -gamma_f * Tn * dv_du + DTn[du] x
+                    do i_dof = 1, MAX_LAGA_DOFS
+                        dprojCoulomb_du(i_dof, 1:3) = -gamma_f*matmul(Tn, dv_du_(i_dof, 1:3))+ &
+                                                      matmul(dTn(i_dof, :, :), x)
+                    end do
+                else
+                    ! ds_du * (xT/|xT|) + s/|xT| * (Id - xT/|xT| \otimes xT/|xT|)*
+                    !                                                    (-gamma Tn dv_du + dTn x)
+                    xT_uni = xT/norm_xT
+                    !     call dger(b_MAX_LAGA_DOFS, b_3, 1.d0, ds_du, b_1, &
+                    !               xT_uni, b_1, dprojCoulomb_du, b_MAX_LAGA_DOFS)
+                    do i_dof = 1, MAX_LAGA_DOFS
+                        dprojCoulomb_du(i_dof, 1:3) = ds_du(i_dof)*xT_uni(1:3)
+                    end do
+                    TnoT = Iden3()-otimes(xT_uni, xT_uni)
+                    coeff = s/norm_xT
+                    do i_dof = 1, b_MAX_LAGA_DOFS
+                        dprojCoulomb_du(i_dof, 1:3) = dprojCoulomb_du(i_dof, 1:3)+ &
+                                                      coeff*(matmul(TnoT, -gamma_f* &
+                                                                    matmul(Tn, dv_du_(i_dof, 1:3)) &
+                                                                    +matmul(dTn(i_dof, :, :), x)))
+                    end do
+                end if
+            end if
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dprojCoulomb_dlc(param, x, s, ds_dl, norm_slav)
+!
+        implicit none
+!
+        type(ContactParameters), intent(in) :: param
+        real(kind=8), intent(in) :: x(3), ds_dl(MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: s, norm_slav(3)
+        real(kind=8) :: dprojCoulomb_dlc(MAX_LAGA_DOFS, 3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Derivative of the projection of the friction augmented Lagrange multiplier
+!   on the Coulomb cone with respect to the contact Lagrange multiplier
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: norm_xT, Tn(3, 3), xT_uni(3), xT(3)
+        blas_int :: b_MAX_LAGA_DOFS, b_3, b_1
+!
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_3 = 3
+        b_1 = 1
+!
+        dprojCoulomb_dlc = 0
+        if (param%type_fric .ne. FRIC_TYPE_NONE) then
+            if (abs(s) > r8prem()) then
+                Tn = projTn(norm_slav)
+                xT = matmul(Tn, x)
+                norm_xT = norm2(xT)
+                !
+                if (norm_xT <= s) then
+                    dprojCoulomb_dlc = 0
+                else
+                    ! ds_dl * x/|x|
+                    xT_uni = xT/norm_xT
+                    call dger(b_MAX_LAGA_DOFS, b_3, 1.d0, ds_dl, b_1, &
+                              xT_uni, b_1, dprojCoulomb_dlc, b_MAX_LAGA_DOFS)
+                end if
+            end if
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dprojCoulomb_dlf(param, x, s, mu_g, ds_dl, norm_slav, gamma_speed)
+!
+        implicit none
+!
+        type(ContactParameters), intent(in) :: param
+        real(kind=8), intent(in) :: x(3), mu_g(MAX_LAGA_DOFS, 3), gamma_speed(3)
+        real(kind=8), intent(in) :: s, norm_slav(3), ds_dl(MAX_LAGA_DOFS)
+        real(kind=8) :: dprojCoulomb_dlf(MAX_LAGA_DOFS, 3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Derivative of the projection of the friction augmented Lagrange multiplier
+!   on the Couomb cone with respect to the friction Lagrange multiplier
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_dof
+        real(kind=8) :: norm_xT, Tn(3, 3), xT_uni(3), xT(3), coeff, TnoT(3, 3)
+        blas_int :: b_MAX_LAGA_DOFS, b_3, b_1
+!
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_3 = 3
+        b_1 = 1
+!
+        dprojCoulomb_dlf = 0.d0
+        if (param%type_fric .ne. FRIC_TYPE_NONE) then
+            if (abs(s) > r8prem()) then
+                Tn = projTn(norm_slav)
+                xT = matmul(Tn, x)
+                norm_xT = norm2(xT)
+                !
+                if (norm_xT <= s) then
+                    ! Tn * dmu_g
+                    coeff = 1.d0
+                    do i_dof = 1, MAX_LAGA_DOFS
+                        dprojCoulomb_dlf(i_dof, 1:3) = matmul(Tn, mu_g(i_dof, 1:3))
+                    end do
+                else
+                    !  ds_dlag*xT/|xT| + s/|xT| * (Id - xT/|xT| \otimes xT/|xT|)*Tn*
+                    !                                                      (dmu_g-gamma_f*speed)
+                    xT_uni = xT/norm_xT
+                    coeff = s/norm_xT
+                    TnoT = Iden3()-otimes(xT_uni, xT_uni)
+                    do i_dof = 1, MAX_LAGA_DOFS
+                        dprojCoulomb_dlf(i_dof, 1:3) = ds_dl(i_dof)*xT_uni+ &
+                                                       coeff*matmul(TnoT, &
+                                                                    matmul(Tn, mu_g(i_dof, :)- &
+                                                                           gamma_speed))
+                    end do
+                end if
+            end if
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     function dNs_du(geom, tau_slav, dTs_ns)
 !
         implicit none
@@ -470,7 +681,13 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: lhs_inv(3, 2), metricTens(2, 2), invMetricTens(2, 2)
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_dime_m1, b_MAX_LAGA_DOFS, b_3, b_nb_dofs, b_dime
+!
+        b_dime_m1 = to_blas_int(geom%elem_dime-1)
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_nb_dofs = to_blas_int(geom%nb_dofs)
+        b_dime = to_blas_int(geom%elem_dime)
+        b_3 = to_blas_int(3)
 !
         metricTens = metricTensor(tau_slav)
         invMetricTens = invMetricTensor(geom, metricTens)
@@ -482,15 +699,9 @@ contains
 ! --- Compute solution: Dns = lhs^-1 * dTs_ns
 !
         dNs_du = 0.d0
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(3)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%elem_dime)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   1.d0, dTs_ns, b_lda, lhs_inv, b_ldb, &
-                   0.d0, dNs_du, b_ldc)
+        call dgemm("N", "T", b_nb_dofs, b_dime, b_dime_m1, &
+                   1.d0, dTs_ns, b_MAX_LAGA_DOFS, lhs_inv, b_3, &
+                   0.d0, dNs_du, b_MAX_LAGA_DOFS)
 !
     end function
 !
@@ -516,7 +727,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS, 2), metricTens(2, 2), invMetricTens(2, 2)
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_dime_m1, b_MAX_LAGA_DOFS, b_2, b_nb_dofs
+!
+        b_dime_m1 = to_blas_int(geom%elem_dime-1)
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_nb_dofs = to_blas_int(geom%nb_dofs)
+
 !
         metricTens = metricTensor(tau_slav)
         invMetricTens = invMetricTensor(geom, metricTens)
@@ -524,28 +740,17 @@ contains
 ! ----- Term: -invMetricTens_slav * (D tau^s(u^s)[v^s]  * n^s)
 !
         invA_dT_ns = 0.d0
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(2)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%elem_dime-1)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   -1.d0, dTs_ns, b_lda, invMetricTens, b_ldb, &
-                   0.d0, invA_dT_ns, b_ldc)
+        b_2 = to_blas_int(2)
+        call dgemm("N", "T", b_nb_dofs, b_dime_m1, b_dime_m1, &
+                   -1.d0, dTs_ns, b_MAX_LAGA_DOFS, invMetricTens, b_2, &
+                   0.d0, invA_dT_ns, b_MAX_LAGA_DOFS)
 !
 ! --- Compute D2 ns . n^s
 !
         d2Ns_du2_ns = 0.d0
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(MAX_LAGA_DOFS)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%nb_dofs)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   1.d0, dTs_ns, b_lda, invA_dT_ns, b_ldb, &
-                   0.d0, d2Ns_du2_ns, b_ldc)
+        call dgemm("N", "T", b_nb_dofs, b_nb_dofs, b_dime_m1, &
+                   1.d0, dTs_ns, b_MAX_LAGA_DOFS, invA_dT_ns, b_MAX_LAGA_DOFS, &
+                   0.d0, d2Ns_du2_ns, b_MAX_LAGA_DOFS)
 !
     end function
 !
@@ -576,7 +781,12 @@ contains
         real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS, 2), metricTens(2, 2), invMetricTens(2, 2)
         real(kind=8) :: ts_nm(2), invA_ts_nm(2), dinvMetric(MAX_LAGA_DOFS, 3, 2)
         integer :: i_tau
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_dime_m1, b_MAX_LAGA_DOFS, b_2, b_nb_dofs, b_dime
+!
+        b_dime_m1 = to_blas_int(geom%elem_dime-1)
+        b_dime = to_blas_int(geom%elem_dime)
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_nb_dofs = to_blas_int(geom%nb_dofs)
 !
         d2Ns_du2_nm = 0.d0
         metricTens = metricTensor(tau_slav)
@@ -591,54 +801,31 @@ contains
 ! --- Term: -invMetricTens_slav * (D tau^s(u^s)[v^s]  * n^s)
 !
         invA_dT_ns = 0.d0
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(2)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%elem_dime-1)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   -1.d0, dTs_ns, b_lda, invMetricTens, b_ldb, &
-                   0.d0, invA_dT_ns, b_ldc)
+        b_2 = to_blas_int(2)
+        call dgemm("N", "T", b_nb_dofs, b_dime_m1, b_dime_m1, &
+                   -1.d0, dTs_ns, b_MAX_LAGA_DOFS, invMetricTens, b_2, &
+                   0.d0, invA_dT_ns, b_MAX_LAGA_DOFS)
 !
 ! --- Term: -( D tau^s(u^s)[v^s](u^s)[v^s] n^s)^T * invMetricTens^s * ( D tau^s(u^s)[v^s] n^m)
 !
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(MAX_LAGA_DOFS)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%nb_dofs)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   1.d0, dTs_nm, b_lda, invA_dT_ns, b_ldb, &
-                   0.d0, d2Ns_du2_nm, b_ldc)
+        call dgemm("N", "T", b_nb_dofs, b_nb_dofs, b_dime_m1, &
+                   1.d0, dTs_nm, b_MAX_LAGA_DOFS, invA_dT_ns, b_MAX_LAGA_DOFS, &
+                   0.d0, d2Ns_du2_nm, b_MAX_LAGA_DOFS)
 !
 ! --- Term: -((tau^s)^T n^m  invMetricTens^s ) . D tau^s(u^s)[v^s] D n^s(u^s)[du^s]
 !
         do i_tau = 1, geom%elem_dime-1
-            b_ldc = to_blas_int(MAX_LAGA_DOFS)
-            b_ldb = to_blas_int(MAX_LAGA_DOFS)
-            b_lda = to_blas_int(MAX_LAGA_DOFS)
-            b_m = to_blas_int(geom%nb_dofs)
-            b_n = to_blas_int(geom%nb_dofs)
-            b_k = to_blas_int(geom%elem_dime)
-            call dgemm("N", "T", b_m, b_n, b_k, &
-                       -invA_ts_nm(i_tau), dTs(:, :, i_tau), b_lda, dNs, b_ldb, &
-                       1.d0, d2Ns_du2_nm, b_ldc)
+            call dgemm("N", "T", b_nb_dofs, b_nb_dofs, b_dime, &
+                       -invA_ts_nm(i_tau), dTs(:, :, i_tau), b_MAX_LAGA_DOFS, dNs, &
+                       b_MAX_LAGA_DOFS, 1.d0, d2Ns_du2_nm, b_MAX_LAGA_DOFS)
         end do
 !
 ! --- Term: (tau^s)^T n^m ( D invMetricTens^s(u^s){\vdu} D tau^s(u^s)[v^s] n^s )
 !
         do i_tau = 1, geom%elem_dime-1
-            b_ldc = to_blas_int(MAX_LAGA_DOFS)
-            b_ldb = to_blas_int(MAX_LAGA_DOFS)
-            b_lda = to_blas_int(MAX_LAGA_DOFS)
-            b_m = to_blas_int(geom%nb_dofs)
-            b_n = to_blas_int(geom%nb_dofs)
-            b_k = to_blas_int(geom%elem_dime-1)
-            call dgemm("N", "T", b_m, b_n, b_k, &
-                       -invA_ts_nm(i_tau), dinvMetric(:, :, i_tau), b_lda, dTs_ns, b_ldb, &
-                       1.d0, d2Ns_du2_nm, b_ldc)
+            call dgemm("N", "T", b_nb_dofs, b_nb_dofs, b_dime_m1, &
+                       -invA_ts_nm(i_tau), dinvMetric(:, :, i_tau), b_MAX_LAGA_DOFS, dTs_ns, &
+                       b_MAX_LAGA_DOFS, 1.d0, d2Ns_du2_nm, b_MAX_LAGA_DOFS)
         end do
 !
     end function
@@ -924,7 +1111,11 @@ contains
 !
         real(kind=8) :: det, rhs(MAX_LAGA_DOFS, 3), lhs(3, 3), lhs_inv(3, 3)
         real(kind=8) :: sol(3, MAX_LAGA_DOFS)
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int :: b_MAX_LAGA_DOFS, b_3, b_nb_dofs
+!
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_3 = to_blas_int(3)
+        b_nb_dofs = to_blas_int(geom%nb_dofs)
 !
         dZetaM = 0.d0
         dGap = 0.d0
@@ -949,15 +1140,9 @@ contains
 !
 ! --- Compute solution: (De^m(u)[v], Dgap(u)[v]) = lhs^-1 * rhs
 !
-        b_ldc = to_blas_int(3)
-        b_ldb = to_blas_int(MAX_LAGA_DOFS)
-        b_lda = to_blas_int(3)
-        b_m = to_blas_int(3)
-        b_n = to_blas_int(geom%nb_dofs)
-        b_k = to_blas_int(3)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   1.d0, lhs_inv, b_lda, rhs, b_ldb, &
-                   0.d0, sol, b_ldc)
+        call dgemm("N", "T", b_3, b_nb_dofs, b_3, &
+                   1.d0, lhs_inv, b_3, rhs, b_MAX_LAGA_DOFS, &
+                   0.d0, sol, b_3)
 !
 ! --- Extract terms
 !
@@ -1028,8 +1213,141 @@ contains
 !
 !===================================================================================================
 !
-    function d2Gap_du2(geom, norm_slav, norm_mast, gap, Hm, &
-                       dNs, dGap, dZetaM, dTm_nm, d2Ns_nm)
+    function dvT_du2(geom, speed, norm_slav, proj_tole, dGap_du_, &
+                     invMetricTens, tau_slav, dZetaM_du_, dts_ns, coor_qp_sl, dshape_func_ma)
+!
+        implicit none
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: tau_slav(3, 2), norm_slav(3), speed(3), coor_qp_sl(2)
+        real(kind=8), intent(in) :: dGap_du_(MAX_LAGA_DOFS), dts_ns(MAX_LAGA_DOFS, 2)
+        real(kind=8), intent(in) :: proj_tole, invMetricTens(2, 2), dshape_func_ma(2, 9)
+        real(kind=8), intent(in) :: dZetaM_du_(MAX_LAGA_DOFS, 2)
+        real(kind=8) :: dvT_du2(MAX_LAGA_DOFS, 2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of tangential speed
+!   D vT(u)[v] ~  A^{-1} *\tau_s * ((D Tn(u)[v]) v + Tn (D v(u)[v]))
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_dof
+        real(kind=8) :: dv_du_(MAX_LAGA_DOFS, 3), Tn(3, 3), dTn(MAX_LAGA_DOFS, 3, 3)
+        real(kind=8) :: dvT_g(MAX_LAGA_DOFS, 3)
+!
+! ------ First derivative of tangential speed
+!
+        dv_du_ = dv_du(geom, proj_tole, dGap_du_, dZetaM_du_, coor_qp_sl, dshape_func_ma)
+!
+! ------ Tangential components in global coordinates
+!
+        Tn = projTn(norm_slav)
+        dTn = dProjTn_du(geom, tau_slav, dts_ns, norm_slav)
+!
+        do i_dof = 1, MAX_LAGA_DOFS
+            dvT_g(i_dof, 1:3) = matmul(dTn(i_dof, :, :), speed)+matmul(Tn, dv_du_(i_dof, :))
+        end do
+!
+! ------ Switch to local coordinates
+!
+        do i_dof = 1, MAX_LAGA_DOFS
+            dvT_du2(i_dof, 1:2) = cmpTang(invMetricTens, tau_slav, dvT_g(i_dof, 1:3))
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+    function dvT_du(geom, speed, norm_slav, proj_tole, dGap_du_, &
+                    invMetricTens, tau_slav, dZetaM_du_, dts_ns, coor_qp_sl, dshape_func_ma)
+!
+        implicit none
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: tau_slav(3, 2), norm_slav(3), speed(3), coor_qp_sl(2)
+        real(kind=8), intent(in) :: dGap_du_(MAX_LAGA_DOFS), dts_ns(MAX_LAGA_DOFS, 2)
+        real(kind=8), intent(in) :: proj_tole, invMetricTens(2, 2), dshape_func_ma(2, 9)
+        real(kind=8), intent(in) :: dZetaM_du_(MAX_LAGA_DOFS, 2)
+        real(kind=8) :: dvT_du(MAX_LAGA_DOFS, 3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of tangential relative speed in global coordinates
+!   D vT(u)[v] = ((D Tn(u)[v]) v + Tn (D v(u)[v]))
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_dof
+        real(kind=8) :: dv_du_(MAX_LAGA_DOFS, 3), Tn(3, 3), dTn(MAX_LAGA_DOFS, 3, 3)
+        real(kind=8) :: dvT_g(MAX_LAGA_DOFS, 3)
+!
+! ------ First derivative of tangential speed
+!
+        dv_du_ = dv_du(geom, proj_tole, dGap_du_, dZetaM_du_, coor_qp_sl, dshape_func_ma)
+!
+! ------ Tangential components in global coordinates
+!
+        Tn = projTn(norm_slav)
+        dTn = dProjTn_du(geom, tau_slav, dts_ns, norm_slav)
+!
+        do i_dof = 1, MAX_LAGA_DOFS
+            dvT_du(i_dof, 1:3) = matmul(dTn(i_dof, :, :), speed)+matmul(Tn, dv_du_(i_dof, :))
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dv_du(geom, proj_tole, dGap_du_, dZetaM_du_, coor_qp_sl, dshape_func_ma)
+!
+        implicit none
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dGap_du_(MAX_LAGA_DOFS), proj_tole, coor_qp_sl(2)
+        real(kind=8), intent(in) :: dZetaM_du_(MAX_LAGA_DOFS, 2), dshape_func_ma(2, 9)
+        real(kind=8) :: dv_du(MAX_LAGA_DOFS, 3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of relative speed in global coordinates
+!   D v(u)[v] = (tau^m_0 dZetaM_du - D g[v] n^s_0)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: norm_slav_prev(3)
+        real(kind=8) :: tau_slav_prev(3, 2)
+        real(kind=8) :: dGap_du_ns(MAX_LAGA_DOFS, 3)
+        real(kind=8) :: norm_mast_prev(3), tau_mast_prev(3, 2), tau_dZeta(3), coor_mast_prev(2)
+        real(kind=8) :: gap_prev
+        integer :: i_dof
+!
+! ------ Compute outward previous slave normal
+        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_prev, &
+                    coor_qp_sl(1), coor_qp_sl(2), norm_slav_prev)
+! ------ Compute outward previous tangent base
+        tau_mast_prev = 0.d0
+        call mmtang(geom%elem_dime, geom%nb_node_mast, geom%coor_mast_prev, dshape_func_ma, &
+                    tau_mast_prev(:, 1), tau_mast_prev(:, 2))
+!
+        dGap_du_ns = 0.d0
+        do i_dof = 1, MAX_LAGA_DOFS
+            dGap_du_ns(i_dof, 1:3) = dGap_du_(i_dof)*norm_slav_prev
+        end do
+!
+        dv_du = 0.d0
+        do i_dof = 1, MAX_LAGA_DOFS
+            tau_dZeta = matmul(tau_mast_prev, dZetaM_du_(i_dof, 1:2))
+            dv_du(i_dof, 1:3) = (tau_dZeta-dGap_du_ns(i_dof, 1:3))
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function d2Gap_du2(geom, norm_slav, norm_mast, gap, Hm, dNs, dGap, dZetaM, dTm_nm, d2Ns_nm)
 !
         implicit none
 !
@@ -1050,8 +1368,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: norm(3), dNs_n(MAX_LAGA_DOFS), dZetaM_H(MAX_LAGA_DOFS, 2), inv_ns_nm
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
-        blas_int :: b_incx, b_incy
+        blas_int :: b_dime_m1, b_MAX_LAGA_DOFS, b_nb_dofs, b_dime, b_incx, b_incy, b_2
+!
+        b_dime_m1 = to_blas_int(geom%elem_dime-1)
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_nb_dofs = to_blas_int(geom%nb_dofs)
+        b_dime = to_blas_int(geom%elem_dime)
 !
         d2Gap_du2 = 0.d0
 !
@@ -1063,31 +1385,22 @@ contains
 ! --- Term: D(n^s[v^s]).n^m/(n^m.n^s)
 !
         dNs_n = 0.d0
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%elem_dime)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, dNs, &
-                   b_lda, norm, b_incx, 1.d0, dNs_n, &
+        call dgemv('N', b_nb_dofs, b_dime, 1.d0, dNs, &
+                   b_MAX_LAGA_DOFS, norm, b_incx, 1.d0, dNs_n, &
                    b_incy)
 !
 ! --- Term: -(D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s]).n^m/(n^m.n^s)
 !
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%nb_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dger(b_m, b_n, -1.d0, dGap, b_incx, &
-                  dNs_n, b_incy, d2Gap_du2, b_lda)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%nb_dofs)
+        call dger(b_nb_dofs, b_nb_dofs, -1.d0, dGap, b_incx, &
+                  dNs_n, b_incy, d2Gap_du2, b_MAX_LAGA_DOFS)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dger(b_m, b_n, -1.d0, dNs_n, b_incx, &
-                  dGap, b_incy, d2Gap_du2, b_lda)
+        call dger(b_nb_dofs, b_nb_dofs, -1.d0, dNs_n, b_incx, &
+                  dGap, b_incy, d2Gap_du2, b_MAX_LAGA_DOFS)
 !
 ! --- Term: -gap(u) D^2 n^s[v^s, w^s].n^m/(n^m.n^s)
 !
@@ -1097,49 +1410,26 @@ contains
 !
 ! --- Term: ( D tau^m[v] .n^m * De[w] + D tau^m[w] .n^m * De[v] )/(n^m.n^s)
 !
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(MAX_LAGA_DOFS)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%nb_dofs)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   inv_ns_nm, dTm_nm, b_lda, dZetaM, b_ldb, &
-                   1.d0, d2Gap_du2, b_ldc)
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(MAX_LAGA_DOFS)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%nb_dofs)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   inv_ns_nm, dZetaM, b_lda, dTm_nm, b_ldb, &
-                   1.d0, d2Gap_du2, b_ldc)
+        call dgemm("N", "T", b_nb_dofs, b_nb_dofs, b_dime_m1, &
+                   inv_ns_nm, dTm_nm, b_MAX_LAGA_DOFS, dZetaM, b_MAX_LAGA_DOFS, &
+                   1.d0, d2Gap_du2, b_MAX_LAGA_DOFS)
+        call dgemm("N", "T", b_nb_dofs, b_nb_dofs, b_dime_m1, &
+                   inv_ns_nm, dZetaM, b_MAX_LAGA_DOFS, dTm_nm, b_MAX_LAGA_DOFS, &
+                   1.d0, d2Gap_du2, b_MAX_LAGA_DOFS)
 !
 ! --- Term: H^m * De[v]
 !
         dZetaM_H = 0.d0
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(2)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%elem_dime-1)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "N", b_m, b_n, b_k, &
-                   1.d0, dZetaM, b_lda, Hm, b_ldb, &
-                   0.d0, dZetaM_H, b_ldc)
+        b_2 = to_blas_int(2)
+        call dgemm("N", "N", b_nb_dofs, b_dime_m1, b_dime_m1, &
+                   1.d0, dZetaM, b_MAX_LAGA_DOFS, Hm, b_2, &
+                   0.d0, dZetaM_H, b_MAX_LAGA_DOFS)
 !
 ! --- Term: (H^m * De[v])*De[w] / (n^m.n^s)
 !
-        b_ldc = to_blas_int(MAX_LAGA_DOFS)
-        b_ldb = to_blas_int(MAX_LAGA_DOFS)
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%nb_dofs)
-        b_k = to_blas_int(geom%elem_dime-1)
-        call dgemm("N", "T", b_m, b_n, b_k, &
-                   inv_ns_nm, dZetaM, b_lda, dZetaM_H, b_ldb, &
-                   1.d0, d2Gap_du2, b_ldc)
+        call dgemm("N", "T", b_nb_dofs, b_nb_dofs, b_dime_m1, &
+                   inv_ns_nm, dZetaM, b_MAX_LAGA_DOFS, dZetaM_H, b_MAX_LAGA_DOFS, &
+                   1.d0, d2Gap_du2, b_MAX_LAGA_DOFS)
 !
     end function
 !
@@ -1254,7 +1544,7 @@ contains
         real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3)
         real(kind=8), intent(in) :: norm_(3)
         real(kind=8) :: jump_norm(MAX_LAGA_DOFS)
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+        blas_int :: b_incx, b_incy, b_MAX_LAGA_DOFS, b_nb_dofs, b_dime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1263,14 +1553,15 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
+        b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
+        b_nb_dofs = to_blas_int(geom%nb_dofs)
+        b_dime = to_blas_int(geom%elem_dime)
+!
         jump_norm = 0.d0
-        b_lda = to_blas_int(MAX_LAGA_DOFS)
-        b_m = to_blas_int(geom%nb_dofs)
-        b_n = to_blas_int(geom%elem_dime)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv("N", b_m, b_n, 1.d0, jump_v, &
-                   b_lda, norm_, b_incx, 0.d0, jump_norm, &
+        call dgemv("N", b_nb_dofs, b_dime, 1.d0, jump_v, &
+                   b_MAX_LAGA_DOFS, norm_, b_incx, 0.d0, jump_norm, &
                    b_incy)
 !
     end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig, &
     chcara = cara(1:8)//'.CARORIEN'
     call etenca(chcara, ligrel, ier)
     ASSERT(ier .eq. 0)
-    nomgd = 'CAORIE'
+    nomgd = 'CAORIE_R'
     call jeveuo(chcara//'.DESC', 'L', idesc)
 !
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR CF NUROTA

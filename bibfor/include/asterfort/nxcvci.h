@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nxcvci(model , &
-                    charge, infoch  , fomult, numedd, tempmoi,&
-                    instap, cncine  )
-        character(len=24), intent(in) :: model
-        character(len=24) :: charge
-        character(len=24) :: infoch
-        character(len=24) :: fomult
+    subroutine nxcvci(loadNameJv, loadInfoJv, loadFuncJv, numedd, tempmoi, &
+                      instap, cncine)
+        character(len=24), intent(in) :: loadNameJv, loadInfoJv, loadFuncJv
         character(len=24) :: numedd
         character(len=19) :: tempmoi
         real(kind=8) :: instap

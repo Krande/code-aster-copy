@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ module contact_type
         integer                             :: algo_cont = 0
         integer                             :: type_cont = 0
         integer                             :: vari_cont = 0
+        integer                             :: jac_type = 0
         real(kind=8)                        :: vari_cont_coef = 0.d0
         real(kind=8), dimension(9)          :: coef_cont = 0.d0
 
@@ -54,6 +55,7 @@ module contact_type
     !! Other
         real(kind=8)                        :: proj_tole = 0.d0
         integer                             :: cont_init = PAIR_CONT_INTE
+        real(kind=8)                        :: E = 0.d0
     end type
 !
     type ContactGeom

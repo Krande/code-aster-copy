@@ -7,4 +7,4 @@ P testlist submit verification sequential
 
 F comm ssnp162s.comm D 1
 F mail ssnp162d.mail D 20
-F libr elasticCZMImplicit2D.mfront D 38
+F libr elasticCZMimplicit.mfront D 38

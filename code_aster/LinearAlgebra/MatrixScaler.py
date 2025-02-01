@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,7 @@ import numpy as np
 
 # petsc4py.init(['-info '])
 try:
-    import petsc4py
-    from petsc4py.PETSc import IS, KSP, PC, Mat, Options, Vec, Viewer
+    from ..Utilities import PETSc
 except ImportError:
     print("Error while importing petsc4py in MatrixScaler")
     assert False
@@ -41,7 +40,7 @@ from ..Utilities import logger
 from ..Supervis import AsterError
 
 
-def _busymscalinf(A: Mat, niter, atol):
+def _busymscalinf(A, niter, atol):
     """
     Compute the scaling of the matrix to have all rows and cols in
     the scaled matrix As to have inf-norm equal to 1
@@ -133,6 +132,7 @@ class MatrixScaler:
         self,
         A: AssemblyMatrixDisplacementReal or AssemblyMatrixTemperatureReal,
         merge_dof=[["DX", "DY", "DZ"], ["DRX", "DRY", "DRZ"]],
+        verbose=False,
     ):
         """Compute and store the entries of the right and left scaling vectors.
 
@@ -167,13 +167,15 @@ class MatrixScaler:
         for dof in merge_dof:
             merged_dof = merge_keys(merged_dof, *dof)
         ndof = len(merged_dof.keys())
-        logger.debug(
-            f"<{self.__class__.__name__}> Considering the components {list(merged_dof.keys())}"
-        )
+        if logger.level or verbose:
+            print(
+                f"<{self.__class__.__name__}> Considering the components {list(merged_dof.keys())}",
+                flush=True,
+            )
 
         # Create matrix that contains the norm of the block of dof
-        norm_mat = Mat().create(comm=petsc4py.PETSc.COMM_SELF)
-        norm_mat.setType(petsc4py.PETSc.Mat.Type.SEQDENSE)
+        norm_mat = PETSc.Mat().create(comm=PETSc.COMM_SELF)
+        norm_mat.setType(PETSc.Mat.Type.SEQDENSE)
         norm_mat.setSizes(ndof, ndof)
         norm_mat.setUp()
         # Dict giving the dofs associated to row of the norm_mat
@@ -181,23 +183,27 @@ class MatrixScaler:
             sdof: row for row, (dof, _) in enumerate(merged_dof.items()) for sdof in dof.split("+")
         }
         for row, (_, val_row) in enumerate(merged_dof.items()):
-            indx_row = IS().createGeneral(val_row)
+            indx_row = PETSc.IS().createGeneral(val_row)
             for col, (_, val_col) in enumerate(merged_dof.items()):
-                indx_col = IS().createGeneral(val_col)
+                indx_col = PETSc.IS().createGeneral(val_col)
                 nrm = pA.createSubMatrix(indx_row, indx_col).norm()
                 norm_mat.setValue(row, col, nrm)
 
         norm_mat.assemble()
-        logger.debug(
-            f"<{self.__class__.__name__}> Initial norm matrix of considered "
-            + f"components \n{norm_mat.getValues(range(ndof), range(ndof))}"
-        )
+        if logger.level or verbose:
+            print(
+                f"<{self.__class__.__name__}> Initial norm matrix of considered "
+                + f"components \n{norm_mat.getValues(range(ndof), range(ndof))}",
+                flush=True,
+            )
 
         norm_mat_scaled, nmat_lvect, nmat_rvect = _busymscalinf(norm_mat, 100, 1.0e-6)
-        logger.debug(
-            f"<{self.__class__.__name__}> Scaled norm matrix of considered "
-            + f"components \n{norm_mat_scaled.getValues(range(ndof), range(ndof))}"
-        )
+        if logger.level or verbose:
+            print(
+                f"<{self.__class__.__name__}> Scaled norm matrix of considered "
+                + f"components \n{norm_mat_scaled.getValues(range(ndof), range(ndof))}",
+                flush=True,
+            )
 
         # the scaling vectors - they have the same shape as the local matrix
         lsize = A.size(local=True)[0]
@@ -233,14 +239,14 @@ class MatrixScaler:
         (from initial to normalized)."""
         if self.rvect is None or self.lvect is None:
             raise ValueError("The scaling must be computed before using it")
-        return rhs.scale(1 / self.rvect)
+        return rhs.scale(self.lvect)
 
     def unscaleSolution(self, sol: FieldOnNodesReal):
         """Unscale the solution in argument using the previously computed scaling vectors
         (from normalized to initial)."""
         if self.rvect is None or self.lvect is None:
             raise ValueError("The scaling must be computed before using it")
-        return sol.scale(self.lvect)
+        return sol.scale(self.rvect)
 
     def getScalingVectors(self):
         """Return the left and right scaling vectors (in this order)."""

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine ntarch(numins, modele, mate, carele, para, &
+    subroutine ntarch(numins, model, materField, caraElem, para, &
                       sddisc, ds_inout, force, ds_algorom_)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         integer, intent(in) :: numins
-        character(len=24), intent(in) :: modele
-        character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: carele
+        character(len=8), intent(in) :: model, materField, caraElem
         real(kind=8), intent(in) :: para(*)
         character(len=19), intent(in) :: sddisc
         type(NL_DS_InOut), intent(in) :: ds_inout

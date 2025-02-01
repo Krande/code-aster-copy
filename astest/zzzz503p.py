@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -183,74 +183,73 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
 
 # plot figure with matplotlib
 if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
-    import aster_core
 
     # disable floating point exceptions from matplotlib
-    aster_core.matfpe(-1)
+    with CA.disable_fpe():
 
-    ylim = {"L2": [1e-10, 0.1], "H1": [1e-7, 1.0]}
-    the_conv = {
-        "LINEAIRE": {"L2": {"o": 3, "c": 2e-2}, "H1": {"o": 2, "c": 0.2}},
-        "QUADRATIQUE": {"L2": {"o": 4, "c": 1e-3}, "H1": {"o": 3, "c": 0.02}},
-    }
-    # plot the data
-    for norm in ("L2", "H1"):
-        plt.plot(1, 1, 1)
+        ylim = {"L2": [1e-10, 0.1], "H1": [1e-7, 1.0]}
+        the_conv = {
+            "LINEAIRE": {"L2": {"o": 3, "c": 2e-2}, "H1": {"o": 2, "c": 0.2}},
+            "QUADRATIQUE": {"L2": {"o": 4, "c": 1e-3}, "H1": {"o": 3, "c": 0.02}},
+        }
+        # plot the data
+        for norm in ("L2", "H1"):
+            plt.plot(1, 1, 1)
 
-        plt.xscale("log")
-        plt.yscale("log")
+            plt.xscale("log")
+            plt.yscale("log")
 
-        # set the limits
-        plt.xlim([0.02, 2])
-        plt.ylim(ylim[norm])
-        plt.xlabel("mesh-size")
-        plt.ylabel("%s-error" % norm)
+            # set the limits
+            plt.xlim([0.02, 2])
+            plt.ylim(ylim[norm])
+            plt.xlabel("mesh-size")
+            plt.ylabel("%s-error" % norm)
 
-        plt.plot(
-            error["LINEAIRE"]["h"],
-            error["LINEAIRE"][norm],
-            marker="o",
-            color="tab:blue",
-            label="k=1, computed",
-        )
-        m, c = conv_order["LINEAIRE"][norm]
-        plt.plot(
-            error["LINEAIRE"]["h"],
-            [
-                the_conv["LINEAIRE"][norm]["c"] * h ** the_conv["LINEAIRE"][norm]["o"]
-                for h in error["LINEAIRE"]["h"]
-            ],
-            "k--",
-            label="k=1, theorical",
-            color="tab:blue",
-        )
+            plt.plot(
+                error["LINEAIRE"]["h"],
+                error["LINEAIRE"][norm],
+                marker="o",
+                color="tab:blue",
+                label="k=1, computed",
+            )
+            m, c = conv_order["LINEAIRE"][norm]
+            plt.plot(
+                error["LINEAIRE"]["h"],
+                [
+                    the_conv["LINEAIRE"][norm]["c"] * h ** the_conv["LINEAIRE"][norm]["o"]
+                    for h in error["LINEAIRE"]["h"]
+                ],
+                "k--",
+                label="k=1, theorical",
+                color="tab:blue",
+            )
 
-        plt.plot(
-            error["QUADRATIQUE"]["h"],
-            error["QUADRATIQUE"][norm],
-            marker="o",
-            color="tab:orange",
-            label="k=2, computed",
-        )
-        m, c = conv_order["QUADRATIQUE"][norm]
-        plt.plot(
-            error["QUADRATIQUE"]["h"],
-            [
-                the_conv["QUADRATIQUE"][norm]["c"] * h ** the_conv["QUADRATIQUE"][norm]["o"]
-                for h in error["LINEAIRE"]["h"]
-            ],
-            "k--",
-            label="k=2, theorical",
-            color="tab:orange",
-        )
+            plt.plot(
+                error["QUADRATIQUE"]["h"],
+                error["QUADRATIQUE"][norm],
+                marker="o",
+                color="tab:orange",
+                label="k=2, computed",
+            )
+            m, c = conv_order["QUADRATIQUE"][norm]
+            plt.plot(
+                error["QUADRATIQUE"]["h"],
+                [
+                    the_conv["QUADRATIQUE"][norm]["c"] * h ** the_conv["QUADRATIQUE"][norm]["o"]
+                    for h in error["LINEAIRE"]["h"]
+                ],
+                "k--",
+                label="k=2, theorical",
+                color="tab:orange",
+            )
 
-        plt.legend()
-        plt.title("%s convergence error for HHO" % norm)
+            plt.legend()
+            plt.title("%s convergence error for HHO" % norm)
 
-        # save plot
-        savedir = "/tmp/" or os.getcwd()
-        plt.savefig(os.path.join(savedir, "%s_error.png" % norm))
-        plt.clf()
+            # save plot
+            savedir = "/tmp/" or os.getcwd()
+            plt.savefig(os.path.join(savedir, "%s_error.png" % norm))
+            plt.clf()
 
 # close
 CA.close()

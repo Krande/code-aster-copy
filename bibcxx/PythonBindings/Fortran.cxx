@@ -3,7 +3,7 @@
  * @brief Definition of interface functions between C++ and Fortran
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -113,6 +113,17 @@ std::string onFatalError( const std::string value ) {
     std::string state( tmp, lng );
     FreeStr( tmp );
     return state;
+}
+
+void call_matfpe( const int value ) {
+    ASTERINTEGER enable;
+
+    if ( value == -1 || value == 1 ) {
+        enable = (ASTERINTEGER)value;
+        CALL_MATFPE( &enable );
+    } else {
+        AS_ABORT( "Invalid value: expecting -1 or 1" );
+    }
 }
 
 extern "C" void _reset_tpmax();

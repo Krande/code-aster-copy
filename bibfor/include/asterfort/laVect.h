@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,11 @@
 #include "contact_module.h"
 !
 interface
-    subroutine laVect(parameters, geom, vect_cont, vect_fric)
+    subroutine laVect(parameters, geom, vect_cont, vect_fric, k_diff)
         use contact_type
         type(ContactParameters), intent(in) :: parameters
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
+        character(len=8), intent(in), optional :: k_diff
     end subroutine laVect
 end interface

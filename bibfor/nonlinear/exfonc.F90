@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 !
     integer :: reac_incr, reac_iter
     aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc, l_cont_lac, l_iden_rela
-    aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead, l_cont_xfem
+    aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
     aster_logical :: l_vibr_mode, l_buckling, lexpl, l_xfem, lmodim, l_mult_front
     aster_logical :: l_cont_gcp, lpetsc, lamg, limpex, l_matr_distr, lgcpc
     aster_logical :: londe, l_dyna, l_grot_gdep, l_newt_krylov, l_mumps, l_rom
@@ -91,7 +91,6 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
     l_xfem = isfonc(listFuncActi, 'XFEM')
     l_cont_cont = isfonc(listFuncActi, 'CONT_CONTINU')
     l_cont_disc = isfonc(listFuncActi, 'CONT_DISCRET')
-    l_cont_xfem = isfonc(listFuncActi, 'CONT_XFEM')
     l_cont = isfonc(listFuncActi, 'CONTACT')
     l_cont_lac = isfonc(listFuncActi, 'CONT_LAC')
     l_unil = isfonc(listFuncActi, 'LIAISON_UNILATER')
@@ -197,21 +196,8 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
             call utmess('F', 'MECANONLINE3_93')
         end if
     end if
-!
-! - Contact (XFEM)
-!
-    if (l_cont_xfem) then
-        l_iden_rela = ds_contact%l_iden_rela
-        if (l_iden_rela .and. l_mult_front) then
-            call utmess('F', 'MECANONLINE3_99')
-        end if
-        if (reac_iter .ne. 1) then
-            call utmess('F', 'MECANONLINE5_72')
-        end if
-    end if
-!
+
 ! - Joint elements
-!
     if (matrix_corr .eq. 'ELASTIQUE') then
         if (check_frot .or. check_rupt .or. check_endo) then
             call utmess('F', 'MECANONLINE3_3')

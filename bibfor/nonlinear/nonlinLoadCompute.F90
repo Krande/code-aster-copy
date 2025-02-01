@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -197,9 +197,11 @@ subroutine nonlinLoadCompute(mode, list_load, &
     if (mode .eq. 'FIXE' .or. mode .eq. 'ACCI') then
         call nmchex(hval_veelem, 'VEELEM', 'CNFEDO', vect_elem)
         call nmchex(hval_veasse, 'VEASSE', 'CNFEDO', vect_asse)
-        call vechme('S', model, lload_name, lload_info, time_list, &
-                    cara_elem, ds_material%mater, ds_material%mateco, &
-                    vect_elem, varc_currz=vrcplu)
+        call vechme('S', &
+                    model, cara_elem, ds_material%mater, ds_material%mateco, &
+                    lload_name, lload_info, &
+                    time_list, &
+                    vect_elem, varcCurrZ_=vrcplu)
         call asasve(vect_elem, nume_dof, 'R', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
@@ -229,10 +231,14 @@ subroutine nonlinLoadCompute(mode, list_load, &
         if (mode .eq. 'FIXE' .or. mode .eq. 'VARI') then
             call nmchex(hval_veelem, 'VEELEM', 'CNFEPI', vect_elem)
             call nmchex(hval_veasse, 'VEASSE', 'CNFEPI', vect_asse)
-            call vefpme(model, cara_elem, ds_material%mater, ds_material%mateco, &
+            call vefpme("S", &
+                        model, cara_elem, &
+                        ds_material%mater, ds_material%mateco, &
                         lload_name, lload_info, &
-                        time_list, vrcplu, vect_elem, ' ', &
-                        disp_prev, disp_cumu_inst)
+                        time_list, &
+                        disp_prev, disp_cumu_inst, &
+                        vrcplu, &
+                        vect_elem)
             call asasve(vect_elem, nume_dof, 'R', vect_alem)
             call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                         'R', vect_asse)
@@ -247,10 +253,14 @@ subroutine nonlinLoadCompute(mode, list_load, &
     if (mode .eq. 'VARI' .or. mode .eq. 'ACCI') then
         call nmchex(hval_veelem, 'VEELEM', 'CNFSDO', vect_elem)
         call nmchex(hval_veasse, 'VEASSE', 'CNFSDO', vect_asse)
-        call vecgme(model, cara_elem, ds_material%mater, ds_material%mateco, lload_name, &
-                    lload_info, time_curr, disp_prev, disp_cumu_inst, &
-                    vect_elem, time_prev, ds_constitutive%compor, ' ', &
-                    vite_curr, acce_curr, strx_prev)
+        call vecgme("S", &
+                    model, cara_elem, ds_material%mater, &
+                    ds_material%mateco, ds_constitutive%compor, &
+                    lload_name, lload_info, &
+                    time_prev, time_curr, &
+                    disp_prev, disp_cumu_inst, &
+                    vite_curr, acce_curr, strx_prev, &
+                    vect_elem)
         call asasve(vect_elem, nume_dof, 'R', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -306,10 +306,10 @@ subroutine op0180()
     end if
 !
 !.... DETERMINATION DU RANG DE LA COMPOSANTE <A1>
-!.... DE LA GRANDEUR <CAGNBA>
+!.... DE LA GRANDEUR <CAGNBA_R>
 !
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'LONMAX', ncaba)
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'L', jcaba)
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA_R'), 'LONMAX', ncaba)
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGNBA_R'), 'L', jcaba)
     irana1 = 0
     do icmp = 1, ncaba
         if (zk8(jcaba+icmp-1) .eq. aire) then

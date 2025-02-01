@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,10 @@ import os
 import numpy as NP
 import numpy.linalg as linalg
 
-import aster
-import aster_core
+from ...Utilities import disable_fpe
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...CodeCommands import INFO_EXEC_ASTER
 
 
 def calcul_gradient(A, erreur):
@@ -44,7 +42,6 @@ def calcul_norme2(V):
 
 
 class Dimension:
-
     """
     Classe gérant l'adimensionnement et le dimensionnement
     """
@@ -291,19 +288,17 @@ def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
 
         # Desactive temporairement les FPE qui pourraient etre generees (a
         # tord!) par blas
-        aster_core.matfpe(-1)
-        valeurs_propres, vecteurs_propres = linalg.eig(Hessien)
-        vecteurs_propres = NP.transpose(
-            vecteurs_propres
-        )  # numpy et Numeric n'ont pas la meme convention
-        sensible = NP.nonzero(NP.greater(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-1))[
-            0
-        ]
-        insensible = NP.nonzero(NP.less(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-2))[
-            0
-        ]
-        # Reactive les FPE
-        aster_core.matfpe(1)
+        with disable_fpe():
+            valeurs_propres, vecteurs_propres = linalg.eig(Hessien)
+            vecteurs_propres = NP.transpose(
+                vecteurs_propres
+            )  # numpy et Numeric n'ont pas la meme convention
+            sensible = NP.nonzero(
+                NP.greater(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-1)
+            )[0]
+            insensible = NP.nonzero(
+                NP.less(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-2)
+            )[0]
 
         Messg.affiche_calcul_etat_final(
             para, Hessien, valeurs_propres, vecteurs_propres, sensible, insensible

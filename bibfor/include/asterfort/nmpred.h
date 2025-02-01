@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmpred(mesh, modele, numedd         , numfix    , ds_material, carele  ,&
-                      ds_constitutive, lischa    , ds_algopara, solveu  , ds_system,&
-                      fonact, ds_print       , ds_measure, ds_algorom , sddisc  ,&
-                      sdnume, sderro         , numins    , valinc     , solalg  , &
-                      matass, maprec         , ds_contact,&
-                      sddyna, nlDynaDamping,&
-                      meelem, measse         , veelem    , veasse     , lerrit)
+    subroutine nmpred(modele, numedd, numfix, ds_material, carele, &
+                      ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
+                      fonact, ds_print, ds_measure, ds_algorom, sddisc, &
+                      sdnume, sderro, numins, valinc, solalg, &
+                      matass, maprec, ds_contact, &
+                      sddyna, nlDynaDamping, &
+                      meelem, measse, veelem, veasse, lerrit)
         use NonLin_Datastructure_type
         use ROM_Datastructure_type
         use NonLinearDyna_type
-        character(len=8), intent(in) :: mesh
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: numfix

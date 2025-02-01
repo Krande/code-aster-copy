@@ -2,7 +2,7 @@
  * @file ContactParameterInterface.cxx
  * @brief Interface python de ContactParameter
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,6 +55,19 @@ Set the contact type used. It is a value of an enum
 
 Arguments:
     ContactType: contact type.
+        )",
+              py::arg( "type" ) )
+        .def( "getJacobianType", &ContactParameter::getJacobianType, R"(
+Return how the Jacobian is computed. It is a value of an enum
+
+Returns:
+    JacobianType: Jacobian type.
+        )" )
+        .def( "setJacobianType", &ContactParameter::setJacobianType, R"(
+Set how the Jacobian is computed. It is a value of an enum
+
+Arguments:
+    JacobianType: Jacobian type.
         )",
               py::arg( "type" ) )
         .def( "getVariant", &ContactParameter::getVariant, R"(

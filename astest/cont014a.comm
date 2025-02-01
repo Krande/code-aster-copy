@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -167,7 +167,7 @@ RELE_S = POST_RELEVE_T(
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=7.40573e-1,
-    VALE_CALC=0.7548442194658828,
+    VALE_CALC=0.7548459650487974,
     NOM_PARA="DX",
     TABLE=RELE_M,
     TYPE_TEST="MAX",
@@ -177,7 +177,7 @@ TEST_TABLE(
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=9.18286e-2,
-    VALE_CALC=0.09278397588659427,
+    VALE_CALC=0.09278610314728888,
     NOM_PARA="DY",
     TABLE=RELE_M,
     TYPE_TEST="MAX",
@@ -187,7 +187,7 @@ TEST_TABLE(
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=7.62576e-1,
-    VALE_CALC=0.7792748242927061,
+    VALE_CALC=0.7792772472017874,
     NOM_PARA="DX",
     TABLE=RELE_S,
     TYPE_TEST="MAX",

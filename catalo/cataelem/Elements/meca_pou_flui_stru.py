@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ from cataelem.Options.options import OP
 
 
 CCAGEPO = LocatedComponents(
-    phys=PHY.CAGEPO,
+    phys=PHY.CAGEPO_R,
     type="ELEM",
     components=(
         "HY1",
@@ -52,7 +52,7 @@ CCAGEPO = LocatedComponents(
 
 
 CCAGNPO = LocatedComponents(
-    phys=PHY.CAGNPO,
+    phys=PHY.CAGNPO_R,
     type="ELEM",
     components=(
         "A1",
@@ -84,7 +84,7 @@ CCAGNPO = LocatedComponents(
 )
 
 
-CCAORIE = LocatedComponents(phys=PHY.CAORIE, type="ELEM", components=("ALPHA", "BETA", "GAMMA"))
+CCAORIE = LocatedComponents(phys=PHY.CAORIE_R, type="ELEM", components=("ALPHA", "BETA", "GAMMA"))
 
 
 DDL_MECA = LocatedComponents(

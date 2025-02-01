@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -124,7 +124,7 @@ subroutine ndassp(listFuncActi, ds_contact, ds_system, &
         end if
     end if
 
-! - Add CONTINUE/XFEM contact force
+! - Add CONTINUE contact forces
     if (ds_contact%l_cneltc) then
         call nonlinDSVectCombAddAny(ds_contact%cneltc, -1.d0, ds_vectcomb)
     end if

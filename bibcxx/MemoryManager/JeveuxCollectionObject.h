@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -246,7 +246,7 @@ class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
     };
 
     inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
         if ( i < 0 && i >= this->size() ) {
             std::string error = "Out of range of JeveuxCollectionObjectClass '" + getStringName() +
@@ -260,7 +260,7 @@ class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
     };
 
     inline ValueType &operator[]( const ASTERINTEGER &i ) {
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _valuePtr != nullptr );
         if ( i < 0 && i >= this->size() ) {
             std::string error = "Out of range of JeveuxCollectionObjectClass '" + getStringName() +
@@ -454,16 +454,16 @@ class JeveuxCollectionObject {
         return *this;
     };
 
-    const JeveuxCollectionObjectTypePtr &operator->(void)const {
-#ifdef ASTER_DEBUG_CXX
+    const JeveuxCollectionObjectTypePtr &operator->( void ) const {
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _jeveuxCOPtr );
 #endif
 
         return _jeveuxCOPtr;
     };
 
-    JeveuxCollectionObjectClass< ValueType > &operator*(void)const {
-#ifdef ASTER_DEBUG_CXX
+    JeveuxCollectionObjectClass< ValueType > &operator*( void ) const {
+#ifdef ASTER_DEBUG_CXX_OBJECTS
         AS_ASSERT( _jeveuxCOPtr );
 #endif
         return *_jeveuxCOPtr;

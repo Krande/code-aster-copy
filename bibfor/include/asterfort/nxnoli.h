@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
+    subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
                       para, sddisc, ds_inout, ds_algorom)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: cara_elem
-        aster_logical, intent(in) :: l_stat
-        aster_logical, intent(in) :: l_evol
+        character(len=8), intent(in) :: model, materField, caraElem
+        aster_logical, intent(in) :: l_stat, l_evol
         real(kind=8), intent(in) :: para(*)
         character(len=19), intent(in) :: sddisc
         type(NL_DS_InOut), intent(inout) :: ds_inout

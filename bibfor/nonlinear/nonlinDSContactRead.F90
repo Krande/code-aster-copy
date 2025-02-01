@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine nonlinDSContactRead(ds_contact)
     integer :: ifm, niv
     integer :: nocc
     character(len=8) :: sdcont
-    character(len=16) :: keyw
+    character(len=16), parameter :: factorKeyword = 'CONTACT'
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,14 +53,9 @@ subroutine nonlinDSContactRead(ds_contact)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_10')
     end if
-!
-! - Initializations
-!
-    keyw = 'CONTACT'
-!
+
 ! - Get name of datastructure from DEFI_CONTACT
-!
-    call getvid(' ', keyw, scal=sdcont, nbret=nocc)
+    call getvid(' ', factorKeyword, scal=sdcont, nbret=nocc)
     ds_contact%l_contact = nocc .gt. 0
     if (nocc .ne. 0) then
         ds_contact%sdcont = sdcont

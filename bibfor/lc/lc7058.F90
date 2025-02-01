@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -131,8 +131,8 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     props = 0.d0
     codret = 0
 
-    ASSERT(nsig .ge. 2*ndim)
-    ASSERT(neps .eq. ndim)
+    ASSERT(nsig .ge. ndim)
+    ASSERT(neps .ge. ndim)
 
 ! - Flags for quantity to compute
     lSigm = L_SIGM(option)
@@ -151,7 +151,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Pointer to MGISBehaviour
     extern_addr = compor(MGIS_ADDR)
 
-! - Managmeent of dimensions
+! - Management of dimensions
     call getMGISDime(lGreenLagr, lCZM, ndim, &
                      neps, nsig, nvi, ndsde, &
                      nstran, nforc, nstatv, nmatr)
@@ -258,9 +258,9 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 
 ! - Convert matrix
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        do i = 1, 3
-            do j = 1, 3
-                dsidep_loc(i, j) = dsidepMGIS(3*(i-1)+j)
+        do i = 1, ndim
+            do j = 1, ndim
+                dsidep_loc(i, j) = dsidepMGIS(ndim*(i-1)+j)
             end do
         end do
     end if

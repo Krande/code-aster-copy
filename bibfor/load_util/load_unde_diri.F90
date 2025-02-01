@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,25 +15,26 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine load_unde_diri(list_load)
+!
+subroutine load_unde_diri(listLoadZ)
+!
+    use listLoad_module
 !
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/codent.h"
 #include "asterfort/copich.h"
 #include "asterfort/copisd.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jedup1.h"
-#include "asterfort/codent.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-!
-    character(len=19), intent(in) :: list_load
+    character(len=*), intent(in) :: listLoadZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,44 +44,42 @@ subroutine load_unde_diri(list_load)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_load         : name of datastructure for list of loads
+! In  listLoad          : name of datastructure for list of loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_load, load_nume_diri, i_load, i_load_diri, i
-    character(len=8) :: load_name, load_name_loca
-    character(len=24) :: lload_info, lload_name
-    integer, pointer :: v_load_info(:) => null()
-    character(len=24), pointer :: v_load_name(:) => null()
+    integer :: nbLoad, loadNumeDiri, iLoad, iLoadDiri, i
+    character(len=8) :: loadName, load_name_loca
+    character(len=24) :: loadInfoJv, loadNameJv
+    integer, pointer :: listLoadInfo(:) => null()
+    character(len=24), pointer :: listLoadName(:) => null()
     character(len=24), pointer :: noli(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Datastructure access
+    loadInfoJv = listLoadZ(1:19)//'.INFC'
+    loadNameJv = listLoadZ(1:19)//'.LCHA'
+    call jeveuo(loadNameJv, 'E', vk24=listLoadName)
+    call jeveuo(loadInfoJv, 'E', vi=listLoadInfo)
 !
-    lload_info = list_load(1:19)//'.INFC'
-    lload_name = list_load(1:19)//'.LCHA'
-    call jeveuo(lload_name, 'E', vk24=v_load_name)
-    call jeveuo(lload_info, 'E', vi=v_load_info)
-!
-    nb_load = v_load_info(1)
-    ASSERT(nb_load .gt. 0)
-    i_load_diri = 0
-!
+    call getNbLoadsFromList(listLoadZ, nbLoad)
+    ASSERT(nbLoad .gt. 0)
+    iLoadDiri = 0
+
 ! - Copy loads
-!
-    do i_load = 1, nb_load
-        load_nume_diri = v_load_info(i_load+1)
-        if (load_nume_diri .eq. 4) then
-            i_load_diri = i_load_diri+1
+    do iLoad = 1, nbLoad
+        loadNumeDiri = listLoadInfo(iLoad+1)
+        if (loadNumeDiri .eq. 4) then
+            iLoadDiri = iLoadDiri+1
             load_name_loca = '&&DIRISU'
-            if (i_load_diri .gt. 99) then
+            if (iLoadDiri .gt. 99) then
                 call utmess('F', 'CHARGES_29')
             end if
-            call codent(i_load_diri, 'D0', load_name_loca(7:8))
-            load_name = v_load_name(i_load) (1:8)
+            call codent(iLoadDiri, 'D0', load_name_loca(7:8))
+            loadName = listLoadName(iLoad) (1:8)
 
 !           -- delete :
             call jedetr(load_name_loca//'.TYPE')
@@ -93,29 +92,29 @@ subroutine load_unde_diri(list_load)
             call jedetr(load_name_loca//'.DUAL.PRDSO')
 
 !           -- copy :
-            call jedup1(load_name//'.TYPE', 'V', load_name_loca//'.TYPE')
-            call jedup1(load_name//'.CHME.MODEL.NOMO', 'V', load_name_loca//'.CHME.MODEL.NOMO')
-            call copisd('LIGREL', 'V', load_name//'.CHME.LIGRE', load_name_loca//'.CHME.LIGRE')
-            call copich('V', load_name//'.CHME.CMULT', load_name_loca//'.CHME.CMULT')
-            call copich('V', load_name//'.CHME.CIMPO', load_name_loca//'.CHME.CIMPO')
+            call jedup1(loadName//'.TYPE', 'V', load_name_loca//'.TYPE')
+            call jedup1(loadName//'.CHME.MODEL.NOMO', 'V', load_name_loca//'.CHME.MODEL.NOMO')
+            call copisd('LIGREL', 'V', loadName//'.CHME.LIGRE', load_name_loca//'.CHME.LIGRE')
+            call copich('V', loadName//'.CHME.CMULT', load_name_loca//'.CHME.CMULT')
+            call copich('V', loadName//'.CHME.CIMPO', load_name_loca//'.CHME.CIMPO')
             call jeveuo(load_name_loca//'.CHME.CIMPO.NOLI', 'E', vk24=noli)
             do i = 1, size(noli)
-                if (noli(i) (1:8) .eq. load_name) then
+                if (noli(i) (1:8) .eq. loadName) then
                     noli(i) (1:8) = load_name_loca
                 end if
             end do
             call jeveuo(load_name_loca//'.CHME.CMULT.NOLI', 'E', vk24=noli)
             do i = 1, size(noli)
-                if (noli(i) (1:8) .eq. load_name) then
+                if (noli(i) (1:8) .eq. loadName) then
                     noli(i) (1:8) = load_name_loca
                 end if
             end do
-            call jedup1(load_name//'.DUAL.PRDK', 'V', load_name_loca//'.DUAL.PRDK')
-            call jedup1(load_name//'.DUAL.PRDI', 'V', load_name_loca//'.DUAL.PRDI')
-            call jedup1(load_name//'.DUAL.PRDSO', 'V', load_name_loca//'.DUAL.PRDSO')
+            call jedup1(loadName//'.DUAL.PRDK', 'V', load_name_loca//'.DUAL.PRDK')
+            call jedup1(loadName//'.DUAL.PRDI', 'V', load_name_loca//'.DUAL.PRDI')
+            call jedup1(loadName//'.DUAL.PRDSO', 'V', load_name_loca//'.DUAL.PRDSO')
 
-            v_load_name(i_load) (1:8) = load_name_loca
-            v_load_name(i_load) (9:16) = load_name
+            listLoadName(iLoad) (1:8) = load_name_loca
+            listLoadName(iLoad) (9:16) = loadName
         end if
     end do
 !

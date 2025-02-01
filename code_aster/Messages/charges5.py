@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,11 +80,6 @@ cata_msg = {
  La charge de nom <%(k1)s> ne peut pas être associée à une fonction multiplicatrice complexe.
  Les charges de type Dirichlet par élimination (AFFE_CHAR_CINE) ne peuvent pas être associées une fonction multiplicatrice complexe .
  Utilisez COEF_MULT ou FONC_MULT au lieu de COEF_MULT_C ou FONC_MULT_C.
-"""
-    ),
-    13: _(
-        """
- La charge de nom <%(k1)s> doit être de type suiveuse (ECHANGE_THM).
 """
     ),
 }

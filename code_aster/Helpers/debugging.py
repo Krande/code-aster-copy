@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,12 @@ For example: use in the ``.export`` file:
 """
 
 import os
-import os.path as osp
-import re
+import pickle
+import time
+from contextlib import contextmanager
+from functools import wraps
+
+import numpy as np
 
 from ..Cata.Language.SyntaxUtils import force_list
 from ..Objects import DataStructure
@@ -258,3 +262,68 @@ def register_context(ctxt, storage):
 # used to force to show children commands
 # from ..Utilities import ExecutionParameter, Options
 # ExecutionParameter().enable(Options.ShowChildCmd)
+
+
+class DebugArgs:
+    """Debugging helper"""
+
+    #: bool: to be raised only once
+    raised = False
+    #: name of the pickle file
+    filename = "debug_trace.pick"
+
+    @classmethod
+    def pickle_on_error(cls, method):
+        """Decorator to pickle the args in case of error."""
+
+        @wraps(method)
+        def wrapper(inst, *args, **kwds):
+            """wrapper"""
+            try:
+                arg0 = inst.copy()
+                retvalue = method(inst, *args, **kwds)
+            except Exception:
+                if not cls.raised:
+                    print(f"pickling traces into {cls.filename}")
+                    with open(cls.filename, "wb") as pick:
+                        print(f"# --- trace arguments of '{method.__name__}':")
+                        print(repr(arg0))
+                        pickle.dump(arg0, pick)
+                        print("--- changed ---")
+                        print(repr(inst))
+                        pickle.dump(inst, pick)
+                        for obj in args:
+                            pickle.dump(obj, pick)
+                            print(repr(obj))
+                cls.raised = True
+                raise
+            return retvalue
+
+        return wrapper
+
+    @classmethod
+    def reset(cls):
+        """Reset state"""
+        cls.raised = False
+
+
+class DebugChrono:
+    """Helper to measure elapsed time."""
+
+    data = []
+
+    @classmethod
+    @contextmanager
+    def measure(cls, title):
+        """Measure elapsed time."""
+        t0 = time.time()
+        yield
+        elapsed = time.time() - t0
+        cls.data.append([title, elapsed])
+        print(f"elapsed time: {title}: {elapsed:.6f}", flush=True)
+
+    @classmethod
+    def save(cls, filename):
+        """Save data into a pickle file."""
+        with open(filename, "wb") as pick:
+            pickle.dump(cls.data, pick)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -196,10 +196,9 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 ! - Initialisations
 !
     lacc0 = ASTER_FALSE
-!
+
 ! - Initializations for contact parameters
-!
-    call nonlinDSContactInit(mesh, model, ds_contact)
+    call nonlinDSContactInit(mesh, ds_contact)
 !
 ! - Initializations for constitutive laws
 !
@@ -258,7 +257,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Prepare contact solving datastructure
     if (ds_contact%l_meca_cont) then
-        call cfmxsd(mesh, model, numedd, listFuncActi, sddyna, ds_contact)
+        call cfmxsd(mesh, model, numedd, sddyna, ds_contact)
     end if
     if (ds_contact%l_meca_unil) then
         call cucrsd(mesh, numedd, ds_contact)
@@ -289,7 +288,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Create vectors
     call nmcrch(numedd, listFuncActi, sddyna, nlDynaDamping, &
-                ds_contact, valinc, solalg, veasse)
+                valinc, solalg, veasse)
 
 ! - Initializations for dynamic
     call nonlinDSDynamicInit(valinc, sddyna, nlDynaDamping, ds_constitutive)
@@ -335,8 +334,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Prepare constant elementary matrices
     call nminmc(listFuncActi, &
-                model, cara_elem, ds_material, &
-                list_load, numfix, &
+                model, list_load, numfix, &
                 meelem, measse)
 
 ! - Prepare matrices for dynamic

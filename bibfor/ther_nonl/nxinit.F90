@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nxinit(mesh, model, mate, &
-                  cara_elem, compor, list_load, &
+subroutine nxinit(mesh, model, materField, &
+                  caraElem, compor, listLoad, &
                   para, nume_dof, &
                   sddisc, ds_inout, sdobse, &
                   time, ds_algopara, &
@@ -45,11 +45,11 @@ subroutine nxinit(mesh, model, mate, &
 #include "asterfort/nonlinDSPrintInit.h"
 #include "asterfort/utmess.h"
 !
-    character(len=24), intent(in) :: model, mate, cara_elem, compor
-    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: compor
+    character(len=24), intent(in) :: listLoad
     real(kind=8), intent(in) :: para(*)
     character(len=24), intent(out) :: nume_dof
-    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: materField, caraElem, model, mesh
     character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=19), intent(out) :: sdobse
@@ -70,10 +70,10 @@ subroutine nxinit(mesh, model, mate, &
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
+! In  materField       : name of material characteristics (field)
+! In  caraElem         : name of elementary characteristics (field)
 ! In  compor           : name of comportment definition (field)
-! In  list_load        : name of datastructure for list of loads
+! In  listLoad         : name of datastructure for list of loads
 ! In  para             : parameters for time
 !                            (1) THETA
 !                            (2) DELTA
@@ -110,14 +110,12 @@ subroutine nxinit(mesh, model, mate, &
     lnkry = ds_algopara%method == 'NEWTON_KRYLOV'
     l_line_search = ds_algopara%line_search%iter_maxi .gt. 0
 
-!
 ! - Create numbering
-!
-    call ntnume(model, list_load, result, nume_dof)
+    call ntnume(model, listLoad, result, nume_dof)
 !
 ! - Check loads
 !
-    call ntload_chck(list_load)
+    call ntload_chck(listLoad)
 !
 ! - Create unknowns
 !
@@ -126,7 +124,7 @@ subroutine nxinit(mesh, model, mate, &
 ! - Create input/output datastructure
 !
     call ntetcr(nume_dof, ds_inout, &
-                list_load, compor, vhydr, hydr_init)
+                listLoad, compor, vhydr, hydr_init)
 !
 ! - Read initial state
 !
@@ -157,7 +155,7 @@ subroutine nxinit(mesh, model, mate, &
 !
 ! - Prepare storing
 !
-    call nxnoli(model, mate, cara_elem, l_stat, l_evol, &
+    call nxnoli(model, materField, caraElem, l_stat, l_evol, &
                 para, sddisc, ds_inout, ds_algorom)
 !
 end subroutine

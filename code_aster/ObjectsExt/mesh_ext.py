@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,14 @@
 ************************************************************************
 """
 
+import os
+import subprocess
+import tempfile
+
 from ..CodeCommands import CREA_MAILLAGE
 from ..Objects import Mesh, PythonBool
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector, force_list
+from ..Utilities import ExecutionParameter, force_list, injector
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
 
@@ -49,6 +53,14 @@ class MeshStateBuilder(InternalStateBuilder):
 class ExtendedMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
     internalStateBuilder = MeshStateBuilder
+
+    def getCoordinatesAsSimpleFieldOnNodes(self):
+        """Same as :py:meth:`getCoordinates` with a conversion into a *SimpleFieldOnNodes*.
+
+        Returns:
+            *SimpleFieldOnNodesReal*: Coordinates as a *SimpleFieldOnNodes*.
+        """
+        return self.getCoordinates().toFieldOnNodes(self).toSimpleFieldOnNodes()
 
     @classmethod
     def buildRectangle(cls, lx=1.0, ly=1.0, nx=1, ny=1, refine=0, info=1):
@@ -291,6 +303,21 @@ class ExtendedMesh:
                             2 - informations about all steps
         """
         mesh_builder.buildFromMedCouplingMesh(self, mcmesh, verbose)
+
+    def plot(self, command="gmsh", local=False):
+        """Plot the mesh.
+
+        Arguments:
+            command (str): Program to be executed to plot the mesh.
+            local (bool): Only used for a *ParallelMesh*.
+        """
+        # the file will be removed when 'tmpf' object will be deleted
+        tmpf = tempfile.NamedTemporaryFile(suffix=".med")
+        filename = tmpf.name
+        # to avoid the warning on existing file
+        os.remove(filename)
+        self.printMedFile(filename)
+        subprocess.run([ExecutionParameter().get_option(f"prog:{command}"), filename])
 
     def readMedFile(self, filename, meshname=None, verbose=1):
         """Read a MED file containing a mesh.

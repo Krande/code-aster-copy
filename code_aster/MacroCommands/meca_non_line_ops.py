@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -49,9 +49,6 @@ def _contact_check(CONTACT):
             assert not zone.hasSmoothing
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
-
-            if zone.hasFriction:
-                assert zone.getFrictionParameter().getType() == FrictionType.Without
 
         if defi.hasFriction:
             assert CONTACT[0]["ALGO_RESO_FROT"] == "NEWTON"

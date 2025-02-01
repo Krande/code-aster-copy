@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,24 +48,19 @@ subroutine op0199()
     integer :: tabad(5), iadesc, iarefe, i, iadirg, imade
     integer :: iphi1, iphi2, iprsto, iret, itxsto
     integer :: itysto, itzsto, ivalk, ivale
-    integer :: n1, n2, n3, n4, n5, n6, n7, n8, n9
-    real(kind=8) :: rbid, tps(6), mij, cij, kij
+    integer :: n1, nbLoad, n3, n4, n5, n6, n7, n8, n9
+    real(kind=8) :: rbid, mij, cij, kij
     complex(kind=8) :: cbid
     aster_logical :: vrai
     character(len=2) :: model
     character(len=3) :: nd
-    character(len=8) :: nomres, k8bid, modmec, phibar, moint, char
-    character(len=8) :: moflui, ma, materi, nomcmp(6), numgen, modgen
-    character(len=14) :: nu, num, nugene
+    character(len=8) :: nomres, k8bid, modeMeca, phibar, moint, loadName
+    character(len=8) :: modelFluid, matrAsse, materField, numgen, modgen
+    character(len=14) :: numeDof, num, nugene
     character(len=16) :: typres, nomcom
     character(len=19) :: max, may, maz, chamno, solveu
-    character(len=24) :: blanc, time, nocham, mateco
-!
-! -----------------------------------------------------------------
-    data nomcmp/'INST    ', 'DELTAT  ', 'THETA   ',&
-     &               'KHI     ', 'R       ', 'RHO     '/
-    data tps/0.0d0, 2*1.0d0, 3*0.0d0/
-    data solveu/'&&OP0199.SOLVEUR'/
+    character(len=24) :: blanc, nocham, mateco
+
 !
 !-----------------------------------------------------------------
 !
@@ -79,18 +74,18 @@ subroutine op0199()
     nbmo = 0
     ndble = 0
     vrai = .true.
-    time = '&TIME'
+    solveu = '&&OP0199.SOLVEUR'
     nugene = ' '
-    materi = ' '
+    materField = ' '
     mateco = ' '
 !
 ! --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 !
-    call getvid(' ', 'MODELE_FLUIDE', scal=moflui, nbret=n1)
-    call getvid(' ', 'CHARGE', scal=char, nbret=n2)
+    call getvid(' ', 'MODELE_FLUIDE', scal=modelFluid, nbret=n1)
+    call getvid(' ', 'CHARGE', scal=loadName, nbret=nbLoad)
     call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=n3)
-    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n4)
-    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
+    call getvid(' ', 'CHAM_MATER', scal=materField, nbret=n4)
+    call getvid(' ', 'MODE_MECA', scal=modeMeca, nbret=n5)
     call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n6)
     call getvid(' ', 'MODELE_GENE', scal=modgen, nbret=n7)
     call getvid(' ', 'POTENTIEL', scal=phibar, nbret=n8)
@@ -100,16 +95,16 @@ subroutine op0199()
 !
     call cresol(solveu)
 !
-    if (n4 .ne. 0) call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
+    if (n4 .ne. 0) call rcmfmc(materField, mateco, l_ther_=ASTER_FALSE)
 !
     if (n6 .ne. 0) nugene = numgen
 !
     if (n5 .ne. 0) then
-        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid, &
+        call rsorac(modeMeca, 'LONUTI', 0, rbid, k8bid, &
                     cbid, rbid, 'ABSOLU', nbmode, 1, &
                     ibid)
         nbmo = nbmode(1)
-        call rsexch(' ', modmec, 'DEPL', 1, nocham, &
+        call rsexch(' ', modeMeca, 'DEPL', 1, nocham, &
                     iret)
     end if
 !
@@ -123,9 +118,9 @@ subroutine op0199()
 ! --- CALCUL DE LA MATRICE ASSEMBLEE DE RIGIDITE DU FLUIDE
 !--------------------------------------------------------------
 !
-    call rigflu(moflui, time, nomcmp, tps, n2, &
-                char, materi, mateco, solveu, ma, &
-                nu)
+    call rigflu(modelFluid, mateco, &
+                nbLoad, loadName, &
+                solveu, numeDof, matrAsse)
 !
 !--------------------------------------------------------------
 ! CALCUL DES MATR_ELEM AX ET AY DANS L'OPTION FLUX_FLUI_X ET _Y
@@ -146,7 +141,7 @@ subroutine op0199()
 ! SUR LA STRUCTURE
 !================================================================
 !
-    call phi199(model, materi, mateco, ma, nu, &
+    call phi199(model, materField, mateco, matrAsse, numeDof, &
                 num, nbmo, solveu, indice, tabad)
 !
 !--------------------------------------------------------------
@@ -168,8 +163,8 @@ subroutine op0199()
 !=====================================================================
 !
     if (n7 .gt. 0) then
-        call calmdg(model, modgen, nugene, num, nu, &
-                    ma, materi, mateco, moint, ndble, &
+        call calmdg(model, modgen, nugene, num, numeDof, &
+                    matrAsse, materField, mateco, moint, ndble, &
                     itxsto, itysto, itzsto, iprsto, nbmo, &
                     iadirg)
     end if
@@ -204,7 +199,7 @@ subroutine op0199()
 !
 ! --- REMPLISSAGE DU .REFE ET .VALE
 !
-        zk24(iarefe) = modmec
+        zk24(iarefe) = modeMeca
         zk24(iarefe+1) = nugene
         zi(iadesc) = 1
         zi(iadesc+1) = nbmo
@@ -213,7 +208,7 @@ subroutine op0199()
 !
             blanc = ' '
             call cal152('MASS_AJOU', max, may, maz, model, &
-                        blanc, iphi1, iphi2, imade, modmec, &
+                        blanc, iphi1, iphi2, imade, modeMeca, &
                         chamno, num, vrai, i, 1, &
                         mij, cij, kij)
 !
