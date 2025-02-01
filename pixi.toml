@@ -6,13 +6,13 @@ channels = ["conda-forge"]
 platforms = ["win-64", "linux-64"]
 
 [environments]
-local = ["local"]
-local-win = ["local-win", "local"]
-local-unix = ["local-unix", "local"]
-conda-unix = ["conda-unix"]
-conda-win = ["conda-win"]
+common = { features=["common"], solve-group="common", no-default-feature=true }
+local-win = { features = ["local-win"], solve-group="common", no-default-feature=true }
+local-unix = { features = ["local-unix", "common"], no-default-feature=true }
+conda-unix = { features = ["conda-unix"], no-default-feature=true }
+conda-win = { features = ["conda-win"], no-default-feature=true }
 
-[feature.local]
+[feature.common]
 platforms = ["win-64", "linux-64"]
 
 [feature.conda-unix]
@@ -26,22 +26,22 @@ platforms = ["win-64"]
 dependencies = { rattler-build = "*" }
 
 [feature.local-win]
-channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
+channels = ["C:/Work/code/condapackaging/output","https://repo.prefix.dev/code-aster", "conda-forge"]
 platforms = ["win-64"]
 
 [feature.local-unix]
 channels = ["conda-forge"]
 platforms = ["linux-64"]
 
-[feature.local.dependencies]
-python = "3.12.8"
-libboost-devel = "1.84"
-waf = "2.0.27"
-numpy = "1.26"
+[feature.common.dependencies]
+python = "==3.12.8"
+libboost-devel = "==1.86"
+waf = "==2.0.27"
+numpy = "1.26.*"
 pyyaml = "*"
 pytest = "*"
 python-dotenv = "*"
-pybind11 = "2.13.1"
+pybind11 = "==2.13.1"
 setuptools = "*"
 
 [feature.local-unix.dependencies]
@@ -52,19 +52,21 @@ gcc = "13*"
 vswhere = "*"
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
-mkl-devel = "2024.1"
-intel-fortran-rt = "2024.1"
+mkl-devel = "2025.*"
+intel-fortran-rt = "2025.*"
 cmake = "*"
 ninja = "*"
 psutil = "*"
-clang = "18*"
-mfront = { version = "*", channel = "conda-forge" }
-mgis = { version = "*", channel = "conda-forge" }
-libmed = { version = "*", build = "*debug*" }
-medcoupling = { version = "*", build = "*debug*" }
-scotch = { version = "*", build = "*debug*" }
-metis = { version = "*", build = "*debug*" }
-mumps = { version = "*", build = "*debug*" }
+clang = "19.*"
+hdf5 = { version = "*", build = "*debug*" }
+mfront = { version = "*", build = "*debug*" }
+mgis = { version = "*", build = "*debug*" }
+libmed = { version = "*", build = "*debug*INT64*" }
+medcoupling = { version = "*", build = "*debug*INT64*" }
+libscotch = { version = "*", build = "*debug*INT64*" }
+scotch = { version = "*", build = "*debug*INT64*" }
+metis = { version = "*", build = "*debug*INT64*" }
+mumps = { version = "*", build = "*debug*INT64*" }
 
 [feature.conda-win.tasks]
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
