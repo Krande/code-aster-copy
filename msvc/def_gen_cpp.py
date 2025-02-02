@@ -42,7 +42,7 @@ def parse_args() -> argparse.Namespace:
 
 
 class Scanner:
-    def __init__(self):
+    def __init__(self, debug=False):
         prefix = os.getenv("CONDA_PREFIX")
 
         if not prefix:  # Probably running from IDE
@@ -58,6 +58,12 @@ class Scanner:
 
         if not clang_cl_exe:
             raise RuntimeError("clang-cl not found in PATH")
+        if debug:
+            self.bibcxx_dir = (Path(__file__).parent / "../build/std/debug/bibcxx").resolve().absolute()
+        else:
+            self.bibcxx_dir = (Path(__file__).parent / "../build/std/release/bibcxx").resolve().absolute()
+        if not self.bibcxx_dir.exists():
+            raise RuntimeError("bibcxx not found in build directory")
 
         self.clang_cl = clang_cl_exe
         self.llvm_nm = llvm_nm_exe
@@ -68,12 +74,18 @@ class Scanner:
         self.bibcxx_include_paths = [f"/I{bibcxx_include_paths.as_posix()}", f"/I{bibcxx_include_paths.as_posix()}/include", f"/I{bibc_include_paths.as_posix()}/include", f"/I{py_include.as_posix()}"]
 
         self.symbols_filter = [
-            "Ref_count_obj",
+            "Ref_count",
             "shared_ptr@",
             "Incref@",
             "Destroy@",
             "Delete_this@",
-            "Decref@"
+            "Decref@",
+            "_vfprintf_l",
+            "_vscprintf_l",
+            "wmemcpy",
+            "wmemset",
+            "bad_alloc",
+            "bad_cast",
         ]
         # make symbols lower
         self.symbols_filter = [f.lower() for f in self.symbols_filter]
@@ -125,18 +137,11 @@ def extract_symbols(obj_file: Path, scanner: Scanner) -> set[str]:
                 symbols.add(name)
     return symbols
 
-def build_def(sources,obj_dir,lib,output, use_as_cli=False, compile_objs=False) -> None:
-    if use_as_cli:
-        args = parse_args()
-        sources = args.sources
-        obj_dir = args.obj_dir
-        lib = args.lib
-        output = args.output
-
-    scanner = Scanner()
+def build_def(scanner: Scanner, sources, obj_dir, output, lib, compile_objs=False) -> None:
     all_symbols: set[str] = set()
     if not compile_objs:
-        obj_files = Path("../build/std/debug/bibcxx").resolve().absolute().rglob("*.o")
+        obj_files = scanner.bibcxx_dir.rglob("*.o")
+
         for obj_file in obj_files:
             symbols = extract_symbols(obj_file, scanner)
             all_symbols |= symbols
@@ -147,6 +152,8 @@ def build_def(sources,obj_dir,lib,output, use_as_cli=False, compile_objs=False) 
             all_symbols |= symbols
 
     print(f"Found {len(all_symbols)} symbols.")
+    if len(list(all_symbols)) == 0:
+        raise RuntimeError("No symbols files found. Please compile the sources first.")
 
     # Write the .def file with the standard format.
     with output.open("w") as f:
@@ -164,8 +171,9 @@ def main():
     lib = "bibcxx"
     output = Path("bibcxx.def")
     obj_dir.mkdir(parents=True, exist_ok=True)
+    scanner = Scanner(debug=True)
 
-    build_def(sources, obj_dir,lib,output,False)
+    build_def(scanner, sources, obj_dir, output, lib)
 
 
 if __name__ == "__main__":

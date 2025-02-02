@@ -83,7 +83,7 @@ ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-as
 [feature.conda.target.linux-64.tasks]
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
 cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
-ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+ctest = { cmd = ["rattler-build", "test",  "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 
 [feature.int32.target.linux-64.tasks]
 build = { cmd = ["waf", "configure", "build"], description = "Build the project" }
