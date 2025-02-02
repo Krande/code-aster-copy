@@ -105,7 +105,7 @@ set INCLUDES_BIBC=%PREF_ROOT%/include %SRC_DIR%/bibfor/include %INCLUDES_BIBC%
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN
 
-python conda\scripts\update_version.py
+python %RECIPE_DIR%\scripts\update_version.py
 
 python %RECIPE_DIR%\config\set_env_var.py %SRC_DIR%
 
