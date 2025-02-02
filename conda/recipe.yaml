@@ -2,11 +2,13 @@ schema_version: 1
 
 context:
   name: code-aster
-  version: 17.2.1
+  source_version: 17.2.6
   win_build: 1
-  build: 200
-  mpi_prefix: nompi
-  build_type: debug
+  version: ${{ source_version + "." + win_build }}
+  build_base: 0
+  mpi_num: ${{ 100 if mpi == 'nompi' else 0 }}
+  build: ${{ (200 if build_type == 'release' else 0) + int_type|int + mpi_num|int + build_base|int }}
+  mpi_prefix: ${{ mpi or 'nompi' }}
 
 package:
   name: ${{ name|lower }}
@@ -17,7 +19,7 @@ source:
 
 build:
   number: ${{ build }}
-  string: py${{ python | replace('.', '') }}_${{ mpi_prefix }}_${{ build_type }}_h${{ hash }}_${{ build }}
+  string: py${{ python | replace('.', '') }}_${{ mpi_prefix }}_${{ build_type }}_INT${{ int_type }}_h${{ hash }}_${{ build }}
 
 requirements:
   build:
@@ -46,15 +48,13 @@ requirements:
     - zlib
     - if: win
       then:
-        - "hdf5 * *debug*"
-        - "metis * *debug*"
-        - "mumps * *debug*"
-        - "mfront * *debug*"
-        - "mgis * *debug*"
-        - "libmed * *debug*"
-        - "libscotch * *debug*"
-        - "scotch * *debug*"
-        - "medcoupling * *debug*"
+        - metis * *${{ build_type }}*INT${{ int_type }}*
+        - mumps * *${{ build_type }}*INT${{ int_type }}*
+        - mfront * *${{ build_type }}*
+        - mgis * *${{ build_type }}*
+        - libmed * *${{ build_type }}*INT${{ int_type }}*
+        - scotch * *${{ build_type }}*INT${{ int_type }}*
+        - medcoupling * *${{ build_type }}*INT${{ int_type }}*
         - psutil
     - if: not win
       then:
@@ -67,7 +67,6 @@ requirements:
         - libmed
         - medcoupling
   run:
-    - python
     - if: win
       then:
         - intel-fortran-rt

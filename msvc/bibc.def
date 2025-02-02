@@ -103,7 +103,6 @@ EXPORTS
 	asterc_getopt_double
 	asterc_getopt_long
 	asterc_getopt_string
-	asterc_matfpe
 	calc_SPEC_OSCI
 	cheksd_
 	chkmsg_

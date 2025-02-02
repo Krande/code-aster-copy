@@ -1,37 +1,27 @@
 [project]
 name = "code-aster"
-version = "17.2.1"
+version = "17.2.6"
 description = "A pixi project for building the windows variant of code aster"
 channels = ["conda-forge"]
 platforms = ["win-64", "linux-64"]
 
 [environments]
-common = { features=["common"], solve-group="common", no-default-feature=true }
-local-win = { features = ["local-win"], solve-group="common", no-default-feature=true }
-local-unix = { features = ["local-unix", "common"], no-default-feature=true }
-conda-unix = { features = ["conda-unix"], no-default-feature=true }
-conda-win = { features = ["conda-win"], no-default-feature=true }
+common = { features = ["common"], solve-group = "common", no-default-feature = true }
+dev = { features = ["dev", "common"], no-default-feature = true }
+int64 = { features = ["int64", "common"], no-default-feature = true }
+int32 = { features = ["int32", "common"], no-default-feature = true }
+conda = { features = ["conda"], no-default-feature = true }
 
-[feature.common]
-platforms = ["win-64", "linux-64"]
-
-[feature.conda-unix]
+[feature.conda]
 channels = ["conda-forge"]
-platforms = ["linux-64"]
+platforms = ["linux-64", "win-64"]
 dependencies = { rattler-build = "*" }
 
-[feature.conda-win]
-channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
-platforms = ["win-64"]
-dependencies = { rattler-build = "*" }
+[feature.int64]
+channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
 
-[feature.local-win]
-channels = ["C:/Work/code/condapackaging/output","https://repo.prefix.dev/code-aster", "conda-forge"]
-platforms = ["win-64"]
-
-[feature.local-unix]
-channels = ["conda-forge"]
-platforms = ["linux-64"]
+[feature.int32]
+channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
 
 [feature.common.dependencies]
 python = "==3.12.8"
@@ -44,20 +34,26 @@ python-dotenv = "*"
 pybind11 = "==2.13.1"
 setuptools = "*"
 
-[feature.local-unix.dependencies]
+[feature.common.target.linux-64.dependencies]
 gfortran = "13*"
+gxx = "13*"
 gcc = "13*"
 
-[feature.local-win.dependencies]
+[feature.common.target.win-64.dependencies]
 vswhere = "*"
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
-mkl-devel = "2025.*"
-intel-fortran-rt = "2025.*"
+mkl-devel = "*"
 cmake = "*"
 ninja = "*"
 psutil = "*"
-clang = "19.*"
+clang = "18.*"
+
+[feature.dev.target.win-64.dependencies]
+clangdev = "18.*"
+pixi-pycharm = "*"
+
+[feature.int64.target.win-64.dependencies]
 hdf5 = { version = "*", build = "*debug*" }
 mfront = { version = "*", build = "*debug*" }
 mgis = { version = "*", build = "*debug*" }
@@ -68,22 +64,37 @@ scotch = { version = "*", build = "*debug*INT64*" }
 metis = { version = "*", build = "*debug*INT64*" }
 mumps = { version = "*", build = "*debug*INT64*" }
 
-[feature.conda-win.tasks]
-cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
-cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
-ctest = { cmd = ["rattler-build", "test", "-c","https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+[feature.int32.target.win-64.dependencies]
+hdf5 = { version = "*", build = "*debug*" }
+mfront = { version = "*", build = "*debug*" }
+mgis = { version = "*", build = "*debug*" }
+libmed = { version = "*", build = "*debug*INT32*" }
+medcoupling = { version = "*", build = "*debug*INT32*" }
+libscotch = { version = "*", build = "*debug*INT32*" }
+scotch = { version = "*", build = "*debug*INT32*" }
+metis = { version = "*", build = "*debug*INT32*" }
+mumps = { version = "*", build = "*debug*INT32*" }
 
-[feature.conda-unix.tasks]
-cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
-cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
-ctest = { cmd = ["rattler-build", "test", "-c","https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+[feature.conda.target.win-64.tasks]
+cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml"] }
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml","-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 
-[feature.local-unix.tasks]
+[feature.conda.target.linux-64.tasks]
+cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+
+[feature.int32.target.linux-64.tasks]
 build = { cmd = ["waf", "configure", "build"], description = "Build the project" }
 
-[feature.local-win.tasks]
-build = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
-install = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+[feature.int64.target.win-64.tasks]
+build64 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+install64 = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+
+[feature.int32.target.win-64.tasks]
+build32 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+install32 = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
 test = { cmd = [
     "run_ctest",
     "--resutest=temp\\seq",
@@ -115,5 +126,8 @@ bibfor_cmake_configure = { cmd = [
 ], description = "Configure the project for building bibfor", env = { FC = "ifx.exe", CC = "clang-cl", CXX = "clang-cl" } }
 cmake_bibfor = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends-on = ["bibfor_cmake_configure"] }
 
-[feature.local-win.target.win-64.activation]
+[feature.int64.target.win-64.activation]
+scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
+
+[feature.int32.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]

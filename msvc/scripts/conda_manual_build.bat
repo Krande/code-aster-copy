@@ -92,7 +92,7 @@ SET MKLROOT=%MKLROOT:\=/%
 SET LIB_PATH_ROOT=%LIBRARY_PREFIX:\=/%
 SET PREF_ROOT=%PREFIX:\=/%
 
-REM set INCLUDES_PYBIND11=%LIB_PATH_ROOT%/include
+set INCLUDES_PYBIND11=%LIB_PATH_ROOT%/include
 
 set LIBPATH_HDF5=%LIB_PATH_ROOT%/lib
 set INCLUDES_HDF5=%LIB_PATH_ROOT%/include
@@ -120,7 +120,7 @@ set LIBPATH=%PREF_ROOT%/libs %LIBPATH%
 REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on multiple threads (for cl.exe only)
 
 set CFLAGS=%CFLAGS% /FS /MD -Wno-visibility
-set CXXFLAGS=%CXXFLAGS% /MD /std:c++17
+set CXXFLAGS=%CXXFLAGS% /MD -Wno-visibility
 
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"

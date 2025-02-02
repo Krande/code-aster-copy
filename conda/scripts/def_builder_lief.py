@@ -1,5 +1,6 @@
 # use lief to get exported symbols from a library
 # requires lief and logzero. and a list of libraries to analyze
+
 import lief
 import sys
 

@@ -546,10 +546,8 @@ EXPORTS
     calc_cara_homo_
     calc_coor_elga_
     calc_epth_elga_
-    calc_fact_int_cont_
     calc_glrcdm_err_
     calc_h_tria_
-    calc_infl_k1_
     calc_moment_
     calc_myf_gf_
     calc_norm_coef_
@@ -575,7 +573,6 @@ EXPORTS
     calci_
     calcin_
     calcj0_
-    calck1_
     calcme_
     calcmm_
     calcms_
@@ -652,7 +649,6 @@ EXPORTS
     caracm_
     caraco_
     caracp_
-    caracx_
     caraff_
     caralv_
     caramx_
@@ -692,7 +688,6 @@ EXPORTS
     cazocm_
     cazoco_
     cazocp_
-    cazocx_
     cazofm_
     cazouu_
     cbchei_
@@ -1148,13 +1143,6 @@ EXPORTS
     codree_
     coecis_
     coedef_
-    coef_infl_
-    coef_infl_a1_
-    coef_infl_b1_
-    coef_infl_b2_
-    coef_infl_c1_
-    coef_infl_c2_
-    coef_poly_
     coefal_
     coefam_
     coefdg_
@@ -1266,7 +1254,6 @@ EXPORTS
     copich_
     copis2_
     copisd_
-    coplas_
     copmat_
     copmod_
     copnor_
@@ -1611,7 +1598,6 @@ EXPORTS
     dfc_read_cont_
     dfc_read_disc_
     dfc_read_lac_
-    dfc_read_xfem_
     dfc_read_zone_
     dfc_save_dime_
     dfda2d_
@@ -2270,7 +2256,6 @@ EXPORTS
     extrac_
     extrai_
     extrma_
-    extrs1_
     extrs2_
     extrs3_
     facint_
@@ -2517,11 +2502,13 @@ EXPORTS
     getfailaction_
     getfailevent_
     getfluidpara_
+    getintercont_
     getintvect_
     getiofield_
     getkinematicforhho_
     getkinematicvalues_
     getlogvect_
+    getmainpara_
     getmat33tab_
     getmfrontplanestress_
     getnode_
@@ -2638,6 +2625,7 @@ EXPORTS
     hlode_
     hmdeca_
     hmderp_
+    hmderp2_
     hplass_
     hsaco_
     hsall_
@@ -2802,8 +2790,10 @@ EXPORTS
     intdevo_
     intdevo_oper_
     intdis_
+    intecellareawrap_
     intega_
     intenc_
+    intepoincoorwrap_
     interf_
     internodesedge_
     internodesinside_
@@ -3095,10 +3085,18 @@ EXPORTS
     laelemcont_
     lagmodtonommod_
     lamatr_
+    lamatr_cf_pr_
+    lamatr_ct_pr_
+    lamatr_ct_std_
+    lamatr_diff_
     laparam_
     laquantities_
     latrco_
     lavect_
+    lavect_cf_pr_
+    lavect_cf_std_
+    lavect_ct_pr_
+    lavect_ct_std_
     lc0000_
     lc0001_
     lc0002_
@@ -3441,24 +3439,20 @@ EXPORTS
     liacar_
     liared_
     libint_
-    licrsd_save_
     liexco_
     liglma_
     ligrma_
     liimpr_
     limaco_
-    limacx_
     limend_
     lipsrb_
     lireco_
     liritm_
     lirlig_
     lirtet_
-    liscad_
     lisccc_
     lisccm_
     lisccp_
-    lisccr_
     lischk_
     liscli_
     liscn1_
@@ -3466,13 +3460,11 @@ EXPORTS
     liscnv_
     liscom_
     liscpp_
-    liscpy_
     liscrs_
     liscva_
     lisdbl_
     lisdef_
     lisexi_
-    lisexp_
     lisico_
     lisimp_
     lislch_
@@ -3480,7 +3472,6 @@ EXPORTS
     lislco_
     lislec_
     lislef_
-    lislfc_
     lislic_
     lisllc_
     lislnf_
@@ -3548,23 +3539,10 @@ EXPORTS
     lkvacv_
     lkvarp_
     lkvarv_
-    load_list_getp_
     load_list_info_
-    load_neum_comp_
-    load_neum_evcm_
-    load_neum_matr_
-    load_neum_prep_
-    load_neum_spec_
-    load_neut_comp_
     load_neut_data_
-    load_neut_evol_
-    load_neut_excl_
     load_neut_iden_
-    load_neut_prep_
-    load_neut_spec_
     load_unde_diri_
-    loadexcludedforanalysis_
-    loadgetneumanntype_
     lobs_
     locglo_
     loncar_
@@ -4424,7 +4402,6 @@ EXPORTS
     nmdocv_
     nmdoet_
     nmdoin_
-    nmdome_
     nmdomt_
     nmdomt_ls_
     nmdopi_
@@ -4813,7 +4790,6 @@ EXPORTS
     ntdoch_wrap_
     ntdoet_
     ntdomt_
-    ntdoth_
     ntetcr_
     ntetl3_
     ntfcma_
@@ -5066,7 +5042,6 @@ EXPORTS
     op0195_
     op0196_
     op0197_
-    op0198_
     op0199_
     op9999_
     optimw_
@@ -5112,6 +5087,7 @@ EXPORTS
     padist_
     padtma_
     paeldt_
+    pairwrap_
     paligi_
     palima_
     palino_
@@ -5471,6 +5447,7 @@ EXPORTS
     qintzz_
     qires1_
     quadco_
+    quadpoincoorwrap_
     quavro_
     r8inir_
     r8rotg_
@@ -5617,7 +5594,6 @@ EXPORTS
     recbgl_
     recddl_
     rechmc_
-    rechth_
     reci2d_
     reci3d_
     reciex_
@@ -5632,9 +5608,6 @@ EXPORTS
     recude_
     recugd_
     recuma_
-    recupe_
-    recutb_
-    recuvl_
     recyec_
     recygl_
     redece_
@@ -5927,6 +5900,7 @@ EXPORTS
     rsexis_
     rsexpa_
     rsgetallfieldtype_
+    rsgetmainpara_
     rsgetonebehaviourfromresult_
     rsgetonemodelfromresult_
     rsgetsize_
@@ -6239,7 +6213,6 @@ EXPORTS
     sumetr_
     surfc1_
     surfc2_
-    surfc3_
     surfcl_
     surfco_
     surfcp_
@@ -7309,7 +7282,6 @@ EXPORTS
     verinr_
     verins_
     veripl_
-    veritb_
     vermot_
     vernmb_
     versst_
@@ -7502,14 +7474,12 @@ EXPORTS
     xalg42_
     xalgo2_
     xalgo3_
-    xappar_
     xasdpl_
     xassfa_
     xassha_frac_
     xasshm_
     xasshm_frac_
     xasshv_frac_
-    xbarvi_
     xbasgl_
     xbaslo_
     xbsig_
@@ -7547,9 +7517,7 @@ EXPORTS
     xcodec_
     xcomhm_
     xconno_
-    xconta_
     xcoocy_
-    xcopco_
     xcourb_
     xcpmo1_
     xcpmo2_
@@ -7564,7 +7532,6 @@ EXPORTS
     xdecov_
     xdecqu_
     xdecqv_
-    xdefco_
     xdeffe_
     xdeffk_
     xdeffk_wrap_
@@ -7603,7 +7570,6 @@ EXPORTS
     xfem_pc_rhs_
     xfem_pc_sol_
     xfem_precond_
-    xfem_rel_lin_
     xfem_store_pc_
     xffcr_
     xffext_
@@ -7659,22 +7625,14 @@ EXPORTS
     xmasel_
     xmasth_
     xmathm_
-    xmchex_
     xmcont_
     xmcoor_
-    xmctcg_
     xmdeco_
-    xmele1_
-    xmele2_
-    xmele3_
-    xmelem_
-    xmelin_
     xmfrot_
     xmifis_
     xmilar_
     xmilfa_
     xmilfi_
-    xminit_
     xminte_
     xmmaa3_
     xmmaa4_
@@ -7686,7 +7644,6 @@ EXPORTS
     xmmatb_
     xmmatc_
     xmmatu_
-    xmmbca_
     xmmbp3_
     xmmbp5_
     xmmco1_
@@ -7710,8 +7667,6 @@ EXPORTS
     xmoini_
     xmolig_
     xmprep_
-    xmrema_
-    xmrept_
     xmrlst_
     xmulco_
     xmulhm_
@@ -7777,11 +7732,9 @@ EXPORTS
     xprvir_
     xprvit_
     xptfon_
-    xreacl_
     xrecff_
     xrechp_
     xrela_elim_
-    xrelco_
     xrell1_
     xrell2_
     xrell3_
@@ -7856,7 +7809,6 @@ EXPORTS
     xxlagm_
     xxlan5_
     xxmmvd_
-    xxmxme_
     xxnmel_
     xxnmpl_
     zacier_

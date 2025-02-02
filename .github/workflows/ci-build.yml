@@ -13,12 +13,19 @@ env:
 
 jobs:
   build:
+    name: Build ${{ matrix.builds.build }}
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.builds.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        builds: [
+          { os: windows-latest, build: .ci_nompi_release_64 },
+          { os: windows-latest, build: .ci_nompi_debug_64 },
+          { os: windows-latest, build: .ci_nompi_release_32 },
+          { os: windows-latest, build: .ci_nompi_release_64 },
+          { os: ubuntu-latest }
+        ]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,13 +39,13 @@ jobs:
 
       - uses: prefix-dev/setup-pixi@v0.8.1
         with:
-          pixi-version: v0.39.2
+          pixi-version: v0.40.3
           cache: true
 
       - name: Build Code_Aster
         shell: bash
         run: |
-          pixi run cbuild --no-test
+          pixi run cbuild --no-test -m conda/${{ matrix.builds.build }}
 
       - name: If failed build, upload log
         if: ${{ failure() }}
