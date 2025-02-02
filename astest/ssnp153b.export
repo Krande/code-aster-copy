@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnp153b.comm D 1
-F datg ssnp153a.datg D 16
-F mmed ssnp153a.mmed D 20
+F datg ssnp153b.datg D 16
+F mmed ssnp153b.mmed D 20
