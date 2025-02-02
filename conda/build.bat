@@ -82,9 +82,9 @@ if "%build_type%" == "debug" (
     set LDFLAGS=%LDFLAGS% /DEBUG /INCREMENTAL:NO
 ) else (
     REM set the equivalent of RelWithDebInfo
-    set FCFLAGS=%FCFLAGS% /debug:full /debug-parameters:all /traceback
-    set CFLAGS=%CFLAGS% /Z7
-    set CXXFLAGS=%CXXFLAGS% /Z7
+    REM set FCFLAGS=%FCFLAGS% /debug:full /debug-parameters:all /traceback
+    REM set CFLAGS=%CFLAGS% /Z7
+    REM set CXXFLAGS=%CXXFLAGS% /Z7
 )
 
 :: Add Math libs

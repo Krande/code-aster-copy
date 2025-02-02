@@ -128,7 +128,6 @@ if "%FC%" == "ifx.exe" (
     set FCFLAGS=%FCFLAGS% /fpp /MD /4I8 /4R8 /names:lowercase /assume:underscore /assume:nobscc /fpe:0
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
-
 ) else (
     echo "Using LLVM Flang Fortran compiler"
     set FC_SEARCH=flang
