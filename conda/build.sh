@@ -30,7 +30,7 @@ export LIBPATH_MEDCOUPLING="${PREFIX}/lib"
 export INCLUDES_MEDCOUPLING="${PREFIX}/include"
 export PYPATH_MEDCOUPLING=${SP_DIR}
 
-python conda/scripts/update_version.py
+python $SRC_DIR/conda/scripts/update_version.py
 
 mpi_type=std
 if [[ "$mpi" != "nompi" ]]; then

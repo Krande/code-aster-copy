@@ -84,5 +84,5 @@ jobs:
       - name: Save Run directory to artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: TestResults-${{ runner.os }}-${{ github.run_id }}
+          name: TestResults-${{ matrix.builds.os_brief }}-${{ matrix.builds.build }}-${{ github.run_id }}
           path: ${{ env.OUTPUT_DIR }}

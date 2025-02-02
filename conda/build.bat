@@ -58,11 +58,12 @@ set CXXFLAGS=%CXXFLAGS% /MD
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0
+    set FCFLAGS=%FCFLAGS% /fpp /4I8 /4R8 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
     if "%int_type%" == "64" (
-        set FFLAGS=%FFLAGS% /4I8 /4R8
+        echo "Setting 64-bit integer type"
+        set FFLAGS=%FFLAGS%
     )
 ) else (
     echo "Using LLVM Flang Fortran compiler"
