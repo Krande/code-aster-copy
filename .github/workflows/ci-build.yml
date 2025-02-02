@@ -45,7 +45,7 @@ jobs:
       - name: Build Code_Aster
         shell: bash
         run: |
-          pixi run cbuild --no-test -m ${{github.workspace}}/conda/${{ matrix.builds.build }}
+          pixi run cbuild --no-test -m ${{github.workspace}}/conda/${{ matrix.builds.build }}.yaml
 
       - name: If failed build, upload log
         if: ${{ failure() }}
