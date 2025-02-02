@@ -68,7 +68,7 @@ Returns:
     bool: True if the pairing quantities are updated appropriately
 )" );
     #ifdef ASTER_PLATFORM_MSVC64
-    class_.def( "compute", py::overload_cast<>( &ContactPairing::compute ),
+    class_.def( "compute", py::overload_cast< ASTERINTEGER & >( &ContactPairing::compute ),
     #else
     class_.def( "compute", py::overload_cast< long int & >( &ContactPairing::compute ),
     #endif
@@ -98,7 +98,8 @@ Returns:
     class_.def(
         "getNumberOfPairs",
         #ifdef ASTER_PLATFORM_MSVC64
-            py::overload_cast<>( &ContactPairing::getNumberOfPairs, py::const_ ),
+        static_cast<ASTERINTEGER (ContactPairing::*)(const ASTERINTEGER &) const>(
+&ContactPairing::getNumberOfPairs),
         #else
             py::overload_cast< const long int & >( &ContactPairing::getNumberOfPairs, py::const_ ),
         #endif
@@ -114,7 +115,8 @@ Returns:
     class_.def(
         "getListOfPairs",
         #ifdef ASTER_PLATFORM_MSVC64
-            py::overload_cast<>( &ContactPairing::getListOfPairs, py::const_ ),
+        static_cast<VectorPairLong (ContactPairing::*)(const ASTERINTEGER &) const>(
+&ContactPairing::getListOfPairs),
         #else
             py::overload_cast< const long int & >( &ContactPairing::getListOfPairs, py::const_ ),
         #endif
