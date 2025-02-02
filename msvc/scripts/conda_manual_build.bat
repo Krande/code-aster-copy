@@ -233,7 +233,7 @@ if %USE_LOG%==1 (
 
 if errorlevel 1 exit 1
 
-call conda_rearrange.bat
+call %~dp0\conda_rearrange.bat
 
 if errorlevel 1 exit 1
 
