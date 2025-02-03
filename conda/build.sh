@@ -61,6 +61,13 @@ else
   echo "FCFLAGS: $FCFLAGS"
 fi
 
+if [[ "${int_type}" == "64" ]]; then
+    echo "Using 32-bit integer type"
+    export DEFINES=%DEFINES% ASTER_INT8
+else
+    echo "Using 32-bit integer type"
+    export DEFINES=%DEFINES% ASTER_INT4
+fi
 
 if [[ "$mpi" == "nompi" ]]; then
   # Install for standard sequential
