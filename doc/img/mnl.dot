@@ -6,10 +6,11 @@ digraph MNL {
     node [fontname = "Helvetica,Arial,sans-serif"; shape = "box";];
     edge [fontname = "Helvetica,Arial,sans-serif";];
     
-    subgraph {
+    subgraph bases {
         keywords [label = "Keywords";];
         problem [label = "PhysicalProblem";shape = "ellipse";];
         state [label = "PhysicalState";shape = "ellipse";];
+        context [label = "ContextMixin";];
     }
     
     mnl [label = "meca_non_line_ops";];
@@ -150,6 +151,8 @@ digraph MNL {
     
     timestepper -> observ [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
     
+    // new
+    pbsolv -> context [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
     // placement
     timestepper -> stepsolv [style = "invis";];
 }

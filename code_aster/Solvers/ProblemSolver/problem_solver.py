@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,20 +29,21 @@ from ...Utilities import (
     logger,
     no_new_attributes,
 )
-from ..Basics import PhysicalState, SolverFeature
+from ..Basics import ContextMixin, PhysicalState, SolverFeature
 from ..Basics import SolverOptions as SOP
 from ..StepSolvers import BaseStepSolver
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
 from .line_search import LineSearch
 from .newton_solver import NewtonSolver
-from .snes_solver import SNESSolver
+from .non_linear_solver import NonLinearSolver
 from .raspen_solver import RASPENSolver
+from .snes_solver import SNESSolver
 from .storage_manager import StorageManager
 from .time_stepper import TimeStepper
 
 
-class ProblemSolver(SolverFeature):
+class ProblemSolver(SolverFeature, ContextMixin):
     """Solver for linear and non linear problem.
 
     Arguments:
@@ -67,27 +68,18 @@ class ProblemSolver(SolverFeature):
         SOP.PostStepHook,
     ]
 
-    _main = _result = None
-    _phys_state = None
+    _main = None
     _verb = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, main, result, pb_type) -> None:
+    def __init__(self, phys_pb, problem_type, result) -> None:
         super().__init__()
-        self._main = main
-        self._result = result
-        self._phys_state = PhysicalState(pb_type, size=1)
+        self.problem = phys_pb
+        self.problem_type = problem_type
+        self.result = result
+        self.state = PhysicalState(problem_type, size=1)
+        self._main = NonLinearSolver()
         self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
-
-    @property
-    def phys_state(self):
-        """PhysicalState: current state."""
-        return self._phys_state
-
-    @property
-    def result(self):
-        """*misc* : the result object."""
-        return self._result
 
     def setKeywords(self, **args):
         """Set parameters from user keywords.
@@ -103,8 +95,8 @@ class ProblemSolver(SolverFeature):
         args = self.get_feature(SOP.Keywords, optional=True)
         self._setLoggingLevel(args.get("INFO", 1))
         # required to build other default objects
-        self._main.use(self.phys_pb)
-        self._main.use(self._phys_state)
+        self._main.use(self.problem)
+        self._main.use(self.state)
         self._main.use(args, SOP.Keywords)
         self._main.use(self._get_stepper())
         self._main.use(self._get_storage())
@@ -124,7 +116,7 @@ class ProblemSolver(SolverFeature):
         finally:
             self._resetLoggingLevel()
             deleteTemporaryObjects()
-        return self._result
+        return self.result
 
     def _setLoggingLevel(self, level):
         """Set logging level.
@@ -156,9 +148,7 @@ class ProblemSolver(SolverFeature):
         if not store:
             args = self.get_feature(SOP.Keywords)
             reuse = args.get("REUSE")
-            store = StorageManager(
-                self._result, args.get("ARCHIVAGE"), reused=reuse is self._result
-            )
+            store = StorageManager(self.result, args.get("ARCHIVAGE"), reused=reuse is self.result)
             if reuse:
                 init_state = args.get("ETAT_INIT")
                 assert init_state
@@ -284,9 +274,9 @@ class ProblemSolver(SolverFeature):
 
     def _get(self, option, required):
         if option & SOP.PhysicalProblem:
-            return self.phys_pb
+            return self.problem
         if option & SOP.PhysicalState:
-            return self.phys_state
+            return self.state
         if option & SOP.Storage:
             return self._get_storage()
         if option & SOP.LinearSolver:

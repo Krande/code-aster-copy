@@ -86,7 +86,7 @@ class IncrementalSolver(SolverFeature, EventSource):
 
         if contact_manager:
             contact_manager.update(self.phys_state)
-            contact_manager.pairing(self.phys_pb)
+            contact_manager.pairing()
 
         if not matrix:
             jacobian = self.opers_manager.getJacobian(matrix_type)

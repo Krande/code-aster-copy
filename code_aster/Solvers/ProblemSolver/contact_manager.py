@@ -20,8 +20,8 @@
 from ...Objects import (
     ContactComputation,
     ContactPairing,
-    ParallelContactPairing,
     ParallelContactNew,
+    ParallelContactPairing,
     ParallelFrictionNew,
 )
 from ...Utilities import no_new_attributes, profile
@@ -62,33 +62,28 @@ class ContactManager(SolverFeature):
             self.coef_cont, self.coef_frot = self.comp.contactCoefficient()
 
     @profile
-    def pairing(self, phys_pb):
-        """Pairing between contact zones.
+    def pairing(self):
+        """Pairing between contact zones."""
+        if not self.enable:
+            return
+        self.pair.compute()
 
-        Arguments:
-            phys_pb (PhysicalProblem): physical problem
-        """
+        # Numbering does not change but connectivity yes.
+        phys_pb = self.phys_pb
+        if isinstance(self.defi, (ParallelFrictionNew, ParallelContactNew)):
+            fed_defi = self.defi.getParallelFiniteElementDescriptor()
+        else:
+            fed_defi = self.defi.getFiniteElementDescriptor()
+        if isinstance(self.pair, ParallelContactPairing):
+            fed_pair = self.pair.getParallelFiniteElementDescriptor()
+        else:
+            fed_pair = self.pair.getFiniteElementDescriptor()
+        phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, fed_pair)
+        model = phys_pb.getModel()
+        loads = phys_pb.getListOfLoads()
+        phys_pb.getDOFNumbering().computeRenumbering(model, loads)
 
-        if self.enable:
-            self.pair.compute()
-
-            # Numbering does not change but connectivity yes.
-            if isinstance(self.defi, ParallelFrictionNew) or isinstance(
-                self.defi, ParallelContactNew
-            ):
-                fed_defi = self.defi.getParallelFiniteElementDescriptor()
-            else:
-                fed_defi = self.defi.getFiniteElementDescriptor()
-            if isinstance(self.pair, ParallelContactPairing):
-                fed_pair = self.pair.getParallelFiniteElementDescriptor()
-            else:
-                fed_pair = self.pair.getFiniteElementDescriptor()
-            phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, fed_pair)
-            model = phys_pb.getModel()
-            loads = phys_pb.getListOfLoads()
-            phys_pb.getDOFNumbering().computeRenumbering(model, loads)
-
-            self.nb_pairing += 1
+        self.nb_pairing += 1
 
     @profile
     def getPairingCoordinates(self):
@@ -97,11 +92,9 @@ class ContactManager(SolverFeature):
         Returns:
             MeshCoordinatesField: coordinates of nodes used for pairing:
         """
-
-        if self.enable:
-            return self.pair.getCoordinates()
-
-        return None
+        if not self.enable:
+            return
+        return self.pair.getCoordinates()
 
     @profile
     def setPairingCoordinates(self, coor):
@@ -110,9 +103,9 @@ class ContactManager(SolverFeature):
         Returns:
             coor (MeshCoordinatesField): coordinates of nodes used for pairing
         """
-
-        if self.enable:
-            self.pair.setCoordinates(coor)
+        if not self.enable:
+            return
+        self.pair.setCoordinates(coor)
 
     @profile
     def data(self):
@@ -121,13 +114,11 @@ class ContactManager(SolverFeature):
         Returns:
             (FieldOnCellsReal): data
         """
-
-        if self.enable:
-            return self.comp.contactData(
-                self.pair, self.phys_pb.getMaterialField(), self.nb_pairing <= 1
-            )
-
-        return None
+        if not self.enable:
+            return
+        return self.comp.contactData(
+            self.pair, self.phys_pb.getMaterialField(), self.nb_pairing <= 1
+        )
 
     @property
     def enable(self):
@@ -136,10 +127,8 @@ class ContactManager(SolverFeature):
         Returns:
          (bool): True if enable else False
         """
-
         if self.defi is not None:
             return True
-
         return False
 
     def update(self, phys_state):
@@ -148,6 +137,6 @@ class ContactManager(SolverFeature):
         Arguments:
             phys_state (PhysicalSate): physical state
         """
-
-        if self.enable:
-            self.pair.updateCoordinates(phys_state.primal_curr)
+        if not self.enable:
+            return
+        self.pair.updateCoordinates(phys_state.primal_curr)

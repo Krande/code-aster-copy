@@ -23,7 +23,6 @@ from ..Helpers import adapt_for_mgis_behaviour
 from ..Helpers.syntax_adapters import adapt_increment_init
 from ..Messages import UTMESS
 from ..Objects import (
-    FrictionType,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
@@ -34,7 +33,7 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
-from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver
+from ..Solvers import ContactManager, ProblemSolver
 from ..Solvers import ProblemType as PBT
 from ..Solvers.Post import Annealing, ComputeDisplFromHHO
 from ..Utilities import print_stats, reset_stats
@@ -44,14 +43,11 @@ def _contact_check(CONTACT):
     """Add controls to prohibit unconverted features in contact"""
     if CONTACT:
         assert CONTACT[0]["ALGO_RESO_GEOM"] == "NEWTON"
-
         defi = CONTACT[0]["DEFINITION"]
-
         for zone in defi.getContactZones():
             assert not zone.hasSmoothing
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
-
         if defi.hasFriction:
             assert CONTACT[0]["ALGO_RESO_FROT"] == "NEWTON"
 
@@ -99,11 +95,7 @@ def meca_non_line_ops(self, **args):
     adapt_increment_init(args, "EVOL_NOLI")
 
     # Add controls to prohibit unconverted features
-    contactArgs = args["CONTACT"]
-    _contact_check(contactArgs)
-    bPMesh = args["MODELE"].getMesh().isParallel()
-    if bPMesh and (type(contactArgs) in (tuple, list) and len(contactArgs) > 1):
-        raise RuntimeError("Only one CONTACT factor keyword allowed with ParallelMesh")
+    _contact_check(args["CONTACT"])
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
@@ -137,13 +129,14 @@ def meca_non_line_ops(self, **args):
     if not result:
         result = NonLinearResult()
 
-    # Create the problem solver
-    solver = ProblemSolver(NonLinearSolver(), result, problem_type)
-
     # Create the physical problem (and use it in problem solver)
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
+
+    # Create the problem solver
+    solver = ProblemSolver(phys_pb, problem_type, result)
     solver.use(phys_pb)
 
+    solver.keywords = param
     solver.setKeywords(**param)
 
     # Add loads
@@ -164,20 +157,18 @@ def meca_non_line_ops(self, **args):
                 raise RuntimeError("Unknown load")
 
     # Add contact
-    contact_manager = None
     if args["CONTACT"]:
         definition = args["CONTACT"][0]["DEFINITION"]
-        contact_manager = ContactManager(definition, phys_pb)
-        if isinstance(definition, ParallelFrictionNew) or isinstance(
-            definition, ParallelContactNew
-        ):
+        solver.contact = ContactManager(definition, phys_pb)
+        if isinstance(definition, (ParallelFrictionNew, ParallelContactNew)):
             fed_defi = definition.getParallelFiniteElementDescriptor()
         else:
             fed_defi = definition.getFiniteElementDescriptor()
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
-    solver.use(contact_manager)
+    solver.use(solver.contact)
 
     # Register hooks
+    # FIXME: to be done by the solver
     solver.use(Annealing())
     solver.use(ComputeDisplFromHHO())
 
