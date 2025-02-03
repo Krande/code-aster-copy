@@ -38,14 +38,16 @@ import tempfile
 
 import medcoupling as mc
 
-from .Fracture.post_beremin_utils import CELL_TO_POINT
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
 from ..CodeCommands import IMPR_RESU, AFFE_MODELE
-from ..Objects import FieldOnCellsReal, NonLinearResult, Table
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Mesh
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..Messages import UTMESS
 from ..Helpers.LogicalUnit import LogicalUnitFile
+
+from .Fracture.post_beremin_utils import CELL_TO_POINT, create_mesh_from_groupno
+
 
 DEBUG = bool(os.environ.get("DEBUG_POST_BEREMIN", ""))
 
@@ -87,7 +89,8 @@ class PostBeremin:
     _weib_params = None
     # data 2D only
     _method_2D = _prec_proj = _model_2D = None
-    _l_proj_3D_2D = _l_mesh_proj_2D = _l_name_mesh_2D = None
+    _l_proj_3D_2D = None
+    _l_mesh_proj_2D = _l_name_mesh_2D = _l_mesh_group_no_2D = None
     _l_mesh_proj_2D_mc = _mesh_3D_cells_mc = _d_max_3d = None
     _model_3D_restricted = None
     _medfilename_temp = _unite_temp = None
@@ -130,12 +133,14 @@ class PostBeremin:
             self._prec_proj = args["METHODE_2D"]["PRECISION"]
             self._l_mesh_proj_2D = args["METHODE_2D"]["MAILLAGE"]
             self._l_name_mesh_2D = args["METHODE_2D"]["NOM_MAIL_MED"]
+            self._l_mesh_group_no_2D = args["METHODE_2D"]["GROUP_NO"]
             self._model_2D = args["METHODE_2D"]["MODELISATION"]
             self._l_mesh_proj_2D_mc = []
 
             if args["METHODE_2D"]["UNITE_RESU"] != 0:
                 self._rout_2D = args["METHODE_2D"]["UNITE_RESU"]
 
+            ##3D modele restricted to _zone
             if self._model_2D == "D_PLAN_SI":
                 l_affe = [
                     _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D"),
@@ -148,19 +153,26 @@ class PostBeremin:
                 MAILLAGE=self._result.getMesh().restrict(self._zone), AFFE=l_affe
             )
 
+            ##Type of 2D mesh input ?
+            if self._l_mesh_group_no_2D:
+                self._l_mesh_proj_2D = [None] * len(self._l_mesh_group_no_2D)
+                self._l_name_mesh_2D = [x for x in self._l_mesh_group_no_2D]
+            else:
+                self._l_mesh_group_no_2D = [None] * len(self._l_mesh_group_no_2D)
+
+                if (self._l_mesh_proj_2D and not self._l_name_mesh_2D) or (
+                    not self._l_mesh_proj_2D and self._l_name_mesh_2D
+                ):
+                    UTMESS("F", "RUPTURE4_17")
+
+                for mesh_2d in self._l_mesh_proj_2D:
+                    if (mesh_2d.isQuadratic() and not self._result.getMesh().isQuadratic()) or (
+                        not mesh_2d.isQuadratic() and self._result.getMesh().isQuadratic()
+                    ):
+                        UTMESS("F", "RUPTURE4_20")
+
             if self._stress_option != "SIGM_ELMOY":
                 UTMESS("F", "RUPTURE4_21")
-
-            if (self._l_mesh_proj_2D and not self._l_name_mesh_2D) or (
-                not self._l_mesh_proj_2D and self._l_name_mesh_2D
-            ):
-                UTMESS("F", "RUPTURE4_17")
-
-            for mesh_2d in self._l_mesh_proj_2D:
-                if (mesh_2d.isQuadratic() and not self._result.getMesh().isQuadratic()) or (
-                    not mesh_2d.isQuadratic() and self._result.getMesh().isQuadratic()
-                ):
-                    UTMESS("F", "RUPTURE4_20")
 
             if self._rout_2D and len(self._l_mesh_proj_2D) != 1:
                 UTMESS("F", "RUPTURE4_19")
@@ -417,7 +429,7 @@ class PostBeremin:
 
         return intsig1pm
 
-    def build_projector(self, mesh_2D):
+    def build_projector(self, mesh_3D, mesh_2D: Mesh = None, group_no_2D: list = None) -> None:
         """Return the 3D -> 2D projector when METHODE_2D is used
 
         Returns:
@@ -441,7 +453,10 @@ class PostBeremin:
                 UTMESS("F", "RUPTURE4_14")
 
         ##Get 2D mesh
-        mesh_2D_mc = mesh_2D.createMedCouplingMesh(spacedim=3)[0]
+        if mesh_2D:
+            mesh_2D_mc = mesh_2D.createMedCouplingMesh(spacedim=3)[0]
+        elif group_no_2D:
+            mesh_2D_mc = create_mesh_from_groupno(mesh_3D, group_no_2D)
         self._l_mesh_proj_2D_mc += [mesh_2D_mc]
         if mesh_2D_mc.getMeshDimension() != 2:
             UTMESS("F", "RUPTURE4_15")
@@ -557,6 +572,7 @@ class PostBeremin:
         """Compute Weibull stress and failure probability."""
         result = self._reswb
         model = result.getModel()
+        mesh = model.getMesh()
         params = result.getAccessParameters()
         logger.info("extracting integration scheme...")
         coor_elga = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
@@ -574,6 +590,16 @@ class PostBeremin:
         ]
 
         for sigma_thr, sigma_refe, pow_m in param_mater:
+
+            logger.info(
+                "M = "
+                + str(pow_m)
+                + "; SIGM_SEUIL = "
+                + str(sigma_thr)
+                + "; SIGM_REFE = "
+                + str(sigma_refe)
+                + " ..."
+            )
 
             id_store = 0
             previous = None
@@ -624,11 +650,15 @@ class PostBeremin:
 
                     if not self._l_proj_3D_2D:
                         self._l_proj_3D_2D = []
-                        for mesh_2D, nom_mesh in zip(self._l_mesh_proj_2D, self._l_name_mesh_2D):
+                        for mesh_2D, nom_mesh, group_no_2D in zip(
+                            self._l_mesh_proj_2D, self._l_name_mesh_2D, self._l_mesh_group_no_2D
+                        ):
                             logger.info(
                                 "Construction du projecteur pour le maillage 2D " + str(nom_mesh)
                             )
-                            self._l_proj_3D_2D += [self.build_projector(mesh_2D)]
+                            self._l_proj_3D_2D += [
+                                self.build_projector(mesh, mesh_2D=mesh_2D, group_no_2D=group_no_2D)
+                            ]
 
                     for mesh_2D_idx, mesh_2D_name in enumerate(self._l_name_mesh_2D):
                         intsig1pm = self.compute_intsig1_2D(sig1, pow_m, idx, time, mesh_2D_idx)

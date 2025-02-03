@@ -49,7 +49,7 @@ char_cl = AFFE_CHAR_CINE(
 )
 
 
-l_inst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=2),))
+l_inst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=1),))
 
 resu_elas = STAT_NON_LINE(
     MODELE=model,
@@ -86,7 +86,7 @@ TEST_TABLE(
     VALE_CALC=1591.4018531,
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=beremin_3d_c0,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_0")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_0")),
 )
 
 
@@ -114,7 +114,7 @@ TEST_TABLE(
     VALE_CALC=1372.616576,
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=beremin_3d_c3,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_3")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_3")),
 )
 
 ##################################################
@@ -152,7 +152,7 @@ TEST_TABLE(
     VALE_CALC=1591.4018531,
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=beremin_2d_c0,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C0")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C0")),
 )
 
 ##################################################
@@ -182,7 +182,7 @@ TEST_TABLE(
     VALE_CALC=1372.616576,
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=beremin_2d_c3,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C3")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C3")),
 )
 
 ##################################################
@@ -206,7 +206,7 @@ TEST_TABLE(
     VALE_CALC=1372.616576,
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=beremin_2d_c03,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C3")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C3")),
 )
 
 TEST_TABLE(
@@ -214,7 +214,7 @@ TEST_TABLE(
     VALE_CALC=1591.4018531,
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=beremin_2d_c03,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C0")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C0")),
 )
 ##################################################
 # BEREMIN 2D réduction au tore uniquement

@@ -99,8 +99,10 @@ POST_BEREMIN = MACRO(
     ),
     METHODE_2D=FACT(
         statut="f",
-        MAILLAGE=SIMP(statut="o", typ=maillage_sdaster, max="**"),
-        NOM_MAIL_MED=SIMP(statut="o", typ="TXM", max="**"),
+        regles=(EXCLUS("MAILLAGE", "GROUP_NO"), EXCLUS("GROUP_NO", "NOM_MAIL_MED")),
+        MAILLAGE=SIMP(statut="f", typ=maillage_sdaster, max="**"),
+        NOM_MAIL_MED=SIMP(statut="f", typ="TXM", max="**"),
+        GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
         PRECISION=SIMP(statut="f", typ="R", defaut=1e-6, val_min=1e-12),
         UNITE_RESU=SIMP(statut="f", typ="I", defaut=0),
         MODELISATION=SIMP(statut="f", typ="TXM", into=("D_PLAN", "D_PLAN_SI"), defaut="D_PLAN_SI"),

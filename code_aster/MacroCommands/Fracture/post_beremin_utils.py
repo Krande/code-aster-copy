@@ -20,12 +20,12 @@
 """
 Outils d'interpolation en correction de fonctionnalités incomplètes de medcoupling
 """
-import math
 import numpy as np
 import medcoupling as mc
 
 from ...Utilities import logger
 from ...Messages import UTMESS
+from ...Objects import Mesh
 
 
 class CELL_TO_POINT:
@@ -215,3 +215,17 @@ class CELL_TO_POINT:
         values = values[self.pt_idx]
 
         return values
+
+
+def create_mesh_from_groupno(mesh_3D, group_no):
+    """Create a 2D mesh object from a 3D mesh and a GROUP_NO"""
+
+    logger.info("Création du maillage 2D " + str(group_no))
+
+    mc_mesh_3D = mesh_3D.createMedCouplingMesh()
+
+    ##Restrict medcoupling mesh to 2D faces
+    a_group_no = mc_mesh_3D.getNodeGroupArr(group_no)
+    mc_mesh_2D = mc_mesh_3D.getMeshAtLevel(0).buildFacePartOfMySelfNode(a_group_no, fullyIn=True)
+
+    return mc_mesh_2D
