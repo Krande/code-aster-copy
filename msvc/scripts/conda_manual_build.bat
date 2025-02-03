@@ -10,7 +10,7 @@ set INCLUDE_TESTS=0
 set USE_LOG=0
 set COLOR_ENABLED=1
 :: BUILD_TYPE can be either debug or release
-set BUILD_TYPE=debug
+set BUILD_DEBUG=0
 set BUILD64=0
 set CLEAN_BUILD=1
 set PIXI_BUILD=0
@@ -33,9 +33,8 @@ if /i "%~1"=="--pixi-build" (
     set VERBOSE_WAF=1
 ) else if /i "%~1"=="--int-type64" (
     set BUILD64=1
-) else if /i "%~1"=="--build-type" (
-    shift
-    set BUILD_TYPE=%~1
+) else if /i "%~1"=="--build-debug" (
+    set BUILD_DEBUG=1
 ) else (
     REM Collect unrecognized arguments
     set EXTRA_WAF_ARGS=!EXTRA_WAF_ARGS! %~1
@@ -149,7 +148,7 @@ if "%FC%" == "ifx.exe" (
 )
 
 :: Create dll debug pdb
-if "%BUILD_TYPE%" == "debug" (
+if "%BUILD_DEBUG%" == "1" (
     echo "Setting debug flags"
     set FCFLAGS=%FCFLAGS% /check:stack
     set CFLAGS=%CFLAGS% /Zi
@@ -178,9 +177,7 @@ set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN
-if "%build_type%" == "debug" (
-@REM     set DEFINES=%DEFINES% ASTER_DEBUG_ALL
-)
+
 REM Clean the build directory
 if %CLEAN_BUILD%==1 (
     echo "Cleaning build directory"
@@ -235,7 +232,7 @@ if %USE_LOG%==1 (
     call conda_datetime.bat
     waf install_debug -vvv > "install_debug_%datetimeString%.log" 2>&1
 ) else (
-    if "%BUILD_TYPE%" == "debug" (
+    if "%BUILD_DEBUG%" == "1" (
         waf install_debug %WAF_INSTALL_EXTRA_ARGS%
     ) else (
         waf install %WAF_INSTALL_EXTRA_ARGS%

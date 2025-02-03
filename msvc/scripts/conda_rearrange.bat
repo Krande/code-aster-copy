@@ -38,7 +38,8 @@ for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.lib") do move "%%f" "%LIBRARY_LIB%"
 
 REM if %CONDA_PREFIX%/Library/share/aster/tests not exists, create it
 if not exist "%CONDA_PREFIX%\Library\share\aster\tests" (
-    xcopy "%PARENT_DIR%\astest\*" "%CONDA_PREFIX%\Library\share\aster\tests" /E /I /Y
+    echo Creating %CONDA_PREFIX%/Library/share/aster/tests... from %PARENT_DIR%..\..\astest
+    xcopy "%PARENT_DIR%..\..\astest\*" "%CONDA_PREFIX%\Library\share\aster\tests" /E /I /Y
 )
 
 echo Files moved successfully.

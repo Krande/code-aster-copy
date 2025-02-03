@@ -116,20 +116,24 @@ ctest = { cmd = ["rattler-build", "test",  "-c", "https://repo.prefix.dev/code-a
 build32 = { cmd = ["waf", "configure", "build"], description = "Build the project" }
 
 [feature.int64.target.win-64.tasks]
-build64 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-type", "release"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+build64 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install64 = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+test32d = { cmd = ["run_ctest", "--resutest=temp\\int64", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 [feature.int64d.target.win-64.tasks]
-build64d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-type", "debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+build64d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install64d = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+test32d = { cmd = ["run_ctest", "--resutest=temp\\int64d", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 [feature.int32.target.win-64.tasks]
-build32 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--build-type", "release"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+build32 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install32 = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+test32d = { cmd = ["run_ctest", "--resutest=temp\\int32", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 [feature.int32d.target.win-64.tasks]
-build32d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--build-type", "debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+build32d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install32d = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+test32d = { cmd = ["run_ctest", "--resutest=temp\\int32d", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 test = { cmd = [
     "run_ctest",
@@ -148,6 +152,9 @@ dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the ast
 
 [feature.int64.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
-
+[feature.int64d.target.win-64.activation]
+scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
 [feature.int32.target.win-64.activation]
+scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
+[feature.int32d.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
