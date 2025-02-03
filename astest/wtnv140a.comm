@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -312,8 +312,9 @@ CH_PREZP = AFFE_CHAR_MECA(MODELE=PHASE1, PRES_REP=(_F(GROUP_MA="DERRIERE", PRES=
 # CI
 #
 SIGINI = CREA_CHAMP(
-    TYPE_CHAM="CART_SIEF_R",
     OPERATION="AFFE",
+    TYPE_CHAM="ELGA_SIEF_R",
+    PROL_ZERO="OUI",
     MODELE=PHASE1,
     AFFE=(
         _F(
