@@ -220,7 +220,7 @@ class CELL_TO_POINT:
 def create_mesh_from_groupno(mesh_3D, group_no):
     """Create a 2D mesh object from a 3D mesh and a GROUP_NO"""
 
-    logger.info("Création du maillage 2D " + str(group_no))
+    logger.info("Création du maillage 2D sur la base du GROUP_NO " + str(group_no))
 
     mc_mesh_3D = mesh_3D.createMedCouplingMesh()
 

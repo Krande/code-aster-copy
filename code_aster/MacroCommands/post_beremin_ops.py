@@ -158,7 +158,7 @@ class PostBeremin:
                 self._l_mesh_proj_2D = [None] * len(self._l_mesh_group_no_2D)
                 self._l_name_mesh_2D = [x for x in self._l_mesh_group_no_2D]
             else:
-                self._l_mesh_group_no_2D = [None] * len(self._l_mesh_group_no_2D)
+                self._l_mesh_group_no_2D = [None] * len(self._l_mesh_proj_2D)
 
                 if (self._l_mesh_proj_2D and not self._l_name_mesh_2D) or (
                     not self._l_mesh_proj_2D and self._l_name_mesh_2D
