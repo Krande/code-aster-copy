@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,11 @@
 from ..Utilities import _
 
 cata_msg = {
+    1: _(
+        """
+Le modèle sur lequel est défini le chargement n'est pas cohérent avec le modèle existant.
+"""
+    ),
     3: _(
         """
  La fonction %(k1)s fournie à l'opérande FLUN de FLUX_NL doit avoir le paramètre TEMP.

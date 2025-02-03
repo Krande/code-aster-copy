@@ -27,6 +27,7 @@
 
 #include "aster_fort_calcul.h"
 
+#include "Messages/Messages.h"
 #include "Supervis/CommandSyntax.h"
 
 #include <typeinfo>
@@ -61,9 +62,7 @@ bool ListOfLoads::checkModelConsistency( const ModelPtr &model ) const {
 bool ListOfLoads::setModel( const ModelPtr &model ) {
     if ( _model ) {
         if ( !this->checkModelConsistency( model ) ) {
-            std::string msg =
-                "Inconsistent model: " + _model->getName() + " vs " + model->getName();
-            AS_ABORT( msg );
+            UTMESS( "F", "CHARGES2_1" );
         }
     } else
         _model = model;

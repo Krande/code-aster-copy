@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ from math import pow
 
 import aster
 
-from .. import Commands
+from .. import CodeCommands
 from ..Cata.DataStructure import formule
 from ..Cata.Syntax import _F
 from ..CodeCommands import DEFI_MATERIAU
@@ -158,7 +158,7 @@ def include_materiau_ops(
 
     context = build_context(UNITE_LONGUEUR, TEMP_EVAL, dict_prol, COEF_MULT, OPTION)
     # ajout des commandes autorisées
-    commandes = dict([(cmd, getattr(Commands, cmd)) for cmd in COMMANDES])
+    commandes = dict([(cmd, getattr(CodeCommands, cmd)) for cmd in COMMANDES])
     context.update(commandes)
     context["_F"] = _F
 

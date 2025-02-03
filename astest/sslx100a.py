@@ -56,6 +56,36 @@ vy.values = m_one
 test.assertAlmostEqual(vy._values.sum(), -6.0, 8, msg="sum: only 6 values assigned, other 0.0")
 test.assertAlmostEqual(vy.sum(), -6.0, 8, msg="sum")
 
+coor = CALC_CHAM_ELEM(MODELE=MO, OPTION="COOR_ELGA", CARA_ELEM=CARA)
+coor_s = coor.toSimpleFieldOnCells()
+weight1 = coor_s.W
+
+post = CALC_CHAMP(RESULTAT=DEP2, GROUP_MA="GROUP_MA_GRMA1", CRITERES="SIEQ_ELGA")
+sieq = post.getField("SIEQ_ELGA", 1).toSimpleFieldOnCells()
+vmis1 = sieq.VMIS
+
+coor = CALC_CHAM_ELEM(MODELE=MO, GROUP_MA="GROUP_MA_GRMA1", OPTION="COOR_ELGA", CARA_ELEM=CARA)
+coor_s = coor.toSimpleFieldOnCells()
+weight2 = coor_s.W
+
+post = CALC_CHAMP(RESULTAT=DEP2, GROUP_MA="Volume1", CRITERES="SIEQ_ELGA")
+sieq = post.getField("SIEQ_ELGA", 1).toSimpleFieldOnCells()
+vmis2 = sieq.VMIS
+
+# weight1 has more points than vmis1
+wr1 = weight1.onSupportOf(vmis1)
+test.assertAlmostEqual(wr1.sum(), 30.0, 6, msg="wr1 sum")
+
+# weight2 has less points than vmis2 (and not defined there)
+wr2 = weight2.onSupportOf(vmis2)
+test.assertAlmostEqual(wr2.sum(), 0.0, 6, msg="wr2 sum")
+
+wr1p = weight1.onSupportOf(vmis1, strict=True)
+test.assertAlmostEqual((wr1 - wr1p).sum(), 0.0, 6, msg="wr1 == wr1p")
+
+with test.assertRaises(IndexError):
+    weight2.onSupportOf(vmis2, strict=True)
+
 test.printSummary()
 
 CA.close()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -416,8 +416,8 @@ class ExtendedResult:
         for each type of field.
 
         Arguments:
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
             field : field
+            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
             value (float|int|str) : value of the access parameter
             para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
             crit (str) : search criterion ABSOLU or RELATIF
