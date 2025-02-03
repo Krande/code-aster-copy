@@ -110,6 +110,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
             dict2.container["CHARGE"] = load->getName();
             if ( _listOfMechaFuncReal[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfMechaFuncReal[pos]->getName();
+            dict2.container["TYPE_CHARGE"] = _listOfMechaTyp[pos];
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -128,6 +129,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
             dict2.container["CHARGE"] = load->getName();
             if ( _listOfMechaFuncFunction[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfMechaFuncFunction[pos]->getName();
+            dict2.container["TYPE_CHARGE"] = _listOfMechaFuncTyp[pos];
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -138,6 +140,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
             dict2.container["CHARGE"] = load->getName();
             if ( _listOfParaMechaFuncReal[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfParaMechaFuncReal[pos]->getName();
+            dict2.container["TYPE_CHARGE"] = _listOfParaMechaTyp[pos];
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -147,6 +150,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
             dict2.container["CHARGE"] = load->getName();
             if ( _listOfParaMechaFuncFunction[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfParaMechaFuncFunction[pos]->getName();
+            dict2.container["TYPE_CHARGE"] = _listOfParaMechaFuncTyp[pos];
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -315,3 +319,30 @@ std::vector< FiniteElementDescriptorPtr > ListOfLoads::getFiniteElementDescripto
 
     return FEDesc;
 };
+
+VectorString ListOfLoads::getListOfMechaTyp() { return _listOfMechaTyp; }
+
+VectorString ListOfLoads::getListOfMechaFuncTyp() { return _listOfMechaFuncTyp; }
+
+void ListOfLoads::setDifferentialDisplacement(
+    const FieldOnNodesRealPtr differentialDisplacement ) {
+    _differentialDisplacement = differentialDisplacement;
+};
+
+const FieldOnNodesRealPtr ListOfLoads::getDifferentialDisplacement() {
+    return _differentialDisplacement;
+};
+
+bool ListOfLoads::hasDifferentialLoads() {
+    for ( const auto &typ : _listOfMechaTyp ) {
+        if ( typ == "DIDI" )
+            return true;
+    }
+    for ( const auto &typ : _listOfMechaFuncTyp ) {
+        if ( typ == "DIDI" )
+            return true;
+    }
+    return false;
+};
+
+bool ListOfLoads::hasDifferentialDisplacement() { return _differentialDisplacement != nullptr; };

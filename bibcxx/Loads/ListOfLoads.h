@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,10 +55,14 @@ class ListOfLoads : public DataStructure {
     ListMecaLoadReal _listOfMechanicalLoadsReal;
     /** @brief List of functions for MechanicalLoads */
     ListOfLoadFunctions _listOfMechaFuncReal;
+    /** @brief List of type_charge for MechanicalLoads */
+    VectorString _listOfMechaTyp;
     /** @brief Chargements Mecaniques */
     ListMecaLoadFunction _listOfMechanicalLoadsFunction;
     /** @brief List of functions for MechanicalLoads */
     ListOfLoadFunctions _listOfMechaFuncFunction;
+    /** @brief List of functions for MechanicalLoadsFunction */
+    VectorString _listOfMechaFuncTyp;
     /** @brief Chargements Mecaniques */
     ListMecaLoadComplex _listOfMechanicalLoadsComplex;
     /** @brief List of functions for MechanicalLoads */
@@ -80,10 +84,14 @@ class ListOfLoads : public DataStructure {
     ListParaMecaLoadReal _listOfParallelMechanicalLoadsReal;
     /** @brief List of functions for ParallelMechanicalLoads */
     ListOfLoadFunctions _listOfParaMechaFuncReal;
+    /** @brief List of type_charge for ParallelMechanicalLoads */
+    VectorString _listOfParaMechaTyp;
     /** @brief Chargements Mecaniques paralleles */
     ListParaMecaLoadFunction _listOfParallelMechanicalLoadsFunction;
     /** @brief List of functions for ParallelMechanicalLoads */
     ListOfLoadFunctions _listOfParaMechaFuncFunction;
+    /** @brief List of type_charge for ParallelMechanicalLoads */
+    VectorString _listOfParaMechaFuncTyp;
     /** @brief Chargements thermique paralleles */
     ListParaTherLoadReal _listOfParallelThermalLoadsReal;
     /** @brief List of functions for ParallelThermalLoads */
@@ -105,6 +113,8 @@ class ListOfLoads : public DataStructure {
     bool _isBuilt;
     /** @brief Model */
     ModelPtr _model;
+    /** @brief differential displacement */
+    FieldOnNodesRealPtr _differentialDisplacement;
 
   public:
     /**
@@ -168,7 +178,11 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const MechanicalLoadRealPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, "FIXE_CSTE" );
+    };
+
+    void addLoad( const MechanicalLoadRealPtr &currentLoad, const std::string &type ) {
+        addLoad( currentLoad, emptyRealFunction, type );
     };
 
     /**
@@ -176,11 +190,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
+    void addLoad( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
         _listOfMechaFuncReal.push_back( func );
+        _listOfMechaTyp.push_back( type );
     };
 
     /**
@@ -188,11 +204,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
         _listOfMechaFuncReal.push_back( func );
+        _listOfMechaTyp.push_back( type );
     };
 
     /**
@@ -200,11 +218,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
         _listOfMechaFuncReal.push_back( func );
+        _listOfMechaTyp.push_back( type );
     };
 
     void addLoad( const MechanicalLoadComplexPtr &currentLoad ) {
@@ -248,7 +268,11 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const MechanicalLoadFunctionPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, "FIXE_CSTE" );
+    };
+
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const std::string &type ) {
+        addLoad( currentLoad, emptyRealFunction, type );
     };
 
     /**
@@ -256,11 +280,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
         _listOfMechaFuncFunction.push_back( func );
+        _listOfMechaFuncTyp.push_back( type );
     };
 
     /**
@@ -268,11 +294,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
         _listOfMechaFuncFunction.push_back( func );
+        _listOfMechaFuncTyp.push_back( type );
     };
 
     /**
@@ -280,16 +308,22 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
         _listOfMechaFuncFunction.push_back( func );
+        _listOfMechaFuncTyp.push_back( type );
     };
 
 #ifdef ASTER_HAVE_MPI
     void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, "FIXE_CSTE" );
+    };
+
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const std::string &type ) {
+        addLoad( currentLoad, emptyRealFunction, type );
     };
 
     /**
@@ -297,11 +331,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const FunctionPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
         _listOfParaMechaFuncReal.push_back( func );
+        _listOfParaMechaTyp.push_back( type );
     };
 
     /**
@@ -309,11 +345,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const FormulaPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
         _listOfParaMechaFuncReal.push_back( func );
+        _listOfParaMechaTyp.push_back( type );
     };
 
     /**
@@ -321,15 +359,17 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const Function2DPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
         _listOfParaMechaFuncReal.push_back( func );
+        _listOfParaMechaTyp.push_back( type );
     };
 
-    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const std::string &type ) {
+        addLoad( currentLoad, emptyRealFunction, type );
     };
 
     /**
@@ -337,11 +377,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
         _listOfParaMechaFuncFunction.push_back( func );
+        _listOfParaMechaFuncTyp.push_back( type );
     };
 
     /**
@@ -349,11 +391,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
         _listOfParaMechaFuncFunction.push_back( func );
+        _listOfParaMechaFuncTyp.push_back( type );
     };
 
     /**
@@ -361,12 +405,13 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad,
-                  const Function2DPtr &func ) {
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func,
+                  const std::string &type ) {
         _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
         _listOfParaMechaFuncFunction.push_back( func );
+        _listOfParaMechaFuncTyp.push_back( type );
     };
 #endif /* ASTER_HAVE_MPI */
 
@@ -761,6 +806,16 @@ class ListOfLoads : public DataStructure {
 
         return nullptr;
     }
+
+    VectorString getListOfMechaTyp();
+    VectorString getListOfMechaFuncTyp();
+
+    void setDifferentialDisplacement( const FieldOnNodesRealPtr );
+
+    const FieldOnNodesRealPtr getDifferentialDisplacement();
+
+    bool hasDifferentialLoads();
+    bool hasDifferentialDisplacement();
 };
 
 /**

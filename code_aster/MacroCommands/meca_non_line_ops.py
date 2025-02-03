@@ -59,7 +59,7 @@ def _keywords_check(keywords):
 
     if "EXCIT" in keywords:
         for load in keywords["EXCIT"]:
-            if load["TYPE_CHARGE"] != "FIXE_CSTE":
+            if load["TYPE_CHARGE"] not in ("FIXE_CSTE", "DIDI"):
                 raise RuntimeError("TYPE_CHARGE not supported")
 
     if "CONVERGENCE" in keywords:
