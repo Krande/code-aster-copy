@@ -101,7 +101,7 @@ de dimension 4 en 2D ou de dimension 6 en 3D"""
     ),
     19: _(
         """
-L'impression de SIGM_MAXI au format .med n'est pas compatible avec
+L'impression au format .med n'est pas compatible avec
 l'utilisation de plusieurs paramètres matériaux,
 ou dans le cas METHODE_2D la projection sur plusieurs plans.
         """
@@ -122,6 +122,13 @@ METHODE_2D doit nécessairement être utilisée avec FILTRE_SIGM = "SIGM_ELMOY"
         """
 Plus de 5 itérations ont été nécessaires pour construire le projecteur
 utilisé dans METHODE_2D. Vérifiez la cohérence des maillages 2D et 3D.
+        """
+    ),
+    23: _(
+        """
+Dans METHODE_2D, la projection a échoué :
+    - Vérifier la cohérence des maillages donnés en entrée.
+    - Augmenter PRECISION.
         """
     ),
 }

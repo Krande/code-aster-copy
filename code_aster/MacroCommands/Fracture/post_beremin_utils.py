@@ -124,15 +124,21 @@ class CELL_TO_POINT:
             prec = ampl * prec
             nb_iter += 1
 
+            # nb_iter max = 10
+            if nb_iter > 10:
+                UTMESS("F", "RUPTURE4_23")
+
             # S'il n'y a pas de nouveaux points OK, on continue avec une précision dégradée
             if nbCells.getMaxValueInArray() == 0:
+                if nb_iter > 10:
+                    UTMESS("F", "RUPTURE4_23")
                 continue
 
             # Index des nouveaux points pour lesquels des cellules sont identifiées
             found = nbCells.findIdsNotEqual(0)
             ok_idx = nook_idx[found]
             logger.info("On a trouvé " + str(len(ok_idx)) + str(" nouveaux points."))
-
+            logger.info("")
             # Concaténation des points et des cellules
             pt_idx_inv.aggregate(ok_idx)
             pos = pos[:-1]
@@ -148,8 +154,11 @@ class CELL_TO_POINT:
             notFound = nbCells.findIdsEqual(0)
             nook_idx = nook_idx[notFound]
             logger.info("Il reste " + str(len(nook_idx)) + str(" points à trouver."))
+            logger.info("")
+            if nb_iter > 10:
+                UTMESS("F", "RUPTURE4_23")
 
-        if nb_iter > 5:
+        if nb_iter > 1:
             UTMESS("A", "RUPTURE4_22")
 
         # Interversion de l'indexation des points : numéro du point utilisateur -> numéro du point du projecteur

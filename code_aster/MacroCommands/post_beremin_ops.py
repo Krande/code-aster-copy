@@ -87,8 +87,9 @@ class PostBeremin:
     _weib_params = None
     # data 2D only
     _method_2D = _prec_proj = _model_2D = None
-    _proj_3D_2D = _mesh_proj_2D = _name_mesh_2D = None
-    _mesh_proj_2D_mc = _mesh_3D_cells_mc = None
+    _l_proj_3D_2D = _l_mesh_proj_2D = _l_name_mesh_2D = None
+    _l_mesh_proj_2D_mc = _mesh_3D_cells_mc = _d_max_3d = None
+    _model_3D_restricted = None
     _medfilename_temp = _unite_temp = None
     _rout_2D = None
 
@@ -126,29 +127,43 @@ class PostBeremin:
         """
         if "METHODE_2D" in args:
             self._method_2D = True
-            self._mesh_proj_2D = args["METHODE_2D"]["MAILLAGE"]
             self._prec_proj = args["METHODE_2D"]["PRECISION"]
-            self._name_mesh_2D = args["METHODE_2D"]["NOM_MAIL_MED"]
+            self._l_mesh_proj_2D = args["METHODE_2D"]["MAILLAGE"]
+            self._l_name_mesh_2D = args["METHODE_2D"]["NOM_MAIL_MED"]
             self._model_2D = args["METHODE_2D"]["MODELISATION"]
+            self._l_mesh_proj_2D_mc = []
 
             if args["METHODE_2D"]["UNITE_RESU"] != 0:
                 self._rout_2D = args["METHODE_2D"]["UNITE_RESU"]
 
+            if self._model_2D == "D_PLAN_SI":
+                l_affe = [
+                    _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+                    _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D_SI"),
+                ]
+            else:
+                l_affe = [_F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D")]
+
+            self._model_3D_restricted = AFFE_MODELE(
+                MAILLAGE=self._result.getMesh().restrict(self._zone), AFFE=l_affe
+            )
+
             if self._stress_option != "SIGM_ELMOY":
                 UTMESS("F", "RUPTURE4_21")
 
-            if (self._mesh_proj_2D and not self._name_mesh_2D) or (
-                not self._mesh_proj_2D and self._name_mesh_2D
+            if (self._l_mesh_proj_2D and not self._l_name_mesh_2D) or (
+                not self._l_mesh_proj_2D and self._l_name_mesh_2D
             ):
                 UTMESS("F", "RUPTURE4_17")
 
-            if (self._mesh_proj_2D.isQuadratic() and not self._result.getMesh().isQuadratic()) or (
-                not self._mesh_proj_2D.isQuadratic() and self._result.getMesh().isQuadratic()
-            ):
-                UTMESS("F", "RUPTURE4_20")
+            for mesh_2d in self._l_mesh_proj_2D:
+                if (mesh_2d.isQuadratic() and not self._result.getMesh().isQuadratic()) or (
+                    not mesh_2d.isQuadratic() and self._result.getMesh().isQuadratic()
+                ):
+                    UTMESS("F", "RUPTURE4_20")
 
-            # if self._rout_2D and len(self._mesh_proj_2D) != 1:
-            #     UTMESS("F", "RUPTURE4_19")
+            if self._rout_2D and len(self._l_mesh_proj_2D) != 1:
+                UTMESS("F", "RUPTURE4_19")
 
     def set_indexes(self, intvar_idx: list = None, stress_idx: list = None) -> None:
         """Define the indexes used to extract the relevant components depending
@@ -402,7 +417,7 @@ class PostBeremin:
 
         return intsig1pm
 
-    def build_projector(self):
+    def build_projector(self, mesh_2D):
         """Return the 3D -> 2D projector when METHODE_2D is used
 
         Returns:
@@ -410,29 +425,35 @@ class PostBeremin:
         """
 
         ##Get 3D mesh (gauss to cells)
-        timeStamps = mc.GetAllFieldIterations(self._medfilename_temp, "TMP")
-        filefield_tmp = mc.MEDFileFieldMultiTS.New(self._medfilename_temp, "TMP")
-        f_on_gauss = filefield_tmp.getFieldAtLevel(
-            mc.ON_GAUSS_PT, timeStamps[-1][0], timeStamps[-1][1], 0
-        )
-        d_max_3d = f_on_gauss.getMesh().computeDiameterField().getArray().getMaxValueInArray()
-        with disable_fpe():
-            f_on_cells = f_on_gauss.voronoize(1e-12)
-        self._mesh_3D_cells_mc = f_on_cells.getMesh()
-        if self._mesh_3D_cells_mc.getMeshDimension() != 3:
-            UTMESS("F", "RUPTURE4_14")
+        if self._mesh_3D_cells_mc is None:
+            timeStamps = mc.GetAllFieldIterations(self._medfilename_temp, "TMP")
+            filefield_tmp = mc.MEDFileFieldMultiTS.New(self._medfilename_temp, "TMP")
+            f_on_gauss = filefield_tmp.getFieldAtLevel(
+                mc.ON_GAUSS_PT, timeStamps[-1][0], timeStamps[-1][1], 0
+            )
+            self._d_max_3d = (
+                f_on_gauss.getMesh().computeDiameterField().getArray().getMaxValueInArray()
+            )
+            with disable_fpe():
+                f_on_cells = f_on_gauss.voronoize(1e-12)
+            self._mesh_3D_cells_mc = f_on_cells.getMesh()
+            if self._mesh_3D_cells_mc.getMeshDimension() != 3:
+                UTMESS("F", "RUPTURE4_14")
 
         ##Get 2D mesh
-        self._mesh_proj_2D_mc = self._mesh_proj_2D.createMedCouplingMesh(spacedim=3)[0]
-        if self._mesh_proj_2D_mc.getMeshDimension() != 2:
+        mesh_2D_mc = mesh_2D.createMedCouplingMesh(spacedim=3)[0]
+        self._l_mesh_proj_2D_mc += [mesh_2D_mc]
+        if mesh_2D_mc.getMeshDimension() != 2:
             UTMESS("F", "RUPTURE4_15")
 
         ##Build projector 3D -> points (points = barycenters of 2D mesh gauss cells)
-        self._proj_3D_2D = CELL_TO_POINT(
-            self._mesh_3D_cells_mc, self._mesh_proj_2D_mc, self._prec_proj, d_max_3d
+        proj_3D_2D = CELL_TO_POINT(
+            self._mesh_3D_cells_mc, mesh_2D_mc, self._prec_proj, self._d_max_3d
         )
 
-    def compute_intsig1_2D(self, sig1, pow_m, idx, time):
+        return proj_3D_2D
+
+    def compute_intsig1_2D(self, sig1, pow_m, idx, time, mesh_2D_idx):
         """Projection of sig1 from 3D cells to barycenter of 2D cells
         and computation of 2D integral
 
@@ -441,18 +462,8 @@ class PostBeremin:
 
         """
 
-        if self._model_2D == "D_PLAN_SI":
-            l_affe = [
-                _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D"),
-                _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D_SI"),
-            ]
-        else:
-            l_affe = [_F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D")]
-
-        modele_tmp = AFFE_MODELE(MAILLAGE=self._result.getMesh().restrict(self._zone), AFFE=l_affe)
-
         ##3D ComponentOnCells to 3D medcoupling array
-        sigmax = FieldOnCellsReal(modele_tmp, "ELGA", "SIEF_R")
+        sigmax = FieldOnCellsReal(self._model_3D_restricted, "ELGA", "SIEF_R")
         sigmax.setValues(0.0)
         sfield = sigmax.toSimpleFieldOnCells()
         sixx = sfield.SIXX
@@ -463,15 +474,16 @@ class PostBeremin:
         sfield_ar = sfield_mc.getArray()[:, 0]
 
         ##Projection 3D -> points
-        sfield_ar_points = self._proj_3D_2D.Eval(sfield_ar)
+        proj_3D_2D = self._l_proj_3D_2D[mesh_2D_idx]
+        sfield_ar_points = proj_3D_2D.Eval(sfield_ar)
         sfield_ar_points.setName("SIXX")
 
         ##Create 2D medcoupling field
         medc_cell_field = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
         medc_cell_field.setName("SIXX")
         medc_cell_field.setTime(time, idx, 0)
-        if len(sfield_ar_points) == self._mesh_proj_2D_mc.getNumberOfCells():
-            medc_cell_field.setMesh(self._mesh_proj_2D_mc)
+        if len(sfield_ar_points) == self._l_mesh_proj_2D_mc[mesh_2D_idx].getNumberOfCells():
+            medc_cell_field.setMesh(self._l_mesh_proj_2D_mc[mesh_2D_idx])
         else:
             UTMESS("F", "RUPTURE4_16")
         medc_cell_field.setArray(sfield_ar_points**pow_m)
@@ -502,8 +514,6 @@ class PostBeremin:
         coef_volu = self._coef_mult / self._weib_params["VOLU_REFE"]
         inv_m = 1 / pow_m
         sigma_u = self._weib_params["SIGM_CNV"] if self._use_function else sigma_refe
-
-        logger.info("computing table values...")
 
         # intfin(INTE_SIXX) = (COEF_MULT/VOLU_REFE*INTE_SIXX)**(1/bere_m)
         sigma_weibull = (coef_volu * intsig1pm) ** inv_m
@@ -556,46 +566,72 @@ class PostBeremin:
 
         table = TableBeremin(self._use_function)
 
-        for sigma_thr in self._weib_params["SIGM_SEUIL"]:
-            for sigma_refe in self._weib_params["SIGM_REFE"]:
-                for pow_m in self._weib_params["M"]:
+        param_mater = [
+            [sigma_thr, sigma_refe, pow_m]
+            for sigma_thr in self._weib_params["SIGM_SEUIL"]
+            for sigma_refe in self._weib_params["SIGM_REFE"]
+            for pow_m in self._weib_params["M"]
+        ]
 
-                    id_store = 0
-                    previous = None
+        for sigma_thr, sigma_refe, pow_m in param_mater:
 
-                    for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
+            id_store = 0
+            previous = None
 
-                        if self._use_indiplas:
-                            indip = self.get_internal_variables(idx)
+            for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
 
-                        sig1 = self.get_major_stress(idx)
+                if self._use_indiplas:
+                    indip = self.get_internal_variables(idx)
 
-                        if self._method_2D and not self._proj_3D_2D:
-                            logger.info("building projector ...")
-                            self.build_projector()
+                sig1 = self.get_major_stress(idx)
 
-                        if self._use_indiplas:
-                            sig1 = self.apply_threshold(sig1, indip)
+                if self._use_indiplas:
+                    sig1 = self.apply_threshold(sig1, indip)
 
-                        sig1 = self.apply_stress_correction(sig1, idx, sigma_thr, sigma_refe)
+                sig1 = self.apply_stress_correction(sig1, idx, sigma_thr, sigma_refe)
 
-                        if self._use_hist:
-                            if previous is None:
-                                previous = sig1.copy()
-                            else:
-                                sig1.maximum(previous)
-                                previous = sig1.copy()
+                if self._use_hist:
+                    if previous is None:
+                        previous = sig1.copy()
+                    else:
+                        sig1.maximum(previous)
+                        previous = sig1.copy()
 
-                        if DEBUG:
-                            print("NEW: sigmax:", id_store, idx, sig1.sum())
+                if DEBUG:
+                    print("NEW: sigmax:", id_store, idx, sig1.sum())
 
-                        if self._method_2D:
-                            intsig1pm = self.compute_intsig1_2D(sig1, pow_m, idx, time)
+                ##SIGMAW 3D
+                if not self._method_2D:
+                    intsig1pm = self.compute_intsig1_3D(sig1, pow_m, coor_elga.W)
+                    self.store_sigm_maxi_3D(id_store, time, sig1, model)
 
-                        else:
-                            intsig1pm = self.compute_intsig1_3D(sig1, pow_m, coor_elga.W)
-                            self.store_sigm_maxi_3D(id_store, time, sig1, model)
+                    strwb, strwb_pm, proba = self.compute_table_values(intsig1pm, pow_m, sigma_refe)
 
+                    table.append(
+                        id_store,
+                        time,
+                        self._zone,
+                        pow_m,
+                        sigma_refe if not self._use_function else "FONCTION",
+                        sigma_thr,
+                        strwb,
+                        strwb_pm,
+                        proba,
+                    )
+
+                ##SIGMAW 2D
+                else:
+
+                    if not self._l_proj_3D_2D:
+                        self._l_proj_3D_2D = []
+                        for mesh_2D, nom_mesh in zip(self._l_mesh_proj_2D, self._l_name_mesh_2D):
+                            logger.info(
+                                "Construction du projecteur pour le maillage 2D " + str(nom_mesh)
+                            )
+                            self._l_proj_3D_2D += [self.build_projector(mesh_2D)]
+
+                    for mesh_2D_idx, mesh_2D_name in enumerate(self._l_name_mesh_2D):
+                        intsig1pm = self.compute_intsig1_2D(sig1, pow_m, idx, time, mesh_2D_idx)
                         strwb, strwb_pm, proba = self.compute_table_values(
                             intsig1pm, pow_m, sigma_refe
                         )
@@ -603,7 +639,7 @@ class PostBeremin:
                         table.append(
                             id_store,
                             time,
-                            self._zone if not self._method_2D else self._name_mesh_2D,
+                            mesh_2D_name,
                             pow_m,
                             sigma_refe if not self._use_function else "FONCTION",
                             sigma_thr,
@@ -612,7 +648,7 @@ class PostBeremin:
                             proba,
                         )
 
-                        id_store += 1
+                id_store += 1
 
         return table
 
@@ -643,7 +679,7 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA, DEFORMATION, FILTRE_SIGM, **args)
         TABLE=sdtable,
         ACTION=_F(
             OPERATION="TRI",
-            NOM_PARA=("NUME_ORDRE", "M", "SIGM_REFE", "SIGM_SEUIL"),
+            NOM_PARA=("NUME_ORDRE", "M", "SIGM_REFE", "SIGM_SEUIL", "GROUP_MA"),
             ORDRE="CROISSANT",
         ),
     )
