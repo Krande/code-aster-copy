@@ -149,11 +149,12 @@ class PostBuild:
         self.keep_msvc_files = keep_msvc_files
 
     def __call__(self, bld):
-        top_dir = pathlib.Path(bld.top_dir).resolve().absolute()
+        build_dir = pathlib.Path(bld.path.get_bld().abspath()).resolve()
+        Logs.info(f"Copying {self.mod_task.module.value} to {build_dir}")
         library_prefix_ = pathlib.Path(bld.env.PREFIX)
         dst = library_prefix_ / f"lib/aster/{self.mod_task.module.value}.pyd"
         if self.mod_task.action == ModuleAction.CUSTOM:
-            src = top_dir / f"build/std/{bld.variant}/msvc/{self.mod_task.module.value}_proxy.dll"
+            src = build_dir / f"msvc/{self.mod_task.module.value}_proxy.dll"
             shutil.copy(src, dst)
             if self.keep_msvc_files is True:
                 Logs.info(f"Keeping MSVC files for {self.mod_task.module.value}")
@@ -172,7 +173,7 @@ class PostBuild:
                 lib_dir_name = "bibcxx"
             else:
                 lib_dir_name = "bibc"
-            src = top_dir / f"build/std/{bld.variant}/{lib_dir_name}/{lib_dir_name}.dll"
+            src = build_dir / f"{lib_dir_name}/{lib_dir_name}.dll"
             shutil.copy(src, dst)
         else:
             raise ValueError(f"Unknown action {self.mod_task.action}")

@@ -62,8 +62,7 @@ if "%FC%" == "ifx.exe" (
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
     if "%int_type%" == "64" (
-        echo "Setting 64-bit integer type"
-        set FFLAGS=%FFLAGS%
+        echo "Using 64-bit integer type"
     )
 ) else (
     echo "Using LLVM Flang Fortran compiler"
@@ -76,15 +75,13 @@ if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Create dll debug pdb
 if "%build_type%" == "debug" (
+    echo "Building debug version"
     set FCFLAGS=%FCFLAGS% /check:stack
     set CFLAGS=%CFLAGS% /Zi
     set CXXFLAGS=%CXXFLAGS% /Zi
     set LDFLAGS=%LDFLAGS% /DEBUG /INCREMENTAL:NO
 ) else (
-    REM set the equivalent of RelWithDebInfo
-    REM set FCFLAGS=%FCFLAGS% /debug:full /debug-parameters:all /traceback
-    REM set CFLAGS=%CFLAGS% /Z7
-    REM set CXXFLAGS=%CXXFLAGS% /Z7
+    echo "Building release version"
 )
 
 :: Add Math libs
@@ -107,8 +104,6 @@ set INCLUDES_BIBC=%PREF_ROOT%/include %SRC_DIR%/bibfor/include %INCLUDES_BIBC%
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN
 
 python %RECIPE_DIR%\scripts\update_version.py
-
-python %RECIPE_DIR%\config\set_env_var.py %SRC_DIR%
 
 REM Install for standard sequential
 waf configure ^
@@ -139,9 +134,9 @@ if errorlevel 1 (
 )
 
 if "%build_type%" == "debug" (
-    waf install_debug -v
+    waf install_debug
 ) else (
-    waf install -v
+    waf install
 )
 
 if errorlevel 1 exit 1

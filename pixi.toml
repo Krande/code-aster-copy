@@ -10,6 +10,8 @@ common = { features = ["common"], solve-group = "common", no-default-feature = t
 dev = { features = ["dev", "common"], no-default-feature = true }
 int64 = { features = ["int64", "common"], no-default-feature = true }
 int32 = { features = ["int32", "common"], no-default-feature = true }
+int64d = { features = ["int64d", "common"], no-default-feature = true }
+int32d = { features = ["int32d", "common"], no-default-feature = true }
 conda = { features = ["conda"], no-default-feature = true }
 
 [feature.conda]
@@ -19,8 +21,11 @@ dependencies = { rattler-build = "*" }
 
 [feature.int64]
 channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
-
+[feature.int64d]
+channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
 [feature.int32]
+channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
+[feature.int32d]
 channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
 
 [feature.common.dependencies]
@@ -54,6 +59,28 @@ clangdev = "18.*"
 pixi-pycharm = "*"
 
 [feature.int64.target.win-64.dependencies]
+hdf5 = { version = "*", build = "*release*" }
+mfront = { version = "*", build = "*release*" }
+mgis = { version = "*", build = "*release*" }
+libmed = { version = "*", build = "*release*INT64*" }
+medcoupling = { version = "*", build = "*release*INT64*" }
+libscotch = { version = "*", build = "*release*INT64*" }
+scotch = { version = "*", build = "*release*INT64*" }
+metis = { version = "*", build = "*release*INT64*" }
+mumps = { version = "*", build = "*release*INT64*" }
+
+[feature.int32.target.win-64.dependencies]
+hdf5 = { version = "*", build = "*release*" }
+mfront = { version = "*", build = "*release*" }
+mgis = { version = "*", build = "*release*" }
+libmed = { version = "*", build = "*release*INT32*" }
+medcoupling = { version = "*", build = "*release*INT32*" }
+libscotch = { version = "*", build = "*release*INT32*" }
+scotch = { version = "*", build = "*release*INT32*" }
+metis = { version = "*", build = "*release*INT32*" }
+mumps = { version = "*", build = "*release*INT32*" }
+
+[feature.int64d.target.win-64.dependencies]
 hdf5 = { version = "*", build = "*debug*" }
 mfront = { version = "*", build = "*debug*" }
 mgis = { version = "*", build = "*debug*" }
@@ -64,7 +91,7 @@ scotch = { version = "*", build = "*debug*INT64*" }
 metis = { version = "*", build = "*debug*INT64*" }
 mumps = { version = "*", build = "*debug*INT64*" }
 
-[feature.int32.target.win-64.dependencies]
+[feature.int32d.target.win-64.dependencies]
 hdf5 = { version = "*", build = "*debug*" }
 mfront = { version = "*", build = "*debug*" }
 mgis = { version = "*", build = "*debug*" }
@@ -86,15 +113,24 @@ cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "co
 ctest = { cmd = ["rattler-build", "test",  "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 
 [feature.int32.target.linux-64.tasks]
-build = { cmd = ["waf", "configure", "build"], description = "Build the project" }
+build32 = { cmd = ["waf", "configure", "build"], description = "Build the project" }
 
 [feature.int64.target.win-64.tasks]
-build64 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+build64 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-type", "release"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install64 = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
 
+[feature.int64d.target.win-64.tasks]
+build64d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-type", "debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+install64d = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+
 [feature.int32.target.win-64.tasks]
-build32 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+build32 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--build-type", "release"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install32 = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+
+[feature.int32d.target.win-64.tasks]
+build32d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--build-type", "debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+install32d = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
+
 test = { cmd = [
     "run_ctest",
     "--resutest=temp\\seq",
@@ -103,28 +139,12 @@ test = { cmd = [
     "-LE", "need_data",
     "--timefactor=5.0",
     "--only-failed-results"], description = "Run the default sequential tests" }
+
+[feature.dev.target.win-64.tasks]
 test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "conda/test_scanner/results"], description = "Scan the test results" }
 debug = { cmd = ["python", "conda/scripts/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
-
 dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the aster executable" }
-bibcxx_cc = { cmd = [
-    "cmake", "-B", "build-cmake", "-G", "Ninja",
-    "-DBUILD_BIBCXX=ON",
-    "-DWIN32_LEAN_AND_MEAN=ON",
-    "-DCMAKE_BUILD_TYPE=release",
-    "--fresh"
-], description = "Configure the project for building bibcxx", env = { CC = "clang-cl", CXX = "clang-cl" } }
-bibcxx_ci = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibcxx", depends-on = ["bibcxx_cc"] }
-
-bibfor_cmake_configure = { cmd = [
-    "cmake", "-B", "build-cmake", "-G", "Ninja",
-    "-DBUILD_BIBFOR=ON",
-    "-DWIN32_LEAN_AND_MEAN=ON",
-    "-DCMAKE_BUILD_TYPE=release",
-    "--fresh"
-], description = "Configure the project for building bibfor", env = { FC = "ifx.exe", CC = "clang-cl", CXX = "clang-cl" } }
-cmake_bibfor = { cmd = ["ninja", "-C", "build-cmake"], description = "Build bibfor", depends-on = ["bibfor_cmake_configure"] }
 
 [feature.int64.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]

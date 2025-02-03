@@ -11,9 +11,10 @@ set USE_LOG=0
 set COLOR_ENABLED=1
 :: BUILD_TYPE can be either debug or release
 set BUILD_TYPE=debug
+set BUILD64=0
 set CLEAN_BUILD=1
 set PIXI_BUILD=0
-
+set VERBOSE_WAF=0
 set EXTRA_WAF_ARGS=
 
 :parse_args
@@ -28,6 +29,10 @@ if /i "%~1"=="--pixi-build" (
     set COLOR_ENABLED=0
 ) else if /i "%~1"=="--no-clean" (
     set CLEAN_BUILD=0
+) else if /i "%~1"=="--verbose-waf" (
+    set VERBOSE_WAF=1
+) else if /i "%~1"=="--int-type64" (
+    set BUILD64=1
 ) else if /i "%~1"=="--build-type" (
     shift
     set BUILD_TYPE=%~1
@@ -78,7 +83,14 @@ where "%CC%"
 where "%FC%"
 REM where "%LINK%"
 
-SET OUTPUT_DIR=%PARENT_DIR%/build/std
+if %BUILD64% == 1 (
+    set INTPATH=int64
+) else (
+    set INTPATH=int32
+)
+
+SET OUTPUT_DIR=%PARENT_DIR%/build/%INTPATH%
+
 SET OUTPUT_DIR=%OUTPUT_DIR:\=/%
 
 set ASTER_PLATFORM_MSVC64=1
@@ -138,14 +150,12 @@ if "%FC%" == "ifx.exe" (
 
 :: Create dll debug pdb
 if "%BUILD_TYPE%" == "debug" (
+    echo "Setting debug flags"
     set FCFLAGS=%FCFLAGS% /check:stack
     set CFLAGS=%CFLAGS% /Zi
     set CXXFLAGS=%CXXFLAGS% /Zi
 ) else (
-    REM set the equivalent of RelWithDebInfo
-@REM     set FCFLAGS=%FCFLAGS% /debug:full /debug-parameters:all /traceback
-@REM     set CFLAGS=%CFLAGS% /Zi
-@REM     set CXXFLAGS=%CXXFLAGS% /Zi
+    echo "Setting release flags"
 )
 
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
@@ -180,7 +190,6 @@ if %CLEAN_BUILD%==1 (
 REM Update version
 python conda\scripts\update_version.py
 
-set BUILD=std
 set EXTRA_ARGS=
 if "%INCLUDE_TESTS%" == "1" (
     echo "Including tests"
@@ -216,7 +225,10 @@ if errorlevel 1 (
     type %OUTPUT_DIR%/config.log
     exit 1
 )
-
+set WAF_INSTALL_EXTRA_ARGS=
+if %VERBOSE_WAF%==1 (
+    set WAF_INSTALL_EXTRA_ARGS=-vvv
+)
 REM Conditional log handling
 if %USE_LOG%==1 (
     set "datetimeString="
@@ -224,15 +236,15 @@ if %USE_LOG%==1 (
     waf install_debug -vvv > "install_debug_%datetimeString%.log" 2>&1
 ) else (
     if "%BUILD_TYPE%" == "debug" (
-        waf install_debug -v
+        waf install_debug %WAF_INSTALL_EXTRA_ARGS%
     ) else (
-        waf install -v
+        waf install %WAF_INSTALL_EXTRA_ARGS%
     )
 )
 
 if errorlevel 1 exit 1
 
-call %~dp0\conda_rearrange.bat
+@REM call %~dp0\conda_rearrange.bat
 
 if errorlevel 1 exit 1
 

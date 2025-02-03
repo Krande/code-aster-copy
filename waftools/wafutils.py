@@ -55,6 +55,13 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         else:
             kwargs["output"] = Context.BOTH
             stdout, stderr = self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
+
+        # Ensure stdout and stderr are strings.
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode("utf-8", errors="replace")
+        if isinstance(stderr, bytes):
+            stderr = stderr.decode("utf-8", errors="replace")
+
         with open(logbase + ".out", "w") as flog:
             flog.write(stdout or "")
         with open(logbase + ".err", "w") as flog:
