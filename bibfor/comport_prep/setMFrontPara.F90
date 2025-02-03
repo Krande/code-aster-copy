@@ -52,7 +52,13 @@ subroutine setMFrontPara(prepCrit, iFactorKeyword)
     integer:: extern_type, iveriborne
     character(len=16) :: extern_addr
     real(kind=8) :: resi_inte
+#ifdef ASTER_INT4  // Only define ASTERINTEGER4 specialization when using 64-bit integers
+    integer(kind=8) :: iter_inte_mfront_maxi
+    integer :: iter_inte_maxi, vali(2)
+#else
     integer :: iter_inte_maxi, iter_inte_mfront_maxi, vali(2)
+#endif
+
 !
 ! --------------------------------------------------------------------------------------------------
 !

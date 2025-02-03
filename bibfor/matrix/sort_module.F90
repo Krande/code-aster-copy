@@ -236,12 +236,19 @@ contains
         !
     end subroutine qsort_i8
     !
+#ifdef ASTER_INT4
     subroutine sort_i8(list, nbElem)
-        ! Dummy arguments
+        ! In 32-bit mode, use default integers
+        integer, intent(inout) :: list(*)
+        integer, intent(in)    :: nbElem
+        integer, pointer       :: tri(:) => null()
+#else
+    subroutine sort_i8(list, nbElem)
+        ! In 64-bit mode, use 8-byte integers
         integer(kind=8), intent(inout) :: list(*)
-        integer(kind=8), intent(in) :: nbElem
-        ! Local variables
-        integer(kind=8), pointer :: tri(:) => null()
+        integer(kind=8), intent(in)    :: nbElem
+        integer(kind=8), pointer       :: tri(:) => null()
+#endif
         !
         if (nbElem > 0) then
             AS_ALLOCATE(vi=tri, size=nbElem)

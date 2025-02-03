@@ -372,7 +372,12 @@ contains
 ! deps_vi   derivee dka  / deps  (grad_vari)
 ! dphi_vi   derivee dka  / dphi  (grad_vari)
 ! --------------------------------------------------------------------------------------------------
+
+#ifdef ASTER_INT4
+        integer(kind=8) :: state
+#else
         integer         :: state
+#endif
         real(kind=8)    :: kam, dka, epm(self%ndimsi), ep(self%ndimsi), rac2(self%ndimsi)
         real(kind=8)    :: vdum1(self%ndimsi), vdum2(self%ndimsi), rdum
         real(kind=8)    :: sigm(self%ndimsi)
@@ -1886,7 +1891,11 @@ contains
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in)             :: eps(:), sigm(:)
+#ifdef ASTER_INT4
+        integer(kind=8), intent(out)         :: state
+#else
         integer, intent(out)                 :: state
+#endif
         real(kind=8), intent(out)            :: dka, ep(:), t(:)
         real(kind=8), intent(out)            :: deps_t(:, :), dphi_t(:), deps_ka(:), dphi_ka
 ! --------------------------------------------------------------------------------------------------
