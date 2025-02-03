@@ -62,9 +62,9 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         if isinstance(stderr, bytes):
             stderr = stderr.decode("utf-8", errors="replace")
 
-        with open(logbase + ".out", "w") as flog:
+        with open(logbase + ".out", "w", encoding="utf-8", errors="replace") as flog:
             flog.write(stdout or "")
-        with open(logbase + ".err", "w") as flog:
+        with open(logbase + ".err", "w", encoding="utf-8", errors="replace") as flog:
             flog.write(stderr or "")
     except Errors.WafError as err:
         Logs.warn("stdout: %s" % err.stdout)
