@@ -43,7 +43,7 @@ template <>
 struct npy_type< JeveuxVectorLong > {
     static const int value = NPY_LONG;
 };
-#ifdef ASTER_INT8  // Only define ASTERINTEGER4 specialization when using 64-bit integers.
+#ifndef ASTER_INT4  // Only define ASTERINTEGER4 specialization when using 64-bit integers.
 template <>
 struct npy_type< JeveuxVectorShort > {
     static const int value = NPY_INT;

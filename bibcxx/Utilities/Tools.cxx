@@ -103,7 +103,7 @@ char *vectorStringAsFStrArray( const VectorString &vector, const int flen ) {
     vectorStringToFStrArray( tabFStr, flen, vector );
     return tabFStr;
 }
-#ifdef ASTER_INT8  // Only define ASTERINTEGER4 specialization when using 64-bit integers.
+#ifndef ASTER_INT4  // Only define ASTERINTEGER4 specialization when using 64-bit integers.
 VectorInt irange( const ASTERINTEGER4 begin, const ASTERINTEGER4 end ) {
     const int size = end - begin + 1;
     VectorInt v( size );

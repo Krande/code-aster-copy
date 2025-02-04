@@ -63,10 +63,10 @@ fi
 
 if [[ "${int_type}" == "64" ]]; then
     echo "Using 64-bit integer type"
-    export DEFINES=${DEFINES} ASTER_INT8
+    export "DEFINES=${DEFINES} ASTER_INT8"
 else
     echo "Using 32-bit integer type"
-    export DEFINES=${DEFINES} ASTER_INT4
+    export "DEFINES=${DEFINES} ASTER_INT4"
 fi
 
 if [[ "$mpi" == "nompi" ]]; then
