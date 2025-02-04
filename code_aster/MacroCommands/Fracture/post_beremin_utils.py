@@ -102,8 +102,10 @@ class CELL_TO_POINT:
         nb_iter = 0
         while 1:
 
-            logger.info("Projector build ... ")
-            logger.info("Precision courante = " + str(prec))
+            logger.info("Construction du projecteur : itération " + str(nb_iter))
+            logger.info(
+                "Precision courante = précision initiale multiplée par " + str(1.5**nb_iter)
+            )
 
             coor_nook = self.coor[nook_idx].toNumPyArray().ravel().tolist()
             (cells_prec, pos_prec) = meshT4.getCellsContainingPoints(coor_nook, prec)
@@ -226,5 +228,7 @@ def create_mesh_from_groupno(mesh_3D, group_no):
     ##Restrict medcoupling mesh to 2D faces
     a_group_no = mc_mesh_3D.getNodeGroupArr(group_no)
     mc_mesh_2D = mc_mesh_3D.getMeshAtLevel(0).buildFacePartOfMySelfNode(a_group_no, fullyIn=True)
+    logger.info("COUCOU")
+    logger.info(mc_mesh_2D)
 
     return mc_mesh_2D
