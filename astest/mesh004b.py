@@ -160,14 +160,23 @@ S.view(v)
 from code_aster.LinearAlgebra import MatrixScaler
 from code_aster.Utilities import logger
 
+# Compute reference solution
+mySolver = CA.MumpsSolver()
+mySolver.factorize(matrAsse)
+sol_ref = mySolver.solve(vecass)
+
+# Export unscaled matrix
 pA_unscaled = matrAsse.toPetsc()
 pA_unscaled.view()
-# The Scling object
+
+# The Scaling object
 S = MatrixScaler.MatrixScaler()
-logger.setLevel(2)
+
+# Duplicate the assembly matrix
 newMat = matrAsse.copy()
+
 # Compute scaling with DX and DY gathered (default behavior)
-S.computeScaling(matrAsse)
+S.computeScaling(matrAsse, verbose=True)
 S.scaleMatrix(newMat)
 
 pA_scaled = newMat.toPetsc()
@@ -176,12 +185,14 @@ nt = PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(pA_unscaled.norm(nt), 43055.55555560758)
 test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 
-
+# Duplicate the assembly matrix again
 newMat = matrAsse.copy()
+
 # Compute scaling with DX and DY separately
-S.computeScaling(matrAsse, merge_dof=[])
+S.computeScaling(matrAsse, merge_dof=[], verbose=True)
 S.scaleMatrix(newMat)
 
+# Export scaled matrix
 pA_scaled = newMat.toPetsc()
 pA_scaled.view()
 nt = PETSc.NormType.NORM_INFINITY
@@ -193,12 +204,14 @@ init_norm = rhs.norm("NORM_INFINITY")
 S.scaleRHS(rhs)
 test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), 0.00970509418019451)
 
+# Check the solution of the scaled system with respect to the reference solution
+mySolver.factorize(newMat)
+solution = mySolver.solve(rhs)
 
-sol = vecass.copy()
-S.unscaleSolution(rhs)
+# The solution *must* be unscaled !
+S.unscaleSolution(solution)
+test.assertAlmostEqual(solution.toPetsc().norm(nt), sol_ref.toPetsc().norm(nt))
 
-
-logger.setLevel(0)
 
 test.printSummary()
 
