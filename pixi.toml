@@ -134,6 +134,7 @@ test32d = { cmd = ["run_ctest", "--resutest=temp\\int32", "-L", "submit", "-L", 
 build32d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install32d = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
 test32d = { cmd = ["run_ctest", "--resutest=temp\\int32d", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
+debug32d = { cmd = ["python", "msvc/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 
 test = { cmd = [
     "run_ctest",
@@ -146,7 +147,7 @@ test = { cmd = [
 
 [feature.dev.target.win-64.tasks]
 test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "conda/test_scanner/results"], description = "Scan the test results" }
-debug = { cmd = ["python", "conda/scripts/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
+debug = { cmd = ["python", "msvc/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
 dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the aster executable" }
 

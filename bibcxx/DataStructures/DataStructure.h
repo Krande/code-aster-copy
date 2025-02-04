@@ -101,8 +101,15 @@ class DataStructure {
      * @brief Destructeur
      */
     ~DataStructure();
-
+#ifdef ASTER_INT4
+#include <cstdint>
+    inline ASTERINTEGER id() {
+        return static_cast<ASTERINTEGER>(reinterpret_cast<std::uintptr_t>(this));
+    }
+#else
     inline ASTERINTEGER id() { return (ASTERINTEGER)this; };
+#endif
+
 
     /**
      * @brief Function to add a datastructure as a dependency

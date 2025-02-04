@@ -30,7 +30,7 @@ class msvclibgen(Task.Task):
             "mfront": self.env.MFRONT_DEF,
         }
         clean_name = output_fp.stem.replace("_gen", "")
-        # Location of python 3.11 libs
+        # todo: auto-gen def files from obj files can be slotted in here
         libs_dir = pathlib.Path(self.env.PREFIX).resolve().absolute().parent / "libs"
         # This is a hack to copy the generated lib to the build directory
         opts = ["/NOLOGO", "/MACHINE:X64", "/SUBSYSTEM:CONSOLE", f"/LIBPATH:{libs_dir}"]
@@ -42,7 +42,7 @@ class msvclibgen(Task.Task):
             def_file_v = clean_name_map.get(clean_name, None)
             if def_file_v is not None:
                 def_file = root_path / def_file_v
-                Logs.info(f"Using passed ref 2{def_file=}")
+                Logs.info(f"Using def file {def_file=}")
             opts += [f"/DEF:{def_file}"]
 
         cmd = cmd[:2] + opts + cmd[2:]

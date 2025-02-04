@@ -500,7 +500,10 @@ def check_platform(self):
         if os_name.endswith("32"):
             os_name = os_name[:-2]
         os_name += "64"
-        self.define("ASTER_HAVE_64_BITS", 1)
+        if 'ASTER_INT4' in self.env.DEFINES:
+            self.undefine("ASTER_HAVE_64_BITS")
+        else:
+            self.define("ASTER_HAVE_64_BITS", 1)
     plt = "ASTER_PLATFORM_" + os_name.upper()
     if os_name.startswith("mingw"):
         self.define("ASTER_PLATFORM_MINGW", 1)
