@@ -199,6 +199,6 @@ class NewtonSolver(SolverFeature):
         if parameter is not None:
             if args.get(keyword) is None:
                 return default
-            return _F(args[keyword])[0].get(parameter, default)
+            return _F(args[keyword]).get(parameter, default)
 
         return args.get(keyword, default)
