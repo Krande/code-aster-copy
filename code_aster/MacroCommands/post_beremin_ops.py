@@ -477,40 +477,52 @@ class PostBeremin:
         """
 
         ##3D ComponentOnCells to 3D medcoupling array
-        sigmax = FieldOnCellsReal(self._model_3D_restricted, "ELGA", "SIEF_R")
-        sigmax.setValues(0.0)
-        sfield = sigmax.toSimpleFieldOnCells()
-        sixx = sfield.SIXX
+        sigma = FieldOnCellsReal(self._model_3D_restricted, "ELGA", "SIEF_R")
+        sigma.setValues(0.0)
+        sigma_sfield = sigma.toSimpleFieldOnCells()
+        sixx = sigma_sfield.SIXX
         sig1.restrict(self._zone_ids)
         sixx += sig1
-        sfield.setComponentValues("SIXX", sixx.expand())
-        sfield_mc = sfield.toMEDCouplingField(self._mesh_3D_cells_mc)
-        sfield_ar = sfield_mc.getArray()[:, 0]
+        sigma_sfield.setComponentValues("SIXX", sixx.expand())
+        sigma_f_mc = sigma_sfield.toMEDCouplingField(self._mesh_3D_cells_mc)
+        sigma_a_mc = sigma_f_mc.getArray()[:, 0]
 
         ##Projection 3D -> points
         proj_3D_2D = self._l_proj_3D_2D[mesh_2D_idx]
-        sfield_ar_points = proj_3D_2D.Eval(sfield_ar)
-        sfield_ar_points.setName("SIXX")
+        sigma_2D_a_mc = proj_3D_2D.Eval(sigma_a_mc)
+        sigma_2D_a_mc.setName("SIYY")
 
-        ##Create 2D medcoupling field
-        medc_cell_field = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
-        medc_cell_field.setName("SIXX")
-        medc_cell_field.setTime(time, idx, 0)
-        if len(sfield_ar_points) == self._l_mesh_proj_2D_mc[mesh_2D_idx].getNumberOfCells():
-            medc_cell_field.setMesh(self._l_mesh_proj_2D_mc[mesh_2D_idx])
+        ##Create 2D medcoupling field for integral
+        sigma_2D_f_mc = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
+        if len(sigma_2D_a_mc) == self._l_mesh_proj_2D_mc[mesh_2D_idx].getNumberOfCells():
+            sigma_2D_f_mc.setMesh(self._l_mesh_proj_2D_mc[mesh_2D_idx])
         else:
             UTMESS("F", "RUPTURE4_16")
-        medc_cell_field.setArray(sfield_ar_points**pow_m)
-        medc_cell_field.setNature(mc.IntensiveConservation)
-        medc_cell_field.setName("SIEF_ELGA")
-        medc_cell_field.checkConsistencyLight()
-
-        if self._rout_2D:
-            filename = LogicalUnitFile.filename_from_unit(self._rout_2D)
-            mc.WriteField(filename, medc_cell_field, True if idx == 0 else False)
+        sigma_2D_f_mc.setTime(time, idx, 0)
+        sigma_2D_f_mc.setArray(sigma_2D_a_mc**pow_m)
+        sigma_2D_f_mc.setNature(mc.IntensiveConservation)
+        sigma_2D_f_mc.setName("SIEF_ELMOY")
+        sigma_2D_f_mc.checkConsistencyLight()
 
         ##Compute integral
-        intsig1pm = medc_cell_field.integral(0, True)
+        intsig1pm = sigma_2D_f_mc.integral(0, True)
+
+        ##Output .med
+        if self._rout_2D:
+            sigma_2D_np = sigma_2D_a_mc.toNumPyArray().reshape((len(sigma_2D_a_mc), 1))
+            sigma_2D_np_out = np.concatenate((sigma_2D_np**pow_m, sigma_2D_np), 1)
+            sigma_2D_a_mc_out = mc.DataArrayDouble(sigma_2D_np_out)
+            sigma_2D_a_mc_out.setInfoOnComponents(["SIXX", "SIYY"])
+            sigma_2D_f_mc_out = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
+            sigma_2D_f_mc_out.setMesh(self._l_mesh_proj_2D_mc[mesh_2D_idx])
+            sigma_2D_f_mc_out.setTime(time, idx, 0)
+            sigma_2D_f_mc_out.setArray(sigma_2D_a_mc_out)
+            sigma_2D_f_mc_out.setNature(mc.IntensiveConservation)
+            sigma_2D_f_mc_out.setName("SIEF_ELMOY")
+            sigma_2D_f_mc_out.checkConsistencyLight()
+
+            filename = LogicalUnitFile.filename_from_unit(self._rout_2D)
+            mc.WriteField(filename, sigma_2D_f_mc_out, True if idx == 0 else False)
 
         return intsig1pm
 
@@ -541,7 +553,7 @@ class PostBeremin:
 
         return sigma_weibull, sigma_weibullpm, proba_weibull
 
-    def store_sigm_maxi_3D(self, idx, time, sig1, model):
+    def store_sigm_maxi_3D(self, idx, time, sig1, model, pow_m):
         """Store the major stress ^M into the output result.
 
         Args:
@@ -558,10 +570,16 @@ class PostBeremin:
         sigmax = FieldOnCellsReal(model, "ELGA", "SIEF_R")
         sigmax.setValues(0.0)
         sfield = sigmax.toSimpleFieldOnCells()
+        ##Major stress ^ M
         sixx = sfield.SIXX
         sixx.restrict(self._zone_ids)
         sixx += sig1
         sfield.setComponentValues("SIXX", sixx.expand())
+        ##Major stress
+        siyy = sfield.SIYY
+        siyy.restrict(self._zone_ids)
+        siyy = sig1 ** (1 / pow_m)
+        sfield.setComponentValues("SIYY", siyy.expand())
         fed = model.getFiniteElementDescriptor()
         sigmax = sfield.toFieldOnCells(fed, "RAPH_MECA", "PCONTPR")
         self._rout.setField(sigmax, "SIEF_ELGA", idx)
@@ -630,7 +648,7 @@ class PostBeremin:
                 ##SIGMAW 3D
                 if not self._method_2D:
                     intsig1pm = self.compute_intsig1_3D(sig1, pow_m, coor_elga.W)
-                    self.store_sigm_maxi_3D(id_store, time, sig1, model)
+                    self.store_sigm_maxi_3D(id_store, time, sig1, model, pow_m)
 
                     strwb, strwb_pm, proba = self.compute_table_values(intsig1pm, pow_m, sigma_refe)
 
