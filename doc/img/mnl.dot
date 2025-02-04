@@ -7,15 +7,25 @@ digraph MNL {
     edge [fontname = "Helvetica,Arial,sans-serif";];
     
     subgraph bases {
-        keywords [label = "Keywords";];
+        keywords [label = "Keywords";shape = "ellipse";];
         problem [label = "PhysicalProblem";shape = "ellipse";];
+        type [label = "ProblemType";shape = "ellipse";];
         state [label = "PhysicalState";shape = "ellipse";];
-        context [label = "ContextMixin";];
+        result [label = "Result";shape = "ellipse";];
+        context [label = "Context";];
+        
+        context -> problem;
+        context -> type;
+        context -> keywords;
+        context -> state;
+        context -> result;
     }
+    
+    problem_old [label = "PhysicalProblem";shape = "ellipse";];
+    state_old [label = "PhysicalState";shape = "ellipse";];
     
     mnl [label = "meca_non_line_ops";];
     pbsolv [label = "ProblemSolver";];
-    main [label = "NonLinearSolver";];
     timestepper [label = "TimeStepper";];
     storage [label = "StorageManager";];
     linsolv [label = "LinearSolver";];
@@ -27,8 +37,27 @@ digraph MNL {
     
     observ [label = "Observer";];
     event [label = "EventSource";];
-    // Notifier or Emitter
-    opers [label = OperatorsManager;style = "dashed";];
+    
+    subgraph cluster_operators {
+        opers [label = "Operators";style = "dashed";];
+        style = "dashed";
+        subgraph {
+            rank = "same";
+            statopers [label = "MecaStatOperators";style = "dashed";];
+            theropers [label = "ThermalOperators";style = "dashed";];
+            dynopers [label = "MecaDynaOperators";style = "dashed";];
+        }
+        integr [label = BaseIntegrator;];
+        newmark [label = NewmarkIntegrator;];
+        
+        // subclasses
+        opers -> statopers [dir = "back"; arrowtail = "empty";];
+        opers -> dynopers [dir = "back"; arrowtail = "empty";];
+        opers -> theropers [dir = "back"; arrowtail = "empty";];
+        
+        dynopers -> integr [dir = "back"; arrowtail = "empty";];
+        integr -> newmark [dir = "back"; arrowtail = "empty";];
+    }
     
     subgraph cluster_stepsolv {
         label = "StepSolver";
@@ -50,21 +79,9 @@ digraph MNL {
         stepsolv -> mecadyn [dir = "back"; arrowtail = "empty";];
         stepsolv -> ther [dir = "back"; arrowtail = "empty";];
         
-        statopers [label = "MecaStatOperatorsManager";style = "dashed";];
-        theropers [label = "ThermalOperatorsManager";style = "dashed";];
-        dynopers [label = "MecaDynaOperatorsManager";style = "dashed";];
-        mecastat -> statopers [xlabel = "use"; dir = "back"; arrowtail = "diamond";];
-        ther -> theropers [xlabel = "use"; dir = "back"; arrowtail = "diamond";];
-        
         implicit [label = "ImplicitStepSolver";];
         explicit [label = "ExplicitStepSolver";];
         multi [label = "MultiStepSolver";];
-        
-        // mecadyn -> dynopers[dir="back", arrowtail="empty"]
-        // ther -> theropers[dir="back", arrowtail="empty"]
-        
-        integr [label = BaseIntegrator;];
-        newmark [label = NewmarkIntegrator;];
         
         // subclasses
         mecadyn -> implicit [dir = "back"; arrowtail = "empty";];
@@ -74,13 +91,6 @@ digraph MNL {
         implicit -> integr;
         explicit -> integr;
         multi -> integr;
-        
-        // composition
-        subgraph {
-            rank = "same";
-            dynopers -> integr [dir = "back"; arrowtail = "diamond";];
-        }
-        integr -> newmark [dir = "back"; arrowtail = "empty";];
     }
     
     subgraph cluster_iter_solv {
@@ -102,57 +112,49 @@ digraph MNL {
     mnl -> keywords [xlabel = "init"; style = "bold";];
     mnl -> problem [xlabel = "creates"; style = "bold";];
     
-    pbsolv -> main [xlabel = "wraps";];
+    pbsolv -> context [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
     pbsolv -> state [xlabel = "creates"; style = "bold";];
+    pbsolv -> timestepper;
+    pbsolv -> storage;
+    pbsolv -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];
+    pbsolv -> hook [label = "todo"; style = "dashed";];
     
-    main -> keywords [xlabel = ".param"; style = "dotted";];
-    main -> problem [style = "dotted";];
-    main -> state [style = "dotted";];
-    main -> timestepper;
-    main -> storage;
-    main -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];
-    main -> hook [label = opt; style = "dashed";];
+    stepsolv -> problem_old [style = "dotted"; ltail = cluster_stepsolv;];
     
-    stepsolv -> problem [style = "dotted"; ltail = cluster_stepsolv;];
-    
-    stepsolv -> state [ltail = cluster_stepsolv;];
+    stepsolv -> state_old [ltail = cluster_stepsolv;];
     stepsolv -> linsolv [ltail = cluster_stepsolv;];
     stepsolv -> conv_criteria [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
     
     conv_criteria -> linsolv [ltail = cluster_iter_solv;];
-    conv_criteria -> opers [xlabel = "use"; dir = "back"; arrowtail = "diamond"; ltail = cluster_iter_solv;];
+    conv_criteria -> opers [ltail = cluster_iter_solv; lhead = cluster_operators;];
     snes -> incr_solv [style = "invis";];
     
     newton -> incr_solv;
     newton -> conv_manager;
-    incr_solv -> contact;
-    incr_solv -> opers [xlabel = "use"; dir = "back"; arrowtail = "diamond";];
-    incr_solv -> linsolv;
     incr_solv -> linesearch;
+    incr_solv -> contact;
+    incr_solv -> opers [lhead = cluster_operators;];
+    incr_solv -> linsolv;
     incr_solv -> conv_manager;
     incr_solv -> event [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
-    incr_solv -> problem [style = "dotted";];
-    incr_solv -> state [style = "dotted";];
-    // integr -> state[style="dotted"];
-    linesearch -> state [style = "dotted";];
+    incr_solv -> problem_old [style = "dotted";];
+    incr_solv -> state_old [style = "dotted";];
+    // integr -> state_old[style="dotted"];
+    linesearch -> state_old [style = "dotted";];
+    linesearch -> opers [lhead = cluster_operators;];
     
-    opers -> contact;
-    // opers -> statopers [dir = "back"; arrowtail = "empty";];
-    // opers -> dynopers [dir = "back"; arrowtail = "empty";];
-    // opers -> theropers [dir = "back"; arrowtail = "empty";];
-    opers -> problem [style = "dotted";];
-    opers -> state [style = "dotted";];
+    // opers -> contact (to be passed by incr_solv)
+    opers -> problem_old [style = "dotted";];
+    opers -> state_old [style = "dotted";];
     
-    contact -> problem [style = "dotted";];
-    conv_manager -> problem [style = "dotted";];
-    conv_manager -> state [style = "dotted";];
-    snes -> problem [style = "dotted";];
-    raspen -> problem [style = "dotted";];
+    contact -> problem_old [style = "dotted";];
+    conv_manager -> problem_old [style = "dotted";];
+    conv_manager -> state_old [style = "dotted";];
+    snes -> problem_old [style = "dotted";];
+    raspen -> problem_old [style = "dotted";];
     
     timestepper -> observ [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
     
-    // new
-    pbsolv -> context [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
     // placement
     timestepper -> stepsolv [style = "invis";];
 }

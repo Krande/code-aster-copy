@@ -66,7 +66,7 @@ class IncrementalSolver(SolverFeature, EventSource):
         """OperatorsManager: Operators manager object."""
         return self.get_feature(SOP.OperatorsManager)
 
-    @profile
+    # @profile
     @SolverFeature.check_once
     def solve(self, matrix_type, matrix=None, force=False):
         """Solve the iteration.

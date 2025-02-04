@@ -100,6 +100,7 @@ def meca_non_line_ops(self, **args):
     adapt_for_mgis_behaviour(self, args)
 
     # Add parameters
+    # NB: Ensure to keep keywords as returned after syntax checking (should always be list)
     param = {
         "ARCHIVAGE": _keyword_clean(args["ARCHIVAGE"]),
         "COMPORTEMENT": args["COMPORTEMENT"],
@@ -173,7 +174,7 @@ def meca_non_line_ops(self, **args):
     solver.use(ComputeDisplFromHHO())
 
     # Run computation
-    solver.run()
+    solver.run_ops()
     print_stats()
     reset_stats()
     return solver.result

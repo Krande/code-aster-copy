@@ -108,7 +108,7 @@ class RASPENSolver(SolverFeature):
 
         return matrix_type
 
-    @profile
+    # @profile
     def solve(self, current_matrix):
         """Solve a step with SNES.
 

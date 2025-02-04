@@ -38,7 +38,7 @@ class ContextMixin:
             self._state = None
             self._keywords = {}
             self._result = None
-            self._contact = None
+            self._contact = None  # FIXME: remove? create deeper?
 
     _ctxt = None
     __setattr__ = no_new_attributes(object.__setattr__)

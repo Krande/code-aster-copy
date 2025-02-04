@@ -186,7 +186,7 @@ class SNESSolver(SolverFeature):
         OptDB.insertString(self._options)
         snes.setFromOptions()
 
-    @profile
+    # @profile
     def solve(self, current_matrix):
         """Solve a step with SNES.
 

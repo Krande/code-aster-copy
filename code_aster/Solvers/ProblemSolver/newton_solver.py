@@ -137,7 +137,7 @@ class NewtonSolver(SolverFeature):
             self._resetMatrix(current_incr)
         return matrix_type
 
-    @profile
+    # @profile
     def solve(self, current_matrix, callback=None):
         """Solve a step.
 

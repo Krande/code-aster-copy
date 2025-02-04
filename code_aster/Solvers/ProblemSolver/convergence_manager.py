@@ -314,7 +314,7 @@ class ConvergenceManager(SolverFeature):
         """
         return copy.deepcopy(self._param)
 
-    @profile
+    # @profile
     @SolverFeature.check_once
     def getDirichletResidual(self, residual):
         """Return the residual with Dirichlet imposed values.
@@ -345,7 +345,7 @@ class ConvergenceManager(SolverFeature):
 
         return residual
 
-    @profile
+    # @profile
     @SolverFeature.check_once
     def getRelativeScaling(self, residuals):
         """Returns the scaling factor to compute the relative error
@@ -399,7 +399,7 @@ class ConvergenceManager(SolverFeature):
 
         return MPI.ASTER_COMM_WORLD.allreduce(scaling, MPI.MAX)
 
-    @profile
+    # @profile
     @SolverFeature.check_once
     def evalNormResidual(self, residuals):
         """Evaluate global residual.
@@ -429,7 +429,7 @@ class ConvergenceManager(SolverFeature):
 
         return resi_fields
 
-    @profile
+    # @profile
     @SolverFeature.check_once
     def evalGeometricResidual(self, displ_delta):
         """Evaluate geometric residual.

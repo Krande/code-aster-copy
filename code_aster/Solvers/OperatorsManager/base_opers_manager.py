@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ from ...Objects import DiscreteComputation
 from ...Utilities import profile
 
 
+# FIXME: ABC
 class BaseOperatorsManager(SolverFeature):
     """Solve an iteration."""
 
@@ -55,7 +56,7 @@ class BaseOperatorsManager(SolverFeature):
         """
         return False
 
-    @profile
+    # @profile
     @SolverFeature.check_once
     def getResidual(self, scaling=1.0, temp_internVar=None):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
@@ -70,7 +71,7 @@ class BaseOperatorsManager(SolverFeature):
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """
-
+        # FIXME: pass contact_manager in args from incr_solv
         disc_comp = DiscreteComputation(self.phys_pb)
         contact_manager = self.get_feature(SOP.Contact, optional=True)
 
@@ -81,7 +82,7 @@ class BaseOperatorsManager(SolverFeature):
             temp_internVar=temp_internVar,
         )
 
-    @profile
+    # @profile
     @SolverFeature.check_once
     def getStiffnessJacobian(self, matrix_type, temp_internVar=None):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du

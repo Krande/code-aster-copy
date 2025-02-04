@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -502,7 +502,7 @@ class PhysicalState(BaseFeature):
         self.current.copy(self._stash)
         self._stash = None
 
-    @profile
+    # @profile
     def commit(self):
         """Commits the current changes and add the state on the stack."""
         # do not use '+=' to create a new object (and not modify previous values)
@@ -524,7 +524,7 @@ class PhysicalState(BaseFeature):
 
         self._current = PhysicalState.State(self._pb_type).copy(current)
 
-    @profile
+    # @profile
     def getCurrentDelta(self):
         """Return the delta for the current state between it has been stashed.
 
@@ -533,7 +533,7 @@ class PhysicalState(BaseFeature):
         """
         return self._states_difference(self._stash, self.current)
 
-    @profile
+    # @profile
     def getDeltaBetweenStates(self, index1, index2):
         """Return the delta between two states.
 
@@ -563,7 +563,7 @@ class PhysicalState(BaseFeature):
         return ret
 
     # FIXME setPrimalValue?
-    @profile
+    # @profile
     def createPrimal(self, phys_pb, value=0.0):
         """Create primal field with a given value
 
@@ -578,7 +578,7 @@ class PhysicalState(BaseFeature):
         field.setValues(value)
         return field
 
-    @profile
+    # @profile
     def createFieldOnCells(self, phys_pb, localization, quantity, value=0.0):
         """Create a field with a given value
 
@@ -602,7 +602,7 @@ class PhysicalState(BaseFeature):
         field.setValues(value)
         return field
 
-    @profile
+    # @profile
     def createStress(self, phys_pb, value):
         """Create stress field with a given value
 
@@ -621,7 +621,7 @@ class PhysicalState(BaseFeature):
 
         return self.createFieldOnCells(phys_pb, "ELGA", type_field, value)
 
-    @profile
+    # @profile
     def createInternalVariablesNext(self, phys_pb, value):
         """Create internal state variables field with a given value
 
@@ -634,7 +634,7 @@ class PhysicalState(BaseFeature):
         """
         return self.createFieldOnCells(phys_pb, "ELGA", "VARI_R", value)
 
-    @profile
+    # @profile
     def createTimeField(self, phys_pb, value):
         """Create time field with a given value
 
@@ -648,7 +648,7 @@ class PhysicalState(BaseFeature):
         disc_comp = DiscreteComputation(phys_pb)
         return disc_comp.createTimeField(value)
 
-    @profile
+    # @profile
     def zeroInitialState(self, phys_pb):
         """Initialize with zero initial state
 

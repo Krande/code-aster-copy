@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -150,8 +150,8 @@ class BaseFeature(metaclass=FeatureMeta):
         features = self.get_features(feature)
         if optional and not features:
             return None
-        if len(features) != 1:
-            raise ValueError(f"expecting one {feature!r} feature, found {features!r}")
+        # if len(features) != 1:
+        #     raise ValueError(f"expecting one {feature!r} feature, found {features!r}")
         return features[0]
 
     def get_childs(self, feature):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -197,7 +197,7 @@ class StorageManager(SolverFeature):
         # if "time" in kwargs:
         #     self._result.setTime(kwargs["time"], idx)
 
-    @profile
+    # @profile
     def storeState(
         self, idx, time, phys_pb, phys_state, param=None, ignore_policy=False, is_final_time=False
     ):
@@ -244,7 +244,7 @@ class StorageManager(SolverFeature):
         self._store()
         return True
 
-    @profile
+    # @profile
     def _store(self):
         """Build result with all indexes in buffer."""
         new_size = self._result.getNumberOfIndexes() + len(self._buffer)
@@ -269,7 +269,7 @@ class StorageManager(SolverFeature):
                     self._store_field(slot.time, field, field_type)
         self._buffer = []
 
-    @profile
+    # @profile
     def _store_field(self, time, field, field_type):
         """Store a field - internal function."""
         if field is None or field_type in self._excl_fields:

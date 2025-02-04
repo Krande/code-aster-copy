@@ -122,7 +122,7 @@ class NonLinearSolver(SolverFeature):
             ignore_policy=ignore_policy,
         )
 
-    @profile
+    # @profile
     def initialize(self):
         """Initialize run"""
         self.check_features()
@@ -146,7 +146,7 @@ class NonLinearSolver(SolverFeature):
         for source in self.get_childs(SOP.ConvergenceCriteria | SOP.EventSource):
             source.add_observer(self.stepper)
 
-    @profile
+    # @profile
     def setInitialState(self):
         """Initialize the physical state."""
         phys_state = self.phys_state
@@ -317,7 +317,7 @@ class NonLinearSolver(SolverFeature):
 
         phys_state.commit()
 
-    @profile
+    # @profile
     def run(self):
         """Solve the problem."""
         self.initialize()
