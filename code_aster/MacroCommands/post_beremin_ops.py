@@ -784,6 +784,10 @@ class TableBeremin(Table):
         """
         list_kws = []
         for col, typ in zip(self.cols, self.types):
-            list_kws.append({"PARA": col, "LISTE_" + typ: self.data[col]})
+            if typ != "K":
+                new_col = {"PARA": col, "LISTE_" + typ: self.data[col]}
+            else:
+                new_col = {"PARA": col, "LISTE_" + typ: self.data[col], "TYPE_K": "K24"}
+            list_kws.append(new_col)
         tab = CREA_TABLE(LISTE=list_kws)
         return tab

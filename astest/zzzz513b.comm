@@ -216,7 +216,7 @@ TEST_TABLE(
     VALE_CALC=1591.4018531,
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=beremin_3d_tore_c0,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_0")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_0_TORE")),
 )
 
 ##################################################
@@ -240,7 +240,7 @@ TEST_TABLE(
     VALE_CALC=1591.401764,
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=beremin_2d_c0_tore,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Plan_0_T")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Plan_0_TORE")),
 )
 
 FIN()
