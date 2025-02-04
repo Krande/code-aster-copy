@@ -25,7 +25,6 @@ import medcoupling as mc
 
 from ...Utilities import logger
 from ...Messages import UTMESS
-from ...Objects import Mesh
 
 
 class CELL_TO_POINT:

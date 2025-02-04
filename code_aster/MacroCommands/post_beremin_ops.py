@@ -354,12 +354,13 @@ class PostBeremin:
             temp = self.get_temperature_field(idx)
             sigref = temp.apply(sigma_refe)
             assert abs(sigref).min() > 0.0
+            sigref.restrict(self._zone_ids)
             sig1 /= sigref
             sig1 *= self._weib_params["SIGM_CNV"]
 
         if sigma_thr > 0.0:
             # apply threshold
-            sig1 = sig1 - sigma_thr
+            sig1 -= sigma_thr
 
             def sig_filter(array):
                 return np.where(array < 0.0, 0.0, array)
@@ -423,8 +424,6 @@ class PostBeremin:
         sig1 **= pow_m
         weight = weight.onSupportOf(sig1)
         integ = sig1 * weight
-        # Restrict to GROUP_MA
-        integ.restrict(self._zone_ids)
         intsig1pm = integ.sum()
 
         return intsig1pm
@@ -560,6 +559,7 @@ class PostBeremin:
         sigmax.setValues(0.0)
         sfield = sigmax.toSimpleFieldOnCells()
         sixx = sfield.SIXX
+        sixx.restrict(self._zone_ids)
         sixx += sig1
         sfield.setComponentValues("SIXX", sixx.expand())
         fed = model.getFiniteElementDescriptor()
@@ -610,6 +610,7 @@ class PostBeremin:
                     indip = self.get_internal_variables(idx)
 
                 sig1 = self.get_major_stress(idx)
+                sig1.restrict(self._zone_ids)
 
                 if self._use_indiplas:
                     sig1 = self.apply_threshold(sig1, indip)
@@ -648,6 +649,7 @@ class PostBeremin:
                 ##SIGMAW 2D
                 else:
 
+                    ##Projectors are built only one time
                     if not self._l_proj_3D_2D:
                         self._l_proj_3D_2D = []
                         for mesh_2D, nom_mesh, group_no_2D in zip(
@@ -660,6 +662,7 @@ class PostBeremin:
                                 self.build_projector(mesh, mesh_2D=mesh_2D, group_no_2D=group_no_2D)
                             ]
 
+                    ##Compute SW2D for every plane
                     for mesh_2D_idx, mesh_2D_name in enumerate(self._l_name_mesh_2D):
                         intsig1pm = self.compute_intsig1_2D(sig1, pow_m, idx, time, mesh_2D_idx)
                         strwb, strwb_pm, proba = self.compute_table_values(
