@@ -16,35 +16,44 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acevor(nbocc, nlg, ier)
-!
-!
+subroutine angvxz(gx, gn, angl)
     implicit none
-    integer :: nbocc, nlg, ier
+!
+    real(kind=8) :: gx(3), gn(3), angl(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     AFFE_CARA_ELEM
-!       Toutes les vérifications sont faites dans le catalogue de la commande
+!   Calcul des 3 angles nautiques à partir du vecteur Gx et d'un vecteur Gn dont la projection
+!   normale sur le plan normal à Gx donne le vecteur Gz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN  : nbocc  : nombre d'occurence
-! OUT : nlg    : nombre total de groupe de maille
+!   IN  :   gx , gn
+!   OUT :   angl
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
-#include "asterfort/getvtx.h"
-! --------------------------------------------------------------------------------------------------
-    integer :: ng, ioc
-! --------------------------------------------------------------------------------------------------
+#include "asterc/r8miem.h"
+#include "asterc/r8pi.h"
+#include "asterfort/angvx.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
 !
-    nlg = 0
+    real(kind=8) :: mro(3, 3), gz(3)
+    real(kind=8) :: alpha, beta, tst
+!-----------------------------------------------------------------------
+    tst = r8miem()
 !
-    do ioc = 1, nbocc
-        call getvtx('ORIENTATION', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
-        nlg = max(nlg, -ng)
-    end do
+    call angvx(gx, alpha, beta)
+    angl(1) = alpha
+    angl(2) = beta
+    angl(3) = 0.d0
+    call matrot(angl, mro)
+    call pmavec('ZERO', 3, mro, gn, gz)
+    if ((abs(gz(3)) .le. tst) .and. (abs(gz(2)) .le. tst)) then
+        angl(3) = r8pi()/2.0d0
+    else
+        angl(3) = atan2(-gz(2), gz(3))
+    end if
 !
 end subroutine

@@ -1,0 +1,122 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="NON")
+
+nom = "SECTION1"
+TCARA = MACR_CARA_POUTRE(
+    NOM=nom, FORMAT="MED", GROUP_MA_BORD="LSURF", GROUP_NO="P1", TABLE_CARA="OUI"
+)
+
+#
+# Récupérations des VALE_REFE : Elles sont dans le QUADRANT 2.
+#
+NomCarac = ["ALPHA", "EY", "EZ", "IY", "IZ", "AY", "AZ", "RY", "RZ", "IYR2", "IZR2"]
+vale_refe = {1: {}, 2: {}, 3: {}, 4: {}}
+TabTmp = TCARA.EXTR_TABLE()
+for ii in range(len(TabTmp.rows)):
+    ligne = TabTmp.rows[ii]
+    if ligne["LIEU"] == nom:
+        for inom in NomCarac:
+            vale_refe[2][inom] = ligne[inom]
+        # Toutes les valeurs en colonnes
+        # for ikey, ival in ligne.items(): print("%10s : " % ikey, ival)
+#
+# fmt: off
+# Les valeurs de références modifiées en fonction du quadrant
+vale_refe[1]["ALPHA"] =  vale_refe[2]["ALPHA"] - 90.0
+vale_refe[1]["EY"]    = -vale_refe[2]["EZ"]
+vale_refe[1]["EZ"]    =  vale_refe[2]["EY"]
+vale_refe[1]["IY"]    =  vale_refe[2]["IZ"]
+vale_refe[1]["IZ"]    =  vale_refe[2]["IY"]
+vale_refe[1]["AY"]    =  vale_refe[2]["AZ"]
+vale_refe[1]["AZ"]    =  vale_refe[2]["AY"]
+vale_refe[1]["RY"]    =  vale_refe[2]["RZ"]
+vale_refe[1]["RZ"]    =  vale_refe[2]["RY"]
+vale_refe[1]["IYR2"]  = -vale_refe[2]["IZR2"]
+vale_refe[1]["IZR2"]  =  vale_refe[2]["IYR2"]
+#
+vale_refe[3]["ALPHA"] =  vale_refe[1]["ALPHA"] + 180.0
+vale_refe[3]["EY"]    = -vale_refe[1]["EY"]
+vale_refe[3]["EZ"]    = -vale_refe[1]["EZ"]
+vale_refe[3]["IY"]    =  vale_refe[1]["IY"]
+vale_refe[3]["IZ"]    =  vale_refe[1]["IZ"]
+vale_refe[3]["AY"]    =  vale_refe[1]["AY"]
+vale_refe[3]["AZ"]    =  vale_refe[1]["AZ"]
+vale_refe[3]["RY"]    =  vale_refe[1]["RY"]
+vale_refe[3]["RZ"]    =  vale_refe[1]["RZ"]
+vale_refe[3]["IYR2"]  = -vale_refe[1]["IYR2"]
+vale_refe[3]["IZR2"]  = -vale_refe[1]["IZR2"]
+#
+vale_refe[4]["ALPHA"] =  vale_refe[1]["ALPHA"] + 270.0
+vale_refe[4]["EY"]    = -vale_refe[1]["EZ"]
+vale_refe[4]["EZ"]    =  vale_refe[1]["EY"]
+vale_refe[4]["IY"]    =  vale_refe[1]["IZ"]
+vale_refe[4]["IZ"]    =  vale_refe[1]["IY"]
+vale_refe[4]["AY"]    =  vale_refe[1]["AZ"]
+vale_refe[4]["AZ"]    =  vale_refe[1]["AY"]
+vale_refe[4]["RY"]    =  vale_refe[1]["RZ"]
+vale_refe[4]["RZ"]    =  vale_refe[1]["RY"]
+vale_refe[4]["IYR2"]  = -vale_refe[1]["IZR2"]
+vale_refe[4]["IZR2"]  =  vale_refe[1]["IYR2"]
+# fmt: on
+#
+"""
+# Le tableau dans la documentation
+print("=+"*20)
+print(".. csv-table::")
+print("    :delim: ;\n")
+print("    **Caractéristiques**; **Quadrant 2**; **Quadrant 1**; **Quadrant 3**; **Quadrant 4**")
+for inom in NomCarac:
+    ligne = "    :math:`%s`" % inom
+    for iqua in [2,1,3,4]:
+        try:
+            ligne += " ; %17.10e" % vale_refe[iqua][inom]
+        except:
+            print( iqua , inom )
+    print(ligne)
+print("=+"*20)
+"""
+
+# Calcul et tests des valeurs dans les différents quadrant
+for iqua in [1, 2, 3, 4]:
+    TCARA = MACR_CARA_POUTRE(
+        NOM=nom, FORMAT="MED", GROUP_MA_BORD="LSURF", GROUP_NO="P1", QUADRANT=iqua
+    )
+    # Les valeurs calculées dans le quadrant "iqua"
+    TabTmp = TCARA.EXTR_TABLE()
+    vale_calc = {}
+    for ii in range(len(TabTmp.rows)):
+        ligne = TabTmp.rows[ii]
+        if ligne["LIEU"] == nom:
+            for inom in NomCarac:
+                vale_calc[inom] = ligne[inom]
+    #
+    for inom in NomCarac:
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=vale_refe[iqua][inom],
+            VALE_CALC=vale_calc[inom],
+            NOM_PARA=inom,
+            TABLE=TCARA,
+            FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+        )
+
+FIN()
+#

@@ -19,21 +19,9 @@
 !
 !
 interface
-    subroutine affori(typ, nomt, cara, val, jad, jin,&
-                      jdno, jdco, nutyma, ntseg,&
-                      lseuil, nbseuil, alphayz)
-        character(len=*) :: typ
-        character(len=*) :: nomt
-        character(len=*) :: cara
-        real(kind=8) :: val(6)
-        integer :: jad
-        integer :: jin
-        integer :: jdno
-        integer :: jdco
-        integer :: nutyma
-        integer :: ntseg
-        real(kind=8), intent(in), optional :: lseuil
-        integer, intent(inout), optional :: nbseuil
-        real(kind=8), intent(in), optional :: alphayz(2)
-    end subroutine affori
+    subroutine angvxz(gx, gn, angl)
+        real(kind=8) :: gx(3)
+        real(kind=8) :: gn(3)
+        real(kind=8) :: angl(*)
+    end subroutine angvxz
 end interface

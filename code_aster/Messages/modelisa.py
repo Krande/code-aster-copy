@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -320,35 +320,6 @@ doit nécessairement être CERCLE.
     56: _(
         """
  impossibilité, la maille  %(k1)s  doit être une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caractéristique  %(k4)s
-"""
-    ),
-    57: _(
-        """
- orientation :
- occurrence 1
- le mot clé "VALE" est obligatoire
-"""
-    ),
-    58: _(
-        """
- orientation :
- occurrence 1
- le mot clé "CARA" est obligatoire
-"""
-    ),
-    59: _(
-        """
- orientation :
- occurrence  %(k1)s
- présence de "VALE" obligatoire si "CARA" est présent
-"""
-    ),
-    60: _(
-        """
- orientation :
- occurrence  %(k1)s
- val :  %(k2)s
- nombre de valeurs entrées incorrect
 """
     ),
     66: _(

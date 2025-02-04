@@ -1,0 +1,205 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+
+# Les maillages de poutres
+MA = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
+Model = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_D_EM")
+)
+
+# Le maillage de la section
+MASECT2 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+# Il faut transformer le maillage de d°2 en d°1, pour les fibres
+MASECT1 = CREA_MAILLAGE(MAILLAGE=MASECT2, QUAD_LINE=_F(GROUP_MA="GSurface"))
+
+for LeQuadrant in [0, 1, 2, 3, 4]:
+    nomsec = "SECTION1"
+    if LeQuadrant == 0:
+        TCARA = MACR_CARA_POUTRE(
+            MAILLAGE=MASECT2,
+            GROUP_MA_BORD="GBordExt",
+            NOM=nomsec,
+            GROUP_NO="GNoeud",
+            TABLE_CARA="OUI",
+        )
+    else:
+        TCARA = MACR_CARA_POUTRE(
+            MAILLAGE=MASECT2,
+            GROUP_MA_BORD="GBordExt",
+            NOM=nomsec,
+            GROUP_NO="GNoeud",
+            TABLE_CARA="OUI",
+            QUADRANT=LeQuadrant,
+        )
+    # IMPR_TABLE(TABLE=TCARA, FORMAT_R="E20.12" )
+
+    # Pour le maillage
+    Cdgy, Cdgz = (2.089034026520e-02, 3.080138682933e-02)
+    # Le Alpha du maillage est dans le Quadrant 2
+    Alpha2 = 1.219766352801e02
+    # Quadrant  = 0  On ne modifie pas le quadrant du maillage
+    # Quadrant != 0  On modifie le quadrant du maillage
+    if LeQuadrant == 0:
+        Alpha = Alpha2
+    elif LeQuadrant == 1:
+        Alpha = Alpha2 - 90.0
+    elif LeQuadrant == 2:
+        Alpha = Alpha2
+    elif LeQuadrant == 3:
+        Alpha = Alpha2 + 90.0
+    elif LeQuadrant == 4:
+        Alpha = Alpha2 + 180.0
+
+    GFF2 = DEFI_GEOM_FIBRE(
+        SECTION=_F(
+            MAILLAGE_SECT=MASECT1,
+            GROUP_MA_SECT="GSurface",
+            GROUP_FIBRE="ACIER",
+            TABLE_CARA=TCARA,
+            NOM_SEC=nomsec,
+            # COOR_AXE_POUTRE = (Cdgy, Cdgz), ANGLE= -Alpha,
+        )
+    )
+
+    CarElem = AFFE_CARA_ELEM(
+        MODELE=Model,
+        GEOM_FIBRE=GFF2,
+        MULTIFIBRE=_F(
+            GROUP_MA=("S0x1", "S0y1", "S0z1", "S0x1y1z1", "S0x2", "S0y2", "S0z2", "S0x2y2z2"),
+            GROUP_FIBRE="ACIER",
+        ),
+        POUTRE=_F(
+            GROUP_MA=("S0x1", "S0y1", "S0z1", "S0x1y1z1", "S0x2", "S0y2", "S0z2", "S0x2y2z2"),
+            SECTION="GENERALE",
+            TABLE_CARA=TCARA,
+            NOM_SEC=nomsec,
+        ),
+        ORIENTATION=(
+            _F(
+                GROUP_MA="S0x1",
+                CARA="VECT_MAIL_Y",
+                VALE=(0.0, 1.0, 0.0),
+                TABLE_CARA=TCARA,
+                NOM_SEC=nomsec,
+            ),
+            _F(
+                GROUP_MA="S0y1",
+                CARA="VECT_MAIL_Y",
+                VALE=(-1.0, 0.0, 0.0),
+                TABLE_CARA=TCARA,
+                NOM_SEC=nomsec,
+            ),
+            _F(
+                GROUP_MA="S0z1",
+                CARA="VECT_MAIL_Z",
+                VALE=(-1.0, 0.0, 0.0),
+                TABLE_CARA=TCARA,
+                NOM_SEC=nomsec,
+            ),
+            _F(
+                GROUP_MA="S0x1y1z1",
+                CARA="VECT_MAIL_Z",
+                VALE=(0.0, 0.0, 1.0),
+                TABLE_CARA=TCARA,
+                NOM_SEC=nomsec,
+            ),
+            #
+            _F(GROUP_MA="S0x2", CARA="VECT_Z", VALE=(0.0, 1.0, 0.0)),
+            _F(GROUP_MA="S0y2", CARA="VECT_Z", VALE=(-1.0, 0.0, 0.0)),
+            _F(GROUP_MA="S0z2", CARA="VECT_Y", VALE=(-1.0, 0.0, 0.0)),
+            _F(GROUP_MA="S0x2y2z2", CARA="VECT_Y", VALE=(0.0, 0.0, 1.0)),
+        ),
+    )
+
+    Carori = CREA_CHAMP(
+        TYPE_CHAM="CART_CAORIE_R", OPERATION="EXTR", CARA_ELEM=CarElem, NOM_CHAM=".CARORIEN"
+    )
+    TCarori = CREA_TABLE(RESU=_F(CHAM_GD=Carori, TOUT="OUI", NOM_CMP=("ALPHA", "BETA", "GAMMA")))
+
+    dgrd = pi / 180.0
+    Valeurs = [
+        ("S0x1", "Sx1", Alpha * dgrd),
+        ("S0y1", "Sy1", Alpha * dgrd),
+        ("S0z1", "Sz1", Alpha * dgrd),
+        ("S0x1y1z1", "Sx1y1z1", Alpha * dgrd),
+        #
+        ("S0x2", "Sx2", -0.5 * pi),
+        ("S0y2", "Sy2", -0.5 * pi),
+        ("S0z2", "Sz2", 0.5 * pi),
+        ("S0x2y2z2", "Sx2y2z2", 0.5 * pi),
+    ]
+
+    # Test sur la TABLE et sur le CHAMP
+    for nom_grpma, nom_maille, gamma in Valeurs:
+        TEST_TABLE(
+            TABLE=TCarori,
+            REFERENCE="ANALYTIQUE",
+            NOM_PARA="GAMMA",
+            VALE_CALC=gamma,
+            VALE_REFE=gamma,
+            FILTRE=_F(NOM_PARA="MAILLE", VALE_K=nom_maille),
+        )
+        TEST_RESU(
+            CARTE=_F(
+                CHAM_GD=Carori,
+                REFERENCE="ANALYTIQUE",
+                NOM_CMP="GAMMA",
+                VALE_CALC=gamma,
+                VALE_REFE=gamma,
+                GROUP_MA=nom_grpma,
+            )
+        )
+
+    """
+    # NE PAS EFFACER ===> Pour impression et visualisation sous ParaView
+    #
+    # Il faut avoir un répertoire en résultat dans le fichier export
+    #       R repe ssll107m_out     R    0
+    #
+    IMPR_TABLE(TABLE=TCarori, FORMAT="ASTER", UNITE=8)
+    #
+    # Impression pour contrôle des sous-points et des repères locaux
+    lefic = './REPE_OUT/reperes_locaux_%d.med' % LeQuadrant
+    unite=DEFI_FICHIER(FICHIER=lefic, ACTION='ASSOCIER', TYPE='LIBRE', ACCES='NEW')
+    IMPR_CONCEPT(
+        FORMAT='MED',VERSION_MED='4.1.0', UNITE=unite,
+        CONCEPT=_F(CARA_ELEM=CarElem, REPERE_LOCAL='ELNO', MODELE=Model),
+    )
+    DEFI_FICHIER(UNITE=unite, ACTION='LIBERER',)
+    #
+    CSIEF=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='AFFE', MODELE=Model,
+        AFFE_SP=_F(CARA_ELEM=CarElem,), PROL_ZERO='OUI',
+        AFFE=(
+            _F(NOM_CMP=('SIXX',), VALE=( LeQuadrant,), TOUT='OUI',),
+        ),
+    )
+    RESU=CREA_RESU(TYPE_RESU='EVOL_NOLI', OPERATION='AFFE',
+        AFFE=_F(NOM_CHAM='SIEF_ELGA', CHAM_GD=CSIEF, MODELE=Model, CARA_ELEM=CarElem, INST=0.0, ),
+    )
+    lefic = './REPE_OUT/sous_points_%d.med' % LeQuadrant
+    unite=DEFI_FICHIER(FICHIER=lefic, ACTION='ASSOCIER', TYPE='LIBRE', ACCES='NEW')
+    IMPR_RESU(FORMAT='MED',VERSION_MED='4.1.0', UNITE=unite,
+        RESU=_F(RESULTAT=RESU, CARA_ELEM=CarElem, NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIXX',),),)
+    DEFI_FICHIER(UNITE=unite, ACTION='LIBERER',)
+    """
+
+FIN()

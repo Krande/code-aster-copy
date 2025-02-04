@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,110 @@ def removeGroupNo(mesh, name):
         DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, DETR_GROUP_NO=_F(NOM=name))
 
 
+# fmt: off
+def TraiteQuadrant(UneSect, NewQuadrant):
+    assert NewQuadrant in [1,2,3,4], "Erreur développeur NewQuadrant:%s" % NewQuadrant
+    #
+    alpha0 = UneSect[ 'ALPHA' ]
+    # On cherche le quadrant dans lequel on est : Alpha est en dg
+    if ( alpha0 < 0.0 ): alpha0 = 360.0 + alpha0
+    #
+    quadrant = 0
+    if (  0.0 <= alpha0 <  90.0): quadrant = 1
+    if ( 90.0 <= alpha0 < 180.0): quadrant = 2
+    if (180.0 <= alpha0 < 270.0): quadrant = 3
+    if (270.0 <= alpha0 < 360.0): quadrant = 4
+    #
+    assert quadrant in [1,2,3,4], "Erreur développeur %f" % alpha0
+    # Récupération des valeurs qui seront mofifiées par le changement de quadrant
+    IY0   = UneSect[ 'IY' ]
+    IZ0   = UneSect[ 'IZ' ]
+    EY0   = UneSect[ 'EY' ]
+    EZ0   = UneSect[ 'EZ' ]
+    AY0   = UneSect[ 'AY' ]
+    AZ0   = UneSect[ 'AZ' ]
+    RY0   = UneSect[ 'RY' ]
+    RZ0   = UneSect[ 'RZ' ]
+    IYR20 = UneSect[ 'IYR2' ]
+    IZR20 = UneSect[ 'IZR2' ]
+    # On met tout dans le 1er quadrant
+    if (quadrant == 1):
+        alpha1 = alpha0
+        AY1 = AY0; AZ1 = AZ0
+        RY1 = RY0; RZ1 = RZ0
+        IY1 = IY0; IZ1 = IZ0
+        EY1   =  EY0;   EZ1   =  EZ0
+        IYR21 =  IYR20; IZR21 =  IZR20
+    elif (quadrant == 2):
+        alpha1 = alpha0 - 90.0
+        AY1 = AZ0; AZ1 = AY0
+        RY1 = RZ0; RZ1 = RY0;
+        IY1 = IZ0; IZ1 = IY0
+        EY1   = -EZ0;   EZ1   =  EY0
+        IYR21 = -IZR20; IZR21 =  IYR20
+    elif (quadrant == 3):
+        alpha1 = alpha0 - 180.0
+        AY1 = AY0; AZ1 = AZ0
+        RY1 = RY0; RZ1 = RZ0
+        IY1 = IY0; IZ1 = IZ0
+        EY1   = -EY0;   EZ1   = -EZ0
+        IYR21 = -IYR20; IZR21 = -IZR20
+    elif (quadrant == 4):
+        alpha1 = alpha0 - 270.0
+        AY1 = AZ0; AZ1 = AY0
+        RY1 = RZ0; RZ1 = RY0
+        IY1 = IZ0; IZ1 = IY0
+        EY1   =  EZ0;   EZ1   = -EY0
+        IYR21 =  IZR20; IZR21 = -IYR20
+    #
+    # Les valeurs ont toutes été mises dans le quadrant 1
+    #   On passe dans NewQuadrant
+    if (NewQuadrant == 1):
+        alpha = alpha1
+        AY = AY1; AZ = AZ1
+        RY = RY1; RZ = RZ1
+        IY = IY1; IZ = IZ1
+        EY   =  EY1;   EZ   =  EZ1
+        IYR2 =  IYR21; IZR2 =  IZR21
+    elif (NewQuadrant == 2):
+        alpha = alpha1 + 90.0
+        AY = AZ1; AZ = AY1
+        RY = RZ1; RZ = RY1
+        IY = IZ1; IZ = IY1
+        EY   =  EZ1;   EZ   = -EY1;
+        IYR2 =  IZR21; IZR2 = -IYR21
+    elif (NewQuadrant == 3):
+        alpha = alpha1 + 180.0
+        AY = AY1; AZ = AZ1
+        RY = RY1; RZ = RZ1
+        IY = IY1; IZ = IZ1;
+        EY   = -EY1;   EZ   = -EZ1;
+        IYR2 = -IYR21; IZR2 = -IZR21
+    elif (NewQuadrant == 4):
+        alpha =alpha1 + 270.0
+        AY = AZ1; AZ = AY1
+        RY = RZ1; RZ = RY1
+        IY = IZ1; IZ = IY1;
+        EY   = -EZ1;   EZ   =  EY1;
+        IYR2 = -IZR21; IZR2 =  IYR21
+    #
+    resu = {
+        "ALPHA" : alpha,
+        "IY"    : IY,
+        "IZ"    : IZ,
+        "EY"    : EY,
+        "EZ"    : EZ,
+        "AY"    : AY,
+        "AZ"    : AZ,
+        "RY"    : RY,
+        "RZ"    : RZ,
+        "IYR2"  : IYR2,
+        "IZR2"  : IZR2,
+    }
+    return resu
+# fmt: on
+
+
 def macr_cara_poutre_ops(
     self,
     MAILLAGE=None,
@@ -67,8 +171,6 @@ def macr_cara_poutre_ops(
     Ecriture de la macro MACR_CARA_POUTRE
     """
     #
-    # On importe les définitions des commandes a utiliser dans la macro
-    # Le nom de la variable doit être obligatoirement le nom de la commande
     #
     ImprTable = False
     #
@@ -89,13 +191,14 @@ def macr_cara_poutre_ops(
     __nomamo = AFFE_MODELE(
         MAILLAGE=__nomlma, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
     )
-
+    #
     __nomdma = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.0, RHO=1.0))
-
+    #
     __nomama = AFFE_MATERIAU(MAILLAGE=__nomlma, AFFE=_F(TOUT="OUI", MATER=__nomdma))
-
+    #
     DLZ = DEFI_LIST_REEL(VALE=(0.0))
-
+    #
+    LeQuadrant9 = args.get("QUADRANT") or 0
     #
     # L'utilisateur ne peut rien faire pour éviter ces "Alarmes" donc pas d'impression
     MasquerAlarme("CHARGES2_87")
@@ -410,6 +513,29 @@ def macr_cara_poutre_ops(
                 OPTION="CARA_CISAILLEMENT",
             ),
         )
+
+        # Coordonnées du centre de torsion dans le repère du maillage
+        # Dans la TABLE __cacis (PCTY, PCTZ)=(CG) exprimé dans le GYZ
+        #   On récupère (CDG_Y_M, CDG_Z_M)
+        #   OC = OG + GC = (CDG_Y_M, CDG_Z_M) - (PCTY, PCTZ)
+        # print("DBG: Table cisaillement"); IMPR_TABLE(TABLE=__cacis,UNITE=6)
+        # On garde la ligne avec LIEU
+        __TabTmp = CALC_TABLE(
+            TABLE=__cacis,
+            TYPE_TABLE="TABLE",
+            ACTION=_F(OPERATION="FILTRE", NOM_PARA="LIEU", CRIT_COMP="NON_VIDE"),
+        )
+        #
+        TabTmp = __TabTmp.EXTR_TABLE()
+        assert len(TabTmp.rows) == 1, "Erreur : Calcul de PTOC_M_(Y,Z)"
+        ligne = TabTmp.rows[0]
+        # print("DBG: Traitement ligne : ", ligne)
+        #
+        ogy, ogz = ligne["CDG_Y_M"], ligne["CDG_Z_M"]
+        cgy, cgz = ligne["PCTY"], ligne["PCTZ"]
+        ptoc_m_y = ogy - cgy
+        ptoc_m_z = ogz - cgz
+        # print("DBG: PTOC_M_(Y,Z) : ", ptoc_m_y, ptoc_m_z)
 
         # ------------------------------------------------------------
         #  CALCUL DE L INERTIE DE GAUCHISSEMENT PAR RESOLUTION  DE  -
@@ -839,27 +965,24 @@ def macr_cara_poutre_ops(
     #
     # mise au propre de la table
     #
-
     # On enlève la ligne avec LIEU='-' et donc les colonnes TYPE_OBJET, NOM_SD
     # on utilise TYPE_TABLE pour forcer le type à table_sdaster et plus table_container
     nomres = CALC_TABLE(
         TABLE=__tabtmp,
         TYPE_TABLE="TABLE",
-        ACTION=_F(OPERATION="FILTRE", NOM_PARA="LIEU", CRIT_COMP="NON_VIDE"),
+        ACTION=(_F(OPERATION="FILTRE", NOM_PARA="LIEU", CRIT_COMP="NON_VIDE"),),
     )
 
     NomMaillageNew, NomMaillageOld = NomMaillage
 
     # Suppression de la référence à NomMaillageOld, remplacé par NOM = NomMaillageNew
     # Si TABLE_CARA == "OUI" et GROUP_MA la ligne est supprimée
-
     if not (TABLE_CARA == "OUI" and GROUP_MA):
         TabTmp = nomres.EXTR_TABLE()
         for ii in range(len(TabTmp.rows)):
             zz = TabTmp.rows[ii]["LIEU"]
             if zz.strip() == NomMaillageOld:
                 TabTmp.rows[ii]["LIEU"] = NomMaillageNew
-        #
         TabTmp = TabTmp.dict_CREA_TABLE()
     else:
         # Une ligne avec LIEU=NomMaillageOld ==> on la supprime
@@ -869,9 +992,34 @@ def macr_cara_poutre_ops(
             ACTION=_F(OPERATION="FILTRE", NOM_PARA="LIEU", CRIT_COMP="NE", VALE_K=NomMaillageOld),
         )
         TabTmp = nomres.EXTR_TABLE().dict_CREA_TABLE()
-
+    #
     nomres = CREA_TABLE(**TabTmp)
-
+    #
+    # On ajoute dans la table PTOC_M_Y, PTOC_M_Z
+    if GROUP_MA_BORD and not GROUP_MA:
+        # print("DBG: Ajout PTOC_M_(Y,Z)")
+        TabTmp = nomres.EXTR_TABLE()
+        assert len(TabTmp.rows) == 1, "Erreur : Ajout PCT_M_(Y,Z)"
+        TabTmp["PCT_M_Y"] = [ptoc_m_y]
+        TabTmp["PCT_M_Z"] = [ptoc_m_z]
+        TabTmp = TabTmp.dict_CREA_TABLE()
+        nomres = CREA_TABLE(**TabTmp)
+        # print("DBG: : Ajout PTOC_M_(Y,Z) Table après modification"); IMPR_TABLE(TABLE=nomres,UNITE=6)
+    #
+    # print("DBG: Table avant modification"); IMPR_TABLE(TABLE=nomres,UNITE=6)
+    TabTmp = nomres.EXTR_TABLE()
+    for ii in range(len(TabTmp.rows)):
+        ligne = TabTmp.rows[ii]
+        if LeQuadrant9 != 0:
+            # print("DBG: LeQuadrant9 : Traitement ligne %d : " % ii, ligne)
+            resu = TraiteQuadrant(ligne, LeQuadrant9)
+            # print("DBG: LeQuadrant9 : Résultat traitement : ", resu)
+            for ikey, ival in resu.items():
+                TabTmp.rows[ii][ikey] = ival
+    # On refait la table
+    TabTmp = TabTmp.dict_CREA_TABLE()
+    nomres = CREA_TABLE(**TabTmp)
+    # print("DBG: Table après modification"); IMPR_TABLE(TABLE=nomres,UNITE=6)
     #
     # On retourne une table exploitable par AFFE_CARA_ELEM, avec seulement les
     # caractéristiques nécessaires
@@ -992,14 +1140,18 @@ def macr_cara_poutre_ops(
                     if not ImprTable:
                         IMPR_TABLE(TABLE=nomres)
                     ImprTable = True
-                    UTMESS("A", "POUTRE0_12", valr=[cdgy, cdgz])
+                    NomResultat = "TabCara"
+                    UTMESS("A", "POUTRE0_12", valr=[cdgy, cdgz], valk=[NomResultat, NomMaillageNew])
                 # Vérification que la section n'est pas tournée
                 alpha = ligne["ALPHA"]
                 if abs(alpha) > 0.001:
                     if not ImprTable:
                         IMPR_TABLE(TABLE=nomres)
                     ImprTable = True
-                    UTMESS("A", "POUTRE0_13", valr=[alpha, -alpha])
+                    NomResultat = "TabCara"
+                    UTMESS(
+                        "A", "POUTRE0_13", valr=[alpha, -alpha], valk=[NomResultat, NomMaillageNew]
+                    )
     #
     # On retourne une table contenant toutes les caractéristiques calculées
     else:
@@ -1019,6 +1171,8 @@ def macr_cara_poutre_ops(
                             "IY_G_M",
                             "IZ_G_M",
                             "IYZ_G_M",
+                            "PCT_M_Y",
+                            "PCT_M_Z",
                             "Y_MAX",
                             "Z_MAX",
                             "Y_MIN",

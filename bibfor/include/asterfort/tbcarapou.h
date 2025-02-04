@@ -19,21 +19,14 @@
 !
 !
 interface
-    subroutine affori(typ, nomt, cara, val, jad, jin,&
-                      jdno, jdco, nutyma, ntseg,&
-                      lseuil, nbseuil, alphayz)
-        character(len=*) :: typ
-        character(len=*) :: nomt
-        character(len=*) :: cara
-        real(kind=8) :: val(6)
-        integer :: jad
-        integer :: jin
-        integer :: jdno
-        integer :: jdco
-        integer :: nutyma
-        integer :: ntseg
-        real(kind=8), intent(in), optional :: lseuil
-        integer, intent(inout), optional :: nbseuil
-        real(kind=8), intent(in), optional :: alphayz(2)
-    end subroutine affori
+    subroutine tbcarapou(nomta, nomsec, nbpara, nompara, valpara, okpara)
+!
+    integer, intent(in)             :: nbpara
+    character(len=*), intent(in)    :: nomta
+    character(len=*), intent(in)    :: nomsec
+    character(len=*), intent(in)    :: nompara(nbpara)
+    integer, intent(out)            :: okpara(nbpara)
+    real(kind=8), intent(out)       :: valpara(nbpara)
+!
+    end subroutine tbcarapou
 end interface

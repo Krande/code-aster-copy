@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,15 +118,20 @@ Conseil : La discrétisation de la section a un impact sur la qualité des résu
 Les coordonnées du centre de gravité de la section sont G=(%(r1)e, %(r2)e)
 
 Si vous utilisez des MULTIFIBRES et que le maillage de description des fibres est le même que
-celui utilisé dans cette commande, il faut dans la commande DEFI_GEOM_FIBRE renseigner le mot
-clef COOR_AXE_POUTRE de façon à faire correspondre le centre de gravité des fibres à l'axe
-neutre de la poutre : COOR_AXE_POUTRE = (%(r1)e, %(r2)e)
+celui utilisé dans cette commande, il faut dans la commande DEFI_GEOM_FIBRE renseigner soit
+le mot clef COOR_AXE_POUTRE soit le mot clef TABLE_CARA et NOM_SEC de façon à faire
+correspondre le centre de gravité des fibres à l'axe neutre de la poutre :
+    COOR_AXE_POUTRE = (%(r1)e, %(r2)e)
+ou
+    TABLE_CARA = %(k1)s, NOM_SEC = "%(k2)s",
 
-Vous avez renseigné l'option TABLE_CARA='OUI'. Si vous utilisez les résultats dans la commande :
-   AFFE_CARA_ELEM / POUTRE avec TABLE_CARA,
-                  / GEOM_FIBRE
-                  / MULTIFIBRE
-Vous risquez d'avoir des résultats inattendus, si vous ne renseignez pas COOR_AXE_POUTRE.
+Vous avez renseigné l'option TABLE_CARA='OUI'. Si vous utilisez les résultats dans la
+commande : AFFE_CARA_ELEM / POUTRE avec TABLE_CARA et NOM_SEC,
+                           / GEOM_FIBRE
+                           / MULTIFIBRE
+
+Vous risquez d'avoir des résultats inattendus, si vous ne renseignez pas :
+    COOR_AXE_POUTRE ou TABLE_CARA et NOM_SEC
 """
     ),
     13: _(
@@ -134,9 +139,12 @@ Vous risquez d'avoir des résultats inattendus, si vous ne renseignez pas COOR_A
 Le repère principal d'inertie est tourné d'un angle de %(r1)f° par rapport aux axes du maillage.
 
 Si vous utilisez des MULTIFIBRES et que le maillage de description des fibres est le même que
-celui utilisé dans cette commande, il faut dans la commande DEFI_GEOM_FIBRE renseigner le mot
-clef ANGLE de façon à faire correspondre le repère principal d'inertie aux axes du maillage de
-la section : ANGLE = %(r2)e
+celui utilisé dans cette commande, il faut dans la commande DEFI_GEOM_FIBRE renseigner soit
+le mot clef ANGLE soit le mot clef TABLE_CARA et NOM_SEC de façon à faire correspondre le
+repère principal d'inertie aux axes du maillage de la section :
+    ANGLE = %(r2)e
+ou
+    TABLE_CARA = %(k1)s, NOM_SEC = "%(k2)s",
 
 Vous avez renseigné l'option TABLE_CARA='OUI'. Si vous utilisez les résultats dans la commande
 AFFE_CARA_ELEM / POUTRE avec TABLE_CARA, il est peut-être nécessaire dans la commande
@@ -149,7 +157,7 @@ ORIENTATION=(
 Par défaut ANGL_VRIL= 0
 
 Vous risquez d'avoir des résultats inattendus, si vous ne renseignez ni :
- - ANGLE dans DEFI_GEOM_FIBRE
+ - ANGLE ou  TABLE_CARA et NOM_SEC dans DEFI_GEOM_FIBRE
  - ORIENTATION dans AFFE_CARA_ELEM
 """
     ),
