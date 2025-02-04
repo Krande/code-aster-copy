@@ -33,6 +33,7 @@ stages:
   - setup
   - build
   - test
+  - code-checking
 
 image:
   name: ${IMAGE_URL}
@@ -67,6 +68,8 @@ compile:
       - build/mpi*/*/*.mod
       - install/*
     expire_in: 3 days
+  rules:
+    - if: $BUILDTYPE != "code-checking"
 
 doc_html:
   interruptible: true
@@ -161,7 +164,7 @@ verification_test:
     reports:
       junit: results/run_testcases.xml
   rules:
-    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $BUILDTYPE != "code-checking" && $CI_COMMIT_REF_NAME !~ $reg_debugging
 
 known_failures_test:
   interruptible: true
@@ -204,3 +207,25 @@ debugging_test:
       junit: results_debugging/run_testcases.xml
   rules:
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
+
+sonarqube:
+  interruptible: true
+  stage: code-checking
+  image:
+    name: nexus.retd.edf.fr:5012/sonarsource/sonar-scanner-cli:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - sonar-scanner
+        -Dsonar.projectBaseDir=.
+        -Dsonar.sources=.
+        -Dsonar.exclusions="data,extern,waf*,**/*.export,build/**,install/**"
+        -Dsonar.projectKey="gitlab-${CI_PROJECT_ID}"
+        -Dsonar.projectName="${CI_PROJECT_PATH_SLUG}"
+        -Dsonar.host.url="${SQ_SERVER}"
+        -Dsonar.login="${SQ_TOKEN}"
+  variables:
+    SQ_SERVER: "https://sonar.pleiade.edf.fr:443"
+  allow_failure: true
+  rules:
+    - if: $BUILDTYPE == "code-checking"
+
