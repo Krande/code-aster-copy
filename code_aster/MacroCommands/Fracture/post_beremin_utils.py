@@ -111,28 +111,16 @@ class CELL_TO_POINT:
             (cells_prec, pos_prec) = meshT4.getCellsContainingPoints(coor_nook, prec)
             nbCells = pos_prec[1:] - pos_prec[:-1]
 
-            logger.info(
-                "Nombre maximal de nouvelles cellules (points de Gauss transformés en TETRA) 3D trouvées = "
-                + str(nbCells.getMaxValueInArray())
-            )
-            logger.info(
-                "Nombre minimal de nouvelles cellules (points de Gauss transformés en TETRA) 3D trouvées = "
-                + str(nbCells.getMinValueInArray())
-            )
-            logger.info("")
-
             # Amplification de la précision
             prec = ampl * prec
             nb_iter += 1
 
-            # nb_iter max = 10
-            if nb_iter > 10:
+            # nb_iter max = 5
+            if nb_iter > 5:
                 UTMESS("F", "RUPTURE4_23")
 
             # S'il n'y a pas de nouveaux points OK, on continue avec une précision dégradée
             if nbCells.getMaxValueInArray() == 0:
-                if nb_iter > 10:
-                    UTMESS("F", "RUPTURE4_23")
                 continue
 
             # Index des nouveaux points pour lesquels des cellules sont identifiées
@@ -156,8 +144,6 @@ class CELL_TO_POINT:
             nook_idx = nook_idx[notFound]
             logger.info("Il reste " + str(len(nook_idx)) + str(" points à trouver."))
             logger.info("")
-            if nb_iter > 10:
-                UTMESS("F", "RUPTURE4_23")
 
         if nb_iter > 1:
             UTMESS("A", "RUPTURE4_22")
@@ -228,7 +214,5 @@ def create_mesh_from_groupno(mesh_3D, group_no):
     ##Restrict medcoupling mesh to 2D faces
     a_group_no = mc_mesh_3D.getNodeGroupArr(group_no)
     mc_mesh_2D = mc_mesh_3D.getMeshAtLevel(0).buildFacePartOfMySelfNode(a_group_no, fullyIn=True)
-    logger.info("COUCOU")
-    logger.info(mc_mesh_2D)
 
     return mc_mesh_2D
