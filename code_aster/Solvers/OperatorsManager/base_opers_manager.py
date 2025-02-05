@@ -17,48 +17,70 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Basics import SolverFeature
-from ..Basics import SolverOptions as SOP
 from ...Objects import DiscreteComputation
-from ...Utilities import profile
+from ...Utilities import profile, no_new_attributes
+from ..Basics import ProblemTypeMixin, SolverFeature, ContextMixin
+from ..Basics import SolverOptions as SOP
+from abc import ABC, abstractmethod
 
 
-# FIXME: ABC
-class BaseOperatorsManager(SolverFeature):
-    """Solve an iteration."""
+# FIXME: add ABC after removing SolverFeature
+class BaseOperatorsManager(SolverFeature, ContextMixin, ProblemTypeMixin):
+    """Base object that provides operators to solve the problem."""
 
     provide = SOP.OperatorsManager
-
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
-
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
     optional_features = [SOP.Contact]
+
+    problem_type = None
+    _first_jacobian = _lagr_scaling = None
+    _tmp_stress = _tmp_internVar = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
         super().__init__()
+        self._first_jacobian = None
+        self._lagr_scaling = None
+        self._tmp_stress = None
+        self._tmp_internVar = None
 
     def initialize(self):
         """Initializes the operator manager."""
-        raise NotImplementedError
+        self._first_jacobian = None
+        self._lagr_scaling = None
+        self._tmp_stress = None
+        self._tmp_internVar = None
 
     def finalize(self):
         """Finalizes the operator manager."""
-        raise NotImplementedError
+        self.phys_state.stress = self._tmp_stress
+        self.phys_state.internVar = self._tmp_internVar
 
-    def executeIteration(self, iter_idx):
-        """Should Newton iteration iter_idx be performed
+    @abstractmethod
+    def setup(self):
+        """Set up the integrator."""
+
+    def shouldExecuteIteration(self, iter_idx):
+        """Tell if the Newton iteration `iter_idx` should be performed.
 
         Arguments:
             iter_idx (int): Newton iteration number.
 
         Returns:
             bool: whether Newton's iteration should be excuted or
-            not, even if the solver has converged
+            not, even if the solver has converged.
         """
         return False
 
+    @property
+    def first_jacobian(self):
+        """Returns the first computed Jacobian"""
+        assert self._first_jacobian is not None
+        return self._first_jacobian
+
     # @profile
     @SolverFeature.check_once
-    def getResidual(self, scaling=1.0, temp_internVar=None):
+    def getResidual(self, scaling=1.0, tmp_internVar=None):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
         This is not the true residual but the opposite.
@@ -79,12 +101,12 @@ class BaseOperatorsManager(SolverFeature):
             self.phys_state,
             contact_manager=contact_manager,
             scaling=scaling,
-            temp_internVar=temp_internVar,
+            tmp_internVar=tmp_internVar,
         )
 
     # @profile
     @SolverFeature.check_once
-    def getStiffnessJacobian(self, matrix_type, temp_internVar=None):
+    def getStiffnessJacobian(self, matrix_type, tmp_internVar=None):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du
 
         Arguments:
@@ -101,5 +123,5 @@ class BaseOperatorsManager(SolverFeature):
             matrix_type=matrix_type,
             contact_manager=contact_manager,
             assemble=True,
-            temp_internVar=temp_internVar,
+            tmp_internVar=tmp_internVar,
         )

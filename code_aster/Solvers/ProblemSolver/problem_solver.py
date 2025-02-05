@@ -36,6 +36,7 @@ from ...Utilities import (
 from ..Basics import ContextMixin, PhysicalState, SolverFeature
 from ..Basics import ProblemType as PBT
 from ..Basics import SolverOptions as SOP
+from ..OperatorsManager import BaseOperatorsManager
 from ..StepSolvers import BaseStepSolver
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
@@ -85,6 +86,8 @@ class ProblemSolver(SolverFeature, ContextMixin):
         self.problem_type = problem_type
         self.result = result
         self.state = PhysicalState(problem_type, size=1)
+        self.oper = BaseOperatorsManager.create_for(self.problem_type)
+        self.oper.useProblemContext(self)
         self.step_rank = None
         self.current_matrix = None
         self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
@@ -130,9 +133,8 @@ class ProblemSolver(SolverFeature, ContextMixin):
         if self._step_solver:
             return self._step_solver
         logger.debug("+++ init StepSolver")
-        step_solver = BaseStepSolver.create(self.keywords)
-        if not step_solver.param:
-            step_solver.setParameters(self.keywords)
+        step_solver = BaseStepSolver.create_for(self.problem_type)
+        step_solver.setParameters(self.keywords)
         # FIXME: todo
         for feat, required in step_solver.undefined():
             step_solver.use(self._getF(feat, required))

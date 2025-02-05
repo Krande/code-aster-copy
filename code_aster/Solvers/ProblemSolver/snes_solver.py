@@ -126,7 +126,7 @@ class SNESSolver(SolverFeature):
         self.current_matrix.applyDirichletBC(diriBCs, residual.resi)
         # Copy to PETSc
         residual.resi.toPetsc(local=self.local).copy(F)
-        # print("internVar=", self.opers_manager._temp_internVar.getValues()[:40:8], flush=True)
+        # print("internVar=", self.opers_manager._tmp_internVar.getValues()[:40:8], flush=True)
 
     def _evalJacobian(self, snes, X, J, P):
         if self.current_incr % self.matr_update_incr == 0:

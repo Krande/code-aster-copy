@@ -163,7 +163,7 @@ class NewtonSolver(SolverFeature):
             matrix_type = self._setMatrixType(current_incr)
 
             # Should the iteration be executed even if the solver converged ?
-            force = self.opers_manager.executeIteration(current_incr)
+            force = self.opers_manager.shouldExecuteIteration(current_incr)
 
             # Solve current iteration
             primal_incr, self.current_matrix, resi_fields = incr_solv.solve(

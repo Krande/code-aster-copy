@@ -401,7 +401,7 @@ class ExtendedDiscreteComputation:
             raise RuntimeError("Not implemented")
 
     @profile
-    def getInternalResidual(self, phys_state, scaling=1.0, temp_internVar=None):
+    def getInternalResidual(self, phys_state, scaling=1.0, tmp_internVar=None):
         """Compute internal residual R_int(u, Lagr).
 
             R_int(u, Lagr) = [B^t.Sig(u) + B^t.Lagr, B^t.primal-primal_impo]
@@ -420,10 +420,10 @@ class ExtendedDiscreteComputation:
 
         # Compute internal forces (B^t.stress)
         if phys_pb.isMechanical():
-            if temp_internVar is None:
+            if tmp_internVar is None:
                 tempVar = phys_state.internVar
             else:
-                tempVar = temp_internVar
+                tempVar = tmp_internVar
             _, codret, internVar, stress, r_stress = self.getInternalMechanicalForces(
                 phys_state.primal_prev,
                 phys_state.primal_step,
@@ -548,7 +548,7 @@ class ExtendedDiscreteComputation:
         return contact_forces
 
     @profile
-    def getResidual(self, phys_state, contact_manager=None, scaling=1.0, temp_internVar=None):
+    def getResidual(self, phys_state, contact_manager=None, scaling=1.0, tmp_internVar=None):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
         This is not the true residual but the opposite.
@@ -564,7 +564,7 @@ class ExtendedDiscreteComputation:
             Cauchy stress tensor (SIEF_ELGA).
         """
 
-        resi, internVar, stress = self.getInternalResidual(phys_state, scaling, temp_internVar)
+        resi, internVar, stress = self.getInternalResidual(phys_state, scaling, tmp_internVar)
         resi.resi_ext = self.getExternalResidual(phys_state)
         resi.resi_cont = self.getContactResidual(phys_state, contact_manager)
 
@@ -575,7 +575,7 @@ class ExtendedDiscreteComputation:
 
     @profile
     def getInternalTangentMatrix(
-        self, phys_state, matrix_type="TANGENTE", assemble=False, temp_internVar=None
+        self, phys_state, matrix_type="TANGENTE", assemble=False, tmp_internVar=None
     ):
         """Compute K(u) = d(Rint(u)) / du
 
@@ -620,10 +620,10 @@ class ExtendedDiscreteComputation:
                 codret = 0
         elif matrix_type == "TANGENTE":
             if phys_pb.isMechanical():
-                if temp_internVar is None:
+                if tmp_internVar is None:
                     tempVar = phys_state.internVar
                 else:
-                    tempVar = temp_internVar
+                    tempVar = tmp_internVar
                 _, codret, matr_elem_rigi = self.getTangentStiffnessMatrix(
                     phys_state.primal_prev,
                     phys_state.primal_step,
@@ -739,7 +739,7 @@ class ExtendedDiscreteComputation:
         matrix_type="TANGENTE",
         contact_manager=None,
         assemble=True,
-        temp_internVar=None,
+        tmp_internVar=None,
     ):
         """Compute tangent matrix for nonlinear problem.
             K(u) = d(Rint(u) - Rext(u)) / du
@@ -749,7 +749,7 @@ class ExtendedDiscreteComputation:
             matrix_type (str): type of matrix used.
             contact_manager (ContactManager) : contact manager
             assemble (bool): assemble or not the matrix
-            temp_internVar = intenal variables values at the previous newton iteration
+            tmp_internVar = intenal variables values at the previous newton iteration
 
         Returns:
             AssemblyMatrixDisplacementReal: Tangent matrix.
@@ -759,7 +759,7 @@ class ExtendedDiscreteComputation:
 
         # Compute elementary matrix
         codret, matr_elem_rigi, matr_elem_dual = self.getInternalTangentMatrix(
-            phys_state, matrix_type, False, temp_internVar
+            phys_state, matrix_type, False, tmp_internVar
         )
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")

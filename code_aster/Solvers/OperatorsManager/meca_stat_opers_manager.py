@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,48 +18,22 @@
 # --------------------------------------------------------------------
 
 from .base_opers_manager import BaseOperatorsManager
-from ...Utilities import no_new_attributes
+from ..Basics import ProblemType as PBT
 
 
 class MecaStatOperatorsManager(BaseOperatorsManager):
-    """Solve an iteration."""
+    """Object that provides operators to solve quasi-static mechanics."""
 
-    _first_jacobian = _lagr_scaling = None
-    _temp_stress = _temp_internVar = None
-    __setattr__ = no_new_attributes(object.__setattr__)
-
-    def __init__(self):
-        super().__init__()
-        self._first_jacobian = self._lagr_scaling = None
-        self._temp_stress = self._temp_internVar = None
-
-    def initialize(self):
-        """Initializes the operator manager."""
-        self._first_jacobian = self._lagr_scaling = None
-        self._temp_stress = self._temp_internVar = None
-
-    def finalize(self):
-        """Finalizes the operator manager."""
-        self.phys_state.stress = self._temp_stress
-        self.phys_state.internVar = self._temp_internVar
-
-    @property
-    def first_jacobian(self):
-        """Returns the first computed Jacobian"""
-        assert self._first_jacobian is not None
-        return self._first_jacobian
+    problem_type = PBT.MecaStat
 
     def getLagrangeScaling(self, matrix_type):
         """Returns Lagrange scaling.
 
         Arguments:
             matrix_type (str): type of matrix used.
-
         """
-
         if self._lagr_scaling is None:
             self._first_jacobian = self.getJacobian(matrix_type)
-
         return self._lagr_scaling
 
     def getResidual(self, scaling=1.0):
@@ -76,10 +50,10 @@ class MecaStatOperatorsManager(BaseOperatorsManager):
             Cauchy stress tensor (SIEF_ELGA).
         """
         resi_state, internVar, stress = super().getResidual(
-            scaling=scaling, temp_internVar=self._temp_internVar
+            scaling=scaling, tmp_internVar=self._tmp_internVar
         )
-        self._temp_stress = stress
-        self._temp_internVar = internVar
+        self._tmp_stress = stress
+        self._tmp_internVar = internVar
         return resi_state
 
     def getJacobian(self, matrix_type):
@@ -95,8 +69,6 @@ class MecaStatOperatorsManager(BaseOperatorsManager):
             jacobian = self._first_jacobian
             self._first_jacobian = None
         else:
-            jacobian = super().getStiffnessJacobian(
-                matrix_type, temp_internVar=self._temp_internVar
-            )
+            jacobian = super().getStiffnessJacobian(matrix_type, tmp_internVar=self._tmp_internVar)
             self._lagr_scaling = jacobian.getLagrangeScaling()
         return jacobian

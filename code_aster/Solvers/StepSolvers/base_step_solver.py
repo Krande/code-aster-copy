@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,20 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Basics import LoggingManager, ProblemDispatcher, SolverFeature
+from abc import ABC, abstractmethod
+
+from ..Basics import (
+    ContextMixin,
+    LoggingManager,
+    ProblemDispatcher,
+    ProblemTypeMixin,
+    SolverFeature,
+)
 from ..Basics import SolverOptions as SOP
 
 
-class BaseStepSolver(SolverFeature, ProblemDispatcher):
+# FIXME: add ABC after removing SolverFeature
+class BaseStepSolver(SolverFeature, ProblemDispatcher, ContextMixin, ProblemTypeMixin):
     """Solves a step, loops on iterations."""
 
     provide = SOP.StepSolver
@@ -76,13 +85,13 @@ class BaseStepSolver(SolverFeature, ProblemDispatcher):
 
         return logManager
 
+    @abstractmethod
     def solve(self):
         """Solve a step.
 
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        raise NotImplementedError
 
     def _get(self, keyword, parameter=None, default=None):
         """Return a keyword value"""
@@ -94,6 +103,6 @@ class BaseStepSolver(SolverFeature, ProblemDispatcher):
 
         return self.param.get(keyword, default)
 
+    @abstractmethod
     def setup(self):
         """set up the step solver."""
-        raise NotImplementedError

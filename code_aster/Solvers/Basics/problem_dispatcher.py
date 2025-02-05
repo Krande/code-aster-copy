@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,18 @@ class ProblemType(IntFlag):
     MecaStat = auto()
     MecaDyna = auto()
     Thermal = auto()
+
+
+class ProblemTypeMixin:
+    """Mixin class that provides a factory depending on the type of physical problem."""
+
+    @classmethod
+    def create_for(cls, problem_type):
+        """Factory that creates the appropriate object."""
+        for kls in cls.__subclasses__():
+            if kls.problem_type == problem_type:
+                return kls()
+        raise TypeError(f"not found: {problem_type.name}")
 
 
 class ProblemDispatcher:
@@ -57,6 +69,3 @@ class ProblemDispatcher:
         else:
             pb_type = ProblemType.MecaStat
         return pb_type
-
-    def _createPrivate(self, param):
-        raise NotImplementedError

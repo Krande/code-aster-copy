@@ -29,7 +29,7 @@ class ContextMixin:
     the informations to build the right object when needed."""
 
     class Data:
-        _problem = _type = _state = _keywords = _result = _contact = None
+        _problem = _type = _state = _keywords = _result = _oper = _contact = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         def __init__(self):
@@ -39,6 +39,7 @@ class ContextMixin:
             self._keywords = {}
             self._result = None
             self._contact = None  # FIXME: remove? create deeper?
+            self._oper = None
 
     _ctxt = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -46,8 +47,9 @@ class ContextMixin:
     def __init__(self):
         self._ctxt = ContextMixin.Data()
 
-    def set_context(self, context):
-        self._ctxt = context
+    def useProblemContext(self, parent):
+        """Set context content from the parent one."""
+        self._ctxt = parent._ctxt
 
     # convenient shortcuts properties
     @property
@@ -78,15 +80,6 @@ class ContextMixin:
     def result(self, value):
         self._ctxt._result = value
 
-    @property
-    def contact(self):
-        """ContactManager: Objects to solve contact conditions"""
-        return self._ctxt._contact
-
-    @contact.setter
-    def contact(self, value):
-        self._ctxt._contact = value
-
     # FIXME: à voir : on garde certains mots-clés ou uniquement quelques infos
     @property
     def keywords(self):
@@ -105,3 +98,21 @@ class ContextMixin:
     @problem_type.setter
     def problem_type(self, value):
         self._ctxt._type = value
+
+    @property
+    def oper(self):
+        """Operators: Objects that adapts operators for each type of problem."""
+        return self._ctxt._oper
+
+    @oper.setter
+    def oper(self, value):
+        self._ctxt._oper = value
+
+    @property
+    def contact(self):
+        """ContactManager: Objects to solve contact conditions"""
+        return self._ctxt._contact
+
+    @contact.setter
+    def contact(self, value):
+        self._ctxt._contact = value

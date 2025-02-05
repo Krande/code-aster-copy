@@ -25,6 +25,6 @@ from .base_features import BaseFeature, EventSource, Observer
 from .context import ContextMixin
 from .logging_manager import LoggingManager
 from .physical_state import PhysicalState
-from .problem_dispatcher import ProblemDispatcher, ProblemType
+from .problem_dispatcher import ProblemDispatcher, ProblemType, ProblemTypeMixin
 from .residual import Residuals
 from .solver_features import SolverFeature, SolverOptions

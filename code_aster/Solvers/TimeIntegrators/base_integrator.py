@@ -17,6 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from abc import ABC, abstractmethod
+
 from ..Basics import SolverOptions as SOP
 from ..OperatorsManager import MecaDynaOperatorsManager
 
@@ -37,7 +39,7 @@ class IntegratorName:
     Newmark = 0x01
 
 
-# FIXME: ABC
+# FIXME: add ABC after removing SolverFeature
 class BaseIntegrator(MecaDynaOperatorsManager):
     """
     Integrator for systems like : M ddX = Fext - Fc(dX) - Fk(X) = funForce(X, dX)
@@ -54,7 +56,6 @@ class BaseIntegrator(MecaDynaOperatorsManager):
     integration_type = IntegrationType.Unset
     integrator_name = IntegratorName.Unset
 
-    _first_jacobian = _lagr_scaling = None
     _init_state = _set_up = None
 
     @classmethod
@@ -74,26 +75,8 @@ class BaseIntegrator(MecaDynaOperatorsManager):
 
     def __init__(self):
         super().__init__()
-        self._first_jacobian = None
-        self._lagr_scaling = None
         self._set_up = False
         self._init_state = None
-
-    def initialize(self):
-        """Initializes the operator manager."""
-        self._temp_stress = self._temp_internVar = None
-        self._first_jacobian = self._lagr_scaling = None
-
-    def finalize(self):
-        """Finalizes the operator manager."""
-        self.phys_state.stress = self._temp_stress
-        self.phys_state.internVar = self._temp_internVar
-
-    @property
-    def first_jacobian(self):
-        """Returns the first computed Jacobian"""
-        assert self._first_jacobian is not None
-        return self._first_jacobian
 
     @property
     def t0(self):
@@ -154,6 +137,7 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         """
         raise NotImplementedError
 
+    @abstractmethod
     def getResidual(self, scaling=1.0):
         """Compute the residue vector."""
         raise NotImplementedError

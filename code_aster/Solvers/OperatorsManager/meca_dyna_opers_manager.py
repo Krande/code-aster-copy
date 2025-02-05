@@ -21,20 +21,19 @@ from .base_opers_manager import BaseOperatorsManager
 from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import IntegrationError
 
-from ..Basics import SolverOptions as SOP
+from ..Basics import SolverOptions as SOP, ProblemType as PBT
 
 
 # FIXME: ABC
 class MecaDynaOperatorsManager(BaseOperatorsManager):
     """Solve an iteration."""
 
+    problem_type = PBT.MecaDyna
     _mass = _elem_mass = None
-    _temp_stress = _temp_internVar = None
 
     def __init__(self):
         super().__init__()
         self._elem_mass = self._mass = None
-        self._temp_stress = self._temp_internVar = None
 
     def _getElemMassMatrix(self):
         """Compute the elementary mass matrix."""
@@ -53,17 +52,17 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
 
     def getFunctional(self, t, dt, U, dU, d2U, scaling=1.0):
         """Computes the functional."""
-        temp_phys_state = self.getTempPhysicalState(t, dt, U, dU, d2U)
+        temp_phys_state = self.getTmpPhysicalState(t, dt, U, dU, d2U)
         temp_phys_state.swap(self.phys_state)
         resi_state, internVar, stress = super().getResidual(scaling=scaling)
         self.phys_state.swap(temp_phys_state)
-        self._temp_stress = stress
-        self._temp_internVar = internVar
+        self._tmp_stress = stress
+        self._tmp_internVar = internVar
         return resi_state
 
     def getStiffAndDamp(self, t, dt, U, dU, d2U, matrix_type):
         """Computes the jacobian."""
-        temp_phys_state = self.getTempPhysicalState(t, dt, U, dU, d2U)
+        temp_phys_state = self.getTmpPhysicalState(t, dt, U, dU, d2U)
         temp_phys_state.swap(self.phys_state)
 
         disc_comp = DiscreteComputation(self.phys_pb)
@@ -93,8 +92,6 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
         rigi_matr.assemble()
 
         # Assemble damping matrix
-        time_curr = t + dt
-
         matr_elem_damp = disc_comp.getDampingMatrix(
             massMatrix=self._elem_mass,
             stiffnessMatrix=matr_elem_rigi,
@@ -107,9 +104,9 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
 
         return rigi_matr, damp_matr
 
-    def getTempPhysicalState(self, t, dt, U, dU, d2U):
+    def getTmpPhysicalState(self, t, dt, U, dU, d2U):
         """Creates a temporary physical state"""
-        # D'ou vient le primal step qui dois etre utlisée ?
+        # D'où vient le primal step qui doit être utilisée ?
         result = self.phys_state.duplicate()
 
         result.time_prev = t

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,66 +19,56 @@
 
 from libaster import AssemblyMatrixTemperatureReal
 
-from .base_opers_manager import BaseOperatorsManager
-from ...Utilities import no_new_attributes
 from ...Objects import DiscreteComputation
+from ...Utilities import no_new_attributes
+from ..Basics import ProblemType as PBT
 from ..Basics import Residuals
+from .base_opers_manager import BaseOperatorsManager
 
 
 class ThermalOperatorsManager(BaseOperatorsManager):
-    """Solve an iteration."""
+    """Object that provides operators to solve thermics."""
 
-    _first_jacobian = _lagr_scaling = None
-    _temp_stress = _temp_internVar = _theta = None
-    _resi_prev = _resi_temp = _first_iter = _stat_init = None
-
+    problem_type = PBT.Thermal
+    _theta = _resi_prev = _resi_temp = _first_iter = _stat_init = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, theta=None, stat=None):
         super().__init__()
-        self._first_jacobian = self._lagr_scaling = None
-        self._temp_stress = self._temp_internVar = None
         self._resi_prev = self._resi_temp = None
-        self._theta, self._first_iter = theta, True
-        self._stat_init = stat and self._theta is not None
-
-    def isStationary(self):
-        """Checks whether it is a stationary or transient case"""
-        return self._stat_init or self._theta is None
+        self._theta = theta
+        self._first_iter = True
+        self._stat_init = stat and theta is not None
 
     def initialize(self):
         """Initializes the operator manager."""
-        self._first_jacobian = self._lagr_scaling = None
-        self._temp_stress = self._temp_internVar = None
+        super().initialize()
         if not self.isStationary():
             self.computeFirstResidual()
 
     def finalize(self):
         """Finalizes the operator manager."""
-        self.phys_state.stress = self._temp_stress
-        self.phys_state.internVar = self._temp_internVar
+        super().finalize()
         if self._stat_init:
             self.computeFirstResidual(residual=self._resi_temp)
         else:
             self._resi_prev = self._resi_temp
 
-    def executeIteration(self, iter_idx):
-        """Should Newton iteration iter_idx be performed
+    def shouldExecuteIteration(self, iter_idx):
+        """Tell if the Newton iteration `iter_idx` should be performed.
 
         Arguments:
             iter_idx (int): Newton iteration number.
 
         Returns:
             bool: whether Newton's iteration should be excuted or
-            not, even if the solver has converged
+            not, even if the solver has converged.
         """
         return iter_idx == 0 and self._theta is not None
 
-    @property
-    def first_jacobian(self):
-        """Returns the first computed Jacobian"""
-        assert self._first_jacobian is not None
-        return self._first_jacobian
+    def isStationary(self):
+        """Checks whether it is a stationary or transient case."""
+        return self._stat_init or self._theta is None
 
     def computeFirstResidual(self, residual=None, scaling=1.0):
         """Computes the first residual."""
@@ -164,8 +154,8 @@ class ThermalOperatorsManager(BaseOperatorsManager):
     def _getResidualStat(self, scaling=1.0):
         """Computes the residual for the stationary case."""
         residual, internVar, stress = super().getResidual(scaling=scaling)
-        self._temp_stress = stress
-        self._temp_internVar = internVar
+        self._tmp_stress = stress
+        self._tmp_internVar = internVar
         if self._stat_init:
             self._resi_temp = residual
         return residual
