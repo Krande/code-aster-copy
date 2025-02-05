@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,9 @@ def force_tuple(obj):
     return tuple(obj)
 
 
-def affe_cara_elem_prod(POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D, GRILLE, MASS_REP, **args):
+def affe_cara_elem_prod(
+    POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D, GRILLE, MASS_REP, RIGI_PARASOL, **args
+):
     """Fonction sdprod de AFFE_CARA_ELEM"""
     # phase de typage seul
     if args.get("__only_type__"):
@@ -277,6 +279,22 @@ def affe_cara_elem_prod(POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D, GRILLE
             if mclf["VALE"] is not None:
                 vale = mclf["VALE"]
                 check(vale >= 0.0, defErr, "MASS_REP", i1, "VALE")
+    ## - - - - - - - - - - - - - - -
+    if RIGI_PARASOL is not None:
+        sizeErr_RP1 = tr("Les cardinaux de FONC_GROUP et GROUP_MA sont différents.")
+        sizeErr_RP2 = tr("Les cardinaux de COEF_GROUP et GROUP_MA sont différents.")
+        for i in range(len(RIGI_PARASOL)):
+            i1 = i + 1
+            mclf = RIGI_PARASOL[i]
+            grp_ma = force_tuple(mclf["GROUP_MA"])
+            if mclf.get("FONC_GROUP") is not None:
+                grp_fc = force_tuple(mclf["FONC_GROUP"])
+                if len(grp_fc) > 0:
+                    check(len(grp_ma) == len(grp_fc), sizeErr_RP1, "RIGI_PARASOL", i1)
+            if mclf.get("COEF_GROUP") is not None:
+                grp_fc = force_tuple(mclf["COEF_GROUP"])
+                if len(grp_fc) > 0:
+                    check(len(grp_ma) == len(grp_fc), sizeErr_RP2, "RIGI_PARASOL", i1)
     #
     # Tout est ok
     return cara_elem
@@ -1193,7 +1211,7 @@ AFFE_CARA_ELEM = OPER(
         GROUP_MA_SEG2=SIMP(
             statut="f", typ=grma, max=1, fr=tr("Mailles de type seg2 correspondant aux discrets")
         ),
-        FONC_GROUP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        FONC_GROUP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule), max="**"),
         COEF_GROUP=SIMP(statut="f", typ="R", max="**"),
         REPERE=SIMP(statut="f", typ="TXM", into=("LOCAL", "GLOBAL"), defaut="GLOBAL"),
         # fmt: off

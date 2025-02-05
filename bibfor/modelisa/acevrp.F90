@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,7 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
     manoma = noma//'.CONNEX'
     do ioc = 1, nbocc
 !        --- ON RECUPERE UNE LISTE DE GROUP_MA ---
-        call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, &
-                    0, k8b, nbgr)
+        call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, 0, k8b, nbgr)
         nbgr = -nbgr
         nbgrmx = max(nbgrmx, nbgr)
     end do
@@ -63,11 +62,9 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
     noemaf = 0
     do ioc = 1, nbocc
         noema2 = 0
-        call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, &
-                    0, k8b, nbgr)
+        call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, 0, k8b, nbgr)
         nbgr = -nbgr
-        call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, &
-                    nbgr, group_ma, nbv)
+        call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, nbgr, group_ma, nbv)
 !
 !        --- ON ECLATE LES GROUP_MA ---
         do i = 1, nbgr

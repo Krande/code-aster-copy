@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,6 +202,28 @@ La topologie du groupe est déterminée par la 1ère maille du groupe.
  - type de la 1ère maille du groupe                  : %(k6)s
 
 Vérifiez vos données.
+"""
+    ),
+    24: _(
+        """AFFE_CARA_ELEM / RIGI_PARASOL
+Pour l'occurrence %(i1)d de RIGI_PARASOL, GROUP_MA = %(k1)s.
+La maille %(k2)s est présente plusieurs fois.
+Elle n'est prise en compte qu'une seule fois.
+"""
+    ),
+    25: _(
+        """AFFE_CARA_ELEM / RIGI_PARASOL
+Pour l'occurrence %(i1)d de RIGI_PARASOL, GROUP_MA[_POI1|_SEG2] = %(k1)s.
+La maille %(k2)s ne fait pas partie du modèle.
+
+Vérifier l'affection du modèle.
+"""
+    ),
+    99: _(
+        """AFFE_CARA_ELEM / RIGI_PARASOL
+Il n'est actuellement pas possible d'utiliser un maillage partitionné pour un calcul parallèle.
+
+Vous avez utilisé PARTITIONNEUR="PTSCOTCH", lors du LIRE_MAILLAGE
 """
     ),
 }
