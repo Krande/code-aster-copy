@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,17 +98,17 @@ subroutine assvec(jvBase, vectAsseZ, &
     character(len=24), pointer :: vectRefe(:) => null()
     character(len=19) :: vectAsse, vectAsseForNume
     character(len=19) :: vectElem, resuElem, numeEqua
-    character(len=24) :: numePrnoJv, numeNueqJv, numeNequJv
+    character(len=24) :: numePrnoJv, numeNueqJv, numeNequJv, numeCrcoJv, numeRefpJv
     character(len=24) :: numeLiliJv, vectAsseLili, ligrelName
-    aster_logical :: ldist, ldgrel, compSuperElement, lparallel_mesh
+    aster_logical :: ldist, ldgrel, compSuperElement, lparallel_mesh, lligrel_cp
     integer :: iDofMode, iVectElem
     integer :: iancmp, ianueq, iapsdl, iad1
     integer :: icmp, iconx2
     integer :: idprn1, idprn2, jresl, iElem
     integer :: iGrel, iDof, ilim
-    integer :: liliNume, ligrelNume, jvVectElem
+    integer :: liliNume, liliNume2, ligrelNume, jvVectElem
     integer :: iResuElem, iret, jec, jvale, iNodeMode
-    integer :: lgncmp, mode, nbNode, meshNbCell
+    integer :: lgncmp, mode, nbNode, nbNode2, meshNbCell
     integer :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem, nbEqua, nbDof
     integer :: meshNbNode, nmxcmp, nbNodeMode, nugd, elemNume, iexi
     integer :: icodla(nbecmx), icodge(nbecmx), lshift
@@ -126,8 +126,12 @@ subroutine assvec(jvBase, vectAsseZ, &
     character(len=24) :: coefLigrelName
     character(len=24), pointer :: celk(:) => null()
     integer, pointer :: celd(:) => null(), celv(:) => null()
+    integer, pointer :: v_crco(:) => null()
+    integer, pointer :: v_refp(:) => null()
+    character(len=24), pointer :: v_tco(:) => null()
     integer :: coefPond
     aster_logical :: maskInve
+
 ! --------------------------------------------------------------------------------------------------
 #define zzngel(ligrelNume) adli(1+3*(ligrelNume-1))
 #define zznelg(ligrelNume,iGrel) zi(adli(1+3*(ligrelNume-1)+2)+iGrel)-\
@@ -266,9 +270,12 @@ subroutine assvec(jvBase, vectAsseZ, &
     numeLiliJv = numeEqua(1:19)//'.LILI'
     numeNueqJv = numeEqua(1:19)//'.NUEQ'
     numeNequJv = numeEqua(1:19)//'.NEQU'
+    numeCrcoJv = numeEqua(1:19)//'.CRCO'
+    numeRefpJv = numeEqua(1:19)//'.REFP'
     call jeveuo(numePrnoJv, 'L', idprn1)
     call jeveuo(jexatr(numePrnoJv, 'LONCUM'), 'L', idprn2)
     call jeveuo(numeNueqJv, 'L', ianueq)
+    call jeveuo(numeRefpJv, 'L', vi=v_refp)
 
 ! - Get number of equations
     call jeexin(numeNequJv, iexi)
@@ -349,6 +356,14 @@ subroutine assvec(jvBase, vectAsseZ, &
                 ligrelName = noli(1)
                 call jenonu(jexnom(vectAsseLili, ligrelName), ligrelNume)
                 call jenonu(jexnom(numeLiliJv, ligrelName), liliNume)
+                call jeveuo(ligrelName(1:19)//'._TCO', "L", vk24=v_tco)
+                lligrel_cp = (v_tco(1) .eq. 'LIGREL_CP')
+                if (lligrel_cp) then
+                    call jeveuo(jexnum(numeCrcoJv, liliNume), 'L', vi=v_crco)
+                    liliNume2 = v_refp(liliNume)
+                else
+                    liliNume2 = liliNume
+                end if
 
 ! ------------- Loop on GREL
                 do iGrel = 1, zzngel(ligrelNume)
@@ -435,15 +450,20 @@ subroutine assvec(jvBase, vectAsseZ, &
                                                 iNodeMode-1)
                                     if (nbNode .lt. 0) then
                                         nbNode = -nbNode
+                                        if (lligrel_cp) then
+                                            nbNode2 = v_crco(nbNode)
+                                        else
+                                            nbNode2 = nbNode
+                                        end if
                                         if (liliNume .eq. 0) then
                                             call utmess('F', 'ASSEMBLA_45')
                                         end if
                                         ASSERT(liliNume .ne. 0)
                                         iad1 = zi(idprn1-1+ &
-                                                  zi(idprn2+liliNume-1)+ &
-                                                  (nbNode-1)*(nec+2)+1-1)
-                                        call corddl(admodl, lcmodl, idprn1, idprn2, liliNume, &
-                                                    mode, nec, nbCmp, nbNode, iNodeMode, &
+                                                  zi(idprn2+liliNume2-1)+ &
+                                                  (nbNode2-1)*(nec+2)+1-1)
+                                        call corddl(admodl, lcmodl, idprn1, idprn2, liliNume2, &
+                                                    mode, nec, nbCmp, nbNode2, iNodeMode, &
                                                     nbDofMode, zi(iapsdl))
                                         ASSERT(nbDofMode .le. 100)
                                     else
@@ -506,7 +526,6 @@ subroutine assvec(jvBase, vectAsseZ, &
 ! - Elementary vector is a nodal field
     call asseVectField(vectAsse, numeDof, vectScalType, &
                        nbVectElem, listVectElem)
-
 !
     if (dbg) then
         call dbgobj(vectValeJv, 'OUI', 6, '&&ASSVEC')

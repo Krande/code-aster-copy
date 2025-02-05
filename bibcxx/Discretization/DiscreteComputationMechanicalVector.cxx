@@ -28,90 +28,15 @@
 #include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/Calcul.h"
 #include "Discretization/DiscreteComputation.h"
+#include "LinearAlgebra/ElementaryMatrixConverter.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
+#include "Modeling/ParallelContactFEDescriptor.h"
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
-
-FieldOnNodesRealPtr DiscreteComputation::getDifferentialDualDisplacement() const {
-    // reimplement nmdidi.F90 & vecdid.F90
-    auto chalph = std::make_shared< ConstantFieldOnCellsReal >( _phys_problem->getMesh() );
-    const std::string physicalName( "NEUT_R" );
-    chalph->allocate( physicalName );
-    ConstantFieldOnZone a( _phys_problem->getMesh() );
-    ConstantFieldValues< ASTERDOUBLE > b( { "X1" }, { 1.0 } );
-    chalph->setValueOnZone( a, b );
-
-    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-
-    // Init
-    ASTERINTEGER iload = 1;
-
-    // Setup
-    const std::string calcul_option( "CHAR_MECA" );
-    elemVect->prepareCompute( calcul_option );
-
-    // Main parameters
-    auto currModel = _phys_problem->getModel();
-    auto listOfLoads = _phys_problem->getListOfLoads();
-
-    FieldOnNodesRealPtr disp_didi = listOfLoads->getDifferentialDisplacement();
-
-    auto calcul = std::make_unique< Calcul >( calcul_option );
-    calcul->setOption( "MECA_BU_R" );
-
-    auto impl = [&]( auto &load, const ASTERINTEGER &iload ) {
-        auto load_FEDesc = load->getFiniteElementDescriptor();
-        auto mult_field = load->getMultiplicativeField();
-        if ( mult_field && mult_field->exists() && load_FEDesc ) {
-            calcul->clearInputs();
-            calcul->clearOutputs();
-            calcul->setFiniteElementDescriptor( load_FEDesc );
-            calcul->addInputField( "PDDLMUR", mult_field );
-            calcul->addInputField( "PDDLIMR", disp_didi );
-            calcul->addInputField( "PALPHAR", chalph );
-
-            calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ),
-                                             iload );
-            }
-        }
-    };
-
-    auto types = listOfLoads->getListOfMechaTyp();
-    for ( const auto &load : listOfLoads->getMechanicalLoadsReal() ) {
-        if ( types[iload - 1] == "DIDI" )
-            impl( load, iload );
-        iload++;
-    }
-
-    auto nloads = types.size();
-    types = listOfLoads->getListOfMechaFuncTyp();
-    for ( const auto &load : listOfLoads->getMechanicalLoadsFunction() ) {
-        if ( types[iload - 1 - nloads] == "DIDI" )
-            impl( load, iload );
-        iload++;
-    }
-
-    elemVect->build();
-
-    if ( elemVect->hasElementaryTerm() ) {
-        return elemVect->assemble( _phys_problem->getDOFNumbering() );
-    } else {
-        FieldOnNodesRealPtr vectAsse =
-            std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
-        vectAsse->setValues( 0.0 );
-        vectAsse->build();
-        return vectAsse;
-    }
-}
 
 FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPtr disp_curr,
                                                               ASTERDOUBLE scaling ) const {
@@ -148,9 +73,6 @@ FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPt
 
     if ( _phys_problem->getMesh()->isParallel() )
         CALLO_AP_ASSEMBLY_VECTOR( bume->getName() );
-
-    if ( listOfLoads->hasDifferentialDisplacement() )
-        bume->operator-=( *getDifferentialDualDisplacement() );
 
     return bume;
 };
@@ -692,13 +614,21 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
     std::string option = "CHAR_MECA_CONT";
 
     auto [Fed_Slave, Fed_pair] = _phys_problem->getListOfLoads()->getContactLoadDescriptor();
+    const auto pCFED = std::dynamic_pointer_cast< ParallelContactFEDescriptor >( Fed_pair );
+    if ( pCFED ) {
+        Fed_pair = pCFED->getSupportFiniteElementDescriptor();
+    }
 
     // Prepare computing
     CalculPtr calcul = std::make_unique< Calcul >( option );
     calcul->setFiniteElementDescriptor( Fed_pair );
 
     // Set input field
-    calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+    if ( pCFED ) {
+        calcul->addInputField( "PGEOMER", Fed_pair->getMesh()->getCoordinates() );
+    } else {
+        calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+    }
     calcul->addInputField( "PGEOMCR", geom );
     calcul->addInputField( "PDEPL_M", displ_prev );
     calcul->addInputField( "PDEPL_P", displ_step );
@@ -727,8 +657,15 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
         elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTFR" ) );
     }
     elemVect->build();
-
-    return elemVect->assemble( _phys_problem->getDOFNumbering() );
+    if ( pCFED ) {
+        auto resu = transfertToParallelFEDesc( elemVect, pCFED );
+        resu->setModel( _phys_problem->getModel() );
+        resu->prepareCompute( option );
+        resu->build();
+        return resu->assemble( _phys_problem->getDOFNumbering() );
+    } else {
+        return elemVect->assemble( _phys_problem->getDOFNumbering() );
+    }
 }
 
 /**  @brief Compute nodal forces  */

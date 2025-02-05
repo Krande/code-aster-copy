@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -477,6 +477,10 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
         nuno2 = 0
         if (deeq((jcoll-1)*2+1) > 0) then
             nuno2 = 1
+        else
+            if (deeq((jcoll-1)*2+1) < 0 .and. deeq((jcoll-1)*2+2) > 0) then
+                nuno2 = 1
+            end if
         end if
         do k = nzdeb, nzfin
             iligl = smhc(k)
@@ -486,6 +490,10 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
             nuno1 = 0
             if (deeq((iligl-1)*2+1) > 0) then
                 nuno1 = 1
+            else
+                if (deeq((iligl-1)*2+1) < 0 .and. deeq((iligl-1)*2+2) > 0) then
+                    nuno2 = 1
+                end if
             end if
 !
 ! --- Filtrage

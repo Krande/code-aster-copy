@@ -29,8 +29,8 @@ ContactPairing::ContactPairing( const std::string name, const ContactNewPtr cont
       _contDefi( contDefi ),
       _mesh( contDefi->getMesh() ),
       _verbosity( 1 ) {
-    if ( !_mesh || _mesh->isParallel() )
-        raiseAsterError( "Mesh is empty or is parallel " );
+    if ( !_mesh )
+        raiseAsterError( "Mesh is empty" );
 
     // Set verbosity
     setVerbosity( contDefi->getVerbosity() );
@@ -41,7 +41,7 @@ ContactPairing::ContactPairing( const std::string name, const ContactNewPtr cont
     // Be sure that zones is not empty and get size of zones
     int nbZoneCont = _contDefi->getNumberOfContactZones();
     if ( nbZoneCont == 0 )
-        raiseAsterError( "ContactZone vector is empty " );
+        raiseAsterError( "ContactZone vector is empty" );
 };
 
 void ContactPairing::setVerbosity( const ASTERINTEGER &level ) {
@@ -655,3 +655,38 @@ VectorLong ContactPairing::getNumberOfIntersectionPoints( ASTERINTEGER &indexZon
 
     return returnValue;
 }
+
+void ContactPairing::updateCoordinates( const FieldOnNodesRealPtr &disp ) {
+    if ( _mesh->getName() != disp->getMesh()->getName() && _mesh->isConnection() ) {
+        const auto cMesh = std::dynamic_pointer_cast< ConnectionMesh >( _mesh );
+        const auto &cCoords = _mesh->getCoordinates();
+        const auto &localNum = cMesh->getNodesLocalNumbering();
+        const auto &owners = cMesh->getNodesOwner();
+        const auto &sFONRed = toSimpleFieldOnNodes( disp )->restrict( { "DX", "DY", "DZ" } );
+        const auto &cmpNb = sFONRed->getComponents().size();
+
+        const int rank = getMPIRank();
+        const auto &nbNodes = localNum->size();
+        cCoords->updateValuePointers();
+        _currentCoordinates->updateValuePointers();
+        VectorReal tmp( 3 * cMesh->getNumberOfNodes(), 0. ),
+            res( 3 * cMesh->getNumberOfNodes(), 0. );
+        for ( int i = 0; i < nbNodes; ++i ) {
+            const auto &curOwner = ( *owners )[i];
+            if ( curOwner == rank ) {
+                const auto &curPos = ( *localNum )[i] - 1;
+                for ( int j = 0; j < cmpNb; ++j ) {
+                    tmp[i * 3 + j] = ( *cCoords )[i][j] + ( *sFONRed )[curPos * cmpNb + j];
+                }
+            }
+        }
+        AsterMPI::all_reduce( tmp, res, MPI_SUM );
+        for ( int i = 0; i < nbNodes; ++i ) {
+            for ( int j = 0; j < 3; ++j ) {
+                ( *_currentCoordinates )[i][j] = res[i * 3 + j];
+            }
+        }
+    } else {
+        *_currentCoordinates = *( _mesh->getCoordinates() ) + *disp;
+    }
+};

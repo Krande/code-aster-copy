@@ -28,6 +28,8 @@ from ..Objects import (
     MechanicalLoadFunction,
     MechanicalLoadReal,
     NonLinearResult,
+    ParallelContactNew,
+    ParallelFrictionNew,
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,
     PhysicalProblem,
@@ -50,6 +52,9 @@ def _contact_check(CONTACT):
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
 
+            if zone.hasFriction:
+                assert zone.getFrictionParameter().getType() == FrictionType.Without
+
         if defi.hasFriction:
             assert CONTACT[0]["ALGO_RESO_FROT"] == "NEWTON"
 
@@ -59,7 +64,7 @@ def _keywords_check(keywords):
 
     if "EXCIT" in keywords:
         for load in keywords["EXCIT"]:
-            if load["TYPE_CHARGE"] not in ("FIXE_CSTE", "DIDI"):
+            if load["TYPE_CHARGE"] != "FIXE_CSTE":
                 raise RuntimeError("TYPE_CHARGE not supported")
 
     if "CONVERGENCE" in keywords:
@@ -162,7 +167,12 @@ def meca_non_line_ops(self, **args):
     if args["CONTACT"]:
         definition = args["CONTACT"][0]["DEFINITION"]
         contact_manager = ContactManager(definition, phys_pb)
-        fed_defi = definition.getFiniteElementDescriptor()
+        if isinstance(definition, ParallelFrictionNew) or isinstance(
+            definition, ParallelContactNew
+        ):
+            fed_defi = definition.getParallelFiniteElementDescriptor()
+        else:
+            fed_defi = definition.getFiniteElementDescriptor()
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
     solver.use(contact_manager)
 

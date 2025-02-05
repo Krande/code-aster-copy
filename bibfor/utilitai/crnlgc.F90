@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,14 +63,14 @@ subroutine crnlgc(numddl)
 !
     integer :: rang, nbproc, jrefn, iaux, nddll
     integer :: nb_comm, icmp, ico2, nbcmp
-    integer :: idprn1, idprn2, ili
+    integer :: idprn1, idprn2, ili, ili2
     integer :: nec, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
     integer :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom
     integer :: nbddll, jnequ, nddl, jenco2, jcpne2, numpr2
     integer :: nbnoer, jrecep1, curpos, ijoin
     integer :: jmlogl, nuno, nb_ddl_envoi, nbddl, domj_i
-    integer :: nddlg, jenvoi2, jrecep2, numnoe, gd
-    integer :: ifm, niv, vali(5), ino, nno, nb_node, nlag
+    integer :: nddlg, jenvoi2, jrecep2, numnoe, gd, iddl
+    integer :: ifm, niv, vali(5), ino, nno, nb_node, nlag, exipr
     integer :: lgenve2, lgenvr2, jnujoi1, jnujoi2, iret, iret1, iret2, nlili
     mpi_int :: mrank, mnbproc, mpicou, tag4, numpr4, n4e, n4r
     integer, pointer :: v_noex(:) => null()
@@ -83,12 +83,16 @@ subroutine crnlgc(numddl)
     integer, pointer :: v_tag(:) => null()
     integer, pointer :: v_dom(:) => null()
     integer, pointer :: v_gco(:) => null()
+    integer, pointer :: v_crco(:) => null()
+    integer, pointer :: v_refp(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
+    aster_logical :: lligrel_cp
 !
     character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig, comm_name, tag_name, nume_equa, joints, meshj
     character(len=24) :: nonulg, domj, recv, send, name, gcom, pgid
     character(len=32) :: nojoie, nojoir
+    character(len=24), pointer :: tco(:) => null()
 !
 !----------------------------------------------------------------------
 !
@@ -121,6 +125,7 @@ subroutine crnlgc(numddl)
 
     call jeveuo(nume_equa//'.NULG', 'E', vi=v_nugll)
     call jeveuo(nume_equa//'.PDDL', 'E', vi=v_posdd)
+    call jeveuo(nume_equa//'.REFP', 'L', vi=v_refp)
 !
 ! -- Création du graphe de comm
     meshj = mesh//".JOIN"
@@ -295,6 +300,18 @@ subroutine crnlgc(numddl)
     call jelira(nume_equa//'.PRNO', 'NMAXOC', nlili, k8bid)
     do ili = 2, nlili
         call jenuno(jexnum(nume_equa//'.LILI', ili), nomlig)
+        call jeveuo(nomlig//'._TCO', "L", vk24=tco)
+        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        if (lligrel_cp) then
+            call jeexin(jexnum(nume_equa//'.CRCO', ili), iret)
+            if (iret .ne. 0) then
+                call jeveuo(jexnum(nume_equa//'.CRCO', ili), 'L', vi=v_crco)
+            end if
+            ili2 = v_refp(ili)
+        else
+            ili2 = ili
+        end if
+        call jeexin(jexnum(nume_equa//'.PRNO', ili), exipr)
         call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
         if (nb_comm > 0) then
             call jeveuo(comm_name, 'L', vi=v_comm)
@@ -320,24 +337,42 @@ subroutine crnlgc(numddl)
 
                 call jeexin(nojoie, iret1)
                 if (iret1 .ne. 0) then
-                    call jeveuo(nojoie, 'L', jjoine)
-                    call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
-                    call wkvect('&&CRNUGL.NUM_DDL_GLOB_E', 'V V I', nbnoee, jnujoi1)
-                    do jaux = 1, nbnoee
-                        numnoe = -zi(jjoine+jaux-1)
-                        ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
-                        nddll = zzprno(ili, numnoe, 1)
-                        zi(jnujoi1+jaux-1) = v_nugll(nddll)
-                    end do
-                    n4e = to_mpi_int(nbnoee)
+                    if (lligrel_cp) then
+                        call jeveuo(nojoie, 'L', jjoine)
+                        call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
+                        call wkvect('&&CRNUGL.NUM_DDL_GLOB_E', 'V V I', 2*nbnoee, jnujoi1)
+                        do jaux = 1, nbnoee
+                            numnoe = zi(jjoine+jaux-1)
+                            nddll = zzprno(1, numnoe, 1)
+                            zi(jnujoi1+2*(jaux-1)) = v_nugll(nddll)
+                            zi(jnujoi1+2*(jaux-1)+1) = zzprno(1, numnoe, 2)
+                        end do
+                        n4e = to_mpi_int(2*nbnoee)
+                    else
+                        call jeveuo(nojoie, 'L', jjoine)
+                        call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
+                        call wkvect('&&CRNUGL.NUM_DDL_GLOB_E', 'V V I', nbnoee, jnujoi1)
+                        do jaux = 1, nbnoee
+                            numnoe = -zi(jjoine+jaux-1)
+                            ASSERT(zzprno(ili2, numnoe, 2) .eq. 1)
+                            nddll = zzprno(ili2, numnoe, 1)
+                            zi(jnujoi1+jaux-1) = v_nugll(nddll)
+                        end do
+                        n4e = to_mpi_int(nbnoee)
+                    end if
                 end if
 
                 call jeexin(nojoir, iret2)
                 if (iret2 .ne. 0) then
                     call jeveuo(nojoir, 'L', jjoinr)
                     call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
-                    call wkvect('&&CRNUGL.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
-                    n4r = to_mpi_int(nbnoer)
+                    if (lligrel_cp) then
+                        call wkvect('&&CRNUGL.NUM_DDL_GLOB_R', 'V V I', 2*nbnoer, jnujoi2)
+                        n4r = to_mpi_int(2*nbnoer)
+                    else
+                        call wkvect('&&CRNUGL.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
+                        n4r = to_mpi_int(nbnoer)
+                    end if
                 end if
                 if (rang .lt. numpro) then
                     if (iret1 .ne. 0) then
@@ -355,14 +390,26 @@ subroutine crnlgc(numddl)
                     end if
                 end if
 
-                if (iret2 .ne. 0) then
-                    do jaux = 1, nbnoer
-                        numnoe = -zi(jjoinr+jaux-1)
-                        ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
-                        nddll = zzprno(ili, numnoe, 1)
-                        v_nugll(nddll) = zi(jnujoi2+jaux-1)
-                        v_posdd(nddll) = numpro
-                    end do
+                if (iret2 .ne. 0 .and. exipr .ne. 0) then
+                    if (lligrel_cp) then
+                        do jaux = 1, nbnoer
+                            numnoe = -zi(jjoinr+jaux-1)
+                            nbddl = zi(jnujoi2+2*(jaux-1)+1)
+                            nddll = zzprno(ili2, numnoe, 1)
+                            do iddl = 0, nbddl-1
+                                v_nugll(nddll+iddl) = zi(jnujoi2+2*(jaux-1))+iddl
+                                v_posdd(nddll+iddl) = numpro
+                            end do
+                        end do
+                    else
+                        do jaux = 1, nbnoer
+                            numnoe = -zi(jjoinr+jaux-1)
+                            ASSERT(zzprno(ili2, numnoe, 2) .eq. 1)
+                            nddll = zzprno(ili2, numnoe, 1)
+                            v_nugll(nddll) = zi(jnujoi2+jaux-1)
+                            v_posdd(nddll) = numpro
+                        end do
+                    end if
                 end if
                 call jedetr('&&CRNUGL.NUM_DDL_GLOB_E')
                 call jedetr('&&CRNUGL.NUM_DDL_GLOB_R')
@@ -382,6 +429,7 @@ subroutine crnlgc(numddl)
     call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
     do iaux = 1, nbddll
         nuno = v_deeq((iaux-1)*2+1)
+        if (nuno .le. 0) cycle
         if (nuno .ne. 0) then
             ASSERT(v_posdd(iaux) == v_noex(nuno))
         else

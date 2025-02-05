@@ -18,6 +18,7 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 from ..Objects import (
+    ConnectionMesh,
     ContactAlgo,
     ContactNew,
     ContactParameter,
@@ -32,6 +33,8 @@ from ..Objects import (
     JacobianType,
     PairingAlgo,
     PairingParameter,
+    ParallelContactNew,
+    ParallelFrictionNew,
 )
 
 
@@ -49,14 +52,21 @@ def defi_cont_ops(self, **keywords):
     Arguments:
         keywords (dict): User's keywords.
     """
-    if _hasFriction(keywords["ZONE"]):
-        result = FrictionNew(keywords["MODELE"])
-    else:
-        result = ContactNew(keywords["MODELE"])
-
     # print("ARGS: ", keywords, flush=True)
     model = keywords["MODELE"]
     verbosity = keywords["INFO"]
+    mesh = model.getMesh()
+
+    if _hasFriction(keywords["ZONE"]):
+        if mesh.isParallel():
+            result = ParallelFrictionNew(keywords["MODELE"], mesh)
+        else:
+            result = FrictionNew(keywords["MODELE"])
+    else:
+        if mesh.isParallel():
+            result = ParallelContactNew(keywords["MODELE"], mesh)
+        else:
+            result = ContactNew(keywords["MODELE"])
 
     # usefull dict
     _algo_cont = {
@@ -96,7 +106,7 @@ def defi_cont_ops(self, **keywords):
     # add infomations for each ZONE
     list_zones = keywords["ZONE"]
     for zone in list_zones:
-        contZone = ContactZone(model)
+        contZone = ContactZone()
 
         contZone.checkNormals = zone["VERI_NORM"] == "OUI"
         contZone.setVerbosity(verbosity)
@@ -163,10 +173,9 @@ def defi_cont_ops(self, **keywords):
             pairParam.setDistanceFunction(zone["DIST_SUPP"])
 
         # build then append
-        contZone.build()
         result.appendContactZone(contZone)
 
-    # build result
+    # build result and contact zones
     result.build()
 
     return result

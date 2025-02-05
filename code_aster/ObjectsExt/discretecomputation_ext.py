@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ from libaster import (
 
 from ..Solvers import Residuals
 from ..Supervis import IntegrationError
-from ..Utilities import injector, profile
+from ..Utilities import injector, profile, MPI
 
 
 @injector(DiscreteComputation)
@@ -524,11 +524,18 @@ class ExtendedDiscreteComputation:
         """
 
         if contact_manager:
+            if contact_manager.defi.isParallel():
+                cMesh = contact_manager.defi.getConnectionModel().getMesh()
+                primal_prev = phys_state.primal_prev.transfertToConnectionMesh(cMesh)
+                primal_step = phys_state.primal_step.transfertToConnectionMesh(cMesh)
+            else:
+                primal_prev = phys_state.primal_prev
+                primal_step = phys_state.primal_step
             # Compute contact forces
             contact_forces = self.getContactForces(
                 contact_manager.getPairingCoordinates(),
-                phys_state.primal_prev,
-                phys_state.primal_step,
+                primal_prev,
+                primal_step,
                 phys_state.time_prev,
                 phys_state.time_step,
                 contact_manager.data(),
@@ -669,16 +676,24 @@ class ExtendedDiscreteComputation:
            ElementaryMatrixDisplacementReal: Contact matrix.
         """
         if contact_manager:
+            if contact_manager.defi.isParallel():
+                cMesh = contact_manager.defi.getConnectionModel().getMesh()
+                primal_prev = phys_state.primal_prev.transfertToConnectionMesh(cMesh)
+                primal_step = phys_state.primal_step.transfertToConnectionMesh(cMesh)
+            else:
+                primal_prev = phys_state.primal_prev
+                primal_step = phys_state.primal_step
             matr_elem_cont = self.getContactMatrix(
                 contact_manager.getPairingCoordinates(),
-                phys_state.primal_prev,
-                phys_state.primal_step,
+                primal_prev,
+                primal_step,
                 phys_state.time_prev,
                 phys_state.time_step,
                 contact_manager.data(),
                 contact_manager.coef_cont,
                 contact_manager.coef_frot,
             )
+            matr_elem_cont.build()
 
             return matr_elem_cont
 

@@ -93,7 +93,7 @@ const struct contCellType contCellNits[contNitsType] = {
 
 class ContactPairing : public DataStructure {
     /** Datastructure for pairing */
-  private:
+  protected:
     /** @brief Mesh */
     BaseMeshPtr _mesh;
 
@@ -115,7 +115,7 @@ class ContactPairing : public DataStructure {
     /** @brief Map between index of global pair and index of local pair in zone */
     MapLong _globPairToLocaPair;
 
-  private:
+  protected:
     /** @brief Resize pairing quantities */
     void resizePairing( const int nbZoneCont );
 
@@ -161,12 +161,7 @@ class ContactPairing : public DataStructure {
     BaseMeshPtr getMesh() const { return _mesh; };
 
     /** @brief Update coordinates */
-    void updateCoordinates( const FieldOnNodesRealPtr disp ) {
-        *_currentCoordinates = *( _mesh->getCoordinates() ) + *disp;
-        for ( auto indexZone = 0; indexZone < _contDefi->getNumberOfContactZones(); indexZone++ ) {
-            _contDefi->updateCoordinates( disp );
-        }
-    };
+    void updateCoordinates( const FieldOnNodesRealPtr &disp );
 
     /** @brief Set coordinates */
     void setCoordinates( const MeshCoordinatesFieldPtr coor ) {
@@ -223,7 +218,7 @@ class ContactPairing : public DataStructure {
     VectorLong getNumberOfIntersectionPoints( ASTERINTEGER &indexZone ) const;
 
     /** @brief Build Finite Element Descriptor from pairing */
-    void buildFiniteElementDescriptor();
+    virtual void buildFiniteElementDescriptor();
 
     /** @brief Get Finite Element Descriptor from pairing */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _fed; };

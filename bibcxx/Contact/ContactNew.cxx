@@ -27,22 +27,16 @@
 #include "aster_fort_mesh.h"
 #include "aster_fort_utils.h"
 
+#include "Meshes/ConnectionMesh.h"
 #include "Messages/Messages.h"
+#include "Modeling/Model.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
 using VectorLongIter = VectorLong::iterator;
 
 ContactNew::ContactNew( const std::string name, const ModelPtr model, const std::string type )
-    : DataStructure( name, 8, type ),
-      _model( model ),
-      _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
-                                                            _model->getMesh() ) ),
-      _verbosity( 1 ) {
-    // model has to be mechanics
-    if ( !_model->isMechanical() )
-        UTMESS( "F", "CONTACT1_2" );
-};
+    : DataStructure( name, 8, type ), _model( model ), _FEDesc( nullptr ), _verbosity( 1 ) {};
 
 void ContactNew::appendContactZone( const ContactZonePtr zone ) {
     _zones.push_back( zone );
@@ -72,6 +66,11 @@ ASTERINTEGER ContactNew::getSpaceDime() const {
 
 bool ContactNew::build() {
     CALL_JEMARQ();
+    // model has to be mechanics
+    if ( !_model->isMechanical() )
+        UTMESS( "F", "CONTACT1_2" );
+    _FEDesc =
+        std::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE", _model->getMesh() );
 
     auto mesh = getMesh();
 
@@ -106,6 +105,7 @@ bool ContactNew::build() {
     std::vector< VectorLong > noeuco;
 
     for ( auto &zone_i : _zones ) {
+        zone_i->build( _model );
         // read slave nodes/cell : localNumbering, same_rank
         auto l_slave_nodes = zone_i->getSlaveNodes();
         auto l_slave_cells = zone_i->getSlaveCells();
@@ -148,7 +148,7 @@ bool ContactNew::build() {
         }
     }
 
-    // Sreate slave elements in model : routine mmprel
+    // Create slave elements in model : routine mmprel
     std::string ligret = ljust( "&&OP0030.LIGRET", 19, ' ' );
     std::string phenom = ljust( "MECANIQUE", 16, ' ' );
     std::string modeli;

@@ -2,7 +2,7 @@
  * @file ContactZoneInterface.cxx
  * @brief Interface python de ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,8 +34,8 @@ Type of coordinates: Slave or Global.)" )
         .value( "Slave", CoordinatesSpace::Slave )
         .value( "Global", CoordinatesSpace::Global )
         .export_values();
-    class_.def( py::init( &initFactoryPtr< MeshPairing, std::string, BaseMeshPtr > ) );
-    class_.def( py::init( &initFactoryPtr< MeshPairing, BaseMeshPtr > ) );
+    class_.def( py::init( &initFactoryPtr< MeshPairing, std::string > ) );
+    class_.def( py::init( &initFactoryPtr< MeshPairing > ) );
     class_.def( "getNumberOfPairs", &MeshPairing::getNumberOfPairs, R"(
 Get number of pairs
 
@@ -82,14 +82,6 @@ Returns:
         Returns:
             list: number of intersection points
                 )" );
-    class_.def( "setPair", &MeshPairing::setPair, R"(
-        Set pair of meshed surfaces
-
-        Arguments:
-            groupNameSlav (str): slave's name
-            groupNameMast (str): master's name
-                )",
-                py::arg( "groupNameSlav" ), py::arg( "groupNameMast" ) );
     class_.def( "compute", &MeshPairing::compute, R"(
 Compute pairing
 
@@ -98,13 +90,6 @@ Arguments:
     pair_tole (real): tolerance for pairing
         )",
                 py::arg( "dist_pairing" ) = -1.0, py::arg( "pair_tole" ) = 1.E-8 );
-    class_.def( "updateCoordinates", &MeshPairing::updateCoordinates, R"(
-Update coordinates of nodes
-
-Arguments:
-    disp (FieldOnNodesReal): nodal field of displacement
-        )",
-                py::arg( "disp" ) );
     class_.def( "setVerbosity", &MeshPairing::setVerbosity, R"(
 Set level of verbosity
       0 - without

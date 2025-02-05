@@ -3,7 +3,7 @@
  * @brief Création de LibAster
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -134,6 +134,9 @@
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ObjectBalancerInterface.h"
 #include "PythonBindings/ParMetisPartitionerInterface.h"
+#include "PythonBindings/ParallelContactFEDescriptorInterface.h"
+#include "PythonBindings/ParallelContactNewInterface.h"
+#include "PythonBindings/ParallelContactPairingInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelEquationNumberingInterface.h"
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
@@ -309,6 +312,9 @@ PYBIND11_MODULE( libaster, mod ) {
     exportParallelMechanicalLoadToPython( mod );
     exportParallelThermalLoadToPython( mod );
     exportParallelFiniteElementDescriptorToPython( mod );
+    exportParallelContactFEDescriptorToPython( mod );
+    exportParallelContactNewToPython( mod );
+    exportParallelContactPairingToPython( mod );
 #endif /* ASTER_HAVE_MPI */
 
     exportConnectionMeshToPython( mod );

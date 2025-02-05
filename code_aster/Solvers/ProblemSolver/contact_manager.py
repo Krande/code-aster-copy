@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Objects import ContactComputation, ContactPairing
+from ...Objects import (
+    ContactComputation,
+    ContactPairing,
+    ParallelContactPairing,
+    ParallelContactNew,
+    ParallelFrictionNew,
+)
 from ...Utilities import no_new_attributes, profile
 from ..Basics import SolverFeature
 from ..Basics import SolverOptions as SOP
@@ -46,7 +52,12 @@ class ContactManager(SolverFeature):
         self.defi = definition
         self.phys_pb = phys_pb
         if self.defi is not None:
-            self.pair = ContactPairing(self.defi)
+            if isinstance(self.defi, ParallelFrictionNew) or isinstance(
+                self.defi, ParallelContactNew
+            ):
+                self.pair = ParallelContactPairing(self.defi)
+            else:
+                self.pair = ContactPairing(self.defi)
             self.comp = ContactComputation(self.defi)
             self.coef_cont, self.coef_frot = self.comp.contactCoefficient()
 
@@ -62,8 +73,16 @@ class ContactManager(SolverFeature):
             self.pair.compute()
 
             # Numbering does not change but connectivity yes.
-            fed_defi = self.defi.getFiniteElementDescriptor()
-            fed_pair = self.pair.getFiniteElementDescriptor()
+            if isinstance(self.defi, ParallelFrictionNew) or isinstance(
+                self.defi, ParallelContactNew
+            ):
+                fed_defi = self.defi.getParallelFiniteElementDescriptor()
+            else:
+                fed_defi = self.defi.getFiniteElementDescriptor()
+            if isinstance(self.pair, ParallelContactPairing):
+                fed_pair = self.pair.getParallelFiniteElementDescriptor()
+            else:
+                fed_pair = self.pair.getFiniteElementDescriptor()
             phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, fed_pair)
             model = phys_pb.getModel()
             loads = phys_pb.getListOfLoads()
@@ -89,7 +108,7 @@ class ContactManager(SolverFeature):
         """Set the coordinates field used for pairing.
 
         Returns:
-            coor (MeshCoordinatesField): coordinates of nodes used for pairing:
+            coor (MeshCoordinatesField): coordinates of nodes used for pairing
         """
 
         if self.enable:

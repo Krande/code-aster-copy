@@ -3,7 +3,7 @@
  * @brief Interface python de ConnectionMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -71,7 +71,8 @@ Returns:
     bool: True if the group is present
         )",
               py::arg( "name" ), py::arg( "local" ) = false )
-        .def( "getCells", &ConnectionMesh::getCells, R"(
+        .def( "getCells",
+              py::overload_cast< const std::string >( &ConnectionMesh::getCells, py::const_ ), R"(
 Return the list of the indexes of the cells that belong to a group of cells.
 
 Arguments:
@@ -100,6 +101,8 @@ hence some nodes can have the same local numbering
 
 Returns:
     tuple[int]: list of nodes with local numbering
-        )" );
+        )" )
+        .def( "isConnection", &ConnectionMesh::isConnection, R"(
+Function to know if a mesh is a ConnectionMesh)" );
 #endif /* ASTER_HAVE_MPI */
 };

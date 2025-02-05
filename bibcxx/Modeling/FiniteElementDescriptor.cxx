@@ -3,7 +3,7 @@
  * @brief Implementation de FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,8 +32,9 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
-FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh )
-    : DataStructure( name, 19, "LIGREL" ),
+FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const std::string &type,
+                                                  const BaseMeshPtr mesh )
+    : DataStructure( name, 19, type ),
       _numberOfDelayedNumberedConstraintNodes( getName() + ".NBNO" ),
       _parameters( getName() + ".LGRF" ),
       _dofDescriptor( getName() + ".PRNM" ),
@@ -50,6 +51,9 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _explorer2(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {};
 
+FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh )
+    : FiniteElementDescriptor( name, "LIGREL", mesh ) {};
+
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
     : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ) {};
 
@@ -60,14 +64,21 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
                                                   const VectorString &groupOfCells )
     : FiniteElementDescriptor( FEDesc->getMesh() ) {
 
-    VectorLong listOfCells = _mesh->getCells( groupOfCells );
+    VectorLong commonCells;
+
+    for ( auto &group : groupOfCells ) {
+        auto cells = _mesh->getCells( group );
+        auto it = commonCells.end();
+        commonCells.insert( it, cells.begin(), cells.end() );
+    }
+
+    VectorLong listOfCells = unique( commonCells );
 
     std::string base( "G" );
     ASTERINTEGER nbCells = listOfCells.size();
     for ( auto &cell : listOfCells )
         cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
-    this->build();
 };
 
 FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,

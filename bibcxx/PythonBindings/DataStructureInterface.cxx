@@ -111,13 +111,15 @@ Return the tile of the *DataStructure* .
 Returns:
     str: Title of the *DataStructure*.
         )" )
-        .def( "debugPrint", &DataStructure::debugPrint, R"(
+        .def( "debugPrint",
+              py::overload_cast< int, bool >( &DataStructure::debugPrint, py::const_ ), R"(
 Print the raw content of a *DataStructure* on the selected file.
 
 Args:
     unit (int): File number (default: 6, means stdout).
+    synchro (bool): To synchronize prints between processors (default: True).
         )",
-              py::arg( "unit" ) = 6 )
+              py::arg( "unit" ) = 6, py::arg( "synchro" ) = true )
         .def( "build", &DataStructure::build,
               R"(
 Update the *DataStructure* attributes from the *Jeveux* objects.

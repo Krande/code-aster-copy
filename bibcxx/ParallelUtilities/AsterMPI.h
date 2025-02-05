@@ -7,7 +7,7 @@
  * STL en parallèle
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -126,6 +126,10 @@ public:
   template <typename T>
   static void all_reduce(const std::vector<T> in_value,
                          std::vector<T> &out_value, MPI_Op op,
+                         aster_comm_t *_commCurrent = aster_get_current_comm());
+  template <typename T>
+  static void all_reduce(const JeveuxVector<T> in_value,
+                         JeveuxVector<T> &out_value, MPI_Op op,
                          aster_comm_t *_commCurrent = aster_get_current_comm());
 
   /// AllReduce values for given OP, one value from each process
@@ -494,6 +498,20 @@ void AsterMPI::all_reduce(const std::vector<T> in_value,
   aster_mpi_allreduce(const_cast<T *>(in_value.data()),
                       static_cast<T *>(out_value.data()), in_value.size(),
                       mpi_type<T>(), op, _commCurrent);
+}
+//---------------------------------------------------------------------------
+template <typename T>
+void AsterMPI::all_reduce(const JeveuxVector<T> in_value,
+                          JeveuxVector<T> &out_value, MPI_Op op,
+                          aster_comm_t *_commCurrent) {
+  if (in_value->size() != out_value->size()) {
+    throw std::runtime_error("Inconsistent sizes");
+  }
+  in_value->updateValuePointer();
+  out_value->updateValuePointer();
+  aster_mpi_allreduce(const_cast<T *>(in_value->getDataPtr()),
+                      static_cast<T *>(out_value->getDataPtr()),
+                      in_value->size(), mpi_type<T>(), op, _commCurrent);
 }
 //---------------------------------------------------------------------------
 template <typename T>

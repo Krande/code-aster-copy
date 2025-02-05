@@ -29,33 +29,35 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
-ContactZone::ContactZone( const std::string name, const ModelPtr model )
+ContactZone::ContactZone( const std::string name )
     : DataStructure( name, 8, "CHAR_CONT_ZONE" ),
-      _model( model ),
+      _model( nullptr ),
       _verbosity( 1 ),
       _checkNormal( true ),
       _smoothing( false ),
       _contParam( std::make_shared< ContactParameter >() ),
       _fricParam( std::make_shared< FrictionParameter >() ),
-      _pairParam( std::make_shared< PairingParameter >() ) {
-    if ( !_model->isMechanical() )
-        UTMESS( "F", "CONTACT1_2" );
-
-    _meshPairing = std::make_shared< MeshPairing >( getName(), model->getMesh() );
-};
+      _pairParam( std::make_shared< PairingParameter >() ),
+      _meshPairing( std::make_shared< MeshPairing >( getName() ) ) {};
 
 void ContactZone::setVerbosity( const ASTERINTEGER &level ) {
     _verbosity = level;
-    _meshPairing->setVerbosity( getVerbosity() );
+    if ( _meshPairing != nullptr ) {
+        _meshPairing->setVerbosity( getVerbosity() );
+    }
 }
 
 bool ContactZone::pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole ) {
     return _meshPairing->compute( dist_pairing, pair_tole );
 }
 
-bool ContactZone::build() {
+bool ContactZone::build( const ModelPtr model ) {
+    _model = model;
+    if ( !_model->isMechanical() )
+        UTMESS( "F", "CONTACT1_2" );
 
-    _meshPairing->initObjects();
+    _meshPairing->initObjects( _model->getMesh() );
+    _meshPairing->setVerbosity( getVerbosity() );
 
     // Some checks
     auto hasCommonNodes = _meshPairing->hasCommonNodes();

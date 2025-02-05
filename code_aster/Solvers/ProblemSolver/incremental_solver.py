@@ -17,16 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import numpy as np
-
 from ...Objects import DiscreteComputation
 from ...Utilities import no_new_attributes, profile
 from ..Basics import EventSource, SolverFeature
 from ..Basics import SolverOptions as SOP
-from ...LinearAlgebra import MatrixScaler
-
-USE_SCALING = False  # for testing only
-PERTURB_JAC = False  # for checking only (sloooow)
 
 
 class IncrementalSolver(SolverFeature, EventSource):
@@ -85,8 +79,8 @@ class IncrementalSolver(SolverFeature, EventSource):
         contact_manager = self.get_feature(SOP.Contact, optional=True)
 
         if contact_manager:
-            contact_manager.update(self.phys_state)
             contact_manager.pairing(self.phys_pb)
+            contact_manager.update(self.phys_state)
 
         if not matrix:
             jacobian = self.opers_manager.getJacobian(matrix_type)
@@ -99,31 +93,6 @@ class IncrementalSolver(SolverFeature, EventSource):
         # compute residual
         residuals = self.opers_manager.getResidual(scaling)
 
-        # ---------------------------------------------------------------------
-        if PERTURB_JAC:
-            neq = self.phys_state.primal_step.size()
-            jac = np.zeros((neq, neq))
-            primal_save = self.phys_state.primal_step.copy()
-            res_0 = np.array(residuals.resi.getValues())
-            eps = 1.0e-6
-            for i_eq in range(neq):
-                if abs(self.phys_state.primal_step[i_eq]) < eps:
-                    self.phys_state.primal_step[i_eq] = -eps
-                    dd = eps
-                else:
-                    self.phys_state.primal_step[i_eq] *= 1 - eps
-                    dd = -self.phys_state.primal_step[i_eq] + primal_save[i_eq]
-                res_p = np.array(self.opers_manager.getResidual(scaling).resi.getValues())
-                jac[:, i_eq] = (res_p - res_0)[:] / dd
-                # return to initial value
-                self.phys_state.primal_step = primal_save.copy()
-            residuals = self.opers_manager.getResidual(scaling)
-            with np.printoptions(precision=3, suppress=False, linewidth=2000):
-                print("perturb_jac=", flush=True)
-                for row in range(0, neq):
-                    print(jac[row, :], flush=True)
-        # ---------------------------------------------------------------------
-
         # evaluate convergence
         convManager = self.get_feature(SOP.ConvergenceManager)
         resi_fields = convManager.evalNormResidual(residuals)
@@ -135,32 +104,16 @@ class IncrementalSolver(SolverFeature, EventSource):
             diriBCs = disc_comp.getIncrementalDirichletBC(
                 self.phys_state.time_curr, self.phys_state.primal_curr
             )
+            # import pdb
+
+            # pdb.set_trace()
 
             # Solve linear system
             linear_solver = self.get_feature(SOP.LinearSolver)
-            if USE_SCALING:
-                S = MatrixScaler.MatrixScaler()
-                S.computeScaling(jacobian, merge_dof=[["DX", "DY"], ["LAGS_C", "LAGS_F1"]])
-                S.scaleMatrix(jacobian)
-                S.scaleRHS(residuals.resi)
-            # ------------------------------------------------------------------------
-            if PERTURB_JAC:
-                A = jacobian.toNumpy()
-                neq = A.shape[0]
-                neql = range(0, neq // 2)
-                with np.printoptions(precision=3, suppress=False, linewidth=2000):
-                    print(f"residual=", np.asarray(residuals.resi.getValues())[neql], flush=True)
-                    print("pert_jac vs jac=", flush=True)
-                    for row in neql:
-                        print(jac[row, neql], flush=True)
-                        print(A[row, neql], flush=True)
-                        print("-" * 20)
-            # ------------------------------------------------------------------------
             if not jacobian.isFactorized():
                 linear_solver.factorize(jacobian, raiseException=True)
             primal_incr = linear_solver.solve(residuals.resi, diriBCs)
-            if USE_SCALING:
-                S.unscaleSolution(primal_incr)
+
             # Use line search
             lineSearch = self.get_feature(SOP.LineSearch)
             lineSearch.use(self.opers_manager)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,10 +57,10 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
     character(len=14) :: nume_ddl
     character(len=19) :: nomligrel, matr_elem, resu_elem, matr_asse, partition
     integer :: iconx1, iconx2, iel, iret, nnoe
-    integer :: igrel, numa, ino, n1, nddl1, rang, jrefa, jdesc
+    integer :: igrel, numa, ino, n1, n12, nddl1, rang, jrefa, jdesc
     integer :: nddlt, nel, nec, mode, nugd, imat, nbssa, iamail
-    integer :: nb_resu_elem, iresu, ilima, ilinu, nbproc
-    aster_logical :: l_dgrel, l_distme, l_matd
+    integer :: nb_resu_elem, iresu, ilima, ilinu, nbproc, ilinu_ref
+    aster_logical :: l_dgrel, l_distme, l_matd, lligrel_cp
     mpi_int :: mrank, msize
 !
     integer, pointer :: v_adne(:) => null()
@@ -69,9 +69,12 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
     integer, pointer :: v_prn1(:) => null()
     integer, pointer :: v_prn2(:) => null()
     integer, pointer :: sssa(:) => null()
+    integer, pointer :: v_refp(:) => null()
+    integer, pointer :: v_crco(:) => null()
     character(len=24), pointer :: v_relr(:) => null()
     character(len=24), pointer :: v_nomlig(:) => null()
     character(len=24), pointer :: v_prtk(:) => null()
+    character(len=24), pointer :: tco(:) => null()
 !
 !-----------------------------------------------------------------------
 !     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -170,6 +173,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 !
 ! --- Acces au NUME_EQUA
 !
+    call jeveuo(nume_ddl//'.NUME.REFP', 'L', vi=v_refp)
     if (l_matd) then
         call jeveuo(nume_ddl//'.NUML.PRNO', 'L', vi=v_prn1)
         call jeveuo(jexatr(nume_ddl//'.NUML.PRNO', 'LONCUM'), 'L', vi=v_prn2)
@@ -248,6 +252,13 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 
                         call jenonu(jexnom(matr_asse//'.LILI', nomligrel), ilima)
                         call jenonu(jexnom(nume_ddl//'.NUME.LILI', nomligrel), ilinu)
+                        ilinu_ref = v_refp(ilinu)
+                        call jeveuo(nomligrel//'._TCO', "L", vk24=tco)
+                        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+                        if (lligrel_cp) then
+                            call jeveuo(jexnum(nume_ddl//'.NUME.CRCO', ilinu), 'L', vi=v_crco)
+                        end if
+                        call jeexin(nomligrel//'.NTCM', iret)
 
                         call jeveuo(resu_elem//'.DESC', 'L', jdesc)
 !
@@ -291,6 +302,9 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 !
                                     if (numa .gt. 0) then
 ! --- MAILLE DU MAILLAGE
+                                        if (lligrel_cp) then
+                                            ASSERT(.false.)
+                                        end if
                                         do ino = 1, nnoe
                                             n1 = zzconx(numa, ino)
                                             nddl1 = zzprno(1, n1, 2)
@@ -302,13 +316,18 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
                                         do ino = 1, nnoe
 ! --- N1 : INDICE DU NOEUDS DS LE .NEMA DU LIGREL DE CHARGE GLOBAL OU LOCAL
                                             n1 = zznema(ilima, numa, ino)
+                                            if (lligrel_cp .and. n1 .lt. 0) then
+                                                n12 = -v_crco(-n1)
+                                            else
+                                                n12 = n1
+                                            end if
                                             if (n1 .lt. 0) then
 ! --- NOEUD TARDIF
-                                                n1 = -n1
-                                                nddl1 = zzprno(ilinu, n1, 2)
+                                                n1 = -n12
+                                                nddl1 = zzprno(ilinu_ref, n1, 2)
                                             else
 ! --- NOEUD PHYSIQUE
-                                                nddl1 = zzprno(1, n1, 2)
+                                                nddl1 = zzprno(1, n12, 2)
                                             end if
                                             nddlt = nddlt+nddl1
                                         end do

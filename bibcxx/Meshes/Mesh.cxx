@@ -3,7 +3,7 @@
  * @brief Implementation de Mesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -106,7 +106,7 @@ VectorLong Mesh::getCells( const std::string name ) const {
 VectorLong Mesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -129,7 +129,7 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINTEGER ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfNodes() - 1 ) );
+        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
     }
 
     std::vector< VectorLong > nodes;
@@ -183,8 +183,9 @@ VectorLong Mesh::getNodesFromCells( const VectorLong &cells, const bool,
 
     for ( auto &cellId : cells ) {
         const auto cell = connecExp[cellId];
-        for ( auto &node : cell )
+        for ( auto &node : cell ) {
             auto ret = nodes.insert( node );
+        }
     }
 
     CALL_JEDEMA();

@@ -3,7 +3,7 @@
  * @brief Implementation de
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -630,17 +630,64 @@ bool ConnectionMesh::hasGroupOfNodes( const std::string &name, const bool ) cons
 }
 
 VectorLong ConnectionMesh::getCells( const std::string name ) const {
+    return getCells( VectorString( { name } ) );
+};
 
-    if ( name.empty() ) {
-        return irange( ASTERINTEGER( 0 ), ASTERINTEGER( getNumberOfCells() - 1 ) );
-    } else if ( !hasGroupOfCells( name ) ) {
+VectorLong ConnectionMesh::getCells( const VectorString &names ) const {
+
+    if ( names.empty() ) {
+        return irange( long( 0 ), long( getNumberOfCells() - 1 ) );
+    }
+
+    std::vector< VectorLong > cells;
+    cells.reserve( names.size() );
+
+    for ( auto &name : names ) {
+        if ( hasGroupOfCells( name ) ) {
+            cells.push_back( ( *_groupsOfCells )[name]->toVector() );
+        }
+    }
+
+    auto all_cells = unique( concatenate( cells ) );
+    for ( auto &cell : all_cells ) {
+        cell -= 1;
+    }
+
+    return all_cells;
+}
+
+VectorLong ConnectionMesh::getNodesFromCells( const VectorLong &cells, const bool,
+                                              const ASTERINTEGER ) const {
+
+    if ( cells.empty() ) {
         return VectorLong();
     }
 
-    VectorLong cells = ( *_groupsOfCells )[name]->toVector();
-    for ( auto &cell : cells )
-        cell -= 1;
-    return cells;
+    CALL_JEMARQ();
+
+    const auto &connecExp = getConnectivityExplorer();
+
+    SetLong nodes;
+
+    for ( auto &cellId : cells ) {
+        const auto cell = connecExp[cellId];
+        for ( auto &node : cell ) {
+            auto ret = nodes.insert( node );
+        }
+    }
+
+    CALL_JEDEMA();
+    return VectorLong( nodes.begin(), nodes.end() );
+}
+
+VectorLong ConnectionMesh::getNodesFromCells( const VectorString &names, const bool,
+                                              const ASTERINTEGER ) const {
+    return getNodesFromCells( this->getCells( names ) );
+};
+
+VectorLong ConnectionMesh::getNodesFromCells( const std::string name, const bool,
+                                              const ASTERINTEGER ) const {
+    return getNodesFromCells( this->getCells( name ) );
 };
 
 #endif /* ASTER_HAVE_MPI */

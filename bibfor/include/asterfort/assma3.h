@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,8 @@ interface
                       jnulo1, jposd1, admodl,&
                       lcmodl, mode, nec, nmxcmp, ncmp,&
                       jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
-                      lgtmp2, jvalm, ilinu, ellagr, nbeltb, ti1, ti2)
+                      lgtmp2, jvalm, ilinu, ellagr, nbeltb, ti1, ti2, &
+                      v_crco, lcontact_par)
         aster_logical :: lmasym
         aster_logical :: lmesym
         character(len=2) :: tt
@@ -65,5 +66,7 @@ interface
         integer :: nbeltb
         integer :: ti1(*)
         integer :: ti2(*)
+        integer :: v_crco(*)
+        aster_logical :: lcontact_par
     end subroutine assma3
 end interface

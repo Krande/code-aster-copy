@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -16,7 +16,10 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "DataFields/FieldConverter.h"
+
+#include "ParallelUtilities/AsterMPI.h"
 
 FieldOnNodesReal toFieldOnNodes( const MeshCoordinatesField &field, const BaseMeshPtr mesh ) {
     FieldOnNodesReal chamno = FieldOnNodesReal();
@@ -67,4 +70,70 @@ FieldOnNodesReal getImaginaryPart( const FieldOnNodesReal &field ) {
     newField.setValues( 0. );
 
     return newField;
+};
+
+FieldOnNodesRealPtr transferToConnectionMesh( const FieldOnNodesRealPtr toTransfer,
+                                              const ConnectionMeshPtr cMesh ) {
+    auto sFON = toSimpleFieldOnNodes( toTransfer );
+    sFON->updateValuePointers();
+
+    const auto &comp = sFON->getComponents();
+    const auto rank = getMPIRank();
+    const auto nbProcs = getMPISize();
+    VectorString uniqueCmp;
+    std::map< std::string, int > namePosIn, namePosAll;
+    VectorLong indirection( comp.size(), 0. );
+    if ( nbProcs > 1 ) {
+        VectorString allComp;
+        for ( int i = 0; i < comp.size(); ++i )
+            namePosIn[comp[i]] = i;
+        AsterMPI::all_gather( comp, allComp );
+        SetString addedCmp;
+        for ( int i = 0; i < allComp.size(); ++i ) {
+            const auto &cmpName = allComp[i];
+            if ( addedCmp.count( cmpName ) == 0 ) {
+                uniqueCmp.push_back( cmpName );
+                namePosAll[cmpName] = uniqueCmp.size() - 1;
+            }
+            addedCmp.insert( cmpName );
+        }
+        for ( const auto &cmpName : comp ) {
+            const auto &pos1 = namePosIn[cmpName];
+            const auto &pos2 = namePosAll[cmpName];
+            indirection[pos1] = pos2;
+        }
+    } else {
+        throw std::runtime_error( "Must not be used in sequential" );
+    }
+
+    SimpleFieldOnNodesRealPtr rSFON = std::make_shared< SimpleFieldOnNodesReal >(
+        cMesh, sFON->getPhysicalQuantity(), uniqueCmp, true );
+    rSFON->updateValuePointers();
+
+    const auto &localNum = cMesh->getNodesLocalNumbering();
+    const auto &owners = cMesh->getNodesOwner();
+    const auto &nbNodes = localNum->size();
+    const auto &nbCmpIn = sFON->getNumberOfComponents();
+    for ( int iNode = 0; iNode < nbNodes; ++iNode ) {
+        const auto &curOwner = ( *owners )[iNode];
+        if ( curOwner == rank ) {
+            const auto &curPos = ( *localNum )[iNode] - 1;
+            for ( int j = 0; j < nbCmpIn; ++j ) {
+                const auto &cmpOut = indirection[j];
+                ( *rSFON )( iNode, cmpOut ) = ( *sFON )( curPos, j );
+            }
+        }
+    }
+
+    const auto &values = rSFON->getValues();
+    JeveuxVectorReal res( "&&TMP", values->size() );
+    AsterMPI::all_reduce( values, res, MPI_SUM );
+
+    const auto &nbCmpOut = rSFON->getNumberOfComponents();
+    for ( int iNode = 0; iNode < nbNodes; ++iNode ) {
+        for ( int j = 0; j < nbCmpOut; ++j ) {
+            ( *rSFON )( iNode, j ) = ( *res )[iNode * nbCmpOut + j];
+        }
+    }
+    return toFieldOnNodes( rSFON );
 };

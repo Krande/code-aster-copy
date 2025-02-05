@@ -5,7 +5,7 @@
  * @file ContactZone.h
  * @brief Header of class ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,14 +55,11 @@ class ContactZone : public DataStructure {
   public:
     using ContactZonePtr = std::shared_ptr< ContactZone >;
 
-    /** @brief No default constructor */
-    ContactZone() = delete;
-
     /** @brief Constructor with given name */
-    ContactZone( const std::string name, const ModelPtr model );
+    ContactZone( const std::string name );
 
     /** @brief Constructor with automatic name */
-    ContactZone( const ModelPtr model ) : ContactZone( ResultNaming::getNewResultName(), model ) {};
+    ContactZone() : ContactZone( ResultNaming::getNewResultName() ) {};
 
     /** @brief Get model */
     ModelPtr getModel() const { return _model; }
@@ -146,10 +143,10 @@ class ContactZone : public DataStructure {
         _meshPairing->setCoordinates( coor );
     };
 
-    /** @brief Update coordinates */
-    void updateCoordinates( const FieldOnNodesRealPtr &disp ) {
-        _meshPairing->updateCoordinates( disp );
-    };
+    //     /** @brief Update coordinates */
+    //     void updateCoordinates( const FieldOnNodesRealPtr &disp ) {
+    //         _meshPairing->updateCoordinates( disp );
+    //     };
 
     /** @brief Set/unset friction for this zone */
     void enableFriction( const bool &friction ) { _fricParam->enableFriction( friction ); };
@@ -170,7 +167,15 @@ class ContactZone : public DataStructure {
     MeshPairingPtr getMeshPairing() { return _meshPairing; };
 
     /** @brief Builder from Fortran part */
-    bool build();
+    bool build( const ModelPtr model );
+
+    const std::string &getSlaveGroupOfCells() const {
+        return _meshPairing->getSlaveGroupOfCells();
+    };
+
+    const std::string &getMasterGroupOfCells() const {
+        return _meshPairing->getMasterGroupOfCells();
+    };
 };
 
 using ContactZonePtr = std::shared_ptr< ContactZone >;
