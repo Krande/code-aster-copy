@@ -229,7 +229,7 @@ sonarqube:
         -Dsonar.python.file.suffixes=py,comm,com0,com1,com2
         -Dsonar.issue.ignore.multicriteria=f1
         -Dsonar.issue.ignore.multicriteria.f1=ruleKey=f90-rules:F90.DESIGN.Include
-        -Dsonar.issue.ignore.multicriteria.e1.resourceKey="**/*.F90"
+        -Dsonar.issue.ignore.multicriteria.f1.resourceKey="**/*.F90"
   variables:
     SQ_SERVER: "https://sonar.pleiade.edf.fr:443"
   allow_failure: true
