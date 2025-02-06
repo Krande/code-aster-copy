@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -38,6 +38,11 @@ void DEFSSSS( ALCART, alcart, const char *, STRING_SIZE, const char *, STRING_SI
 #define CALLO_CELCES_WRAP( a, b, c ) CALLOOO( CELCES_WRAP, celces_wrap, a, b, c )
 void DEFSSS( CELCES_WRAP, celces_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );
+
+#define CALL_CARCES( a, b, c, d, e, f, g ) CALLOOOOOOP( CARCES, carces, a, b, c, d, e, f, g )
+void DEFSSSSSSP( CARCES, carces, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                 STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                 STRING_SIZE, ASTERINTEGER * );
 
 #define CALLO_CESCEL_WRAP( a, b, c, d, e, f, g, h, i, j )                                          \
     CALLOOOOOPOOOP( CESCEL_WRAP, cescel_wrap, a, b, c, d, e, f, g, h, i, j )

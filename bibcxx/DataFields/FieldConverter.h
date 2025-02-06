@@ -154,20 +154,26 @@ toSimpleFieldOnNodes( const std::shared_ptr< SimpleFieldOnCells< ValueType > > f
 ////// Convert to SimpleFieldOnCells ////////////
 template < typename ValueType >
 std::shared_ptr< SimpleFieldOnCells< ValueType > >
-toSimpleFieldOnCells( const std::shared_ptr< ConstantFieldOnCells< ValueType > > field ) {
-    auto chs = std::make_shared< SimpleFieldOnCells< ValueType > >( field->getMesh() );
+toSimpleFieldOnCells( const ConstantFieldOnCells< ValueType > &field ) {
+    auto chs = std::make_shared< SimpleFieldOnCells< ValueType > >( field.getMesh() );
 
     // Convert to CHAM_ELEM_S
     const std::string base = "G", kstop = "A", loc = "ELEM";
     ASTERINTEGER iret = 0;
     std::string cesmod = " ";
 
-    CALLO_CARCES( field->getName(), loc, cesmod, base, chs->getName(), kstop, &iret );
+    CALL_CARCES( field.getName(), loc, cesmod, base, chs->getName(), kstop, &iret );
 
     AS_ASSERT( iret == 0 );
 
     chs->build();
     return chs;
+}
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnCells< ValueType > >
+toSimpleFieldOnCells( const std::shared_ptr< ConstantFieldOnCells< ValueType > > field ) {
+    return toSimpleFieldOnCells( *field );
 }
 
 template < typename ValueType >

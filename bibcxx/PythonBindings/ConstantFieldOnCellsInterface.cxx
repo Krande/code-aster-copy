@@ -3,7 +3,7 @@
  * @brief Interface python de ConstantFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,6 +27,7 @@
 
 #include "aster_pybind.h"
 
+#include "DataFields/FieldConverter.h"
 #include "PythonBindings/DataFieldInterface.h"
 #include "PythonBindings/DataStructureInterface.h"
 
@@ -62,7 +63,15 @@ void exportConstantFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 list[float]: List of values
         )" )
-        .def( "setValueOnCells", &ConstantFieldOnCellsReal::setValueOnCells );
+        .def( "setValueOnCells", &ConstantFieldOnCellsReal::setValueOnCells )
+        .def( "toSimpleFieldOnCells",
+              []( const ConstantFieldOnCellsReal &f ) { return toSimpleFieldOnCells( f ); },
+              R"(
+Convert to SimpleFieldOnCells
+
+Returns:
+    SimpleFieldOnCellsReal: field converted
+        )" );
 
     py::class_< ConstantFieldOnCellsChar16, ConstantFieldOnCellsChar16Ptr, DataField >(
         mod, "ConstantFieldOnCellsChar16" )
