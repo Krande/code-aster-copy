@@ -75,12 +75,8 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
-        contact_manager = self.get_feature(SOP.Contact, optional=True)
-
-        matr_elem_cont = disc_comp.getContactTangentMatrix(self.phys_state, contact_manager)
-
+        matr_elem_cont = disc_comp.getContactTangentMatrix(self.phys_state, self.contact)
         matr_elem_ext = disc_comp.getExternalTangentMatrix(self.phys_state)
-
         self.phys_state.swap(temp_phys_state)
 
         # Assemble stiffness matrix

@@ -30,7 +30,6 @@ class BaseOperatorsManager(SolverFeature, ContextMixin, ProblemTypeMixin):
 
     provide = SOP.OperatorsManager
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
-    optional_features = [SOP.Contact]
 
     problem_type = None
     _first_jacobian = _lagr_scaling = None
@@ -93,13 +92,10 @@ class BaseOperatorsManager(SolverFeature, ContextMixin, ProblemTypeMixin):
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """
-        # FIXME: pass contact_manager in args from incr_solv
         disc_comp = DiscreteComputation(self.phys_pb)
-        contact_manager = self.get_feature(SOP.Contact, optional=True)
-
         return disc_comp.getResidual(
             self.phys_state,
-            contact_manager=contact_manager,
+            contact_manager=self.contact,
             scaling=scaling,
             tmp_internVar=tmp_internVar,
         )
@@ -116,12 +112,10 @@ class BaseOperatorsManager(SolverFeature, ContextMixin, ProblemTypeMixin):
             AssemblyMatrixDisplacementReal: Jacobian matrix.
         """
         disc_comp = DiscreteComputation(self.phys_pb)
-        contact_manager = self.get_feature(SOP.Contact, optional=True)
-
         return disc_comp.getTangentMatrix(
             self.phys_state,
             matrix_type=matrix_type,
-            contact_manager=contact_manager,
+            contact_manager=self.contact,
             assemble=True,
             tmp_internVar=tmp_internVar,
         )

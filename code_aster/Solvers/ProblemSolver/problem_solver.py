@@ -501,10 +501,6 @@ class ProblemSolver(SolverFeature, ContextMixin):
         self.use(line)
         return self.get_feature(SOP.LineSearch)
 
-    def _get_contact_manager(self):
-        logger.debug("+++ get ContactManager")
-        return self.get_feature(SOP.Contact, optional=True)
-
     def _get_conv_manager(self):
         logger.debug("+++ get ConvergenceManager")
         converg = self.get_feature(SOP.ConvergenceManager, optional=True)

@@ -21,7 +21,7 @@
 Base objects used to solve generic non linear problems.
 """
 
-from ...Utilities import no_new_attributes
+from ...Utilities import no_new_attributes, logger
 
 
 class ContextMixin:
@@ -111,6 +111,7 @@ class ContextMixin:
     @property
     def contact(self):
         """ContactManager: Objects to solve contact conditions"""
+        logger.debug("CTXT: ctxt.contact: %s", self._ctxt._contact)
         return self._ctxt._contact
 
     @contact.setter

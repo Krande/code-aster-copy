@@ -14,6 +14,7 @@ digraph MNL {
         type [label = "ProblemType";shape = "ellipse";];
         state [label = "PhysicalState";shape = "ellipse";];
         result [label = "Result";shape = "ellipse";];
+        contact [label = "Contact";];
         context [label = "Context";shape = "circle";];
         
         context -> problem;
@@ -21,6 +22,7 @@ digraph MNL {
         context -> keywords;
         context -> state;
         context -> result;
+        context -> contact;
         context -> operators [lhead = cluster_operators;];
     }
     
@@ -34,7 +36,6 @@ digraph MNL {
     linsolv [label = "LinearSolver";];
     linesearch [label = "LineSearch";];
     conv_manager [label = "ConvergenceManager";];
-    contact [label = "Contact";];
     hook [label = "PostStepHook";];
     incr_solv [label = "IncrementalSolver";];
     
@@ -135,7 +136,7 @@ digraph MNL {
     newton -> incr_solv;
     newton -> conv_manager;
     incr_solv -> linesearch;
-    incr_solv -> contact;
+    incr_solv -> contact_old;
     incr_solv -> operators [lhead = cluster_operators;];
     incr_solv -> linsolv;
     incr_solv -> conv_manager;
@@ -146,12 +147,10 @@ digraph MNL {
     linesearch -> state_old [style = "dotted";];
     linesearch -> operators [lhead = cluster_operators;];
     
-    // operators -> contact (to be passed by incr_solv)
     operators -> dispatch [xlabel = "factory"; dir = "back"; arrowtail = "empty";];
     operators -> problem_old [style = "dotted";];
     operators -> state_old [style = "dotted";];
     
-    contact -> problem_old [style = "dotted";];
     conv_manager -> problem_old [style = "dotted";];
     conv_manager -> state_old [style = "dotted";];
     snes -> problem_old [style = "dotted";];
