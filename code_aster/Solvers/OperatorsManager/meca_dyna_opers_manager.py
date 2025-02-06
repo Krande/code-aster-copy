@@ -17,16 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .base_opers_manager import BaseOperatorsManager
 from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import IntegrationError
+from ..Basics import ProblemType as PBT
+from .base_opers_manager import BaseOperatorsManager
 
-from ..Basics import SolverOptions as SOP, ProblemType as PBT
 
-
-# FIXME: ABC
 class MecaDynaOperatorsManager(BaseOperatorsManager):
-    """Solve an iteration."""
+    """Base object that provides operators to solve a dynamics problem."""
 
     problem_type = PBT.MecaDyna
     _mass = _elem_mass = None

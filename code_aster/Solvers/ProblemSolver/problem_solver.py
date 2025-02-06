@@ -80,13 +80,14 @@ class ProblemSolver(SolverFeature, ContextMixin):
     step_rank = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, phys_pb, problem_type, result) -> None:
+    def __init__(self, phys_pb, problem_type, result, keywords) -> None:
         super().__init__()
         self.problem = phys_pb
         self.problem_type = problem_type
         self.result = result
+        self.keywords = keywords
         self.state = PhysicalState(problem_type, size=1)
-        self.oper = BaseOperatorsManager.create_for(self.problem_type)
+        self.oper = BaseOperatorsManager.factory(self.problem_type, self.keywords)
         self.oper.useProblemContext(self)
         self.step_rank = None
         self.current_matrix = None
@@ -133,15 +134,15 @@ class ProblemSolver(SolverFeature, ContextMixin):
         if self._step_solver:
             return self._step_solver
         logger.debug("+++ init StepSolver")
-        step_solver = BaseStepSolver.create_for(self.problem_type)
-        step_solver.setParameters(self.keywords)
+        self._step_solver = solv = BaseStepSolver.factory(self.problem_type, self.keywords)
+        solv.useProblemContext(self)
+        solv.setParameters(self.keywords)
         # FIXME: todo
-        for feat, required in step_solver.undefined():
-            step_solver.use(self._getF(feat, required))
-        self.use(step_solver)
-        step_solver.setup()
-        self._step_solver = step_solver
-        return self._step_solver
+        for feat, required in solv.undefined():
+            solv.use(self._getF(feat, required))
+        self.use(solv)
+        solv.setup()
+        return solv
 
     def isFinished(self):
         """Tell if there are steps to be computed.

@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 from enum import IntFlag, auto
+from inspect import isabstract
 
 
 class ProblemType(IntFlag):
@@ -33,12 +34,22 @@ class ProblemTypeMixin:
     """Mixin class that provides a factory depending on the type of physical problem."""
 
     @classmethod
-    def create_for(cls, problem_type):
-        """Factory that creates the appropriate object."""
+    def factory(cls, problem_type, keywords):
+        """Factory that creates the appropriate object.
+
+        Args:
+            problem_type (ProblemType): Type of physical problem.
+            keywords (dict): Part of user keywords.
+
+        Returns:
+            instance: A new object of the relevant type.
+        """
         for kls in cls.__subclasses__():
             if kls.problem_type == problem_type:
+                if isabstract(kls):
+                    return kls.factory(problem_type, keywords)
                 return kls()
-        raise TypeError(f"not found: {problem_type.name}")
+        raise TypeError(f"unsupported type: {problem_type.name}")
 
 
 class ProblemDispatcher:

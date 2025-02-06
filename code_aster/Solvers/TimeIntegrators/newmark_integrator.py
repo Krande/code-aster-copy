@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,33 +17,37 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .base_integrator import BaseIntegrator, IntegrationType, IntegratorName
 from ...Utilities import no_new_attributes
+from ..Basics import ProblemType as PBT
+from .base_integrator import BaseIntegrator, TimeScheme, IntegratorType
 
 
 class NewmarkIntegrator(BaseIntegrator):
     """Implementation of Newmark's scheme."""
 
-    integration_type = IntegrationType.Implicit
-    integrator_name = IntegratorName.Newmark
+    integration_type = TimeScheme.Implicit
+    integrator_name = IntegratorType.Newmark
 
     _gamma = _beta = _J = None
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
-    def create(cls, schema):
-        """Setup a time integrator for the given problem.
+    def factory(cls, problem_type, keywords):
+        """Factory that creates the appropriate object.
 
-        Arguments:
-            schema (dict) : *SCHEMA_TEMPS* keyword.
+        Args:
+            problem_type (ProblemType): Type of physical problem.
+            keywords (dict): Part of user keywords.
 
         Returns:
             *NewmarkIntegrator*: A *NewmarkIntegrator* object.
         """
-        return cls(gamma=schema["GAMMA"], beta=schema["BETA"])
+        assert problem_type == PBT.MecaDyna, f"unsupported type: {problem_type}"
+        factkw = keywords["SCHEMA_TEMPS"]
+        return cls(gamma=factkw["GAMMA"], beta=factkw["BETA"])
 
-    def __init__(self, gamma=None, beta=None):
+    def __init__(self, gamma, beta):
         super().__init__()
         self._gamma = gamma
         self._beta = beta

@@ -23,13 +23,13 @@ from ...Utilities import profile
 
 from ..Basics import SolverOptions as SOP
 from .meca_dyna_step_solver import MecaDynaStepSolver
-from ..TimeIntegrators import IntegrationType
+from ..TimeIntegrators import TimeScheme
 
 
 class ImplicitStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
-    integration_type = IntegrationType.Implicit
+    integration_type = TimeScheme.Implicit
 
     @classmethod
     def create(cls, integrator, param):

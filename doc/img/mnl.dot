@@ -2,7 +2,7 @@ digraph MNL {
     compound = "true";
     // global: circle, dotted
     // mixin: note, dashed
-    // abstract: '*', dashed
+    // abstract: ' {abstr}', dashed
     labelloc = "t";
     fontname = "Helvetica,Arial,sans-serif";
     node [fontname = "Helvetica,Arial,sans-serif"; shape = "box";];
@@ -15,6 +15,7 @@ digraph MNL {
         state [label = "PhysicalState";shape = "ellipse";];
         result [label = "Result";shape = "ellipse";];
         contact [label = "Contact";];
+        linsolv [label = "LinearSolver";];
         context [label = "Context";shape = "circle";];
         
         context -> problem;
@@ -22,8 +23,9 @@ digraph MNL {
         context -> keywords;
         context -> state;
         context -> result;
-        context -> contact;
         context -> operators [lhead = cluster_operators;];
+        context -> contact;
+        context -> linsolv;
     }
     
     problem_old [label = "PhysicalProblem";shape = "ellipse";];
@@ -33,7 +35,6 @@ digraph MNL {
     pbsolv [label = "ProblemSolver";];
     timestepper [label = "TimeStepper";];
     storage [label = "StorageManager";];
-    linsolv [label = "LinearSolver";];
     linesearch [label = "LineSearch";];
     conv_manager [label = "ConvergenceManager";];
     hook [label = "PostStepHook";];
@@ -44,17 +45,17 @@ digraph MNL {
     dispatch [label = "ProblemTypeMixin";style = "dashed";shape = "note";];
     
     subgraph cluster_operators {
-        operators [label = "Operators*";style = "dashed";];
+        operators [label = "Operators {abstr}";style = "dashed";];
         style = "dashed";
         subgraph {
             rank = "same";
             statopers [label = "MecaStatOperators";];
             theropers [label = "ThermalOperators";];
-            dynopers [label = "MecaDynaOperators*";style = "dashed";];
+            dynopers [label = "MecaDynaOperators {abstr}";style = "dashed";];
         }
         integr [label = BaseIntegrator;];
         newmark [label = NewmarkIntegrator;];
-        context_op [label = "Context";style = "dotted";shape = "circle";];
+        context_op [label = "*Context";style = "dotted";shape = "circle";];
         
         operators -> context_op [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
         // subclasses
@@ -75,11 +76,13 @@ digraph MNL {
             mecadyn [label = "MecaDynaStepSolver";];
             ther [label = "ThermalStepSolver";];
         }
-        stepsolv [label = "BaseStepSolver*";style = "dashed";];
+        stepsolv [label = "BaseStepSolver {abstr}";style = "dashed";];
         // subclasses
         stepsolv -> mecastat [dir = "back"; arrowtail = "empty";];
         stepsolv -> mecadyn [dir = "back"; arrowtail = "empty";];
         stepsolv -> ther [dir = "back"; arrowtail = "empty";];
+        context_st [label = "*Context";style = "dotted";shape = "circle";];
+        stepsolv -> context_st [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
         
         implicit [label = "ImplicitStepSolver";];
         explicit [label = "ExplicitStepSolver";];
@@ -99,7 +102,7 @@ digraph MNL {
         label = ConvergenceCriteria;
         style = "dashed";
         
-        conv_criteria [label = "IterationsSolver*";style = "dashed";];
+        conv_criteria [label = "IterationsSolver {abstr}";style = "dashed";];
         // [style = invis]
         newton [label = "NewtonSolver";];
         snes [label = "SNESSolver";];

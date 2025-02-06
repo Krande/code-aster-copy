@@ -17,19 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Objects import DiscreteComputation
-from ...Utilities import profile, no_new_attributes
-from ..Basics import ProblemTypeMixin, SolverFeature, ContextMixin
-from ..Basics import SolverOptions as SOP
 from abc import ABC, abstractmethod
 
+from ...Objects import DiscreteComputation
+from ...Utilities import no_new_attributes, profile
+from ..Basics import ContextMixin, ProblemTypeMixin, SolverFeature
 
-# FIXME: add ABC after removing SolverFeature
-class BaseOperatorsManager(SolverFeature, ContextMixin, ProblemTypeMixin):
+
+class BaseOperatorsManager(ABC, ContextMixin, ProblemTypeMixin):
     """Base object that provides operators to solve the problem."""
-
-    provide = SOP.OperatorsManager
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 
     problem_type = None
     _first_jacobian = _lagr_scaling = None

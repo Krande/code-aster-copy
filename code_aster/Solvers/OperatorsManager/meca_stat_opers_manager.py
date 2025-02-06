@@ -17,8 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .base_opers_manager import BaseOperatorsManager
 from ..Basics import ProblemType as PBT
+from .base_opers_manager import BaseOperatorsManager
 
 
 class MecaStatOperatorsManager(BaseOperatorsManager):
@@ -72,3 +72,7 @@ class MecaStatOperatorsManager(BaseOperatorsManager):
             jacobian = super().getStiffnessJacobian(matrix_type, tmp_internVar=self._tmp_internVar)
             self._lagr_scaling = jacobian.getLagrangeScaling()
         return jacobian
+
+    def setup(self):
+        """Set up the operators."""
+        # nothing to do

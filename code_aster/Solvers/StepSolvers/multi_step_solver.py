@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..TimeIntegrators import IntegrationType, BaseIntegrator
+from ..TimeIntegrators import TimeScheme, BaseIntegrator
 from .meca_dyna_step_solver import MecaDynaStepSolver
 from math import sqrt
 
@@ -25,7 +25,7 @@ from math import sqrt
 class MultiStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
-    integration_type = IntegrationType.Multiple
+    integration_type = TimeScheme.Multiple
 
     @classmethod
     def create(cls, step_solvers, param):

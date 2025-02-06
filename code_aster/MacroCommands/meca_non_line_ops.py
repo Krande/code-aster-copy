@@ -134,10 +134,9 @@ def meca_non_line_ops(self, **args):
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
 
     # Create the problem solver
-    solver = ProblemSolver(phys_pb, problem_type, result)
+    solver = ProblemSolver(phys_pb, problem_type, result, param)
     solver.use(phys_pb)
 
-    solver.keywords = param
     solver.setKeywords(**param)
 
     # Add loads

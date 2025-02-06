@@ -17,29 +17,29 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from enum import IntFlag, auto
 
-from ..Basics import SolverOptions as SOP
 from ..OperatorsManager import MecaDynaOperatorsManager
+from ..Basics import ProblemType as PBT
 
 
-class IntegrationType:
-    """Time integrators types."""
+class TimeScheme(IntFlag):
+    """Time integrator schemes."""
 
-    Unset = 0x00
-    Implicit = 0x01
-    Explicit = 0x02
-    Multiple = 0x04
-
-
-class IntegratorName:
-    """Time integrators names."""
-
-    Unset = 0x00
-    Newmark = 0x01
+    Unset = auto()
+    Implicit = auto()
+    Explicit = auto()
+    Multiple = auto()
 
 
-# FIXME: add ABC after removing SolverFeature
+class IntegratorType(IntFlag):
+    """Types of time integrators."""
+
+    Unset = auto()
+    Newmark = auto()
+
+
 class BaseIntegrator(MecaDynaOperatorsManager):
     """
     Integrator for systems like : M ddX = Fext - Fc(dX) - Fk(X) = funForce(X, dX)
@@ -51,27 +51,27 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         df : Jacobian matrix of f
     """
 
-    provide = SOP.TimeIntegrator | MecaDynaOperatorsManager.provide
-
-    integration_type = IntegrationType.Unset
-    integrator_name = IntegratorName.Unset
+    integration_type = TimeScheme.Unset
+    integrator_name = IntegratorType.Unset
 
     _init_state = _set_up = None
 
     @classmethod
-    def create(cls, name, schema):
-        """Setup a solver for the given problem.
+    def factory(cls, problem_type, keywords):
+        """Factory that creates the appropriate object.
 
-        Arguments:
-            name : integrator name.
-            schema (dict) : *SCHEMA_TEMPS* keyword.
+        Args:
+            problem_type (ProblemType): Type of physical problem.
+            keywords (dict): Part of user keywords.
 
         Returns:
             *BaseIntegrator*: A relevant *BaseIntegrator* object.
         """
+        assert problem_type == PBT.MecaDyna, f"unsupported type: {problem_type}"
+        integr = keywords["SCHEMA_TEMPS"]["SCHEMA"].capitalize()
         for klass in cls.__subclasses__():
-            if klass.integrator_name == name:
-                return klass.create(schema)
+            if klass.integrator_name.name == integr:
+                return klass.factory(problem_type, keywords)
 
     def __init__(self):
         super().__init__()
@@ -145,10 +145,9 @@ class BaseIntegrator(MecaDynaOperatorsManager):
     def computeAcceleration(self):
         """Computes the acceleration."""
         force = self.getFunctional(self.t0, self.dt, self.U, self.dU, self.d2U).resi
-        linear_solver = self.get_feature(SOP.LinearSolver)
         if not self._mass.isFactorized():
-            linear_solver.factorize(self._mass)
-        self.phys_state.current.d2U = linear_solver.solve(force)
+            self.linear_solver.factorize(self._mass)
+        self.phys_state.current.d2U = self.linear_solver.solve(force)
 
     @property
     def U0(self):

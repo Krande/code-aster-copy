@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 
 from ..Basics import SolverOptions as SOP
 from .meca_dyna_step_solver import MecaDynaStepSolver
-from ..TimeIntegrators import IntegrationType
+from ..TimeIntegrators import TimeScheme
 
 
 class ExplicitStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
-    integration_type = IntegrationType.Explicit
+    integration_type = TimeScheme.Explicit
 
     @classmethod
     def create(cls, integrator, param):

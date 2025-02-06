@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from .base_step_solver import BaseStepSolver
-from ..TimeIntegrators import IntegrationType, IntegratorName, BaseIntegrator
+from ..TimeIntegrators import TimeScheme, IntegratorType, BaseIntegrator
 from ..Basics import ProblemType
 
 
@@ -26,7 +26,7 @@ class MecaDynaStepSolver(BaseStepSolver):
     """Solves a step, loops on iterations."""
 
     problem_type = ProblemType.MecaDyna
-    integration_type = IntegrationType.Unset
+    integration_type = TimeScheme.Unset
 
     @classmethod
     def create(cls, param=None):
@@ -58,7 +58,7 @@ class MecaDynaStepSolver(BaseStepSolver):
 
         if len(solvers_list) > 1:
             for klass in cls.__subclasses__():
-                if klass.integration_type == IntegrationType.Multiple:
+                if klass.integration_type == TimeScheme.Multiple:
                     solver = klass.create(solvers_list, param)
         else:
             solver = solvers_list[0]
@@ -115,10 +115,10 @@ class MecaDynaStepSolver(BaseStepSolver):
             schema (dict) : *SCHEMA_TEMPS* keyword.
 
         Returns:
-            List[IntegratorName]: list of integrator names.
+            List[IntegratorType]: list of integrator names.
         """
         assert schema["SCHEMA"] == "NEWMARK", schema["SCHEMA"]
-        integrator_name = IntegratorName.Newmark
+        integrator_name = IntegratorType.Newmark
         return [integrator_name]
 
     def setup(self):
