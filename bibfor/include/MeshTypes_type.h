@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 
 ! Total number of cell types
@@ -56,3 +55,5 @@
 #define MT_HEXA27  27
 #define MT_HEXA9   70
 #define MT_PENTA7  71
+! Maximum number of nodes on linear cells
+#define MT_MAX_NBNODE_LINE  8

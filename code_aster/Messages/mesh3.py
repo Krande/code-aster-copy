@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,12 @@ cata_msg = {
     7: _("""La maille %(k1)s a été réorientée."""),
     8: _("""La maille %(k1)s est orientée."""),
     9: _("""La maille %(k1)s sert à orienter un nouveau groupe connexe."""),
+    10: _(
+        """Le type de maille %(k1)s n'est actuellement pas traité pour calculer la longueur des aretes. Les aretes sur cette mailles sont toutes supposées nulles, ce qui peut engendrer des effets de bord sur les commandes utilisant ce critère."""
+    ),
+    11: _("""Le groupe de mailles %(k1)s n'existe pas dans le maillage."""),
+    12: _("""Il ne semble y avoir aucun groupe de mailles dans le maillage."""),
+    13: _("""Le groupe de mailles %(k1)s est vide."""),
     92: _(
         """L'option ne traite que les mailles linéiques Or, des mailles surfaciques ont été fournies."""
     ),

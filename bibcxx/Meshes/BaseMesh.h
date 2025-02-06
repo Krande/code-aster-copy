@@ -36,8 +36,8 @@
 /** @brief Forward declaration of ConstantFieldOnCells */
 template < class ValueType >
 class ConstantFieldOnCells;
-typedef ConstantFieldOnCells< ASTERDOUBLE > ConstantFieldOnCellsReal;
-typedef std::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
+using ConstantFieldOnCellsReal = ConstantFieldOnCells< ASTERDOUBLE >;
+using ConstantFieldOnCellsRealPtr = std::shared_ptr< ConstantFieldOnCellsReal >;
 
 /**
  * @class BaseMesh
@@ -49,12 +49,12 @@ class BaseMesh : public DataStructure, public ListOfTables {
     static unsigned long int _node_idx;
 
   public:
-    typedef MeshExplorer< CellsIteratorFromConnectivity, const JeveuxContiguousCollectionLong &,
-                          const JeveuxVectorLong & >
-        ConnectivityMeshExplorer;
+    using ConnectivityMeshExplorer =
+        MeshExplorer< CellsIteratorFromConnectivity, const JeveuxContiguousCollectionLong &,
+                      const JeveuxVectorLong & >;
 
   protected:
-    typedef JeveuxCollection< ASTERINTEGER, NamesMapChar24 > JeveuxCollectionLongNamePtr;
+    using JeveuxCollectionLongNamePtr = JeveuxCollection< ASTERINTEGER, NamesMapChar24 >;
     /** @brief Objet Jeveux '.DIME' */
     JeveuxVectorLong _dimensionInformations;
     /** @brief Champ aux noeuds '.COORDO' */
@@ -110,11 +110,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
                        const int verbosity );
 
   public:
-    /**
-     * @typedef BaseMeshPtr
-     * @brief Pointeur intelligent vers un BaseMesh
-     */
-    typedef std::shared_ptr< BaseMesh > BaseMeshPtr;
+    using BaseMeshPtr = std::shared_ptr< BaseMesh >;
 
     virtual void addFamily( int id, VectorString groups ) {};
 
@@ -469,13 +465,11 @@ class BaseMesh : public DataStructure, public ListOfTables {
     void show( const int verbosity = 1 ) const;
 
     void check( const ASTERDOUBLE tolerance );
+
+    std::pair< ASTERDOUBLE, ASTERDOUBLE > getMinMaxEdgeSizes( const std::string cellGroupName );
 };
 
-/**
- * @typedef BaseMeshPtr
- * @brief Pointeur intelligent vers un BaseMesh
- */
-typedef std::shared_ptr< BaseMesh > BaseMeshPtr;
+using BaseMeshPtr = std::shared_ptr< BaseMesh >;
 
 /**
  * @brief Helper function to automatically name nodes and cells

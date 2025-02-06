@@ -24,17 +24,20 @@ DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
 # --------------------------------------------------------------------
 
 
-MA = LIRE_MAILLAGE(FORMAT="MED")
+mesh = LIRE_MAILLAGE(FORMAT="MED")
 
-MA = MODI_MAILLAGE(
-    reuse=MA,
-    MAILLAGE=MA,
+mesh = MODI_MAILLAGE(
+    reuse=mesh,
+    MAILLAGE=mesh,
     ORIE_PEAU=_F(
         GROUP_MA_PEAU=("BOTTOM_T", "SPH_B_B", "SPH_B_T", "SPH_T_B", "SPH_T_T", "TOP_B", "ENCAST")
     ),
 )
 
-MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(GROUP_MA="ENCAST"))
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_NO=_F(GROUP_MA="ENCAST"))
+
+
+edges = mesh.getMinMaxEdgeSizes("TOUT")
 
 #
 # --------------------------------------------------------------------
@@ -44,7 +47,7 @@ MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(GROUP_MA="ENCAST"))
 
 MAT = DEFI_MATERIAU(ELAS=_F(E=200000, NU=0.3))
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 #
 # --------------------------------------------------------------------
@@ -52,7 +55,9 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 # --------------------------------------------------------------------
 #
 
-MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA=("TOUT",), PHENOMENE="MECANIQUE", MODELISATION="3D"))
+MO = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(GROUP_MA=("TOUT",), PHENOMENE="MECANIQUE", MODELISATION="3D")
+)
 
 #
 # --------------------------------------------------------------------
@@ -84,6 +89,7 @@ DEPL = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(GROUP_MA="DEPLA", DZ=-2))
 #                           SUPPRESSION DES MOUVEMENTS DE CORPS RIGIDE
 # --------------------------------------------------------------------
 #
+
 
 CONT = DEFI_CONTACT(
     MODELE=MO,

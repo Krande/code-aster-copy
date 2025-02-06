@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine cargeo(meshZ)
-        character(len=*), intent(in) :: meshZ
-    end subroutine cargeo
+    subroutine minMaxEdgesWrap(meshZ, groupNameZ, edgeMin, edgeMax)
+        character(len=*), intent(in) :: meshZ, groupNameZ
+        real(kind=8), intent(out) :: edgeMin, edgeMax
+    end subroutine minMaxEdgesWrap
 end interface

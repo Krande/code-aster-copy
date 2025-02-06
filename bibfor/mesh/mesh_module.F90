@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
 module mesh_module
 ! ==================================================================================================
@@ -25,17 +26,20 @@ module mesh_module
     public :: checkNormalOnSkinCell, checkInclude, getCellOptionForName, createNameOfCell
     public :: getNodeOptionForName, createNameOfNode, getGroupsFromCell, getMeshDimension
     public :: getFirstNodeFromNodeGroup, getListOfCellGroup, checkCellsAreSkin
+    public :: compMinMaxEdges
+    public :: getCellsFromGroup
 ! ==================================================================================================
     private
+#include "asterc/r8gaem.h"
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "MeshTypes_type.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -48,12 +52,15 @@ module mesh_module
 #include "asterfort/lxlgut.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
+#include "asterfort/rminsp.h"
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "blas/ddot.h"
 #include "asterfort/int_to_char8.h"
 #include "asterfort/char8_to_int.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -931,6 +938,262 @@ contains
 !
         if (onlySkin1D .and. hasSkin2D) then
             call utmess('F', 'MESH3_92')
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compMinMaxEdges
+!
+! Compute min and max edges on all cells in mesh (default) or only in a list of cells in mesh
+!
+! In  mesh             : mesh
+! Out edgeMin          : length of smallest edge
+! Out edgeMax          : length of greatest edge
+! In  nbCell           : number of cells where to compute ()
+! Ptr listCellNume     : pointer to index of cells where to compute ()
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine compMinMaxEdges(meshZ, edgeMin, edgeMax, &
+                               nbCell_, listCellNume_)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ
+        real(kind=8), intent(out) :: edgeMin, edgeMax
+        integer, optional, intent(in) :: nbCell_
+        integer, optional, pointer :: listCellNume_(:)
+! ----- Local
+        character(len=8) :: mesh, cellTypeName
+        integer :: nbCell, nbCellMesh
+        integer :: cellNume, cellTypeNume, nodeNume
+        integer :: iNode, iCell
+        real(kind=8) :: x(MT_MAX_NBNODE_LINE), y(MT_MAX_NBNODE_LINE), z(MT_MAX_NBNODE_LINE)
+        real(kind=8) :: d1, d2, d3, d4
+        integer, pointer :: meshDime(:) => null(), meshTypeCell(:) => null()
+        integer, pointer :: meshConnex(:) => null()
+        real(kind=8), pointer :: meshNodeCoor(:) => null()
+        aster_logical :: l_pmesh, onAllMesh
+!
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        edgeMin = r8gaem()
+        edgeMax = 0.d0
+        if (present(nbCell_)) then
+            ASSERT(present(listCellNume_))
+            onAllMesh = ASTER_FALSE
+        else
+            onAllMesh = ASTER_TRUE
+        end if
+
+! ----- Access to mesh
+        call jeveuo(mesh//'.DIME', 'L', vi=meshDime)
+        call jeveuo(mesh//'.TYPMAIL', 'L', vi=meshTypeCell)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=meshNodeCoor)
+        nbCellMesh = meshDime(3)
+        l_pmesh = isParallelMesh(mesh)
+
+! ----- Set list
+        if (onAllMesh) then
+            nbCell = nbCellMesh
+        else
+            nbCell = nbCell_
+            ASSERT(nbCell .le. nbCellMesh)
+        end if
+
+        do iCell = 1, nbCell
+! --------- Current cell
+            if (onAllMesh) then
+                cellNume = iCell
+            else
+                cellNume = listCellNume_(iCell)
+            end if
+
+            ASSERT(cellNume .le. nbCellMesh)
+            cellTypeNume = meshTypeCell(cellNume)
+            call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
+            call jeveuo(jexnum(mesh//'.CONNEX', cellNume), 'L', vi=meshConnex)
+
+! --------- Compute max and min edges on this cell
+            if (cellTypeName(1:3) .eq. 'POI') then
+            else if (cellTypeName(1:3) .eq. 'SEG') then
+                do iNode = 1, 2
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                edgeMin = rminsp(edgeMin, d1, 0.d0, 0.d0, 0.d0)
+                edgeMax = max(edgeMax, d1)
+            else if (cellTypeName(1:4) .eq. 'TRIA') then
+                do iNode = 1, 3
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(1)-x(3))**2+(y(1)-y(3))**2+(z(1)-z(3))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+            else if (cellTypeName(1:4) .eq. 'QUAD') then
+                do iNode = 1, 4
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(4)-x(3))**2+(y(4)-y(3))**2+(z(4)-z(3))**2
+                d4 = (x(1)-x(4))**2+(y(1)-y(4))**2+(z(1)-z(4))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+            else if (cellTypeName(1:4) .eq. 'HEXA') then
+                do iNode = 1, 8
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(4)-x(3))**2+(y(4)-y(3))**2+(z(4)-z(3))**2
+                d4 = (x(1)-x(4))**2+(y(1)-y(4))**2+(z(1)-z(4))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+                d1 = (x(6)-x(5))**2+(y(6)-y(5))**2+(z(6)-z(5))**2
+                d2 = (x(7)-x(6))**2+(y(7)-y(6))**2+(z(7)-z(6))**2
+                d3 = (x(8)-x(7))**2+(y(8)-y(7))**2+(z(8)-z(7))**2
+                d4 = (x(5)-x(8))**2+(y(5)-y(8))**2+(z(5)-z(8))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+                d1 = (x(1)-x(5))**2+(y(1)-y(5))**2+(z(1)-z(5))**2
+                d2 = (x(2)-x(6))**2+(y(2)-y(6))**2+(z(2)-z(6))**2
+                d3 = (x(3)-x(7))**2+(y(3)-y(7))**2+(z(3)-z(7))**2
+                d4 = (x(4)-x(8))**2+(y(4)-y(8))**2+(z(4)-z(8))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+            else if (cellTypeName(1:5) .eq. 'PENTA') then
+                do iNode = 1, 6
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(1)-x(3))**2+(y(1)-y(3))**2+(z(1)-z(3))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+                d1 = (x(5)-x(4))**2+(y(5)-y(4))**2+(z(5)-z(4))**2
+                d2 = (x(6)-x(5))**2+(y(6)-y(5))**2+(z(6)-z(5))**2
+                d3 = (x(4)-x(6))**2+(y(4)-y(6))**2+(z(4)-z(6))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+                d1 = (x(1)-x(4))**2+(y(1)-y(4))**2+(z(1)-z(4))**2
+                d2 = (x(2)-x(5))**2+(y(2)-y(5))**2+(z(2)-z(5))**2
+                d3 = (x(3)-x(6))**2+(y(3)-y(6))**2+(z(3)-z(6))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+            else if (cellTypeName(1:5) .eq. 'TETRA') then
+                do iNode = 1, 4
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(1)-x(3))**2+(y(1)-y(3))**2+(z(1)-z(3))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+                d1 = (x(4)-x(1))**2+(y(4)-y(1))**2+(z(4)-z(1))**2
+                d2 = (x(4)-x(2))**2+(y(4)-y(2))**2+(z(4)-z(2))**2
+                d3 = (x(4)-x(3))**2+(y(4)-y(3))**2+(z(4)-z(3))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+            else if (cellTypeName(1:4) .eq. 'PYRA') then
+                do iNode = 1, 5
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(4)-x(3))**2+(y(4)-y(3))**2+(z(4)-z(3))**2
+                d4 = (x(1)-x(4))**2+(y(1)-y(4))**2+(z(1)-z(4))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+                d1 = (x(5)-x(1))**2+(y(5)-y(1))**2+(z(5)-z(1))**2
+                d2 = (x(5)-x(2))**2+(y(5)-y(2))**2+(z(5)-z(2))**2
+                d3 = (x(5)-x(3))**2+(y(5)-y(3))**2+(z(5)-z(3))**2
+                d4 = (x(5)-x(4))**2+(y(5)-y(4))**2+(z(5)-z(4))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+            else
+                call utmess('F', 'MESH3_10', sk=cellTypeName)
+            end if
+
+        end do
+        if (l_pmesh) then
+            call asmpi_comm_vect("MPI_MIN", 'R', scr=edgeMin)
+            call asmpi_comm_vect("MPI_MAX", 'R', scr=edgeMax)
+        end if
+        if (edgeMin .eq. r8gaem()) then
+            edgeMin = 0.d0
+        end if
+        edgeMin = sqrt(edgeMin)
+        edgeMax = sqrt(edgeMax)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getCellsFromGroup
+!
+! Get list of cells from group
+!
+! In  mesh             : mesh
+! In  groupName        : name of group of cell
+! Out edgeMax          : length of greatest edge
+! Out nbCell           : number of cells
+! Ptr listCellNume     : pointer to index of cells
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getCellsFromGroup(meshZ, groupNameZ, nbCell, listCellNume)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ, groupNameZ
+        integer, intent(out) :: nbCell
+        integer, pointer :: listCellNume(:)
+! ----- Local
+        character(len=8) :: mesh
+        character(len=24) :: groupName
+        integer :: iexi, iret
+!
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        groupName = groupNameZ
+
+        call jeexin(mesh//'.GROUPEMA', iexi)
+        if (iexi .gt. 0) then
+            call jeexin(jexnom(mesh//'.GROUPEMA', groupName), iret)
+            if (iret .eq. 0) then
+                call utmess('F', 'MESH3_11', sk=groupName)
+            else
+                call jelira(jexnom(mesh//'.GROUPEMA', groupName), 'LONMAX', nbCell)
+                if (nbCell .ne. 0) then
+                    call jeveuo(jexnom(mesh//'.GROUPEMA', groupName), 'L', vi=listCellNume)
+                end if
+            end if
+        else
+            call utmess('F', 'MESH3_12')
         end if
 !
 !   ------------------------------------------------------------------------------------------------
