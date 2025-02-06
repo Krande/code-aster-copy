@@ -54,7 +54,7 @@ RELOC_RESU_2 = REST_HOMO_LOCAL(
     OPTION="SIEF_ELGA",
     TRANSLATION="OUI",
     INST=INSTS,
-    COMPLET="OUI",
+    # COMPLET="OUI",
 )
 test.assertSetEqual(set(RELOC_RESU_2.getFieldsNames()), set(["DEPL", "SIEF_ELGA"]))
 test.assertSequenceEqual(RELOC_RESU_2.getAccessParameters()["INST"], INSTS)
