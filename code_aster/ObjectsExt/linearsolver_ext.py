@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,9 @@
 **********************************************************
 """
 
+import gc
+
 from ..Cata.Commons.c_solveur import C_SOLVEUR
-from ..Solvers import SolverOptions as SOP
 from ..Objects import (
     GcpcSolver,
     LdltSolver,
@@ -34,12 +35,10 @@ from ..Objects import (
     PetscSolver,
 )
 from ..Utilities import injector, logger, profile
-import gc
 
 
 @injector(LinearSolver)
 class ExtendedLinearSolver:
-
     @classmethod
     def factory(cls, command=None, mcf=None, **kwargs):
         """Create the solver object from the SOLVEUR factor keyword.
@@ -76,7 +75,7 @@ class ExtendedLinearSolver:
         solver = klass(**kwargs)
         return solver
 
-    # add profile to theses methods
+    # add profile to these methods
     factorize = profile(LinearSolver.factorize)
     solve = profile(LinearSolver.solve)
 

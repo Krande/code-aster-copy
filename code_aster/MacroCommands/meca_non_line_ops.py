@@ -135,9 +135,6 @@ def meca_non_line_ops(self, **args):
 
     # Create the problem solver
     solver = ProblemSolver(phys_pb, problem_type, result, param)
-    solver.use(phys_pb)
-
-    solver.setKeywords(**param)
 
     # Add loads
     if args["EXCIT"]:
@@ -165,12 +162,11 @@ def meca_non_line_ops(self, **args):
         else:
             fed_defi = definition.getFiniteElementDescriptor()
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
-    solver.use(solver.contact)
 
     # Register hooks
     # FIXME: to be done by the solver
-    solver.use(Annealing())
-    solver.use(ComputeDisplFromHHO())
+    # solver.use(Annealing())
+    # solver.use(ComputeDisplFromHHO())
 
     # Run computation
     solver.run_ops()

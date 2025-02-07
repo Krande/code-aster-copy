@@ -51,6 +51,7 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         df : Jacobian matrix of f
     """
 
+    problem_type = PBT.MecaDyna
     integration_type = TimeScheme.Unset
     integrator_name = IntegratorType.Unset
 
@@ -66,11 +67,11 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         Returns:
             *BaseIntegrator*: A relevant *BaseIntegrator* object.
         """
-        assert context.problem_type == PBT.MecaDyna, f"unsupported type: {context.problem_type}"
+        assert context.problem_type == cls.problem_type, f"unsupported type: {context.problem_type}"
         integr = context.keywords["SCHEMA_TEMPS"]["SCHEMA"].capitalize()
-        for klass in cls.__subclasses__():
-            if klass.integrator_name.name == integr:
-                return klass.factory(context)
+        for kls in cls.__subclasses__():
+            if kls.integrator_name.name == integr:
+                return kls.builder(context)
 
     def __init__(self):
         super().__init__()

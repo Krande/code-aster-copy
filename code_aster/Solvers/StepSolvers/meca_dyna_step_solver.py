@@ -72,8 +72,8 @@ class MecaDynaStepSolver(BaseStepSolver):
     def initialize(self):
         """Initialization."""
         super().initialize()
-        self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
-        self.setInitialState(self.phys_state)
+        self.state.primal_step = self.state.createPrimal(self.problem, 0.0)
+        self.setInitialState(self.state)
 
     def setInitialState(self, initial_state):
         """Define the initial state of the integrator.

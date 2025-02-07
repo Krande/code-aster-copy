@@ -57,7 +57,7 @@ class ThermalStepSolver(BaseStepSolver):
     def initialize(self):
         """Initialization."""
         super().initialize()
-        self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
+        self.state.primal_step = self.state.createPrimal(self.problem, 0.0)
 
     # @profile
     def solve(self):
@@ -69,14 +69,12 @@ class ThermalStepSolver(BaseStepSolver):
         logManager = self.createLoggingManager()
         logManager.printConvTableEntries()
 
-        self.conv_criteria.setLoggingManager(logManager)
-        self.conv_criteria.initialize()
-
         # Solve current iteration
-        self.current_matrix = self.conv_criteria.solve(self.current_matrix)
+        self._iterations_solv.setLoggingManager(logManager)
+        self._iterations_solv.initialize()
+        self.current_matrix = self._iterations_solv.solve(self.current_matrix)
 
         deleteTemporaryObjects()
-
         logManager.printConvTableEnd()
 
     def setup(self):

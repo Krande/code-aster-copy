@@ -22,37 +22,40 @@ from libaster import asmpi_free, asmpi_get, asmpi_set, asmpi_split
 from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile
 from ...Utilities.mpi_utils import MPI
-from ..Basics import SolverFeature
-from ..Basics import SolverOptions as SOP
 from .snes_solver import SNESSolver
+from .iterations_solver import IterationsSolver
 
 
 def Print(*args):
     print(*args, flush=True)
 
 
-class RASPENSolver(SolverFeature):
+class RASPENSolver(IterationsSolver):
     """Solves a step using PETSc SNES, loops on iterations."""
 
-    provide = SOP.ConvergenceCriteria
-
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
-
-    optional_features = [SOP.OperatorsManager]
-
-    param = logManager = None
-    matr_update_incr = prediction = None
-    current_incr = current_matrix = None
     _primal_incr = _resi_comp = None
     _scaling = _options = None
     local_solver = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
+    @classmethod
+    def builder(cls, context):
+        """Builder of RaspenSolver object.
+
+        Args:
+            context (Context): Context of the problem.
+
+        Returns:
+            instance: New object.
+        """
+        instance = cls()
+        instance.context = context
+        instance.local_solver = SNESSolver(local=False)
+        instance.local_solver.context = context
+        return instance
+
     def __init__(self):
         super().__init__()
-        self.matr_update_incr = self.prediction = None
-        self.param = self.logManager = None
-        self.current_incr = self.current_matrix = None
         self._primal_incr = self._resi_comp = None
         self._scaling = self._options = None
         self.local_solver = None
@@ -60,57 +63,7 @@ class RASPENSolver(SolverFeature):
     def initialize(self):
         """Initialize the object for the next step."""
         super().initialize()
-        self.check_features()
-        self.current_incr = 0
-        self.current_matrix = None
-        self.local_solver = SNESSolver(local=False)
-        self.local_solver.context = self.context
         self.local_solver.initialize()
-
-    @property
-    def matrix_type(self):
-        """Matrix type"""
-        return self._setMatrixType()
-
-    @property
-    def opers_manager(self):
-        """OperatorsManager: Operators manager object."""
-        return self.get_feature(SOP.OperatorsManager)
-
-    def setParameters(self, param):
-        """Set parameters from user keywords.
-
-        Arguments:
-            param (dict) : user keywords.
-        """
-        self.param = param
-
-        self.prediction = self._get("NEWTON", "PREDICTION") or self._get("NEWTON", "MATRICE")
-
-        assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
-
-        self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
-
-    def setLoggingManager(self, logManager):
-        """Assign the logging manager.
-
-        Arguments:
-            logManager (LoggingManager): Logging manager.
-        """
-        self.logManager = logManager
-
-    def _setMatrixType(self):
-        """Set matrix type.
-
-        Returns:
-            str: Type of matrix to be computed.
-        """
-        if self.current_incr == 0:
-            matrix_type = "PRED_" + self.prediction
-        else:
-            matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
-
-        return matrix_type
 
     # @profile
     def solve(self, current_matrix):
@@ -120,24 +73,24 @@ class RASPENSolver(SolverFeature):
             *ConvergenceError* exception in case of error.
         """
 
-        self.opers_manager.initialize()
+        self.oper.initialize()
 
-        self._scaling = self.opers_manager.getLagrangeScaling(self.matrix_type)
-        self.current_matrix = self.opers_manager.first_jacobian
+        self._scaling = self.oper.getLagrangeScaling(self.matrix_type)
+        self.current_matrix = self.oper.first_jacobian
 
         p_jac = self.current_matrix.toPetsc(local=True)
 
-        DDPart = DomainDecomposition(self.phys_pb.getMesh(), self.phys_pb.getDOFNumbering())
+        DDPart = DomainDecomposition(self.problem.getMesh(), self.problem.getDOFNumbering())
 
         local_solver = self.local_solver
         local_solver.initSNES()
 
-        self._primal_incr = self.phys_state.primal_step.copy()
+        self._primal_incr = self.state.primal_step.copy()
 
         raspen_solver = _RASPENSolver(
             local_solver,
             p_jac,
-            self.phys_state.primal_step,
+            self.state.primal_step,
             DDPart,
             None,
             0.0,
@@ -149,9 +102,9 @@ class RASPENSolver(SolverFeature):
             withCoarsePb=False,
             comm=DDPart.comm,
         )
-        rtol = self._get("CONVERGENCE", "RESI_GLOB_RELA")
-        atol = self._get("CONVERGENCE", "RESI_GLOB_MAXI", 1.0e-24)
-        maxiter = self._get("CONVERGENCE", "ITER_GLOB_MAXI")
+        rtol = self.get_keyword("CONVERGENCE", "RESI_GLOB_RELA")
+        atol = self.get_keyword("CONVERGENCE", "RESI_GLOB_MAXI", 1.0e-24)
+        maxiter = self.get_keyword("CONVERGENCE", "ITER_GLOB_MAXI")
         raspen_solver.setTolerances(rtol=rtol, atol=atol, maxiter=maxiter)
 
         # register the function in charge of
@@ -168,9 +121,8 @@ class RASPENSolver(SolverFeature):
 
         OptDB = PETSc.Options()
         if not self._options:
-            linear_solver = self.get_feature(SOP.LinearSolver)
-            linear_solver.build()
-            self._options = linear_solver.getPetscOptions()
+            self.linear_solver.build()
+            self._options = self.linear_solver.getPetscOptions()
         OptDB.insertString(self._options)
         raspen_solver.glbSnes.setFromOptions()
 
@@ -180,21 +132,11 @@ class RASPENSolver(SolverFeature):
         if raspen_solver.glbSnes.getConvergedReason() < 0:
             raise ConvergenceError("MECANONLINE9_7")
 
-        self.opers_manager.finalize()
+        self.oper.finalize()
         # delete local snes
         self.local_solver.snes = None
 
         return self.current_matrix
-
-    def _get(self, keyword, parameter=None, default=None):
-        """Return a keyword value"""
-        args = self.param
-        if parameter is not None:
-            if args.get(keyword) is None:
-                return default
-            return _F(args[keyword])[0].get(parameter, default)
-
-        return args.get(keyword, default)
 
 
 class _RASPENSolver:

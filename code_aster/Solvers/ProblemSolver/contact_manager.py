@@ -25,18 +25,14 @@ from ...Objects import (
     ParallelFrictionNew,
 )
 from ...Utilities import no_new_attributes, profile
-from ..Basics import SolverFeature
-from ..Basics import SolverOptions as SOP
 
 
-class ContactManager(SolverFeature):
+class ContactManager:
     """Solve contact problem."""
-
-    provide = SOP.Contact
 
     defi = pair = comp = None
     coef_cont = coef_frot = None
-    phys_pb = None
+    problem = None
     nb_pairing = 0
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -50,7 +46,7 @@ class ContactManager(SolverFeature):
         super().__init__()
         self.nb_pairing = 0
         self.defi = definition
-        self.phys_pb = phys_pb
+        self.problem = phys_pb
         if self.defi is not None:
             if isinstance(self.defi, ParallelFrictionNew) or isinstance(
                 self.defi, ParallelContactNew
@@ -69,7 +65,7 @@ class ContactManager(SolverFeature):
         self.pair.compute()
 
         # Numbering does not change but connectivity yes.
-        phys_pb = self.phys_pb
+        phys_pb = self.problem
         if isinstance(self.defi, (ParallelFrictionNew, ParallelContactNew)):
             fed_defi = self.defi.getParallelFiniteElementDescriptor()
         else:
@@ -117,7 +113,7 @@ class ContactManager(SolverFeature):
         if not self.enable:
             return
         return self.comp.contactData(
-            self.pair, self.phys_pb.getMaterialField(), self.nb_pairing <= 1
+            self.pair, self.problem.getMaterialField(), self.nb_pairing <= 1
         )
 
     @property

@@ -50,9 +50,7 @@ class ProblemTypeMixin:
             if kls.problem_type == context.problem_type:
                 if isabstract(kls):
                     return kls.factory(context)
-                instance = kls()
-                instance.context = context
-                return instance
+                return kls.builder(context)
         raise TypeError(f"no candidate for {cls=}, type: {context.problem_type}")
 
 

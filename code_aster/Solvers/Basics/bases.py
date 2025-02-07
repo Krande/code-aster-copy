@@ -50,6 +50,8 @@ class Context:
 
     # FIXME: to be removed and created deeper/later from '.keywords'?
     # FIXME: with TimeScheme.Multiple? several '.oper'? one '.oper' per StepSolver?
+    # FIXME: Creating all objects in ProblemSolver should allow overloading
+    # FIXME: and to known syntax in one place (for instance: RECH_LINEAIRE in NewtonSolver)
 
     class KeywordsStore:
         """Container that stores and gives access to some user keywords."""
@@ -159,8 +161,14 @@ class ContextMixin:
 
     @classmethod
     def builder(cls, context):
-        """Default factory for :py:class:`ContextMixin` object.
+        """Default builder for :py:class:`ContextMixin` object.
         Should be subclassed for non trivial constructor.
+
+        Args:
+            context (Context): Context of the problem.
+
+        Returns:
+            instance: New object.
         """
         instance = cls()
         instance.context = context
@@ -209,7 +217,7 @@ class ContextMixin:
         Returns:
             *misc*: Keyword value.
         """
-        return self._ctxt.get_keywords.get(keyword, parameter, default)
+        return self._ctxt.get_keyword(keyword, parameter, default)
 
     @property
     def problem(self):

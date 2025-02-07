@@ -21,15 +21,13 @@ import copy
 import re
 from math import sqrt
 
-import numpy as np
-
 from ...Objects import DiscreteComputation
 from ...Utilities import MPI, logger, no_new_attributes, profile
-from ..Basics import SolverFeature
+from ..Basics import ContextMixin
 from ..Basics import SolverOptions as SOP
 
 
-class ConvergenceManager(SolverFeature):
+class ConvergenceManager(ContextMixin):
     """Object that decides about the convergence status."""
 
     provide = SOP.ConvergenceManager
@@ -234,6 +232,27 @@ class ConvergenceManager(SolverFeature):
             """
             return self.isSet() and self._value >= self._refe
 
+    @classmethod
+    def builder(cls, context):
+        """Default builder for :py:class:`ContextMixin` object.
+        Should be subclassed for non trivial constructor.
+
+        Args:
+            context (Context): Context of the problem.
+
+        Returns:
+            instance: New object.
+        """
+        instance = cls()
+        instance.context = context
+        for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "ITER_GLOB_MAXI"):
+            value = instance.get_keyword("CONVERGENCE", crit)
+            if value is not None:
+                instance.setdefault(crit, value)
+        if instance.get_keyword("CONTACT"):
+            instance.setdefault("RESI_GEOM", instance.get_keyword("CONTACT", "RESI_GEOM"))
+        return instance
+
     def __init__(self):
         super().__init__()
         self._param = {}
@@ -315,7 +334,6 @@ class ConvergenceManager(SolverFeature):
         return copy.deepcopy(self._param)
 
     # @profile
-    @SolverFeature.check_once
     def getDirichletResidual(self, residual):
         """Return the residual with Dirichlet imposed values.
 
@@ -325,15 +343,15 @@ class ConvergenceManager(SolverFeature):
         Returns:
             FieldOnNodesReal: Residual changed in place.
         """
-        loads = self.phys_pb.getListOfLoads()
+        loads = self.problem.getListOfLoads()
 
         # maybe not really efficient
         if loads.hasDirichletBC():
-            disc_comp = DiscreteComputation(self.phys_pb)
+            disc_comp = DiscreteComputation(self.problem)
             diriBCs = disc_comp.getIncrementalDirichletBC(
-                self.phys_state.time_curr, self.phys_state.primal_curr
+                self.state.time_curr, self.state.primal_curr
             )
-            eliminatedDofs = self.phys_pb.getDirichletBCDOFs()
+            eliminatedDofs = self.problem.getDirichletBCDOFs()
             nbElimination = len(eliminatedDofs)
             assert residual.size() == nbElimination
 
@@ -346,7 +364,6 @@ class ConvergenceManager(SolverFeature):
         return residual
 
     # @profile
-    @SolverFeature.check_once
     def getRelativeScaling(self, residuals):
         """Returns the scaling factor to compute the relative error
 
@@ -357,17 +374,17 @@ class ConvergenceManager(SolverFeature):
             float: scaling factor.
         """
         scaling = 0.0
-        eliminatedDofs = self.phys_pb.getDirichletBCDOFs()
+        eliminatedDofs = self.problem.getDirichletBCDOFs()
 
         residuals.update()
 
-        nume_equa = self.phys_pb.getDOFNumbering().getEquationNumbering()
+        nume_equa = self.problem.getDOFNumbering().getEquationNumbering()
         cmp2dof = nume_equa.getDOFFromNodeAndComponent()
 
-        disc_comp = DiscreteComputation(self.phys_pb)
-        if self.phys_state.externVar:
+        disc_comp = DiscreteComputation(self.problem)
+        if self.state.externVar:
             varc = disc_comp.getExternalStateVariablesForces(
-                self.phys_state.time_curr, self.phys_state.externVar
+                self.state.time_curr, self.state.externVar
             ).getValues()
 
         for [iNode, cmp], ieq in cmp2dof.items():
@@ -375,7 +392,7 @@ class ConvergenceManager(SolverFeature):
             f_ext = 0.0
             f_cont = 0.0
             f_mass = 0.0
-            if self.phys_state.externVar:
+            if self.state.externVar:
                 f_varc = varc[ieq]
             else:
                 f_varc = 0.0
@@ -400,7 +417,6 @@ class ConvergenceManager(SolverFeature):
         return MPI.ASTER_COMM_WORLD.allreduce(scaling, MPI.MAX)
 
     # @profile
-    @SolverFeature.check_once
     def evalNormResidual(self, residuals):
         """Evaluate global residual.
 
@@ -430,7 +446,6 @@ class ConvergenceManager(SolverFeature):
         return resi_fields
 
     # @profile
-    @SolverFeature.check_once
     def evalGeometricResidual(self, displ_delta):
         """Evaluate geometric residual.
 
@@ -438,7 +453,7 @@ class ConvergenceManager(SolverFeature):
             displ_dela (FieldOnNodesReal): variation of displacement.
         """
         # scaling with diagonal of bounding box
-        TABG = self.phys_pb.getMesh().getTable("CARA_GEOM")
+        TABG = self.problem.getMesh().getTable("CARA_GEOM")
         x_diag = TABG["X_MAX", 1] - TABG["X_MIN", 1]
         y_diag = TABG["Y_MAX", 1] - TABG["Y_MIN", 1]
         z_diag = TABG["Z_MAX", 1] - TABG["Z_MIN", 1]

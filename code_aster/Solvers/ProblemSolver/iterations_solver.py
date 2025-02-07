@@ -20,9 +20,8 @@
 from abc import ABC, abstractmethod
 from enum import IntFlag, auto
 
-from ...Utilities import no_new_attributes
+from ...Utilities import no_new_attributes, profile
 from ..Basics import ContextMixin, ProblemTypeMixin
-from ..Basics import ProblemType as PBT
 
 
 class IterationsSolver(ABC, ContextMixin, ProblemTypeMixin):
@@ -40,7 +39,7 @@ class IterationsSolver(ABC, ContextMixin, ProblemTypeMixin):
 
     logManager = None
     current_incr = current_matrix = None
-    matr_update_incr = prediction = None
+    _matr_update_incr = _prediction = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
@@ -51,36 +50,26 @@ class IterationsSolver(ABC, ContextMixin, ProblemTypeMixin):
             context (Context): Context of the problem.
 
         Returns:
-            *BaseIntegrator*: A relevant *BaseIntegrator* object.
+            *IterationsSolver*: A relevant *BaseIntegrator* object.
         """
         method = context.keywords.get("METHODE", default="NEWTON").capitalize()
         for kls in cls.__subclasses__():
             if kls.solver_type.name == method:
-                instance = kls()
-                instance.context = context
-                return instance
+                return kls.builder(context)
 
     def __init__(self):
         super().__init__()
+
+    def _post_init(self):
+        self._prediction = self.get_keyword(
+            "NEWTON", "PREDICTION", self.get_keyword("NEWTON", "MATRICE")
+        )
+        self._matr_update_incr = self.get_keyword("NEWTON", "REAC_ITER", 1)
 
     def initialize(self):
         """Initialize the object for the next step."""
         self.current_incr = 0
         self.current_matrix = None
-        self.conv_manager.initialize()
-        iter_glob = self.conv_manager.setdefault("ITER_GLOB_MAXI")
-        iter_glob.minValue = 1
-
-    def setParameters(self, param):
-        """Assign parameters from user keywords.
-
-        Arguments:
-            param (dict) : user keywords.
-        """
-        self.param = param
-        self.prediction = self._get("NEWTON", "PREDICTION") or self._get("NEWTON", "MATRICE")
-        assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
-        self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
 
     def setLoggingManager(self, logManager):
         """Assign the logging manager.
@@ -90,50 +79,13 @@ class IterationsSolver(ABC, ContextMixin, ProblemTypeMixin):
         """
         self.logManager = logManager
 
-    def update(self, primal_incr, resi_fields=None, callback=None):
-        """Update the physical state.
-
-        Arguments:
-            primal_incr (FieldOnNodes): Displacement increment.
-            resi_fields (dict of FieldOnNodes): Fields of residual values
-        """
-
-        self.phys_state.primal_step += primal_incr
-
-        for key, field in resi_fields.items():
-            self.phys_state.set(key, field)
-
-        if callback:
-            callback(primal_incr)
-
-    def _resetMatrix(self, current_incr):
-        """Reset matrix if needed
-
-        Arguments:
-            current_incr (int): index of the current increment
-
-        """
-        if (
-            self.matr_update_incr > 0 and current_incr % self.matr_update_incr == 0
-        ) or self.contact_manager:
-            # make unavailable the current tangent matrix
-            self.current_matrix = None
-
-    def _setMatrixType(self, current_incr):
-        """Set matrix type.
-
-        Arguments:
-            current_incr (int): index of the current increment
-
-        Returns:
-            str: Type of matrix to be computed.
-        """
-        if current_incr == 0:
-            matrix_type = "PRED_" + self.prediction
+    @property
+    def matrix_type(self):
+        """str: Type of the matrix to be currently used."""
+        if self.current_incr == 0:
+            matrix_type = "PRED_" + self._prediction
         else:
-            matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
-
-            self._resetMatrix(current_incr)
+            matrix_type = self.get_keyword("NEWTON", "MATRICE", "TANGENTE")
         return matrix_type
 
     @abstractmethod

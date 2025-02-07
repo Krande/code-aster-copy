@@ -33,16 +33,15 @@ class NewmarkIntegrator(BaseIntegrator):
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
-    def factory(cls, context):
-        """Factory that creates the appropriate object.
+    def builder(cls, context):
+        """Builder of NewmarkIntegrator object.
 
         Args:
             context (Context): Context of the problem.
 
         Returns:
-            *NewmarkIntegrator*: A *NewmarkIntegrator* object.
+            instance: New object.
         """
-        assert context.problem_type == PBT.MecaDyna, f"unsupported type: {context.problem_type}"
         factkw = context.keywords["SCHEMA_TEMPS"]
         instance = cls(gamma=factkw["GAMMA"], beta=factkw["BETA"])
         instance.context = context

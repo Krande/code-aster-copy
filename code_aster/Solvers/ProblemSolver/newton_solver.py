@@ -19,74 +19,49 @@
 
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
-from ..Basics import SolverFeature
-from ..Basics import SolverOptions as SOP
+from .convergence_manager import ConvergenceManager
+from .incremental_solver import IncrementalSolver
 from .iterations_solver import IterationsSolver
+from .line_search import LineSearch
 
 
 class NewtonSolver(IterationsSolver):
     """Solves a step, loops on iterations."""
 
     solver_type = IterationsSolver.SubType.Newton
-    provide = SOP.ConvergenceCriteria
 
-    required_features = [
-        SOP.PhysicalProblem,
-        SOP.PhysicalState,
-        SOP.ConvergenceManager,
-        SOP.IncrementalSolver,
-        SOP.LinearSolver,
-    ]
-
-    optional_features = [SOP.OperatorsManager, SOP.Contact]
-
-    matr_update_incr = prediction = None
-    param = logManager = None
-    current_matrix = None
+    # FIXME: merge IncrementalSolver into NewtonSolver
+    _incr_solv = _converg = _line_search = None
     __setattr__ = no_new_attributes(object.__setattr__)
+
+    @classmethod
+    def builder(cls, context):
+        """Builder of RaspenSolver object.
+
+        Args:
+            context (Context): Context of the problem.
+
+        Returns:
+            instance: New object.
+        """
+        instance = cls()
+        instance.context = context
+        instance._post_init()
+        instance._converg = ConvergenceManager.builder(context)
+        instance._line_search = LineSearch.builder(context)
+        instance._incr_solv = IncrementalSolver.builder(context)
+        instance._incr_solv.share(instance._converg, instance._line_search)
+        return instance
 
     def __init__(self):
         super().__init__()
 
     def initialize(self):
         """Initialize the object for the next step."""
-        self.check_features()
-        self.current_matrix = None
-        self.conv_manager.initialize()
-        iter_glob = self.conv_manager.setdefault("ITER_GLOB_MAXI")
+        super().initialize()
+        self._converg.initialize()
+        iter_glob = self._converg.setdefault("ITER_GLOB_MAXI")
         iter_glob.minValue = 1
-
-    @property
-    def conv_manager(self):
-        """ConvergenceManager: Convergence manager object."""
-        return self.get_feature(SOP.ConvergenceManager)
-
-    @property
-    def contact_manager(self):
-        """ContactManager: contact object."""
-        return self.get_feature(SOP.Contact, optional=True)
-
-    def setParameters(self, param):
-        """Assign parameters from user keywords.
-
-        Arguments:
-            param (dict) : user keywords.
-        """
-        self.param = param
-
-        self.prediction = self._get("NEWTON", "PREDICTION") or self._get("NEWTON", "MATRICE")
-
-        assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
-
-        self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
-
-    def setLoggingManager(self, logManager):
-        """Assign the logging manager.
-
-        Arguments:
-            logManager (LoggingManager): Logging manager.
-        """
-        self.logManager = logManager
 
     def update(self, primal_incr, resi_fields=None, callback=None):
         """Update the physical state.
@@ -96,43 +71,25 @@ class NewtonSolver(IterationsSolver):
             resi_fields (dict of FieldOnNodes): Fields of residual values
         """
 
-        self.phys_state.primal_step += primal_incr
+        self.state.primal_step += primal_incr
 
         for key, field in resi_fields.items():
-            self.phys_state.set(key, field)
+            self.state.set(key, field)
 
         if callback:
             callback(primal_incr)
 
-    def _resetMatrix(self, current_incr):
+    def _resetMatrix(self):
         """Reset matrix if needed
 
         Arguments:
             current_incr (int): index of the current increment
-
         """
         if (
-            self.matr_update_incr > 0 and current_incr % self.matr_update_incr == 0
-        ) or self.contact_manager:
+            self._matr_update_incr > 0 and self.current_incr % self._matr_update_incr == 0
+        ) or self.contact:
             # make unavailable the current tangent matrix
             self.current_matrix = None
-
-    def _setMatrixType(self, current_incr):
-        """Set matrix type.
-
-        Arguments:
-            current_incr (int): index of the current increment
-
-        Returns:
-            str: Type of matrix to be computed.
-        """
-        if current_incr == 0:
-            matrix_type = "PRED_" + self.prediction
-        else:
-            matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
-
-            self._resetMatrix(current_incr)
-        return matrix_type
 
     # @profile
     def solve(self, current_matrix, callback=None):
@@ -143,59 +100,43 @@ class NewtonSolver(IterationsSolver):
         """
         self.current_matrix = current_matrix
 
-        iter_glob = self.conv_manager.setdefault("ITER_GLOB_MAXI")
-
-        incr_solv = self.get_feature(SOP.IncrementalSolver)
-        incr_solv.use(self.oper)
-        current_incr = -1
+        iter_glob = self._converg.setdefault("ITER_GLOB_MAXI")
 
         self.oper.initialize()
-
-        while not self.conv_manager.isFinished():
-            current_incr += 1
-
-            iter_glob.value = current_incr
+        while not self._converg.isFinished():
+            iter_glob.value = self.current_incr
 
             # Select type of matrix
-            matrix_type = self._setMatrixType(current_incr)
+            matrix_type = self.matrix_type
+            if self.current_incr > 0:
+                self._resetMatrix()
 
             # Should the iteration be executed even if the solver converged ?
-            force = self.oper.shouldExecuteIteration(current_incr)
+            force = self.oper.shouldExecuteIteration(self.current_incr)
 
             # Solve current iteration
-            primal_incr, self.current_matrix, resi_fields = incr_solv.solve(
+            primal_incr, self.current_matrix, resi_fields = self._incr_solv.solve(
                 matrix_type, self.current_matrix, force
             )
 
             # Update
             self.update(primal_incr, resi_fields, callback)
 
-            if current_incr > 0:
+            if self.current_incr > 0:
                 self.logManager.printConvTableRow(
                     [
-                        current_incr - 1,
-                        self.conv_manager.get("RESI_GLOB_RELA"),
-                        self.conv_manager.get("RESI_GLOB_MAXI"),
-                        self.conv_manager.get("RESI_GEOM"),
+                        self.current_incr - 1,
+                        self._converg.get("RESI_GLOB_RELA"),
+                        self._converg.get("RESI_GLOB_MAXI"),
+                        self._converg.get("RESI_GEOM"),
                         matrix_type,
                     ]
                 )
+            self.current_incr += 1
 
-        if not self.conv_manager.isConverged():
+        if not self._converg.isConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
         self.oper.finalize()
-
-        self._resetMatrix(current_incr)
-
+        self._resetMatrix()
         return self.current_matrix
-
-    def _get(self, keyword, parameter=None, default=None):
-        """Return a keyword value"""
-        args = self.param
-        if parameter is not None:
-            if args.get(keyword) is None:
-                return default
-            return _F(args[keyword]).get(parameter, default)
-
-        return args.get(keyword, default)

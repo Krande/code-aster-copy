@@ -26,7 +26,6 @@ from .base_opers_manager import BaseOperatorsManager
 class MecaDynaOperatorsManager(BaseOperatorsManager):
     """Base object that provides operators to solve a dynamics problem."""
 
-    problem_type = PBT.MecaDyna
     _mass = _elem_mass = None
 
     def __init__(self):
@@ -35,15 +34,15 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
 
     def _getElemMassMatrix(self):
         """Compute the elementary mass matrix."""
-        disc_comp = DiscreteComputation(self.phys_pb)
+        disc_comp = DiscreteComputation(self.problem)
         matr_elem_mass = disc_comp.getMassMatrix(
-            time=self.phys_state.time_curr, varc_curr=self.phys_state.internVar
+            time=self.state.time_curr, varc_curr=self.state.internVar
         )
         return matr_elem_mass
 
     def _getMassMatrix(self):
         """Compute the mass matrix."""
-        mass_matr = AssemblyMatrixDisplacementReal(self.phys_pb)
+        mass_matr = AssemblyMatrixDisplacementReal(self.problem)
         mass_matr.addElementaryMatrix(self._elem_mass)
         mass_matr.assemble()
         return mass_matr
@@ -51,9 +50,9 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
     def getFunctional(self, t, dt, U, dU, d2U, scaling=1.0):
         """Computes the functional."""
         temp_phys_state = self.getTmpPhysicalState(t, dt, U, dU, d2U)
-        temp_phys_state.swap(self.phys_state)
+        temp_phys_state.swap(self.state)
         resi_state, internVar, stress = super().getResidual(scaling=scaling)
-        self.phys_state.swap(temp_phys_state)
+        self.state.swap(temp_phys_state)
         self._tmp_stress = stress
         self._tmp_internVar = internVar
         return resi_state
@@ -61,24 +60,24 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
     def getStiffAndDamp(self, t, dt, U, dU, d2U, matrix_type):
         """Computes the jacobian."""
         temp_phys_state = self.getTmpPhysicalState(t, dt, U, dU, d2U)
-        temp_phys_state.swap(self.phys_state)
+        temp_phys_state.swap(self.state)
 
-        disc_comp = DiscreteComputation(self.phys_pb)
+        disc_comp = DiscreteComputation(self.problem)
 
         # Compute elementary matrix
         codret, matr_elem_rigi, matr_elem_dual = disc_comp.getInternalTangentMatrix(
-            self.phys_state, matrix_type=matrix_type, assemble=False
+            self.state, matrix_type=matrix_type, assemble=False
         )
 
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
-        matr_elem_cont = disc_comp.getContactTangentMatrix(self.phys_state, self.contact)
-        matr_elem_ext = disc_comp.getExternalTangentMatrix(self.phys_state)
-        self.phys_state.swap(temp_phys_state)
+        matr_elem_cont = disc_comp.getContactTangentMatrix(self.state, self.contact)
+        matr_elem_ext = disc_comp.getExternalTangentMatrix(self.state)
+        self.state.swap(temp_phys_state)
 
         # Assemble stiffness matrix
-        rigi_matr = AssemblyMatrixDisplacementReal(self.phys_pb)
+        rigi_matr = AssemblyMatrixDisplacementReal(self.problem)
         rigi_matr.addElementaryMatrix(matr_elem_rigi)
         rigi_matr.addElementaryMatrix(matr_elem_dual)
         rigi_matr.addElementaryMatrix(matr_elem_cont)
@@ -89,10 +88,10 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
         matr_elem_damp = disc_comp.getDampingMatrix(
             massMatrix=self._elem_mass,
             stiffnessMatrix=matr_elem_rigi,
-            varc_curr=self.phys_state.externVar,
+            varc_curr=self.state.externVar,
         )
 
-        damp_matr = AssemblyMatrixDisplacementReal(self.phys_pb)
+        damp_matr = AssemblyMatrixDisplacementReal(self.problem)
         damp_matr.addElementaryMatrix(matr_elem_damp)
         damp_matr.assemble()
 
@@ -101,7 +100,7 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
     def getTmpPhysicalState(self, t, dt, U, dU, d2U):
         """Creates a temporary physical state"""
         # D'où vient le primal step qui doit être utilisée ?
-        result = self.phys_state.duplicate()
+        result = self.state.duplicate()
 
         result.time_prev = t
         result.time_step = dt

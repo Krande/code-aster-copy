@@ -33,6 +33,23 @@ class ThermalOperatorsManager(BaseOperatorsManager):
     _theta = _resi_prev = _resi_temp = _first_iter = _stat_init = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
+    @classmethod
+    def builder(cls, context):
+        """Builder of ThermalOperatorsManager object.
+
+        Args:
+            context (Context): Context of the problem.
+
+        Returns:
+            instance: New object.
+        """
+        assert context.problem_type == cls.problem_type, f"unsupported type: {context.problem_type}"
+        theta = context.keywords.get("SCHEMA_TEMPS", "THETA")
+        stat = context.keywords.get("ETAT_INIT", "STAT") == "OUI"
+        instance = cls(theta=theta, stat=stat)
+        instance.context = context
+        return instance
+
     def __init__(self, theta=None, stat=None):
         super().__init__()
         self._resi_prev = self._resi_temp = None
@@ -76,16 +93,16 @@ class ThermalOperatorsManager(BaseOperatorsManager):
             return
 
         if residual is None:
-            timec = self.phys_state.time_curr
-            self.phys_state.time_curr = self.phys_state.time_prev
+            timec = self.state.time_curr
+            self.state.time_curr = self.state.time_prev
             self._resi_prev = super().getResidual(scaling=scaling)[0]
-            self.phys_state.time_curr = timec
+            self.state.time_curr = timec
         else:
             self._resi_prev = residual
 
-        disc_comp = DiscreteComputation(self.phys_pb)
+        disc_comp = DiscreteComputation(self.problem)
         self._resi_prev.resi_mass = disc_comp.getNonLinearCapacityForces(
-            self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar
+            self.state.primal_prev, self.state.primal_step, self.state.externVar
         )
 
         self._first_iter = self._stat_init = False
@@ -122,19 +139,19 @@ class ThermalOperatorsManager(BaseOperatorsManager):
 
     def _getJacobianTrans(self, matrix_type):
         """Computes the jacobian matrix for the transient case."""
-        disc_comp = DiscreteComputation(self.phys_pb)
+        disc_comp = DiscreteComputation(self.problem)
 
         mass_ther = disc_comp.getTangentCapacityMatrix(
-            self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar
+            self.state.primal_prev, self.state.primal_step, self.state.externVar
         )
 
-        codret, rigi_ther, rigi_ther_dual = disc_comp.getInternalTangentMatrix(self.phys_state)
+        codret, rigi_ther, rigi_ther_dual = disc_comp.getInternalTangentMatrix(self.state)
 
-        rigi_ther_ext = disc_comp.getExternalTangentMatrix(self.phys_state)
+        rigi_ther_ext = disc_comp.getExternalTangentMatrix(self.state)
 
-        dt, theta = self.phys_state.time_step, self._theta
+        dt, theta = self.state.time_step, self._theta
 
-        jacobian = AssemblyMatrixTemperatureReal(self.phys_pb)
+        jacobian = AssemblyMatrixTemperatureReal(self.problem)
         jacobian.addElementaryMatrix(rigi_ther, theta)
         jacobian.addElementaryMatrix(rigi_ther_ext, theta)
         jacobian.addElementaryMatrix(rigi_ther_dual)
@@ -162,13 +179,13 @@ class ThermalOperatorsManager(BaseOperatorsManager):
 
     def _getResidualTrans(self, scaling=1.0):
         """Computes the residual for the transient case."""
-        dt, theta = self.phys_state.time_step, self._theta
-        disc_comp = DiscreteComputation(self.phys_pb)
+        dt, theta = self.state.time_step, self._theta
+        disc_comp = DiscreteComputation(self.problem)
 
         resi_curr, _, _ = super().getResidual(scaling=scaling)
 
         resi_mass = disc_comp.getNonLinearCapacityForces(
-            self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar
+            self.state.primal_prev, self.state.primal_step, self.state.externVar
         )
 
         EVNL_AS = (1.0 / dt) * self._resi_prev.resi_mass - (

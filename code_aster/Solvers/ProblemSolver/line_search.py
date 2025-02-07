@@ -19,13 +19,13 @@
 
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile, logger
-from ..Basics import SolverFeature
+from ..Basics import ContextMixin
 from ..Basics import SolverOptions as SOP
 
 import numpy as np
 
 
-class LineSearch(SolverFeature):
+class LineSearch(ContextMixin):
     """Line search methods"""
 
     provide = SOP.LineSearch
@@ -37,9 +37,23 @@ class LineSearch(SolverFeature):
     param = solve = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
+    @classmethod
+    def builder(cls, context):
+        """Default builder for :py:class:`ContextMixin` object.
+        Should be subclassed for non trivial constructor.
+
+        Args:
+            context (Context): Context of the problem.
+
+        Returns:
+            instance: New object.
+        """
+        instance = cls(context.keywords.get("RECH_LINEAIRE"))
+        instance.context = context
+        return instance
+
     def __init__(self, keywords):
         super().__init__()
-
         self.param = keywords
         self.solve = None
 
@@ -54,11 +68,11 @@ class LineSearch(SolverFeature):
 
     def setup(self):
         """Set up the line search object"""
-        self.solve = self.__solve
+        # FIXME: hmm, why?
+        self.solve = self._solve
 
     # @profile
-    @SolverFeature.check_once
-    def __solve(self, solution, scaling=1.0):
+    def _solve(self, solution, scaling=1.0):
         """Apply linear search for mechanical problems.
 
         Arguments:
@@ -74,8 +88,7 @@ class LineSearch(SolverFeature):
             def _f(rho, solution=solution, scaling=scaling):
                 self.phys_state.primal_step += rho * solution
                 # compute residual
-                opersManager = self.get_feature(SOP.OperatorsManager)
-                resi_state = opersManager.getResidual(scaling)
+                resi_state = self.oper.getResidual(scaling)
                 self.phys_state.primal_step -= rho * solution
                 return -resi_state.resi.dot(solution)
 

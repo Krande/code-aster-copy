@@ -32,8 +32,24 @@ class BaseStepSolver(ABC, ContextMixin, ProblemTypeMixin):
     #     SOP.ConvergenceCriteria,      x
     #     SOP.LinearSolver,
     # ]
-    _iter_solv = None
+    _iterations_solv = None
     current_matrix = None
+
+    @classmethod
+    def builder(cls, context):
+        """Default builder for :py:class:`ContextMixin` object.
+        Should be subclassed for non trivial constructor.
+
+        Args:
+            context (Context): Context of the problem.
+
+        Returns:
+            instance: New object.
+        """
+        instance = cls()
+        instance.context = context
+        instance._iterations_solv = IterationsSolver.factory(context)
+        return instance
 
     def __init__(self):
         super().__init__()
@@ -41,7 +57,6 @@ class BaseStepSolver(ABC, ContextMixin, ProblemTypeMixin):
 
     def initialize(self):
         """Initialization."""
-        self._iter_solv = IterationsSolver.factory(self.context)
 
     def createLoggingManager(self):
         """Return a logging manager

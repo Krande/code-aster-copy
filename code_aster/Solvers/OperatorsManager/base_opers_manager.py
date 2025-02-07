@@ -21,7 +21,7 @@ from abc import ABC, abstractmethod
 
 from ...Objects import DiscreteComputation
 from ...Utilities import no_new_attributes, profile
-from ..Basics import ContextMixin, ProblemTypeMixin, SolverFeature
+from ..Basics import ContextMixin, ProblemTypeMixin
 
 
 class BaseOperatorsManager(ABC, ContextMixin, ProblemTypeMixin):
@@ -48,8 +48,8 @@ class BaseOperatorsManager(ABC, ContextMixin, ProblemTypeMixin):
 
     def finalize(self):
         """Finalizes the operator manager."""
-        self.phys_state.stress = self._tmp_stress
-        self.phys_state.internVar = self._tmp_internVar
+        self.state.stress = self._tmp_stress
+        self.state.internVar = self._tmp_internVar
 
     @abstractmethod
     def setup(self):
@@ -74,7 +74,6 @@ class BaseOperatorsManager(ABC, ContextMixin, ProblemTypeMixin):
         return self._first_jacobian
 
     # @profile
-    @SolverFeature.check_once
     def getResidual(self, scaling=1.0, tmp_internVar=None):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
@@ -88,16 +87,12 @@ class BaseOperatorsManager(ABC, ContextMixin, ProblemTypeMixin):
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """
-        disc_comp = DiscreteComputation(self.phys_pb)
+        disc_comp = DiscreteComputation(self.problem)
         return disc_comp.getResidual(
-            self.phys_state,
-            contact_manager=self.contact,
-            scaling=scaling,
-            tmp_internVar=tmp_internVar,
+            self.state, contact_manager=self.contact, scaling=scaling, tmp_internVar=tmp_internVar
         )
 
     # @profile
-    @SolverFeature.check_once
     def getStiffnessJacobian(self, matrix_type, tmp_internVar=None):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du
 
@@ -107,9 +102,9 @@ class BaseOperatorsManager(ABC, ContextMixin, ProblemTypeMixin):
         Returns:
             AssemblyMatrixDisplacementReal: Jacobian matrix.
         """
-        disc_comp = DiscreteComputation(self.phys_pb)
+        disc_comp = DiscreteComputation(self.problem)
         return disc_comp.getTangentMatrix(
-            self.phys_state,
+            self.state,
             matrix_type=matrix_type,
             contact_manager=self.contact,
             assemble=True,
