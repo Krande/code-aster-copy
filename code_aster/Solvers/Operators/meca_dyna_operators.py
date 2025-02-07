@@ -26,6 +26,7 @@ from .base_operators import BaseOperators
 class MecaDynaOperators(BaseOperators):
     """Base object that provides operators to solve a dynamics problem."""
 
+    problem_type = PBT.MecaDyna
     _mass = _elem_mass = None
 
     def __init__(self):

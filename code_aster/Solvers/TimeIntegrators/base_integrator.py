@@ -51,7 +51,6 @@ class BaseIntegrator(MecaDynaOperators):
         df : Jacobian matrix of f
     """
 
-    problem_type = PBT.MecaDyna
     integration_type = TimeScheme.Unset
     integrator_name = IntegratorType.Unset
 

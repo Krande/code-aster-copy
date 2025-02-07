@@ -51,7 +51,7 @@ class DispatcherMixin:
             instance: A new object of the relevant type.
         """
         for kls in cls.__subclasses__():
-            logger.debug("candidate: %s", kls)
+            logger.debug("candidate for '%s': %s", context.problem_type, kls)
             if kls.problem_type == context.problem_type:
                 if isabstract(kls):
                     return kls.factory(context)
