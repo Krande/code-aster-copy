@@ -25,11 +25,11 @@ from libaster import ConvergenceError, IntegrationError, SolverError
 from ...Cata.Syntax import _F
 from ...Messages import MessageLog
 from ...Utilities import cmp, force_list, logger, no_new_attributes
-from ..Basics import Observer, SolverFeature
+from ..Basics import Observer
 from ..Basics import SolverOptions as SOP
 
 
-class TimeStepper(SolverFeature, Observer):
+class TimeStepper(Observer):
     """This object deals with the time steps.
 
     It gives the list of the time steps to be calculated. The initial time is

@@ -32,12 +32,6 @@ PERTURB_JAC = False  # for checking only (sloooow)
 class IncrementalSolver(EventSource, ContextMixin):
     """Solve an iteration."""
 
-    provide = SOP.IncrementalSolver | SOP.EventSource
-
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver, SOP.LineSearch]
-
-    optional_features = [SOP.Contact, SOP.ConvergenceManager, SOP.OperatorsManager]
-
     _data = None
     _converg = _line_search = None
     __setattr__ = no_new_attributes(object.__setattr__)

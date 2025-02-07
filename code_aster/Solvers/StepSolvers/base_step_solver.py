@@ -19,11 +19,11 @@
 
 from abc import ABC, abstractmethod
 
-from ..Basics import ContextMixin, LoggingManager, ProblemTypeMixin
+from ..Basics import ContextMixin, LoggingManager, DispatcherMixin
 from ..ProblemSolver import IterationsSolver
 
 
-class BaseStepSolver(ABC, ContextMixin, ProblemTypeMixin):
+class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
     """Solves a step, loops on iterations."""
 
     # required_features = [

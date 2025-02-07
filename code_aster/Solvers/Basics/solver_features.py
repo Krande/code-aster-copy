@@ -22,7 +22,6 @@ Objects used to build generic problems solvers.
 """
 
 from enum import IntFlag, auto
-from .base_features import BaseFeature
 
 
 class SolverOptions(IntFlag):
@@ -65,19 +64,3 @@ class SolverOptions(IntFlag):
 
     # FE operators manager
     OperatorsManager = auto()
-
-
-# FIXME: keep as mixin
-class SolverFeature(BaseFeature):
-    """Feature object for non linear operators."""
-
-    # convenient shortcuts properties
-    @property
-    def phys_pb(self):
-        """PhysicalProblem: current problem description."""
-        return self.get_feature(SolverOptions.PhysicalProblem)
-
-    @property
-    def phys_state(self):
-        """PhysicalState: current state."""
-        return self.get_feature(SolverOptions.PhysicalState)

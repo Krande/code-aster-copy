@@ -19,12 +19,10 @@
 
 from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal
 from ...Utilities import no_new_attributes, profile
-from .base_features import BaseFeature
 from .problem_dispatcher import ProblemType as PBT
-from .solver_features import SolverOptions as SOP
 
 
-class PhysicalState(BaseFeature):
+class PhysicalState:
     """This object represents a Physical State of the model.
 
     Actually, it stores a stack of physical states and works as an *adapter*
@@ -269,8 +267,6 @@ class PhysicalState(BaseFeature):
                 if field:
                     values = field.getValues()
                     print(f"* {key:10s} ", sum(values) / len(values), flush=True)
-
-    provide = SOP.PhysicalState
 
     _current = _stack = _size = _stash = _pb_type = None
     __setattr__ = no_new_attributes(object.__setattr__)

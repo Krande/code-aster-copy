@@ -81,12 +81,12 @@ class BaseIntegrator(MecaDynaOperatorsManager):
     @property
     def t0(self):
         """Time at the beginning of the step."""
-        return self.phys_state.time_prev
+        return self.state.time_prev
 
     @property
     def dt(self):
         """Returns the current time step"""
-        return self.phys_state.time_step
+        return self.state.time_step
 
     def getLagrangeScaling(self, matrix_type):
         """Returns Lagrange scaling.
@@ -147,7 +147,7 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         force = self.getFunctional(self.t0, self.dt, self.U, self.dU, self.d2U).resi
         if not self._mass.isFactorized():
             self.linear_solver.factorize(self._mass)
-        self.phys_state.current.d2U = self.linear_solver.solve(force)
+        self.state.current.d2U = self.linear_solver.solve(force)
 
     @property
     def U0(self):
@@ -194,7 +194,7 @@ class BaseIntegrator(MecaDynaOperatorsManager):
     @property
     def U(self):
         """Current primal unknowns."""
-        return self.phys_state.current.U
+        return self.state.current.U
 
     @U.setter
     def U(self, field):
@@ -203,12 +203,12 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         Arguments:
             field (FieldOnNodesReal): field value
         """
-        self.phys_state.current.U = field
+        self.state.current.U = field
 
     @property
     def dU(self):
         """Current derivative of primal unknowns."""
-        return self.phys_state.current.dU
+        return self.state.current.dU
 
     @dU.setter
     def dU(self, field):
@@ -217,12 +217,12 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         Arguments:
             field (FieldOnNodesReal): field value
         """
-        self.phys_state.current.dU = field
+        self.state.current.dU = field
 
     @property
     def d2U(self):
         """Current second derivative of primal unknowns."""
-        return self.phys_state.current.d2U
+        return self.state.current.d2U
 
     @d2U.setter
     def d2U(self, field):
@@ -231,7 +231,7 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         Arguments:
             field (FieldOnNodesReal): field value
         """
-        self.phys_state.current.d2U = field
+        self.state.current.d2U = field
 
     def setup(self):
         """set up the integrator."""

@@ -32,7 +32,7 @@ class ProblemType(IntFlag):
     Thermal = auto()
 
 
-class ProblemTypeMixin:
+class DispatcherMixin:
     """Mixin class that provides a factory depending on the type of physical problem."""
 
     @classmethod
@@ -52,33 +52,3 @@ class ProblemTypeMixin:
                     return kls.factory(context)
                 return kls.builder(context)
         raise TypeError(f"no candidate for {cls=}, type: {context.problem_type}")
-
-
-class ProblemDispatcher:
-    """class that implements the problem dispatcher
-    based on the type of physical problem."""
-
-    problem_type = ProblemType.Unset
-
-    @classmethod
-    def create(cls, param):
-        """factory function that returns the appropriate child class."""
-        found = None
-        pb_type = cls._getProblemType(param)
-        for klass in cls.__subclasses__():
-            if klass.problem_type == pb_type:
-                found = klass.create(param=param)
-        assert found, f"not found: {pb_type.name}"
-        found._createPrivate(param)
-        return found
-
-    @classmethod
-    def _getProblemType(cls, param):
-        """Identify the physical problem."""
-        if "TYPE_CALCUL" in param:
-            pb_type = ProblemType.Thermal
-        elif "SCHEMA_TEMPS" in param:
-            pb_type = ProblemType.MecaDyna
-        else:
-            pb_type = ProblemType.MecaStat
-        return pb_type

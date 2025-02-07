@@ -21,10 +21,10 @@ from abc import ABC, abstractmethod
 
 from ...Objects import DiscreteComputation
 from ...Utilities import no_new_attributes, profile
-from ..Basics import ContextMixin, ProblemTypeMixin
+from ..Basics import ContextMixin, DispatcherMixin
 
 
-class BaseOperatorsManager(ABC, ContextMixin, ProblemTypeMixin):
+class BaseOperatorsManager(ABC, ContextMixin, DispatcherMixin):
     """Base object that provides operators to solve the problem."""
 
     problem_type = None

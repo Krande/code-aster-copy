@@ -1,6 +1,6 @@
 digraph MNL {
     compound = "true";
-    // global: circle, dotted
+    // global+several pointers: circle
     // mixin: note, dashed
     // abstract: ' {abstr}', dashed
     labelloc = "t";
@@ -28,24 +28,22 @@ digraph MNL {
         context -> linsolv;
     }
     
-    problem_old [label = "PhysicalProblem";shape = "ellipse";];
-    state_old [label = "PhysicalState";shape = "ellipse";];
-    
     mnl [label = "meca_non_line_ops";];
     pbsolv [label = "ProblemSolver";];
     timestepper [label = "TimeStepper";];
     storage [label = "StorageManager";];
-    linesearch [label = "LineSearch";];
-    conv_manager [label = "ConvergenceManager";];
     hook [label = "PostStepHook";];
-    incr_solv [label = "IncrementalSolver";];
     
     observ [label = "Observer";style = "dashed";shape = "note";];
     event [label = "EventSource";style = "dashed";shape = "note";];
-    dispatch [label = "ProblemTypeMixin";style = "dashed";shape = "note";];
     
     subgraph cluster_operators {
-        operators [label = "Operators {abstr}";style = "dashed";];
+        subgraph {
+            rank = "same";
+            operators [label = "Operators {abstr}";style = "dashed";];
+            mixin_oper [label = "ContextMixin + DispatcherMixin";style = "dashed";shape = "note";];
+            operators -> mixin_oper [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
         style = "dashed";
         subgraph {
             rank = "same";
@@ -55,9 +53,7 @@ digraph MNL {
         }
         integr [label = BaseIntegrator;];
         newmark [label = NewmarkIntegrator;];
-        context_op [label = "*Context";style = "dotted";shape = "circle";];
         
-        operators -> context_op [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
         // subclasses
         operators -> statopers [dir = "back"; arrowtail = "empty";];
         operators -> dynopers [dir = "back"; arrowtail = "empty";];
@@ -76,13 +72,16 @@ digraph MNL {
             mecadyn [label = "MecaDynaStepSolver";];
             ther [label = "ThermalStepSolver";];
         }
-        stepsolv [label = "BaseStepSolver {abstr}";style = "dashed";];
+        subgraph {
+            rank = "same";
+            stepsolv [label = "BaseStepSolver {abstr}";style = "dashed";];
+            mixin_step [label = "ContextMixin + DispatcherMixin";style = "dashed";shape = "note";];
+            stepsolv -> mixin_step [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
         // subclasses
         stepsolv -> mecastat [dir = "back"; arrowtail = "empty";];
         stepsolv -> mecadyn [dir = "back"; arrowtail = "empty";];
         stepsolv -> ther [dir = "back"; arrowtail = "empty";];
-        context_st [label = "*Context";style = "dotted";shape = "circle";];
-        stepsolv -> context_st [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
         
         implicit [label = "ImplicitStepSolver";];
         explicit [label = "ExplicitStepSolver";];
@@ -99,25 +98,29 @@ digraph MNL {
     }
     
     subgraph cluster_iter_solv {
-        label = ConvergenceCriteria;
+        label = IterationsSolver;
         style = "dashed";
-        
-        conv_criteria [label = "IterationsSolver {abstr}";style = "dashed";];
+        subgraph {
+            rank = "same";
+            iter_solver [label = "IterationsSolver {abstr}";style = "dashed";];
+            mixin_iter [label = "ContextMixin + DispatcherMixin";style = "dashed";shape = "note";];
+            iter_solver -> mixin_iter [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
         // [style = invis]
         newton [label = "NewtonSolver";];
         snes [label = "SNESSolver";];
         raspen [label = "RaspenSolver";];
         
-        conv_criteria -> newton [dir = "back"; arrowtail = "empty"; style = "dotted";];
-        conv_criteria -> snes [dir = "back"; arrowtail = "empty"; style = "dotted";];
-        conv_criteria -> raspen [dir = "back"; arrowtail = "empty"; style = "dotted";];
+        iter_solver -> newton [dir = "back"; arrowtail = "empty";];
+        iter_solver -> snes [dir = "back"; arrowtail = "empty";];
+        iter_solver -> raspen [dir = "back"; arrowtail = "empty";];
     }
     
     mnl -> pbsolv;
     mnl -> keywords [xlabel = "creates"; style = "bold";];
     mnl -> problem [xlabel = "creates"; style = "bold";];
     
-    pbsolv -> context [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
+    pbsolv -> context [dir = "back"; arrowtail = "empty";];
     pbsolv -> state [xlabel = "creates"; style = "bold";];
     pbsolv -> operators [xlabel = "creates"; style = "bold"; lhead = cluster_operators;];
     pbsolv -> timestepper;
@@ -125,42 +128,47 @@ digraph MNL {
     pbsolv -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];
     pbsolv -> hook [label = "todo"; style = "dashed";];
     
-    stepsolv -> problem_old [style = "dotted"; ltail = cluster_stepsolv;];
-    stepsolv -> dispatch [xlabel = "factory"; dir = "back"; arrowtail = "empty";];
+    stepsolv -> iter_solver [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
     
-    stepsolv -> state_old [ltail = cluster_stepsolv;];
-    stepsolv -> linsolv [ltail = cluster_stepsolv;];
-    stepsolv -> conv_criteria [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
-    
-    conv_criteria -> linsolv [ltail = cluster_iter_solv;];
-    conv_criteria -> operators [ltail = cluster_iter_solv; lhead = cluster_operators;];
-    snes -> incr_solv [style = "invis";];
+    iter_solver -> linsolv [ltail = cluster_iter_solv;];
+    iter_solver -> operators [ltail = cluster_iter_solv; lhead = cluster_operators;];
     
     newton -> incr_solv;
+    newton -> linesearch;
     newton -> conv_manager;
+    
+    subgraph {
+        rank = "same";
+        incr_solv [label = "IncrementalSolver";];
+        mixin_incr [label = "ContextMixin";style = "dashed";shape = "note";];
+        incr_solv -> mixin_incr [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
     incr_solv -> linesearch;
-    incr_solv -> contact_old;
+    incr_solv -> contact;
     incr_solv -> operators [lhead = cluster_operators;];
     incr_solv -> linsolv;
     incr_solv -> conv_manager;
-    incr_solv -> event [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
-    incr_solv -> problem_old [style = "dotted";];
-    incr_solv -> state_old [style = "dotted";];
-    // integr -> state_old[style="dotted"];
-    linesearch -> state_old [style = "dotted";];
+    incr_solv -> event [dir = "back"; arrowtail = "empty";];
+    
+    subgraph {
+        rank = "same";
+        linesearch [label = "LineSearch";];
+        mixin_line [label = "ContextMixin";style = "dashed";shape = "note";];
+        linesearch -> mixin_line [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
     linesearch -> operators [lhead = cluster_operators;];
     
-    operators -> dispatch [xlabel = "factory"; dir = "back"; arrowtail = "empty";];
-    operators -> problem_old [style = "dotted";];
-    operators -> state_old [style = "dotted";];
+    subgraph {
+        rank = "same";
+        conv_manager [label = "ConvergenceManager";];
+        mixin_conv [label = "ContextMixin";style = "dashed";shape = "note";];
+        conv_manager -> mixin_conv [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
     
-    conv_manager -> problem_old [style = "dotted";];
-    conv_manager -> state_old [style = "dotted";];
-    snes -> problem_old [style = "dotted";];
-    raspen -> problem_old [style = "dotted";];
-    
-    timestepper -> observ [xlabel = "mixin"; dir = "back"; arrowtail = "empty";];
-    
+    subgraph {
+        rank = "same";
+        timestepper -> observ [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
     // placement
-    timestepper -> stepsolv [style = "invis";];
+    // timestepper -> stepsolv [style = "invis";];
 }

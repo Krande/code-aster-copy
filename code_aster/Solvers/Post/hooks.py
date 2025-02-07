@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,17 +42,17 @@ class Annealing:
 
     def __call__(self, nl_solver):
         if self._enabled is None:
-            self._enabled = nl_solver.phys_pb.getBehaviourProperty().hasAnnealing()
+            self._enabled = nl_solver.problem.getBehaviourProperty().hasAnnealing()
         if not self._enabled:
             return
 
         try:
-            previous = nl_solver.phys_state.getState(-1)
+            previous = nl_solver.state.getState(-1)
         except IndexError:
             # No post-pro at initial step
             return
-        current = nl_solver.phys_state
-        post_process = PostProcessing(nl_solver.phys_pb)
+        current = nl_solver.state
+        post_process = PostProcessing(nl_solver.problem)
         internVar_anneal = post_process.computeAnnealing(
             current.internVar,
             previous.time_curr,
@@ -74,12 +74,12 @@ class ComputeHydr:
 
     def __call__(self, nl_solver):
         if self._enabled is None:
-            self._enabled = nl_solver.phys_pb.getBehaviourProperty().hasBehaviour("THER_HYDR")
+            self._enabled = nl_solver.problem.getBehaviourProperty().hasBehaviour("THER_HYDR")
         if not self._enabled:
             return
 
-        current = nl_solver.phys_state
-        post = PostProcessing(nl_solver.phys_pb)
+        current = nl_solver.state
+        post = PostProcessing(nl_solver.problem)
         try:
             hydr_prev = current.getState(-1).auxiliary["HYDR_ELGA"]
             hydr_curr = post.computeHydration(
@@ -90,7 +90,7 @@ class ComputeHydr:
                 hydr_prev,
             )
         except IndexError:
-            hydr_curr = current.createFieldOnCells(nl_solver.phys_pb, "ELGA", "HYDR_R")
+            hydr_curr = current.createFieldOnCells(nl_solver.problem, "ELGA", "HYDR_R")
         current.set("HYDR_ELGA", hydr_curr)
 
 
@@ -107,12 +107,12 @@ class PostHHO:
     def __call__(self, nl_solver):
         """Hook to compute HHO_DEPL"""
         if self._enabled is None:
-            self._enabled = nl_solver.phys_pb.getModel().existsHHO()
-            self._hho = HHO(nl_solver.phys_pb)
+            self._enabled = nl_solver.problem.getModel().existsHHO()
+            self._hho = HHO(nl_solver.problem)
         if not self._enabled:
             return
 
-        current = nl_solver.phys_state
+        current = nl_solver.state
         hho_field = self._hho.projectOnLagrangeSpace(current.primal_curr)
         current.set(self._field_name, hho_field)
 

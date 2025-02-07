@@ -69,4 +69,4 @@ class ImplicitStepSolver(MecaDynaStepSolver):
 
         logManager.printConvTableEnd()
 
-        self._integrator.setInitialState(self.phys_state)
+        self._integrator.setInitialState(self.state)

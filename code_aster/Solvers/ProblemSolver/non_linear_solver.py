@@ -42,8 +42,8 @@ For example for the displacement field and a Newton solver.
   displacement (displ_step)
 """
 
-from ...Messages import MessageLog, UTMESS
-from ...Objects import NonLinearResult, ThermalResult, HHO, ConstantFieldOnCellsReal
+from ...Messages import UTMESS, MessageLog
+from ...Objects import HHO, ConstantFieldOnCellsReal, NonLinearResult, ThermalResult
 from ...Supervis import ConvergenceError, IntegrationError, SolverError
 from ...Utilities import DEBUG, logger, no_new_attributes, profile
 from ..Basics import ProblemType as PBT
@@ -186,8 +186,7 @@ class NonLinearSolver(SolverFeature):
                 field = resu.getField(name_field, para=para, value=val)
                 if model is field.getModel():
                     return field
-                else:
-                    _raise_elga_error()
+                _raise_elga_error()
 
             def _get_field_and_check_model(state, name_field, model, fieldModel=None):
                 """Extract the field from the initial state, then check that
@@ -205,8 +204,7 @@ class NonLinearSolver(SolverFeature):
                     )
                 if model is field.getModel():
                     return field
-                else:
-                    _raise_elga_error()
+                _raise_elga_error()
 
             model = self.phys_pb.getModel()
 

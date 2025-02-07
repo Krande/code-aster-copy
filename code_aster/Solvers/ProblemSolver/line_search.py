@@ -17,22 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile, logger
 from ..Basics import ContextMixin
-from ..Basics import SolverOptions as SOP
 
 import numpy as np
 
 
 class LineSearch(ContextMixin):
     """Line search methods"""
-
-    provide = SOP.LineSearch
-
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
-
-    optional_features = [SOP.OperatorsManager]
 
     param = solve = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -86,10 +78,10 @@ class LineSearch(ContextMixin):
             method = self.param["METHODE"]
 
             def _f(rho, solution=solution, scaling=scaling):
-                self.phys_state.primal_step += rho * solution
+                self.state.primal_step += rho * solution
                 # compute residual
                 resi_state = self.oper.getResidual(scaling)
-                self.phys_state.primal_step -= rho * solution
+                self.state.primal_step -= rho * solution
                 return -resi_state.resi.dot(solution)
 
             def _proj(rho, param=self.param):
@@ -122,7 +114,6 @@ class LineSearch(ContextMixin):
                 else:
                     sens = -1.0
                 rhoneg = 0.0
-                fneg = sens * f0
                 bpos = False
             else:
                 sens = 1.0

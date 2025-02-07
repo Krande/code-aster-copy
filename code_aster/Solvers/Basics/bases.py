@@ -156,6 +156,7 @@ class ContextMixin:
         linear_solver: :py:class:`LinearSolver` object
     """
 
+    # FIXME: "parent" objects must declared what attr they need
     _ctxt = None
     __setattr__ = no_new_attributes(object.__setattr__)
 

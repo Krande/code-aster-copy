@@ -19,18 +19,14 @@
 
 from ...Messages import MessageLog
 from ...Utilities import SearchList, cmp, force_list, logger, no_new_attributes, profile
-from ..Basics import SolverFeature
-from ..Basics import SolverOptions as SOP
 
 
-class StorageManager(SolverFeature):
+class StorageManager:
     """Object that manages the storing of fields in the Result object.
 
     Arguments:
         result (~code_aster.Objects.Result): Result container.
     """
-
-    provide = SOP.Storage
 
     class Slot:
         """Container that holds objects to be saved"""

@@ -27,7 +27,6 @@ from .incremental_solver import IncrementalSolver
 from .iterations_solver import IterationsSolver
 from .line_search import LineSearch
 from .newton_solver import NewtonSolver
-from .non_linear_solver import NonLinearSolver
 from .problem_solver import ProblemSolver
 from .raspen_solver import RASPENSolver
 from .snes_solver import SNESSolver

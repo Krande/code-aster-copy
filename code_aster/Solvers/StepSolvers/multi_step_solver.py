@@ -63,7 +63,7 @@ class MultiStepSolver(MecaDynaStepSolver):
         step0.solve(t_init, self._coef * delta_t)
         print("++ Solving stage 2")
         step1.setInitialState(state0)
-        # step1.setIntermediateState(self.phys_state)
+        # step1.setIntermediateState(self.state)
         step1.solve(t_init, delta_t)
 
     def setup(self):

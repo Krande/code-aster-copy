@@ -46,7 +46,7 @@ class ExplicitStepSolver(MecaDynaStepSolver):
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        time, time_step = self.phys_state.time_prev, self.phys_state.time_step
+        time, time_step = self.state.time_prev, self.state.time_step
 
         # mandatory
         criteria = self.get_feature(SOP.ConvergenceCriteria)

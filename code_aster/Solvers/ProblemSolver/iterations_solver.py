@@ -21,10 +21,10 @@ from abc import ABC, abstractmethod
 from enum import IntFlag, auto
 
 from ...Utilities import no_new_attributes, profile
-from ..Basics import ContextMixin, ProblemTypeMixin
+from ..Basics import ContextMixin, DispatcherMixin
 
 
-class IterationsSolver(ABC, ContextMixin, ProblemTypeMixin):
+class IterationsSolver(ABC, ContextMixin, DispatcherMixin):
     """Solves a step, loops on iterations."""
 
     class SubType(IntFlag):

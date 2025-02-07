@@ -21,10 +21,10 @@
 Features definition.
 """
 
-from .base_features import BaseFeature, EventSource, Observer
+from .base_features import EventSource, Observer
 from .bases import ContextMixin
 from .logging_manager import LoggingManager
 from .physical_state import PhysicalState
-from .problem_dispatcher import ProblemDispatcher, ProblemType, ProblemTypeMixin
+from .problem_dispatcher import DispatcherMixin, ProblemType
 from .residual import Residuals
-from .solver_features import SolverFeature, SolverOptions
+from .solver_features import SolverOptions
