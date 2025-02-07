@@ -74,20 +74,21 @@ subroutine me2mme_evol(modelZ, caraElemZ, materFieldZ, matecoZ, nharm, jvBase, &
     compor = " "
 
 ! - Preparing input fields
-    call prepGeneralFields(modelZ, caraElemZ, materFieldZ, matecoZ, &
-                           applySuiv, &
-                           timePrev, timeCurr, timeTheta, nharm, &
+    call prepGeneralFields(modelZ, caraElemZ, matecoZ, &
+                           nharm, &
                            varcCurr, dispPrev, dispCumuInst, &
-                           compor, strxPrev, viteCurr, acceCurr, &
                            nbFieldIn, lpain, lchin)
 
 ! - Composite dead Neumann loads (EVOL_CHAR)
     loadPreObject = loadName(1:8)//'.CHME'
     loadLigrel = loadPreObject(1:13)//'.LIGRE'
-    call compLoadEvolVect(modelZ, caraElemZ, timePrev, jvBase, &
-                          applySuiv, iLoad, loadPreObject, &
-                          loadLigrel, ligrelCalcZ, &
+    call compLoadEvolVect(modelZ, caraElemZ, materFieldZ, compor, &
+                          timePrev, jvBase, &
+                          applySuiv, iLoad, &
+                          timePrev, timeCurr, timeTheta, &
+                          loadPreObject, loadLigrel, ligrelCalcZ, &
                           nbFieldIn, lpain, lchin, &
-                          resuElem, vectElem)
+                          resuElem, vectElem, &
+                          dispPrev, dispCumuInst, strxPrev, viteCurr, acceCurr)
 !
 end subroutine

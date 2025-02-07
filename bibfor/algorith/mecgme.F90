@@ -169,13 +169,10 @@ subroutine mecgme(stop, &
     end if
 
 ! - Preparing input fields
-    call prepGeneralFields(modelZ, caraElemZ, materFieldZ, matecoZ, &
-                           applySuiv, &
-                           timePrev, timeCurr, timeTheta, nharm, &
+    call prepGeneralFields(modelZ, caraElemZ, matecoZ, &
+                           nharm, &
                            varcCurr, dispPrev, dispCumuInst, &
-                           compor, strxPrev, viteCurr, acceCurr, &
                            nbFieldIn, lpain, lchin)
-
 ! - Computation
     if (l_first_matr) then
         do iLoad = 1, nbLoad
@@ -186,16 +183,24 @@ subroutine mecgme(stop, &
             loadLigrel = loadPreObject(1:13)//'.LIGRE'
 
             if (loadNume .eq. 4) then
-                call compLoadMatr(applyPilo, &
+                call compLoadMatr(applyPilo, applySuiv, &
                                   iLoad, iMatr, loadNume, &
+                                  modelZ, materFieldZ, compor, &
+                                  strxPrev, viteCurr, acceCurr, &
+                                  timePrev, timeCurr, timeTheta, &
                                   loadLigrel, loadPreObject, &
                                   stop, nbFieldIn, lpain, lchin, &
                                   ligrelCalc, jvBase, matrElemZ)
+
                 call compLoadEvolMatr(timeCurr, jvBase, &
-                                      applySuiv, iLoad, iMatr, loadPreObject, &
-                                      loadLigrel, ligrelCalc, &
+                                      applySuiv, iLoad, iMatr, &
+                                      modelZ, materFieldZ, compor, &
+                                      strxPrev, viteCurr, acceCurr, &
+                                      timePrev, timeCurr, timeTheta, &
+                                      loadPreObject, loadLigrel, ligrelCalc, &
                                       nbFieldIn, lpain, lchin, &
                                       matrElemZ)
+
             end if
         end do
     else
@@ -209,14 +214,21 @@ subroutine mecgme(stop, &
                 loadLigrel = loadPreObject(1:13)//'.LIGRE'
 
                 if (loadNume .eq. 4) then
-                    call compLoadMatr(applyPilo, &
+                    call compLoadMatr(applyPilo, applySuiv, &
                                       iLoad, iMatr, loadNume, &
+                                      modelZ, materFieldZ, compor, &
+                                      strxPrev, viteCurr, acceCurr, &
+                                      timePrev, timeCurr, timeTheta, &
                                       loadLigrel, loadPreObject, &
                                       stop, nbFieldIn, lpain, lchin, &
                                       ligrelCalc, jvBase, matrElemZ)
+
                     call compLoadEvolMatr(timeCurr, jvBase, &
-                                          applySuiv, iLoad, iMatr, loadPreObject, &
-                                          loadLigrel, ligrelCalc, &
+                                          applySuiv, iLoad, iMatr, &
+                                          modelZ, materFieldZ, compor, &
+                                          strxPrev, viteCurr, acceCurr, &
+                                          timePrev, timeCurr, timeTheta, &
+                                          loadPreObject, loadLigrel, ligrelCalc, &
                                           nbFieldIn, lpain, lchin, &
                                           matrElemZ)
                 end if
