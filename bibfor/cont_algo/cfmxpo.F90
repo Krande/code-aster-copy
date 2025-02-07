@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine cfmxpo(mesh, model_, ds_contact, nume_inst, sddisc, &
                   ds_measure, hval_algo, hval_incr)
@@ -32,7 +31,6 @@ subroutine cfmxpo(mesh, model_, ds_contact, nume_inst, sddisc, &
 #include "asterfort/cfverl.h"
 #include "asterfort/mmdeco.h"
 #include "asterfort/mldeco.h"
-#include "asterfort/xmdeco.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=*), intent(in) :: model_
@@ -62,18 +60,16 @@ subroutine cfmxpo(mesh, model_, ds_contact, nume_inst, sddisc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_cont, l_cont_disc, l_cont_xfem, l_all_verif, l_cont_lac
+    aster_logical :: l_cont_cont, l_cont_disc, l_all_verif, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
     l_cont_disc = cfdisl(ds_contact%sdcont_defi, 'FORMUL_DISCRETE')
-    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
     l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
     l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-!
+
 ! - Time step cut management
-!
     if (.not. l_all_verif) then
         if (l_cont_disc) then
             call cfdeco(ds_contact)
@@ -81,19 +77,15 @@ subroutine cfmxpo(mesh, model_, ds_contact, nume_inst, sddisc, &
             call mmdeco(ds_contact)
         else if (l_cont_lac) then
             call mldeco(ds_contact)
-        else if (l_cont_xfem) then
-            call xmdeco(ds_contact)
         end if
     end if
-!
+
 ! - Check normals
-!
     if (l_cont_cont .or. l_cont_disc) then
         call cfverl(ds_contact)
     end if
-!
+
 ! - Save post-treatment fields for contact
-!
     call cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
                 sddisc, hval_algo, hval_incr)
 !

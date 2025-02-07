@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmctcg(mesh, ds_contact, ds_measure)
 !
@@ -34,7 +33,7 @@ subroutine nmctcg(mesh, ds_contact, ds_measure)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Continue/XFEM method
+! MECA_NON_LINE - Continue method
 !
 ! Geometric loop: geometric actualisation and pairing
 !

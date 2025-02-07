@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: kyrylo.kazymyrenko at edf.fr
 
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
@@ -30,15 +29,7 @@ def C_PILOTAGE():
         TYPE=SIMP(
             statut="o",
             typ="TXM",
-            into=(
-                "DDL_IMPO",
-                "LONG_ARC",
-                "PRED_ELAS",
-                "DEFORMATION",
-                "ANA_LIM",
-                "SAUT_IMPO",
-                "SAUT_LONG_ARC",
-            ),
+            into=("DDL_IMPO", "LONG_ARC", "PRED_ELAS", "DEFORMATION", "ANA_LIM"),
         ),
         COEF_MULT=SIMP(statut="f", typ="R", defaut=1.0e0),
         EVOL_PARA=SIMP(
@@ -50,7 +41,7 @@ def C_PILOTAGE():
         ETA_PILO_R_MIN=SIMP(statut="f", typ="R"),
         PROJ_BORNES=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
         b_long_arc=BLOC(
-            condition="""equal_to("TYPE", 'LONG_ARC') or equal_to("TYPE", 'SAUT_LONG_ARC')""",
+            condition="""equal_to("TYPE", 'LONG_ARC') or equal_to("TYPE", )""",
             SELECTION=SIMP(
                 statut="f",
                 typ="TXM",
@@ -59,7 +50,7 @@ def C_PILOTAGE():
             ),
         ),
         b_other=BLOC(
-            condition="""not equal_to("TYPE", 'LONG_ARC') and not equal_to("TYPE", 'SAUT_LONG_ARC')""",
+            condition="""not equal_to("TYPE", 'LONG_ARC')""",
             SELECTION=SIMP(
                 statut="f",
                 typ="TXM",
@@ -69,9 +60,7 @@ def C_PILOTAGE():
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        FISSURE=SIMP(statut="f", typ=fiss_xfem, validators=NoRepeat(), max="**"),
         NOEUD=SIMP(statut="f", typ=no, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         NOM_CMP=SIMP(statut="f", typ="TXM", max="**"),
-        DIRE_PILO=SIMP(statut="f", typ="TXM", max="**"),
     )

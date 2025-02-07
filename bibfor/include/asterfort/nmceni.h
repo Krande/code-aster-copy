@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
-                      sdpilo, eta, isxfe, f)
+    subroutine nmceni(numedd, depdel, deppr1, deppr2, rho, &
+                      eta, f)
         character(len=24) :: numedd
         character(len=19) :: depdel
         character(len=19) :: deppr1
         character(len=19) :: deppr2
         real(kind=8) :: rho
-        character(len=19) :: sdpilo
         real(kind=8) :: eta
         aster_logical :: isxfe
         real(kind=8) :: f

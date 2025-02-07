@@ -439,7 +439,6 @@ class NomChamIntoGenerator:
             ),
         },
         Phenomenon.AUTRES: {
-            "COHE_ELEM": (("nonlin", "dyna"), tr("Variables internes cohésives XFEM")),
             "COMPORTEMENT": ((), tr("Carte de comportement mécanique")),
             "COMPORTHER": ((), tr("Carte de comportement thermique")),
             "DEPL_VIBR": ((), tr("Déplacement pour mode vibratoire")),

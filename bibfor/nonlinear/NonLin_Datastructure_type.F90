@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1303, W1501
 !
 module NonLin_Datastructure_type
@@ -291,10 +290,10 @@ module NonLin_Datastructure_type
 ! ----- Name of <LIGREL> for contact elements (create in MECA_NON_LINE)
         character(len=19) :: ligrel_elem_cont = ' '
         aster_logical     :: l_elem_cont = ASTER_FALSE
-! ----- Identity relations between dof (XFEM with ELIM_ARETE or LAC method)
+! ----- Identity relations between dof (LAC method)
         aster_logical     :: l_iden_rela = ASTER_FALSE
         character(len=24) :: iden_rela = ' '
-! ----- Relations between dof (QUAD8 in discrete methods or XFEM, create in DEFI_CONTACT)
+! ----- Relations between dof (QUAD8 in discrete methods, create in DEFI_CONTACT)
         aster_logical     :: l_dof_rela = ASTER_FALSE
         character(len=8)  :: ligrel_dof_rela = ' '
 ! ----- Name of <CHELEM> - Input field

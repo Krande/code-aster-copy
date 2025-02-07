@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
-                  modele, ds_material, ds_constitutive, ds_contact, valinc, &
+                  modele, ds_material, ds_constitutive, valinc, &
                   nbatte, numedd, nbeffe, eta, pilcvg, &
                   carele)
 !
@@ -30,7 +29,6 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exixfe.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -50,8 +48,6 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
     character(len=24) :: modele, carele
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=24) :: numedd
-    type(NL_DS_Contact), intent(in) :: ds_contact
-!
 ! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
@@ -73,7 +69,6 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
 ! IN  NUMEDD : NUME_DDL
 ! In  ds_material      : datastructure for material parameters
 ! In  ds_constitutive  : datastructure for constitutive laws management
-! In  ds_contact       : datastructure for contact management
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -90,14 +85,13 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: neq, i, ierm
+    integer :: neq, i
     real(kind=8) :: dtau, etrmin, etrmax, coef
     character(len=19) :: ddepl0, ddepl1
     character(len=24) :: typpil
     character(len=19) :: ligrpi, cartyp, careta
     character(len=19) :: depmoi, depdel, deppr1, deppr2
     character(len=19) :: cnfepi
-    aster_logical :: isxfe
     real(kind=8), pointer :: dep0(:) => null()
     real(kind=8), pointer :: dep1(:) => null()
     real(kind=8), pointer :: du0(:) => null()
@@ -109,8 +103,6 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
 !
     call jemarq()
     call infdbg('PILOTAGE', ifm, niv)
-    call exixfe(modele, ierm)
-    isxfe = (ierm .eq. 1)
 !
 ! --- AFFICHAGE
 !
@@ -163,7 +155,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
 !
 ! --- PILOTAGE PAR UN DDL IMPOSE
 !
-    if (typpil .eq. 'DDL_IMPO' .or. typpil .eq. 'SAUT_IMPO') then
+    if (typpil .eq. 'DDL_IMPO') then
         call nmpidd(numedd, sdpilo, dtau, depdel, ddepl0, &
                     ddepl1, eta(1), pilcvg, nbeffe)
 !
@@ -175,15 +167,15 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
 !
 ! --- PILOTAGE PAR LONGUEUR D'ARC
 !
-    else if (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') then
-        call nmpila(numedd, sdpilo, isxfe, dtau, depdel, &
+    else if (typpil .eq. 'LONG_ARC') then
+        call nmpila(numedd, sdpilo, dtau, depdel, &
                     ddepl0, ddepl1, nbeffe, eta, pilcvg)
 !
 ! --- PILOTAGE PAR CRITERE
 !
     else if (typpil .eq. 'PRED_ELAS' .or. typpil .eq. 'DEFORMATION') then
         call nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
-                    ds_constitutive, ds_contact, valinc, depdel, ddepl0, &
+                    ds_constitutive, valinc, depdel, ddepl0, &
                     ddepl1, dtau, nbeffe, eta, pilcvg, &
                     typpil, carele)
     else

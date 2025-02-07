@@ -69,8 +69,7 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
 !
     integer :: nb_field, nb_field_resu
     integer :: i_field, i_field_resu
-    integer, pointer :: xfem_cont(:) => null()
-    aster_logical :: l_find, l_xfem_cohe
+    aster_logical :: l_find
     character(len=19) :: result
     character(len=24) :: field_resu, field_type, algo_name, init_name, listLoadResu
 !
@@ -85,22 +84,8 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
 
 ! - Select fields depending on active functionnalities
     call nmetac(list_func_acti, sddyna, ds_contact, ds_inout)
-!
-! - Set localization for cohesive XFEM fields
-!
-    call GetIOField(ds_inout, 'COHE_ELEM', l_acti_=l_xfem_cohe)
-    if (l_xfem_cohe) then
-        call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
-        if (xfem_cont(1) .eq. 2) then
-            call SetIOField(ds_inout, 'COHE_ELEM', disc_type_='ELNO')
-        end if
-        if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 3) then
-            call SetIOField(ds_inout, 'COHE_ELEM', disc_type_='ELEM')
-        end if
-    end if
-!
+
 ! - Add fields
-!
     do i_field = 1, nb_field
         field_type = ds_inout%field(i_field)%type
         call nmetcc(field_type, algo_name, init_name, &

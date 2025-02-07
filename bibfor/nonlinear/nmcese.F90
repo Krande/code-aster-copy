@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
 subroutine nmcese(modele, numedd, ds_material, carele, &
@@ -31,7 +30,6 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/exixfe.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmceai.h"
 #include "asterfort/nmceni.h"
@@ -111,12 +109,12 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ldccv(2), ierm, indic, sel
+    integer :: ldccv(2), indic, sel
     real(kind=8) :: f(2)
     character(len=8) :: choix, txt
     character(len=19) :: depold, depdel, deppr1, deppr2
     character(len=24) :: typpil
-    aster_logical :: swloun, isxfe
+    aster_logical :: swloun
     aster_logical :: switch, mixte
     real(kind=8) :: miincr, miresi, fnid(2)
     real(kind=8), pointer :: plir(:) => null()
@@ -157,11 +155,7 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 ! --- STRATEGIE BASEE SUR LES TECHNIQUES EVENT-DRIVEN 'AUTRE_PILOTAGE'
 !
     swloun = .false.
-!
-! --- ETONNANT QUE X-FEM SE GLISSE A CE NIVEAU DU CODE (ET PLUS AVANT)
-!
-    call exixfe(modele, ierm)
-    isxfe = (ierm .eq. 1)
+
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -174,21 +168,21 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 !
     if (typsel .eq. 'ANGL_INCR_DEPL') then
 !
-        if (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') then
+        if (typpil .eq. 'LONG_ARC') then
             call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
             swloun = plir(1)*plir(6) .lt. 0.d0
         end if
         call nmceai(numedd, depdel, deppr1, deppr2, depold, &
-                    sdpilo, rho, eta(1), isxfe, f(1), &
+                    sdpilo, rho, eta(1), f(1), &
                     indic)
         call nmceai(numedd, depdel, deppr1, deppr2, depold, &
-                    sdpilo, rho, eta(2), isxfe, f(2), &
+                    sdpilo, rho, eta(2), f(2), &
                     indic)
         if (indic .eq. 0) then
             call nmceni(numedd, depdel, deppr1, deppr2, rho, &
-                        sdpilo, eta(1), isxfe, f(1))
+                        eta(1), f(1))
             call nmceni(numedd, depdel, deppr1, deppr2, rho, &
-                        sdpilo, eta(2), isxfe, f(2))
+                        eta(2), f(2))
         end if
         goto 500
     end if
@@ -197,9 +191,9 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 !
     if (typsel .eq. 'NORM_INCR_DEPL' .or. mixte) then
         call nmceni(numedd, depdel, deppr1, deppr2, rho, &
-                    sdpilo, eta(1), isxfe, f(1))
+                    eta(1), f(1))
         call nmceni(numedd, depdel, deppr1, deppr2, rho, &
-                    sdpilo, eta(2), isxfe, f(2))
+                    eta(2), f(2))
 !
 ! ----- SI STRATEGIE MIXTE : EXAMEN DU CONTRASTE
 !

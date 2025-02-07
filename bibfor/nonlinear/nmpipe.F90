@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
-                  ds_constitutive, ds_contact, valinc, depdel, ddepl0, &
+                  ds_constitutive, valinc, depdel, ddepl0, &
                   ddepl1, tau, nbeffe, eta, pilcvg, &
                   typpil, carele)
 !
@@ -57,7 +56,6 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: depdel, valinc(*)
-    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +72,6 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 ! In  ds_material      : datastructure for material parameters
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! In  ds_constitutive  : datastructure for constitutive laws management
-! In  ds_contact       : datastructure for contact management
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT
 ! IN  DDEPL0 : VARIATION DE DEPLACEMENT K-1.F0
 ! IN  DDEPL1 : VARIATION DE DEPLACEMENT K-1.F1
@@ -99,21 +96,16 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
     integer :: nbma, nbpt, icmp, ma, pt, npg, nbgmax
     integer :: jcesd, jcesl, ja0a1, ja0, ja1, ja2, ja3, jtrav
     integer :: iret, ja4
-    real(kind=8) :: result
     character(len=8) :: cpar
     character(len=19) :: copilo, copils, ctau
     character(len=24) :: a0a1, trav
     character(len=19) :: chgeom
     character(len=19) :: depmoi, sigmoi, varmoi, commoi
+    character(len=19) :: depplu
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
     aster_logical :: debug
-    character(len=19) :: xdonco, xindco, lnno, ltno, pinter, ainter, cface
-    character(len=19) :: faclon, baseco, xcohes, depplu
-    aster_logical :: lcontx
-    integer :: ier
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: xfem_cont(:) => null()
 !
     data copilo, copils/'&&NMPIPE.COPILO', '&&NMPIPE.COPILS'/
     data ctau/'&&NMPIPE.CTAU'/
@@ -123,11 +115,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 !
     call jemarq()
     call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
-!
-! --- MODELE X-FEM AVEC CONTACT ?
-!
-    call jeexin(modele(1:8)//'.XFEM_CONT', ier)
-    lcontx = ier .ne. 0
+
 !
 ! --- ON FAIT UN CALCUL DE PILOTAGE
 !
@@ -136,36 +124,14 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 ! --- INITIALISATIONS
 !
     if (typpil .eq. 'PRED_ELAS') then
-        if (lcontx) then
-            call jeveuo(modele(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
-            if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 3) then
-                option = 'PILO_PRED_ELAS'
-            else
-                option = 'PILO_PRED_ELAS_M'
-            end if
-        else
-            option = 'PILO_PRED_ELAS'
-        end if
+        option = 'PILO_PRED_ELAS'
     else if (typpil .eq. 'DEFORMATION') then
         option = 'PILO_PRED_DEFO'
     else
         ASSERT(.false.)
     end if
     debug = nivdbg .ge. 2
-!
-! --- RECUPERATION DES DONNEES XFEM
-!
-    xindco = ds_contact%sdcont_solv(1:14)//'.XFIP'
-    xdonco = ds_contact%sdcont_solv(1:14)//'.XFDO'
-    xcohes = ds_contact%sdcont_solv(1:14)//'.XCOH'
-    lnno = modele(1:8)//'.LNNO'
-    ltno = modele(1:8)//'.LTNO'
-    pinter = modele(1:8)//'.TOPOFAC.OE'
-    ainter = modele(1:8)//'.TOPOFAC.AI'
-    cface = modele(1:8)//'.TOPOFAC.CF'
-    faclon = modele(1:8)//'.TOPOFAC.LO'
-    baseco = modele(1:8)//'.TOPOFAC.BA'
-!
+
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
     call inical(nbin, lpain, lchin, nbout, lpaout, &
@@ -221,28 +187,8 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
     lchin(12) = ctau
     lpain(13) = 'PCAMASS'
     lchin(13) = carele(1:8)//'.CARMASSI'
-    lpain(14) = 'PINDCOI'
-    lchin(14) = xindco
-    lpain(15) = 'PDONCO'
-    lchin(15) = xdonco
-    lpain(16) = 'PLSN'
-    lchin(16) = lnno
-    lpain(17) = 'PLST'
-    lchin(17) = ltno
-    lpain(18) = 'PPINTER'
-    lchin(18) = pinter
-    lpain(19) = 'PAINTER'
-    lchin(19) = ainter
-    lpain(20) = 'PCFACE'
-    lchin(20) = cface
-    lpain(21) = 'PLONGCO'
-    lchin(21) = faclon
-    lpain(22) = 'PBASECO'
-    lchin(22) = baseco
-    lpain(23) = 'PCOHES'
-    lchin(23) = xcohes(1:19)
-    lpain(24) = 'PCARCRI'
-    lchin(24) = ds_constitutive%carcri(1:19)
+    lpain(14) = 'PCARCRI'
+    lchin(14) = ds_constitutive%carcri(1:19)
 !
 ! --- REMPLISSAGE DU CHAMP DE SORTIE
 !
@@ -303,14 +249,6 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 !
 !
 !
-            if (lcontx) then
-! - XFEM : SI PAS DE SOL AU PT DE GAUSS, ON N AJOUTE PAS DE DROITE
-                result = abs(cesv(ja0))+abs(cesv(ja1))+abs(cesv(ja2))+abs(cesv(1-1+ja3))
-                if (result .eq. 0) then
-                    goto 200
-                end if
-            end if
-!
 ! ---     LECTURE DU CODE RETOUR
 !
             if (ja4 .ne. 0) then
@@ -335,7 +273,6 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
                     end if
                 end if
             end if
-200         continue
         end do
     end do
 !
