@@ -25,16 +25,107 @@ from ...Cata.Language.SyntaxObjects import _F
 from ...Utilities import force_list, logger, no_new_attributes
 
 
-class KeywordsStore:
-    """Container that stores and gives access to some user keywords."""
+# FIXME: to be moved under Context (private)
 
-    _keywords = None
+
+class Context:
+    """Object that stores the objects required by a :py:class:`ProblemSolver`.
+
+    It only stores objects that are shared at different levels of the algorithm.
+    Objects only used by one stage/object should be created there.
+    If different objects should be created at each timestep for example, they
+    should not be here.
+
+    Attributes:
+        problem: :py:class:`PhysicalProblem` object
+        state: :py:class:`PhysicalState` object
+        result: :py:class:`Result` object (:py:class:`NonLinearResult`,
+            :py:class:`ThermalResult`)
+        problem_type: :py:class:`ProblemType` enum value
+        keywords: Part of the user keywords
+        oper: :py:class:`BaseOperatorsManager` object
+        contact: :py:class:`ContactManager` object
+        linear_solver: :py:class:`LinearSolver` object
+    """
+
+    # FIXME: to be removed and created deeper/later from '.keywords'?
+    # FIXME: with TimeScheme.Multiple? several '.oper'? one '.oper' per StepSolver?
+
+    class KeywordsStore:
+        """Container that stores and gives access to some user keywords."""
+
+        _dict_kwds = None
+        __setattr__ = no_new_attributes(object.__setattr__)
+
+        def __init__(self, keywords):
+            self._dict_kwds = keywords
+
+        def __getitem__(self, keyword):
+            """Return a keyword value.
+
+            Args:
+                keyword (str): Simple keyword.
+
+            Returns:
+                *misc*: Keyword value.
+            """
+            return self._dict_kwds[keyword]
+
+        def get(self, keyword, parameter=None, default=None):
+            """Return a keyword value.
+
+            Args:
+                keyword (str): Simple or factor keyword.
+                parameter (str|None): Simple keyword under the factor keyword, or *None*.
+                default (*misc*): Default value if the keyword is undefined.
+
+            Returns:
+                *misc*: Keyword value.
+            """
+            kwds = self._dict_kwds
+            if parameter is not None:
+                if kwds.get(keyword) is None:
+                    return default
+                return _F(kwds[keyword])[0].get(parameter, default)
+
+            return kwds.get(keyword, default)
+
+    _problem = _type = _state = _keywords = _result = None
+    _oper = _contact = _linsolv = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, keywords):
-        self._keywords = keywords
+    def __init__(self):
+        self._type = None
+        self._keywords = Context.KeywordsStore({})
+        self._problem = None
+        self._state = None
+        self._result = None
+        self._oper = None
+        self._contact = None
+        self._linsolv = None
 
-    def get(self, keyword, parameter=None, default=None):
+    # only few properties are needed (during initializations)
+    @property
+    def problem_type(self):
+        """ProblemType: Attribute that holds the type of problem."""
+        return self._type
+
+    @problem_type.setter
+    def problem_type(self, value):
+        self._type = value
+
+    # FIXME: à voir : on garde certains mots-clés ou uniquement quelques infos
+    @property
+    def keywords(self):
+        """Dict: Attribute that holds the keywords object."""
+        return self._keywords
+
+    @keywords.setter
+    def keywords(self, value_dict):
+        assert isinstance(value_dict, dict), f"unsupported type: {type(value_dict)}"
+        self._keywords = Context.KeywordsStore(value_dict)
+
+    def get_keyword(self, keyword, parameter=None, default=None):
         """ "Return a keyword value.
 
         Args:
@@ -45,65 +136,81 @@ class KeywordsStore:
         Returns:
             *misc*: Keyword value.
         """
-        args = self._keywords
-        if parameter is not None:
-            if args.get(keyword) is None:
-                return default
-            return _F(args[keyword])[0].get(parameter, default)
-
-        return args.get(keyword, default)
+        return self._keywords.get(keyword, parameter, default)
 
 
 class ContextMixin:
-    """Mixin object that store the objects required by the command or
-    the informations to build the right object when needed.
+    """Mixin object that wraps access to the objects of :py:class:`Context`.
 
     Attributes:
-        problem: PhysicalProblem object
-        state: PhysicalState object
-        result: Result object (NonLinearResult, ThermalResult)
-        problem_type: ProblemType enum value
+        problem: :py:class:`PhysicalProblem` object
+        state: :py:class:`PhysicalState` object
+        result: :py:class:`Result` object (:py:class:`NonLinearResult`,
+            :py:class:`ThermalResult`)
+        problem_type: :py:class:`ProblemType` enum value
         keywords: Part of the user keywords
-        oper: Operators object
-        contact: ContactManager object
-        linear_solver: LinearSolver object
+        oper: :py:class:`BaseOperatorsManager` object
+        contact: :py:class:`ContactManager` object
+        linear_solver: :py:class:`LinearSolver` object
     """
-
-    # FIXME: @dataclass with python>=3.7
-    class Data:
-        _problem = _type = _state = _keywords = _result = None
-        _oper = _contact = _linsolv = None
-        __setattr__ = no_new_attributes(object.__setattr__)
-
-        def __init__(self):
-            self._problem = None
-            # FIXME: check if it's needed
-            self._type = None
-            self._state = None
-            self._keywords = KeywordsStore()
-            self._result = None
-            # FIXME: to be removed and created deeper/later from '.keywords'?
-            # FIXME: with TimeScheme.Multiple? several '.oper'? one '.oper' per StepSolver?
-            self._oper = None
-            self._contact = None
-            self._linsolv = None
 
     _ctxt = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
+    @classmethod
+    def builder(cls, context):
+        """Default factory for :py:class:`ContextMixin` object.
+        Should be subclassed for non trivial constructor.
+        """
+        instance = cls()
+        instance.context = context
+        return instance
+
     def __init__(self):
-        self._ctxt = ContextMixin.Data()
+        self._ctxt = Context()
 
     @property
     def context(self):
         """Data: Context attached to the object."""
         return self._ctxt
 
-    def useProblemContext(self, parent):
-        """Set context content from the parent one."""
-        self._ctxt = parent._ctxt
+    @context.setter
+    def context(self, other):
+        assert isinstance(other, Context)
+        self._ctxt = other
 
     # convenient shortcuts properties
+    @property
+    def problem_type(self):
+        """ProblemType: Attribute that holds the type of problem."""
+        return self._ctxt.problem_type
+
+    @problem_type.setter
+    def problem_type(self, value):
+        self._ctxt.problem_type = value
+
+    @property
+    def keywords(self):
+        """Dict: Attribute that holds the keywords object."""
+        return self._ctxt._keywords
+
+    @keywords.setter
+    def keywords(self, value_dict):
+        self._ctxt.keywords = value_dict
+
+    def get_keyword(self, keyword, parameter=None, default=None):
+        """ "Return a keyword value.
+
+        Args:
+            keyword (str): Simple or factor keyword.
+            parameter (str|None): Simple keyword under the factor keyword, or *None*.
+            default (*misc*): Default value if the keyword is undefined.
+
+        Returns:
+            *misc*: Keyword value.
+        """
+        return self._ctxt.get_keywords.get(keyword, parameter, default)
+
     @property
     def problem(self):
         """PhysicalProblem: current problem description."""
@@ -132,39 +239,6 @@ class ContextMixin:
     def result(self, value):
         self._ctxt._result = value
 
-    # FIXME: à voir : on garde certains mots-clés ou uniquement quelques infos
-    @property
-    def keywords(self):
-        """Dict: Attribute that holds the keywords object."""
-        return self._ctxt._keywords
-
-    @keywords.setter
-    def keywords(self, value_dict):
-        assert isinstance(value_dict, dict), f"unsupported type: {type(value_dict)}"
-        self._ctxt._keywords = KeywordsStore(value_dict)
-
-    def get_keyword(self, keyword, parameter=None, default=None):
-        """ "Return a keyword value.
-
-        Args:
-            keyword (str): Simple or factor keyword.
-            parameter (str|None): Simple keyword under the factor keyword, or *None*.
-            default (*misc*): Default value if the keyword is undefined.
-
-        Returns:
-            *misc*: Keyword value.
-        """
-        return self._ctxt._keywords.get(keyword, parameter, default)
-
-    @property
-    def problem_type(self):
-        """ProblemType: Attribute that holds the type of problem."""
-        return self._ctxt._type
-
-    @problem_type.setter
-    def problem_type(self, value):
-        self._ctxt._type = value
-
     @property
     def oper(self):
         """Operators: Objects that adapts operators for each type of problem."""
@@ -187,25 +261,8 @@ class ContextMixin:
     @property
     def linear_solver(self):
         """LinearSolver: Attribute that holds the linear solver."""
-        return self._linsolv
+        return self._ctxt._linsolv
 
     @linear_solver.setter
     def linear_solver(self, value):
-        self.linsolv = value
-
-
-def convert_F(input, max=1):
-    """Return a normalized value of a factor keyword.
-    If max=1, a `_F` object is returned.
-    Otherwise, a list of `_F` is returned.
-
-    Args:
-        input (list[dict|_F]): A dict or a `_F`, or a list of.
-        max (int|'**'): Value of the 'max' attribute in the keyword description.
-
-    Returns:
-        `_F`|list[`_F`]: one `_F` object if max=1 or a list of `_F` objects.
-    """
-    if max == 1:
-        return _F(force_list(input)[0])
-    return [_F(i) for i in force_list(input)]
+        self._ctxt._linsolv = value

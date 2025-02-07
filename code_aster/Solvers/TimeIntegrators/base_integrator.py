@@ -57,21 +57,20 @@ class BaseIntegrator(MecaDynaOperatorsManager):
     _init_state = _set_up = None
 
     @classmethod
-    def factory(cls, problem_type, keywords):
+    def factory(cls, context):
         """Factory that creates the appropriate object.
 
         Args:
-            problem_type (ProblemType): Type of physical problem.
-            keywords (dict): Part of user keywords.
+            context (Context): Context of the problem.
 
         Returns:
             *BaseIntegrator*: A relevant *BaseIntegrator* object.
         """
-        assert problem_type == PBT.MecaDyna, f"unsupported type: {problem_type}"
-        integr = keywords["SCHEMA_TEMPS"]["SCHEMA"].capitalize()
+        assert context.problem_type == PBT.MecaDyna, f"unsupported type: {context.problem_type}"
+        integr = context.keywords["SCHEMA_TEMPS"]["SCHEMA"].capitalize()
         for klass in cls.__subclasses__():
             if klass.integrator_name.name == integr:
-                return klass.factory(problem_type, keywords)
+                return klass.factory(context)
 
     def __init__(self):
         super().__init__()

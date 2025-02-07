@@ -19,56 +19,29 @@
 
 from abc import ABC, abstractmethod
 
-from ..Basics import (
-    ContextMixin,
-    LoggingManager,
-    ProblemDispatcher,
-    ProblemTypeMixin,
-    SolverFeature,
-)
-from ..Basics import SolverOptions as SOP
+from ..Basics import ContextMixin, LoggingManager, ProblemTypeMixin
+from ..ProblemSolver import IterationsSolver
 
 
-# FIXME: add ABC after removing SolverFeature
-class BaseStepSolver(SolverFeature, ProblemDispatcher, ContextMixin, ProblemTypeMixin):
+class BaseStepSolver(ABC, ContextMixin, ProblemTypeMixin):
     """Solves a step, loops on iterations."""
 
-    provide = SOP.StepSolver
-
-    required_features = [
-        SOP.PhysicalProblem,
-        SOP.PhysicalState,
-        SOP.ConvergenceCriteria,
-        SOP.LinearSolver,
-    ]
-
-    optional_features = [SOP.Contact, SOP.OperatorsManager]
-
-    current_matrix = param = None
+    # required_features = [
+    #     SOP.PhysicalProblem,          x
+    #     SOP.PhysicalState,            x
+    #     SOP.ConvergenceCriteria,      x
+    #     SOP.LinearSolver,
+    # ]
+    _iter_solv = None
+    current_matrix = None
 
     def __init__(self):
-        super(BaseStepSolver, self).__init__()
-        self.current_matrix = self.param = None
-
-    @property
-    def conv_criteria(self):
-        """ConvergenceCriteria: Convergence criteria object."""
-        return self.get_feature(SOP.ConvergenceCriteria)
-
-    def _createPrivate(self, param):
-        self.setParameters(param)
-
-    def setParameters(self, param):
-        """Set parameters from user keywords.
-
-        Arguments:
-            param (dict) : user keywords.
-        """
-        self.param = param
+        super().__init__()
+        self.current_matrix = None
 
     def initialize(self):
         """Initialization."""
-        self.check_features()
+        self._iter_solv = IterationsSolver.factory(self.context)
 
     def createLoggingManager(self):
         """Return a logging manager
@@ -93,16 +66,6 @@ class BaseStepSolver(SolverFeature, ProblemDispatcher, ContextMixin, ProblemType
             *ConvergenceError* exception in case of error.
         """
 
-    def _get(self, keyword, parameter=None, default=None):
-        """Return a keyword value"""
-        if parameter is not None:
-            if keyword in self.param and self.param.get(keyword) is not None:
-                return self.param.get(keyword).get(parameter, default)
-            else:
-                return default
-
-        return self.param.get(keyword, default)
-
-    @abstractmethod
-    def setup(self):
-        """set up the step solver."""
+    # @abstractmethod
+    # def setup(self):
+    #     """set up the step solver."""

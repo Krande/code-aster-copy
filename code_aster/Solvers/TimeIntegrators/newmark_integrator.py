@@ -33,19 +33,20 @@ class NewmarkIntegrator(BaseIntegrator):
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
-    def factory(cls, problem_type, keywords):
+    def factory(cls, context):
         """Factory that creates the appropriate object.
 
         Args:
-            problem_type (ProblemType): Type of physical problem.
-            keywords (dict): Part of user keywords.
+            context (Context): Context of the problem.
 
         Returns:
             *NewmarkIntegrator*: A *NewmarkIntegrator* object.
         """
-        assert problem_type == PBT.MecaDyna, f"unsupported type: {problem_type}"
-        factkw = keywords["SCHEMA_TEMPS"]
-        return cls(gamma=factkw["GAMMA"], beta=factkw["BETA"])
+        assert context.problem_type == PBT.MecaDyna, f"unsupported type: {context.problem_type}"
+        factkw = context.keywords["SCHEMA_TEMPS"]
+        instance = cls(gamma=factkw["GAMMA"], beta=factkw["BETA"])
+        instance.context = context
+        return instance
 
     def __init__(self, gamma, beta):
         super().__init__()

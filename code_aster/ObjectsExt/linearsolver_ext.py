@@ -39,7 +39,6 @@ import gc
 
 @injector(LinearSolver)
 class ExtendedLinearSolver:
-    provide = SOP.LinearSolver
 
     @classmethod
     def factory(cls, command=None, mcf=None, **kwargs):

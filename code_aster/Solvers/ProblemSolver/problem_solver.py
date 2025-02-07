@@ -80,6 +80,11 @@ class ProblemSolver(SolverFeature, ContextMixin):
     step_rank = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
+    @classmethod
+    def builder(cls, _):
+        """Disabled for this object."""
+        raise NotImplementedError("ProblemSolver builds the Context itself!")
+
     def __init__(self, phys_pb, problem_type, result, keywords) -> None:
         super().__init__()
         self.problem = phys_pb
@@ -87,8 +92,7 @@ class ProblemSolver(SolverFeature, ContextMixin):
         self.result = result
         self.keywords = keywords
         self.state = PhysicalState(problem_type, size=1)
-        self.oper = BaseOperatorsManager.factory(self.problem_type, self.keywords)
-        self.oper.useProblemContext(self)
+        self.oper = BaseOperatorsManager.factory(self.context)
         self.step_rank = None
         self.current_matrix = None
         self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
@@ -134,13 +138,12 @@ class ProblemSolver(SolverFeature, ContextMixin):
         if self._step_solver:
             return self._step_solver
         logger.debug("+++ init StepSolver")
-        self._step_solver = solv = BaseStepSolver.factory(self.problem_type, self.keywords)
-        solv.useProblemContext(self)
+        self._step_solver = solv = BaseStepSolver.factory(self.context)
         solv.setParameters(self.keywords)
-        # FIXME: todo
-        for feat, required in solv.undefined():
-            solv.use(self._getF(feat, required))
-        self.use(solv)
+        # # FIXME: todo
+        # for feat, required in solv.undefined():
+        #     solv.use(self._getF(feat, required))
+        # self.use(solv)
         solv.setup()
         return solv
 
@@ -398,17 +401,17 @@ class ProblemSolver(SolverFeature, ContextMixin):
 
     def _initialize(self):
         """Initialize default objects when required."""
-        args = self.get_feature(SOP.Keywords, optional=True)
-        self._setLoggingLevel(args.get("INFO", 1))
-        # required to build other default objects
-        self.use(self.problem)
-        self.use(self.state)
-        self.use(args, SOP.Keywords)
-        self.use(self._get_stepper())
-        self.use(self._get_storage())
-        self.use(self._get_step_solver())
-        self.use(self.get_features(SOP.PostStepHook), provide=SOP.PostStepHook)
-        self.check_features()
+        # args = self.get_feature(SOP.Keywords, optional=True)
+        # self._setLoggingLevel(args.get("INFO", 1))
+        # # required to build other default objects
+        # self.use(self.problem)
+        # self.use(self.state)
+        # self.use(args, SOP.Keywords)
+        # self.use(self._get_stepper())
+        # self.use(self._get_storage())
+        # self.use(self._get_step_solver())
+        # self.use(self.get_features(SOP.PostStepHook), provide=SOP.PostStepHook)
+        # self.check_features()
 
     def run_ops(self):
         """Solve the problem.

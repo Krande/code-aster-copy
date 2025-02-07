@@ -66,11 +66,6 @@ class NewtonSolver(IterationsSolver):
         """ContactManager: contact object."""
         return self.get_feature(SOP.Contact, optional=True)
 
-    @property
-    def opers_manager(self):
-        """OperatorsManager: Operators manager object."""
-        return self.get_feature(SOP.OperatorsManager)
-
     def setParameters(self, param):
         """Assign parameters from user keywords.
 
@@ -151,10 +146,10 @@ class NewtonSolver(IterationsSolver):
         iter_glob = self.conv_manager.setdefault("ITER_GLOB_MAXI")
 
         incr_solv = self.get_feature(SOP.IncrementalSolver)
-        incr_solv.use(self.opers_manager)
+        incr_solv.use(self.oper)
         current_incr = -1
 
-        self.opers_manager.initialize()
+        self.oper.initialize()
 
         while not self.conv_manager.isFinished():
             current_incr += 1
@@ -165,7 +160,7 @@ class NewtonSolver(IterationsSolver):
             matrix_type = self._setMatrixType(current_incr)
 
             # Should the iteration be executed even if the solver converged ?
-            force = self.opers_manager.shouldExecuteIteration(current_incr)
+            force = self.oper.shouldExecuteIteration(current_incr)
 
             # Solve current iteration
             primal_incr, self.current_matrix, resi_fields = incr_solv.solve(
@@ -189,7 +184,7 @@ class NewtonSolver(IterationsSolver):
         if not self.conv_manager.isConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
-        self.opers_manager.finalize()
+        self.oper.finalize()
 
         self._resetMatrix(current_incr)
 

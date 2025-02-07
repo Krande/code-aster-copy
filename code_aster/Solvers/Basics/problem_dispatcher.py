@@ -20,6 +20,8 @@
 from enum import IntFlag, auto
 from inspect import isabstract
 
+from ...Utilities import logger
+
 
 class ProblemType(IntFlag):
     """Types of physical problems."""
@@ -34,22 +36,24 @@ class ProblemTypeMixin:
     """Mixin class that provides a factory depending on the type of physical problem."""
 
     @classmethod
-    def factory(cls, problem_type, keywords):
+    def factory(cls, context):
         """Factory that creates the appropriate object.
 
         Args:
-            problem_type (ProblemType): Type of physical problem.
-            keywords (dict): Part of user keywords.
+            context (Context): Context of the problem.
 
         Returns:
             instance: A new object of the relevant type.
         """
         for kls in cls.__subclasses__():
-            if kls.problem_type == problem_type:
+            logger.debug("candidate: %s", kls)
+            if kls.problem_type == context.problem_type:
                 if isabstract(kls):
-                    return kls.factory(problem_type, keywords)
-                return kls()
-        raise TypeError(f"unsupported type: {problem_type.name}")
+                    return kls.factory(context)
+                instance = kls()
+                instance.context = context
+                return instance
+        raise TypeError(f"no candidate for {cls=}, type: {context.problem_type}")
 
 
 class ProblemDispatcher:

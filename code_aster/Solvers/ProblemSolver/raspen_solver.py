@@ -24,6 +24,7 @@ from ...Utilities import PETSc, no_new_attributes, profile
 from ...Utilities.mpi_utils import MPI
 from ..Basics import SolverFeature
 from ..Basics import SolverOptions as SOP
+from .snes_solver import SNESSolver
 
 
 def Print(*args):
@@ -58,9 +59,12 @@ class RASPENSolver(SolverFeature):
 
     def initialize(self):
         """Initialize the object for the next step."""
+        super().initialize()
         self.check_features()
         self.current_incr = 0
         self.current_matrix = None
+        self.local_solver = SNESSolver(local=False)
+        self.local_solver.context = self.context
         self.local_solver.initialize()
 
     @property

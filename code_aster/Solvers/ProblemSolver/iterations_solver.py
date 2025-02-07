@@ -21,7 +21,7 @@ from abc import ABC, abstractmethod
 from enum import IntFlag, auto
 
 from ...Utilities import no_new_attributes
-from ..Basics import ContextMixin, KeywordsStore, ProblemTypeMixin
+from ..Basics import ContextMixin, ProblemTypeMixin
 from ..Basics import ProblemType as PBT
 
 
@@ -44,21 +44,21 @@ class IterationsSolver(ABC, ContextMixin, ProblemTypeMixin):
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
-    def factory(cls, problem_type, keywords):
+    def factory(cls, context):
         """Factory that creates the appropriate object.
 
         Args:
-            problem_type (ProblemType): Type of physical problem.
-            keywords (dict): Part of user keywords.
+            context (Context): Context of the problem.
 
         Returns:
             *BaseIntegrator*: A relevant *BaseIntegrator* object.
         """
-        assert problem_type == PBT.MecaStat, f"unsupported type: {problem_type}"
-        method = KeywordsStore(keywords).get("METHODE", default="NEWTON").capitalize()
+        method = context.keywords.get("METHODE", default="NEWTON").capitalize()
         for kls in cls.__subclasses__():
             if kls.solver_type.name == method:
-                return kls(keywords)
+                instance = kls()
+                instance.context = context
+                return instance
 
     def __init__(self):
         super().__init__()

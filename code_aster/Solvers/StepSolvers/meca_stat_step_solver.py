@@ -19,39 +19,25 @@
 
 from libaster import deleteTemporaryObjects
 
-from .base_step_solver import BaseStepSolver
-from ..Basics import SolverOptions as SOP
 from ...Utilities import no_new_attributes, profile
-from ..OperatorsManager import MecaStatOperatorsManager
 from ..Basics import ProblemType
+from ..OperatorsManager import MecaStatOperatorsManager
+from .base_step_solver import BaseStepSolver
 
 
 class MecaStatStepSolver(BaseStepSolver):
     """Solves a step, loops on iterations."""
 
     problem_type = ProblemType.MecaStat
-
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    @classmethod
-    def create(cls, param=None):
-        """Setup a solver for the given problem.
-
-        Arguments:
-            param (dict) : user keywords.
-
-        Returns:
-            *StepSolver*: A relevant *StepSolver* object.
-        """
-        return cls()
-
     def __init__(self):
-        super(MecaStatStepSolver, self).__init__()
+        super().__init__()
 
     def initialize(self):
         """Initialization."""
         super().initialize()
-        self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
+        self.state.primal_step = self.state.createPrimal(self.phys_pb, 0.0)
 
     # @profile
     def solve(self):
@@ -72,17 +58,3 @@ class MecaStatStepSolver(BaseStepSolver):
         deleteTemporaryObjects()
 
         logManager.printConvTableEnd()
-
-    def setup(self):
-        """set up the step solver."""
-        opers_manager = self.get_feature(SOP.OperatorsManager, optional=True)
-        if not opers_manager:
-            opers_manager = MecaStatOperatorsManager()
-        for feat, required in opers_manager.undefined():
-            feat_obj = self.get_feature(feat, optional=(not required))
-            opers_manager.use(feat_obj)
-        self.conv_criteria.use(opers_manager)
-        if hasattr(self.conv_criteria, "local_solver"):
-            if self.conv_criteria.local_solver:
-                self.conv_criteria.local_solver.use(opers_manager)
-        self.use(opers_manager)
