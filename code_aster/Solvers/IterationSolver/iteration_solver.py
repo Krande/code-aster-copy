@@ -35,6 +35,7 @@ class BaseInterationSolver(ABC, ContextMixin, DispatcherMixin):
         Snes = auto()
         Raspen = auto()
 
+    __needs__ = ("keywords", "oper", "state")
     solver_type = SubType.Unset
 
     logManager = None

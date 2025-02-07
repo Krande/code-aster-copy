@@ -27,6 +27,7 @@ from ..Basics import ContextMixin, DispatcherMixin
 class BaseOperators(ABC, ContextMixin, DispatcherMixin):
     """Base object that provides operators to solve the problem."""
 
+    __needs__ = ("problem", "state", "contact")
     problem_type = None
     _first_jacobian = _lagr_scaling = None
     _tmp_stress = _tmp_internVar = None

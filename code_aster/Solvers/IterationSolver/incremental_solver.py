@@ -32,6 +32,7 @@ PERTURB_JAC = False  # for checking only (sloooow)
 class IncrementalSolver(EventSource, ContextMixin):
     """Solve an iteration."""
 
+    __needs__ = ("problem", "state", "keywords", "oper", "linear_solver", "contact")
     _data = None
     _converg = _line_search = None
     __setattr__ = no_new_attributes(object.__setattr__)

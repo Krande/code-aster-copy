@@ -30,6 +30,7 @@ from ..Basics import SolverOptions as SOP
 class ConvergenceManager(ContextMixin):
     """Object that decides about the convergence status."""
 
+    __needs__ = ("problem", "state", "keywords")
     provide = SOP.ConvergenceManager
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 

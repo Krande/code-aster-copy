@@ -21,6 +21,8 @@
 Base objects used to solve generic non linear problems.
 """
 
+from functools import wraps
+
 from ...Cata.Language.SyntaxObjects import _F
 from ...Utilities import logger, no_new_attributes
 
@@ -138,6 +140,24 @@ class Context:
         return self._keywords.get(keyword, parameter, default)
 
 
+def check_access(alt=None):
+    """Decorator to wrap TestCase methods by calling writeResult"""
+
+    def decorator(method):
+        @wraps(method)
+        def wrapper(inst, *args, **kwds):
+            """wrapper"""
+            required = alt or method.__name__
+            if required != "context" and required not in inst.__needs__:
+                raise AttributeError(f"undeclared access to {required}")
+                # logger.warning(f"undeclared access from {inst.__class__.__name__} to {required}")
+            return method(inst, *args, **kwds)
+
+        return wrapper
+
+    return decorator
+
+
 class ContextMixin:
     """Mixin object that wraps access to the objects of :py:class:`Context`.
 
@@ -153,7 +173,8 @@ class ContextMixin:
         linear_solver: :py:class:`LinearSolver` object
     """
 
-    # FIXME: "parent" objects must declared what attr they need
+    # each class must declared what attributes it needs to access
+    __needs__ = ()
     _ctxt = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -176,34 +197,41 @@ class ContextMixin:
         self._ctxt = Context()
 
     @property
+    @check_access()
     def context(self):
         """Data: Context attached to the object."""
         return self._ctxt
 
     @context.setter
+    @check_access()
     def context(self, other):
         assert isinstance(other, Context)
         self._ctxt = other
 
     # convenient shortcuts properties
     @property
+    @check_access()
     def problem_type(self):
         """ProblemType: Attribute that holds the type of problem."""
         return self._ctxt.problem_type
 
     @problem_type.setter
+    @check_access()
     def problem_type(self, value):
         self._ctxt.problem_type = value
 
     @property
+    @check_access()
     def keywords(self):
         """Dict: Attribute that holds the keywords object."""
         return self._ctxt._keywords
 
     @keywords.setter
+    @check_access()
     def keywords(self, value_dict):
         self._ctxt.keywords = value_dict
 
+    @check_access(alt="keywords")
     def get_keyword(self, keyword, parameter=None, default=None):
         """ "Return a keyword value.
 
@@ -218,57 +246,69 @@ class ContextMixin:
         return self._ctxt.get_keyword(keyword, parameter, default)
 
     @property
+    @check_access()
     def problem(self):
         """PhysicalProblem: current problem description."""
         return self._ctxt._problem
 
     @problem.setter
+    @check_access()
     def problem(self, problem):
         assert not self._ctxt._problem, "must be set only once!"
         self._ctxt._problem = problem
 
     @property
+    @check_access()
     def state(self):
         """PhysicalState: current state."""
         return self._ctxt._state
 
     @state.setter
+    @check_access()
     def state(self, state):
         self._ctxt._state = state
 
     @property
+    @check_access()
     def result(self):
         """Result: Attribute that holds the result object."""
         return self._ctxt._result
 
     @result.setter
+    @check_access()
     def result(self, value):
         self._ctxt._result = value
 
     @property
+    @check_access()
     def oper(self):
         """Operators: Objects that adapts operators for each type of problem."""
         return self._ctxt._oper
 
     @oper.setter
+    @check_access()
     def oper(self, value):
         self._ctxt._oper = value
 
     @property
+    @check_access()
     def contact(self):
         """ContactManager: Objects to solve contact conditions"""
         logger.debug("CTXT: ctxt.contact: %s", self._ctxt._contact)
         return self._ctxt._contact
 
     @contact.setter
+    @check_access()
     def contact(self, value):
         self._ctxt._contact = value
 
     @property
+    @check_access()
     def linear_solver(self):
         """LinearSolver: Attribute that holds the linear solver."""
         return self._ctxt._linsolv
 
     @linear_solver.setter
+    @check_access()
     def linear_solver(self, value):
         self._ctxt._linsolv = value

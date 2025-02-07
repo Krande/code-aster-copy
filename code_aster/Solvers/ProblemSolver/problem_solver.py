@@ -49,6 +49,16 @@ class ProblemSolver(ContextMixin):
         result (*misc*): The result object.
     """
 
+    __needs__ = (
+        "contact",
+        "keywords",
+        "linear_solver",
+        "oper",
+        "problem",
+        "problem_type",
+        "result",
+        "state",
+    )
     # required_features = [
     #     SOP.Keywords,
     #     SOP.LinearSolver,

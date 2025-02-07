@@ -26,12 +26,7 @@ from ..IterationSolver import BaseInterationSolver
 class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
     """Solves a step, loops on iterations."""
 
-    # required_features = [
-    #     SOP.PhysicalProblem,          x
-    #     SOP.PhysicalState,            x
-    #     SOP.ConvergenceCriteria,      x
-    #     SOP.LinearSolver,
-    # ]
+    __needs__ = ("problem", "state", "oper", "linear_solver")
     _iterations_solv = None
     current_matrix = None
 

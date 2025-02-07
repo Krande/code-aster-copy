@@ -28,8 +28,8 @@ from .line_search import LineSearch
 class NewtonSolver(BaseInterationSolver):
     """Solves a step, loops on iterations."""
 
+    __needs__ = ("problem", "state", "keywords", "oper", "linear_solver", "contact")
     solver_type = BaseInterationSolver.SubType.Newton
-
     # FIXME: merge IncrementalSolver into NewtonSolver
     _incr_solv = _converg = _line_search = None
     __setattr__ = no_new_attributes(object.__setattr__)
