@@ -143,11 +143,6 @@ class ContactZone : public DataStructure {
         _meshPairing->setCoordinates( coor );
     };
 
-    //     /** @brief Update coordinates */
-    //     void updateCoordinates( const FieldOnNodesRealPtr &disp ) {
-    //         _meshPairing->updateCoordinates( disp );
-    //     };
-
     /** @brief Set/unset friction for this zone */
     void enableFriction( const bool &friction ) { _fricParam->enableFriction( friction ); };
 

@@ -38,7 +38,7 @@ ContactZone::ContactZone( const std::string name )
       _contParam( std::make_shared< ContactParameter >() ),
       _fricParam( std::make_shared< FrictionParameter >() ),
       _pairParam( std::make_shared< PairingParameter >() ),
-      _meshPairing( std::make_shared< MeshPairing >( getName() ) ) {};
+      _meshPairing( std::make_shared< MeshPairing >( getName() + ".APMA" ) ) {};
 
 void ContactZone::setVerbosity( const ASTERINTEGER &level ) {
     _verbosity = level;

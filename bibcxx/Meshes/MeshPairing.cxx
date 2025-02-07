@@ -29,7 +29,7 @@
 #include "Utilities/Tools.h"
 
 MeshPairing::MeshPairing( const std::string name )
-    : DataStructure( name, 8, "MESH_PAIRING" ),
+    : DataStructure( name, 13, "MESH_PAIRING" ),
       _mesh( nullptr ),
       _masterInverseConnectivity( JeveuxCollectionLong( getName() + ".CM" ) ),
       _slaveInverseConnectivity( JeveuxCollectionLong( getName() + ".CS" ) ),
@@ -54,8 +54,6 @@ void MeshPairing::setPair( const std::string &groupNameSlav, const std::string &
 
     MeshPairing::setMasterGroupOfCells( groupNameMast );
     MeshPairing::setSlaveGroupOfCells( groupNameSlav );
-
-    //     this->initObjects();
 };
 
 ASTERBOOL

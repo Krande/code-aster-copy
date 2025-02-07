@@ -56,7 +56,9 @@ class MeshPairing : public DataStructure {
     VectorLong _slaveNodes;
     /** @brief List of excluded slave cells */
     VectorLong _slaveCellsExcluded;
+    /** @brief List of groups of excluded slave cells */
     VectorString _excludedSlaveCells;
+    /** @brief List of groups of excluded slave nodes */
     VectorString _excludedSlaveNodes;
 
     /** @brief  Master inverse connectivity */
@@ -159,19 +161,11 @@ class MeshPairing : public DataStructure {
     /** @brief Get coordinates */
     MeshCoordinatesFieldPtr getCoordinates() const { return _currentCoordinates; }
 
-    //     /** @brief Update coordinates */
-    //     void updateCoordinates( const FieldOnNodesRealPtr &disp ) {
-    //         *_currentCoordinates = *( _mesh->getCoordinates() ) + *disp;
-    //     };
-
     /** @brief Set coordinates */
     void setCoordinates( const MeshCoordinatesFieldPtr &coor ) { _currentCoordinates = coor; };
 
     /** @brief Set pair */
     void setPair( const std::string &groupNameSlav, const std::string &groupNameMast );
-
-    /** @brief Init pair */
-    void initPair();
 
     /** @brief Set slave cells */
     void setSlaveGroupOfCells( const std::string &groupName );

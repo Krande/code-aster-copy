@@ -35,8 +35,6 @@ void exportParallelContactFEDescriptorToPython( py::module_ &mod ) {
                 ParallelContactFEDescriptor::ParallelContactFEDescriptorPtr,
                 FiniteElementDescriptor >( mod, "ParallelContactFEDescriptor" )
         // fake initFactoryPtr: not directly created by user
-        // .def( py::init( &initFactoryPtr< ParallelContactFEDescriptor, std::string, std::string,
-        //                                  BaseMeshPtr > ) )
         .def( py::init(
             &initFactoryPtr< ParallelContactFEDescriptor, FiniteElementDescriptorPtr,
                              ConnectionMeshPtr, ModelPtr, ModelPtr, VectorString, VectorString > ) )
