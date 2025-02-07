@@ -34,7 +34,7 @@ cata_msg = {
     8: _("""La maille %(k1)s est orientée."""),
     9: _("""La maille %(k1)s sert à orienter un nouveau groupe connexe."""),
     10: _(
-        """Le type de maille %(k1)s n'est actuellement pas traité pour calculer la longueur des aretes. Les aretes sur cette mailles sont toutes supposées nulles, ce qui peut engendrer des effets de bord sur les commandes utilisant ce critère."""
+        """Le type de maille %(k1)s n'est actuellement pas traité pour calculer la longueur des arêtes. Les arêtes sur cette mailles sont toutes supposées nulles, ce qui peut engendrer des effets de bord sur les commandes utilisant ce critère."""
     ),
     11: _("""Le groupe de mailles %(k1)s n'existe pas dans le maillage."""),
     12: _("""Il ne semble y avoir aucun groupe de mailles dans le maillage."""),

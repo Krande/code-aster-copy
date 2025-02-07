@@ -588,25 +588,19 @@ contains
 !
 ! Get options from user for name of cell
 !
-! In  keywfact         : factor keyword to read parameters
-! In  iocc             : index of factor keyword
 ! Out lPrefCellName    : flag if a string was given for name of cell
 ! Out lPrefCellNume    : flag if a integer was given for name of cell
 ! Out prefCellName     : string for name of cell
 ! Out prefCellNume     : integer for name of cell
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getCellOptionForName(keywfact, iocc, lPrefCellName, lPrefCellNume, prefCellName, &
+    subroutine getCellOptionForName(lPrefCellName, lPrefCellNume, prefCellName, &
                                     prefCellNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=16), intent(in) :: keywfact
-        integer, intent(in) :: iocc
         aster_logical, intent(out) :: lPrefCellName, lPrefCellNume
         character(len=8), intent(out) :: prefCellName
         integer, intent(out) :: prefCellNume
-! - Local
-        integer :: n1
 !   ------------------------------------------------------------------------------------------------
         lPrefCellName = ASTER_FALSE
         lPrefCellNume = ASTER_FALSE
@@ -621,18 +615,15 @@ contains
 ! Create name for cell
 !
 ! IO  cellName         : name of cell
-! In  lPrefCellName    : flag if a string was given for name of cell
-! In  lPrefCellNume    : flag if a integer was given for name of cell
 ! In  prefCellName     : string for name of cell
 ! IO  prefCellNume     : integer for name of cell
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine createNameOfCell(cellName, lPrefCellName, lPrefCellNume, prefCellName, &
+    subroutine createNameOfCell(cellName, prefCellName, &
                                 prefCellNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=8), intent(inout) :: cellName
-        aster_logical, intent(in) :: lPrefCellName, lPrefCellNume
         character(len=8), intent(in) :: prefCellName
         integer, intent(inout) :: prefCellNume
 ! - Local
@@ -655,27 +646,19 @@ contains
 !
 ! Get options from user for name of node
 !
-! In  keywfact         : factor keyword to read parameters
-! In  iocc             : index of factor keyword
-! Out lPrefNodeName    : flag if a string was given for name of node
 ! Out lPrefNodeNume    : flag if a integer was given for name of node
 ! Out prefNodeName     : string for name of node
 ! Out prefNodeNume     : integer for name of node
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getNodeOptionForName(keywfact, iocc, lPrefNodeName, lPrefNodeNume, prefNodeName, &
+    subroutine getNodeOptionForName(lPrefNodeNume, prefNodeName, &
                                     prefNodeNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=16), intent(in) :: keywfact
-        integer, intent(in) :: iocc
-        aster_logical, intent(out) :: lPrefNodeName, lPrefNodeNume
+        aster_logical, intent(out) :: lPrefNodeNume
         character(len=8), intent(out) :: prefNodeName
         integer, intent(out) :: prefNodeNume
-! - Local
-        integer :: n1
 !   ------------------------------------------------------------------------------------------------
-        lPrefNodeName = ASTER_FALSE
         lPrefNodeNume = ASTER_FALSE
         prefNodeName = ' '
         prefNodeNume = -1
@@ -688,18 +671,17 @@ contains
 ! Create name for node
 !
 ! IO  nodeName         : name of node
-! In  lPrefNodeName    : flag if a string was given for name of node
 ! In  lPrefNodeNume    : flag if a integer was given for name of node
 ! In  prefNodeName     : string for name of node
 ! IO  prefNodeNume     : integer for name of node
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine createNameOfNode(nodeName, lPrefNodeName, lPrefNodeNume, prefNodeName, &
+    subroutine createNameOfNode(nodeName, lPrefNodeNume, prefNodeName, &
                                 prefNodeNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=8), intent(inout) :: nodeName
-        aster_logical, intent(in) :: lPrefNodeName, lPrefNodeNume
+        aster_logical, intent(in) :: lPrefNodeNume
         character(len=8), intent(in) :: prefNodeName
         integer, intent(inout) :: prefNodeNume
 ! - Local

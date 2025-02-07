@@ -15,14 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function cfmmvd(vect)
 !
     implicit none
 !
 #include "asterfort/assert.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer :: cfmmvd
     character(len=5), intent(in) :: vect
@@ -40,7 +38,7 @@ function cfmmvd(vect)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: zmeth = 23, ztole = 3, ztabf = 34, zcmcf = 16
+    integer, parameter :: zmeth = 23, ztole = 3, ztabf = 34, zcmcf = 17
     integer, parameter :: ztgde = 6, zdirn = 6, zdime = 18, zpoud = 3
     integer, parameter :: ztypm = 2, zperc = 4, ztypn = 2, zmesx = 5
     integer, parameter :: zapme = 3, zmaes = 4, zresu = 30, zcmdf = 6

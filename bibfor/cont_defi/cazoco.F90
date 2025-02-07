@@ -59,7 +59,7 @@ subroutine cazoco(sdcont, keywf, cont_form, i_zone, &
         call cazocm(sdcont, keywf, i_zone)
         call cazocc(sdcont, keywf, i_zone)
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine
