@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,22 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmetcv(model, field_refe, field_in, field_disc_in, field_out, field_disc_out)
+subroutine nmetcv(model, fieldRefe, fieldType, &
+                  fieldInName, fieldInDisc, fieldOutName, fieldOutDisc)
 !
     implicit none
 !
+#include "asterfort/assert.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: model
-    character(len=24), intent(in) :: field_refe
-    character(len=24), intent(in) :: field_in
-    character(len=24), intent(in) :: field_out
-    character(len=4), intent(in) :: field_disc_in
-    character(len=4), intent(in) :: field_disc_out
+    character(len=24), intent(in) :: fieldRefe
+    character(len=24), intent(in) :: fieldType
+    character(len=24), intent(in) :: fieldInName, fieldOutName
+    character(len=4), intent(in) :: fieldInDisc, fieldOutDisc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,11 +42,12 @@ subroutine nmetcv(model, field_refe, field_in, field_disc_in, field_out, field_d
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model           : model
-! In  field_refe      : name of a reference field to convert ELGA fields
-! In  field_in        : name of field to convert
-! In  field_disc_in   : spatial discretization of field to convert
-! In  field_out       : name of field converted
-! In  field_disc_out  : spatial discretization of field converted
+! In  fieldtype       : type of field
+! In  fieldRefe       : name of a reference field to convert ELGA fields
+! In  fieldInName     : name of field to convert
+! In  fieldInDisc     : spatial discretization of field to convert
+! In  fieldOutName    : name of field converted
+! In  fieldOutDisc    : spatial discretization of field converted
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,20 +55,17 @@ subroutine nmetcv(model, field_refe, field_in, field_disc_in, field_out, field_d
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! - Good discretization -> nothing to do
-!
-    if (field_disc_in .eq. field_disc_out) then
-        call copisd('CHAMP_GD', 'V', field_in, field_out)
+
+    if (fieldInDisc .eq. fieldOutDisc) then
+! ----- Good discretization -> nothing to do
+        call copisd('CHAMP_GD', 'V', fieldInName, fieldOutName)
     else
-!
 ! ----- Not good discretization -> is it possible to convert ?
-!
-        valk(1) = field_in
-        valk(2) = field_disc_in
-        valk(3) = field_disc_out
-        if (field_disc_out .eq. 'ELGA') then
-            if (field_refe .eq. ' ') then
+        valk(1) = fieldType
+        valk(2) = fieldInDisc
+        valk(3) = fieldOutDisc
+        if (fieldOutDisc .eq. 'ELGA') then
+            if (fieldRefe .eq. ' ') then
                 call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
             else
                 call utmess('I', 'ETATINIT_51', nk=3, valk=valk)
@@ -74,11 +73,10 @@ subroutine nmetcv(model, field_refe, field_in, field_disc_in, field_out, field_d
         else
             call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
         end if
-!
-! ----- Not good discretization -> convert
-!
-        call chpchd(field_in, field_disc_out, field_refe, 'NON', 'V', &
-                    field_out, model)
+
+! ----- Not good discretization -> try to convert
+        call chpchd(fieldInName, fieldOutDisc, fieldRefe, 'NON', 'V', &
+                    fieldOutName, model)
     end if
 !
 end subroutine

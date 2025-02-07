@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,6 @@ subroutine ntetl3(i_field, ds_inout, tempct)
 #include "asterfort/nmetnc.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
     integer, intent(in) :: i_field
     type(NL_DS_InOut), intent(inout) :: ds_inout
     real(kind=8), intent(in) :: tempct
@@ -48,72 +46,59 @@ subroutine ntetl3(i_field, ds_inout, tempct)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret
-    character(len=24) :: field_type
-    character(len=24) :: valk(2)
+    character(len=24) :: fieldType
     character(len=24) :: algo_name, field_algo
-    character(len=4) :: init_type, disc_type
+    character(len=4) :: init_type, fieldDisc
     character(len=8) :: gran_name
     aster_logical :: l_acti
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
+
 ! - Field to read ?
-!
     if (ds_inout%field(i_field)%l_read_init) then
-!
 ! ----- Name of field (type) in results datastructure
-!
-        field_type = ds_inout%field(i_field)%type
-!
+        fieldType = ds_inout%field(i_field)%type
+
 ! ----- Name of field in algorithm
-!
         algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
-!
+
 ! ----- Spatial discretization of field
-!
-        disc_type = ds_inout%field(i_field)%disc_type
-!
+        fieldDisc = ds_inout%field(i_field)%disc_type
+
 ! ----- Type of GRANDEUR of field
-!
         gran_name = ds_inout%field(i_field)%gran_name
-!
+
 ! ----- Actual state of field
-!
         init_type = ds_inout%field(i_field)%init_type
-!
+
 ! ----- Is field should been active ?
-!
         l_acti = ds_inout%l_field_acti(i_field)
-!
+
 ! ----- Informations about field
-!
         if (l_acti) then
             if (init_type .eq. ' ') then
-                call utmess('F', 'ETATINIT_30', sk=field_type)
+                call utmess('F', 'ETATINIT_30', sk=fieldType)
             else
-                valk(1) = field_type
-                valk(2) = ds_inout%result
                 if (init_type .eq. 'ZERO') then
-                    call utmess('I', 'ETATINIT_31', sk=field_type)
+                    call utmess('I', 'ETATINIT_31', sk=fieldType)
                 else if (init_type .eq. 'RESU') then
-                    call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
+                    call utmess('I', 'ETATINIT_32', sk=fieldType)
                 else if (init_type .eq. 'READ') then
-                    call utmess('I', 'ETATINIT_33', sk=field_type)
+                    call utmess('I', 'ETATINIT_33', sk=fieldType)
                 else if (init_type .eq. 'STAT') then
                     call utmess('I', 'ETATINIT_34')
                 else if (init_type .eq. 'VALE') then
                     call utmess('I', 'ETATINIT_35', sr=tempct)
                 else
-                    ASSERT(.false.)
+                    ASSERT(ASTER_FALSE)
                 end if
             end if
-!
+
 ! --------- Check GRANDEUR and discretization
-!
             if (gran_name .ne. ' ') then
-                call chpver('F', field_algo, disc_type, gran_name, iret)
+                call chpver('F', field_algo, fieldDisc, gran_name, iret)
             end if
         end if
     end if

@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    function idensd(dsTypeZ, dsName1Z, dsName2Z)
-        aster_logical :: idensd
-        character(len=*), intent(in) :: dsName1Z, dsName2Z, dsTypeZ
-    end function idensd
+    subroutine stressChck(stressRefeZ, stressZ, iret)
+        character(len=*), intent(in) :: stressRefeZ, stressZ
+        integer, intent(out) :: iret
+    end subroutine stressChck
 end interface
