@@ -58,6 +58,13 @@ resu_elas = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=l_inst),
 )
 
+fiss = DEFI_FOND_FISS(
+    MAILLAGE=mesh,
+    FOND_FISS=_F(GROUP_MA="FRONT", TYPE_FOND="OUVERT"),
+    LEVRE_SUP=_F(GROUP_MA="LEVRE"),
+    SYME="OUI",
+)
+
 ##################################################
 # BEREMIN 3D normalisé pour comparaison au 2D
 ##################################################
@@ -128,7 +135,7 @@ beremin_2d_p0 = POST_BEREMIN(
     GROUP_MA="CT",
     FILTRE_SIGM="SIGM_ELMOY",
     WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
-    METHODE_2D=_F(GROUP_NO="Plan_0", UNITE_RESU=83),
+    METHODE_2D=_F(GROUP_NO="Plan_0", FISSURE=fiss, UNITE_RESU=83),
 )
 
 IMPR_TABLE(TABLE=beremin_2d_p0, UNITE=6)
@@ -152,7 +159,7 @@ beremin_2d_p4 = POST_BEREMIN(
     GROUP_MA="CT",
     FILTRE_SIGM="SIGM_ELMOY",
     WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
-    METHODE_2D=_F(GROUP_NO="Plan_4", UNITE_RESU=84),
+    METHODE_2D=_F(GROUP_NO="Plan_4", FISSURE=fiss, UNITE_RESU=84),
 )
 
 IMPR_TABLE(TABLE=beremin_2d_p4, UNITE=6)
@@ -176,7 +183,7 @@ beremin_2d_c04 = POST_BEREMIN(
     GROUP_MA="CT",
     FILTRE_SIGM="SIGM_ELMOY",
     WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
-    METHODE_2D=_F(GROUP_NO=("Plan_0", "Plan_4")),
+    METHODE_2D=_F(GROUP_NO=("Plan_0", "Plan_4"), FISSURE=fiss),
 )
 
 IMPR_TABLE(TABLE=beremin_2d_c04, UNITE=6)
@@ -230,7 +237,7 @@ beremin_2d_c0_tore = POST_BEREMIN(
     GROUP_MA="Couche_0_TORE",
     FILTRE_SIGM="SIGM_ELMOY",
     WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
-    METHODE_2D=_F(GROUP_NO="Plan_0_TORE"),
+    METHODE_2D=_F(GROUP_NO="Plan_0_TORE", FISSURE=fiss),
 )
 
 IMPR_TABLE(TABLE=beremin_2d_c0_tore, UNITE=6)

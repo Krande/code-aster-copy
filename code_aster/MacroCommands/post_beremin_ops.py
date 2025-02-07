@@ -89,7 +89,8 @@ class PostBeremin:
     _weib_params = None
     # data 2D only
     _method_2D = _prec_proj = _model_2D = None
-    _l_proj_3D_2D = None
+    _groupno = None
+    _l_proj_3D_2D = _fondfiss = _dictfondfiss = None
     _l_mesh_proj_2D = _l_name_mesh_2D = _l_mesh_group_no_2D = None
     _l_mesh_proj_2D_mc = _mesh_3D_cells_mc = _d_max_3d = None
     _model_3D_restricted = None
@@ -134,29 +135,27 @@ class PostBeremin:
             self._l_mesh_proj_2D = args["METHODE_2D"]["MAILLAGE"]
             self._l_name_mesh_2D = args["METHODE_2D"]["NOM_MAIL_MED"]
             self._l_mesh_group_no_2D = args["METHODE_2D"]["GROUP_NO"]
+            self._fondfiss = args["METHODE_2D"]["FISSURE"]
             self._model_2D = args["METHODE_2D"]["MODELISATION"]
             self._l_mesh_proj_2D_mc = []
 
             if args["METHODE_2D"]["UNITE_RESU"] != 0:
                 self._rout_2D = args["METHODE_2D"]["UNITE_RESU"]
 
-            ##3D modele restricted to _zone
-            if self._model_2D == "D_PLAN_SI":
-                l_affe = [
+            self._model_3D_restricted = AFFE_MODELE(
+                MAILLAGE=self._result.getMesh().restrict(self._zone),
+                AFFE=(
                     _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D"),
                     _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D_SI"),
-                ]
-            else:
-                l_affe = [_F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D")]
-
-            self._model_3D_restricted = AFFE_MODELE(
-                MAILLAGE=self._result.getMesh().restrict(self._zone), AFFE=l_affe
+                ),
             )
 
             ##Type of 2D mesh input ?
             if self._l_mesh_group_no_2D:
                 self._l_mesh_proj_2D = [None] * len(self._l_mesh_group_no_2D)
                 self._l_name_mesh_2D = [x for x in self._l_mesh_group_no_2D]
+                self.set_fondfiss_info()
+                self._groupno = True
             else:
                 self._l_mesh_group_no_2D = [None] * len(self._l_mesh_proj_2D)
 
@@ -197,6 +196,26 @@ class PostBeremin:
             if len(stress_idx) not in [4, 6]:
                 UTMESS("F", "RUPTURE4_18")
             self._stress_idx = stress_idx
+
+    def set_fondfiss_info(self):
+        """Define fondfiss information (X Y Z ABSCURV ABSCURVNORM) for table output METHODE_2D"""
+
+        frontnodes = self._fondfiss.getCrackFrontNodes()
+        frontnodes = [int(x[1:]) - 1 for x in frontnodes]
+        frontpos = self._fondfiss.getCrackFrontPosition()
+        frontabscurv = self._fondfiss.getCrackFrontAbsCurv()
+        abscurvmax = max(frontabscurv)
+
+        self._dictfondfiss = {}
+        for (group_no, nom_group_no) in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
+            nodes = self._result.getMesh().getNodes(group_no)
+            both = set(frontnodes).intersection(nodes)
+            both = list(both)
+            indexfrontnode = frontnodes.index(both[0])
+            pos = frontpos[3 * indexfrontnode : 3 * (indexfrontnode + 1)]
+            abscurv = frontabscurv[indexfrontnode]
+            # X Y Z ABSCURV ABSCURVNORM
+            self._dictfondfiss[nom_group_no] = pos + [abscurv, abscurv / abscurvmax]
 
     def use_history(self, value: bool) -> None:
         """Enable the use of history or just the current timestep.
@@ -598,7 +617,7 @@ class PostBeremin:
 
         logger.info("starting computation...")
 
-        table = TableBeremin(self._use_function)
+        table = TableBeremin(self._use_function, self._groupno)
 
         param_mater = [
             [sigma_thr, sigma_refe, pow_m]
@@ -687,17 +706,35 @@ class PostBeremin:
                             intsig1pm, pow_m, sigma_refe
                         )
 
-                        table.append(
-                            id_store,
-                            time,
-                            mesh_2D_name,
-                            pow_m,
-                            sigma_refe if not self._use_function else "FONCTION",
-                            sigma_thr,
-                            strwb,
-                            strwb_pm,
-                            proba,
-                        )
+                        if not self._groupno:
+                            table.append(
+                                id_store,
+                                time,
+                                mesh_2D_name,
+                                pow_m,
+                                sigma_refe if not self._use_function else "FONCTION",
+                                sigma_thr,
+                                strwb,
+                                strwb_pm,
+                                proba,
+                            )
+                        else:
+                            table.append(
+                                id_store,
+                                time,
+                                mesh_2D_name,
+                                self._dictfondfiss[mesh_2D_name][0],
+                                self._dictfondfiss[mesh_2D_name][1],
+                                self._dictfondfiss[mesh_2D_name][2],
+                                self._dictfondfiss[mesh_2D_name][3],
+                                self._dictfondfiss[mesh_2D_name][4],
+                                pow_m,
+                                sigma_refe if not self._use_function else "FONCTION",
+                                sigma_thr,
+                                strwb,
+                                strwb_pm,
+                                proba,
+                            )
 
                 id_store += 1
 
@@ -725,14 +762,13 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA, DEFORMATION, FILTRE_SIGM, **args)
     table = post.main()
     sdtable = table.create_table()
 
+    if post._groupno:
+        tri = ("NUME_ORDRE", "M", "SIGM_REFE", "SIGM_SEUIL", "ABSC_CURV_NORM")
+    else:
+        tri = ("NUME_ORDRE", "M", "SIGM_REFE", "SIGM_SEUIL", "GROUP_MA")
+
     sdtable = CALC_TABLE(
-        reuse=sdtable,
-        TABLE=sdtable,
-        ACTION=_F(
-            OPERATION="TRI",
-            NOM_PARA=("NUME_ORDRE", "M", "SIGM_REFE", "SIGM_SEUIL", "GROUP_MA"),
-            ORDRE="CROISSANT",
-        ),
+        reuse=sdtable, TABLE=sdtable, ACTION=_F(OPERATION="TRI", NOM_PARA=tri, ORDRE="CROISSANT")
     )
 
     return sdtable
@@ -742,29 +778,56 @@ class TableBeremin(Table):
     """Helper object to build the result table."""
 
     types = None
-    cols = [
-        "NUME_ORDRE",
-        "INST",
-        "GROUP_MA",
-        "M",
-        "SIGM_REFE",
-        "SIGM_SEUIL",
-        "SIGMA_WEIBULL",
-        "SIGMA_WEIBULL**M",
-        "PROBA_WEIBULL",
-    ]
+    cols = None
     data = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, use_function):
+    def __init__(self, use_function, group_no):
         Table.__init__(self)
         self.data = {}
+        if not group_no:
+            self.cols = [
+                "NUME_ORDRE",
+                "INST",
+                "GROUP_MA",
+                "M",
+                "SIGM_REFE",
+                "SIGM_SEUIL",
+                "SIGMA_WEIBULL",
+                "SIGMA_WEIBULL**M",
+                "PROBA_WEIBULL",
+            ]
+        else:
+            self.cols = [
+                "NUME_ORDRE",
+                "INST",
+                "GROUP_MA",
+                "COOR_X",
+                "COOR_Y",
+                "COOR_Z",
+                "ABSC_CURV",
+                "ABSC_CURV_NORM",
+                "M",
+                "SIGM_REFE",
+                "SIGM_SEUIL",
+                "SIGMA_WEIBULL",
+                "SIGMA_WEIBULL**M",
+                "PROBA_WEIBULL",
+            ]
+
         for col in self.cols:
             self.data.setdefault(col, [])
-        if use_function:
-            self.types = "IRKRKRRRR"
+
+        if not group_no:
+            if use_function:
+                self.types = "IRKRKRRRR"
+            else:
+                self.types = "IRKRRRRRR"
         else:
-            self.types = "IRKRRRRRR"
+            if use_function:
+                self.types = "IRKRRRRRRKRRRR"
+            else:
+                self.types = "IRKRRRRRRRRRRR"
 
     def append(self, *values):
         """Append the values of a row (columns order must match the definition).
