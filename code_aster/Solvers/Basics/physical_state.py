@@ -19,7 +19,7 @@
 
 from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal
 from ...Utilities import no_new_attributes, profile
-from .problem_dispatcher import ProblemType as PBT
+from .bases import ProblemType as PBT
 
 
 class PhysicalState:

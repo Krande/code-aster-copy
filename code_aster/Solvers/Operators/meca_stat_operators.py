@@ -18,10 +18,10 @@
 # --------------------------------------------------------------------
 
 from ..Basics import ProblemType as PBT
-from .base_opers_manager import BaseOperatorsManager
+from .base_operators import BaseOperators
 
 
-class MecaStatOperatorsManager(BaseOperatorsManager):
+class MecaStatOperators(BaseOperators):
     """Object that provides operators to solve quasi-static mechanics."""
 
     problem_type = PBT.MecaStat

@@ -22,7 +22,7 @@ from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortra
 from ...Cata.Language.SyntaxObjects import _F
 from ...Messages import UTMESS, MessageLog
 from ...Objects import HHO, LinearSolver, NonLinearResult, ThermalResult
-from ...Supervis import AsterError, ConvergenceError, IntegrationError, SolverError
+from ...Supervis import ConvergenceError, IntegrationError, SolverError
 from ...Utilities import (
     DEBUG,
     INFO,
@@ -35,7 +35,7 @@ from ...Utilities import (
 )
 from ..Basics import ContextMixin, PhysicalState
 from ..Basics import ProblemType as PBT
-from ..OperatorsManager import BaseOperatorsManager
+from ..Operators import BaseOperators
 from ..StepSolvers import BaseStepSolver
 from .storage_manager import StorageManager
 from .time_stepper import TimeStepper
@@ -86,7 +86,7 @@ class ProblemSolver(ContextMixin):
         self.result = result
         self.keywords = keywords
         self.state = PhysicalState(problem_type, size=1)
-        self.oper = BaseOperatorsManager.factory(self.context)
+        self.oper = BaseOperators.factory(self.context)
         self.linear_solver = self._linear_solver_builder(self.context)
         self.step_rank = None
         self.current_matrix = None

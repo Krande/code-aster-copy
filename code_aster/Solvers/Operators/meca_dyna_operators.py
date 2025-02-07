@@ -20,10 +20,10 @@
 from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import IntegrationError
 from ..Basics import ProblemType as PBT
-from .base_opers_manager import BaseOperatorsManager
+from .base_operators import BaseOperators
 
 
-class MecaDynaOperatorsManager(BaseOperatorsManager):
+class MecaDynaOperators(BaseOperators):
     """Base object that provides operators to solve a dynamics problem."""
 
     _mass = _elem_mass = None

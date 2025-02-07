@@ -24,7 +24,7 @@ from ...Utilities import no_new_attributes, profile
 from ..Basics import ContextMixin, DispatcherMixin
 
 
-class IterationsSolver(ABC, ContextMixin, DispatcherMixin):
+class BaseInterationSolver(ABC, ContextMixin, DispatcherMixin):
     """Solves a step, loops on iterations."""
 
     class SubType(IntFlag):
@@ -50,7 +50,7 @@ class IterationsSolver(ABC, ContextMixin, DispatcherMixin):
             context (Context): Context of the problem.
 
         Returns:
-            *IterationsSolver*: A relevant *BaseIntegrator* object.
+            instance: New object.
         """
         method = context.keywords.get("METHODE", default="NEWTON").capitalize()
         for kls in cls.__subclasses__():

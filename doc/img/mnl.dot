@@ -35,12 +35,12 @@ digraph MNL {
     hook [label = "PostStepHook";];
     
     observ [label = "Observer";style = "dashed";shape = "note";];
-    event [label = "EventSource";style = "dashed";shape = "note";];
+    // event [label = "EventSource";style = "dashed";shape = "note";];
     
     subgraph cluster_operators {
         subgraph {
             rank = "same";
-            operators [label = "Operators {abstr}";style = "dashed";];
+            operators [label = "BaseOperators {abstr}";style = "dashed";];
             mixin_oper [label = "ContextMixin + DispatcherMixin";style = "dashed";shape = "note";];
             operators -> mixin_oper [dir = "back"; style = "dashed"; arrowtail = "empty";];
         }
@@ -102,7 +102,7 @@ digraph MNL {
         style = "dashed";
         subgraph {
             rank = "same";
-            iter_solver [label = "IterationsSolver {abstr}";style = "dashed";];
+            iter_solver [label = "BaseIterationsSolver {abstr}";style = "dashed";];
             mixin_iter [label = "ContextMixin + DispatcherMixin";style = "dashed";shape = "note";];
             iter_solver -> mixin_iter [dir = "back"; style = "dashed"; arrowtail = "empty";];
         }
@@ -131,7 +131,6 @@ digraph MNL {
     stepsolv -> iter_solver [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
     
     iter_solver -> linsolv [ltail = cluster_iter_solv;];
-    iter_solver -> operators [ltail = cluster_iter_solv; lhead = cluster_operators;];
     
     newton -> incr_solv;
     newton -> linesearch;
@@ -140,15 +139,13 @@ digraph MNL {
     subgraph {
         rank = "same";
         incr_solv [label = "IncrementalSolver";];
-        mixin_incr [label = "ContextMixin";style = "dashed";shape = "note";];
+        mixin_incr [label = "EventSource + ContextMixin";style = "dashed";shape = "note";];
         incr_solv -> mixin_incr [dir = "back"; style = "dashed"; arrowtail = "empty";];
     }
     incr_solv -> linesearch;
     incr_solv -> contact;
-    incr_solv -> operators [lhead = cluster_operators;];
     incr_solv -> linsolv;
     incr_solv -> conv_manager;
-    incr_solv -> event [dir = "back"; arrowtail = "empty";];
     
     subgraph {
         rank = "same";
@@ -156,7 +153,6 @@ digraph MNL {
         mixin_line [label = "ContextMixin";style = "dashed";shape = "note";];
         linesearch -> mixin_line [dir = "back"; style = "dashed"; arrowtail = "empty";];
     }
-    linesearch -> operators [lhead = cluster_operators;];
     
     subgraph {
         rank = "same";

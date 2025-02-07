@@ -20,7 +20,7 @@
 from abc import ABC, abstractmethod
 
 from ..Basics import ContextMixin, LoggingManager, DispatcherMixin
-from ..ProblemSolver import IterationsSolver
+from ..IterationSolver import BaseInterationSolver
 
 
 class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
@@ -48,7 +48,7 @@ class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
         """
         instance = cls()
         instance.context = context
-        instance._iterations_solv = IterationsSolver.factory(context)
+        instance._iterations_solv = BaseInterationSolver.factory(context)
         return instance
 
     def __init__(self):

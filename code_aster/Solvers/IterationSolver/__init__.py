@@ -18,12 +18,12 @@
 # --------------------------------------------------------------------
 
 """
-Features definition.
+Solving iterations.
 """
 
-from .bases import DispatcherMixin, EventSource, Observer, ProblemType
-from .context import ContextMixin
-from .logging_manager import LoggingManager
-from .physical_state import PhysicalState
-from .residual import Residuals
-from .solver_features import SolverOptions
+from .convergence_manager import ConvergenceManager
+from .incremental_solver import IncrementalSolver
+from .iteration_solver import BaseInterationSolver
+from .newton_solver import NewtonSolver
+from .raspen_solver import RASPENSolver
+from .snes_solver import SNESSolver

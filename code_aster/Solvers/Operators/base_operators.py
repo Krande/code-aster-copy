@@ -24,7 +24,7 @@ from ...Utilities import no_new_attributes, profile
 from ..Basics import ContextMixin, DispatcherMixin
 
 
-class BaseOperatorsManager(ABC, ContextMixin, DispatcherMixin):
+class BaseOperators(ABC, ContextMixin, DispatcherMixin):
     """Base object that provides operators to solve the problem."""
 
     problem_type = None

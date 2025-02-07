@@ -23,7 +23,7 @@ from .base_step_solver import BaseStepSolver
 from ..Basics import ProblemType
 from ..Basics import SolverOptions as SOP
 from ...Utilities import no_new_attributes, profile
-from ..OperatorsManager import ThermalOperatorsManager
+from ..Operators import ThermalOperators
 
 
 class ThermalStepSolver(BaseStepSolver):
@@ -82,7 +82,7 @@ class ThermalStepSolver(BaseStepSolver):
         opers_manager = self.get_feature(SOP.OperatorsManager, optional=True)
         if not opers_manager:
             stat = self.param["ETAT_INIT"].get("STAT") == "OUI"
-            opers_manager = ThermalOperatorsManager(theta=self._theta, stat=stat)
+            opers_manager = ThermalOperators(theta=self._theta, stat=stat)
         for feat, required in opers_manager.undefined():
             feat_obj = self.get_feature(feat, optional=(not required))
             opers_manager.use(feat_obj)

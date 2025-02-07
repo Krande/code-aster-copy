@@ -22,13 +22,6 @@ PostProcessings definition.
 """
 
 from .contact_manager import ContactManager
-from .convergence_manager import ConvergenceManager
-from .incremental_solver import IncrementalSolver
-from .iterations_solver import IterationsSolver
-from .line_search import LineSearch
-from .newton_solver import NewtonSolver
 from .problem_solver import ProblemSolver
-from .raspen_solver import RASPENSolver
-from .snes_solver import SNESSolver
 from .storage_manager import StorageManager
 from .time_stepper import TimeStepper

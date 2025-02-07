@@ -18,260 +18,91 @@
 # --------------------------------------------------------------------
 
 """
-Base objects used to solve generic non linear problems.
+Useful objects used to build operators.
 """
 
-from ...Cata.Language.SyntaxObjects import _F
-from ...Utilities import force_list, logger, no_new_attributes
+from abc import ABC, abstractmethod
+from enum import IntFlag, auto
+from inspect import isabstract
+
+from ...Utilities import logger
 
 
-# FIXME: to be moved under Context (private)
+class ProblemType(IntFlag):
+    """Types of physical problems."""
+
+    Unset = 0
+    MecaStat = auto()
+    MecaDyna = auto()
+    Thermal = auto()
 
 
-class Context:
-    """Object that stores the objects required by a :py:class:`ProblemSolver`.
-
-    It only stores objects that are shared at different levels of the algorithm.
-    Objects only used by one stage/object should be created there.
-    If different objects should be created at each timestep for example, they
-    should not be here.
-
-    Attributes:
-        problem: :py:class:`PhysicalProblem` object
-        state: :py:class:`PhysicalState` object
-        result: :py:class:`Result` object (:py:class:`NonLinearResult`,
-            :py:class:`ThermalResult`)
-        problem_type: :py:class:`ProblemType` enum value
-        keywords: Part of the user keywords
-        oper: :py:class:`BaseOperatorsManager` object
-        contact: :py:class:`ContactManager` object
-        linear_solver: :py:class:`LinearSolver` object
-    """
-
-    # FIXME: to be removed and created deeper/later from '.keywords'?
-    # FIXME: with TimeScheme.Multiple? several '.oper'? one '.oper' per StepSolver?
-    # FIXME: Creating all objects in ProblemSolver should allow overloading
-    # FIXME: and to known syntax in one place (for instance: RECH_LINEAIRE in NewtonSolver)
-
-    class KeywordsStore:
-        """Container that stores and gives access to some user keywords."""
-
-        _dict_kwds = None
-        __setattr__ = no_new_attributes(object.__setattr__)
-
-        def __init__(self, keywords):
-            self._dict_kwds = keywords
-
-        def __getitem__(self, keyword):
-            """Return a keyword value.
-
-            Args:
-                keyword (str): Simple keyword.
-
-            Returns:
-                *misc*: Keyword value.
-            """
-            return self._dict_kwds[keyword]
-
-        def get(self, keyword, parameter=None, default=None):
-            """Return a keyword value.
-
-            Args:
-                keyword (str): Simple or factor keyword.
-                parameter (str|None): Simple keyword under the factor keyword, or *None*.
-                default (*misc*): Default value if the keyword is undefined.
-
-            Returns:
-                *misc*: Keyword value.
-            """
-            kwds = self._dict_kwds
-            if parameter is not None:
-                if kwds.get(keyword) is None:
-                    return default
-                return _F(kwds[keyword])[0].get(parameter, default)
-
-            return kwds.get(keyword, default)
-
-    _problem = _type = _state = _keywords = _result = None
-    _oper = _contact = _linsolv = None
-    __setattr__ = no_new_attributes(object.__setattr__)
-
-    def __init__(self):
-        self._type = None
-        self._keywords = Context.KeywordsStore({})
-        self._problem = None
-        self._state = None
-        self._result = None
-        self._oper = None
-        self._contact = None
-        self._linsolv = None
-
-    # only few properties are needed (during initializations)
-    @property
-    def problem_type(self):
-        """ProblemType: Attribute that holds the type of problem."""
-        return self._type
-
-    @problem_type.setter
-    def problem_type(self, value):
-        self._type = value
-
-    # FIXME: à voir : on garde certains mots-clés ou uniquement quelques infos
-    @property
-    def keywords(self):
-        """Dict: Attribute that holds the keywords object."""
-        return self._keywords
-
-    @keywords.setter
-    def keywords(self, value_dict):
-        assert isinstance(value_dict, dict), f"unsupported type: {type(value_dict)}"
-        self._keywords = Context.KeywordsStore(value_dict)
-
-    def get_keyword(self, keyword, parameter=None, default=None):
-        """ "Return a keyword value.
-
-        Args:
-            keyword (str): Simple or factor keyword.
-            parameter (str|None): Simple keyword under the factor keyword, or *None*.
-            default (*misc*): Default value if the keyword is undefined.
-
-        Returns:
-            *misc*: Keyword value.
-        """
-        return self._keywords.get(keyword, parameter, default)
-
-
-class ContextMixin:
-    """Mixin object that wraps access to the objects of :py:class:`Context`.
-
-    Attributes:
-        problem: :py:class:`PhysicalProblem` object
-        state: :py:class:`PhysicalState` object
-        result: :py:class:`Result` object (:py:class:`NonLinearResult`,
-            :py:class:`ThermalResult`)
-        problem_type: :py:class:`ProblemType` enum value
-        keywords: Part of the user keywords
-        oper: :py:class:`BaseOperatorsManager` object
-        contact: :py:class:`ContactManager` object
-        linear_solver: :py:class:`LinearSolver` object
-    """
-
-    # FIXME: "parent" objects must declared what attr they need
-    _ctxt = None
-    __setattr__ = no_new_attributes(object.__setattr__)
+class DispatcherMixin:
+    """Mixin class that provides a factory depending on the type of physical problem."""
 
     @classmethod
-    def builder(cls, context):
-        """Default builder for :py:class:`ContextMixin` object.
-        Should be subclassed for non trivial constructor.
+    def factory(cls, context):
+        """Factory that creates the appropriate object.
 
         Args:
             context (Context): Context of the problem.
 
         Returns:
-            instance: New object.
+            instance: A new object of the relevant type.
         """
-        instance = cls()
-        instance.context = context
-        return instance
+        for kls in cls.__subclasses__():
+            logger.debug("candidate: %s", kls)
+            if kls.problem_type == context.problem_type:
+                if isabstract(kls):
+                    return kls.factory(context)
+                return kls.builder(context)
+        raise TypeError(f"no candidate for {cls=}, type: {context.problem_type}")
 
-    def __init__(self):
-        self._ctxt = Context()
 
-    @property
-    def context(self):
-        """Data: Context attached to the object."""
-        return self._ctxt
+class Observer(ABC):
+    """The Observer interface declares the `notify` method, used by events."""
 
-    @context.setter
-    def context(self, other):
-        assert isinstance(other, Context)
-        self._ctxt = other
+    @abstractmethod
+    def notify(self, event):
+        """Receive notification from event.
 
-    # convenient shortcuts properties
-    @property
-    def problem_type(self):
-        """ProblemType: Attribute that holds the type of problem."""
-        return self._ctxt.problem_type
-
-    @problem_type.setter
-    def problem_type(self, value):
-        self._ctxt.problem_type = value
-
-    @property
-    def keywords(self):
-        """Dict: Attribute that holds the keywords object."""
-        return self._ctxt._keywords
-
-    @keywords.setter
-    def keywords(self, value_dict):
-        self._ctxt.keywords = value_dict
-
-    def get_keyword(self, keyword, parameter=None, default=None):
-        """ "Return a keyword value.
-
-        Args:
-            keyword (str): Simple or factor keyword.
-            parameter (str|None): Simple keyword under the factor keyword, or *None*.
-            default (*misc*): Default value if the keyword is undefined.
-
-        Returns:
-            *misc*: Keyword value.
+        Arguments:
+            event (EventSource): Object that sends the notification.
         """
-        return self._ctxt.get_keyword(keyword, parameter, default)
+        # calls event.get_state()
 
-    @property
-    def problem(self):
-        """PhysicalProblem: current problem description."""
-        return self._ctxt._problem
 
-    @problem.setter
-    def problem(self, problem):
-        assert not self._ctxt._problem, "must be set only once!"
-        self._ctxt._problem = problem
+class EventSource(ABC):
+    """The EventSource interface declares a set of methods for managing observers."""
 
-    @property
-    def state(self):
-        """PhysicalState: current state."""
-        return self._ctxt._state
+    # for no_new_attributes
+    _observers = None
 
-    @state.setter
-    def state(self, state):
-        self._ctxt._state = state
+    def __init__(self) -> None:
+        super().__init__()
+        self._observers = []
 
-    @property
-    def result(self):
-        """Result: Attribute that holds the result object."""
-        return self._ctxt._result
+    def add_observer(self, observer):
+        """Attach an observer to the event.
 
-    @result.setter
-    def result(self, value):
-        self._ctxt._result = value
+        Arguments:
+            observer (Observer): Observer object to be added.
+        """
+        self._observers.append(observer)
 
-    @property
-    def oper(self):
-        """Operators: Objects that adapts operators for each type of problem."""
-        return self._ctxt._oper
+    def remove_observer(self, observer):
+        """Detach an observer from the event.
 
-    @oper.setter
-    def oper(self, value):
-        self._ctxt._oper = value
+        Arguments:
+            observer (Observer): Observer object to be removed.
+        """
+        self._observers.remove(observer)
 
-    @property
-    def contact(self):
-        """ContactManager: Objects to solve contact conditions"""
-        logger.debug("CTXT: ctxt.contact: %s", self._ctxt._contact)
-        return self._ctxt._contact
+    def notifyObservers(self):
+        """Notify all observers about an event."""
+        for obs in self._observers:
+            obs.notify(self)
 
-    @contact.setter
-    def contact(self, value):
-        self._ctxt._contact = value
-
-    @property
-    def linear_solver(self):
-        """LinearSolver: Attribute that holds the linear solver."""
-        return self._ctxt._linsolv
-
-    @linear_solver.setter
-    def linear_solver(self, value):
-        self._ctxt._linsolv = value
+    @abstractmethod
+    def get_state(self):
+        """Returns the current state to be shared with observers."""

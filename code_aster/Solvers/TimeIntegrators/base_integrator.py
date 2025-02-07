@@ -20,7 +20,7 @@
 from abc import abstractmethod
 from enum import IntFlag, auto
 
-from ..OperatorsManager import MecaDynaOperatorsManager
+from ..Operators import MecaDynaOperators
 from ..Basics import ProblemType as PBT
 
 
@@ -40,7 +40,7 @@ class IntegratorType(IntFlag):
     Newmark = auto()
 
 
-class BaseIntegrator(MecaDynaOperatorsManager):
+class BaseIntegrator(MecaDynaOperators):
     """
     Integrator for systems like : M ddX = Fext - Fc(dX) - Fk(X) = funForce(X, dX)
     In case of a linear problem : M ddX = Fext - C dX - K X

@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .base_opers_manager import BaseOperatorsManager
-from .meca_stat_opers_manager import MecaStatOperatorsManager
-from .meca_dyna_opers_manager import MecaDynaOperatorsManager
-from .thermal_opers_manager import ThermalOperatorsManager
+from .base_operators import BaseOperators
+from .meca_stat_operators import MecaStatOperators
+from .meca_dyna_operators import MecaDynaOperators
+from .thermal_operators import ThermalOperators

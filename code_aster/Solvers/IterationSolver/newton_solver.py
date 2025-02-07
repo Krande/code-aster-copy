@@ -21,14 +21,14 @@ from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
-from .iterations_solver import IterationsSolver
+from .iteration_solver import BaseInterationSolver
 from .line_search import LineSearch
 
 
-class NewtonSolver(IterationsSolver):
+class NewtonSolver(BaseInterationSolver):
     """Solves a step, loops on iterations."""
 
-    solver_type = IterationsSolver.SubType.Newton
+    solver_type = BaseInterationSolver.SubType.Newton
 
     # FIXME: merge IncrementalSolver into NewtonSolver
     _incr_solv = _converg = _line_search = None

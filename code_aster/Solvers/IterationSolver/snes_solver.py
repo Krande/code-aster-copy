@@ -20,14 +20,14 @@
 from ...Objects import DiscreteComputation
 from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile
-from .iterations_solver import IterationsSolver
+from .iteration_solver import BaseInterationSolver
 
 
 def Print(*args):
     print(*args, flush=True)
 
 
-class SNESSolver(IterationsSolver):
+class SNESSolver(BaseInterationSolver):
     """Solves a step using PETSc SNES, loops on iterations."""
 
     _primal_incr = _resi_comp = None

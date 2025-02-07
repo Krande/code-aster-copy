@@ -23,10 +23,10 @@ from ...Objects import DiscreteComputation
 from ...Utilities import no_new_attributes
 from ..Basics import ProblemType as PBT
 from ..Basics import Residuals
-from .base_opers_manager import BaseOperatorsManager
+from .base_operators import BaseOperators
 
 
-class ThermalOperatorsManager(BaseOperatorsManager):
+class ThermalOperators(BaseOperators):
     """Object that provides operators to solve thermics."""
 
     problem_type = PBT.Thermal
@@ -35,7 +35,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
 
     @classmethod
     def builder(cls, context):
-        """Builder of ThermalOperatorsManager object.
+        """Builder of ThermalOperators object.
 
         Args:
             context (Context): Context of the problem.
