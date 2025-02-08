@@ -182,13 +182,18 @@ if %BUILD64% == 1 (
     echo "Using 64-bit integer type"
     if "%FC%" == "ifx.exe" (
         set FCFLAGS=%FCFLAGS% /4I8
-    else (
+    ) else (
         set FCFLAGS=%FCFLAGS% -fdefault-integer-8
     )
     set DEFINES=%DEFINES% ASTER_INT8
 ) else (
     echo "Using 32-bit integer type"
-    set DEFINES=%DEFINES% ASTER_INT4
+    if "%FC%" == "ifx.exe" (
+        set FCFLAGS=%FCFLAGS% /4I8
+    ) else (
+        set FCFLAGS=%FCFLAGS% -fdefault-integer-8
+    )
+    set DEFINES=%DEFINES% ASTER_INT8
 )
 
 REM Clean the build directory

@@ -58,13 +58,13 @@ set CXXFLAGS=%CXXFLAGS% /MD
 if "%FC%" == "ifx.exe" (
     echo "Using Intel Fortran LLVM IFX compiler"
     set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /4R8 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0
+    set FCFLAGS=%FCFLAGS% /fpp /4R8 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /4I8
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 ) else (
     echo "Using LLVM Flang Fortran compiler"
     set FC_SEARCH=flang
-    set FCFLAGS=%FCFLAGS% -cpp --dependent-lib=msvcrt -fdefault-double-8 -fdefault-real-8 -funderscoring
+    set FCFLAGS=%FCFLAGS% -cpp --dependent-lib=msvcrt -fdefault-double-8 -fdefault-real-8 -funderscoring -fdefault-integer-8
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% -L %LIB_PATH_ROOT%/lib -L %LIB_PATH_ROOT%/bin -L %PREF_ROOT%/libs
 )
@@ -100,17 +100,11 @@ set INCLUDES_BIBC=%PREF_ROOT%/include %SRC_DIR%/bibfor/include %INCLUDES_BIBC%
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN
 
+set DEFINES=%DEFINES% ASTER_INT8
 if "%int_type%" == "64" (
     echo "Using 64-bit integer type"
-    if "%FC%" == "ifx.exe" (
-        set FCFLAGS=%FCFLAGS% /4I8
-    ) else (
-        set FCFLAGS=%FCFLAGS% -fdefault-integer-8
-    )
-    set DEFINES=%DEFINES% ASTER_INT8
 ) else (
     echo "Using 32-bit integer type"
-    set DEFINES=%DEFINES% ASTER_INT4
 )
 
 python %RECIPE_DIR%\scripts\update_version.py
