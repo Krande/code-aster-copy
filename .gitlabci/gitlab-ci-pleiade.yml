@@ -4,7 +4,7 @@ variables:
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
   PREREQ_VERSION: 20240327
   OSNAME: debian-11
-  IMAGE_URL: nexus.retd.edf.fr:5075/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
+  IMAGE_URL: ${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
   BUILD: mpi
   BUILDTYPE: ci
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
@@ -26,6 +26,8 @@ workflow:
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
       variables:
         BUILD: debug
+    - if: $BUILDTYPE == "code-checking"
+    - if: $BUILDTYPE == "docker"
   auto_cancel:
     on_new_commit: interruptible
 
@@ -33,6 +35,7 @@ stages:
   - setup
   - build
   - test
+  - code-checking
 
 image:
   name: ${IMAGE_URL}
@@ -47,6 +50,8 @@ prepare:
       - devtools/*
       - data-src/*
     expire_in: 6 hours
+  rules:
+    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
 compile:
   interruptible: true
@@ -67,6 +72,8 @@ compile:
       - build/mpi*/*/*.mod
       - install/*
     expire_in: 3 days
+  rules:
+    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
 doc_html:
   interruptible: true
@@ -161,7 +168,7 @@ verification_test:
     reports:
       junit: results/run_testcases.xml
   rules:
-    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"  && $CI_COMMIT_REF_NAME !~ $reg_debugging
 
 known_failures_test:
   interruptible: true
@@ -204,3 +211,44 @@ debugging_test:
       junit: results_debugging/run_testcases.xml
   rules:
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
+
+sonarqube:
+  interruptible: true
+  stage: code-checking
+  image:
+    name: nexus.retd.edf.fr:5012/sonarsource/sonar-scanner-cli:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - sonar-scanner
+        -Dsonar.projectKey="gitlab-${CI_PROJECT_ID}"
+        -Dsonar.projectName="${CI_PROJECT_PATH_SLUG}"
+        -Dsonar.host.url="${SQ_SERVER}"
+        -Dsonar.login="${SQ_TOKEN}"
+        -Dsonar.projectBaseDir=.
+        -Dsonar.sources=.
+        -Dsonar.exclusions="data,extern,waf*,**/*.export,build/**,install/**"
+        -Dsonar.python.file.suffixes=py,comm,com0,com1,com2
+        -Dsonar.issue.ignore.multicriteria=f1
+        -Dsonar.issue.ignore.multicriteria.f1.ruleKey=f90-rules:F90.DESIGN.Include
+        -Dsonar.issue.ignore.multicriteria.f1.resourceKey="f90-rules:**/*.F90"
+  variables:
+    SQ_SERVER: "https://sonar.pleiade.edf.fr:443"
+  allow_failure: true
+  rules:
+    - if: $BUILDTYPE == "code-checking"
+
+docker:
+  stage: build
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $BUILDTYPE == "docker"
+  image:
+    name: nexus.retd.edf.fr/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - sh .gitlabci/build_docker_codeaster.sh ${OSNAME}
+  allow_failure: true
+  artifacts:
+    paths:
+      - artf/codeaster-main-*.dockerfile
+    expire_in: 1 day

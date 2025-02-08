@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -199,7 +199,7 @@ TEST_RESU(
 
 # Add loads
 phys_pb.addLoad(CHR_LIAI)
-phys_pb.addLoadFromDict({"CHARGE": CHR_FORC, "FONC_MULT": F_CHAR})
+phys_pb.addLoadFromDict({"CHARGE": CHR_FORC, "FONC_MULT": F_CHAR, "TYPE_CHARGE": "FIXE_CSTE"})
 
 # Compute new numbering
 phys_pb.computeDOFNumbering()

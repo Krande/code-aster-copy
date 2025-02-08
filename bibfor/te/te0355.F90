@@ -51,25 +51,19 @@ subroutine te0355(nomopt, nomte)
     real(kind=8) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     aster_logical :: diff_num, l_vari
 !
+! --------------------------------------------------------------------------------------------------
+!
+
 ! - Informations about finite element
-!
     call laelem(nomte, geom, parameters)
-!
+
 ! - Get Parameters
-!
     call laParam(parameters)
 
-! - Hack to treat unpaired elements in case of friction
-    if (nomte(1:1) == 'F') then
-        parameters%l_fric = ASTER_TRUE
-    end if
-!
 ! - Use finite difference Jacobian
-!
     diff_num = (parameters%jac_type .gt. 0)
-!
+
 ! - Verif
-!
     ASSERT(parameters%algo_cont == CONT_ALGO_LAGR)
     l_vari = ((parameters%vari_cont == CONT_VARI_ROBU) .or. &
               (parameters%vari_cont == CONT_VARI_CLAS) .or. &

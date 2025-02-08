@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 """
 
 from ..Solvers import SolverOptions as SOP
-from ..Objects import DirichletBC, PhysicalProblem
+from ..Objects import DirichletBC, PhysicalProblem, MechanicalLoadComplex
 from ..Utilities import injector
 
 
@@ -43,10 +43,14 @@ class ExtendedPhysicalProblem:
         if "FONC_MULT" in dictLoad:
             if isinstance(charge, DirichletBC):
                 self.addDirichletBC(charge, dictLoad["FONC_MULT"])
+            elif charge.getType() == "CHAR_MECA" and not isinstance(charge, MechanicalLoadComplex):
+                self.addLoad(charge, dictLoad["FONC_MULT"], dictLoad["TYPE_CHARGE"])
             else:
                 self.addLoad(charge, dictLoad["FONC_MULT"])
         else:
             if isinstance(charge, DirichletBC):
                 self.addDirichletBC(charge)
+            elif charge.getType() == "CHAR_MECA" and not isinstance(charge, MechanicalLoadComplex):
+                self.addLoad(charge, dictLoad["TYPE_CHARGE"])
             else:
                 self.addLoad(charge)

@@ -281,17 +281,22 @@ void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, cons
                                                   const JeveuxCollectionLong meshConnectivity,
                                                   std::vector< VectorLong > &listContElem,
                                                   std::vector< VectorPairLong > &listContType,
-                                                  ASTERINTEGER &iContPair, SetLong &slaveNodePaired,
+                                                  SetLong &slaveNodePaired,
                                                   SetLong &slaveCellPaired ) {
 
+    // contactElemType: the number of elements for a given type
+    // listContType: list of contact cells attached to pair (cellType, iPair)
+    // listContElem: list of contact cells
+
     auto mesh = getMesh();
+    ASTERINTEGER iContPair = 0;
 
     // Loop on contact zones
     for ( int iZone = 0; iZone < nbZoneCont; iZone++ ) {
         // Get current zone
         auto zone = _contDefi->getContactZone( iZone );
 
-        // Get contact parameters for this zone
+        // Get parameters for this zone
         auto contAlgo = zone->getContactParameter()->getAlgorithm();
         auto lFric = zone->getFrictionParameter()->hasFriction();
 
@@ -336,7 +341,10 @@ void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, cons
             }
             contactElemType[typeElemNume] += 1;
 
-            listContTypeZone.push_back( std::make_pair( typeElemNume, ++iContPair ) );
+            // New virtual element
+            iContPair++;
+            listContTypeZone.push_back( std::make_pair( typeElemNume, iContPair ) );
+            _cell2Zone[iContPair - 1] = iZone;
 
             // Get nodes
             auto slav_cell_con = ( *meshConnectivity )[slavCellUsedNume + 1];
@@ -369,16 +377,20 @@ void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, cons
         // Add contact elements of zone
         listContType.push_back( listContTypeZone );
     }
+    AS_ASSERT( iContPair == this->getNumberOfPairs() )
 }
 
 void ContactPairing::createVirtualElemForOrphelanNodes(
     const ASTERLOGICAL lAxis, const int nbZoneCont, MapLong &contactElemType,
     const JeveuxCollectionLong meshConnectivity, std::vector< VectorLong > &listContElem,
-    std::vector< VectorPairLong > &listContType, ASTERINTEGER &iContPair, SetLong &slaveNodePaired,
+    std::vector< VectorPairLong > &listContType, SetLong &slaveNodePaired,
     SetLong &slaveCellPaired ) {
 
     // Get mesh
     auto mesh = getMesh();
+
+    ASTERINTEGER iContPair = 0;
+    iContPair = this->getNumberOfPairs();
 
     // Get model
     auto model = _contDefi->getModel();
@@ -479,8 +491,10 @@ void ContactPairing::createVirtualElemForOrphelanNodes(
                         }
                         contactElemType[typeElemNume] += 1;
 
-                        // Add the new contact element
-                        listContTypeZone.push_back( std::make_pair( typeElemNume, ++iContPair ) );
+                        // New virtual element
+                        iContPair++;
+                        listContTypeZone.push_back( std::make_pair( typeElemNume, iContPair ) );
+                        _cell2Zone[iContPair - 1] = iZone;
 
                         // Add the nodes of the new contact element
                         listContElem.push_back( VectorLong( { nodeNume, typeElemNume } ) );
@@ -516,7 +530,6 @@ void ContactPairing::buildFiniteElementDescriptor() {
     // Create objets for nodes and cells
     VectorOfVectorsLong listContElem;
     listContElem.reserve( nbContPairTot );
-
     std::vector< VectorPairLong > listContType;
     listContType.reserve( 2 * nbZoneCont );
 
@@ -524,18 +537,21 @@ void ContactPairing::buildFiniteElementDescriptor() {
     SetLong slaveNodePaired, slaveCellPaired;
 
     // Index of current contact pair
-    ASTERINTEGER iContPair = 0;
+    // ASTERINTEGER iContPair = 0;
 
     // Object for number of cells for each type of contact cell
     MapLong contactElemType;
 
+    // Clear map between zone and contact elements
+    _cell2Zone.clear();
+
     // Create virtual elements for contact
     createVirtualElemForContact( lAxis, nbZoneCont, contactElemType, meshConnectivity, listContElem,
-                                 listContType, iContPair, slaveNodePaired, slaveCellPaired );
+                                 listContType, slaveNodePaired, slaveCellPaired );
 
     // Create virtual elements for orphelan nodes
     createVirtualElemForOrphelanNodes( lAxis, nbZoneCont, contactElemType, meshConnectivity,
-                                       listContElem, listContType, iContPair, slaveNodePaired,
+                                       listContElem, listContType, slaveNodePaired,
                                        slaveCellPaired );
 
     // Create finite element descriptor for virtual contact elements
@@ -550,43 +566,37 @@ void ContactPairing::buildFiniteElementDescriptor() {
     ContactResFEDNema->allocateContiguousNumbered( listContElem );
 
     // Number of groups of elements and length of FED for contact element
-    ASTERINTEGER nbGrel = 0, ligrcf_liel_lont = 0;
+    ASTERINTEGER nbGrel = 0, lielLont = 0;
     for ( auto &[type, size] : contactElemType ) {
-        ligrcf_liel_lont += size;
+        lielLont += size;
         nbGrel += 1;
     }
-    ligrcf_liel_lont += nbGrel;
+    lielLont += nbGrel;
 
     // Create list of elements (LIEL object)
     auto ContactResFEDLiel = _fed->getListOfGroupsOfElements();
-    ContactResFEDLiel->allocateContiguousNumbered( nbGrel, ligrcf_liel_lont, Variable );
+    ContactResFEDLiel->allocateContiguousNumbered( nbGrel, lielLont, Variable );
 
-    // Clear map between zone and contact elements
-    _pair2Zone.clear();
-
-    // Clear map between index of global pair and index of local pair in zone
-    _globPairToLocaPair.clear();
-
-    // Add virtual element
+    // Add virtual elements for each GREL
     for ( auto &[type, size] : contactElemType ) {
-        VectorLong contactElemZone;
-        contactElemZone.reserve( size );
+        VectorLong virtualCells;
+        virtualCells.reserve( size );
 
-        ASTERINTEGER iZone = 0;
+        // ASTERINTEGER iZone = 0;
         for ( auto &listContTypeZone : listContType ) {
             for ( auto &[typeElemNume, iContPair] : listContTypeZone ) {
                 if ( typeElemNume == type ) {
                     // Virtual cells = index of cells is negative
-                    contactElemZone.push_back( -iContPair );
-                    _pair2Zone[iContPair - 1] = iZone;
+                    virtualCells.push_back( -iContPair );
                 }
             }
-            iZone++;
         }
-        contactElemZone.push_back( type );
-        ContactResFEDLiel->push_back( contactElemZone );
+        virtualCells.push_back( type );
+        ContactResFEDLiel->push_back( virtualCells );
     }
 
+    // Map between index of global pair and index of local pair in zone
+    _globPairToLocaPair.clear();
     for ( ASTERINTEGER indexZone = 0; indexZone < nbZoneCont; indexZone++ ) {
         if ( indexZone == 0 ) {
             _globPairToLocaPair[indexZone] = 0;

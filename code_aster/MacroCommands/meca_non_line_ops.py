@@ -59,7 +59,7 @@ def _keywords_check(keywords):
 
     if "EXCIT" in keywords:
         for load in keywords["EXCIT"]:
-            if load["TYPE_CHARGE"] != "FIXE_CSTE":
+            if load["TYPE_CHARGE"] not in ("FIXE_CSTE", "DIDI"):
                 raise RuntimeError("TYPE_CHARGE not supported")
 
     if "CONVERGENCE" in keywords:
@@ -69,6 +69,19 @@ def _keywords_check(keywords):
 
     if keywords["METHODE"] not in ["NEWTON", "SNES", "RASPEN"]:
         raise RuntimeError("unsupported value in METHODE")
+
+
+def _keyword_clean(obj):
+    """Return obj[0] if exists, return obj if not"""
+
+    if hasattr(obj, "__getitem__"):
+        if type(obj) is dict:
+            return obj
+        else:
+            return obj[0]
+
+    else:
+        return obj
 
 
 def meca_non_line_ops(self, **args):
@@ -90,18 +103,18 @@ def meca_non_line_ops(self, **args):
 
     # Add parameters
     param = {
-        "ARCHIVAGE": args["ARCHIVAGE"],
+        "ARCHIVAGE": _keyword_clean(args["ARCHIVAGE"]),
         "COMPORTEMENT": args["COMPORTEMENT"],
         "CONTACT": args["CONTACT"],
-        "CONVERGENCE": args["CONVERGENCE"],
-        "ETAT_INIT": args["ETAT_INIT"],
+        "CONVERGENCE": _keyword_clean(args["CONVERGENCE"]),
+        "ETAT_INIT": _keyword_clean(args["ETAT_INIT"]),
         "INFO": args["INFO"],
         "METHODE": args["METHODE"],
-        "NEWTON": args["NEWTON"],
-        "RECH_LINEAIRE": args["RECH_LINEAIRE"],
-        "SOLVEUR": args["SOLVEUR"],
+        "NEWTON": _keyword_clean(args["NEWTON"]),
+        "RECH_LINEAIRE": _keyword_clean(args["RECH_LINEAIRE"]),
+        "SOLVEUR": _keyword_clean(args["SOLVEUR"]),
         "REUSE": args["reuse"],
-        "INCREMENT": args["INCREMENT"],
+        "INCREMENT": _keyword_clean(args["INCREMENT"]),
     }
 
     if param["SOLVEUR"]["METHODE"] == "PETSC":

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe LoadUtilities
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,22 +56,26 @@ void addDirichletBCToInterface( py::class_< cppclass, Args... > pyclass ) {
 
 template < class cppclass, typename... Args >
 void addMechanicalLoadToInterface( py::class_< cppclass, Args... > pyclass ) {
+    void ( cppclass::*c3 )( const MechanicalLoadRealPtr & ) = &cppclass::addLoad;
+    void ( cppclass::*c4 )( const MechanicalLoadFunctionPtr & ) = &cppclass::addLoad;
+    void ( cppclass::*c5 )( const MechanicalLoadRealPtr &, const std::string &type ) =
+        &cppclass::addLoad;
+    void ( cppclass::*c6 )( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func,
+                            const std::string &type ) = &cppclass::addLoad;
+    void ( cppclass::*c7 )( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func,
+                            const std::string &type ) = &cppclass::addLoad;
+    void ( cppclass::*c8 )( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func,
+                            const std::string &type ) = &cppclass::addLoad;
 
-    void ( cppclass::*c5 )( const MechanicalLoadRealPtr & ) = &cppclass::addLoad;
-    void ( cppclass::*c6 )( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) =
+    void ( cppclass::*c9 )( const MechanicalLoadFunctionPtr &, const std::string &type ) =
         &cppclass::addLoad;
-    void ( cppclass::*c7 )( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) =
-        &cppclass::addLoad;
-    void ( cppclass::*c8 )( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) =
-        &cppclass::addLoad;
-
-    void ( cppclass::*c9 )( const MechanicalLoadFunctionPtr & ) = &cppclass::addLoad;
-    void ( cppclass::*c10 )( const MechanicalLoadFunctionPtr &currentLoad,
-                             const FunctionPtr &func ) = &cppclass::addLoad;
-    void ( cppclass::*c11 )( const MechanicalLoadFunctionPtr &currentLoad,
-                             const FormulaPtr &func ) = &cppclass::addLoad;
+    void ( cppclass::*c10 )( const MechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func,
+                             const std::string &type ) = &cppclass::addLoad;
+    void ( cppclass::*c11 )( const MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func,
+                             const std::string &type ) = &cppclass::addLoad;
     void ( cppclass::*c12 )( const MechanicalLoadFunctionPtr &currentLoad,
-                             const Function2DPtr &func ) = &cppclass::addLoad;
+                             const Function2DPtr &func, const std::string &type ) =
+        &cppclass::addLoad;
 
     void ( cppclass::*c13 )( const MechanicalLoadComplexPtr & ) = &cppclass::addLoad;
     void ( cppclass::*c14 )( const MechanicalLoadComplexPtr &currentLoad,
@@ -80,7 +84,8 @@ void addMechanicalLoadToInterface( py::class_< cppclass, Args... > pyclass ) {
         &cppclass::addLoad;
     void ( cppclass::*c16 )( const MechanicalLoadComplexPtr &currentLoad,
                              const Function2DPtr &func ) = &cppclass::addLoad;
-
+    pyclass.def( "addLoad", c3 );
+    pyclass.def( "addLoad", c4 );
     pyclass.def( "addLoad", c5 );
     pyclass.def( "addLoad", c6 );
     pyclass.def( "addLoad", c7 );
@@ -99,22 +104,29 @@ void addMechanicalLoadToInterface( py::class_< cppclass, Args... > pyclass ) {
 template < class cppclass, typename... Args >
 void addParallelMechanicalLoadToInterface( py::class_< cppclass, Args... > pyclass ) {
 
-    void ( cppclass::*c9 )( const ParallelMechanicalLoadRealPtr & ) = &cppclass::addLoad;
+    void ( cppclass::*c8 )( const ParallelMechanicalLoadRealPtr & ) = &cppclass::addLoad;
+    void ( cppclass::*c9 )( const ParallelMechanicalLoadRealPtr &, const std::string &type ) =
+        &cppclass::addLoad;
     void ( cppclass::*c10 )( const ParallelMechanicalLoadRealPtr &currentLoad,
-                             const FunctionPtr &func ) = &cppclass::addLoad;
+                             const FunctionPtr &func, const std::string &type ) =
+        &cppclass::addLoad;
     void ( cppclass::*c11 )( const ParallelMechanicalLoadRealPtr &currentLoad,
-                             const FormulaPtr &func ) = &cppclass::addLoad;
+                             const FormulaPtr &func, const std::string &type ) = &cppclass::addLoad;
     void ( cppclass::*c12 )( const ParallelMechanicalLoadRealPtr &currentLoad,
-                             const Function2DPtr &func ) = &cppclass::addLoad;
+                             const Function2DPtr &func, const std::string &type ) =
+        &cppclass::addLoad;
 
-    void ( cppclass::*c13 )( const ParallelMechanicalLoadFunctionPtr & ) = &cppclass::addLoad;
+    void ( cppclass::*c13 )( const ParallelMechanicalLoadFunctionPtr &, const std::string &type ) =
+        &cppclass::addLoad;
     void ( cppclass::*c14 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
-                             const FunctionPtr &func ) = &cppclass::addLoad;
+                             const FunctionPtr &func, const std::string &type ) =
+        &cppclass::addLoad;
     void ( cppclass::*c15 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
-                             const FormulaPtr &func ) = &cppclass::addLoad;
+                             const FormulaPtr &func, const std::string &type ) = &cppclass::addLoad;
     void ( cppclass::*c16 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
-                             const Function2DPtr &func ) = &cppclass::addLoad;
-
+                             const Function2DPtr &func, const std::string &type ) =
+        &cppclass::addLoad;
+    pyclass.def( "addLoad", c8 );
     pyclass.def( "addLoad", c9 );
     pyclass.def( "addLoad", c10 );
     pyclass.def( "addLoad", c11 );

@@ -1,7 +1,7 @@
 /**
  * @file ContactPairing.h
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -109,8 +109,8 @@ class ContactPairing : public DataStructure {
     /** @brief Level of verbosity */
     ASTERINTEGER _verbosity;
 
-    /** @brief Map between pair and zone */
-    MapLong _pair2Zone;
+    /** @brief Map between virtual cell and zone */
+    MapLong _cell2Zone;
 
     /** @brief Map between index of global pair and index of local pair in zone */
     MapLong _globPairToLocaPair;
@@ -125,8 +125,7 @@ class ContactPairing : public DataStructure {
                                       const JeveuxCollectionLong meshConnectivity,
                                       std::vector< VectorLong > &listContElem,
                                       std::vector< VectorPairLong > &listContType,
-                                      ASTERINTEGER &iContPair, SetLong &slaveNodePaired,
-                                      SetLong &slaveCellPaired );
+                                      SetLong &slaveNodePaired, SetLong &slaveCellPaired );
 
     /** @brief Create virtual elements for orphelan nodes */
     void createVirtualElemForOrphelanNodes( const ASTERLOGICAL lAxis, const int nbZoneCont,
@@ -134,8 +133,7 @@ class ContactPairing : public DataStructure {
                                             const JeveuxCollectionLong meshConnectivity,
                                             std::vector< VectorLong > &listContElem,
                                             std::vector< VectorPairLong > &listContType,
-                                            ASTERINTEGER &iContPair, SetLong &slaveNodePaired,
-                                            SetLong &slaveCellPaired );
+                                            SetLong &slaveNodePaired, SetLong &slaveCellPaired );
 
     /** @brief Get index of contact cell */
     ASTERINTEGER getContCellIndx( const ContactAlgo contAlgo, std::string slavCellTypeName,
@@ -230,8 +228,8 @@ class ContactPairing : public DataStructure {
     /** @brief Get Finite Element Descriptor from pairing */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _fed; };
 
-    /** @brief Get map between pair and zone */
-    MapLong pairsToZones() const { return _pair2Zone; };
+    /** @brief Get map between virtal cell and contact zone */
+    MapLong cellsToZones() const { return _cell2Zone; };
 
     /** @brief Get map between index of global pair and index of local pair in zone */
     MapLong globPairToLocaPair() const { return _globPairToLocaPair; };

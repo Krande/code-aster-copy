@@ -4745,83 +4745,89 @@ class ListOfLoads(DataStructure):
 
         1. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >) -> None
 
-        2. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+        2. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
 
-        3. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+        3. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: str) -> None
 
-        4. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+        4. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function, arg2: str) -> None
 
-        5. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+        5. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Formula, arg2: str) -> None
 
-        6. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+        6. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function2D, arg2: str) -> None
 
-        7. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+        7. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: str) -> None
 
-        8. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+        8. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function, arg2: str) -> None
 
-        9. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >) -> None
+        9. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula, arg2: str) -> None
 
-        10. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function) -> None
+        10. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D, arg2: str) -> None
 
-        11. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Formula) -> None
+        11. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >) -> None
 
-        12. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function2D) -> None
+        12. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function) -> None
 
-        13. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >) -> None
+        13. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Formula) -> None
 
-        14. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+        14. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function2D) -> None
 
-        15. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+        15. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >) -> None
 
-        16. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+        16. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
 
-        17. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+        17. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
 
-        18. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+        18. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
 
-        19. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+        19. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
 
-        20. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+        20. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
 
-        21. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >) -> None
+        21. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
 
-        22. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function) -> None
+        22. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
 
-        23. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Formula) -> None
+        23. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >) -> None
 
-        24. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function2D) -> None
+        24. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function) -> None
 
-        25. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >) -> None
+        25. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Formula) -> None
 
-        26. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+        26. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function2D) -> None
 
-        27. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+        27. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >) -> None
 
-        28. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+        28. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: str) -> None
 
-        29. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+        29. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function, arg2: str) -> None
 
-        30. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+        30. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Formula, arg2: str) -> None
 
-        31. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+        31. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function2D, arg2: str) -> None
 
-        32. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+        32. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: str) -> None
 
-        33. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >) -> None
+        33. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function, arg2: str) -> None
 
-        34. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+        34. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula, arg2: str) -> None
 
-        35. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+        35. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D, arg2: str) -> None
 
-        36. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+        36. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >) -> None
 
-        37. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+        37. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
 
-        38. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+        38. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
 
-        39. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+        39. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
 
-        40. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+        40. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+
+        41. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+
+        42. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+
+        43. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
         """
 
     def getContactLoadDescriptor(self):
@@ -4876,6 +4882,9 @@ class ListOfLoads(DataStructure):
             ListParaMecaLoadReal: a list of real parallel mechanical loads
         """
 
+    def hasDifferentialLoads(self):
+        """Return True if there are DIDI loads"""
+
     def hasDirichletBC(self):
         """Dirichlet BCs have been added or not ?
 
@@ -4896,6 +4905,9 @@ class ListOfLoads(DataStructure):
         Returns:
             bool: True if has been built already.
         """
+
+    def setDifferentialDisplacement(self, arg0):
+        """Set differential displacement field for DIDI loads"""
 
 
 # class BaseFunction in libaster
@@ -13461,83 +13473,89 @@ class PhysicalProblem:
 
         1. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadReal) -> None
 
-        2. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadReal, arg1: libaster.Function) -> None
+        2. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction) -> None
 
-        3. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadReal, arg1: libaster.Formula) -> None
+        3. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadReal, arg1: str) -> None
 
-        4. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadReal, arg1: libaster.Function2D) -> None
+        4. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadReal, arg1: libaster.Function, arg2: str) -> None
 
-        5. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction) -> None
+        5. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadReal, arg1: libaster.Formula, arg2: str) -> None
 
-        6. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction, arg1: libaster.Function) -> None
+        6. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadReal, arg1: libaster.Function2D, arg2: str) -> None
 
-        7. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction, arg1: libaster.Formula) -> None
+        7. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction, arg1: str) -> None
 
-        8. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction, arg1: libaster.Function2D) -> None
+        8. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction, arg1: libaster.Function, arg2: str) -> None
 
-        9. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadComplex) -> None
+        9. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction, arg1: libaster.Formula, arg2: str) -> None
 
-        10. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadComplex, arg1: libaster.Function) -> None
+        10. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadFunction, arg1: libaster.Function2D, arg2: str) -> None
 
-        11. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadComplex, arg1: libaster.Formula) -> None
+        11. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadComplex) -> None
 
-        12. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadComplex, arg1: libaster.Function2D) -> None
+        12. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadComplex, arg1: libaster.Function) -> None
 
-        13. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >) -> None
+        13. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadComplex, arg1: libaster.Formula) -> None
 
-        14. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function) -> None
+        14. addLoad(self: libaster.PhysicalProblem, arg0: libaster.MechanicalLoadComplex, arg1: libaster.Function2D) -> None
 
-        15. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Formula) -> None
+        15. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >) -> None
 
-        16. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function2D) -> None
+        16. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: str) -> None
 
-        17. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+        17. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function, arg2: str) -> None
 
-        18. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function) -> None
+        18. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Formula, arg2: str) -> None
 
-        19. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Formula) -> None
+        19. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function2D, arg2: str) -> None
 
-        20. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function2D) -> None
+        20. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: str) -> None
 
-        21. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >) -> None
+        21. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function, arg2: str) -> None
 
-        22. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function) -> None
+        22. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Formula, arg2: str) -> None
 
-        23. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Formula) -> None
+        23. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function2D, arg2: str) -> None
 
-        24. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function2D) -> None
+        24. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >) -> None
 
-        25. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+        25. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function) -> None
 
-        26. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function) -> None
+        26. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Formula) -> None
 
-        27. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Formula) -> None
+        27. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function2D) -> None
 
-        28. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function2D) -> None
+        28. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
 
-        29. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal) -> None
+        29. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function) -> None
 
-        30. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Function) -> None
+        30. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Formula) -> None
 
-        31. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Formula) -> None
+        31. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function2D) -> None
 
-        32. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Function2D) -> None
+        32. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal) -> None
 
-        33. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction) -> None
+        33. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Function) -> None
 
-        34. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function) -> None
+        34. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Formula) -> None
 
-        35. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Formula) -> None
+        35. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Function2D) -> None
 
-        36. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function2D) -> None
+        36. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction) -> None
 
-        37. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex) -> None
+        37. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function) -> None
 
-        38. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Function) -> None
+        38. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Formula) -> None
 
-        39. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Formula) -> None
+        39. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function2D) -> None
 
-        40. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Function2D) -> None
+        40. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex) -> None
+
+        41. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Function) -> None
+
+        42. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Formula) -> None
+
+        43. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Function2D) -> None
         """
 
     def computeBehaviourProperty(self, COMPORTEMENT, SIGM_INIT="NON", INFO=1):

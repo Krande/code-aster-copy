@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ CALC_CHAM_ELEM = OPER(
     op=38,
     sd_prod=cham_elem,
     fr=tr(
-        "Calculer un champ élémentaire en thermique et en accoustique à partir de champs déjà calculés"
+        "Calculer un champ élémentaire en thermique et en acoustique à partir de champs déjà calculés"
     ),
     reentrant="n",
     MODELE=SIMP(statut="o", typ=modele_sdaster),

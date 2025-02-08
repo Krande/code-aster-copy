@@ -46,6 +46,7 @@ from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, 
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
 from . import mesh_builder
+from .simplefieldonnodes_ext import SimpleFieldOnNodesReal
 
 
 class ParallelMeshStateBuilder(InternalStateBuilder):
@@ -478,6 +479,40 @@ class ExtendedParallelMesh:
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
         return self._getNodesFromCells(force_list(group_name), localNumbering, val[same_rank])
+
+    def getOwnerField(self):
+        """Returns a field of the ranks that owns the nodes.
+
+        Returns:
+            FieldOnNodesReal: The field.
+        """
+
+        val = self.getNodesOwner()
+        sf = SimpleFieldOnNodesReal(self, "NEUT_R", ["X1"], True)
+
+        for inode, prop in enumerate(val):
+            sf[inode, 0] = prop
+
+        f = sf.toFieldOnNodes()
+
+        return f
+
+    def getNumberingField(self):
+        """Returns a field of the nodes global numbering.
+
+        Returns:
+            FieldOnNodesReal: The field.
+        """
+
+        sf = SimpleFieldOnNodesReal(self, "NEUT_R", ["X1"], True)
+        l2G = self.getLocalToGlobalNodeIds()
+
+        for inode in range(len(l2G)):
+            sf[inode, 0] = l2G[inode]
+
+        f = sf.toFieldOnNodes()
+
+        return f
 
 
 @injector(ConnectionMesh)

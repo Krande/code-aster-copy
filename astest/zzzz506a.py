@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,8 +108,8 @@ class PostHook:
 snl = ProblemSolver(NonLinearSolver(), CA.NonLinearResult(), pb_type=ProblemType.MecaStat)
 snl.use(CA.PhysicalProblem(model, mater))
 snl.use(CA.LinearSolver.factory(METHODE="MUMPS"))
-snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})
-snl.phys_pb.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE})
+snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
+snl.phys_pb.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
 snl.setKeywords(
     CONVERGENCE={"RESI_GLOB_RELA": 1.0e-6, "ITER_GLOB_MAXI": 20},
     NEWTON={"PREDICTION": "ELASTIQUE"},
