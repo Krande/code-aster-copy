@@ -106,7 +106,7 @@ VectorLong Mesh::getCells( const std::string name ) const {
 VectorLong Mesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -129,7 +129,7 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINTEGER ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfNodes() - 1 ) );
     }
 
     std::vector< VectorLong > nodes;

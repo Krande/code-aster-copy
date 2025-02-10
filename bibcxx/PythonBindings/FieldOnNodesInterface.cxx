@@ -41,19 +41,21 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
         .def( "copy", &FieldOnNodesReal::copy )
-        .def( "transfertToConnectionMesh",
-              []( const FieldOnNodesRealPtr f, const ConnectionMeshPtr c ) {
-                  return transferToConnectionMesh( f, c );
-              },
-              R"(
+        .def(
+            "transfertToConnectionMesh",
+            []( const FieldOnNodesRealPtr f, const ConnectionMeshPtr c ) {
+                return transferToConnectionMesh( f, c );
+            },
+            R"(
 Transfer SimpleFieldOnNodes to a ConnectionMesh
 
 Returns:
     SimpleFieldOnNodesReal: transfered field
         )" )
-        .def( "toSimpleFieldOnNodes",
-              []( const FieldOnNodesReal &f ) { return toSimpleFieldOnNodes( f ); },
-              R"(
+        .def(
+            "toSimpleFieldOnNodes",
+            []( const FieldOnNodesReal &f ) { return toSimpleFieldOnNodes( f ); },
+            R"(
 Convert to SimpleFieldOnNodes
 
 Returns:
@@ -61,10 +63,12 @@ Returns:
         )" )
         .def( "getPhysicalQuantity", &FieldOnNodesReal::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
-        .def( "__getitem__",
-              +[]( const FieldOnNodesReal &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
-        .def( "__setitem__", +[]( FieldOnNodesReal &v, ASTERINTEGER i,
-                                  ASTERDOUBLE f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__getitem__",
+            +[]( const FieldOnNodesReal &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
+        .def(
+            "__setitem__", +[]( FieldOnNodesReal &v, ASTERINTEGER i,
+                                ASTERDOUBLE f ) { return v.operator[]( i ) = f; } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -119,15 +123,17 @@ Returns:
                 FieldOnNodesReal: field with name physical quantity.
             )",
               py::arg( "physQuantity" ), py::arg( "map_cmps" ) )
-        .def( "getRealPart", []( const FieldOnNodesReal &f ) { return getRealPart( f ); },
-              R"(
+        .def(
+            "getRealPart", []( const FieldOnNodesReal &f ) { return getRealPart( f ); },
+            R"(
 Extract the real part of the real field (the field is duplicated)
 
 Returns:
     FieldOnNodesReal: real part
         )" )
-        .def( "getImaginaryPart", []( const FieldOnNodesReal &f ) { return getImaginaryPart( f ); },
-              R"(
+        .def(
+            "getImaginaryPart", []( const FieldOnNodesReal &f ) { return getImaginaryPart( f ); },
+            R"(
 Extract the imaginary part of the real field (a 0-filled field is produced)
 
 Returns:
@@ -297,24 +303,27 @@ Returns:
         .def( py::init< const FieldOnNodesComplex & >() )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
-        .def( "toSimpleFieldOnNodes",
-              []( const FieldOnNodesComplex &f ) { return toSimpleFieldOnNodes( f ); },
-              R"(
+        .def(
+            "toSimpleFieldOnNodes",
+            []( const FieldOnNodesComplex &f ) { return toSimpleFieldOnNodes( f ); },
+            R"(
 Convert to SimpleFieldOnNodes
 
 Returns:
     SimpleFieldOnNodesComplex: field converted
         )" )
-        .def( "getRealPart", []( const FieldOnNodesComplex &f ) { return getRealPart( f ); },
-              R"(
+        .def(
+            "getRealPart", []( const FieldOnNodesComplex &f ) { return getRealPart( f ); },
+            R"(
 Extract the real part of the complex field
 
 Returns:
     FieldOnNodesReal: real part
         )" )
-        .def( "getImaginaryPart",
-              []( const FieldOnNodesComplex &f ) { return getImaginaryPart( f ); },
-              R"(
+        .def(
+            "getImaginaryPart",
+            []( const FieldOnNodesComplex &f ) { return getImaginaryPart( f ); },
+            R"(
 Extract the imaginary part of the complex field
 
 Returns:
@@ -322,10 +331,12 @@ Returns:
         )" )
         .def( "getPhysicalQuantity", &FieldOnNodesComplex::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
-        .def( "__getitem__",
-              +[]( const FieldOnNodesComplex &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
-        .def( "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
-                                  ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__getitem__",
+            +[]( const FieldOnNodesComplex &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
+        .def(
+            "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
+                                ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
         .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
         .def( "setMesh", &FieldOnNodesComplex::setMesh )
         .def( "setDescription", &FieldOnNodesComplex::setDescription )
