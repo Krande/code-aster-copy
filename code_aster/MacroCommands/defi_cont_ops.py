@@ -52,7 +52,6 @@ def defi_cont_ops(self, **keywords):
     Arguments:
         keywords (dict): User's keywords.
     """
-    # print("ARGS: ", keywords, flush=True)
     model = keywords["MODELE"]
     verbosity = keywords["INFO"]
     mesh = model.getMesh()

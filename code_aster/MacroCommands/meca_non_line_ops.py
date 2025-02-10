@@ -102,7 +102,13 @@ def meca_non_line_ops(self, **args):
     adapt_increment_init(args, "EVOL_NOLI")
 
     # Add controls to prohibit unconverted features
-    _contact_check(args["CONTACT"])
+    contactArgs = args["CONTACT"]
+    _contact_check(contactArgs)
+    print("ICI", args["CONTACT"], type(args["CONTACT"]))
+    help(args["EXCIT"])
+    bPMesh = args["MODELE"].getMesh().isParallel()
+    if bPMesh and (type(contactArgs) in (tuple, list) and len(contactArgs) > 1):
+        raise RuntimeError("Only one CONTACT factor keyword allowed with ParallelMesh")
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
