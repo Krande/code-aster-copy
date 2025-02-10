@@ -64,9 +64,12 @@ void exportConstantFieldOnCellsToPython( py::module_ &mod ) {
                 list[float]: List of values
         )" )
         .def( "setValueOnCells", &ConstantFieldOnCellsReal::setValueOnCells )
-        .def( "toSimpleFieldOnCells",
-              []( const ConstantFieldOnCellsReal &f ) { return toSimpleFieldOnCells( f ); },
-              R"(
+        .def(
+            "toSimpleFieldOnCells",
+            []( const ConstantFieldOnCellsReal &f, const SimpleFieldOnCellsReal &sfm ) {
+                return toSimpleFieldOnCells( f, sfm );
+            },
+            R"(
 Convert to SimpleFieldOnCells
 
 Returns:

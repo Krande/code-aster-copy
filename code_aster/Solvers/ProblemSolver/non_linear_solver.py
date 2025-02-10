@@ -43,7 +43,7 @@ For example for the displacement field and a Newton solver.
 """
 
 from ...Messages import MessageLog, UTMESS
-from ...Objects import NonLinearResult, ThermalResult, HHO
+from ...Objects import NonLinearResult, ThermalResult, HHO, ConstantFieldOnCellsReal
 from ...Supervis import ConvergenceError, IntegrationError, SolverError
 from ...Utilities import DEBUG, logger, no_new_attributes, profile
 from ..Basics import ProblemType as PBT
@@ -189,12 +189,20 @@ class NonLinearSolver(SolverFeature):
                 else:
                     _raise_elga_error()
 
-            def _get_field_and_check_model(state, name_field, model):
+            def _get_field_and_check_model(state, name_field, model, fieldModel=None):
                 """Extract the field from the initial state, then check that
                 the model of the field is the same as the model given in parameter.
+                If the field in a ConstantFieldOnCellsReal, it is converted in FieldOnCellsReal
+                using fieldModel.
 
                 Returns the field if the model is the same"""
                 field = state.get(name_field)
+                if isinstance(field, ConstantFieldOnCellsReal):
+                    simpleFieldModel = fieldModel.toSimpleFieldOnCells()
+                    simpleField = field.toSimpleFieldOnCells(simpleFieldModel)
+                    field = simpleField.toFieldOnCells(
+                        model.getFiniteElementDescriptor(), "TOU_INI_ELGA", ""
+                    )
                 if model is field.getModel():
                     return field
                 else:
@@ -262,7 +270,7 @@ class NonLinearSolver(SolverFeature):
 
             if "SIGM" in init_state:
                 phys_state.stress = _get_field_and_check_model(
-                    state=init_state, name_field="SIGM", model=model
+                    state=init_state, name_field="SIGM", model=model, fieldModel=phys_state.stress
                 )
                 _msginit("SIEF_ELGA")
 
