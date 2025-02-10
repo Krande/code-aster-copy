@@ -17,9 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-"""
-Calcul de proprietés homo
-"""
 from libaster import Physics, Modelings
 from ...Cata.Syntax import _F
 from ...CodeCommands import AFFE_MATERIAU, CALC_CHAMP

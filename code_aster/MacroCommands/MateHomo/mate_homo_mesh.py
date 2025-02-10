@@ -24,14 +24,21 @@ from . import MESH_TOL
 
 
 def prepare_mesh_syme(meshin, affe_groups, affe_all):
-    """
-    Cette fonction sert à construire un nouveau maillage qui reprends seulement la partie 3D
-    du maillage fourni par l'utilisateur. Tous les groupes de volume sont conservés.
-    Un group de volume BODY est ajouté est inclut l'ensemble des éléments à traiter selon
-    la déclaration de TOUT=OUI ou d'une liste de GROUP_MA.
-    Dans cette macro les affectations en TOUT='OUI' sont converties en affectations sur GROUP_MA=BODY
+    """Return a new mesh for the homogeneisation computations.
 
-    Les groupes de faces pour les CL sont crées à partir des min et max de la bounding box.
+    Only the 3D part of the original mesh is kept, together with the 3D groups.
+    A volume group BODY is created from the list of user material prescription.
+    Face groups are created as the group on the bounding box.
+
+    Arguments
+    ---------
+        mesh (Mesh): The user VER mesh.
+        affe (list): List of material prescription from user command.
+        affeall (bool): True if TOUT='OUI' is used.
+
+    Returns
+    -------
+        mesh (Mesh): The internal VER mesh.
     """
 
     ASSERT(len(affe_groups) > 0 or affe_all)
@@ -91,6 +98,9 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
 
 
 def check_meshdim(m0):
+    """
+    Perform dimensional checks on the input user mesh.
+    """
 
     nb_zones = len(m0.partitionBySpreadZone())
     if not nb_zones == 1:
@@ -112,6 +122,9 @@ def check_meshdim(m0):
 
 
 def rebuild_with_groups(m0, l0groups):
+    """
+    Rebuild mesh preserving 3D groups and creating new 2D and 1D groups.
+    """
 
     skin = m0.computeSkin()
 
