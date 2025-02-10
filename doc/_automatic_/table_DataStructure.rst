@@ -68,7 +68,7 @@
    * - :py:class:`~code_aster.Objects.ContactPairing`
      - 
    * - :py:class:`~code_aster.Objects.ContactZone`
-     - 
+     - ``char_cont_zone``
    * - :py:class:`~code_aster.Objects.Crack`
      - ``fond_fissure``
    * - :py:class:`~code_aster.Objects.CyclicSymmetryMode`
@@ -250,7 +250,7 @@
    * - :py:class:`~code_aster.Objects.MeshCoordinatesField`
      - 
    * - :py:class:`~code_aster.Objects.MeshPairing`
-     - 
+     - ``mesh_pairing``
    * - :py:class:`~code_aster.Objects.MeshesMapping`
      - ``corresp_2_mailla``
    * - :py:class:`~code_aster.Objects.ModeResult`
@@ -275,11 +275,19 @@
      - ``evol_noli``
    * - :py:class:`~code_aster.Objects.NormalSpeedOnFaceReal`
      - 
+   * - :py:class:`~code_aster.Objects.ParallelContactFEDescriptor`
+     - 
+   * - :py:class:`~code_aster.Objects.ParallelContactNew`
+     - 
+   * - :py:class:`~code_aster.Objects.ParallelContactPairing`
+     - 
    * - :py:class:`~code_aster.Objects.ParallelDOFNumbering`
      - ``nume_ddl_p``
    * - :py:class:`~code_aster.Objects.ParallelEquationNumbering`
      - ``nume_equa``
    * - :py:class:`~code_aster.Objects.ParallelFiniteElementDescriptor`
+     - 
+   * - :py:class:`~code_aster.Objects.ParallelFrictionNew`
      - 
    * - :py:class:`~code_aster.Objects.ParallelMechanicalLoadFunction`
      - 
