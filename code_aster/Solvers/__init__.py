@@ -22,11 +22,5 @@ Useful objects used for various problem solvers.
 """
 
 from .Basics import ContextMixin, Observer, PhysicalState, ProblemType, Residuals, SolverOptions
-from .IterationSolver import (
-    ConvergenceManager,
-    IncrementalSolver,
-    NewtonSolver,
-    RASPENSolver,
-    SNESSolver,
-)
+from .IterationSolver import ConvergenceManager, NewtonSolver, RASPENSolver, SNESSolver
 from .ProblemSolver import ContactManager, ProblemSolver, StorageManager, TimeStepper
