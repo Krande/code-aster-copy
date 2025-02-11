@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,12 +31,25 @@ from ...CodeCommands import (
     AFFE_CHAR_CINE,
     MECA_STATIQUE,
     POST_ELEM,
+    IMPR_RESU,
 )
 from ...Messages import ASSERT, UTMESS
 from ...Objects import Function
+from . import NameConverter
 
 
 def create_empty_dictpara(ls_para):
+    """Init empty result table.
+
+    Arguments
+    ---------
+        para (list[str]): List of output parameters.
+
+    Returns
+    -------
+        tab (OrderedDict): Output table.
+    """
+
     tabpara = OrderedDict()
     for para in ls_para:
         tabpara[para] = []
@@ -45,8 +58,15 @@ def create_empty_dictpara(ls_para):
 
 def get_temp_def_alpha(resu):
     """
-    Get the TEMP_DEF_ALPHA parameter from a given SD.
-    Return default is 20.0
+    Return the set TEMP_DEF_ALPHA from a Result datastructure.
+
+    Arguments
+    ---------
+        resu (Result): Input result datastructure.
+
+    Returns
+    -------
+        tda (float): The TEMP_DEF_ALPHA parameter if found, otherwise default 20.
     """
 
     temp_def_alpha = 20.0
@@ -64,12 +84,27 @@ def get_temp_def_alpha(resu):
 
 def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
     """
-    Cette fonction sert à :
-    * Rajouter une couche de vérification sur les propriétés des matériaux affectées.
-    * Rédéfinir ces memes matériaux pour ne conserver que E NU LAMBDA afin de replacer
-      les calculs stationnaires par des évolutions. Ceci pour avoir équivalence des résultats.
-    * Transformer les affectations TOUT=OUI en affectations sur GROUP_MA=BODY
+    Return the proper material fields prescription to compute the homogeneus parameters.
+
+    In order to perform homogeneisation for several temperature values,
+    it is necessary to ignore the ALPHA and RHO_CP parameters.
+
+    If command variable is not TEMP, convert the command variable to a pseudo-TEMP.
+
+    This function also convert the TOUT='OUI' prescription in GROUP_MA='BODY'.
+
+    Arguments
+    ---------
+        type (str): Type of homogeneisation (MASSIF | PLAQUE).
+        affe (list): List of material prescription from user command.
+        varcname (str): Name of command variable (TEMP | IRRA).
+
+    Returns
+    -------
+        affe_mate (dict): Modified material prescription for material averaging.
+        affe_calc (dict): Modified material prescription for corrector computation.
     """
+
     # material properties are accessed without "_FO" suffix
     mat1, mat2, mat3 = "ELAS", "THER", "THER_NL"
     mandatory_elas, optional_elas = ["E", "NU"], ["RHO", "ALPHA"]
@@ -188,10 +223,20 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
 
 
 def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
-    """
-    Cette fonction sert récuperer les coeff ALPHA affecté sur differents zones
-    pour en créer une fonction de INST qui servira dans le affe_char_meca pour
-    le calcul des correcteurs de dilatation
+    """Modify the ALPHA functions parameters.
+
+    This function converts the prescribed ALPHA function of temperature as functions of time.
+    They are used for the computation of the dilatation corrector fields.
+
+    Arguments
+    ---------
+        affe_mate (dict): Modified material prescription for material averaging.
+        varcvalue (list[float]): List of temperature at which parameters are computed.
+
+    Returns
+    -------
+        alpha_calc (list): Modified ALPHA functions.
+
     """
 
     ls_alpha_calc = []
@@ -212,6 +257,28 @@ def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
 
 
 def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values):
+    """Setup the homogeneus parameters computation.
+
+    Arguments
+    ---------
+        type (str): Type of homogeneisation (MASSIF | PLAQUE).
+        mesh (Mesh): The VER mesh.
+        groupma (list[str]): List of groups where properties are prescribed.
+        affe (list): List of material prescription from user command.
+        varcname (str): Name of command variable (TEMP | IRRA).
+        varcvalue (list[float]): List of temperature at which parameters are computed.
+
+    Returns
+    -------
+        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
+        modme (Model): Mechanical model.
+        matme (MaterialField): Mechanical material field.
+        modth (Model): Thermal model.
+        matth (MaterialField): Thermal material field.
+        linst (ListOfFloats): List of pseudo-time values (homogeneisation temperature values).
+        alpha (list): List of dilatation coefficient as function of pseudo-time (temperature).
+    """
+
     ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(
         type_homo, ls_affe, varc_name, ls_group_tout
     )
@@ -274,23 +341,41 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
     )
 
     DEPLMATE = MECA_STATIQUE(
-        MODELE=MODME, CHAM_MATER=CHLOIME, LIST_INST=L_INST, EXCIT=(_F(CHARGE=LOCK_MECA))
+        MODELE=MODME,
+        CHAM_MATER=CHLOIME,
+        LIST_INST=L_INST,
+        EXCIT=(_F(CHARGE=LOCK_MECA)),
+        OPTION="SANS",
     )
 
     return DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_alpha_calc
 
 
 def cross_work(RESU1, RESU2, INST, ls_group_tout):
-    """
-    Cette fonction sert à effectuer le calcul du travail croisé des correcteurs au travers
-    d'un calcul de l'énergie potentielle d'un correcteur ou de leur combinaison
+    """Compute the cross work value of correctors using the potential energy.
+
+    If X == Y --> W = 2 * EPOT(X)
+
+    If X != Y --> W = EPOT(X + Y) - EPOT(X) - EPOT(Y)
+
+    Warning : these formulas depends on the choice of BC for correctors (PRE_EPSI).
+
+    Arguments
+    ---------
+        resu1 (Result): The first result datastructure, elastic or thermal.
+        resu2 (Result): The second result datastructure, elastic or thermal.
+        inst (float): The pseudo-time (temperature) value for the work computation.
+        groupma (list[str]): List of groups where properties are prescribed.
+
+    Returns
+    -------
+        work (float): The cross work value.
     """
 
     ASSERT(RESU1.getMesh() is RESU2.getMesh())
     ASSERT(RESU1.getModel() is RESU2.getModel())
     ASSERT(RESU1.getMaterialField() is RESU2.getMaterialField())
     ASSERT(RESU1.getType() == RESU2.getType())
-    epot = 0
 
     RESU_TYPE = RESU1.getType()
     ASSERT(RESU_TYPE in ("EVOL_ELAS", "EVOL_THER"))

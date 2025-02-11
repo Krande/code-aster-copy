@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe PhysicalQuantityManager
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -46,6 +46,8 @@ class PhysicalQuantityManager {
     static ASTERINTEGER getNumberOfEncodedInteger( const ASTERINTEGER );
 
     static ASTERINTEGER getNumberOfComponents( const ASTERINTEGER );
+
+    static const VectorString getAllPhysicalQuantityNames();
 
     static const VectorString getComponentNames( const ASTERINTEGER );
 };

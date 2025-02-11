@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,11 @@ Le groupe %(k1)s ne fait pas partie du maillage
 L'intersection des groupes n'est pas vide
 """
     ),
+    6: _(
+        """
+Le champ %(k1)s n'existe pas dans le concept résultat %(k2)s.
+"""
+    ),
     7: _(
         """
 On ne peut pas créer le groupe '%(k1)s'.
@@ -84,6 +89,21 @@ Le paramètre '%(k1)s' n'est pas une fonction.
     14: _(
         """
 Le paramètre '%(k1)s' n'est pas identique pour l'ensemble des matériaux affectés.
+"""
+    ),
+    15: _(
+        """
+L'origine du maillage ('%(r1)f', '%(r2)f', '%(r3)f') ne coïncide pas avec l'origine de l'espace cartésien.
+"""
+    ),
+    16: _(
+        """
+Les correcteurs fournis ne respectent pas le type d'homogénéisation '%(k1)s'.
+"""
+    ),
+    17: _(
+        """
+Le fichier fourni ne contient pas de correcteurs.
 """
     ),
 }

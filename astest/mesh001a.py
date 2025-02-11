@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -562,6 +562,11 @@ test.assertSequenceEqual(
     ],
 )
 test.assertEqual(CA.Mesh.buildDisk(refine=2).getNumberOfNodes(), 257)
+
+# from mesh builder -  Disk
+builder = CA.Mesh.buildArc(radius=2, angle=np.pi / 2, refine=3)
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["ARC"])
+test.assertEqual(len(builder.getCells("ARC")), 15)
 
 # from mesh builder -  Disk
 builder = CA.Mesh.buildRing(refine=3)

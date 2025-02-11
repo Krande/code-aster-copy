@@ -327,6 +327,9 @@ class PhysicalQuantityManager:
     def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
+    def getAllPhysicalQuantityNames():
+        pass
+
     def getComponentNames(self):
         pass
 
@@ -4125,6 +4128,9 @@ class SimpleFieldOnNodesReal(DataField):
     def getComponents(self):
         pass
 
+    def getLocalization(self):
+        pass
+
     def getMesh(self):
         """Returns base mesh"""
 
@@ -4297,6 +4303,9 @@ class SimpleFieldOnNodesComplex(DataField):
         pass
 
     def getComponents(self):
+        pass
+
+    def getLocalization(self):
         pass
 
     def getMesh(self):

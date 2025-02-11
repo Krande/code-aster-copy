@@ -127,6 +127,7 @@ Returns:
         .def( "hasComponent", &SimpleFieldOnNodesReal::hasComponent )
         .def( "getMesh", &SimpleFieldOnNodesReal::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesReal::getPhysicalQuantity )
+        .def( "getLocalization", &SimpleFieldOnNodesReal::getLocalization )
         .def( "setValues",
               py::overload_cast< const VectorLong &, const VectorString &, const VectorReal & >(
                   &SimpleFieldOnNodesReal::setValues ),
@@ -263,5 +264,6 @@ Returns:
         .def( "hasComponent", &SimpleFieldOnNodesComplex::hasComponent )
         .def( "getMesh", &SimpleFieldOnNodesComplex::getMesh, R"(Returns base mesh)" )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesComplex::getPhysicalQuantity )
+        .def( "getLocalization", &SimpleFieldOnNodesComplex::getLocalization )
         .def( "updateValuePointers", &SimpleFieldOnNodesComplex::updateValuePointers );
 };

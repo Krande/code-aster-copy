@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ TAB_HOMO = CALC_MATE_HOMO(
     AFFE=(_F(TOUT="OUI", MATER=RESINE), _F(GROUP_MA=("tube0", "tube1"), MATER=VERRE)),
     VARC=_F(NOM_VARC="TEMP", VALE=20),
     TYPE_HOMO="MASSIF",
-    UNITE=80,
 )
 
 VALE_REFE = {"E_N": 43418, "E_T": 12123, "G_TN": 4468, "NU_NT": 0.265, "NU_TL": 0.401}

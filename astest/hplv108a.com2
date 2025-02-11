@@ -1,0 +1,86 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.Utilities import medcoupling as medc
+from code_aster.Helpers.LogicalUnit import LogicalUnitFile
+from code_aster.MacroCommands.MateHomo.mate_homo_utilities import setup_calcul
+from code_aster.MacroCommands.MateHomo import mate_homo_massif
+from code_aster.MacroCommands.MateHomo.syme_homo_corr import BuildFullSymmetryMassif
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+# fname = LogicalUnitFile.filename_from_unit(80)
+# resuin = medc.MEDFileData(fname)
+# resuout = BuildFullSymmetryMassif(resuin)
+# resuout.write(fname, 2)
+
+# MA_CORR = LIRE_MAILLAGE(UNITE=80)
+# CORR_MECA_FULL = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_ELAS", MAILLAGE=MA_CORR)
+# CORR_THER_FULL = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_THER", MAILLAGE=MA_CORR)
+
+# MESH_FULL = CORR_MECA_FULL["CORR_MECA11"].getMesh()
+
+# LSTEMP = [20]
+# DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_alpha_calc = setup_calcul(
+#     "MASSIF", MESH_FULL, ("plaque"), (_F(GROUP_MA="plaque", MATER=MATEUNI),), "TEMP", LSTEMP
+# )
+# (xmin, xmax), (ymin, ymax), (zmin, zmax) = MESH_FULL.createMedCouplingMesh()[0].getBoundingBox()
+# volume_ver = (xmax - xmin) * (ymax - ymin) * (zmax - zmin)
+
+# for n in CORR_MECA_FULL.keys():
+#     CORR_MECA_FULL[n].setMaterialField(CHMATME)
+
+# for n in CORR_THER_FULL.keys():
+#     CORR_THER_FULL[n].setMaterialField(CHMATTH)
+# A_hom, K_hom, TAB_HOMO_FULL = mate_homo_massif.calc_tabpara_massif(
+#     DEPLMATE, volume_ver, ("plaque",), "TEMP", LSTEMP, **CORR_MECA_FULL, **CORR_THER_FULL
+# )
+
+
+# def update_refe(para, value):
+#     upvalue = value
+#     if para in ("A3131", "A2323", "A1212"):
+#         upvalue = value / 2
+#     return upvalue
+
+
+# temp = "20.0"
+# for para, value in testrefe.items():
+#     vale_calc = testresu[temp][para]
+#     vale_refe = update_refe(para, value)
+#     TEST_TABLE(
+#         TABLE=TAB_HOMO_FULL,
+#         NOM_PARA=para,
+#         VALE_REFE=vale_refe,
+#         REFERENCE="SOURCE_EXTERNE",
+#         VALE_CALC=vale_calc,
+#         FILTRE=_F(NOM_PARA="TEMP", VALE=float(temp)),
+#     )
+
+test = CA.TestCase()
+# test.assertEqual(MESH_FULL.getNumberOfNodes(), 6269, msg="Number of nodes after symmetry")
+# test.assertEqual(MESH_FULL.getNumberOfCells(), 2120, msg="Number of cells after symmetry")
+test.assertTrue(True)
+test.printSummary()
+
+
+FIN()

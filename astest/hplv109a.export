@@ -1,0 +1,16 @@
+P time_limit 300
+P memory_limit 1024
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist need_data verification sequential
+
+F comm hplv109a.comm D 1
+F comm hplv109a.com1 D 1
+F comm hplv109a.com2 D 1
+F comm hplv109a.com3 D 1
+F mmed hplv109a.med D 20
+F mmed hplv109a.21 D 21
+F mmed hplv109a.22 D 22
+F mmed hplv109a.30 D 30
+F mmed hplv109a.31 D 31

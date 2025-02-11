@@ -30,6 +30,7 @@ from ..Messages import UTMESS
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import SearchList, InterpolateList, force_list, injector, is_number, logger
 from ..Utilities import medcoupling as medc
+from ..Utilities.MedUtils import MEDConverter
 
 
 class ResultStateBuilder(InternalStateBuilder):
@@ -438,55 +439,37 @@ class ExtendedResult:
 
         self._setField(field, name, storageIndex)
 
-    def createMedCouplingResult(self, medmesh=None):
+    def createMedCouplingResult(self, medmesh=None, profile=False, prefix=""):
         """Export the result to a new MED container.
 
         The export is limited to fields on nodes (Real) only.
 
         Arguments:
             medmesh, optional (*MEDFileUMesh*): The medcoupling support mesh.
+            profile, optional (bool): True to create a MED profile from field mask.
+            prefix,  optional (str): Prefix for field names.
 
         Returns:
             field ( MEDFileData ) : The result in med format ( medcoupling ).
         """
 
-        # Get NUME_ORDRE
-        para = self.getAccessParameters()
+        return MEDConverter.toMEDFileData(self, medmesh, profile, prefix)
 
-        ranks = para.get("NUME_ORDRE")
-        assert ranks is not None
+    @classmethod
+    def fromMedCouplingResult(cls, medresult, astermesh=None):
+        """Create a new result from an existing MED container.
 
-        # Get the variable to be associated to time in the med file
-        times = None
-        for i in ("INST", "FREQ", "NUME_MODE"):
-            if i in para:
-                times = para.get(i)
-                break
-        assert times is not None
+        The import is limited to fields on nodes (Real) without profile.
 
-        # Only works for fields on nodes real
-        save_fields = self.getFieldsOnNodesRealNames()
-        if len(save_fields) == 0:
-            msg = "None of the fields can be exported to medcoupling"
-            raise RuntimeError(msg)
+        Arguments:
+            medresult (MEDFileData) : The result in med format ( medcoupling ).
+            astermesh, optional (Mesh): The aster support mesh.
 
-        # Init medcoupling objets
-        medresult = medc.MEDFileData()
-        meshes = medc.MEDFileMeshes()
-        fields = medc.MEDFileFields()
+        Returns:
+            result ( Result ) : The result in Aster format.
+        """
 
-        # Set mesh
-        medmesh = medmesh or self.getMesh().createMedCouplingMesh()
-        meshes.pushMesh(medmesh)
+        result = cls()
+        MEDConverter.fromMEDFileData(result, medresult, astermesh)
 
-        for fname in save_fields:
-            fmts = medc.MEDFileFieldMultiTS()
-            for rank, time in zip(ranks, times):
-                medcfield = self.getField(fname, rank).toMEDFileField1TS(medmesh)
-                medcfield.setTime(rank, 0, time)
-                fmts.pushBackTimeStep(medcfield)
-            fields.pushField(fmts)
-
-        medresult.setMeshes(meshes)
-        medresult.setFields(fields)
-        return medresult
+        return result

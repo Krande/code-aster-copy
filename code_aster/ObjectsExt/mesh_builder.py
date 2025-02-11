@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -171,6 +171,43 @@ def rectangle(xmin, xmax, ymin, ymax, nx=1, ny=1):
     mcmesh.setGroupsAtLevel(0, [surface])
     mcmesh.setGroupsAtLevel(-1, [left, right, top, bottom])
     mcmesh.setGroupsAtLevel(1, [n1, n2, n3, n4])
+
+    return mcmesh
+
+
+def arc(radius, angle, no):
+    """Build the mesh of an arc.
+
+    Arguments:
+        radius [float] : Arc radius.
+        angle [float] : Arc angle in radians.
+        no [int] : number of segments along the theta axis.
+    """
+    assert all(isinstance(i, int) for i in (no,)), "Invalid parameter"
+    assert no >= 2, "Invalid geometry"
+    assert radius > 0.0, "Invalid geometry"
+    assert angle > 0.0, "Invalid geometry"
+    assert angle <= 2 * math.pi, "Invalid geometry"
+
+    coords_rad = medc.DataArrayDouble(no)
+    coords_rad[:] = radius
+
+    coords_theta = medc.DataArrayDouble(no)
+    coords_theta.iota()
+    coords_theta /= (no - 1) / angle
+
+    coords_p = medc.DataArrayDouble.Meld((coords_rad, coords_theta))
+    coords_c = coords_p.fromPolarToCart()
+    meshU = medc.MEDCouplingUMesh.Build1DMeshFromCoords(coords_c)
+
+    arc = medc.DataArrayInt.Range(0, meshU.getNumberOfCells(), 1)
+    arc.setName("ARC")
+
+    # Compose med mesh
+    mcmesh = medc.MEDFileUMesh()
+    mcmesh[0] = meshU
+    mcmesh.setName("ARC")
+    mcmesh.setGroupsAtLevel(0, [arc])
 
     return mcmesh
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -178,6 +178,9 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
         fieldSupport = 'NOEU'
     else if (fieldType .eq. 'FLUX_NOEU') then
         fieldQuantity = 'FLUX_R'
+        fieldSupport = 'NOEU'
+    else if (fieldType .eq. 'GRAT_NOEU') then
+        fieldQuantity = 'GRAT_R'
         fieldSupport = 'NOEU'
     else if (fieldType .eq. 'VARI_ELGA') then
         fieldQuantity = 'VARI_R'
