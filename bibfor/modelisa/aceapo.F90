@@ -89,7 +89,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     character(len=16) :: nunoel
     character(len=19) :: cartpo, cartge, cartpf, tabcar, napcis, foncis
     character(len=24) :: tmpnpo, tmpvpo, tmpgen, tmpnge, tmpvge, typca, nommai
-    character(len=24) :: tmpnpf, tmpvpf, tmpgef, modmai, mlggma, mlgnma, tmpvor
+    character(len=24) :: tmpnpf, tmpvpf, tmpgef, modmai, mlggma, mlgnma
     character(len=24) :: vmessk(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -539,7 +539,6 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     call jedetr(tmpvpo)
     call jedetr(tmpnge)
     call jedetr(tmpvge)
-    call jedetr(tmpvor)
 !
 999 continue
     call jedema()
