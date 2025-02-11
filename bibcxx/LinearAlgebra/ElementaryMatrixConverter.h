@@ -28,6 +28,8 @@
 
 #include "aster_fort_calcul.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "LinearAlgebra/ElementaryVector.h"
 #include "Modeling/ParallelContactFEDescriptor.h"
@@ -39,5 +41,7 @@ transfertToParallelFEDesc( const ElementaryMatrixDisplacementRealPtr,
 ElementaryVectorDisplacementRealPtr
 transfertToParallelFEDesc( const ElementaryVectorDisplacementRealPtr,
                            const ParallelContactFEDescriptorPtr );
+
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* ELEMENTARYMATRIXCONVERTER_H_ */

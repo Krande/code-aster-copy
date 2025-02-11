@@ -173,7 +173,10 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 !
 ! --- Acces au NUME_EQUA
 !
-    call jeveuo(nume_ddl//'.NUME.REFP', 'L', vi=v_refp)
+    call jeexin(nume_ddl//'.NUME.REFP', iret)
+    if (iret .ne. 0) then
+        call jeveuo(nume_ddl//'.NUME.REFP', 'L', vi=v_refp)
+    end if
     if (l_matd) then
         call jeveuo(nume_ddl//'.NUML.PRNO', 'L', vi=v_prn1)
         call jeveuo(jexatr(nume_ddl//'.NUML.PRNO', 'LONCUM'), 'L', vi=v_prn2)
@@ -252,11 +255,16 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 
                         call jenonu(jexnom(matr_asse//'.LILI', nomligrel), ilima)
                         call jenonu(jexnom(nume_ddl//'.NUME.LILI', nomligrel), ilinu)
-                        ilinu_ref = v_refp(ilinu)
-                        call jeveuo(nomligrel//'._TCO', "L", vk24=tco)
-                        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+                        ilinu_ref = ilinu
+                        lligrel_cp = .false.
+                        call jeexin(nomligrel//'._TCO', iret)
+                        if (iret .ne. 0) then
+                            call jeveuo(nomligrel//'._TCO', "L", vk24=tco)
+                            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+                        end if
                         if (lligrel_cp) then
                             call jeveuo(jexnum(nume_ddl//'.NUME.CRCO', ilinu), 'L', vi=v_crco)
+                            ilinu_ref = v_refp(ilinu)
                         end if
                         call jeexin(nomligrel//'.NTCM', iret)
 

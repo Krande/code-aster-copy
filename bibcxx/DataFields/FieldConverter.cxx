@@ -72,6 +72,7 @@ FieldOnNodesReal getImaginaryPart( const FieldOnNodesReal &field ) {
     return newField;
 };
 
+#ifdef ASTER_HAVE_MPI
 FieldOnNodesRealPtr transferToConnectionMesh( const FieldOnNodesRealPtr toTransfer,
                                               const ConnectionMeshPtr cMesh ) {
     auto sFON = toSimpleFieldOnNodes( toTransfer );
@@ -137,3 +138,4 @@ FieldOnNodesRealPtr transferToConnectionMesh( const FieldOnNodesRealPtr toTransf
     }
     return toFieldOnNodes( rSFON );
 };
+#endif /* ASTER_HAVE_MPI */

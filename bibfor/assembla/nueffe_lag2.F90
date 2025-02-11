@@ -357,8 +357,13 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
         else
             nbn = 0
         end if
-        call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
-        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        call jeexin(nomli(1:19)//'._TCO', iret)
+        if (iret .ne. 0) then
+            call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
+            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        else
+            lligrel_cp = .false.
+        end if
         v_refp(ili) = ili
         if (lligrel_cp) then
             if (cont_lili_ref .eq. 0) then
@@ -431,8 +436,13 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !      -------------------------------------------------
         inulag = 0
         call jenuno(jexnum(lili, ili), nomli)
-        call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
-        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        call jeexin(nomli(1:19)//'._TCO', iret)
+        if (iret .ne. 0) then
+            call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
+            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        else
+            lligrel_cp = .false.
+        end if
         call jeexin(nomli(1:19)//'.LGNS', iret)
         if (iret .ne. 0) then
 
@@ -534,8 +544,13 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !      -------------------------------------------------
         inulag = 0
         call jenuno(jexnum(lili, ili), nomli)
-        call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
-        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        call jeexin(nomli(1:19)//'._TCO', iret)
+        if (iret .ne. 0) then
+            call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
+            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        else
+            lligrel_cp = .false.
+        end if
         call jeexin(nomli(1:19)//'.LGNS', iret)
         if (iret .ne. 0) then
 
@@ -910,7 +925,13 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     end do
     do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
-        call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
+        call jeexin(nomli(1:19)//'._TCO', iret)
+        if (iret .ne. 0) then
+            call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
+            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        else
+            lligrel_cp = .false.
+        end if
         call jeexin(nomli(1:19)//'.LGNS', iret)
         if ((iret .ne. 0) .and. (tco(1) .eq. 'LIGREL_CP')) then
             if (ili .ne. cont_lili_ref) then
@@ -968,8 +989,13 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !     -------------------------------------------
     do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
-        call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
-        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        call jeexin(nomli(1:19)//'._TCO', iret)
+        if (iret .ne. 0) then
+            call jeveuo(nomli(1:19)//'._TCO', "L", vk24=tco)
+            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        else
+            lligrel_cp = .false.
+        end if
         if (lligrel_cp) then
             call jeexin(jexnum(crco, ili), iret)
             if (iret .ne. 0) then

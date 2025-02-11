@@ -125,7 +125,10 @@ subroutine crnlgc(numddl)
 
     call jeveuo(nume_equa//'.NULG', 'E', vi=v_nugll)
     call jeveuo(nume_equa//'.PDDL', 'E', vi=v_posdd)
-    call jeveuo(nume_equa//'.REFP', 'L', vi=v_refp)
+    call jeexin(nume_equa//'.REFP', iret)
+    if (iret .ne. 0) then
+        call jeveuo(nume_equa//'.REFP', 'L', vi=v_refp)
+    end if
 !
 ! -- Création du graphe de comm
     meshj = mesh//".JOIN"
@@ -300,8 +303,12 @@ subroutine crnlgc(numddl)
     call jelira(nume_equa//'.PRNO', 'NMAXOC', nlili, k8bid)
     do ili = 2, nlili
         call jenuno(jexnum(nume_equa//'.LILI', ili), nomlig)
-        call jeveuo(nomlig//'._TCO', "L", vk24=tco)
-        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        lligrel_cp = .false.
+        call jeexin(nomlig//'._TCO', iret)
+        if (iret .ne. 0) then
+            call jeveuo(nomlig//'._TCO', "L", vk24=tco)
+            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        end if
         if (lligrel_cp) then
             call jeexin(jexnum(nume_equa//'.CRCO', ili), iret)
             if (iret .ne. 0) then

@@ -23,6 +23,8 @@
 
 #include "LinearAlgebra/ElementaryMatrixConverter.h"
 
+#ifdef ASTER_HAVE_MPI
+
 ElementaryTermRealPtr transfertToParallelFEDesc( const ElementaryTermRealPtr curElemT,
                                                  const ParallelContactFEDescriptorPtr pFEDesc ) {
     const auto &fEDesc = pFEDesc->getSupportFiniteElementDescriptor();
@@ -130,3 +132,5 @@ transfertToParallelFEDesc( const ElementaryVectorDisplacementRealPtr eVIn,
     }
     return eV;
 };
+
+#endif /* ASTER_HAVE_MPI */

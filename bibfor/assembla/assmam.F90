@@ -355,7 +355,10 @@ subroutine assmam(jvBase, matrAsseZ, &
 
     call jeveuo(nu14//'.SMOS.SMHC', 'L', jsmhc)
     call jeveuo(nu14//'.SMOS.SMDI', 'L', jsmdi)
-    call jeveuo(nu14//'.NUME.REFP', 'L', vi=v_refp)
+    call jeexin(nu14//'.NUME.REFP', iret)
+    if (iret .ne. 0) then
+        call jeveuo(nu14//'.NUME.REFP', 'L', vi=v_refp)
+    end if
     if (lmatd) then
         call jeveuo(nu14//'.NUML.PRNO', 'L', jprn1)
         call jeveuo(jexatr(nu14//'.NUML.PRNO', 'LONCUM'), 'L', jprn2)
@@ -467,8 +470,12 @@ subroutine assmam(jvBase, matrAsseZ, &
 
             call jenonu(jexnom(matrAsse//'.LILI', ligre1), ilima)
             call jenonu(jexnom(nu14//'.NUME.LILI', ligre1), ilinu)
-            call jeveuo(noli(1) (1:19)//'._TCO', "L", vk24=tco)
-            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+            lligrel_cp = .false.
+            call jeexin(noli(1) (1:19)//'._TCO', ier)
+            if (ier .ne. 0) then
+                call jeveuo(noli(1) (1:19)//'._TCO', "L", vk24=tco)
+                lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+            end if
             if (lligrel_cp) then
                 call jeveuo(jexnum(nu14//'.NUME.CRCO', ilinu), 'L', vi=v_crco)
                 call jeveuo(ligre1//".CMNO", 'L', vk24=v_cmno)

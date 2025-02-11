@@ -25,6 +25,7 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
 #include "asterfort/assert.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -146,8 +147,11 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
         lligrel_cp = .false.
         if (i_ligr .gt. 1) then
             call jenuno(jexnum(lili, i_ligr), nomli)
-            call jeveuo(nomli//'._TCO', "L", vk24=tco)
-            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+            call jeexin(nomli//'._TCO', ier)
+            if (ier .ne. 0) then
+                call jeveuo(nomli//'._TCO', "L", vk24=tco)
+                lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+            end if
             if (lligrel_cp) then
                 call jeveuo(nomli//'.LOGL', 'L', vi=p_logl)
             end if

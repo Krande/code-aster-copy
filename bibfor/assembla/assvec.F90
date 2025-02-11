@@ -275,7 +275,10 @@ subroutine assvec(jvBase, vectAsseZ, &
     call jeveuo(numePrnoJv, 'L', idprn1)
     call jeveuo(jexatr(numePrnoJv, 'LONCUM'), 'L', idprn2)
     call jeveuo(numeNueqJv, 'L', ianueq)
-    call jeveuo(numeRefpJv, 'L', vi=v_refp)
+    call jeexin(numeRefpJv, iret)
+    if (iret .ne. 0) then
+        call jeveuo(numeRefpJv, 'L', vi=v_refp)
+    end if
 
 ! - Get number of equations
     call jeexin(numeNequJv, iexi)
@@ -356,8 +359,12 @@ subroutine assvec(jvBase, vectAsseZ, &
                 ligrelName = noli(1)
                 call jenonu(jexnom(vectAsseLili, ligrelName), ligrelNume)
                 call jenonu(jexnom(numeLiliJv, ligrelName), liliNume)
-                call jeveuo(ligrelName(1:19)//'._TCO', "L", vk24=v_tco)
-                lligrel_cp = (v_tco(1) .eq. 'LIGREL_CP')
+                lligrel_cp = .false.
+                call jeexin(ligrelName(1:19)//'._TCO', iret)
+                if (iret .ne. 0) then
+                    call jeveuo(ligrelName(1:19)//'._TCO', "L", vk24=v_tco)
+                    lligrel_cp = (v_tco(1) .eq. 'LIGREL_CP')
+                end if
                 if (lligrel_cp) then
                     call jeveuo(jexnum(numeCrcoJv, liliNume), 'L', vi=v_crco)
                     liliNume2 = v_refp(liliNume)

@@ -221,7 +221,10 @@ subroutine promor(nuz, base, printz)
         call jeveuo(jexatr(nu//'.NUML.PRNO', 'LONCUM'), 'L', idprn2)
         call jeveuo(nu//'.NUML.NUEQ', 'L', jnueq)
     end if
-    call jeveuo(nu//'.NUME.REFP', 'L', vi=v_refp)
+    call jeexin(nu//'.NUME.REFP', iret)
+    if (iret .ne. 0) then
+        call jeveuo(nu//'.NUME.REFP', 'L', vi=v_refp)
+    end if
 !
     nec = nbec(igd)
     nequ = zi(iadequ)
@@ -272,8 +275,12 @@ subroutine promor(nuz, base, printz)
 !     -----------------------------------------------
     do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
-        call jeveuo(nomlig//'._TCO', "L", vk24=tco)
-        lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        call jeexin(nomlig//'._TCO', iret)
+        lligrel_cp = .false.
+        if (iret .ne. 0) then
+            call jeveuo(nomlig//'._TCO', "L", vk24=tco)
+            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        end if
         if (lligrel_cp) then
             ili2 = v_refp(ili)
             call jeexin(jexnum(crco, ili), iret)
