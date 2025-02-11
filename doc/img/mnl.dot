@@ -91,10 +91,6 @@ digraph MNL {
         mecadyn -> implicit [dir = "back"; arrowtail = "empty";];
         mecadyn -> explicit [dir = "back"; arrowtail = "empty";];
         mecadyn -> multi [dir = "back"; arrowtail = "empty";];
-        
-        implicit -> integr;
-        explicit -> integr;
-        multi -> integr;
     }
     
     subgraph cluster_iter_solv {
@@ -130,8 +126,6 @@ digraph MNL {
     
     stepsolv -> iter_solver [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
     
-    iter_solver -> linsolv [ltail = cluster_iter_solv;];
-    
     newton -> incr_solv;
     newton -> linesearch;
     newton -> conv_manager;
@@ -143,8 +137,6 @@ digraph MNL {
         incr_solv -> mixin_incr [dir = "back"; style = "dashed"; arrowtail = "empty";];
     }
     incr_solv -> linesearch;
-    incr_solv -> contact;
-    incr_solv -> linsolv;
     incr_solv -> conv_manager;
     
     subgraph {

@@ -117,9 +117,8 @@ class ProblemSolver(ContextMixin):
             PBT.MecaDyna: "DYNA_NON_LINE",
             PBT.Thermal: "THER_NON_LINE",
         }
-        return LinearSolver.factory(
-            command=dcmd[context.problem_type], mcf=context.keywords["SOLVEUR"]
-        )
+        # FIXME: should be: dcmd[context.problem_type]
+        return LinearSolver.factory(command="STAT_NON_LINE", mcf=context.keywords["SOLVEUR"])
 
     # convenient shortcuts properties to init and access subobjects
     @property
