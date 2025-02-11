@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,13 @@ contains
                     call hhoData%initialize(1, 1, 1, 0.d0, ASTER_FALSE, &
                                             ASTER_FALSE)
                 else
-                    ASSERT(ASTER_FALSE)
+                    call dismoi('EXI_HHO_CSTE', model, 'MODELE', repk=answer)
+                    if (answer .eq. 'OUI') then
+                        call hhoData%initialize(0, 0, 0, 0.d0, ASTER_FALSE, &
+                                                ASTER_FALSE)
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
                 end if
             end if
         else

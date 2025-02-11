@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -428,7 +428,7 @@ contains
 !
 ! -- RHS : volumetric part
 ! -- get quadrature
-        call hhoQuadCell%GetQuadCell(hhoCell, hhoData%grad_degree()+(hhoData%cell_degree()-1))
+        call hhoQuadCell%GetQuadCell(hhoCell, hhoData%grad_degree()+max(hhoData%cell_degree()-1, 0))
 !
 ! - Loop on quadrature point
         do ipg = 1, hhoQuadCell%nbQuadPoints

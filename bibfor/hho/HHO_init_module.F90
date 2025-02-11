@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -594,7 +594,11 @@ contains
 ! --- Read Parameters
 !
         ASSERT(lteatt('TYPMOD2', 'HHO') .or. lteatt('TYPMOD2', 'HHO_GRAD'))
-        if (lteatt('FORMULATION', 'HHO_LINE')) then
+        if (lteatt('FORMULATION', 'HHO_CSTE')) then
+            face_deg = 0
+            cell_deg = 0
+            grad_deg = 0
+        elseif (lteatt('FORMULATION', 'HHO_LINE')) then
             face_deg = 1
             cell_deg = 1
             grad_deg = 1
