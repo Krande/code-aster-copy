@@ -32,7 +32,7 @@ DDL_THER = LocatedComponents(
     phys=PHY.TEMP_R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("HHO_T[1]",)), ("EN2", ()), ("EN3", ("HHO_T[1]"))),
+    components=(("EN1", ("HHO_FT[1]",)), ("EN2", ()), ("EN3", ("HHO_CT[1]"))),
 )
 
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))

@@ -1893,8 +1893,8 @@ ETHM_R = PhysicalQuantity(
     type="R",
     components=("COEF[4]", "PRE[2]"),
     comment="""  ETHM_R Type:R Coef Echange lineaire (modelisation THM)
-       COEF :C11 C12 C21 C22 
-       PRE : PRE1 ext et PRE2 ext 
+       COEF :C11 C12 C21 C22
+       PRE : PRE1 ext et PRE2 ext
 
 """,
 )
@@ -1902,8 +1902,8 @@ ETHM_F = PhysicalQuantity(
     type="K8",
     components=("COEF[4]", "PRE[2]"),
     comment="""  ETHM_F Type:F Coef Echange lineaire (modelisation THM)
-       COEF :C11 C12 C21 C22 
-       PRE : PRE1 ext et PRE2 
+       COEF :C11 C12 C21 C22
+       PRE : PRE1 ext et PRE2
 
 """,
 )
@@ -3658,7 +3658,8 @@ TEMP_R = PhysicalQuantity(
         "DTX",
         "DTY",
         "DTZ",
-        "HHO_T[10]",
+        "HHO_CT[10]",
+        "HHO_FT[6]",
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3672,8 +3673,8 @@ TEMP_R = PhysicalQuantity(
        DTX : derivee de la temperature selon x (n'est pas un ddl)
        DTY : derivee de la temperature selon y (n'est pas un ddl)
        DTZ : derivee de la temperature selon z (n'est pas un ddl)
-       HHO_T : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
-
+       HHO_CT : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
+       HHO_FT : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y face)
 """,
 )
 

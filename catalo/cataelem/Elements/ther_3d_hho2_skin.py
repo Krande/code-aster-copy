@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import cataelem.Commons.attributes as AT
 # Located components
 # --------------------------------------------------------------------------------------------------
 DDL_THER = LocatedComponents(
-    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_T[6]",)), ("EN2", ()))
+    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_FT[6]",)), ("EN2", ()))
 )
 
 CHHOBS = LocatedComponents(

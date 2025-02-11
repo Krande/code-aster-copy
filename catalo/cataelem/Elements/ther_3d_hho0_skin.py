@@ -30,7 +30,7 @@ import cataelem.Commons.attributes as AT
 # Located components
 # --------------------------------------------------------------------------------------------------
 DDL_THER = LocatedComponents(
-    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_T[1]",)), ("EN2", ()))
+    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_FT[1]",)), ("EN2", ()))
 )
 
 CHHOBS = LocatedComponents(

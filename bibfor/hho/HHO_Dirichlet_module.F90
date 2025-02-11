@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,13 +90,13 @@ contains
 !
 !===================================================================================================
 !
-    integerfunction hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
+    integer function hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
 !
-    implicit none
+        implicit none
 !
-    integer, intent(in) :: nb_cmp_hho_dir
-    integer, intent(in) :: nume_cmp
-    integer, intent(in) :: ndim
+        integer, intent(in) :: nb_cmp_hho_dir
+        integer, intent(in) :: nume_cmp
+        integer, intent(in) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - Dirichlet loads
@@ -109,25 +109,25 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    hhoDiriNum = 0
+        hhoDiriNum = 0
 !
-    if (ndim .ge. 2) then
-        if ((nume_cmp >= 1) .and. nume_cmp <= (nb_cmp_hho_dir)) then
-            hhoDiriNum = 1
-        else if ((nume_cmp >= nb_cmp_hho_dir+1) .and. (nume_cmp <= 2*nb_cmp_hho_dir)) then
-            hhoDiriNum = 2
-        else if (ndim == 3) then
-            if ((nume_cmp >= 2*nb_cmp_hho_dir+1) .and. (nume_cmp <= 3*nb_cmp_hho_dir)) then
-                hhoDiriNum = 3
+        if (ndim .ge. 2) then
+            if ((nume_cmp >= 1) .and. nume_cmp <= (nb_cmp_hho_dir)) then
+                hhoDiriNum = 1
+            else if ((nume_cmp >= nb_cmp_hho_dir+1) .and. (nume_cmp <= 2*nb_cmp_hho_dir)) then
+                hhoDiriNum = 2
+            else if (ndim == 3) then
+                if ((nume_cmp >= 2*nb_cmp_hho_dir+1) .and. (nume_cmp <= 3*nb_cmp_hho_dir)) then
+                    hhoDiriNum = 3
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
             else
                 ASSERT(ASTER_FALSE)
             end if
         else
             ASSERT(ASTER_FALSE)
         end if
-    else
-        ASSERT(ASTER_FALSE)
-    end if
 !
     end function
 !
@@ -528,7 +528,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idnddl, idvddl, jcmp, max_cmp
+        integer :: idnddl, idvddl, jcmp, max_cmp_f, max_cmp_c
         integer :: iddl, i, nbcmp, ila, icmp, userDOFNbSupp, ndim
         character(len=16) :: currentDOF
         real(kind=8) :: valeDOF
@@ -555,11 +555,9 @@ contains
 ! --- Get type of HHO
 !
         call hhoGetTypeFromModel(model, hhoData, ndim)
-        max_cmp = max( &
-                  binomial(hhoData%cell_degree()+ndim, hhoData%cell_degree()), &
-                  binomial(hhoData%face_degree()+ndim-1, hhoData%face_degree()) &
-                  )
-        ASSERT(max_cmp <= nbCmpSupp)
+        max_cmp_c = binomial(hhoData%cell_degree()+ndim, hhoData%cell_degree())
+        max_cmp_f = binomial(hhoData%face_degree()+ndim-1, hhoData%face_degree())
+        ASSERT(max_cmp_f+max_cmp_c <= nbCmpSupp)
 !
 ! - Create objects
 !
@@ -608,7 +606,7 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-                do i = 2, max_cmp
+                do i = 2, max_cmp_c
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
                     zk8(idnddl+nbddl-1) = 'HHO_DX'//code
@@ -632,7 +630,7 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-                do i = 2, max_cmp
+                do i = 2, max_cmp_c
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
                     zk8(idnddl+nbddl-1) = 'HHO_DY'//code
@@ -659,7 +657,7 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-                do i = 2, max_cmp
+                do i = 2, max_cmp_c
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
                     zk8(idnddl+nbddl-1) = 'HHO_DZ'//code
@@ -673,8 +671,9 @@ contains
                     end if
                 end do
             else if (currentDOF .eq. 'TEMP') then
+                !! face part
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = 'HHO_T1'
+                zk8(idnddl+nbddl-1) = 'HHO_FT1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 else if (valeType .eq. 'F') then
@@ -683,10 +682,34 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-                do i = 2, max_cmp
+                do i = 2, max_cmp_f
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_T'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_FT'//code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1) = 0.d0
+                    else if (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+                !! cell part
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_CT1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                else if (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp_c
+                    nbddl = nbddl+1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_CT'//code
                     if (valeType .eq. 'R') then
                         zr(idvddl+nbddl-1) = 0.d0
                     else if (valeType .eq. 'F') then
@@ -1110,19 +1133,19 @@ contains
         ASSERT(ASTER_FALSE)
     end if
 !
-end function
+    end function
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-function hhoDiriNodeType(typema, i_node) result(isCellNode)
+    function hhoDiriNodeType(typema, i_node) result(isCellNode)
 !
-    implicit none
+        implicit none
 !
-    character(len=8), intent(in), optional :: typema
-    integer, intent(in) :: i_node
-    aster_logical :: isCellNode
+        character(len=8), intent(in), optional :: typema
+        integer, intent(in) :: i_node
+        aster_logical :: isCellNode
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - AFFE_CHAR_CINE_F
@@ -1132,38 +1155,38 @@ function hhoDiriNodeType(typema, i_node) result(isCellNode)
 !   In (opt) typema : type of element
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
-    character(len=8) :: typma2
+        integer :: iret
+        character(len=8) :: typma2
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---  Get type of element
 !
-    if (present(typema)) then
-        typma2 = typema
-    else
-        call teattr('S', 'TYPMA', typma2, iret)
-        ASSERT(iret == 0)
-    end if
+        if (present(typema)) then
+            typma2 = typema
+        else
+            call teattr('S', 'TYPMA', typma2, iret)
+            ASSERT(iret == 0)
+        end if
 !
-    isCellNode = ASTER_FALSE
+        isCellNode = ASTER_FALSE
 !
-    if (typma2 == 'H27' .or. typma2 == 'HEXA27') then
-        isCellNode = i_node == 27
-    else if (typma2 == 'T15' .or. typma2 == 'TETRA15') then
-        isCellNode = i_node == 15
-    else if (typma2 == 'P21' .or. typma2 == 'PENTA21') then
-        isCellNode = i_node == 21
-    else if (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
-        isCellNode = i_node == 19
-    else if (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
-        isCellNode = i_node == 9
-    else if (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
-        isCellNode = i_node == 7
-    else
-        ASSERT(ASTER_FALSE)
-    end if
+        if (typma2 == 'H27' .or. typma2 == 'HEXA27') then
+            isCellNode = i_node == 27
+        else if (typma2 == 'T15' .or. typma2 == 'TETRA15') then
+            isCellNode = i_node == 15
+        else if (typma2 == 'P21' .or. typma2 == 'PENTA21') then
+            isCellNode = i_node == 21
+        else if (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
+            isCellNode = i_node == 19
+        else if (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
+            isCellNode = i_node == 9
+        else if (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
+            isCellNode = i_node == 7
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
-end function
+    end function
 !
 end module
