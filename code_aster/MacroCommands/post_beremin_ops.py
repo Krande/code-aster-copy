@@ -486,7 +486,21 @@ class PostBeremin:
 
         return proj_3D_2D
 
-    def compute_intsig1_2D(self, sig1, pow_m, idx, time, mesh_2D_idx):
+    def convert_to_mc(self, sig1):
+
+        ##3D ComponentOnCells to 3D medcoupling array
+        sigma = FieldOnCellsReal(self._model_3D_restricted, "ELGA", "SIEF_R")
+        sigma.setValues(0.0)
+        sigma_sfield = sigma.toSimpleFieldOnCells()
+        sixx = sigma_sfield.SIXX
+        sixx += sig1
+        sigma_sfield.setComponentValues("SIXX", sixx)
+        sigma_f_mc = sigma_sfield.toMEDCouplingField(self._mesh_3D_cells_mc)
+        sigma_a_mc = sigma_f_mc.getArray()[:, 0]
+
+        return sigma_a_mc
+
+    def compute_intsig1_2D(self, mc_sig1, pow_m, idx, time, mesh_2D_idx):
         """Projection of sig1 from 3D cells to barycenter of 2D cells
         and computation of 2D integral
 
@@ -495,20 +509,8 @@ class PostBeremin:
 
         """
 
-        ##3D ComponentOnCells to 3D medcoupling array
-        sigma = FieldOnCellsReal(self._model_3D_restricted, "ELGA", "SIEF_R")
-        sigma.setValues(0.0)
-        sigma_sfield = sigma.toSimpleFieldOnCells()
-        sixx = sigma_sfield.SIXX
-        sig1.restrict(self._zone_ids)
-        sixx += sig1
-        sigma_sfield.setComponentValues("SIXX", sixx.expand())
-        sigma_f_mc = sigma_sfield.toMEDCouplingField(self._mesh_3D_cells_mc)
-        sigma_a_mc = sigma_f_mc.getArray()[:, 0]
-
         ##Projection 3D -> points
-        proj_3D_2D = self._l_proj_3D_2D[mesh_2D_idx]
-        sigma_2D_a_mc = proj_3D_2D.Eval(sigma_a_mc)
+        sigma_2D_a_mc = self._l_proj_3D_2D[mesh_2D_idx].Eval(mc_sig1)
         sigma_2D_a_mc.setName("SIYY")
 
         ##Create 2D medcoupling field for integral
@@ -699,9 +701,11 @@ class PostBeremin:
                                 self.build_projector(mesh, mesh_2D=mesh_2D, group_no_2D=group_no_2D)
                             ]
 
+                    mc_sig1 = self.convert_to_mc(sig1)
+
                     ##Compute SW2D for every plane
                     for mesh_2D_idx, mesh_2D_name in enumerate(self._l_name_mesh_2D):
-                        intsig1pm = self.compute_intsig1_2D(sig1, pow_m, idx, time, mesh_2D_idx)
+                        intsig1pm = self.compute_intsig1_2D(mc_sig1, pow_m, idx, time, mesh_2D_idx)
                         strwb, strwb_pm, proba = self.compute_table_values(
                             intsig1pm, pow_m, sigma_refe
                         )
