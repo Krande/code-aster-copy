@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -159,12 +159,21 @@ S.view(v)
 from code_aster.LinearAlgebra import MatrixScaler
 from code_aster.Utilities import logger
 
+# Compute reference solution
+mySolver = code_aster.MumpsSolver()
+mySolver.factorize(matrAsse)
+sol_ref = mySolver.solve(vecass)
+
+# Export unscaled matrix
 pA_unscaled = matrAsse.toPetsc()
 pA_unscaled.view()
-# The Scling object
+
+# The Scaling object
 S = MatrixScaler.MatrixScaler()
-logger.setLevel(2)
+
+# Duplicate the assembly matrix
 newMat = matrAsse.copy()
+
 # Compute scaling with DX and DY gathered (default behavior)
 S.computeScaling(matrAsse)
 S.scaleMatrix(newMat)
@@ -175,12 +184,14 @@ nt = PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(pA_unscaled.norm(nt), 43055.55555560758)
 test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 
-
+# Duplicate the assembly matrix again
 newMat = matrAsse.copy()
+
 # Compute scaling with DX and DY separately
 S.computeScaling(matrAsse, merge_dof=[])
 S.scaleMatrix(newMat)
 
+# Export scaled matrix
 pA_scaled = newMat.toPetsc()
 pA_scaled.view()
 nt = PETSc.NormType.NORM_INFINITY
@@ -190,15 +201,16 @@ test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 rhs = vecass.copy()
 init_norm = rhs.norm("NORM_INFINITY")
 S.scaleRHS(rhs)
-test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), 286.21852876537895)
+test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), 0.00970509418019451)
 
+# Check the solution of the scaled system with respect to the reference solution
+mySolver.factorize(newMat)
+solution = mySolver.solve(rhs)
 
-sol = vecass.copy()
-S.unscaleSolution(rhs)
-test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), init_norm)
+# The solution *must* be unscaled !
+S.unscaleSolution(solution)
+test.assertAlmostEqual(solution.toPetsc().norm(nt), sol_ref.toPetsc().norm(nt))
 
-
-logger.setLevel(0)
 
 test.printSummary()
 

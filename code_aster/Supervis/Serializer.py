@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -438,7 +438,7 @@ def _filteringContext(context):
         if getattr(numpy, name, None) is obj:  # see issue29282
             continue
         # check attr needed for python<=3.6
-        if hasattr(obj, "__class__") and isinstance(obj, IOBase):
+        if hasattr(obj, "__class__") and isinstance(obj, (IOBase, MPI.Intracomm)):
             continue
         if ipython and name in ("_", "__", "___", "_ih", "_oh", "_dh", "In", "Out", "exit", "quit"):
             continue

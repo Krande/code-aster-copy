@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -233,14 +233,14 @@ class MatrixScaler:
         (from initial to normalized)."""
         if self.rvect is None or self.lvect is None:
             raise ValueError("The scaling must be computed before using it")
-        return rhs.scale(1 / self.rvect)
+        return rhs.scale(self.lvect)
 
     def unscaleSolution(self, sol: FieldOnNodesReal):
         """Unscale the solution in argument using the previously computed scaling vectors
         (from normalized to initial)."""
         if self.rvect is None or self.lvect is None:
             raise ValueError("The scaling must be computed before using it")
-        return sol.scale(self.lvect)
+        return sol.scale(self.rvect)
 
     def getScalingVectors(self):
         """Return the left and right scaling vectors (in this order)."""
