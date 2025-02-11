@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("HHO_DX[6]", "HHO_DY[6]", "HHO_DZ[6]")), ("EN2", ())),
+    components=(("EN1", ("HHO_FX[6]", "HHO_FY[6]", "HHO_FZ[6]")), ("EN2", ())),
 )
 
 CHHOBS = LocatedComponents(

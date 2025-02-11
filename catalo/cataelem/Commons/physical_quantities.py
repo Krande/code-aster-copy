@@ -842,9 +842,12 @@ list_cmp_depl = (
     "DRGX",
     "DRGY",
     "DRGZ",
-    "HHO_DX[10]",
-    "HHO_DY[10]",
-    "HHO_DZ[10]",
+    "HHO_CX[10]",
+    "HHO_CY[10]",
+    "HHO_CZ[10]",
+    "HHO_FX[6]",
+    "HHO_FY[6]",
+    "HHO_FZ[6]",
     "HHO_VR[10]",
     "HHO_LG[10]",
     "PINCH",
@@ -917,9 +920,12 @@ comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DRGX    : rotation des grilles (élément poutre assemblage combustible)
        DRGY    : rotation des grilles (élément poutre assemblage combustible)
        DRGZ    : rotation des grilles (élément poutre assemblage combustible)
-       HHO_DX : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
-       HHO_DY : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
-       HHO_DZ : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
+       HHO_CX : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell - dir X)
+       HHO_CY : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell - dir Y)
+       HHO_CZ : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell - dir Z)
+       HHO_FX : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (face - dir X)
+       HHO_FY : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (face - dir Y)
+       HHO_FZ : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (face - dir Z)
        HHO_VR : degres de liberté HHO: VARI (cell + faces)
        HHO_LG : degres de liberté HHO: LAG_GV (cell)
        PINCH   : pinch dof for solid-shell elements

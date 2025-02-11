@@ -156,7 +156,7 @@ contains
 !
         integer :: nume_gd, ifm, niv, nb_cmp_hho_max, offset
         integer :: i_cmp, ndim, elem_ndim, type_nume, i_func, nb_cine_func, nb_elem_mesh
-        integer :: nb_cmp_hho_dir_c, nb_cmp_hho_dir_f, nb_cmp_hho_dir
+        integer :: nb_cmp_hho_dir_c, nb_cmp_hho_dir_f, nb_cmp_hho_dir, nume_cmp_f
         character(len=8) :: name_gd, load_name, load_type, type_name, load_cine, mesh
         character(len=8), pointer :: v_field_valv(:) => null()
         character(len=8), pointer :: p_cata_nomcmp(:) => null()
@@ -340,11 +340,8 @@ contains
                                 i_func = ndim*(node_nume_loc-offset)+dim_cmp
                                 v_field_valv(i_func) = v_afcv(i_affe_cine)
                                 if (.not. isCellNode) then
-                                    hhoField%v_info_cine(3*(i_affe_cine-1)+3) = (dim_cmp-1)*nb_cm&
-                                                                                &p_hho_dir_c+nume&
-                                                                                &_cmp-(dim_cmp-1)&
-                                                                                &*nb_cmp_hho_dir_&
-                                                                                &f
+                                    nume_cmp_f = ndim*nb_cmp_hho_dir_c+nume_cmp
+                                    hhoField%v_info_cine(3*(i_affe_cine-1)+3) = nume_cmp_f
                                 end if
                             end if
                         end do
@@ -596,8 +593,33 @@ contains
             end if
 !
             if (currentDOF .eq. 'DX') then
+                !! face
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = 'HHO_DX1'
+                zk8(idnddl+nbddl-1) = 'HHO_FX1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                else if (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp_f
+                    nbddl = nbddl+1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_FX'//code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1) = 0.d0
+                    else if (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+                !! cell
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_CX1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 else if (valeType .eq. 'F') then
@@ -609,7 +631,7 @@ contains
                 do i = 2, max_cmp_c
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_DX'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_CX'//code
                     if (valeType .eq. 'R') then
                         zr(idvddl+nbddl-1) = 0.d0
                     else if (valeType .eq. 'F') then
@@ -620,8 +642,33 @@ contains
                     end if
                 end do
             else if (currentDOF .eq. 'DY') then
+                !! face
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = 'HHO_DY1'
+                zk8(idnddl+nbddl-1) = 'HHO_FY1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                else if (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp_f
+                    nbddl = nbddl+1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_FY'//code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1) = 0.d0
+                    else if (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+                !! cell
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_CY1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 else if (valeType .eq. 'F') then
@@ -633,7 +680,7 @@ contains
                 do i = 2, max_cmp_c
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_DY'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_CY'//code
                     if (valeType .eq. 'R') then
                         zr(idvddl+nbddl-1) = 0.d0
                     else if (valeType .eq. 'F') then
@@ -647,8 +694,33 @@ contains
                 if (ndim .ne. 3) then
                     call utmess('F', 'CHARGES_57')
                 end if
+                !! face
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = 'HHO_DZ1'
+                zk8(idnddl+nbddl-1) = 'HHO_FZ1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                else if (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp_f
+                    nbddl = nbddl+1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_FZ'//code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1) = 0.d0
+                    else if (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+                !! cell
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_CZ1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 else if (valeType .eq. 'F') then
@@ -660,7 +732,7 @@ contains
                 do i = 2, max_cmp_c
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_DZ'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_CZ'//code
                     if (valeType .eq. 'R') then
                         zr(idvddl+nbddl-1) = 0.d0
                     else if (valeType .eq. 'F') then
