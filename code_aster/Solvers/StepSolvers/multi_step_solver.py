@@ -25,25 +25,12 @@ from math import sqrt
 class MultiStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
-    integration_type = TimeScheme.Multiple
-
-    @classmethod
-    def create(cls, step_solvers, param):
-        """Setup a solver for the given problem.
-
-        Arguments:
-            step_solvers (list) : list of step solvers.
-            param (dict) : user keywords.
-
-        Returns:
-            *StepSolver*: A relevant *StepSolver* object.
-        """
-        return cls(step_solvers)
+    integrator_type = TimeScheme.Multiple
 
     def __init__(self, step_solvers):
         assert len(step_solvers) == 2, len(step_solvers)
-        assert isinstance(step_solvers[0]._integrator, BaseIntegrator)
-        # assert isinstance(step_solvers[1]._integrator, OnSubStepIntegrator)
+        assert isinstance(step_solvers[0].oper, BaseIntegrator)
+        # assert isinstance(step_solvers[1].oper, OnSubStepIntegrator)
         self._step_solvers = step_solvers
         self._coef = 2.0 - sqrt(2)
 
@@ -65,11 +52,3 @@ class MultiStepSolver(MecaDynaStepSolver):
         step1.setInitialState(state0)
         # step1.setIntermediateState(self.state)
         step1.solve(t_init, delta_t)
-
-    def setup(self):
-        """set up the step solver."""
-        for step_solver in self._step_solvers:
-            for feat, required in step_solver.undefined():
-                feat_obj = self.get_feature(feat, optional=(not required))
-                step_solver.use(feat_obj)
-            step_solver.setup()

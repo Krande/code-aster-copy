@@ -24,7 +24,7 @@ from ...Utilities import no_new_attributes, profile
 from ..Basics import ContextMixin, DispatcherMixin
 
 
-class BaseInterationSolver(ABC, ContextMixin, DispatcherMixin):
+class BaseIterationSolver(ABC, ContextMixin, DispatcherMixin):
     """Solves a step, loops on iterations."""
 
     class SubType(IntFlag):

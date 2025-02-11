@@ -74,7 +74,7 @@ class BaseOperators(ABC, ContextMixin, DispatcherMixin):
         assert self._first_jacobian is not None
         return self._first_jacobian
 
-    # @profile
+    @profile
     def getResidual(self, scaling=1.0, tmp_internVar=None):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
@@ -93,7 +93,7 @@ class BaseOperators(ABC, ContextMixin, DispatcherMixin):
             self.state, contact_manager=self.contact, scaling=scaling, tmp_internVar=tmp_internVar
         )
 
-    # @profile
+    @profile
     def getStiffnessJacobian(self, matrix_type, tmp_internVar=None):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du
 

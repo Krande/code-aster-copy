@@ -23,7 +23,7 @@ Solving iterations.
 
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
-from .iteration_solver import BaseInterationSolver
+from .iteration_solver import BaseIterationSolver
 from .newton_solver import NewtonSolver
 from .raspen_solver import RASPENSolver
 from .snes_solver import SNESSolver

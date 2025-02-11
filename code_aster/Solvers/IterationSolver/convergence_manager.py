@@ -24,15 +24,12 @@ from math import sqrt
 from ...Objects import DiscreteComputation
 from ...Utilities import MPI, logger, no_new_attributes, profile
 from ..Basics import ContextMixin
-from ..Basics import SolverOptions as SOP
 
 
 class ConvergenceManager(ContextMixin):
     """Object that decides about the convergence status."""
 
     __needs__ = ("problem", "state", "keywords")
-    provide = SOP.ConvergenceManager
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 
     _param = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -244,8 +241,7 @@ class ConvergenceManager(ContextMixin):
         Returns:
             instance: New object.
         """
-        instance = cls()
-        instance.context = context
+        instance = super().builder(context)
         for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "ITER_GLOB_MAXI"):
             value = instance.get_keyword("CONVERGENCE", crit)
             if value is not None:
@@ -334,7 +330,7 @@ class ConvergenceManager(ContextMixin):
         """
         return copy.deepcopy(self._param)
 
-    # @profile
+    @profile
     def getDirichletResidual(self, residual):
         """Return the residual with Dirichlet imposed values.
 
@@ -364,7 +360,7 @@ class ConvergenceManager(ContextMixin):
 
         return residual
 
-    # @profile
+    @profile
     def getRelativeScaling(self, residuals):
         """Returns the scaling factor to compute the relative error
 
@@ -417,7 +413,7 @@ class ConvergenceManager(ContextMixin):
 
         return MPI.ASTER_COMM_WORLD.allreduce(scaling, MPI.MAX)
 
-    # @profile
+    @profile
     def evalNormResidual(self, residuals):
         """Evaluate global residual.
 
@@ -446,7 +442,7 @@ class ConvergenceManager(ContextMixin):
 
         return resi_fields
 
-    # @profile
+    @profile
     def evalGeometricResidual(self, displ_delta):
         """Evaluate geometric residual.
 

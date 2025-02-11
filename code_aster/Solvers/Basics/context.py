@@ -294,7 +294,6 @@ class ContextMixin:
     @check_access()
     def contact(self):
         """ContactManager: Objects to solve contact conditions"""
-        logger.debug("CTXT: ctxt.contact: %s", self._ctxt._contact)
         return self._ctxt._contact
 
     @contact.setter

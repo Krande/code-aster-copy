@@ -18,18 +18,16 @@
 # --------------------------------------------------------------------
 
 from ...Utilities import no_new_attributes
-from ..Basics import ProblemType as PBT
 from .base_integrator import BaseIntegrator, TimeScheme, IntegratorType
 
 
 class NewmarkIntegrator(BaseIntegrator):
     """Implementation of Newmark's scheme."""
 
-    integration_type = TimeScheme.Implicit
+    integrator_type = TimeScheme.Implicit
     integrator_name = IntegratorType.Newmark
 
     _gamma = _beta = _J = None
-
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod

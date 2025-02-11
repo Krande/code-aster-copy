@@ -57,7 +57,7 @@ class ContactManager:
             self.comp = ContactComputation(self.defi)
             self.coef_cont, self.coef_frot = self.comp.contactCoefficient()
 
-    # @profile
+    @profile
     def pairing(self):
         """Pairing between contact zones."""
         if not self.enable:
@@ -81,7 +81,7 @@ class ContactManager:
 
         self.nb_pairing += 1
 
-    # @profile
+    @profile
     def getPairingCoordinates(self):
         """Get the coordinates field used for pairing.
 
@@ -92,7 +92,7 @@ class ContactManager:
             return
         return self.pair.getCoordinates()
 
-    # @profile
+    @profile
     def setPairingCoordinates(self, coor):
         """Set the coordinates field used for pairing.
 
@@ -103,7 +103,7 @@ class ContactManager:
             return
         self.pair.setCoordinates(coor)
 
-    # @profile
+    @profile
     def data(self):
         """Compute data for DiscreteComputation.
 

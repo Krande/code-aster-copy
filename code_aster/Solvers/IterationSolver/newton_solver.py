@@ -21,15 +21,15 @@ from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
-from .iteration_solver import BaseInterationSolver
+from .iteration_solver import BaseIterationSolver
 from .line_search import LineSearch
 
 
-class NewtonSolver(BaseInterationSolver):
+class NewtonSolver(BaseIterationSolver):
     """Solves a step, loops on iterations."""
 
     __needs__ = ("problem", "state", "keywords", "oper", "linear_solver", "contact")
-    solver_type = BaseInterationSolver.SubType.Newton
+    solver_type = BaseIterationSolver.SubType.Newton
     # FIXME: merge IncrementalSolver into NewtonSolver
     _incr_solv = _converg = _line_search = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -44,8 +44,7 @@ class NewtonSolver(BaseInterationSolver):
         Returns:
             instance: New object.
         """
-        instance = cls()
-        instance.context = context
+        instance = super().builder(context)
         instance._post_init()
         instance._converg = ConvergenceManager.builder(context)
         instance._line_search = LineSearch.builder(context)
@@ -91,7 +90,7 @@ class NewtonSolver(BaseInterationSolver):
             # make unavailable the current tangent matrix
             self.current_matrix = None
 
-    # @profile
+    @profile
     def solve(self, current_matrix, callback=None):
         """Solve a step.
 

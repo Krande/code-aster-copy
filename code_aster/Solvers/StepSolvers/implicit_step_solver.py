@@ -20,53 +20,32 @@
 from libaster import deleteTemporaryObjects
 
 from ...Utilities import profile
-
-from ..Basics import SolverOptions as SOP
-from .meca_dyna_step_solver import MecaDynaStepSolver
 from ..TimeIntegrators import TimeScheme
+from .meca_dyna_step_solver import MecaDynaStepSolver
 
 
 class ImplicitStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
-    integration_type = TimeScheme.Implicit
+    integrator_type = TimeScheme.Implicit
 
-    @classmethod
-    def create(cls, integrator, param):
-        """Setup a solver for the given problem.
-
-        Arguments:
-            integrator : time integrator
-            param (dict) : user keywords.
-
-        Returns:
-            *StepSolver*: A relevant *StepSolver* object.
-        """
-        return cls(integrator)
-
-    # @profile
+    @profile
     def solve(self):
         """Solve a step.
 
         Raises:
             *ConvergenceError* exception in case of error.
         """
-
         logManager = self.createLoggingManager()
         logManager.printConvTableEntries()
+        self._iterations_solv.setLoggingManager(logManager)
+        self._iterations_solv.initialize()
+        self.oper.initializeStep()
 
-        criteria = self.get_feature(SOP.ConvergenceCriteria)
-        criteria.use(self.get_feature(SOP.OperatorsManager))
-
-        criteria.setLoggingManager(logManager)
-        criteria.initialize()
-
-        self._integrator.initializeStep()
-
-        self.current_matrix = criteria.solve(self.current_matrix, self._integrator.updateVariables)
+        self.current_matrix = self._iterations_solv.solve(
+            self.current_matrix, callback=self.oper.updateVariables
+        )
 
         deleteTemporaryObjects()
-
         logManager.printConvTableEnd()
-
-        self._integrator.setInitialState(self.state)
+        self.oper.setInitialState(self.state)

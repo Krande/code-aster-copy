@@ -193,7 +193,7 @@ class StorageManager:
         # if "time" in kwargs:
         #     self._result.setTime(kwargs["time"], idx)
 
-    # @profile
+    @profile
     def storeState(
         self, idx, time, phys_pb, phys_state, param=None, ignore_policy=False, is_final_time=False
     ):
@@ -240,7 +240,7 @@ class StorageManager:
         self._store()
         return True
 
-    # @profile
+    @profile
     def _store(self):
         """Build result with all indexes in buffer."""
         new_size = self._result.getNumberOfIndexes() + len(self._buffer)
@@ -265,7 +265,7 @@ class StorageManager:
                     self._store_field(slot.time, field, field_type)
         self._buffer = []
 
-    # @profile
+    @profile
     def _store_field(self, time, field, field_type):
         """Store a field - internal function."""
         if field is None or field_type in self._excl_fields:

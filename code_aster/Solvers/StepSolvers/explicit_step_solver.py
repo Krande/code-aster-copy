@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Basics import SolverOptions as SOP
 from .meca_dyna_step_solver import MecaDynaStepSolver
 from ..TimeIntegrators import TimeScheme
 
@@ -25,20 +24,7 @@ from ..TimeIntegrators import TimeScheme
 class ExplicitStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
-    integration_type = TimeScheme.Explicit
-
-    @classmethod
-    def create(cls, integrator, param):
-        """Setup a solver for the given problem.
-
-        Arguments:
-            integrator : time integrator
-            param (dict) : user keywords.
-
-        Returns:
-            *StepSolver*: A relevant *StepSolver* object.
-        """
-        return cls(integrator)
+    integrator_type = TimeScheme.Explicit
 
     def solve(self):
         """Solve a step.
@@ -47,10 +33,5 @@ class ExplicitStepSolver(MecaDynaStepSolver):
             *ConvergenceError* exception in case of error.
         """
         time, time_step = self.state.time_prev, self.state.time_step
-
-        # mandatory
-        criteria = self.get_feature(SOP.ConvergenceCriteria)
-        criteria.use(self.get_feature(SOP.OperatorsManager))
-
-        self._integrator.initializeStep(time, time_step)
-        self._integrator.integrate()
+        self.oper.initializeStep(time, time_step)
+        self.oper.integrate()

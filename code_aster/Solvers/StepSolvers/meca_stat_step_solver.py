@@ -38,7 +38,7 @@ class MecaStatStepSolver(BaseStepSolver):
         super().initialize()
         self.state.primal_step = self.state.createPrimal(self.problem, 0.0)
 
-    # @profile
+    @profile
     def solve(self):
         """Solve a step.
 

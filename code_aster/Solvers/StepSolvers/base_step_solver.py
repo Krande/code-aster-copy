@@ -19,8 +19,9 @@
 
 from abc import ABC, abstractmethod
 
-from ..Basics import ContextMixin, LoggingManager, DispatcherMixin
-from ..IterationSolver import BaseInterationSolver
+from ...Utilities import no_new_attributes
+from ..Basics import ContextMixin, DispatcherMixin, LoggingManager
+from ..IterationSolver import BaseIterationSolver
 
 
 class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
@@ -29,6 +30,7 @@ class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
     __needs__ = ("problem", "state", "oper", "linear_solver")
     _iterations_solv = None
     current_matrix = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
     def builder(cls, context):
@@ -41,9 +43,8 @@ class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
         Returns:
             instance: New object.
         """
-        instance = cls()
-        instance.context = context
-        instance._iterations_solv = BaseInterationSolver.factory(context)
+        instance = super().builder(context)
+        instance._iterations_solv = BaseIterationSolver.factory(context)
         return instance
 
     def __init__(self):
@@ -75,7 +76,3 @@ class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
         Raises:
             *ConvergenceError* exception in case of error.
         """
-
-    # @abstractmethod
-    # def setup(self):
-    #     """set up the step solver."""

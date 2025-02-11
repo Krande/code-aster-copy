@@ -20,8 +20,8 @@
 from abc import abstractmethod
 from enum import IntFlag, auto
 
+from ...Utilities import no_new_attributes
 from ..Operators import MecaDynaOperators
-from ..Basics import ProblemType as PBT
 
 
 class TimeScheme(IntFlag):
@@ -51,10 +51,11 @@ class BaseIntegrator(MecaDynaOperators):
         df : Jacobian matrix of f
     """
 
-    integration_type = TimeScheme.Unset
+    integrator_type = TimeScheme.Unset
     integrator_name = IntegratorType.Unset
 
     _init_state = _set_up = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
     def factory(cls, context):
@@ -66,6 +67,8 @@ class BaseIntegrator(MecaDynaOperators):
         Returns:
             *BaseIntegrator*: A relevant *BaseIntegrator* object.
         """
+        # FIXME: for multi-steps, should probably return a list to build a MultiStepSolver on...
+        # see transient-history repository, NLIntegrators.py?ref_type=heads#L329
         assert context.problem_type == cls.problem_type, f"unsupported type: {context.problem_type}"
         integr = context.keywords["SCHEMA_TEMPS"]["SCHEMA"].capitalize()
         for kls in cls.__subclasses__():

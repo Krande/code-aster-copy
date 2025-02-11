@@ -190,7 +190,7 @@ class ProblemSolver(ContextMixin):
             ignore_policy=ignore_policy,
         )
 
-    # @profile
+    @profile
     def initialize(self):
         """Initialize run"""
         phys_pb = self.problem
@@ -214,7 +214,7 @@ class ProblemSolver(ContextMixin):
         #     source.add_observer(self.stepper)
 
     # FIXME: mixin by problem_type / factory
-    # @profile
+    @profile
     def setInitialState(self):
         """Initialize the physical state."""
         self.state.zeroInitialState(self.problem)
@@ -320,7 +320,7 @@ class ProblemSolver(ContextMixin):
 
         self.state.commit()
 
-    # @profile
+    @profile
     def run(self):
         """Solve the problem."""
         self.initialize()

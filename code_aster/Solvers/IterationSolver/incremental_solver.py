@@ -62,7 +62,7 @@ class IncrementalSolver(EventSource, ContextMixin):
         """Returns the current residuals to be shared with observers."""
         return SOP.IncrementalSolver, self._data
 
-    # @profile
+    @profile
     def solve(self, matrix_type, matrix=None, force=False):
         """Solve the iteration.
 

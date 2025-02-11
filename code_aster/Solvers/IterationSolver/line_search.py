@@ -63,7 +63,7 @@ class LineSearch(ContextMixin):
         # FIXME: hmm, why?
         self.solve = self._solve
 
-    # @profile
+    @profile
     def _solve(self, solution, scaling=1.0):
         """Apply linear search for mechanical problems.
 

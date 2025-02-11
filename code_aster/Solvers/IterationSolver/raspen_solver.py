@@ -23,14 +23,14 @@ from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile
 from ...Utilities.mpi_utils import MPI
 from .snes_solver import SNESSolver
-from .iteration_solver import BaseInterationSolver
+from .iteration_solver import BaseIterationSolver
 
 
 def Print(*args):
     print(*args, flush=True)
 
 
-class RASPENSolver(BaseInterationSolver):
+class RASPENSolver(BaseIterationSolver):
     """Solves a step using PETSc SNES, loops on iterations."""
 
     _primal_incr = _resi_comp = None
@@ -48,8 +48,7 @@ class RASPENSolver(BaseInterationSolver):
         Returns:
             instance: New object.
         """
-        instance = cls()
-        instance.context = context
+        instance = super().builder(context)
         instance.local_solver = SNESSolver(local=False)
         instance.local_solver.context = context
         return instance
@@ -65,7 +64,7 @@ class RASPENSolver(BaseInterationSolver):
         super().initialize()
         self.local_solver.initialize()
 
-    # @profile
+    @profile
     def solve(self, current_matrix):
         """Solve a step with SNES.
 
