@@ -34,7 +34,7 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
-from ..Solvers import BaseOperators, ContactManager, Context, PhysicalState, ProblemSolver
+from ..Solvers import BaseOperators, ContactManager, Context, NonLinearOperator, PhysicalState
 from ..Solvers import ProblemType as PBT
 from ..Solvers.Post import Annealing, ComputeDisplFromHHO
 from ..Utilities import print_stats, reset_stats
@@ -164,7 +164,7 @@ def meca_non_line_ops(self, **args):
     context.linear_solver = LinearSolver.factory("MECA_NON_LINE", mcf=context.keywords["SOLVEUR"])
     context.state = PhysicalState(context.problem_type, size=1)
 
-    solver = ProblemSolver.builder(context)
+    solver = NonLinearOperator.builder(context)
 
     # Register hooks
     # FIXME: to be done by the solver

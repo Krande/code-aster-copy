@@ -28,7 +28,7 @@ from ...Utilities import no_new_attributes
 
 
 class Context:
-    """Object that stores the objects required by a :py:class:`ProblemSolver`.
+    """Object that stores the objects required by a :py:class:`NonLinearOperator`.
 
     It only stores objects that are shared at different levels of the algorithm.
     Objects only used by one stage/object should be created there.

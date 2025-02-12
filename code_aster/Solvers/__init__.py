@@ -31,5 +31,5 @@ from .Basics import (
     SolverOptions,
 )
 from .IterationSolver import ConvergenceManager, NewtonSolver, RASPENSolver, SNESSolver
+from .Main import ContactManager, NonLinearOperator, StorageManager, TimeStepper
 from .Operators import BaseOperators
-from .ProblemSolver import ContactManager, ProblemSolver, StorageManager, TimeStepper

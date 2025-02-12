@@ -22,6 +22,6 @@ PostProcessings definition.
 """
 
 from .contact_manager import ContactManager
-from .problem_solver import ProblemSolver
+from .non_linear_operator import NonLinearOperator
 from .storage_manager import StorageManager
 from .time_stepper import TimeStepper

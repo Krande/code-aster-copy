@@ -39,7 +39,7 @@ from .storage_manager import StorageManager
 from .time_stepper import TimeStepper
 
 
-class ProblemSolver(ContextMixin):
+class NonLinearOperator(ContextMixin):
     """Solver for linear and non linear problem.
 
     Arguments:
@@ -66,7 +66,7 @@ class ProblemSolver(ContextMixin):
 
     @classmethod
     def builder(cls, context):
-        """Builder of a ProblemSolver object.
+        """Builder of a NonLinearOperator object.
 
         Args:
             context (Context): Context of the problem.

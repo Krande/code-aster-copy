@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -29,7 +29,7 @@ from ..Objects import (
     ThermalLoadReal,
     ThermalResult,
 )
-from ..Solvers import NonLinearSolver, ProblemSolver
+from ..Solvers import NonLinearOperator
 from ..Solvers import ProblemType as PBT
 from ..Solvers.Post import ComputeHydr, ComputeTempFromHHO
 from ..Utilities import force_list, print_stats, reset_stats

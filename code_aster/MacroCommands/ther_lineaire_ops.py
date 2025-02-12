@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -297,8 +297,9 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
     return rhs
 
 
+# FIXME: hmm
 class SolverMockup:
-    """Simulate a ProblemSolver object."""
+    """Simulate a NonLinearOperator object."""
 
     def __init__(self, phys_pb, phys_state) -> None:
         self.phys_pb = phys_pb

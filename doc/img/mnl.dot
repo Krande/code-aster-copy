@@ -13,7 +13,7 @@ digraph MNL {
         keywords [label = "Keywords";shape = "ellipse";];
         problem [label = "PhysicalProblem";shape = "ellipse";];
         type [label = "ProblemType";shape = "ellipse";];
-        state [label = "PhysicalState";shape = "ellipse";];
+        state [label = "PhysicalState";];
         result [label = "Result";shape = "ellipse";];
         contact [label = "Contact";];
         linsolv [label = "LinearSolver";];
@@ -32,9 +32,9 @@ digraph MNL {
     mnl [label = "meca_non_line_ops";];
     subgraph {
         rank = "same";
-        pbsolv [label = "ProblemSolver";];
+        nl_operator [label = "NonLinearOperator";];
         mixin_pb [label = "ContextMixin";style = "dashed";shape = "note";];
-        pbsolv -> mixin_pb [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        nl_operator -> mixin_pb [dir = "back"; style = "dashed"; arrowtail = "empty";];
     }
     timestepper [label = "TimeStepper";];
     storage [label = "StorageManager";];
@@ -122,13 +122,13 @@ digraph MNL {
         iter_solver -> raspen [dir = "back"; arrowtail = "empty";];
     }
     
-    mnl -> pbsolv;
+    mnl -> nl_operator;
     mnl -> context [xlabel = "creates"; style = "bold";];
     
-    pbsolv -> timestepper;
-    pbsolv -> storage;
-    pbsolv -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];
-    pbsolv -> hook [label = "todo"; style = "dashed";];
+    nl_operator -> timestepper;
+    nl_operator -> storage;
+    nl_operator -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];
+    nl_operator -> hook [label = "todo"; style = "dashed";];
     
     stepsolv -> iter_solver [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
     
