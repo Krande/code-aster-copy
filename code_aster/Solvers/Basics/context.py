@@ -24,7 +24,7 @@ Base objects used to solve generic non linear problems.
 from functools import wraps
 
 from ...Cata.Language.SyntaxObjects import _F
-from ...Utilities import logger, no_new_attributes
+from ...Utilities import no_new_attributes
 
 
 class Context:
@@ -47,9 +47,8 @@ class Context:
         linear_solver: :py:class:`LinearSolver` object
     """
 
-    # FIXME: to be removed and created deeper/later from '.keywords'?
     # FIXME: with TimeScheme.Multiple? several '.oper'? one '.oper' per StepSolver?
-    # FIXME: Creating all objects in ProblemSolver should allow overloading
+    # FIXME: Creating all objects in ops should allow overloading
     # FIXME: and to known syntax in one place (for instance: RECH_LINEAIRE in NewtonSolver)
 
     class KeywordsStore:
@@ -105,7 +104,6 @@ class Context:
         self._contact = None
         self._linsolv = None
 
-    # only few properties are needed (during initializations)
     @property
     def problem_type(self):
         """ProblemType: Attribute that holds the type of problem."""
@@ -113,6 +111,7 @@ class Context:
 
     @problem_type.setter
     def problem_type(self, value):
+        assert self._type is None, "must be set only once!"
         self._type = value
 
     # FIXME: à voir : on garde certains mots-clés ou uniquement quelques infos
@@ -138,6 +137,62 @@ class Context:
             *misc*: Keyword value.
         """
         return self._keywords.get(keyword, parameter, default)
+
+    @property
+    def problem(self):
+        """PhysicalProblem: current problem description."""
+        return self._problem
+
+    @problem.setter
+    def problem(self, problem):
+        assert self._problem is None, "must be set only once!"
+        self._problem = problem
+
+    @property
+    def state(self):
+        """PhysicalState: current state."""
+        assert self._state is None, "must be set only once!"
+        return self._state
+
+    @state.setter
+    def state(self, state):
+        self._state = state
+
+    @property
+    def result(self):
+        """Result: Attribute that holds the result object."""
+        return self._result
+
+    @result.setter
+    def result(self, value):
+        self._result = value
+
+    @property
+    def oper(self):
+        """Operators: Objects that adapts operators for each type of problem."""
+        return self._oper
+
+    @oper.setter
+    def oper(self, value):
+        self._oper = value
+
+    @property
+    def contact(self):
+        """ContactManager: Objects to solve contact conditions"""
+        return self._contact
+
+    @contact.setter
+    def contact(self, value):
+        self._contact = value
+
+    @property
+    def linear_solver(self):
+        """LinearSolver: Attribute that holds the linear solver."""
+        return self._linsolv
+
+    @linear_solver.setter
+    def linear_solver(self, value):
+        self._linsolv = value
 
 
 def check_access(alt=None):
@@ -254,7 +309,6 @@ class ContextMixin:
     @problem.setter
     @check_access()
     def problem(self, problem):
-        assert not self._ctxt._problem, "must be set only once!"
         self._ctxt._problem = problem
 
     @property

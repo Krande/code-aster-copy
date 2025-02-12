@@ -23,6 +23,7 @@ from ..Helpers import adapt_for_mgis_behaviour
 from ..Helpers.syntax_adapters import adapt_increment_init
 from ..Messages import UTMESS
 from ..Objects import (
+    LinearSolver,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
@@ -33,7 +34,7 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
-from ..Solvers import ContactManager, ProblemSolver
+from ..Solvers import BaseOperators, ContactManager, Context, PhysicalState, ProblemSolver
 from ..Solvers import ProblemType as PBT
 from ..Solvers.Post import Annealing, ComputeDisplFromHHO
 from ..Utilities import print_stats, reset_stats
@@ -99,9 +100,11 @@ def meca_non_line_ops(self, **args):
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
-    # Add parameters
-    # NB: Ensure to keep keywords as returned after syntax checking (should always be list)
-    param = {
+    # Setup Context
+    context = Context()
+
+    # Keep some keywords
+    kwds = {
         "ARCHIVAGE": _keyword_clean(args["ARCHIVAGE"]),
         "COMPORTEMENT": args["COMPORTEMENT"],
         "CONTACT": args["CONTACT"],
@@ -115,26 +118,21 @@ def meca_non_line_ops(self, **args):
         "REUSE": args["reuse"],
         "INCREMENT": _keyword_clean(args["INCREMENT"]),
     }
-
-    if param["SOLVEUR"]["METHODE"] == "PETSC":
-        if param["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
-            param["SOLVEUR"]["REAC_PRECOND"] = 0
+    if kwds["SOLVEUR"]["METHODE"] == "PETSC":
+        if kwds["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
+            kwds["SOLVEUR"]["REAC_PRECOND"] = 0
 
     if "SCHEMA_TEMPS" in args:
-        problem_type = PBT.MecaDyna
-        param["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
+        context.problem_type = PBT.MecaDyna
+        kwds["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
     else:
-        problem_type = PBT.MecaStat
+        context.problem_type = PBT.MecaStat
+    context.keywords = kwds
 
-    result = args.get("reuse")
-    if not result:
-        result = NonLinearResult()
+    context.result = args.get("reuse") or NonLinearResult()
 
-    # Create the physical problem (and use it in problem solver)
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
-
-    # Create the problem solver
-    solver = ProblemSolver(phys_pb, problem_type, result, param)
+    context.problem = phys_pb
 
     # Add loads
     if args["EXCIT"]:
@@ -153,15 +151,20 @@ def meca_non_line_ops(self, **args):
             else:
                 raise RuntimeError("Unknown load")
 
-    # Add contact
     if args["CONTACT"]:
         definition = args["CONTACT"][0]["DEFINITION"]
-        solver.contact = ContactManager(definition, phys_pb)
+        context.contact = ContactManager(definition, phys_pb)
         if isinstance(definition, (ParallelFrictionNew, ParallelContactNew)):
             fed_defi = definition.getParallelFiniteElementDescriptor()
         else:
             fed_defi = definition.getFiniteElementDescriptor()
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
+
+    context.oper = BaseOperators.factory(context)
+    context.linear_solver = LinearSolver.factory("STAT_NON_LINE", mcf=context.keywords["SOLVEUR"])
+    context.state = PhysicalState(context.problem_type, size=1)
+
+    solver = ProblemSolver.builder(context)
 
     # Register hooks
     # FIXME: to be done by the solver
@@ -169,7 +172,7 @@ def meca_non_line_ops(self, **args):
     # solver.use(ComputeDisplFromHHO())
 
     # Run computation
-    solver.run_ops()
+    solver.run()
     print_stats()
     reset_stats()
-    return solver.result
+    return context.result

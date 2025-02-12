@@ -68,7 +68,7 @@ class SNESSolver(BaseIterationSolver):
         # print("internVar=", self.oper._tmp_internVar.getValues()[:40:8], flush=True)
 
     def _evalJacobian(self, snes, X, J, P):
-        if self.current_incr % self._matr_update_incr == 0:
+        if self.current_incr % self.update_matr_incr == 0:
             _matrix = self.oper.getJacobian(self.matrix_type)
             self.current_matrix = _matrix
             self._scaling = self.oper.getLagrangeScaling(self.matrix_type)

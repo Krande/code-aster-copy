@@ -43,7 +43,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
 
     @classmethod
     def builder(cls, context):
-        """Builder of RaspenSolver object.
+        """Builder of NewtonSolver object.
 
         Args:
             context (Context): Context of the problem.
@@ -52,7 +52,6 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             instance: New object.
         """
         instance = super().builder(context)
-        instance._post_init()
         instance._converg = ConvergenceManager.builder(context)
         instance._line_search = LineSearch.builder(context)
         return instance
@@ -91,7 +90,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
             current_incr (int): index of the current increment
         """
         if (
-            self._matr_update_incr > 0 and self.current_incr % self._matr_update_incr == 0
+            self.update_matr_incr > 0 and self.current_incr % self.update_matr_incr == 0
         ) or self.contact:
             # make unavailable the current tangent matrix
             self.current_matrix = None

@@ -66,14 +66,10 @@ class ExtendedLinearSolver:
                 kwargs = mcf
         kwargs["command"] = command
         name = kwargs.get("METHODE")
-        klass = None
-        for sub in cls.__subclasses__():
-            if sub.solverName() == name:
-                klass = sub
-                break
-        assert klass, f"Unknown solver: {name}"
-        solver = klass(**kwargs)
-        return solver
+        for kls in cls.__subclasses__():
+            if kls.solverName() == name:
+                return kls(**kwargs)
+        raise TypeError(f"no candidate for {cls=}, solver: {name}")
 
     # add profile to these methods
     factorize = profile(LinearSolver.factorize)

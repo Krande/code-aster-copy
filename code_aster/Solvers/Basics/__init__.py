@@ -22,7 +22,7 @@ Features definition.
 """
 
 from .bases import DispatcherMixin, EventSource, Observer, ProblemType
-from .context import ContextMixin
+from .context import Context, ContextMixin
 from .logging_manager import LoggingManager
 from .physical_state import PhysicalState
 from .residual import Residuals

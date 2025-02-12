@@ -19,9 +19,8 @@
 
 from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
-from ...Cata.Language.SyntaxObjects import _F
 from ...Messages import UTMESS, MessageLog
-from ...Objects import HHO, LinearSolver, NonLinearResult, ThermalResult
+from ...Objects import HHO, NonLinearResult, ThermalResult
 from ...Supervis import ConvergenceError, IntegrationError, SolverError
 from ...Utilities import (
     DEBUG,
@@ -33,9 +32,8 @@ from ...Utilities import (
     no_new_attributes,
     profile,
 )
-from ..Basics import ContextMixin, PhysicalState
+from ..Basics import ContextMixin
 from ..Basics import ProblemType as PBT
-from ..Operators import BaseOperators
 from ..StepSolvers import BaseStepSolver
 from .storage_manager import StorageManager
 from .time_stepper import TimeStepper
@@ -59,66 +57,32 @@ class ProblemSolver(ContextMixin):
         "result",
         "state",
     )
-    # required_features = [
-    #     SOP.Keywords,
-    #     SOP.LinearSolver,
-    #     SOP.PhysicalProblem,
-    #     SOP.PhysicalState,
-    #     SOP.StepSolver,
-    #     SOP.Storage,
-    #     SOP.TimeStepper,
-    # ]
-    # optional_features = [
-    #     SOP.Contact,
-    #     SOP.ConvergenceCriteria,
-    #     SOP.ConvergenceManager,
-    #     SOP.IncrementalSolver,
-    #     SOP.LineSearch,
-    #     SOP.PostStepHook,
-    # ]
 
     _stepper = _store = _step_solver = None
     _verb = None
     # FIXME: add _ prefix?
-    step_rank = current_matrix = None
+    _step_idx = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    # FIXME: maybe Context should be built in '_ops'?
     @classmethod
-    def builder(cls, _):
-        """Disabled for this object."""
-        raise NotImplementedError("ProblemSolver builds the Context itself!")
-
-    def __init__(self, phys_pb, problem_type, result, keywords) -> None:
-        super().__init__()
-        self.problem = phys_pb
-        self.problem_type = problem_type
-        self.result = result
-        self.keywords = keywords
-        self.state = PhysicalState(problem_type, size=1)
-        self.oper = BaseOperators.factory(self.context)
-        self.linear_solver = self._linear_solver_builder(self.context)
-        self.step_rank = None
-        self.current_matrix = None
-        self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
-
-    @staticmethod
-    def _linear_solver_builder(context):
-        """Builder of LinearSolver object from a Context.
+    def builder(cls, context):
+        """Builder of a ProblemSolver object.
 
         Args:
             context (Context): Context of the problem.
 
         Returns:
-            *RaspenSolver*: New object.
+            instance: New object.
         """
-        dcmd = {
-            PBT.MecaStat: "STAT_NON_LINE",
-            PBT.MecaDyna: "DYNA_NON_LINE",
-            PBT.Thermal: "THER_NON_LINE",
-        }
-        # FIXME: should be: dcmd[context.problem_type]
-        return LinearSolver.factory(command="STAT_NON_LINE", mcf=context.keywords["SOLVEUR"])
+        # same as constructor
+        return cls(context)
+
+    def __init__(self, context) -> None:
+        super().__init__()
+        self.context = context
+        self._step_idx = None
+        self.current_matrix = None
+        self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
 
     # convenient shortcuts properties to init and access subobjects
     @property
@@ -181,7 +145,7 @@ class ProblemSolver(ContextMixin):
             bool: *True* if it was actually stored, else *False*.
         """
         return self.store.storeState(
-            self.step_rank,
+            self._step_idx,
             state.time_curr,
             self.problem,
             state,
@@ -203,7 +167,7 @@ class ProblemSolver(ContextMixin):
         phys_pb.computeDOFNumbering()
         if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
             phys_pb.computeReferenceExternalStateVariables()
-        self.step_rank = 0
+        self._step_idx = 0
         self.setInitialState()
         self._storeState(self.state)
         # FIXME: register observers
@@ -319,8 +283,22 @@ class ProblemSolver(ContextMixin):
 
         self.state.commit()
 
-    @profile
     def run(self):
+        """Solve the problem.
+
+        Returns:
+            *misc*: result object.
+        """
+        try:
+            self._setLoggingLevel(self.get_keyword("INFO", default=1))
+            self.run_()
+        finally:
+            self._resetLoggingLevel()
+            deleteTemporaryObjects()
+        return self.result
+
+    @profile
+    def run_(self):
         """Solve the problem."""
         self.initialize()
         matr_update_step = self.get_keyword("NEWTON", "REAC_INCR", 1)
@@ -341,7 +319,7 @@ class ProblemSolver(ContextMixin):
             self.computeExternalStateVariables(state.time_curr)
             solv.initialize()
 
-            if matr_update_step == 0 or (self.step_rank + 1) % matr_update_step:
+            if matr_update_step == 0 or (self._step_idx + 1) % matr_update_step:
                 solv.current_matrix = self.current_matrix
             else:
                 solv.current_matrix = None
@@ -371,7 +349,7 @@ class ProblemSolver(ContextMixin):
                 state.commit()
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
-                self.step_rank += 1
+                self._step_idx += 1
                 last_stored = self._storeState(state)
         # ensure that last step was stored
         if not last_stored:
@@ -391,34 +369,6 @@ class ProblemSolver(ContextMixin):
         """
         if self.problem.getMaterialField().hasExternalStateVariable():
             self.state.externVar = self.problem.getExternalStateVariables(current_time)
-
-    # ---- OLD ----
-    # def _initialize(self):
-    #     """Initialize default objects when required."""
-    #     args = self.get_feature(SOP.Keywords, optional=True)
-    #     self._setLoggingLevel(args.get("INFO", 1))
-    #     # required to build other default objects
-    #     self.use(self.problem)
-    #     self.use(self.state)
-    #     self.use(args, SOP.Keywords)
-    #     self.use(self._get_stepper())
-    #     self.use(self._get_storage())
-    #     self.use(self._get_step_solver())
-    #     self.use(self.get_features(SOP.PostStepHook), provide=SOP.PostStepHook)
-    #     self.check_features()
-
-    def run_ops(self):
-        """Solve the problem.
-
-        Returns:
-            *misc*: result object.
-        """
-        try:
-            self.run()
-        finally:
-            self._resetLoggingLevel()
-            deleteTemporaryObjects()
-        return self.result
 
     def _setLoggingLevel(self, level):
         """Set logging level.
@@ -443,159 +393,6 @@ class ProblemSolver(ContextMixin):
         logger.setLevel(level)
         if show:
             ExecutionParameter().enable(Options.ShowSyntax)
-
-    # methods that build and return objects (allowing dependencies)
-    # def _get_storage(self):
-    #     logger.debug("+++ get StorageManager")
-    #     store = self.get_feature(SOP.Storage, optional=True)
-    #     if not store:
-    #         args = self.get_feature(SOP.Keywords)
-    #         reuse = args.get("REUSE")
-    #         store = StorageManager(self.result, args.get("ARCHIVAGE"), reused=reuse is self.result)
-    #         if reuse:
-    #             init_state = args.get("ETAT_INIT")
-    #             assert init_state
-    #             if "EVOL_NOLI" in init_state:
-    #                 # Pour l'instant, on se restreint au cas où la sd passée
-    #                 # par reuse est la même que celle passée dans ETAT_INIT
-    #                 assert init_state["EVOL_NOLI"] is reuse
-    #             init_index = None
-    #             stepper = self.get_feature(SOP.TimeStepper, optional=True)
-    #             if stepper:
-    #                 init_index = reuse.getIndexFromParameter(
-    #                     "INST", stepper.getInitial(), "RELATIF", stepper._eps
-    #                 )
-    #             else:
-    #                 init_index = reuse.getLastIndex()
-    #             store.setFirstStorageIndex(init_index + 1)
-    #     self.use(store)
-    #     return store
-
-    # def _get_stepper(self):
-    #     logger.debug("+++ get Stepper")
-    #     stepper = self.get_feature(SOP.TimeStepper, optional=True)
-    #     if not stepper:
-    #         args = self.get_feature(SOP.Keywords)
-    #         stepper = TimeStepper.from_keywords(**args["INCREMENT"])
-    #     self.use(stepper)
-    #     return stepper
-
-    # def _get_linear_solver(self):
-    #     logger.debug("+++ get LinearSolver")
-    #     if not self.has_feature(SOP.LinearSolver):
-    #         args = self.get_feature(SOP.Keywords)
-    #         self.use(LinearSolver.factory("STAT_NON_LINE", args["SOLVEUR"]))
-    #     return self.get_feature(SOP.LinearSolver)
-
-    # def _get_line_search(self):
-    #     logger.debug("+++ get LineSearch")
-    #     if not self.has_feature(SOP.LineSearch):
-    #         args = self.get_feature(SOP.Keywords)
-    #         line = LineSearch(args.get("RECH_LINEAIRE"))
-    #     for feat, required in line.undefined():
-    #         line.use(self._getF(feat, required))
-    #     line.setup()
-    #     self.use(line)
-    #     return self.get_feature(SOP.LineSearch)
-
-    # def _get_conv_manager(self):
-    #     logger.debug("+++ get ConvergenceManager")
-    #     converg = self.get_feature(SOP.ConvergenceManager, optional=True)
-    #     if not converg:
-    #         args = self.get_feature(SOP.Keywords)
-    #         converg = ConvergenceManager()
-    #         for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "ITER_GLOB_MAXI"):
-    #             value = args["CONVERGENCE"].get(crit)
-    #             if value is not None:
-    #                 converg.setdefault(crit, value)
-    #         if args.get("CONTACT"):
-    #             converg.setdefault("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
-    #     for feat, required in converg.undefined():
-    #         converg.use(self._getF(feat, required))
-    #     self.use(converg)
-    #     return converg
-
-    # def _get_incremental_solver(self):
-    #     logger.debug("+++ get IncrementalSolver")
-    #     incr_solver = self.get_feature(SOP.IncrementalSolver, optional=True)
-    #     if not incr_solver:
-    #         incr_solver = IncrementalSolver()
-    #     for feat, required in incr_solver.undefined():
-    #         incr_solver.use(self._getF(feat, required))
-    #     self.use(incr_solver)
-    #     return incr_solver
-
-    # def _get_step_conv_solver(self):
-    #     logger.debug("+++ get ConvergenceCriteria")
-    #     step_conv_solv = self.get_feature(SOP.ConvergenceCriteria, optional=True)
-    #     args = self.get_feature(SOP.Keywords)
-    #     use_local_solver = False
-    #     if not step_conv_solv:
-    #         method = args.get("METHODE", "NEWTON")
-    #         if method == "NEWTON":
-    #             step_conv_solv = NewtonSolver()
-    #         elif method == "SNES":
-    #             step_conv_solv = SNESSolver()
-    #         elif method == "RASPEN":
-    #             step_conv_solv = RASPENSolver()
-    #             local_solver = SNESSolver(local=True)
-    #             step_conv_solv.local_solver = local_solver
-    #             use_local_solver = True
-    #         else:
-    #             raise AsterError(f"Unkwown method {method}")
-    #     # FIXME replace by 'use(*, Keywords)'
-    #     if not step_conv_solv.param:
-    #         step_conv_solv.setParameters(args)
-    #         if use_local_solver:
-    #             local_solver.setParameters(args)
-    #     for feat, required in step_conv_solv.undefined():
-    #         step_conv_solv.use(self._getF(feat, required))
-    #         if use_local_solver:
-    #             local_solver.use(self._getF(feat, required))
-    #     self.use(step_conv_solv)
-    #     if use_local_solver:
-    #         self.use(local_solver)
-    #     return step_conv_solv
-
-    # def _get_step_solver(self):
-    #     logger.debug("+++ get StepSolver")
-    #     step_solver = self.get_feature(SOP.StepSolver, optional=True)
-    #     if not step_solver:
-    #         step_solver = BaseStepSolver.create(self.get_feature(SOP.Keywords))
-    #     # FIXME replace by 'use(*, Keywords)'
-    #     if not step_solver.param:
-    #         step_solver.setParameters(self.get_feature(SOP.Keywords))
-    #     for feat, required in step_solver.undefined():
-    #         step_solver.use(self._getF(feat, required))
-    #     self.use(step_solver)
-    #     step_solver.setup()
-    #     return step_solver
-
-    # def _getF(self, option, required):
-    #     if option & SOP.PhysicalProblem:
-    #         return self.problem
-    #     if option & SOP.PhysicalState:
-    #         return self.state
-    #     if option & SOP.Storage:
-    #         return self.store
-    #     if option & SOP.LinearSolver:
-    #         return self._get_linear_solver()
-    #     if option & SOP.LineSearch:
-    #         return self._get_line_search()
-    #     if option & SOP.Contact:
-    #         return self.contact
-    #     if option & SOP.ConvergenceManager:
-    #         return self._get_conv_manager()
-    #     if option & SOP.IncrementalSolver:
-    #         return self._get_incremental_solver()
-    #     if option & SOP.ConvergenceCriteria:
-    #         return self._get_step_conv_solver()
-    #     if option & SOP.StepSolver:
-    #         return self.step_solver
-    #     if option & SOP.TimeStepper:
-    #         return self.stepper
-    #     if required:
-    #         raise NotImplementedError(f"unsupported feature id: {option}")
 
 
 def _msginit(field, result=None):

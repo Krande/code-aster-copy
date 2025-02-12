@@ -4,6 +4,7 @@ digraph MNL {
     // mixin: note, dashed
     // abstract: ' {abstr}', dashed
     labelloc = "t";
+    rankdir = "LR";
     fontname = "Helvetica,Arial,sans-serif";
     node [fontname = "Helvetica,Arial,sans-serif"; shape = "box";];
     edge [fontname = "Helvetica,Arial,sans-serif";];
@@ -29,7 +30,12 @@ digraph MNL {
     }
     
     mnl [label = "meca_non_line_ops";];
-    pbsolv [label = "ProblemSolver";];
+    subgraph {
+        rank = "same";
+        pbsolv [label = "ProblemSolver";];
+        mixin_pb [label = "ContextMixin";style = "dashed";shape = "note";];
+        pbsolv -> mixin_pb [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
     timestepper [label = "TimeStepper";];
     storage [label = "StorageManager";];
     hook [label = "PostStepHook";];
@@ -117,12 +123,8 @@ digraph MNL {
     }
     
     mnl -> pbsolv;
-    mnl -> keywords [xlabel = "creates"; style = "bold";];
-    mnl -> problem [xlabel = "creates"; style = "bold";];
+    mnl -> context [xlabel = "creates"; style = "bold";];
     
-    pbsolv -> context [dir = "back"; arrowtail = "empty";];
-    pbsolv -> state [xlabel = "creates"; style = "bold";];
-    pbsolv -> operators [xlabel = "creates"; style = "bold"; lhead = cluster_operators;];
     pbsolv -> timestepper;
     pbsolv -> storage;
     pbsolv -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];

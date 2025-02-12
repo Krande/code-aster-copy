@@ -40,7 +40,6 @@ class BaseIterationSolver(ABC, ContextMixin, DispatcherMixin):
 
     logManager = None
     current_incr = current_matrix = None
-    _matr_update_incr = _prediction = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
@@ -61,11 +60,15 @@ class BaseIterationSolver(ABC, ContextMixin, DispatcherMixin):
     def __init__(self):
         super().__init__()
 
-    def _post_init(self):
-        self._prediction = self.get_keyword(
-            "NEWTON", "PREDICTION", self.get_keyword("NEWTON", "MATRICE")
-        )
-        self._matr_update_incr = self.get_keyword("NEWTON", "REAC_ITER", 1)
+    @property
+    def matr_prediction(self):
+        """str: Type of prediction matrix to be used."""
+        return self.get_keyword("NEWTON", "PREDICTION", self.get_keyword("NEWTON", "MATRICE"))
+
+    @property
+    def update_matr_incr(self):
+        """int: Number of increments between updating matrix."""
+        return self.get_keyword("NEWTON", "REAC_ITER", 1)
 
     def initialize(self):
         """Initialize the object for the next step."""
@@ -84,7 +87,7 @@ class BaseIterationSolver(ABC, ContextMixin, DispatcherMixin):
     def matrix_type(self):
         """str: Type of the matrix to be currently used."""
         if self.current_incr == 0:
-            matrix_type = "PRED_" + self._prediction
+            matrix_type = "PRED_" + self.matr_prediction
         else:
             matrix_type = self.get_keyword("NEWTON", "MATRICE", "TANGENTE")
         return matrix_type
