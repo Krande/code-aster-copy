@@ -73,13 +73,13 @@ MECA_NON_LINE = MACRO(
     ARCHIVAGE=C_ARCHIVAGE(),
     # -------------------------------------------------------------------
     b_newton_solveur=BLOC(
-        condition="""equal_to("METHODE", 'NEWTON')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE")
+        condition="""equal_to("METHODE", 'NEWTON')""", SOLVEUR=C_SOLVEUR("MECA_NON_LINE")
     ),
     b_snes_solveur=BLOC(
-        condition="""equal_to("METHODE", 'SNES')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE_SNES")
+        condition="""equal_to("METHODE", 'SNES')""", SOLVEUR=C_SOLVEUR("MECA_NON_LINE+SNES")
     ),
     b_raspen_solveur=BLOC(
-        condition="""equal_to("METHODE", 'RASPEN')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE_SNES")
+        condition="""equal_to("METHODE", 'RASPEN')""", SOLVEUR=C_SOLVEUR("MECA_NON_LINE+SNES")
     ),
     # -------------------------------------------------------------------
     SCHEMA_TEMPS=FACT(

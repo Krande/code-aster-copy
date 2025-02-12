@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,9 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
     # --------------------------------------------------------------------
 
     _type = None
+    # compatibility
+    if command == "STAT_NON_LINE":
+        command = "MECA_NON_LINE"
 
     #  Classification ('SD'/'LIN'/'NL')
     if command in (
@@ -69,13 +72,11 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
         "THER_NON_LINE_MO",
     ):
         _type = "LIN"
-    elif command in (
+    elif command.startswith("MECA_NON_LINE") or command in (
         "CALC_PRECONT",
         "DYNA_LINE_TRAN",
         "DYNA_NON_LINE",
         "MODE_NON_LINE",
-        "STAT_NON_LINE_SNES",
-        "STAT_NON_LINE",
         "THER_NON_LINE",
     ):
         _type = "NL"
@@ -87,13 +88,12 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
     _dist = False
 
     #  MATR_DISTRIBUEE ne fonctionnent que dans MECA_STATIQUE et MECA_NON_LINE
-    if command in (
+    if command.startswith("MECA_NON_LINE") or command in (
         "CALC_IFS_DNL",
         "CALC_PRECONT",
         "DYNA_NON_LINE",
         "MACRO_BASCULE_SCHEMA",
         "MECA_STATIQUE",
-        "STAT_NON_LINE",
         "THER_NON_LINE",
         "THER_LINEAIRE",
     ):
@@ -197,7 +197,7 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
     if command in ["MODE_ITER_INV_SM"]:
         _defaut = "MULT_FRONT"
         _into = ("MULT_FRONT", "LDLT")
-    if command in ["STAT_NON_LINE_SNES"]:
+    if command in ["MECA_NON_LINE+SNES"]:
         _defaut = "PETSC"
         _into = ("PETSC",)
     _MotCleSimples["METHODE"] = SIMP(statut="f", typ="TXM", defaut=_defaut, into=_into)
@@ -546,4 +546,6 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
 # required by 'LinearSolver.factory()', CommandSyntax needs a static catalog
 C_SOLVEUR_MECA_STATIQUE = FACT(statut="o", SOLVEUR=C_SOLVEUR("MECA_STATIQUE"))
 C_SOLVEUR_THER_LINEAIRE = FACT(statut="o", SOLVEUR=C_SOLVEUR("THER_LINEAIRE"))
-C_SOLVEUR_STAT_NON_LINE = FACT(statut="o", SOLVEUR=C_SOLVEUR("STAT_NON_LINE"))
+C_SOLVEUR_MECA_NON_LINE = FACT(statut="o", SOLVEUR=C_SOLVEUR("MECA_NON_LINE"))
+# compatibility
+C_SOLVEUR_STAT_NON_LINE = C_SOLVEUR_MECA_NON_LINE

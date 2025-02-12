@@ -161,7 +161,7 @@ def meca_non_line_ops(self, **args):
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
 
     context.oper = BaseOperators.factory(context)
-    context.linear_solver = LinearSolver.factory("STAT_NON_LINE", mcf=context.keywords["SOLVEUR"])
+    context.linear_solver = LinearSolver.factory("MECA_NON_LINE", mcf=context.keywords["SOLVEUR"])
     context.state = PhysicalState(context.problem_type, size=1)
 
     solver = ProblemSolver.builder(context)
