@@ -40,7 +40,7 @@ class NewmarkIntegrator(BaseIntegrator):
         Returns:
             instance: New object.
         """
-        factkw = context.keywords["SCHEMA_TEMPS"]
+        factkw = context.get_keyword("SCHEMA_TEMPS")
         instance = cls(gamma=factkw["GAMMA"], beta=factkw["BETA"])
         instance.context = context
         return instance

@@ -204,7 +204,7 @@ def check_access(alt=None):
             """wrapper"""
             required = alt or method.__name__
             if required != "context" and required not in inst.__needs__:
-                raise AttributeError(f"undeclared access to {required}")
+                raise AttributeError(f"undeclared access to {required!r}")
                 # logger.warning(f"undeclared access from {inst.__class__.__name__} to {required}")
             return method(inst, *args, **kwds)
 

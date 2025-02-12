@@ -55,6 +55,7 @@ class BaseOperators(ABC, ContextMixin, DispatcherMixin):
     @abstractmethod
     def setup(self):
         """Set up the integrator."""
+        # FIXME: rm
 
     def shouldExecuteIteration(self, iter_idx):
         """Tell if the Newton iteration `iter_idx` should be performed.

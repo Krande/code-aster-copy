@@ -75,4 +75,4 @@ class MecaStatOperators(BaseOperators):
 
     def setup(self):
         """Set up the operators."""
-        # nothing to do
+        # FIXME: rm

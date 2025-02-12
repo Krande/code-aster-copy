@@ -379,7 +379,6 @@ class NonLinearOperator(ContextMixin):
         info = {0: WARNING, 1: INFO, 2: DEBUG, 3: DEBUG, 4: DEBUG}
         if level is None:
             level = 1
-        level = 2
         setFortranLoggingLevel(level)
         logger.setLevel(info[level])
         # Disable printing of python command

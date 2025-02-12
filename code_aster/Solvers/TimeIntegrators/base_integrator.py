@@ -70,7 +70,7 @@ class BaseIntegrator(MecaDynaOperators):
         # FIXME: for multi-steps, should probably return a list to build a MultiStepSolver on...
         # see transient-history repository, NLIntegrators.py?ref_type=heads#L329
         assert context.problem_type == cls.problem_type, f"unsupported type: {context.problem_type}"
-        integr = context.keywords["SCHEMA_TEMPS"]["SCHEMA"].capitalize()
+        integr = context.get_keyword("SCHEMA_TEMPS", "SCHEMA", "").capitalize()
         for kls in cls.__subclasses__():
             if kls.integrator_name.name == integr:
                 return kls.builder(context)

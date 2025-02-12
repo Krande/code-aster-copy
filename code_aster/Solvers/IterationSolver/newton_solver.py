@@ -27,7 +27,7 @@ from ..Basics import EventSource
 from ..Basics import SolverOptions as SOP
 from .convergence_manager import ConvergenceManager
 from .iteration_solver import BaseIterationSolver
-from .line_search import LineSearch
+from .line_search import BaseLineSearch
 
 USE_SCALING = False  # for testing only
 PERTURB_JAC = False  # for checking only (sloooow)
@@ -53,7 +53,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         """
         instance = super().builder(context)
         instance._converg = ConvergenceManager.builder(context)
-        instance._line_search = LineSearch.builder(context)
+        instance._line_search = BaseLineSearch.factory(context)
         return instance
 
     def __init__(self):
@@ -237,7 +237,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
                 S.unscaleSolution(primal_incr)
             # Use line search
             if not self._converg.isPrediction():
-                if self._line_search.activated() and not force:
+                if self._line_search.isEnabled() and not force:
                     primal_incr = self._line_search.solve(primal_incr, scaling)
         else:
             primal_incr = self.state.createPrimal(self.problem, 0.0)
