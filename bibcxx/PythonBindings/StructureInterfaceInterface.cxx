@@ -3,7 +3,7 @@
  * @brief Interface python de StructureInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,7 +27,9 @@
 
 void exportStructureInterfaceToPython( py::module_ &mod ) {
 
-    py::enum_< InterfaceTypeEnum >( mod, "InterfaceType" )
+    py::enum_< InterfaceTypeEnum >( mod, "InterfaceType", R"(
+Enumeration of interface type.
+    )" )
         .value( "MacNeal", MacNeal )
         .value( "CraigBampton", CraigBampton )
         .value( "HarmonicCraigBampton", HarmonicCraigBampton )

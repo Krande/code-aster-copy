@@ -2,7 +2,7 @@
  * @file GenericEnumInterface.cxx
  * @brief Interface python de GenericEnum
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,12 +28,9 @@ void exportGenericEnumToPython( py::module_ &mod ) {
 
     py::enum_< PythonBool >( mod, "PythonBool", R"(
 Enumeration that represents an extended boolean.
+    )"
 
-Attributes:
-    FALSE (int): False is 0
-    NONE (int): None means undefined, is -1
-    TRUE (int): True is 1
-    )" )
+                             )
         .value( "NONE", PythonBool::None )
         .value( "TRUE", PythonBool::True )
         .value( "FALSE", PythonBool::False )

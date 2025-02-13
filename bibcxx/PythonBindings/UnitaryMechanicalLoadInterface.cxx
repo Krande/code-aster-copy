@@ -2,7 +2,7 @@
  * @file UnitaryMechanicalLoadInterface.cxx
  * @brief Interface python de MechanicalLoad
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,7 +26,9 @@
 
 void exportUnitaryMechanicalLoadToPython( py::module_ &mod ) {
 
-    py::enum_< LoadEnum >( mod, "Loads" )
+    py::enum_< LoadEnum >( mod, "Loads", R"(
+Enumeration for type of load.
+    )" )
         .value( "NodalForce", NodalForce )
         .value( "ForceOnEdge", ForceOnEdge )
         .value( "ForceOnFace", ForceOnFace )

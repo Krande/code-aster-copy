@@ -3,7 +3,7 @@
  * @brief Interface python de Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,13 +27,17 @@
 
 void exportModelToPython( py::module_ &mod ) {
 
-    py::enum_< ModelSplitingMethod >( mod, "ModelSplitingMethod" )
+    py::enum_< ModelSplitingMethod >( mod, "ModelSplitingMethod", R"(
+Enumeration for model split method .
+    )" )
         .value( "Centralized", Centralized )
         .value( "SubDomain", SubDomain )
         .value( "GroupOfCells", GroupOfCellsSplit )
         .export_values();
 
-    py::enum_< GraphPartitioner >( mod, "GraphPartitioner" )
+    py::enum_< GraphPartitioner >( mod, "GraphPartitioner", R"(
+Enumeration for graph partitionner.
+    )" )
         .value( "Scotch", ScotchPartitioner )
         .value( "Metis", MetisPartitioner )
         .export_values();

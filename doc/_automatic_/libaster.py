@@ -94,13 +94,7 @@ def raiseAsterError(idmess="VIDE_1"):
 
 
 class PythonBool:
-    """Enumeration that represents an extended boolean.
-
-    Attributes:
-        FALSE (int): False is 0
-        NONE (int): None means undefined, is -1
-        TRUE (int): True is 1
-    """
+    """Enumeration that represents an extended boolean."""
 
     # Method resolution order:
     #     PythonBool
@@ -411,7 +405,7 @@ class Node:
 
 
 class EntityType:
-    pass
+    """Enumeration for entity type."""
 
     # Method resolution order:
     #     EntityType
@@ -5451,7 +5445,7 @@ class Contact(DataStructure):
 
 
 class ContactAlgo:
-    pass
+    """Enumeration for contact algorithm."""
 
     # Method resolution order:
     #     ContactAlgo
@@ -5519,7 +5513,7 @@ class ContactAlgo:
 
 
 class ContactVariant:
-    pass
+    """Enumeration for contact variant."""
 
     # Method resolution order:
     #     ContactVariant
@@ -5591,7 +5585,7 @@ class ContactVariant:
 
 
 class ContactType:
-    pass
+    """Enumeration for contact type."""
 
     # Method resolution order:
     #     ContactType
@@ -5657,7 +5651,7 @@ class ContactType:
 
 
 class FrictionAlgo:
-    pass
+    """Enumeration for friction algorithm."""
 
     # Method resolution order:
     #     FrictionAlgo
@@ -5725,7 +5719,7 @@ class FrictionAlgo:
 
 
 class FrictionType:
-    pass
+    """Enumeration for friction type."""
 
     # Method resolution order:
     #     FrictionType
@@ -5795,7 +5789,7 @@ class FrictionType:
 
 
 class PairingAlgo:
-    pass
+    """Enumeration for pairing algorithm."""
 
     # Method resolution order:
     #     PairingAlgo
@@ -5859,7 +5853,7 @@ class PairingAlgo:
 
 
 class InitialState:
-    pass
+    """Enumeration for initial state."""
 
     # Method resolution order:
     #     InitialState
@@ -5927,7 +5921,7 @@ class InitialState:
 
 
 class JacobianType:
-    pass
+    """Enumeration for jacobian type."""
 
     # Method resolution order:
     #     JacobianType
@@ -9122,7 +9116,7 @@ class RitzBasis(GenericModalBasis):
 
 
 class InterfaceType:
-    pass
+    """Enumeration of interface type."""
 
     # Method resolution order:
     #     InterfaceType
@@ -9565,7 +9559,7 @@ class MechanicalLoadDescriptionReal(DataStructure):
 
 
 class Loads:
-    pass
+    """Enumeration for type of load."""
 
     # Method resolution order:
     #     Loads
@@ -10253,7 +10247,7 @@ class DistributedHydraulicFluxReal(MechanicalLoadReal):
 
 
 class PhysicalQuantityComponent:
-    pass
+    """Enumeration for physical component."""
 
     # Method resolution order:
     #     PhysicalQuantityComponent
@@ -11583,7 +11577,7 @@ class GeneralizedModel(DataStructure):
 
 
 class Physics:
-    pass
+    """Enumeration physics."""
 
     # Method resolution order:
     #     Physics
@@ -11651,7 +11645,7 @@ class Physics:
 
 
 class Modelings:
-    pass
+    """Enumeration of modelings."""
 
     # Method resolution order:
     #     Modelings
@@ -12081,7 +12075,7 @@ class Modelings:
 
 
 class Formulation:
-    pass
+    """Enumeration of formulation."""
 
     # Method resolution order:
     #     Formulation
@@ -12159,7 +12153,7 @@ class Formulation:
 
 
 class ModelSplitingMethod:
-    pass
+    """Enumeration for model split method ."""
 
     # Method resolution order:
     #     ModelSplitingMethod
@@ -12227,7 +12221,7 @@ class ModelSplitingMethod:
 
 
 class GraphPartitioner:
-    pass
+    """Enumeration for graph partitionner."""
 
     # Method resolution order:
     #     GraphPartitioner
@@ -15706,7 +15700,7 @@ class ExternalVariableTraits:
 
 
 class externVarEnumInt:
-    pass
+    """Enumeration for external variable."""
 
     # Method resolution order:
     #     externVarEnumInt
@@ -15759,6 +15753,41 @@ class externVarEnumInt:
     @property
     def value(self):
         pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    ConcreteDrying = 11
+
+    ConcreteHydration = 4
+
+    Corrosion = 2
+
+    Geometry = 1
+
+    Irradiation = 5
+
+    IrreversibleStrain = 3
+
+    Neutral1 = 8
+
+    Neutral2 = 9
+
+    Neutral3 = 10
+
+    NumberOfExternVarTypes = 14
+
+    SteelPhases = 6
+
+    Temperature = 0
+
+    TotalFluidPressure = 12
+
+    Unknown = -1
+
+    VolumetricStrain = 13
+
+    ZircaloyPhases = 7
 
 
 # class ExternalStateVariablesResult in libaster
@@ -16615,7 +16644,7 @@ def applyBalancingStrategy(*args, **kwargs):
 
 
 class MedFileAccessType:
-    pass
+    """Enumeration med access type."""
 
     # Method resolution order:
     #     MedFileAccessType

@@ -26,13 +26,17 @@
 
 void exportContactEnumToPython( py::module_ &mod ) {
 
-    py::enum_< ContactAlgo >( mod, "ContactAlgo" )
+    py::enum_< ContactAlgo >( mod, "ContactAlgo", R"(
+Enumeration for contact algorithm.
+    )" )
         .value( "Lagrangian", ContactAlgo::Lagrangian )
         .value( "Nitsche", ContactAlgo::Nitsche )
         .value( "Penalization", ContactAlgo::Penalization )
         .export_values();
 
-    py::enum_< ContactVariant >( mod, "ContactVariant" )
+    py::enum_< ContactVariant >( mod, "ContactVariant", R"(
+Enumeration for contact variant.
+    )" )
         .value( "Empty", ContactVariant::Empty )
         .value( "Fast", ContactVariant::Fast )
         .value( "Robust", ContactVariant::Robust )
@@ -40,35 +44,47 @@ void exportContactEnumToPython( py::module_ &mod ) {
         .value( "Classic", ContactVariant::Classic )
         .export_values();
 
-    py::enum_< ContactType >( mod, "ContactType" )
+    py::enum_< ContactType >( mod, "ContactType", R"(
+Enumeration for contact type.
+    )" )
         .value( "Unilateral", ContactType::Unilateral )
         .value( "Bilateral", ContactType::Bilateral )
         .export_values();
 
-    py::enum_< FrictionAlgo >( mod, "FrictionAlgo" )
+    py::enum_< FrictionAlgo >( mod, "FrictionAlgo", R"(
+Enumeration for friction algorithm.
+    )" )
         .value( "Lagrangian", FrictionAlgo::Lagrangian )
         .value( "Nitsche", FrictionAlgo::Nitsche )
         .value( "Penalization", FrictionAlgo::Penalization )
         .export_values();
 
-    py::enum_< FrictionType >( mod, "FrictionType" )
+    py::enum_< FrictionType >( mod, "FrictionType", R"(
+Enumeration for friction type.
+    )" )
         .value( "Without", FrictionType::Without )
         .value( "Tresca", FrictionType::Tresca )
         .value( "Coulomb", FrictionType::Coulomb )
         .value( "Stick", FrictionType::Stick )
         .export_values();
 
-    py::enum_< PairingAlgo >( mod, "PairingAlgo" )
+    py::enum_< PairingAlgo >( mod, "PairingAlgo", R"(
+Enumeration for pairing algorithm.
+    )" )
         .value( "Mortar", PairingAlgo::Mortar )
         .export_values();
 
-    py::enum_< InitialState >( mod, "InitialState" )
+    py::enum_< InitialState >( mod, "InitialState", R"(
+Enumeration for initial state.
+    )" )
         .value( "Interpenetrated", InitialState::Interpenetrated )
         .value( "Yes", InitialState::Yes )
         .value( "No", InitialState::No )
         .export_values();
 
-    py::enum_< JacobianType >( mod, "JacobianType" )
+    py::enum_< JacobianType >( mod, "JacobianType", R"(
+Enumeration for jacobian type.
+    )" )
         .value( "Analytical", JacobianType::Analytical )
         .value( "Perturbation", JacobianType::Perturbation )
         .export_values();

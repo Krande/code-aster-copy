@@ -3,7 +3,7 @@
  * @brief Interface python de PhysicsAndModelings
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,13 +27,17 @@
 
 void exportPhysicsAndModelingsToPython( py::module_ &mod ) {
 
-    py::enum_< Physics >( mod, "Physics" )
+    py::enum_< Physics >( mod, "Physics", R"(
+Enumeration physics.
+    )" )
         .value( "Mechanics", Mechanics )
         .value( "Thermal", Thermal )
         .value( "Acoustic", Acoustic )
         .export_values();
 
-    py::enum_< Modelings >( mod, "Modelings" )
+    py::enum_< Modelings >( mod, "Modelings", R"(
+Enumeration of modelings.
+    )" )
         .value( "PlanarBar", PlanarBar )
         .value( "DIS_T_2D", DIS_T_2D )
         .value( "DIS_TR_2D", DIS_TR_2D )
@@ -220,7 +224,9 @@ void exportPhysicsAndModelingsToPython( py::module_ &mod ) {
         .value( "TUYAU_6M", TUYAU_6M )
         .export_values();
 
-    py::enum_< Formulation >( mod, "Formulation" )
+    py::enum_< Formulation >( mod, "Formulation", R"(
+Enumeration of formulation.
+    )" )
         .value( "NoFormulation", NoFormulation )
         .value( "Linear", Linear )
         .value( "Quadratic", Quadratic )

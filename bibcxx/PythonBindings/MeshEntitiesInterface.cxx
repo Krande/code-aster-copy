@@ -2,7 +2,7 @@
  * @file MeshEntitiesInterface.cxx
  * @brief Interface python de MeshEntities
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,7 +28,9 @@
 
 void exportMeshEntitiesToPython( py::module_ &mod ) {
 
-    py::enum_< EntityType >( mod, "EntityType" )
+    py::enum_< EntityType >( mod, "EntityType", R"(
+Enumeration for entity type.
+    )" )
         .value( "GroupOfNodesType", GroupOfNodesType )
         .value( "GroupOfCellsType", GroupOfCellsType )
         .value( "AllMeshEntitiesType", AllMeshEntitiesType )
