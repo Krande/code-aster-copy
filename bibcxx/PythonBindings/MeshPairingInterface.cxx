@@ -82,6 +82,21 @@ Returns:
         Returns:
             list: number of intersection points
                 )" );
+    class_.def( "setPair", &MeshPairing::setPair, R"(
+        Set pair of meshed surfaces
+
+        Arguments:
+            groupNameSlav (str): slave's name
+            groupNameMast (str): master's name
+                )",
+                py::arg( "groupNameSlav" ), py::arg( "groupNameMast" ) );
+    class_.def( "setMesh", &MeshPairing::setMesh, R"(
+        Set Mesh
+
+        Arguments:
+            mesh (BaseMesh): support mesh
+                )",
+                py::arg( "mesh" ) );
     class_.def( "compute", &MeshPairing::compute, R"(
 Compute pairing
 

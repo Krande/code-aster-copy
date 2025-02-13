@@ -167,8 +167,8 @@ Returns:
 Print the mesh in the MED format
 
 Arguments:
-    filename (str): Name of the file
-    local (bool=True) : print local values only (relevant for BaseMesh only)
+    filename (Path|str): Name of the file
+    local (bool=True) : print local values only (relevant for a ParallelMesh only)
 
 Returns:
     Bool: True if of
@@ -240,5 +240,37 @@ Returns local to global IDs mapping for cells
 
 Returns:
     list[int]: local to global IDs mapping.
+        )" )
+        .def( "getRestrictedToOriginalNodesIds", &BaseMesh::getRestrictedToOriginalNodesIds,
+              R"(
+If the mesh is created as a restriction of an initial mesh,
+It returns for each nodes, the node id of the initial mesh.
+
+Returns:
+    list[int]: for each nodes, the node id of the initial mesh.
+        )" )
+        .def( "getRestrictedToOriginalCellsIds", &BaseMesh::getRestrictedToOriginalCellsIds,
+              R"(
+If the mesh is created as restriction of an initial mesh,
+It returns for each cells, the cell id of the initial mesh.
+
+Returns:
+    list[int]: for each cells, the cell id of the initial mesh.
+        )" )
+        .def( "getOriginalToRestrictedNodesIds", &BaseMesh::getOriginalToRestrictedNodesIds,
+              R"(
+If the mesh is created as a restriction of an initial mesh,
+It returns a dict betweenn the node id of the initial mesh and the current node id.
+
+Returns:
+    dict[int]: a dict betweenn the node id of the initial mesh and the current node id.
+        )" )
+        .def( "getOriginalToRestrictedCellsIds", &BaseMesh::getOriginalToRestrictedCellsIds,
+              R"(
+If the mesh is created as restriction of an initial mesh,
+It returns a dict between the cell id of the initial mesh and the current cell id.
+
+Returns:
+    dict[int]: a dict between the cell id of the initial mesh and the current cell id.
         )" );
 };

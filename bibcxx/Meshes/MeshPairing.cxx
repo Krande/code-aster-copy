@@ -42,6 +42,8 @@ MeshPairing::MeshPairing( const std::string name )
       _nbPairs( 0 ),
       _method( PairingMethod::Fast ) {};
 
+void MeshPairing::setMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; }
+
 void MeshPairing::setSlaveGroupOfCells( const std::string &groupName ) {
     _slaveCellsGroup = groupName;
 };
@@ -54,6 +56,7 @@ void MeshPairing::setPair( const std::string &groupNameSlav, const std::string &
 
     MeshPairing::setMasterGroupOfCells( groupNameMast );
     MeshPairing::setSlaveGroupOfCells( groupNameSlav );
+    initObjects();
 };
 
 ASTERBOOL
@@ -526,50 +529,13 @@ ASTERBOOL MeshPairing::buildSlaveCellsVolu() {
 
 void MeshPairing::setExcludedSlaveGroupOfCells( const VectorString &groupsName ) {
     _excludedSlaveCells = groupsName;
-    auto mesh = getMesh();
-    for ( auto &groupName : groupsName ) {
-        if ( !( getMesh()->hasGroupOfCells( groupName ) ) ) {
-            throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
-        }
-
-        VectorLong sans_gr_i = mesh->getCells( groupName );
-        auto it = _slaveCellsExcluded.end();
-        _slaveCellsExcluded.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
-    }
-
-    _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
-    AS_ASSERT( _slaveCells.size() > 0 );
-    _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
 };
 
 void MeshPairing::setExcludedSlaveGroupOfNodes( const VectorString &groupsName ) {
     _excludedSlaveNodes = groupsName;
-    auto mesh = getMesh();
-
-    // Build inverse connectivity
-    AS_ASSERT( buildInverseConnectivity() );
-
-    for ( auto &groupName : groupsName ) {
-        if ( !( getMesh()->hasGroupOfNodes( groupName ) ) ) {
-            throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
-        }
-
-        VectorLong sans_gr_i = mesh->getNodes( groupName );
-        for ( auto &node : sans_gr_i ) {
-            auto cellsToExclude = this->getSlaveCellsFromNode( node );
-            auto it = _slaveCellsExcluded.end();
-            _slaveCellsExcluded.insert( it, cellsToExclude.begin(), cellsToExclude.end() );
-        }
-    }
-
-    _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
-    AS_ASSERT( _slaveCells.size() > 0 );
-    _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
 };
 
-ASTERBOOL MeshPairing::initObjects( const BaseMeshPtr mesh ) {
-    _mesh = mesh;
-
+ASTERBOOL MeshPairing::initObjects() {
     _currentCoordinates = std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
 
     if ( getMesh()->hasGroupOfCells( _slaveCellsGroup ) ) {
@@ -585,6 +551,44 @@ ASTERBOOL MeshPairing::initObjects( const BaseMeshPtr mesh ) {
     } else {
         throw std::runtime_error( "The given group " + _masterCellsGroup +
                                   " doesn't exist in mesh" );
+    }
+
+    if ( _excludedSlaveCells.size() != 0 ) {
+        for ( auto &groupName : _excludedSlaveCells ) {
+            if ( !( getMesh()->hasGroupOfCells( groupName ) ) ) {
+                throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
+            }
+
+            VectorLong sans_gr_i = _mesh->getCells( groupName );
+            auto it = _slaveCellsExcluded.end();
+            _slaveCellsExcluded.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
+        }
+
+        _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
+        AS_ASSERT( _slaveCells.size() > 0 );
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+    }
+
+    if ( _excludedSlaveNodes.size() != 0 ) {
+        // Build inverse connectivity
+        AS_ASSERT( buildInverseConnectivity() );
+
+        for ( auto &groupName : _excludedSlaveNodes ) {
+            if ( !( getMesh()->hasGroupOfNodes( groupName ) ) ) {
+                throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
+            }
+
+            VectorLong sans_gr_i = _mesh->getNodes( groupName );
+            for ( auto &node : sans_gr_i ) {
+                auto cellsToExclude = this->getSlaveCellsFromNode( node );
+                auto it = _slaveCellsExcluded.end();
+                _slaveCellsExcluded.insert( it, cellsToExclude.begin(), cellsToExclude.end() );
+            }
+        }
+
+        _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
+        AS_ASSERT( _slaveCells.size() > 0 );
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
     }
 
     _zoneHaveBeenDefined = true;

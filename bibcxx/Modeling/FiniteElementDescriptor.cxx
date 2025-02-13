@@ -64,21 +64,14 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
                                                   const VectorString &groupOfCells )
     : FiniteElementDescriptor( FEDesc->getMesh() ) {
 
-    VectorLong commonCells;
-
-    for ( auto &group : groupOfCells ) {
-        auto cells = _mesh->getCells( group );
-        auto it = commonCells.end();
-        commonCells.insert( it, cells.begin(), cells.end() );
-    }
-
-    VectorLong listOfCells = unique( commonCells );
+    VectorLong listOfCells = _mesh->getCells( groupOfCells );
 
     std::string base( "G" );
     ASTERINTEGER nbCells = listOfCells.size();
     for ( auto &cell : listOfCells )
         cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
+    this->build();
 };
 
 FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,

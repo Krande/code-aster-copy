@@ -36,6 +36,7 @@ from ..Objects import (
     ParallelContactNew,
     ParallelFrictionNew,
 )
+from ..Utilities import MPI
 
 
 def _hasFriction(zones):
@@ -57,12 +58,12 @@ def defi_cont_ops(self, **keywords):
     mesh = model.getMesh()
 
     if _hasFriction(keywords["ZONE"]):
-        if mesh.isParallel():
+        if mesh.isParallel() and MPI.ASTER_COMM_WORLD.Get_size() > 1:
             result = ParallelFrictionNew(keywords["MODELE"], mesh)
         else:
             result = FrictionNew(keywords["MODELE"])
     else:
-        if mesh.isParallel():
+        if mesh.isParallel() and MPI.ASTER_COMM_WORLD.Get_size() > 1:
             result = ParallelContactNew(keywords["MODELE"], mesh)
         else:
             result = ContactNew(keywords["MODELE"])

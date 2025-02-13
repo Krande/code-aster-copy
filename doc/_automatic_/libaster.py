@@ -657,6 +657,38 @@ class BaseMesh(DataStructure):
             int: Number of nodes.
         """
 
+    def getOriginalToRestrictedCellsIds(self):
+        """If the mesh is created as restriction of an initial mesh,
+        It returns a dict between the cell id of the initial mesh and the current cell id.
+
+        Returns:
+            dict[int]: a dict between the cell id of the initial mesh and the current cell id.
+        """
+
+    def getOriginalToRestrictedNodesIds(self):
+        """If the mesh is created as a restriction of an initial mesh,
+        It returns a dict betweenn the node id of the initial mesh and the current node id.
+
+        Returns:
+            dict[int]: a dict betweenn the node id of the initial mesh and the current node id.
+        """
+
+    def getRestrictedToOriginalCellsIds(self):
+        """If the mesh is created as restriction of an initial mesh,
+        It returns for each cells, the cell id of the initial mesh.
+
+        Returns:
+            list[int]: for each cells, the cell id of the initial mesh.
+        """
+
+    def getRestrictedToOriginalNodesIds(self):
+        """If the mesh is created as a restriction of an initial mesh,
+        It returns for each nodes, the node id of the initial mesh.
+
+        Returns:
+            list[int]: for each nodes, the node id of the initial mesh.
+        """
+
     def getTable(self, identifier):
         """Extract a Table from the datastructure.
 
@@ -698,8 +730,8 @@ class BaseMesh(DataStructure):
         """Print the mesh in the MED format
 
         Arguments:
-            filename (str): Name of the file
-            local (bool=True) : print local values only (relevant for BaseMesh only)
+            filename (Path|str): Name of the file
+            local (bool=True) : print local values only (relevant for a ParallelMesh only)
 
         Returns:
             Bool: True if of
@@ -3035,6 +3067,10 @@ class FieldOnNodesReal(DataField):
         4. __init__(self: libaster.FieldOnNodesReal, arg0: Model) -> None
 
         5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
+
+        6. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, cmps: list[str]) -> None
+
+        7. __init__(self: libaster.FieldOnNodesReal, mesh: libaster.BaseMesh, quantity: str, values: dict[str, float], groupsOfNodes: list[str] = [], groupsOfCells: list[str] = []) -> None
         """
 
     def __isub__(self, arg0):
@@ -3271,6 +3307,17 @@ class FieldOnNodesReal(DataField):
 
         Returns:
             int: number of element in the field
+        """
+
+    def toFieldOnCells(self, fed, loc):
+        """Converts to FieldOnCells
+
+        Arguments:
+            fed [FiniteElementDescriptor]: finite element descriptor
+            loc [str] : name of localization like 'ELGA'.
+
+        Returns:
+            FieldOnCellsReal: field converted.
         """
 
     def toSimpleFieldOnNodes(self):
@@ -6752,11 +6799,26 @@ class MeshPairing(DataStructure):
             str: excluded groups' names
         """
 
+    def setMesh(self, mesh):
+        """Set Mesh
+
+        Arguments:
+            mesh (BaseMesh): support mesh
+        """
+
     def setMethod(self, method):
         """Set method of pairing
 
         Arguments:
             method (PairingMethod): method ("OLD", "Fast", "Robust)
+        """
+
+    def setPair(self, groupNameSlav, groupNameMast):
+        """Set pair of meshed surfaces
+
+        Arguments:
+            groupNameSlav (str): slave's name
+            groupNameMast (str): master's name
         """
 
     def setVerbosity(self, level):

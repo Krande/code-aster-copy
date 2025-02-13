@@ -630,6 +630,11 @@ bool ConnectionMesh::hasGroupOfNodes( const std::string &name, const bool ) cons
 }
 
 VectorLong ConnectionMesh::getCells( const std::string name ) const {
+    if ( name.empty() ) {
+        return irange( ASTERINTEGER( 0 ), ASTERINTEGER( getNumberOfCells() - 1 ) );
+    } else if ( !hasGroupOfCells( name ) ) {
+        return VectorLong();
+    }
     return getCells( VectorString( { name } ) );
 };
 

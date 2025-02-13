@@ -147,10 +147,11 @@ class MeshPairing : public DataStructure {
     MeshPairing() : MeshPairing( ResultNaming::getNewResultName() ) {};
 
     /** @brief Initializations of datastructures defining pairing */
-    bool initObjects( const BaseMeshPtr mesh );
+    bool initObjects();
 
     /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _mesh; };
+    void setMesh( const BaseMeshPtr & );
 
     /** @brief Set verbosity */
     void setVerbosity( const ASTERINTEGER &level ) { _verbosity = level; }

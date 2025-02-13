@@ -52,9 +52,6 @@ def _contact_check(CONTACT):
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
 
-            if zone.hasFriction:
-                assert zone.getFrictionParameter().getType() == FrictionType.Without
-
         if defi.hasFriction:
             assert CONTACT[0]["ALGO_RESO_FROT"] == "NEWTON"
 
@@ -64,7 +61,7 @@ def _keywords_check(keywords):
 
     if "EXCIT" in keywords:
         for load in keywords["EXCIT"]:
-            if load["TYPE_CHARGE"] != "FIXE_CSTE":
+            if load["TYPE_CHARGE"] not in ("FIXE_CSTE", "DIDI"):
                 raise RuntimeError("TYPE_CHARGE not supported")
 
     if "CONVERGENCE" in keywords:

@@ -27,6 +27,7 @@
 #include "aster_pybind.h"
 
 #include "DataFields/FieldConverter.h"
+#include "DataFields/FieldOnNodesBuilder.h"
 #include "PythonBindings/DataStructureInterface.h"
 
 void exportFieldOnNodesToPython( py::module_ &mod ) {
@@ -40,7 +41,23 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, const FieldOnNodesReal & > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
+        .def( py::init( []( const BaseMeshPtr mesh, const std::string &quantity,
+                            const VectorString &cmps ) {
+                  return FieldOnNodesPtrBuilder< ASTERDOUBLE >( mesh, quantity, cmps );
+              } ),
+              py::arg( "mesh" ), py::arg( "quantity" ), py::arg( "cmps" ) )
+        .def( py::init( []( const BaseMeshPtr mesh, const std::string &quantity,
+                            const std::map< std::string, ASTERDOUBLE > &values,
+                            const VectorString &groupsOfNodes = {},
+                            const VectorString &groupsOfCells = {} ) {
+                  return FieldOnNodesPtrBuilder< ASTERDOUBLE >( mesh, quantity, values,
+                                                                groupsOfNodes, groupsOfCells );
+              } ),
+              py::arg( "mesh" ), py::arg( "quantity" ), py::arg( "values" ),
+              py::arg( "groupsOfNodes" ) = VectorString(),
+              py::arg( "groupsOfCells" ) = VectorString() )
         .def( "copy", &FieldOnNodesReal::copy )
+#ifdef ASTER_HAVE_MPI
         .def(
             "transfertToConnectionMesh",
             []( const FieldOnNodesRealPtr f, const ConnectionMeshPtr c ) {
@@ -52,6 +69,7 @@ Transfer SimpleFieldOnNodes to a ConnectionMesh
 Returns:
     SimpleFieldOnNodesReal: transfered field
         )" )
+#endif /* ASTER_HAVE_MPI */
         .def(
             "toSimpleFieldOnNodes",
             []( const FieldOnNodesReal &f ) { return toSimpleFieldOnNodes( f ); },
@@ -61,6 +79,21 @@ Convert to SimpleFieldOnNodes
 Returns:
     SimpleFieldOnNodesReal: field converted
         )" )
+        .def(
+            "toFieldOnCells",
+            []( const FieldOnNodesReal &f, const FiniteElementDescriptorPtr fed,
+                const std::string loc ) { return toFieldOnCells( f, fed, loc ); },
+            R"(
+            Converts to FieldOnCells
+
+            Arguments:
+                fed [FiniteElementDescriptor]: finite element descriptor
+                loc [str] : name of localization like 'ELGA'.
+
+            Returns:
+                FieldOnCellsReal: field converted.
+            )",
+            py::arg( "fed" ), py::arg( "loc" ) )
         .def( "getPhysicalQuantity", &FieldOnNodesReal::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def(

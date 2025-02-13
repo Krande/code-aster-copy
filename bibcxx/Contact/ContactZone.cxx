@@ -56,7 +56,8 @@ bool ContactZone::build( const ModelPtr model ) {
     if ( !_model->isMechanical() )
         UTMESS( "F", "CONTACT1_2" );
 
-    _meshPairing->initObjects( _model->getMesh() );
+    _meshPairing->setMesh( _model->getMesh() );
+    _meshPairing->initObjects();
     _meshPairing->setVerbosity( getVerbosity() );
 
     // Some checks

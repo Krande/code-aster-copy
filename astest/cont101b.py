@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,8 @@ Mail = MODI_MAILLAGE(
 MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 # Generate pairs
-meshPair = CA.MeshPairing(Mail)
+meshPair = CA.MeshPairing()
+meshPair.setMesh(Mail)
 meshPair.setVerbosity(2)
 meshPair.setPair("CONT_BAS", "CONT_HAUT")
 meshPair.setMethod(PairingMethod.Fast)
@@ -141,7 +142,8 @@ test.assertSequenceEqual(
 
 
 # Generate pairs
-meshPair = CA.MeshPairing(Mail)
+meshPair = CA.MeshPairing()
+meshPair.setMesh(Mail)
 meshPair.setVerbosity(2)
 meshPair.setPair("CONT_HAUT", "CONT_BAS")
 meshPair.setMethod(PairingMethod.Fast)
