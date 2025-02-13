@@ -51,7 +51,7 @@ class RASPENSolver(BaseIterationSolver):
             instance: New object.
         """
         instance = super().builder(context)
-        instance._local_solver = SNESSolver(local=False)
+        instance._local_solver = SNESSolver(local=True)
         instance._local_solver.context = context
         return instance
 

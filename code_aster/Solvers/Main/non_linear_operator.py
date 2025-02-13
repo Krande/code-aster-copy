@@ -47,17 +47,7 @@ class NonLinearOperator(ContextMixin):
         result (*misc*): The result object.
     """
 
-    __needs__ = (
-        "contact",
-        "keywords",
-        "linear_solver",
-        "stepper",
-        "oper",
-        "problem",
-        "problem_type",
-        "result",
-        "state",
-    )
+    __needs__ = ("keywords", "stepper", "problem", "problem_type", "result", "state")
 
     _store = _step_solver = _hooks = None
     _verb = None

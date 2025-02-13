@@ -20,7 +20,7 @@
 from abc import ABC, abstractmethod
 from enum import IntFlag, auto
 
-from ...Utilities import no_new_attributes, profile
+from ...Utilities import no_new_attributes
 from ..Basics import ContextMixin, DispatcherMixin
 
 
