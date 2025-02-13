@@ -201,6 +201,15 @@ class NonLinearOperator(ContextMixin):
                 )
                 _msginit("VARI_ELGA", resu.userName)
 
+                list_of_loads = self.problem.getListOfLoads()
+                if list_of_loads.hasDifferentialLoads():
+                    nume_didi = init_state.get("NUME_DIDI")
+                    if nume_didi:
+                        displ = resu.getField("DEPL", nume_didi).copyUsingDescription(nume_equa)
+                    else:
+                        displ = self.state.primal_curr
+                    list_of_loads.setDifferentialDisplacement(displ)
+
             if "EVOL_THER" in init_state:
                 resu = init_state.get("EVOL_THER")
                 assert isinstance(resu, ThermalResult), resu
