@@ -18,12 +18,14 @@ digraph MNL {
         contact [label = "Contact";];
         linsolv [label = "LinearSolver";];
         context [label = "Context";shape = "circle";];
+        timestepper [label = "TimeStepper";];
         
         context -> problem;
         context -> type;
         context -> keywords;
         context -> state;
         context -> result;
+        context -> timestepper;
         context -> operators [lhead = cluster_operators;];
         context -> contact;
         context -> linsolv;
@@ -36,7 +38,6 @@ digraph MNL {
         mixin_pb [label = "ContextMixin";style = "dashed";shape = "note";];
         nl_operator -> mixin_pb [dir = "back"; style = "dashed"; arrowtail = "empty";];
     }
-    timestepper [label = "TimeStepper";];
     storage [label = "StorageManager";];
     hook [label = "PostStepHook";];
     
@@ -127,7 +128,6 @@ digraph MNL {
         rank = "same";
         mnl -> context [xlabel = "creates"; style = "bold";];
     }
-    nl_operator -> timestepper;
     nl_operator -> storage;
     nl_operator -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];
     nl_operator -> hook [label = "todo"; style = "dashed";];

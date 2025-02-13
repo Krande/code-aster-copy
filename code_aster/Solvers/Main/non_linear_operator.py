@@ -36,7 +36,6 @@ from ..Basics import ContextMixin
 from ..Basics import ProblemType as PBT
 from ..StepSolvers import BaseStepSolver
 from .storage_manager import StorageManager
-from .time_stepper import TimeStepper
 
 
 class NonLinearOperator(ContextMixin):
@@ -51,6 +50,7 @@ class NonLinearOperator(ContextMixin):
         "contact",
         "keywords",
         "linear_solver",
+        "stepper",
         "oper",
         "problem",
         "problem_type",
@@ -58,9 +58,9 @@ class NonLinearOperator(ContextMixin):
         "state",
     )
 
-    _stepper = _store = _step_solver = None
+    _store = _step_solver = None
     _verb = None
-    # FIXME: add _ prefix?
+    # FIXME: prefer _current_matrix and property
     _step_idx = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -86,14 +86,6 @@ class NonLinearOperator(ContextMixin):
 
     # convenient shortcuts properties to init and access subobjects
     @property
-    def stepper(self):
-        """:py:class:`~.time_stepper.TimeStepper`: object to be used."""
-        if not self._stepper:
-            logger.debug("+++ init Stepper")
-            self._stepper = TimeStepper.from_keywords(**self.keywords["INCREMENT"])
-        return self._stepper
-
-    @property
     def store(self):
         if not self._store:
             logger.debug("+++ init StorageManager")
@@ -109,9 +101,8 @@ class NonLinearOperator(ContextMixin):
                     # Pour l'instant, on se restreint au cas où la sd passée
                     # par reuse est la même que celle passée dans ETAT_INIT
                     assert init_state["EVOL_NOLI"] is reuse
-                # FIXME: access to _eps!
                 init_index = reuse.getIndexFromParameter(
-                    "INST", self.stepper.getInitial(), "RELATIF", self.stepper._eps
+                    "INST", self.stepper.getInitial(), "RELATIF", self.stepper.null_increment
                 )
                 # if stepper is None ?! should be happen
                 # init_index = reuse.getLastIndex()

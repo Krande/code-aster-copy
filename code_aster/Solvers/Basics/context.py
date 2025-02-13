@@ -43,6 +43,7 @@ class Context:
         problem_type: :py:class:`ProblemType` enum value
         keywords: Part of the user keywords
         oper: :py:class:`BaseOperators` object
+        stepper: :py:class:`TimeStepper` object
         contact: :py:class:`ContactManager` object
         linear_solver: :py:class:`LinearSolver` object
     """
@@ -91,7 +92,7 @@ class Context:
             return kwds.get(keyword, default)
 
     _problem = _type = _state = _keywords = _result = None
-    _oper = _contact = _linsolv = None
+    _stepper = _oper = _contact = _linsolv = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
@@ -100,6 +101,7 @@ class Context:
         self._problem = None
         self._state = None
         self._result = None
+        self._stepper = None
         self._oper = None
         self._contact = None
         self._linsolv = None
@@ -168,8 +170,17 @@ class Context:
         self._result = value
 
     @property
+    def stepper(self):
+        """TimeStepper: Attribute that holds the time stepper."""
+        return self._stepper
+
+    @stepper.setter
+    def stepper(self, value):
+        self._stepper = value
+
+    @property
     def oper(self):
-        """Operators: Objects that adapts operators for each type of problem."""
+        """Operators: Object that adapts operators for each type of problem."""
         return self._oper
 
     @oper.setter
@@ -178,7 +189,7 @@ class Context:
 
     @property
     def contact(self):
-        """ContactManager: Objects to solve contact conditions"""
+        """ContactManager: Object to solve contact conditions"""
         return self._contact
 
     @contact.setter
@@ -308,8 +319,8 @@ class ContextMixin:
 
     @problem.setter
     @check_access()
-    def problem(self, problem):
-        self._ctxt._problem = problem
+    def problem(self, value):
+        self._ctxt.problem = value
 
     @property
     @check_access()
@@ -319,8 +330,8 @@ class ContextMixin:
 
     @state.setter
     @check_access()
-    def state(self, state):
-        self._ctxt._state = state
+    def state(self, value):
+        self._ctxt.state = value
 
     @property
     @check_access()
@@ -331,29 +342,40 @@ class ContextMixin:
     @result.setter
     @check_access()
     def result(self, value):
-        self._ctxt._result = value
+        self._ctxt.result = value
+
+    @property
+    @check_access()
+    def stepper(self):
+        """TimeStepper: Attribute that holds the time stepper."""
+        return self._ctxt._stepper
+
+    @stepper.setter
+    @check_access()
+    def stepper(self, value):
+        self._ctxt.stepper = value
 
     @property
     @check_access()
     def oper(self):
-        """Operators: Objects that adapts operators for each type of problem."""
+        """Operators: Object that adapts operators for each type of problem."""
         return self._ctxt._oper
 
     @oper.setter
     @check_access()
     def oper(self, value):
-        self._ctxt._oper = value
+        self._ctxt.oper = value
 
     @property
     @check_access()
     def contact(self):
-        """ContactManager: Objects to solve contact conditions"""
+        """ContactManager: Object to solve contact conditions"""
         return self._ctxt._contact
 
     @contact.setter
     @check_access()
     def contact(self, value):
-        self._ctxt._contact = value
+        self._ctxt.contact = value
 
     @property
     @check_access()
@@ -364,4 +386,4 @@ class ContextMixin:
     @linear_solver.setter
     @check_access()
     def linear_solver(self, value):
-        self._ctxt._linsolv = value
+        self._ctxt.linear_solver = value
