@@ -41,12 +41,12 @@ import medcoupling as mc
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
 from ..CodeCommands import IMPR_RESU, AFFE_MODELE
-from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Mesh
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..Messages import UTMESS
 from ..Helpers.LogicalUnit import LogicalUnitFile
 
-from .Fracture.post_beremin_utils import CELL_TO_POINT, create_mesh_from_groupno
+from .Fracture.post_beremin_utils import CellToPoints, create_mesh_from_groupno
 
 
 DEBUG = bool(os.environ.get("DEBUG_POST_BEREMIN", ""))
@@ -132,9 +132,9 @@ class PostBeremin:
         if "METHODE_2D" in args:
             self._method_2D = True
             self._prec_proj = args["METHODE_2D"]["PRECISION"]
-            self._l_mesh_proj_2D = args["METHODE_2D"]["MAILLAGE"]
+            self._l_mesh_proj_2D = args["METHODE_2D"]["MAILLAGE_PLAN"]
             self._l_name_mesh_2D = args["METHODE_2D"]["NOM_MAIL_MED"]
-            self._l_mesh_group_no_2D = args["METHODE_2D"]["GROUP_NO"]
+            self._l_mesh_group_no_2D = args["METHODE_2D"]["GROUP_NO_PLAN"]
             self._fondfiss = args["METHODE_2D"]["FISSURE"]
             self._model_2D = args["METHODE_2D"]["MODELISATION"]
             self._l_mesh_proj_2D_mc = []
@@ -447,11 +447,16 @@ class PostBeremin:
 
         return intsig1pm
 
-    def build_projector(self, mesh_3D, mesh_2D: Mesh = None, group_no_2D: list = None) -> None:
+    def build_projector(self, mesh_3D, mesh_2D, group_no_2D):
         """Return the 3D -> 2D projector when METHODE_2D is used
 
+        Args:
+            mesh_3D (*Mesh*): Mesh 3D object from result
+            mesh_2D (*Mesh*): 2D mesh of plane (if already created, else None)
+            group_no_2D (*grno*): Group of nodes to create mesh_2D
+
         Returns:
-            *CELL_TO_POINT*: 3D -> 2D projector
+            *CellToPoints*: 3D -> 2D projector
         """
 
         ##Get 3D mesh (gauss to cells)
@@ -480,13 +485,21 @@ class PostBeremin:
             UTMESS("F", "RUPTURE4_15")
 
         ##Build projector 3D -> points (points = barycenters of 2D mesh gauss cells)
-        proj_3D_2D = CELL_TO_POINT(
+        proj_3D_2D = CellToPoints(
             self._mesh_3D_cells_mc, mesh_2D_mc, self._prec_proj, self._d_max_3d
         )
 
         return proj_3D_2D
 
     def convert_to_mc(self, sig1):
+        """Convert major stress to medcoupling.
+
+        Args:
+            sig1 (*ComponentOnCells*): Major stress 3D
+
+        Returns:
+            sigma_a_mc: Major stress 3D (medcoupling array)
+        """
 
         ##3D ComponentOnCells to 3D medcoupling array
         sigma = FieldOnCellsReal(self._model_3D_restricted, "ELGA", "SIEF_R")
@@ -505,8 +518,14 @@ class PostBeremin:
         and computation of 2D integral
 
         Args:
-            sig1 (*ComponentOnCells*): Major stress on 3D cells
+            mc_sig1 (*medcoupling array*): Major stress 3D
+            pow_m (float): current M coefficient
+            idx (int): Storage index.
+            time (float): Time value.
+            mesh_2D_idx(int): Index of current 2D plane mesh
 
+        Returns:
+            intsig1pm: integral of major stress ^ M on current 2D plane.
         """
 
         ##Projection 3D -> points
@@ -697,9 +716,7 @@ class PostBeremin:
                             logger.info(
                                 "Construction du projecteur pour le maillage 2D " + str(nom_mesh)
                             )
-                            self._l_proj_3D_2D += [
-                                self.build_projector(mesh, mesh_2D=mesh_2D, group_no_2D=group_no_2D)
-                            ]
+                            self._l_proj_3D_2D += [self.build_projector(mesh, mesh_2D, group_no_2D)]
 
                     mc_sig1 = self.convert_to_mc(sig1)
 

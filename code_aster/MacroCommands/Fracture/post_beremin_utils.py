@@ -27,23 +27,26 @@ from ...Utilities import logger
 from ...Messages import UTMESS
 
 
-class CELL_TO_POINT:
+class CellToPoints:
     """
-    GetCellsContainingPoints peut échouer en présence de faces gauches
-    On propose ici une stratégie robuste pour passer de valeurs P0 (sur cellules) à un nuage de points
-    En chaque point, on retient la valeur du champ dans la cellule à laquelle appartient le point
-    Si le point appartient à plusieurs cellules (précision), on fait la moyenne arithmétique des cellules conscernées
-    A noter que la précision s'entend comme une valeur relative : multipliée par la taille de la boite englobant la cellule,
-    elle fournit le rayon (absolu) de la boule pour la détection de cellules ou relatif
-    Si le point n'appartient à aucune cellule, on augmente la précision jusqu'à trouver au moins une cellule
-    """
+    GetCellsContainingPoints may fail in the presence of non-planar faces.
+    We propose here a robust strategy to transition from P0 values (on cells)
+    to a point cloud. At each point, we retain the field value in the cell to
+    which the point belongs. If the point belongs to multiple cells (precision),
+    we take the arithmetic mean of the concerned cells. Note that precision is
+    understood as a relative value: multiplied by the size of the bounding box
+    of the cell, it provides the (absolute) radius of the ball for cell
+    detection or relative. If the point does not belong to any cell,
+    we try to increase this precision. If no cell is found, an error is thrown"""
 
     def __init__(self, mesh_3D, mesh_2D, prec_rel, d_max_3d, ampl=1.5):
         """
-        mesh_3D    : maillage de cellules 3D (celui sur lequel seront aussi définis les champs à projeter)
-        mesh_2D  : maillage 2D sur lequel les champs seront projetés
-        prec_rel : précision relative minimale par rapport à la taille de maille du maillage 2D
-        ampl    : facteur d'amplification de la précision lorsqu'on ne trouve pas de cellules correspondant à un point
+        Args:
+            mesh_3D(*UMesh*): 3D cell mesh (the one on which the fields to be projected will also be defined)
+            mesh_2D(*UMesh*): 2D mesh on which the fields will be projected
+            prec_rel(float): minimum relative precision with respect to the mesh size of the 2D mesh
+            d_max_3d(float): maximum size of 3D elements
+            ampl(float): amplification factor of the precision when no cells corresponding to a point are found
         """
 
         self.mesh = mesh_3D
@@ -60,36 +63,39 @@ class CELL_TO_POINT:
 
     def ComputeRelativePrecision(self, mesh_2D, prec_rel, d_max_3D):
         """
-        Estime la précision relative de l'identification des cellules correspondant aux points
-        en s'appuyant sur la taille des mailles 2D et la précision relative donnée en entrée
+        Estimates the relative precision of identifying cells corresponding to points
+        based on the size of the 2D mesh and the relative precision provided as input
+
+        Args:
+            mesh_2D(*UMesh*): 2D mesh on which the fields will be projected
+            prec_rel(float): minimum relative precision with respect to the mesh size of the 2D mesh
+            d_max_3d(float): maximum size of 3D elements
         """
         prec_abs = prec_rel * mesh_2D.computeDiameterField().getArray().getMinValueInArray()
         self.prec = prec_abs / d_max_3D
 
     def Build(self, ampl):
         """
-        Construction du projecteur, à savoir le lien point -> cellules correspondantes
-        Identique à getCellsContainingPoints mais en plus robuste vis-à-vis de la précision
-        car on augmente progressivement (facteur ampl) la précision jusqu'à ce qu'à chaque point
-        corresponde au moins une cellule
+        Construction of the projector, i.e., the link point -> corresponding cells
+        Identical to GetCellsContainingPoints but more robust in terms of precision
+        because we progressively increase (ampl factor) the precision (at most 5 times)
+
         """
 
         # ------------------------------------------------------------------------------------------
-        # 1 - Le maillage support du champ est découpé en tétraèdres
+        # 1 - The mesh supporting the field is divided into tetrahedra.
         # ------------------------------------------------------------------------------------------
 
         meshT4 = self.mesh.deepCopy()
 
         if not meshT4.getAllGeoTypes() == [mc.NORM_TETRA4]:
-            (meshT4, transfer, ibid) = meshT4.tetrahedrize(
-                mc.PLANAR_FACE_6
-            )  # ne respecte pas la conformité, ce qui explique tout le développement
+            (meshT4, transfer, ibid) = meshT4.tetrahedrize(mc.PLANAR_FACE_6)  # non conformal mesh
         else:
             transfer = mc.DataArrayInt(np.arange(meshT4.getNumberOfCells()).tolist())
-        meshT4 = meshT4.buildUnstructured()  # Bug medcoupling si on ne fait rien
+        meshT4 = meshT4.buildUnstructured()  # Bug medcoupling otherwise
 
         # ------------------------------------------------------------------------------------------
-        # 2- On repère les cellules T4 contenant les points avec un accroissement progressif de la précision jusqu'à ce que tous les points aient une correspondance
+        # 2- We identify the T4 cells containing the points with a progressive increase in precision (5 times at most)
         # ------------------------------------------------------------------------------------------
 
         prec = self.prec
@@ -98,7 +104,7 @@ class CELL_TO_POINT:
         pos = mc.DataArrayInt([0])
         nook_idx = mc.DataArrayInt(np.arange(self.nbr).tolist())
 
-        # boucle sur la précision de recherche
+        # loop on precision
         nb_iter = 0
         while 1:
 
@@ -111,7 +117,7 @@ class CELL_TO_POINT:
             (cells_prec, pos_prec) = meshT4.getCellsContainingPoints(coor_nook, prec)
             nbCells = pos_prec[1:] - pos_prec[:-1]
 
-            # Amplification de la précision
+            # Amplification of precision
             prec = ampl * prec
             nb_iter += 1
 
@@ -119,27 +125,27 @@ class CELL_TO_POINT:
             if nb_iter > 5:
                 UTMESS("F", "RUPTURE4_23")
 
-            # S'il n'y a pas de nouveaux points OK, on continue avec une précision dégradée
+            # If there are no new OK points, we continue with degraded precision.
             if nbCells.getMaxValueInArray() == 0:
                 continue
 
-            # Index des nouveaux points pour lesquels des cellules sont identifiées
+            # Index of new points for which cells are identified
             found = nbCells.findIdsNotEqual(0)
             ok_idx = nook_idx[found]
             logger.info("On a trouvé " + str(len(ok_idx)) + str(" nouveaux points."))
             logger.info("")
-            # Concaténation des points et des cellules
+            # Concatenation of points and cells
             pt_idx_inv.aggregate(ok_idx)
             pos = pos[:-1]
             pos.aggregate(pos_prec[found] + len(cells))
             cells.aggregate(cells_prec)
             pos.aggregate(mc.DataArrayInt([len(cells)]))
 
-            # Tous les points ont-ils trouvé leurs cellules d'appartenance
+            # Have all points found their corresponding cells?
             if nbCells.getMinValueInArray() > 0:
                 break
 
-            # Points résiduels qui n'ont toujours pas trouvé leurs cellules d'appartenance
+            # Residual points that still have not found their corresponding cells
             notFound = nbCells.findIdsEqual(0)
             nook_idx = nook_idx[notFound]
             logger.info("Il reste " + str(len(nook_idx)) + str(" points à trouver."))
@@ -148,11 +154,11 @@ class CELL_TO_POINT:
         if nb_iter > 1:
             UTMESS("A", "RUPTURE4_22")
 
-        # Interversion de l'indexation des points : numéro du point utilisateur -> numéro du point du projecteur
+        # Swapping the indexing of points: user point number -> projector point number
         self.pt_idx = mc.DataArrayInt([-1] * self.nbr)
         self.pt_idx[pt_idx_inv] = mc.DataArrayInt(np.arange(self.nbr).tolist())
 
-        # Cellules du maillage d'origine pour chacun des points
+        # Original mesh cells for each of the points
         self.cells = transfer[cells]
         self.pos = pos
 
@@ -162,43 +168,33 @@ class CELL_TO_POINT:
         ).getMinValueInArray() > 0  # on a bien trouvé au moins une cellule pour chaque point
         assert len(self.pos) == self.nbr + 1
 
-    def GetCellsContainingPoints(self):
-        """
-        On renvoie les éléments caractéristiques du projecteur (cells, pos, pt_idx)
-        cells et pos ont la même signification que la méthode éponyme de medcoupling
-        En revanche, on a une indirection supplémentaire : cells et pos sont repérés par rapport
-        à la numérotation des points interne au projecteur
-        pt_idx[numero_point_utilisateur] = numero_point_projecteur
-        """
-        return (self.cells.deepCopy(), self.pos.deepCopy(), self.pt_idx.deepCopy())
-
     def Eval(self, fieldValues):
         """
-        Evaluation du champ scalaire P0 sur les points d'échantillonnage (un DataArrayDouble)
+        Evaluation of the scalar field P0 on the sampling points (a DataArrayDouble)
         """
 
-        # Coefficient de pondération propre à chaque cellule
+        # Weighting coefficient specific to each cell
         nbCells = self.pos[1:] - self.pos[:-1]
         weights = mc.DataArrayDouble((1.0 / nbCells.toNumPyArray()).tolist())
 
-        # Calcul des moyennes arithmétiques dans la numérotation des points propre au projecteur
+        # Calculation of arithmetic means in the projector's specific point numbering
         offset = 0
         values = mc.DataArrayDouble(self.nbr, fieldValues.getNumberOfComponents())
         values.fillWithValue(0.0)
 
         while nbCells.getMaxValueInArray() > 0:
-            # Points pour lesquels il reste des cellules à calculer
+            # Points for which cells still need to be calculated
             active_idx = nbCells.findIdsGreaterOrEqualTo(1)
 
-            # Contribution des cellules courante à la moyenne
+            # Contribution of the current cells to the average
             cells = self.cells[self.pos[active_idx] + offset]
             values[active_idx] = values[active_idx] + weights[active_idx] * fieldValues[cells]
 
-            # Préparation des pointeurs pour les termes suivants
+            # Preparation of pointers for the following terms
             nbCells = nbCells - 1
             offset += 1
 
-        # indexation des valeurs dans la numérotation de l'utilisateur
+        # Indexing of values in the user's numbering
         values = values[self.pt_idx]
 
         return values

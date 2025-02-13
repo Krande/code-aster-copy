@@ -4,6 +4,5 @@ P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
-F comm zzzz513b.comm 		D 1
-F mmed zzzz513a.mmed  		D 20
-
+F comm sslv101b.comm 		D 1
+F mmed sslv101a.mmed  		D 20
