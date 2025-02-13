@@ -23,8 +23,7 @@ from ...LinearAlgebra import MatrixScaler
 from ...Objects import DiscreteComputation
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
-from ..Basics import EventSource
-from ..Basics import SolverOptions as SOP
+from ..Basics import EventId, EventSource
 from .convergence_manager import ConvergenceManager
 from .iteration_solver import BaseIterationSolver
 from .line_search import BaseLineSearch
@@ -54,6 +53,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
         instance = super().builder(context)
         instance._converg = ConvergenceManager.builder(context)
         instance._line_search = BaseLineSearch.factory(context)
+        instance.add_observer(context.stepper)
         return instance
 
     def __init__(self):
@@ -244,22 +244,21 @@ class NewtonSolver(BaseIterationSolver, EventSource):
 
         # evaluate geometric - convergence
         self._converg.evalGeometricResidual(primal_incr)
-        self.notifyObservers(self._converg, matrix_type)
+        self.notifyObservers(matrix_type)
 
         return primal_incr, jacobian, resi_fields
 
-    def notifyObservers(self, convManager, matrix_type):
-        """Notify all observers about the convergence.
+    def notifyObservers(self, matrix_type):
+        """Notify observers about the convergence.
 
         Arguments:
-            convManager (ConvergenceManager): Object that holds the criteria values.
             matrix_type (str): Type of matrix used.
         """
-        self._data = convManager.getParameters()
+        self._data = self._converg.getParameters()
         self._data["matrix"] = matrix_type
-        self._data["isConverged"] = convManager.isConverged()
+        self._data["isConverged"] = self._converg.isConverged()
         super().notifyObservers()
 
     def get_state(self):
         """Returns the current residuals to be shared with observers."""
-        return SOP.IncrementalSolver, self._data
+        return EventId.IterationSolver, self._data

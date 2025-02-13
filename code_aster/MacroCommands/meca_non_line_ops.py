@@ -43,7 +43,6 @@ from ..Solvers import (
     TimeStepper,
 )
 from ..Solvers import ProblemType as PBT
-from ..Solvers.Post import Annealing, ComputeDisplFromHHO
 from ..Utilities import print_stats, reset_stats
 
 
@@ -173,14 +172,8 @@ def meca_non_line_ops(self, **args):
     context.state = PhysicalState(context.problem_type, size=1)
 
     solver = NonLinearOperator.builder(context)
-
-    # Register hooks
-    # FIXME: to be done by the solver
-    # solver.use(Annealing())
-    # solver.use(ComputeDisplFromHHO())
-
-    # Run computation
     solver.run()
+
     print_stats()
     reset_stats()
     return context.result

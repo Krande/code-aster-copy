@@ -34,6 +34,7 @@ from ...Utilities import (
 )
 from ..Basics import ContextMixin
 from ..Basics import ProblemType as PBT
+from ..Post import Annealing, ComputeDisplFromHHO
 from ..StepSolvers import BaseStepSolver
 from .storage_manager import StorageManager
 
@@ -58,7 +59,7 @@ class NonLinearOperator(ContextMixin):
         "state",
     )
 
-    _store = _step_solver = None
+    _store = _step_solver = _hooks = None
     _verb = None
     # FIXME: prefer _current_matrix and property
     _step_idx = current_matrix = None
@@ -158,14 +159,16 @@ class NonLinearOperator(ContextMixin):
         phys_pb.computeDOFNumbering()
         if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
             phys_pb.computeReferenceExternalStateVariables()
+        self._register_hooks()
         self._step_idx = 0
         self.setInitialState()
         self._storeState(self.state)
-        # FIXME: register observers
-        # for source in self.get_childs(SOP.IncrementalSolver | SOP.EventSource):
-        #     source.add_observer(self.stepper)
-        # for source in self.get_childs(SOP.ConvergenceCriteria | SOP.EventSource):
-        #     source.add_observer(self.stepper)
+
+    def _register_hooks(self):
+        self._hooks = []
+        if self.problem_type & (PBT.MecaStat | PBT.MecaDyna):
+            self._hooks.append(Annealing())
+            self._hooks.append(ComputeDisplFromHHO())
 
     # FIXME: mixin by problem_type / factory
     @profile
@@ -348,9 +351,8 @@ class NonLinearOperator(ContextMixin):
 
     def post_hooks(self):
         """Call post hooks"""
-        # FIXME: todo
-        # for hook in self.get_features(SOP.PostStepHook):
-        #     hook(self)
+        for hook in self._hooks:
+            hook(self)
 
     def computeExternalStateVariables(self, current_time):
         """Compute and set external variables in the physical state.

@@ -72,6 +72,12 @@ class Observer(ABC):
         # calls event.get_state()
 
 
+class EventId(IntFlag):
+    """Identifiers of EventSource objects."""
+
+    IterationSolver = auto()
+
+
 class EventSource(ABC):
     """The EventSource interface declares a set of methods for managing observers."""
 

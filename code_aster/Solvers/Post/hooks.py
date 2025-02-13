@@ -17,11 +17,40 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from abc import ABC, abstractmethod
+
 from ...Objects import HHO, PostProcessing
-from ..Basics import SolverOptions as SOP
 
 
-class Annealing:
+class BaseHook(ABC):
+    """Base class to define hooks"""
+
+    def __init__(self) -> None:
+        self._enabled = None
+
+    def __call__(self, nl_oper):
+        """Entrypoint of hook object"""
+        if self._enabled is None:
+            self.setup(nl_oper)
+        if not self._enabled:
+            return
+        self.run(nl_oper)
+
+    @abstractmethod
+    def setup(self, nl_oper):
+        """Setup function"""
+        # should at least set '_enabled' value
+
+    @abstractmethod
+    def run(self, nl_oper):
+        """Execute the hook
+
+        Args:
+            nl_oper (NonLinearOperator): Non linear operator
+        """
+
+
+class Annealing(BaseHook):
     """This object deals with annealing.
 
     This class can be used to calculate the mechanical state after annealing for
@@ -34,25 +63,23 @@ class Annealing:
         NewInternVar^{n} = f( InterVar^{n}, t^{n-1}, t^{n}, ExtVar^{n-1}, ExtVar^{n})
     """
 
-    provide = SOP.PostStepHook
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
+    def setup(self, nl_oper):
+        """Setup function"""
+        self._enabled = nl_oper.problem.getBehaviourProperty().hasAnnealing()
 
-    def __init__(self) -> None:
-        self._enabled = None
+    def run(self, nl_oper):
+        """Execute the hook
 
-    def __call__(self, nl_solver):
-        if self._enabled is None:
-            self._enabled = nl_solver.problem.getBehaviourProperty().hasAnnealing()
-        if not self._enabled:
-            return
-
+        Args:
+            nl_oper (NonLinearOperator): Non linear operator
+        """
         try:
-            previous = nl_solver.state.getState(-1)
+            previous = nl_oper.state.getState(-1)
         except IndexError:
             # No post-pro at initial step
             return
-        current = nl_solver.state
-        post_process = PostProcessing(nl_solver.problem)
+        current = nl_oper.state
+        post_process = PostProcessing(nl_oper.problem)
         internVar_anneal = post_process.computeAnnealing(
             current.internVar,
             previous.time_curr,
@@ -64,22 +91,21 @@ class Annealing:
         current.internVar = internVar_anneal
 
 
-class ComputeHydr:
+class ComputeHydr(BaseHook):
     """Hook to compute HYDR_ELGA."""
 
-    provide = SOP.PostStepHook
+    def setup(self, nl_oper):
+        """Setup function"""
+        self._enabled = nl_oper.problem.getBehaviourProperty().hasBehaviour("THER_HYDR")
 
-    def __init__(self) -> None:
-        self._enabled = None
+    def run(self, nl_oper):
+        """Execute the hook
 
-    def __call__(self, nl_solver):
-        if self._enabled is None:
-            self._enabled = nl_solver.problem.getBehaviourProperty().hasBehaviour("THER_HYDR")
-        if not self._enabled:
-            return
-
-        current = nl_solver.state
-        post = PostProcessing(nl_solver.problem)
+        Args:
+            nl_oper (NonLinearOperator): Non linear operator
+        """
+        current = nl_oper.state
+        post = PostProcessing(nl_oper.problem)
         try:
             hydr_prev = current.getState(-1).auxiliary["HYDR_ELGA"]
             hydr_curr = post.computeHydration(
@@ -90,29 +116,34 @@ class ComputeHydr:
                 hydr_prev,
             )
         except IndexError:
-            hydr_curr = current.createFieldOnCells(nl_solver.problem, "ELGA", "HYDR_R")
+            hydr_curr = current.createFieldOnCells(nl_oper.problem, "ELGA", "HYDR_R")
         current.set("HYDR_ELGA", hydr_curr)
 
 
-class PostHHO:
+class PostHHO(BaseHook):
     """Compute the true primal field from HHO unknowns."""
 
-    provide = SOP.PostStepHook
-    _field_name = None
-
     def __init__(self) -> None:
-        self._enabled = None
+        super().__init__()
         self._hho = None
 
-    def __call__(self, nl_solver):
-        """Hook to compute HHO_DEPL"""
-        if self._enabled is None:
-            self._enabled = nl_solver.problem.getModel().existsHHO()
-            self._hho = HHO(nl_solver.problem)
-        if not self._enabled:
-            return
+    @property
+    @abstractmethod
+    def _field_name(self):
+        """str: Name of the field to be created"""
 
-        current = nl_solver.state
+    def setup(self, nl_oper):
+        """Setup function"""
+        self._enabled = nl_oper.problem.getModel().existsHHO()
+        self._hho = HHO(nl_oper.problem)
+
+    def run(self, nl_oper):
+        """Execute the hook
+
+        Args:
+            nl_oper (NonLinearOperator): Non linear operator
+        """
+        current = nl_oper.state
         hho_field = self._hho.projectOnLagrangeSpace(current.primal_curr)
         current.set(self._field_name, hho_field)
 
@@ -120,10 +151,16 @@ class PostHHO:
 class ComputeDisplFromHHO(PostHHO):
     """Compute the displacement field from HHO unknowns."""
 
-    _field_name = "HHO_DEPL"
+    @property
+    def _field_name(self):
+        """str: Name of the field to be created"""
+        return "HHO_DEPL"
 
 
 class ComputeTempFromHHO(PostHHO):
     """Compute the temperature field from HHO unknowns."""
 
-    _field_name = "HHO_TEMP"
+    @property
+    def _field_name(self):
+        """str: Name of the field to be created"""
+        return "HHO_TEMP"

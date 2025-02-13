@@ -25,8 +25,7 @@ from libaster import ConvergenceError, IntegrationError, SolverError
 from ...Cata.Syntax import _F
 from ...Messages import MessageLog
 from ...Utilities import cmp, force_list, logger, no_new_attributes
-from ..Basics import Observer
-from ..Basics import SolverOptions as SOP
+from ..Basics import EventId, Observer
 
 
 class TimeStepper(Observer):
@@ -44,8 +43,6 @@ class TimeStepper(Observer):
         initial (float, optional): Initial time (default: 0.0).
         final (float, optional): Final time (default: the last given).
     """
-
-    provide = SOP.TimeStepper
 
     _times = _eps = _current = _initial = _final = _last = None
     _actions = _state = None
@@ -288,19 +285,16 @@ class TimeStepper(Observer):
         """
         state = self._state
         eid, data = event.get_state()
-        if eid & SOP.IncrementalSolver:
-            logger.debug("+ received from incremental: %s", data)
+        if eid & EventId.IterationSolver:
+            logger.debug("+ received from an iteration solver: %s", data)
             if "PRED" not in data.get("matrix", ""):
                 hist = state["history"]
                 crit = state["criteria"]
                 for para in ("ITER_GLOB_MAXI", "RESI_GLOB_RELA", "RESI_GLOB_MAXI"):
                     hist.setdefault(para, []).append(data[para].value)
                     crit[para] = data[para].reference
-        if eid & SOP.ConvergenceCriteria:
-            logger.debug("+ received from conv.crit.: %s", data)
-            if data.get("isConverged"):
-                conv = state["converged"]
-                conv["ITER_GLOB_MAXI"] = data["ITER_GLOB_MAXI"].value
+        else:
+            raise TypeError(f"unsupported event: {eid=}")
 
     @property
     def splitting_level(self):
