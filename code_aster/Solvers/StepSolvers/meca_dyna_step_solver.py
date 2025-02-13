@@ -50,6 +50,7 @@ class MecaDynaStepSolver(BaseStepSolver):
             logger.debug("candidate for '%s': %s", context.problem_type, kls)
             if kls.integrator_type == oper.integrator_type:
                 return kls.builder(context)
+        raise TypeError(f"no candidate for {cls=}, type: {oper.integrator_type}")
 
     def __init__(self):
         super().__init__()

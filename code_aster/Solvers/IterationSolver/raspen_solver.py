@@ -33,9 +33,11 @@ def Print(*args):
 class RASPENSolver(BaseIterationSolver):
     """Solves a step using PETSc SNES, loops on iterations."""
 
+    __needs__ = ("problem", "state", "keywords", "oper", "linear_solver")
+    solver_type = BaseIterationSolver.SubType.Raspen
     _primal_incr = _resi_comp = None
     _scaling = _options = None
-    local_solver = None
+    _local_solver = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
@@ -49,20 +51,20 @@ class RASPENSolver(BaseIterationSolver):
             instance: New object.
         """
         instance = super().builder(context)
-        instance.local_solver = SNESSolver(local=False)
-        instance.local_solver.context = context
+        instance._local_solver = SNESSolver(local=False)
+        instance._local_solver.context = context
         return instance
 
     def __init__(self):
         super().__init__()
         self._primal_incr = self._resi_comp = None
         self._scaling = self._options = None
-        self.local_solver = None
+        self._local_solver = None
 
     def initialize(self):
         """Initialize the object for the next step."""
         super().initialize()
-        self.local_solver.initialize()
+        self._local_solver.initialize()
 
     @profile
     def solve(self, current_matrix):
@@ -71,9 +73,7 @@ class RASPENSolver(BaseIterationSolver):
         Raises:
             *ConvergenceError* exception in case of error.
         """
-
         self.oper.initialize()
-
         self._scaling = self.oper.getLagrangeScaling(self.matrix_type)
         self.current_matrix = self.oper.first_jacobian
 
@@ -81,7 +81,7 @@ class RASPENSolver(BaseIterationSolver):
 
         DDPart = DomainDecomposition(self.problem.getMesh(), self.problem.getDOFNumbering())
 
-        local_solver = self.local_solver
+        local_solver = self._local_solver
         local_solver.initSNES()
 
         self._primal_incr = self.state.primal_step.copy()
@@ -112,9 +112,7 @@ class RASPENSolver(BaseIterationSolver):
         p_resi.set(0)
 
         def _monitor(snes, its, fgnorm):
-            self.logManager.printConvTableRow(
-                [its, " - ", fgnorm, " - ", self.local_solver.matrix_type]
-            )
+            self.logManager.printConvTableRow([its, " - ", fgnorm, " - ", local_solver.matrix_type])
 
         raspen_solver.glbSnes.setMonitor(_monitor)
 
@@ -133,7 +131,7 @@ class RASPENSolver(BaseIterationSolver):
 
         self.oper.finalize()
         # delete local snes
-        self.local_solver.snes = None
+        local_solver.snes = None
 
         return self.current_matrix
 

@@ -71,6 +71,7 @@ class BaseLineSearch(ABC, ContextMixin):
         for kls in cls.__subclasses__():
             if searched in kls.linesearch_type:
                 return kls.builder(context)
+        raise TypeError(f"no candidate for {cls=}, method: {method}")
 
     def __init__(self):
         super().__init__()

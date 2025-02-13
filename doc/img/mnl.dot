@@ -4,7 +4,7 @@ digraph MNL {
     // mixin: note, dashed
     // abstract: ' {abstr}', dashed
     labelloc = "t";
-    rankdir = "LR";
+    // rankdir = "LR";
     fontname = "Helvetica,Arial,sans-serif";
     node [fontname = "Helvetica,Arial,sans-serif"; shape = "box";];
     edge [fontname = "Helvetica,Arial,sans-serif";];
@@ -123,8 +123,10 @@ digraph MNL {
     }
     
     mnl -> nl_operator;
-    mnl -> context [xlabel = "creates"; style = "bold";];
-    
+    subgraph {
+        rank = "same";
+        mnl -> context [xlabel = "creates"; style = "bold";];
+    }
     nl_operator -> timestepper;
     nl_operator -> storage;
     nl_operator -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];

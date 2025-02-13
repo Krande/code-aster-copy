@@ -30,6 +30,8 @@ def Print(*args):
 class SNESSolver(BaseIterationSolver):
     """Solves a step using PETSc SNES, loops on iterations."""
 
+    __needs__ = ("problem", "state", "keywords", "oper", "linear_solver")
+    solver_type = BaseIterationSolver.SubType.Snes
     _primal_incr = _resi_comp = None
     _scaling = _options = None
     local = snes = fnorm0 = None
