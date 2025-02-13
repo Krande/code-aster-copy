@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 """
-Features definition.
+Definition of common objects for non linear operators.
 """
 
 from .bases import DispatcherMixin, EventId, EventSource, Observer, ProblemType

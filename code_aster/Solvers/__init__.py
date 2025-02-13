@@ -19,6 +19,12 @@
 
 """
 Useful objects used for various problem solvers.
+
+General architecture:
+
+.. image:: ../../../img/mnl.svg
+   :align: center
+
 """
 
 from .Basics import (

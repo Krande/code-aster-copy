@@ -153,11 +153,11 @@ class Context:
     @property
     def state(self):
         """PhysicalState: current state."""
-        assert self._state is None, "must be set only once!"
         return self._state
 
     @state.setter
     def state(self, state):
+        assert self._state is None, "must be set only once!"
         self._state = state
 
     @property
@@ -225,7 +225,7 @@ def check_access(alt=None):
 
 
 class ContextMixin:
-    """Mixin object that wraps access to the objects of :py:class:`Context`.
+    """Mixin object that wraps access to the objects of Context.
 
     Attributes:
         problem: :py:class:`PhysicalProblem` object
@@ -290,7 +290,7 @@ class ContextMixin:
     @check_access()
     def keywords(self):
         """Dict: Attribute that holds the keywords object."""
-        return self._ctxt._keywords
+        return self._ctxt.keywords
 
     @keywords.setter
     @check_access()
@@ -315,7 +315,7 @@ class ContextMixin:
     @check_access()
     def problem(self):
         """PhysicalProblem: current problem description."""
-        return self._ctxt._problem
+        return self._ctxt.problem
 
     @problem.setter
     @check_access()
@@ -326,7 +326,7 @@ class ContextMixin:
     @check_access()
     def state(self):
         """PhysicalState: current state."""
-        return self._ctxt._state
+        return self._ctxt.state
 
     @state.setter
     @check_access()
@@ -337,7 +337,7 @@ class ContextMixin:
     @check_access()
     def result(self):
         """Result: Attribute that holds the result object."""
-        return self._ctxt._result
+        return self._ctxt.result
 
     @result.setter
     @check_access()
@@ -348,7 +348,7 @@ class ContextMixin:
     @check_access()
     def stepper(self):
         """TimeStepper: Attribute that holds the time stepper."""
-        return self._ctxt._stepper
+        return self._ctxt.stepper
 
     @stepper.setter
     @check_access()
@@ -359,7 +359,7 @@ class ContextMixin:
     @check_access()
     def oper(self):
         """Operators: Object that adapts operators for each type of problem."""
-        return self._ctxt._oper
+        return self._ctxt.oper
 
     @oper.setter
     @check_access()
@@ -370,7 +370,7 @@ class ContextMixin:
     @check_access()
     def contact(self):
         """ContactManager: Object to solve contact conditions"""
-        return self._ctxt._contact
+        return self._ctxt.contact
 
     @contact.setter
     @check_access()
@@ -381,7 +381,7 @@ class ContextMixin:
     @check_access()
     def linear_solver(self):
         """LinearSolver: Attribute that holds the linear solver."""
-        return self._ctxt._linsolv
+        return self._ctxt.linear_solver
 
     @linear_solver.setter
     @check_access()

@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 """
-PostProcessings definition.
+High-level objects.
 """
 
 from .contact_manager import ContactManager
