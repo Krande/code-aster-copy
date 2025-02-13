@@ -35,7 +35,7 @@ digraph MNL {
     subgraph {
         rank = "same";
         nl_operator [label = "NonLinearOperator";];
-        mixin_pb [label = "ContextMixin";style = "dashed";shape = "note";];
+        mixin_pb [label = ".pb/.state/.kwds/.pbtype/.stepper/.result";style = "dashed";shape = "note";];
         nl_operator -> mixin_pb [dir = "back"; style = "dashed"; arrowtail = "empty";];
     }
     storage [label = "StorageManager";];
@@ -47,7 +47,7 @@ digraph MNL {
         subgraph {
             rank = "same";
             operators [label = "BaseOperators {abstr}";style = "dashed";];
-            mixin_oper [label = "ContextMixin + DispatcherMixin";style = "dashed";shape = "note";];
+            mixin_oper [label = ".pb/.state/.contact + DispatcherMixin";style = "dashed";shape = "note";];
             operators -> mixin_oper [dir = "back"; style = "dashed"; arrowtail = "empty";];
         }
         style = "dashed";
@@ -81,7 +81,7 @@ digraph MNL {
         subgraph {
             rank = "same";
             stepsolv [label = "BaseStepSolver {abstr}";style = "dashed";];
-            mixin_step [label = "ContextMixin + DispatcherMixin";style = "dashed";shape = "note";];
+            mixin_step [label = ".pb/.state/.oper/.linsolv + DispatcherMixin";style = "dashed";shape = "note";];
             stepsolv -> mixin_step [dir = "back"; style = "dashed"; arrowtail = "empty";];
         }
         // subclasses
@@ -105,7 +105,7 @@ digraph MNL {
         subgraph {
             rank = "same";
             iter_solver [label = "BaseIterationSolver {abstr}";style = "dashed";];
-            mixin_iter [label = "ContextMixin + DispatcherMixin";style = "dashed";shape = "note";];
+            mixin_iter [label = ".state/.kwds/.oper + DispatcherMixin";style = "dashed";shape = "note";];
             iter_solver -> mixin_iter [dir = "back"; style = "dashed"; arrowtail = "empty";];
         }
         // [style = invis]
@@ -115,9 +115,20 @@ digraph MNL {
             event [label = "EventSource";style = "dashed";shape = "note";];
             newton -> event [dir = "back"; style = "dashed"; arrowtail = "empty";];
         }
-        snes [label = "SNESSolver";];
-        raspen [label = "RaspenSolver";];
-        
+        subgraph {
+            snes [label = "SNESSolver";];
+            mixin_snes [label = "+.pb/.linsolv";style = "dashed";shape = "note";];
+            snes -> mixin_snes [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        subgraph {
+            raspen [label = "RaspenSolver";];
+            mixin_rasp [label = "+.pb/.linsolv";style = "dashed";shape = "note";];
+            raspen -> mixin_rasp [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        subgraph {
+            mixin_newt [label = "+.pb/.linsolv/.contact";style = "dashed";shape = "note";];
+            newton -> mixin_newt [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
         iter_solver -> newton [dir = "back"; arrowtail = "empty";];
         iter_solver -> snes [dir = "back"; arrowtail = "empty";];
         iter_solver -> raspen [dir = "back"; arrowtail = "empty";];
@@ -129,30 +140,30 @@ digraph MNL {
         mnl -> context [xlabel = "creates"; style = "bold";];
     }
     nl_operator -> storage;
-    nl_operator -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv; style = "bold";];
-    nl_operator -> hook [label = "todo"; style = "dashed";];
+    nl_operator -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv;];
+    nl_operator -> hook;
     
     stepsolv -> iter_solver [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
+    
+    subgraph {
+        // rank = "same";
+        linesearch [label = "LineSearch";];
+        mixin_line [label = ".state/.kwds/.oper";style = "dashed";shape = "note";];
+        linesearch -> mixin_line [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
+    
+    subgraph {
+        // rank = "same";
+        conv_manager [label = "ConvergenceManager";];
+        mixin_conv [label = ".pb/.state/.kwds";style = "dashed";shape = "note";];
+        conv_manager -> mixin_conv [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
     
     newton -> linesearch;
     newton -> conv_manager;
     
     subgraph {
-        rank = "same";
-        linesearch [label = "LineSearch";];
-        mixin_line [label = "ContextMixin";style = "dashed";shape = "note";];
-        linesearch -> mixin_line [dir = "back"; style = "dashed"; arrowtail = "empty";];
-    }
-    
-    subgraph {
-        rank = "same";
-        conv_manager [label = "ConvergenceManager";];
-        mixin_conv [label = "ContextMixin";style = "dashed";shape = "note";];
-        conv_manager -> mixin_conv [dir = "back"; style = "dashed"; arrowtail = "empty";];
-    }
-    
-    subgraph {
-        rank = "same";
+        // rank = "same";
         timestepper -> observ [dir = "back"; style = "dashed"; arrowtail = "empty";];
     }
     // placement
