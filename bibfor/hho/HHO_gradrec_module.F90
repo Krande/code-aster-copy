@@ -29,6 +29,7 @@ module HHO_gradrec_module
     use HHO_massmat_module
     use HHO_stiffmat_module
     use HHO_geometry_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -68,8 +69,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(out) :: gradrec(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), optional, intent(out) :: lhs(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        type(HHO_matrix), intent(out) :: gradrec
+        type(HHO_matrix), optional, intent(out) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -186,17 +187,17 @@ contains
         end do
 !
 ! - Solve the system gradrec =(MG)^-1 * BG
-        gradrec = 0.d0
-        gradrec(1:dimMG, 1:total_dofs) = BG(1:dimMG, 1:total_dofs)
+        call gradrec%initialize(dimMG, total_dofs, 0.0)
+        gradrec%m = BG(1:dimMG, 1:total_dofs)
 !
 ! - Verif strange bug if info neq 0 in entry
         info = 0
         b_n = to_blas_int(dimMG)
         b_nhrs = to_blas_int(total_dofs)
         b_lda = to_blas_int(MSIZE_CELL_SCAL)
-        b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+        b_ldb = to_blas_int(gradrec%max_nrows)
         call dposv('U', b_n, b_nhrs, MG, b_lda, &
-                   gradrec, b_ldb, info)
+                   gradrec%m, b_ldb, info)
 !
 ! - Sucess ?
         if (info .ne. 0) then
@@ -204,18 +205,18 @@ contains
         end if
 !
         if (present(lhs)) then
-            lhs = 0.d0
+            call lhs%initialize(total_dofs, total_dofs, 0.0)
 !
 ! ----- Compute lhs =BG**T * gradrec
-            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
-            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            b_ldc = to_blas_int(lhs%max_nrows)
+            b_ldb = to_blas_int(gradrec%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(dimMG)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG, b_lda, gradrec, b_ldb, &
-                       0.d0, lhs, b_ldc)
+                       1.d0, BG, b_lda, gradrec%m, b_ldb, &
+                       0.d0, lhs%m, b_ldc)
         end if
 !
         DEBUG_TIMER(end)
@@ -233,9 +234,9 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(out) :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
-        real(kind=8), intent(out) :: gradrec_scal(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), optional, intent(out) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(out) :: gradrec
+        type(HHO_matrix), intent(out) :: gradrec_scal
+        type(HHO_matrix), optional, intent(out) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -250,8 +251,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 ! ----- Local variables
         type(HHO_basis_cell) :: hhoBasisCell
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs_scal
-        integer :: gradrec_scal_row, cbs_comp, fbs_comp, faces_dofs, cbs, fbs
+        type(HHO_matrix) :: lhs_scal
+        integer :: gradrec_scal_row, cbs_comp, fbs_comp, faces_dofs, cbs, fbs, gbs, gbs_sym
         integer :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
         integer :: total_dofs, iFace, jbeginVec, jendVec
         real(kind=8) :: start, end
@@ -259,7 +260,7 @@ contains
         DEBUG_TIMER(start)
 !
 ! -- number of dofs
-        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
         faces_dofs = total_dofs-cbs
 !
 ! -- init cell basis
@@ -278,7 +279,7 @@ contains
         cbs_comp = cbs/hhoCell%ndim
         fbs_comp = fbs/hhoCell%ndim
 !
-        gradrec = 0.d0
+        call gradrec%initialize(gbs, total_dofs, 0.d0)
 ! the componants are ordered direction by direction
         do idim = 1, hhoCell%ndim
 ! ----- copy volumetric part
@@ -287,8 +288,8 @@ contains
             jbeginCell = (idim-1)*cbs_comp+1
             jendCell = jbeginCell+cbs_comp-1
 !
-            gradrec(ibeginGrad:iendGrad, jbeginCell:jendCell) &
-                = gradrec_scal(1:gradrec_scal_row, 1:cbs_comp)
+            gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                = gradrec_scal%m(1:gradrec_scal_row, 1:cbs_comp)
 !
 ! ----- copy faces part
             do iFace = 1, hhoCell%nbfaces
@@ -297,14 +298,15 @@ contains
                 jbeginVec = cbs_comp+(iFace-1)*fbs_comp+1
                 jendVec = jbeginVec+fbs_comp-1
 !
-                gradrec(ibeginGrad:iendGrad, jbeginFace:jendFace) &
-                    = gradrec_scal(1:gradrec_scal_row, jbeginVec:jendVec)
+                gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                    = gradrec_scal%m(1:gradrec_scal_row, jbeginVec:jendVec)
             end do
 !
         end do
 !
         if (present(lhs)) then
             call MatScal2Vec(hhoCell, hhoData, lhs_scal, lhs)
+            call lhs_scal%free()
         end if
 !
         DEBUG_TIMER(end)
@@ -322,8 +324,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(out) :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
-        real(kind=8), optional, intent(out) :: lhs(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        type(HHO_matrix), intent(out) :: gradrec
+        type(HHO_matrix), optional, intent(out) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -457,8 +459,10 @@ contains
             end do
         end do
 !
+        call gradrec%initialize(gbs, total_dofs, 0.0)
+!
         if (massMat%isIdentity) then
-            gradrec(1:gbs, 1:total_dofs) = BG(1:gbs, 1:total_dofs)
+            gradrec%m = BG(1:gbs, 1:total_dofs)
 !
         else
 ! - Solve the system gradrec =(MG)^-1 * BG
@@ -486,29 +490,28 @@ contains
             end if
 !
 ! -- decompress solution
-            gradrec = 0.d0
             do idim = 1, hhoCell%ndim
                 ibeginBG = (idim-1)*dimMassMat+1
                 iendBG = ibeginBG+dimMassMat-1
                 ibeginSOL = (idim-1)*total_dofs+1
                 iendSOL = ibeginSOL+total_dofs-1
-                gradrec(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
+                gradrec%m(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
             end do
         end if
 !
         if (present(lhs)) then
-            lhs = 0.d0
+            call lhs%initialize(total_dofs, total_dofs, 0.d0)
 !
 ! ----- Compute lhs =BG**T * gradrec
-            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
-            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_ldc = to_blas_int(lhs%max_nrows)
+            b_ldb = to_blas_int(gradrec%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_VEC)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(hhoCell%ndim*dimMassMat)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG, b_lda, gradrec, b_ldb, &
-                       0.d0, lhs, b_ldc)
+                       1.d0, BG, b_lda, gradrec%m, b_ldb, &
+                       0.d0, lhs%m, b_ldc)
         end if
 !
         DEBUG_TIMER(end)
@@ -527,10 +530,10 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(in) :: gradrecvec(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
-        real(kind=8), optional, intent(in) :: lhsvec(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), optional, intent(out) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: gradrecvec
+        type(HHO_matrix), intent(out) :: gradrec
+        type(HHO_matrix), optional, intent(in) :: lhsvec
+        type(HHO_matrix), optional, intent(out) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -561,7 +564,7 @@ contains
 !
 ! -- BE CAREFULL : the componant of the gradient are save in a row format
 !
-        gradrec = 0.d0
+        call gradrec%initialize(gbs, total_dofs, 0.0)
         do idim = 1, hhoCell%ndim
 ! ----- copy volumetric part
             ibeginGrad = (idim-1)*gbs_comp+1
@@ -569,8 +572,8 @@ contains
             jbeginCell = (idim-1)*cbs_comp+1
             jendCell = jbeginCell+cbs_comp-1
 !
-            gradrec(ibeginGrad:iendGrad, jbeginCell:jendCell) = gradrecvec(1:gbs_comp, 1:cbs_comp &
-                                                                           )
+            gradrec%m(ibeginGrad:iendGrad, jbeginCell:jendCell) &
+                = gradrecvec%m(1:gbs_comp, 1:cbs_comp)
 !
 ! ----- copy faces part
             do iFace = 1, hhoCell%nbfaces
@@ -579,14 +582,15 @@ contains
                 jbeginVec = cbs_comp+(iFace-1)*fbs_comp+1
                 jendVec = jbeginVec+fbs_comp-1
 !
-                gradrec(ibeginGrad:iendGrad, jbeginFace:jendFace) &
-                    = gradrecvec(1:gbs_comp, jbeginVec:jendVec)
+                gradrec%m(ibeginGrad:iendGrad, jbeginFace:jendFace) &
+                    = gradrecvec%m(1:gbs_comp, jbeginVec:jendVec)
             end do
 !
         end do
 !
         if (present(lhs)) then
             ASSERT(present(lhsvec))
+            call lhs%initialize(total_dofs, total_dofs, 0.0)
             call MatScal2Vec(hhoCell, hhoData, lhsvec, lhs)
         end if
 !
@@ -602,8 +606,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(out) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
-        real(kind=8), optional, intent(out) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(out) :: gradrec
+        type(HHO_matrix), optional, intent(out) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -616,8 +620,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 ! ----- Local variables
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs_scal
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradrec_scal
+        type(HHO_matrix) :: lhs_scal, gradrec_scal
         real(kind=8) :: start, end
 !
         DEBUG_TIMER(start)
@@ -627,9 +630,12 @@ contains
             call hhoGradRecFullVec(hhoCell, hhoData, gradrec_scal, lhs_scal)
             call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradrec_scal, gradrec, &
                                           lhsvec=lhs_scal, lhs=lhs)
+            call gradrec_scal%free()
+            call lhs_scal%free()
         else
             call hhoGradRecFullVec(hhoCell, hhoData, gradrec_scal)
             call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradrec_scal, gradrec)
+            call gradrec_scal%free()
         end if
 !
         DEBUG_TIMER(end)
@@ -647,8 +653,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(out) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
-        real(kind=8), optional, intent(out) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(out) :: gradrec
+        type(HHO_matrix), optional, intent(out) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -701,6 +707,8 @@ contains
 !
         cbs_comp = cbs/hhoCell%ndim
         fbs_comp = fbs/hhoCell%ndim
+
+        call gradrec%initialize(gbs_sym, total_dofs, 0.0)
 !
 ! -- compute mass matrix of P^k_d(T;R)
         call massMat%compute(hhoCell, 0, hhoData%grad_degree())
@@ -1012,7 +1020,7 @@ contains
         end do
 !
         if (massMat%isIdentity) then
-            gradrec(1:gbs_sym, 1:total_dofs) = BG(1:gbs_sym, 1:total_dofs)
+            gradrec%m = BG(1:gbs_sym, 1:total_dofs)
         else
 ! - Solve the system gradrec =(MG)^-1 * BG
             SOL = 0.d0
@@ -1039,29 +1047,28 @@ contains
             end if
 !
 ! -- decompress solution
-            gradrec = 0.d0
             do idim = 1, nbdimMat
                 ibeginBG = (idim-1)*dimMassMat+1
                 iendBG = ibeginBG+dimMassMat-1
                 ibeginSOL = (idim-1)*total_dofs+1
                 iendSOL = ibeginSOL+total_dofs-1
-                gradrec(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
+                gradrec%m(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
             end do
         end if
 !
         if (present(lhs)) then
-            lhs = 0.d0
+            call lhs%initialize(total_dofs, total_dofs, 0.0)
 !
 ! ----- Compute lhs =BG**T * gradrec
-            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
-            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_ldc = to_blas_int(lhs%max_nrows)
+            b_ldb = to_blas_int(gradrec%max_nrows)
             b_lda = to_blas_int(6*MSIZE_CELL_SCAL)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs_sym)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG, b_lda, gradrec, b_ldb, &
-                       0.d0, lhs, b_ldc)
+                       1.d0, BG, b_lda, gradrec%m, b_ldb, &
+                       0.d0, lhs%m, b_ldc)
         end if
 !
         DEBUG_TIMER(end)
@@ -1079,8 +1086,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(out) :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
-        real(kind=8), optional, intent(out) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(out) :: gradrec
+        type(HHO_matrix), optional, intent(out) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -1334,22 +1341,22 @@ contains
             call utmess('F', 'HHO1_5')
         end if
 !
-        gradrec = 0.d0
-        gradrec(1:dimMG, 1:total_dofs) = gradrec2(1:dimMG, 1:total_dofs)
+        call gradrec%initialize(dimMG, total_dofs)
+        gradrec%m = gradrec2(1:dimMG, 1:total_dofs)
 !
         if (present(lhs)) then
-            lhs = 0.d0
+            call lhs%initialize(total_dofs, total_dofs, 0.0)
 !
 ! ----- Compute lhs =BG**T * gradrec
-            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
-            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_ldc = to_blas_int(lhs%max_nrows)
+            b_ldb = to_blas_int(gradrec%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_VEC+3)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(dimMG)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG, b_lda, gradrec, b_ldb, &
-                       0.d0, lhs, b_ldc)
+                       1.d0, BG, b_lda, gradrec%m, b_ldb, &
+                       0.d0, lhs%m, b_ldc)
         end if
 !
         DEBUG_TIMER(end)

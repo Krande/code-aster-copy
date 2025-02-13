@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine te0437(nomopt, nomte)
     use HHO_size_module
     use HHO_ther_module
     use HHO_utils_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -62,7 +63,7 @@ subroutine te0437(nomopt, nomte)
     real(kind=8) :: theta, sour, dsdt, temp_eval
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs
+    type(HHO_matrix) :: lhs
 !
 ! --- Get element parameters
 !
@@ -110,7 +111,7 @@ subroutine te0437(nomopt, nomte)
 !
 ! ---- Compute mass matrix
 !
-    lhs = 0.d0
+    call lhs%initialize(total_dofs, total_dofs, 0.d0)
 !
 ! ----- Loop on quadrature point
     do ipg = 1, hhoQuad%nbQuadPoints
@@ -118,18 +119,18 @@ subroutine te0437(nomopt, nomte)
         call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, &
                                  hhoData%cell_degree(), BSCEval)
 ! --------  Eval massMat
-        call hhoComputeLhsMassTher(VoluValuesQP(ipg), hhoQuad%weights(ipg), BSCEval, cbs, &
-                                   lhs(1:MSIZE_CELL_SCAL, 1:MSIZE_CELL_SCAL))
+        call hhoComputeLhsMassTher(VoluValuesQP(ipg), hhoQuad%weights(ipg), BSCEval, cbs, lhs)
     end do
 !
 ! ----- Copy the lower part
 !
-    call hhoCopySymPartMat('U', lhs(1:cbs, 1:cbs))
+    call hhoCopySymPartMat('U', lhs%m(1:cbs, 1:cbs))
 !
 ! ---- save result
 !
     call hhoRenumTherMat(hhoCell, hhoData, lhs)
-    call writeMatrix('PMATTTR', total_dofs, total_dofs, ASTER_TRUE, lhs)
+    call lhs%write('PMATTTR', ASTER_TRUE)
+    call lhs%free()
 !
 999 continue
 !

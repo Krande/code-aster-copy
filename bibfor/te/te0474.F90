@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine te0474(nomopt, nomte)
     use HHO_quadrature_module
     use HHO_Meca_module
     use HHO_init_module, only: hhoInfoInitCell
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -51,7 +52,7 @@ subroutine te0474(nomopt, nomte)
     type(HHO_Quadrature) :: hhoQuadCellMass
     integer :: cbs, fbs, total_dofs, npg
     character(len=8), parameter :: fami = 'MASS'
-    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC) :: mass
+    type(HHO_matrix) :: mass
 !
 ! --- Get HHO informations
 !
@@ -82,6 +83,7 @@ subroutine te0474(nomopt, nomte)
 ! --- Save matrix
 !
     call hhoRenumMecaMat(hhoCell, hhoData, mass)
-    call writeMatrix('PMATUUR', total_dofs, total_dofs, ASTER_TRUE, mass)
+    call mass%write('PMATUUR', ASTER_TRUE)
+    call mass%free()
 !
 end subroutine

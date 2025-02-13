@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ module HHO_GV_module
     use HHO_utils_module
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat
     use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -99,11 +100,12 @@ module HHO_GV_module
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: lagv_curr = 0.d0
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: lagv_incr = 0.d0
 ! ----- Gradient reconstruction and stabilisation
-        real(kind=8) :: grad(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) = 0.d0
-        real(kind=8) :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) = 0.d0
+        type(HHO_matrix) :: grad
+        type(HHO_matrix) :: stab
 ! ----- member function
     contains
         procedure, pass :: initialize => initialize_gv
+        procedure, pass :: free => free_gv
     end type HHO_GV_State
 !
 contains
@@ -123,7 +125,7 @@ contains
         type(HHO_Meca_State), intent(in) :: hhoMecaState
         type(HHO_Compor_State), intent(inout) :: hhoComporState
         type(HHO_GV_State), intent(in) :: hhoGVState
-        real(kind=8), intent(out) :: lhs(MSIZE_TDOFS_MIX, MSIZE_TDOFS_MIX)
+        type(HHO_matrix), intent(out) :: lhs
         real(kind=8), intent(out) :: rhs(MSIZE_TDOFS_MIX)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -170,7 +172,7 @@ contains
         real(kind=8) :: lm_AT(MSIZE_CELL_SCAL, MSIZE_CELL_MAT)
         real(kind=8) :: rhs_vari(MSIZE_TDOFS_SCAL), rhs_lagv(MSIZE_CELL_SCAL)
         real(kind=8) :: rhs_mk(MSIZE_TDOFS_VEC)
-        real(kind=8), save :: lhs_mm(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix) :: lhs_mm, lhs_ll
         real(kind=8) :: lhs_mv(MSIZE_TDOFS_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8) :: lhs_ml(MSIZE_TDOFS_VEC, MSIZE_CELL_SCAL)
         real(kind=8) :: lhs_vm(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_VEC)
@@ -178,7 +180,6 @@ contains
         real(kind=8) :: lhs_vl(MSIZE_TDOFS_SCAL, MSIZE_CELL_SCAL)
         real(kind=8) :: lhs_lm(MSIZE_CELL_SCAL, MSIZE_TDOFS_VEC)
         real(kind=8) :: lhs_lv(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8) :: lhs_ll(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         integer :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL), mapLagv(MSIZE_CELL_SCAL)
         integer :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
         integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
@@ -189,8 +190,18 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
-        lhs = 0.d0
         rhs = 0.d0
+!
+! ----- Type of behavior
+        call check_behavior(hhoComporState)
+
+! ----- Initialisation of behaviour datastructure
+        call behaviourInit(BEHinteg)
+!
+! ----- Vector and/or matrix
+        forc_noda = hhoComporState%option == "FORC_NODA"
+        l_lhs = L_MATR(hhoComporState%option)
+        l_rhs = L_VECT(hhoComporState%option) .or. forc_noda
 !
 ! ------ number of dofs
 !
@@ -207,13 +218,17 @@ contains
 !
 ! ------ initialization
 !
+        if (l_lhs) then
+            call lhs_mm%initialize(mk_total_dofs, mk_total_dofs, 0.d0)
+            call lhs_ll%initialize(gv_cbs, gv_cbs, 0.d0)
+        end if
+!
         mk_bT = 0.d0
         mk_AT = 0.d0
         mk_TMP = 0.d0
         G_prev_coeff = 0.d0
         G_curr_coeff = 0.d0
         rhs_mk = 0.d0
-        lhs_mm = 0.d0
         lhs_mv = 0.d0
         lhs_ml = 0.d0
 !
@@ -229,22 +244,10 @@ contains
         lhs_vl = 0.d0
         lhs_lm = 0.d0
         lhs_lv = 0.d0
-        lhs_ll = 0.d0
         mv_AT = 0.d0
         ml_AT = 0.d0
         vm_AT = 0.d0
         lm_AT = 0.d0
-
-! ----- Type of behavior
-        call check_behavior(hhoComporState)
-
-! ----- Initialisation of behaviour datastructure
-        call behaviourInit(BEHinteg)
-
-        ! ----- Vector and/or matrix
-        forc_noda = hhoComporState%option == "FORC_NODA"
-        l_lhs = L_MATR(hhoComporState%option)
-        l_rhs = L_VECT(hhoComporState%option) .or. forc_noda
 
         ! ----- Set main parameters for behaviour (on cell)
         if (.not. forc_noda) then
@@ -260,33 +263,33 @@ contains
 
 ! ----- compute G_prev = gradrec * depl_prev (sym or not)
 !
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
         b_m = to_blas_int(mk_gbs_tot)
         b_n = to_blas_int(mk_total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad, &
+        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad%m, &
                    b_lda, hhoMecaState%depl_prev, b_incx, 0.d0, G_prev_coeff, &
                    b_incy)
 !
 ! ----- compute G_curr = gradrec * depl_curr (sym or not)
 !
-        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad, &
+        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad%m, &
                    b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff, &
                    b_incy)
 !
 ! ----- compute GV_prev = gradrec * vari_prev
 !
-        b_lda = to_blas_int(MSIZE_CELL_VEC)
+        b_lda = to_blas_int(hhoGVState%grad%max_nrows)
         b_m = to_blas_int(gv_gbs)
         b_n = to_blas_int(gv_total_dofs)
-        call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad, &
+        call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad%m, &
                    b_lda, hhoGVState%vari_prev, b_incx, 0.d0, GV_prev_coeff, &
                    b_incy)
 !
 ! ----- compute GV_curr = gradrec * vari_curr
 !
-        call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad, &
+        call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad%m, &
                    b_lda, hhoGVState%vari_curr, b_incx, 0.d0, GV_curr_coeff, &
                    b_incy)
 !
@@ -461,36 +464,36 @@ contains
 !
         if (l_rhs) then
 ! ----- compute rhs += Gradrec**T * bT
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
             b_m = to_blas_int(mk_gbs_tot)
             b_n = to_blas_int(mk_total_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad, &
+            call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad%m, &
                        b_lda, mk_bT, b_incx, 1.d0, rhs_mk, &
                        b_incy)
 ! ----- compute rhs += stab
-            b_lda = to_blas_int(MSIZE_TDOFS_VEC)
+            b_lda = to_blas_int(hhoMecaState%stab%max_nrows)
             b_n = to_blas_int(mk_total_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dsymv('U', b_n, mk_stab, hhoMecaState%stab, b_lda, &
+            call dsymv('U', b_n, mk_stab, hhoMecaState%stab%m, b_lda, &
                        hhoMecaState%depl_curr, b_incx, 1.d0, rhs_mk, b_incy)
 ! ----- compute rhs += Gradrec**T * bT
-            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(hhoGVState%grad%max_nrows)
             b_m = to_blas_int(gv_gbs)
             b_n = to_blas_int(gv_total_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, hhoGVState%grad, &
+            call dgemv('T', b_m, b_n, 1.d0, hhoGVState%grad%m, &
                        b_lda, gv_bT, b_incx, 1.d0, rhs_vari, &
                        b_incy)
 ! ----- compute rhs += stab
-            b_lda = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_lda = to_blas_int(hhoGVState%stab%max_nrows)
             b_n = to_blas_int(gv_total_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dsymv('U', b_n, gv_stab, hhoGVState%stab, b_lda, &
+            call dsymv('U', b_n, gv_stab, hhoGVState%stab%m, b_lda, &
                        hhoGVState%vari_curr, b_incx, 1.d0, rhs_vari, b_incy)
 ! ----- assembly
             call hhoAssGVRhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv, &
@@ -504,56 +507,56 @@ contains
 !
             call hhoCopySymPartMat('U', lhs_vv(1:gv_cbs, 1:gv_cbs))
             call hhoCopySymPartMat('U', lhs_vl(1:gv_cbs, 1:gv_cbs))
-            call hhoCopySymPartMat('U', lhs_ll(1:gv_cbs, 1:gv_cbs))
+            call hhoCopySymPartMat('U', lhs_ll%m(1:gv_cbs, 1:gv_cbs))
 !
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
             b_ldc = to_blas_int(MSIZE_CELL_MAT)
-            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(hhoMecaState%grad%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_MAT)
             b_m = to_blas_int(mk_gbs_tot)
             b_n = to_blas_int(mk_total_dofs)
             b_k = to_blas_int(mk_gbs_tot)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, mk_AT, b_lda, hhoMecaState%grad, b_ldb, &
+                       1.d0, mk_AT, b_lda, hhoMecaState%grad%m, b_ldb, &
                        0.d0, mk_TMP, b_ldc)
             b_ldc = to_blas_int(MSIZE_CELL_VEC)
-            b_ldb = to_blas_int(MSIZE_CELL_VEC)
+            b_ldb = to_blas_int(hhoGVState%grad%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_VEC)
             b_m = to_blas_int(gv_gbs)
             b_n = to_blas_int(gv_total_dofs)
             b_k = to_blas_int(gv_gbs)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, gv_AT, b_lda, hhoGVState%grad, b_ldb, &
+                       1.d0, gv_AT, b_lda, hhoGVState%grad%m, b_ldb, &
                        0.d0, gv_TMP, b_ldc)
 ! ----- step2: lhs += gradrec**T * TMP
-            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldc = to_blas_int(lhs_mm%max_nrows)
             b_ldb = to_blas_int(MSIZE_CELL_MAT)
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
             b_m = to_blas_int(mk_total_dofs)
             b_n = to_blas_int(mk_total_dofs)
             b_k = to_blas_int(mk_gbs_tot)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, hhoMecaState%grad, b_lda, mk_TMP, b_ldb, &
-                       0.d0, lhs_mm, b_ldc)
+                       1.d0, hhoMecaState%grad%m, b_lda, mk_TMP, b_ldb, &
+                       0.d0, lhs_mm%m, b_ldc)
             b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
             b_ldb = to_blas_int(MSIZE_CELL_VEC)
-            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(hhoGVState%grad%max_nrows)
             b_m = to_blas_int(gv_total_dofs)
             b_n = to_blas_int(gv_total_dofs)
             b_k = to_blas_int(gv_gbs)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, hhoGVState%grad, b_lda, gv_TMP, b_ldb, &
+                       1.d0, hhoGVState%grad%m, b_lda, gv_TMP, b_ldb, &
                        1.d0, lhs_vv, b_ldc)
 !
             b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
             b_ldb = to_blas_int(MSIZE_CELL_MAT)
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
             b_m = to_blas_int(mk_total_dofs)
             b_n = to_blas_int(gv_cbs)
             b_k = to_blas_int(mk_gbs_tot)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, hhoMecaState%grad, b_lda, mv_AT, b_ldb, &
+                       1.d0, hhoMecaState%grad%m, b_lda, mv_AT, b_ldb, &
                        0.d0, lhs_mv, b_ldc)
             b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
             b_ldb = to_blas_int(MSIZE_CELL_MAT)
@@ -562,25 +565,25 @@ contains
             b_n = to_blas_int(gv_cbs)
             b_k = to_blas_int(mk_gbs_tot)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, hhoMecaState%grad, b_lda, ml_AT, b_ldb, &
+                       1.d0, hhoMecaState%grad%m, b_lda, ml_AT, b_ldb, &
                        0.d0, lhs_ml, b_ldc)
             b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
-            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(hhoMecaState%grad%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
             b_m = to_blas_int(gv_cbs)
             b_n = to_blas_int(mk_total_dofs)
             b_k = to_blas_int(mk_gbs_tot)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, vm_AT, b_lda, hhoMecaState%grad, b_ldb, &
+                       1.d0, vm_AT, b_lda, hhoMecaState%grad%m, b_ldb, &
                        0.d0, lhs_vm, b_ldc)
             b_ldc = to_blas_int(MSIZE_CELL_SCAL)
             b_ldb = to_blas_int(MSIZE_CELL_MAT)
-            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
             b_m = to_blas_int(gv_cbs)
             b_n = to_blas_int(mk_total_dofs)
             b_k = to_blas_int(mk_gbs_tot)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, lm_AT, b_lda, hhoMecaState%grad, b_ldb, &
+                       1.d0, lm_AT, b_lda, hhoMecaState%grad%m, b_ldb, &
                        0.d0, lhs_lm, b_ldc)
 ! ----- Add stabilization
 ! ----- += coeff * stab_mk
@@ -588,7 +591,7 @@ contains
                 b_n = to_blas_int(mk_total_dofs)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, mk_stab, hhoMecaState%stab(1, j), b_incx, lhs_mm(1, j), &
+                call daxpy(b_n, mk_stab, hhoMecaState%stab%m(:, j), b_incx, lhs_mm%m(:, j), &
                            b_incy)
             end do
 ! ----- += coeff * stab_vv
@@ -596,7 +599,7 @@ contains
                 b_n = to_blas_int(gv_total_dofs)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, gv_stab, hhoGVState%stab(1, j), b_incx, lhs_vv(1, j), &
+                call daxpy(b_n, gv_stab, hhoGVState%stab%m(:, j), b_incx, lhs_vv(1, j), &
                            b_incy)
             end do
 !
@@ -1179,7 +1182,7 @@ contains
         integer, intent(in) :: mapMeca(MSIZE_TDOFS_VEC)
         integer, intent(in) :: mapVari(MSIZE_TDOFS_SCAL)
         integer, intent(in) :: mapLagv(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: lhs_mm(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: lhs_mm, lhs_ll
         real(kind=8), intent(in) :: lhs_mv(MSIZE_TDOFS_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8), intent(in) :: lhs_ml(MSIZE_TDOFS_VEC, MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: lhs_vm(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_VEC)
@@ -1187,56 +1190,56 @@ contains
         real(kind=8), intent(in) :: lhs_vl(MSIZE_TDOFS_SCAL, MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: lhs_lm(MSIZE_CELL_SCAL, MSIZE_TDOFS_VEC)
         real(kind=8), intent(in) :: lhs_lv(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(in) :: lhs_ll(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        real(kind=8), intent(out) :: lhs(MSIZE_TDOFS_MIX, MSIZE_TDOFS_MIX)
+        type(HHO_matrix), intent(out) :: lhs
 !--------------------------------------------------------------------------------------------------
 ! Assembly LHS for GRAD_VARI
 !
 !--------------------------------------------------------------------------------------------------
         integer :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
-        integer :: i_row, i_col
+        integer :: i_row, i_col, total_dofs
 !
         call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
         call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
 !
-        lhs = 0.d0
+        total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
+        call lhs%initialize(total_dofs, total_dofs, 0.d0)
 !
 ! --- Bloc meca
         do i_row = 1, mk_total_dofs
             do i_col = 1, mk_total_dofs
-                lhs(mapMeca(i_row), mapMeca(i_col)) = lhs_mm(i_row, i_col)
+                lhs%m(mapMeca(i_row), mapMeca(i_col)) = lhs_mm%m(i_row, i_col)
             end do
             do i_col = 1, gv_total_dofs
-                lhs(mapMeca(i_row), mapVari(i_col)) = lhs_mv(i_row, i_col)
+                lhs%m(mapMeca(i_row), mapVari(i_col)) = lhs_mv(i_row, i_col)
             end do
             do i_col = 1, gv_cbs
-                lhs(mapMeca(i_row), mapLagv(i_col)) = lhs_ml(i_row, i_col)
+                lhs%m(mapMeca(i_row), mapLagv(i_col)) = lhs_ml(i_row, i_col)
             end do
         end do
 !
 ! --- Bloc vari
         do i_row = 1, gv_total_dofs
             do i_col = 1, mk_total_dofs
-                lhs(mapVari(i_row), mapMeca(i_col)) = lhs_vm(i_row, i_col)
+                lhs%m(mapVari(i_row), mapMeca(i_col)) = lhs_vm(i_row, i_col)
             end do
             do i_col = 1, gv_total_dofs
-                lhs(mapVari(i_row), mapVari(i_col)) = lhs_vv(i_row, i_col)
+                lhs%m(mapVari(i_row), mapVari(i_col)) = lhs_vv(i_row, i_col)
             end do
             do i_col = 1, gv_cbs
-                lhs(mapVari(i_row), mapLagv(i_col)) = lhs_vl(i_row, i_col)
+                lhs%m(mapVari(i_row), mapLagv(i_col)) = lhs_vl(i_row, i_col)
             end do
         end do
 !
 ! --- Bloc lagr
         do i_row = 1, gv_cbs
             do i_col = 1, mk_total_dofs
-                lhs(mapLagv(i_row), mapMeca(i_col)) = lhs_lm(i_row, i_col)
+                lhs%m(mapLagv(i_row), mapMeca(i_col)) = lhs_lm(i_row, i_col)
             end do
             do i_col = 1, gv_total_dofs
-                lhs(mapLagv(i_row), mapVari(i_col)) = lhs_lv(i_row, i_col)
+                lhs%m(mapLagv(i_row), mapVari(i_col)) = lhs_lv(i_row, i_col)
             end do
             do i_col = 1, gv_cbs
-                lhs(mapLagv(i_row), mapLagv(i_col)) = lhs_ll(i_row, i_col)
+                lhs%m(mapLagv(i_row), mapLagv(i_col)) = lhs_ll%m(i_row, i_col)
             end do
         end do
 !
@@ -1344,6 +1347,25 @@ contains
 !
 !===================================================================================================
 !
+    subroutine free_gv(this)
+!
+        implicit none
+!
+        class(HHO_GV_State), intent(inout) :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+!  clean HHO_GV_STATE
+! --------------------------------------------------------------------------------------------------
+!
+        call this%grad%free()
+        call this%stab%free()
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine hhoCalcOpGv(hhoCell, hhoData, l_largestrains, hhoMecaState, hhoGvState)
 !
         implicit none
@@ -1376,10 +1398,12 @@ contains
             call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, &
                                       hhoMecaState%stab)
 !
-            call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, &
-                               gv_gbs)
-            call readMatrix('PCHHOGT', gv_gbs, gv_total_dofs, ASTER_FALSE, hhoGVState%grad)
-            call readMatrix('PCHHOST', gv_total_dofs, gv_total_dofs, ASTER_TRUE, hhoGVState%stab)
+            call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
+
+            call hhoGVState%grad%initialize(gv_gbs, gv_total_dofs, 0.d0)
+            call hhoGVState%grad%read('PCHHOGT', ASTER_FALSE)
+            call hhoGVState%stab%initialize(gv_total_dofs, gv_total_dofs, 0.d0)
+            call hhoGVState%stab%read('PCHHOST', ASTER_TRUE)
 !
         else
             call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, &

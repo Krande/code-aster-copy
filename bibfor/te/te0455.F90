@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine te0455(nomopt, nomte)
     use HHO_quadrature_module
     use HHO_Meca_module
     use HHO_init_module, only: hhoInfoInitCell
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -66,7 +67,7 @@ subroutine te0455(nomopt, nomte)
     aster_logical :: l_largestrains, lMatr, lVect, lSigm, lVari, matsym
     character(len=4), parameter :: fami = 'RIGI'
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC)
-    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC) :: lhs
+    type(HHO_matrix) :: lhs
 !
 ! --- Get HHO informations
 !
@@ -152,10 +153,13 @@ subroutine te0455(nomopt, nomte)
         call hhoRenumMecaMat(hhoCell, hhoData, lhs)
 !
         if (matsym) then
-            call writeMatrix('PMATUUR', total_dofs, total_dofs, ASTER_TRUE, lhs)
+            call lhs%write('PMATUUR', ASTER_TRUE)
         else
-            call writeMatrix('PMATUNS', total_dofs, total_dofs, ASTER_FALSE, lhs)
+            call lhs%write('PMATUNS', ASTER_FALSE)
         end if
     end if
+!
+    call lhs%free()
+    call hhoMecaState%free()
 !
 end subroutine

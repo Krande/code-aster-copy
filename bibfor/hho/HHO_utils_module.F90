@@ -23,6 +23,7 @@ module HHO_utils_module
 !
     use HHO_type
     use HHO_size_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -528,8 +529,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(in) :: mat_scal(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out) :: mat_vec(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: mat_scal
+        type(HHO_matrix), intent(out) :: mat_vec
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -554,14 +555,15 @@ contains
         fbs_comp = fbs/hhoCell%ndim
 !
 ! -- copy the scalar matrix in the vectorial matrix
-        mat_vec = 0.d0
+        call mat_vec%initialize(hhoCell%ndim*mat_scal%nrows, hhoCell%ndim*mat_scal%ncols, 0.d0)
 !
         do idim = 1, hhoCell%ndim
 ! --------- copy volumetric part
             jbeginCell = (idim-1)*cbs_comp+1
             jendCell = jbeginCell+cbs_comp-1
 !
-            mat_vec(jbeginCell:jendCell, jbeginCell:jendCell) = mat_scal(1:cbs_comp, 1:cbs_comp)
+            mat_vec%m(jbeginCell:jendCell, jbeginCell:jendCell) &
+                = mat_scal%m(1:cbs_comp, 1:cbs_comp)
 !
 ! --------- copy faces part
             do iFace = 1, hhoCell%nbfaces
@@ -576,15 +578,15 @@ contains
                     jbeginVec = cbs_comp+(jFace-1)*fbs_comp+1
                     jendVec = jbeginVec+fbs_comp-1
 !
-                    mat_vec(ibeginFace:iendFace, jbeginFace:jendFace) &
-                        = mat_scal(ibeginVec:iendVec, jbeginVec:jendVec)
+                    mat_vec%m(ibeginFace:iendFace, jbeginFace:jendFace) &
+                        = mat_scal%m(ibeginVec:iendVec, jbeginVec:jendVec)
                 end do
 !
 ! --------- copy coupled part
-                mat_vec(jbeginCell:jendCell, ibeginFace:iendFace) &
-                    = mat_scal(1:cbs_comp, ibeginVec:iendVec)
-                mat_vec(ibeginFace:iendFace, jbeginCell:jendCell) &
-                    = mat_scal(ibeginVec:iendVec, 1:cbs_comp)
+                mat_vec%m(jbeginCell:jendCell, ibeginFace:iendFace) &
+                    = mat_scal%m(1:cbs_comp, ibeginVec:iendVec)
+                mat_vec%m(ibeginFace:iendFace, jbeginCell:jendCell) &
+                    = mat_scal%m(ibeginVec:iendVec, 1:cbs_comp)
             end do
         end do
 !
@@ -796,7 +798,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: mat(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(inout) :: mat
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -819,16 +821,16 @@ contains
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs-cbs
 !
-        mat_tmp(1:total_dofs, 1:total_dofs) = mat(1:total_dofs, 1:total_dofs)
+        mat_tmp(1:total_dofs, 1:total_dofs) = mat%m(1:total_dofs, 1:total_dofs)
 !
 ! ---- K_FF
-        mat(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
+        mat%m(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
 ! ---- K_FT
-        mat(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
+        mat%m(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
 ! ---- K_TF
-        mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
+        mat%m((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
 ! ---- K_TT
-        mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
+        mat%m((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
 !
     end subroutine
 !
@@ -892,7 +894,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: mat(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        type(HHO_matrix), intent(inout) :: mat
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -915,16 +917,16 @@ contains
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs-cbs
 !
-        mat_tmp(1:total_dofs, 1:total_dofs) = mat(1:total_dofs, 1:total_dofs)
+        mat_tmp(1:total_dofs, 1:total_dofs) = mat%m(1:total_dofs, 1:total_dofs)
 !
 ! ---- K_FF
-        mat(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
+        mat%m(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
 ! ---- K_FT
-        mat(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
+        mat%m(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
 ! ---- K_TF
-        mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
+        mat%m((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
 ! ---- K_TT
-        mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
+        mat%m((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
 !
     end subroutine
 !

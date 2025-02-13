@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ module HHO_stabilization_module
     use HHO_tracemat_module
     use HHO_type
     use HHO_utils_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -63,8 +64,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        type(HHO_matrix), intent(in) :: gradrec
+        type(HHO_matrix), intent(out) :: stab
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -123,7 +124,7 @@ contains
 ! -- Verif size
         ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= dimM1)
 !
-        stab = 0.d0
+        call stab%initialize(total_dofs, total_dofs, 0.0)
         proj1 = 0.d0
 !
 ! -- Build \pi_F^k (v_F - P_T^K v) equations (21) and (22)
@@ -131,13 +132,13 @@ contains
 !
 ! -- Compute proj1 = -M2 * gradrec
         b_ldc = to_blas_int(MSIZE_CELL_SCAL)
-        b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+        b_ldb = to_blas_int(gradrec%max_nrows)
         b_lda = to_blas_int(MSIZE_CELL_SCAL)
         b_m = to_blas_int(dimM1)
         b_n = to_blas_int(total_dofs)
         b_k = to_blas_int(colsM2)
         call dgemm('N', 'N', b_m, b_n, b_k, &
-                   -1.d0, M2, b_lda, gradrec, b_ldb, &
+                   -1.d0, M2, b_lda, gradrec%m, b_ldb, &
                    0.d0, proj1, b_ldc)
 !
         if (.not. massMat%isIdentity) then
@@ -205,13 +206,13 @@ contains
 ! ----  compute proj2 = MR1 * gradrec
             proj2 = 0.d0
             b_ldc = to_blas_int(MSIZE_FACE_SCAL)
-            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            b_ldb = to_blas_int(gradrec%max_nrows)
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
             b_m = to_blas_int(fbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(colsM2)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, MR1, b_lda, gradrec, b_ldb, &
+                       1.d0, MR1, b_lda, gradrec%m, b_ldb, &
                        0.d0, proj2, b_ldc)
 !
             if (.not. faceMass%isIdentity) then
@@ -295,7 +296,7 @@ contains
             end if
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldc = to_blas_int(stab%max_nrows)
             b_ldb = to_blas_int(MSIZE_FACE_SCAL)
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
             b_m = to_blas_int(total_dofs)
@@ -303,7 +304,7 @@ contains
             b_k = to_blas_int(fbs)
             call dgemm('T', 'N', b_m, b_n, b_k, &
                        invH, proj3, b_lda, TMP, b_ldb, &
-                       1.d0, stab, b_ldc)
+                       1.d0, stab%m, b_ldc)
 !
             offset_face = offset_face+fbs
         end do
@@ -323,8 +324,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(in) :: gradrec_scal(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: gradrec_scal
+        type(HHO_matrix), intent(out) :: stab
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -338,7 +339,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: start, end
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab_scal
+        type(HHO_matrix) :: stab_scal
 ! --------------------------------------------------------------------------------------------------
 !
         DEBUG_TIMER(start)
@@ -348,6 +349,7 @@ contains
 !
 ! -- copy the scalar stabilization in the vectorial stabilization
         call MatScal2Vec(hhoCell, hhoData, stab_scal, stab)
+        call stab_scal%free()
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoStabVec", end-start)
@@ -364,8 +366,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
-        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: gradrec
+        type(HHO_matrix), intent(out) :: stab
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -440,7 +442,7 @@ contains
 ! -- Verif size
         ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= dimM1)
 !
-        stab = 0.d0
+        call stab%initialize(total_dofs, total_dofs, 0.0)
         proj1 = 0.d0
 !
 ! -- Build \pi_F^k (v_F - P_T^K v) equations (21) and (22)
@@ -462,7 +464,7 @@ contains
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(colsM2)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       -1.d0, M2, b_lda, gradrec(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
+                       -1.d0, M2, b_lda, gradrec%m(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
                        0.d0, proj1(ifromProj:itoProj, 1:total_dofs), b_ldc)
 !
             if (.not. massMat%isIdentity) then
@@ -544,7 +546,7 @@ contains
                 b_n = to_blas_int(total_dofs)
                 b_k = to_blas_int(colsM2)
                 call dgemm('N', 'N', b_m, b_n, b_k, &
-                           1.d0, MR1, b_lda, gradrec(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
+                           1.d0, MR1, b_lda, gradrec%m(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
                            0.d0, proj2, b_ldc)
 !
                 if (.not. faceMass%isIdentity) then
@@ -630,7 +632,7 @@ contains
                 end if
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-                b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+                b_ldc = to_blas_int(stab%max_nrows)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
                 b_lda = to_blas_int(MSIZE_FACE_SCAL)
                 b_m = to_blas_int(total_dofs)
@@ -638,7 +640,7 @@ contains
                 b_k = to_blas_int(fbs_comp)
                 call dgemm('T', 'N', b_m, b_n, b_k, &
                            invH, proj3, b_lda, TMP, b_ldb, &
-                           1.d0, stab, b_ldc)
+                           1.d0, stab%m, b_ldc)
 !
             end do
         end do
@@ -658,7 +660,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        type(HHO_matrix), intent(out) :: stab
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - HDG type stabilisation 1/h_F(v_F - pi^k_F(vT))_F
@@ -692,7 +694,7 @@ contains
 ! -- number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
-        stab = 0.d0
+        call stab%initialize(total_dofs, total_dofs, 0.0)
         proj1 = 0.d0
 !
 ! --  Step 1: v_T
@@ -782,7 +784,7 @@ contains
                        0.d0, TMP, b_ldc)
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-            b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
+            b_ldc = to_blas_int(stab%max_nrows)
             b_ldb = to_blas_int(MSIZE_FACE_SCAL)
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
             b_m = to_blas_int(total_dofs)
@@ -790,7 +792,7 @@ contains
             b_k = to_blas_int(fbs)
             call dgemm('T', 'N', b_m, b_n, b_k, &
                        invH, proj3, b_lda, TMP, b_ldb, &
-                       1.d0, stab, b_ldc)
+                       1.d0, stab%m, b_ldc)
 !
             offset_face = offset_face+fbs
         end do
@@ -810,7 +812,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(out) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(out) :: stab
         real(kind=8) :: start, end
 !
 ! --------------------------------------------------------------------------------------------------
@@ -823,7 +825,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab_scal
+        type(HHO_matrix) :: stab_scal
 ! --------------------------------------------------------------------------------------------------
 !
         DEBUG_TIMER(start)
@@ -833,6 +835,7 @@ contains
 !
 ! -- copy the scalar stabilization in the vectorial stabilization
         call MatScal2Vec(hhoCell, hhoData, stab_scal, stab)
+        call stab_scal%free()
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hdgStabVec", end-start)

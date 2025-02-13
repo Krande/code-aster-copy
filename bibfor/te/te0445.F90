@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine te0445(nomopt, nomte)
     use HHO_quadrature_module
     use HHO_ther_module
     use HHO_init_module, only: hhoInfoInitCell
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -54,8 +55,7 @@ subroutine te0445(nomopt, nomte)
     character(len=8), parameter :: fami_rigi = 'RIGI', fami_mass = 'MASS'
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradfull
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab
+    type(HHO_matrix) :: gradfull, stab
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs_rigi, rhs_mass, rhs
     real(kind=8) :: theta, dtime
     aster_logical :: laxis
@@ -126,5 +126,8 @@ subroutine te0445(nomopt, nomte)
 !
     call hhoRenumTherVec(hhoCell, hhoData, rhs)
     call writeVector('PVECTTR', total_dofs, rhs)
+!
+    call gradfull%free()
+    call stab%free()
 !
 end subroutine

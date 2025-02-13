@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine te0448(nomopt, nomte)
     use HHO_size_module
     use HHO_type
     use HHO_utils_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -68,7 +69,7 @@ subroutine te0448(nomopt, nomte)
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_curr
     real(kind=8), dimension(MSIZE_CELL_MAT) :: G_curr_coeff
-    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC) :: gradrec
+    type(HHO_matrix) :: gradrec
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --- Get HHO informations
@@ -147,22 +148,22 @@ subroutine te0448(nomopt, nomte)
 ! --- Compute local contribution
 !
     if (l_largestrains) then
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(gradrec%max_nrows)
         b_m = to_blas_int(gbs)
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
                    b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
                    b_incy)
         gbs_curr = gbs
     else
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(gradrec%max_nrows)
         b_m = to_blas_int(gbs_sym)
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
                    b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
                    b_incy)
         gbs_curr = gbs_sym
@@ -186,5 +187,7 @@ subroutine te0448(nomopt, nomte)
             zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if
     end do
+!
+    call gradrec%free()
 !
 end subroutine

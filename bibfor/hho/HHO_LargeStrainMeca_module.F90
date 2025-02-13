@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ module HHO_LargeStrainMeca_module
     use Behaviour_type
     use Behaviour_module
     use FE_algebra_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -87,7 +88,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
-        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: gradrec
         character(len=*), intent(in) :: fami
         character(len=8), intent(in) :: typmod(2)
         integer, intent(in) :: imate
@@ -105,7 +106,7 @@ contains
         real(kind=8), intent(in) :: angmas(*)
         character(len=16), intent(in) :: mult_comp
         aster_logical, intent(in) :: cplan
-        real(kind=8), intent(inout) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(inout) :: lhs
         real(kind=8), intent(inout) :: rhs(MSIZE_TDOFS_VEC)
         real(kind=8), intent(inout) :: sig_curr(ncomp, *)
         real(kind=8), intent(inout) :: vi_curr(lgpg, *)
@@ -203,23 +204,23 @@ contains
 !
 ! ----- compute G_prev = gradrec * depl_prev
 !
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(gradrec%max_nrows)
         b_m = to_blas_int(gbs)
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
                    b_lda, depl_prev, b_incx, 0.d0, G_prev_coeff, &
                    b_incy)
 !
 ! ----- compute G_curr = gradrec * depl_curr
 !
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(gradrec%max_nrows)
         b_m = to_blas_int(gbs)
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
                    b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
                    b_incy)
 !print*, "GT_utf", G_curr_coeff(1:gbs)
@@ -315,12 +316,12 @@ contains
 ! ----- compute rhs += Gradrec**T * bT
 !
         if (l_rhs) then
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(gradrec%max_nrows)
             b_m = to_blas_int(gbs)
             b_n = to_blas_int(total_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, gradrec, &
+            call dgemv('T', b_m, b_n, 1.d0, gradrec%m, &
                        b_lda, bT, b_incx, 1.d0, rhs, &
                        b_incy)
         end if
@@ -330,26 +331,26 @@ contains
 !
         if (l_lhs) then
             b_ldc = to_blas_int(MSIZE_CELL_MAT)
-            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(gradrec%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_MAT)
             b_m = to_blas_int(gbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, AT, b_lda, gradrec, b_ldb, &
+                       1.d0, AT, b_lda, gradrec%m, b_ldb, &
                        0.d0, TMP, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
-            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldc = to_blas_int(lhs%max_nrows)
             b_ldb = to_blas_int(MSIZE_CELL_MAT)
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(gradrec%max_nrows)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, gradrec, b_lda, TMP, b_ldb, &
-                       1.d0, lhs, b_ldc)
+                       1.d0, gradrec%m, b_lda, TMP, b_ldb, &
+                       1.d0, lhs%m, b_ldc)
 !
         end if
 ! print*, "KT", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs))

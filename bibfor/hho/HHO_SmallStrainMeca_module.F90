@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ module HHO_SmallStrainMeca_module
     use HHO_type
     use HHO_utils_module
     use HHO_eval_module
+    use HHO_matrix_module
     use Behaviour_type
     use Behaviour_module
     use FE_algebra_module
@@ -79,7 +80,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
-        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: gradrec
         character(len=*), intent(in) :: fami
         character(len=8), intent(in) :: typmod(*)
         integer, intent(in) :: imate
@@ -96,7 +97,7 @@ contains
         real(kind=8), intent(in) :: vim(lgpg, *)
         real(kind=8), intent(in) :: angmas(*)
         character(len=16), intent(in) :: mult_comp
-        real(kind=8), intent(inout) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(inout) :: lhs
         real(kind=8), intent(inout) :: rhs(MSIZE_TDOFS_VEC)
         real(kind=8), intent(inout) :: sigp(ncomp, *)
         real(kind=8), intent(inout) :: vip(lgpg, *)
@@ -180,22 +181,22 @@ contains
         call hhoBasisCell%initialize(hhoCell)
 !
 ! ----- compute E_prev = gradrec_sym * depl_prev
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(gradrec%max_nrows)
         b_m = to_blas_int(gbs_sym)
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
                    b_lda, depl_prev, b_incx, 0.d0, E_prev_coeff, &
                    b_incy)
 !
 ! ----- compute E_incr = gradrec_sym * depl_incr
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(gradrec%max_nrows)
         b_m = to_blas_int(gbs_sym)
         b_n = to_blas_int(total_dofs)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
                    b_lda, depl_incr, b_incx, 0.d0, E_incr_coeff, &
                    b_incy)
 !
@@ -252,12 +253,12 @@ contains
 !
 ! ----- compute rhs += Gradrec**T * bT
         if (l_rhs) then
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(gradrec%max_nrows)
             b_m = to_blas_int(gbs_sym)
             b_n = to_blas_int(total_dofs)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, gradrec, &
+            call dgemv('T', b_m, b_n, 1.d0, gradrec%m, &
                        b_lda, bT, b_incx, 1.d0, rhs, &
                        b_incy)
         end if
@@ -269,25 +270,25 @@ contains
             call hhoCopySymPartMat('U', AT, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
             b_ldc = to_blas_int(MSIZE_CELL_MAT)
-            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(gradrec%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_MAT)
             b_m = to_blas_int(gbs_sym)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs_sym)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, AT, b_lda, gradrec, b_ldb, &
+                       1.d0, AT, b_lda, gradrec%m, b_ldb, &
                        0.d0, TMP, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-            b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+            b_ldc = to_blas_int(lhs%max_nrows)
             b_ldb = to_blas_int(MSIZE_CELL_MAT)
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(gradrec%max_nrows)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs_sym)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, gradrec, b_lda, TMP, b_ldb, &
-                       1.d0, lhs, b_ldc)
+                       1.d0, gradrec%m, b_lda, TMP, b_ldb, &
+                       1.d0, lhs%m, b_ldc)
         end if
 !
 ! print*, "AT", hhoNorm2Mat(AT(1:gbs_sym,1:gbs_sym))
@@ -315,13 +316,13 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
-        real(kind=8), intent(in) :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: gradrec
         character(len=*), intent(in) :: fami
         integer, intent(in) :: imate
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: angmas(*)
-        real(kind=8), intent(inout) :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(inout) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -391,25 +392,25 @@ contains
         call hhoCopySymPartMat('U', AT, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
         b_ldc = to_blas_int(MSIZE_CELL_MAT)
-        b_ldb = to_blas_int(MSIZE_CELL_MAT)
+        b_ldb = to_blas_int(gradrec%max_nrows)
         b_lda = to_blas_int(MSIZE_CELL_MAT)
         b_m = to_blas_int(gbs_sym)
         b_n = to_blas_int(total_dofs)
-        b_k = to_blas_int(total_dofs)
+        b_k = to_blas_int(gbs_sym)
         call dgemm('N', 'N', b_m, b_n, b_k, &
-                   1.d0, AT, b_lda, gradrec, b_ldb, &
+                   1.d0, AT, b_lda, gradrec%m, b_ldb, &
                    0.d0, TMP, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-        b_ldc = to_blas_int(MSIZE_TDOFS_VEC)
+        b_ldc = to_blas_int(lhs%max_nrows)
         b_ldb = to_blas_int(MSIZE_CELL_MAT)
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(gradrec%max_nrows)
         b_m = to_blas_int(total_dofs)
         b_n = to_blas_int(total_dofs)
         b_k = to_blas_int(gbs_sym)
         call dgemm('T', 'N', b_m, b_n, b_k, &
-                   1.d0, gradrec, b_lda, TMP, b_ldb, &
-                   1.d0, lhs, b_ldc)
+                   1.d0, gradrec%m, b_lda, TMP, b_ldb, &
+                   1.d0, lhs%m, b_ldc)
 !
     end subroutine
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine te0487(nomopt, nomte)
     use HHO_eval_module
     use HHO_ther_module
     use HHO_init_module, only: hhoInfoInitCell
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -61,7 +62,7 @@ subroutine te0487(nomopt, nomte)
     integer :: ipg, icodre(3), jtemps, jmate
     character(len=8), parameter :: fami = 'RIGI'
     character(len=32) :: phenom
-    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradrec
+    type(HHO_matrix) :: gradrec
     real(kind=8), dimension(3*MAX_QP_CELL) :: flux
     real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
     real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
@@ -123,12 +124,12 @@ subroutine te0487(nomopt, nomte)
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
-    b_lda = to_blas_int(MSIZE_CELL_VEC)
+    b_lda = to_blas_int(gradrec%max_nrows)
     b_m = to_blas_int(gbs)
     b_n = to_blas_int(total_dofs)
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, 1.d0, gradrec, &
+    call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
                b_lda, temp_curr, b_incx, 0.d0, G_curr_coeff, &
                b_incy)
 !
@@ -166,5 +167,7 @@ subroutine te0487(nomopt, nomte)
 ! --- Save fluxes
 !
     call writeVector('PFLUXPG', hhoCell%ndim*npg, flux)
+!
+    call gradrec%free()
 !
 end subroutine
