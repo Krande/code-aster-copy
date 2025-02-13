@@ -231,6 +231,7 @@ sonarqube:
         -Dsonar.issue.ignore.multicriteria=f1
         -Dsonar.issue.ignore.multicriteria.f1.ruleKey=f90-rules:F90.DESIGN.Include
         -Dsonar.issue.ignore.multicriteria.f1.resourceKey="f90-rules:**/*.F90"
+        -Dsonar.scanner.javaOpts="-Xmx2G -Xms512M -XX:+HeapDumpOnOutOfMemoryError"
   variables:
     SQ_SERVER: "https://sonar.pleiade.edf.fr:443"
   allow_failure: true
