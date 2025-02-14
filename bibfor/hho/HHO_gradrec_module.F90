@@ -26,6 +26,7 @@ module HHO_gradrec_module
     use HHO_massmat_module
     use HHO_stiffmat_module
     use HHO_geometry_module
+    use HHO_algebra_module
     use HHO_matrix_module
 !
     implicit none
@@ -680,8 +681,7 @@ contains
         integer :: jbegCell, jendCell, jbegFace, jendFace
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
-        blas_int :: b_incx, b_incy
-        blas_int :: b_k, b_ldc, b_m
+        blas_int :: b_incx, b_incy, b_m
 !
         DEBUG_TIMER(start)
 !
@@ -1060,15 +1060,8 @@ contains
             call lhs%initialize(total_dofs, total_dofs, 0.0)
 !
 ! ----- Compute lhs =BG**T * gradrec
-            b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(BG%max_nrows)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(gbs_sym)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG%m, b_lda, gradrec%m, b_ldb, &
-                       0.d0, lhs%m, b_ldc)
+            call hho_dgemm_TN(1.d0, BG, gradrec, 0.d0, lhs)
+!
         end if
         call BG%free()
 !
@@ -1122,8 +1115,7 @@ contains
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, LWORK
         real(kind=8) :: qp_dphi_ss, normal(3)
         real(kind=8) :: start, end
-        blas_int :: b_k, b_ldc, b_m
-        blas_int :: b_incx, b_incy
+        blas_int :: b_m, b_incx, b_incy
 !
         DEBUG_TIMER(start)
 !
@@ -1350,17 +1342,9 @@ contains
             call lhs%initialize(total_dofs, total_dofs, 0.0)
 !
 ! ----- Compute lhs =BG**T * gradrec
-            b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(BG%max_nrows)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(dimMG)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG%m, b_lda, gradrec%m, b_ldb, &
-                       0.d0, lhs%m, b_ldc)
+            call hho_dgemm_TN(1.d0, BG, gradrec, 0.d0, lhs)
         end if
-!
+
         call BG%free()
 !
         DEBUG_TIMER(end)

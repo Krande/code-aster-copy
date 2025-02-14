@@ -35,6 +35,7 @@ module HHO_Meca_module
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat
     use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
     use HHO_matrix_module
+    use HHO_algebra_module
 !
     implicit none
 !
@@ -66,8 +67,6 @@ module HHO_Meca_module
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-#include "blas/dgemv.h"
-#include "blas/dsymv.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -245,7 +244,6 @@ contains
         aster_logical :: l_rigi_meca, l_vari
         integer :: cbs, fbs, total_dofs, j
         blas_int :: b_incx, b_incy, b_n
-        blas_int :: b_lda
 !
 ! --- Verif compor
 !
@@ -313,12 +311,8 @@ contains
         call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, hhoMecaState%time_curr, hhoQuadCellRigi)
 !
         if (L_VECT(hhoCS%option)) then
-            b_lda = to_blas_int(hhoMecaState%stab%max_nrows)
-            b_n = to_blas_int(total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab%m, b_lda, &
-                       hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
+            call hho_dsymv_U(hhoData%coeff_stab(), hhoMecaState%stab, hhoMecaState%depl_curr, &
+                             1.d0, rhs)
         end if
 !
         if (L_MATR(hhoCS%option)) then
@@ -716,7 +710,6 @@ contains
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: Cauchy_curr(6), PK1_curr(3, 3), G_curr(3, 3), F_curr(3, 3)
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_curr_coeff
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
         rhs = 0.d0
         bT = 0.d0
@@ -732,14 +725,8 @@ contains
 ! --- Compute local contribution
 !
         if (hhoCS%l_largestrain) then
-            b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
-            b_m = to_blas_int(gbs)
-            b_n = to_blas_int(total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad%m, &
-                       b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff, &
-                       b_incy)
+            call hho_dgemv_N(1.d0, hhoMecaState%grad, hhoMecaState%depl_curr, 0.d0, &
+                             G_curr_coeff)
             gbs_curr = gbs
         else
             gbs_curr = gbs_sym
@@ -780,25 +767,14 @@ contains
             end if
         end do
 !
-        b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
-        b_m = to_blas_int(gbs_curr)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad%m, &
-                   b_lda, bT, b_incx, 1.d0, rhs, &
-                   b_incy)
+        call hho_dgemv_T(1.d0, hhoMecaState%grad, bT, 1.d0, rhs)
 !
 ! --- add stabilization
 !
         call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
 !
-        b_lda = to_blas_int(hhoMecaState%stab%max_nrows)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dsymv('U', b_n, hhoData%coeff_stab(), hhoMecaState%stab%m, b_lda, &
-                   hhoMecaState%depl_curr, b_incx, 1.d0, rhs, b_incy)
+        call hho_dsymv_U(hhoData%coeff_stab(), hhoMecaState%stab, hhoMecaState%depl_curr, &
+                         1.d0, rhs)
 !
     end subroutine
 !

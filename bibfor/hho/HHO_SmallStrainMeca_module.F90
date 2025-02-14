@@ -27,6 +27,7 @@ module HHO_SmallStrainMeca_module
     use HHO_utils_module
     use HHO_eval_module
     use HHO_matrix_module
+    use HHO_algebra_module
     use Behaviour_type
     use Behaviour_module
     use FE_algebra_module
@@ -43,8 +44,6 @@ module HHO_SmallStrainMeca_module
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmcomp.h"
 #include "blas/daxpy.h"
-#include "blas/dgemm.h"
-#include "blas/dgemv.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -142,8 +141,6 @@ contains
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
         integer :: cod(27)
         aster_logical :: l_lhs, l_rhs
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
-        blas_int :: b_incx, b_incy
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -180,24 +177,10 @@ contains
         call hhoBasisCell%initialize(hhoCell)
 !
 ! ----- compute E_prev = gradrec_sym * depl_prev
-        b_lda = to_blas_int(gradrec%max_nrows)
-        b_m = to_blas_int(gbs_sym)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
-                   b_lda, depl_prev, b_incx, 0.d0, E_prev_coeff, &
-                   b_incy)
+        call hho_dgemv_N(1.d0, gradrec, depl_prev, 0.0, E_prev_coeff)
 !
 ! ----- compute E_incr = gradrec_sym * depl_incr
-        b_lda = to_blas_int(gradrec%max_nrows)
-        b_m = to_blas_int(gbs_sym)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
-                   b_lda, depl_incr, b_incx, 0.d0, E_incr_coeff, &
-                   b_incy)
+        call hho_dgemv_N(1.d0, gradrec, depl_incr, 0.0, E_incr_coeff)
 !
 ! ----- Loop on quadrature point
 !
@@ -252,14 +235,7 @@ contains
 !
 ! ----- compute rhs += Gradrec**T * bT
         if (l_rhs) then
-            b_lda = to_blas_int(gradrec%max_nrows)
-            b_m = to_blas_int(gbs_sym)
-            b_n = to_blas_int(total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, gradrec%m, &
-                       b_lda, bT, b_incx, 1.d0, rhs, &
-                       b_incy)
+            call hho_dgemv_T(1.d0, gradrec, bT, 1.d0, rhs)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -269,26 +245,10 @@ contains
             call hhoCopySymPartMat('U', AT%m, gbs_sym)
             call TMP%initialize(gbs_sym, total_dofs, 0.d0)
 ! ----- step1: TMP = AT * gradrec
-            b_ldc = to_blas_int(TMP%max_nrows)
-            b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(AT%max_nrows)
-            b_m = to_blas_int(gbs_sym)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(gbs_sym)
-            call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, AT%m, b_lda, gradrec%m, b_ldb, &
-                       0.d0, TMP%m, b_ldc)
+            call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-            b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(TMP%max_nrows)
-            b_lda = to_blas_int(gradrec%max_nrows)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(gbs_sym)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, gradrec%m, b_lda, TMP%m, b_ldb, &
-                       1.d0, lhs%m, b_ldc)
+            call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
 !
             call TMP%free()
             call AT%free()
@@ -350,7 +310,7 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         type(HHO_matrix) :: AT, TMP
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+!
 ! --------------------------------------------------------------------------------------------------
 !
 ! ------ number of dofs
@@ -395,26 +355,10 @@ contains
 ! ----- Copy symetric part of AT
         call hhoCopySymPartMat('U', AT%m, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
-        b_ldc = to_blas_int(TMP%max_nrows)
-        b_ldb = to_blas_int(gradrec%max_nrows)
-        b_lda = to_blas_int(AT%max_nrows)
-        b_m = to_blas_int(gbs_sym)
-        b_n = to_blas_int(total_dofs)
-        b_k = to_blas_int(gbs_sym)
-        call dgemm('N', 'N', b_m, b_n, b_k, &
-                   1.d0, AT%m, b_lda, gradrec%m, b_ldb, &
-                   0.d0, TMP%m, b_ldc)
+        call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-        b_ldc = to_blas_int(lhs%max_nrows)
-        b_ldb = to_blas_int(TMP%max_nrows)
-        b_lda = to_blas_int(gradrec%max_nrows)
-        b_m = to_blas_int(total_dofs)
-        b_n = to_blas_int(total_dofs)
-        b_k = to_blas_int(gbs_sym)
-        call dgemm('T', 'N', b_m, b_n, b_k, &
-                   1.d0, gradrec%m, b_lda, TMP%m, b_ldb, &
-                   1.d0, lhs%m, b_ldc)
+        call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
 
         call AT%free()
         call TMP%free()

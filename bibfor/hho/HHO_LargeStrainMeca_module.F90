@@ -29,6 +29,7 @@ module HHO_LargeStrainMeca_module
     use Behaviour_module
     use FE_algebra_module
     use HHO_matrix_module
+    use HHO_algebra_module
 !
     implicit none
 !
@@ -51,8 +52,6 @@ module HHO_LargeStrainMeca_module
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "asterfort/utmess.h"
-#include "blas/dgemm.h"
-#include "blas/dgemv.h"
 #include "blas/dger.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -153,8 +152,7 @@ contains
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
         integer :: cod(27), nbsig
         aster_logical :: l_gdeflog, l_green_lagr, l_lhs, l_rhs
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
-        blas_int :: b_incx, b_incy
+!
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -203,26 +201,12 @@ contains
 !
 ! ----- compute G_prev = gradrec * depl_prev
 !
-        b_lda = to_blas_int(gradrec%max_nrows)
-        b_m = to_blas_int(gbs)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
-                   b_lda, depl_prev, b_incx, 0.d0, G_prev_coeff, &
-                   b_incy)
+        call hho_dgemv_N(1.d0, gradrec, depl_prev, 0.d0, G_prev_coeff)
 !
 ! ----- compute G_curr = gradrec * depl_curr
 !
-        b_lda = to_blas_int(gradrec%max_nrows)
-        b_m = to_blas_int(gbs)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
-                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
-                   b_incy)
-!print*, "GT_utf", G_curr_coeff(1:gbs)
+        call hho_dgemv_N(1.d0, gradrec, depl_curr, 0.d0, G_curr_coeff)
+!
 !
 ! ----- Loop on quadrature point
 !
@@ -315,14 +299,7 @@ contains
 ! ----- compute rhs += Gradrec**T * bT
 !
         if (l_rhs) then
-            b_lda = to_blas_int(gradrec%max_nrows)
-            b_m = to_blas_int(gbs)
-            b_n = to_blas_int(total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, gradrec%m, &
-                       b_lda, bT, b_incx, 1.d0, rhs, &
-                       b_incy)
+            call hho_dgemv_T(1.d0, gradrec, bT, 1.d0, rhs)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -330,27 +307,12 @@ contains
 !
         if (l_lhs) then
             call TMP%initialize(gbs, total_dofs, 0.d0)
-            b_ldc = to_blas_int(TMP%max_nrows)
-            b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(AT%max_nrows)
-            b_m = to_blas_int(gbs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(gbs)
-            call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, AT%m, b_lda, gradrec%m, b_ldb, &
-                       0.d0, TMP%m, b_ldc)
+!
+            call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
-            b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(TMP%max_nrows)
-            b_lda = to_blas_int(gradrec%max_nrows)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(gbs)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, gradrec%m, b_lda, TMP%m, b_ldb, &
-                       1.d0, lhs%m, b_ldc)
+            call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
 !
             call TMP%free()
             call AT%free()

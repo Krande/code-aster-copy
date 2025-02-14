@@ -29,6 +29,7 @@ module HHO_Ther_module
     use HHO_type
     use HHO_utils_module
     use HHO_matrix_module
+    use HHO_algebra_module
     use NonLin_Datastructure_type
 !
     implicit none
@@ -51,7 +52,6 @@ module HHO_Ther_module
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dgemm.h"
-#include "blas/dgemv.h"
 #include "blas/dger.h"
 #include "blas/dsymv.h"
 #include "blas/dsyr.h"
@@ -189,13 +189,7 @@ contains
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
-        b_lda = to_blas_int(gradrec%max_nrows)
-        b_m = to_blas_int(gbs)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, b_lda, &
-                   temp_curr, b_incx, 0.d0, G_curr_coeff, b_incy)
+        call hho_dgemv_N(1.d0, gradrec, temp_curr, 0.0, G_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !
@@ -244,14 +238,7 @@ contains
 ! ----- compute rhs += Gradrec**T * bT
 !
         if (l_rhs) then
-            b_lda = to_blas_int(gradrec%max_nrows)
-            b_m = to_blas_int(gbs)
-            b_n = to_blas_int(total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, gradrec%m, &
-                       b_lda, bT, b_incx, 1.d0, rhs, &
-                       b_incy)
+            call hho_dgemv_T(1.0, gradrec, bT, 1.d0, rhs)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
@@ -271,15 +258,7 @@ contains
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
-            b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(TMP%max_nrows)
-            b_lda = to_blas_int(gradrec%max_nrows)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(gbs)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, gradrec%m, b_lda, TMP%m, b_ldb, &
-                       1.d0, lhs%m, b_ldc)
+            call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
             call TMP%free()
 !
         end if

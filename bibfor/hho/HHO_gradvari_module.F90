@@ -37,6 +37,7 @@ module HHO_GV_module
     use HHO_utils_module
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat
     use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
+    use HHO_algebra_module
     use HHO_matrix_module
 !
     implicit none
@@ -63,9 +64,7 @@ module HHO_GV_module
 #include "asterfort/readMatrix.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-#include "blas/dsymv.h"
 #include "blas/dgemm.h"
-#include "blas/dgemv.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -259,35 +258,19 @@ contains
 
 ! ----- compute G_prev = gradrec * depl_prev (sym or not)
 !
-        b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
-        b_m = to_blas_int(mk_gbs_tot)
-        b_n = to_blas_int(mk_total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad%m, &
-                   b_lda, hhoMecaState%depl_prev, b_incx, 0.d0, G_prev_coeff, &
-                   b_incy)
+        call hho_dgemv_N(1.d0, hhoMecaState%grad, hhoMecaState%depl_prev, 0.d0, G_prev_coeff)
 !
 ! ----- compute G_curr = gradrec * depl_curr (sym or not)
 !
-        call dgemv('N', b_m, b_n, 1.d0, hhoMecaState%grad%m, &
-                   b_lda, hhoMecaState%depl_curr, b_incx, 0.d0, G_curr_coeff, &
-                   b_incy)
+        call hho_dgemv_N(1.d0, hhoMecaState%grad, hhoMecaState%depl_curr, 0.d0, G_curr_coeff)
 !
 ! ----- compute GV_prev = gradrec * vari_prev
 !
-        b_lda = to_blas_int(hhoGVState%grad%max_nrows)
-        b_m = to_blas_int(gv_gbs)
-        b_n = to_blas_int(gv_total_dofs)
-        call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad%m, &
-                   b_lda, hhoGVState%vari_prev, b_incx, 0.d0, GV_prev_coeff, &
-                   b_incy)
+        call hho_dgemv_N(1.d0, hhoGVState%grad, hhoGVState%vari_prev, 0.d0, GV_prev_coeff)
 !
 ! ----- compute GV_curr = gradrec * vari_curr
 !
-        call dgemv('N', b_m, b_n, 1.d0, hhoGVState%grad%m, &
-                   b_lda, hhoGVState%vari_curr, b_incx, 0.d0, GV_curr_coeff, &
-                   b_incy)
+        call hho_dgemv_N(1.d0, hhoGVState%grad, hhoGVState%vari_curr, 0.d0, GV_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !
@@ -460,37 +443,13 @@ contains
 !
         if (l_rhs) then
 ! ----- compute rhs += Gradrec**T * bT
-            b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
-            b_m = to_blas_int(mk_gbs_tot)
-            b_n = to_blas_int(mk_total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, hhoMecaState%grad%m, &
-                       b_lda, mk_bT, b_incx, 1.d0, rhs_mk, &
-                       b_incy)
+            call hho_dgemv_T(1.d0, hhoMecaState%grad, mk_bT, 1.d0, rhs_mk)
 ! ----- compute rhs += stab
-            b_lda = to_blas_int(hhoMecaState%stab%max_nrows)
-            b_n = to_blas_int(mk_total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dsymv('U', b_n, mk_stab, hhoMecaState%stab%m, b_lda, &
-                       hhoMecaState%depl_curr, b_incx, 1.d0, rhs_mk, b_incy)
+            call hho_dsymv_U(mk_stab, hhoMecaState%stab, hhoMecaState%depl_curr, 1.d0, rhs_mk)
 ! ----- compute rhs += Gradrec**T * bT
-            b_lda = to_blas_int(hhoGVState%grad%max_nrows)
-            b_m = to_blas_int(gv_gbs)
-            b_n = to_blas_int(gv_total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dgemv('T', b_m, b_n, 1.d0, hhoGVState%grad%m, &
-                       b_lda, gv_bT, b_incx, 1.d0, rhs_vari, &
-                       b_incy)
+            call hho_dgemv_T(1.d0, hhoGVState%grad, gv_bT, 1.d0, rhs_vari)
 ! ----- compute rhs += stab
-            b_lda = to_blas_int(hhoGVState%stab%max_nrows)
-            b_n = to_blas_int(gv_total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dsymv('U', b_n, gv_stab, hhoGVState%stab%m, b_lda, &
-                       hhoGVState%vari_curr, b_incx, 1.d0, rhs_vari, b_incy)
+            call hho_dsymv_U(gv_stab, hhoGVState%stab, hhoGVState%vari_curr, 1.d0, rhs_vari)
 ! ----- assembly
             call hhoAssGVRhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv, &
                              rhs_mk, rhs_vari, rhs_lagv, rhs)
@@ -507,15 +466,8 @@ contains
 !
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
-            b_ldc = to_blas_int(mk_TMP%max_nrows)
-            b_ldb = to_blas_int(hhoMecaState%grad%max_nrows)
-            b_lda = to_blas_int(mk_AT%max_nrows)
-            b_m = to_blas_int(mk_gbs_tot)
-            b_n = to_blas_int(mk_total_dofs)
-            b_k = to_blas_int(mk_gbs_tot)
-            call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, mk_AT%m, b_lda, hhoMecaState%grad%m, b_ldb, &
-                       0.d0, mk_TMP%m, b_ldc)
+            call hho_dgemm_NN(1.d0, mk_AT, hhoMecaState%grad, 0.d0, mk_TMP)
+!
             b_ldc = to_blas_int(MSIZE_CELL_VEC)
             b_ldb = to_blas_int(hhoGVState%grad%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_VEC)
@@ -526,15 +478,8 @@ contains
                        1.d0, gv_AT, b_lda, hhoGVState%grad%m, b_ldb, &
                        0.d0, gv_TMP, b_ldc)
 ! ----- step2: lhs += gradrec**T * TMP
-            b_ldc = to_blas_int(lhs_mm%max_nrows)
-            b_ldb = to_blas_int(mk_TMP%max_nrows)
-            b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
-            b_m = to_blas_int(mk_total_dofs)
-            b_n = to_blas_int(mk_total_dofs)
-            b_k = to_blas_int(mk_gbs_tot)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, hhoMecaState%grad%m, b_lda, mk_TMP%m, b_ldb, &
-                       0.d0, lhs_mm%m, b_ldc)
+            call hho_dgemm_TN(1.d0, hhoMecaState%grad, mk_TMP, 0.d0, lhs_mm)
+!
             b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
             b_ldb = to_blas_int(MSIZE_CELL_VEC)
             b_lda = to_blas_int(hhoGVState%grad%max_nrows)
