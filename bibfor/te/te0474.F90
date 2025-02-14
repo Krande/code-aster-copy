@@ -82,7 +82,6 @@ subroutine te0474(nomopt, nomte)
 !
 ! --- Save matrix
 !
-    call hhoRenumMecaMat(hhoCell, hhoData, mass)
     call mass%write('PMATUUR', ASTER_TRUE)
     call mass%free()
 !

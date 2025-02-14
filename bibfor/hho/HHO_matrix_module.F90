@@ -26,6 +26,7 @@ module HHO_matrix_module
 #include "asterfort/assert.h"
 #include "asterfort/writeMatrix.h"
 #include "asterfort/readMatrix.h"
+#include "blas/daxpy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,12 +52,14 @@ module HHO_matrix_module
         procedure, pass :: print => hhoMatricePrint
         procedure, pass :: copySymU => hhoMatriceCopySymU
         procedure, pass :: copy => hhoMatriceCopy
+        procedure, pass :: add => hhoMatriceAdd
 !
     end type HHO_matrix
 !
     public   :: HHO_matrix
     private  :: hhoMatriceInit, hhoMatriceFree, hhoMatriceWrite, hhoMatriceSetValue
     private  :: hhoMatriceRead, hhoMatricePrint, hhoMatriceCopySymU, hhoMatriceCopy
+    private  :: hhoMatriceAdd
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -127,6 +130,8 @@ contains
 !
         ASSERT(this%is_allocated)
         call writeMatrix(name, this%nrows, this%ncols, l_sym, this%m)
+
+        call this%print()
 !
     end subroutine
 !
@@ -234,15 +239,51 @@ contains
 !
         integer :: row_offset, col_offset
 !
-        row_offset = 0
+        row_offset = 1
         if (present(row_offset_)) row_offset = row_offset_
-        col_offset = 0
+        col_offset = 1
         if (present(col_offset_)) col_offset = col_offset_
 !
-        ASSERT(this%nrows >= row_offset+mat%nrows)
-        ASSERT(this%ncols >= col_offset+mat%ncols)
+        ASSERT(this%nrows >= row_offset+mat%nrows-1)
+        ASSERT(this%ncols >= col_offset+mat%ncols-1)
 !
-        this%m(row_offset:row_offset+mat%nrows, col_offset:col_offset+mat%ncols) = mat%m
+        this%m(row_offset:row_offset+mat%nrows-1, col_offset:col_offset+mat%ncols-1) = mat%m
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMatriceAdd(this, mat, alpha_)
+!
+        implicit none
+!
+        class(HHO_matrix), intent(inout) :: this
+        type(HHO_matrix), intent(in) :: mat
+        real(kind=8), intent(in), optional :: alpha_
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   print matrix
+!   In mat   : matrix to print
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: j
+        real(kind=8) :: alpha
+        blas_int, parameter :: one = to_blas_int(1)
+        blas_int :: b_n
+!
+        alpha = 1.d0
+        if (present(alpha_)) alpha = alpha_
+!
+        ASSERT(this%nrows == mat%nrows)
+        ASSERT(this%ncols == mat%ncols)
+!
+        b_n = to_blas_int(this%nrows)
+        do j = 1, this%ncols
+            call daxpy(b_n, alpha, mat%m(:, j), one, this%m(:, j), one)
+        end do
 !
     end subroutine
 !

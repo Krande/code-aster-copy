@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ subroutine te0450(nomopt, nomte)
     type(HHO_Meca_State) :: hhoMecaState
 !
     integer :: cbs, fbs, total_dofs, npg, i, isig, cbs_cmp, j, fbs_cmp, ipg
+    integer :: faces_dofs
     aster_logical :: l_largestrains
     character(len=4), parameter :: fami = "RIGI"
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC), refe_rhs(MSIZE_TDOFS_VEC)
@@ -69,6 +70,7 @@ subroutine te0450(nomopt, nomte)
 !
 ! --- Number of dofs
     call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+    faces_dofs = total_dofs-cbs
 !
 ! --- Type of finite element
 !
@@ -112,16 +114,16 @@ subroutine te0450(nomopt, nomte)
         fbs_cmp = fbs/hhoCell%ndim
         ! Set mean value
         do i = 1, hhoCell%ndim
-            val_refe(i) = refe_rhs((i-1)*cbs_cmp+1)
+            val_refe(i) = refe_rhs(faces_dofs+(i-1)*cbs_cmp+1)
             do j = 1, hhoCell%nbfaces
-                val_refe(i) = max(val_refe(i), refe_rhs(cbs+(j-1)*fbs+(i-1)*fbs_cmp+1))
+                val_refe(i) = max(val_refe(i), refe_rhs((j-1)*fbs+(i-1)*fbs_cmp+1))
             end do
         end do
         rhs = 0.d0
         do i = 1, hhoCell%ndim
-            rhs((i-1)*cbs_cmp+1:i*cbs_cmp) = val_refe(i)
+            rhs(faces_dofs+(i-1)*cbs_cmp+1:faces_dofs+i*cbs_cmp) = val_refe(i)
             do j = 1, hhoCell%nbfaces
-                rhs(cbs+(j-1)*fbs+(i-1)*fbs_cmp+1:cbs+(j-1)*fbs+i*fbs_cmp) = val_refe(i)
+                rhs((j-1)*fbs+(i-1)*fbs_cmp+1:(j-1)*fbs+i*fbs_cmp) = val_refe(i)
             end do
         end do
     else
@@ -130,7 +132,6 @@ subroutine te0450(nomopt, nomte)
 !
 ! --- Save rhs
 !
-    call hhoRenumMecaVec(hhoCell, hhoData, rhs)
     call writeVector('PVECTUR', total_dofs, rhs)
 !
 end subroutine

@@ -109,7 +109,7 @@ subroutine te0445(nomopt, nomte)
     theta = zr(itemps+2)
 !
     rhs = 0.d0
-    call daxpy_1(cbs, 1.d0/dtime, rhs_mass(total_dofs-cbs+1), rhs)
+    call daxpy_1(cbs, 1.d0/dtime, rhs_mass(total_dofs-cbs+1:total_dofs), rhs)
     call daxpy_1(total_dofs, -(1.d0-theta), rhs_rigi, rhs)
 !
 ! --- Save rhs

@@ -316,13 +316,7 @@ contains
         end if
 !
         if (L_MATR(hhoCS%option)) then
-            do j = 1, total_dofs
-                b_n = to_blas_int(total_dofs)
-                b_incx = to_blas_int(1)
-                b_incy = to_blas_int(1)
-                call daxpy(b_n, hhoData%coeff_stab(), hhoMecaState%stab%m(:, j), b_incx, &
-                           lhs%m(:, j), b_incy)
-            end do
+            call lhs%add(hhoMecaState%stab, hhoData%coeff_stab())
         end if
 !
 999     continue
@@ -506,12 +500,10 @@ contains
 ! --- get displacement in T-
 !
                 call readVector('PDEPLMR', mk_total_dofs, this%depl_prev)
-                call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_prev)
 !
 ! --- get increment displacement beetween T- and T+
 !
                 call readVector('PDEPLPR', mk_total_dofs, this%depl_incr)
-                call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_incr)
             else
                 call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
                 total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
@@ -555,11 +547,9 @@ contains
         else if (hhoComporState%option == "FORC_NODA") then
             call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
             call readVector('PDEPLAR', mk_total_dofs, this%depl_curr)
-            call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_curr)
         else if (hhoComporState%option == "REFE_FORC_NODA") then
             call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
             call readVector('PDEPLMR', mk_total_dofs, this%depl_curr)
-            call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_curr)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -662,8 +652,7 @@ contains
             b_n = to_blas_int(dimMatScal)
             b_incx = to_blas_int(1)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
-            call dsyr('U', b_n, coeff, BSCEval, b_incx, &
-                      mass_scal, b_lda)
+            call dsyr('U', b_n, coeff, BSCEval, b_incx, mass_scal, b_lda)
 !
         end do
 !
@@ -671,7 +660,7 @@ contains
 !
         call hhoCopySymPartMat('U', mass_scal(1:dimMatScal, 1:dimMatScal))
         call MatCellScal2Vec(hhoCell, hhoData, mass_scal, mass_vec)
-        mass%m(1:cbs, 1:cbs) = mass_vec(1:cbs, 1:cbs)
+        mass%m(faces_dofs+1:total_dofs, faces_dofs+1:total_dofs) = mass_vec(1:cbs, 1:cbs)
 !
     end subroutine
 !
@@ -758,12 +747,10 @@ contains
 !
                 call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
 !
-                call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, &
-                                        bT)
+                call hhoComputeRhsLarge(hhoCell, PK1_curr, weight, BSCEval, gbs, bT)
             else
 !
-                call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, &
-                                        bT)
+                call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
             end if
         end do
 !

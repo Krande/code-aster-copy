@@ -138,7 +138,6 @@ subroutine te0455(nomopt, nomte)
 ! --- Save rhs
 !
     if (lVect) then
-        call hhoRenumMecaVec(hhoCell, hhoData, rhs)
         call writeVector('PVECTUR', total_dofs, rhs)
     end if
 !
@@ -150,7 +149,6 @@ subroutine te0455(nomopt, nomte)
         else
             matsym = ASTER_TRUE
         end if
-        call hhoRenumMecaMat(hhoCell, hhoData, lhs)
 !
         if (matsym) then
             call lhs%write('PMATUUR', ASTER_TRUE)

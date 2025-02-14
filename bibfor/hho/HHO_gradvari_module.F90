@@ -527,21 +527,9 @@ contains
                        0.d0, lhs_lm, b_ldc)
 ! ----- Add stabilization
 ! ----- += coeff * stab_mk
-            do j = 1, mk_total_dofs
-                b_n = to_blas_int(mk_total_dofs)
-                b_incx = to_blas_int(1)
-                b_incy = to_blas_int(1)
-                call daxpy(b_n, mk_stab, hhoMecaState%stab%m(:, j), b_incx, lhs_mm%m(:, j), &
-                           b_incy)
-            end do
+            call lhs_mm%add(hhoMecaState%stab, mk_stab)
 ! ----- += coeff * stab_vv
-            do j = 1, gv_total_dofs
-                b_n = to_blas_int(gv_total_dofs)
-                b_incx = to_blas_int(1)
-                b_incy = to_blas_int(1)
-                call daxpy(b_n, gv_stab, hhoGVState%stab%m(:, j), b_incx, lhs_vv(1, j), &
-                           b_incy)
-            end do
+            call lhs_mm%add(hhoGVState%stab, gv_stab)
 !
 ! ----- the symmetry is checked inside gdef_log
             lhs_lv = transpose(lhs_vl)

@@ -216,13 +216,11 @@ contains
 !
 ! ------- Compute rhs
 !
-            if (l_rhs) call hhoComputeRhsRigiTher(hhoCell, sig_curr, weight, BSCEval, gbs, &
-                                                  bT)
+            if (l_rhs) call hhoComputeRhsRigiTher(hhoCell, sig_curr, weight, BSCEval, gbs, bT)
 !
 ! ------- Compute lhs
 !
-            if (l_lhs) call hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, &
-                                                  AT)
+            if (l_lhs) call hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
 ! ------- Save fluxes
 !
@@ -264,13 +262,7 @@ contains
         end if
 !
         if (l_lhs) then
-            do j = 1, total_dofs
-                b_n = to_blas_int(total_dofs)
-                b_incx = to_blas_int(1)
-                b_incy = to_blas_int(1)
-                call daxpy(b_n, hhoData%coeff_stab(), stab%m(:, j), b_incx, lhs%m(:, j), &
-                           b_incy)
-            end do
+            call lhs%add(stab, hhoData%coeff_stab())
         end if
 !
         DEBUG_TIMER(end)
@@ -314,7 +306,7 @@ contains
         character(len=32) :: phenom
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
         integer :: jmate, ipg, icodre(3), jtemps
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T_curr
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: temp_T_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, time_curr, cp, temp_eval, beta
         character(len=8) :: poum
@@ -368,7 +360,7 @@ contains
 ! --------- Eval gradient at T+
 !
             temp_eval = hhoEvalScalCell( &
-                        hhoBasisCell, hhoData%cell_degree(), coorpg, temp_T_curr(cell_offset:), cbs)
+                        hhoBasisCell, hhoData%cell_degree(), coorpg, temp_T_curr, cbs)
 !
 ! -------- Compute behavior
 !
@@ -379,7 +371,8 @@ contains
 !
             if (l_rhs) then
                 beta = cp*temp_eval
-                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, rhs(cell_offset:))
+                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, &
+                                           rhs(cell_offset:total_dofs))
             end if
 !
 ! -------- Compute lhs
@@ -394,7 +387,7 @@ contains
 !
         if (l_lhs) then
             call lhs_cell%copySymU()
-            call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
+            call lhs%copy(lhs_cell, cell_offset, cell_offset)
             call lhs_cell%free()
         end if
 !
@@ -433,7 +426,7 @@ contains
         character(len=32) :: phenom
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
         integer :: jmate, ipg, icodre(3), jcomp, ifon(6)
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T_curr
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: temp_T_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, temp_eval, beta, dbeta
         character(len=16) :: comp
@@ -496,7 +489,7 @@ contains
 ! --------- Eval gradient at T+
 !
             temp_eval = hhoEvalScalCell( &
-                        hhoBasisCell, hhoData%cell_degree(), coorpg, temp_T_curr(cell_offset:), cbs)
+                        hhoBasisCell, hhoData%cell_degree(), coorpg, temp_T_curr, cbs)
 !
 ! -------- Compute behavior
 !
@@ -520,7 +513,7 @@ contains
 !
         if (l_lhs) then
             call lhs_cell%copySymU()
-            call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
+            call lhs%copy(lhs_cell, cell_offset, cell_offset)
             call lhs_cell%free()
         end if
 !

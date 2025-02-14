@@ -28,6 +28,7 @@ subroutine te0448(nomopt, nomte)
     use HHO_type
     use HHO_utils_module
     use HHO_matrix_module
+    use HHO_algebra_module
 !
     implicit none
 !
@@ -57,7 +58,7 @@ subroutine te0448(nomopt, nomte)
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer :: cbs, fbs, total_dofs, gbs, gbs_sym
-    integer :: npg, gbs_curr, gbs_cmp
+    integer :: npg
     integer :: ipg, idefo, nsig
     aster_logical :: l_largestrains
     character(len=4) :: fami
@@ -70,7 +71,6 @@ subroutine te0448(nomopt, nomte)
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_curr
     real(kind=8), dimension(MSIZE_CELL_MAT) :: G_curr_coeff
     type(HHO_matrix) :: gradrec
-    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --- Get HHO informations
 !
@@ -85,7 +85,6 @@ subroutine te0448(nomopt, nomte)
     call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                        gbs, gbs_sym)
     nsig = nbsigm()
-    gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     ASSERT(cbs <= MSIZE_CELL_VEC)
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
@@ -139,7 +138,6 @@ subroutine te0448(nomopt, nomte)
 !
     depl_curr = 0.d0
     call readVector('PDEPLAR', total_dofs, depl_curr)
-    call hhoRenumMecaVecInv(hhoCell, hhoData, depl_curr)
 !
 ! ----- init basis
 !
@@ -147,27 +145,7 @@ subroutine te0448(nomopt, nomte)
 !
 ! --- Compute local contribution
 !
-    if (l_largestrains) then
-        b_lda = to_blas_int(gradrec%max_nrows)
-        b_m = to_blas_int(gbs)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
-                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
-                   b_incy)
-        gbs_curr = gbs
-    else
-        b_lda = to_blas_int(gradrec%max_nrows)
-        b_m = to_blas_int(gbs_sym)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
-                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
-                   b_incy)
-        gbs_curr = gbs_sym
-    end if
+    call hho_dgemv_N(1.d0, gradrec, depl_curr, 0.d0, G_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !
