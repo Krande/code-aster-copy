@@ -145,9 +145,13 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* *********************************************************************** */
 
     /* Sort copy of input vector to be identical on all procs */
+    std::set< std::string > uniqueGrp;
     for ( const auto &nameOfTheGroup : groupsOfCells ) {
-        if ( mesh->hasGroupOfCells( nameOfTheGroup, false ) )
+        const auto count = ( uniqueGrp.count( nameOfTheGroup ) == 0 );
+        if ( mesh->hasGroupOfCells( nameOfTheGroup, false ) && count ) {
             groupsOfCellsToFind.push_back( nameOfTheGroup );
+            uniqueGrp.insert( nameOfTheGroup );
+        }
     }
     std::sort( groupsOfCellsToFind.begin(), groupsOfCellsToFind.end() );
 
@@ -544,7 +548,9 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
             }
             std::sort( cellsOfGrp.begin(), cellsOfGrp.end() );
 
-            _groupsOfCells->push_back( nameOfTheGroup, cellsOfGrp );
+            if ( cellsOfGrp.size() != 0 ) {
+                _groupsOfCells->push_back( nameOfTheGroup, cellsOfGrp );
+            }
         }
     }
 
