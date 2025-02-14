@@ -211,3 +211,6 @@ class ThermalOperators(BaseOperators):
         self._resi_temp = resi_curr
 
         return residual
+
+    def setup(self):
+        """Set up the integrator."""

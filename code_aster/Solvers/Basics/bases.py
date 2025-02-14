@@ -31,10 +31,11 @@ from ...Utilities import logger
 class ProblemType(IntFlag):
     """Types of physical problems."""
 
-    Unset = 0
+    Unset = auto()
     MecaStat = auto()
     MecaDyna = auto()
     Thermal = auto()
+    AllMechanics = MecaStat | MecaDyna
 
 
 class DispatcherMixin:

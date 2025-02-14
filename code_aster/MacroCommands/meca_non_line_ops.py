@@ -106,10 +106,7 @@ def meca_non_line_ops(self, **args):
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
-    # Setup Context
-    context = Context()
-
-    # Keep some keywords
+    # FIXME: move keywords cleanup in factory - Keep some keywords
     kwds = {
         "ARCHIVAGE": _keyword_clean(args["ARCHIVAGE"]),
         "COMPORTEMENT": args["COMPORTEMENT"],
@@ -123,23 +120,13 @@ def meca_non_line_ops(self, **args):
         "SOLVEUR": _keyword_clean(args["SOLVEUR"]),
         "REUSE": args["reuse"],
         "INCREMENT": _keyword_clean(args["INCREMENT"]),
+        "SCHEMA_TEMPS": args.get("SCHEMA_TEMPS"),
     }
     if kwds["SOLVEUR"]["METHODE"] == "PETSC":
         if kwds["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
             kwds["SOLVEUR"]["REAC_PRECOND"] = 0
 
-    if "SCHEMA_TEMPS" in args:
-        context.problem_type = PBT.MecaDyna
-        kwds["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
-    else:
-        context.problem_type = PBT.MecaStat
-    context.keywords = kwds
-
-    context.result = args.get("reuse") or NonLinearResult()
-
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
-    context.problem = phys_pb
-
     # Add loads
     if args["EXCIT"]:
         for load in args["EXCIT"]:
@@ -157,23 +144,9 @@ def meca_non_line_ops(self, **args):
             else:
                 raise RuntimeError("Unknown load")
 
-    if args["CONTACT"]:
-        definition = args["CONTACT"][0]["DEFINITION"]
-        context.contact = ContactManager(definition, phys_pb)
-        if isinstance(definition, (ParallelFrictionNew, ParallelContactNew)):
-            fed_defi = definition.getParallelFiniteElementDescriptor()
-        else:
-            fed_defi = definition.getFiniteElementDescriptor()
-        phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
-
-    context.oper = BaseOperators.factory(context)
-    context.stepper = TimeStepper.from_keywords(**kwds["INCREMENT"])
-    context.linear_solver = LinearSolver.factory("MECA_NON_LINE", mcf=context.keywords["SOLVEUR"])
-    context.state = PhysicalState(context.problem_type, size=1)
-
-    solver = NonLinearOperator.builder(context)
-    solver.run()
+    operator = NonLinearOperator.factory(phys_pb, result=args.get("reuse"), **kwds)
+    operator.run()
 
     print_stats()
     reset_stats()
-    return context.result
+    return operator.result

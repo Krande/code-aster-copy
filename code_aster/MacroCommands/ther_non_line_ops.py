@@ -29,14 +29,14 @@ from ..Objects import (
     ThermalLoadReal,
     ThermalResult,
 )
-from ..Solvers import NonLinearOperator
+from ..Solvers import Context, NonLinearOperator
 from ..Solvers import ProblemType as PBT
 from ..Solvers.Post import ComputeHydr, ComputeTempFromHHO
 from ..Utilities import force_list, print_stats, reset_stats
 from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
 
 
-def use_fortran(keywords):
+def _use_fortran(keywords):
     excluded_keys = ("EVOL_THER_SECH", "OBSERVATION")
 
     for key in excluded_keys:
@@ -73,23 +73,33 @@ def ther_non_line_ops(self, **args):
     Arguments:
         **args (dict): User's keywords.
     """
-
     args = _F(args)
-    reset_stats()
-
-    if use_fortran(args):
+    if _use_fortran(args):
         return THER_NON_LINE_FORT(**args)
 
+    reset_stats()
     adapt_increment_init(args, "EVOL_THER")
-
     verbosity = args["INFO"]
 
-    # python Version
-    if "RESULTAT" in args:
-        result = args["RESULTAT"]
-    else:
-        result = ThermalResult()
-    solver = ProblemSolver(NonLinearSolver(), result, PBT.Thermal)
+    # Add parameters
+    kwds = dict(
+        ARCHIVAGE=args["ARCHIVAGE"],
+        COMPORTEMENT=args["COMPORTEMENT"],
+        CONVERGENCE=args["CONVERGENCE"],
+        ETAT_INIT=args["ETAT_INIT"],
+        INFO=args["INFO"],
+        METHODE=args["METHODE"],
+        NEWTON=args["NEWTON"],
+        RECH_LINEAIRE=args["RECH_LINEAIRE"],
+        SOLVEUR=args["SOLVEUR"],
+        TYPE_CALCUL=args["TYPE_CALCUL"],
+        INCREMENT=args["INCREMENT"],
+        REUSE=args["reuse"],
+        SCHEMA_TEMPS=args.get("SCHEMA_TEMPS"),
+    )
+    if kwds["SOLVEUR"]["METHODE"] == "PETSC":
+        if kwds["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
+            kwds["SOLVEUR"]["REAC_PRECOND"] = 0
 
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
     # Add loads
@@ -118,39 +128,10 @@ def ther_non_line_ops(self, **args):
             else:
                 raise RuntimeError("Unknown load")
 
-    solver.use(phys_pb)
+    operator = NonLinearOperator.factory(phys_pb, result=args.get("RESULTAT"), **kwds)
+    operator.run()
 
-    # Add parameters
-    param = dict(
-        ARCHIVAGE=args["ARCHIVAGE"],
-        COMPORTEMENT=args["COMPORTEMENT"],
-        CONVERGENCE=args["CONVERGENCE"],
-        ETAT_INIT=args["ETAT_INIT"],
-        INFO=args["INFO"],
-        METHODE=args["METHODE"],
-        NEWTON=args["NEWTON"],
-        RECH_LINEAIRE=args["RECH_LINEAIRE"],
-        SOLVEUR=args["SOLVEUR"],
-        TYPE_CALCUL=args["TYPE_CALCUL"],
-        INCREMENT=args["INCREMENT"],
-        REUSE=args["reuse"],
-    )
-
-    if param["SOLVEUR"]["METHODE"] == "PETSC":
-        if param["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
-            param["SOLVEUR"]["REAC_PRECOND"] = 0
-
-    param["SCHEMA_TEMPS"] = args.get("SCHEMA_TEMPS")
-
-    solver.setKeywords(**param)
-
-    # Register hooks
-    solver.use(ComputeHydr())
-    solver.use(ComputeTempFromHHO())
-
-    # Run computation
-    solver.run()
     if verbosity > 1:
         print_stats()
     reset_stats()
-    return solver.result
+    return operator.result

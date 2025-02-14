@@ -36,10 +36,9 @@ class BaseHook(ABC):
             return
         self.run(nl_oper)
 
-    @abstractmethod
     def setup(self, nl_oper):
-        """Setup function"""
-        # should at least set '_enabled' value
+        """Setup function: default implementation always enables the hook."""
+        self._enabled = True
 
     @abstractmethod
     def run(self, nl_oper):

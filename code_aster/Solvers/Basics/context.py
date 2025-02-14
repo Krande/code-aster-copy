@@ -24,7 +24,8 @@ Base objects used to solve generic non linear problems.
 from functools import wraps
 
 from ...Cata.Language.SyntaxObjects import _F
-from ...Utilities import no_new_attributes
+from ...Utilities import logger, no_new_attributes
+from .bases import ProblemType as PBT
 
 
 class Context:
@@ -105,6 +106,17 @@ class Context:
         self._oper = None
         self._contact = None
         self._linsolv = None
+
+    def check(self):
+        """Check for required/optional attributes."""
+        for attr in ("problem_type", "problem", "state", "result", "oper", "keywords"):
+            if not getattr(self, attr):
+                logger.error(f"{attr!r} attribute is required")
+        for attr in ("stepper", "linear_solver"):
+            if not getattr(self, attr):
+                logger.warning(f"{attr!r} is not yet defined")
+        if self._type & PBT.AllMechanics and not getattr(self, "contact"):
+            logger.info(f"'contact' is not defined")
 
     @property
     def problem_type(self):

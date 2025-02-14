@@ -20,7 +20,15 @@
 from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
 from ...Messages import UTMESS, MessageLog
-from ...Objects import HHO, NonLinearResult, ThermalResult
+from ...Objects import (
+    HHO,
+    LinearSolver,
+    NonLinearResult,
+    ParallelContactNew,
+    ParallelFrictionNew,
+    Physics,
+    ThermalResult,
+)
 from ...Supervis import ConvergenceError, IntegrationError, SolverError
 from ...Utilities import (
     DEBUG,
@@ -32,11 +40,14 @@ from ...Utilities import (
     no_new_attributes,
     profile,
 )
-from ..Basics import ContextMixin
+from ..Basics import Context, ContextMixin, PhysicalState
 from ..Basics import ProblemType as PBT
-from ..Post import Annealing, ComputeDisplFromHHO
+from ..Operators import BaseOperators
+from ..Post import Annealing, ComputeDisplFromHHO, ComputeHydr, ComputeTempFromHHO
 from ..StepSolvers import BaseStepSolver
+from .contact_manager import ContactManager
 from .storage_manager import StorageManager
+from .time_stepper import TimeStepper
 
 
 class NonLinearOperator(ContextMixin):
@@ -56,6 +67,58 @@ class NonLinearOperator(ContextMixin):
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
+    def factory(cls, problem, result=None, **keywords):
+        """Initialize a *NonLinearOperator*.
+        Advanced users may override the *context* of the operator by customizing
+        the content of `.context` object.
+
+        NB: You must respect the rules of the related
+        command. No default keywords are automatically added.
+
+        Args:
+            problem (PhysicalProblem): Problem to be solved.
+            result (Result, optional): Object to be eventually reused.
+            keywords (dict): Keywords arguments to adjust the features as
+                usually passed to MECA_NON_LINE or THER_NON_LINE.
+
+        Returns:
+            instance: NonLinearOperator object.
+        """
+        context = Context()
+        context.problem = problem
+        context.keywords = keywords
+        _get = context.get_keyword
+
+        phys = problem.getModel().getPhysics()
+        if phys == Physics.Thermal:
+            context.problem_type = PBT.Thermal
+            context.result = result or ThermalResult()
+
+        elif phys == Physics.Mechanics:
+            context.problem_type = PBT.MecaDyna if _get("SCHEMA_TEMPS") else PBT.MecaStat
+            context.result = result or NonLinearResult()
+            if _get("CONTACT"):
+                definition = _get("CONTACT", "DEFINITION")
+                context.contact = ContactManager(definition, problem)
+                if isinstance(definition, (ParallelFrictionNew, ParallelContactNew)):
+                    fed_defi = definition.getParallelFiniteElementDescriptor()
+                else:
+                    fed_defi = definition.getFiniteElementDescriptor()
+                problem.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
+
+        else:
+            raise TypeError(f"unsupported physics: {phys}")
+
+        context.oper = BaseOperators.factory(context)
+        if _get("INCREMENT"):
+            context.stepper = TimeStepper.from_keywords(**_get("INCREMENT"))
+        if _get("SOLVEUR"):
+            context.linear_solver = LinearSolver.factory("MECA_NON_LINE", mcf=_get("SOLVEUR"))
+        context.state = PhysicalState(context.problem_type, size=1)
+        context.check()
+        return NonLinearOperator.builder(context)
+
+    @classmethod
     def builder(cls, context):
         """Builder of a NonLinearOperator object.
 
@@ -71,6 +134,7 @@ class NonLinearOperator(ContextMixin):
     def __init__(self, context) -> None:
         super().__init__()
         self.context = context
+        self._hooks = []
         self._step_idx = None
         self.current_matrix = None
         self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
@@ -155,10 +219,20 @@ class NonLinearOperator(ContextMixin):
         self._storeState(self.state)
 
     def _register_hooks(self):
-        self._hooks = []
-        if self.problem_type & (PBT.MecaStat | PBT.MecaDyna):
-            self._hooks.append(Annealing())
-            self._hooks.append(ComputeDisplFromHHO())
+        if self.problem_type & PBT.AllMechanics:
+            self.register_hook(Annealing())
+            self.register_hook(ComputeDisplFromHHO())
+        elif self.problem_type & PBT.Thermal:
+            self.register_hook(ComputeHydr())
+            self.register_hook(ComputeTempFromHHO())
+
+    def register_hook(self, hook):
+        """Register a new hook.
+
+        Args:
+            hook (BaseHook): Object that provides a *BaseHook* interface.
+        """
+        self._hooks.append(hook)
 
     # FIXME: mixin by problem_type / factory
     @profile
