@@ -242,7 +242,7 @@ contains
         if (l_lhs) then
 !
 ! ----- Copy symetric part of AT
-            call hhoCopySymPartMat('U', AT%m, gbs_sym)
+            call AT%copySymU()
             call TMP%initialize(gbs_sym, total_dofs, 0.d0)
 ! ----- step1: TMP = AT * gradrec
             call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
@@ -353,7 +353,7 @@ contains
 ! ----- compute lhs += gradrec**T * AT * gradrec
 !
 ! ----- Copy symetric part of AT
-        call hhoCopySymPartMat('U', AT%m, gbs_sym)
+        call AT%copySymU()
 ! ----- step1: TMP = AT * gradrec
         call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
 !

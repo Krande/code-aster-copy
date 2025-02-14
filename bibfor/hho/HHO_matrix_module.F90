@@ -49,12 +49,13 @@ module HHO_matrix_module
         procedure, pass :: read => hhoMatriceRead
         procedure, pass :: setValue => hhoMatriceSetValue
         procedure, pass :: print => hhoMatricePrint
+        procedure, pass :: copySymU => hhoMatriceCopySymU
 !
     end type HHO_matrix
 !
     public   :: HHO_matrix
     private  :: hhoMatriceInit, hhoMatriceFree, hhoMatriceWrite, hhoMatriceSetValue
-    private  :: hhoMatriceRead, hhoMatricePrint
+    private  :: hhoMatriceRead, hhoMatricePrint, hhoMatriceCopySymU
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -183,6 +184,31 @@ contains
         write (6, *) "matrix of", this%nrows, "rows x ", this%ncols, "cols"
         do i = 1, this%nrows
             write (6, '(50ES13.6)') this%m(i, 1:this%ncols)
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMatriceCopySymU(this)
+!
+        implicit none
+!
+        class(HHO_matrix), intent(in) :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   print matrix
+!   In mat   : matrix to print
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i
+!
+!
+        do i = 1, this%ncols-1
+            this%m(i+1:this%ncols, i) = this%m(i, i+1:this%ncols)
         end do
 !
     end subroutine

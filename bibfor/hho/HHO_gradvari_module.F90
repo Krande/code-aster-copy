@@ -462,7 +462,7 @@ contains
 !
             call hhoCopySymPartMat('U', lhs_vv(1:gv_cbs, 1:gv_cbs))
             call hhoCopySymPartMat('U', lhs_vl(1:gv_cbs, 1:gv_cbs))
-            call hhoCopySymPartMat('U', lhs_ll%m(1:gv_cbs, 1:gv_cbs))
+            call lhs_ll%copySymU()
 !
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
