@@ -21,18 +21,23 @@ from .syme_utilities import SymmetryManager
 
 
 def BuildFullSymmetryMassif(resuin):
-    """Return a new result containing the symmetric projecton merged with the current one.
+    """
+    Returns a new result containing the symmetric projection merged with the
+    current one.
 
-    Data is mirrored along `X`, `Y` and then `Z` with respect to the cartesian origin (0,0,0).
-    Only nodal fields are taken into account.
+    This function performs a symmetric projection of the input corrector fields
+    along the `X`, `Y`, and `Z` axes, with respect to the Cartesian origin
+    (0, 0, 0). The projection is done sequentially along each axis, and only
+    nodal fields are considered in this process. The resulting fields are merged
+    to produce a comprehensive symmetric dataset.
 
-    Arguments
-    ---------
-        resuin (MEDFileData): Input corrector fields.
+    Args:
+        resuin (MEDFileData): The input corrector fields to be symmetrically
+            projected.
 
-    Returns
-    -------
-        resuout (MEDFileData): Output corrector fields.
+    Returns:
+        MEDFileData: The output corrector fields containing the symmetric
+            projections merged with the original data.
     """
 
     point = [0, 0, 0]

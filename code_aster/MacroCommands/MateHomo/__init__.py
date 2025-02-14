@@ -35,7 +35,7 @@ class HomoType:
         """
         Get text representation of given value.
 
-        Arguments:
+        Args:
             value (HomoType): Homogeneisation type.
 
         Returns:
@@ -55,7 +55,7 @@ class HomoType:
         """
         Get value representation of given text.
 
-        Arguments:
+        Args:
             text (str): Homogeneisation type.
 
         Returns:

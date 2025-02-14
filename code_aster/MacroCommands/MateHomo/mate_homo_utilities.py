@@ -39,15 +39,14 @@ from . import NameConverter
 
 
 def create_empty_dictpara(ls_para):
-    """Init empty result table.
+    """
+    Init empty result table.
 
-    Arguments
-    ---------
+    Args:
         para (list[str]): List of output parameters.
 
-    Returns
-    -------
-        tab (OrderedDict): Output table.
+    Returns:
+        OrderedDict: Output table.
     """
 
     tabpara = OrderedDict()
@@ -58,15 +57,21 @@ def create_empty_dictpara(ls_para):
 
 def get_temp_def_alpha(resu):
     """
-    Return the set TEMP_DEF_ALPHA from a Result datastructure.
+    Retrieve the TEMP_DEF_ALPHA parameter from a Result datastructure.
 
-    Arguments
-    ---------
-        resu (Result): Input result datastructure.
+    This function searches through the provided Result datastructure (`resu`) to
+    find the TEMP_DEF_ALPHA parameter. If the parameter is found, it returns its
+    value. If the parameter is not found, the function returns a default value of
+    20. This is useful for ensuring that a valid temperature deformation alpha
+    value is always available for further calculations.
 
-    Returns
-    -------
-        tda (float): The TEMP_DEF_ALPHA parameter if found, otherwise default 20.
+    Args:
+        resu (Result): The input result datastructure from which to retrieve the
+            TEMP_DEF_ALPHA parameter.
+
+    Returns:
+        float: The TEMP_DEF_ALPHA parameter if found, otherwise the default value
+            of 20.
     """
 
     temp_def_alpha = 20.0
@@ -84,23 +89,29 @@ def get_temp_def_alpha(resu):
 
 def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
     """
-    Return the proper material fields prescription to compute the homogeneus parameters.
+    Returns the appropriate material fields prescription to compute the
+    homogeneous parameters.
 
-    In order to perform homogeneisation for several temperature values,
-    it is necessary to ignore the ALPHA and RHO_CP parameters.
+    This function processes the material prescriptions provided by the user to
+    prepare them for homogenization computations. It handles the following tasks:
+    1. Ignores the ALPHA and RHO_CP parameters for multiple temperature values to
+       ensure accurate homogenization.
+    2. Converts the command variable to a pseudo-TEMP if it is not already TEMP.
+    3. Converts the TOUT='OUI' prescription to GROUP_MA='BODY' to standardize the
+       input.
 
-    If command variable is not TEMP, convert the command variable to a pseudo-TEMP.
+    Args:
+        type_homo (str): Type of homogenization (MASSIF | PLAQUE). Determines the
+            type of homogenization to be performed.
+        ls_affe (list): List of material prescriptions from the user command.
+            These prescriptions define the material properties and their variations
+            with respect to temperature or other variables.
+        varc_name (str): Name of the command variable (TEMP | IRRA). This variable
+            indicates the type of parameter variation (e.g., temperature or
+            irradiation).
+        ls_group_tout (list[str]): List of groups where properties are prescribed.
 
-    This function also convert the TOUT='OUI' prescription in GROUP_MA='BODY'.
-
-    Arguments
-    ---------
-        type (str): Type of homogeneisation (MASSIF | PLAQUE).
-        affe (list): List of material prescription from user command.
-        varcname (str): Name of command variable (TEMP | IRRA).
-
-    Returns
-    -------
+    Returns:
         affe_mate (dict): Modified material prescription for material averaging.
         affe_calc (dict): Modified material prescription for corrector computation.
     """
@@ -223,20 +234,26 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
 
 
 def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
-    """Modify the ALPHA functions parameters.
+    """
+    Modifies the ALPHA function parameters.
 
-    This function converts the prescribed ALPHA function of temperature as functions of time.
-    They are used for the computation of the dilatation corrector fields.
+    This function converts the prescribed ALPHA function of temperature into
+    functions of time. These modified functions are used for the computation of
+    the dilatation corrector fields, which are essential for accurately modeling
+    thermal expansion behavior.
 
-    Arguments
-    ---------
-        affe_mate (dict): Modified material prescription for material averaging.
-        varcvalue (list[float]): List of temperature at which parameters are computed.
+    Args:
+        ls_affe_mod_mate (list[dict]): Modified material prescription for material
+            averaging. This list contains dictionaries with material properties
+            that have been adjusted for homogenization.
+        varc_values (list[float]): List of temperatures at which parameters are
+            computed. These values are used to create the time-dependent ALPHA
+            functions.
 
-    Returns
-    -------
-        alpha_calc (list): Modified ALPHA functions.
-
+    Returns:
+        list[dict]: Modified ALPHA functions as a list of dictionaries. Each
+            dictionary contains the group name and the corresponding ALPHA function
+            of time.
     """
 
     ls_alpha_calc = []
@@ -257,26 +274,58 @@ def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
 
 
 def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values):
-    """Setup the homogeneus parameters computation.
+    """
+    Sets up the computation of homogeneous parameters.
 
-    Arguments
-    ---------
-        type (str): Type of homogeneisation (MASSIF | PLAQUE).
-        mesh (Mesh): The VER mesh.
-        groupma (list[str]): List of groups where properties are prescribed.
-        affe (list): List of material prescription from user command.
-        varcname (str): Name of command variable (TEMP | IRRA).
-        varcvalue (list[float]): List of temperature at which parameters are computed.
+    This function prepares the necessary components for the computation of
+    homogeneous parameters based on the specified type of homogenization
+    (either MASSIF or PLAQUE). It processes the material prescriptions provided
+    by the user, sets up the mechanical and thermal models, and computes the
+    dilatation coefficients as functions of pseudo-time (temperature).
 
-    Returns
-    -------
-        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
-        modme (Model): Mechanical model.
-        matme (MaterialField): Mechanical material field.
-        modth (Model): Thermal model.
-        matth (MaterialField): Thermal material field.
-        linst (ListOfFloats): List of pseudo-time values (homogeneisation temperature values).
-        alpha (list): List of dilatation coefficient as function of pseudo-time (temperature).
+    The function performs the following tasks:
+    1. Processes the material prescriptions to handle different temperature
+       values and converts command variables to pseudo-TEMP if necessary.
+    2. Sets up the mechanical model and material field for the computation of
+       mechanical properties.
+    3. Sets up the thermal model and material field for the computation of
+       thermal properties.
+    4. Computes the dilatation coefficients (ALPHA) as functions of pseudo-time,
+       which correspond to the specified temperature values.
+
+    Args:
+        type_homo (str): Type of homogenization (MASSIF | PLAQUE). Determines the
+            type of homogenization to be performed.
+        mesh (Mesh): The VER mesh used for the computation.
+        ls_group_tout (list[str]): List of groups where properties are prescribed.
+            These groups define the regions of the mesh where material properties
+            are applied.
+        ls_affe (list): List of material prescriptions from the user command.
+            These prescriptions define the material properties and their
+            variations with respect to temperature or other variables.
+        varc_name (str): Name of the command variable (TEMP | IRRA). This variable
+            indicates the type of parameter variation (e.g., temperature or
+            irradiation).
+        varc_values (list[float]): List of temperatures at which parameters are
+            computed. These values define the pseudo-time steps for the
+            homogenization process.
+
+    Returns:
+        ElasticResult: Mechanical result from 0-load boundary condition. This
+            result contains the computed mechanical properties of the material
+            under the specified conditions.
+        Model: Mechanical model used for the computation of mechanical properties.
+        MaterialField: Mechanical material field containing the material
+            properties for the mechanical model.
+        Model: Thermal model used for the computation of thermal properties.
+        MaterialField: Thermal material field containing the material properties
+            for the thermal model.
+        ListOfFloats: List of pseudo-time values (homogenization temperature
+            values). These values correspond to the specified temperature values
+            and are used as time steps in the homogenization process.
+        list: List of dilatation coefficients (ALPHA) as functions of pseudo-time
+            (temperature). These coefficients describe the thermal expansion
+            behavior of the material at different temperatures.
     """
 
     ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(
@@ -352,24 +401,30 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
 
 
 def cross_work(RESU1, RESU2, INST, ls_group_tout):
-    """Compute the cross work value of correctors using the potential energy.
+    """
+    Computes the cross work value of correctors using the potential energy.
 
-    If X == Y --> W = 2 * EPOT(X)
+    This function calculates the cross work value of correctors based on their
+    potential energy. The cross work value is determined using the following
+    formulas:
+    - If X == Y: W = 2 * EPOT(X)
+    - If X != Y: W = EPOT(X + Y) - EPOT(X) - EPOT(Y)
 
-    If X != Y --> W = EPOT(X + Y) - EPOT(X) - EPOT(Y)
+    Note: These formulas depend on the choice of boundary conditions (BC) for
+    correctors (PRE_EPSI).
 
-    Warning : these formulas depends on the choice of BC for correctors (PRE_EPSI).
+    Args:
+        RESU1 (Result): The first result data structure, either elastic or
+            thermal.
+        RESU2 (Result): The second result data structure, either elastic or
+            thermal.
+        INST (float): The pseudo-time (temperature) value for the work
+            computation.
+        ls_group_tout (list[str]): List of groups where properties are
+            prescribed.
 
-    Arguments
-    ---------
-        resu1 (Result): The first result datastructure, elastic or thermal.
-        resu2 (Result): The second result datastructure, elastic or thermal.
-        inst (float): The pseudo-time (temperature) value for the work computation.
-        groupma (list[str]): List of groups where properties are prescribed.
-
-    Returns
-    -------
-        work (float): The cross work value.
+    Returns:
+        float: The cross work value.
     """
 
     ASSERT(RESU1.getMesh() is RESU2.getMesh())

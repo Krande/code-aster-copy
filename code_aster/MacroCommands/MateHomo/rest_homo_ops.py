@@ -32,7 +32,11 @@ def rest_homo_ops(self, **kwargs):
     """
     Main function for field relocalisation.
 
+    This function performs the relocalisation of fields based on the provided global results
+    and user settings. It supports both mechanical and thermal field relocalisation.
+
     """
+
     # Read the user settings
     resu_glob_meca = kwargs.get("EVOL_ELAS")
     resu_glob_ther = kwargs.get("EVOL_THER")

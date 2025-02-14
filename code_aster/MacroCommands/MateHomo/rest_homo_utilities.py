@@ -154,8 +154,7 @@ class RelocManager:
         """
         Init function.
 
-        Arguments
-        ---------
+        Args:
             kwargs (dict) : Arguments dict from aster catalogue.
         """
 
@@ -291,12 +290,10 @@ class RelocManager:
         If present, returns the associated list of storage indexes
         Otherwise returns the full list of NUME_ORDRE
 
-        Arguments
-        ---------
+        Args:
             resu (ElasticResult | ThermalResult): Result datastructure
 
-        Returns
-        -------
+        Returns:
             idx (list[int]): List of storage indexes.
 
         """
@@ -317,8 +314,7 @@ class RelocManager:
         Temperature values are given as function of time.
         They are then used as access variable (pseudo-time) to interpolate the corrector fields.
 
-        Arguments
-        ---------
+        Args:
             x (list[float]): Time values.
             y (list[float]): Temperature values.
             ext (bool): True to set linear extrapolation out of time bounds (default : False)
@@ -343,13 +339,11 @@ class RelocManager:
         Result is interpolated at the specified parameter value.
         The parameter is temperature, which is used as pseudo-time.
 
-        Arguments
-        ---------
+        Args:
             name (str): The corrector field name (e.g. CORR_MECA11).
             value (float): Temperature value for field interpolation.
 
-        Returns
-        -------
+        Returns:
             array (np.ndarray): The corrector field values.
 
         """
@@ -377,12 +371,10 @@ class RelocManager:
         Result is interpolated at the specified parameter value.
         The parameter is temperature, which is used as pseudo-time.
 
-        Arguments
-        ---------
+        Args:
             value (float): Value of temperature for interpolation.
 
-        Returns
-        -------
+        Returns:
             arrays (list[np.ndarray]): List of corrector fields values.
         """
 
@@ -412,12 +404,10 @@ class RelocManager:
         Result is interpolated at the specified parameter value.
         The parameter is temperature, which is used as pseudo-time.
 
-        Arguments
-        ---------
+        Args:
             value (float): Value of temperature for interpolation.
 
-        Returns
-        -------
+        Returns:
             arrays (list[np.ndarray]): List of corrector fields values.
         """
 
@@ -437,12 +427,10 @@ class RelocManager:
         The global solution is the result of a computation using homogeneus parameters.
         Return arrays are intented to be function of time.
 
-        Arguments
-        ---------
+        Args:
             resu (ElasticResult): The global solution.
 
-        Returns
-        -------
+        Returns:
             dp0 (dict): Displacement of point P0 (DEPL).
             epsip0 (dict): Strain of point P0 (EPSI_NOEU).
 
@@ -486,12 +474,10 @@ class RelocManager:
         The global solution is the result of a computation using homogeneus parameters.
         Return arrays are intented to be function of time.
 
-        Arguments
-        ---------
+        Args:
             resu (ThermalResult): The global solution.
 
-        Returns
-        -------
+        Returns:
             tp0 (dict): Temperature of point P0 (TEMP).
             gratp0 (dict): Temperature gradient of point P0 (GRAT_NOEU).
 
