@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1504
 !
 ! ==================================================================================================
 !
@@ -109,9 +110,14 @@ contains
 !
 ! In  model             : name of model
 ! In  caraElem          : name of elementary characteristics (field)
+! In  materField        : name of material characteristics (field)
+! In  compor            : name of comportment definition (field)
 ! In  time              : time
 ! In  applySuiv         : flag for undead loads
 ! In  iLoad             : index of load in list of loads datastructure
+! In  timePrev          : previous time
+! In  timeCurr          : current time
+! In  timeTheta         : parameter theta
 ! In  loadPreObject     : base JEVEUX name for object
 ! In  loadLigrel        : ligrel for load
 ! In  ligrelCalc        : LIGREL to compute
@@ -124,20 +130,25 @@ contains
 ! In  dispCumuInst      : displacement increment from beginning of current time
 ! In  strxPrev          : fibers information at beginning of current time
 ! In  viteCurr          : speed at current time
+! In  acceCurr          : acceleration at current time
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compLoadEvolVect(modelZ, caraElemZ, time, jvBase, &
-                                applySuiv, iLoad, loadPreObjectZ, &
-                                loadLigrelZ, ligrelCalc, &
+    subroutine compLoadEvolVect(modelZ, caraElemZ, materFieldZ, compor, &
+                                time, jvBase, &
+                                applySuiv, iLoad, &
+                                timePrev, timeCurr, timeTheta, &
+                                loadPreObjectZ, loadLigrelZ, ligrelCalc, &
                                 nbFieldInGene, lpain, lchin, &
                                 resuElem, vectElem, &
-                                dispPrev_, dispCumuInst_, strxPrev_, viteCurr_)
+                                dispPrev_, dispCumuInst_, strxPrev_, viteCurr_, acceCurr_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=*), intent(in) :: modelZ, caraElemZ
+        character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ
+        character(len=24), intent(in) :: compor
         real(kind=8), intent(in) :: time
         character(len=1), intent(in) :: jvBase
         integer, intent(in) :: iLoad
+        real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
         aster_logical, intent(in) :: applySuiv
         character(len=24), intent(in)  :: ligrelCalc
@@ -147,7 +158,7 @@ contains
         character(len=19), intent(inout) :: resuElem
         character(len=19), intent(in) :: vectElem
         character(len=19), optional, intent(in) :: dispPrev_, dispCumuInst_
-        character(len=19), optional, intent(in) :: strxPrev_, viteCurr_
+        character(len=19), optional, intent(in) :: strxPrev_, viteCurr_, acceCurr_
 ! ----- Local
         character(len=19), parameter :: inputLoadField = '&&NMDEPR'
         character(len=1), parameter :: stop = 'S'
@@ -161,7 +172,7 @@ contains
         character(len=24) :: loadObjectJv
         character(len=8), pointer :: loadObject(:) => null()
         integer :: indxNeumType
-        character(len=19) :: dispPrev, dispCumuInst, strxPrev, viteCurr
+        character(len=24) :: dispPrev, dispCumuInst, strxPrev, viteCurr, acceCurr
         aster_logical :: existBody2D, existBody3D, existSurf, existLine, existPressure
         aster_logical :: existNodalForce, existWind, hasLoad
         aster_logical :: lSuivLoad
@@ -185,6 +196,10 @@ contains
         viteCurr = " "
         if (present(viteCurr_)) then
             viteCurr = viteCurr_
+        end if
+        acceCurr = " "
+        if (present(acceCurr_)) then
+            acceCurr = acceCurr_
         end if
 
 ! ----- Get object from AFFE_CHAR_MECA
@@ -236,6 +251,9 @@ contains
             end if
             call compLoadVectType(applyPilo, applySuiv, &
                                   indxNeumType, iLoad, loadNume, &
+                                  modelZ, materFieldZ, compor, &
+                                  strxPrev, viteCurr, acceCurr, &
+                                  timePrev, timeCurr, timeTheta, &
                                   loadPreObjectZ, loadLigrelZ, &
                                   hasInputField, inputLoadField, &
                                   stop, nbFieldInGene, lpain, lchin, &
@@ -272,6 +290,9 @@ contains
             end if
             call compLoadVectType(applyPilo, applySuiv, &
                                   indxNeumType, iLoad, loadNume, &
+                                  modelZ, materFieldZ, compor, &
+                                  strxPrev, viteCurr, acceCurr, &
+                                  timePrev, timeCurr, timeTheta, &
                                   loadPreObjectZ, loadLigrelZ, &
                                   hasInputField, inputLoadField, &
                                   stop, nbFieldInGene, lpain, lchin, &
@@ -295,6 +316,9 @@ contains
             end if
             call compLoadVectType(applyPilo, applySuiv, &
                                   indxNeumType, iLoad, loadNume, &
+                                  modelZ, materFieldZ, compor, &
+                                  strxPrev, viteCurr, acceCurr, &
+                                  timePrev, timeCurr, timeTheta, &
                                   loadPreObjectZ, loadLigrelZ, &
                                   hasInputField, inputLoadField, &
                                   stop, nbFieldInGene, lpain, lchin, &
@@ -492,7 +516,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=24), intent(in) :: model, caraElem
-        character(len=19), intent(in) :: dispPrev, dispCumuInst, strxPrev, viteCurr
+        character(len=24), intent(in) :: dispPrev, dispCumuInst, strxPrev, viteCurr
         integer, intent(in) :: iLoad
         character(len=19), intent(in) :: inputLoadField
         character(len=24), intent(in) :: ligrelCalc
@@ -625,54 +649,34 @@ contains
 ! Prepare input fields for computation of mechanical loads
 !
 ! In  model             : name of model
-! In  materField        : name of material characteristics (field)
 ! In  mateco            : mane of coded material
 ! In  caraElem          : name of elementary characteristics (field)
-! In  applySuiv         : flag for undead loads
-! In  timePrev          : previous time
-! In  timeCurr          : current time
-! In  timeTheta         : parameter theta
 ! In  nharm             : Fourier mode
 ! In  varcCurr          : command variable for current time
 ! In  dispPrev          : displacement at beginning of current time
 ! In  dispCumuInst      : displacement increment from beginning of current time
-! In  compor            : name of comportment definition (field)
-! In  strxPrev          : fibers information at beginning of current time
-! In  viteCurr          : speed at current time
-! In  acceCurr          : acceleration at current time
 ! Out nbFieldInGene     : number of input fields (generic for all loads)
 ! Out lpain             : list of input parameters
 ! Out lchin             : list of input fields
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine prepGeneralFields(modelZ, caraElemZ, materFieldZ, matecoZ, &
-                                 applySuiv, &
-                                 timePrev, timeCurr, timeTheta, nharm, &
+    subroutine prepGeneralFields(modelZ, caraElemZ, matecoZ, &
+                                 nharm, &
                                  varcCurr, dispPrev, dispCumuInst, &
-                                 compor, strxPrev, viteCurr, acceCurr, &
                                  nbFieldInGene, lpain, lchin)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: modelZ, caraElemZ
-        character(len=*), intent(in) :: materFieldZ, matecoZ
-        aster_logical, intent(in) :: applySuiv
-        real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
+        character(len=*), intent(in) ::  matecoZ
         integer, intent(in) :: nharm
         character(len=24), intent(in) :: varcCurr, dispPrev, dispCumuInst
-        character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
         integer, intent(out) :: nbFieldInGene
         character(len=*), intent(out) :: lpain(LOAD_NEUM_NBMAXIN), lchin(LOAD_NEUM_NBMAXIN)
 ! ----- Local
         integer :: ier
         aster_logical :: lXfem
         character(len=8) :: mesh
-        character(len=24) :: ligrel_model
         character(len=24) :: chgeom, chcara(18), chharm
-        character(len=24), parameter :: chtime = "&&VECHME.CHTIME"
-        integer, parameter :: nbCmp = 3
-        character(len=8), parameter :: cmpName(nbCmp) = (/ &
-                                       "INST    ", "DELTAT  ", "THETA   "/)
-        real(kind=8) :: cmpValue(nbCmp)
 !   ------------------------------------------------------------------------------------------------
 !
         nbFieldInGene = 0
@@ -680,7 +684,6 @@ contains
         lchin = " "
 
 ! ----- Parameters from model
-        ligrel_model = modelZ(1:8)//'.MODELE'
         call exixfe(modelZ, ier)
         lXfem = ier .ne. 0
         call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk=mesh)
@@ -691,84 +694,49 @@ contains
 ! ----- Prepare field for elementary characteristics
         call mecara(caraElemZ, chcara)
 
-! ----- Prepare field for time
-        if (applySuiv) then
-            cmpValue(1) = timeCurr
-        else
-            cmpValue(1) = timePrev
-        end if
-        cmpValue(2) = timeCurr-timePrev
-        cmpValue(3) = timeTheta
-        call mecact('V', chtime, 'LIGREL', ligrel_model, 'INST_R  ', &
-                    ncmp=nbCmp, lnomcmp=cmpName, vr=cmpValue)
-
 ! ----- Prepare field for Fourier
         call meharm(modelZ, nharm, chharm)
 
 ! ----- Standard fields
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
-        lpain(2) = 'PINSTR'
-        lchin(2) = chtime
-        lpain(3) = 'PMATERC'
-        lchin(3) = matecoZ
-        lpain(4) = 'PCACOQU'
-        lchin(4) = chcara(7)
-        lpain(5) = 'PCAGNPO'
-        lchin(5) = chcara(6)
-        lpain(6) = 'PCADISM'
-        lchin(6) = chcara(3)
-        lpain(7) = 'PCAORIE'
-        lchin(7) = chcara(1)
-        lpain(8) = 'PCACABL'
-        lchin(8) = chcara(10)
-        lpain(9) = 'PCAARPO'
-        lchin(9) = chcara(9)
-        lpain(10) = 'PCAGNBA'
-        lchin(10) = chcara(11)
-        lpain(11) = 'PCAMASS'
-        lchin(11) = chcara(12)
-        lpain(12) = 'PCAGEPO'
-        lchin(12) = chcara(5)
-        lpain(13) = 'PNBSP_I'
-        lchin(13) = chcara(16)
-        lpain(14) = 'PFIBRES'
-        lchin(14) = chcara(17)
-        lpain(15) = 'PCINFDI'
-        lchin(15) = chcara(15)
-        lpain(16) = 'PHARMON'
-        lchin(16) = chharm
-        lpain(17) = 'PVARCPR'
-        lchin(17) = varcCurr
-        lpain(18) = 'PDEPLMR'
-        lchin(18) = dispPrev
-        lpain(19) = 'PDEPLPR'
-        lchin(19) = dispCumuInst
-        lpain(20) = 'PABSCUR'
-        lchin(20) = mesh(1:8)//'.ABSC_CURV'
-        nbFieldInGene = 20
-        if (applySuiv) then
-            nbFieldInGene = nbFieldInGene+1
-            lpain(nbFieldInGene) = 'PVITPLU'
-            lchin(nbFieldInGene) = viteCurr
-            nbFieldInGene = nbFieldInGene+1
-            lpain(nbFieldInGene) = 'PACCPLU'
-            lchin(nbFieldInGene) = acceCurr
-            nbFieldInGene = nbFieldInGene+1
-            lpain(nbFieldInGene) = 'PSTRXMR'
-            lchin(nbFieldInGene) = strxPrev
-        end if
-
-! ----- Behaviour: from DEFI_COMPOR or from non-linear
-        if (applySuiv) then
-            nbFieldInGene = nbFieldInGene+1
-            lpain(nbFieldInGene) = 'PCOMPOR'
-            lchin(nbFieldInGene) = compor
-        else
-            nbFieldInGene = nbFieldInGene+1
-            lpain(nbFieldInGene) = 'PCOMPOR'
-            lchin(nbFieldInGene) = materFieldZ(1:8)//'.COMPOR'
-        end if
+        lpain(2) = 'PMATERC'
+        lchin(2) = matecoZ
+        lpain(3) = 'PCACOQU'
+        lchin(3) = chcara(7)
+        lpain(4) = 'PCAGNPO'
+        lchin(4) = chcara(6)
+        lpain(5) = 'PCADISM'
+        lchin(5) = chcara(3)
+        lpain(6) = 'PCAORIE'
+        lchin(6) = chcara(1)
+        lpain(7) = 'PCACABL'
+        lchin(7) = chcara(10)
+        lpain(8) = 'PCAARPO'
+        lchin(8) = chcara(9)
+        lpain(9) = 'PCAGNBA'
+        lchin(9) = chcara(11)
+        lpain(10) = 'PCAMASS'
+        lchin(10) = chcara(12)
+        lpain(11) = 'PCAGEPO'
+        lchin(11) = chcara(5)
+        lpain(12) = 'PNBSP_I'
+        lchin(12) = chcara(16)
+        lpain(13) = 'PFIBRES'
+        lchin(13) = chcara(17)
+        lpain(14) = 'PCINFDI'
+        lchin(14) = chcara(15)
+        lpain(15) = 'PHARMON'
+        lchin(15) = chharm
+        lpain(16) = 'PVARCPR'
+        lchin(16) = varcCurr
+        lpain(17) = 'PDEPLMR'
+        lchin(17) = dispPrev
+        lpain(18) = 'PDEPLPR'
+        lchin(18) = dispCumuInst
+        lpain(19) = 'PABSCUR'
+        lchin(19) = mesh(1:8)//'.ABSC_CURV'
+        nbFieldInGene = 19
 
 ! ----- Specific fields for HHO
         call hhoAddInputField(modelZ, LOAD_NEUM_NBMAXIN, lchin, lpain, nbFieldInGene)
@@ -792,6 +760,15 @@ contains
 ! In  applySuiv         : flag for undead loads
 ! In  iLoad             : index of current load
 ! In  loadNume          : identification of load type
+! In  model             : name of model
+! In  materField        : name of material characteristics (field)
+! In  compor            : name of comportment definition (field)
+! In  strxPrev          : fibers information at beginning of current time
+! In  viteCurr          : speed at current time
+! In  acceCurr          : acceleration at current time
+! In  timePrev          : previous time
+! In  timeCurr          : current time
+! In  timeTheta         : parameter theta
 ! In  loadPreObject     : base JEVEUX name for object
 ! In  loadLigrel        : ligrel for load
 ! In  stop              : CALCUL subroutine comportement
@@ -805,13 +782,20 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine compLoadVect(applyPilo, applySuiv, &
-                            iLoad, loadNume, loadPreObjectZ, loadLigrelZ, &
+                            iLoad, loadNume, &
+                            modelZ, materFieldZ, compor, &
+                            strxPrev, viteCurr, acceCurr, &
+                            timePrev, timeCurr, timeTheta, &
+                            loadPreObjectZ, loadLigrelZ, &
                             stop, nbFieldInGene, lpain, lchin, &
                             ligrelCalcZ, jvBase, resuElemZ, vectElemZ)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         aster_logical, intent(in) :: applyPilo, applySuiv
         integer, intent(in) :: iLoad, loadNume
+        character(len=*), intent(in) :: modelZ, materFieldZ
+        character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
+        real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
         character(len=1), intent(in) :: stop
         integer, intent(in) :: nbFieldInGene
@@ -829,6 +813,9 @@ contains
         do indxNeumType = 1, LOAD_NEUM_NBTYPE
             call compLoadVectType(applyPilo, applySuiv, &
                                   indxNeumType, iLoad, loadNume, &
+                                  modelZ, materFieldZ, compor, &
+                                  strxPrev, viteCurr, acceCurr, &
+                                  timePrev, timeCurr, timeTheta, &
                                   loadPreObjectZ, loadLigrelZ, &
                                   hasInputField, inputLoadField, &
                                   stop, nbFieldInGene, lpain, lchin, &
@@ -925,6 +912,16 @@ contains
 ! Prepare specific fields
 !
 ! In  indxNeumType      : index of the type
+! In  applySuiv         : flag for undead loads
+! In  model             : name of model
+! In  materField        : name of material characteristics (field)
+! In  compor            : name of comportment definition (field)
+! In  strxPrev          : fibers information at beginning of current time
+! In  viteCurr          : speed at current time
+! In  acceCurr          : acceleration at current time
+! In  timePrev          : previous time
+! In  timeCurr          : current time
+! In  timeTheta         : parameter theta
 ! In  loadField         : standard input field
 ! In  loadPreObject     : base JEVEUX name for object
 ! In  loadIsFunc        : flag if load is a function
@@ -936,13 +933,20 @@ contains
 ! IO  lchin             : list of input fields
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine prepSpecificFields(indxNeumType, &
+    subroutine prepSpecificFields(indxNeumType, applySuiv, &
+                                  modelZ, materFieldZ, compor, &
+                                  strxPrev, viteCurr, acceCurr, &
+                                  timePrev, timeCurr, timeTheta, &
                                   loadFieldZ, loadPreObjectZ, &
                                   loadIsSigm, loadIsFunc, loadIsVectAsse, &
                                   nbFieldInGene, nbFieldIn, lpain, lchin)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         integer, intent(in) :: indxNeumType
+        aster_logical, intent(in) :: applySuiv
+        character(len=*), intent(in) :: modelZ, materFieldZ
+        character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
+        real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadFieldZ, loadPreObjectZ
         aster_logical, intent(in) :: loadIsSigm, loadIsFunc, loadIsVectAsse
         integer, intent(in) :: nbFieldInGene
@@ -953,10 +957,33 @@ contains
         character(len=8) :: ng
         character(len=8), pointer :: preSigm(:) => null()
         integer, pointer :: desc(:) => null()
+        character(len=24) :: ligrel_model
+        character(len=24), parameter :: chtime = "&&VECHME.CHTIME"
+        integer, parameter :: nbCmp = 3
+        character(len=8), parameter :: cmpName(nbCmp) = (/ &
+                                       "INST    ", "DELTAT  ", "THETA   "/)
+        real(kind=8) :: cmpValue(nbCmp)
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(indxNeumType .ge. 1 .and. indxNeumType .le. LOAD_NEUM_NBTYPE)
         nbFieldIn = nbFieldInGene
+
+! ----- Parameters from model
+        ligrel_model = modelZ(1:8)//'.MODELE'
+
+! ----- Prepare field for time
+        if (applySuiv) then
+            cmpValue(1) = timeCurr
+        else
+            cmpValue(1) = timePrev
+        end if
+        cmpValue(2) = timeCurr-timePrev
+        cmpValue(3) = timeTheta
+        call mecact('V', chtime, 'LIGREL', ligrel_model, 'INST_R  ', &
+                    ncmp=nbCmp, lnomcmp=cmpName, vr=cmpValue)
+        nbFieldIn = nbFieldIn+1
+        lpain(nbFieldIn) = 'PINSTR'
+        lchin(nbFieldIn) = chtime
 
 ! ----- Name of input fields
         if (loadIsFunc) then
@@ -1025,6 +1052,31 @@ contains
                 lchin(nbFieldIn) = loadPreObjectZ(1:13)//'.DEPL_R'
             end if
         end if
+
+! ----- Fields for SUIV
+        if (applySuiv) then
+            nbFieldIn = nbFieldIn+1
+            lpain(nbFieldIn) = 'PVITPLU'
+            lchin(nbFieldIn) = viteCurr
+            nbFieldIn = nbFieldIn+1
+            lpain(nbFieldIn) = 'PACCPLU'
+            lchin(nbFieldIn) = acceCurr
+            nbFieldIn = nbFieldIn+1
+            lpain(nbFieldIn) = 'PSTRXMR'
+            lchin(nbFieldIn) = strxPrev
+        end if
+
+! ----- Behaviour: from DEFI_COMPOR or from non-linear
+        if (applySuiv) then
+            nbFieldIn = nbFieldIn+1
+            lpain(nbFieldIn) = 'PCOMPOR'
+            lchin(nbFieldIn) = compor
+        else
+            nbFieldIn = nbFieldIn+1
+            lpain(nbFieldIn) = 'PCOMPOR'
+            lchin(nbFieldIn) = materFieldZ(1:8)//'.COMPOR'
+        end if
+
         ASSERT(nbFieldIn .le. LOAD_NEUM_NBMAXIN)
 !
 !   ------------------------------------------------------------------------------------------------
@@ -1093,6 +1145,15 @@ contains
 ! In  indxNeumType      : index of the type
 ! In  iLoad             : index of current load
 ! In  loadNume          : identification of load type
+! In  model             : name of model
+! In  materField        : name of material characteristics (field)
+! In  compor            : name of comportment definition (field)
+! In  strxPrev          : fibers information at beginning of current time
+! In  viteCurr          : speed at current time
+! In  acceCurr          : acceleration at current time
+! In  timePrev          : previous time
+! In  timeCurr          : current time
+! In  timeTheta         : parameter theta
 ! In  loadPreObject     : base JEVEUX name for object
 ! In  loadLigrel        : ligrel for load
 ! In  hasInputField     : input field given by load (for EVOL_CHAR)
@@ -1109,6 +1170,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compLoadVectType(applyPilo, applySuiv, &
                                 indxNeumType, iLoad, loadNume, &
+                                modelZ, materFieldZ, compor, &
+                                strxPrev, viteCurr, acceCurr, &
+                                timePrev, timeCurr, timeTheta, &
                                 loadPreObjectZ, loadLigrelZ, &
                                 hasInputField, inputLoadFieldZ, &
                                 stop, nbFieldInGene, lpain, lchin, &
@@ -1117,6 +1181,9 @@ contains
 ! ----- Parameters
         aster_logical, intent(in) :: applyPilo, applySuiv
         integer, intent(in) :: indxNeumType, iLoad, loadNume
+        character(len=*), intent(in) :: modelZ, materFieldZ
+        character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
+        real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
         aster_logical, intent(in) :: hasInputField
         character(len=*), intent(in) :: inputLoadFieldZ
@@ -1165,7 +1232,10 @@ contains
                               loadRHSOption)
 
 ! --------- Add specific input fields
-            call prepSpecificFields(indxNeumType, &
+            call prepSpecificFields(indxNeumType, applySuiv, &
+                                    modelZ, materFieldZ, compor, &
+                                    strxPrev, viteCurr, acceCurr, &
+                                    timePrev, timeCurr, timeTheta, &
                                     loadField, loadPreObjectZ, &
                                     loadIsSigm, loadIsFunc, loadIsVectAsse, &
                                     nbFieldInGene, nbFieldIn, lpain, lchin)
@@ -1213,9 +1283,19 @@ contains
 ! Computation of mechanical loads - Matrix
 !
 ! In  applyPilo         : flag for "PILOTAGE" loads (continuation methods)
+! In  applySuiv         : flag for undead loads
 ! In  iLoad             : index of current load
 ! IO  iMatr             : index of current matrix
 ! In  loadNume          : identification of load type
+! In  model             : name of model
+! In  materField        : name of material characteristics (field)
+! In  compor            : name of comportment definition (field)
+! In  strxPrev          : fibers information at beginning of current time
+! In  viteCurr          : speed at current time
+! In  acceCurr          : acceleration at current time
+! In  timePrev          : previous time
+! In  timeCurr          : current time
+! In  timeTheta         : parameter theta
 ! In  loadLigrel        : ligrel for load
 ! In  loadPreObject     : base JEVEUX name for object
 ! In  stop              : CALCUL subroutine comportement
@@ -1227,16 +1307,22 @@ contains
 ! In  matrElemZ         : name of elementary matrix
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compLoadMatr(applyPilo, &
+    subroutine compLoadMatr(applyPilo, applySuiv, &
                             iLoad, iMatr, loadNume, &
+                            modelZ, materFieldZ, compor, &
+                            strxPrev, viteCurr, acceCurr, &
+                            timePrev, timeCurr, timeTheta, &
                             loadLigrelZ, loadPreObjectZ, &
                             stop, nbFieldIn, lpain, lchin, &
                             ligrelCalcZ, jvBase, matrElemZ)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        aster_logical, intent(in) :: applyPilo
+        aster_logical, intent(in) :: applyPilo, applySuiv
         integer, intent(in) :: iLoad, loadNume
         integer, intent(inout) :: iMatr
+        character(len=*), intent(in) :: modelZ, materFieldZ
+        character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
+        real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadLigrelZ, loadPreObjectZ
         character(len=1), intent(in) :: stop
         integer, intent(inout) :: nbFieldIn
@@ -1251,8 +1337,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         do indxNeumType = 1, LOAD_NEUM_NBTYPE
-            call compLoadMatrType(applyPilo, &
+            call compLoadMatrType(applyPilo, applySuiv, &
                                   indxNeumType, iLoad, iMatr, loadNume, &
+                                  modelZ, materFieldZ, compor, &
+                                  strxPrev, viteCurr, acceCurr, &
+                                  timePrev, timeCurr, timeTheta, &
                                   loadLigrelZ, loadPreObjectZ, &
                                   hasInputField, inputLoadField, &
                                   stop, nbFieldIn, lpain, lchin, &
@@ -1268,6 +1357,7 @@ contains
 ! Computation of specific mechanical load type - Matrix
 !
 ! In  applyPilo         : flag for "PILOTAGE" loads (continuation methods)
+! In  applySuiv         : flag for undead loads
 ! In  indxNeumType      : index of the type
 ! In  iLoad             : index of current load
 ! IO  iMatr             : index of current matrix
@@ -1285,17 +1375,23 @@ contains
 ! In  matrElem          : name of elementary matrix
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compLoadMatrType(applyPilo, &
+    subroutine compLoadMatrType(applyPilo, applySuiv, &
                                 indxNeumType, iLoad, iMatr, loadNume, &
+                                modelZ, materFieldZ, compor, &
+                                strxPrev, viteCurr, acceCurr, &
+                                timePrev, timeCurr, timeTheta, &
                                 loadLigrelZ, loadPreObjectZ, &
                                 hasInputField, inputLoadFieldZ, &
                                 stop, nbFieldInGene, lpain, lchin, &
                                 ligrelCalcZ, jvBase, matrElemZ)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        aster_logical, intent(in) :: applyPilo
+        aster_logical, intent(in) :: applyPilo, applySuiv
         integer, intent(in) :: indxNeumType, iLoad, loadNume
         integer, intent(inout) :: iMatr
+        character(len=*), intent(in) :: modelZ, materFieldZ
+        character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
+        real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadLigrelZ, loadPreObjectZ
         aster_logical, intent(in) :: hasInputField
         character(len=*), intent(in) :: inputLoadFieldZ
@@ -1348,7 +1444,10 @@ contains
                 ASSERT(.not. loadIsSigm)
 
 ! ------------- Add specific input fields
-                call prepSpecificFields(indxNeumType, &
+                call prepSpecificFields(indxNeumType, applySuiv, &
+                                        modelZ, materFieldZ, compor, &
+                                        strxPrev, viteCurr, acceCurr, &
+                                        timePrev, timeCurr, timeTheta, &
                                         loadField, loadPreObjectZ, &
                                         loadIsSigm, loadIsFunc, loadIsVectAsse, &
                                         nbFieldInGene, nbFieldIn, lpain, lchin)
@@ -1437,6 +1536,15 @@ contains
 ! In  iLoad             : index of current load
 ! IO  iMatr             : index of current matrix
 ! In  applySuiv         : flag for undead loads
+! In  model             : name of model
+! In  materField        : name of material characteristics (field)
+! In  compor            : name of comportment definition (field)
+! In  strxPrev          : fibers information at beginning of current time
+! In  viteCurr          : speed at current time
+! In  acceCurr          : acceleration at current time
+! In  timePrev          : previous time
+! In  timeCurr          : current time
+! In  timeTheta         : parameter theta
 ! In  loadPreObject     : base JEVEUX name for object
 ! In  loadLigrel        : ligrel for load
 ! In  ligrelCalc        : LIGREL to compute
@@ -1447,8 +1555,11 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine compLoadEvolMatr(time, jvBase, &
-                                applySuiv, iLoad, iMatr, loadPreObjectZ, &
-                                loadLigrelZ, ligrelCalc, &
+                                applySuiv, iLoad, iMatr, &
+                                modelZ, materFieldZ, compor, &
+                                strxPrev, viteCurr, acceCurr, &
+                                timePrev, timeCurr, timeTheta, &
+                                loadPreObjectZ, loadLigrelZ, ligrelCalc, &
                                 nbFieldIn, lpain, lchin, &
                                 matrElemZ)
 !   ------------------------------------------------------------------------------------------------
@@ -1457,6 +1568,9 @@ contains
         character(len=1), intent(in) :: jvBase
         integer, intent(in) :: iLoad
         integer, intent(inout) :: iMatr
+        character(len=*), intent(in) :: modelZ, materFieldZ
+        character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
+        real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
         aster_logical, intent(in) :: applySuiv
         character(len=24), intent(in)  :: ligrelCalc
@@ -1512,8 +1626,11 @@ contains
             if (applySuiv .and. .not. lSuivLoad) then
                 call utmess('F', 'CHARGES8_14')
             end if
-            call compLoadMatrType(applyPilo, &
+            call compLoadMatrType(applyPilo, applySuiv, &
                                   indxNeumType, iLoad, iMatr, loadNume, &
+                                  modelZ, materFieldZ, compor, &
+                                  strxPrev, viteCurr, acceCurr, &
+                                  timePrev, timeCurr, timeTheta, &
                                   loadLigrelZ, loadPreObjectZ, &
                                   hasInputField, inputLoadField, &
                                   stop, nbFieldIn, lpain, lchin, &
