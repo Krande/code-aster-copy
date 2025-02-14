@@ -297,19 +297,18 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
     return rhs
 
 
-# FIXME: hmm
-class SolverMockup:
+class OperatorMockup:
     """Simulate a NonLinearOperator object."""
 
     def __init__(self, phys_pb, phys_state) -> None:
-        self.phys_pb = phys_pb
-        self.phys_state = phys_state
+        self.problem = phys_pb
+        self.state = phys_state
 
 
-def _post_hooks(solver, hooks):
+def _post_hooks(lin_operator, hooks):
     """Call hooks"""
     for hook in hooks:
-        hook(solver)
+        hook(lin_operator)
 
 
 def ther_lineaire_ops(self, **args):
@@ -390,7 +389,7 @@ def ther_lineaire_ops(self, **args):
     # Define main objects
     phys_state = PhysicalState(PBT.Thermal)
     disc_comp = DiscreteComputation(phys_pb)
-    solver = SolverMockup(phys_pb, phys_state)
+    lin_operator = OperatorMockup(phys_pb, phys_state)
     hooks = [ComputeTempFromHHO()]
 
     # we define the matrix before to have an unique name
@@ -438,7 +437,7 @@ def ther_lineaire_ops(self, **args):
             diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
             phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
 
-        _post_hooks(solver, hooks)
+        _post_hooks(lin_operator, hooks)
         phys_state.commit()
 
         if save_initial_state:
@@ -489,7 +488,7 @@ def ther_lineaire_ops(self, **args):
         diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
         phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
 
-        _post_hooks(solver, hooks)
+        _post_hooks(lin_operator, hooks)
         phys_state.commit()
 
         step_rank += 1

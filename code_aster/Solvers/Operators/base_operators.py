@@ -85,7 +85,7 @@ class BaseOperators(ABC, ContextMixin, DispatcherMixin):
             scaling (float): Scaling factor for Lagrange multipliers (default: 1.0).
 
         Returns:
-            tuple (Residuals(), FieldOnCellsReal, FieldOnCellsReal):
+            tuple (Residuals, FieldOnCellsReal, FieldOnCellsReal):
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """

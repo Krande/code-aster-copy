@@ -190,8 +190,3 @@ Non Linear Solver for Mechanical Analyses
    :show-inheritance:
    :members:
    :special-members: __init__
-
-.. automodule:: code_aster.Solvers.Basics.solver_features
-   :show-inheritance:
-   :members:
-   :special-members: __init__

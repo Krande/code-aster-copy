@@ -21,7 +21,6 @@ from libaster import deleteTemporaryObjects
 
 from .base_step_solver import BaseStepSolver
 from ..Basics import ProblemType
-from ..Basics import SolverOptions as SOP
 from ...Utilities import no_new_attributes, profile
 from ..Operators import ThermalOperators
 

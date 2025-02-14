@@ -27,15 +27,7 @@ General architecture:
 
 """
 
-from .Basics import (
-    Context,
-    ContextMixin,
-    Observer,
-    PhysicalState,
-    ProblemType,
-    Residuals,
-    SolverOptions,
-)
+from .Basics import Context, PhysicalState, ProblemType, Residuals
 from .IterationSolver import ConvergenceManager, NewtonSolver, RASPENSolver, SNESSolver
 from .Main import ContactManager, NonLinearOperator, StorageManager, TimeStepper
 from .Operators import BaseOperators

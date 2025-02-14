@@ -26,4 +26,3 @@ from .context import Context, ContextMixin
 from .logging_manager import LoggingManager
 from .physical_state import PhysicalState
 from .residual import Residuals
-from .solver_features import SolverOptions
