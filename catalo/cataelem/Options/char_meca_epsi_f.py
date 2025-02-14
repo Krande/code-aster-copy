@@ -59,13 +59,14 @@ CHAR_MECA_EPSI_F = Option(
         PNBSP_I,
         PCOMPOR,
         SP.PCAGNBA,
+        SP.PABSCUR,
     ),
     para_out=(SP.PVECTUR,),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.INTERFACE, "OUI"))),
     ),
-    comment=""" CHAR_MECA_EPSI_F (MOT-CLE : EPSI_INIT): CALCUL DU SECOND
+    comment=""" CHAR_MECA_EPSI_F (MOT-CLE : PRE_EPSI): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES DEFORMATIONS INITIALES.
            LES DEFORMATIONS SONT DONNEES SOUS FORME DE FONCTION """,
 )

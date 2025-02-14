@@ -336,6 +336,7 @@ class MECA_POU_D_TGM(Element):
                 (OP.CHAR_MECA_EPSI_F.PNBSP_I, ENBSP_I),
                 (OP.CHAR_MECA_EPSI_F.PVARCPR, LC.ZVARCPG),
                 (SP.PINSTR, CTEMPSR),
+                (SP.PABSCUR, CABSCUR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

@@ -60,7 +60,7 @@ subroutine te0020(nomopt, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: lmater, jacf, idefi, ivectu
-    integer :: lorien, nno, nc
+    integer :: lorien, nno, nc, iabsc
     real(kind=8) :: r8bid, e, xnu, g, carsec(6), fs(14)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, a2, xiy2, xiz2
     real(kind=8) :: epx(2), xky(2), xkz(2), vect_y(3), norm, vect_x(3)
@@ -73,8 +73,8 @@ subroutine te0020(nomopt, nomte)
     character(len=16) :: nomres(nbres)
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10), itemps, igeom, ier, ino
-    character(len=8) :: nompar(4)
-    real(kind=8) :: valpar(4)
+    character(len=8) :: nompar(5)
+    real(kind=8) :: valpar(5)
 !
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 9
@@ -142,21 +142,24 @@ subroutine te0020(nomopt, nomte)
         call jevech('PEPSINF', 'L', idefi)
         call jevech('PINSTR', 'L', itemps)
         call jevech('PGEOMER', 'L', igeom)
+        call jevech('PABSCUR', 'L', iabsc)
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
         nompar(4) = 'INST'
         valpar(4) = zr(itemps)
+        nompar(5) = 'ABSC'
+        valpar(5) = (zr(iabsc)+zr(iabsc+1))/2.d0
         do ino = 1, 2
             valpar(1) = zr(igeom+(ino-1)*3-1+1)
             valpar(2) = zr(igeom+(ino-1)*3-1+2)
             valpar(3) = zr(igeom+(ino-1)*3-1+3)
 
-            call fointe('FM', zk8(idefi), 4, nompar, valpar, &
+            call fointe('FM', zk8(idefi), 5, nompar, valpar, &
                         epx(ino), ier)
-            call fointe('FM', zk8(idefi+1), 4, nompar, valpar, &
+            call fointe('FM', zk8(idefi+1), 5, nompar, valpar, &
                         xky(ino), ier)
-            call fointe('FM', zk8(idefi+2), 4, nompar, valpar, &
+            call fointe('FM', zk8(idefi+2), 5, nompar, valpar, &
                         xkz(ino), ier)
         end do
     end if
