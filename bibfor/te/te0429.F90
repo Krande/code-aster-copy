@@ -72,8 +72,6 @@ subroutine te0429(nomopt, nomte)
 !
 ! --- Number of dofs
     call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    ASSERT(cbs <= MSIZE_CELL_SCAL)
-    ASSERT(fbs <= MSIZE_FACE_SCAL)
     ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
 !
     if (nomopt == "MASS_THER_TANG") then
@@ -86,7 +84,6 @@ subroutine te0429(nomopt, nomte)
 !
 ! --- Save lhs
 !
-        call hhoRenumTherMat(hhoCell, hhoData, lhs)
         call lhs%write('PMATTTR', ASTER_TRUE)
         call lhs%free()
 !
@@ -96,7 +93,6 @@ subroutine te0429(nomopt, nomte)
 !
 ! --- Save rhs
 !
-        call hhoRenumTherVec(hhoCell, hhoData, rhs)
         call writeVector('PRESIDU', total_dofs, rhs)
 !
     else

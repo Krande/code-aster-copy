@@ -67,8 +67,6 @@ subroutine te0477(nomopt, nomte)
 !
 ! --- Number of dofs
     call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    ASSERT(cbs <= MSIZE_CELL_SCAL)
-    ASSERT(fbs <= MSIZE_FACE_SCAL)
     ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
 !
     if (nomopt /= "RAPH_THER") then
@@ -91,7 +89,6 @@ subroutine te0477(nomopt, nomte)
 !
 ! --- Save lhs
 !
-    call hhoRenumTherVec(hhoCell, hhoData, rhs)
     call writeVector('PRESIDU', total_dofs, rhs)
 !
     call stab%free()

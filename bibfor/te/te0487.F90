@@ -27,6 +27,7 @@ subroutine te0487(nomopt, nomte)
     use HHO_ther_module
     use HHO_init_module, only: hhoInfoInitCell
     use HHO_matrix_module
+    use HHO_algebra_module
 !
     implicit none
 !
@@ -58,7 +59,7 @@ subroutine te0487(nomopt, nomte)
     type(HHO_Cell) :: hhoCell
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer :: cbs, fbs, total_dofs, npg, deca, gbs
+    integer :: cbs, fbs, total_dofs, npg, deca, gbs, cell_offset
     integer :: ipg, icodre(3), jtemps, jmate
     character(len=8), parameter :: fami = 'RIGI'
     character(len=32) :: phenom
@@ -69,7 +70,6 @@ subroutine te0487(nomopt, nomte)
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
     real(kind=8), dimension(MSIZE_CELL_VEC) :: G_curr_coeff
-    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 ! --- Get element parameters
 !
@@ -80,11 +80,11 @@ subroutine te0487(nomopt, nomte)
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
 !
 ! --- Number of dofs
-    call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                       gbs)
+    call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
     ASSERT(cbs <= MSIZE_CELL_SCAL)
     ASSERT(fbs <= MSIZE_FACE_SCAL)
     ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
+    cell_offset = total_dofs-cbs+1
 !
     if (nomopt /= "FLUX_ELGA") then
         ASSERT(ASTER_FALSE)
@@ -120,18 +120,10 @@ subroutine te0487(nomopt, nomte)
 !
     temp_curr = 0.d0
     call readVector('PTEMPER', total_dofs, temp_curr)
-    call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
-    b_lda = to_blas_int(gradrec%max_nrows)
-    b_m = to_blas_int(gbs)
-    b_n = to_blas_int(total_dofs)
-    b_incx = to_blas_int(1)
-    b_incy = to_blas_int(1)
-    call dgemv('N', b_m, b_n, 1.d0, gradrec%m, &
-               b_lda, temp_curr, b_incx, 0.d0, G_curr_coeff, &
-               b_incy)
+    call hho_dgemv_N(1.d0, gradrec, temp_curr, 0.d0, G_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !
@@ -152,7 +144,8 @@ subroutine te0487(nomopt, nomte)
 ! --------- Eval temperature at T+
 !
         temp_eval_curr = hhoEvalScalCell( &
-                         hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), temp_curr, cbs)
+                         hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), &
+                         temp_curr(cell_offset:), cbs)
 !
 ! ------- Compute behavior
 !

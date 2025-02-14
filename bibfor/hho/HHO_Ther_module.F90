@@ -120,15 +120,13 @@ contains
         real(kind=8), dimension(MSIZE_CELL_VEC) :: bT, G_curr_coeff
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8) :: AT(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
-        type(HHO_matrix) :: TMP
+        type(HHO_matrix) :: TMP, AT
         real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
         real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
         real(kind=8), pointer :: flux(:) => null()
         aster_logical :: l_rhs, l_lhs, l_nl, l_flux
         real(kind=8) :: start, end
         blas_int :: b_incx, b_incy, b_n
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
 !
         DEBUG_TIMER(start)
 !
@@ -166,11 +164,11 @@ contains
 !
         if (l_lhs) then
             call lhs%initialize(total_dofs, total_dofs, 0.d0)
+            call AT%initialize(gbs, gbs, 0.d0)
         end if
         if (l_rhs) rhs = 0.d0
 !
         bT = 0.d0
-        AT = 0.d0
         G_curr_coeff = 0.d0
 !
         call hhoBasisCell%initialize(hhoCell)
@@ -180,10 +178,8 @@ contains
         temp_curr = 0.d0
         if (l_nl) then
             call readVector('PTEMPEI', total_dofs, temp_curr)
-            call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
         else if (l_rhs) then
             call readVector('PTEMPER', total_dofs, temp_curr)
-            call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
         end if
         ndim = hhoCell%ndim
 !
@@ -209,7 +205,8 @@ contains
 ! --------- Eval temperature at T+
 !
             temp_eval_curr = hhoEvalScalCell( &
-                             hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), temp_curr, cbs)
+                             hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), &
+                             temp_curr(faces_dofs+1:total_dofs), cbs)
 !
 ! ------- Compute behavior
 !
@@ -235,31 +232,25 @@ contains
 !
         end do
 !
+        if (l_rhs) then
+!
 ! ----- compute rhs += Gradrec**T * bT
 !
-        if (l_rhs) then
             call hho_dgemv_T(1.0, gradrec, bT, 1.d0, rhs)
         end if
 !
+        if (l_lhs) then
 ! ----- compute lhs += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
 !
-        if (l_lhs) then
             call TMP%initialize(gbs, total_dofs, 0.d0)
-            b_ldc = to_blas_int(TMP%max_nrows)
-            b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(MSIZE_CELL_VEC)
-            b_m = to_blas_int(gbs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(gbs)
-            call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, AT, b_lda, gradrec%m, b_ldb, &
-                       0.d0, TMP%m, b_ldc)
+            call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
             call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
             call TMP%free()
+            call AT%free()
 !
         end if
 !
@@ -269,12 +260,7 @@ contains
                                   time_curr)
 !
         if (l_rhs) then
-            b_lda = to_blas_int(stab%max_nrows)
-            b_n = to_blas_int(total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dsymv('U', b_n, hhoData%coeff_stab(), stab%m, b_lda, &
-                       temp_curr, b_incx, 1.d0, rhs, b_incy)
+            call hho_dsymv_U(hhoData%coeff_stab(), stab, temp_curr, 1.d0, rhs)
         end if
 !
         if (l_lhs) then
@@ -326,13 +312,14 @@ contains
 !
         type(HHO_basis_cell) :: hhoBasisCell
         character(len=32) :: phenom
-        integer :: cbs, fbs, total_dofs, faces_dofs, gbs
+        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
         integer :: jmate, ipg, icodre(3), jtemps
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, time_curr, cp, temp_eval, beta
         character(len=8) :: poum
         aster_logical :: l_rhs, l_lhs
+        type(HHO_matrix) :: lhs_cell
 !
         l_lhs = present(lhs)
         l_rhs = present(rhs)
@@ -348,14 +335,15 @@ contains
 !
 ! --- number of dofs
 !
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                           gbs)
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
         faces_dofs = total_dofs-cbs
+        cell_offset = faces_dofs+1
 !
 ! -- initialization
 !
         if (l_lhs) then
             call lhs%initialize(total_dofs, total_dofs, 0.d0)
+            call lhs_cell%initialize(cbs, cbs, 0.d0)
         end if
         if (l_rhs) rhs = 0.d0
 !
@@ -364,7 +352,7 @@ contains
 ! --- compute temp in T+
 !
         temp_T_curr = 0.d0
-        if (l_rhs) call readVector('PTEMPER', cbs, temp_T_curr, total_dofs-cbs)
+        if (l_rhs) call readVector('PTEMPER', cbs, temp_T_curr, faces_dofs)
         poum = "+"
 !
 ! ----- Loop on quadrature point
@@ -380,7 +368,7 @@ contains
 ! --------- Eval gradient at T+
 !
             temp_eval = hhoEvalScalCell( &
-                        hhoBasisCell, hhoData%cell_degree(), coorpg, temp_T_curr, cbs)
+                        hhoBasisCell, hhoData%cell_degree(), coorpg, temp_T_curr(cell_offset:), cbs)
 !
 ! -------- Compute behavior
 !
@@ -391,20 +379,24 @@ contains
 !
             if (l_rhs) then
                 beta = cp*temp_eval
-                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, rhs(1:MSIZE_CELL_SCAL))
+                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, rhs(cell_offset:))
             end if
 !
 ! -------- Compute lhs
 !
             if (l_lhs) then
-                call hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, lhs)
+                call hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, lhs_cell)
             end if
 !
         end do
 !
 ! ----- Copy the lower part
 !
-        if (l_lhs) call hhoCopySymPartMat('U', lhs%m(1:cbs, 1:cbs))
+        if (l_lhs) then
+            call lhs_cell%copySymU()
+            call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
+            call lhs_cell%free()
+        end if
 !
     end subroutine
 !
@@ -437,8 +429,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
+        type(HHO_matrix) :: lhs_cell
         character(len=32) :: phenom
-        integer :: cbs, fbs, total_dofs, faces_dofs, gbs
+        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
         integer :: jmate, ipg, icodre(3), jcomp, ifon(6)
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
@@ -473,11 +466,13 @@ contains
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                            gbs)
         faces_dofs = total_dofs-cbs
+        cell_offset = faces_dofs+1
 !
 ! -- initialization
 !
         if (l_lhs) then
             call lhs%initialize(total_dofs, total_dofs, 0.0)
+            call lhs_cell%initialize(cbs, cbs, 0.d0)
         end if
         if (l_rhs) rhs = 0.d0
 !
@@ -486,7 +481,7 @@ contains
 ! --- compute temp in T+
 !
         temp_T_curr = 0.d0
-        call readVector('PTEMPEI', cbs, temp_T_curr, total_dofs-cbs)
+        call readVector('PTEMPEI', cbs, temp_T_curr, faces_dofs)
 !
 ! ----- Loop on quadrature point
 !
@@ -501,7 +496,7 @@ contains
 ! --------- Eval gradient at T+
 !
             temp_eval = hhoEvalScalCell( &
-                        hhoBasisCell, hhoData%cell_degree(), coorpg, temp_T_curr, cbs)
+                        hhoBasisCell, hhoData%cell_degree(), coorpg, temp_T_curr(cell_offset:), cbs)
 !
 ! -------- Compute behavior
 !
@@ -510,20 +505,24 @@ contains
 ! -------- Compute rhs
 !
             if (l_rhs) then
-                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, rhs(1:MSIZE_CELL_SCAL))
+                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, rhs(cell_offset:))
             end if
 !
 ! -------- Compute lhs
 !
             if (l_lhs) then
-                call hhoComputeLhsMassTher(dbeta, weight, BSCEval, cbs, lhs)
+                call hhoComputeLhsMassTher(dbeta, weight, BSCEval, cbs, lhs_cell)
             end if
 !
         end do
 !
 ! ----- Copy the lower part
 !
-        if (l_lhs) call hhoCopySymPartMat('U', lhs%m(1:cbs, 1:cbs))
+        if (l_lhs) then
+            call lhs_cell%copySymU()
+            call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
+            call lhs_cell%free()
+        end if
 !
     end subroutine
 !
@@ -694,8 +693,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, &
-                                     AT)
+    subroutine hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
         implicit none
 !
@@ -704,7 +702,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         integer, intent(in) :: gbs
-        real(kind=8), intent(inout) :: AT(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermics
@@ -731,7 +729,7 @@ contains
         col = 1
         do i = 1, hhoCell%ndim
             do k = 1, gbs_cmp
-                call daxpy_1(gbs, BSCEval(k), qp_Agphi(:, i), AT(:, col))
+                call daxpy_1(gbs, BSCEval(k), qp_Agphi(:, i), AT%m(:, col))
                 col = col+1
             end do
         end do

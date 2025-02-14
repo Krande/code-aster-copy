@@ -91,7 +91,7 @@ contains
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL), normal(3)
         integer :: ipg, dimStiffMat, ifromMG, itoMG, ifromBG, itoBG, dimMG
-        integer :: cbs, fbs, total_dofs, iface, fromFace, toFace
+        integer :: cbs, fbs, total_dofs, iface, fromFace, toFace, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
@@ -104,6 +104,7 @@ contains
 !
 ! -- number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        cell_offset = total_dofs-cbs+1
 !
 ! -- compute stiffness matrix
         dimStiffMat = hhoBasisCell%BSSize(0, hhoData%face_degree()+1)
@@ -120,9 +121,9 @@ contains
         call hhoBasisCell%BSRange(0, hhoData%cell_degree(), ifromBG, itoBG)
 !
         BG = 0.d0
-        BG(1:dimMG, 1:cbs) = stiffMat(ifromMG:itoMG, ifromBG:itoBG)
+        BG(1:dimMG, cell_offset:total_dofs) = stiffMat(ifromMG:itoMG, ifromBG:itoBG)
 !
-        toFace = cbs
+        toFace = 0
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
@@ -132,8 +133,8 @@ contains
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
             call hhoQuad%GetQuadFace(hhoface, &
-                                     hhoData%face_degree()+max(hhoData%face_degree(), hhoData%ce&
-                                     &ll_degree())+1, &
+                                     hhoData%face_degree()+ &
+                                     max(hhoData%face_degree(), hhoData%cell_degree())+1, &
                                      param=ASTER_TRUE)
 !
 ! ----- Loop on quadrature point
@@ -159,8 +160,7 @@ contains
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dgemv('T', b_m, b_n, hhoQuad%weights(ipg), BSCGradEval, &
-                           b_lda, normal, b_incx, 0.d0, CGradN, &
-                           b_incy)
+                           b_lda, normal, b_incx, 0.d0, CGradN, b_incy)
 !
 ! --------  Compute (vF, grad *normal)
                 b_lda = to_blas_int(dimMG)
@@ -178,7 +178,7 @@ contains
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dger(b_m, b_n, -1.d0, CGradN, b_incx, &
-                          BSCEval, b_incy, BG, b_lda)
+                          BSCEval, b_incy, BG(1:dimMG, cell_offset:total_dofs), b_lda)
 !
             end do
 !
@@ -350,7 +350,7 @@ contains
         integer :: cbs, fbs, total_dofs, gbs, dimMassMat
         integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
-        integer :: iface, fromFace, toFace
+        integer :: iface, fromFace, toFace, cell_offset
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
         blas_int :: b_incx, b_incy
@@ -361,14 +361,14 @@ contains
         call hhoBasisCell%initialize(hhoCell)
 !
 ! -- number of dofs
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                           gbs)
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
+        cell_offset = total_dofs-cbs+1
 !
 ! -- compute mass matrix of P^k_d(T;R)
         call massMat%compute(hhoCell, 0, hhoData%grad_degree())
         dimMassMat = massMat%nrows
 !
-        toFace = cbs
+        toFace = 0
         BG = 0.d0
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
@@ -419,7 +419,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, 1:cbs), b_lda)
+                              BSCEval, b_incy, BG(ibeginBG:iendBG, cell_offset:total_dofs), b_lda)
 !
                 end do
             end do
@@ -453,7 +453,7 @@ contains
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dger(b_m, b_n, hhoQuadCell%weights(ipg), BSGEval, b_incx, &
-                          VecGrad, b_incy, BG(ibeginBG:iendBG, 1:cbs), b_lda)
+                          VecGrad, b_incy, BG(ibeginBG:iendBG, cell_offset:total_dofs), b_lda)
             end do
         end do
 !
@@ -477,10 +477,9 @@ contains
             info = 0
             b_n = to_blas_int(dimMassMat)
             b_nhrs = to_blas_int(hhoCell%ndim*total_dofs)
-            b_lda = to_blas_int(MSIZE_CELL_SCAL)
+            b_lda = to_blas_int(massMat%max_nrows)
             b_ldb = to_blas_int(MSIZE_CELL_SCAL)
-            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, &
-                       SOL, b_ldb, info)
+            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, SOL, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
@@ -521,8 +520,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGradRecFullMatFromVec(hhoCell, hhoData, gradrecvec, gradrec, lhsvec, &
-                                        lhs)
+    subroutine hhoGradRecFullMatFromVec(hhoCell, hhoData, gradrecvec, gradrec, lhsvec, lhs)
 !
         implicit none
 !

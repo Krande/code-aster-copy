@@ -158,8 +158,7 @@ contains
         real(kind=8) :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, mk_stab, gv_stab
         real(kind=8) :: BSCEvalG(MSIZE_CELL_SCAL), BSCEval(MSIZE_CELL_SCAL)
-        type(HHO_matrix) :: mk_AT, mk_TMP
-        real(kind=8) :: gv_AT(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        type(HHO_matrix) :: mk_AT, mk_TMP, gv_AT
         real(kind=8) :: gv_TMP(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8) :: mv_AT(MSIZE_CELL_MAT, MSIZE_CELL_SCAL)
         real(kind=8) :: ml_AT(MSIZE_CELL_MAT, MSIZE_CELL_SCAL)
@@ -218,6 +217,7 @@ contains
             call lhs_ll%initialize(gv_cbs, gv_cbs, 0.d0)
             call mk_AT%initialize(mk_gbs, mk_gbs, 0.d0)
             call mk_TMP%initialize(mk_gbs, mk_total_dofs, 0.d0)
+            call gv_AT%initialize(gv_gbs, gv_gbs, 0.d0)
         end if
 !
         mk_bT = 0.d0
@@ -228,7 +228,6 @@ contains
         lhs_ml = 0.d0
 !
         gv_bT = 0.d0
-        gv_AT = 0.d0
         gv_tmp = 0.d0
         GV_prev_coeff = 0.d0
         GV_curr_coeff = 0.d0
@@ -468,14 +467,14 @@ contains
 ! ----- step1: TMP = AT * gradrec
             call hho_dgemm_NN(1.d0, mk_AT, hhoMecaState%grad, 0.d0, mk_TMP)
 !
-            b_ldc = to_blas_int(MSIZE_CELL_VEC)
+            b_ldc = to_blas_int(gv_AT%max_nrows)
             b_ldb = to_blas_int(hhoGVState%grad%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_VEC)
             b_m = to_blas_int(gv_gbs)
             b_n = to_blas_int(gv_total_dofs)
             b_k = to_blas_int(gv_gbs)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, gv_AT, b_lda, hhoGVState%grad%m, b_ldb, &
+                       1.d0, gv_AT%m, b_lda, hhoGVState%grad%m, b_ldb, &
                        0.d0, gv_TMP, b_ldc)
 ! ----- step2: lhs += gradrec**T * TMP
             call hho_dgemm_TN(1.d0, hhoMecaState%grad, mk_TMP, 0.d0, lhs_mm)
@@ -563,6 +562,7 @@ contains
         call mk_TMP%free()
         call lhs_mm%free()
         call lhs_ll%free()
+        call gv_AT%free()
 !
     end subroutine
 !

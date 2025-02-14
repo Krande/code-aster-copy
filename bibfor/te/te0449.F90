@@ -88,7 +88,6 @@ subroutine te0449(nomopt, nomte)
 !
 ! --- Save lhs
 !
-    call hhoRenumTherMat(hhoCell, hhoData, lhs)
     call lhs%write('PMATTTR', ASTER_TRUE)
     call lhs%free()
 !

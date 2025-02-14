@@ -83,10 +83,10 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: M1, M2
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: proj1
-        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
+        real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj2, proj3, TMP
-        integer :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, dimM1, colsM2, i, j
-        integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace
+        integer :: dimMassMat, ifromM2, itoM2, colsM2, i, j
+        integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
@@ -99,27 +99,22 @@ contains
 !
 ! -- number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        cell_offset = total_dofs-cbs+1
 !
 ! -- compute cell mass matrix
         call massMat%compute(hhoCell, 0, hhoData%face_degree()+1)
         dimMassMat = massMat%nrows
 !
 ! -- Range
-        call hhoBasisCell%BSRange(0, hhoData%cell_degree(), ifromM1, itoM1)
-        dimM1 = hhoBasisCell%BSSize(0, hhoData%cell_degree())
         call hhoBasisCell%BSRange(1, hhoData%face_degree()+1, ifromM2, itoM2)
         colsM2 = hhoBasisCell%BSSize(1, hhoData%face_degree()+1)
 !
-! -- extract M1:
-        M1 = 0.d0
-        M1(1:dimM1, 1:dimM1) = massMat%m(ifromM1:itoM1, ifromM1:itoM1)
-!
 ! -- extract M2:
         M2 = 0.d0
-        M2(1:dimM1, 1:colsM2) = massMat%m(ifromM1:itoM1, ifromM2:itoM2)
+        M2(1:cbs, 1:colsM2) = massMat%m(0:cbs, ifromM2:itoM2)
 !
 ! -- Verif size
-        ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= dimM1)
+        ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= cbs)
 !
         call stab%initialize(total_dofs, total_dofs, 0.0)
         proj1 = 0.d0
@@ -131,7 +126,7 @@ contains
         b_ldc = to_blas_int(MSIZE_CELL_SCAL)
         b_ldb = to_blas_int(gradrec%max_nrows)
         b_lda = to_blas_int(MSIZE_CELL_SCAL)
-        b_m = to_blas_int(dimM1)
+        b_m = to_blas_int(cbs)
         b_n = to_blas_int(total_dofs)
         b_k = to_blas_int(colsM2)
         call dgemm('N', 'N', b_m, b_n, b_k, &
@@ -139,10 +134,14 @@ contains
                    0.d0, proj1, b_ldc)
 !
         if (.not. massMat%isIdentity) then
+!
+! -- extract M1:
+            M1 = 0.d0
+            M1(1:cbs, 1:cbs) = massMat%m(:cbs, 1:cbs)
 ! -- Solve proj1 = M1^-1 * proj1
 ! -- Verif strange bug if info neq 0 in entry
             info = 0
-            b_n = to_blas_int(dimM1)
+            b_n = to_blas_int(cbs)
             b_nhrs = to_blas_int(total_dofs)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
             b_ldb = to_blas_int(MSIZE_CELL_SCAL)
@@ -158,12 +157,12 @@ contains
 !
 ! --  Step 2: v_T - \pi_T^k p_T^k v (first term minus third term)
 ! -- Compute proj1 = proj1 + I_Cell
-        do i = 1, dimM1
-            proj1(i, i) = proj1(i, i)+1.d0
+        do i = 1, cbs
+            proj1(i, cell_offset-1+i) = proj1(i, cell_offset-1+i)+1.d0
         end do
 !
 ! Step 3: project on faces (eqn. 21)
-        offset_face = cbs+1
+        offset_face = 1
 !
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
@@ -239,19 +238,17 @@ contains
 !
 ! ---- Step 3b: \pi_F^k( v_T - \pi_T^k p_T^k v )
 !
-            MR2 = 0.d0
-            MR2(1:fbs, 1:dimM1) = traceMat(1:fbs, ifromM1:itoM1)
 !
-! ---- Compute proj3 = MR2 * proj1
+! ---- Compute proj3 = traceMat * proj1
             proj3 = 0.d0
             b_ldc = to_blas_int(MSIZE_FACE_SCAL)
             b_ldb = to_blas_int(MSIZE_CELL_SCAL)
             b_lda = to_blas_int(MSIZE_FACE_SCAL)
             b_m = to_blas_int(fbs)
             b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(dimM1)
+            b_k = to_blas_int(cbs)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, MR2, b_lda, proj1, b_ldb, &
+                       1.d0, traceMat, b_lda, proj1, b_ldb, &
                        0.d0, proj3, b_ldc)
 !
             if (.not. faceMass%isIdentity) then
@@ -281,7 +278,7 @@ contains
                 TMP = 0.d0
                 b_ldc = to_blas_int(MSIZE_FACE_SCAL)
                 b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_lda = to_blas_int(faceMass%max_nrows)
                 b_m = to_blas_int(fbs)
                 b_n = to_blas_int(total_dofs)
                 b_k = to_blas_int(fbs)
@@ -679,7 +676,7 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: proj1
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj3, TMP
-        integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, i, j
+        integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, i, j, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
@@ -692,6 +689,7 @@ contains
 !
 ! -- number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        cell_offset = total_dofs-cbs+1
 !
         call stab%initialize(total_dofs, total_dofs, 0.0)
         proj1 = 0.d0
@@ -699,11 +697,11 @@ contains
 ! --  Step 1: v_T
 ! -- Compute proj1 =  I_Cell
         do i = 1, cbs
-            proj1(i, i) = 1.d0
+            proj1(i, cell_offset-1+i) = 1.d0
         end do
 !
 ! Step 3: project on faces (eqn. 21)
-        offset_face = cbs+1
+        offset_face = 1
 !
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
@@ -774,7 +772,7 @@ contains
             TMP = 0.d0
             b_ldc = to_blas_int(MSIZE_FACE_SCAL)
             b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-            b_lda = to_blas_int(MSIZE_FACE_SCAL)
+            b_lda = to_blas_int(faceMass%max_nrows)
             b_m = to_blas_int(fbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(fbs)

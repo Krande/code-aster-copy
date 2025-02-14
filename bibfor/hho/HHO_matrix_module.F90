@@ -50,12 +50,13 @@ module HHO_matrix_module
         procedure, pass :: setValue => hhoMatriceSetValue
         procedure, pass :: print => hhoMatricePrint
         procedure, pass :: copySymU => hhoMatriceCopySymU
+        procedure, pass :: copy => hhoMatriceCopy
 !
     end type HHO_matrix
 !
     public   :: HHO_matrix
     private  :: hhoMatriceInit, hhoMatriceFree, hhoMatriceWrite, hhoMatriceSetValue
-    private  :: hhoMatriceRead, hhoMatricePrint, hhoMatriceCopySymU
+    private  :: hhoMatriceRead, hhoMatricePrint, hhoMatriceCopySymU, hhoMatriceCopy
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -210,6 +211,38 @@ contains
         do i = 1, this%ncols-1
             this%m(i+1:this%ncols, i) = this%m(i, i+1:this%ncols)
         end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMatriceCopy(this, mat, row_offset_, col_offset_)
+!
+        implicit none
+!
+        class(HHO_matrix), intent(inout) :: this
+        type(HHO_matrix), intent(in) :: mat
+        integer, intent(in), optional :: row_offset_, col_offset_
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   print matrix
+!   In mat   : matrix to print
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: row_offset, col_offset
+!
+        row_offset = 0
+        if (present(row_offset_)) row_offset = row_offset_
+        col_offset = 0
+        if (present(col_offset_)) col_offset = col_offset_
+!
+        ASSERT(this%nrows >= row_offset+mat%nrows)
+        ASSERT(this%ncols >= col_offset+mat%ncols)
+!
+        this%m(row_offset:row_offset+mat%nrows, col_offset:col_offset+mat%ncols) = mat%m
 !
     end subroutine
 !

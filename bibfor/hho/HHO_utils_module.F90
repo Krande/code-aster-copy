@@ -48,7 +48,6 @@ module HHO_utils_module
     public :: hhoPrintTensor4, hhoPrintTensor4Mangle, hhoRenumMecaVec, hhoRenumMecaMat
     public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv, MatCellScal2Vec
     public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S, CellNameS2L
-    public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
     public :: hhoIsIdentityMat, hhoIdentityMat
 !    private  ::
 !
@@ -739,56 +738,6 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoRenumTherVecInv(hhoCell, hhoData, vec)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_SCAL)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vF1, ..., vFn, vT) to (vT, vF1, ..., vFn)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut vec        : vector to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: vec_tmp(MSIZE_TDOFS_SCAL)
-        blas_int :: b_incx, b_incy, b_n
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
-! --- v_T
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp(faces_dofs+1), b_incx, vec, b_incy)
-! --- v_F
-        b_n = to_blas_int(faces_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp, b_incx, vec(cbs+1), b_incy)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
     subroutine hhoRenumMecaMat(hhoCell, hhoData, mat)
 !
         implicit none
@@ -815,6 +764,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---- Number of dofs
+        ASSERT(ASTER_FALSE)
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs-cbs
 !
@@ -831,102 +781,6 @@ contains
         mat%m((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp%m(1:cbs, 1:cbs)
 
         call mat_tmp%free()
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoRenumTherVec(hhoCell, hhoData, vec)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_SCAL)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vT, vF1, ..., vFn) to (vF1, ..., vFn, vT)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut vec        : vector to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: vec_tmp(MSIZE_TDOFS_SCAL)
-        blas_int :: b_incx, b_incy, b_n
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
-! --- v_F
-        b_n = to_blas_int(faces_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp(cbs+1), b_incx, vec, b_incy)
-! --- v_T
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp, b_incx, vec(faces_dofs+1), b_incy)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoRenumTherMat(hhoCell, hhoData, mat)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        type(HHO_matrix), intent(inout) :: mat
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vTT, vTF) to (vFF, vFT)
-!        (vFT, vFF)    (vTF, vTT)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut mat        : matrix to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: mat_tmp(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        mat_tmp(1:total_dofs, 1:total_dofs) = mat%m(1:total_dofs, 1:total_dofs)
-!
-! ---- K_FF
-        mat%m(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
-! ---- K_FT
-        mat%m(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
-! ---- K_TF
-        mat%m((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
-! ---- K_TT
-        mat%m((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
 !
     end subroutine
 !
