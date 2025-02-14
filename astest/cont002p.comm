@@ -28,11 +28,9 @@ test = CA.TestCase()
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
-# Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 Mail = CA.ParallelMesh()
 Mail.readMedFile("fort.20")
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
-Mail.printMedFile("/home/H85256/dev/codeaster-git/test/contact_hpc/" + str(rank) + ".med")
 
 Mail = MODI_MAILLAGE(
     reuse=Mail,

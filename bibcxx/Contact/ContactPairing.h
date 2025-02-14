@@ -166,9 +166,7 @@ class ContactPairing : public DataStructure {
     /** @brief Set coordinates */
     void setCoordinates( const MeshCoordinatesFieldPtr coor ) {
         _currentCoordinates = coor;
-        for ( auto indexZone = 0; indexZone < _contDefi->getNumberOfContactZones(); indexZone++ ) {
-            _contDefi->setCoordinates( coor );
-        }
+        _contDefi->setCoordinates( coor );
     };
 
     /** @brief Compute pairing quantities of zone */

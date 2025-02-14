@@ -37,6 +37,7 @@ ContactPairing::ContactPairing( const std::string name, const ContactNewPtr cont
 
     // Create object for mesh coordinates
     _currentCoordinates = std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
+    _contDefi->setCoordinates( _currentCoordinates );
 
     // Be sure that zones is not empty and get size of zones
     int nbZoneCont = _contDefi->getNumberOfContactZones();

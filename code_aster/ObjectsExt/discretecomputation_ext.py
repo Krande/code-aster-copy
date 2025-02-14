@@ -693,7 +693,6 @@ class ExtendedDiscreteComputation:
                 contact_manager.coef_cont,
                 contact_manager.coef_frot,
             )
-            matr_elem_cont.build()
 
             return matr_elem_cont
 

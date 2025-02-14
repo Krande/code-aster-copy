@@ -162,7 +162,7 @@ class MeshPairing : public DataStructure {
     /** @brief Get coordinates */
     MeshCoordinatesFieldPtr getCoordinates() const { return _currentCoordinates; }
 
-    /** @brief Set coordinates */
+    // /** @brief Set coordinates */
     void setCoordinates( const MeshCoordinatesFieldPtr &coor ) { _currentCoordinates = coor; };
 
     /** @brief Set pair */

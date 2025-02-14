@@ -945,6 +945,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
         auto resu = transfertToParallelFEDesc( elemMatr, pCFED );
         resu->setModel( _phys_problem->getModel() );
         resu->prepareCompute( option );
+        resu->build();
         return resu;
     } else {
 #endif /* ASTER_HAVE_MPI */

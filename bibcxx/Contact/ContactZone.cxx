@@ -42,9 +42,7 @@ ContactZone::ContactZone( const std::string name )
 
 void ContactZone::setVerbosity( const ASTERINTEGER &level ) {
     _verbosity = level;
-    if ( _meshPairing != nullptr ) {
-        _meshPairing->setVerbosity( getVerbosity() );
-    }
+    _meshPairing->setVerbosity( getVerbosity() );
 }
 
 bool ContactZone::pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole ) {

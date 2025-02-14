@@ -102,9 +102,6 @@ class ContactNew : public DataStructure {
         _zones.at( zone_id )->getMeshPairing()->clearResult();
     };
 
-    /** @brief Update coordinates */
-    void updateCoordinates( const FieldOnNodesRealPtr &disp ) {};
-
     /** @brief Set coordinates */
     void setCoordinates( const MeshCoordinatesFieldPtr &coor ) {
         for ( auto &zone : _zones ) {

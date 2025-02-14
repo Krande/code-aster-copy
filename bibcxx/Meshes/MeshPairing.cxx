@@ -40,9 +40,16 @@ MeshPairing::MeshPairing( const std::string name )
       _masterCellsGroup( " " ),
       _zoneHaveBeenDefined( false ),
       _nbPairs( 0 ),
-      _method( PairingMethod::Fast ) {};
+      _method( PairingMethod::Fast ),
+      _currentCoordinates( nullptr ) {};
 
-void MeshPairing::setMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; }
+void MeshPairing::setMesh( const BaseMeshPtr &mesh ) {
+    _mesh = mesh;
+    if ( _currentCoordinates == nullptr ) {
+        _currentCoordinates =
+            std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
+    }
+}
 
 void MeshPairing::setSlaveGroupOfCells( const std::string &groupName ) {
     _slaveCellsGroup = groupName;
@@ -56,7 +63,8 @@ void MeshPairing::setPair( const std::string &groupNameSlav, const std::string &
 
     MeshPairing::setMasterGroupOfCells( groupNameMast );
     MeshPairing::setSlaveGroupOfCells( groupNameSlav );
-    initObjects();
+
+    this->initObjects();
 };
 
 ASTERBOOL
@@ -536,8 +544,6 @@ void MeshPairing::setExcludedSlaveGroupOfNodes( const VectorString &groupsName )
 };
 
 ASTERBOOL MeshPairing::initObjects() {
-    _currentCoordinates = std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
-
     if ( getMesh()->hasGroupOfCells( _slaveCellsGroup ) ) {
         _slaveNodes = getMesh()->getNodesFromCells( _slaveCellsGroup, false, true );
         _slaveCells = getMesh()->getCells( _slaveCellsGroup );
