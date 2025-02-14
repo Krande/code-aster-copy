@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,9 +43,11 @@ subroutine te0020(nomopt, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/angvxy.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
+#include "asterfort/normev.h"
 #include "asterfort/pmfinfo.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfitx.h"
@@ -61,8 +63,8 @@ subroutine te0020(nomopt, nomte)
     integer :: lorien, nno, nc
     real(kind=8) :: r8bid, e, xnu, g, carsec(6), fs(14)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, a2, xiy2, xiz2
-    real(kind=8) :: epx(2), xky(2), xkz(2)
-    real(kind=8) :: pgl(3, 3)
+    real(kind=8) :: epx(2), xky(2), xkz(2), vect_y(3), norm, vect_x(3)
+    real(kind=8) :: pgl(3, 3), angl(3), dgamma
 !
     integer :: nbres
     parameter(nbres=4)
@@ -124,15 +126,18 @@ subroutine te0020(nomopt, nomte)
         xiz = carsec(4)
     end if
 !
-
+    vect_y(:) = 0.d0
     if (nomopt(15:16) .eq. '_R') then
         call jevech('PEPSINR', 'L', idefi)
         epx(1) = zr(idefi)
+        epx(2) = epx(1)
         xky(1) = zr(idefi+1)
+        xky(2) = xky(1)
         xkz(1) = zr(idefi+2)
-        epx(2) = zr(idefi+3)
-        xky(2) = zr(idefi+4)
-        xkz(2) = zr(idefi+5)
+        xkz(2) = xkz(1)
+        vect_y(1) = zr(idefi+3)
+        vect_y(2) = zr(idefi+4)
+        vect_y(3) = zr(idefi+5)
     else
         call jevech('PEPSINF', 'L', idefi)
         call jevech('PINSTR', 'L', itemps)
@@ -164,6 +169,21 @@ subroutine te0020(nomopt, nomte)
     end if
     if (abs(xkz(1)-xkz(2)) .gt. 1d3*r8prem()) then
         call utmess('F', 'CHARGES_4', sk='KZ', nr=2, valr=xkz)
+    end if
+!   Récupération des orientations alpha, beta, gamma
+    call jevech('PCAORIE', 'L', lorien)
+!   Matrice de rotation mgl
+    call matrot(zr(lorien), pgl)
+!   Traitement du repère imposé
+    call normev(vect_y, norm)
+    if (norm .gt. r8prem()) then
+        vect_x(:) = pgl(1, :)
+        call angvxy(vect_x, vect_y, angl)
+        dgamma = angl(3)-zr(lorien-1+3)
+        xky(1) = cos(dgamma)*xky(2)-sin(dgamma)*xkz(2)
+        xkz(1) = sin(dgamma)*xky(2)+cos(dgamma)*xkz(2)
+        xky(2) = xky(1)
+        xkz(2) = xkz(1)
     end if
 !
     fs(1) = e*a*epx(1)
@@ -225,10 +245,7 @@ subroutine te0020(nomopt, nomte)
     fs(4) = -fs(4)
     fs(5) = -fs(5)
     fs(6) = -fs(6)
-!   Récupération des orientations alpha, beta, gamma
-    call jevech('PCAORIE', 'L', lorien)
-!   Matrice de rotation mgl
+!   Passage en repère global
     nno = 2
-    call matrot(zr(lorien), pgl)
     call utpvlg(nno, nc, pgl, fs, zr(ivectu))
 end subroutine

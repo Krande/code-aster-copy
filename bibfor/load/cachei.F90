@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,9 +57,9 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
 !
     integer :: i, nchei, ncmp, jvale, jvalv, iocc, nxx, nyy, nzz
     integer :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
-    integer :: nbtou, nbma, jma, nepsi
+    integer :: nbtou, nbma, jma, nepsi, nvecty
     real(kind=8) :: epxx, epyy, epzz, epxy, epxz, epyz, epx, xky, xkz, xexx
-    real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy
+    real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy, vect_y(3)
     character(len=8) :: k8b, kepxx, kepyy, kepzz, kepxy, kepxz, kepyz
     character(len=8) :: kepx, kxky, kxkz, kxexx, kxeyy, kxexy, kxkxx, kxkyy, kxkxy
     character(len=8) :: typmcl(2)
@@ -89,7 +89,7 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
     call jeveuo(carte//'.VALV', 'E', jvalv)
     call jeveuo(carte//'.VALE', 'E', jvale)
 !
-    ncmp = 15
+    ncmp = 18
 !
     vncmp(1) = 'EPXX'
     vncmp(2) = 'EPYY'
@@ -106,6 +106,10 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
     vncmp(13) = 'KXX'
     vncmp(14) = 'KYY'
     vncmp(15) = 'KXY'
+!
+    vncmp(16) = 'VECT_2_X'
+    vncmp(17) = 'VECT_2_Y'
+    vncmp(18) = 'VECT_2_Z'
     if (valeType .eq. 'REEL') then
         do i = 1, ncmp
             zr(jvalv-1+i) = 0.d0
@@ -144,6 +148,7 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             call getvr8(keywordFact, 'KXX', iocc=iocc, scal=xkxx, nbret=nkxx)
             call getvr8(keywordFact, 'KYY', iocc=iocc, scal=xkyy, nbret=nkyy)
             call getvr8(keywordFact, 'KXY', iocc=iocc, scal=xkxy, nbret=nkxy)
+            call getvr8(keywordFact, 'VECT_Y', iocc=iocc, nbval=3, vect=vect_y, nbret=nvecty)
 !
             do i = 1, ncmp
                 zr(jvalv-1+i) = 0.d0
@@ -165,6 +170,11 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             if (nkxx .ne. 0) zr(jvalv-1+13) = xkxx
             if (nkyy .ne. 0) zr(jvalv-1+14) = xkyy
             if (nkxy .ne. 0) zr(jvalv-1+15) = xkxy
+            if (nvecty .ne. 0) then
+                zr(jvalv-1+16) = vect_y(1)
+                zr(jvalv-1+17) = vect_y(2)
+                zr(jvalv-1+18) = vect_y(3)
+            end if
         else
             call getvid(keywordFact, 'EPXX', iocc=iocc, scal=kepxx, nbret=nxx)
             call getvid(keywordFact, 'EPYY', iocc=iocc, scal=kepyy, nbret=nyy)

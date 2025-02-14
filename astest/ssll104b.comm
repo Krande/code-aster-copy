@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,9 +87,30 @@ CL5 = AFFE_CHAR_MECA(
 CH1 = AFFE_CHAR_MECA(
     MODELE=MO1,
     PRE_EPSI=(
-        _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
-        _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        _F(GROUP_MA=("E7", "E8"), EPX=1.0e-3 * 3, KY=2.0e-3 * 3, KZ=3.0e-3 * 3),
+        #       on donne le Y local =>
+        _F(
+            GROUP_MA=("E1", "E2"),
+            EPX=1.0e-3,
+            KY=2.0e-3,
+            KZ=3.0e-3,
+            VECT_Y=(-0.70710678118654746, 0.70710678118654757, 0.0000000000000000),
+        ),
+        #       on donne le Z local
+        _F(
+            GROUP_MA=("E4", "E5"),
+            EPX=1.0e-3 * 2,
+            KZ=-2.0e-3 * 2,
+            KY=3.0e-3 * 2,
+            VECT_Y=(-0.40824829046386302, -0.40824829046386296, 0.81649658092772603),
+        ),
+        #       on donne -Y local
+        _F(
+            GROUP_MA=("E7", "E8"),
+            EPX=1.0e-3 * 3,
+            KY=-2.0e-3 * 3,
+            KZ=-3.0e-3 * 3,
+            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+        ),
     ),
 )
 
@@ -98,7 +119,14 @@ CH2 = AFFE_CHAR_MECA(
     PRE_EPSI=(
         _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
         _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        _F(GROUP_MA=("E7", "E8"), EPX=1.0e-3 * 3, KY=2.0e-3 * 3, KZ=3.0e-3 * 3),
+        #       on donne -Y local
+        _F(
+            GROUP_MA=("E7", "E8"),
+            EPX=1.0e-3 * 3,
+            KY=-2.0e-3 * 3,
+            KZ=-3.0e-3 * 3,
+            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+        ),
     ),
 )
 
@@ -107,7 +135,14 @@ CH3 = AFFE_CHAR_MECA(
     PRE_EPSI=(
         _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
         _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        _F(GROUP_MA=("E7", "E8"), EPX=1.0e-3 * 3, KY=2.0e-3 * 3, KZ=3.0e-3 * 3),
+        #       on donne -Y local
+        _F(
+            GROUP_MA=("E7", "E8"),
+            EPX=1.0e-3 * 3,
+            KY=-2.0e-3 * 3,
+            KZ=-3.0e-3 * 3,
+            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+        ),
     ),
 )
 
@@ -116,7 +151,14 @@ CH4 = AFFE_CHAR_MECA(
     PRE_EPSI=(
         _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
         _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        _F(GROUP_MA=("E7", "E8"), EPX=1.0e-3 * 3, KY=2.0e-3 * 3, KZ=3.0e-3 * 3),
+        #       on donne -Y local
+        _F(
+            GROUP_MA=("E7", "E8"),
+            EPX=1.0e-3 * 3,
+            KY=-2.0e-3 * 3,
+            KZ=-3.0e-3 * 3,
+            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+        ),
     ),
 )
 
@@ -125,7 +167,14 @@ CH5 = AFFE_CHAR_MECA(
     PRE_EPSI=(
         _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
         _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        _F(GROUP_MA=("E7", "E8"), EPX=1.0e-3 * 3, KY=2.0e-3 * 3, KZ=3.0e-3 * 3),
+        #       on donne -Y local
+        _F(
+            GROUP_MA=("E7", "E8"),
+            EPX=1.0e-3 * 3,
+            KY=-2.0e-3 * 3,
+            KZ=-3.0e-3 * 3,
+            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+        ),
     ),
 )
 

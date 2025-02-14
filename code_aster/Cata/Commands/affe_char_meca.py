@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -930,6 +930,7 @@ AFFE_CHAR_MECA = OPER(
                 "KYY",
                 "KXY",
             ),
+            PRESENT_PRESENT("VECT_Y", "KY", "KZ"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
@@ -942,6 +943,7 @@ AFFE_CHAR_MECA = OPER(
         EPX=SIMP(statut="f", typ="R"),
         KY=SIMP(statut="f", typ="R"),
         KZ=SIMP(statut="f", typ="R"),
+        VECT_Y=SIMP(statut="f", typ="R", min=3, max=3),
         EXX=SIMP(statut="f", typ="R"),
         EYY=SIMP(statut="f", typ="R"),
         EXY=SIMP(statut="f", typ="R"),
