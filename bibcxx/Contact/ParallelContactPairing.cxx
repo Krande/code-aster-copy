@@ -33,6 +33,8 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
+#ifdef ASTER_HAVE_MPI
+
 using VectorLongIter = VectorLong::iterator;
 
 ParallelContactPairing::ParallelContactPairing( const std::string name,
@@ -50,3 +52,5 @@ void ParallelContactPairing::buildFiniteElementDescriptor() {
         throw std::runtime_error( "Problem with ConnectionMesh while contact pairing" );
     }
 }
+
+#endif /* ASTER_HAVE_MPI */

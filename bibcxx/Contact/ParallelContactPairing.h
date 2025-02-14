@@ -24,6 +24,8 @@
 
 #include "astercxx.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "Contact/ContactPairing.h"
 #include "Contact/ParallelContactNew.h"
 
@@ -67,3 +69,5 @@ class ParallelContactPairing : public ContactPairing {
  * @brief Pointeur intelligent vers un ParallelContactPairing
  */
 using ParallelContactPairingPtr = std::shared_ptr< ParallelContactPairing >;
+
+#endif /* ASTER_HAVE_MPI */

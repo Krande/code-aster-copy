@@ -658,6 +658,7 @@ VectorLong ContactPairing::getNumberOfIntersectionPoints( ASTERINTEGER &indexZon
 }
 
 void ContactPairing::updateCoordinates( const FieldOnNodesRealPtr &disp ) {
+#ifdef ASTER_HAVE_MPI
     if ( _mesh->getName() != disp->getMesh()->getName() && _mesh->isConnection() ) {
         const auto cMesh = std::dynamic_pointer_cast< ConnectionMesh >( _mesh );
         const auto &cCoords = _mesh->getCoordinates();
@@ -688,6 +689,9 @@ void ContactPairing::updateCoordinates( const FieldOnNodesRealPtr &disp ) {
             }
         }
     } else {
+#endif /* ASTER_HAVE_MPI */
         *_currentCoordinates = *( _mesh->getCoordinates() ) + *disp;
+#ifdef ASTER_HAVE_MPI
     }
+#endif /* ASTER_HAVE_MPI */
 };

@@ -19,7 +19,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include "Contact/ParallelContactNew.h"
 
 #include "aster_fort_ds.h"
@@ -32,6 +31,8 @@
 #include "Modeling/Model.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
+
+#ifdef ASTER_HAVE_MPI
 
 using VectorLongIter = VectorLong::iterator;
 
@@ -69,3 +70,5 @@ bool ParallelContactNew::build() {
 
     return true;
 }
+
+#endif /* ASTER_HAVE_MPI */

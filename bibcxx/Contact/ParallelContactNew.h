@@ -27,6 +27,8 @@
 #include "Contact/ContactNew.h"
 #include "Modeling/ParallelContactFEDescriptor.h"
 
+#ifdef ASTER_HAVE_MPI
+
 class ParallelContactNew : public ContactNew {
   protected:
     /** @brief Mesh */
@@ -122,3 +124,5 @@ class ParallelFrictionNew : public ParallelContactNew {
  * @brief Pointeur intelligent vers un ParallelFrictionNew
  */
 using ParallelFrictionNewPtr = std::shared_ptr< ParallelFrictionNew >;
+
+#endif /* ASTER_HAVE_MPI */
