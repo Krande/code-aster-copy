@@ -419,9 +419,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
     setModel( model );
     const int rank = getMPIRank();
     const int nbProcs = getMPISize();
-    if ( rank == 0 ) {
-        FEDesc->getMesh()->printMedFile( "/home/H85256/my_test.med" );
-    }
     const auto &fEType = connectionModel->getFiniteElementType();
     fEType->updateValuePointer();
     const auto &lmasterCells = mesh->getCells( masters );
