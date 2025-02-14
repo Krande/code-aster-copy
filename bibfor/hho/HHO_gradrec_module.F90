@@ -16,9 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
-! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
-
 module HHO_gradrec_module
 !
     use HHO_type
@@ -562,7 +559,7 @@ contains
         fbs_comp = fbs/hhoCell%ndim
         gbs_comp = gbs/hhoCell%ndim
 !
-! -- BE CAREFULL : the componant of the gradient are save in a row format
+! -- BE CAREFULL : the componant of the gradient are stored in a row format
 !
         call gradrec%initialize(gbs, total_dofs, 0.0)
         do idim = 1, hhoCell%ndim
@@ -672,8 +669,7 @@ contains
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature) :: hhoQuad, hhoQuadCell
         type(HHO_massmat_cell) :: massMat
-        real(kind=8), dimension(6*MSIZE_CELL_SCAL, MSIZE_TDOFS_VEC), save :: BG
-        real(kind=8), dimension(MSIZE_CELL_SCAL, 6*MSIZE_TDOFS_VEC), save :: SOL
+        type(HHO_matrix) :: BG, SOL
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCSGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
         real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
@@ -714,7 +710,7 @@ contains
         call massMat%compute(hhoCell, 0, hhoData%grad_degree())
         dimMassMat = massMat%nrows
 !
-        BG = 0.d0
+        call BG%initialize(gbs_sym, total_dofs, 0.d0)
 !
 ! -- RHS : volumetric part
 ! -- get quadrature
@@ -733,13 +729,14 @@ contains
 ! ------ Loop on diagonal terms
             do idim = 1, hhoCell%ndim
                 ibeginBG = (idim-1)*dimMassMat+1
-!
+                iendBG = ibeginBG+dimMassMat-1
+                !
                 do j = 1, cbs
                     coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(idim, j)
                     b_n = to_blas_int(dimMassMat)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call daxpy(b_n, coeff, BSGEval, b_incx, BG(ibeginBG, j), &
+                    call daxpy(b_n, coeff, BSGEval, b_incx, BG%m(ibeginBG:iendBG, j), &
                                b_incy)
                 end do
             end do
@@ -748,25 +745,27 @@ contains
             if (hhoCell%ndim == 3) then
                 do idim = 1, hhoCell%ndim
                     ibeginBG = (3+idim-1)*dimMassMat+1
+                    iendBG = ibeginBG+dimMassMat-1
 !
                     do j = 1, cbs
                         coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(3+idim, j)
                         b_n = to_blas_int(dimMassMat)
                         b_incx = to_blas_int(1)
                         b_incy = to_blas_int(1)
-                        call daxpy(b_n, coeff, BSGEval, b_incx, BG(ibeginBG, j), &
+                        call daxpy(b_n, coeff, BSGEval, b_incx, BG%m(ibeginBG:iendBG, j), &
                                    b_incy)
                     end do
                 end do
             else if (hhoCell%ndim == 2) then
                 ibeginBG = (3-1)*dimMassMat+1
-!
+                iendBG = ibeginBG+dimMassMat-1
+                !
                 do j = 1, cbs
                     coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(4, j)
                     b_n = to_blas_int(dimMassMat)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call daxpy(b_n, coeff, BSGEval, b_incx, BG(ibeginBG, j), &
+                    call daxpy(b_n, coeff, BSGEval, b_incx, BG%m(ibeginBG:iendBG, j), &
                                b_incy)
                 end do
             else
@@ -819,7 +818,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     b_lda = to_blas_int(dimMassMat)
@@ -828,7 +827,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
                 end do
 !
                 if (hhoCell%ndim == 2) then
@@ -843,7 +842,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, 1:cbs_comp), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, 1:cbs_comp), b_lda)
 !
                     b_lda = to_blas_int(dimMassMat)
                     b_m = to_blas_int(dimMassMat)
@@ -851,7 +850,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, (cbs_comp+1):cbs), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, (cbs_comp+1):cbs), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     jbegFace = cbs+(iface-1)*fbs+1
@@ -862,7 +861,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = jbegFace+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
@@ -872,7 +871,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                 else if (hhoCell%ndim == 3) then
 ! ------ hors diagonal composants term 12
@@ -888,7 +887,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
@@ -898,7 +897,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     jbegFace = cbs+(iface-1)*fbs+1
@@ -909,7 +908,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = jbegFace+fbs_comp
                     jendFace = jbegFace+fbs_comp-1
@@ -919,7 +918,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 ! ------ extra diagonal composants term 13
                     ibeginBG = 4*dimMassMat+1
                     iendBG = ibeginBG+dimMassMat-1
@@ -933,7 +932,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = 2*cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
@@ -943,7 +942,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     jbegFace = cbs+(iface-1)*fbs+1
@@ -954,7 +953,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = cbs+(iface-1)*fbs+1+2*fbs_comp
                     jendFace = jbegFace+fbs_comp-1
@@ -964,7 +963,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(1)/rac2, BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 ! ------ extra diagonal composants term 23
                     ibeginBG = 5*dimMassMat+1
                     iendBG = ibeginBG+dimMassMat-1
@@ -978,7 +977,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
                     jbegCell = 2*cbs_comp+1
                     jendCell = jbegCell+cbs_comp-1
@@ -988,7 +987,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, jbegCell:jendCell), b_lda)
 !
 ! ------------  Compute (vF, tau *normal)
                     jbegFace = cbs+(iface-1)*fbs+1+fbs_comp
@@ -999,7 +998,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(3)/rac2, BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                     jbegFace = cbs+(iface-1)*fbs+1+2*fbs_comp
                     jendFace = jbegFace+fbs_comp-1
@@ -1009,7 +1008,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(2)/rac2, BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, jbegFace:jendFace), b_lda)
 !
                 else
                     ASSERT(ASTER_FALSE)
@@ -1020,16 +1019,16 @@ contains
         end do
 !
         if (massMat%isIdentity) then
-            gradrec%m = BG(1:gbs_sym, 1:total_dofs)
+            gradrec%m = BG%m(1:gbs_sym, 1:total_dofs)
         else
 ! - Solve the system gradrec =(MG)^-1 * BG
-            SOL = 0.d0
+            call SOL%initialize(dimMassMat, nbdimMat*total_dofs)
             do idim = 1, nbdimMat
                 ibeginBG = (idim-1)*dimMassMat+1
                 iendBG = ibeginBG+dimMassMat-1
                 ibeginSOL = (idim-1)*total_dofs+1
                 iendSOL = ibeginSOL+total_dofs-1
-                SOL(1:dimMassMat, ibeginSOL:iendSOL) = BG(ibeginBG:iendBG, 1:total_dofs)
+                SOL%m(1:dimMassMat, ibeginSOL:iendSOL) = BG%m(ibeginBG:iendBG, 1:total_dofs)
             end do
 !
 ! - Verif strange bug if info neq 0 in entry
@@ -1037,9 +1036,9 @@ contains
             b_n = to_blas_int(dimMassMat)
             b_nhrs = to_blas_int(nbdimMat*total_dofs)
             b_lda = to_blas_int(MSIZE_CELL_SCAL)
-            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
+            b_ldb = to_blas_int(SOL%max_nrows)
             call dposv('U', b_n, b_nhrs, massMat%m, b_lda, &
-                       SOL, b_ldb, info)
+                       SOL%m, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
@@ -1052,8 +1051,9 @@ contains
                 iendBG = ibeginBG+dimMassMat-1
                 ibeginSOL = (idim-1)*total_dofs+1
                 iendSOL = ibeginSOL+total_dofs-1
-                gradrec%m(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
+                gradrec%m(ibeginBG:iendBG, 1:total_dofs) = SOL%m(1:dimMassMat, ibeginSOL:iendSOL)
             end do
+            call SOL%free()
         end if
 !
         if (present(lhs)) then
@@ -1062,14 +1062,15 @@ contains
 ! ----- Compute lhs =BG**T * gradrec
             b_ldc = to_blas_int(lhs%max_nrows)
             b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(6*MSIZE_CELL_SCAL)
+            b_lda = to_blas_int(BG%max_nrows)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs_sym)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG, b_lda, gradrec%m, b_ldb, &
+                       1.d0, BG%m, b_lda, gradrec%m, b_ldb, &
                        0.d0, lhs%m, b_ldc)
         end if
+        call BG%free()
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoGradRecSymFullMat", end-start)
@@ -1106,20 +1107,19 @@ contains
         type(HHO_quadrature) :: hhoQuad, hhoQuadCell
         real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_CELL_VEC) :: stiffMat
         real(kind=8), dimension(MSIZE_CELL_VEC+3, MSIZE_CELL_VEC+3) :: MG
-        real(kind=8), dimension(MSIZE_CELL_VEC+3, MSIZE_TDOFS_VEC), save :: BG, gradrec2
+        type(HHO_matrix) :: BG
         real(kind=8), dimension(MSIZE_CELL_VEC, 3) :: CGradN
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCGradEval
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
-        blas_int, parameter :: LWORK = (MSIZE_CELL_VEC+3)*MSIZE_TDOFS_VEC
-        real(kind=8), dimension(LWORK), save :: WORK
+        type(HHO_matrix) :: WORK
         blas_int, dimension(MSIZE_CELL_VEC+3) :: IPIV
         integer :: ipg, dimStiffMat, ifromBG, itoBG, dimMG, nblag, dimMGLag, idir, idir2
         integer :: cbs, fbs, total_dofs, iface, i, cbs_comp, fbs_comp, dimMG_cmp, ind_MG
         integer :: jbeginCell, jendCell, jbeginFace, jendFace, idim, j, dimStiffMat_cmp
         integer :: row_deb_MG, row_fin_MG, col_deb_MG, col_fin_MG, col_deb_BG, col_fin_BG
         integer :: row_deb_ST, row_fin_ST, col_deb_ST, col_fin_ST
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, LWORK
         real(kind=8) :: qp_dphi_ss, normal(3)
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
@@ -1156,7 +1156,7 @@ contains
         dimMGLag = dimMG+nblag
 !
         MG = 0.d0
-        BG = 0.d0
+        call BG%initialize(dimMGLag, total_dofs, 0.d0)
 !
         do idir = 1, hhoCell%ndim
             row_deb_MG = (idir-1)*dimMG_cmp+1
@@ -1185,10 +1185,10 @@ contains
                 col_deb_ST = (idir2-1)*dimStiffMat_cmp+1
                 col_fin_ST = col_deb_ST+cbs_comp-1
 !
-                BG(row_deb_MG:row_fin_MG, col_deb_BG:col_fin_BG) = stiffMat( &
-                                                                   row_deb_ST:row_fin_ST, &
-                                                                   col_deb_ST:col_fin_ST &
-                                                                   )
+                BG%m(row_deb_MG:row_fin_MG, col_deb_BG:col_fin_BG) = stiffMat( &
+                                                                     row_deb_ST:row_fin_ST, &
+                                                                     col_deb_ST:col_fin_ST &
+                                                                     )
             end do
 !
         end do
@@ -1304,7 +1304,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, 1.d0, CGradN(1:dimMG, idim), b_incx, &
-                              BSFEval, b_incy, BG(1:dimMG, jbeginFace:jendFace), b_lda)
+                              BSFEval, b_incy, BG%m(1:dimMG, jbeginFace:jendFace), b_lda)
 !
 ! ------------  Compute -(vT, grad_s *normal)
                     jbeginCell = (idim-1)*cbs_comp+1
@@ -1315,7 +1315,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -1.d0, CGradN(1:dimMG, idim), b_incx, &
-                              BSCEval, b_incy, BG(1:dimMG, jbeginCell:jendCell), b_lda)
+                              BSCEval, b_incy, BG%m(1:dimMG, jbeginCell:jendCell), b_lda)
                 end do
 !
             end do
@@ -1323,26 +1323,28 @@ contains
         end do
 !
 ! - Solve the system gradrec =(MG)^-1 * BG
-        gradrec2 = 0.d0
-        gradrec2(1:dimMGLag, 1:total_dofs) = BG(1:dimMGLag, 1:total_dofs)
+        call gradrec%initialize(dimMGLag, total_dofs)
+        gradrec%m = BG%m
 !
 ! - Verif strange bug if info neq 0 in entry
+        call WORK%initialize(dimMGLag, total_dofs)
+        LWORK = to_blas_int(dimMGLag*total_dofs)
         info = 0
         b_n = to_blas_int(dimMGLag)
         b_nhrs = to_blas_int(total_dofs)
         b_lda = to_blas_int(MSIZE_CELL_VEC+3)
-        b_ldb = to_blas_int(MSIZE_CELL_VEC+3)
+        b_ldb = to_blas_int(gradrec%max_nrows)
         call dsysv('U', b_n, b_nhrs, MG, b_lda, &
-                   IPIV, gradrec2, b_ldb, WORK, LWORK, &
-                   info)
+                   IPIV, gradrec%m, b_ldb, WORK%m, LWORK, info)
+        call WORK%free()
+!
+! - Resize matrix to remove lagr
+        gradrec%nrows = dimMG
 !
 ! - Sucess ?
         if (info .ne. 0) then
             call utmess('F', 'HHO1_5')
         end if
-!
-        call gradrec%initialize(dimMG, total_dofs)
-        gradrec%m = gradrec2(1:dimMG, 1:total_dofs)
 !
         if (present(lhs)) then
             call lhs%initialize(total_dofs, total_dofs, 0.0)
@@ -1350,14 +1352,16 @@ contains
 ! ----- Compute lhs =BG**T * gradrec
             b_ldc = to_blas_int(lhs%max_nrows)
             b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(MSIZE_CELL_VEC+3)
+            b_lda = to_blas_int(BG%max_nrows)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(dimMG)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG, b_lda, gradrec%m, b_ldb, &
+                       1.d0, BG%m, b_lda, gradrec%m, b_ldb, &
                        0.d0, lhs%m, b_ldc)
         end if
+!
+        call BG%free()
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoGradRecSymMat", end-start)

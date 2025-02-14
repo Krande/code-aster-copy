@@ -16,9 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
-! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
-
 module HHO_utils_module
 !
     use HHO_type
@@ -37,6 +34,7 @@ module HHO_utils_module
 #include "asterfort/symt46.h"
 #include "asterfort/getResuElem.h"
 #include "blas/dcopy.h"
+#include "blas/dgemm.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -52,7 +50,7 @@ module HHO_utils_module
     public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv, MatCellScal2Vec
     public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S, CellNameS2L
     public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
-    public :: hhoIsIdentityMat, hhoIdentityMat
+    public :: hhoIsIdentityMat, hhoIdentityMat, hho_dgemm_NN
 !    private  ::
 !
 contains
@@ -814,23 +812,26 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8), save :: mat_tmp(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix) :: mat_tmp
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---- Number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs-cbs
 !
-        mat_tmp(1:total_dofs, 1:total_dofs) = mat%m(1:total_dofs, 1:total_dofs)
+        call mat_tmp%initialize(total_dofs, total_dofs)
+        mat_tmp%m = mat%m(1:total_dofs, 1:total_dofs)
 !
 ! ---- K_FF
-        mat%m(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
+        mat%m(1:faces_dofs, 1:faces_dofs) = mat_tmp%m((cbs+1):total_dofs, (cbs+1):total_dofs)
 ! ---- K_FT
-        mat%m(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
+        mat%m(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp%m((cbs+1):total_dofs, 1:cbs)
 ! ---- K_TF
-        mat%m((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
+        mat%m((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp%m(1:cbs, (cbs+1):total_dofs)
 ! ---- K_TT
-        mat%m((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
+        mat%m((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp%m(1:cbs, 1:cbs)
+
+        call mat_tmp%free()
 !
     end subroutine
 !
@@ -989,6 +990,42 @@ contains
         do j = 1, size
             mat(j, j) = 1.d0
         end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hho_dgemm_NN(alpha, matA, matB, beta, matC)
+!
+        implicit none
+!
+        type(HHO_matrix), intent(in) :: matA, matB
+        type(HHO_matrix), intent(inout) :: matC
+        real(kind=8), intent(in) :: alpha, beta
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   DGEMM blas routine for hho_matrix
+! --------------------------------------------------------------------------------------------------
+!
+        blas_int :: b_k, b_n, b_m, b_lda, b_ldb, b_ldc
+!
+        b_lda = to_blas_int(matA%max_nrows)
+        b_ldb = to_blas_int(matB%max_nrows)
+        b_ldc = to_blas_int(matC%max_nrows)
+        b_m = to_blas_int(matA%nrows)
+        b_n = to_blas_int(matB%ncols)
+        b_k = to_blas_int(matA%ncols)
+!
+        ASSERT(matB%nrows == matA%ncols)
+        ASSERT(matA%nrows == matC%nrows)
+        ASSERT(matB%ncols == matC%ncols)
+!
+        call dgemm('N', 'N', b_m, b_n, b_k, &
+                   alpha, matA%m, b_lda, matB%m, b_ldb, &
+                   beta, matC%m, b_ldc)
 !
     end subroutine
 !

@@ -18,9 +18,6 @@
 
 ! aslint: disable=W1504
 
-! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
-! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
-
 module HHO_SmallStrainMeca_module
 !
     use HHO_basis_module
@@ -141,8 +138,7 @@ contains
         real(kind=8) :: dsidep(6, 6), E_prev(6), E_incr(6), Cauchy_curr(6), Cauchy_prev(6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), bT(MSIZE_CELL_MAT)
-        real(kind=8), save :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
-        real(kind=8), save :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        type(HHO_matrix) :: AT, TMP
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
         integer :: cod(27)
         aster_logical :: l_lhs, l_rhs
@@ -158,7 +154,6 @@ contains
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
 !
         bT = 0.d0
-        AT = 0.d0
         dsidep = 0.d0
         E_prev_coeff = 0.d0
         E_incr_coeff = 0.d0
@@ -166,6 +161,10 @@ contains
         l_lhs = L_MATR(option)
         l_rhs = L_VECT(option)
         nb_sig = nbsigm()
+
+        if (l_lhs) then
+            call AT%initialize(gbs_sym, gbs_sym, 0.d0)
+        end if
 
 ! ----- Initialisation of behaviour datastructure
         call behaviourInit(BEHinteg)
@@ -267,28 +266,32 @@ contains
         if (l_lhs) then
 !
 ! ----- Copy symetric part of AT
-            call hhoCopySymPartMat('U', AT, gbs_sym)
+            call hhoCopySymPartMat('U', AT%m, gbs_sym)
+            call TMP%initialize(gbs_sym, total_dofs, 0.d0)
 ! ----- step1: TMP = AT * gradrec
-            b_ldc = to_blas_int(MSIZE_CELL_MAT)
+            b_ldc = to_blas_int(TMP%max_nrows)
             b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(AT%max_nrows)
             b_m = to_blas_int(gbs_sym)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs_sym)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, AT, b_lda, gradrec%m, b_ldb, &
-                       0.d0, TMP, b_ldc)
+                       1.d0, AT%m, b_lda, gradrec%m, b_ldb, &
+                       0.d0, TMP%m, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
             b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(TMP%max_nrows)
             b_lda = to_blas_int(gradrec%max_nrows)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs_sym)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, gradrec%m, b_lda, TMP, b_ldb, &
+                       1.d0, gradrec%m, b_lda, TMP%m, b_ldb, &
                        1.d0, lhs%m, b_ldc)
+!
+            call TMP%free()
+            call AT%free()
         end if
 !
 ! print*, "AT", hhoNorm2Mat(AT(1:gbs_sym,1:gbs_sym))
@@ -345,8 +348,7 @@ contains
         real(kind=8) :: dsidep(6, 6), dsidep3D(6, 6)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), save :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
-        real(kind=8), save :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        type(HHO_matrix) :: AT, TMP
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! --------------------------------------------------------------------------------------------------
@@ -357,13 +359,15 @@ contains
         faces_dofs = total_dofs-cbs
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
 !
-        AT = 0.d0
         dsidep = 0.d0
         nb_sig = nbsigm()
 !
         if (option /= "RIGI_MECA") then
             ASSERT(ASTER_FALSE)
         end if
+
+        call AT%initialize(gbs_sym, gbs_sym, 0.d0)
+        call TMP%initialize(gbs_sym, total_dofs, 0.d0)
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -389,28 +393,31 @@ contains
 ! ----- compute lhs += gradrec**T * AT * gradrec
 !
 ! ----- Copy symetric part of AT
-        call hhoCopySymPartMat('U', AT, gbs_sym)
+        call hhoCopySymPartMat('U', AT%m, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
-        b_ldc = to_blas_int(MSIZE_CELL_MAT)
+        b_ldc = to_blas_int(TMP%max_nrows)
         b_ldb = to_blas_int(gradrec%max_nrows)
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
+        b_lda = to_blas_int(AT%max_nrows)
         b_m = to_blas_int(gbs_sym)
         b_n = to_blas_int(total_dofs)
         b_k = to_blas_int(gbs_sym)
         call dgemm('N', 'N', b_m, b_n, b_k, &
-                   1.d0, AT, b_lda, gradrec%m, b_ldb, &
-                   0.d0, TMP, b_ldc)
+                   1.d0, AT%m, b_lda, gradrec%m, b_ldb, &
+                   0.d0, TMP%m, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
         b_ldc = to_blas_int(lhs%max_nrows)
-        b_ldb = to_blas_int(MSIZE_CELL_MAT)
+        b_ldb = to_blas_int(TMP%max_nrows)
         b_lda = to_blas_int(gradrec%max_nrows)
         b_m = to_blas_int(total_dofs)
         b_n = to_blas_int(total_dofs)
         b_k = to_blas_int(gbs_sym)
         call dgemm('T', 'N', b_m, b_n, b_k, &
-                   1.d0, gradrec%m, b_lda, TMP, b_ldb, &
+                   1.d0, gradrec%m, b_lda, TMP%m, b_ldb, &
                    1.d0, lhs%m, b_ldc)
+
+        call AT%free()
+        call TMP%free()
 !
     end subroutine
 !
@@ -486,7 +493,7 @@ contains
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         integer, intent(in) :: gbs_sym
         integer, intent(in) :: gbs_cmp
-        real(kind=8), intent(inout) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
+        type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -515,7 +522,7 @@ contains
 ! ---------- diagonal term
             do i = 1, hhoCell%ndim
                 do k = 1, gbs_cmp
-                    AT(row, j) = AT(row, j)+qp_Cgphi(i, j)*BSCEval(k)
+                    AT%m(row, j) = AT%m(row, j)+qp_Cgphi(i, j)*BSCEval(k)
                     row = row+1
                     if (row > j) then
                         go to 100
@@ -528,7 +535,7 @@ contains
             case (3)
                 do i = 1, 3
                     do k = 1, gbs_cmp
-                        AT(row, j) = AT(row, j)+qp_Cgphi(3+i, j)*BSCEval(k)
+                        AT%m(row, j) = AT%m(row, j)+qp_Cgphi(3+i, j)*BSCEval(k)
                         row = row+1
                         if (row > j) then
                             go to 100
@@ -537,7 +544,7 @@ contains
                 end do
             case (2)
                 do k = 1, gbs_cmp
-                    AT(row, j) = AT(row, j)+qp_Cgphi(4, j)*BSCEval(k)
+                    AT%m(row, j) = AT%m(row, j)+qp_Cgphi(4, j)*BSCEval(k)
                     row = row+1
                     if (row > j) then
                         go to 100

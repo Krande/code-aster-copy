@@ -17,9 +17,6 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 
-! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
-! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
-
 module HHO_GV_module
 !
     use NonLin_Datastructure_type
@@ -162,8 +159,7 @@ contains
         real(kind=8) :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, mk_stab, gv_stab
         real(kind=8) :: BSCEvalG(MSIZE_CELL_SCAL), BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), save :: mk_AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
-        real(kind=8), save :: mk_TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        type(HHO_matrix) :: mk_AT, mk_TMP
         real(kind=8) :: gv_AT(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
         real(kind=8) :: gv_TMP(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8) :: mv_AT(MSIZE_CELL_MAT, MSIZE_CELL_SCAL)
@@ -221,11 +217,11 @@ contains
         if (l_lhs) then
             call lhs_mm%initialize(mk_total_dofs, mk_total_dofs, 0.d0)
             call lhs_ll%initialize(gv_cbs, gv_cbs, 0.d0)
+            call mk_AT%initialize(mk_gbs, mk_gbs, 0.d0)
+            call mk_TMP%initialize(mk_gbs, mk_total_dofs, 0.d0)
         end if
 !
         mk_bT = 0.d0
-        mk_AT = 0.d0
-        mk_TMP = 0.d0
         G_prev_coeff = 0.d0
         G_curr_coeff = 0.d0
         rhs_mk = 0.d0
@@ -511,15 +507,15 @@ contains
 !
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
-            b_ldc = to_blas_int(MSIZE_CELL_MAT)
+            b_ldc = to_blas_int(mk_TMP%max_nrows)
             b_ldb = to_blas_int(hhoMecaState%grad%max_nrows)
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(mk_AT%max_nrows)
             b_m = to_blas_int(mk_gbs_tot)
             b_n = to_blas_int(mk_total_dofs)
             b_k = to_blas_int(mk_gbs_tot)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, mk_AT, b_lda, hhoMecaState%grad%m, b_ldb, &
-                       0.d0, mk_TMP, b_ldc)
+                       1.d0, mk_AT%m, b_lda, hhoMecaState%grad%m, b_ldb, &
+                       0.d0, mk_TMP%m, b_ldc)
             b_ldc = to_blas_int(MSIZE_CELL_VEC)
             b_ldb = to_blas_int(hhoGVState%grad%max_nrows)
             b_lda = to_blas_int(MSIZE_CELL_VEC)
@@ -531,13 +527,13 @@ contains
                        0.d0, gv_TMP, b_ldc)
 ! ----- step2: lhs += gradrec**T * TMP
             b_ldc = to_blas_int(lhs_mm%max_nrows)
-            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(mk_TMP%max_nrows)
             b_lda = to_blas_int(hhoMecaState%grad%max_nrows)
             b_m = to_blas_int(mk_total_dofs)
             b_n = to_blas_int(mk_total_dofs)
             b_k = to_blas_int(mk_gbs_tot)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, hhoMecaState%grad%m, b_lda, mk_TMP, b_ldb, &
+                       1.d0, hhoMecaState%grad%m, b_lda, mk_TMP%m, b_ldb, &
                        0.d0, lhs_mm%m, b_ldc)
             b_ldc = to_blas_int(MSIZE_TDOFS_SCAL)
             b_ldb = to_blas_int(MSIZE_CELL_VEC)
@@ -617,6 +613,11 @@ contains
 ! - SYNTHESE DES CODES RETOURS
 !
         call codere(cod, hhoQuadCellRigi%nbQuadPoints, hhoComporState%codret)
+!
+        call mk_AT%free()
+        call mk_TMP%free()
+        call lhs_mm%free()
+        call lhs_ll%free()
 !
     end subroutine
 !

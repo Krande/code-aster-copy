@@ -17,9 +17,6 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 
-! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
-! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
-
 module HHO_LargeStrainMeca_module
 !
     use HHO_basis_module
@@ -151,8 +148,7 @@ contains
         real(kind=8) :: module_tang(3, 3, 3, 3), G_prev(3, 3), G_curr(3, 3)
         real(kind=8) :: F_prev(3, 3), F_curr(3, 3), Pk1_curr(3, 3)
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), save :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
-        real(kind=8), save :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        type(HHO_matrix) :: AT, TMP
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
         integer :: cod(27), nbsig
@@ -172,7 +168,6 @@ contains
 !
         nbsig = nbsigm_cmp(hhoCell%ndim)
         bT = 0.d0
-        AT = 0.d0
         G_prev_coeff = 0.d0
         G_curr_coeff = 0.d0
         !print*, "GT", hhoNorm2Mat(gradrec(1:gbs,1:total_dofs))
@@ -196,6 +191,10 @@ contains
 !
         if (cplan .and. l_green_lagr) then
             ASSERT(ASTER_FALSE)
+        end if
+!
+        if (l_lhs) then
+            call AT%initialize(gbs, gbs, 0.d0)
         end if
 !
 ! ----- init basis
@@ -330,28 +329,31 @@ contains
 ! ----- step1: TMP = AT * gradrec
 !
         if (l_lhs) then
-            b_ldc = to_blas_int(MSIZE_CELL_MAT)
+            call TMP%initialize(gbs, total_dofs, 0.d0)
+            b_ldc = to_blas_int(TMP%max_nrows)
             b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(MSIZE_CELL_MAT)
+            b_lda = to_blas_int(AT%max_nrows)
             b_m = to_blas_int(gbs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs)
             call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, AT, b_lda, gradrec%m, b_ldb, &
-                       0.d0, TMP, b_ldc)
+                       1.d0, AT%m, b_lda, gradrec%m, b_ldb, &
+                       0.d0, TMP%m, b_ldc)
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
             b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(MSIZE_CELL_MAT)
+            b_ldb = to_blas_int(TMP%max_nrows)
             b_lda = to_blas_int(gradrec%max_nrows)
             b_m = to_blas_int(total_dofs)
             b_n = to_blas_int(total_dofs)
             b_k = to_blas_int(gbs)
             call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, gradrec%m, b_lda, TMP, b_ldb, &
+                       1.d0, gradrec%m, b_lda, TMP%m, b_ldb, &
                        1.d0, lhs%m, b_ldc)
 !
+            call TMP%free()
+            call AT%free()
         end if
 ! print*, "KT", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs))
 ! print*, "fT", norm2(rhs)
@@ -424,7 +426,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         integer, intent(in) :: gbs
-        real(kind=8), intent(inout) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
+        type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -454,7 +456,7 @@ contains
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
                 do k = 1, gbs_cmp
-                    call daxpy_1(gbs, BSCEval(k), qp_Agphi(:, deca), AT(:, col))
+                    call daxpy_1(gbs, BSCEval(k), qp_Agphi(:, deca), AT%m(:, col))
                     col = col+1
                 end do
                 deca = deca+1

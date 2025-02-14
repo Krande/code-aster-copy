@@ -16,9 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
-! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
-
 module HHO_Ther_module
 !
     use FE_algebra_module
@@ -283,6 +280,7 @@ contains
             call dgemm('T', 'N', b_m, b_n, b_k, &
                        1.d0, gradrec%m, b_lda, TMP%m, b_ldb, &
                        1.d0, lhs%m, b_ldc)
+            call TMP%free()
 !
         end if
 !
@@ -672,7 +670,7 @@ contains
         gbs_cmp = gbs/hhoCell%ndim
         qp_stress = weight*stress
 ! -------- Compute scalar_product of (stress, gphi)_T
-! -------- (RAPPEL: the composents of the gradient are saved by rows)
+! -------- (RAPPEL: the composents of the gradient are stored by rows)
         deca = 0
         do i = 1, hhoCell%ndim
             call daxpy_1(gbs_cmp, qp_stress(i), BSCEval, bT(deca+1))

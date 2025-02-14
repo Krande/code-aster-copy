@@ -16,9 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
-! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
-
 module HHO_stabilization_module
 !
     use HHO_basis_module
@@ -387,7 +384,7 @@ contains
         real(kind=8) :: invH
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: M1, M2
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC), save :: proj1
+        type(HHO_matrix) :: proj1
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_VEC) :: proj2, proj3, TMP
         integer :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, dimM1, colsM2, i, j, idir
@@ -443,7 +440,7 @@ contains
         ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= dimM1)
 !
         call stab%initialize(total_dofs, total_dofs, 0.0)
-        proj1 = 0.d0
+        call proj1%initialize(cbs+3, total_dofs, 0.d0)
 !
 ! -- Build \pi_F^k (v_F - P_T^K v) equations (21) and (22)
 ! -- compute proj1: Step 1: compute \pi_T^k p_T^k v (third term).
@@ -465,7 +462,7 @@ contains
             b_k = to_blas_int(colsM2)
             call dgemm('N', 'N', b_m, b_n, b_k, &
                        -1.d0, M2, b_lda, gradrec%m(ifromGrad:itoGrad, 1:total_dofs), b_ldb, &
-                       0.d0, proj1(ifromProj:itoProj, 1:total_dofs), b_ldc)
+                       0.d0, proj1%m(ifromProj:itoProj, 1:total_dofs), b_ldc)
 !
             if (.not. massMat%isIdentity) then
 ! -- Solve proj1 = M1^-1 * proj1
@@ -476,7 +473,7 @@ contains
                 b_lda = to_blas_int(MSIZE_CELL_SCAL)
                 b_ldb = to_blas_int(dimM1)
                 call dpotrs('U', b_n, b_nhrs, M1, b_lda, &
-                            proj1(ifromProj:itoProj, 1:total_dofs), b_ldb, info)
+                            proj1%m(ifromProj:itoProj, 1:total_dofs), b_ldb, info)
 !
 ! -- Sucess ?
                 if (info .ne. 0) then
@@ -489,7 +486,7 @@ contains
 ! --  Step 2: v_T - \pi_T^k p_T^k v (first term minus third term)
 ! -- Compute proj1 = proj1 + I_Cell
         do i = 1, hhoCell%ndim*dimM1
-            proj1(i, i) = proj1(i, i)+1.d0
+            proj1%m(i, i) = proj1%m(i, i)+1.d0
         end do
 !
 ! Step 3: project on faces (eqn. 21)
@@ -589,7 +586,7 @@ contains
                 b_n = to_blas_int(total_dofs)
                 b_k = to_blas_int(dimM1)
                 call dgemm('N', 'N', b_m, b_n, b_k, &
-                           1.d0, MR2, b_lda, proj1(ifromProj:itoProj, 1:total_dofs), b_ldb, &
+                           1.d0, MR2, b_lda, proj1%m(ifromProj:itoProj, 1:total_dofs), b_ldb, &
                            0.d0, proj3, b_ldc)
 !
                 if (.not. faceMass%isIdentity) then
@@ -644,6 +641,8 @@ contains
 !
             end do
         end do
+!
+        call proj1%free()
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoStabSymVec", end-start)
