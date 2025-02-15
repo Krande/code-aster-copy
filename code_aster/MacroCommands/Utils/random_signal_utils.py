@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1112,3 +1112,50 @@ def corrcoefmodel(Period, f_beta=None):
 
     Mat_Gx = NP.linalg.cholesky(Mat_Eps)
     return Periods, Mat_Gx
+
+
+
+#
+# -----------------------------------------------------------------
+# CORRECTION ZPA DES SIGNAUX
+# -----------------------------------------------------------------
+#
+## Ces fonctions permettent de corriger les zpa des signaux, seront restituées dans l'opérateur GENE_ACCE_SEISME
+
+# create the Gaussian mask
+def def_mask(signal, y00, epsilon):
+    t = signal[0]
+    y = signal[1]
+    t0_idx = np.argmax(np.abs(y))
+
+    t0 = t[t0_idx]
+    y0 = y[t0_idx]*np.sign(y[t0_idx])
+    mask = 1 - (1 - y00 / y0) * np.exp(-0.5 * ((t - t0) / epsilon) ** 2)
+
+    return mask
+
+# correct the accelerogram to yield pga
+def correct_signal(signal : list,
+                   pga : float,
+                   epsilon: float):
+
+    mask = def_mask(signal, pga, epsilon)
+
+    sig = signal[1] * mask
+    newsig = sig - np.mean(sig)
+
+    new_signal = (signal[0], newsig)
+
+    return new_signal
+
+# zpa match function
+def zpa_match(signal : list,
+              pga : float,
+              epsilon: float = 0.03):
+
+    new_signal = correct_signal(signal, pga, epsilon)
+
+    while np.max(np.abs(new_signal[1])) > pga*1.001:
+        new_signal = correct_signal(new_signal, pga, epsilon)
+
+    return new_signal[1]
