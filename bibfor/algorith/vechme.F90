@@ -152,11 +152,9 @@ subroutine vechme(stop, &
     end if
 
 ! - Preparing input fields
-    call prepGeneralFields(model, caraElemZ, materFieldZ, matecoZ, &
-                           applySuiv, &
-                           timePrev, timeCurr, timeTheta, nharm, &
+    call prepGeneralFields(model, caraElemZ, matecoZ, &
+                           nharm, &
                            varcCurr, dispPrev, dispCumuInst, &
-                           compor, strxPrev, viteCurr, acceCurr, &
                            nbFieldInGene, lpain, lchin)
 
 ! - Computation
@@ -169,16 +167,24 @@ subroutine vechme(stop, &
         if ((loadNume .gt. 0 .and. loadNume .lt. 4) .or. (loadNume .eq. 55)) then
 ! --------- Standard dead Neumann loads
             call compLoadVect(applyPilo, applySuiv, &
-                              iLoad, loadNume, loadPreObject, loadLigrel, &
+                              iLoad, loadNume, &
+                              model, materFieldZ, compor, &
+                              strxPrev, viteCurr, acceCurr, &
+                              timePrev, timeCurr, timeTheta, &
+                              loadPreObject, loadLigrel, &
                               stop, nbFieldInGene, lpain, lchin, &
                               ligrelCalc, jvBase, resuElem, vectElem)
 
 ! --------- Composite dead Neumann loads (EVOL_CHAR)
-            call compLoadEvolVect(modelZ, caraElemZ, timePrev, jvBase, &
-                                  applySuiv, iLoad, loadPreObject, &
-                                  loadLigrel, ligrelCalc, &
+            call compLoadEvolVect(model, caraElemZ, materFieldZ, compor, &
+                                  timePrev, jvBase, &
+                                  applySuiv, iLoad, &
+                                  timePrev, timeCurr, timeTheta, &
+                                  loadPreObject, loadLigrel, ligrelCalc, &
                                   nbFieldInGene, lpain, lchin, &
-                                  resuElem, vectElem)
+                                  resuElem, vectElem, &
+                                  dispPrev, dispCumuInst, &
+                                  strxPrev, viteCurr, acceCurr)
         end if
     end do
 !

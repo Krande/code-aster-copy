@@ -32,6 +32,7 @@ from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import injector
 from ..Utilities import medcoupling as medc
 from .component import ComponentOnCells
+from ..Utilities.MedUtils import MEDConverter
 
 
 class SFoCStateBuilder(InternalStateBuilder):
@@ -95,6 +96,19 @@ class ExtendedSimpleFieldOnCellsReal:
         return ComponentOnCells(
             mvalues, ComponentOnCells.Description(self, self._cache["idx"], self._cache["nbpt"])
         )
+
+    def toMEDCouplingField(self, medmesh, prefix=""):
+        """Export the field to a new MEDCoupling field
+
+        Arguments:
+            medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
+            prefix,  optional (str): Prefix for field names.
+
+        Returns:
+            field ( MEDCouplingFieldDouble ) : The field medcoupling format.
+        """
+
+        return MEDConverter.toMEDCouplingField(self, medmesh, prefix)
 
     def setComponentValues(self, component, cfvalue):
         """Assign the values of a component.
@@ -213,45 +227,8 @@ class ExtendedSimpleFieldOnCellsReal:
 
         return sfield
 
-    def toMEDCouplingField(self, medmesh):
-        """Export the field to a new MEDCoupling field
-
-        Arguments:
-            medmesh (*MEDCouplingUMesh*): The medcoupling support mesh.
-
-        Returns:
-            field ( MEDCouplingFieldDouble ) : The field medcoupling format.
-        """
-
-        if not isinstance(medmesh, (medc.MEDCouplingUMesh, PMM.MEDCouplingUMesh)):
-            msg = "toMEDCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
-            raise TypeError(msg.format(type(medmesh).__name__))
-
-        values, mask = self._cache["val"], self._cache["msk"]
-
-        # Restrict field based on mask
-        restricted_cells = np.where(np.any(mask, axis=1))[0]
-        restricted_values = values[restricted_cells, :]
-
-        # Medcoupling field
-        field_values = medc.DataArrayDouble(restricted_values)
-        field_values.setInfoOnComponents(self.getComponents())
-        field_values.setName(self.getPhysicalQuantity())
-        medc_cell_field = medc.MEDCouplingFieldDouble(medc.ON_CELLS, medc.ONE_TIME)
-        medc_cell_field.setName(self.getPhysicalQuantity())
-        medc_cell_field.setArray(field_values)
-        medc_cell_field.setNature(medc.IntensiveConservation)
-
-        if len(restricted_cells) == medmesh.getNumberOfCells():
-            medc_cell_field.setMesh(medmesh)
-        else:
-            raise NotImplementedError()
-
-        medc_cell_field.checkConsistencyLight()
-
-        return medc_cell_field
-
-    def fromMEDCouplingField(self, mc_field):
+    @classmethod
+    def fromMEDCouplingField(cls, mc_field, astermesh):
         """Import the field to a new MEDCoupling field. Set values in place.
 
             It assumes that the DataArray contains the list of components and
@@ -261,23 +238,10 @@ class ExtendedSimpleFieldOnCellsReal:
             field (*MEDCouplingFieldDouble*): The medcoupling field.
         """
 
-        if not isinstance(mc_field, (medc.MEDCouplingFieldDouble, PMM.MEDCouplingFieldDouble)):
-            msg = "fromMEDCouplingField() argument must be a MEDCouplingFieldDouble, not '{}'"
-            raise TypeError(msg.format(type(mc_field).__name__))
+        phys, cmps, values = MEDConverter.fromMEDFileField1TSCells(mc_field, astermesh)
 
-        if mc_field.getTypeOfField() != medc.ON_CELLS:
-            raise RuntimeError("Field is not defined on cells.")
+        field = cls(astermesh)
+        field.allocate("ELEM", phys, cmps, 1, 1)
+        field.setValues(values)
 
-        mesh = mc_field.getMesh()
-        if mesh.getNumberOfCells() != self.getMesh().getNumberOfCells():
-            raise RuntimeError("Meshes have an incompatible number of cells.")
-
-        # mc values
-        arr = mc_field.getArray()
-
-        cmps = arr.getInfoOnComponents()
-        phys = arr.getName()
-
-        self.allocate("ELEM", phys, cmps, 1, 1)
-
-        self.setValues(arr.getValues())
+        return field

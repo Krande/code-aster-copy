@@ -7,6 +7,7 @@ P testlist submit verification sequential
 
 F comm hplv108a.comm D 1
 F comm hplv108a.com1 D 1
+F comm hplv108a.com2 D 1
 F mmed hplv108a.med D 20
 F libr hplv108a.30 D 30
 F nom hplv108a.json D 0

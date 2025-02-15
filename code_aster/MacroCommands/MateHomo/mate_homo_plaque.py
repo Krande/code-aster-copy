@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,8 @@ from ...Objects import ThermalResultDict, ElasticResultDict
 
 from . import mate_homo_utilities as utilities
 
+# List of all the parameters in the result table
+
 PARAPLAQUE = [
     "MEMB_L",
     "MEMB_T",
@@ -55,6 +57,28 @@ PARAPLAQUE = [
 
 
 def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, dir_plaque):
+    """Compute the elastic correctors for PLAQUE (Plate) case.
+
+    Thermal homogeneisation is not implemented yet; this function performs 6 MECA_STATIQUE.
+
+    The computation of the homogeneus parameters for several temperature values is done
+    by considering the temperature as a pseudo-time value.
+
+    Arguments
+    ---------
+        modme (Model): Mechanical model.
+        matme (MaterialField): Mechanical material field.
+        modth (Model): Thermal model.
+        matth (MaterialField): Thermal material field.
+        linst (ListOfFloats): List of pseudo-time values (homogeneisation temperature values).
+        groupma (list[str]): List of groups where properties are prescribed.
+        dir (str): Orientation of the normal axis of the plate element.
+
+    Returns
+    -------
+        elas (ElasticResultDict): Dict of elastic correctors.
+        ther (ThermalResultDict): Dict of thermal correctors. Empty.
+    """
     SYME_MECA_XX_mm = AFFE_CHAR_CINE(
         MODELE=MODME,
         MECA_IMPO=(
@@ -126,6 +150,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11_mm), _F(CHARGE=SYME_MECA_XX_mm)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA22_MEMB"] = MECA_STATIQUE(
@@ -133,6 +158,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22_mm), _F(CHARGE=SYME_MECA_XX_mm)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA12_MEMB"] = MECA_STATIQUE(
@@ -140,6 +166,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12_mm), _F(CHARGE=ANTI_MECA_12_mm)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA11_FLEX"] = MECA_STATIQUE(
@@ -147,6 +174,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11_ff), _F(CHARGE=SYME_MECA_XX_ff)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA22_FLEX"] = MECA_STATIQUE(
@@ -154,6 +182,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22_ff), _F(CHARGE=SYME_MECA_XX_ff)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA12_FLEX"] = MECA_STATIQUE(
@@ -161,21 +190,44 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12_ff), _F(CHARGE=ANTI_MECA_12_ff)),
+        OPTION="SANS",
     )
 
     return elas_fields, ther_fields
 
 
 def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
+    """Compute the average value of material parameters on the VER mesh.
+
+    In order to use existing operators (CALC_CHAMP and POST_ELEM) this function works with
+    a pseudo-result as input, obtained with a 0-load boundary condition.
+
+    List of computed parameters :
+       LAME_1 : first Lamé coefficient
+       LAME_2 : second Lamé coefficient
+       ALPHA_3K : compression modulus
+       RHO : density
+       RHO_CP : product of density with specific heat
+       LAMBDA_THER : thermal conductivity
+
+    Arguments
+    ---------
+        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
+        groupma (list[str]): List of groups where properties are prescribed.
+        dir (str): Orientation of the normal axis of the plate element.
+
+    Returns
+    -------
+        values (dict): average properties values as function of pseudo-time (temperature).
+    """
+
     LAME_1_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E*NU/((1+NU)*(1-2*NU))")
     LAME_2_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E/(2*(1+NU))")
 
     LAME_1_ff = FORMULE(
-        NOM_PARA=("E", "NU", dir_plaque), VALE="{}**2 * E*NU/((1+NU)*(1-2*NU))".format(dir_plaque)
+        NOM_PARA=("E", "NU", dir_plaque), VALE=f"{dir_plaque}**2 * E*NU/((1+NU)*(1-2*NU))"
     )
-    LAME_2_ff = FORMULE(
-        NOM_PARA=("E", "NU", dir_plaque), VALE="{}**2 * E/(2*(1+NU))".format(dir_plaque)
-    )
+    LAME_2_ff = FORMULE(NOM_PARA=("E", "NU", dir_plaque), VALE=f"{dir_plaque}**2 * E/(2*(1+NU))")
 
     RESUMATE = CALC_CHAMP(
         RESULTAT=DEPLMATE,
@@ -246,6 +298,28 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
 def calc_tabpara_plaque(
     DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, dir_plaque, dirthick, **fields
 ):
+    """Compute the homogeneus properties values.
+
+    Arguments
+    ---------
+        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
+        volumever (float): Volume of VER.
+        groupma (list[str]): List of groups where properties are prescribed.
+        varcname (str): Name of command variable (TEMP | IRRA).
+        varcvalue (list[float]): List of temperature at which parameters are computed.
+        dir (str): Orientation of the normal axis of the plate element.
+        thick (float): Plate thickness.
+        **fields (ElasticResultDict, ThermalResultDict): corrector fields.
+
+    Returns
+    -------
+        C_HOM (list[np.ndarray]): Homogeneus membrane matrix for each temperature value.
+        D_HOM (list[np.ndarray]): Homogeneus flex matrix for each temperature value.
+        G_HOM (list[np.ndarray]): Homogeneus shear matrix for each temperature value.
+        table (Table): Aster table with all the homonegeus parameters (ready for DEFI_MATERIAU).
+
+    """
+
     CORR_MECA11_MEMB = fields["CORR_MECA11_MEMB"]
     CORR_MECA22_MEMB = fields["CORR_MECA22_MEMB"]
     CORR_MECA12_MEMB = fields["CORR_MECA12_MEMB"]
@@ -261,6 +335,9 @@ def calc_tabpara_plaque(
     loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma, dir_plaque)
     h = dirthick[dir_plaque]
     tda = utilities.get_temp_def_alpha(DEPLMATE)
+    ls_C_hom = {}
+    ls_D_hom = {}
+    ls_G_hom = {}
 
     for i, inst_meca in enumerate(insts_meca):
 
@@ -321,6 +398,10 @@ def calc_tabpara_plaque(
         G_hom = np.array([[G11_hom,   0       ],
                           [0,         G22_hom ]])
         # fmt: on
+
+        ls_C_hom[inst_meca] = C_hom
+        ls_D_hom[inst_meca] = D_hom
+        ls_G_hom[inst_meca] = G_hom
 
         RHO = (1 / volume_ver) * loimel["RHO"][i]
 

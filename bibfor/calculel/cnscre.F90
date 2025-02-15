@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,9 +87,10 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
 !------------------------------------------------------------------
 !     2- CREATION DE CNS.CNSK:
 !     ------------------------
-    call wkvect(cns//'.CNSK', base//' V K8', 2, jcnsk)
+    call wkvect(cns//'.CNSK', base//' V K8', 3, jcnsk)
     zk8(jcnsk-1+1) = ma
     zk8(jcnsk-1+2) = nomgd
+    zk8(jcnsk-1+3) = 'NOEU'
 !
 !------------------------------------------------------------------
 !     3- CREATION DE CNS.CNSD:

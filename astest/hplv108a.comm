@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,11 @@ TAB_HOMO = CALC_MATE_HOMO(
     TYPE_HOMO="MASSIF",
     CORR_MECA=CO("CORR_MECA"),
     CORR_THER=CO("CORR_THER"),
-    UNITE=80,
 )
+
+IMPR_CORR_HOMO(UNITE=80, CORR_MECA=CORR_MECA)
+
+IMPR_CORR_HOMO(UNITE=80, CORR_THER=CORR_THER)
 
 testrefe = {
     "A1111": 0.48437,

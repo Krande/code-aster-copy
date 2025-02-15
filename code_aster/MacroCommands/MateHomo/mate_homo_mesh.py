@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,17 +20,25 @@
 from ...Messages import ASSERT, UTMESS
 from ...Objects import Mesh
 from ...Utilities import medcoupling as mc
+from . import MESH_TOL
 
 
 def prepare_mesh_syme(meshin, affe_groups, affe_all):
-    """
-    Cette fonction sert à construire un nouveau maillage qui reprends seulement la partie 3D
-    du maillage fourni par l'utilisateur. Tous les groupes de volume sont conservés.
-    Un group de volume BODY est ajouté est inclut l'ensemble des éléments à traiter selon
-    la déclaration de TOUT=OUI ou d'une liste de GROUP_MA.
-    Dans cette macro les affectations en TOUT='OUI' sont converties en affectations sur GROUP_MA=BODY
+    """Return a new mesh for the homogeneisation computations.
 
-    Les groupes de faces pour les CL sont crées à partir des min et max de la bounding box.
+    Only the 3D part of the original mesh is kept, together with the 3D groups.
+    A volume group BODY is created from the list of user material prescription.
+    Face groups are created as the group on the bounding box.
+
+    Arguments
+    ---------
+        mesh (Mesh): The user VER mesh.
+        affe (list): List of material prescription from user command.
+        affeall (bool): True if TOUT='OUI' is used.
+
+    Returns
+    -------
+        mesh (Mesh): The internal VER mesh.
     """
 
     ASSERT(len(affe_groups) > 0 or affe_all)
@@ -38,15 +46,7 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     mm = meshin.createMedCouplingMesh()
     m0full = mm[0]
 
-    nb_zones = len(m0full.partitionBySpreadZone())
-    if not nb_zones == 1:
-        UTMESS("F", "HOMO1_1", vali=nb_zones)
-
-    if not m0full.getMeshDimension() == 3:
-        UTMESS("F", "HOMO1_2", vali=m0full.getMeshDimension())
-
-    if not m0full.getSpaceDimension() == 3:
-        UTMESS("F", "HOMO1_3", vali=m0full.getSpaceDimension())
+    assert check_meshdim(m0full)
 
     body_groups = []
 
@@ -71,12 +71,6 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     bodycells = mc.DataArrayInt.BuildUnion(body_groups)
     m0 = m0full[bodycells]
     m0.zipCoords()
-    skin = m0.computeSkin()
-
-    newmesh = mc.MEDFileUMesh()
-    newmesh.setName(mm.getName())
-    newmesh[0] = m0
-    newmesh[-1] = skin
 
     # Conservation de tous les groupes de volume sauf BODY et ajout du groupe bodycells
     group_tout = "BODY"
@@ -93,12 +87,57 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
 
     fullvolume = mc.DataArrayInt.Range(0, len(bodycells), 1)
     fullvolume.setName(group_tout)
+    l0groups = preserved_groups + [fullvolume]
 
-    newmesh.setGroupsAtLevel(0, preserved_groups + [fullvolume])
+    volume_ver, dirthick, newmesh = rebuild_with_groups(m0, l0groups)
+
+    mesh = Mesh()
+    mesh.buildFromMedCouplingMesh(newmesh)
+
+    return mesh, group_tout, volume_ver, dirthick
+
+
+def check_meshdim(m0):
+    """
+    Perform dimensional checks on the input user mesh.
+    """
+
+    nb_zones = len(m0.partitionBySpreadZone())
+    if not nb_zones == 1:
+        UTMESS("F", "HOMO1_1", vali=nb_zones)
+
+    if not m0.getMeshDimension() == 3:
+        UTMESS("F", "HOMO1_2", vali=m0.getMeshDimension())
+
+    if not m0.getSpaceDimension() == 3:
+        UTMESS("F", "HOMO1_3", vali=m0.getSpaceDimension())
+
+    bounds = m0.getBoundingBox()
+    vmins = [v[0] for v in bounds]
+    for vmin in vmins:
+        if abs(vmin) > MESH_TOL:
+            UTMESS("F", "HOMO1_15", valr=vmins)
+
+    return True
+
+
+def rebuild_with_groups(m0, l0groups):
+    """
+    Rebuild mesh preserving 3D groups and creating new 2D and 1D groups.
+    """
+
+    skin = m0.computeSkin()
+
+    newmesh = mc.MEDFileUMesh()
+    newmesh.setName(m0.getName())
+    newmesh[0] = m0
+    newmesh[-1] = skin
+
+    newmesh.setGroupsAtLevel(0, l0groups)
 
     # Recherche des faces à xmin,xmax,ymin,ymax,zmin,zmax et creation des groupes
     bounds = m0.getBoundingBox()
-    tol = 1.0e-10
+    tol = MESH_TOL
     face_groups = []
     face_nodes = {}
     volume_ver = 1.0
@@ -208,7 +247,4 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
 
     newmesh.setGroupsAtLevel(1, node_groups)
 
-    mesh = Mesh()
-    mesh.buildFromMedCouplingMesh(newmesh)
-
-    return mesh, group_tout, volume_ver, dirthick
+    return volume_ver, dirthick, newmesh

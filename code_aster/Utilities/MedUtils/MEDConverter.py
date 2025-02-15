@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,65 +19,7 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-import libaster
-from .. import medcoupling as medc
-
-
-def convertMesh2MedCoupling(asmesh):
-    """Convert a *Mesh* into a MEDCoupling mesh.
-
-    Arguments:
-        asmesh (*Mesh*): Mesh object to be converted.
-
-    Returns:
-        *MEDCouplingMesh*: MEDCoupling object.
-    """
-    cells, groups_c, groups_n = libaster.getMedCouplingConversionData(asmesh)
-
-    mcmesh = medc.MEDFileUMesh()
-    coords = medc.DataArrayDouble(
-        asmesh.getCoordinates().getValues(), asmesh.getNumberOfNodes(), 3
-    )[:, : asmesh.getDimension()]
-
-    maxdim = max(cells.keys())
-    levels = {i: i - maxdim for i in range(maxdim, -1, -1)}
-
-    # Creation du maillage par niveau, depart par le plus haut (0)
-    for dim in sorted(cells.keys())[::-1]:
-
-        mesh_at_current_level = medc.MEDCouplingUMesh(asmesh.getName(), dim)
-        mesh_at_current_level.setCoords(coords)
-
-        conn, connI = cells[dim]
-        mesh_at_current_level.setConnectivity(medc.DataArrayInt(conn), medc.DataArrayInt(connI))
-
-        o2n = mesh_at_current_level.sortCellsInMEDFileFrmt()
-        mesh_at_current_level.checkConsistencyLight()
-        mcmesh.setMeshAtLevel(levels[dim], mesh_at_current_level)
-
-        # Groupes de mailles
-        try:
-            groups_c_at_level = []
-            for group_name, group_cells in groups_c[dim].items():
-                group_medcoupling = medc.DataArrayInt(group_cells)
-                group_medcoupling.transformWithIndArr(o2n)
-                group_medcoupling.setName(group_name)
-                groups_c_at_level.append(group_medcoupling)
-            mcmesh.setGroupsAtLevel(levels[dim], groups_c_at_level)
-
-        except KeyError:
-            # Pas de groupes à ce niveau
-            pass
-
-    # Groupes de noeuds au niveau 1
-    groups_n_at_level = []
-    for group_name, group_nodes in groups_n.items():
-        group_medcoupling = medc.DataArrayInt(group_nodes)
-        group_medcoupling.setName(group_name)
-        groups_n_at_level.append(group_medcoupling)
-    mcmesh.setGroupsAtLevel(1, groups_n_at_level)
-
-    mcmesh.setName(asmesh.getName())
-    mcmesh.rearrangeFamilies()
-
-    return mcmesh
+from .MEDMeshConverter import convertMesh2MedCoupling
+from .MEDFieldConverter import toMEDFileField1TS, toMEDCouplingField
+from .MEDFieldConverter import fromMEDFileField1TSNodes, fromMEDFileField1TSCells
+from .MEDResultConverter import fromMEDFileData, toMEDFileData

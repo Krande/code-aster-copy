@@ -1,0 +1,79 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import math
+from code_aster.CodeCommands import *
+from code_aster.Objects import *
+from code_aster import CA
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+test = CA.TestCase()
+
+TAB_REFE_1 = LIRE_TABLE(UNITE=30)
+values_refe_1 = TAB_REFE_1.EXTR_TABLE().values()
+
+TAB_RESU_1 = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="TEMP_RELOC",
+        RESULTAT=RELOC_RESU_1,
+        INST=INSTS[1],
+        NOM_CHAM="TEMP",
+        TOUT_CMP="OUI",
+        GROUP_NO="ANALYSE",
+    )
+)
+IMPR_TABLE(UNITE=40, FORMAT_R="E12.10", TABLE=TAB_RESU_1)
+
+values_resu_1 = TAB_RESU_1.EXTR_TABLE().values()
+
+TAB_REFE_2 = LIRE_TABLE(UNITE=31)
+values_refe_2 = TAB_REFE_2.EXTR_TABLE().values()
+TAB_RESU_2 = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="TEMP_RELOC",
+        RESULTAT=RELOC_RESU_2,
+        INST=INSTS[1],
+        NOM_CHAM="TEMP",
+        TOUT_CMP="OUI",
+        GROUP_NO="ANALYSE",
+    )
+)
+IMPR_TABLE(UNITE=41, FORMAT_R="E12.10", TABLE=TAB_RESU_2)
+
+values_resu_2 = TAB_RESU_2.EXTR_TABLE().values()
+
+for quantity in ("ABSC_CURV", "TEMP"):
+    for i, (calc, refe) in enumerate(zip(values_resu_1[quantity], values_refe_1[quantity])):
+        node_resu = values_resu_1["NOEUD"][i]
+        node_refe = values_refe_1["NOEUD"][i]
+        test.assertTrue(node_resu == node_refe, msg=f"RESU1 ## NOEUD - {node_resu} == {node_refe}")
+        test.assertAlmostEqual(calc, refe, msg=f"RESU1 ## {quantity} - {node_resu}")
+
+    for i, (calc, refe) in enumerate(zip(values_resu_2[quantity], values_refe_2[quantity])):
+        node_resu = values_resu_2["NOEUD"][i]
+        node_refe = values_refe_2["NOEUD"][i]
+        test.assertTrue(node_resu == node_refe, msg=f"RESU2 ## NOEUD - {node_resu} == {node_refe}")
+        test.assertAlmostEqual(calc, refe, msg=f"RESU2 ## {quantity} - {node_resu}")
+
+test.printSummary()
+
+FIN()

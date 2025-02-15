@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,23 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+
+def calc_homo_sdprod(self, CORR_MECA, CORR_THER, **kwargs):
+    if kwargs.get("__all__"):
+        return ([table_sdaster],)
+
+    if CORR_THER is not None:
+        self.type_sdprod(CORR_THER, evol_ther_dict)
+    if CORR_MECA is not None:
+        self.type_sdprod(CORR_MECA, evol_elas_dict)
+
+    return table_sdaster
+
+
 CALC_MATE_HOMO = MACRO(
     nom="CALC_MATE_HOMO",
     op=OPS("code_aster.MacroCommands.MateHomo.mate_homo_ops.mate_homo_ops"),
-    sd_prod=table_sdaster,
-    docu="UX.YZ.AB",
+    sd_prod=calc_homo_sdprod,
     reentrant="n",
     fr=tr("Calcul des paramètres elastiques équivalents par homogénéisation périodique"),
     MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
@@ -46,12 +58,14 @@ CALC_MATE_HOMO = MACRO(
         VALE=SIMP(statut="o", typ="R", min=1, max="**"),
     ),
     TYPE_HOMO=SIMP(statut="o", typ="TXM", into=("MASSIF", "PLAQUE")),
-    UNITE=SIMP(statut="f", typ=UnitType("med"), inout="out"),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
-    CORR_MECA=SIMP(statut="f", typ=CO),
-    b_corr_massif=BLOC(condition="TYPE_HOMO == 'MASSIF'", CORR_THER=SIMP(statut="f", typ=CO)),
+    CORR_MECA=SIMP(statut="f", typ=CO, validators=NoRepeat()),
+    b_corr_massif=BLOC(
+        condition="""equal_to("TYPE_HOMO", "MASSIF")""",
+        CORR_THER=SIMP(statut="f", typ=CO, validators=NoRepeat()),
+    ),
     b_corr_plaque=BLOC(
-        condition="TYPE_HOMO == 'PLAQUE'",
+        condition="""equal_to("TYPE_HOMO", "PLAQUE")""",
         VECT_NORM=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z")),
     ),
 )

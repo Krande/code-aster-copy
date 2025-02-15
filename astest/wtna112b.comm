@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -180,7 +180,8 @@ ENT1 = PINI / 1000.0
 SIGINIT = CREA_CHAMP(
     MODELE=MODELE,
     OPERATION="AFFE",
-    TYPE_CHAM="CART_SIEF_R",
+    TYPE_CHAM="ELGA_SIEF_R",
+    PROL_ZERO="OUI",
     AFFE=(
         _F(
             GROUP_MA="COX",
@@ -202,9 +203,6 @@ SIGINIT = CREA_CHAMP(
                 "FH11Y",
                 "FH11Z",
                 "ENT11",
-                "QPRIM",
-                "FHTX",
-                "FHTY",
             ),
             VALE=(
                 SIEFF0,
@@ -224,9 +222,6 @@ SIGINIT = CREA_CHAMP(
                 0.0,
                 0.0,
                 ENT1,
-                0.0,
-                0.0,
-                0.0,
             ),
         ),
     ),

@@ -1,0 +1,65 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import math
+from code_aster.CodeCommands import *
+from code_aster.Objects import *
+from code_aster import CA
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+test = CA.TestCase()
+
+RELOC_RESU_1 = REST_HOMO_LOCAL(
+    TYPE_HOMO="MASSIF",
+    POSITION=(x0, y0, z0),
+    AFFE=(_F(GROUP_MA=("plaque",), MATER=ACIER), _F(GROUP_MA=("tube1",), MATER=INCONEL)),
+    CORR_MECA=CORR_MECA_RELOAD,
+    CORR_THER=CORR_THER_RELOAD,
+    PRESSION=1.0,
+    EVOL_ELAS=RESU_GLOB_HOMO_MECA,
+    EVOL_THER=RESU_GLOB_HOMO_THER,
+    TOUT_INST="OUI",
+)
+
+test.assertSetEqual(set(RELOC_RESU_1.getFieldsNames()), set(["DEPL"]))
+test.assertSequenceEqual(RELOC_RESU_1.getAccessParameters()["INST"], INSTS)
+
+RELOC_RESU_2 = REST_HOMO_LOCAL(
+    TYPE_HOMO="MASSIF",
+    POSITION=(x0, y0, z0),
+    AFFE=(_F(GROUP_MA=("plaque",), MATER=ACIER), _F(GROUP_MA=("tube1",), MATER=INCONEL)),
+    CORR_MECA=CORR_MECA,
+    CORR_THER=CORR_THER,
+    TEMP_REF=20,
+    PRESSION=1.0,
+    EVOL_ELAS=RESU_GLOB_HOMO_MECA,
+    EVOL_THER=RESU_GLOB_HOMO_THER,
+    OPTION="SIEF_ELGA",
+    TRANSLATION="OUI",
+    INST=INSTS,
+    # COMPLET="OUI",
+)
+test.assertSetEqual(set(RELOC_RESU_2.getFieldsNames()), set(["DEPL", "SIEF_ELGA"]))
+test.assertSequenceEqual(RELOC_RESU_2.getAccessParameters()["INST"], INSTS)
+
+
+test.printSummary()
+
+FIN()

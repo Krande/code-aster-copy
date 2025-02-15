@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ from ...Objects import ThermalResultDict, ElasticResultDict
 
 from . import mate_homo_utilities as utilities
 
+# List of all the parameters in the result table
 
 PARAMASSIF = [
     "E_L",
@@ -78,6 +79,31 @@ PARAMASSIF = [
 
 
 def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_group_ma):
+    """Compute the elastic and thermal correctors for MASSIF (Bulk) case.
+
+    This function performs 7 MECA_STATIQUE and 3 THER_LINEAIRE.
+    If the group `face_int` is present performs an additional MECA_STATIQUE to compute
+    the internal pressure corrector.
+
+    The computation of the homogeneus parameters for several temperature values is done
+    by considering the temperature as a pseudo-time value.
+
+    Arguments
+    ---------
+        modme (Model): Mechanical model.
+        matme (MaterialField): Mechanical material field.
+        modth (Model): Thermal model.
+        matth (MaterialField): Thermal material field.
+        linst (ListOfFloats): List of pseudo-time values (homogeneisation temperature values).
+        alpha (list): List of dilatation coefficient as function of pseudo-time (temperature).
+        groupma (list[str]): List of groups where properties are prescribed.
+
+    Returns
+    -------
+        elas (ElasticResultDict): Dict of elastic correctors.
+        ther (ThermalResultDict): Dict of thermal correctors.
+    """
+
     # Chargements pour calcul des correcteurs MECANIQUES
     # =======================================================================
 
@@ -201,6 +227,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHARDIL), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
     )
 
     # Calcul des correcteurs MECANIQUES
@@ -211,6 +238,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA22"] = MECA_STATIQUE(
@@ -218,6 +246,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA12"] = MECA_STATIQUE(
@@ -225,6 +254,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12), _F(CHARGE=ANTI_MECA_12)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA33"] = MECA_STATIQUE(
@@ -232,6 +262,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR33), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA31"] = MECA_STATIQUE(
@@ -239,6 +270,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR31), _F(CHARGE=ANTI_MECA_31)),
+        OPTION="SANS",
     )
 
     elas_fields["CORR_MECA23"] = MECA_STATIQUE(
@@ -246,6 +278,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR23), _F(CHARGE=ANTI_MECA_23)),
+        OPTION="SANS",
     )
 
     # Calcul des correcteurs MECANIQUES de pression interne
@@ -258,6 +291,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
             CHAM_MATER=CHMATME,
             LIST_INST=L_INST,
             EXCIT=(_F(CHARGE=CHAR_PINT), _F(CHARGE=SYME_MECA_XX)),
+            OPTION="SANS",
         )
 
     # Calcul des correcteurs THERMIQUES
@@ -290,6 +324,29 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
 
 
 def calc_loimel_massif(DEPLMATE, ls_group_tout):
+    """Compute the average value of material parameters on the VER mesh.
+
+    In order to use existing operators (CALC_CHAMP and POST_ELEM) this function works with
+    a pseudo-result as input, obtained with a 0-load boundary condition.
+
+    List of computed parameters :
+       LAME_1 : first Lamé coefficient
+       LAME_2 : second Lamé coefficient
+       ALPHA_3K : compression modulus
+       RHO : density
+       RHO_CP : product of density with specific heat
+       LAMBDA_THER : thermal conductivity
+
+    Arguments
+    ---------
+        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
+        groupma (list[str]): List of groups where properties are prescribed.
+
+    Returns
+    -------
+        values (dict): average properties values as function of pseudo-time (temperature).
+    """
+
     LAME_1 = FORMULE(NOM_PARA=("E", "NU"), VALE="E*NU/((1+NU)*(1-2*NU))")
     LAME_2 = FORMULE(NOM_PARA=("E", "NU"), VALE="E/(2*(1+NU))")
     ALPHA_3K = FORMULE(NOM_PARA=("E", "NU", "ALPHA"), VALE="ALPHA*E/(1-2*NU)")
@@ -353,6 +410,26 @@ def calc_loimel_massif(DEPLMATE, ls_group_tout):
 
 
 def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, **fields):
+    """Compute the homogeneus properties values.
+
+    Arguments
+    ---------
+        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
+        volumever (float): Volume of VER.
+        groupma (list[str]): List of groups where properties are prescribed.
+        varcname (str): Name of command variable (TEMP | IRRA).
+        varcvalue (list[float]): List of temperature at which parameters are computed.
+        **fields (ElasticResultDict, ThermalResultDict): corrector fields.
+
+
+    Returns
+    -------
+        A_HOM (list[np.ndarray]): Homogeneus elastic matrix for each temperature value.
+        K_HOM (list[np.ndarray]): Homogeneus thermal matrix for each temperature value.
+        table (Table): Aster table with all the homonegeus parameters (ready for DEFI_MATERIAU).
+
+    """
+
     CORR_MECA11 = fields["CORR_MECA11"]
     CORR_MECA22 = fields["CORR_MECA22"]
     CORR_MECA33 = fields["CORR_MECA33"]
@@ -372,6 +449,8 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAMASSIF)
     loimel = calc_loimel_massif(DEPLMATE, ls_group_ma)
     tda = utilities.get_temp_def_alpha(DEPLMATE)
+    ls_A_hom = {}
+    ls_K_hom = {}
 
     for i, (inst_meca, inst_ther) in enumerate(zip(insts_meca, insts_ther)):
 
@@ -410,6 +489,7 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
                           [0,       K22_hom, 0      ],
                           [0,       0,       K33_hom]])
         # fmt: on
+        ls_K_hom[inst_ther] = K_hom
 
         lambda_meca = loimel["LAME1"][i]
         mu_meca = loimel["LAME2"][i]
@@ -436,6 +516,7 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
                           [0,         0,         0,         0,         A2323_hom, 0         ],
                           [0,         0,         0,         0,         0,         A3131_hom]])
         # fmt: on
+        ls_A_hom[inst_meca] = A_hom
 
         A_inv = np.linalg.inv(A_hom)
         K_inv = np.linalg.inv(K_hom)
@@ -500,4 +581,4 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
     tabpara = CREA_TABLE(LISTE=[_F(PARA=para, LISTE_R=values) for para, values in dictpara.items()])
 
-    return A_hom, K_hom, tabpara
+    return ls_A_hom, ls_K_hom, tabpara

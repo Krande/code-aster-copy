@@ -147,11 +147,9 @@ subroutine vefpme(stop, &
     end if
 
 ! - Preparing input fields
-    call prepGeneralFields(model, caraElemZ, materFieldZ, matecoZ, &
-                           applySuiv, &
-                           timePrev, timeCurr, timeTheta, nharm, &
+    call prepGeneralFields(model, caraElemZ, matecoZ, &
+                           nharm, &
                            varcCurr, dispPrev, dispCumuInst, &
-                           compor, strxPrev, viteCurr, acceCurr, &
                            nbFieldInGene, lpain, lchin)
 
 ! - Computation
@@ -165,7 +163,11 @@ subroutine vefpme(stop, &
         if ((loadNume .eq. 5) .or. (loadNume .eq. 8)) then
             applySuiv = ASTER_FALSE
             call compLoadVect(applyPilo, applySuiv, &
-                              iLoad, loadNume, loadPreObject, loadLigrel, &
+                              iLoad, loadNume, &
+                              model, materFieldZ, compor, &
+                              strxPrev, viteCurr, acceCurr, &
+                              timePrev, timeCurr, timeTheta, &
+                              loadPreObject, loadLigrel, &
                               stop, nbFieldInGene, lpain, lchin, &
                               ligrelCalc, jvBase, resuElem, vectElem)
         end if
@@ -174,7 +176,11 @@ subroutine vefpme(stop, &
         if ((loadNume .eq. 9) .or. (loadNume .eq. 11)) then
             applySuiv = ASTER_TRUE
             call compLoadVect(applyPilo, applySuiv, &
-                              iLoad, loadNume, loadPreObject, loadLigrel, &
+                              iLoad, loadNume, &
+                              model, materFieldZ, compor, &
+                              strxPrev, viteCurr, acceCurr, &
+                              timePrev, timeCurr, timeTheta, &
+                              loadPreObject, loadLigrel, &
                               stop, nbFieldInGene, lpain, lchin, &
                               ligrelCalc, jvBase, resuElem, vectElem)
         end if
