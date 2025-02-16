@@ -93,7 +93,6 @@ jobs:
           pixi run ctest --package-file ${{ env.CONDA_FILE }}
 
       - name: Upload all packages
-        if: ${{ inputs.upload == 'true' && (matrix.builds.build == '.ci_nompi_release_64' || matrix.builds.build == '.ci_nompi_debug_64') }}
         shell: pixi run bash -e {0}
         run: |
           shopt -s nullglob

@@ -37,3 +37,4 @@ conda/test_file.py
 build/*
 build-cmake/*
 output/
+test_output/
