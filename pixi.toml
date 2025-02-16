@@ -20,13 +20,13 @@ platforms = ["linux-64", "win-64"]
 dependencies = { rattler-build = "*" }
 
 [feature.int64]
-channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
+channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
 [feature.int64d]
-channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
+channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
 [feature.int32]
-channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
+channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
 [feature.int32d]
-channels = ["https://repo.prefix.dev/code-aster-dev", "https://repo.prefix.dev/code-aster", "conda-forge"]
+channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
 
 [feature.common.dependencies]
 python = "==3.12.8"
@@ -104,13 +104,13 @@ mumps = { version = "*", build = "*debug*INT32*" }
 
 [feature.conda.target.win-64.tasks]
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml"] }
-cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml","-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
-ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml","-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 
 [feature.conda.target.linux-64.tasks]
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
-cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
-ctest = { cmd = ["rattler-build", "test",  "-c", "https://repo.prefix.dev/code-aster-dev", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+ctest = { cmd = ["rattler-build", "test",  "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 
 [feature.int32.target.linux-64.tasks]
 build32 = { cmd = ["waf", "configure", "build"], description = "Build the project" }
