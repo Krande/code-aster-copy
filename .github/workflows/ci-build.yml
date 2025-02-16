@@ -3,6 +3,13 @@ name: ci-code-aster-build
 # bump 1
 on:
   workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Upload code-aster to the prefix channel'
+        type: boolean
+        required: false
+        default: false
+
   push:
     branches:
       - win-support
@@ -10,6 +17,10 @@ on:
 env:
   CONDA_FILE: ""
   OUTPUT_DIR: "${{ github.workspace }}\\test_output"
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   build:
@@ -80,6 +91,19 @@ jobs:
         continue-on-error: true # Prevent the workflow from failing
         run: |
           pixi run ctest --package-file ${{ env.CONDA_FILE }}
+
+      - name: Upload all packages
+        if: ${{ inputs.upload == 'true' && (matrix.builds.build == '.ci_nompi_release_64' || matrix.builds.build == '.ci_nompi_debug_64') }}
+        shell: pixi run bash -e {0}
+        run: |
+          shopt -s nullglob
+          EXIT_CODE=0
+          for pkg in $(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \) ); do
+            if ! rattler-build upload prefix -c code-aster "${pkg}"; then
+              EXIT_CODE=1
+            fi
+          done
+          exit $EXIT_CODE
 
       - name: Save Run directory to artifacts
         uses: actions/upload-artifact@v4
