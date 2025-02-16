@@ -2,6 +2,7 @@ import os
 import pathlib
 from dataclasses import dataclass
 from datetime import datetime
+import xml.etree.ElementTree as ET
 
 from error_patterns import find_error_pattern, ErrorPattern
 
@@ -27,16 +28,43 @@ def check_mess_file(mess_file: str | pathlib.Path) -> TestStats:
         error_pattern=error_pattern
     )
 
+@dataclass
+class XmlLogStats:
+    name: str
+    tot_num_jobs: int
+    tot_failures: int
+    time: float
+    failure_data: list[str] = None
 
-def eval_tests(test_dir: str | pathlib.Path, results_dir: str | pathlib.Path = "results"):
+
+def get_xml_log_stats(xml_file: pathlib.Path) -> XmlLogStats:
+    # Parsing the XML
+    root = ET.fromstring(xml_file.read_text(encoding="utf-8"))
+    name = root.get("name")
+    time = float(root.get("time"))
+    tot_num_jobs = int(root.get("tests"))
+    tot_failures = int(root.get("failures"))
+
+    # Extracting test cases with failures
+    testcases_with_failure = [testcase for testcase in root.findall("testcase") if testcase.find("failure") is not None]
+
+
+    return XmlLogStats(name=name, tot_num_jobs=tot_num_jobs, tot_failures=tot_failures, time=time)
+
+def eval_tests(test_dir: str | pathlib.Path, results_dir: str | pathlib.Path = "results", set_passing_env_var: bool = False):
 
     if isinstance(test_dir, str):
         test_dir = pathlib.Path(test_dir)
 
-    tot_seq_files = 2217
+    test_cases_xml = get_xml_log_stats(test_dir / "run_testcases.xml")
+
+    tot_seq_files = test_cases_xml.tot_num_jobs
     failed_test_files = list(test_dir.glob("*.mess"))
     tot_failed = len(failed_test_files)
     perc_passing = 100 - 100 * tot_failed / tot_seq_files
+    if set_passing_env_var:
+        os.environ["PASSED_TESTS"] = str(perc_passing)
+        print(f"Set environment variable PASSED_TESTS to {perc_passing:.2f}%")
     tot_passing = tot_seq_files - tot_failed
 
     error_map = {}
@@ -68,9 +96,10 @@ def scan_cli():
     parser = argparse.ArgumentParser(description='Evaluate test results')
     parser.add_argument('test_dir', type=str, help='Directory containing test files')
     parser.add_argument('--output', type=str, help='Output directory for results')
+    parser.add_argument('--set-passing-env-var', action='store_true', help='Set environment variable PASSED_TESTS which represents the percentage (0-100) of passing tests')
     args = parser.parse_args()
-    eval_tests(args.test_dir, args.output)
+    eval_tests(args.test_dir, args.output, args.set_passing_env_var)
 
 if __name__ == '__main__':
-    # eval_tests("../../temp/seq-debug")
+    #eval_tests("../../test_output")
     scan_cli()

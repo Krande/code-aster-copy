@@ -17,7 +17,7 @@ conda = { features = ["conda"], no-default-feature = true }
 [feature.conda]
 channels = ["conda-forge"]
 platforms = ["linux-64", "win-64"]
-dependencies = { rattler-build = "*" }
+dependencies = { rattler-build = "*", python = "==3.12.8" }
 
 [feature.int64]
 channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
@@ -102,15 +102,16 @@ scotch = { version = "*", build = "*debug*INT32*" }
 metis = { version = "*", build = "*debug*INT32*" }
 mumps = { version = "*", build = "*debug*INT32*" }
 
+[feature.conda.tasks]
+ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml","-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR="$PIXI_PROJECT_ROOT/test_output"} }
+test-eval = { cmd = ["python", "conda/test_scanner/eval_tests.py", "$PIXI_PROJECT_ROOT/test_output", "--output", "$PIXI_PROJECT_ROOT/conda/test_scanner/results"] }
+
 [feature.conda.target.win-64.tasks]
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml"] }
-cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml","-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR="$PIXI_PROJECT_ROOT/test_output"} }
-ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 
 [feature.conda.target.linux-64.tasks]
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
-cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
-ctest = { cmd = ["rattler-build", "test",  "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
 
 [feature.int32.target.linux-64.tasks]
 build32 = { cmd = ["waf", "configure", "build"], description = "Build the project" }

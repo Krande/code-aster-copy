@@ -3,13 +3,6 @@ name: ci-code-aster-build
 # bump 1
 on:
   workflow_dispatch:
-    inputs:
-      upload:
-        description: 'Upload code-aster to the prefix channel'
-        type: boolean
-        required: false
-        default: true
-
   push:
     branches:
       - win-support
@@ -92,7 +85,12 @@ jobs:
         run: |
           pixi run ctest --package-file ${{ env.CONDA_FILE }}
 
+      - name: Export test results
+        run: |
+          pixi run test-eval --set-passing-env-var
+
       - name: Upload all packages
+        if: ${{ env.PASSED_TESTS != '' && fromJson(env.PASSED_TESTS) > 80.0 }}
         shell: pixi run bash -e {0}
         run: |
           shopt -s nullglob

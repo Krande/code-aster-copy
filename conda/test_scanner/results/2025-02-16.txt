@@ -1,0 +1,104 @@
+Total passing tests: 84.69% [1853/2188]
+Total failed tests: 335 of 2188
+ASRUN_PERMISSION_ERROR_WIN32 (''):
+  1 [0.30%]
+  asrun01b
+CALC_ESSAI_GEOMECA_INDEX_ERROR ('Index error in CALC_ESSAI_GEOMECA'):
+  4 [1.19%]
+  comp012f|comp012g|comp012h|comp012i
+CALC_FERRAILLAGE_TYPE_ERROR_FLOAT_INT (''):
+  1 [0.30%]
+  ssll13a
+CATANESS_3_ALGELINE_1 ('ALGELINE_1 error in CATAMESS_3'):
+  16 [4.78%]
+  forma12a|sdld102d|sdld103b|sdld25a|sdld34a|sdll132a|sdll132b|sdll132c|sdll132d|sdll150a|sdls122a|sdls505b|ssll103a|sslv139a|zzzz330b|zzzz330c
+DVP1_jxveri ('DVP_1 jxveri exception'):
+  1 [0.30%]
+  zzzz289a
+DYNA_VIBRA_TYPE_ERROR_FLOAT_INT (''):
+  1 [0.30%]
+  ahlv302g
+FACTOR_11_MECA_STATIQUE (''):
+  1 [0.30%]
+  sdls505a
+FACTOR_55_MUMPS ('FACTOR_55 MUMPS problem or alarm'):
+  7 [2.09%]
+  fdlv106a|gcpc001a|mumps01a|mumps02a|mumps03a|zzzz253a|zzzz401a
+JEVEUX1_55_AFFE_CARA_ELEM ('JEVEUX1_55 error in AFFE_CARA_ELEM'):
+  1 [0.30%]
+  sdls501b
+JEVEUX1_55_AFFE_CHAR_CINE ('JEVEUX1_55 error in AFFE_CHAR_CINE'):
+  20 [5.97%]
+  hslv303b|sslp116c|sslp116d|ssls106a|ssls148a|ssls20d|ssnp307a|ssnv133d|ssnv133e|ssnv220a|ttll01o|ttll01p|ttll01q|ttll01r|ttll01s|ttll01t|ttnl02e|zzzz503j|zzzz503k|zzzz506h
+JEVEUX1_55_AFFE_CHAR_MECA ('JEVEUX1_55 error in AFFE_CHAR_MECA'):
+  8 [2.39%]
+  comp005c|comp005d|forma05d|hplp100b|ssls147a|ssna119a|ssnv187b|zzzz406b
+JEVEUX1_55_AFFE_CHAR_THER ('JEVEUX1_55 error in AFFE_CHAR_THER'):
+  11 [3.28%]
+  tplv304a|tpnv01c|ttll100b|ttlp301c|ttlp301d|ttlv100b|wtnv152a|wtnv152b|wtnv152c|wtnv152d|zzzz503q
+JEVEUX1_55_AFFE_MATERIAU ('JEVEUX1_55 error in AFFE_MATERIAU'):
+  6 [1.79%]
+  hsna102e|sslv146c|sslv146d|ssns107b|ssns107d|ttnl101e
+JEVEUX1_55_AFFE_MODELE ('JEVEUX1_55 error in AFFE_MODELE'):
+  9 [2.69%]
+  hsnv132a|sdls505c|sdls505d|ssnv137b|zzzz306a|zzzz306c|zzzz306d|zzzz306e|zzzz323d
+JEVEUX1_55_CREA_MAILLAGE ('JEVEUX1_55 error in CREA_MAILLAGE'):
+  15 [4.48%]
+  shll101d|ssls04d|sslx300h|ssnp121r|ssnp123g|ssnp162p|ssnv129c|tpll01j|zzzz238c|zzzz323c|zzzz383a|zzzz383b|zzzz383c|zzzz383d|zzzz503p
+JEVEUX1_55_DEFI_GROUP ('JEVEUX1_55 error in DEFI_GROUP'):
+  37 [11.04%]
+  ssnp121q|ssnp162i|ssnp162j|ssnv112b|ssnv112g|ssnv112l|ssnv138f|ssnv138h|ssnv138i|ssnv203c|ssnv203d|ssnv245b|ssnv245d|ssnv246b|tpla07a|wtnl100c|wtnp102b|wtnp102e|wtnp102f|wtnp107a|wtnp107b|wtnp107c|wtnv140b|wtnv140c|wtnv143a|wtnv143b|wtnv143c|wtnv143d|wtnv143e|wtnv144c|wtnv144d|zzzz106b|zzzz238b|zzzz257a|zzzz257b|zzzz257c|zzzz503s
+JEVEUX1_55_IMPR_RESU ('JEVEUX1_55 error in IMPR_RESU'):
+  2 [0.60%]
+  ssnv128p|zzzz206a
+JEVEUX1_55_MODI_MAILLAGE ('JEVEUX1_55 error in MODI_MAILLAGE'):
+  21 [6.27%]
+  adlv100p|erreu12a|forma05a|mesh001i|mfron02j|sslv153a|ssnp162g|ssnp162l|ssnp178d|ssnp178k|ssnp179d|ssnp179k|ssnv187v|ssnv187x|ssnv191d|wtna112c|wtnp114a|wtnv114h|wtnv143f|zzzz121c|zzzz359a
+JEVEUX1_55_POST_ELEM ('JEVEUX1_55 error in POST_ELEM'):
+  1 [0.30%]
+  zzzz205a
+JEVEUX1_55_POST_MAIL_XFEM ('JEVEUX1_55 error in POST_MAIL_XFEM'):
+  7 [2.09%]
+  zzzz361a|zzzz361b|zzzz361c|zzzz361d|zzzz361e|zzzz361f|zzzz361g
+JEVEUX_26_ORDR (''):
+  10 [2.99%]
+  hsna106a|hsnv135a|hsnv136d|ssnv163d|ssnv163e|ssnv181b|ssnv518a|ssnv519a|wtnv122d|wtnv122e
+MED_ACCESS_ERROR ('Access violation error in MED file creation'):
+  6 [1.79%]
+  sdll14a|sdll14b|sdll14c|ssla103f|sslv120a|zzzz353a
+MED_mfiope (''):
+  1 [0.30%]
+  ssnv129a
+MED_mpfprw (''):
+  23 [6.87%]
+  forma05c|forma06a|forma40b|sslp318a|sslp318b|sslp318c|ssnl123a|ssnl504a|ssnp118q|ssnp118r|ssnp118s|ssnp156a|ttlp101b|ttlp101c|zzzz137b|zzzz161a|zzzz175b|zzzz237b|zzzz258a|zzzz323a|zzzz326a|zzzz326b|zzzz340a
+MISSING_ASRUN (''):
+  2 [0.60%]
+  ssna110a|ssnv228b
+MISSING_HOMARD ('Missing homard'):
+  11 [3.28%]
+  forma01b|forma01c|forma11a|ssnv173k|tplp107b|tplp305d|zzzz121d|zzzz121e|zzzz319a|zzzz319b|zzzz356a
+MISSING_SCIPY (''):
+  2 [0.60%]
+  sdld110b|zzzz509f
+MISSING_XMGRACE ('Missing xmgrace'):
+  3 [0.90%]
+  forma10a|forma10b|forma30b
+MODI_MAILLAGE_WIN_FATAL (''):
+  2 [0.60%]
+  ssnp170l|ssnp170w
+NOOK_TEST_RESU (''):
+  8 [2.39%]
+  sdld101a|sdll104a|sdnd107e|supv004a|vocab01b|zzzz130b|zzzz395e|zzzz395q
+PERMISSION_ERROR_macr_lign_coupe_ops ('Permission denied error in macr_lign_coupe_ops'):
+  26 [7.76%]
+  forma02a|ssll107a|ssll107f|ssll107g|ssll107h|ssll107i|ssll107j|ssll107l|ssll107m|sslp116a|sslp116b|sslp117a|sslp117b|sslv100c|sslv110a|ssnl125a|ssnp123a|tpll01b|tpls102a|tpls102b|tpna01a|tpna01b|tpna01d|tpna01e|zzzz136c|zzzz407a
+REST_SPEC_PHYS (''):
+  1 [0.30%]
+  sdlx302a
+SIMU_POINT_MAT_INDEX_ERROR (''):
+  3 [0.90%]
+  ssnv205b|ssnv205c|ssnv232c
+Unknown ('Unknown error pattern'):
+  67 [20.00%]
+  comp012b|comp012c|cont001g|cont001i|cont013a|cont013b|distr01a|erreu09e|forma02c|func01e|mesh001h|sdll113b|sdls01b|sdls118a|ssls101n|ssls111a|ssls113a|ssls135a|sslv159d|sslx100a|ssnd116b|ssnp162s|ssnp162t|ssnp178a|ssnv200a|ssnv259a|zzzz114a|zzzz132a|zzzz143a|zzzz162b|zzzz166b|zzzz166d|zzzz185a|zzzz215c|zzzz264b|zzzz264c|zzzz322a|zzzz323b|zzzz323e|zzzz328a|zzzz328b|zzzz328e|zzzz366a|zzzz366b|zzzz366c|zzzz366d|zzzz389a|zzzz395a|zzzz395b|zzzz395c|zzzz395d|zzzz395f|zzzz395g|zzzz395h|zzzz395j|zzzz395m|zzzz395o|zzzz395r|zzzz395t|zzzz400a|zzzz409a|zzzz413a|zzzz501d|zzzz503b|zzzz505b|zzzz505g|zzzz506d
