@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
 !
     implicit none
 !
+#include "asterfort/Behaviour_type.h"
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
@@ -222,10 +223,12 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
         num = valres(2)
         deumum = em/(1.d0+num)
 !        CRIT_RUPT
-        if ((crit(13) .gt. 0.d0) .and. (vim(8) .gt. 0.d0)) then
-            lgpg = 8
-            call rupmat(fami, kpg, ksp, imate, vim, &
-                        lgpg, em, sigm)
+        if (crit(IPOSTITER) .gt. 0.d0) then
+            if (vim(8) .gt. 0.d0) then
+                lgpg = 8
+                call rupmat(fami, kpg, ksp, imate, vim, &
+                            lgpg, em, sigm)
+            end if
 !       Si il y a rupture
         end if
 !
@@ -241,10 +244,12 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
         nu = valres(2)
 !
 !        CRIT_RUPT
-        if ((crit(13) .gt. 0.d0) .and. (vim(8) .gt. 0.d0)) then
-            lgpg = 8
-            call rupmat(fami, kpg, ksp, imate, vim, &
-                        lgpg, e, sigm)
+        if (crit(IPOSTITER) .gt. 0.d0) then
+            if (vim(8) .gt. 0.d0) then
+                lgpg = 8
+                call rupmat(fami, kpg, ksp, imate, vim, &
+                            lgpg, e, sigm)
+            end if
         end if
 !
         if (inco) then
@@ -340,10 +345,12 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
                     jvalem, nbvalm, em)
 !
 !        CRIT_RUPT VMIS_ISOT_TRAC
-        if ((crit(13) .gt. 0.d0) .and. (vim(8) .gt. 0.d0)) then
-            lgpg = 8
-            call rupmat(fami, kpg, ksp, imate, vim, &
-                        lgpg, em, sigm)
+        if (crit(IPOSTITER) .gt. 0.d0) then
+            if (vim(8) .gt. 0.d0) then
+                lgpg = 8
+                call rupmat(fami, kpg, ksp, imate, vim, &
+                            lgpg, em, sigm)
+            end if
         end if
 !
         deumum = em/(1.d0+num)
@@ -364,10 +371,12 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
         call rctrac(imate, 1, 'SIGM', para_vale, jprolp, &
                     jvalep, nbvalp, e)
 !        CRIT_RUPT VMIS_ISOT_TRAC
-        if ((crit(13) .gt. 0.d0) .and. (vim(8) .gt. 0.d0)) then
-            lgpg = 8
-            call rupmat(fami, kpg, ksp, imate, vim, &
-                        lgpg, e, sigm)
+        if (crit(IPOSTITER) .gt. 0.d0) then
+            if (vim(8) .gt. 0.d0) then
+                lgpg = 8
+                call rupmat(fami, kpg, ksp, imate, vim, &
+                            lgpg, e, sigm)
+            end if
         end if
 !
         call rcfonc('S', 1, jprolp, jvalep, nbvalp, &
@@ -563,8 +572,10 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
         end do
 !
 !      S'il YA RUPTURE ALORS INTERDIRE PLASTICITE CAR LES CONTRAINTES ONT ETE MIS A ZERO
-        if ((crit(13) .gt. 0.d0) .and. (vim(8) .gt. 0.d0)) then
-            plasti = .false.
+        if (crit(IPOSTITER) .gt. 0.d0) then
+            if (vim(8) .gt. 0.d0) then
+                plasti = .false.
+            end if
         end if
 !
 !
