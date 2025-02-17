@@ -9,7 +9,6 @@ on:
 #    - donotrun
 env:
   CONDA_FILE: ""
-  OUTPUT_DIR: "${{ github.workspace }}\\test_output"
 
 permissions:
   contents: read
@@ -90,8 +89,14 @@ jobs:
         run: |
           pixi run test-eval --set-passing-env-var
 
+      - name: Print passed tests
+        shell: pixi run bash -e {0}
+        run: |
+          echo "PASSED_TESTS = ${{ env.PASSED_TESTS }}"
+          echo "From JSON ${{ fromJson(env.PASSED_TESTS) }}"
+          echo "From JSON Bool ${{ fromJson(env.PASSED_TESTS) > 80.0 }}"
+
       - name: Upload all packages
-        if: ${{ env.PASSED_TESTS != '' && fromJson(env.PASSED_TESTS) > 80.0 }}
         shell: pixi run bash -e {0}
         run: |
           shopt -s nullglob

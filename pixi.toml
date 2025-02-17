@@ -103,7 +103,7 @@ metis = { version = "*", build = "*debug*INT32*" }
 mumps = { version = "*", build = "*debug*INT32*" }
 
 [feature.conda.tasks]
-ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"] }
+ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR="$PIXI_PROJECT_ROOT/test_output"} }
 cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml","-m", "conda/config.yaml", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR="$PIXI_PROJECT_ROOT/test_output"} }
 test-eval = { cmd = ["python", "conda/test_scanner/eval_tests.py", "$PIXI_PROJECT_ROOT/test_output", "--output", "$PIXI_PROJECT_ROOT/conda/test_scanner/results"] }
 
