@@ -21,5 +21,7 @@
 Time integrators classes.
 """
 
+__all__ = ("BaseIntegrator", "IntegratorType", "NewmarkIntegrator", "TimeScheme")
+
 from .base_integrator import BaseIntegrator, TimeScheme, IntegratorType
 from .newmark_integrator import NewmarkIntegrator

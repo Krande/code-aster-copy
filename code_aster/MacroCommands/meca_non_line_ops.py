@@ -23,26 +23,14 @@ from ..Helpers import adapt_for_mgis_behaviour
 from ..Helpers.syntax_adapters import adapt_increment_init
 from ..Messages import UTMESS
 from ..Objects import (
-    LinearSolver,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
-    NonLinearResult,
-    ParallelContactNew,
-    ParallelFrictionNew,
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
-from ..Solvers import (
-    BaseOperators,
-    ContactManager,
-    Context,
-    NonLinearOperator,
-    PhysicalState,
-    TimeStepper,
-)
-from ..Solvers import ProblemType as PBT
+from ..Solvers import NonLinearOperator
 from ..Utilities import print_stats, reset_stats
 
 

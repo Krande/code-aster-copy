@@ -19,10 +19,9 @@
 
 from libaster import deleteTemporaryObjects
 
-from .base_step_solver import BaseStepSolver
-from ..Basics import ProblemType
 from ...Utilities import no_new_attributes, profile
-from ..Operators import ThermalOperators
+from ..Basics import ProblemType
+from .base_step_solver import BaseStepSolver
 
 
 class ThermalStepSolver(BaseStepSolver):
@@ -75,15 +74,3 @@ class ThermalStepSolver(BaseStepSolver):
 
         deleteTemporaryObjects()
         logManager.printConvTableEnd()
-
-    def setup(self):
-        """set up the step solver."""
-        opers_manager = self.get_feature(SOP.OperatorsManager, optional=True)
-        if not opers_manager:
-            stat = self.param["ETAT_INIT"].get("STAT") == "OUI"
-            opers_manager = ThermalOperators(theta=self._theta, stat=stat)
-        for feat, required in opers_manager.undefined():
-            feat_obj = self.get_feature(feat, optional=(not required))
-            opers_manager.use(feat_obj)
-        self.conv_criteria.use(opers_manager)
-        self.use(opers_manager)

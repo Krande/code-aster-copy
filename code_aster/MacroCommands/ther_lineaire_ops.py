@@ -342,9 +342,6 @@ def ther_lineaire_ops(self, **args):
     phys_pb = PhysicalProblem(model, args["CHAM_MATER"], args.get("CARA_ELEM"))
     logger.debug("<THER_LINEAIRE>: Physical Problem created")
 
-    # for HHO model
-    hho = HHO(phys_pb)
-
     # Add loads
     phys_pb = _addLoads(phys_pb, args)
     has_exchange_fields = _hasExchangeFields(args)

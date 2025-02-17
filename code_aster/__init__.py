@@ -58,6 +58,8 @@ Here is the diagram of the package organization:
 
 """
 
+__all__ = ("libaster", "rc", "__version__")
+
 # image generated with:
 #   diagr_import --pkg --grp -g doc/img/diagr_code_aster.svg \
 #       code_aster/**/*.py

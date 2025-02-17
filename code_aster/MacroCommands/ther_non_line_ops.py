@@ -27,11 +27,8 @@ from ..Objects import (
     ThermalDirichletBC,
     ThermalLoadFunction,
     ThermalLoadReal,
-    ThermalResult,
 )
-from ..Solvers import Context, NonLinearOperator
-from ..Solvers import ProblemType as PBT
-from ..Solvers.Post import ComputeHydr, ComputeTempFromHHO
+from ..Solvers import NonLinearOperator
 from ..Utilities import force_list, print_stats, reset_stats
 from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
 

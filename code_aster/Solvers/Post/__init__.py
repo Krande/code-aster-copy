@@ -21,4 +21,6 @@
 PostProcessings definition.
 """
 
+__all__ = ("Annealing", "BaseHook", "ComputeDisplFromHHO", "ComputeHydr", "ComputeTempFromHHO")
+
 from .hooks import Annealing, BaseHook, ComputeDisplFromHHO, ComputeHydr, ComputeTempFromHHO

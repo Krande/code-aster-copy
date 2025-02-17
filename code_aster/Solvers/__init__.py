@@ -27,6 +27,23 @@ General architecture:
 
 """
 
+__all__ = (
+    "BaseHook",
+    "BaseOperators",
+    "ContactManager",
+    "Context",
+    "ConvergenceManager",
+    "NewtonSolver",
+    "NonLinearOperator",
+    "PhysicalState",
+    "ProblemType",
+    "RASPENSolver",
+    "Residuals",
+    "SNESSolver",
+    "StorageManager",
+    "TimeStepper",
+)
+
 from .Basics import Context, PhysicalState, ProblemType, Residuals
 from .IterationSolver import ConvergenceManager, NewtonSolver, RASPENSolver, SNESSolver
 from .Main import ContactManager, NonLinearOperator, StorageManager, TimeStepper

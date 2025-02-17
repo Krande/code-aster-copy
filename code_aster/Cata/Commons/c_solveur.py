@@ -465,17 +465,17 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
         b_mult_front=BLOC(
             condition="""equal_to("METHODE", 'MULT_FRONT') """,
             fr=tr("Paramètres de la méthode multi frontale"),
-            **_BlocMF
+            **_BlocMF,
         ),
         b_ldlt=BLOC(
             condition="""equal_to("METHODE", 'LDLT') """,
             fr=tr("Paramètres de la méthode LDLT"),
-            **_BlocLD
+            **_BlocLD,
         ),
         b_mumps=BLOC(
             condition="""equal_to("METHODE", 'MUMPS') """,
             fr=tr("Paramètres de la méthode MUMPS"),
-            **_BlocMU
+            **_BlocMU,
         ),
         b_gcpc=BLOC(
             condition="""equal_to("METHODE", 'GCPC') """,
@@ -483,14 +483,14 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
             b_ldltinc=BLOC(
                 condition="""equal_to("PRE_COND", 'LDLT_INC') """,
                 fr=tr("Paramètres de la factorisation incomplète"),
-                **_BlocGC_INC
+                **_BlocGC_INC,
             ),
             b_simple=BLOC(
                 condition="""is_in("PRE_COND", ('LDLT_SP', 'LDLT_DP')) """,
                 fr=tr("Paramètres de la factorisation simple précision ou low-rank"),
-                **_BlocXX_SP
+                **_BlocXX_SP,
             ),
-            **_BlocGC
+            **_BlocGC,
         ),
         b_petsc=BLOC(
             condition="""equal_to("METHODE", 'PETSC') """,
@@ -498,46 +498,46 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
             b_ldltinc=BLOC(
                 condition="""equal_to("PRE_COND", 'LDLT_INC') """,
                 fr=tr("Paramètres de la factorisation incomplète"),
-                **_BlocPE_INC
+                **_BlocPE_INC,
             ),
             b_simple=BLOC(
                 condition="""is_in("PRE_COND", ('LDLT_SP', 'LDLT_DP')) """,
                 fr=tr("Paramètres de la factorisation simple précision ou low rank"),
-                **_BlocXX_SP
+                **_BlocXX_SP,
             ),
             b_ml=BLOC(
                 condition="""equal_to("PRE_COND", 'ML') """,
                 fr=tr("Paramètres du multigrille algébrique ML"),
-                **_BlocPE_ML
+                **_BlocPE_ML,
             ),
             b_boomer=BLOC(
                 condition="""equal_to("PRE_COND", 'BOOMER') """,
                 fr=tr("Paramètres du multigrille algébrique HYPRE"),
-                **_BlocPE_BOOMER
+                **_BlocPE_BOOMER,
             ),
             b_gamg=BLOC(
                 condition="""equal_to("PRE_COND", 'GAMG') """,
                 fr=tr("Paramètres du multigrille algébrique GAMG"),
-                **_BlocPE_GAMG
+                **_BlocPE_GAMG,
             ),
             b_hpddm=BLOC(
                 condition="""equal_to("PRE_COND", 'HPDDM') """,
                 fr=tr("Paramètres du Schwarz HPDDM"),
-                **_BlocPE_HPDDM
+                **_BlocPE_HPDDM,
             ),
             b_lagaug=BLOC(
                 condition="""equal_to("PRE_COND", 'BLOC_LAGR') """,
                 fr=tr("Paramètres du préconditionneur Lagrangien Augmenté BLOC_LAGR"),
-                **_BlocPE_LAGAUG
+                **_BlocPE_LAGAUG,
             ),
             b_fieldsplit=BLOC(condition="""is_in("PRE_COND", ('FIELDSPLIT'))""", **_BlocPE_FIELD),
             b_util=BLOC(condition="""is_in("PRE_COND", ('UTILISATEUR'))""", **_BlocPE_UTIL),
             b_autres=BLOC(
                 condition="""is_in("PRE_COND", ('JACOBI','SOR','SANS'))""", **_BlocXX_Autres
             ),
-            **_BlocPE
+            **_BlocPE,
         ),
-        **_MotCleSimples
+        **_MotCleSimples,
     )
 
     return mcfact

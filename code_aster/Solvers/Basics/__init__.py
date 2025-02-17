@@ -21,6 +21,19 @@
 Definition of common objects for non linear operators.
 """
 
+__all__ = (
+    "DispatcherMixin",
+    "EventId",
+    "EventSource",
+    "Observer",
+    "ProblemType",
+    "Context",
+    "ContextMixin",
+    "LoggingManager",
+    "PhysicalState",
+    "Residuals",
+)
+
 from .bases import DispatcherMixin, EventId, EventSource, Observer, ProblemType
 from .context import Context, ContextMixin
 from .logging_manager import LoggingManager

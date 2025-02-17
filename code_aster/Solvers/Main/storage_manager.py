@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ...Messages import MessageLog
-from ...Utilities import SearchList, cmp, force_list, logger, no_new_attributes, profile
+from ...Utilities import SearchList, force_list, logger, no_new_attributes, profile
 
 
 class StorageManager:
