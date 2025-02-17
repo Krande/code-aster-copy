@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
+# #
 # person_in_charge: irmela.zentner at edf.fr
 
 # Validation de la prise en compte de l'option d'interpolation déclarée
 # dans les fonctions fournies à GENE_ACCE_SEISME
-
+#
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 graine = 1000  # Graine
@@ -204,12 +204,10 @@ TEST_TABLE(
     CRITERE="RELATIF",
 )
 
-
 # ----------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------
 # Verification de l'utilisation du filtre basse-bas FREQ_FILTRE_ZPA
 # dans les fonctions fournies à GENE_ACCE_SEISME
-
 zpa_cut = 30.0  # Fréquence de coupure pour le filtre Butterworth
 graine = 7461  # Graine
 t_pas = 0.005  # Fréquence d'échantillonage du signal
@@ -279,16 +277,13 @@ ACCE1 = GENE_ACCE_SEISME(
     ),
     MODULATION=_F(TYPE="GAMMA", INST_INI=t_init),
 )
-
-
 # ----------------------------------------------------------------------------------
 # Extraction des accélérogrammes de la table
 # ACC = [None]*n_tir
 l_SRO = []
 l_SRO1 = []
 l_SRO02 = []
-
-
+#
 for i in range(n_tir):
     ACC = RECU_FONCTION(
         TABLE=ACCE1, FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=i + 1), NOM_PARA_TABL="FONCTION"
@@ -310,13 +305,11 @@ for i in range(n_tir):
     l_SRO02.append(SRO02)
     l_SRO1.append(SRO1)
 
-
 SRO_MEAN = CALC_FONCTION(MOYENNE=_F(FONCTION=l_SRO))
 
 SRO_MEAN1 = CALC_FONCTION(MOYENNE=_F(FONCTION=l_SRO1))
 
 SRO_MEAN02 = CALC_FONCTION(MOYENNE=_F(FONCTION=l_SRO02))
-
 
 TEST_FONCTION(
     VALEUR=(
@@ -358,11 +351,11 @@ TEST_FONCTION(
         ),
     )
 )
-
+#
 # ----------------------------------------------------------------------------------
 # Generation d'un a	accelero avec correction ZPA
 lamor = [0.02, 0.05, 0.1, ]
-
+#
 ACCE2 = GENE_ACCE_SEISME(
     INIT_ALEA=graine,
     PAS_INST=t_pas,
@@ -379,15 +372,15 @@ ACCE2 = GENE_ACCE_SEISME(
     ),
     MODULATION=_F(TYPE="GAMMA", INST_INI=t_init),
 )
-
+#
 F_ACC = RECU_FONCTION( TABLE = ACCE2,
                     FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = 1),
                     NOM_PARA_TABL='FONCTION', TITRE = 'ACCE UNIQUE');
-
+#
 SRO_ACCE = CALC_FONCTION(SPEC_OSCI=_F(FONCTION= F_ACC, LIST_FREQ = L_FR,
                       NORME=9.81, AMOR_REDUIT= lamor,),);
-
-
+#
+#
 TEST_FONCTION(
     VALEUR=(
          _F(
@@ -428,5 +421,4 @@ TEST_FONCTION(
         ),
     )
 )
-
 FIN()
