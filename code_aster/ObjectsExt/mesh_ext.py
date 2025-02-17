@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ class ExtendedMesh:
             info [int] : verbosity mode (0|1|2). (default 1).
         """
 
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
@@ -99,7 +99,7 @@ class ExtendedMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (0|1|2). (default 1).
         """
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
@@ -137,7 +137,7 @@ class ExtendedMesh:
             info [int] : verbosity mode (0|1|2). (default 1).
         """
 
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
@@ -185,7 +185,7 @@ class ExtendedMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (1 or 2). (default 1).
         """
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
