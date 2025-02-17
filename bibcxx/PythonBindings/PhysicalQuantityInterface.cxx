@@ -3,7 +3,7 @@
  * @brief Interface python de PhysicalQuantity
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,7 +30,9 @@
 
 void exportPhysicalQuantityToPython( py::module_ &mod ) {
 
-    py::enum_< PhysicalQuantityComponent >( mod, "PhysicalQuantityComponent" )
+    py::enum_< PhysicalQuantityComponent >( mod, "PhysicalQuantityComponent", R"(
+Enumeration for physical component.
+    )" )
         .value( "Dx", Dx )
         .value( "Dy", Dy )
         .value( "Dz", Dz )
