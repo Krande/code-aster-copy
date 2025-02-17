@@ -1126,11 +1126,11 @@ def corrcoefmodel(Period, f_beta=None):
 def def_mask(signal, y00, epsilon):
     t = signal[0]
     y = signal[1]
-    t0_idx = np.argmax(np.abs(y))
+    t0_idx = NP.argmax(NP.abs(y))
 
     t0 = t[t0_idx]
-    y0 = y[t0_idx]*np.sign(y[t0_idx])
-    mask = 1 - (1 - y00 / y0) * np.exp(-0.5 * ((t - t0) / epsilon) ** 2)
+    y0 = y[t0_idx]*NP.sign(y[t0_idx])
+    mask = 1 - (1 - y00 / y0) * NP.exp(-0.5 * ((t - t0) / epsilon) ** 2)
 
     return mask
 
@@ -1142,7 +1142,7 @@ def correct_signal(signal : list,
     mask = def_mask(signal, pga, epsilon)
 
     sig = signal[1] * mask
-    newsig = sig - np.mean(sig)
+    newsig = sig - NP.mean(sig)
 
     new_signal = (signal[0], newsig)
 
@@ -1155,7 +1155,8 @@ def zpa_match(signal : list,
 
     new_signal = correct_signal(signal, pga, epsilon)
 
-    while np.max(np.abs(new_signal[1])) > pga*1.001:
+    while NP.max(NP.abs(new_signal[1])) > pga*1.001:
+
         new_signal = correct_signal(new_signal, pga, epsilon)
 
     return new_signal[1]

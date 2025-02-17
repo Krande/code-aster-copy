@@ -154,9 +154,7 @@ class GeneAcceParameters:
         else:
             corr_keys = {}
             corr_keys["TYPE"] = "SCALAR"
-        self.simulation_keys = {"CORR_KEYS": corr_keys}
-
-        self.simulation_keys.update({"CORR_ZPA": False})
+        self.simulation_keys = {"CORR_KEYS": corr_keys, "CORR_ZPA": False}
 
         if kwargs.get("DSP"):
             self.cas = "DSP"
@@ -191,15 +189,18 @@ class GeneAcceParameters:
                 GeneratorKeys = kwargs.get("SPEC_UNIQUE")[0]
                 if "SPEC_UNIQUE" in others:
                     others.remove("SPEC_UNIQUE")
-                if kwargs.get("CORR_ZPA") == 'OUI':
-                    self.simulation_keys.update({"CORR_ZPA": True})
                 self.simulation_keys.update({"SPEC_METHODE": "SPEC_UNIQUE"})
+
             method_keys = GeneratorKeys.cree_dict_valeurs(GeneratorKeys.mc_liste)
+
         self.method_keys = {}
         for key in method_keys:
             self.method_keys[key] = method_keys[key]
         if "NB_ITER" in self.method_keys:
             self.simulation_keys.update({"NB_ITER": self.method_keys["NB_ITER"]})
+        if "CORR_ZPA" in self.method_keys:
+            if self.method_keys["CORR_ZPA"] == 'OUI':
+                self.simulation_keys.update({"CORR_ZPA": True})
         # OtherKeys remplissage
         others_keys = {}
         for key in others:
@@ -744,10 +745,18 @@ class Simulator:
     def process_TimeHistory(self, generator, Xt):
         """apply modulation and low pass filter if requested"""
         Xm = Xt * generator.modulator.fonc_modul.vale_y
-        if self.simu_params["CORR_ZPA"]:
-            Xm = zpa_match((generator.sampler.liste_temps, Xm), self.SRO_args['ZPA'])
+
+
         if self.FREQ_FILTRE > 0.0:
             Xm = acce_filtre_CP(Xm, generator.sampler.DT, self.FREQ_FILTRE)
+
+        if self.simu_params["CORR_ZPA"]:
+
+            zpa = generator.SRO_args['ZPA'] * generator.SRO_args['NORME']
+            Xm = zpa_match((generator.sampler.liste_temps, Xm), zpa)
+
+            if self.FREQ_FILTRE > 0.0:
+                Xm = acce_filtre_CP(Xm, generator.sampler.DT, self.FREQ_FILTRE)
 
         return Xm
 
