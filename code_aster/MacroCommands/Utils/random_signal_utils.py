@@ -165,25 +165,14 @@ def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
     # CP filter/corner frequency : wcp
     wcp = fcorner * 2.0 * pi
     N = len(vale_acce)
-    # discrectisation
-    OM = pi / dt
-    dw = 2.0 * OM / N
-    N2 = N // 2 + 1
-    ws0 = NP.arange(0.0, (N2 + 1) * dw, dw)
-    ws = ws0[:N2]
-    im = csqrt(-1)
-    acce_in = NP.fft.fft(NP.array(vale_acce))
-    hw2 = ws**2 * 1.0 / ((wcp**2 - ws**2) + 2.0 * amoc * im * wcp * ws)
-    liste_pairs = list(zip(-hw2, acce_in[:N2]))
-    Yw = [a * b for a, b in liste_pairs]
-    if is_even(N):  # nombre pair
-        ni = 1
-    else:  # nombre impair
-        ni = 0
-    for kk in range(N2 + 1, N + 1):
-        Yw.append(Yw[N2 - ni - 1].conjugate())
-        ni = ni + 1
-    acce_out = NP.fft.ifft(Yw).real
+    ws = NP.fft.rfftfreq(N, d=dt) * 2*pi
+
+    acce_in = NP.fft.rfft(NP.array(vale_acce))
+
+    hw2 = - ws**2 * 1.0 / ((wcp**2 - ws**2) + 2.0 * amoc * 1j * wcp * ws)
+    Yw = acce_in * hw2
+
+    acce_out = NP.fft.irfft(Yw, n=N)
     #      f_out = t_fonction(vale_t, acce_out, para=f_in.para)
     return acce_out
 
@@ -906,46 +895,22 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2):
     vale_acce = f_in.vale_y
     N = len(vale_t)
     dt = vale_t[1] - vale_t[0]
-    # discrectisation
-    OM = pi / dt
-    dw = 2.0 * OM / N
-    N2 = N // 2 + 1
-    ws0 = NP.arange(0.0, (N2 + 1) * dw, dw)
-    ws = ws0[:N2]
+    ws = NP.fft.rfftfreq(N, d=dt) * 2*pi
     vale_sro = []
-    im = csqrt(-1)
-    acce_in = NP.fft.fft(NP.array(vale_acce))
+    acce_in = NP.fft.rfft(NP.array(vale_acce))
     for fi in l_freq:
         w_0 = fi * 2.0 * pi
-        hw2 = 1.0 / ((w_0**2 - ws**2) + 2.0 * xig * im * w_0 * ws)
-        liste_pairs = list(zip(hw2, acce_in[:N2]))
-        Yw = [a * b for a, b in liste_pairs]
-        if is_even(N):  # nombre pair
-            ni = 1
-        else:  # nombre impair
-            ni = 0
-        for kk in range(N2 + 1, N + 1):
-            Yw.append(Yw[N2 - ni - 1].conjugate())
-            ni = ni + 1
-        acce_out = NP.fft.ifft(Yw).real
+        hw2 = 1.0 / ((w_0**2 - ws**2) + 2.0 * xig * 1j * w_0 * ws)
+        Yw = acce_in * hw2
+        acce_out = NP.fft.irfft(Yw, n=N)
         vale_sro.append(w_0**ideb * max(abs(acce_out)))
     f_out = t_fonction(l_freq, vale_sro, para=para_sro)
     return f_out
-
-
 #
-
-
-def is_even(num):
-    """Return whether the number num is even."""
-    return num % 2 == 0
-
-
 # -----------------------------------------------------------------
 # DSP2FR
 # -----------------------------------------------------------------
 # Ajustement d'une DSP rationelle proche de KT
-
 
 def DSP2FR(f_dsp_refe, FC):
     # ---------------------------------------------------------
@@ -1120,7 +1085,7 @@ def corrcoefmodel(Period, f_beta=None):
 # CORRECTION ZPA DES SIGNAUX
 # -----------------------------------------------------------------
 #
-## Ces fonctions permettent de corriger les zpa des signaux, seront restituées dans l'opérateur GENE_ACCE_SEISME
+## Ces fonctions permettent de corriger les zpa des signauxacce
 
 # create the Gaussian mask
 def def_mask(signal, y00, epsilon):
