@@ -63,7 +63,16 @@ def eval_tests(test_dir: str | pathlib.Path, results_dir: str | pathlib.Path = "
     tot_failed = len(failed_test_files)
     perc_passing = 100 - 100 * tot_failed / tot_seq_files
     if set_passing_env_var:
+        # This sets it for the current process
         os.environ["PASSED_TESTS"] = str(perc_passing)
+        # This sets it globally for the current GitHub Action CI job
+        github_env = os.getenv("GITHUB_ENV")
+        if github_env:
+            with open(github_env, "a") as f:
+                f.write(f"PASSED_TESTS={perc_passing}\n")
+            print("Set GITHUB_ENV variable PASSED_TESTS")
+        else:
+            print("Environment variable GITHUB_ENV not found.")
         print(f"Set environment variable PASSED_TESTS to {perc_passing:.2f}%")
     tot_passing = tot_seq_files - tot_failed
 
