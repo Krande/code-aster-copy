@@ -97,7 +97,7 @@ jobs:
               print("PASSED_TESTS not found in environment, assuming test failed")
               result = "false"
               
-          print(f"Setting PASSED_TESTS to {result}")
+          print(f"Setting PASSED_TESTS to {result} based on {passed_tests_str}")
           with open(os.environ["GITHUB_OUTPUT"], "a") as env_file:
             env_file.write(f"PASSED_TESTS={result}\n")
         env:
