@@ -85,29 +85,32 @@ CL5 = AFFE_CHAR_MECA(
 CH1 = AFFE_CHAR_MECA(
     MODELE=MO1,
     PRE_EPSI=(
-        #       on donne le Y local =>
+        #       on donne VECT_N=-Zloc pour tomber sur la base locale (Xloc, Yloc, Zloc)
+        #       donc KN1 = KY, et KN2 = KZ
         _F(
             GROUP_MA=("E1", "E2"),
             EPX=1.0e-3,
-            KY=2.0e-3,
-            KZ=3.0e-3,
-            VECT_Y=(-0.70710678118654746, 0.70710678118654757, 0.0000000000000000),
+            KN1=2.0e-3,
+            KN2=3.0e-3,
+            VECT_N=(0.40824829046386302, 0.40824829046386296, -0.81649658092772603),
         ),
-        #       on donne le Z local
+        #       on donne VECT_N=Yloc pour tomber sur la base locale (Xloc, Zloc, -Yloc)
+        #       donc KN1 = KZ, et KN2 = -KY
         _F(
             GROUP_MA=("E4", "E5"),
             EPX=1.0e-3 * 2,
-            KZ=-2.0e-3 * 2,
-            KY=3.0e-3 * 2,
-            VECT_Y=(-0.40824829046386302, -0.40824829046386296, 0.81649658092772603),
+            KN2=-2.0e-3 * 2,
+            KN1=3.0e-3 * 2,
+            VECT_N=(-0.70710678118654746, 0.70710678118654757, 0.0000000000000000),
         ),
-        #       on donne -Y local
+        #       on donne VECT_N=Zloc pour tomber sur la base locale (Xloc, -Yloc, -Zloc)
+        #       donc KN1 = -KY, et KN2 = -KZ
         _F(
             GROUP_MA=("E7", "E8"),
             EPX=1.0e-3 * 3,
-            KY=-2.0e-3 * 3,
-            KZ=-3.0e-3 * 3,
-            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+            KN1=-2.0e-3 * 3,
+            KN2=-3.0e-3 * 3,
+            VECT_N=(-0.40824829046386302, -0.40824829046386296, 0.81649658092772603),
         ),
     ),
 )
@@ -117,13 +120,14 @@ CH2 = AFFE_CHAR_MECA(
     PRE_EPSI=(
         _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
         _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        #       on donne -Y local
+        #       on donne VECT_N=Zloc pour tomber sur la base locale (Xloc, -Yloc, -Zloc)
+        #       donc KN1 = -KY, et KN2 = -KZ
         _F(
             GROUP_MA=("E7", "E8"),
             EPX=1.0e-3 * 3,
-            KY=-2.0e-3 * 3,
-            KZ=-3.0e-3 * 3,
-            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+            KN1=-2.0e-3 * 3,
+            KN2=-3.0e-3 * 3,
+            VECT_N=(-0.40824829046386302, -0.40824829046386296, 0.81649658092772603),
         ),
     ),
 )
@@ -133,13 +137,14 @@ CH3 = AFFE_CHAR_MECA(
     PRE_EPSI=(
         _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
         _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        #       on donne -Y local
+        #       on donne VECT_N=Zloc pour tomber sur la base locale (Xloc, -Yloc, -Zloc)
+        #       donc KN1 = -KY, et KN2 = -KZ
         _F(
             GROUP_MA=("E7", "E8"),
             EPX=1.0e-3 * 3,
-            KY=-2.0e-3 * 3,
-            KZ=-3.0e-3 * 3,
-            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+            KN1=-2.0e-3 * 3,
+            KN2=-3.0e-3 * 3,
+            VECT_N=(-0.40824829046386302, -0.40824829046386296, 0.81649658092772603),
         ),
     ),
 )
@@ -149,13 +154,14 @@ CH4 = AFFE_CHAR_MECA(
     PRE_EPSI=(
         _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
         _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        #       on donne -Y local
+        #       on donne VECT_N=Zloc pour tomber sur la base locale (Xloc, -Yloc, -Zloc)
+        #       donc KN1 = -KY, et KN2 = -KZ
         _F(
             GROUP_MA=("E7", "E8"),
             EPX=1.0e-3 * 3,
-            KY=-2.0e-3 * 3,
-            KZ=-3.0e-3 * 3,
-            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+            KN1=-2.0e-3 * 3,
+            KN2=-3.0e-3 * 3,
+            VECT_N=(-0.40824829046386302, -0.40824829046386296, 0.81649658092772603),
         ),
     ),
 )
@@ -165,13 +171,14 @@ CH5 = AFFE_CHAR_MECA(
     PRE_EPSI=(
         _F(GROUP_MA=("E1", "E2"), EPX=1.0e-3, KY=2.0e-3, KZ=3.0e-3),
         _F(GROUP_MA=("E4", "E5"), EPX=1.0e-3 * 2, KY=2.0e-3 * 2, KZ=3.0e-3 * 2),
-        #       on donne -Y local
+        #       on donne VECT_N=Zloc pour tomber sur la base locale (Xloc, -Yloc, -Zloc)
+        #       donc KN1 = -KY, et KN2 = -KZ
         _F(
             GROUP_MA=("E7", "E8"),
             EPX=1.0e-3 * 3,
-            KY=-2.0e-3 * 3,
-            KZ=-3.0e-3 * 3,
-            VECT_Y=(0.70710678118654746, -0.70710678118654757, 0.0000000000000000),
+            KN1=-2.0e-3 * 3,
+            KN2=-3.0e-3 * 3,
+            VECT_N=(-0.40824829046386302, -0.40824829046386296, 0.81649658092772603),
         ),
     ),
 )
@@ -190,7 +197,9 @@ def escalier(x):
         return 0.0
 
 
-EPX = FORMULE(VALE="1.E-3*escalier(X)*INST+ABSC-ABSC", escalier=escalier, NOM_PARA=["X", "INST"])
+EPX = FORMULE(
+    VALE="1.E-3*escalier(X)*INST+ABSC-ABSC", escalier=escalier, NOM_PARA=["X", "INST", "ABSC"]
+)
 KY = FORMULE(VALE="2.E-3*escalier(Y)*INST", escalier=escalier, NOM_PARA=["Y", "INST"])
 KZ = FORMULE(VALE="3.E-3*escalier(Z)*INST", escalier=escalier, NOM_PARA=["Z", "INST"])
 

@@ -52,6 +52,7 @@ subroutine te0020(nomopt, nomte)
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfitx.h"
 #include "asterfort/poutre_modloc.h"
+#include "asterfort/provec.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
@@ -64,7 +65,7 @@ subroutine te0020(nomopt, nomte)
     real(kind=8) :: r8bid, e, xnu, g, carsec(6), fs(14)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, a2, xiy2, xiz2
     real(kind=8) :: epx(2), xky(2), xkz(2), vect_y(3), norm, vect_x(3)
-    real(kind=8) :: pgl(3, 3), angl(3), dgamma
+    real(kind=8) :: pgl(3, 3), angl(3), dgamma, vect_n(3)
 !
     integer :: nbres
     parameter(nbres=4)
@@ -126,7 +127,7 @@ subroutine te0020(nomopt, nomte)
         xiz = carsec(4)
     end if
 !
-    vect_y(:) = 0.d0
+    vect_n(:) = 0.d0
     if (nomopt(15:16) .eq. '_R') then
         call jevech('PEPSINR', 'L', idefi)
         epx(1) = zr(idefi)
@@ -135,9 +136,9 @@ subroutine te0020(nomopt, nomte)
         xky(2) = xky(1)
         xkz(1) = zr(idefi+2)
         xkz(2) = xkz(1)
-        vect_y(1) = zr(idefi+3)
-        vect_y(2) = zr(idefi+4)
-        vect_y(3) = zr(idefi+5)
+        vect_n(1) = zr(idefi+3)
+        vect_n(2) = zr(idefi+4)
+        vect_n(3) = zr(idefi+5)
     else
         call jevech('PEPSINF', 'L', idefi)
         call jevech('PINSTR', 'L', itemps)
@@ -178,9 +179,10 @@ subroutine te0020(nomopt, nomte)
 !   Matrice de rotation mgl
     call matrot(zr(lorien), pgl)
 !   Traitement du repère imposé
-    call normev(vect_y, norm)
+    call normev(vect_n, norm)
     if (norm .gt. r8prem()) then
         vect_x(:) = pgl(1, :)
+        call provec(vect_x, vect_n, vect_y)
         call angvxy(vect_x, vect_y, angl)
         dgamma = angl(3)-zr(lorien-1+3)
         xky(1) = cos(dgamma)*xky(2)-sin(dgamma)*xkz(2)

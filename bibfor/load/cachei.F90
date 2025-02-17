@@ -57,9 +57,9 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
 !
     integer :: i, nchei, ncmp, jvale, jvalv, iocc, nxx, nyy, nzz
     integer :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
-    integer :: nbtou, nbma, jma, nepsi, nvecty
+    integer :: nbtou, nbma, jma, nepsi, nvectn, nkn1, nkn2
     real(kind=8) :: epxx, epyy, epzz, epxy, epxz, epyz, epx, xky, xkz, xexx
-    real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy, vect_y(3)
+    real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy, vect_n(3), xkn1, xkn2
     character(len=8) :: k8b, kepxx, kepyy, kepzz, kepxy, kepxz, kepyz
     character(len=8) :: kepx, kxky, kxkz, kxexx, kxeyy, kxexy, kxkxx, kxkyy, kxkxy
     character(len=8) :: typmcl(2)
@@ -148,7 +148,9 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             call getvr8(keywordFact, 'KXX', iocc=iocc, scal=xkxx, nbret=nkxx)
             call getvr8(keywordFact, 'KYY', iocc=iocc, scal=xkyy, nbret=nkyy)
             call getvr8(keywordFact, 'KXY', iocc=iocc, scal=xkxy, nbret=nkxy)
-            call getvr8(keywordFact, 'VECT_Y', iocc=iocc, nbval=3, vect=vect_y, nbret=nvecty)
+            call getvr8(keywordFact, 'KN1', iocc=iocc, scal=xkn1, nbret=nkn1)
+            call getvr8(keywordFact, 'KN2', iocc=iocc, scal=xkn2, nbret=nkn2)
+            call getvr8(keywordFact, 'VECT_N', iocc=iocc, nbval=3, vect=vect_n, nbret=nvectn)
 !
             do i = 1, ncmp
                 zr(jvalv-1+i) = 0.d0
@@ -164,16 +166,18 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             if (nex .ne. 0) zr(jvalv-1+7) = epx
             if (nky .ne. 0) zr(jvalv-1+8) = xky
             if (nkz .ne. 0) zr(jvalv-1+9) = xkz
+            if (nkn1 .ne. 0) zr(jvalv-1+8) = xkn1
+            if (nkn2 .ne. 0) zr(jvalv-1+9) = xkn2
             if (nexx .ne. 0) zr(jvalv-1+10) = xexx
             if (neyy .ne. 0) zr(jvalv-1+11) = xeyy
             if (nexy .ne. 0) zr(jvalv-1+12) = xexy
             if (nkxx .ne. 0) zr(jvalv-1+13) = xkxx
             if (nkyy .ne. 0) zr(jvalv-1+14) = xkyy
             if (nkxy .ne. 0) zr(jvalv-1+15) = xkxy
-            if (nvecty .ne. 0) then
-                zr(jvalv-1+16) = vect_y(1)
-                zr(jvalv-1+17) = vect_y(2)
-                zr(jvalv-1+18) = vect_y(3)
+            if (nvectn .ne. 0) then
+                zr(jvalv-1+16) = vect_n(1)
+                zr(jvalv-1+17) = vect_n(2)
+                zr(jvalv-1+18) = vect_n(3)
             end if
         else
             call getvid(keywordFact, 'EPXX', iocc=iocc, scal=kepxx, nbret=nxx)
