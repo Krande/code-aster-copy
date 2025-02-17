@@ -4,17 +4,6 @@
 Non Linear Solver for Mechanical Analyses
 #########################################
 
-
-.. automodule:: code_aster.Solvers
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
-.. automodule:: code_aster.Solvers.Main
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
 .. automodule:: code_aster.Solvers.Main.non_linear_operator
    :show-inheritance:
    :members:
@@ -31,11 +20,6 @@ Non Linear Solver for Mechanical Analyses
    :special-members: __init__
 
 .. automodule:: code_aster.Solvers.Main.contact_manager
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
-.. automodule:: code_aster.Solvers.StepSolvers
    :show-inheritance:
    :members:
    :special-members: __init__
@@ -75,22 +59,12 @@ Non Linear Solver for Mechanical Analyses
    :members:
    :special-members: __init__
 
-.. automodule:: code_aster.Solvers.TimeIntegrators
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
 .. automodule:: code_aster.Solvers.TimeIntegrators.base_integrator
    :show-inheritance:
    :members:
    :special-members: __init__
 
 .. automodule:: code_aster.Solvers.TimeIntegrators.newmark_integrator
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
-.. automodule:: code_aster.Solvers.IterationSolver
    :show-inheritance:
    :members:
    :special-members: __init__
@@ -125,11 +99,6 @@ Non Linear Solver for Mechanical Analyses
    :members:
    :special-members: __init__
 
-.. automodule:: code_aster.Solvers.Operators
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
 .. automodule:: code_aster.Solvers.Operators.base_operators
    :show-inheritance:
    :members:
@@ -150,17 +119,7 @@ Non Linear Solver for Mechanical Analyses
    :members:
    :special-members: __init__
 
-.. automodule:: code_aster.Solvers.Post
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
 .. automodule:: code_aster.Solvers.Post.hooks
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
-.. automodule:: code_aster.Solvers.Basics
    :show-inheritance:
    :members:
    :special-members: __init__

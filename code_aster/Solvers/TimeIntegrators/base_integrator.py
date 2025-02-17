@@ -21,7 +21,7 @@ from abc import abstractmethod
 from enum import IntFlag, auto
 
 from ...Utilities import no_new_attributes
-from ..Operators import MecaDynaOperators
+from ..Operators.meca_dyna_operators import MecaDynaOperators
 
 
 class TimeScheme(IntFlag):
@@ -127,17 +127,6 @@ class BaseIntegrator(MecaDynaOperators):
         raise NotImplementedError
 
     def updateVariables(self, q, dq=None, ddq=None):
-        raise NotImplementedError
-
-    def getJacobian(self, matrix_type):
-        """Compute the jacobian matrix.
-
-        Arguments:
-            matrix_type (str): type of matrix used.
-
-        Returns:
-            AssemblyMatrixDisplacementReal: Jacobian matrix.
-        """
         raise NotImplementedError
 
     @abstractmethod

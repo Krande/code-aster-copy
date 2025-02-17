@@ -128,7 +128,6 @@ class Context:
         assert self._type is None, "must be set only once!"
         self._type = value
 
-    # FIXME: à voir : on garde certains mots-clés ou uniquement quelques infos
     @property
     def keywords(self):
         """Dict: Attribute that holds the keywords object."""

@@ -72,7 +72,3 @@ class MecaStatOperators(BaseOperators):
             jacobian = super().getStiffnessJacobian(matrix_type, tmp_internVar=self._tmp_internVar)
             self._lagr_scaling = jacobian.getLagrangeScaling()
         return jacobian
-
-    def setup(self):
-        """Set up the operators."""
-        # FIXME: rm

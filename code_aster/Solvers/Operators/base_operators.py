@@ -52,11 +52,6 @@ class BaseOperators(ABC, ContextMixin, DispatcherMixin):
         self.state.stress = self._tmp_stress
         self.state.internVar = self._tmp_internVar
 
-    @abstractmethod
-    def setup(self):
-        """Set up the integrator."""
-        # FIXME: rm
-
     def shouldExecuteIteration(self, iter_idx):
         """Tell if the Newton iteration `iter_idx` should be performed.
 
@@ -112,3 +107,14 @@ class BaseOperators(ABC, ContextMixin, DispatcherMixin):
             assemble=True,
             tmp_internVar=tmp_internVar,
         )
+
+    @abstractmethod
+    def getJacobian(self, matrix_type):
+        """Compute K(u) = d(Rint(u) - Rext(u)) / du
+
+        Arguments:
+            matrix_type (str): type of matrix used.
+
+        Returns:
+            AssemblyMatrix: Jacobian matrix.
+        """
