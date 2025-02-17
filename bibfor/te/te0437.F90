@@ -126,7 +126,7 @@ subroutine te0437(nomopt, nomte)
 ! ----- Copy the lower part
 !
     call lhs_cell%copySymU()
-    call lhs%copy(lhs_cell, faces_dofs+1, faces_dofs+1)
+    call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
     call lhs_cell%free()
 !
 ! ---- save result

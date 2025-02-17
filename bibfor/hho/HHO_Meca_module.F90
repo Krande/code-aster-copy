@@ -650,7 +650,7 @@ contains
 !
         call hhoCopySymPartMat('U', mass_scal(1:dimMatScal, 1:dimMatScal))
         call MatCellScal2Vec(hhoCell, hhoData, mass_scal, mass_vec)
-        call mass%copy(mass_vec, faces_dofs+1, faces_dofs+1)
+        call mass%copy(mass_vec, faces_dofs, faces_dofs)
         call mass_vec%free()
 !
     end subroutine

@@ -239,15 +239,15 @@ contains
 !
         integer :: row_offset, col_offset
 !
-        row_offset = 1
+        row_offset = 0
         if (present(row_offset_)) row_offset = row_offset_
-        col_offset = 1
+        col_offset = 0
         if (present(col_offset_)) col_offset = col_offset_
 !
-        ASSERT(this%nrows >= row_offset+mat%nrows-1)
-        ASSERT(this%ncols >= col_offset+mat%ncols-1)
+        ASSERT(this%nrows >= row_offset+mat%nrows)
+        ASSERT(this%ncols >= col_offset+mat%ncols)
 !
-        this%m(row_offset:row_offset+mat%nrows-1, col_offset:col_offset+mat%ncols-1) = mat%m
+        this%m(row_offset+1:row_offset+1+mat%nrows, col_offset+1:col_offset+1+mat%ncols) = mat%m
 !
     end subroutine
 !

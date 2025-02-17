@@ -385,7 +385,7 @@ contains
 !
         if (l_lhs) then
             call lhs_cell%copySymU()
-            call lhs%copy(lhs_cell, cell_offset, cell_offset)
+            call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
             call lhs_cell%free()
         end if
 !
@@ -511,7 +511,7 @@ contains
 !
         if (l_lhs) then
             call lhs_cell%copySymU()
-            call lhs%copy(lhs_cell, cell_offset, cell_offset)
+            call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
             call lhs_cell%free()
         end if
 !
