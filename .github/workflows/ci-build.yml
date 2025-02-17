@@ -97,6 +97,7 @@ jobs:
               print("PASSED_TESTS not found in environment, assuming test failed")
               result = "false"
               
+          print(f"Setting PASSED_TESTS to {result}")
           with open(os.environ["GITHUB_OUTPUT"], "a") as env_file:
             env_file.write(f"PASSED_TESTS={result}\n")
         env:
@@ -119,4 +120,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TestResults-${{ matrix.builds.os_brief }}-${{ matrix.builds.build }}-${{ github.run_id }}
-          path: ${{ env.OUTPUT_DIR }}
+          path: "${{ github.workspace }}\\test_output"
