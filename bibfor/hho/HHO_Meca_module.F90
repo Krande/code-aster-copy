@@ -592,13 +592,13 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
+        type(HHO_matrix) :: mass_vec
         character(len=32) :: phenom
         integer :: cbs, fbs, total_dofs, faces_dofs
         integer :: jmate, ipg, icodre(3), dimMatScal
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, rho, rho_(1), coeff
         real(kind=8) :: mass_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        real(kind=8) :: mass_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
         blas_int :: b_incx, b_lda, b_n
 !
 ! --- Get input fields
@@ -650,7 +650,8 @@ contains
 !
         call hhoCopySymPartMat('U', mass_scal(1:dimMatScal, 1:dimMatScal))
         call MatCellScal2Vec(hhoCell, hhoData, mass_scal, mass_vec)
-        mass%m(faces_dofs+1:total_dofs, faces_dofs+1:total_dofs) = mass_vec(1:cbs, 1:cbs)
+        call mass%copy(mass_vec, faces_dofs+1, faces_dofs+1)
+        call mass_vec%free()
 !
     end subroutine
 !

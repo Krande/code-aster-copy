@@ -85,17 +85,15 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature) :: hhoQuad
+        type(HHO_matrix) :: BG
         real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL) :: stiffMat, MG
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: BG
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: CGradN
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL), normal(3)
         integer :: ipg, dimStiffMat, ifromMG, itoMG, ifromBG, itoBG, dimMG
         integer :: cbs, fbs, total_dofs, iface, fromFace, toFace, cell_offset
-        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
+        blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_incx, b_incy, b_m
         real(kind=8) :: start, end
-        blas_int :: b_k, b_ldc, b_m
-        blas_int :: b_incx, b_incy
 !
         DEBUG_TIMER(start)
 !
@@ -120,8 +118,8 @@ contains
 ! -- RHS : volumetric part
         call hhoBasisCell%BSRange(0, hhoData%cell_degree(), ifromBG, itoBG)
 !
-        BG = 0.d0
-        BG(1:dimMG, cell_offset:total_dofs) = stiffMat(ifromMG:itoMG, ifromBG:itoBG)
+        call BG%initialize(dimMG, total_dofs, 0.d0)
+        BG%m(1:dimMG, cell_offset:total_dofs) = stiffMat(ifromMG:itoMG, ifromBG:itoBG)
 !
         toFace = 0
 ! -- Loop on the faces
@@ -169,7 +167,7 @@ contains
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dger(b_m, b_n, 1.d0, CGradN, b_incx, &
-                          BSFEval, b_incy, BG(1:dimMG, fromFace:toFace), b_lda)
+                          BSFEval, b_incy, BG%m(1:dimMG, fromFace:toFace), b_lda)
 !
 ! --------  Compute -(vT, grad *normal)
                 b_lda = to_blas_int(dimMG)
@@ -178,7 +176,7 @@ contains
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dger(b_m, b_n, -1.d0, CGradN, b_incx, &
-                          BSCEval, b_incy, BG(1:dimMG, cell_offset:total_dofs), b_lda)
+                          BSCEval, b_incy, BG%m(1:dimMG, cell_offset:total_dofs), b_lda)
 !
             end do
 !
@@ -186,7 +184,7 @@ contains
 !
 ! - Solve the system gradrec =(MG)^-1 * BG
         call gradrec%initialize(dimMG, total_dofs, 0.0)
-        gradrec%m = BG(1:dimMG, 1:total_dofs)
+        call gradrec%copy(BG)
 !
 ! - Verif strange bug if info neq 0 in entry
         info = 0
@@ -206,16 +204,10 @@ contains
             call lhs%initialize(total_dofs, total_dofs, 0.0)
 !
 ! ----- Compute lhs =BG**T * gradrec
-            b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(MSIZE_CELL_SCAL)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(dimMG)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG, b_lda, gradrec%m, b_ldb, &
-                       0.d0, lhs%m, b_ldc)
+            call hho_dgemm_TN(-1.d0, BG, gradrec, 0.d0, lhs)
         end if
+!
+        call BG%free()
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoGradRecVec", end-start)
@@ -341,8 +333,7 @@ contains
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature) :: hhoQuad, hhoQuadCell
         type(HHO_massmat_cell) :: massMat
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: BG
-        real(kind=8), dimension(MSIZE_CELL_SCAL, 3*MSIZE_TDOFS_SCAL) :: SOL
+        type(HHO_matrix) :: BG, SOL
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval, BSGEval, VecGrad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
@@ -352,8 +343,7 @@ contains
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         integer :: iface, fromFace, toFace, cell_offset
         real(kind=8) :: start, end
-        blas_int :: b_k, b_ldc, b_m
-        blas_int :: b_incx, b_incy
+        blas_int :: b_m, b_incx, b_incy
 !
         DEBUG_TIMER(start)
 !
@@ -369,7 +359,7 @@ contains
         dimMassMat = massMat%nrows
 !
         toFace = 0
-        BG = 0.d0
+        call BG%initialize(gbs, total_dofs, 0.d0)
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
@@ -410,7 +400,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
-                              BSFEval, b_incy, BG(ibeginBG:iendBG, fromFace:toFace), b_lda)
+                              BSFEval, b_incy, BG%m(ibeginBG:iendBG, fromFace:toFace), b_lda)
 !
 ! ------------  Compute -(vT, tau *normal)
                     b_lda = to_blas_int(dimMassMat)
@@ -419,7 +409,7 @@ contains
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(idim), BSGEval, b_incx, &
-                              BSCEval, b_incy, BG(ibeginBG:iendBG, cell_offset:total_dofs), b_lda)
+                              BSCEval, b_incy, BG%m(ibeginBG:iendBG, cell_offset:total_dofs), b_lda)
 !
                 end do
             end do
@@ -453,24 +443,24 @@ contains
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
                 call dger(b_m, b_n, hhoQuadCell%weights(ipg), BSGEval, b_incx, &
-                          VecGrad, b_incy, BG(ibeginBG:iendBG, cell_offset:total_dofs), b_lda)
+                          VecGrad, b_incy, BG%m(ibeginBG:iendBG, cell_offset:total_dofs), b_lda)
             end do
         end do
 !
         call gradrec%initialize(gbs, total_dofs, 0.0)
 !
         if (massMat%isIdentity) then
-            gradrec%m = BG(1:gbs, 1:total_dofs)
+            call gradrec%copy(BG)
 !
         else
 ! - Solve the system gradrec =(MG)^-1 * BG
-            SOL = 0.d0
+            call SOL%initialize(cbs, 3*total_dofs, 0.d0)
             do idim = 1, hhoCell%ndim
                 ibeginBG = (idim-1)*dimMassMat+1
                 iendBG = ibeginBG+dimMassMat-1
                 ibeginSOL = (idim-1)*total_dofs+1
                 iendSOL = ibeginSOL+total_dofs-1
-                SOL(1:dimMassMat, ibeginSOL:iendSOL) = BG(ibeginBG:iendBG, 1:total_dofs)
+                SOL%m(1:dimMassMat, ibeginSOL:iendSOL) = BG%m(ibeginBG:iendBG, 1:total_dofs)
             end do
 !
 ! - Verif strange bug if info neq 0 in entry
@@ -478,8 +468,8 @@ contains
             b_n = to_blas_int(dimMassMat)
             b_nhrs = to_blas_int(hhoCell%ndim*total_dofs)
             b_lda = to_blas_int(massMat%max_nrows)
-            b_ldb = to_blas_int(MSIZE_CELL_SCAL)
-            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, SOL, b_ldb, info)
+            b_ldb = to_blas_int(SOL%max_nrows)
+            call dposv('U', b_n, b_nhrs, massMat%m, b_lda, SOL%m, b_ldb, info)
 !
 ! - Sucess ?
             if (info .ne. 0) then
@@ -492,24 +482,19 @@ contains
                 iendBG = ibeginBG+dimMassMat-1
                 ibeginSOL = (idim-1)*total_dofs+1
                 iendSOL = ibeginSOL+total_dofs-1
-                gradrec%m(ibeginBG:iendBG, 1:total_dofs) = SOL(1:dimMassMat, ibeginSOL:iendSOL)
+                gradrec%m(ibeginBG:iendBG, 1:total_dofs) = SOL%m(1:dimMassMat, ibeginSOL:iendSOL)
             end do
+            call SOL%free()
         end if
 !
         if (present(lhs)) then
             call lhs%initialize(total_dofs, total_dofs, 0.d0)
 !
 ! ----- Compute lhs =BG**T * gradrec
-            b_ldc = to_blas_int(lhs%max_nrows)
-            b_ldb = to_blas_int(gradrec%max_nrows)
-            b_lda = to_blas_int(MSIZE_CELL_VEC)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(hhoCell%ndim*dimMassMat)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       1.d0, BG, b_lda, gradrec%m, b_ldb, &
-                       0.d0, lhs%m, b_ldc)
+            call hho_dgemm_TN(1.d0, BG, gradrec, 0.0, lhs)
         end if
+!
+        call BG%free()
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoGradRecFullVec", end-start)
@@ -1103,9 +1088,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature) :: hhoQuad, hhoQuadCell
-        real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_CELL_VEC) :: stiffMat
-        real(kind=8), dimension(MSIZE_CELL_VEC+3, MSIZE_CELL_VEC+3) :: MG
-        type(HHO_matrix) :: BG
+        type(HHO_matrix) :: BG, stiffMat, MG
         real(kind=8), dimension(MSIZE_CELL_VEC, 3) :: CGradN
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVCGradEval
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
@@ -1153,7 +1136,7 @@ contains
         dimMG_cmp = dimMG/hhoCell%ndim
         dimMGLag = dimMG+nblag
 !
-        MG = 0.d0
+        call MG%initialize(dimMG+3, dimMG+3, 0.d0)
         call BG%initialize(dimMGLag, total_dofs, 0.d0)
 !
         do idir = 1, hhoCell%ndim
@@ -1168,28 +1151,30 @@ contains
                 col_deb_ST = (idir2-1)*dimStiffMat_cmp+2
                 col_fin_ST = col_deb_ST+dimMG_cmp-1
 !
-                MG(row_deb_MG:row_fin_MG, col_deb_MG:col_fin_MG) = stiffMat( &
-                                                                   row_deb_ST:row_fin_ST, &
-                                                                   col_deb_ST:col_fin_ST &
-                                                                   )
+                MG%m(row_deb_MG:row_fin_MG, col_deb_MG:col_fin_MG) = stiffMat%m( &
+                                                                     row_deb_ST:row_fin_ST, &
+                                                                     col_deb_ST:col_fin_ST &
+                                                                     )
 !
-                MG(col_deb_MG:col_fin_MG, row_deb_MG:row_fin_MG) = stiffMat( &
-                                                                   col_deb_ST:col_fin_ST, &
-                                                                   row_deb_ST:row_fin_ST &
-                                                                   )
+                MG%m(col_deb_MG:col_fin_MG, row_deb_MG:row_fin_MG) = stiffMat%m( &
+                                                                     col_deb_ST:col_fin_ST, &
+                                                                     row_deb_ST:row_fin_ST &
+                                                                     )
 !
                 col_deb_BG = faces_dof+(idir2-1)*cbs_comp+1
                 col_fin_BG = col_deb_BG+cbs_comp-1
                 col_deb_ST = (idir2-1)*dimStiffMat_cmp+1
                 col_fin_ST = col_deb_ST+cbs_comp-1
 !
-                BG%m(row_deb_MG:row_fin_MG, col_deb_BG:col_fin_BG) = stiffMat( &
+                BG%m(row_deb_MG:row_fin_MG, col_deb_BG:col_fin_BG) = stiffMat%m( &
                                                                      row_deb_ST:row_fin_ST, &
                                                                      col_deb_ST:col_fin_ST &
                                                                      )
             end do
 !
         end do
+!
+        call stiffMat%free()
 !
 ! -- impose lagrange multipliers
 ! -- get quadrature
@@ -1207,47 +1192,47 @@ contains
 ! ------------- dir = 1
                     qp_dphi_ss = hhoQuadCell%weights(ipg)*BSCGradEval(2, j)
                     ind_MG = j
-                    MG(ind_MG, dimMG+1) = MG(ind_MG, dimMG+1)+qp_dphi_ss
-                    MG(dimMG+1, ind_MG) = MG(dimMG+1, ind_MG)+qp_dphi_ss
+                    MG%m(ind_MG, dimMG+1) = MG%m(ind_MG, dimMG+1)+qp_dphi_ss
+                    MG%m(dimMG+1, ind_MG) = MG%m(dimMG+1, ind_MG)+qp_dphi_ss
 ! ------------- dir = 2
                     qp_dphi_ss = -hhoQuadCell%weights(ipg)*BSCGradEval(1, j)
                     ind_MG = dimMG_cmp+j
-                    MG(ind_MG, dimMG+1) = MG(ind_MG, dimMG+1)+qp_dphi_ss
-                    MG(dimMG+1, ind_MG) = MG(dimMG+1, ind_MG)+qp_dphi_ss
+                    MG%m(ind_MG, dimMG+1) = MG%m(ind_MG, dimMG+1)+qp_dphi_ss
+                    MG%m(dimMG+1, ind_MG) = MG%m(dimMG+1, ind_MG)+qp_dphi_ss
                 else if (hhoCell%ndim == 3) then
 ! ------------- lag1
 ! ------------- dir = 1
                     qp_dphi_ss = hhoQuadCell%weights(ipg)*BSCGradEval(2, j)
                     ind_MG = j
-                    MG(ind_MG, dimMG+1) = MG(ind_MG, dimMG+1)+qp_dphi_ss
-                    MG(dimMG+1, ind_MG) = MG(dimMG+1, ind_MG)+qp_dphi_ss
+                    MG%m(ind_MG, dimMG+1) = MG%m(ind_MG, dimMG+1)+qp_dphi_ss
+                    MG%m(dimMG+1, ind_MG) = MG%m(dimMG+1, ind_MG)+qp_dphi_ss
 ! ------------- dir = 2
                     qp_dphi_ss = -hhoQuadCell%weights(ipg)*BSCGradEval(1, j)
                     ind_MG = dimMG_cmp+j
-                    MG(ind_MG, dimMG+1) = MG(ind_MG, dimMG+1)+qp_dphi_ss
-                    MG(dimMG+1, ind_MG) = MG(dimMG+1, ind_MG)+qp_dphi_ss
+                    MG%m(ind_MG, dimMG+1) = MG%m(ind_MG, dimMG+1)+qp_dphi_ss
+                    MG%m(dimMG+1, ind_MG) = MG%m(dimMG+1, ind_MG)+qp_dphi_ss
 ! ------------- lag2
 ! ------------- dir = 1
                     qp_dphi_ss = hhoQuadCell%weights(ipg)*BSCGradEval(3, j)
                     ind_MG = j
-                    MG(ind_MG, dimMG+2) = MG(ind_MG, dimMG+2)+qp_dphi_ss
-                    MG(dimMG+2, ind_MG) = MG(dimMG+2, ind_MG)+qp_dphi_ss
+                    MG%m(ind_MG, dimMG+2) = MG%m(ind_MG, dimMG+2)+qp_dphi_ss
+                    MG%m(dimMG+2, ind_MG) = MG%m(dimMG+2, ind_MG)+qp_dphi_ss
 ! ------------- dir = 3
                     qp_dphi_ss = -hhoQuadCell%weights(ipg)*BSCGradEval(1, j)
                     ind_MG = 2*dimMG_cmp+j
-                    MG(ind_MG, dimMG+2) = MG(ind_MG, dimMG+2)+qp_dphi_ss
-                    MG(dimMG+2, ind_MG) = MG(dimMG+2, ind_MG)+qp_dphi_ss
+                    MG%m(ind_MG, dimMG+2) = MG%m(ind_MG, dimMG+2)+qp_dphi_ss
+                    MG%m(dimMG+2, ind_MG) = MG%m(dimMG+2, ind_MG)+qp_dphi_ss
 ! ------------- lag3
 ! ------------- dir = 2
                     qp_dphi_ss = hhoQuadCell%weights(ipg)*BSCGradEval(3, j)
                     ind_MG = dimMG_cmp+j
-                    MG(ind_MG, dimMG+3) = MG(ind_MG, dimMG+3)+qp_dphi_ss
-                    MG(dimMG+3, ind_MG) = MG(dimMG+3, ind_MG)+qp_dphi_ss
+                    MG%m(ind_MG, dimMG+3) = MG%m(ind_MG, dimMG+3)+qp_dphi_ss
+                    MG%m(dimMG+3, ind_MG) = MG%m(dimMG+3, ind_MG)+qp_dphi_ss
 ! ------------- dir = 3
                     qp_dphi_ss = -hhoQuadCell%weights(ipg)*BSCGradEval(2, j)
                     ind_MG = 2*dimMG_cmp+j
-                    MG(ind_MG, dimMG+3) = MG(ind_MG, dimMG+3)+qp_dphi_ss
-                    MG(dimMG+3, ind_MG) = MG(dimMG+3, ind_MG)+qp_dphi_ss
+                    MG%m(ind_MG, dimMG+3) = MG%m(ind_MG, dimMG+3)+qp_dphi_ss
+                    MG%m(dimMG+3, ind_MG) = MG%m(dimMG+3, ind_MG)+qp_dphi_ss
                 else
                     ASSERT(ASTER_FALSE)
                 end if
@@ -1322,7 +1307,7 @@ contains
 !
 ! - Solve the system gradrec =(MG)^-1 * BG
         call gradrec%initialize(dimMGLag, total_dofs)
-        gradrec%m = BG%m
+        call gradrec%copy(BG)
 !
 ! - Verif strange bug if info neq 0 in entry
         call WORK%initialize(dimMGLag, total_dofs)
@@ -1330,9 +1315,9 @@ contains
         info = 0
         b_n = to_blas_int(dimMGLag)
         b_nhrs = to_blas_int(total_dofs)
-        b_lda = to_blas_int(MSIZE_CELL_VEC+3)
+        b_lda = to_blas_int(MG%max_nrows)
         b_ldb = to_blas_int(gradrec%max_nrows)
-        call dsysv('U', b_n, b_nhrs, MG, b_lda, &
+        call dsysv('U', b_n, b_nhrs, MG%m, b_lda, &
                    IPIV, gradrec%m, b_ldb, WORK%m, LWORK, info)
         call WORK%free()
 !
@@ -1352,6 +1337,7 @@ contains
         end if
 
         call BG%free()
+        call MG%free()
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoGradRecSymMat", end-start)

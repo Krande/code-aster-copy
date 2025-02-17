@@ -603,7 +603,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         real(kind=8), intent(in) :: mat_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        real(kind=8), intent(out) :: mat_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        type(HHO_matrix), intent(out) :: mat_vec
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -626,14 +626,14 @@ contains
         cbs_comp = cbs/hhoCell%ndim
 !
 ! -- copy the scalar matrix in the vectorial matrix
-        mat_vec = 0.d0
+        call mat_vec%initialize(cbs, cbs, 0.d0)
 !
         do idim = 1, hhoCell%ndim
 ! --------- copy volumetric part
             jbeginCell = (idim-1)*cbs_comp+1
             jendCell = jbeginCell+cbs_comp-1
 !
-            mat_vec(jbeginCell:jendCell, jbeginCell:jendCell) = mat_scal(1:cbs_comp, 1:cbs_comp)
+            mat_vec%m(jbeginCell:jendCell, jbeginCell:jendCell) = mat_scal(1:cbs_comp, 1:cbs_comp)
         end do
 !
     end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ module HHO_stiffmat_module
     use HHO_quadrature_module
     use HHO_basis_module
     use HHO_utils_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -119,7 +120,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         integer, intent(in) :: min_order
         integer, intent(in) :: max_order
-        real(kind=8), intent(out) :: stiffMat(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        type(HHO_matrix), intent(out) :: stiffMat
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -144,7 +145,7 @@ contains
         call hhoBasisCell%initialize(hhoCell)
 ! ----- dimension of stiffMat
         dimMat = hhoBasisCell%BVSize(min_order, max_order)
-        stiffMat = 0.d0
+        call stiffMat%initialize(dimMat, dimMat, 0.d0)
 !
 ! ----- get quadrature: derivative polynome of degree max_order-1
         call hhoQuad%GetQuadCell(hhoCell, 2*(max_order-1))
@@ -159,14 +160,14 @@ contains
             b_n = to_blas_int(dimMat)
             b_k = to_blas_int(6)
             b_lda = to_blas_int(6)
-            b_ldc = to_blas_int(MSIZE_CELL_VEC)
+            b_ldc = to_blas_int(stiffMat%max_nrows)
             call dsyrk('U', 'T', b_n, b_k, hhoQuad%weights(ipg), &
-                       BVGradEval, b_lda, 1.d0, stiffMat, b_ldc)
+                       BVGradEval, b_lda, 1.d0, stiffMat%m, b_ldc)
         end do
 !
 ! ----- Copy the lower part
 !
-        call hhoCopySymPartMat('U', stiffMat(1:dimMat, 1:dimMat))
+        call stiffMat%copySymU()
 !
     end subroutine
 !
