@@ -147,8 +147,7 @@ subroutine te0465(option, nomte)
 !
             tg = hhoEvalScalCell( &
                  hhoBasisCell, hhoData%cell_degree(), hhoQuadCell%points(1:3, ipg), temp_T_curr, &
-                 cbs &
-                 )
+                 cbs)
 !
 ! --------- Evaluate source
 !

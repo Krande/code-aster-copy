@@ -19,6 +19,8 @@
 !
 module HHO_matrix_module
 !
+    use FE_algebra_module
+!
     implicit none
 !
     private
@@ -130,8 +132,6 @@ contains
 !
         ASSERT(this%is_allocated)
         call writeMatrix(name, this%nrows, this%ncols, l_sym, this%m)
-
-        call this%print()
 !
     end subroutine
 !
@@ -271,8 +271,6 @@ contains
 !
         integer :: j
         real(kind=8) :: alpha
-        blas_int, parameter :: one = to_blas_int(1)
-        blas_int :: b_n
 !
         alpha = 1.d0
         if (present(alpha_)) alpha = alpha_
@@ -280,9 +278,8 @@ contains
         ASSERT(this%nrows == mat%nrows)
         ASSERT(this%ncols == mat%ncols)
 !
-        b_n = to_blas_int(this%nrows)
         do j = 1, this%ncols
-            call daxpy(b_n, alpha, mat%m(:, j), one, this%m(:, j), one)
+            call daxpy_1(this%nrows, alpha, mat%m(:, j), this%m(:, j))
         end do
 !
     end subroutine

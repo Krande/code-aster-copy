@@ -26,6 +26,7 @@ module HHO_Dirichlet_module
     use HHO_utils_module, only: hhoGetTypeFromModel
     use HHO_eval_module, only: hhoFuncFScalEvalQp
     use HHO_L2proj_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -64,9 +65,6 @@ module HHO_Dirichlet_module
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "blas/daxpy.h"
-#include "blas/dscal.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 !
@@ -881,7 +879,6 @@ contains
         integer :: cbs, fbs, total_dofs, idim, iFace, nbpara, ind
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
-        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -938,10 +935,7 @@ contains
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                   rhs_face)
-            b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
+            call dcopy_1(fbs, rhs_face, rhs_cine(ind))
             ind = ind+fbs
         end do
 !
@@ -962,10 +956,7 @@ contains
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
+        call dcopy_1(cbs, rhs_cell, rhs_cine(ind))
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !
@@ -1001,7 +992,6 @@ contains
         integer :: cbs, fbs, total_dofs, idim, iFace, ind, ndim
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
-        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1037,10 +1027,7 @@ contains
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                   rhs_face)
-            b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
+            call dcopy_1(fbs, rhs_face, rhs_cine(ind))
             ind = ind+fbs
         end do
 !
@@ -1060,10 +1047,7 @@ contains
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
+        call dcopy_1(cbs, rhs_cell, rhs_cine(ind))
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !
@@ -1100,7 +1084,6 @@ contains
         integer :: cbs, fbs, total_dofs, iFace, ind
         real(kind=8) :: FuncValuesQP(MAX_QP_FACE), FuncValuesCellQP(MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
-        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1129,10 +1112,7 @@ contains
 !
             call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                    rhs_face)
-            b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
+            call dcopy_1(fbs, rhs_face, rhs_cine(ind))
             ind = ind+fbs
         end do
 !
@@ -1147,10 +1127,7 @@ contains
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                rhs_cell)
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
+        call dcopy_1(cbs, rhs_cell, rhs_cine(ind))
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !
@@ -1161,11 +1138,11 @@ contains
 !
 !===================================================================================================
 !
-    integerfunction hhoDiriOffset(typema)
+    integer function hhoDiriOffset(typema)
 !
-    implicit none
+        implicit none
 !
-    character(len=8), intent(in), optional :: typema
+        character(len=8), intent(in), optional :: typema
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - AFFE_CHAR_CINE_F
@@ -1175,35 +1152,35 @@ contains
 !   In (opt) typema : type of element
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
-    character(len=8) :: typma2
+        integer :: iret
+        character(len=8) :: typma2
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---  Get type of element
 !
-    if (present(typema)) then
-        typma2 = typema
-    else
-        call teattr('S', 'TYPMA', typma2, iret)
-        ASSERT(iret == 0)
-    end if
+        if (present(typema)) then
+            typma2 = typema
+        else
+            call teattr('S', 'TYPMA', typma2, iret)
+            ASSERT(iret == 0)
+        end if
 !
-    if (typma2 == 'H27' .or. typma2 == 'HEXA27') then
-        hhoDiriOffset = 21
-    else if (typma2 == 'T15' .or. typma2 == 'TETRA15') then
-        hhoDiriOffset = 11
-    else if (typma2 == 'P21' .or. typma2 == 'PENTA21') then
-        hhoDiriOffset = 16
-    else if (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
-        hhoDiriOffset = 14
-    else if (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
-        hhoDiriOffset = 5
-    else if (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
-        hhoDiriOffset = 4
-    else
-        ASSERT(ASTER_FALSE)
-    end if
+        if (typma2 == 'H27' .or. typma2 == 'HEXA27') then
+            hhoDiriOffset = 21
+        else if (typma2 == 'T15' .or. typma2 == 'TETRA15') then
+            hhoDiriOffset = 11
+        else if (typma2 == 'P21' .or. typma2 == 'PENTA21') then
+            hhoDiriOffset = 16
+        else if (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
+            hhoDiriOffset = 14
+        else if (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
+            hhoDiriOffset = 5
+        else if (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
+            hhoDiriOffset = 4
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
     end function
 !

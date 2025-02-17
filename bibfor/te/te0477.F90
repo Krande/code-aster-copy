@@ -76,7 +76,6 @@ subroutine te0477(nomopt, nomte)
 ! --- Compute Operators
 !
     if (hhoData%precompute()) then
-!
         call hhoReloadPreCalcTher(hhoCell, hhoData, gradfull, stab)
     else
         call hhoCalcOpTher(hhoCell, hhoData, gradfull, stab)

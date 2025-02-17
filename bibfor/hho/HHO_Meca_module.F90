@@ -36,6 +36,7 @@ module HHO_Meca_module
     use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
     use HHO_matrix_module
     use HHO_algebra_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -65,8 +66,6 @@ module HHO_Meca_module
 #include "asterfort/sigtopk1.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -242,8 +241,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical :: l_rigi_meca, l_vari
-        integer :: cbs, fbs, total_dofs, j
-        blas_int :: b_incx, b_incy, b_n
+        integer :: cbs, fbs, total_dofs
 !
 ! --- Verif compor
 !
@@ -483,7 +481,6 @@ contains
         integer :: mk_cbs, mk_fbs, mk_total_dofs, iFace, iDof
         integer :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
-        blas_int :: b_incx, b_incy, b_n
 !
         if (hhoComporState%option .ne. "RIGI_MECA" .and. hhoComporState%option .ne. &
             "FORC_NODA" .and. hhoComporState%option .ne. "REFE_FORC_NODA") then
@@ -530,15 +527,8 @@ contains
 !
 ! --- compute displacement in T+
 !
-            b_n = to_blas_int(mk_total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, this%depl_prev, b_incx, this%depl_curr, b_incy)
-            b_n = to_blas_int(mk_total_dofs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, this%depl_incr, b_incx, this%depl_curr, &
-                       b_incy)
+            call dcopy_1(mk_total_dofs, this%depl_prev, this%depl_curr)
+            call daxpy_1(mk_total_dofs, 1.d0, this%depl_incr, this%depl_curr)
         else if (hhoComporState%option == "RIGI_MECA") then
             call tecach('ONO', 'PINSTR', 'L', iret, iad=iinstp)
             if (iinstp .ne. 0) then

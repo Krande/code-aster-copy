@@ -79,8 +79,6 @@ subroutine te0455(nomopt, nomte)
 !
 ! --- Number of dofs
     call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    ASSERT(cbs <= MSIZE_CELL_VEC)
-    ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
     if (nomopt /= "RIGI_MECA_TANG" .and. nomopt /= "RIGI_MECA_ELAS" .and. &
@@ -115,7 +113,6 @@ subroutine te0455(nomopt, nomte)
 ! --- Compute Operators
 !
     if (hhoData%precompute()) then
-!
         call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, &
                                   hhoMecaState%stab)
     else

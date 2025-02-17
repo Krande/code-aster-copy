@@ -61,7 +61,7 @@ subroutine te0437(nomopt, nomte)
     character(len=8), parameter :: fami = 'RIGI'
     real(kind=8) :: VoluValuesQP(MAX_QP_CELL)
     real(kind=8) :: theta, sour, dsdt, temp_eval
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T
+    real(kind=8), dimension(MSIZE_CELL_SCAL) :: temp_T
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
     type(HHO_matrix) :: lhs, lhs_cell
 !
@@ -119,13 +119,14 @@ subroutine te0437(nomopt, nomte)
         call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, &
                                  hhoData%cell_degree(), BSCEval)
 ! --------  Eval massMat
-        call hhoComputeLhsMassTher(VoluValuesQP(ipg), hhoQuad%weights(ipg), BSCEval, cbs, lhs_cell)
+        call hhoComputeLhsMassTher(VoluValuesQP(ipg), hhoQuad%weights(ipg), &
+                                   BSCEval, cbs, lhs_cell)
     end do
 !
 ! ----- Copy the lower part
 !
     call lhs_cell%copySymU()
-    call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
+    call lhs%copy(lhs_cell, faces_dofs+1, faces_dofs+1)
     call lhs_cell%free()
 !
 ! ---- save result

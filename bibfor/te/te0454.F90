@@ -50,7 +50,7 @@ subroutine te0454(nomopt, nomte)
 ! --- Local variables
 !
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer :: cbs, fbs, total_dofs, npg
+    integer :: npg
     character(len=8), parameter :: fami = 'RIGI'
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
@@ -63,12 +63,6 @@ subroutine te0454(nomopt, nomte)
 ! --- Get HHO informations
 !
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
-!
-! --- Number of dofs
-    call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    ASSERT(cbs <= MSIZE_CELL_SCAL)
-    ASSERT(fbs <= MSIZE_FACE_SCAL)
-    ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
 !
     if (nomopt /= "RIGI_THER" .and. nomopt /= "RIGI_THER_TANG") then
         ASSERT(ASTER_FALSE)

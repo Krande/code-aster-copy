@@ -58,7 +58,7 @@ subroutine te0449(nomopt, nomte)
     type(HHO_Quadrature) :: hhoQuadCellMass
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: cbs, fbs, total_dofs, npg
+    integer :: npg
     character(len=8), parameter :: fami = 'MASS'
     type(HHO_matrix) :: lhs
 !
@@ -69,12 +69,6 @@ subroutine te0449(nomopt, nomte)
 ! --- Get HHO informations
 !
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellMass)
-!
-! --- Number of dofs
-    call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    ASSERT(cbs <= MSIZE_CELL_SCAL)
-    ASSERT(fbs <= MSIZE_FACE_SCAL)
-    ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
 !
     if (nomopt /= "MASS_THER") then
         ASSERT(ASTER_FALSE)

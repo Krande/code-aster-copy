@@ -309,13 +309,13 @@ contains
             call TMP%initialize(gbs, total_dofs, 0.d0)
 !
             call hho_dgemm_NN(1.d0, AT, gradrec, 0.d0, TMP)
+            call AT%free()
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
             call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
 !
             call TMP%free()
-            call AT%free()
         end if
 ! print*, "KT", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs))
 ! print*, "fT", norm2(rhs)
@@ -378,8 +378,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsLarge(hhoCell, module_tang, weight, BSCEval, gbs, &
-                                  AT)
+    subroutine hhoComputeLhsLarge(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
         implicit none
 !

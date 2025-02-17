@@ -39,6 +39,7 @@ module HHO_GV_module
     use HHO_gradrec_module, only: hhoGradRecSymMat, hhoGradRecFullMatFromVec
     use HHO_algebra_module
     use HHO_matrix_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -62,8 +63,6 @@ module HHO_GV_module
 #include "asterfort/deflg4.h"
 #include "asterfort/prodmt.h"
 #include "asterfort/readMatrix.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
 #include "blas/dgemm.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
@@ -176,11 +175,11 @@ contains
         real(kind=8) :: lhs_lv(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
         integer :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL), mapLagv(MSIZE_CELL_SCAL)
         integer :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
-        integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
+        integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, gv_faces_dofs
         integer :: cod(27), ipg, j, mk_gbs_tot
         aster_logical :: l_lhs, l_rhs, forc_noda
-        blas_int :: b_incx, b_incy, b_n
-        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
+        blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -201,8 +200,8 @@ contains
 !
         call hhoMecaNLDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs, &
                            mk_gbs, mk_gbs_sym)
-        call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, &
-                           gv_gbs)
+        call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
+        gv_faces_dofs = gv_total_dofs-gv_cbs
         if (hhoComporState%l_largestrain) then
             mk_gbs_tot = mk_gbs
         else
@@ -370,7 +369,8 @@ contains
                 call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEvalG, gv_gbs, &
                                            gv_bT)
 ! ---------- += weight * (sig_vari, c_phi)
-                call hhoComputeRhsMassTher(sig_vari, weight, BSCEval, gv_cbs, rhs_vari)
+                call hhoComputeRhsMassTher(sig_vari, weight, BSCEval, gv_cbs, &
+                                           rhs_vari(gv_faces_dofs+1:))
 ! ---------- += weight * (sig_lagv, c_phi)
                 call hhoComputeRhsMassTher(sig_lagv, weight, BSCEval, gv_cbs, rhs_lagv)
             end if
@@ -413,19 +413,15 @@ contains
 !                                             BSCEvalG, mk_gbs, lm_AT)
                 end if
 ! ---------- += weight * (dgv_dv : g_phi, g_phi)
-                call hhoComputeLhsRigiTher(hhoCell, dsgv_dgv, weight, BSCEvalG, gv_gbs, &
-                                           gv_AT)
+                call hhoComputeLhsRigiTher(hhoCell, dsgv_dgv, weight, BSCEvalG, gv_gbs, gv_AT)
 ! ---------- += weight * (dsv_dv : c_phi, c_phi)
                 coeff = weight*dsv_dv
                 b_n = to_blas_int(gv_cbs)
-                b_incx = to_blas_int(1)
                 b_lda = to_blas_int(MSIZE_TDOFS_SCAL)
-                call dsyr('U', b_n, coeff, BSCEval, b_incx, &
-                          lhs_vv, b_lda)
+                call dsyr('U', b_n, coeff, BSCEval, b_one, lhs_vv, b_lda)
 ! ---------- += weight * (dsv_dl : c_phi, c_phi)
                 coeff = weight*dsv_dl
-                call dsyr('U', b_n, coeff, BSCEval, b_incx, &
-                          lhs_vl, b_lda)
+                call dsyr('U', b_n, coeff, BSCEval, b_one, lhs_vl, b_lda)
 ! ---------- += weight * (dsl_dl : c_phi, c_phi)
                 call hhoComputeLhsMassTher(dsl_dl, weight, BSCEval, gv_cbs, lhs_ll)
             end if
@@ -467,9 +463,9 @@ contains
 ! ----- step1: TMP = AT * gradrec
             call hho_dgemm_NN(1.d0, mk_AT, hhoMecaState%grad, 0.d0, mk_TMP)
 !
-            b_ldc = to_blas_int(gv_AT%max_nrows)
+            b_ldc = to_blas_int(MSIZE_CELL_VEC)
             b_ldb = to_blas_int(hhoGVState%grad%max_nrows)
-            b_lda = to_blas_int(MSIZE_CELL_VEC)
+            b_lda = to_blas_int(gv_AT%max_nrows)
             b_m = to_blas_int(gv_gbs)
             b_n = to_blas_int(gv_total_dofs)
             b_k = to_blas_int(gv_gbs)
@@ -529,7 +525,10 @@ contains
 ! ----- += coeff * stab_mk
             call lhs_mm%add(hhoMecaState%stab, mk_stab)
 ! ----- += coeff * stab_vv
-            call lhs_mm%add(hhoGVState%stab, gv_stab)
+            do j = 1, gv_total_dofs
+                call daxpy_1(gv_total_dofs, gv_stab, hhoGVState%stab%m(:, j), lhs_vv(1, j))
+            end do
+
 !
 ! ----- the symmetry is checked inside gdef_log
             lhs_lv = transpose(lhs_vl)
@@ -1202,7 +1201,8 @@ contains
         integer :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
         aster_logical :: forc_noda
-        blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
 !
         forc_noda = hhoComporState%option == "FORC_NODA"
         if (hhoComporState%option .ne. "RIGI_MECA") then
@@ -1253,26 +1253,13 @@ contains
 !
 ! --- compute in T+
 !
-        b_n = to_blas_int(gv_total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, this%vari_prev, b_incx, this%vari_curr, b_incy)
-        b_n = to_blas_int(gv_total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, this%vari_incr, b_incx, this%vari_curr, &
-                   b_incy)
+        call dcopy_1(gv_total_dofs, this%vari_prev, this%vari_curr)
+        call daxpy_1(gv_total_dofs, 1.d0, this%vari_incr, this%vari_curr)
 !
         if (.not. forc_noda) then
-            b_n = to_blas_int(gv_cbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, this%lagv_prev, b_incx, this%lagv_curr, b_incy)
-            b_n = to_blas_int(gv_cbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, this%vari_incr, b_incx, this%lagv_curr, &
-                       b_incy)
+
+            call dcopy_1(gv_cbs, this%lagv_prev, this%lagv_curr)
+            call daxpy_1(gv_cbs, 1.d0, this%vari_incr, this%lagv_curr)
         end if
 !
     end subroutine
@@ -1379,7 +1366,6 @@ contains
 !
         real(kind=8) :: qp_Acphi(3, 3, MSIZE_CELL_SCAL)
         integer :: i, j, k, row, gbs_cmp
-        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (module_tang : scphi)_T
@@ -1394,11 +1380,7 @@ contains
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
                 do k = 1, gbs_cmp
-                    b_n = to_blas_int(gv_cbs)
-                    b_incx = to_blas_int(1)
-                    b_incy = to_blas_int(1)
-                    call daxpy(b_n, BSCEvalG(k), qp_Acphi(i, j, :), b_incx, AT(row, :), &
-                               b_incy)
+                    call daxpy_1(gv_cbs, BSCEvalG(k), qp_Acphi(i, j, :), AT(row, :))
                     row = row+1
                 end do
             end do
@@ -1437,7 +1419,6 @@ contains
 !
         real(kind=8) :: qp_Agphi(3, 3, MSIZE_CELL_SCAL)
         integer :: i, j, k, col, gbs_cmp
-        blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (module_tang : sgphi)_T
@@ -1452,11 +1433,7 @@ contains
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
                 do k = 1, gbs_cmp
-                    b_n = to_blas_int(gv_cbs)
-                    b_incx = to_blas_int(1)
-                    b_incy = to_blas_int(1)
-                    call daxpy(b_n, qp_Agphi(i, j, k), BSCEval, b_incx, AT(:, col), &
-                               b_incy)
+                    call daxpy_1(gv_cbs, qp_Agphi(i, j, k), BSCEval, AT(:, col))
                     col = col+1
                 end do
             end do
