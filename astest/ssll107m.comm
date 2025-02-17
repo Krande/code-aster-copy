@@ -31,6 +31,9 @@ MASECT2 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 # Il faut transformer le maillage de d°2 en d°1, pour les fibres
 MASECT1 = CREA_MAILLAGE(MAILLAGE=MASECT2, QUAD_LINE=_F(GROUP_MA="GSurface"))
 
+# Création de fibres (5% de la surface totale)
+SectAire = 1.54404e-03 / 20.0
+#
 for LeQuadrant in [0, 1, 2, 3, 4]:
     nomsec = "SECTION1"
     if LeQuadrant == 0:
@@ -76,8 +79,23 @@ for LeQuadrant in [0, 1, 2, 3, 4]:
             GROUP_FIBRE="ACIER",
             TABLE_CARA=TCARA,
             NOM_SEC=nomsec,
-            # COOR_AXE_POUTRE = (Cdgy, Cdgz), ANGLE= -Alpha,
-        )
+        ),
+        FIBRE=_F(
+            GROUP_FIBRE="COINS",
+            CARA="DIAMETRE",
+            TABLE_CARA=TCARA,
+            NOM_SEC=nomsec,
+            # Formatage en 'off' pour garder l'alignement des valeurs
+            # fmt: off
+            VALE=( -0.002, -0.002, SectAire,
+                    0.082, -0.002, SectAire,
+                    0.082,  0.011, SectAire,
+                    0.015,  0.015, SectAire,
+                    0.011,  0.102, SectAire,
+                   -0.002,  0.102, SectAire,
+            )
+            # fmt: on
+        ),
     )
 
     CarElem = AFFE_CARA_ELEM(
@@ -85,7 +103,7 @@ for LeQuadrant in [0, 1, 2, 3, 4]:
         GEOM_FIBRE=GFF2,
         MULTIFIBRE=_F(
             GROUP_MA=("S0x1", "S0y1", "S0z1", "S0x1y1z1", "S0x2", "S0y2", "S0z2", "S0x2y2z2"),
-            GROUP_FIBRE="ACIER",
+            GROUP_FIBRE=("ACIER", "COINS"),
         ),
         POUTRE=_F(
             GROUP_MA=("S0x1", "S0y1", "S0z1", "S0x1y1z1", "S0x2", "S0y2", "S0z2", "S0x2y2z2"),
@@ -170,7 +188,7 @@ for LeQuadrant in [0, 1, 2, 3, 4]:
         )
 
     """
-    # NE PAS EFFACER ===> Pour impression et visualisation sous ParaView
+    # NE PAS EFFACER ===> Pour impression et visualisation sous ParaView
     #
     # Il faut avoir un répertoire en résultat dans le fichier export
     #       R repe ssll107m_out     R    0
