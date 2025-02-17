@@ -44,7 +44,7 @@ import numpy
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
-    ERREUR=_F(ALARME="EXCEPTION"),
+    ERREUR=_F(ALARME="ALARME"),
     # DEBUG=_F(SDVERI='OUI',),
     INFO=1,
 )
