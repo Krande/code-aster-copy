@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -816,7 +816,7 @@ contains
 ! ----- End of loop
 99      continue
 !
-        if (projPara%errorCode .eq. 1) then
+        if (projPara%debug .and. projPara%errorCode .eq. 1) then
             WRITE (6, *) "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
             WRITE (6, *) "Newton algorithm for projection"
             WRITE (6, *) " => failure "

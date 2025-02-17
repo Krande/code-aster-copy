@@ -24,21 +24,25 @@ from . import MESH_TOL
 
 
 def prepare_mesh_syme(meshin, affe_groups, affe_all):
-    """Return a new mesh for the homogeneisation computations.
+    """
+    Prepare a new mesh for homogenisation computations.
 
-    Only the 3D part of the original mesh is kept, together with the 3D groups.
-    A volume group BODY is created from the list of user material prescription.
-    Face groups are created as the group on the bounding box.
+    This function retains only the 3D part of the original mesh and its 3D
+    groups. It creates a volume group 'BODY' from the list of user material
+    prescriptions. Additionally, face groups are created as groups on the
+    bounding box.
 
-    Arguments
-    ---------
-        mesh (Mesh): The user VER mesh.
-        affe (list): List of material prescription from user command.
-        affeall (bool): True if TOUT='OUI' is used.
+    Args:
+        meshin (Mesh): The user-provided VER mesh.
+        affe_groups (list): List of material prescriptions from the user
+            command.
+        affe_all (bool): True if TOUT='OUI' is used.
 
-    Returns
-    -------
-        mesh (Mesh): The internal VER mesh.
+    Returns:
+        Mesh: The internal VER mesh.
+        str: The name of the volume group created.
+        DataArrayInt: The volume of the VER mesh.
+        DataArrayInt: The thickness of the mesh along plate direction.
     """
 
     ASSERT(len(affe_groups) > 0 or affe_all)
@@ -100,6 +104,18 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
 def check_meshdim(m0):
     """
     Perform dimensional checks on the input user mesh.
+
+    This function ensures that the mesh meets specific dimensional criteria:
+    - The mesh must consist of a single zone.
+    - The mesh must have a dimension of 3.
+    - The mesh must be in a 3-dimensional space.
+    - The minimum bounding box coordinates must be within a specified tolerance.
+
+    Args:
+        m0 (Mesh): The input user mesh to be checked.
+
+    Returns:
+        bool: True if all checks pass, otherwise raises an error.
     """
 
     nb_zones = len(m0.partitionBySpreadZone())
@@ -123,7 +139,22 @@ def check_meshdim(m0):
 
 def rebuild_with_groups(m0, l0groups):
     """
-    Rebuild mesh preserving 3D groups and creating new 2D and 1D groups.
+    Rebuild the mesh while preserving 3D groups and creating new 2D and 1D
+    groups.
+
+    This function computes the skin of the mesh, sets groups at different
+    levels, and creates face and node groups based on the bounding box of the
+    mesh.
+
+    Args:
+        m0 (Mesh): The original 3D mesh.
+        l0groups (list): List of 3D groups to be preserved in the new mesh.
+
+    Returns:
+        tuple: A tuple containing:
+            float: The volume of the VER mesh.
+            dict: The thickness in each direction (x, y, z).
+            MEDFileUMesh: The new mesh with preserved and newly created groups.
     """
 
     skin = m0.computeSkin()

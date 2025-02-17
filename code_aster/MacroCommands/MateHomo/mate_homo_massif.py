@@ -79,29 +79,39 @@ PARAMASSIF = [
 
 
 def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_group_ma):
-    """Compute the elastic and thermal correctors for MASSIF (Bulk) case.
+    """
+    Compute the elastic and thermal correctors for the MASSIF (Bulk) case.
 
-    This function performs 7 MECA_STATIQUE and 3 THER_LINEAIRE.
-    If the group `face_int` is present performs an additional MECA_STATIQUE to compute
-    the internal pressure corrector.
+    This function performs a series of mechanical and thermal analyses to compute
+    the corrector fields for a bulk material. Specifically, it conducts seven
+    mechanical static analyses (MECA_STATIQUE) and three thermal linear analyses
+    (THER_LINEAIRE). If the group `face_int` is present in the mesh, an
+    additional mechanical static analysis is performed to compute the internal
+    pressure corrector.
 
-    The computation of the homogeneus parameters for several temperature values is done
-    by considering the temperature as a pseudo-time value.
+    The function also handles the computation of homogeneous parameters for
+    various temperature values by treating the temperature as a pseudo-time
+    value. This allows for the calculation of temperature-dependent properties.
 
-    Arguments
-    ---------
-        modme (Model): Mechanical model.
-        matme (MaterialField): Mechanical material field.
-        modth (Model): Thermal model.
-        matth (MaterialField): Thermal material field.
-        linst (ListOfFloats): List of pseudo-time values (homogeneisation temperature values).
-        alpha (list): List of dilatation coefficient as function of pseudo-time (temperature).
-        groupma (list[str]): List of groups where properties are prescribed.
+    Args:
+        MODME (Model): The mechanical model used for the analyses.
+        CHMATME (MaterialField): The mechanical material field containing
+            material properties.
+        MODTH (Model): The thermal model used for the analyses.
+        CHMATTH (MaterialField): The thermal material field containing material
+            properties.
+        L_INST (list[float]): A list of pseudo-time values representing
+            homogenization temperature values.
+        alpha_calc (list): A list of dilatation coefficients as a function of
+            pseudo-time (temperature).
+        ls_group_ma (list[str]): A list of groups where properties are
+            prescribed.
 
-    Returns
-    -------
-        elas (ElasticResultDict): Dict of elastic correctors.
-        ther (ThermalResultDict): Dict of thermal correctors.
+    Returns:
+        ElasticResultDict: A dictionary containing the elastic correctors for
+            the bulk material.
+        ThermalResultDict: A dictionary containing the thermal correctors for
+            the bulk material.
     """
 
     # Chargements pour calcul des correcteurs MECANIQUES
@@ -324,27 +334,31 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
 
 
 def calc_loimel_massif(DEPLMATE, ls_group_tout):
-    """Compute the average value of material parameters on the VER mesh.
+    """
+    Compute the average value of material parameters on the VER mesh.
 
-    In order to use existing operators (CALC_CHAMP and POST_ELEM) this function works with
-    a pseudo-result as input, obtained with a 0-load boundary condition.
+    This function calculates the average values of various material parameters
+    on the VER mesh using a pseudo-result obtained with a 0-load boundary
+    condition. It leverages existing operators (CALC_CHAMP and POST_ELEM) to
+    perform the calculations.
 
-    List of computed parameters :
-       LAME_1 : first Lamé coefficient
-       LAME_2 : second Lamé coefficient
-       ALPHA_3K : compression modulus
-       RHO : density
-       RHO_CP : product of density with specific heat
-       LAMBDA_THER : thermal conductivity
+    List of computed parameters:
+    - LAME_1: First Lamé coefficient
+    - LAME_2: Second Lamé coefficient
+    - ALPHA_3K: Compression modulus
+    - RHO: Density
+    - RHO_CP: Product of density with specific heat
+    - LAMBDA_THER: Thermal conductivity
 
-    Arguments
-    ---------
-        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
-        groupma (list[str]): List of groups where properties are prescribed.
+    Args:
+        DEPLMATE (ElasticResult): Mechanical result from the 0-load boundary
+            condition.
+        ls_group_tout (list[str]): List of groups where properties are
+            prescribed.
 
-    Returns
-    -------
-        values (dict): average properties values as function of pseudo-time (temperature).
+    Returns:
+        dict: A dictionary containing the average properties values as a
+            function of pseudo-time (temperature).
     """
 
     LAME_1 = FORMULE(NOM_PARA=("E", "NU"), VALE="E*NU/((1+NU)*(1-2*NU))")
@@ -410,24 +424,33 @@ def calc_loimel_massif(DEPLMATE, ls_group_tout):
 
 
 def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, **fields):
-    """Compute the homogeneus properties values.
+    """
+    Compute the homogeneous properties values.
 
-    Arguments
-    ---------
-        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
-        volumever (float): Volume of VER.
-        groupma (list[str]): List of groups where properties are prescribed.
-        varcname (str): Name of command variable (TEMP | IRRA).
-        varcvalue (list[float]): List of temperature at which parameters are computed.
-        **fields (ElasticResultDict, ThermalResultDict): corrector fields.
+    This function calculates the homogeneous elastic and thermal properties for
+    a bulk material (MASSIF) case. It uses mechanical and thermal corrector
+    fields to compute the properties at various temperatures or irradiation
+    levels.
 
+    Args:
+        DEPLMATE (ElasticResult): Mechanical result from the 0-load boundary
+            condition.
+        volume_ver (float): Volume of the Volume Element Representative (VER).
+        ls_group_ma (list[str]): List of groups where properties are prescribed.
+        varc_name (str): Name of the command variable (e.g., TEMP for
+            temperature, IRRA for irradiation).
+        ls_varc (list[float]): List of values for the command variable at which
+            parameters are computed.
+        **fields (ElasticResultDict, ThermalResultDict): Corrector fields for
+            mechanical and thermal analyses.
 
-    Returns
-    -------
-        A_HOM (list[np.ndarray]): Homogeneus elastic matrix for each temperature value.
-        K_HOM (list[np.ndarray]): Homogeneus thermal matrix for each temperature value.
-        table (Table): Aster table with all the homonegeus parameters (ready for DEFI_MATERIAU).
-
+    Returns:
+        list[np.ndarray]: Homogeneous elastic matrix for each value of the
+            command variable.
+        list[np.ndarray]: Homogeneous thermal matrix for each value of the
+            command variable.
+        Table: Aster table with all the homogeneous parameters, ready for
+            DEFI_MATERIAU.
     """
 
     CORR_MECA11 = fields["CORR_MECA11"]

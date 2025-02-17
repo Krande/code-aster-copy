@@ -24,10 +24,11 @@ from . import MESH_TOL
 
 class SymmetryManager:
     """
-    Handle the symmetric projection of homogeneisation corrector fields.
+    Handles the symmetric projection of homogenization corrector fields.
 
-    Input data and mesh are output of CALC_MATE_HOMO.
-    Mesh is either 1/8 or 1/4 of the structure defined with positive coordinates.
+    This class is designed to manage the symmetric projection of fields used in homogenization
+    processes. The input data and mesh are outputs from the CALC_MATE_HOMO function. The mesh
+    provided is either 1/8 or 1/4 of the entire structure, defined with positive coordinates.
 
     """
 
@@ -37,42 +38,66 @@ class SymmetryManager:
 
     @property
     def axis(self):
-        """Holds the projection axis"""
+        """
+        Returns the projection axis.
+
+        The projection axis is determined based on the symmetry direction provided during
+        initialization. This axis is used to mirror the corrector fields.
+
+        Returns:
+            list[int]: The projection axis as a list of three integers.
+
+        """
+
         assert self._dir is not None
         return self._axis[self._dir]
 
     @property
     def point(self):
-        """Holds the symmetry point"""
+        """
+        Returns the symmetry point.
+
+        The symmetry point is the reference point around which the symmetric projection is
+        performed. It is defined by the coordinates (x0, y0, z0).
+
+        Returns:
+            tuple[float, float, float]: The symmetry point as a tuple (x0, y0, z0).
+
+        """
+
         return (self._x0, self._y0, self._z0)
 
     def __init__(self, point, axis):
         """
-        Init function.
+        Initializes the symmetry manager.
 
-        Arguments
-        ---------
-            point (list[float]) : Symmetry point (x0, y0, z0).
-            axis (str) : Symmetry axis (X|Y|Z).
+        This constructor sets up the symmetry manager with a specific symmetry point and axis.
+        The axis must be one of the predefined axes (X, Y, or Z).
+
+        Args:
+            point (list[float]): Symmetry point (x0, y0, z0).
+            axis (str): Symmetry axis (X, Y, or Z).
+
         """
+
         assert axis in self._axis
         self._dir = axis
         self._x0, self._y0, self._z0 = point
 
     def sign(self, fieldname):
-        """Return the sign vector.
+        """
+        Returns the sign vector.
 
-        Corrector fields might be symmetric or anti-symmetric.
-        This condition affect the component which sign changes during symmetric projection.
-        A non-zero returned value implies a sign change on the projected component value.
+        Corrector fields might be symmetric or anti-symmetric. This method determines
+        the sign vector based on the field name, which indicates how the field should
+        be mirrored. A non-zero value in the sign vector implies a sign change on the
+        projected component value.
 
-        Arguments
-        ---------
-            fieldname (str): The corrector field name as produced by CALC_MATE_HOMO
+        Args:
+            fieldname (str): The corrector field name as produced by CALC_MATE_HOMO.
 
-        Returns
-        -------
-            sign [int, int, int]): Sign vector.
+        Returns:
+            list[int]: Sign vector as a list of three integers.
         """
 
         assert self._dir is not None
@@ -115,29 +140,35 @@ class SymmetryManager:
         return ret
 
     def build_symmetry_mesh(self, meshin):
-        """Return the full mesh.
 
-        Arguments
-        ---------
+        """
+        Returns the full mesh.
+
+        This method constructs the full mesh by mirroring the input mesh along the
+        specified symmetry axis and point. It ensures that the mirrored mesh is
+        correctly merged with the original mesh, handling node merging and coordinate
+        adjustments.
+
+        Args:
             meshin (MEDFileUMesh): The symmetric mesh of corrector fields.
 
-        Returns
-        -------
-            meshout (MEDFileUMesh): The full mesh of corrector fields.
-            keep_ids (DataArrayInt) : Node ids of non-merged nodes.
-            merge_ids (DataArrayInt) : Node ids of merged nodes.
+        Returns:
+            MEDFileUMesh: The full mesh of corrector fields.
+            list[int]: The IDs of non-merged nodes (DataArrayInt).
+            list[int]: The IDs of merged nodes (DataArrayInt).
         """
 
         if not isinstance(meshin, medc.MEDFileUMesh):
-            raise RuntimeError("Input mesh is not MEDFileUMesh as expected !")
+            raise RuntimeError("The input mesh must be of type MEDFileUMesh.")
         if meshin.getMeshDimension() != 3:
-            raise RuntimeError("Works only for 3D mesh")
+            raise RuntimeError("This function only supports 3D meshes.")
         if (
             not medc.DataArrayDouble(self.axis, 1, 3)
             .magnitude()
             .isEqual(medc.DataArrayDouble([1.0]), MESH_TOL)
         ):
-            raise RuntimeError("Input normal has to have magnitude equal to one with eps")
+            msg = "The input normal vector must have a magnitude of one, within the specified epsilon tolerance."
+            raise RuntimeError(msg)
         nb_nodes_meshin = meshin.getNumberOfNodes()
         coors_sym = meshin.getCoords().symmetry3DPlane(self.point, self.axis)
         coords_merged_with_duplicates = medc.DataArrayDouble.Aggregate(
@@ -147,11 +178,11 @@ class SymmetryManager:
             MESH_TOL
         )
         if not common_nodes_shift.deltaShiftIndex().findIdsNotEqual(2).empty():
-            msg = "There are groups of more than 2 points considered as merged."
+            msg = "There are groups with more than 2 points considered as merged."
             raise RuntimeError(msg)
         common_nodes_id.rearrange(2)
         if not (common_nodes_id[:, 0] + nb_nodes_meshin).isEqual(common_nodes_id[:, 1]):
-            msg = "With epsilon specified impossible to detect cleanly pts to be merged"
+            msg = "With the specified epsilon, it is impossible to accurately detect points to be merged."
             raise RuntimeError(msg)
         common_nodes_id.rearrange(1)
         o2n, newNbnodes = medc.DataArrayInt.ConvertIndexArrayToO2N(
@@ -187,20 +218,23 @@ class SymmetryManager:
         return mesh_merged, point_ids_to_keep_sym, point_ids_to_merge
 
     def build_symmetry(self, resuin, meshfull=None, keep_ids=None, merge_ids=None):
-        """Return a new result containing the symmetric result merged with the current one.
+        """
+        Returns a new result containing the symmetric result merged with the current
+        one.
 
-        Data is mirrored along the stored `axis`. Only nodal fields are taken into account.
+        This method mirrors the input corrector fields along the stored axis and
+        merges them with the original fields. Only nodal fields are taken into
+        account. If the full mesh and node IDs are not provided, they are computed
+        internally.
 
-        Arguments
-        ---------
+        Args:
             resuin (MEDFileData): Input corrector fields.
             meshfull (MEDFileUMesh, optional): The full mesh of corrector fields.
-            keep_ids (DataArrayInt, optional) : Node ids of non-merged nodes.
-            merge_ids (DataArrayInt, optional) : Node ids of merged nodes.
+            keep_ids (DataArrayInt, optional): IDs of non-merged nodes.
+            merge_ids (DataArrayInt, optional): IDs of merged nodes.
 
-        Returns
-        -------
-            resuout (MEDFileData): Output corrector fields.
+        Returns:
+            MEDFileData: Output corrector fields.
         """
 
         meshesin = resuin.getMeshes()
@@ -230,10 +264,10 @@ class SymmetryManager:
             for f1ts in fmts:
                 field_type_list = f1ts.getTypesOfFieldAvailable()
                 if len(field_type_list) != 1:
-                    msg = "Fields with multiple space discr not managed !"
+                    msg = "Fields with multiple spatial discretizations are not supported."
                     raise RuntimeError(msg)
                 if len(f1ts.getPflsReallyUsed()) != 0:
-                    msg = "Profiles are not managed now !"
+                    msg = "Fields with profiles are not supported."
                     raise RuntimeError(msg)
                 field_type = field_type_list[0]
                 with f1ts:
@@ -258,7 +292,7 @@ class SymmetryManager:
                             vtest.abs()
                             check = vtest.findIdsGreaterThan(MESH_TOL).empty()
                             if not check:
-                                msg = "Presence of values in node field of pts to be merged that are not equal to 0 along input planeVector"
+                                msg = "Non-zero values detected in the node field for points to be merged along the input plane vector."
                                 raise RuntimeError(msg)
 
                         values_merged = medc.DataArrayDouble.Aggregate(

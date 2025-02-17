@@ -30,14 +30,12 @@ def createLocalTherResult(rmanager, resuglob):
     at point P0 with the corrector fields.
     Point P0 is a point on the global mesh where the center of the VER is located.
 
-    Arguments
-    ---------
+    Args:
         rmanager (RelocManager): Object containing user's settings and correctors.
         resuglob (ThermalResult): The global solution.
 
 
-    Returns
-    -------
+    Returns:
         resuloc (ThermalResult): The local thermal solution.
 
     """
@@ -86,14 +84,12 @@ def createLocalElasResult(rmanager, resuglob):
 
     The internal pressure must be given by user.
 
-    Arguments
-    ---------
+    Args:
         rmanager (RelocManager): Object containing user's settings and correctors.
         resuglob (ElasticResult): The global elastic solution.
 
 
-    Returns
-    -------
+    Returns:
         resuloc (ElasticResult): The local elastic solution.
 
     """
