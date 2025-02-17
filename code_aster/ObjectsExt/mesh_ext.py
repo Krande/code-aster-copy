@@ -74,7 +74,7 @@ class ExtendedMesh:
             info [int] : verbosity mode (0|1|2). (default 1).
         """
 
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
@@ -112,7 +112,7 @@ class ExtendedMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (0|1|2). (default 1).
         """
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
@@ -136,7 +136,7 @@ class ExtendedMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (0|1|2). (default 1).
         """
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
@@ -174,7 +174,7 @@ class ExtendedMesh:
             info [int] : verbosity mode (0|1|2). (default 1).
         """
 
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
@@ -222,7 +222,7 @@ class ExtendedMesh:
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (1 or 2). (default 1).
         """
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
         assert isinstance(refine, int), "Invalid parameter"
 
         # Take into account refine level before creating mesh
@@ -267,7 +267,7 @@ class ExtendedMesh:
             groups [bool] : if True, creates a group for each point,(default False).
             info [int] : verbosity mode (1 or 2), (default 1).
         """
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
 
         mcmesh = mesh_builder.pointcloud(coordlist=coordlist, groups=groups)
 
@@ -286,7 +286,7 @@ class ExtendedMesh:
             groups [bool] : if True, creates a group for each point,(default False).
             info [int] : verbosity mode (1 or 2), (default 1).
         """
-        assert info in (0, 1, 2), "Invalid parameter"
+        assert info in (0, 1, 2, 4), "Invalid parameter"
 
         mcmesh = mesh_builder.spline1d(coordlist=coordlist, groups=groups)
 
