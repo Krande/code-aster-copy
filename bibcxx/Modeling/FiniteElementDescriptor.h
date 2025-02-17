@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -77,6 +77,12 @@ class FiniteElementDescriptor : public DataStructure {
     /** @brief Model if known */
     // We use a weak_ptr to avoid circular reference
     std::weak_ptr< Model > _model;
+
+    /**
+     * @brief Constructeur
+     */
+    FiniteElementDescriptor( const std::string &name, const std::string &type,
+                             const BaseMeshPtr mesh );
 
   public:
     /**

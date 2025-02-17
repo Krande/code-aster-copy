@@ -28,6 +28,8 @@ from ..Objects import (
     MechanicalLoadFunction,
     MechanicalLoadReal,
     NonLinearResult,
+    ParallelContactNew,
+    ParallelFrictionNew,
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,
     PhysicalProblem,
@@ -97,7 +99,11 @@ def meca_non_line_ops(self, **args):
     adapt_increment_init(args, "EVOL_NOLI")
 
     # Add controls to prohibit unconverted features
-    _contact_check(args["CONTACT"])
+    contactArgs = args["CONTACT"]
+    _contact_check(contactArgs)
+    bPMesh = args["MODELE"].getMesh().isParallel()
+    if bPMesh and (type(contactArgs) in (tuple, list) and len(contactArgs) > 1):
+        raise RuntimeError("Only one CONTACT factor keyword allowed with ParallelMesh")
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
@@ -162,7 +168,12 @@ def meca_non_line_ops(self, **args):
     if args["CONTACT"]:
         definition = args["CONTACT"][0]["DEFINITION"]
         contact_manager = ContactManager(definition, phys_pb)
-        fed_defi = definition.getFiniteElementDescriptor()
+        if isinstance(definition, ParallelFrictionNew) or isinstance(
+            definition, ParallelContactNew
+        ):
+            fed_defi = definition.getParallelFiniteElementDescriptor()
+        else:
+            fed_defi = definition.getFiniteElementDescriptor()
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
     solver.use(contact_manager)
 

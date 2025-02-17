@@ -189,11 +189,12 @@ class DataStructure:
             bool: *True* if all went ok, *False* otherwise.
         """
 
-    def debugPrint(self, unit=6):
+    def debugPrint(self, unit=6, synchro=True):
         """Print the raw content of a *DataStructure* on the selected file.
 
         Args:
             unit (int): File number (default: 6, means stdout).
+            synchro (bool): To synchronize prints between processors (default: True).
         """
 
     def getDependencies(self):
@@ -707,6 +708,9 @@ class BaseMesh(DataStructure):
         Returns:
             bool : *True* if mesh contains at least one cell of given type, else *False*
         """
+
+    def isConnection(self):
+        """Function to know if a mesh is a ConnectionMesh"""
 
     def isIncomplete(self):
         """Tell if the mesh is complete on parallel instances.
@@ -3321,6 +3325,13 @@ class FieldOnNodesReal(DataField):
 
         Returns:
             SimpleFieldOnNodesReal: field converted
+        """
+
+    def transfertToConnectionMesh(self, arg0):
+        """Transfer SimpleFieldOnNodes to a ConnectionMesh
+
+        Returns:
+            SimpleFieldOnNodesReal: transfered field
         """
 
     def transform(self, func):
@@ -6333,28 +6344,28 @@ class ContactNew(DataStructure):
         """Return the finite element descriptor to define virtual cells for Lagrange multipliers
 
         Returns:
-            FiniteElementDescriptor: finite element descriptor
+            FiniteElementDescriptor: fed.
         """
 
     def getMesh(self):
         """Return the mesh used in the contact definition
 
         Returns:
-            BaseMesh: mesh.
+            Mesh: mesh.
         """
 
     def getModel(self):
         """Return the model used in the contact definition
 
         Returns:
-            Model: model
+            Model: model.
         """
 
     def getNumberOfContactZones(self):
         """Return the number of contact zones used
 
         Returns:
-            int: number of contact zones.
+            inter: number of contact zones.
         """
 
     def getVerbosity(self):
@@ -6366,6 +6377,9 @@ class ContactNew(DataStructure):
         Returns:
             integer: level of verbosity
         """
+
+    def isParallel(self):
+        """bool: true if parallel contact."""
 
     def setVerbosity(self, level):
         """Set level of verbosity:
@@ -6430,12 +6444,12 @@ class ContactZone(DataStructure):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ContactZone, arg0: str, arg1: Model) -> None
+        1. __init__(self: libaster.ContactZone, arg0: str) -> None
 
-        2. __init__(self: libaster.ContactZone, arg0: Model) -> None
+        2. __init__(self: libaster.ContactZone) -> None
         """
 
-    def build(self):
+    def build(self, arg0):
         """Build and check internal objects
 
         Returns:
@@ -6608,9 +6622,9 @@ class MeshPairing(DataStructure):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.MeshPairing, arg0: str, arg1: libaster.BaseMesh) -> None
+        1. __init__(self: libaster.MeshPairing, arg0: str) -> None
 
-        2. __init__(self: libaster.MeshPairing, arg0: libaster.BaseMesh) -> None
+        2. __init__(self: libaster.MeshPairing) -> None
         """
 
     def checkNormals(self, model):
@@ -6785,6 +6799,13 @@ class MeshPairing(DataStructure):
             str: excluded groups' names
         """
 
+    def setMesh(self, mesh):
+        """Set Mesh
+
+        Arguments:
+            mesh (BaseMesh): support mesh
+        """
+
     def setMethod(self, method):
         """Set method of pairing
 
@@ -6808,13 +6829,6 @@ class MeshPairing(DataStructure):
 
         Arguments:
             level (integer): level of verbosity
-        """
-
-    def updateCoordinates(self, disp):
-        """Update coordinates of nodes
-
-        Arguments:
-            disp (FieldOnNodesReal): nodal field of displacement
         """
 
 
@@ -15317,6 +15331,126 @@ class ParallelFiniteElementDescriptor(FiniteElementDescriptor):
         """
 
 
+# class ParallelContactFEDescriptor in libaster
+
+
+class ParallelContactFEDescriptor(FiniteElementDescriptor):
+    pass
+
+    # Method resolution order:
+    #     ParallelContactFEDescriptor
+    #     FiniteElementDescriptor
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0, arg1, arg2, arg3, arg4, arg5):
+        pass
+
+    def getJointObjectName(self):
+        pass
+
+    def getJoints(self):
+        """Return the vector of joints between the curent domain and the others subdomains.
+
+        Returns:
+            list: joints between subdomains.
+        """
+
+
+# class ParallelContactNew in libaster
+
+
+class ParallelContactNew(ContactNew):
+    pass
+
+    # Method resolution order:
+    #     ParallelContactNew
+    #     ContactNew
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.ParallelContactNew, arg0: str, arg1: libaster.Model, arg2: libaster.ParallelMesh) -> None
+
+        2. __init__(self: libaster.ParallelContactNew, arg0: libaster.Model, arg1: libaster.ParallelMesh) -> None
+        """
+
+    def build(self):
+        pass
+
+    def getConnectionModel(self):
+        pass
+
+    def getParallelFiniteElementDescriptor(self):
+        """Return ParallelFiniteElementDescriptor"""
+
+    def isParallel(self):
+        """bool: true if parallel contact."""
+
+
+# class ParallelFrictionNew in libaster
+
+
+class ParallelFrictionNew(ParallelContactNew):
+    pass
+
+    # Method resolution order:
+    #     ParallelFrictionNew
+    #     ParallelContactNew
+    #     ContactNew
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.ParallelFrictionNew, arg0: str, arg1: libaster.Model, arg2: libaster.ParallelMesh) -> None
+
+        2. __init__(self: libaster.ParallelFrictionNew, arg0: libaster.Model, arg1: libaster.ParallelMesh) -> None
+        """
+
+
+# class ParallelContactPairing in libaster
+
+
+class ParallelContactPairing(ContactPairing):
+    pass
+
+    # Method resolution order:
+    #     ParallelContactPairing
+    #     ContactPairing
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.ParallelContactPairing, arg0: str, arg1: libaster.ParallelContactNew) -> None
+
+        2. __init__(self: libaster.ParallelContactPairing, arg0: libaster.ParallelContactNew) -> None
+        """
+
+    def buildFiniteElementDescriptor(self):
+        pass
+
+    def getParallelFiniteElementDescriptor(self):
+        """Return ParallelFiniteElementDescriptor"""
+
+
 # class ConnectionMesh in libaster
 
 
@@ -15406,6 +15540,9 @@ class ConnectionMesh(BaseMesh):
         Returns:
             bool: True if the group is present
         """
+
+    def isConnection(self):
+        """Function to know if a mesh is a ConnectionMesh"""
 
 
 # class ResultNaming in libaster

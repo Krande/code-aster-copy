@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,8 @@ MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MOD
 # -------------------------------------
 ## -- OLD PAIRING METHOD
 # - Generate pairs
-meshPair_old = CA.MeshPairing(Mail)
+meshPair_old = CA.MeshPairing()
+meshPair_old.setMesh(Mail)
 meshPair_old.setVerbosity(2)
 meshPair_old.setPair("CONT_BAS", "CONT_HAUT")
 meshPair_old.setMethod(PairingMethod.Legacy)
@@ -67,7 +68,8 @@ listPairs_old = meshPair_old.getListOfPairs()
 
 # -- FAST PAIRING METHOD
 # - Generate pairs
-meshPair_fast = CA.MeshPairing(Mail)
+meshPair_fast = CA.MeshPairing()
+meshPair_fast.setMesh(Mail)
 meshPair_fast.setVerbosity(2)
 meshPair_fast.setPair("CONT_BAS", "CONT_HAUT")
 meshPair_fast.setMethod(PairingMethod.BrutForce)

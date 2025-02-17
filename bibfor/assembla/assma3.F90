@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,8 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel, &
                   jnulo1, jposd1, admodl, &
                   lcmodl, mode, nec, nmxcmp, ncmp, &
                   jsmhc, jsmdi, iconx1, iconx2, jtmp2, &
-                  lgtmp2, jvalm, ilinu, ellagr, nbeltb, ti1, ti2)
+                  lgtmp2, jvalm, ilinu, ellagr, nbeltb, ti1, ti2, &
+                  v_crco, lcontact_par)
 !
     implicit none
 !
@@ -49,8 +50,8 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel, &
     integer :: lcmodl, k1, k2, n2, n3
     integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
     integer :: nec, nmxcmp, nnoe, numa, nk2, decael
-    integer :: ti1(*), ti2(*), nbeltb
-    aster_logical :: ldist, ldgrel
+    integer :: ti1(*), ti2(*), nbeltb, v_crco(*)
+    aster_logical :: ldist, ldgrel, lcontact_par
     integer, pointer :: numsd(:)
 !
     integer :: nbi1
@@ -170,7 +171,11 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel, &
             n1 = zznema(ilima, numa, k1)
             if (n1 .lt. 0) then
 !           NOEUD TARDIF
-                n1 = -n1
+                if (lcontact_par) then
+                    n1 = v_crco(-n1)
+                else
+                    n1 = -n1
+                end if
 !
 !
 !

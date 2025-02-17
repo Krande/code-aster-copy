@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,12 +28,14 @@
 #include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/Calcul.h"
 #include "Discretization/DiscreteComputation.h"
+#include "LinearAlgebra/ElementaryMatrixConverter.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Messages/Messages.h"
 #include "Modeling/Model.h"
+#include "Modeling/ParallelContactFEDescriptor.h"
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
@@ -887,13 +889,27 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
     std::string option = "RIGI_CONT";
 
     auto [Fed_Slave, Fed_pair] = _phys_problem->getListOfLoads()->getContactLoadDescriptor();
+#ifdef ASTER_HAVE_MPI
+    const auto pCFED = std::dynamic_pointer_cast< ParallelContactFEDescriptor >( Fed_pair );
+    if ( pCFED ) {
+        Fed_pair = pCFED->getSupportFiniteElementDescriptor();
+    }
+#endif /* ASTER_HAVE_MPI */
 
     // Prepare computing
     CalculPtr calcul = std::make_unique< Calcul >( option );
     calcul->setFiniteElementDescriptor( Fed_pair );
 
     // Set input field
-    calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+#ifdef ASTER_HAVE_MPI
+    if ( pCFED ) {
+        calcul->addInputField( "PGEOMER", Fed_pair->getMesh()->getCoordinates() );
+    } else {
+#endif /* ASTER_HAVE_MPI */
+        calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+#ifdef ASTER_HAVE_MPI
+    }
+#endif /* ASTER_HAVE_MPI */
     calcul->addInputField( "PGEOMCR", geom );
     calcul->addInputField( "PDEPL_M", displ_prev );
     calcul->addInputField( "PDEPL_P", displ_step );
@@ -907,7 +923,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
 
     // Create output vector
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        Fed_pair->getModel(), _phys_problem->getMaterialField(),
         _phys_problem->getElementaryCharacteristics() );
     elemMatr->prepareCompute( option );
 
@@ -924,8 +940,19 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
         elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
     }
     elemMatr->build();
-
-    return elemMatr;
+#ifdef ASTER_HAVE_MPI
+    if ( pCFED ) {
+        auto resu = transfertToParallelFEDesc( elemMatr, pCFED );
+        resu->setModel( _phys_problem->getModel() );
+        resu->prepareCompute( option );
+        resu->build();
+        return resu;
+    } else {
+#endif /* ASTER_HAVE_MPI */
+        return elemMatr;
+#ifdef ASTER_HAVE_MPI
+    }
+#endif /* ASTER_HAVE_MPI */
 }
 
 ElementaryMatrixDisplacementRealPtr

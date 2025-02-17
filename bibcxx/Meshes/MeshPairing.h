@@ -5,7 +5,7 @@
  * @file MeshPairing.h
  * @brief Header of MeshPairing class
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,6 +56,10 @@ class MeshPairing : public DataStructure {
     VectorLong _slaveNodes;
     /** @brief List of excluded slave cells */
     VectorLong _slaveCellsExcluded;
+    /** @brief List of groups of excluded slave cells */
+    VectorString _excludedSlaveCells;
+    /** @brief List of groups of excluded slave nodes */
+    VectorString _excludedSlaveNodes;
 
     /** @brief  Master inverse connectivity */
     JeveuxCollectionLong _masterInverseConnectivity;
@@ -136,21 +140,18 @@ class MeshPairing : public DataStructure {
   public:
     using MeshPairingPtr = std::shared_ptr< MeshPairing >;
 
-    /** @brief No default constructor */
-    MeshPairing() = delete;
-
     /** @brief Constructor with given name */
-    MeshPairing( const std::string name, const BaseMeshPtr mesh );
+    MeshPairing( const std::string name );
 
     /** @brief Constructor with automatic name */
-    MeshPairing( const BaseMeshPtr mesh )
-        : MeshPairing( ResultNaming::getNewResultName(), mesh ) {};
+    MeshPairing() : MeshPairing( ResultNaming::getNewResultName() ) {};
 
     /** @brief Initializations of datastructures defining pairing */
     bool initObjects();
 
     /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _mesh; };
+    void setMesh( const BaseMeshPtr & );
 
     /** @brief Set verbosity */
     void setVerbosity( const ASTERINTEGER &level ) { _verbosity = level; }
@@ -161,19 +162,11 @@ class MeshPairing : public DataStructure {
     /** @brief Get coordinates */
     MeshCoordinatesFieldPtr getCoordinates() const { return _currentCoordinates; }
 
-    /** @brief Update coordinates */
-    void updateCoordinates( const FieldOnNodesRealPtr &disp ) {
-        *_currentCoordinates = *( _mesh->getCoordinates() ) + *disp;
-    };
-
-    /** @brief Set coordinates */
+    // /** @brief Set coordinates */
     void setCoordinates( const MeshCoordinatesFieldPtr &coor ) { _currentCoordinates = coor; };
 
     /** @brief Set pair */
     void setPair( const std::string &groupNameSlav, const std::string &groupNameMast );
-
-    /** @brief Init pair */
-    void initPair();
 
     /** @brief Set slave cells */
     void setSlaveGroupOfCells( const std::string &groupName );
@@ -188,10 +181,10 @@ class MeshPairing : public DataStructure {
     void setExcludedSlaveGroupOfNodes( const VectorString &groupsName );
 
     /** @brief Get name of group for slave cells */
-    std::string getSlaveGroupOfCells() const { return _slaveCellsGroup; }
+    const std::string &getSlaveGroupOfCells() const { return _slaveCellsGroup; }
 
     /** @brief Get name of group for master cells */
-    std::string getMasterGroupOfCells() const { return _masterCellsGroup; }
+    const std::string &getMasterGroupOfCells() const { return _masterCellsGroup; }
 
     /** @brief Get master cells*/
     const VectorLong &getMasterCells() const { return _masterCells; };

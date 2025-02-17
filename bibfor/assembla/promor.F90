@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,16 +57,17 @@ subroutine promor(nuz, base, printz)
     character(len=8) :: ma, mo, exiele
 !----------------------------------------------------------------------
     character(len=14) :: nu
-    aster_logical :: ldist, ldgrel, lmadis, printt
+    aster_logical :: ldist, ldgrel, lmadis, printt, lligrel_cp
     character(len=19) :: nomlig
+    character(len=24) :: crco
     integer :: iconx2, ili, iel
     integer :: idprn1
     integer :: idprn2, ifm, niv, iret, nnoe, jnueq
-    integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1
+    integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1, n12
     integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
     integer :: iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
     integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
-    integer ::  rang, imd, jsmh1
+    integer ::  rang, imd, jsmh1, ili2
 !
     character(len=19) :: partit
     real(kind=8) :: valr(2), rcoef, requ
@@ -76,7 +77,10 @@ subroutine promor(nuz, base, printz)
     integer, pointer :: connex(:) => null()
     integer, pointer :: adli(:) => null()
     character(len=24), pointer :: prtk(:) => null()
+    character(len=24), pointer :: tco(:) => null()
     integer, pointer :: sssa(:) => null()
+    integer, pointer :: v_refp(:) => null()
+    integer, pointer :: v_crco(:) => null()
     mpi_int :: mrank, msize
 !
 !-----------------------------------------------------------------------
@@ -199,6 +203,8 @@ subroutine promor(nuz, base, printz)
     call jeveuo(nu//'     .ADNE', 'E', vi=adne)
     call jeveuo(nu//'     .ADLI', 'E', vi=adli)
 !
+    crco = nu//'.NUME.CRCO'
+!
 !     -- CAS MATR_DISTRIBUE='OUI' => LMADIS=.TRUE.
     call jeexin(nu//'.NUML.DELG', imd)
     lmadis = (imd .ne. 0)
@@ -214,6 +220,10 @@ subroutine promor(nuz, base, printz)
         call jeveuo(nu//'.NUML.PRNO', 'L', idprn1)
         call jeveuo(jexatr(nu//'.NUML.PRNO', 'LONCUM'), 'L', idprn2)
         call jeveuo(nu//'.NUML.NUEQ', 'L', jnueq)
+    end if
+    call jeexin(nu//'.NUME.REFP', iret)
+    if (iret .ne. 0) then
+        call jeveuo(nu//'.NUME.REFP', 'L', vi=v_refp)
     end if
 !
     nec = nbec(igd)
@@ -265,6 +275,21 @@ subroutine promor(nuz, base, printz)
 !     -----------------------------------------------
     do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
+        call jeexin(nomlig//'._TCO', iret)
+        lligrel_cp = .false.
+        if (iret .ne. 0) then
+            call jeveuo(nomlig//'._TCO', "L", vk24=tco)
+            lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+        end if
+        if (lligrel_cp) then
+            ili2 = v_refp(ili)
+            call jeexin(jexnum(crco, ili), iret)
+            if (iret .ne. 0) then
+                call jeveuo(jexnum(crco, ili), 'L', vi=v_crco)
+            end if
+        else
+            ili2 = ili
+        end if
         call dismoi('EXI_ELEM', nomlig, 'LIGREL', repk=exiele)
 !
         if (nomlig(1:8) .eq. mo) then
@@ -321,8 +346,13 @@ subroutine promor(nuz, base, printz)
                         n1 = zznema(ili, numa, k1)
                         if (n1 .lt. 0) then
                             n1 = -n1
-                            iad1 = zzprno(ili, n1, 1)
-                            nddl1 = zzprno(ili, n1, 2)
+                            if (lligrel_cp) then
+                                n12 = v_crco(n1)
+                            else
+                                n12 = n1
+                            end if
+                            iad1 = zzprno(ili2, n12, 1)
+                            nddl1 = zzprno(ili2, n12, 2)
                         else
                             iad1 = zzprno(1, n1, 1)
                             nddl1 = zzprno(1, n1, 2)

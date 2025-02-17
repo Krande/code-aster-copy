@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine assmam(jvBase, matrAsseZ, &
 #include "asterc/getres.h"
 #include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/assma1.h"
 #include "asterfort/assma2.h"
@@ -107,11 +106,12 @@ subroutine assmam(jvBase, matrAsseZ, &
     character(len=8) :: symel, kempic
     character(len=14) :: numeDof, nu14
     character(len=19) :: matrAsse, mat19, resu, matel, ligre1
+    character(len=21) :: cMeshName
     character(len=1) :: matsym
     character(len=3) :: matd, answer
     real(kind=8) :: c1, temps(7)
     aster_logical :: acreer, cumul, ldistme, lmatd, l_parallel_matrix
-    aster_logical :: lmasym, lmesym, ldgrel, lparallel_mesh
+    aster_logical :: lmasym, lmesym, ldgrel, lparallel_mesh, lligrel_cp
     integer :: admodl, i, nbi1mx
     integer :: jdesc
     integer :: jadli, jadne, jnueq, jnulo1
@@ -127,12 +127,16 @@ subroutine assmam(jvBase, matrAsseZ, &
     integer :: nblc, nbnomx, nbnoss, nbresu
     integer :: ncmp, nbvel, nec, nel, nequ, nbproc
     integer :: niv, nlili, nmxcmp, nnoe
-    integer :: nugd, rang, ieq, idia, ellagr, iexi
+    integer :: nugd, rang, ieq, idia, ellagr, iexi, ilinu2
     integer, pointer :: smde(:) => null()
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: relr(:) => null()
+    character(len=24), pointer :: tco(:) => null()
+    character(len=24), pointer :: v_cmno(:) => null()
     integer, pointer :: assma3_tab1(:) => null(), assma3_tab2(:) => null()
     integer, pointer :: numsd(:) => null()
+    integer, pointer :: v_crco(:) => null()
+    integer, pointer :: v_refp(:) => null()
 
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
@@ -198,6 +202,7 @@ subroutine assmam(jvBase, matrAsseZ, &
     call infniv(ifm, niv)
 
     matrAsse = matrAsseZ
+    cMeshName = ' '
 
 ! - Get numbering
     numeDof = numeDofZ
@@ -350,6 +355,10 @@ subroutine assmam(jvBase, matrAsseZ, &
 
     call jeveuo(nu14//'.SMOS.SMHC', 'L', jsmhc)
     call jeveuo(nu14//'.SMOS.SMDI', 'L', jsmdi)
+    call jeexin(nu14//'.NUME.REFP', iret)
+    if (iret .ne. 0) then
+        call jeveuo(nu14//'.NUME.REFP', 'L', vi=v_refp)
+    end if
     if (lmatd) then
         call jeveuo(nu14//'.NUML.PRNO', 'L', jprn1)
         call jeveuo(jexatr(nu14//'.NUML.PRNO', 'LONCUM'), 'L', jprn2)
@@ -461,6 +470,20 @@ subroutine assmam(jvBase, matrAsseZ, &
 
             call jenonu(jexnom(matrAsse//'.LILI', ligre1), ilima)
             call jenonu(jexnom(nu14//'.NUME.LILI', ligre1), ilinu)
+            lligrel_cp = .false.
+            call jeexin(noli(1) (1:19)//'._TCO', ier)
+            if (ier .ne. 0) then
+                call jeveuo(noli(1) (1:19)//'._TCO', "L", vk24=tco)
+                lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+            end if
+            if (lligrel_cp) then
+                call jeveuo(jexnum(nu14//'.NUME.CRCO', ilinu), 'L', vi=v_crco)
+                call jeveuo(ligre1//".CMNO", 'L', vk24=v_cmno)
+                cMeshName = v_cmno(1)
+                ilinu2 = v_refp(ilinu)
+            else
+                ilinu2 = ilinu
+            end if
 
             call dismoi('TYPE_SCA', resu, 'RESUELEM', repk=typsca)
             ASSERT(typsca .eq. 'R' .or. typsca .eq. 'C')
@@ -502,8 +525,9 @@ subroutine assmam(jvBase, matrAsseZ, &
                                     jnulo1, jposd1, admodl, &
                                     lcmodl, mode, nec, nmxcmp, ncmp, &
                                     jsmhc, jsmdi, iconx1, iconx2, jtmp2, &
-                                    lgtmp2, jvalm, ilinu, ellagr, &
-                                    nbi1mx, assma3_tab1, assma3_tab2)
+                                    lgtmp2, jvalm, ilinu2, ellagr, &
+                                    nbi1mx, assma3_tab1, assma3_tab2, &
+                                    v_crco, lligrel_cp)
                     end do
                     call jelibe(jexnum(resu//'.RESL', igr))
                 end if
@@ -521,6 +545,9 @@ subroutine assmam(jvBase, matrAsseZ, &
     else
         if (zk24(jrefa-1+4) .ne. optio2) zk24(jrefa-1+4) = '&&MELANGE'
     end if
+    ! NSELLENET ce lien est-il legitime ??? !!!!!!!!!!!!!
+    zk24(jrefa-1+5) = cMeshName
+    ! NSELLENET !!!!!!!!!!!!!
 
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSMAM', 'FIN', ' ')

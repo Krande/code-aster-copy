@@ -30,6 +30,7 @@
 #include "DataFields/MeshCoordinatesField.h"
 #include "DataFields/SimpleFieldOnCells.h"
 #include "DataFields/SimpleFieldOnNodes.h"
+#include "Meshes/ConnectionMesh.h"
 #include "Supervis/Exceptions.h"
 
 //////// Convert to FieldOnNodes ////////////////
@@ -243,6 +244,10 @@ toFieldOnCells( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field,
                 const std::string nompar = std::string() ) {
     return toFieldOnCells( *field, fed, option, nompar );
 }
+
+#ifdef ASTER_HAVE_MPI
+FieldOnNodesRealPtr transferToConnectionMesh( const FieldOnNodesRealPtr, const ConnectionMeshPtr );
+#endif /* ASTER_HAVE_MPI */
 
 using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;
 using FieldOnNodesComplex = FieldOnNodes< ASTERCOMPLEX >;

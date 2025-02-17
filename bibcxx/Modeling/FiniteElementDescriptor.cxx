@@ -3,7 +3,7 @@
  * @brief Implementation de FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,8 +32,9 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
-FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh )
-    : DataStructure( name, 19, "LIGREL" ),
+FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const std::string &type,
+                                                  const BaseMeshPtr mesh )
+    : DataStructure( name, 19, type ),
       _numberOfDelayedNumberedConstraintNodes( getName() + ".NBNO" ),
       _parameters( getName() + ".LGRF" ),
       _dofDescriptor( getName() + ".PRNM" ),
@@ -49,6 +50,9 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _virtualCellsDescriptor ) ),
       _explorer2(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {};
+
+FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh )
+    : FiniteElementDescriptor( name, "LIGREL", mesh ) {};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
     : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ) {};
@@ -77,7 +81,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
 }
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
+    FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 
     VectorLong listOfCells = _mesh->getCells( groupsOfCells );
 
@@ -85,7 +89,7 @@ FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
+    FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
 
     auto fed = std::make_shared< FiniteElementDescriptor >( getMesh() );
 

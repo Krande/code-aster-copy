@@ -2,7 +2,7 @@
  * @file ContactNew.h
  * @brief Header of class ContactNew
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -102,13 +102,6 @@ class ContactNew : public DataStructure {
         _zones.at( zone_id )->getMeshPairing()->clearResult();
     };
 
-    /** @brief Update coordinates */
-    void updateCoordinates( const FieldOnNodesRealPtr &disp ) {
-        for ( auto &zone : _zones ) {
-            zone->updateCoordinates( disp );
-        }
-    };
-
     /** @brief Set coordinates */
     void setCoordinates( const MeshCoordinatesFieldPtr &coor ) {
         for ( auto &zone : _zones ) {
@@ -144,7 +137,10 @@ class ContactNew : public DataStructure {
     VectorLong getNumberOfIntersectionPoints( const ASTERINTEGER &indexZone ) const;
 
     /** @brief Builder from Fortran part */
-    bool build();
+    virtual bool build();
+
+    /** @brief To know if ContactNew (or child) is Parallel */
+    bool isParallel() const { return false; };
 };
 
 using ContactNewPtr = std::shared_ptr< ContactNew >;

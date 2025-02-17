@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
 #include "asterfort/assert.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -95,8 +96,8 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
     parameter(nb_cmp_chck=10)
 !
     character(len=8) :: nono, nocmp
-    character(len=24) :: prno, nueq, deeq
-    character(len=19) :: nume_equa
+    character(len=24) :: prno, nueq, deeq, lili
+    character(len=19) :: nume_equa, nomli
     character(len=24) :: delg
     character(len=24) :: valk(2)
     integer :: i_ligr, iadg, i_dof, ier, i_equ
@@ -104,10 +105,13 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
     integer :: jprno, jtypl, length_prno, nb_lagr, nb_ligr
     integer :: nb_node, ncmpmx, nddlb, nec, nob
     integer :: i_node, i_cmp_glob, i_cmp_chck
+    aster_logical :: lligrel_cp
     integer, pointer :: lnobloq(:) => null()
     integer, pointer :: p_nueq(:) => null()
     integer, pointer :: p_deeq(:) => null()
     integer, pointer :: p_delg(:) => null()
+    integer, pointer :: p_logl(:) => null()
+    character(len=24), pointer :: tco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,6 +122,7 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
     prno = nume_equa(1:19)//'.PRNO'
     nueq = nume_equa(1:19)//'.NUEQ'
     deeq = nume_equa(1:19)//'.DEEQ'
+    lili = nume_equa(1:19)//'.LILI'
     if (nb_node_subs .gt. 0) then
         call jeveuo(mesh//'.TYPL', 'L', jtypl)
     end if
@@ -139,6 +144,18 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
     call jelira(prno, 'NMAXOC', nb_ligr)
     do i_ligr = 1, nb_ligr
         call jelira(jexnum(prno, i_ligr), 'LONMAX', length_prno)
+        lligrel_cp = .false.
+        if (i_ligr .gt. 1) then
+            call jenuno(jexnum(lili, i_ligr), nomli)
+            call jeexin(nomli//'._TCO', ier)
+            if (ier .ne. 0) then
+                call jeveuo(nomli//'._TCO', "L", vk24=tco)
+                lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+            end if
+            if (lligrel_cp) then
+                call jeveuo(nomli//'.LOGL', 'L', vi=p_logl)
+            end if
+        end if
         if (length_prno .gt. 0) then
             call jeveuo(jexnum(prno, i_ligr), 'L', jprno)
 !
@@ -167,8 +184,13 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
                             ilag = nb_lagr+i_node
                             nob = zi(iddlag+(ilag-1)*3)
                             nddlb = zi(iddlag+(ilag-1)*3+1)
-                            p_deeq(2*(i_equ-1)+1) = nob
-                            p_deeq(2*(i_equ-1)+2) = nddlb
+                            if (lligrel_cp) then
+                                p_deeq(2*(i_equ-1)+1) = -p_logl(i_node)
+                                p_deeq(2*(i_equ-1)+2) = i_cmp_glob
+                            else
+                                p_deeq(2*(i_equ-1)+1) = nob
+                                p_deeq(2*(i_equ-1)+2) = nddlb
+                            end if
                             p_delg(i_equ) = -zi(iddlag+(ilag-1)*3+2)
                         end if
                     end if

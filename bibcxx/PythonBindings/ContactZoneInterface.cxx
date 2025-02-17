@@ -2,7 +2,7 @@
  * @file ContactZoneInterface.cxx
  * @brief Interface python de ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,8 +28,8 @@ void exportContactZoneToPython( py::module_ &mod ) {
 
     py::class_< ContactZone, ContactZone::ContactZonePtr, DataStructure >( mod, "ContactZone", R"(
 Object to define a zone of contact.)" )
-        .def( py::init( &initFactoryPtr< ContactZone, std::string, ModelPtr > ) )
-        .def( py::init( &initFactoryPtr< ContactZone, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ContactZone, std::string > ) )
+        .def( py::init( &initFactoryPtr< ContactZone > ) )
         .def( "getModel", &ContactZone::getModel, R"(
 Return the model used in the contact zone definition
 

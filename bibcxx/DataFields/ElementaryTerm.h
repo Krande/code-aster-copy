@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryTerm
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -61,6 +61,21 @@ class ElementaryTerm : public DataField {
 
     ElementaryTerm() : ElementaryTerm( DataStructureNaming::getNewName() ) {};
 
+    void allocate( const FiniteElementDescriptorPtr fEDesc, const std::string &option,
+                   const ASTERINTEGER &physicalQuantityId, const ASTERINTEGER &localModeId ) {
+        _noli->allocate( 4 );
+        ( *_noli )[0] = fEDesc->getName();
+        ( *_noli )[1] = option;
+        ( *_noli )[2] = "MPI_COMPLET";
+        const auto &nbGrel = fEDesc->getListOfGroupsOfElements()->size();
+        _descriptor->allocate( 2 + nbGrel );
+        ( *_descriptor )[0] = physicalQuantityId;
+        ( *_descriptor )[1] = nbGrel;
+        for ( int i = 0; i < nbGrel; ++i )
+            ( *_descriptor )[i + 2] = localModeId;
+        _resl->allocateSparseNumbered( nbGrel );
+    };
+
     void setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc ) {
         if ( FEDesc ) {
             if ( _FEDesc && _FEDesc != FEDesc ) {
@@ -81,6 +96,8 @@ class ElementaryTerm : public DataField {
     };
 
     const JeveuxCollection< ValueType > &getValues() const { return _resl; };
+
+    JeveuxCollection< ValueType > &getValues() { return _resl; };
 
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
 
@@ -106,6 +123,11 @@ class ElementaryTerm : public DataField {
         const std::string questi( "NOM_GD" );
         CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
         return strip( repk.toString() );
+    }
+
+    ASTERINTEGER getPhysicalQuantityId() {
+        _descriptor->updateValuePointer();
+        return ( *_descriptor )[0];
     }
 
     ASTERINTEGER getNumberOfGroupOfCells() const {
@@ -141,6 +163,30 @@ class ElementaryTerm : public DataField {
         }
 
         return modeName;
+    }
+
+    /**
+     * @brief Return MODE_LOCAL
+     */
+    ASTERINTEGER getLocalModeId() const {
+        const auto nbGrel = getNumberOfGroupOfCells();
+        _descriptor->updateValuePointer();
+
+        ASTERINTEGER modeId = -1;
+        for ( auto igr = 0; igr < nbGrel; igr++ ) {
+            auto mode = ( *_descriptor )[2 + igr];
+            if ( mode > 0 ) {
+                if ( modeId == -1 ) {
+                    modeId = mode;
+                } else {
+                    if ( modeId != mode ) {
+                        AS_ABORT( "Multiple names." );
+                    }
+                }
+            }
+        }
+
+        return modeId;
     }
 
     bool isMPIFull() {

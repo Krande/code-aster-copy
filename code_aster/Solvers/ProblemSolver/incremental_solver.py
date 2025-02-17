@@ -135,6 +135,9 @@ class IncrementalSolver(SolverFeature, EventSource):
             diriBCs = disc_comp.getIncrementalDirichletBC(
                 self.phys_state.time_curr, self.phys_state.primal_curr
             )
+            # import pdb
+
+            # pdb.set_trace()
 
             # Solve linear system
             linear_solver = self.get_feature(SOP.LinearSolver)
@@ -161,6 +164,7 @@ class IncrementalSolver(SolverFeature, EventSource):
             primal_incr = linear_solver.solve(residuals.resi, diriBCs)
             if USE_SCALING:
                 S.unscaleSolution(primal_incr)
+
             # Use line search
             lineSearch = self.get_feature(SOP.LineSearch)
             lineSearch.use(self.opers_manager)
