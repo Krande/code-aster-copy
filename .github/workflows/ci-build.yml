@@ -59,6 +59,7 @@ jobs:
           path: ${{ github.workspace }}/output/bld
 
       - name: Find the outputted .conda file and set it as an output
+        shell: pixi run python {0}
         run: |
           import pathlib
           import os
@@ -71,16 +72,7 @@ jobs:
           with open(os.environ["GITHUB_ENV"], "a") as env_file:
                 env_file.write(f"CONDA_FILE={conda_file.as_posix()}\n")
 
-        shell: pixi run python {0}
-
       - name: run rattler test
-        if: ${{ runner.os == 'Windows' }}
-        continue-on-error: true # Prevent the workflow from failing
-        run: |
-          pixi run ctest --package-file ${{ env.CONDA_FILE }}
-
-      - name: run rattler test
-        if: ${{ runner.os != 'Windows' }}
         continue-on-error: true # Prevent the workflow from failing
         run: |
           pixi run ctest --package-file ${{ env.CONDA_FILE }}
@@ -89,14 +81,29 @@ jobs:
         run: |
           pixi run test-eval --set-passing-env-var
 
-      - name: Print passed tests
-        shell: pixi run bash -e {0}
+      - name: Evaluate test result
+        id: test-eval
+        shell: pixi run python {0}
         run: |
-          echo "PASSED_TESTS = ${{ env.PASSED_TESTS }}"
-          echo "From JSON ${{ fromJson(env.PASSED_TESTS) }}"
-          echo "From JSON Bool ${{ fromJson(env.PASSED_TESTS) > 80.0 }}"
+          import os
+          passed_tests_str = os.getenv("PASSED_TESTS")
+          if passed_tests_str is not None:
+              try:
+                  result = "true" if float(passed_tests_str) > 80.0 else "false"
+              except ValueError:
+                  print(f"PASSED_TESTS '{passed_tests_str}' is not a float, assuming test failed")
+                  result = "false"
+          else:
+              print("PASSED_TESTS not found in environment, assuming test failed")
+              result = "false"
+              
+          with open(os.environ["GITHUB_OUTPUT"], "a") as env_file:
+            env_file.write(f"PASSED_TESTS={result}\n")
+        env:
+          PASSED_TESTS: ${{ env.PASSED_TESTS }}
 
       - name: Upload all packages
+        if: steps.test-eval.outputs.PASSED_TESTS == 'true'
         shell: pixi run bash -e {0}
         run: |
           shopt -s nullglob
