@@ -425,12 +425,11 @@ class PostBeremin:
 
         return varc_elga.TEMP
 
-    def compute_intsig1_3D(self, sig1, pow_m, weight):
+    def compute_intsig1_3D(self, sig1, weight):
         """Compute the values to be added into the result table.
 
         Args:
             sig1 (*ComponentOnCells*): Major stress ^ M.
-            pow_m (float): current M coefficient
             weight (*ComponentOnCells*): Weight of each integration point,
                 **changed in place**.
 
@@ -440,7 +439,6 @@ class PostBeremin:
         if DEBUG:
             print("NEW: sigpm:", sig1.sum())
 
-        sig1 **= pow_m
         weight = weight.onSupportOf(sig1)
         integ = sig1 * weight
         intsig1pm = integ.sum()
@@ -539,7 +537,7 @@ class PostBeremin:
         else:
             UTMESS("F", "RUPTURE4_16")
         sigma_2D_f_mc.setTime(time, idx, 0)
-        sigma_2D_f_mc.setArray(sigma_2D_a_mc**pow_m)
+        sigma_2D_f_mc.setArray(sigma_2D_a_mc)
         sigma_2D_f_mc.setNature(mc.IntensiveConservation)
         sigma_2D_f_mc.setName("SIEF_ELMOY")
         sigma_2D_f_mc.checkConsistencyLight()
@@ -550,7 +548,7 @@ class PostBeremin:
         ##Output .med
         if self._rout_2D:
             sigma_2D_np = sigma_2D_a_mc.toNumPyArray().reshape((len(sigma_2D_a_mc), 1))
-            sigma_2D_np_out = np.concatenate((sigma_2D_np**pow_m, sigma_2D_np), 1)
+            sigma_2D_np_out = np.concatenate((sigma_2D_np, sigma_2D_np ** (1 / pow_m)), 1)
             sigma_2D_a_mc_out = mc.DataArrayDouble(sigma_2D_np_out)
             sigma_2D_a_mc_out.setInfoOnComponents(["SIXX", "SIYY"])
             sigma_2D_f_mc_out = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
@@ -685,9 +683,11 @@ class PostBeremin:
                 if DEBUG:
                     print("NEW: sigmax:", id_store, idx, sig1.sum())
 
+                sig1 **= pow_m
+
                 ##SIGMAW 3D
                 if not self._method_2D:
-                    intsig1pm = self.compute_intsig1_3D(sig1, pow_m, coor_elga.W)
+                    intsig1pm = self.compute_intsig1_3D(sig1, coor_elga.W)
                     self.store_sigm_maxi_3D(id_store, time, sig1, model, pow_m)
 
                     strwb, strwb_pm, proba = self.compute_table_values(intsig1pm, pow_m, sigma_refe)
