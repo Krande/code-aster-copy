@@ -43,6 +43,7 @@ from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, D
 from ..CodeCommands import IMPR_RESU, AFFE_MODELE
 from ..Objects import FieldOnCellsReal, NonLinearResult, Table
 from ..Utilities import logger, disable_fpe, no_new_attributes
+from ..Utilities.MedUtils import MEDFieldConverter
 from ..Messages import UTMESS
 from ..Helpers.LogicalUnit import LogicalUnitFile
 
@@ -506,7 +507,9 @@ class PostBeremin:
         sixx = sigma_sfield.SIXX
         sixx += sig1
         sigma_sfield.setComponentValues("SIXX", sixx)
-        sigma_f_mc = sigma_sfield.toMEDCouplingField(self._mesh_3D_cells_mc)
+        sigma_f_mc, prof = MEDFieldConverter.toMCFieldAndProfileElem(
+            sigma_sfield, self._mesh_3D_cells_mc
+        )
         sigma_a_mc = sigma_f_mc.getArray()[:, 0]
 
         return sigma_a_mc
