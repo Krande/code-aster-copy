@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,10 +50,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !
     implicit none
 !
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/jedetr.h"
-!
     real(kind=8) :: cequi
     real(kind=8) :: ht
     real(kind=8) :: bw
@@ -82,19 +78,12 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     integer :: N_ET, N_PC, N_EC, N_PCAC, N_PCACN, k
     integer :: N_ECN
 
-    character(24) :: p01, p02
-    character(24) :: p03, p04
-    character(24) :: p05, p06
-    character(24) :: p07, p08
-    character(24) :: p09, p10
-    character(24) :: p11, p12
-
-    real(kind=8), pointer :: N_P1(:) => null(), M_P1(:) => null()
-    real(kind=8), pointer :: N_P2(:) => null(), M_P2(:) => null()
-    real(kind=8), pointer :: N_P3(:) => null(), M_P3(:) => null()
-    real(kind=8), pointer :: N_P4(:) => null(), M_P4(:) => null()
-    real(kind=8), pointer :: N_P5(:) => null(), M_P5(:) => null()
-    real(kind=8), pointer :: N_P6(:) => null(), M_P6(:) => null()
+    real(kind=8), allocatable :: N_P1(:), M_P1(:)
+    real(kind=8), allocatable :: N_P2(:), M_P2(:)
+    real(kind=8), allocatable :: N_P3(:), M_P3(:)
+    real(kind=8), allocatable :: N_P4(:), M_P4(:)
+    real(kind=8), allocatable :: N_P5(:), M_P5(:)
+    real(kind=8), allocatable :: N_P6(:), M_P6(:)
 
 !   Paramètres de calcul
 
@@ -136,12 +125,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !---------------------------------------------------------------
 
     N_ET = 11
-
-    p01 = 'POINT_ITER_DINTELS_01'
-    p02 = 'POINT_ITER_DINTELS_02'
-
-    call wkvect(p01, ' V V R ', N_ET, vr=N_P1)
-    call wkvect(p02, ' V V R ', N_ET, vr=M_P1)
+    allocate (N_P1(N_ET))
+    allocate (M_P1(N_ET))
 
     do k = 1, N_ET
 
@@ -160,11 +145,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     N_PC = 101
     N_PCAC = CEILING((N_PC-1)*(ht/d))+1
 
-    p03 = 'POINT_ITER_DINTELS_03'
-    p04 = 'POINT_ITER_DINTELS_04'
-
-    call wkvect(p03, ' V V R ', N_PCAC, vr=N_P2)
-    call wkvect(p04, ' V V R ', N_PCAC, vr=M_P2)
+    allocate (N_P2(N_PCAC))
+    allocate (M_P2(N_PCAC))
 
     do k = 1, N_PCAC
 
@@ -194,12 +176,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !-------------------------------------------------------------------
 
     N_EC = CEILING(10*(scmaxneg*unite_pa))+1
-
-    p05 = 'POINT_ITER_DINTELS_05'
-    p06 = 'POINT_ITER_DINTELS_06'
-
-    call wkvect(p05, ' V V R ', N_EC, vr=N_P3)
-    call wkvect(p06, ' V V R ', N_EC, vr=M_P3)
+    allocate (N_P3(N_EC))
+    allocate (M_P3(N_EC))
 
     do k = 1, N_EC
 
@@ -225,12 +203,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !-------------------------------------------------------------------
 
     N_ECN = CEILING(10*(scmax*unite_pa))+1
-
-    p07 = 'POINT_ITER_DINTELS_07'
-    p08 = 'POINT_ITER_DINTELS_08'
-
-    call wkvect(p07, ' V V R ', N_ECN, vr=N_P4)
-    call wkvect(p08, ' V V R ', N_ECN, vr=M_P4)
+    allocate (N_P4(N_ECN))
+    allocate (M_P4(N_ECN))
 
     do k = 1, N_ECN
 
@@ -256,12 +230,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !--------------------------------------------------------------------------
 
     N_PCACN = CEILING((N_PC-1)*(ht/dneg))+1
-
-    p09 = 'POINT_ITER_DINTELS_09'
-    p10 = 'POINT_ITER_DINTELS_10'
-
-    call wkvect(p09, ' V V R ', N_PCACN, vr=N_P5)
-    call wkvect(p10, ' V V R ', N_PCACN, vr=M_P5)
+    allocate (N_P5(N_PCACN))
+    allocate (M_P5(N_PCACN))
 
     do k = 1, N_PCACN
 
@@ -289,12 +259,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !Traitement en PIVOT A - Entièrement Tendu (ET) + Moment Negatif
 !---------------------------------------------------------------
-
-    p11 = 'POINT_ITER_DINTELS_11'
-    p12 = 'POINT_ITER_DINTELS_12'
-
-    call wkvect(p11, ' V V R ', N_ET, vr=N_P6)
-    call wkvect(p12, ' V V R ', N_ET, vr=M_P6)
+    allocate (N_P6(N_ET))
+    allocate (M_P6(N_ET))
 
     do k = 1, N_ET
 
@@ -336,17 +302,17 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
         mrd(k+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN) = M_P6(k)
     end do
 
-    call jedetr(p01)
-    call jedetr(p02)
-    call jedetr(p03)
-    call jedetr(p04)
-    call jedetr(p05)
-    call jedetr(p06)
-    call jedetr(p07)
-    call jedetr(p08)
-    call jedetr(p09)
-    call jedetr(p10)
-    call jedetr(p11)
-    call jedetr(p12)
+    deallocate (N_P1)
+    deallocate (N_P2)
+    deallocate (N_P3)
+    deallocate (N_P4)
+    deallocate (N_P5)
+    deallocate (N_P6)
+    deallocate (M_P1)
+    deallocate (M_P2)
+    deallocate (M_P3)
+    deallocate (M_P4)
+    deallocate (M_P5)
+    deallocate (M_P6)
 
 end subroutine
