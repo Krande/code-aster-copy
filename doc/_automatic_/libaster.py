@@ -11464,6 +11464,13 @@ class Crack(DataStructure):
     def getConfigInit(self):
         """Return the crack initial configuration"""
 
+    def getCrackFrontAbsCurv(self):
+        """Return the crack front absc curv
+
+        Returns:
+            list[float]: the crack front absc curv
+        """
+
     def getCrackFrontBasis(self):
         """Return the crack front basis
 
@@ -11491,14 +11498,6 @@ class Crack(DataStructure):
         Returns:
             list[float]: the crack front Position
         """
-
-    def getCrackFrontAbsCurv(self):
-        """Return the crack front Position
-
-        Returns:
-            list[float]: the crack front abs curv
-        """
-
 
     def getCrackFrontRadius(self):
         """Return the crack front Radius

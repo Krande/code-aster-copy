@@ -101,7 +101,7 @@ de dimension 4 en 2D ou de dimension 6 en 3D"""
     ),
     19: _(
         """
-L'impression au format .med n'est pas compatible avec
+L'impression d'un résultat n'est pas compatible avec
 l'utilisation de plusieurs paramètres matériaux,
 ou dans le cas METHODE_2D la projection sur plusieurs plans.
         """
