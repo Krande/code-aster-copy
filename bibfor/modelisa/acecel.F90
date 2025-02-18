@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,14 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
 !
 !     AFFE_CARA_ELEM
 !     COMPTEUR D'ELEMENTS
+!
+!       IN
+!           ele_sup_num : numéro des éléments dans les catalogues &CATA.TE.NOMTE
+!           ele_sup_typ : numéro interne à ACE du type de l'élément
+!                           cf cara_elem_parameter_module
+!       OUT
+!           nb_ty_el    : nombre du type d'élément  nb_ty_el ( [ele_sup_typ] )
+!           zjdlm       : numéro de l'élément porté par la maille
 !
 ! --------------------------------------------------------------------------------------------------
 !

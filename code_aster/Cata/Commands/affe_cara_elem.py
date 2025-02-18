@@ -34,7 +34,17 @@ def force_tuple(obj):
 
 
 def affe_cara_elem_prod(
-    POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D, GRILLE, MASS_REP, ORIENTATION, **args
+    POUTRE,
+    BARRE,
+    COQUE,
+    CABLE,
+    DISCRET,
+    DISCRET_2D,
+    GRILLE,
+    MASS_REP,
+    ORIENTATION,
+    RIGI_PARASOL,
+    **args
 ):
     """Fonction sdprod de AFFE_CARA_ELEM"""
     # phase de typage seul
@@ -291,6 +301,22 @@ def affe_cara_elem_prod(
                 vale = NP.array(mclf["VALE"])
                 vv = NP.sum(vale * vale)
                 check(vv > 0.0, defErr, "ORIENTATION", i1, "VALE")
+    ## - - - - - - - - - - - - - - -
+    if RIGI_PARASOL is not None:
+        sizeErr_RP1 = tr("Les cardinaux de FONC_GROUP et GROUP_MA sont différents.")
+        sizeErr_RP2 = tr("Les cardinaux de COEF_GROUP et GROUP_MA sont différents.")
+        for i in range(len(RIGI_PARASOL)):
+            i1 = i + 1
+            mclf = RIGI_PARASOL[i]
+            grp_ma = force_tuple(mclf["GROUP_MA"])
+            if mclf.get("FONC_GROUP") is not None:
+                grp_fc = force_tuple(mclf["FONC_GROUP"])
+                if len(grp_fc) > 0:
+                    check(len(grp_ma) == len(grp_fc), sizeErr_RP1, "RIGI_PARASOL", i1)
+            if mclf.get("COEF_GROUP") is not None:
+                grp_fc = force_tuple(mclf["COEF_GROUP"])
+                if len(grp_fc) > 0:
+                    check(len(grp_ma) == len(grp_fc), sizeErr_RP2, "RIGI_PARASOL", i1)
     #
     # Pour l'instant Tout est ok
     return cara_elem
@@ -1339,7 +1365,7 @@ AFFE_CARA_ELEM = OPER(
         GROUP_MA_SEG2=SIMP(
             statut="f", typ=grma, max=1, fr=tr("Mailles de type seg2 correspondant aux discrets")
         ),
-        FONC_GROUP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        FONC_GROUP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule), max="**"),
         COEF_GROUP=SIMP(statut="f", typ="R", max="**"),
         REPERE=SIMP(statut="f", typ="TXM", into=("LOCAL", "GLOBAL"), defaut="GLOBAL"),
         CARA=SIMP(

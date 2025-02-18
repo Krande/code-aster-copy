@@ -28,6 +28,7 @@ def C_NOM_GRANDEUR():
     return (
         "ABSC_R",
         "CACOQU_R",
+        "CADISK_R",
         "CAORIE_R",
         "CAMA_R",
         "CHLI_R",

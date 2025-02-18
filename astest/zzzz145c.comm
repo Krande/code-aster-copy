@@ -1,0 +1,149 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+#
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="EXCEPTION"))
+
+mail = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=22)
+
+modT = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=(
+        _F(GROUP_MA="DALLE", PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+        _F(GROUP_MA="RESSORT", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RESSORT2", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+
+# Raideur       Translation & Rotation
+kx = 11000.0
+ky = 12000.0
+kz = 13000.0
+krx = 31000.0
+kry = 32000.0
+krz = 33000.0
+# Amortissement Translation & Rotation
+ax = 21000.0
+ay = 22000.0
+az = 23000.0
+arx = 41000.0
+ary = 42000.0
+arz = 43000.0
+#
+
+# La référence
+CARK1 = AFFE_CARA_ELEM(
+    MODELE=modT,
+    COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+    ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+    RIGI_PARASOL=(
+        _F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="K_T_D_L",
+            VALE=(kx, ky, kz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    ),
+)
+
+
+# On affecte 2 fois ==> Règle de surcharge ==> Doit être identique à la référence
+CARK2 = AFFE_CARA_ELEM(
+    MODELE=modT,
+    COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+    ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+    RIGI_PARASOL=(
+        _F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="K_T_D_L",
+            VALE=(kx, ky, kz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+        _F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT2",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="K_T_D_L",
+            VALE=(kx, ky, kz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    ),
+)
+
+Ressort1 = CREA_CHAMP(
+    TYPE_CHAM="CART_CADISK_R", OPERATION="EXTR", CARA_ELEM=CARK1, NOM_CHAM=".CARDISCK"
+)
+TRessort1 = CREA_TABLE(
+    RESU=_F(CHAM_GD=Ressort1, GROUP_MA="RESSORT", NOM_CMP=("K1", "K3", "K6", "K10", "K15", "K21"))
+)
+
+Ressort2 = CREA_CHAMP(
+    TYPE_CHAM="CART_CADISK_R", OPERATION="EXTR", CARA_ELEM=CARK2, NOM_CHAM=".CARDISCK"
+)
+TRessort2 = CREA_TABLE(
+    RESU=_F(CHAM_GD=Ressort2, GROUP_MA="RESSORT", NOM_CMP=("K1", "K3", "K6", "K10", "K15", "K21"))
+)
+
+# Comparaison de toutes les composantes sur toutes les mailles :
+#   On soustrait et on compare à 0.0
+Differ = FORMULE(VALE="(X1-X2)/(abs(X1)+abs(X2))", NOM_PARA=["X1", "X2"])
+Compar = CALC_TABLE(
+    TABLE=TRessort1,
+    ACTION=(
+        _F(OPERATION="RENOMME", NOM_PARA=("K1", "KK1")),
+        _F(OPERATION="RENOMME", NOM_PARA=("K3", "KK3")),
+        _F(OPERATION="RENOMME", NOM_PARA=("K6", "KK6")),
+        _F(OPERATION="RENOMME", NOM_PARA=("K10", "KK10")),
+        _F(OPERATION="RENOMME", NOM_PARA=("K15", "KK15")),
+        _F(OPERATION="RENOMME", NOM_PARA=("K21", "KK21")),
+        _F(OPERATION="COMB", TABLE=TRessort2, NOM_PARA="MAILLE"),
+        _F(OPERATION="OPER", FORMULE=Differ, NOM_PARA="DK1", NOM_COLONNE=("KK1", "K1")),
+        _F(OPERATION="OPER", FORMULE=Differ, NOM_PARA="DK3", NOM_COLONNE=("KK3", "K3")),
+        _F(OPERATION="OPER", FORMULE=Differ, NOM_PARA="DK6", NOM_COLONNE=("KK6", "K6")),
+        _F(OPERATION="OPER", FORMULE=Differ, NOM_PARA="DK10", NOM_COLONNE=("KK10", "K10")),
+        _F(OPERATION="OPER", FORMULE=Differ, NOM_PARA="DK15", NOM_COLONNE=("KK15", "K15")),
+        _F(OPERATION="OPER", FORMULE=Differ, NOM_PARA="DK21", NOM_COLONNE=("KK21", "K21")),
+        _F(OPERATION="SUPPRIME", NOM_PARA=("K1", "K3", "K6", "K10", "K15", "K21")),
+        _F(OPERATION="SUPPRIME", NOM_PARA=("KK1", "KK3", "KK6", "KK10", "KK15", "KK21")),
+    ),
+)
+
+IMPR_TABLE(TABLE=Compar, UNITE=8)
+
+for para in ["DK1", "DK3", "DK6", "DK10", "DK15", "DK21"]:
+    TEST_TABLE(
+        TABLE=Compar,
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE=0.0,
+        VALE_CALC=0.0,
+        ORDRE_GRANDEUR=1.0,
+        FILTRE=_F(CRIT_COMP="MAXI_ABS", NOM_PARA=para),
+        NOM_PARA=para,
+    )
+
+FIN()

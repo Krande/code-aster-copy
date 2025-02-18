@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
-    subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr )
+    subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm )
         use cara_elem_info_type
         use cara_elem_carte_type
         type (cara_elem_info) :: infdonn
@@ -30,5 +30,6 @@ interface
         integer :: nbocc
         type (cara_elem_carte) :: infcarte(*)
         integer :: ivr(*)
+        integer :: zjdlm(*)
    end subroutine acearp
 end interface
