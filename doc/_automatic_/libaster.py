@@ -3705,6 +3705,13 @@ class ConstantFieldOnCellsReal(DataField):
             int: size of field
         """
 
+    def toSimpleFieldOnCells(self, arg0):
+        """Convert to SimpleFieldOnCells
+
+        Returns:
+            SimpleFieldOnCellsReal: field converted
+        """
+
 
 # class ConstantFieldOnCellsChar16 in libaster
 
