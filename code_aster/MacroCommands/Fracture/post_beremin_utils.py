@@ -21,9 +21,9 @@
 Outils d'interpolation en correction de fonctionnalités incomplètes de medcoupling
 """
 import numpy as np
-import medcoupling as mc
 
 from ...Utilities import logger
+from ...Utilities import medcoupling as medc
 from ...Messages import UTMESS
 
 
@@ -88,10 +88,10 @@ class CellToPoints:
 
         meshT4 = self.mesh.deepCopy()
 
-        if not meshT4.getAllGeoTypes() == [mc.NORM_TETRA4]:
-            (meshT4, transfer, ibid) = meshT4.tetrahedrize(mc.PLANAR_FACE_6)  # non conformal mesh
+        if not meshT4.getAllGeoTypes() == [medc.NORM_TETRA4]:
+            (meshT4, transfer, ibid) = meshT4.tetrahedrize(medc.PLANAR_FACE_6)  # non conformal mesh
         else:
-            transfer = mc.DataArrayInt(np.arange(meshT4.getNumberOfCells()).tolist())
+            transfer = medc.DataArrayInt(np.arange(meshT4.getNumberOfCells()).tolist())
         meshT4 = meshT4.buildUnstructured()  # Bug medcoupling otherwise
 
         # ------------------------------------------------------------------------------------------
@@ -99,10 +99,10 @@ class CellToPoints:
         # ------------------------------------------------------------------------------------------
 
         prec = self.prec
-        pt_idx_inv = mc.DataArrayInt([])
-        cells = mc.DataArrayInt([])
-        pos = mc.DataArrayInt([0])
-        nook_idx = mc.DataArrayInt(np.arange(self.nbr).tolist())
+        pt_idx_inv = medc.DataArrayInt([])
+        cells = medc.DataArrayInt([])
+        pos = medc.DataArrayInt([0])
+        nook_idx = medc.DataArrayInt(np.arange(self.nbr).tolist())
 
         # loop on precision
         nb_iter = 0
@@ -139,7 +139,7 @@ class CellToPoints:
             pos = pos[:-1]
             pos.aggregate(pos_prec[found] + len(cells))
             cells.aggregate(cells_prec)
-            pos.aggregate(mc.DataArrayInt([len(cells)]))
+            pos.aggregate(medc.DataArrayInt([len(cells)]))
 
             # Have all points found their corresponding cells?
             if nbCells.getMinValueInArray() > 0:
@@ -155,8 +155,8 @@ class CellToPoints:
             UTMESS("A", "RUPTURE4_22")
 
         # Swapping the indexing of points: user point number -> projector point number
-        self.pt_idx = mc.DataArrayInt([-1] * self.nbr)
-        self.pt_idx[pt_idx_inv] = mc.DataArrayInt(np.arange(self.nbr).tolist())
+        self.pt_idx = medc.DataArrayInt([-1] * self.nbr)
+        self.pt_idx[pt_idx_inv] = medc.DataArrayInt(np.arange(self.nbr).tolist())
 
         # Original mesh cells for each of the points
         self.cells = transfer[cells]
@@ -175,11 +175,11 @@ class CellToPoints:
 
         # Weighting coefficient specific to each cell
         nbCells = self.pos[1:] - self.pos[:-1]
-        weights = mc.DataArrayDouble((1.0 / nbCells.toNumPyArray()).tolist())
+        weights = medc.DataArrayDouble((1.0 / nbCells.toNumPyArray()).tolist())
 
         # Calculation of arithmetic means in the projector's specific point numbering
         offset = 0
-        values = mc.DataArrayDouble(self.nbr, fieldValues.getNumberOfComponents())
+        values = medc.DataArrayDouble(self.nbr, fieldValues.getNumberOfComponents())
         values.fillWithValue(0.0)
 
         while nbCells.getMaxValueInArray() > 0:

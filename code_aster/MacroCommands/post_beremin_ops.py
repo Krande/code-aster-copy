@@ -36,14 +36,13 @@ import os
 import numpy as np
 import tempfile
 
-import medcoupling as mc
-
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
 from ..CodeCommands import IMPR_RESU, AFFE_MODELE
 from ..Objects import FieldOnCellsReal, NonLinearResult, Table
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..Utilities.MedUtils import MEDFieldConverter
+from ..Utilities import medcoupling as medc
 from ..Messages import UTMESS
 from ..Helpers.LogicalUnit import LogicalUnitFile
 
@@ -460,10 +459,10 @@ class PostBeremin:
 
         ##Get 3D mesh (gauss to cells)
         if self._mesh_3D_cells_mc is None:
-            timeStamps = mc.GetAllFieldIterations(self._medfilename_temp, "TMP")
-            filefield_tmp = mc.MEDFileFieldMultiTS.New(self._medfilename_temp, "TMP")
+            timeStamps = medc.GetAllFieldIterations(self._medfilename_temp, "TMP")
+            filefield_tmp = medc.MEDFileFieldMultiTS.New(self._medfilename_temp, "TMP")
             f_on_gauss = filefield_tmp.getFieldAtLevel(
-                mc.ON_GAUSS_PT, timeStamps[-1][0], timeStamps[-1][1], 0
+                medc.ON_GAUSS_PT, timeStamps[-1][0], timeStamps[-1][1], 0
             )
             self._d_max_3d = (
                 f_on_gauss.getMesh().computeDiameterField().getArray().getMaxValueInArray()
@@ -476,7 +475,7 @@ class PostBeremin:
 
         ##Get 2D mesh
         if mesh_2D:
-            mesh_2D_mc = mesh_2D.createMedCouplingMesh(spacedim=3)[0]
+            mesh_2D_mc = mesh_2D.createMedCouplingMesh(spacedim_3d=True)[0]
         elif group_no_2D:
             mesh_2D_mc = create_mesh_from_groupno(mesh_3D, group_no_2D)
         self._l_mesh_proj_2D_mc += [mesh_2D_mc]
@@ -534,14 +533,14 @@ class PostBeremin:
         sigma_2D_a_mc.setName("SIYY")
 
         ##Create 2D medcoupling field for integral
-        sigma_2D_f_mc = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
+        sigma_2D_f_mc = medc.MEDCouplingFieldDouble(medc.ON_CELLS, medc.ONE_TIME)
         if len(sigma_2D_a_mc) == self._l_mesh_proj_2D_mc[mesh_2D_idx].getNumberOfCells():
             sigma_2D_f_mc.setMesh(self._l_mesh_proj_2D_mc[mesh_2D_idx])
         else:
             UTMESS("F", "RUPTURE4_16")
         sigma_2D_f_mc.setTime(time, idx, 0)
         sigma_2D_f_mc.setArray(sigma_2D_a_mc)
-        sigma_2D_f_mc.setNature(mc.IntensiveConservation)
+        sigma_2D_f_mc.setNature(medc.IntensiveConservation)
         sigma_2D_f_mc.setName("SIEF_ELMOY")
         sigma_2D_f_mc.checkConsistencyLight()
 
@@ -552,18 +551,18 @@ class PostBeremin:
         if self._rout_2D:
             sigma_2D_np = sigma_2D_a_mc.toNumPyArray().reshape((len(sigma_2D_a_mc), 1))
             sigma_2D_np_out = np.concatenate((sigma_2D_np, sigma_2D_np ** (1 / pow_m)), 1)
-            sigma_2D_a_mc_out = mc.DataArrayDouble(sigma_2D_np_out)
+            sigma_2D_a_mc_out = medc.DataArrayDouble(sigma_2D_np_out)
             sigma_2D_a_mc_out.setInfoOnComponents(["SIXX", "SIYY"])
-            sigma_2D_f_mc_out = mc.MEDCouplingFieldDouble(mc.ON_CELLS, mc.ONE_TIME)
+            sigma_2D_f_mc_out = medc.MEDCouplingFieldDouble(medc.ON_CELLS, medc.ONE_TIME)
             sigma_2D_f_mc_out.setMesh(self._l_mesh_proj_2D_mc[mesh_2D_idx])
             sigma_2D_f_mc_out.setTime(time, idx, 0)
             sigma_2D_f_mc_out.setArray(sigma_2D_a_mc_out)
-            sigma_2D_f_mc_out.setNature(mc.IntensiveConservation)
+            sigma_2D_f_mc_out.setNature(medc.IntensiveConservation)
             sigma_2D_f_mc_out.setName("SIEF_ELMOY")
             sigma_2D_f_mc_out.checkConsistencyLight()
 
             filename = LogicalUnitFile.filename_from_unit(self._rout_2D)
-            mc.WriteField(filename, sigma_2D_f_mc_out, True if idx == 0 else False)
+            medc.WriteField(filename, sigma_2D_f_mc_out, True if idx == 0 else False)
 
         return intsig1pm
 
