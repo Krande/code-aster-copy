@@ -502,6 +502,7 @@ contains
 !
                 call readVector('PDEPLPR', mk_total_dofs, this%depl_incr)
             else
+                ! GRAD_VARI
                 call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
                 total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
                 call readVector('PDEPLMR', total_dofs, tmp_prev)
@@ -513,15 +514,16 @@ contains
                     do iDof = 1, mk_fbs
                         num_tot = num_tot+1
                         num_mk = num_mk+1
-                        this%depl_prev(mk_cbs+num_mk) = tmp_prev(num_tot)
-                        this%depl_incr(mk_cbs+num_mk) = tmp_incr(num_tot)
+                        this%depl_prev(num_mk) = tmp_prev(num_tot)
+                        this%depl_incr(num_mk) = tmp_incr(num_tot)
                     end do
                     num_tot = num_tot+gv_fbs
                 end do
                 do iDof = 1, mk_cbs
                     num_tot = num_tot+1
-                    this%depl_prev(iDof) = tmp_prev(num_tot)
-                    this%depl_incr(iDof) = tmp_incr(num_tot)
+                    num_mk = num_mk+1
+                    this%depl_prev(num_mk) = tmp_prev(num_tot)
+                    this%depl_incr(num_mk) = tmp_incr(num_tot)
                 end do
             end if
 !
@@ -612,6 +614,10 @@ contains
         faces_dofs = total_dofs-cbs
         dimMatScal = cbs/hhoCell%ndim
 !
+        b_n = to_blas_int(dimMatScal)
+        b_incx = to_blas_int(1)
+        b_lda = to_blas_int(MSIZE_CELL_SCAL)
+!
 ! -- initialization
 !
         call mass%initialize(total_dofs, total_dofs, 0.0)
@@ -639,9 +645,6 @@ contains
 ! -------- Compute mass
 !
             coeff = rho*weight
-            b_n = to_blas_int(dimMatScal)
-            b_incx = to_blas_int(1)
-            b_lda = to_blas_int(MSIZE_CELL_SCAL)
             call dsyr('U', b_n, coeff, BSCEval, b_incx, mass_scal, b_lda)
 !
         end do

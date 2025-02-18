@@ -55,13 +55,14 @@ module HHO_matrix_module
         procedure, pass :: copySymU => hhoMatriceCopySymU
         procedure, pass :: copy => hhoMatriceCopy
         procedure, pass :: add => hhoMatriceAdd
+        procedure, pass :: prune => hhoMatricePrune
 !
     end type HHO_matrix
 !
     public   :: HHO_matrix
     private  :: hhoMatriceInit, hhoMatriceFree, hhoMatriceWrite, hhoMatriceSetValue
     private  :: hhoMatriceRead, hhoMatricePrint, hhoMatriceCopySymU, hhoMatriceCopy
-    private  :: hhoMatriceAdd
+    private  :: hhoMatriceAdd, hhoMatricePrune
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -198,11 +199,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoMatriceCopySymU(this)
+    subroutine hhoMatriceCopySymU(this, row_offset_, col_offset_)
 !
         implicit none
 !
         class(HHO_matrix), intent(in) :: this
+        integer, intent(in), optional :: row_offset_, col_offset_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -210,11 +212,19 @@ contains
 !   In mat   : matrix to print
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i
+        integer :: row_offset, col_offset, il, size, ig, jg
 !
+        row_offset = 0
+        if (present(row_offset_)) row_offset = row_offset_
+        col_offset = 0
+        if (present(col_offset_)) col_offset = col_offset_
 !
-        do i = 1, this%ncols-1
-            this%m(i+1:this%ncols, i) = this%m(i, i+1:this%ncols)
+        ASSERT(this%ncols-col_offset == this%nrows-row_offset)
+        size = this%nrows-row_offset
+        do il = 1, size-1
+            ig = row_offset+il
+            jg = col_offset+il
+            this%m(ig+1:this%nrows, jg) = this%m(ig, jg+1:this%ncols)
         end do
 !
     end subroutine
@@ -280,6 +290,35 @@ contains
 !
         do j = 1, this%ncols
             call daxpy_1(this%nrows, alpha, mat%m(:, j), this%m(:, j))
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMatricePrune(this, threshold)
+!
+        implicit none
+!
+        class(HHO_matrix), intent(inout) :: this
+        real(kind=8), intent(in) :: threshold
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   print matrix
+!   In mat   : matrix to print
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, j
+!
+        do j = 1, this%ncols
+            do i = 1, this%nrows
+                if (abs(this%m(i, j)) < threshold) then
+                    this%m(i, j) = 0.d0
+                end if
+            end do
         end do
 !
     end subroutine

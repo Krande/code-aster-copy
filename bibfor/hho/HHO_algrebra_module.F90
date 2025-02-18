@@ -29,6 +29,7 @@ module HHO_algebra_module
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 #include "blas/dsymv.h"
+#include "blas/dsyr.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,7 +39,7 @@ module HHO_algebra_module
 !
 
     public :: hho_dgemm_NN, hho_dgemm_TN, hho_dgemv_N, hho_dgemv_T
-    public :: hho_dsymv_U
+    public :: hho_dsymv_U, hho_dsyr_U
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -205,6 +206,33 @@ contains
         ASSERT(matA%nrows == matA%ncols)
         call dsymv('U', b_n, alpha, matA%m, &
                    b_lda, x, one, beta, y, one)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hho_dsyr_U(alpha, x, matA)
+!
+        implicit none
+!
+        type(HHO_matrix), intent(inout) :: matA
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(in) :: alpha
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   DSYR blas routine for hho_matrix
+! --------------------------------------------------------------------------------------------------
+!
+        blas_int :: b_n, b_lda
+        blas_int, parameter :: one = to_blas_int(1)
+!
+        ASSERT(matA%nrows == matA%ncols)
+        b_lda = to_blas_int(matA%max_nrows)
+        b_n = to_blas_int(matA%nrows)
+        call dsyr('U', b_n, alpha, x, one, matA%m, b_lda)
 !
     end subroutine
 !
