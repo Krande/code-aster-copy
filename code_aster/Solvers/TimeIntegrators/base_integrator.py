@@ -122,17 +122,17 @@ class BaseIntegrator(MecaDynaOperators):
         if not self._set_up:
             self.setup()
 
+    @abstractmethod
     def initializeStep(self):
         """Define the step parameters."""
-        raise NotImplementedError
 
+    @abstractmethod
     def updateVariables(self, q, dq=None, ddq=None):
-        raise NotImplementedError
+        """Update the physical state."""
 
     @abstractmethod
     def getResidual(self, scaling=1.0):
         """Compute the residue vector."""
-        raise NotImplementedError
 
     def computeAcceleration(self):
         """Computes the acceleration."""

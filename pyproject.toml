@@ -8,7 +8,7 @@ profile = "black"
 [tool.ruff]
 line-length = 100
 indent-width = 4
-builtins = ["_", "_F]
+builtins = ["_", "_F"]
 
 [tool.ruff.format]
 quote-style = "double"

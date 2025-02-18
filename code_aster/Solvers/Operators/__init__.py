@@ -17,6 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-__all__ = ("BaseOperators",)
+__all__ = ("BaseOperators", "MecaDynaOperators", "MecaStatOperators", "ThermalOperators")
 
 from .base_operators import BaseOperators
+from .meca_dyna_operators import MecaDynaOperators
+from .meca_stat_operators import MecaStatOperators
+from .thermal_operators import ThermalOperators

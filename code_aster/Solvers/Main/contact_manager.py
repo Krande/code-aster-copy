@@ -48,9 +48,7 @@ class ContactManager:
         self.defi = definition
         self.problem = phys_pb
         if self.defi is not None:
-            if isinstance(self.defi, ParallelFrictionNew) or isinstance(
-                self.defi, ParallelContactNew
-            ):
+            if isinstance(self.defi, (ParallelFrictionNew, ParallelContactNew)):
                 self.pair = ParallelContactPairing(self.defi)
             else:
                 self.pair = ContactPairing(self.defi)
@@ -86,7 +84,7 @@ class ContactManager:
         """Get the coordinates field used for pairing.
 
         Returns:
-            MeshCoordinatesField: coordinates of nodes used for pairing:
+            MeshCoordinatesField: coordinates of nodes used for pairing
         """
         if not self.enable:
             return

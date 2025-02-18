@@ -22,6 +22,7 @@ from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortra
 from ...Messages import UTMESS, MessageLog
 from ...Objects import (
     HHO,
+    ConstantFieldOnCellsReal,
     LinearSolver,
     NonLinearResult,
     ParallelContactNew,
@@ -304,7 +305,7 @@ class NonLinearOperator(ContextMixin):
 
             if "SIGM" in init_state:
                 self.state.stress = _get_field_and_check_model(
-                    state=init_state, name_field="SIGM", model=model
+                    state=init_state, name_field="SIGM", model=model, fieldModel=self.state.stress
                 )
                 _msginit("SIEF_ELGA")
 
@@ -493,17 +494,22 @@ def _extract_resu_field_and_check_model(resu, para, val, name_field, model):
     field = resu.getField(name_field, para=para, value=val)
     if model is field.getModel():
         return field
-    else:
-        _raise_elga_error()
+    _raise_elga_error()
 
 
-def _get_field_and_check_model(state, name_field, model):
+def _get_field_and_check_model(state, name_field, model, fieldModel=None):
     """Extract the field from the initial state, then check that
     the model of the field is the same as the model given in parameter.
+    If the field in a ConstantFieldOnCellsReal, it is converted in FieldOnCellsReal
+    using fieldModel.
 
-    Returns the field if the model is the same"""
+    Returns the field if the model is the same
+    """
     field = state.get(name_field)
+    if isinstance(field, ConstantFieldOnCellsReal):
+        simpleFieldModel = fieldModel.toSimpleFieldOnCells()
+        simpleField = field.toSimpleFieldOnCells(simpleFieldModel)
+        field = simpleField.toFieldOnCells(model.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
     if model is field.getModel():
         return field
-    else:
-        _raise_elga_error()
+    _raise_elga_error()

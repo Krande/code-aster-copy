@@ -1,5 +1,6 @@
 # class AsterError in libaster
 
+
 class AsterError(Exception):
     pass
 
@@ -11,7 +12,9 @@ class AsterError(Exception):
 
     # Data descriptors defined here:
 
+
 # class ConvergenceError in libaster
+
 
 class ConvergenceError(AsterError):
     pass
@@ -23,7 +26,9 @@ class ConvergenceError(AsterError):
     #     builtins.BaseException
     #     builtins.object
 
+
 # class IntegrationError in libaster
+
 
 class IntegrationError(AsterError):
     pass
@@ -35,7 +40,9 @@ class IntegrationError(AsterError):
     #     builtins.BaseException
     #     builtins.object
 
+
 # class SolverError in libaster
+
 
 class SolverError(AsterError):
     pass
@@ -47,7 +54,9 @@ class SolverError(AsterError):
     #     builtins.BaseException
     #     builtins.object
 
+
 # class ContactError in libaster
+
 
 class ContactError(AsterError):
     pass
@@ -59,7 +68,9 @@ class ContactError(AsterError):
     #     builtins.BaseException
     #     builtins.object
 
+
 # class TimeLimitError in libaster
+
 
 class TimeLimitError(AsterError):
     pass
@@ -71,16 +82,19 @@ class TimeLimitError(AsterError):
     #     builtins.BaseException
     #     builtins.object
 
+
 # built-in function raiseAsterError in libaster
 
-def raiseAsterError(idmess='VIDE_1'):
+
+def raiseAsterError(idmess="VIDE_1"):
     pass
+
 
 # class PythonBool in libaster
 
+
 class PythonBool:
-    """Enumeration that represents an extended boolean.
-    """
+    """Enumeration that represents an extended boolean."""
 
     # Method resolution order:
     #     PythonBool
@@ -119,7 +133,7 @@ class PythonBool:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -128,14 +142,13 @@ class PythonBool:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     FALSE = 0
@@ -144,7 +157,9 @@ class PythonBool:
 
     TRUE = 1
 
+
 # class DataStructure in libaster
+
 
 class DataStructure:
     pass
@@ -157,8 +172,7 @@ class DataStructure:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def addDependency(self, ds):
         """Add a dependency to a *DataStructure*.
@@ -227,8 +241,7 @@ class DataStructure:
         """
 
     def resetDependencies(self):
-        """Clear the list of explicit dependencies.
-        """
+        """Clear the list of explicit dependencies."""
 
     def setTitle(self, title):
         """Set the tile of the *DataStructure* .
@@ -237,25 +250,30 @@ class DataStructure:
             title [str]: Title of the *DataStructure*.
         """
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data descriptors defined here:
 
     @property
     def userName(self):
-        """str: Name of the user variable that holds this object.
-        """
+        """str: Name of the user variable that holds this object."""
+
 
 # built-in function debugJeveuxContent in libaster
+
 
 def debugJeveuxContent(arg0):
     pass
 
+
 # built-in function debugJeveuxExists in libaster
+
 
 def debugJeveuxExists(arg0):
     pass
 
+
 # built-in function use_count in libaster
+
 
 def use_count(*args, **kwargs):
     """Overloaded function.
@@ -287,7 +305,9 @@ def use_count(*args, **kwargs):
     13. use_count(arg0: AssemblyMatrix<std::complex<double>, (PhysicalQuantityEnum)5>) -> int
     """
 
+
 # class PhysicalQuantityManager in libaster
+
 
 class PhysicalQuantityManager:
     pass
@@ -300,8 +320,7 @@ class PhysicalQuantityManager:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getAllPhysicalQuantityNames():
         pass
@@ -318,7 +337,9 @@ class PhysicalQuantityManager:
     def hasQuantityOfName(self):
         pass
 
+
 # class Node in libaster
+
 
 class Node:
     pass
@@ -337,8 +358,7 @@ class Node:
         pass
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __setitem__(self, arg0, arg1):
         pass
@@ -381,11 +401,12 @@ class Node:
             float: z.
         """
 
+
 # class EntityType in libaster
 
+
 class EntityType:
-    """Enumeration for entity type.
-    """
+    """Enumeration for entity type."""
 
     # Method resolution order:
     #     EntityType
@@ -424,7 +445,7 @@ class EntityType:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -433,14 +454,13 @@ class EntityType:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     AllMeshEntitiesType = 2
@@ -455,7 +475,9 @@ class EntityType:
 
     NodeType = 4
 
+
 # class MeshEntity in libaster
+
 
 class MeshEntity:
     pass
@@ -482,7 +504,9 @@ class MeshEntity:
     def getType(self):
         pass
 
+
 # class AllMeshEntities in libaster
+
 
 class AllMeshEntities(MeshEntity):
     pass
@@ -496,10 +520,11 @@ class AllMeshEntities(MeshEntity):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
 
 # class BaseMesh in libaster
+
 
 class BaseMesh(DataStructure):
     pass
@@ -513,8 +538,7 @@ class BaseMesh(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
         """Build list of Tables based on the mesh
@@ -686,8 +710,7 @@ class BaseMesh(DataStructure):
         """
 
     def isConnection(self):
-        """Function to know if a mesh is a ConnectionMesh
-        """
+        """Function to know if a mesh is a ConnectionMesh"""
 
     def isIncomplete(self):
         """Tell if the mesh is complete on parallel instances.
@@ -728,7 +751,9 @@ class BaseMesh(DataStructure):
             bool: *True* in case of success, *False* otherwise.
         """
 
+
 # class Mesh in libaster
+
 
 class Mesh(BaseMesh):
     pass
@@ -908,7 +933,9 @@ class Mesh(BaseMesh):
             localNumbering=false (bool): not used (for compatibilty with ParallelMesh)
         """
 
+
 # built-in function getMedCouplingConversionData in libaster
+
 
 def getMedCouplingConversionData(mesh):
     """Return three dictionnaries containing data to create an equivalent MedCoupling unstructured mesh.
@@ -931,7 +958,9 @@ def getMedCouplingConversionData(mesh):
         tuple (cells, groups_c, groups_n) : The data to create the equivalent MedCoupling mesh.
     """
 
+
 # class DiscreteComputation in libaster
+
 
 class DiscreteComputation:
     pass
@@ -1004,7 +1033,9 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getContactForces(self, geom, displ_prev, displ_step, time_prev, time_step, data, coef_cont, coef_frot):
+    def getContactForces(
+        self, geom, displ_prev, displ_step, time_prev, time_step, data, coef_cont, coef_frot
+    ):
         """Compute contact and friction forces
 
         Arguments:
@@ -1021,7 +1052,9 @@ class DiscreteComputation:
             FieldOnNodesReal: contact and friction forces
         """
 
-    def getContactMatrix(self, geom, displ_prev, displ_step, time_prev, time_step, data, coef_cont, coef_frot):
+    def getContactMatrix(
+        self, geom, displ_prev, displ_step, time_prev, time_step, data, coef_cont, coef_frot
+    ):
         """Compute contact matrix
 
         Arguments:
@@ -1079,7 +1112,9 @@ class DiscreteComputation:
               FieldOnNodes: Dirichlet load vector
         """
 
-    def getElasticStiffnessMatrix(self, time_curr=0.0, fourierMode=-1, varc_curr=None, groupOfCells=[], with_dual=True):
+    def getElasticStiffnessMatrix(
+        self, time_curr=0.0, fourierMode=-1, varc_curr=None, groupOfCells=[], with_dual=True
+    ):
         """Return the elementary matrices for elastic Stiffness matrix.
         Option RIGI_MECA.
 
@@ -1133,7 +1168,9 @@ class DiscreteComputation:
               ElementaryMatrixReal: elementary fluid-structure Stiffness matrix
         """
 
-    def getGeometricStiffnessMatrix(self, sief_elga, strx_elga=None, displ=None, modeFourier=-1, groupOfCells=[]):
+    def getGeometricStiffnessMatrix(
+        self, sief_elga, strx_elga=None, displ=None, modeFourier=-1, groupOfCells=[]
+    ):
         """Return the elementary matrices for geometric Stiffness matrix.
         Option RIGI_MECA_HYST.
 
@@ -1225,7 +1262,19 @@ class DiscreteComputation:
               FieldOnNodes: incremental imposed displacement vector
         """
 
-    def getInternalMechanicalForces(self, displ_prev, displ_step, stress, internVar, internVarIter, time_prev, time_step, varc_prev=None, varc_curr=None, groupOfCells=[]):
+    def getInternalMechanicalForces(
+        self,
+        displ_prev,
+        displ_step,
+        stress,
+        internVar,
+        internVarIter,
+        time_prev,
+        time_step,
+        varc_prev=None,
+        varc_curr=None,
+        groupOfCells=[],
+    ):
         """Compute internal forces (integration of behaviour)
 
         Arguments:
@@ -1280,7 +1329,9 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getLinearConductivityMatrix(self, time_curr, fourierMode=0, varc_curr=None, groupOfCells=[], with_dual=True):
+    def getLinearConductivityMatrix(
+        self, time_curr, fourierMode=0, varc_curr=None, groupOfCells=[], with_dual=True
+    ):
         """Return the elementary matices for linear thermal matrix.
         Option RIGI_THER.
 
@@ -1307,7 +1358,15 @@ class DiscreteComputation:
             ElementaryMatrix: elementary linear acoustic matrices
         """
 
-    def getMechanicalDampingMatrix(self, getMechanicalMassMatrix=None, stiffnessMatrix=None, varc_curr=None, groupOfCells=[], flui_int=1, onde_flui=1):
+    def getMechanicalDampingMatrix(
+        self,
+        getMechanicalMassMatrix=None,
+        stiffnessMatrix=None,
+        varc_curr=None,
+        groupOfCells=[],
+        flui_int=1,
+        onde_flui=1,
+    ):
         """Return the elementary matrices for damping matrix.
         Option AMOR_MECA.
 
@@ -1334,7 +1393,9 @@ class DiscreteComputation:
               FieldOnNodesReal: imposed displacement vector
         """
 
-    def getMechanicalForces(self, time_curr=0.0, time_step=0.0, theta=1.0, modeFourier=0, varc_curr=None):
+    def getMechanicalForces(
+        self, time_curr=0.0, time_step=0.0, theta=1.0, modeFourier=0, varc_curr=None
+    ):
         """Return the total mechanical Neumann forces vector
 
         Arguments:
@@ -1372,7 +1433,9 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getMechanicalNeumannForces(self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0, varc_curr=None, assembly=True):
+    def getMechanicalNeumannForces(
+        self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0, varc_curr=None, assembly=True
+    ):
         """Return the elementary mechanical Neumann forces vector
 
         Arguments:
@@ -1387,7 +1450,16 @@ class DiscreteComputation:
               ElementaryVectorDisplacementReal: elementary Neumann forces vector
         """
 
-    def getMechanicalNodalForces(self, stress, disp=None, modeFourier=0, varc_curr=None, behaviourMap=None, groupOfCells=[], assembly=True):
+    def getMechanicalNodalForces(
+        self,
+        stress,
+        disp=None,
+        modeFourier=0,
+        varc_curr=None,
+        behaviourMap=None,
+        groupOfCells=[],
+        assembly=True,
+    ):
         """Return the elementary mechanical nodal forces vector
 
         Arguments:
@@ -1403,7 +1475,17 @@ class DiscreteComputation:
               ElementaryVectorDisplacementReal: elementary Neumann forces vector
         """
 
-    def getMechanicalReactionForces(self, disp, stress, time_prev=0.0, time_curr=0.0, theta=1.0, modeFourier=0, varc_curr=None, behaviourMap=None):
+    def getMechanicalReactionForces(
+        self,
+        disp,
+        stress,
+        time_prev=0.0,
+        time_curr=0.0,
+        theta=1.0,
+        modeFourier=0,
+        varc_curr=None,
+        behaviourMap=None,
+    ):
         """Return the reaction forces
 
         Arguments:
@@ -1420,7 +1502,9 @@ class DiscreteComputation:
               FieldOnNodesReal: forces vector
         """
 
-    def getMechanicalVolumetricForces(self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0, varc_curr=None, assembly=True):
+    def getMechanicalVolumetricForces(
+        self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0, varc_curr=None, assembly=True
+    ):
         """Return the elementary mechanical Volumetric forces vector
 
         Arguments:
@@ -1456,7 +1540,18 @@ class DiscreteComputation:
               PhysicalProblem: physical problem
         """
 
-    def getPredictionTangentStiffnessMatrix(self, displ_prev, displ_step, stress, internVar, time_prev, time_step, varc_prev=None, varc_curr=None, groupOfCells=[]):
+    def getPredictionTangentStiffnessMatrix(
+        self,
+        displ_prev,
+        displ_step,
+        stress,
+        internVar,
+        time_prev,
+        time_step,
+        varc_prev=None,
+        varc_curr=None,
+        groupOfCells=[],
+    ):
         """Compute jacobian matrix for Newton algorithm, Euler prediction
 
         Arguments:
@@ -1501,7 +1596,9 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getTangentConductivityMatrix(self, temp_prev, temp_step, varc_curr=None, groupOfCells=[], with_dual=True):
+    def getTangentConductivityMatrix(
+        self, temp_prev, temp_step, varc_curr=None, groupOfCells=[], with_dual=True
+    ):
         """Return the elementary matrices for tangent conductivity.
         Option MASS_THER_TANG.
 
@@ -1516,7 +1613,19 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getTangentStiffnessMatrix(self, displ_prev, displ_step, stress, internVar, internVarIter, time_prev, time_step, varc_prev=None, varc_curr=None, groupOfCells=[]):
+    def getTangentStiffnessMatrix(
+        self,
+        displ_prev,
+        displ_step,
+        stress,
+        internVar,
+        internVarIter,
+        time_prev,
+        time_step,
+        varc_prev=None,
+        varc_curr=None,
+        groupOfCells=[],
+    ):
         """Compute jacobian matrix for Newton algorithm
 
         Arguments:
@@ -1702,7 +1811,9 @@ class DiscreteComputation:
               FieldOnNodes: load
         """
 
+
 # class EquationNumbering in libaster
+
 
 class EquationNumbering(DataStructure):
     pass
@@ -1733,11 +1844,11 @@ class EquationNumbering(DataStructure):
     def getDOFFromNodeAndComponent(self, local=True):
         """Return the dict of dofs with the pair (node id, component's name) as keys
 
-         Arguments:
-             local (bool) = True: if True use local dof index else use global index in HPC
+        Arguments:
+            local (bool) = True: if True use local dof index else use global index in HPC
 
-         Returns:
-             dict[int, str] : dofs id for each node id and component's name
+        Returns:
+            dict[int, str] : dofs id for each node id and component's name
         """
 
     def getDOFFromNodeAndComponentId(self, local=True):
@@ -1889,7 +2000,9 @@ class EquationNumbering(DataStructure):
             bool: *True* if used, *False* otherwise.
         """
 
+
 # class MatrixStorage in libaster
+
 
 class MatrixStorage(DataStructure):
     pass
@@ -1905,7 +2018,9 @@ class MatrixStorage(DataStructure):
     def __init__(self, arg0):
         pass
 
+
 # class MorseStorage in libaster
+
 
 class MorseStorage(MatrixStorage):
     pass
@@ -1920,8 +2035,7 @@ class MorseStorage(MatrixStorage):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getDiagonalPositions(self):
         pass
@@ -1929,7 +2043,9 @@ class MorseStorage(MatrixStorage):
     def getRows(self):
         pass
 
+
 # class BaseDOFNumbering in libaster
+
 
 class BaseDOFNumbering(DataStructure):
     pass
@@ -1943,8 +2059,7 @@ class BaseDOFNumbering(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def computeNumbering(self, *args, **kwargs):
         """Overloaded function.
@@ -2008,7 +2123,9 @@ class BaseDOFNumbering(DataStructure):
     def setModel(self, arg0):
         pass
 
+
 # class DOFNumbering in libaster
+
 
 class DOFNumbering(BaseDOFNumbering):
     pass
@@ -2189,7 +2306,9 @@ class DOFNumbering(BaseDOFNumbering):
             bool: *True* if used, *False* otherwise.
         """
 
+
 # class ElementaryCharacteristics in libaster
+
 
 class ElementaryCharacteristics(DataStructure):
     pass
@@ -2216,7 +2335,9 @@ class ElementaryCharacteristics(DataStructure):
     def getModel(self):
         pass
 
+
 # class FiniteElementDescriptor in libaster
+
 
 class FiniteElementDescriptor(DataStructure):
     pass
@@ -2273,7 +2394,9 @@ class FiniteElementDescriptor(DataStructure):
     def transferDofDescriptorFrom(self, arg0):
         pass
 
+
 # class FiberGeometry in libaster
+
 
 class FiberGeometry(DataStructure):
     pass
@@ -2294,7 +2417,9 @@ class FiberGeometry(DataStructure):
         2. __init__(self: libaster.FiberGeometry, arg0: str) -> None
         """
 
+
 # class DataField in libaster
+
 
 class DataField(DataStructure):
     pass
@@ -2326,7 +2451,9 @@ class DataField(DataStructure):
             str: field type
         """
 
+
 # class FieldOnCellsReal in libaster
+
 
 class FieldOnCellsReal(DataField):
     pass
@@ -2568,7 +2695,9 @@ class FieldOnCellsReal(DataField):
             FieldOnCellsReal: New FieldOnCells object with the transformed values
         """
 
+
 # class FieldOnCellsComplex in libaster
+
 
 class FieldOnCellsComplex(DataField):
     pass
@@ -2721,7 +2850,9 @@ class FieldOnCellsComplex(DataField):
             FieldOnCellsComplex: New FieldOnCells object with the transformed values
         """
 
+
 # class FieldOnCellsLong in libaster
+
 
 class FieldOnCellsLong(DataField):
     pass
@@ -2843,7 +2974,9 @@ class FieldOnCellsLong(DataField):
             int: number of element in the field
         """
 
+
 # class FieldOnCellsChar8 in libaster
+
 
 class FieldOnCellsChar8(DataField):
     pass
@@ -2894,7 +3027,9 @@ class FieldOnCellsChar8(DataField):
     def setDescription(self, arg0):
         pass
 
+
 # class FieldOnNodesReal in libaster
+
 
 class FieldOnNodesReal(DataField):
     pass
@@ -3107,7 +3242,7 @@ class FieldOnNodesReal(DataField):
                         list[double]: List of values.
         """
 
-    def norm(self, normType='NORM_INFINITY', list_cmp=[]):
+    def norm(self, normType="NORM_INFINITY", list_cmp=[]):
         """Return the euclidean norm of the field
 
         Arguments:
@@ -3212,7 +3347,9 @@ class FieldOnNodesReal(DataField):
     def updateValuePointers(self):
         pass
 
+
 # class FieldOnNodesComplex in libaster
+
 
 class FieldOnNodesComplex(DataField):
     pass
@@ -3346,7 +3483,7 @@ class FieldOnNodesComplex(DataField):
                         list[complex]: List of values.
         """
 
-    def norm(self, normType='NORM_INFINITY', list_cmp=[]):
+    def norm(self, normType="NORM_INFINITY", list_cmp=[]):
         """Return the euclidean norm of the field
 
         Arguments:
@@ -3414,7 +3551,9 @@ class FieldOnNodesComplex(DataField):
     def updateValuePointers(self):
         pass
 
+
 # class FieldOnNodesLong in libaster
+
 
 class FieldOnNodesLong(DataField):
     pass
@@ -3455,7 +3594,9 @@ class FieldOnNodesLong(DataField):
     def setMesh(self, arg0):
         pass
 
+
 # class FieldOnNodesChar8 in libaster
+
 
 class FieldOnNodesChar8(DataField):
     pass
@@ -3496,7 +3637,9 @@ class FieldOnNodesChar8(DataField):
     def setMesh(self, arg0):
         pass
 
+
 # class ConstantFieldValuesReal in libaster
+
 
 class ConstantFieldValuesReal:
     pass
@@ -3509,8 +3652,7 @@ class ConstantFieldValuesReal:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getValues(self):
         """Return the field values
@@ -3519,7 +3661,9 @@ class ConstantFieldValuesReal:
             list[float]: List of values
         """
 
+
 # class ConstantFieldOnCellsReal in libaster
+
 
 class ConstantFieldOnCellsReal(DataField):
     pass
@@ -3568,7 +3712,9 @@ class ConstantFieldOnCellsReal(DataField):
             SimpleFieldOnCellsReal: field converted
         """
 
+
 # class ConstantFieldOnCellsChar16 in libaster
+
 
 class ConstantFieldOnCellsChar16(DataField):
     pass
@@ -3593,7 +3739,9 @@ class ConstantFieldOnCellsChar16(DataField):
     def getMesh(self):
         pass
 
+
 # class ConstantFieldOnCellsLong in libaster
+
 
 class ConstantFieldOnCellsLong(DataField):
     pass
@@ -3618,7 +3766,9 @@ class ConstantFieldOnCellsLong(DataField):
     def getMesh(self):
         pass
 
+
 # class SimpleFieldOnCellsReal in libaster
+
 
 class SimpleFieldOnCellsReal(DataField):
     pass
@@ -3707,8 +3857,7 @@ class SimpleFieldOnCellsReal(DataField):
         pass
 
     def getMesh(self):
-        """Returns base mesh
-        """
+        """Returns base mesh"""
 
     def getNumberOfCells(self):
         pass
@@ -3878,7 +4027,7 @@ class SimpleFieldOnCellsReal(DataField):
                         values (list[float]): list of values to set.
         """
 
-    def toFieldOnCells(self, fed, option='', nompar=''):
+    def toFieldOnCells(self, fed, option="", nompar=""):
         """Converts to FieldOnCells
 
         Arguments:
@@ -3919,7 +4068,9 @@ class SimpleFieldOnCellsReal(DataField):
     def updateValuePointers(self):
         pass
 
+
 # class SimpleFieldOnNodesReal in libaster
+
 
 class SimpleFieldOnNodesReal(DataField):
     pass
@@ -3993,8 +4144,7 @@ class SimpleFieldOnNodesReal(DataField):
         pass
 
     def getMesh(self):
-        """Returns base mesh
-        """
+        """Returns base mesh"""
 
     def getNumberOfComponents(self):
         pass
@@ -4129,7 +4279,9 @@ class SimpleFieldOnNodesReal(DataField):
     def updateValuePointers(self):
         pass
 
+
 # class SimpleFieldOnNodesComplex in libaster
+
 
 class SimpleFieldOnNodesComplex(DataField):
     pass
@@ -4169,8 +4321,7 @@ class SimpleFieldOnNodesComplex(DataField):
         pass
 
     def getMesh(self):
-        """Returns base mesh
-        """
+        """Returns base mesh"""
 
     def getNumberOfComponents(self):
         pass
@@ -4199,7 +4350,9 @@ class SimpleFieldOnNodesComplex(DataField):
     def updateValuePointers(self):
         pass
 
+
 # class Table in libaster
+
 
 class Table(DataStructure):
     pass
@@ -4245,10 +4398,11 @@ class Table(DataStructure):
         """
 
     def getValues(self, arg0):
-        """For internal use only. See *get_column()*.
-        """
+        """For internal use only. See *get_column()*."""
+
 
 # class TableOfFunctions in libaster
+
 
 class TableOfFunctions(Table):
     pass
@@ -4271,8 +4425,7 @@ class TableOfFunctions(Table):
         """
 
     def addFunction(self, arg0):
-        """Add a function into the table.
-        """
+        """Add a function into the table."""
 
     def getFunction(self, pos):
         """Returns the function stored at a given position.
@@ -4291,7 +4444,9 @@ class TableOfFunctions(Table):
             int: Number of functions.
         """
 
+
 # class TableContainer in libaster
+
 
 class TableContainer(Table):
     pass
@@ -4394,7 +4549,9 @@ class TableContainer(Table):
     def getTable(self, arg0):
         pass
 
+
 # class TimesList in libaster
+
 
 class TimesList(DataStructure):
     pass
@@ -4421,14 +4578,16 @@ class TimesList(DataStructure):
     def setValues(self, arg0):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data descriptors defined here:
 
     @property
     def stepper(self):
         pass
 
+
 # class GeneralizedDOFNumbering in libaster
+
 
 class GeneralizedDOFNumbering(DataStructure):
     pass
@@ -4469,7 +4628,9 @@ class GeneralizedDOFNumbering(DataStructure):
         2. setModalBasis(self: libaster.GeneralizedDOFNumbering, arg0: GeneralizedModeResult) -> bool
         """
 
+
 # class FluidStructureInteraction in libaster
+
 
 class FluidStructureInteraction(DataStructure):
     pass
@@ -4490,7 +4651,9 @@ class FluidStructureInteraction(DataStructure):
         2. __init__(self: libaster.FluidStructureInteraction, arg0: str) -> None
         """
 
+
 # class TurbulentSpectrum in libaster
+
 
 class TurbulentSpectrum(DataStructure):
     pass
@@ -4511,7 +4674,9 @@ class TurbulentSpectrum(DataStructure):
         2. __init__(self: libaster.TurbulentSpectrum, arg0: str) -> None
         """
 
+
 # class GenericFunction in libaster
+
 
 class GenericFunction(DataStructure):
     pass
@@ -4525,8 +4690,7 @@ class GenericFunction(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getProperties(self):
         """Returns the properties of the function.
@@ -4548,7 +4712,9 @@ class GenericFunction(DataStructure):
                 "LE"...
         """
 
+
 # class ListOfLoads in libaster
+
 
 class ListOfLoads(DataStructure):
     pass
@@ -4738,8 +4904,7 @@ class ListOfLoads(DataStructure):
         """
 
     def hasDifferentialLoads(self):
-        """Return True if there are DIDI loads
-        """
+        """Return True if there are DIDI loads"""
 
     def hasDirichletBC(self):
         """Dirichlet BCs have been added or not ?
@@ -4763,10 +4928,11 @@ class ListOfLoads(DataStructure):
         """
 
     def setDifferentialDisplacement(self, arg0):
-        """Set differential displacement field for DIDI loads
-        """
+        """Set differential displacement field for DIDI loads"""
+
 
 # class BaseFunction in libaster
+
 
 class BaseFunction(GenericFunction):
     pass
@@ -4781,8 +4947,7 @@ class BaseFunction(GenericFunction):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getValues(self):
         """Return a list of the values of the function as (x1, x2, ..., y1, y2, ...)
@@ -4826,7 +4991,9 @@ class BaseFunction(GenericFunction):
             ordo (list): List of ordinates.
         """
 
+
 # class Function in libaster
+
 
 class Function(BaseFunction):
     pass
@@ -4850,8 +5017,7 @@ class Function(BaseFunction):
         """
 
     def setAsConstant(self):
-        """To be called for a constant function.
-        """
+        """To be called for a constant function."""
 
     def setValues(self, arg0, arg1):
         pass
@@ -4863,7 +5029,9 @@ class Function(BaseFunction):
             int: Number of points.
         """
 
+
 # class FunctionComplex in libaster
+
 
 class FunctionComplex(BaseFunction):
     pass
@@ -4901,7 +5069,9 @@ class FunctionComplex(BaseFunction):
             int: Number of points.
         """
 
+
 # class Formula in libaster
+
 
 class Formula(GenericFunction):
     pass
@@ -4962,8 +5132,7 @@ class Formula(GenericFunction):
         """
 
     def setComplex(self):
-        """Set the type of the formula as complex.
-        """
+        """Set the type of the formula as complex."""
 
     def setContext(self, context):
         """Define the context holding objects required to evaluate the expression.
@@ -4989,7 +5158,9 @@ class Formula(GenericFunction):
             varnames (list[str]): List of variables names.
         """
 
+
 # built-in function jeveux_init in libaster
+
 
 def jeveux_init(mpi_comm):
     """Initialize the memory manager (Jeveux).
@@ -4998,13 +5169,16 @@ def jeveux_init(mpi_comm):
         mpi_comm (int): Identifier of MPI communicator (from ``py2f()``).
     """
 
+
 # built-in function jeveux_finalize in libaster
 
+
 def jeveux_finalize(arg0):
-    """Finalize the memory manager (Jeveux).
-    """
+    """Finalize the memory manager (Jeveux)."""
+
 
 # built-in function call_oper in libaster
+
 
 def call_oper(syntax, jxveri):
     """Call a Fortran operator ('op' subroutine).
@@ -5014,26 +5188,32 @@ def call_oper(syntax, jxveri):
         jxveri (int): If non null `JXVERI` is called after calling the operator.
     """
 
+
 # built-in function call_oper_init in libaster
+
 
 def call_oper_init():
     """Execute initializations before and after operator but without executing any
     operator.
     """
 
+
 # built-in function cmd_ctxt_enter in libaster
 
+
 def cmd_ctxt_enter():
-    """Call Fortran 'cmd_ctxt_enter' subroutine.
-    """
+    """Call Fortran 'cmd_ctxt_enter' subroutine."""
+
 
 # built-in function cmd_ctxt_exit in libaster
 
+
 def cmd_ctxt_exit():
-    """Call Fortran 'cmd_ctxt_exit' subroutine.
-    """
+    """Call Fortran 'cmd_ctxt_exit' subroutine."""
+
 
 # built-in function write in libaster
+
 
 def write(text):
     """Print a string using the fortran subroutine.
@@ -5042,7 +5222,9 @@ def write(text):
         text (str): Text to be printed.
     """
 
+
 # built-in function affich in libaster
+
 
 def affich(code, text):
     """Print a string using the fortran subroutine on an internal file.
@@ -5052,7 +5234,9 @@ def affich(code, text):
         text (str): Text to be printed.
     """
 
+
 # built-in function jeveux_status in libaster
+
 
 def jeveux_status():
     """Return the status of the Jeveux memory manager.
@@ -5061,7 +5245,9 @@ def jeveux_status():
         int: 0 after initialization and after shutdown, 1 during the execution.
     """
 
+
 # built-in function jeveux_delete in libaster
+
 
 def jeveux_delete(prefix):
     """Force manual deletion of Jeveux objects.
@@ -5073,21 +5259,25 @@ def jeveux_delete(prefix):
         prefix (str): Root name of the Jeveux datastructure.
     """
 
+
 # built-in function deleteTemporaryObjects in libaster
 
+
 def deleteTemporaryObjects():
-    """Delete temporary Jeveux objects
-    """
+    """Delete temporary Jeveux objects"""
+
 
 # built-in function deleteCachedObjects in libaster
 
+
 def deleteCachedObjects():
-    """Delete temporary and cached Jeveux objects (temporary, matrix, base, ...)
-    """
+    """Delete temporary and cached Jeveux objects (temporary, matrix, base, ...)"""
+
 
 # built-in function onFatalError in libaster
 
-def onFatalError(value=''):
+
+def onFatalError(value=""):
     """Get/set the behavior in case of error.
 
     Arguments:
@@ -5099,7 +5289,9 @@ def onFatalError(value=''):
         str: Current value
     """
 
+
 # built-in function matfpe in libaster
+
 
 def matfpe(value):
     """Enable or disable floating point exceptions.
@@ -5111,7 +5303,9 @@ def matfpe(value):
         str: Current value
     """
 
+
 # built-in function set_option in libaster
+
 
 def set_option(arg0, arg1):
     """Set an option value to be used from Fortran operators.
@@ -5121,7 +5315,9 @@ def set_option(arg0, arg1):
         value (float): Option value.
     """
 
+
 # built-in function asmpi_set in libaster
+
 
 def asmpi_set(arg0):
     """Set the current MPI communicator.
@@ -5130,7 +5326,9 @@ def asmpi_set(arg0):
         comm (int): id of the communicator.
     """
 
+
 # built-in function asmpi_get in libaster
+
 
 def asmpi_get():
     """Get the current MPI communicator.
@@ -5139,7 +5337,9 @@ def asmpi_get():
         comm (int): id of the communicator.
     """
 
+
 # built-in function asmpi_free in libaster
+
 
 def asmpi_free(arg0):
     """Free the MPI communicator in argument.
@@ -5148,7 +5348,9 @@ def asmpi_free(arg0):
         comm (int): id of the communicator.
     """
 
+
 # built-in function asmpi_split in libaster
+
 
 def asmpi_split(arg0, arg1, arg2):
     """Split the MPI communicator in argument.
@@ -5162,7 +5364,9 @@ def asmpi_split(arg0, arg1, arg2):
         comm (int) : id of the communicator.
     """
 
+
 # built-in function asmpi_info in libaster
+
 
 def asmpi_info(arg0):
     """Return the rank and size of the MPI communicator.
@@ -5175,7 +5379,9 @@ def asmpi_info(arg0):
         size (int) : size of the communicator.
     """
 
+
 # class Function2D in libaster
+
 
 class Function2D(GenericFunction):
     pass
@@ -5223,7 +5429,9 @@ class Function2D(GenericFunction):
             list[list [float]]: List of values (size = number of functions).
         """
 
+
 # class Contact in libaster
+
 
 class Contact(DataStructure):
     pass
@@ -5250,11 +5458,12 @@ class Contact(DataStructure):
     def getModel(self):
         pass
 
+
 # class ContactAlgo in libaster
 
+
 class ContactAlgo:
-    """Enumeration for contact algorithm.
-    """
+    """Enumeration for contact algorithm."""
 
     # Method resolution order:
     #     ContactAlgo
@@ -5293,7 +5502,7 @@ class ContactAlgo:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -5302,14 +5511,13 @@ class ContactAlgo:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Lagrangian = 0
@@ -5318,11 +5526,12 @@ class ContactAlgo:
 
     Penalization = 2
 
+
 # class ContactVariant in libaster
 
+
 class ContactVariant:
-    """Enumeration for contact variant.
-    """
+    """Enumeration for contact variant."""
 
     # Method resolution order:
     #     ContactVariant
@@ -5361,7 +5570,7 @@ class ContactVariant:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -5370,14 +5579,13 @@ class ContactVariant:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Classic = 4
@@ -5390,11 +5598,12 @@ class ContactVariant:
 
     Symetric = 3
 
+
 # class ContactType in libaster
 
+
 class ContactType:
-    """Enumeration for contact type.
-    """
+    """Enumeration for contact type."""
 
     # Method resolution order:
     #     ContactType
@@ -5433,7 +5642,7 @@ class ContactType:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -5442,25 +5651,25 @@ class ContactType:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Bilateral = 1
 
     Unilateral = 0
 
+
 # class FrictionAlgo in libaster
 
+
 class FrictionAlgo:
-    """Enumeration for friction algorithm.
-    """
+    """Enumeration for friction algorithm."""
 
     # Method resolution order:
     #     FrictionAlgo
@@ -5499,7 +5708,7 @@ class FrictionAlgo:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -5508,14 +5717,13 @@ class FrictionAlgo:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Lagrangian = 0
@@ -5524,11 +5732,12 @@ class FrictionAlgo:
 
     Penalization = 2
 
+
 # class FrictionType in libaster
 
+
 class FrictionType:
-    """Enumeration for friction type.
-    """
+    """Enumeration for friction type."""
 
     # Method resolution order:
     #     FrictionType
@@ -5567,7 +5776,7 @@ class FrictionType:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -5576,14 +5785,13 @@ class FrictionType:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Coulomb = 2
@@ -5594,11 +5802,12 @@ class FrictionType:
 
     Without = 0
 
+
 # class PairingAlgo in libaster
 
+
 class PairingAlgo:
-    """Enumeration for pairing algorithm.
-    """
+    """Enumeration for pairing algorithm."""
 
     # Method resolution order:
     #     PairingAlgo
@@ -5637,7 +5846,7 @@ class PairingAlgo:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -5646,23 +5855,23 @@ class PairingAlgo:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Mortar = 0
 
+
 # class InitialState in libaster
 
+
 class InitialState:
-    """Enumeration for initial state.
-    """
+    """Enumeration for initial state."""
 
     # Method resolution order:
     #     InitialState
@@ -5701,7 +5910,7 @@ class InitialState:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -5710,14 +5919,13 @@ class InitialState:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Interpenetrated = 0
@@ -5726,11 +5934,12 @@ class InitialState:
 
     Yes = 2
 
+
 # class JacobianType in libaster
 
+
 class JacobianType:
-    """Enumeration for jacobian type.
-    """
+    """Enumeration for jacobian type."""
 
     # Method resolution order:
     #     JacobianType
@@ -5769,7 +5978,7 @@ class JacobianType:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -5778,21 +5987,22 @@ class JacobianType:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Analytical = 0
 
     Perturbation = 1
 
+
 # class ContactParameter in libaster
+
 
 class ContactParameter:
     pass
@@ -5883,7 +6093,9 @@ class ContactParameter:
             ContactVariant: contact variant.
         """
 
+
 # class FrictionParameter in libaster
+
 
 class FrictionParameter:
     pass
@@ -5974,15 +6186,16 @@ class FrictionParameter:
             FrictionType: Friction type.
         """
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data descriptors defined here:
 
     @property
     def hasFriction(self):
-        """bool: enable or disable the use of friction.
-        """
+        """bool: enable or disable the use of friction."""
+
 
 # class PairingParameter in libaster
+
 
 class PairingParameter:
     pass
@@ -6073,20 +6286,20 @@ class PairingParameter:
             InitialState: Initial contact state.
         """
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data descriptors defined here:
 
     @property
     def hasBeamDistance(self):
-        """bool: enable or disable the use of a fictive distance for beam.
-        """
+        """bool: enable or disable the use of a fictive distance for beam."""
 
     @property
     def hasShellDistance(self):
-        """bool: enable or disable the use of a fictive distance for shell.
-        """
+        """bool: enable or disable the use of a fictive distance for shell."""
+
 
 # class ContactNew in libaster
+
 
 class ContactNew(DataStructure):
     pass
@@ -6115,8 +6328,7 @@ class ContactNew(DataStructure):
         """
 
     def build(self):
-        """Build and check internal objects
-        """
+        """Build and check internal objects"""
 
     def getContactZone(self, zone_id):
         """Return the specified contact zone
@@ -6174,8 +6386,7 @@ class ContactNew(DataStructure):
         """
 
     def isParallel(self):
-        """bool: true if parallel contact.
-        """
+        """bool: true if parallel contact."""
 
     def setVerbosity(self, level):
         """Set level of verbosity:
@@ -6187,20 +6398,20 @@ class ContactNew(DataStructure):
             level (int): level of verbosity
         """
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data descriptors defined here:
 
     @property
     def hasFriction(self):
-        """bool: enable or disable the use of friction.
-        """
+        """bool: enable or disable the use of friction."""
 
     @property
     def hasSmoothing(self):
-        """bool: enable or disable  the use of smoothing.
-        """
+        """bool: enable or disable  the use of smoothing."""
+
 
 # class FrictionNew in libaster
+
 
 class FrictionNew(ContactNew):
     pass
@@ -6222,11 +6433,12 @@ class FrictionNew(ContactNew):
         2. __init__(self: libaster.FrictionNew, arg0: Model) -> None
         """
 
+
 # class ContactZone in libaster
 
+
 class ContactZone(DataStructure):
-    """Object to define a zone of contact.
-    """
+    """Object to define a zone of contact."""
 
     # Method resolution order:
     #     ContactZone
@@ -6376,13 +6588,12 @@ class ContactZone(DataStructure):
             level (int) : level of verbosity
         """
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data descriptors defined here:
 
     @property
     def checkNormals(self):
-        """bool: attribute that holds the checking of outwards normals.
-        """
+        """bool: attribute that holds the checking of outwards normals."""
 
     @property
     def hasFriction(self):
@@ -6400,11 +6611,12 @@ class ContactZone(DataStructure):
             bool: smoothing or not
         """
 
+
 # class MeshPairing in libaster
 
+
 class MeshPairing(DataStructure):
-    """Object to create a pairing operator between two meshed surfaces.
-    """
+    """Object to create a pairing operator between two meshed surfaces."""
 
     # Method resolution order:
     #     MeshPairing
@@ -6626,11 +6838,12 @@ class MeshPairing(DataStructure):
             level (integer): level of verbosity
         """
 
+
 # class CoordinatesSpace in libaster
 
+
 class CoordinatesSpace:
-    """Type of coordinates: Slave or Global.
-    """
+    """Type of coordinates: Slave or Global."""
 
     # Method resolution order:
     #     CoordinatesSpace
@@ -6669,7 +6882,7 @@ class CoordinatesSpace:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -6678,25 +6891,25 @@ class CoordinatesSpace:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Global = 1
 
     Slave = 0
 
+
 # class PairingMethod in libaster
 
+
 class PairingMethod:
-    """Type of pairing: Fast, BrutForce and Legacy.
-    """
+    """Type of pairing: Fast, BrutForce and Legacy."""
 
     # Method resolution order:
     #     PairingMethod
@@ -6735,7 +6948,7 @@ class PairingMethod:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -6744,14 +6957,13 @@ class PairingMethod:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     BrutForce = 2
@@ -6760,11 +6972,12 @@ class PairingMethod:
 
     Legacy = 1
 
+
 # class ContactPairing in libaster
 
+
 class ContactPairing(DataStructure):
-    """Object to create contact pairing.
-    """
+    """Object to create contact pairing."""
 
     # Method resolution order:
     #     ContactPairing
@@ -6957,7 +7170,9 @@ class ContactPairing(DataStructure):
             disp (FieldOnNodes) : field for displacement
         """
 
+
 # class ContactComputation in libaster
+
 
 class ContactComputation:
     pass
@@ -7018,7 +7233,9 @@ class ContactComputation:
             level (int) : level of verbosity
         """
 
+
 # class BaseAssemblyMatrix in libaster
+
 
 class BaseAssemblyMatrix(DataStructure):
     pass
@@ -7115,10 +7332,9 @@ class BaseAssemblyMatrix(DataStructure):
         """
 
     def isSymmetric(self):
-        """Return True if matrix is symmetric
-        """
+        """Return True if matrix is symmetric"""
 
-    def print(self, format='ASTER', unit=6):
+    def print(self, format="ASTER", unit=6):
         """Print the matrix in code_aster or matlab format (with information on the DOF).
 
         Arguments:
@@ -7139,8 +7355,7 @@ class BaseAssemblyMatrix(DataStructure):
         pass
 
     def symmetrize(self):
-        """Make the assembly matrix symmetric in place
-        """
+        """Make the assembly matrix symmetric in place"""
 
     def transpose(self):
         pass
@@ -7148,7 +7363,9 @@ class BaseAssemblyMatrix(DataStructure):
     def updateDOFNumbering(self):
         pass
 
+
 # class AssemblyMatrixDisplacementReal in libaster
+
 
 class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
     pass
@@ -7268,7 +7485,9 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
             local (bool) local or global size
         """
 
+
 # class AssemblyMatrixEliminatedReal in libaster
+
 
 class AssemblyMatrixEliminatedReal(AssemblyMatrixDisplacementReal):
     pass
@@ -7291,7 +7510,9 @@ class AssemblyMatrixEliminatedReal(AssemblyMatrixDisplacementReal):
         2. __init__(self: libaster.AssemblyMatrixEliminatedReal, arg0: str) -> None
         """
 
+
 # class AssemblyMatrixDisplacementComplex in libaster
+
 
 class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
     pass
@@ -7370,7 +7591,9 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
     def transposeConjugate(self):
         pass
 
+
 # class AssemblyMatrixTemperatureReal in libaster
+
 
 class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
     pass
@@ -7483,7 +7706,9 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
             local (bool) local or global size
         """
 
+
 # class AssemblyMatrixTemperatureComplex in libaster
+
 
 class AssemblyMatrixTemperatureComplex(BaseAssemblyMatrix):
     pass
@@ -7525,7 +7750,9 @@ class AssemblyMatrixTemperatureComplex(BaseAssemblyMatrix):
     def transposeConjugate(self):
         pass
 
+
 # class AssemblyMatrixPressureReal in libaster
+
 
 class AssemblyMatrixPressureReal(BaseAssemblyMatrix):
     pass
@@ -7612,7 +7839,9 @@ class AssemblyMatrixPressureReal(BaseAssemblyMatrix):
             values (list[float]): List of the values.
         """
 
+
 # class AssemblyMatrixPressureComplex in libaster
+
 
 class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
     pass
@@ -7690,7 +7919,9 @@ class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
     def transposeConjugate(self):
         pass
 
+
 # class ElementaryTermReal in libaster
+
 
 class ElementaryTermReal(DataField):
     pass
@@ -7754,7 +7985,9 @@ class ElementaryTermReal(DataField):
             list[list[float]]: values
         """
 
+
 # class ElementaryTermComplex in libaster
+
 
 class ElementaryTermComplex(DataField):
     pass
@@ -7811,7 +8044,9 @@ class ElementaryTermComplex(DataField):
             str: name of the physical quantity
         """
 
+
 # class BaseElementaryMatrix in libaster
+
 
 class BaseElementaryMatrix(DataStructure):
     pass
@@ -7825,8 +8060,7 @@ class BaseElementaryMatrix(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getElementaryCharacteristics(self):
         pass
@@ -7849,7 +8083,9 @@ class BaseElementaryMatrix(DataStructure):
     def setModel(self, arg0):
         pass
 
+
 # class ElementaryMatrixDisplacementReal in libaster
+
 
 class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
     pass
@@ -7894,7 +8130,9 @@ class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
     def hasElementaryTerms(self):
         pass
 
+
 # class ElementaryMatrixDisplacementComplex in libaster
+
 
 class ElementaryMatrixDisplacementComplex(BaseElementaryMatrix):
     pass
@@ -7936,7 +8174,9 @@ class ElementaryMatrixDisplacementComplex(BaseElementaryMatrix):
     def hasElementaryTerms(self):
         pass
 
+
 # class ElementaryMatrixTemperatureReal in libaster
+
 
 class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
     pass
@@ -7981,7 +8221,9 @@ class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
     def hasElementaryTerms(self):
         pass
 
+
 # class ElementaryMatrixPressureComplex in libaster
+
 
 class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
     pass
@@ -8023,7 +8265,9 @@ class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
     def hasElementaryTerms(self):
         pass
 
+
 # class BaseElementaryVector in libaster
+
 
 class BaseElementaryVector(DataStructure):
     pass
@@ -8079,7 +8323,9 @@ class BaseElementaryVector(DataStructure):
     def setType(self, arg0):
         pass
 
+
 # class ElementaryVectorReal in libaster
+
 
 class ElementaryVectorReal(BaseElementaryVector):
     pass
@@ -8139,7 +8385,9 @@ class ElementaryVectorReal(BaseElementaryVector):
     def setVeass(self, arg0, arg1):
         pass
 
+
 # class ElementaryVectorComplex in libaster
+
 
 class ElementaryVectorComplex(BaseElementaryVector):
     pass
@@ -8196,7 +8444,9 @@ class ElementaryVectorComplex(BaseElementaryVector):
     def setVeass(self, arg0, arg1):
         pass
 
+
 # class ElementaryVectorDisplacementReal in libaster
+
 
 class ElementaryVectorDisplacementReal(ElementaryVectorReal):
     pass
@@ -8221,7 +8471,9 @@ class ElementaryVectorDisplacementReal(ElementaryVectorReal):
         3. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
+
 # class ElementaryVectorTemperatureReal in libaster
+
 
 class ElementaryVectorTemperatureReal(ElementaryVectorReal):
     pass
@@ -8246,7 +8498,9 @@ class ElementaryVectorTemperatureReal(ElementaryVectorReal):
         3. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
+
 # class ElementaryVectorPressureComplex in libaster
+
 
 class ElementaryVectorPressureComplex(ElementaryVectorComplex):
     pass
@@ -8271,7 +8525,9 @@ class ElementaryVectorPressureComplex(ElementaryVectorComplex):
         3. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
+
 # class GeneralizedAssemblyMatrix in libaster
+
 
 class GeneralizedAssemblyMatrix(DataStructure):
     pass
@@ -8285,8 +8541,7 @@ class GeneralizedAssemblyMatrix(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def exists(self):
         """Return True if the matrix exists
@@ -8333,7 +8588,9 @@ class GeneralizedAssemblyMatrix(DataStructure):
             int: size of the matrix.
         """
 
+
 # class GeneralizedAssemblyMatrixReal in libaster
+
 
 class GeneralizedAssemblyMatrixReal(GeneralizedAssemblyMatrix):
     pass
@@ -8390,7 +8647,9 @@ class GeneralizedAssemblyMatrixReal(GeneralizedAssemblyMatrix):
             values [list[float]]: set upper part of the matrix.
         """
 
+
 # class GeneralizedAssemblyMatrixComplex in libaster
+
 
 class GeneralizedAssemblyMatrixComplex(GeneralizedAssemblyMatrix):
     pass
@@ -8447,7 +8706,9 @@ class GeneralizedAssemblyMatrixComplex(GeneralizedAssemblyMatrix):
             values [list[complex]]: set upper part of the matrix.
         """
 
+
 # class GeneralizedAssemblyVector in libaster
+
 
 class GeneralizedAssemblyVector(DataStructure):
     pass
@@ -8461,10 +8722,11 @@ class GeneralizedAssemblyVector(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
 
 # class GeneralizedAssemblyVectorReal in libaster
+
 
 class GeneralizedAssemblyVectorReal(GeneralizedAssemblyVector):
     pass
@@ -8500,7 +8762,9 @@ class GeneralizedAssemblyVectorReal(GeneralizedAssemblyVector):
             values (list[float]): set vector.
         """
 
+
 # class GeneralizedAssemblyVectorComplex in libaster
+
 
 class GeneralizedAssemblyVectorComplex(GeneralizedAssemblyVector):
     pass
@@ -8536,7 +8800,9 @@ class GeneralizedAssemblyVectorComplex(GeneralizedAssemblyVector):
             values (list[complex]): set vector.
         """
 
+
 # class InterspectralMatrix in libaster
+
 
 class InterspectralMatrix(DataStructure):
     pass
@@ -8578,7 +8844,9 @@ class InterspectralMatrix(DataStructure):
     def getNumberOfFrequencies(self):
         pass
 
+
 # class LinearSolver in libaster
+
 
 class LinearSolver(DataStructure):
     pass
@@ -8592,8 +8860,7 @@ class LinearSolver(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
         """build internal objects of the solver
@@ -8611,8 +8878,7 @@ class LinearSolver(DataStructure):
         """
 
     def enableXfem(self):
-        """Enable preconditionning for XFEM modeling.
-        """
+        """Enable preconditionning for XFEM modeling."""
 
     def factorize(self, matrix, raiseException=False):
         """Factorize the matrix.
@@ -8673,7 +8939,9 @@ class LinearSolver(DataStructure):
              bool: True if the solver support ParallelMesh, else False
         """
 
+
 # class MultFrontSolver in libaster
+
 
 class MultFrontSolver(LinearSolver):
     pass
@@ -8695,7 +8963,9 @@ class MultFrontSolver(LinearSolver):
         2. __init__(self: libaster.MultFrontSolver, arg0: str) -> None
         """
 
+
 # class LdltSolver in libaster
+
 
 class LdltSolver(LinearSolver):
     pass
@@ -8717,7 +8987,9 @@ class LdltSolver(LinearSolver):
         2. __init__(self: libaster.LdltSolver, arg0: str) -> None
         """
 
+
 # class MumpsSolver in libaster
+
 
 class MumpsSolver(LinearSolver):
     pass
@@ -8739,7 +9011,9 @@ class MumpsSolver(LinearSolver):
         2. __init__(self: libaster.MumpsSolver, arg0: str) -> None
         """
 
+
 # class PetscSolver in libaster
+
 
 class PetscSolver(LinearSolver):
     pass
@@ -8768,7 +9042,9 @@ class PetscSolver(LinearSolver):
             string: the petsc solver options
         """
 
+
 # class GcpcSolver in libaster
+
 
 class GcpcSolver(LinearSolver):
     pass
@@ -8790,7 +9066,9 @@ class GcpcSolver(LinearSolver):
         2. __init__(self: libaster.GcpcSolver, arg0: str) -> None
         """
 
+
 # class GenericModalBasis in libaster
+
 
 class GenericModalBasis(DataStructure):
     pass
@@ -8804,10 +9082,11 @@ class GenericModalBasis(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
 
 # class StandardModalBasis in libaster
+
 
 class StandardModalBasis(GenericModalBasis):
     pass
@@ -8829,7 +9108,9 @@ class StandardModalBasis(GenericModalBasis):
         2. __init__(self: libaster.StandardModalBasis, arg0: str) -> None
         """
 
+
 # class RitzBasis in libaster
+
 
 class RitzBasis(GenericModalBasis):
     pass
@@ -8851,11 +9132,12 @@ class RitzBasis(GenericModalBasis):
         2. __init__(self: libaster.RitzBasis, arg0: str) -> None
         """
 
+
 # class InterfaceType in libaster
 
+
 class InterfaceType:
-    """Enumeration of interface type.
-    """
+    """Enumeration of interface type."""
 
     # Method resolution order:
     #     InterfaceType
@@ -8894,7 +9176,7 @@ class InterfaceType:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -8903,14 +9185,13 @@ class InterfaceType:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     CraigBampton = 1
@@ -8919,7 +9200,9 @@ class InterfaceType:
 
     MacNeal = 0
 
+
 # class StructureInterface in libaster
+
 
 class StructureInterface(DataStructure):
     pass
@@ -8944,7 +9227,9 @@ class StructureInterface(DataStructure):
         4. __init__(self: libaster.StructureInterface, arg0: str, arg1: libaster.DOFNumbering) -> None
         """
 
+
 # class AcousticLoadComplex in libaster
+
 
 class AcousticLoadComplex(DataStructure):
     pass
@@ -8974,7 +9259,9 @@ class AcousticLoadComplex(DataStructure):
     def getModel(self):
         pass
 
+
 # class DirichletBC in libaster
+
 
 class DirichletBC(DataStructure):
     pass
@@ -8988,8 +9275,7 @@ class DirichletBC(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
         pass
@@ -9015,7 +9301,9 @@ class DirichletBC(DataStructure):
             syntax: the syntax
         """
 
+
 # class MechanicalDirichletBC in libaster
+
 
 class MechanicalDirichletBC(DirichletBC):
     pass
@@ -9053,7 +9341,9 @@ class MechanicalDirichletBC(DirichletBC):
         2. addBCOnNodes(self: libaster.MechanicalDirichletBC, arg0: PhysicalQuantityComponent, arg1: float, arg2: list[str]) -> bool
         """
 
+
 # class ThermalDirichletBC in libaster
+
 
 class ThermalDirichletBC(DirichletBC):
     pass
@@ -9093,7 +9383,9 @@ class ThermalDirichletBC(DirichletBC):
         3. addBCOnNodes(self: libaster.ThermalDirichletBC, arg0: PhysicalQuantityComponent, arg1: libaster.Function, arg2: list[str]) -> bool
         """
 
+
 # class AcousticDirichletBC in libaster
+
 
 class AcousticDirichletBC(DirichletBC):
     pass
@@ -9115,7 +9407,9 @@ class AcousticDirichletBC(DirichletBC):
         2. __init__(self: libaster.AcousticDirichletBC, arg0: str, arg1: Model) -> None
         """
 
+
 # class MechanicalLoadReal in libaster
+
 
 class MechanicalLoadReal(DataStructure):
     pass
@@ -9164,7 +9458,9 @@ class MechanicalLoadReal(DataStructure):
     def updateValuePointers(self):
         pass
 
+
 # class MechanicalLoadFunction in libaster
+
 
 class MechanicalLoadFunction(DataStructure):
     pass
@@ -9210,7 +9506,9 @@ class MechanicalLoadFunction(DataStructure):
     def updateValuePointers(self):
         pass
 
+
 # class MechanicalLoadComplex in libaster
+
 
 class MechanicalLoadComplex(DataStructure):
     pass
@@ -9256,7 +9554,9 @@ class MechanicalLoadComplex(DataStructure):
     def updateValuePointers(self):
         pass
 
+
 # class MechanicalLoadDescriptionReal in libaster
+
 
 class MechanicalLoadDescriptionReal(DataStructure):
     pass
@@ -9275,11 +9575,12 @@ class MechanicalLoadDescriptionReal(DataStructure):
     def getConstantLoadField(self, arg0):
         pass
 
+
 # class Loads in libaster
 
+
 class Loads:
-    """Enumeration for type of load.
-    """
+    """Enumeration for type of load."""
 
     # Method resolution order:
     #     Loads
@@ -9318,7 +9619,7 @@ class Loads:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -9327,14 +9628,13 @@ class Loads:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     DistributedPressure = 9
@@ -9363,7 +9663,9 @@ class Loads:
 
     WavePressureOnFace = 11
 
+
 # class NodalForceReal in libaster
+
 
 class NodalForceReal(MechanicalLoadReal):
     pass
@@ -9391,7 +9693,9 @@ class NodalForceReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class NodalStructuralForceReal in libaster
+
 
 class NodalStructuralForceReal(MechanicalLoadReal):
     pass
@@ -9419,7 +9723,9 @@ class NodalStructuralForceReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class ForceOnFaceReal in libaster
+
 
 class ForceOnFaceReal(MechanicalLoadReal):
     pass
@@ -9447,7 +9753,9 @@ class ForceOnFaceReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class ForceOnEdgeReal in libaster
+
 
 class ForceOnEdgeReal(MechanicalLoadReal):
     pass
@@ -9475,7 +9783,9 @@ class ForceOnEdgeReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class StructuralForceOnEdgeReal in libaster
+
 
 class StructuralForceOnEdgeReal(MechanicalLoadReal):
     pass
@@ -9503,7 +9813,9 @@ class StructuralForceOnEdgeReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class LineicForceReal in libaster
+
 
 class LineicForceReal(MechanicalLoadReal):
     pass
@@ -9531,7 +9843,9 @@ class LineicForceReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class InternalForceReal in libaster
+
 
 class InternalForceReal(MechanicalLoadReal):
     pass
@@ -9559,7 +9873,9 @@ class InternalForceReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class StructuralForceOnBeamReal in libaster
+
 
 class StructuralForceOnBeamReal(MechanicalLoadReal):
     pass
@@ -9587,7 +9903,9 @@ class StructuralForceOnBeamReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class LocalForceOnBeamReal in libaster
+
 
 class LocalForceOnBeamReal(MechanicalLoadReal):
     pass
@@ -9615,7 +9933,9 @@ class LocalForceOnBeamReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class StructuralForceOnShellReal in libaster
+
 
 class StructuralForceOnShellReal(MechanicalLoadReal):
     pass
@@ -9643,7 +9963,9 @@ class StructuralForceOnShellReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class LocalForceOnShellReal in libaster
+
 
 class LocalForceOnShellReal(MechanicalLoadReal):
     pass
@@ -9671,7 +9993,9 @@ class LocalForceOnShellReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class PressureOnShellReal in libaster
+
 
 class PressureOnShellReal(MechanicalLoadReal):
     pass
@@ -9699,7 +10023,9 @@ class PressureOnShellReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class PressureOnPipeReal in libaster
+
 
 class PressureOnPipeReal(MechanicalLoadReal):
     pass
@@ -9727,7 +10053,9 @@ class PressureOnPipeReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class ImposedDisplacementReal in libaster
+
 
 class ImposedDisplacementReal(MechanicalLoadReal):
     pass
@@ -9755,7 +10083,9 @@ class ImposedDisplacementReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class ImposedPressureReal in libaster
+
 
 class ImposedPressureReal(MechanicalLoadReal):
     pass
@@ -9783,7 +10113,9 @@ class ImposedPressureReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class DistributedPressureReal in libaster
+
 
 class DistributedPressureReal(MechanicalLoadReal):
     pass
@@ -9811,7 +10143,9 @@ class DistributedPressureReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class NormalSpeedOnFaceReal in libaster
+
 
 class NormalSpeedOnFaceReal(MechanicalLoadReal):
     pass
@@ -9839,7 +10173,9 @@ class NormalSpeedOnFaceReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class WavePressureOnFaceReal in libaster
+
 
 class WavePressureOnFaceReal(MechanicalLoadReal):
     pass
@@ -9867,7 +10203,9 @@ class WavePressureOnFaceReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class DistributedHeatFluxReal in libaster
+
 
 class DistributedHeatFluxReal(MechanicalLoadReal):
     pass
@@ -9895,7 +10233,9 @@ class DistributedHeatFluxReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class DistributedHydraulicFluxReal in libaster
+
 
 class DistributedHydraulicFluxReal(MechanicalLoadReal):
     pass
@@ -9923,11 +10263,12 @@ class DistributedHydraulicFluxReal(MechanicalLoadReal):
     def setValue(self, arg0, arg1):
         pass
 
+
 # class PhysicalQuantityComponent in libaster
 
+
 class PhysicalQuantityComponent:
-    """Enumeration for physical component.
-    """
+    """Enumeration for physical component."""
 
     # Method resolution order:
     #     PhysicalQuantityComponent
@@ -9966,7 +10307,7 @@ class PhysicalQuantityComponent:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -9975,14 +10316,13 @@ class PhysicalQuantityComponent:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Drx = 3
@@ -10047,7 +10387,9 @@ class PhysicalQuantityComponent:
 
     Vz = 17
 
+
 # class ForceReal in libaster
+
 
 class ForceReal:
     pass
@@ -10074,7 +10416,9 @@ class ForceReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class StructuralForceReal in libaster
+
 
 class StructuralForceReal:
     pass
@@ -10101,7 +10445,9 @@ class StructuralForceReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class LocalBeamForceReal in libaster
+
 
 class LocalBeamForceReal:
     pass
@@ -10128,7 +10474,9 @@ class LocalBeamForceReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class LocalShellForceReal in libaster
+
 
 class LocalShellForceReal:
     pass
@@ -10155,7 +10503,9 @@ class LocalShellForceReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class DisplacementReal in libaster
+
 
 class DisplacementReal:
     pass
@@ -10182,7 +10532,9 @@ class DisplacementReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class PressureReal in libaster
+
 
 class PressureReal:
     pass
@@ -10209,7 +10561,9 @@ class PressureReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class ImpedanceReal in libaster
+
 
 class ImpedanceReal:
     pass
@@ -10236,7 +10590,9 @@ class ImpedanceReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class NormalSpeedReal in libaster
+
 
 class NormalSpeedReal:
     pass
@@ -10263,7 +10619,9 @@ class NormalSpeedReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class HeatFluxReal in libaster
+
 
 class HeatFluxReal:
     pass
@@ -10290,7 +10648,9 @@ class HeatFluxReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class HydraulicFluxReal in libaster
+
 
 class HydraulicFluxReal:
     pass
@@ -10317,7 +10677,9 @@ class HydraulicFluxReal:
     def setValue(self, arg0, arg1):
         pass
 
+
 # class ThermalLoadReal in libaster
+
 
 class ThermalLoadReal(DataStructure):
     pass
@@ -10367,7 +10729,9 @@ class ThermalLoadReal(DataStructure):
             bool: field exists
         """
 
+
 # class ThermalLoadFunction in libaster
+
 
 class ThermalLoadFunction(DataStructure):
     pass
@@ -10414,7 +10778,9 @@ class ThermalLoadFunction(DataStructure):
             bool: field exists
         """
 
+
 # class ThermalLoadDescriptionReal in libaster
+
 
 class ThermalLoadDescriptionReal(DataStructure):
     pass
@@ -10433,7 +10799,9 @@ class ThermalLoadDescriptionReal(DataStructure):
     def getConstantLoadField(self, arg0):
         pass
 
+
 # class BehaviourDefinition in libaster
+
 
 class BehaviourDefinition(DataStructure):
     pass
@@ -10454,7 +10822,9 @@ class BehaviourDefinition(DataStructure):
         2. __init__(self: libaster.BehaviourDefinition, arg0: str) -> None
         """
 
+
 # class Material in libaster
+
 
 class Material(DataStructure):
     pass
@@ -10532,7 +10902,9 @@ class Material(DataStructure):
             int: Number of material names.
         """
 
+
 # class PartOfMaterialField in libaster
+
 
 class PartOfMaterialField:
     pass
@@ -10564,7 +10936,9 @@ class PartOfMaterialField:
     def getVectorOfMaterial(self):
         pass
 
+
 # class MaterialField in libaster
+
 
 class MaterialField(DataStructure):
     pass
@@ -10638,8 +11012,7 @@ class MaterialField(DataStructure):
         """
 
     def build(self):
-        """Build material field
-        """
+        """Build material field"""
 
     def getExtStateVariablesOnMeshEntities(self):
         pass
@@ -10736,7 +11109,9 @@ class MaterialField(DataStructure):
             bool: *True* in case of success, *False* otherwise.
         """
 
+
 # class Grid in libaster
+
 
 class Grid(Mesh):
     pass
@@ -10759,7 +11134,9 @@ class Grid(Mesh):
         2. __init__(self: libaster.Grid, arg0: str) -> None
         """
 
+
 # class MeshesMapping in libaster
+
 
 class MeshesMapping(DataStructure):
     pass
@@ -10789,7 +11166,9 @@ class MeshesMapping(DataStructure):
     def setSecondMesh(self, arg0):
         pass
 
+
 # class Skeleton in libaster
+
 
 class Skeleton(BaseMesh):
     pass
@@ -10811,7 +11190,9 @@ class Skeleton(BaseMesh):
         2. __init__(self: libaster.Skeleton, arg0: str) -> None
         """
 
+
 # class DynamicMacroElement in libaster
+
 
 class DynamicMacroElement(DataStructure):
     pass
@@ -10903,7 +11284,9 @@ class DynamicMacroElement(DataStructure):
         2. setStiffnessMatrix(self: libaster.DynamicMacroElement, arg0: libaster.AssemblyMatrixDisplacementReal) -> bool
         """
 
+
 # class StaticMacroElement in libaster
+
 
 class StaticMacroElement(DataStructure):
     pass
@@ -10924,7 +11307,9 @@ class StaticMacroElement(DataStructure):
         2. __init__(self: libaster.StaticMacroElement, arg0: str) -> None
         """
 
+
 # class SuperMesh in libaster
+
 
 class SuperMesh(Mesh):
     pass
@@ -10948,27 +11333,25 @@ class SuperMesh(Mesh):
         """
 
     def addDynamicMacroElement(self, arg0):
-        """Add a dynamic macro element.
-        """
+        """Add a dynamic macro element."""
 
     def addStaticMacroElement(self, arg0):
-        """Add a static macro element.
-        """
+        """Add a static macro element."""
 
     def build(self):
         """Returns:
-            bool: true if building is ok
+        bool: true if building is ok
         """
 
     def getDynamicMacroElements(self):
-        """Return all dynamic macro elements.
-        """
+        """Return all dynamic macro elements."""
 
     def getStaticMacroElements(self):
-        """Return all static macro elements.
-        """
+        """Return all static macro elements."""
+
 
 # class CrackShape in libaster
+
 
 class CrackShape:
     pass
@@ -11055,7 +11438,9 @@ class CrackShape:
     def setSquareCrackShape(self, arg0, arg1, arg2, arg3, arg4, arg5, arg6):
         pass
 
+
 # class Crack in libaster
+
 
 class Crack(DataStructure):
     pass
@@ -11077,8 +11462,7 @@ class Crack(DataStructure):
         """
 
     def getConfigInit(self):
-        """Return the crack initial configuration
-        """
+        """Return the crack initial configuration"""
 
     def getCrackFrontAbsCurv(self):
         """Return the crack front absc curv
@@ -11179,10 +11563,11 @@ class Crack(DataStructure):
         """
 
     def isSymmetric(self):
-        """Return true if crack is symeric
-        """
+        """Return true if crack is symeric"""
+
 
 # class GeneralizedModel in libaster
+
 
 class GeneralizedModel(DataStructure):
     pass
@@ -11215,11 +11600,12 @@ class GeneralizedModel(DataStructure):
     def getDynamicStructureLinks(self):
         pass
 
+
 # class Physics in libaster
 
+
 class Physics:
-    """Enumeration physics.
-    """
+    """Enumeration physics."""
 
     # Method resolution order:
     #     Physics
@@ -11258,7 +11644,7 @@ class Physics:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -11267,14 +11653,13 @@ class Physics:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Acoustic = 2
@@ -11283,11 +11668,12 @@ class Physics:
 
     Thermal = 1
 
+
 # class Modelings in libaster
 
+
 class Modelings:
-    """Enumeration of modelings.
-    """
+    """Enumeration of modelings."""
 
     # Method resolution order:
     #     Modelings
@@ -11326,7 +11712,7 @@ class Modelings:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -11335,14 +11721,13 @@ class Modelings:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     AXIS_FLUIDE = 63
@@ -11713,11 +12098,12 @@ class Modelings:
 
     TridimensionalAbsorbingBoundary = 8
 
+
 # class Formulation in libaster
 
+
 class Formulation:
-    """Enumeration of formulation.
-    """
+    """Enumeration of formulation."""
 
     # Method resolution order:
     #     Formulation
@@ -11756,7 +12142,7 @@ class Formulation:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -11765,14 +12151,13 @@ class Formulation:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Dil = 6
@@ -11791,11 +12176,12 @@ class Formulation:
 
     UPsi = 5
 
+
 # class ModelSplitingMethod in libaster
 
+
 class ModelSplitingMethod:
-    """Enumeration for model split method .
-    """
+    """Enumeration for model split method ."""
 
     # Method resolution order:
     #     ModelSplitingMethod
@@ -11834,7 +12220,7 @@ class ModelSplitingMethod:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -11843,14 +12229,13 @@ class ModelSplitingMethod:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Centralized = 0
@@ -11859,11 +12244,12 @@ class ModelSplitingMethod:
 
     SubDomain = 1
 
+
 # class GraphPartitioner in libaster
 
+
 class GraphPartitioner:
-    """Enumeration for graph partitionner.
-    """
+    """Enumeration for graph partitionner."""
 
     # Method resolution order:
     #     GraphPartitioner
@@ -11902,7 +12288,7 @@ class GraphPartitioner:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -11911,21 +12297,22 @@ class GraphPartitioner:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     Metis = 1
 
     Scotch = 0
 
+
 # class Model in libaster
+
 
 class Model(DataStructure):
     pass
@@ -11974,8 +12361,7 @@ class Model(DataStructure):
         """
 
     def banBalancing(self):
-        """Prohibit model balancing
-        """
+        """Prohibit model balancing"""
 
     def build(self):
         pass
@@ -12118,7 +12504,9 @@ class Model(DataStructure):
     def xfemPreconditioningEnable(self):
         pass
 
+
 # class PrestressingCable in libaster
+
 
 class PrestressingCable(DataStructure):
     pass
@@ -12152,7 +12540,9 @@ class PrestressingCable(DataStructure):
             *Model*: Model object.
         """
 
+
 # class XfemCrack in libaster
+
 
 class XfemCrack(DataStructure):
     pass
@@ -12321,7 +12711,9 @@ class XfemCrack(DataStructure):
     def updateInternalState(self):
         pass
 
+
 # class Result in libaster
+
 
 class Result(DataStructure):
     pass
@@ -12714,10 +13106,9 @@ class Result(DataStructure):
         pass
 
     def printListOfFields(self):
-        """Print the names of all fields (real, complex, ...) stored in the result.
-        """
+        """Print the names of all fields (real, complex, ...) stored in the result."""
 
-    def printMedFile(self, filename, medname='', local=True, internalVar=True):
+    def printMedFile(self, filename, medname="", local=True, internalVar=True):
         """Print the result in a MED file.
 
         Args:
@@ -12851,7 +13242,9 @@ class Result(DataStructure):
             index (int):  index where to save time value
         """
 
+
 # class TransientResult in libaster
+
 
 class TransientResult(Result):
     pass
@@ -12873,7 +13266,9 @@ class TransientResult(Result):
         2. __init__(self: libaster.TransientResult, arg0: str, arg1: str) -> None
         """
 
+
 # class LoadResult in libaster
+
 
 class LoadResult(TransientResult):
     pass
@@ -12896,7 +13291,9 @@ class LoadResult(TransientResult):
         2. __init__(self: libaster.LoadResult, arg0: str) -> None
         """
 
+
 # class ThermalResult in libaster
+
 
 class ThermalResult(TransientResult):
     pass
@@ -12919,7 +13316,9 @@ class ThermalResult(TransientResult):
         2. __init__(self: libaster.ThermalResult, arg0: str) -> None
         """
 
+
 # class CombinedFourierResult in libaster
+
 
 class CombinedFourierResult(Result):
     pass
@@ -12941,7 +13340,9 @@ class CombinedFourierResult(Result):
         2. __init__(self: libaster.CombinedFourierResult, arg0: str) -> None
         """
 
+
 # class ElasticFourierResult in libaster
+
 
 class ElasticFourierResult(Result):
     pass
@@ -12963,7 +13364,9 @@ class ElasticFourierResult(Result):
         2. __init__(self: libaster.ElasticFourierResult, arg0: str) -> None
         """
 
+
 # class ThermalFourierResult in libaster
+
 
 class ThermalFourierResult(Result):
     pass
@@ -12985,7 +13388,9 @@ class ThermalFourierResult(Result):
         2. __init__(self: libaster.ThermalFourierResult, arg0: str) -> None
         """
 
+
 # class MultipleElasticResult in libaster
+
 
 class MultipleElasticResult(Result):
     pass
@@ -13007,7 +13412,9 @@ class MultipleElasticResult(Result):
         2. __init__(self: libaster.MultipleElasticResult, arg0: str) -> None
         """
 
+
 # class NonLinearResult in libaster
+
 
 class NonLinearResult(TransientResult):
     pass
@@ -13033,7 +13440,7 @@ class NonLinearResult(TransientResult):
     def getTangentMatrix(self):
         pass
 
-    def printMedFile(self, filename, medname='', local=True, internalVar=True):
+    def printMedFile(self, filename, medname="", local=True, internalVar=True):
         """Print the result in a MED file.
 
         Args:
@@ -13050,7 +13457,9 @@ class NonLinearResult(TransientResult):
         2. setContact(self: libaster.NonLinearResult, arg0: libaster.Contact, arg1: int) -> None
         """
 
+
 # class PhysicalProblem in libaster
+
 
 class PhysicalProblem:
     pass
@@ -13180,7 +13589,7 @@ class PhysicalProblem:
         43. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Function2D) -> None
         """
 
-    def computeBehaviourProperty(self, COMPORTEMENT, SIGM_INIT='NON', INFO=1):
+    def computeBehaviourProperty(self, COMPORTEMENT, SIGM_INIT="NON", INFO=1):
         """Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
         Arguments:
@@ -13196,7 +13605,7 @@ class PhysicalProblem:
             Bool: True if success
         """
 
-    def computeListOfLoads(self, command_name=''):
+    def computeListOfLoads(self, command_name=""):
         """Build the list of loads from the added loads
 
         Arguments:
@@ -13338,7 +13747,9 @@ class PhysicalProblem:
             field(FieldOnNodes): the modified field
         """
 
+
 # class Glossary in libaster
+
 
 class Glossary:
     pass
@@ -13351,8 +13762,7 @@ class Glossary:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getComponent(self, arg0):
         pass
@@ -13363,12 +13773,16 @@ class Glossary:
     def getPhysics(self, arg0):
         pass
 
+
 # built-in function getGlossary in libaster
+
 
 def getGlossary():
     pass
 
+
 # class CyclicSymmetryMode in libaster
+
 
 class CyclicSymmetryMode(DataStructure):
     pass
@@ -13389,7 +13803,9 @@ class CyclicSymmetryMode(DataStructure):
         2. __init__(self: libaster.CyclicSymmetryMode, arg0: str) -> None
         """
 
+
 # class FullResult in libaster
+
 
 class FullResult(Result):
     pass
@@ -13417,7 +13833,9 @@ class FullResult(Result):
     def setDOFNumbering(self, arg0):
         pass
 
+
 # class ModeResult in libaster
+
 
 class ModeResult(FullResult):
     pass
@@ -13486,7 +13904,9 @@ class ModeResult(FullResult):
     def setStructureInterface(self, arg0):
         pass
 
+
 # class ModeResultComplex in libaster
+
 
 class ModeResultComplex(ModeResult):
     pass
@@ -13532,7 +13952,9 @@ class ModeResultComplex(ModeResult):
     def setStructureInterface(self, arg0):
         pass
 
+
 # class AcousticModeResult in libaster
+
 
 class AcousticModeResult(FullResult):
     pass
@@ -13558,7 +13980,9 @@ class AcousticModeResult(FullResult):
     def setStiffnessMatrix(self, arg0):
         pass
 
+
 # class BucklingModeResult in libaster
+
 
 class BucklingModeResult(FullResult):
     pass
@@ -13600,7 +14024,9 @@ class BucklingModeResult(FullResult):
         6. setStiffnessMatrix(self: libaster.BucklingModeResult, arg0: libaster.GeneralizedAssemblyMatrixComplex) -> bool
         """
 
+
 # class GeneralizedResultReal in libaster
+
 
 class GeneralizedResultReal(DataStructure):
     pass
@@ -13614,10 +14040,11 @@ class GeneralizedResultReal(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
 
 # class GeneralizedResultComplex in libaster
+
 
 class GeneralizedResultComplex(DataStructure):
     pass
@@ -13631,10 +14058,11 @@ class GeneralizedResultComplex(DataStructure):
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
 
 # class TransientGeneralizedResult in libaster
+
 
 class TransientGeneralizedResult(GeneralizedResultReal):
     pass
@@ -13657,8 +14085,7 @@ class TransientGeneralizedResult(GeneralizedResultReal):
         """
 
     def build(self):
-        """Builds C++ arguments associated to attributes stored by blocks of time indices
-        """
+        """Builds C++ arguments associated to attributes stored by blocks of time indices"""
 
     def getAccelerationValues(self, *args, **kwargs):
         """Overloaded function.
@@ -13808,7 +14235,9 @@ class TransientGeneralizedResult(GeneralizedResultReal):
             val (list[double]): generalized velocity values.
         """
 
+
 # class HarmoGeneralizedResult in libaster
+
 
 class HarmoGeneralizedResult(GeneralizedResultComplex):
     pass
@@ -13854,7 +14283,9 @@ class HarmoGeneralizedResult(GeneralizedResultComplex):
     def setVelocity(self, arg0):
         pass
 
+
 # class ElasticResult in libaster
+
 
 class ElasticResult(Result):
     pass
@@ -13876,7 +14307,9 @@ class ElasticResult(Result):
         2. __init__(self: libaster.ElasticResult, arg0: str) -> None
         """
 
+
 # class MeshCoordinatesField in libaster
+
 
 class MeshCoordinatesField(DataStructure):
     pass
@@ -13988,10 +14421,11 @@ class MeshCoordinatesField(DataStructure):
         """
 
     def updateValuePointers(self):
-        """Update values of internal pointer.
-        """
+        """Update values of internal pointer."""
+
 
 # class FullTransientResult in libaster
+
 
 class FullTransientResult(FullResult):
     pass
@@ -14014,7 +14448,9 @@ class FullTransientResult(FullResult):
         2. __init__(self: libaster.FullTransientResult) -> None
         """
 
+
 # class FullHarmonicResult in libaster
+
 
 class FullHarmonicResult(FullResult):
     pass
@@ -14037,7 +14473,9 @@ class FullHarmonicResult(FullResult):
         2. __init__(self: libaster.FullHarmonicResult) -> None
         """
 
+
 # class FullHarmonicAcousticResult in libaster
+
 
 class FullHarmonicAcousticResult(FullResult):
     pass
@@ -14060,7 +14498,9 @@ class FullHarmonicAcousticResult(FullResult):
         2. __init__(self: libaster.FullHarmonicAcousticResult) -> None
         """
 
+
 # class FluidStructureModalBasis in libaster
+
 
 class FluidStructureModalBasis(DataStructure):
     pass
@@ -14091,7 +14531,9 @@ class FluidStructureModalBasis(DataStructure):
             Table: Table stored with the given identifier.
         """
 
+
 # class GeneralizedModeResult in libaster
+
 
 class GeneralizedModeResult(FullResult):
     pass
@@ -14143,7 +14585,9 @@ class GeneralizedModeResult(FullResult):
         2. setStiffnessMatrix(self: libaster.GeneralizedModeResult, arg0: libaster.GeneralizedAssemblyMatrixComplex) -> bool
         """
 
+
 # class MGISBehaviour in libaster
+
 
 class MGISBehaviour(DataStructure):
     pass
@@ -14178,7 +14622,9 @@ class MGISBehaviour(DataStructure):
             path: Library path.
         """
 
+
 # class ParallelMesh in libaster
+
 
 class ParallelMesh(BaseMesh):
     pass
@@ -14337,8 +14783,7 @@ class ParallelMesh(BaseMesh):
         """
 
     def getOppositeDomains(self):
-        """Returns the list of opposite domains of local process
-        """
+        """Returns the list of opposite domains of local process"""
 
     def getOuterCells(self):
         """Return the list of the indexes of the outer cells in the mesh
@@ -14407,7 +14852,9 @@ class ParallelMesh(BaseMesh):
             localNumbering=false (bool): ids are given in the local numbering ?
         """
 
+
 # class ParallelEquationNumbering in libaster
+
 
 class ParallelEquationNumbering(EquationNumbering):
     pass
@@ -14512,7 +14959,9 @@ class ParallelEquationNumbering(EquationNumbering):
             int: local number of the DOF.
         """
 
+
 # class ParallelDOFNumbering in libaster
+
 
 class ParallelDOFNumbering(BaseDOFNumbering):
     pass
@@ -14728,7 +15177,9 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             bool: *True* if used, *False* otherwise.
         """
 
+
 # class ParallelMechanicalLoadReal in libaster
+
 
 class ParallelMechanicalLoadReal(DataStructure):
     pass
@@ -14766,7 +15217,9 @@ class ParallelMechanicalLoadReal(DataStructure):
             grpMa (list of strings): list of cell groups
         """
 
+
 # class ParallelMechanicalLoadFunction in libaster
+
 
 class ParallelMechanicalLoadFunction(DataStructure):
     pass
@@ -14795,7 +15248,9 @@ class ParallelMechanicalLoadFunction(DataStructure):
     def getModel(self):
         pass
 
+
 # class ParallelThermalLoadReal in libaster
+
 
 class ParallelThermalLoadReal(DataStructure):
     pass
@@ -14831,7 +15286,9 @@ class ParallelThermalLoadReal(DataStructure):
             grpMa (list of strings): list of cell groups
         """
 
+
 # class ParallelThermalLoadFunction in libaster
+
 
 class ParallelThermalLoadFunction(DataStructure):
     pass
@@ -14858,7 +15315,9 @@ class ParallelThermalLoadFunction(DataStructure):
     def getModel(self):
         pass
 
+
 # class ParallelFiniteElementDescriptor in libaster
+
 
 class ParallelFiniteElementDescriptor(FiniteElementDescriptor):
     pass
@@ -14885,7 +15344,9 @@ class ParallelFiniteElementDescriptor(FiniteElementDescriptor):
             list: joints between subdomains.
         """
 
+
 # class ParallelContactFEDescriptor in libaster
+
 
 class ParallelContactFEDescriptor(FiniteElementDescriptor):
     pass
@@ -14912,7 +15373,9 @@ class ParallelContactFEDescriptor(FiniteElementDescriptor):
             list: joints between subdomains.
         """
 
+
 # class ParallelContactNew in libaster
+
 
 class ParallelContactNew(ContactNew):
     pass
@@ -14941,14 +15404,14 @@ class ParallelContactNew(ContactNew):
         pass
 
     def getParallelFiniteElementDescriptor(self):
-        """Return ParallelFiniteElementDescriptor
-        """
+        """Return ParallelFiniteElementDescriptor"""
 
     def isParallel(self):
-        """bool: true if parallel contact.
-        """
+        """bool: true if parallel contact."""
+
 
 # class ParallelFrictionNew in libaster
+
 
 class ParallelFrictionNew(ParallelContactNew):
     pass
@@ -14971,7 +15434,9 @@ class ParallelFrictionNew(ParallelContactNew):
         2. __init__(self: libaster.ParallelFrictionNew, arg0: libaster.Model, arg1: libaster.ParallelMesh) -> None
         """
 
+
 # class ParallelContactPairing in libaster
+
 
 class ParallelContactPairing(ContactPairing):
     pass
@@ -14997,10 +15462,11 @@ class ParallelContactPairing(ContactPairing):
         pass
 
     def getParallelFiniteElementDescriptor(self):
-        """Return ParallelFiniteElementDescriptor
-        """
+        """Return ParallelFiniteElementDescriptor"""
+
 
 # class ConnectionMesh in libaster
+
 
 class ConnectionMesh(BaseMesh):
     pass
@@ -15022,7 +15488,7 @@ class ConnectionMesh(BaseMesh):
         2. __init__(self: libaster.ConnectionMesh, arg0: str, arg1: libaster.ParallelMesh, arg2: list[str], arg3: list[str]) -> None
         """
 
-    def getCells(self, group_name=''):
+    def getCells(self, group_name=""):
         """Return the list of the indexes of the cells that belong to a group of cells.
 
         Arguments:
@@ -15090,10 +15556,11 @@ class ConnectionMesh(BaseMesh):
         """
 
     def isConnection(self):
-        """Function to know if a mesh is a ConnectionMesh
-        """
+        """Function to know if a mesh is a ConnectionMesh"""
+
 
 # class ResultNaming in libaster
+
 
 class ResultNaming:
     pass
@@ -15106,13 +15573,14 @@ class ResultNaming:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Static methods defined here:
 
+
 # class ListOfFloats in libaster
+
 
 class ListOfFloats(DataStructure):
     pass
@@ -15139,14 +15607,16 @@ class ListOfFloats(DataStructure):
     def setVectorValues(self, arg0):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
     def size(self):
         pass
 
+
 # class ListOfIntegers in libaster
+
 
 class ListOfIntegers(DataStructure):
     pass
@@ -15173,14 +15643,16 @@ class ListOfIntegers(DataStructure):
     def setVectorValues(self, arg0):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
     def size(self):
         pass
 
+
 # class EmpiricalModeResult in libaster
+
 
 class EmpiricalModeResult(Result):
     pass
@@ -15202,7 +15674,9 @@ class EmpiricalModeResult(Result):
         2. __init__(self: libaster.EmpiricalModeResult, arg0: str) -> None
         """
 
+
 # class EvolutionParameter in libaster
+
 
 class EvolutionParameter:
     pass
@@ -15281,7 +15755,9 @@ class EvolutionParameter:
                         function (Function): function
         """
 
+
 # class ExternalStateVariable in libaster
+
 
 class ExternalStateVariable:
     pass
@@ -15315,15 +15791,13 @@ class ExternalStateVariable:
         pass
 
     def getField(self):
-        """Get the field of values
-        """
+        """Get the field of values"""
 
     def getReferenceValue(self):
         pass
 
     def getTransientResult(self):
-        """Get the transient result
-        """
+        """Get the transient result"""
 
     def getType(self):
         pass
@@ -15352,7 +15826,9 @@ class ExternalStateVariable:
             value (float): reference value
         """
 
+
 # class ExternalVariableTraits in libaster
+
 
 class ExternalVariableTraits:
     pass
@@ -15365,17 +15841,17 @@ class ExternalVariableTraits:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getExternVarTypeStr(self):
         pass
 
+
 # class externVarEnumInt in libaster
 
+
 class externVarEnumInt:
-    """Enumeration for external variable.
-    """
+    """Enumeration for external variable."""
 
     # Method resolution order:
     #     externVarEnumInt
@@ -15414,7 +15890,7 @@ class externVarEnumInt:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -15423,14 +15899,13 @@ class externVarEnumInt:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     ConcreteDrying = 11
@@ -15465,7 +15940,9 @@ class externVarEnumInt:
 
     ZircaloyPhases = 7
 
+
 # class ExternalStateVariablesResult in libaster
+
 
 class ExternalStateVariablesResult(TransientResult):
     pass
@@ -15488,7 +15965,9 @@ class ExternalStateVariablesResult(TransientResult):
         2. __init__(self: libaster.ExternalStateVariablesResult, arg0: str) -> None
         """
 
+
 # built-in function createEnthalpy in libaster
+
 
 def createEnthalpy(rho_cp_func, beta_func):
     """Integrate the rho_cp function by adding a point at T=0 K to be sure \\
@@ -15499,22 +15978,27 @@ def createEnthalpy(rho_cp_func, beta_func):
         beta_func[Function]: Function of BETA to modify (add value at T=0K)
     """
 
+
 # built-in function petscFinalize in libaster
 
+
 def petscFinalize():
-    """Stops the PETSc interface.
-    """
+    """Stops the PETSc interface."""
+
 
 # built-in function petscInitialize in libaster
 
-def petscInitialize(options=''):
+
+def petscInitialize(options=""):
     """Starts the PETSc interface with options.
 
     Arguments:
         options[str]: PETSc options
     """
 
+
 # built-in function assemblyMatrixToPetsc in libaster
+
 
 def assemblyMatrixToPetsc(*args, **kwargs):
     """Overloaded function.
@@ -15547,7 +16031,9 @@ def assemblyMatrixToPetsc(*args, **kwargs):
         *Mat*: PETSc matrix.
     """
 
+
 # class BehaviourProperty in libaster
+
 
 class BehaviourProperty(DataStructure):
     pass
@@ -15624,7 +16110,9 @@ class BehaviourProperty(DataStructure):
             bool: *True* if present, *False* otherwise.
         """
 
+
 # class CodedMaterial in libaster
+
 
 class CodedMaterial:
     pass
@@ -15653,7 +16141,9 @@ class CodedMaterial:
     def getCodedMaterialField(self):
         pass
 
+
 # built-in function setFortranLoggingLevel in libaster
+
 
 def setFortranLoggingLevel(level):
     """Set level of logging for fortran code.
@@ -15662,13 +16152,16 @@ def setFortranLoggingLevel(level):
         level[int]: Level of logging
     """
 
+
 # built-in function resetFortranLoggingLevel in libaster
 
+
 def resetFortranLoggingLevel():
-    """Reset level of logging for fortran code (level = 0).
-    """
+    """Reset level of logging for fortran code (level = 0)."""
+
 
 # class PostProcessing in libaster
+
 
 class PostProcessing:
     pass
@@ -15711,7 +16204,9 @@ class PostProcessing:
             FieldOnCellReals: hydration field at end of current time step
         """
 
+
 # class HHO in libaster
+
 
 class HHO:
     pass
@@ -15899,7 +16394,9 @@ class HHO:
               FieldOnNodesReal: HHO field project on Lagrange space
         """
 
+
 # class CommGraph in libaster
+
 
 class CommGraph:
     pass
@@ -15932,10 +16429,11 @@ class CommGraph:
         """
 
     def synchronizeOverProcesses(self):
-        """Synchronise graph over processes
-        """
+        """Synchronise graph over processes"""
+
 
 # class ObjectBalancer in libaster
+
 
 class ObjectBalancer:
     pass
@@ -15999,16 +16497,13 @@ class ObjectBalancer:
         """
 
     def endElementarySendDefinition(self):
-        """End the definition of sends
-        """
+        """End the definition of sends"""
 
     def getRenumbering(self):
-        """Get element renumbering (if necessary)
-        """
+        """Get element renumbering (if necessary)"""
 
     def prepareCommunications(self):
-        """Prepare the communications between processes
-        """
+        """Prepare the communications between processes"""
 
     def setElementsToKeep(self, elemList):
         """Add a list of elements to keep on local process
@@ -16017,7 +16512,9 @@ class ObjectBalancer:
             elemList: list of elements to keep
         """
 
+
 # class MeshBalancer in libaster
+
 
 class MeshBalancer:
     pass
@@ -16068,7 +16565,9 @@ class MeshBalancer:
             balancer: object balancer
         """
 
+
 # class IncompleteMesh in libaster
+
 
 class IncompleteMesh(Mesh):
     pass
@@ -16104,7 +16603,9 @@ class IncompleteMesh(Mesh):
              list: list of ids in local numbering
         """
 
+
 # class PtScotchPartitioner in libaster
+
 
 class PtScotchPartitioner:
     pass
@@ -16146,8 +16647,7 @@ class PtScotchPartitioner:
         """
 
     def checkGraph(self):
-        """Ask PtScotch to check the graph
-        """
+        """Ask PtScotch to check the graph"""
 
     def partitionGraph(self, deterministic=False):
         """Call PtScotch partitioning
@@ -16166,7 +16666,9 @@ class PtScotchPartitioner:
             path: path to output file
         """
 
+
 # class ParMetisPartitioner in libaster
+
 
 class ParMetisPartitioner:
     pass
@@ -16198,7 +16700,9 @@ class ParMetisPartitioner:
             list[int]: Owner for each nodes
         """
 
+
 # class MeshConnectionGraph in libaster
+
 
 class MeshConnectionGraph:
     pass
@@ -16232,10 +16736,11 @@ class MeshConnectionGraph:
         """
 
     def debugCheck(self):
-        """Check graph
-        """
+        """Check graph"""
+
 
 # built-in function applyBalancingStrategy in libaster
+
 
 def applyBalancingStrategy(*args, **kwargs):
     """Overloaded function.
@@ -16285,11 +16790,12 @@ def applyBalancingStrategy(*args, **kwargs):
         mesh: PhysicalProblem
     """
 
+
 # class MedFileAccessType in libaster
 
+
 class MedFileAccessType:
-    """Enumeration med access type.
-    """
+    """Enumeration med access type."""
 
     # Method resolution order:
     #     MedFileAccessType
@@ -16328,7 +16834,7 @@ class MedFileAccessType:
     def __str__(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Readonly properties defined here:
 
     @property
@@ -16337,14 +16843,13 @@ class MedFileAccessType:
 
     @property
     def name(self):
-        """name(self: object) -> str
-        """
+        """name(self: object) -> str"""
 
     @property
     def value(self):
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Data and other attributes defined here:
 
     MedCreate = 2
@@ -16353,7 +16858,9 @@ class MedFileAccessType:
 
     MedReadWrite = 1
 
+
 # class MedFileReader in libaster
+
 
 class MedFileReader:
     pass
@@ -16372,8 +16879,7 @@ class MedFileReader:
         pass
 
     def close(self):
-        """Close med file
-        """
+        """Close med file"""
 
     def getField(self, *args, **kwargs):
         """Overloaded function.
@@ -16462,7 +16968,9 @@ class MedFileReader:
             int: return code (0 if open is ok)
         """
 
+
 # class MedField in libaster
+
 
 class MedField:
     pass
@@ -16475,8 +16983,7 @@ class MedField:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):
         pass
@@ -16493,20 +17000,16 @@ class MedField:
         """
 
     def getComponentName(self):
-        """Get field component name
-        """
+        """Get field component name"""
 
     def getComponentNumber(self):
-        """Get field component number
-        """
+        """Get field component number"""
 
     def getName(self):
-        """Get field name
-        """
+        """Get field name"""
 
     def getProfileNumberAtSequenceOnEntity(self, arg0, arg1, arg2, arg3):
-        """Get profile number in calculation sequence for a given entity and geometric type
-        """
+        """Get profile number in calculation sequence for a given entity and geometric type"""
 
     def getSequence(self, arg0):
         """Get time step id and iteration id for a given sequence id
@@ -16516,8 +17019,7 @@ class MedField:
         """
 
     def getSequenceNumber(self):
-        """Get calculation sequence number
-        """
+        """Get calculation sequence number"""
 
     def getTime(self, arg0):
         """Get time for a given sequence id
@@ -16563,7 +17065,9 @@ class MedField:
             list: values on nodes
         """
 
+
 # class MedMesh in libaster
+
 
 class MedMesh:
     pass
@@ -16576,8 +17080,7 @@ class MedMesh:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):
         pass
@@ -16678,8 +17181,7 @@ class MedMesh:
         """
 
     def getDimension(self):
-        """Get mesh dimension
-        """
+        """Get mesh dimension"""
 
     def getFamilies(self):
         """Get family list
@@ -16700,8 +17202,7 @@ class MedMesh:
         """
 
     def getName(self):
-        """Get mesh name
-        """
+        """Get mesh name"""
 
     def getNodeFamilyAtSequence(self, numdt, numit):
         """Get node families for calculation sequence
@@ -16746,8 +17247,7 @@ class MedMesh:
         """
 
     def getSequenceNumber(self):
-        """Get calculation sequence number
-        """
+        """Get calculation sequence number"""
 
     def readCoordinates(self, numdt, numit):
         """Get coordinates for calculation sequence
@@ -16760,7 +17260,9 @@ class MedMesh:
             list: coordinates list
         """
 
+
 # class MedFamily in libaster
+
 
 class MedFamily:
     pass
@@ -16773,25 +17275,23 @@ class MedFamily:
     # Methods defined here:
 
     def __init__(self, /, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature.
-        """
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):
         pass
 
     def getGroups(self):
-        """Get list of groups in family
-        """
+        """Get list of groups in family"""
 
     def getId(self):
-        """Get family med id
-        """
+        """Get family med id"""
 
     def getName(self):
-        """Get family name
-        """
+        """Get family name"""
+
 
 # class MedVector in libaster
+
 
 class MedVector:
     pass
@@ -16818,16 +17318,13 @@ class MedVector:
         pass
 
     def getComponentName(self):
-        """Get component name
-        """
+        """Get component name"""
 
     def getComponentNumber(self):
-        """Get component name
-        """
+        """Get component name"""
 
     def getComponentVector(self):
-        """Get component on element vector
-        """
+        """Get component on element vector"""
 
     def getCumulatedSizesVector(self):
         """Get cumulated sizes vector
@@ -16844,30 +17341,26 @@ class MedVector:
         """
 
     def setComponentName(self, arg0):
-        """Set component name
-        """
+        """Set component name"""
 
     def setComponentNumber(self, arg0):
-        """Set component number
-        """
+        """Set component number"""
 
     def setComponentVector(self, arg0):
-        """Set component on element vector
-        """
+        """Set component on element vector"""
 
     def setCumulatedSizesVector(self, arg0):
-        """Set cumulated sizes vector
-        """
+        """Set cumulated sizes vector"""
 
     def setValues(self, arg0):
-        """Set vector values (WARNING values are owned by MedVector: no copy)
-        """
+        """Set vector values (WARNING values are owned by MedVector: no copy)"""
 
     def size(self):
-        """Get vector size, ie: number of elements (cells or nodes)
-        """
+        """Get vector size, ie: number of elements (cells or nodes)"""
+
 
 # class FieldCharacteristics in libaster
+
 
 class FieldCharacteristics:
     pass
@@ -16900,12 +17393,16 @@ class FieldCharacteristics:
     def getQuantity(self):
         pass
 
+
 # built-in function getModelings in libaster
+
 
 def getModelings():
     pass
 
+
 # class SyntaxSaver in libaster
+
 
 class SyntaxSaver:
     pass

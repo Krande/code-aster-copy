@@ -31,12 +31,16 @@ from ..Objects import (
     PhysicalProblem,
 )
 from ..Solvers import NonLinearOperator
-from ..Utilities import print_stats, reset_stats
+from ..Utilities import force_list, print_stats, reset_stats
 
 
-def _contact_check(CONTACT):
+def _contact_check(model, CONTACT):
     """Add controls to prohibit unconverted features in contact"""
     if CONTACT:
+        CONTACT = force_list(CONTACT)
+        # currently max=1 in C_CONTACT
+        if len(CONTACT) > 1 and model.getMesh().isParallel():
+            raise TypeError("Only one CONTACT factor keyword is allowed with a ParallelMesh")
         assert CONTACT[0]["ALGO_RESO_GEOM"] == "NEWTON"
         defi = CONTACT[0]["DEFINITION"]
         for zone in defi.getContactZones():
@@ -90,7 +94,7 @@ def meca_non_line_ops(self, **args):
     adapt_increment_init(args, "EVOL_NOLI")
 
     # Add controls to prohibit unconverted features
-    _contact_check(args["CONTACT"])
+    _contact_check(args["MODELE"], args["CONTACT"])
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
