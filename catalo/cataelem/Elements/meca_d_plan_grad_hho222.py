@@ -263,15 +263,15 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
 )
 
-DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
+DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "VARI", "LAG_GV"))
+
+DEPLCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[10]",))
 
 MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_DEPL)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
-
-MVEFORC = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DEPLHHO)
 
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
@@ -411,7 +411,7 @@ class MECA_DGVQ_HHO222(Element):
             te=458,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
-                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO),
+                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLCINE),
                 (OP.HHO_CINE_R_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_DEPL),),

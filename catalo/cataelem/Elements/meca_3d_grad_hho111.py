@@ -350,7 +350,11 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
 )
 
-DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
+DEPLHHO = LocatedComponents(
+    phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "VARI", "LAG_GV")
+)
+
+DEPLCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[21]",))
 
@@ -535,7 +539,7 @@ class MECA3DGVH_HHO111(Element):
             te=458,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
-                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO),
+                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLCINE),
                 (OP.HHO_CINE_R_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_DEPL),),
