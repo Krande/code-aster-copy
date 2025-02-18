@@ -16,6 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+! aslint: disable=C9992
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_GV_module
 !
     use NonLin_Datastructure_type
