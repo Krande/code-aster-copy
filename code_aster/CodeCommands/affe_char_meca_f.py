@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -22,6 +22,7 @@
 from ..Objects import MechanicalLoadFunction, ParallelMechanicalLoadFunction, ConnectionMesh, Model
 from ..Supervis import ExecuteCommand
 from .affe_char_meca import MechanicalLoadDefinition, _getGroups
+from ..Cata.Commands import DEFI_CONSTANTE
 
 
 class MechanicalLoadFunctionDefinition(ExecuteCommand):
@@ -85,6 +86,51 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
         """
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "MODELE")
+
+    def adapt_syntax(self, keywords):
+        """Hook to adapt syntax *after* syntax checking.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        if "PRE_EPSI" in keywords:
+            # Convert the 3 real components of VECT_N to constant functions
+            l_dic_kws = keywords.get("PRE_EPSI")
+            if (
+                type(l_dic_kws) == tuple or type(l_dic_kws) == list
+            ):  # il y a plus d'une occurrence de MASSIF
+                for dic in l_dic_kws:
+                    if "VECT_N" in dic.keys():
+                        convert_real_to_constant_function(dic, "VECT_N")
+                        print("etienne keywords", keywords)
+            # check syntax after changing the keywords
+            self.check_syntax(keywords)
+
+
+def convert_real_to_constant_function(mcfact, name):
+    """Replace a list of real by constant functions (separed parameters).
+
+    Example: VECT_N=(x, y, z) is replaced by
+             VECT_N1 =DEFI_CONSTANTE(VALE=x),
+             VECT_N2 =DEFI_CONSTANTE(VALE=y),
+             VECT_N3 =DEFI_CONSTANTE(VALE=z),
+
+    Args:
+        mcfact (dict): factor keyword, changed in place.
+        name (str): keyword containing the list.
+    """
+    # values = mcfact.pop(name, None)
+    if name in mcfact:
+        values = mcfact[name]
+    else:
+        return
+    # if not values:
+    #     return
+    func = [None] * len(values)
+    for i, value in enumerate(values):
+        func[i] = DEFI_CONSTANTE(VALE=value)
+        mcfact[f"{name}{i + 1}"] = func[i]
 
 
 AFFE_CHAR_MECA_F = MechanicalLoadFunctionDefinition.run

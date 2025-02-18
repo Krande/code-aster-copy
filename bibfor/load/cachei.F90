@@ -62,7 +62,7 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
     real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy, vect_n(3), xkn1, xkn2
     character(len=8) :: k8b, kepxx, kepyy, kepzz, kepxy, kepxz, kepyz
     character(len=8) :: kepx, kxky, kxkz, kxexx, kxeyy, kxexy, kxkxx, kxkyy, kxkxy
-    character(len=8) :: typmcl(2)
+    character(len=8) :: typmcl(2), kxkn1, kxkn2, kxvn1, kxvn2, kxvn3
     character(len=16) :: keywordFact, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai, chepsi
@@ -195,6 +195,11 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             call getvid(keywordFact, 'KXX', iocc=iocc, scal=kxkxx, nbret=nkxx)
             call getvid(keywordFact, 'KYY', iocc=iocc, scal=kxkyy, nbret=nkyy)
             call getvid(keywordFact, 'KXY', iocc=iocc, scal=kxkxy, nbret=nkxy)
+            call getvid(keywordFact, 'KN1', iocc=iocc, scal=kxkn1, nbret=nkn1)
+            call getvid(keywordFact, 'KN2', iocc=iocc, scal=kxkn2, nbret=nkn2)
+            call getvid(keywordFact, 'VECT_N1', iocc=iocc, scal=kxvn1, nbret=nvectn)
+            call getvid(keywordFact, 'VECT_N2', iocc=iocc, scal=kxvn2, nbret=nvectn)
+            call getvid(keywordFact, 'VECT_N3', iocc=iocc, scal=kxvn3, nbret=nvectn)
             do i = 1, ncmp
                 zk8(jvalv-1+i) = '&FOZERO'
             end do
@@ -208,12 +213,21 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             if (nex .ne. 0) zk8(jvalv-1+7) = kepx
             if (nky .ne. 0) zk8(jvalv-1+8) = kxky
             if (nkz .ne. 0) zk8(jvalv-1+9) = kxkz
+            if (nkn1 .ne. 0) zk8(jvalv-1+8) = kxkn1
+            if (nkn2 .ne. 0) zk8(jvalv-1+9) = kxkn2
+
             if (nexx .ne. 0) zk8(jvalv-1+10) = kxexx
             if (neyy .ne. 0) zk8(jvalv-1+11) = kxeyy
             if (nexy .ne. 0) zk8(jvalv-1+12) = kxexy
             if (nkxx .ne. 0) zk8(jvalv-1+13) = kxkxx
             if (nkyy .ne. 0) zk8(jvalv-1+14) = kxkyy
             if (nkxy .ne. 0) zk8(jvalv-1+15) = kxkxy
+
+            if (nvectn .ne. 0) then
+                zk8(jvalv-1+16) = kxvn1
+                zk8(jvalv-1+17) = kxvn2
+                zk8(jvalv-1+18) = kxvn3
+            end if
         end if
 !
         call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)

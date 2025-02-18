@@ -202,9 +202,22 @@ EPX = FORMULE(
 )
 KY = FORMULE(VALE="2.E-3*escalier(Y)*INST", escalier=escalier, NOM_PARA=["Y", "INST"])
 KZ = FORMULE(VALE="3.E-3*escalier(Z)*INST", escalier=escalier, NOM_PARA=["Z", "INST"])
-
+# KN1 = - KY
+KN1 = FORMULE(VALE="-2.E-3*escalier(Y)*INST", escalier=escalier, NOM_PARA=["Y", "INST"])
+# KN2 = - KZ
+KN2 = FORMULE(VALE="-3.E-3*escalier(Z)*INST", escalier=escalier, NOM_PARA=["Z", "INST"])
 CHF1 = AFFE_CHAR_MECA_F(
-    MODELE=MO1, PRE_EPSI=_F(GROUP_MA=("E1", "E2", "E4", "E5", "E7", "E8"), EPX=EPX, KY=KY, KZ=KZ)
+    MODELE=MO1,
+    PRE_EPSI=(
+        _F(GROUP_MA=("E1", "E2", "E4"), EPX=EPX, KY=KY, KZ=KZ),
+        _F(
+            GROUP_MA=("E5", "E7", "E8"),
+            EPX=EPX,
+            KN1=KN1,
+            KN2=KN2,
+            VECT_N=(-0.40824829046386302, -0.40824829046386296, 0.81649658092772603),
+        ),
+    ),
 )
 
 CHF2 = AFFE_CHAR_MECA_F(
