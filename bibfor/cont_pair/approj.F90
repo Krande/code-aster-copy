@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
 #include "asterfort/cfnben.h"
 #include "asterfort/cfnumm.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
 #include "asterfort/mmproj.h"
 #include "asterfort/utmess.h"
 !
@@ -93,6 +94,7 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: ifm, niv
     character(len=8) :: elem_mast_type, elem_mast_name
     integer :: elem_mast_ndim, niverr, elem_mast_nbnode, node_nbelem, ino
     real(kind=8) :: elem_mast_coor(27), vect_pm(3)
@@ -105,6 +107,8 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    call infdbg('APPARIEMENT', ifm, niv)
+
     dist_mini = r8gaem()
     ksi1_mini = r8gaem()
     ksi2_mini = r8gaem()
@@ -181,7 +185,9 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
 !
         if (niverr .eq. 1) then
             err_appa = 1
-            call utmess('I', 'APPARIEMENT_13', sk=elem_mast_name, nr=3, valr=poin_coor)
+            if (niv .ge. 2) then
+                call utmess('I', 'APPARIEMENT_13', sk=elem_mast_name, nr=3, valr=poin_coor)
+            end if
         end if
 !
 ! ----- Compute distance
