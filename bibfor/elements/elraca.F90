@@ -390,8 +390,8 @@ subroutine elraca(elrefz, &
 
     case ('SE2')
         nbfpg = 17
-        nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 3, 5, 6, 7, 8, &
-                         4, 5, 10, nnos+2, nnos+3]
+        nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 5, 6, 7, 8, &
+                         3, 5, 4, 5, 10, nnos+2, nnos+3]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
