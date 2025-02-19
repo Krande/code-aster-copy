@@ -144,6 +144,11 @@ subroutine te0020(nomopt, nomte)
         call jevech('PINSTR', 'L', itemps)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PABSCUR', 'L', iabsc)
+!       récupération de VECT_N
+        call fointe('FM', zk8(idefi+3), 0, ' ', [0.d0], vect_n(1), ier)
+        call fointe('FM', zk8(idefi+4), 0, ' ', [0.d0], vect_n(2), ier)
+        call fointe('FM', zk8(idefi+5), 0, ' ', [0.d0], vect_n(3), ier)
+!
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
@@ -182,7 +187,8 @@ subroutine te0020(nomopt, nomte)
     call normev(vect_n, norm)
     if (norm .gt. r8prem()) then
         vect_x(:) = pgl(1, :)
-        call provec(vect_x, vect_n, vect_y)
+        call provec(vect_n, vect_x, vect_y)
+        call normev(vect_y, norm)
         call angvxy(vect_x, vect_y, angl)
         dgamma = angl(3)-zr(lorien-1+3)
         xky(1) = cos(dgamma)*xky(2)-sin(dgamma)*xkz(2)

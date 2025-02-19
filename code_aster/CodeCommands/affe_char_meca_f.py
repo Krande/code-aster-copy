@@ -48,7 +48,6 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
                 fact[f"VECT_N{ic+1}"] = DEFI_CONSTANTE(VALE=value)
         # check syntax after changing the keywords
         self.check_syntax(keywords)
-        print(f"MC: {keywords=}", flush=True)
 
     def create_result(self, keywords):
         """Initialize the result.

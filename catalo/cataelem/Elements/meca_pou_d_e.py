@@ -94,7 +94,9 @@ CEPSINR = LocatedComponents(
     phys=PHY.EPSI_R, type="ELEM", components=("EPX", "KY", "KZ", "VECT_2_X", "VECT_2_Y", "VECT_2_Z")
 )
 
-CEPSINF = LocatedComponents(phys=PHY.EPSI_F, type="ELEM", components=("EPX", "KY", "KZ"))
+CEPSINF = LocatedComponents(
+    phys=PHY.EPSI_F, type="ELEM", components=("EPX", "KY", "KZ", "VECT_2_X", "VECT_2_Y", "VECT_2_Z")
+)
 
 
 EDEFGNO = LocatedComponents(
