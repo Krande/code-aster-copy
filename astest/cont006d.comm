@@ -1,0 +1,628 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+import math
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
+
+
+try:
+    # Import du module de calcul symbolique Sympy
+    with CA.disable_fpe():
+        import sympy
+
+    sympy_available = True
+except ImportError:
+    sympy_available = False
+
+# -----------------------------------------------------------------------------------
+# Test identical to cont006c but using a quadratic mesh: the solution fields are therefore
+# discretised as P2 for the displacement and P1 for the pressure). Thus, the analytical
+# solution is constructed on a linear mesh onto which the calculated solution is projected.
+# -----------------------------------------------------------------------------------
+
+
+# ================================================================================================================================================================================
+def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_SUR):
+    """RESULTAT  : SD Resultat contenant la solution calculee
+    Depl_Ana  : Solution analytique sous forme d une liste de FORMULEs Aster du deplacement
+    P_Ana     : Solution analytique sous forme d une liste de FORMULEs Aster de la pression de contact
+    MAIL      : SD Maillage
+    MODELE    : SD Modele de la solution calculee
+    GROUP_MA  : Entitee sur laquelle on veut calculer la norme
+
+    OUT : {'NormeL2ErreurU':NormeL2ErreurU,'NormeInfSolAna':NormeInfSolAna,'NormeInfErreur':NormeInfErreur}
+    """
+
+    # ========================================================================================
+    #          Creation d'un maillage lineaire pour calculer l'erreur sur P
+    # ========================================================================================
+    MAIL_line = MAIL.convertToLinear()
+    MO_line = AFFE_MODELE(
+        MAILLAGE=MAIL_line, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D")
+    )
+
+    # ========================================================================================
+    #          Creation de la solution analytique en deplacement
+    # ========================================================================================
+    CHXN = CREA_CHAMP(
+        OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAIL, INFO=1
+    )
+
+    TEMP1 = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="NOEU_NEUT_F",
+        MAILLAGE=MAIL,
+        AFFE=(
+            _F(GROUP_MA=GROUP_MA_VOL, NOM_CMP="X1", VALE_F=Depl_Ana[0]),
+            _F(GROUP_MA=GROUP_MA_VOL, NOM_CMP="X2", VALE_F=Depl_Ana[1]),
+            _F(GROUP_MA=GROUP_MA_VOL, NOM_CMP="X3", VALE_F=Depl_Ana[2]),
+        ),
+    )
+
+    TEMP2 = CREA_CHAMP(OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=TEMP1, CHAM_PARA=CHXN)
+
+    Uana = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_DEPL_R",
+        MAILLAGE=MAIL,
+        ASSE=(
+            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=TEMP2, NOM_CMP="X1", NOM_CMP_RESU="DX"),
+            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=TEMP2, NOM_CMP="X2", NOM_CMP_RESU="DY"),
+            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=TEMP2, NOM_CMP="X3", NOM_CMP_RESU="DZ"),
+        ),
+    )
+
+    Ucalc = CREA_CHAMP(
+        OPERATION="EXTR", INST=1.0, NOM_CHAM="DEPL", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=RESULTAT
+    )
+
+    # ========================================================================================
+    #          Creation de la solution analytique en pression
+    # ========================================================================================
+
+    CHXN_line = CREA_CHAMP(
+        OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAIL_line, INFO=1
+    )
+
+    TEMP1P = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="NOEU_NEUT_F",
+        MAILLAGE=MAIL_line,
+        AFFE=(_F(GROUP_MA=GROUP_MA_SUR, NOM_CMP="X1", VALE_F=P_ana),),
+    )
+
+    TEMP2P = CREA_CHAMP(
+        OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=TEMP1P, CHAM_PARA=CHXN_line
+    )
+
+    Pana = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_DEPL_R",
+        MAILLAGE=MAIL_line,
+        ASSE=(_F(GROUP_MA=GROUP_MA_SUR, CHAM_GD=TEMP2P, NOM_CMP="X1", NOM_CMP_RESU="LAGS_C"),),
+    )
+
+    Pcalc0 = CREA_CHAMP(
+        OPERATION="EXTR", INST=1.0, NOM_CHAM="DEPL", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=RESULTAT
+    )
+    Pcalc = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_DEPL_R",
+        MAILLAGE=MAIL,
+        ASSE=(_F(GROUP_MA=GROUP_MA_SUR, CHAM_GD=Pcalc0, NOM_CMP="LAGS_C", NOM_CMP_RESU="LAGS_C"),),
+    )
+
+    # ========================================================================================
+    #          Creation de la solution analytique en deplacement aux points d'integration
+    # ========================================================================================
+
+    CHXG = CREA_CHAMP(
+        OPERATION="DISC", TYPE_CHAM="ELGA_GEOM_R", PROL_ZERO="OUI", CHAM_GD=CHXN, MODELE=MODELE
+    )
+    CHXG_line = CREA_CHAMP(
+        OPERATION="DISC",
+        TYPE_CHAM="ELGA_GEOM_R",
+        PROL_ZERO="OUI",
+        CHAM_GD=CHXN_line,
+        MODELE=MO_line,
+    )
+
+    TEMP3 = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="ELGA_NEUT_F",
+        MODELE=MODELE,
+        PROL_ZERO="OUI",
+        AFFE=(
+            _F(GROUP_MA=GROUP_MA_VOL, NOM_CMP="X1", VALE_F=Depl_Ana[0]),
+            _F(GROUP_MA=GROUP_MA_VOL, NOM_CMP="X2", VALE_F=Depl_Ana[1]),
+            _F(GROUP_MA=GROUP_MA_VOL, NOM_CMP="X3", VALE_F=Depl_Ana[2]),
+        ),
+    )
+
+    UanaG = CREA_CHAMP(OPERATION="EVAL", TYPE_CHAM="ELGA_NEUT_R", CHAM_F=TEMP3, CHAM_PARA=CHXG)
+
+    # ========================================================================================
+    #          Creation de la solution analytique en pression
+    # ========================================================================================
+
+    TEMP3P = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="ELGA_NEUT_F",
+        MODELE=MO_line,
+        PROL_ZERO="OUI",
+        AFFE=(_F(GROUP_MA=GROUP_MA_SUR, NOM_CMP="X1", VALE_F=P_ana),),
+    )
+
+    PanaG = CREA_CHAMP(
+        OPERATION="EVAL", TYPE_CHAM="ELGA_NEUT_R", CHAM_F=TEMP3P, CHAM_PARA=CHXG_line
+    )
+
+    # ========================================================================================
+    #          Creation de la solution calculee en deplacement aux points d'integration
+    # ========================================================================================
+
+    Ucalc1 = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_NEUT_R",
+        MAILLAGE=MAIL,
+        ASSE=(
+            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Ucalc, NOM_CMP="DX", NOM_CMP_RESU="X1"),
+            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Ucalc, NOM_CMP="DY", NOM_CMP_RESU="X2"),
+            _F(GROUP_MA=GROUP_MA_VOL, CHAM_GD=Ucalc, NOM_CMP="DZ", NOM_CMP_RESU="X3"),
+        ),
+    )
+
+    UcalcG = CREA_CHAMP(
+        OPERATION="DISC", TYPE_CHAM="ELGA_NEUT_R", MODELE=MODELE, PROL_ZERO="OUI", CHAM_GD=Ucalc1
+    )
+
+    # ========================================================================================
+    #          Creation de la pression calculee en deplacement aux points d'integration
+    # ========================================================================================
+
+    Pcalc01 = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_NEUT_R",
+        MAILLAGE=MAIL,
+        ASSE=(_F(GROUP_MA=GROUP_MA_SUR, CHAM_GD=Ucalc, NOM_CMP="LAGS_C", NOM_CMP_RESU="X1"),),
+    )
+    # Projection sur le maillage linéaire pour comparaison avec la solution analytique
+    Pcalc1 = PROJ_CHAMP(
+        METHODE="AUTO",
+        CHAM_GD=Pcalc01,
+        MAILLAGE_1=MAIL,
+        MAILLAGE_2=MAIL_line,
+        INFO=2,
+        VIS_A_VIS=(
+            _F(GROUP_MA_1="ESCLAVE", GROUP_MA_2="ESCLAVE"),
+            _F(GROUP_MA_1="VOLUME", GROUP_MA_2="VOLUME"),
+        ),
+    )
+    import pdb
+
+    pdb.set_trace()
+
+    PcalcG = CREA_CHAMP(
+        OPERATION="DISC", TYPE_CHAM="ELGA_NEUT_R", MODELE=MO_line, PROL_ZERO="OUI", CHAM_GD=Pcalc1
+    )
+
+    # ========================================================================================
+    #          Calcul de la norme L2 de l'erreur en deplacement et de la repartition de l'erreur
+    # ========================================================================================
+
+    DIFFUG = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="ELGA_DEPL_R",
+        MODELE=MODELE,
+        PROL_ZERO="OUI",
+        ASSE=(
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=UcalcG,
+                CUMUL="OUI",
+                COEF_R=1.0,
+                NOM_CMP="X1",
+                NOM_CMP_RESU="DX",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=UanaG,
+                CUMUL="OUI",
+                COEF_R=-1.0,
+                NOM_CMP="X1",
+                NOM_CMP_RESU="DX",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=UcalcG,
+                CUMUL="OUI",
+                COEF_R=1.0,
+                NOM_CMP="X2",
+                NOM_CMP_RESU="DY",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=UanaG,
+                CUMUL="OUI",
+                COEF_R=-1.0,
+                NOM_CMP="X2",
+                NOM_CMP_RESU="DY",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=UcalcG,
+                CUMUL="OUI",
+                COEF_R=1.0,
+                NOM_CMP="X3",
+                NOM_CMP_RESU="DZ",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=UanaG,
+                CUMUL="OUI",
+                COEF_R=-1.0,
+                NOM_CMP="X3",
+                NOM_CMP_RESU="DZ",
+            ),
+        ),
+    )
+
+    DIFFUN = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_DEPL_R",
+        MODELE=MODELE,
+        ASSE=(
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=Ucalc,
+                CUMUL="OUI",
+                COEF_R=1.0,
+                NOM_CMP="DX",
+                NOM_CMP_RESU="DX",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=Uana,
+                CUMUL="OUI",
+                COEF_R=-1.0,
+                NOM_CMP="DX",
+                NOM_CMP_RESU="DX",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=Ucalc,
+                CUMUL="OUI",
+                COEF_R=1.0,
+                NOM_CMP="DY",
+                NOM_CMP_RESU="DY",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=Uana,
+                CUMUL="OUI",
+                COEF_R=-1.0,
+                NOM_CMP="DY",
+                NOM_CMP_RESU="DY",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=Ucalc,
+                CUMUL="OUI",
+                COEF_R=1.0,
+                NOM_CMP="DZ",
+                NOM_CMP_RESU="DZ",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_VOL,
+                CHAM_GD=Uana,
+                CUMUL="OUI",
+                COEF_R=-1.0,
+                NOM_CMP="DZ",
+                NOM_CMP_RESU="DZ",
+            ),
+        ),
+    )
+
+    tabU = POST_ELEM(NORME=_F(TYPE_NORM="L2", GROUP_MA=GROUP_MA_VOL, CHAM_GD=DIFFUG, MODELE=MODELE))
+    NormeL2ErreurU = tabU["VALE_NORM", 1]
+    IMPR_TABLE(TABLE=tabU)
+
+    # ========================================================================================
+    #          Calcul de la norme L2 de l'erreur en pression et de la repartition de l'erreur
+    # ========================================================================================
+
+    DIFFPG = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="ELGA_DEPL_R",
+        MODELE=MO_line,
+        PROL_ZERO="OUI",
+        ASSE=(
+            _F(
+                GROUP_MA=GROUP_MA_SUR,
+                CHAM_GD=PcalcG,
+                CUMUL="OUI",
+                COEF_R=1.0,
+                NOM_CMP="X1",
+                NOM_CMP_RESU="DX",
+            ),
+            _F(
+                GROUP_MA=GROUP_MA_SUR,
+                CHAM_GD=PanaG,
+                CUMUL="OUI",
+                COEF_R=-1.0,
+                NOM_CMP="X1",
+                NOM_CMP_RESU="DX",
+            ),
+        ),
+    )
+
+    tabP = POST_ELEM(
+        NORME=_F(TYPE_NORM="L2", GROUP_MA=GROUP_MA_SUR, CHAM_GD=DIFFPG, MODELE=MO_line)
+    )
+    NormeL2ErreurP = tabP["VALE_NORM", 1]
+    IMPR_TABLE(TABLE=tabP)
+
+    return {
+        "NormeL2ErreurU": NormeL2ErreurU,
+        "NormeL2ErreurP": NormeL2ErreurP,
+        "Ucalc": Ucalc,
+        "Uana": Uana,
+        "Pcalc": Pcalc,
+        "Pana": Pana,
+        "DIFFUN": DIFFUN,
+        "DIFFPG": DIFFPG,
+    }
+
+
+# ================================================================================================================================================================================
+
+
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    DEBUG=_F(SDVERI="OUI"),
+    IGNORE_ALARM=("MODELISA4_1", "MODELE1_63"),
+)
+
+# ================================================================================================
+# Definition des caracteristiques du materiau
+# ================================================================================================
+E = 100
+NU = 0.3
+
+# ================================================================================================
+# Calcul de la solution de reference
+# ================================================================================================
+
+from ssnv219e import *
+
+# ================================================================================================
+# Debut de l'etude de la convergence
+# Nombre de remaillage
+Nb_Raffinement = 3
+TitreU = "Erreur ||\qU\sh\\N-\2U\\N\Q || en norme L\s2\\N, maillages en hexaedres"
+
+TitreP = "Erreur ||\qP\sh\\N-\2P\\N\Q || en norme L\s2\\N, maillages en hexaedres"
+
+Legende = "Cas HEXA 8"
+
+# Initialisation des listes
+MA = [None] * (Nb_Raffinement)
+NormeL2ErreurU = [None] * (Nb_Raffinement)
+NormeL2ErreurP = [None] * (Nb_Raffinement)
+
+TailleMaille = [(1.0 / 2.0 ** (i + 1)) for i in range(Nb_Raffinement)]
+
+base_quad = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
+
+cube = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
+
+cube = MODI_MAILLAGE(
+    reuse=cube,
+    MAILLAGE=cube,
+    ORIE_PEAU=(
+        _F(GROUP_MA_PEAU="ESCLAVE"),
+        _F(GROUP_MA_PEAU="BORDX"),
+        _F(GROUP_MA_PEAU="BORDMX"),
+        _F(GROUP_MA_PEAU="BORDY"),
+        _F(GROUP_MA_PEAU="BORDMY"),
+    ),
+)
+
+# sub-meshes kept quadratic
+cube = cube.refine(1)
+base = base_quad
+
+MA[0] = ASSE_MAILLAGE(MAILLAGE_1=base, MAILLAGE_2=cube, OPERATION="SUPERPOSE")
+
+
+# Definition du materiau cas isotrope
+acier = DEFI_MATERIAU(ELAS=_F(E=E, NU=NU))
+
+# Definition du transitoire
+LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=1),))
+
+RAMPE = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE"
+)
+
+
+for Raff in range(0, Nb_Raffinement):
+
+    # ========================================================================================
+    #          Preparation de calcul sur le nouveau maillage
+    # ========================================================================================
+
+    # Correspondance Modele Maillage
+    modl = AFFE_MODELE(
+        MAILLAGE=MA[Raff], AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D")
+    )
+    ## Affectation du materiau
+    chmat = AFFE_MATERIAU(MAILLAGE=MA[Raff], AFFE=_F(TOUT="OUI", MATER=acier))
+
+    # affectation des conditions limites
+    Dirich = AFFE_CHAR_CINE_F(MODELE=modl, MECA_IMPO=_F(GROUP_MA="HAUT", DX=FUx, DY=FUy, DZ=FUz))
+
+    Neumann = AFFE_CHAR_MECA_F(
+        MODELE=modl,
+        FORCE_FACE=(
+            _F(GROUP_MA="BORDX", FX=FsurfXx, FY=FsurfXy, FZ=FsurfXz),
+            _F(GROUP_MA="BORDMX", FX=FsurfmXx, FY=FsurfmXy, FZ=FsurfmXz),
+            _F(GROUP_MA="BORDY", FX=FsurfYx, FY=FsurfYy, FZ=FsurfYz),
+            _F(GROUP_MA="BORDMY", FX=FsurfmYx, FY=FsurfmYy, FZ=FsurfmYz),
+            _F(GROUP_MA="ESCLAVE", FX=FsurfTx, FY=FsurfTy, FZ=FsurfTz),
+        ),
+    )
+
+    ForceInt = AFFE_CHAR_MECA_F(
+        MODELE=modl, FORCE_INTERNE=_F(GROUP_MA="VOLUME", FX=Fvolx, FY=Fvoly, FZ=Fvolz)
+    )
+
+    # Affectation des conditions limites
+    Contact = DEFI_CONT(
+        MODELE=modl,
+        ZONE=_F(
+            GROUP_MA_MAIT="MAITRE",
+            GROUP_MA_ESCL="ESCLAVE",
+            COEF_CONT=E / 100,
+            ALGO_CONT="LAGRANGIEN",
+        ),
+    )
+    BlocBase = AFFE_CHAR_CINE(MODELE=modl, MECA_IMPO=_F(GROUP_MA="MAITRE", DX=0, DY=0, DZ=0))
+
+    # Phase de resolution proprement dit
+    EVOLNOLI = MECA_NON_LINE(
+        MODELE=modl,
+        CHAM_MATER=chmat,
+        COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GREEN_LAGRANGE", TOUT="OUI"),
+        INCREMENT=_F(LIST_INST=LINST),
+        NEWTON=_F(REAC_ITER=1),
+        CONVERGENCE=_F(ITER_GLOB_MAXI=100, RESI_GLOB_RELA=1e-8),
+        CONTACT=_F(DEFINITION=Contact, ALGO_RESO_GEOM="NEWTON"),
+        EXCIT=(
+            _F(CHARGE=Neumann, FONC_MULT=RAMPE),
+            _F(CHARGE=Dirich, FONC_MULT=RAMPE),
+            _F(CHARGE=ForceInt, FONC_MULT=RAMPE),
+            _F(CHARGE=BlocBase),
+        ),
+        INFO=1,
+    )
+
+    CALC_CHAMP(reuse=EVOLNOLI, RESULTAT=EVOLNOLI, CONTRAINTE=("SIEF_NOEU",))
+
+    # ========================================================================================
+    #          Calcul des normes d'erreur
+    # ========================================================================================
+
+    dicResu = NormeAster(EVOLNOLI, [FUx, FUy, FUz], FcontNN, MA[Raff], modl, "VOLUME", "ESCLAVE")
+
+    NormeL2ErreurU[Raff] = dicResu["NormeL2ErreurU"]
+    NormeL2ErreurP[Raff] = dicResu["NormeL2ErreurP"]
+
+    # ========================================================================================
+    #          Adaptationn de maillage proprement dite
+    # ========================================================================================
+
+    if Raff < (Nb_Raffinement - 1):
+        cube = cube.refine()
+        MA[Raff + 1] = ASSE_MAILLAGE(MAILLAGE_1=base, MAILLAGE_2=cube, OPERATION="SUPERPOSE")
+
+    # ================================================================================================
+    # Impression de la courbe de convergence
+    # ================================================================================================
+
+
+PenteL2U = -math.log(NormeL2ErreurU[-1] / NormeL2ErreurU[-2]) / math.log(2.0)
+PenteL2P = -math.log(NormeL2ErreurP[-1] / NormeL2ErreurP[-2]) / math.log(2.0)
+
+PenteLST = CREA_TABLE(LISTE=(_F(LISTE_R=PenteL2U, PARA="PU"), _F(LISTE_R=PenteL2P, PARA="PP")))
+
+TEST_TABLE(
+    TABLE=PenteLST,
+    NOM_PARA="PU",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=3.6393536468336483,  # raffinement=5
+    VALE_REFE=2.0,  # vitesse de convergence
+    PRECISION=0.85,  #
+)
+
+
+TEST_TABLE(
+    TABLE=PenteLST,
+    NOM_PARA="PP",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=2.672450159379122,  # raffinement=5
+    VALE_REFE=1.5,  # vitesse de convergence
+    PRECISION=1.0,  # surconvergence
+)
+
+sous_titreU = "Ordres de convergence: cas HEXA8= %f " % (PenteL2U)
+sous_titreP = "Ordres de convergence: cas HEXA8= %f " % (PenteL2P)
+
+
+IMPR_FONCTION(
+    FORMAT="XMGRACE",
+    UNITE=29,
+    # PILOTE="INTERACTIF",
+    BORNE_X=(min(TailleMaille) * 0.7, max(TailleMaille) * 1.3),
+    BORNE_Y=(min(NormeL2ErreurU) * 0.7, max(NormeL2ErreurU) * 1.3),
+    COURBE=(_F(ABSCISSE=TailleMaille, ORDONNEE=NormeL2ErreurU, LEGENDE=Legende),),
+    TITRE=TitreU,
+    SOUS_TITRE=sous_titreU,
+    LEGENDE_X="h",
+    LEGENDE_Y="L\s2\\N(Erreur)",
+    ECHELLE_X="LOG",
+    ECHELLE_Y="LOG",
+    INFO=1,
+)
+
+IMPR_FONCTION(
+    FORMAT="XMGRACE",
+    UNITE=40,
+    # PILOTE="INTERACTIF",
+    BORNE_X=(min(TailleMaille) * 0.7, max(TailleMaille) * 1.3),
+    BORNE_Y=(min(NormeL2ErreurP) * 0.7, max(NormeL2ErreurP) * 1.3),
+    COURBE=(_F(ABSCISSE=TailleMaille, ORDONNEE=NormeL2ErreurP, LEGENDE=Legende),),
+    TITRE=TitreP,
+    SOUS_TITRE=sous_titreP,
+    LEGENDE_X="h",
+    LEGENDE_Y="L\s2\\N(Erreur)",
+    ECHELLE_X="LOG",
+    ECHELLE_Y="LOG",
+    INFO=1,
+)
+
+
+# Impression des deplacements
+# ----------------------------
+# DEFI_FICHIER(UNITE=80, TYPE="BINARY", FICHIER="/tmp/resu.resu.med")
+
+IMPR_RESU(
+    FORMAT="MED",
+    UNITE=80,
+    RESU=(
+        _F(CHAM_GD=dicResu["Ucalc"], GROUP_MA="VOLUME", NOM_CMP=("DX", "DY", "DZ")),
+        _F(CHAM_GD=dicResu["Uana"], GROUP_MA="VOLUME", NOM_CMP=("DX", "DY", "DZ")),
+        _F(CHAM_GD=dicResu["DIFFUN"], GROUP_MA="VOLUME", NOM_CMP=("DX", "DY", "DZ")),
+        _F(RESULTAT=EVOLNOLI),
+    ),
+)
+
+FIN()
