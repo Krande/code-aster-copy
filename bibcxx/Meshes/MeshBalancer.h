@@ -5,7 +5,7 @@
  * @file MeshBalancer.h
  * @brief Fichier entete de la classe MeshBalancer
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -70,8 +70,8 @@ class MeshBalancer {
                                              VectorOfVectorsLong & );
     VectorInt findNodesToSend( const VectorInt &nodesListIn );
 
-    void sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &connexIn,
-                    JeveuxVectorLong &typeOut, JeveuxCollectionLong &connexOut );
+    void sortCells( JeveuxVectorLong &typeIn, JeveuxContiguousCollectionLong &connexIn,
+                    JeveuxVectorLong &typeOut, JeveuxContiguousCollectionLong &connexOut );
 
     void sortCells( VectorLong &vectIn, VectorLong &vectOut ) const;
 

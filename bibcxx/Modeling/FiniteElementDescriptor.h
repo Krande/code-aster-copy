@@ -44,8 +44,8 @@ using ModelPtr = std::shared_ptr< Model >;
  */
 class FiniteElementDescriptor : public DataStructure {
   public:
-    using ConnectivityVirtualCellsExplorer =
-        MeshExplorer< CellsIteratorFromFiniteElementDescriptor, const JeveuxCollectionLong & >;
+    using ConnectivityVirtualCellsExplorer = MeshExplorer< CellsIteratorFromFiniteElementDescriptor,
+                                                           const JeveuxContiguousCollectionLong & >;
 
   protected:
     /** @brief Vecteur Jeveux '.NBNO' */
@@ -55,11 +55,11 @@ class FiniteElementDescriptor : public DataStructure {
     /** @brief Vecteur Jeveux '.PRNM' */
     JeveuxVectorLong _dofDescriptor;
     /** @brief Collection '.LIEL' */
-    JeveuxCollectionLong _listOfGroupsOfElements;
+    JeveuxContiguousCollectionLong _listOfGroupsOfElements;
     /** @brief Vecteur Jeveux '.REPE' */
     JeveuxVectorLong _groupsOfCellsNumberByElement;
     /** @brief Collection '.NEMA' */
-    JeveuxCollectionLong _virtualCellsDescriptor;
+    JeveuxContiguousCollectionLong _virtualCellsDescriptor;
     /** @brief Vecteur Jeveux '.PRNS' */
     JeveuxVectorLong _dofOfDelayedNumberedConstraintNodes;
     /** @brief Vecteur Jeveux '.LGNS' */
@@ -118,9 +118,9 @@ class FiniteElementDescriptor : public DataStructure {
 
     const ConnectivityVirtualCellsExplorer &getListOfGroupsOfElementsExplorer() const;
 
-    const JeveuxCollectionLong &getListOfGroupsOfElements() const;
+    const JeveuxContiguousCollectionLong &getListOfGroupsOfElements() const;
 
-    const JeveuxCollectionLong &getVirtualCellsDescriptor() const;
+    const JeveuxContiguousCollectionLong &getVirtualCellsDescriptor() const;
 
     ASTERINTEGER getNumberOfVirtualNodes() const;
 

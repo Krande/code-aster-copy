@@ -259,8 +259,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
 
     if ( nbElemToKeep < 0 ) {
         // Allocation du .NEMA
-        _virtualCellsDescriptor->allocateContiguousNumbered( -nbElemToKeep,
-                                                             totalSizeToKeep - nbElemToKeep );
+        _virtualCellsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
 
         int cmpt = 0;
         for ( const auto &vCell : vCellToAdd ) {
@@ -327,7 +326,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
         }
     }
 
-    _listOfGroupsOfElements->allocateContiguousNumbered( nbCollObj, totalCollSize + nbCollObj );
+    _listOfGroupsOfElements->allocate( nbCollObj, totalCollSize + nbCollObj );
     for ( const auto &vec : toLiel ) {
         if ( vec.size() != 0 ) {
             _listOfGroupsOfElements->push_back( vec );
@@ -641,8 +640,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
 
     if ( nbElemToKeep < 0 ) {
         // Allocation du .NEMA
-        _virtualCellsDescriptor->allocateContiguousNumbered( -nbElemToKeep,
-                                                             totalSizeToKeep - nbElemToKeep );
+        _virtualCellsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
 
         int cmpt = 0;
         for ( const auto &vCell : vCellToAdd ) {
@@ -709,7 +707,7 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
         }
     }
 
-    _listOfGroupsOfElements->allocateContiguousNumbered( nbCollObj, totalCollSize + nbCollObj );
+    _listOfGroupsOfElements->allocate( nbCollObj, totalCollSize + nbCollObj );
     for ( const auto &vec : toLiel ) {
         if ( vec.size() != 0 ) {
             _listOfGroupsOfElements->push_back( vec );

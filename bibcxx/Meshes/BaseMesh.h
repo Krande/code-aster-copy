@@ -4,7 +4,7 @@
  * @file BaseMesh.h
  * @brief Fichier entete de la classe BaseMesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -49,7 +49,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     static unsigned long int _node_idx;
 
   public:
-    typedef MeshExplorer< CellsIteratorFromConnectivity, const JeveuxCollectionLong &,
+    typedef MeshExplorer< CellsIteratorFromConnectivity, const JeveuxContiguousCollectionLong &,
                           const JeveuxVectorLong & >
         ConnectivityMeshExplorer;
 
@@ -66,7 +66,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /** @brief Collection Jeveux '.GROUPENO' */
     JeveuxCollectionLongNamePtr _groupsOfNodes;
     /** @brief Collection Jeveux '.CONNEX' */
-    JeveuxCollectionLong _connectivity;
+    JeveuxContiguousCollectionLong _connectivity;
     /** @brief Pointeur de nom Jeveux '.NOMMAIL' */
     NamesMapChar8 _nameOfCells;
     /** @brief Objet Jeveux '.TYPMAIL' */
@@ -134,7 +134,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Return the connectivity
      */
-    const JeveuxCollectionLong getConnectivity() const { return _connectivity; }
+    const JeveuxContiguousCollectionLong getConnectivity() const { return _connectivity; }
 
     /**
      * @brief Return the connectivity, node zero based

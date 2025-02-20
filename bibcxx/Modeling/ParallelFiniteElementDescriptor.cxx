@@ -185,8 +185,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         _joints->setReceivedElements( recv );
 
         // Allocation du .NEMA
-        _virtualCellsDescriptor->allocateContiguousNumbered( -nbElemToKeep,
-                                                             totalSizeToKeep - nbElemToKeep );
+        _virtualCellsDescriptor->allocate( -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
 
         // Remplissage du .NEMA avec les elements tardifs a conserver
         for ( auto &numElem : virtualCellToKeep ) {
@@ -224,14 +223,14 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
             }
         }
 
-        _listOfGroupsOfElements->allocateContiguousNumbered( nbCollObj, totalCollSize + nbCollObj );
+        _listOfGroupsOfElements->allocate( nbCollObj, totalCollSize + nbCollObj );
         for ( const auto &vec : toLiel ) {
             if ( vec.size() != 0 ) {
                 _listOfGroupsOfElements->push_back( vec );
             }
         }
     } else {
-        _listOfGroupsOfElements->allocateContiguousNumbered( 1, 1 );
+        _listOfGroupsOfElements->allocate( 1, 1 );
         VectorLong joints;
         _joints->setOppositeDomains( joints );
     }

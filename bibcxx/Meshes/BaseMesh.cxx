@@ -3,7 +3,7 @@
  * @brief Implementation de BaseMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -46,7 +46,7 @@ BaseMesh::BaseMesh( const std::string &name, const std::string &type )
       _coordinates( new MeshCoordinatesField( getName() + ".COORDO    " ) ),
       _nameOfGrpNodes( NamesMapChar24( getName() + ".PTRNOMNOE " ) ),
       _groupsOfNodes( JeveuxCollectionLongNamePtr( getName() + ".GROUPENO  ", _nameOfGrpNodes ) ),
-      _connectivity( JeveuxCollectionLong( getName() + ".CONNEX    " ) ),
+      _connectivity( JeveuxContiguousCollectionLong( getName() + ".CONNEX    " ) ),
       _nameOfCells( NamesMapChar8( getName() + ".NOMMAI    " ) ),
       _cellsType( JeveuxVectorLong( getName() + ".TYPMAIL   " ) ),
       _nameOfGrpCells( NamesMapChar24( getName() + ".PTRNOMMAI " ) ),
@@ -230,7 +230,7 @@ const std::vector< VectorLong > BaseMesh::getConnectivityZeroBased() const {
     }
     result.reserve( _connectivity->size() );
     for ( const auto &pair : _connectivity ) {
-        const auto &obj = pair.second;
+        const auto &obj = pair;
         obj->updateValuePointer();
         VectorLong items;
         items.reserve( obj->size() );
@@ -381,7 +381,7 @@ void BaseMesh::initDefinition( const int &dim, const VectorReal &coord,
     ( *_cellsType ) = types;
 
     AS_ASSERT( !_connectivity.exists() );
-    _connectivity->allocateContiguousNumbered( connectivity );
+    _connectivity->allocate( connectivity );
 
     const JeveuxVectorReal values( "&&TMP", coord );
     _coordinates->assign( values );
@@ -391,10 +391,10 @@ void BaseMesh::initDefinition( const int &dim, const VectorReal &coord,
 
     // created to the max capacity, groups may be added by several calls to addGroupsOfxxx
     if ( nbGrpCells > 0 ) {
-        _groupsOfCells->allocateSparseNamed( nbGrpCells );
+        _groupsOfCells->allocate( nbGrpCells );
     }
     if ( nbGrpNodes > 0 ) {
-        _groupsOfNodes->allocateSparseNamed( nbGrpNodes );
+        _groupsOfNodes->allocate( nbGrpNodes );
     }
 }
 
@@ -436,7 +436,7 @@ void BaseMesh::addGroupsOfNodes( const VectorString &names,
     int nbGroups = names.size();
     AS_ASSERT( nbGroups == groupsOfNodes.size() );
     if ( !_groupsOfNodes->exists() )
-        _groupsOfNodes->allocateSparseNamed( nbGroups );
+        _groupsOfNodes->allocate( nbGroups );
     AS_ASSERT( _groupsOfNodes->capacity() >= _groupsOfNodes->size() + nbGroups );
 
     for ( auto i = 0; i < nbGroups; ++i ) {
@@ -449,7 +449,7 @@ void BaseMesh::addGroupsOfCells( const VectorString &names,
     int nbGroups = names.size();
     AS_ASSERT( nbGroups == groupsOfCells.size() );
     if ( !_groupsOfCells->exists() )
-        _groupsOfCells->allocateSparseNamed( nbGroups );
+        _groupsOfCells->allocate( nbGroups );
     AS_ASSERT( _groupsOfCells->capacity() >= _groupsOfCells->size() + nbGroups );
 
     for ( auto i = 0; i < nbGroups; ++i ) {

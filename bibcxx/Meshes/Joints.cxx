@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -102,7 +102,7 @@ bool Joints::build() {
 
 void Joints::setSendedElements( const VectorOfVectorsLong &send ) {
     if ( send.size() > 0 ) {
-        _send->allocateSparseNumbered( send.size() );
+        _send->allocate( send.size() );
 
         ASTERINTEGER i = 1;
         for ( auto &send_i : send ) {
@@ -116,7 +116,7 @@ void Joints::setSendedElements( const VectorOfVectorsLong &send ) {
 
 void Joints::setReceivedElements( const VectorOfVectorsLong &recv ) {
     if ( recv.size() > 0 ) {
-        _recv->allocateSparseNumbered( recv.size() );
+        _recv->allocate( recv.size() );
 
         ASTERINTEGER i = 1;
         for ( auto &recv_i : recv ) {

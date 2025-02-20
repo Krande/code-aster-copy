@@ -471,7 +471,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     /* Add group of nodes */
     if ( groupsOfNodesToFind.size() > 0 ) {
-        _groupsOfNodes->allocateSparseNamed( groupsOfNodesToFind.size() );
+        _groupsOfNodes->allocate( groupsOfNodesToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfNodesToFind ) {
             const auto &toCopy = groupsOfNodesGathered[nameOfTheGroup];
@@ -497,7 +497,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     _cellsOwner->allocate( totalNumberOfCells );
     _nameOfCells->allocate( totalNumberOfCells );
     _cellsType->allocate( totalNumberOfCells );
-    _connectivity->allocateContiguousNumbered( totalNumberOfCells, connectivitiesGathered.size() );
+    _connectivity->allocate( totalNumberOfCells, connectivitiesGathered.size() );
 
     ASTERINTEGER offset = 0;
     for ( auto i = 0; i < totalNumberOfCells; ++i ) {
@@ -528,7 +528,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     /* Add group of cells */
     if ( groupsOfCellsToFind.size() > 0 ) {
-        _groupsOfCells->allocateSparseNamed( groupsOfCellsToFind.size() );
+        _groupsOfCells->allocate( groupsOfCellsToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfCellsToFind ) {
             const auto &toCopy = groupsOfCellsGathered[nameOfTheGroup];

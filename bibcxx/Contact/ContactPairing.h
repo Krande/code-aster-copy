@@ -122,7 +122,7 @@ class ContactPairing : public DataStructure {
     /** @brief Create virtual elements for contact */
     void createVirtualElemForContact( const ASTERLOGICAL lAxis, const int nbZoneCont,
                                       MapLong &contactElemType,
-                                      const JeveuxCollectionLong meshConnectivity,
+                                      const JeveuxContiguousCollectionLong meshConnectivity,
                                       std::vector< VectorLong > &listContElem,
                                       std::vector< VectorPairLong > &listContType,
                                       SetLong &slaveNodePaired, SetLong &slaveCellPaired );
@@ -130,7 +130,7 @@ class ContactPairing : public DataStructure {
     /** @brief Create virtual elements for orphelan nodes */
     void createVirtualElemForOrphelanNodes( const ASTERLOGICAL lAxis, const int nbZoneCont,
                                             MapLong &contactElemType,
-                                            const JeveuxCollectionLong meshConnectivity,
+                                            const JeveuxContiguousCollectionLong meshConnectivity,
                                             std::vector< VectorLong > &listContElem,
                                             std::vector< VectorPairLong > &listContType,
                                             SetLong &slaveNodePaired, SetLong &slaveCellPaired );
