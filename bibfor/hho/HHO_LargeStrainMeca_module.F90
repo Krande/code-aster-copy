@@ -526,7 +526,8 @@ contains
 !
         real(kind=8) :: qp_module_tang(3, 3, 3, 3), qp_mod_vec(9)
         integer :: i, j, row, col, gbs_cmp, dim2
-        blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+        blas_int :: b_lda, b_m, b_n
+        blas_int, parameter :: b_one = 1
 ! --------------------------------------------------------------------------------------------------
 !
         Agphi = 0.d0
@@ -534,19 +535,18 @@ contains
         gbs_cmp = gbs/dim2
         qp_module_tang = weight*module_tang
 !
+        b_lda = to_blas_int(gbs_cmp)
+        b_m = to_blas_int(gbs_cmp)
+        b_n = to_blas_int(dim2)
+!
         row = 1
         col = 1
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
 ! ------------- Extract and transform the tangent moduli
                 qp_mod_vec = transfo_A(hhoCell%ndim, qp_module_tang, i, j)
-                b_lda = to_blas_int(gbs_cmp)
-                b_m = to_blas_int(gbs_cmp)
-                b_n = to_blas_int(dim2)
-                b_incx = to_blas_int(1)
-                b_incy = to_blas_int(1)
-                call dger(b_m, b_n, 1.d0, BSCEval, b_incx, &
-                          qp_mod_vec, b_incy, Agphi(row:(row+gbs_cmp-1), 1:dim2), b_lda)
+                call dger(b_m, b_n, 1.d0, BSCEval, b_one, &
+                          qp_mod_vec, b_one, Agphi(row:(row+gbs_cmp-1), 1:dim2), b_lda)
                 row = row+gbs_cmp
             end do
         end do
