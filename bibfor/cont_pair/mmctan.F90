@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,9 @@ subroutine mmctan(numema, alias, nno, ndim, coorma, &
 !
     if (niverr .eq. 1) then
         err_appa = 1
-        call utmess('I', 'APPARIEMENT_13', si=numema, nr=3, valr=coorno)
+        if (niv .ge. 2) then
+            call utmess('I', 'APPARIEMENT_13', si=numema, nr=3, valr=coorno)
+        end if
     end if
 !
     call mmdonf(ndim, nno, alias, ksi(1), ksi(2), dff)
