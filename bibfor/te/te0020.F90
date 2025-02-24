@@ -64,8 +64,8 @@ subroutine te0020(nomopt, nomte)
     integer :: lorien, nno, nc, iabsc
     real(kind=8) :: r8bid, e, xnu, g, carsec(6), fs(14)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, a2, xiy2, xiz2
-    real(kind=8) :: epx(2), xky(2), xkz(2), vect_y(3), norm, vect_x(3)
-    real(kind=8) :: pgl(3, 3), angl(3), dgamma, vect_n(3)
+    real(kind=8) :: epx, xky, xkz, vect_y(3), norm, vect_x(3)
+    real(kind=8) :: pgl(3, 3), angl(3), dgamma, vect_n(3), xkn1, xkn2
 !
     integer :: nbres
     parameter(nbres=4)
@@ -73,7 +73,7 @@ subroutine te0020(nomopt, nomte)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10), itemps, igeom, ier, ino
+    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10), itemps, igeom, ier
     character(len=8) :: nompar(5)
     real(kind=8) :: valpar(5)
 !
@@ -130,12 +130,9 @@ subroutine te0020(nomopt, nomte)
     vect_n(:) = 0.d0
     if (nomopt(15:16) .eq. '_R') then
         call jevech('PEPSINR', 'L', idefi)
-        epx(1) = zr(idefi)
-        epx(2) = epx(1)
-        xky(1) = zr(idefi+1)
-        xky(2) = xky(1)
-        xkz(1) = zr(idefi+2)
-        xkz(2) = xkz(1)
+        epx = zr(idefi)
+        xky = zr(idefi+1)
+        xkz = zr(idefi+2)
         vect_n(1) = zr(idefi+3)
         vect_n(2) = zr(idefi+4)
         vect_n(3) = zr(idefi+5)
@@ -156,28 +153,16 @@ subroutine te0020(nomopt, nomte)
         valpar(4) = zr(itemps)
         nompar(5) = 'ABSC'
         valpar(5) = (zr(iabsc)+zr(iabsc+1))/2.d0
-        do ino = 1, 2
-            valpar(1) = zr(igeom+(ino-1)*3-1+1)
-            valpar(2) = zr(igeom+(ino-1)*3-1+2)
-            valpar(3) = zr(igeom+(ino-1)*3-1+3)
-
-            call fointe('FM', zk8(idefi), 5, nompar, valpar, &
-                        epx(ino), ier)
-            call fointe('FM', zk8(idefi+1), 5, nompar, valpar, &
-                        xky(ino), ier)
-            call fointe('FM', zk8(idefi+2), 5, nompar, valpar, &
-                        xkz(ino), ier)
-        end do
-    end if
-!   les valeurs doivent être les mêmes aux deux noeuds
-    if (abs(epx(1)-epx(2)) .gt. 1d3*r8prem()) then
-        call utmess('F', 'CHARGES_4', sk='EPX', nr=2, valr=epx)
-    end if
-    if (abs(xky(1)-xky(2)) .gt. 1d3*r8prem()) then
-        call utmess('F', 'CHARGES_4', sk='KY', nr=2, valr=xky)
-    end if
-    if (abs(xkz(1)-xkz(2)) .gt. 1d3*r8prem()) then
-        call utmess('F', 'CHARGES_4', sk='KZ', nr=2, valr=xkz)
+!       milieu de la poutre
+        valpar(1) = (zr(igeom+(2-1)*3-1+1)+zr(igeom-1+1))/2.d0
+        valpar(2) = (zr(igeom+(2-1)*3-1+2)+zr(igeom-1+2))/2.d0
+        valpar(3) = (zr(igeom+(2-1)*3-1+3)+zr(igeom-1+3))/2.d0
+        call fointe('FM', zk8(idefi), 5, nompar, valpar, &
+                    epx, ier)
+        call fointe('FM', zk8(idefi+1), 5, nompar, valpar, &
+                    xky, ier)
+        call fointe('FM', zk8(idefi+2), 5, nompar, valpar, &
+                    xkz, ier)
     end if
 !   Récupération des orientations alpha, beta, gamma
     call jevech('PCAORIE', 'L', lorien)
@@ -191,64 +176,64 @@ subroutine te0020(nomopt, nomte)
         call normev(vect_y, norm)
         call angvxy(vect_x, vect_y, angl)
         dgamma = angl(3)-zr(lorien-1+3)
-        xky(1) = cos(dgamma)*xky(2)-sin(dgamma)*xkz(2)
-        xkz(1) = sin(dgamma)*xky(2)+cos(dgamma)*xkz(2)
-        xky(2) = xky(1)
-        xkz(2) = xkz(1)
+        xkn1 = xky
+        xkn2 = xkz
+        xky = cos(dgamma)*xkn1-sin(dgamma)*xkn2
+        xkz = sin(dgamma)*xkn1+cos(dgamma)*xkn2
     end if
 !
-    fs(1) = e*a*epx(1)
+    fs(1) = e*a*epx
     fs(2) = 0.d0
     fs(3) = 0.d0
     fs(4) = 0.d0
-    fs(5) = e*xiy*xky(1)
-    fs(6) = e*xiz*xkz(1)
+    fs(5) = e*xiy*xky
+    fs(6) = e*xiz*xkz
     if ((nomte .eq. 'MECA_POU_D_TG')) then
         fs(7) = 0.d0
-        fs(8) = e*a*epx(2)
+        fs(8) = e*a*epx
         fs(9) = 0.d0
         fs(10) = 0.d0
         fs(11) = 0.d0
-        fs(12) = e*xiy*xky(2)
-        fs(13) = e*xiz*xkz(2)
+        fs(12) = e*xiy*xky
+        fs(13) = e*xiz*xkz
         fs(14) = 0.d0
 !
         nc = 7
     else if (nomte .eq. 'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
         call pmfitx(zi(lmater), 1, carsec, r8bid)
-        fs(1) = carsec(1)*epx(1)
-        fs(5) = carsec(5)*xky(1)
-        fs(6) = carsec(4)*xkz(1)
+        fs(1) = carsec(1)*epx
+        fs(5) = carsec(5)*xky
+        fs(6) = carsec(4)*xkz
         fs(7) = 0.d0
-        fs(8) = carsec(1)*epx(2)
+        fs(8) = carsec(1)*epx
         fs(9) = 0.d0
         fs(10) = 0.d0
         fs(11) = 0.d0
-        fs(12) = carsec(5)*xky(2)
-        fs(13) = carsec(4)*xkz(2)
+        fs(12) = carsec(5)*xky
+        fs(13) = carsec(4)*xkz
         fs(14) = 0.d0
 !
         nc = 7
     else if (nomte .eq. 'MECA_POU_D_EM') then
 !       Récupération des caractéristiques des fibres
         call pmfitx(zi(lmater), 1, carsec, r8bid)
-        fs(1) = carsec(1)*epx(1)
-        fs(5) = carsec(5)*xky(1)
-        fs(6) = carsec(4)*xkz(1)
-        fs(7) = carsec(1)*epx(2)
+        fs(1) = carsec(1)*epx
+        fs(5) = carsec(5)*xky
+        fs(6) = carsec(4)*xkz
+        fs(7) = carsec(1)*epx
         fs(8) = 0.d0
         fs(9) = 0.d0
         fs(10) = 0.d0
-        fs(11) = carsec(5)*xky(2)
-        fs(12) = carsec(4)*xkz(2)
+        fs(11) = carsec(5)*xky
+        fs(12) = carsec(4)*xkz
     else
-        fs(7) = e*a2*epx(2)
+        fs(7) = e*a2*epx
         fs(8) = 0.d0
         fs(9) = 0.d0
         fs(10) = 0.d0
-        fs(11) = e*xiy2*xky(2)
-        fs(12) = e*xiz2*xkz(2)
+        fs(11) = e*xiy2*xky
+        fs(12) = e*xiz2*xkz
     end if
     fs(1) = -fs(1)
     fs(2) = -fs(2)

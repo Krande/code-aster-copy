@@ -31,17 +31,6 @@ La charge %(k1)s n'a pu être identifiée. Cette erreur est probablement due à 
 mot-clef facteur vide dans l'opérateur AFFE_CHAR_MECA, AFFE_CHAR_THER ou AFFE_CHAR_ACOU.
 """
     ),
-    4: _(
-        """
-Le type de chargement PRE_EPSI doit avoir la
-même valeur aux deux noeuds d'un même élément de poutre.
-
-Valeur au noeud 1 pour la composante %(k1)s : %(r1)f
-Valeur au noeud 2 pour la composante %(k1)s : %(r2)f
-
-Pour les poutres, le code ne sait pas encore traiter ce type de chargement variable sur l'élément.
-"""
-    ),
     5: _(
         """
 Il ne peut y avoir qu'une seule occurrence du chargement PRE_EPSI quand le mot-clé EPSI
