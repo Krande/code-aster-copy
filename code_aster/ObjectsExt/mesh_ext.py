@@ -381,14 +381,17 @@ class ExtendedMesh:
 
         return CREA_MAILLAGE(MAILLAGE=self, RESTREINT=_F(GROUP_MA=groupsOfCells), INFO=info)
 
-    def createMedCouplingMesh(self):
+    def createMedCouplingMesh(self, spacedim_3d=False):
         """Returns the MEDCoupling unstructured mesh associated to the current mesh.
+
+        Arguments:
+            spacedim_3d (*bool*): if true, space dimension of mc mesh is forced to 3
 
         Returns:
             Mesh: The MEDCoupling unstructured mesh associated to the current mesh.
         """
 
-        return convertMesh2MedCoupling(self)
+        return convertMesh2MedCoupling(self, spacedim_3d)
 
     def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.

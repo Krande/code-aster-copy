@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,12 @@ from ..Language.Syntax import *
 
 def post_beremin_prod(self, SIGM_MAXI, **args):
     if args.get("__all__"):
-        return ([table_container], [table_container, resultat_sdaster])
+        return ([table_sdaster], [table_sdaster, evol_noli])
 
     if SIGM_MAXI is not None:
-        if SIGM_MAXI.is_typco():
-            return [table_container, resultat_sdaster]
+        self.type_sdprod(SIGM_MAXI, evol_noli)
 
-    return table_container
+    return table_sdaster
 
 
 POST_BEREMIN = MACRO(
@@ -60,13 +59,8 @@ POST_BEREMIN = MACRO(
         into=("SIGM_ELGA", "SIGM_ELMOY"),
         fr=tr("Option de moyennation des contraintes"),
     ),
-    LIST_NUME_VARI=SIMP(
-        statut="o",
-        typ="I",
-        fr=tr("Numéros des variables EPSPEQ et INDIPLAS"),
-        val_min=1,
-        min=2,
-        max=2,
+    NUME_VARI=SIMP(
+        statut="f", typ="I", fr=tr("Numéro de la variable interne INDIPLAS"), min=1, max=1, defaut=0
     ),
     b_gdeflog=BLOC(
         condition="""equal_to("DEFORMATION", 'GDEF_LOG')""",
@@ -87,5 +81,36 @@ POST_BEREMIN = MACRO(
     ),
     COEF_MULT=SIMP(
         statut="f", typ="R", defaut=1.0, fr=tr("Coefficient à renseigner selon u4.81.22")
+    ),
+    WEIBULL=FACT(
+        statut="f",
+        M=SIMP(statut="o", typ="R", max="**"),
+        VOLU_REFE=SIMP(statut="o", typ="R"),
+        SIGM_REFE=SIMP(statut="o", typ="R", max="**"),
+        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0, max="**"),
+    ),
+    WEIBULL_FO=FACT(
+        statut="f",
+        M=SIMP(statut="o", typ="R", max="**"),
+        VOLU_REFE=SIMP(statut="o", typ="R"),
+        SIGM_CNV=SIMP(statut="o", typ="R"),
+        SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0, max="**"),
+    ),
+    METHODE_2D=FACT(
+        statut="f",
+        regles=(
+            PRESENT_PRESENT("GROUP_NO_PLAN", "FISSURE"),
+            PRESENT_PRESENT("MAILLAGE_PLAN", "NOM_MAIL_MED"),
+            EXCLUS("MAILLAGE_PLAN", "GROUP_NO_PLAN"),
+            EXCLUS("GROUP_NO_PLAN", "NOM_MAIL_MED"),
+            EXCLUS("MAILLAGE_PLAN", "FISSURE"),
+        ),
+        MAILLAGE_PLAN=SIMP(statut="f", typ=maillage_sdaster, max="**"),
+        NOM_MAIL_MED=SIMP(statut="f", typ="TXM", max="**"),
+        GROUP_NO_PLAN=SIMP(statut="f", typ=grno, max="**"),
+        FISSURE=SIMP(statut="f", typ=fond_fissure, max=1),
+        PRECISION=SIMP(statut="f", typ="R", defaut=1e-6, val_min=1e-12),
+        UNITE_RESU=SIMP(statut="f", typ="I", defaut=0),
     ),
 )

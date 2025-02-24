@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -495,12 +495,6 @@ CALC_G : On ne peut pas calculer les dérivées des fonctions singulières car o
     76: _(
         """
 CALC_G : Le champ fourni par CHAM_THETA_IN n'est pas correct. Les composants DIR_Z, ABSC_CURV et LONG doivent être nuls en 2D.
-"""
-    ),
-    88: _(
-        """
-Le groupe de mailles %(k1)s donné dans POST_BEREMIN n'est pas un groupe utilisé
-dans AFFE_MATERIAU pour affecter les propriétés de WEIBULL.
 """
     ),
     89: _(

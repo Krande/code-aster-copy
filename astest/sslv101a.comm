@@ -1,0 +1,262 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+mat_CT = DEFI_MATERIAU(ELAS=_F(E=210e3, NU=0.3))
+
+mesh = LIRE_MAILLAGE(FORMAT="MED")
+
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
+
+model = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=(
+        _F(TOUT=("OUI",), PHENOMENE="MECANIQUE", MODELISATION=("3D",)),
+        _F(TOUT=("OUI",), PHENOMENE="MECANIQUE", MODELISATION=("3D_SI",)),
+    ),
+)
+
+mate = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=(_F(TOUT="OUI", MATER=mat_CT),))
+
+
+ramp = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 0.1), PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE"
+)
+
+char_depl = AFFE_CHAR_MECA_F(MODELE=model, DDL_IMPO=(_F(GROUP_NO="DX0", DY=ramp),))
+
+char_cl = AFFE_CHAR_CINE(
+    MODELE=model,
+    MECA_IMPO=(_F(GROUP_NO="DX0", DX=0.0), _F(GROUP_NO="DY0", DY=0.0), _F(GROUP_NO="SYM", DZ=0.0)),
+)
+
+
+l_inst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=1),))
+
+resu_elas = STAT_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=mate,
+    EXCIT=(_F(CHARGE=char_cl), _F(CHARGE=char_depl)),
+    INCREMENT=_F(LIST_INST=l_inst),
+)
+
+##################################################
+# BEREMIN 3D normalisé pour comparaison au 2D
+##################################################
+
+##Couche 0 SW 3D normalisée par la taille de maille
+beremin_3d_c0 = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2 / 3.33333,
+    DEFORMATION="PETIT",
+    GROUP_MA="Couche_0",
+    FILTRE_SIGM="SIGM_ELMOY",
+    SIGM_MAXI=CO("SIG_TEST0"),
+    WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
+)
+
+IMPR_TABLE(TABLE=beremin_3d_c0, UNITE=6)
+
+# IMPR_RESU(
+#     FORMAT="MED",
+#     UNITE=81,
+#     RESU=_F(RESULTAT=SIG_TEST0),
+# )
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1591.4018531,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_3d_c0,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_0")),
+)
+
+
+##Couche 3 SW 3D normalisée par la taille de maille
+beremin_3d_c3 = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2 / 2.5,
+    DEFORMATION="PETIT",
+    GROUP_MA="Couche_3",
+    FILTRE_SIGM="SIGM_ELMOY",
+    SIGM_MAXI=CO("SIG_TEST3"),
+    WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
+)
+
+IMPR_TABLE(TABLE=beremin_3d_c3, UNITE=6)
+
+# IMPR_RESU(
+#     FORMAT="MED",
+#     UNITE=82,
+#     RESU=_F(RESULTAT=SIG_TEST3),
+# )
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1372.616576,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_3d_c3,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_3")),
+)
+
+##################################################
+# BEREMIN 2D plan 0
+##################################################
+
+# Toute la face de la CT sauf la goupille en 0
+mesh_2D_c0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=21)
+
+##Plan 3
+mesh_2D_c3 = COPIER(CONCEPT=mesh_2D_c0)
+
+mesh_2D_c3 = MODI_MAILLAGE(reuse=mesh_2D_c3, MAILLAGE=mesh_2D_c3, TRANSLATION=(0, 0, 12.5))
+
+beremin_2d_c0 = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2,
+    DEFORMATION="PETIT",
+    GROUP_MA="CT",
+    FILTRE_SIGM="SIGM_ELMOY",
+    WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
+    METHODE_2D=_F(MAILLAGE_PLAN=mesh_2D_c0, NOM_MAIL_MED="2D_C0", UNITE_RESU=83),
+)
+
+IMPR_TABLE(TABLE=beremin_2d_c0, UNITE=6)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1591.4018531,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_2d_c0,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C0")),
+)
+
+##################################################
+# BEREMIN 2D plan 3
+##################################################
+
+beremin_2d_c3 = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2,
+    DEFORMATION="PETIT",
+    GROUP_MA="CT",
+    FILTRE_SIGM="SIGM_ELMOY",
+    WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
+    METHODE_2D=_F(MAILLAGE_PLAN=mesh_2D_c3, NOM_MAIL_MED="2D_C3", UNITE_RESU=84),
+)
+
+IMPR_TABLE(TABLE=beremin_2d_c3, UNITE=6)
+
+# IMPR_RESU(
+#     FORMAT="MED",
+#     UNITE=80,
+#     RESU=_F(RESULTAT=resu_elas),
+# )
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1372.616576,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_2d_c3,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C3")),
+)
+
+##################################################
+# BEREMIN 2D plan 0 et 3 en même temps
+##################################################
+
+beremin_2d_c03 = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2,
+    DEFORMATION="PETIT",
+    GROUP_MA="CT",
+    FILTRE_SIGM="SIGM_ELMOY",
+    WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
+    METHODE_2D=_F(MAILLAGE_PLAN=(mesh_2D_c0, mesh_2D_c3), NOM_MAIL_MED=("2D_C0", "2D_C3")),
+)
+
+IMPR_TABLE(TABLE=beremin_2d_c03, UNITE=6)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1372.616576,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_2d_c03,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C3")),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1591.4018531,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_2d_c03,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="2D_C0")),
+)
+
+##################################################
+# BEREMIN 3D normalisé réduction au tore uniquement
+##################################################
+beremin_3d_tore_c0 = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2 / 3.33333,
+    DEFORMATION="PETIT",
+    GROUP_MA="Couche_0_TORE",
+    FILTRE_SIGM="SIGM_ELMOY",
+    WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
+)
+
+IMPR_TABLE(TABLE=beremin_3d_tore_c0, UNITE=6)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1591.4018531,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_3d_tore_c0,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_0_TORE")),
+)
+
+##################################################
+# BEREMIN 2D réduction au tore uniquement
+##################################################
+# Uniquement la face du tore en 0
+mesh_2D_tore_c0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=22)
+
+beremin_2d_c0_tore = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2,
+    DEFORMATION="PETIT",
+    GROUP_MA="CT",
+    FILTRE_SIGM="SIGM_ELMOY",
+    WEIBULL=_F(M=18.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
+    METHODE_2D=_F(MAILLAGE_PLAN=mesh_2D_tore_c0, NOM_MAIL_MED="Couche_0_TORE"),
+)
+
+IMPR_TABLE(TABLE=beremin_2d_c0_tore, UNITE=6)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1591.401764,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_2d_c0_tore,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_0_TORE")),
+)
+
+FIN()
