@@ -2290,7 +2290,9 @@ N240_I = PhysicalQuantity(type="I", components=("X[240]",))
 
 N2448R = PhysicalQuantity(type="R", components=("X[2448]",))
 
-N3240R = PhysicalQuantity(type="R", components=("X[6480]",))
+N3600R = PhysicalQuantity(type="R", components=("X[3600]",))
+
+N6480R = PhysicalQuantity(type="R", components=("X[6480]",))
 
 N480_I = PhysicalQuantity(
     type="I",

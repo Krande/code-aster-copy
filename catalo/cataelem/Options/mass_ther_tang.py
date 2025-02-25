@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
-PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
 PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
 

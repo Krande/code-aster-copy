@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient 
 
 PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
 
-PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
 PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
 

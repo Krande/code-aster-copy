@@ -26,7 +26,7 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PCHHOBS = InputParameter(phys=PHY.N480_R, comment=""" HHO - coefficient base locale""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
 
 PVARCPR = InputParameter(
