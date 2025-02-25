@@ -268,9 +268,6 @@ Assurez-vous que cette valeur par défaut correspond bien au cas que vous voulez
     52: _(
         """Maille: %(k1)-8s - Nombre de points précédent: %(i1)d - Nombre de points courant: %(i2)d"""
     ),
-    52: _(
-        """Maille: %(k1)-8s - Nombre de composantes précédent: %(i1)d - Nombre de composantes courant: %(i2)d"""
-    ),
     54: _(
         """
 Erreur lors de la vérification de la cohérence entre les champs de contrainte.
