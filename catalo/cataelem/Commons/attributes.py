@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -301,9 +301,10 @@ FLUIDE = Attribute(
 )
 
 FORMULATION = Attribute(
-    value=("HHO_LINE", "HHO_QUAD", "U_P_PHI", "U_P", "U_PSI", "DIL", "DIL_INCO"),
+    value=("HHO_CSTE", "HHO_LINE", "HHO_QUAD", "U_P_PHI", "U_P", "U_PSI", "DIL", "DIL_INCO"),
     comment="""
-  FORMULATION =  'HHO_LINE'  : formulation linear for HHO (1/2/1)
+  FORMULATION =  'HHO_CSTE'  : formulation constante for HHO (0/0/0)
+  FORMULATION =  'HHO_LINE'  : formulation linear for HHO (1/1/1)
   FORMULATION =  'HHO_QUAD'  : formulation quadratic for HHO (2/2/2)
   FORMULATION =  'U_P_PHI' : formulation displacement/pressure/disp potential
   FORMULATION =  'U_P'    : formulation displacement/pressure

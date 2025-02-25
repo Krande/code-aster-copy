@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ import cataelem.Commons.attributes as AT
 # Located components
 # --------------------------------------------------------------------------------------------------
 DDL_THER = LocatedComponents(
-    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_T[3]",)), ("EN2", ()))
+    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_FT[2]",)), ("EN2", ()))
 )
 
 CHHOBS = LocatedComponents(
-    phys=PHY.N480_R, type="ELNO", diff=True, components=(("EN1", ("X[21]",)), ("EN2", ()))
+    phys=PHY.N480_R, type="ELNO", diff=True, components=(("EN1", ("X[6]",)), ("EN2", ()))
 )
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
@@ -42,19 +42,19 @@ MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 # --------------------------------------------------------------------------------------------------
-class THER3DQU9_HHO1_F(Element):
-    """Thermics - Skin element HHO_LINE - 3D - QUAD"""
+class THER_2D_HHO1_F(Element):
+    """Thermics - Skin element HHO_LINE - PLAN - SEG"""
 
-    meshType = MT.QUAD9
-    nodes = (SetOfNodes("EN1", (9,)), SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8)))
+    meshType = MT.SEG3
+    nodes = (SetOfNodes("EN1", (3,)), SetOfNodes("EN2", (1, 2)))
     attrs = ((AT.BORD_ISO, "OUI"),)
-    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG4",), mater=("RIGI",)),)
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2",), mater=("RIGI",)),)
     calculs = (
         OP.CHAR_THER_FLUN_F(
             te=461,
             para_in=(
                 (SP.PFLUXNF, LC.CFLUXNF),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.CHAR_THER_FLUN_F.PCHHOBS, CHHOBS),
             ),
@@ -64,7 +64,7 @@ class THER3DQU9_HHO1_F(Element):
             te=461,
             para_in=(
                 (SP.PFLUXNR, LC.CFLUXNR),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.CHAR_THER_FLUN_R.PCHHOBS, CHHOBS),
             ),
@@ -74,7 +74,7 @@ class THER3DQU9_HHO1_F(Element):
             te=461,
             para_in=(
                 (SP.PFLUXNL, LC.CFLUXNF),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.CHAR_THER_FLUNL.PCHHOBS, CHHOBS),
@@ -85,7 +85,7 @@ class THER3DQU9_HHO1_F(Element):
             te=461,
             para_in=(
                 (SP.PCOEFHF, LC.CHECHPF),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (SP.PT_EXTF, LC.CTEMPEF),
@@ -97,7 +97,7 @@ class THER3DQU9_HHO1_F(Element):
             te=461,
             para_in=(
                 (SP.PCOEFHR, LC.CHECHPR),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (SP.PT_EXTR, LC.ET_EXTR),
@@ -108,7 +108,7 @@ class THER3DQU9_HHO1_F(Element):
         OP.CHAR_THER_RAYO_F(
             te=461,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PRAYONF, LC.CRAYONF),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
@@ -119,7 +119,7 @@ class THER3DQU9_HHO1_F(Element):
         OP.CHAR_THER_RAYO_R(
             te=461,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
@@ -131,7 +131,7 @@ class THER3DQU9_HHO1_F(Element):
             te=457,
             para_in=(
                 (SP.PCOEFHF, LC.CHECHPF),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.RIGI_THER_ECHA_F.PCHHOBS, CHHOBS),
             ),
@@ -141,7 +141,7 @@ class THER3DQU9_HHO1_F(Element):
             te=457,
             para_in=(
                 (SP.PCOEFHR, LC.CHECHPR),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.RIGI_THER_ECHA_R.PCHHOBS, CHHOBS),
             ),
@@ -151,7 +151,7 @@ class THER3DQU9_HHO1_F(Element):
             te=457,
             para_in=(
                 (SP.PFLUXNL, LC.CFLUXNF),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.MTAN_THER_FLUXNL.PCHHOBS, CHHOBS),
@@ -161,7 +161,7 @@ class THER3DQU9_HHO1_F(Element):
         OP.MTAN_THER_RAYO_F(
             te=457,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PRAYONF, LC.CRAYONF),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
@@ -172,7 +172,7 @@ class THER3DQU9_HHO1_F(Element):
         OP.MTAN_THER_RAYO_R(
             te=457,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
@@ -183,35 +183,31 @@ class THER3DQU9_HHO1_F(Element):
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELGA.PGEOM_R, LC.EGGEO3D),
+                (OP.TOU_INI_ELGA.PFLUX_R, LC.EFLUX2R),
+                (OP.TOU_INI_ELGA.PGEOM_R, LC.EGGEO2D),
                 (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
                 (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
+                (SP.PTEMP_R, LC.ETEMPPG),
             ),
         ),
         OP.TOU_INI_ELEM(
             te=99,
-            para_out=(
-                (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
-                (OP.TOU_INI_ELEM.PNEU1_R, LC.CNEUTR1),
-                (OP.TOU_INI_ELEM.PCOEH_R, LC.CHECHPR),
-            ),
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PFLUN_R, LC.CFLUXNR)),
         ),
         OP.TOU_INI_ELNO(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM3D),
+                (OP.TOU_INI_ELNO.PFLUX_R, LC.NFLUX2R),
+                (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM2D),
+                (OP.TOU_INI_ELNO.PHYDR_R, LC.EHYDRNO),
+                (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
+                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASES),
             ),
         ),
     )
 
 
-# --------------------------------------------------------------------------------------------------
-class THER3DTR7_HHO1_F(THER3DQU9_HHO1_F):
-    """Thermics - Skin element 3D_HHO_LINE - TRIA"""
-
-    meshType = MT.TRIA7
-    nodes = (SetOfNodes("EN1", (7,)), SetOfNodes("EN2", (1, 2, 3, 4, 5, 6)))
-    attrs = ((AT.BORD_ISO, "OUI"),)
-    elrefe = (ElrefeLoc(MT.TR7, gauss=("RIGI=FPG3",), mater=("RIGI",)),)
+class THER_AX_HHO1_F(THER_2D_HHO1_F):
+    """Thermics - Skin element HHO_LINE - AXIS - SEG"""

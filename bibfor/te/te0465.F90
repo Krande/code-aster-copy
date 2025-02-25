@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,8 +65,8 @@ subroutine te0465(option, nomte)
     type(HHO_Cell) :: hhoCell
     type(HHO_Quadrature) :: hhoQuadCell
     type(HHO_basis_cell) :: hhoBasisCell
-    real(kind=8), dimension(MSIZE_CELL_SCAL) :: rhs_T
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs, temp_T_curr
+    real(kind=8), dimension(MSIZE_CELL_SCAL) :: rhs_T, temp_T_curr
+    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs
     real(kind=8) :: VoluValuesQP(MAX_QP_CELL)
     real(kind=8) :: theta, time_curr, tg
     integer :: fbs, nbpara, npg, faces_dofs, cbs, total_dofs
@@ -147,8 +147,7 @@ subroutine te0465(option, nomte)
 !
             tg = hhoEvalScalCell( &
                  hhoBasisCell, hhoData%cell_degree(), hhoQuadCell%points(1:3, ipg), temp_T_curr, &
-                 cbs &
-                 )
+                 cbs)
 !
 ! --------- Evaluate source
 !

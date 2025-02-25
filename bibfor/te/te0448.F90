@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,8 @@ subroutine te0448(nomopt, nomte)
     use HHO_size_module
     use HHO_type
     use HHO_utils_module
+    use HHO_matrix_module
+    use HHO_algebra_module
 !
     implicit none
 !
@@ -56,7 +58,7 @@ subroutine te0448(nomopt, nomte)
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer :: cbs, fbs, total_dofs, gbs, gbs_sym
-    integer :: npg, gbs_curr, gbs_cmp
+    integer :: npg
     integer :: ipg, idefo, nsig
     aster_logical :: l_largestrains
     character(len=4) :: fami
@@ -68,8 +70,7 @@ subroutine te0448(nomopt, nomte)
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_curr
     real(kind=8), dimension(MSIZE_CELL_MAT) :: G_curr_coeff
-    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC) :: gradrec
-    blas_int :: b_incx, b_incy, b_lda, b_m, b_n
+    type(HHO_matrix) :: gradrec
 !
 ! --- Get HHO informations
 !
@@ -84,7 +85,6 @@ subroutine te0448(nomopt, nomte)
     call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
                        gbs, gbs_sym)
     nsig = nbsigm()
-    gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     ASSERT(cbs <= MSIZE_CELL_VEC)
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
@@ -138,7 +138,6 @@ subroutine te0448(nomopt, nomte)
 !
     depl_curr = 0.d0
     call readVector('PDEPLAR', total_dofs, depl_curr)
-    call hhoRenumMecaVecInv(hhoCell, hhoData, depl_curr)
 !
 ! ----- init basis
 !
@@ -146,27 +145,7 @@ subroutine te0448(nomopt, nomte)
 !
 ! --- Compute local contribution
 !
-    if (l_largestrains) then
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
-        b_m = to_blas_int(gbs)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
-                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
-                   b_incy)
-        gbs_curr = gbs
-    else
-        b_lda = to_blas_int(MSIZE_CELL_MAT)
-        b_m = to_blas_int(gbs_sym)
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dgemv('N', b_m, b_n, 1.d0, gradrec, &
-                   b_lda, depl_curr, b_incx, 0.d0, G_curr_coeff, &
-                   b_incy)
-        gbs_curr = gbs_sym
-    end if
+    call hho_dgemv_N(1.d0, gradrec, depl_curr, 0.d0, G_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !
@@ -186,5 +165,7 @@ subroutine te0448(nomopt, nomte)
             zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if
     end do
+!
+    call gradrec%free()
 !
 end subroutine

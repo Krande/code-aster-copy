@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine te0485(nomopt, nomte)
     use HHO_compor_module
     use HHO_GV_module
     use HHO_init_module, only: hhoInfoInitCell
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -64,7 +65,7 @@ subroutine te0485(nomopt, nomte)
     aster_logical :: lMatr, lVect, lSigm, lVari, matsym
     character(len=4), parameter :: fami = 'RIGI'
     real(kind=8) :: rhs(MSIZE_TDOFS_MIX)
-    real(kind=8), dimension(MSIZE_TDOFS_MIX, MSIZE_TDOFS_MIX) :: lhs
+    type(HHO_matrix) :: lhs
 !
 ! --- Get HHO informations
 !
@@ -131,10 +132,14 @@ subroutine te0485(nomopt, nomte)
         call nmtstm(hhoComporState%carcri, jmatt, matsym)
 !
         if (matsym) then
-            call writeMatrix('PMATUUR', total_dofs, total_dofs, ASTER_TRUE, lhs)
+            call lhs%write('PMATUUR', ASTER_TRUE)
         else
-            call writeMatrix('PMATUNS', total_dofs, total_dofs, ASTER_FALSE, lhs)
+            call lhs%write('PMATUNS', ASTER_FALSE)
         end if
     end if
+!
+    call lhs%free()
+    call hhoMecaState%free()
+    call hhoGVState%free()
 !
 end subroutine

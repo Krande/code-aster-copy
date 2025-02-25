@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ DDL_MECA = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        ("EN1", ("HHO_DX[3]", "HHO_DY[3]", "HHO_DZ[3]", "HHO_VR[3]")),
+        ("EN1", ("HHO_FX[3]", "HHO_FY[3]", "HHO_FZ[3]", "HHO_VR[3]")),
         ("EN2", ()),
-        ("EN3", ("HHO_DX[4]", "HHO_DY[4]", "HHO_DZ[4]", "HHO_VR[4]", "HHO_LG[4]")),
+        ("EN3", ("HHO_CX[4]", "HHO_CY[4]", "HHO_CZ[4]", "HHO_VR[4]", "HHO_LG[4]")),
     ),
 )
 
@@ -46,9 +46,9 @@ DDL_DEPL = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        ("EN1", ("HHO_DX[3]", "HHO_DY[3]", "HHO_DZ[3]")),
+        ("EN1", ("HHO_FX[3]", "HHO_FY[3]", "HHO_FZ[3]")),
         ("EN2", ()),
-        ("EN3", ("HHO_DX[4]", "HHO_DY[4]", "HHO_DZ[4]")),
+        ("EN3", ("HHO_CX[4]", "HHO_CY[4]", "HHO_CZ[4]")),
     ),
 )
 
@@ -350,7 +350,11 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
 )
 
-DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
+DEPLHHO = LocatedComponents(
+    phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "VARI", "LAG_GV")
+)
+
+DEPLCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[21]",))
 
@@ -535,7 +539,7 @@ class MECA3DGVH_HHO111(Element):
             te=458,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
-                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO),
+                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLCINE),
                 (OP.HHO_CINE_R_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_DEPL),),

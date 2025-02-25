@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ DDL_THER = LocatedComponents(
     phys=PHY.TEMP_R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("HHO_T[6]",)), ("EN2", ()), ("EN3", ("HHO_T[10]"))),
+    components=(("EN1", ("HHO_FT[6]",)), ("EN2", ()), ("EN3", ("HHO_CT[10]"))),
 )
 
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))

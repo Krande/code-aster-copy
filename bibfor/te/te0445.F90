@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,8 @@ subroutine te0445(nomopt, nomte)
     use HHO_quadrature_module
     use HHO_ther_module
     use HHO_init_module, only: hhoInfoInitCell
+    use HHO_matrix_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -54,12 +56,10 @@ subroutine te0445(nomopt, nomte)
     character(len=8), parameter :: fami_rigi = 'RIGI', fami_mass = 'MASS'
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradfull
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab
+    type(HHO_matrix) :: gradfull, stab
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs_rigi, rhs_mass, rhs
     real(kind=8) :: theta, dtime
     aster_logical :: laxis
-    blas_int :: b_incx, b_incy, b_n
 !
 ! --- Get HHO informations
 !
@@ -72,8 +72,6 @@ subroutine te0445(nomopt, nomte)
 !
 ! --- Number of dofs
     call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    ASSERT(cbs <= MSIZE_CELL_SCAL)
-    ASSERT(fbs <= MSIZE_FACE_SCAL)
     ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
 !
     if (nomopt /= "CHAR_THER_EVOL") then
@@ -89,7 +87,6 @@ subroutine te0445(nomopt, nomte)
 ! --- Compute Operators
 !
     if (hhoData%precompute()) then
-!
         call hhoReloadPreCalcTher(hhoCell, hhoData, gradfull, stab)
     else
         call hhoCalcOpTher(hhoCell, hhoData, gradfull, stab)
@@ -111,20 +108,15 @@ subroutine te0445(nomopt, nomte)
     theta = zr(itemps+2)
 !
     rhs = 0.d0
-    b_n = to_blas_int(cbs)
-    b_incx = to_blas_int(1)
-    b_incy = to_blas_int(1)
-    call daxpy(b_n, 1.d0/dtime, rhs_mass, b_incx, rhs, &
-               b_incy)
-    b_n = to_blas_int(total_dofs)
-    b_incx = to_blas_int(1)
-    b_incy = to_blas_int(1)
-    call daxpy(b_n, -(1.d0-theta), rhs_rigi, b_incx, rhs, &
-               b_incy)
+    call daxpy_1(cbs, 1.d0/dtime, rhs_mass(total_dofs-cbs+1:total_dofs), &
+                 rhs(total_dofs-cbs+1:total_dofs))
+    call daxpy_1(total_dofs, -(1.d0-theta), rhs_rigi, rhs)
 !
 ! --- Save rhs
 !
-    call hhoRenumTherVec(hhoCell, hhoData, rhs)
     call writeVector('PVECTTR', total_dofs, rhs)
+!
+    call gradfull%free()
+    call stab%free()
 !
 end subroutine

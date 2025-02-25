@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine te0437(nomopt, nomte)
     use HHO_size_module
     use HHO_ther_module
     use HHO_utils_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -56,13 +57,13 @@ subroutine te0437(nomopt, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_basis_cell) :: hhoBasisCell
-    integer :: cbs, fbs, total_dofs, npg, isour, ipg, itime
+    integer :: cbs, fbs, total_dofs, npg, isour, ipg, itime, faces_dofs
     character(len=8), parameter :: fami = 'RIGI'
     real(kind=8) :: VoluValuesQP(MAX_QP_CELL)
     real(kind=8) :: theta, sour, dsdt, temp_eval
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T
+    real(kind=8), dimension(MSIZE_CELL_SCAL) :: temp_T
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs
+    type(HHO_matrix) :: lhs, lhs_cell
 !
 ! --- Get element parameters
 !
@@ -74,9 +75,8 @@ subroutine te0437(nomopt, nomte)
 !
 ! --- Number of dofs
     call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    ASSERT(cbs <= MSIZE_CELL_SCAL)
-    ASSERT(fbs <= MSIZE_FACE_SCAL)
     ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
+    faces_dofs = total_dofs-cbs
 !
     call hhoBasisCell%initialize(hhoCell)
 !
@@ -93,7 +93,7 @@ subroutine te0437(nomopt, nomte)
 ! ----- Get real value
 !
         temp_T = 0.d0
-        call readVector('PTEMPEI', cbs, temp_T, total_dofs-cbs)
+        call readVector('PTEMPEI', cbs, temp_T, faces_dofs)
 !
         do ipg = 1, hhoQuad%nbQuadPoints
             temp_eval = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
@@ -110,7 +110,8 @@ subroutine te0437(nomopt, nomte)
 !
 ! ---- Compute mass matrix
 !
-    lhs = 0.d0
+    call lhs%initialize(total_dofs, total_dofs, 0.d0)
+    call lhs_cell%initialize(cbs, cbs, 0.d0)
 !
 ! ----- Loop on quadrature point
     do ipg = 1, hhoQuad%nbQuadPoints
@@ -118,18 +119,20 @@ subroutine te0437(nomopt, nomte)
         call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, &
                                  hhoData%cell_degree(), BSCEval)
 ! --------  Eval massMat
-        call hhoComputeLhsMassTher(VoluValuesQP(ipg), hhoQuad%weights(ipg), BSCEval, cbs, &
-                                   lhs(1:MSIZE_CELL_SCAL, 1:MSIZE_CELL_SCAL))
+        call hhoComputeLhsMassTher(VoluValuesQP(ipg), hhoQuad%weights(ipg), &
+                                   BSCEval, cbs, lhs_cell)
     end do
 !
 ! ----- Copy the lower part
 !
-    call hhoCopySymPartMat('U', lhs(1:cbs, 1:cbs))
+    call lhs_cell%copySymU()
+    call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
+    call lhs_cell%free()
 !
 ! ---- save result
 !
-    call hhoRenumTherMat(hhoCell, hhoData, lhs)
-    call writeMatrix('PMATTTR', total_dofs, total_dofs, ASTER_TRUE, lhs)
+    call lhs%write('PMATTTR', ASTER_TRUE)
+    call lhs%free()
 !
 999 continue
 !

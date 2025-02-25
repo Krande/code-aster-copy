@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
-! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
-
 module HHO_utils_module
 !
     use HHO_type
     use HHO_size_module
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -47,10 +45,9 @@ module HHO_utils_module
 !
 ! --------------------------------------------------------------------------------------------------
     public :: hhoCopySymPartMat, hhoPrintMat, hhoNorm2Mat, hhoProdSmatVec
-    public :: hhoPrintTensor4, hhoPrintTensor4Mangle, hhoRenumMecaVec, hhoRenumMecaMat
-    public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv, MatCellScal2Vec
+    public :: hhoPrintTensor4, hhoPrintTensor4Mangle
+    public :: hhoGetTypeFromModel, MatScal2Vec, MatCellScal2Vec
     public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S, CellNameS2L
-    public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
     public :: hhoIsIdentityMat, hhoIdentityMat
 !    private  ::
 !
@@ -95,7 +92,13 @@ contains
                     call hhoData%initialize(1, 1, 1, 0.d0, ASTER_FALSE, &
                                             ASTER_FALSE)
                 else
-                    ASSERT(ASTER_FALSE)
+                    call dismoi('EXI_HHO_CSTE', model, 'MODELE', repk=answer)
+                    if (answer .eq. 'OUI') then
+                        call hhoData%initialize(0, 0, 0, 0.d0, ASTER_FALSE, &
+                                                ASTER_FALSE)
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
                 end if
             end if
         else
@@ -522,8 +525,8 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(in) :: mat_scal(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out) :: mat_vec(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+        type(HHO_matrix), intent(in) :: mat_scal
+        type(HHO_matrix), intent(out) :: mat_vec
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -539,46 +542,51 @@ contains
         integer :: cbs_comp, fbs_comp, cbs, fbs, jbeginVec, jendVec
         integer :: total_dofs, idim, jbeginCell, jendCell, jbeginFace, jendFace, iFace
         integer :: jFace, ibeginFace, iendFace, ibeginVec, iendVec
+        integer :: faces_dofs, faces_dofs_comp, total_dofs_comp
 ! --------------------------------------------------------------------------------------------------
 !
 ! -- number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        faces_dofs = total_dofs-cbs
 !
         cbs_comp = cbs/hhoCell%ndim
         fbs_comp = fbs/hhoCell%ndim
+        faces_dofs_comp = faces_dofs/hhoCell%ndim
+        total_dofs_comp = total_dofs/hhoCell%ndim
 !
 ! -- copy the scalar matrix in the vectorial matrix
-        mat_vec = 0.d0
+        call mat_vec%initialize(hhoCell%ndim*mat_scal%nrows, hhoCell%ndim*mat_scal%ncols, 0.d0)
 !
         do idim = 1, hhoCell%ndim
 ! --------- copy volumetric part
-            jbeginCell = (idim-1)*cbs_comp+1
+            jbeginCell = faces_dofs+(idim-1)*cbs_comp+1
             jendCell = jbeginCell+cbs_comp-1
 !
-            mat_vec(jbeginCell:jendCell, jbeginCell:jendCell) = mat_scal(1:cbs_comp, 1:cbs_comp)
+            mat_vec%m(jbeginCell:jendCell, jbeginCell:jendCell) &
+                = mat_scal%m(faces_dofs_comp+1:total_dofs_comp, faces_dofs_comp+1:total_dofs_comp)
 !
 ! --------- copy faces part
             do iFace = 1, hhoCell%nbfaces
-                ibeginFace = cbs+(iFace-1)*fbs+(idim-1)*fbs_comp+1
+                ibeginFace = (iFace-1)*fbs+(idim-1)*fbs_comp+1
                 iendFace = ibeginFace+fbs_comp-1
-                ibeginVec = cbs_comp+(iFace-1)*fbs_comp+1
+                ibeginVec = (iFace-1)*fbs_comp+1
                 iendVec = ibeginVec+fbs_comp-1
 !
                 do jFace = 1, hhoCell%nbfaces
-                    jbeginFace = cbs+(jFace-1)*fbs+(idim-1)*fbs_comp+1
+                    jbeginFace = (jFace-1)*fbs+(idim-1)*fbs_comp+1
                     jendFace = jbeginFace+fbs_comp-1
-                    jbeginVec = cbs_comp+(jFace-1)*fbs_comp+1
+                    jbeginVec = (jFace-1)*fbs_comp+1
                     jendVec = jbeginVec+fbs_comp-1
 !
-                    mat_vec(ibeginFace:iendFace, jbeginFace:jendFace) &
-                        = mat_scal(ibeginVec:iendVec, jbeginVec:jendVec)
+                    mat_vec%m(ibeginFace:iendFace, jbeginFace:jendFace) &
+                        = mat_scal%m(ibeginVec:iendVec, jbeginVec:jendVec)
                 end do
 !
 ! --------- copy coupled part
-                mat_vec(jbeginCell:jendCell, ibeginFace:iendFace) &
-                    = mat_scal(1:cbs_comp, ibeginVec:iendVec)
-                mat_vec(ibeginFace:iendFace, jbeginCell:jendCell) &
-                    = mat_scal(ibeginVec:iendVec, 1:cbs_comp)
+                mat_vec%m(jbeginCell:jendCell, ibeginFace:iendFace) &
+                    = mat_scal%m(faces_dofs_comp+1:total_dofs_comp, ibeginVec:iendVec)
+                mat_vec%m(ibeginFace:iendFace, jbeginCell:jendCell) &
+                    = mat_scal%m(ibeginVec:iendVec, faces_dofs_comp+1:total_dofs_comp)
             end do
         end do
 !
@@ -595,7 +603,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         real(kind=8), intent(in) :: mat_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        real(kind=8), intent(out) :: mat_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+        type(HHO_matrix), intent(out) :: mat_vec
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -618,307 +626,15 @@ contains
         cbs_comp = cbs/hhoCell%ndim
 !
 ! -- copy the scalar matrix in the vectorial matrix
-        mat_vec = 0.d0
+        call mat_vec%initialize(cbs, cbs, 0.d0)
 !
         do idim = 1, hhoCell%ndim
 ! --------- copy volumetric part
             jbeginCell = (idim-1)*cbs_comp+1
             jendCell = jbeginCell+cbs_comp-1
 !
-            mat_vec(jbeginCell:jendCell, jbeginCell:jendCell) = mat_scal(1:cbs_comp, 1:cbs_comp)
+            mat_vec%m(jbeginCell:jendCell, jbeginCell:jendCell) = mat_scal(1:cbs_comp, 1:cbs_comp)
         end do
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoRenumMecaVec(hhoCell, hhoData, vec)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_VEC)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vT, vF1, ..., vFn) to (vF1, ..., vFn, vT)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut vec        : vector to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: vec_tmp(MSIZE_TDOFS_VEC)
-        blas_int :: b_incx, b_incy, b_n
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
-! --- v_F
-        b_n = to_blas_int(faces_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp(cbs+1), b_incx, vec, b_incy)
-! --- v_T
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp, b_incx, vec(faces_dofs+1), b_incy)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoRenumMecaVecInv(hhoCell, hhoData, vec)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_VEC)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vF1, ..., vFn, vT) to (vT, vF1, ..., vFn)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut vec        : vector to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: vec_tmp(MSIZE_TDOFS_VEC)
-        blas_int :: b_incx, b_incy, b_n
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
-! --- v_T
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp(faces_dofs+1), b_incx, vec, b_incy)
-! --- v_F
-        b_n = to_blas_int(faces_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp, b_incx, vec(cbs+1), b_incy)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoRenumTherVecInv(hhoCell, hhoData, vec)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_SCAL)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vF1, ..., vFn, vT) to (vT, vF1, ..., vFn)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut vec        : vector to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: vec_tmp(MSIZE_TDOFS_SCAL)
-        blas_int :: b_incx, b_incy, b_n
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
-! --- v_T
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp(faces_dofs+1), b_incx, vec, b_incy)
-! --- v_F
-        b_n = to_blas_int(faces_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp, b_incx, vec(cbs+1), b_incy)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoRenumMecaMat(hhoCell, hhoData, mat)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: mat(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vTT, vTF) to (vFF, vFT)
-!        (vFT, vFF)    (vTF, vTT)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut mat        : matrix to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8), save :: mat_tmp(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        mat_tmp(1:total_dofs, 1:total_dofs) = mat(1:total_dofs, 1:total_dofs)
-!
-! ---- K_FF
-        mat(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
-! ---- K_FT
-        mat(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
-! ---- K_TF
-        mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
-! ---- K_TT
-        mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoRenumTherVec(hhoCell, hhoData, vec)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_SCAL)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vT, vF1, ..., vFn) to (vF1, ..., vFn, vT)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut vec        : vector to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: vec_tmp(MSIZE_TDOFS_SCAL)
-        blas_int :: b_incx, b_incy, b_n
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        b_n = to_blas_int(total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec, b_incx, vec_tmp, b_incy)
-! --- v_F
-        b_n = to_blas_int(faces_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp(cbs+1), b_incx, vec, b_incy)
-! --- v_T
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, vec_tmp, b_incx, vec(faces_dofs+1), b_incy)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoRenumTherMat(hhoCell, hhoData, mat)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in) :: hhoCell
-        type(HHO_Data), intent(in) :: hhoData
-        real(kind=8), intent(inout) :: mat(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Renumbering of HHO unknowns:
-!   From (vTT, vTF) to (vFF, vFT)
-!        (vFT, vFF)    (vTF, vTT)
-!
-!   In hhoCell      : the current HHO Cell
-!   In hhoData      : information on HHO methods
-!   IOut mat        : matrix to renumber
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        real(kind=8) :: mat_tmp(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
-! --------------------------------------------------------------------------------------------------
-!
-! ---- Number of dofs
-        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
-!
-        mat_tmp(1:total_dofs, 1:total_dofs) = mat(1:total_dofs, 1:total_dofs)
-!
-! ---- K_FF
-        mat(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
-! ---- K_FT
-        mat(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
-! ---- K_TF
-        mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
-! ---- K_TT
-        mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
 !
     end subroutine
 !

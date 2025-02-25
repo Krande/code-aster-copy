@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,8 @@ subroutine te0494(nomopt, nomte)
     type(HHO_basis_face) :: hhoBasisFace
     real(kind=8) :: basis(6*MAX_FACE_COEF+MAX_CELL_COEF)
     integer :: dec, iFace, size
-    blas_int :: b_incx, b_incy, b_n
+    blas_int :: b_n
+    blas_int, parameter :: b_incx = 1, b_incy = 1
 !
     ASSERT(nomopt .eq. 'HHO_PRECALC_BS')
 !
@@ -62,8 +63,6 @@ subroutine te0494(nomopt, nomte)
         call hhoBasisFace%initialize(hhoCell%faces(iFace))
         size = maxval(hhoBasisFace%coeff_shift)-1
         b_n = to_blas_int(size)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
         call dcopy(b_n, hhoBasisFace%coeff_mono, b_incx, basis(dec), b_incy)
         dec = dec+size
     end do
@@ -71,8 +70,6 @@ subroutine te0494(nomopt, nomte)
     call hhoBasisCell%initialize(hhoCell)
     size = maxval(hhoBasisCell%coeff_shift)-1
     b_n = to_blas_int(size)
-    b_incx = to_blas_int(1)
-    b_incy = to_blas_int(1)
     call dcopy(b_n, hhoBasisCell%coeff_mono, b_incx, basis(dec), b_incy)
     dec = dec+size
 !

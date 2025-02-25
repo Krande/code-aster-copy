@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -142,8 +142,8 @@ contains
 !
         real(kind=8) :: meas_2
         real(kind=8), dimension(3) :: v1
-        integer, parameter :: max_order = 7
-        integer, parameter :: max_pg = 4
+        integer, parameter :: max_order = 15
+        integer, parameter :: max_pg = 8
         character(len=8), dimension(0:max_order) ::rules
         integer :: dimp, nbpg, ipg
         real(kind=8), dimension(max_pg) :: xpg, poidpg
@@ -151,7 +151,8 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1', 'FPG1', 'FPG2', 'FPG2', 'FPG3', 'FPG3', 'FPG4', 'FPG4'/)
+        rules = (/'FPG1', 'FPG1', 'FPG2', 'FPG2', 'FPG3', 'FPG3', 'FPG4', 'FPG4', &
+                  'FPG5', 'FPG5', 'FPG6', 'FPG6', 'FPG7', 'FPG7', 'FPG8', 'FPG8'/)
 !
         meas_2 = measure/2.d0
         v1 = (coorno(1:3, 2)-coorno(1:3, 1))/2.d0
@@ -196,8 +197,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorpgglo
-        integer, parameter :: max_order = 7
-        integer, parameter :: max_pg = 16
+        integer, parameter :: max_order = 15
+        integer, parameter :: max_pg = 64
         character(len=8), dimension(0:max_order) ::rules
         integer :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, jaco
@@ -205,7 +206,8 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG1 ', 'FPG4 ', 'FPG4 ', 'FPG9 ', 'FPG9 ', 'FPG16', 'FPG16'/)
+        rules = (/'FPG1 ', 'FPG1 ', 'FPG4 ', 'FPG4 ', 'FPG9 ', 'FPG9 ', 'FPG16', 'FPG16', &
+                  'FPG25', 'FPG25', 'FPG36', 'FPG36', 'FPG49', 'FPG49', 'FPG64', 'FPG64'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -249,8 +251,8 @@ contains
 !
         real(kind=8) :: jaco
         real(kind=8), dimension(3) :: coorac
-        integer, parameter :: max_order = 7
-        integer, parameter :: max_pg = 64
+        integer, parameter :: max_order = 15
+        integer, parameter :: max_pg = 512
         character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z
@@ -258,7 +260,9 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG1 ', 'FPG8 ', 'FPG8 ', 'FPG27', 'FPG27', 'FPG64', 'FPG64'/)
+        rules = (/'FPG1  ', 'FPG1  ', 'FPG8  ', 'FPG8  ', 'FPG27 ', 'FPG27 ', 'FPG64 ', 'FPG64 ', &
+                  'FPG125', 'FPG125', 'FPG216', 'FPG216', 'FPG343', 'FPG343', 'FPG512', 'FPG512'/)
+
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -296,7 +300,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO
 !
-!   Get the quadrature rules for a atriangle
+!   Get the quadrature rules for a triangle
 !   In coorno       : coordinates of the nodes
 !   In measure      : surface of the triangle
 !   Out this        : hho quadrature
@@ -304,8 +308,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorac
-        integer, parameter :: max_order = 8
-        integer, parameter :: max_pg = 16
+        integer, parameter :: max_order = 14
+        integer, parameter :: max_pg = 42
         character(len=8), dimension(0:max_order) ::rules
         integer :: dimp, nbpg, ipg, ino
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
@@ -313,7 +317,8 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG1 ', 'FPG3 ', 'FPG4 ', 'FPG6 ', 'FPG7 ', 'FPG12', 'FPG13', 'FPG16'/)
+        rules = (/'FPG1 ', 'FPG1 ', 'FPG3 ', 'FPG4 ', 'FPG6 ', 'FPG7 ', 'FPG12', 'FPG13', 'FPG16', &
+                  'FPG19', 'FPG25', 'FPG28', 'FPG33', 'FPG37', 'FPG42'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -364,8 +369,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorac
-        integer, parameter :: max_order = 8
-        integer, parameter :: max_pg = 16
+        integer, parameter :: max_order = 14
+        integer, parameter :: max_pg = 42
         character(len=8), dimension(0:max_order) :: rules
         character(len=8) :: typma_s
         integer :: dimp, nbpg, ipg, ino, iret
@@ -373,7 +378,7 @@ contains
         real(kind=8) :: coor_tri(3, 3), xe(3)
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
 !
-! ----- split into tetra
+! ----- split into tria
         call cellNameL2S(typema, typma_s)
         call hhoSplitSimplex(typema, n_simp, ind_simp)
         ASSERT(n_simp <= 2)
@@ -381,7 +386,8 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG1 ', 'FPG3 ', 'FPG4 ', 'FPG6 ', 'FPG7 ', 'FPG12', 'FPG13', 'FPG16'/)
+        rules = (/'FPG1 ', 'FPG1 ', 'FPG3 ', 'FPG4 ', 'FPG6 ', 'FPG7 ', 'FPG12', 'FPG13', 'FPG16', &
+                  'FPG19', 'FPG25', 'FPG28', 'FPG33', 'FPG37', 'FPG42'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -442,8 +448,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorac
-        integer, parameter :: max_order = 6
-        integer, parameter :: max_pg = 23
+        integer, parameter :: max_order = 14
+        integer, parameter :: max_pg = 204
         character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z, jaco
@@ -451,7 +457,8 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG1 ', 'FPG4 ', 'FPG5 ', 'FPG11', 'FPG15', 'FPG23'/)
+        rules = (/'FPG1  ', 'FPG1  ', 'FPG4  ', 'FPG5  ', 'FPG11 ', 'FPG15 ', 'FPG24 ', "FPG35 ", &
+                  'FPG46 ', 'FPG59 ', 'FPG74 ', 'FPG94 ', 'FPG117', 'FPG144', 'FPG204'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -498,8 +505,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorac
-        integer, parameter :: max_order = 6
-        integer, parameter :: max_pg = 23
+        integer, parameter :: max_order = 14
+        integer, parameter :: max_pg = 204
         character(len=8), dimension(0:max_order) :: rules
         character(len=8) :: typma_s
         integer :: dimp, nbpg, ipg, ino, iret
@@ -515,7 +522,8 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG1 ', 'FPG4 ', 'FPG5 ', 'FPG11', 'FPG15', 'FPG23'/)
+        rules = (/'FPG1  ', 'FPG1  ', 'FPG4  ', 'FPG5  ', 'FPG11 ', 'FPG15 ', 'FPG24 ', "FPG35 ", &
+                  'FPG46 ', 'FPG59 ', 'FPG74 ', 'FPG94 ', 'FPG117', 'FPG144', 'FPG204'/)
 !
 !------ get quadrature points
         coorpg = 0.d0

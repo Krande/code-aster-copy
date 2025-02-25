@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine te0449(nomopt, nomte)
     use HHO_ther_module
     use HHO_basis_module
     use HHO_init_module, only: hhoInfoInitCell
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -57,9 +58,9 @@ subroutine te0449(nomopt, nomte)
     type(HHO_Quadrature) :: hhoQuadCellMass
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: cbs, fbs, total_dofs, npg
+    integer :: npg
     character(len=8), parameter :: fami = 'MASS'
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs
+    type(HHO_matrix) :: lhs
 !
 ! --- Get element parameters
 !
@@ -68,12 +69,6 @@ subroutine te0449(nomopt, nomte)
 ! --- Get HHO informations
 !
     call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellMass)
-!
-! --- Number of dofs
-    call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    ASSERT(cbs <= MSIZE_CELL_SCAL)
-    ASSERT(fbs <= MSIZE_FACE_SCAL)
-    ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
 !
     if (nomopt /= "MASS_THER") then
         ASSERT(ASTER_FALSE)
@@ -87,7 +82,7 @@ subroutine te0449(nomopt, nomte)
 !
 ! --- Save lhs
 !
-    call hhoRenumTherMat(hhoCell, hhoData, lhs)
-    call writeMatrix('PMATTTR', total_dofs, total_dofs, ASTER_TRUE, lhs)
+    call lhs%write('PMATTTR', ASTER_TRUE)
+    call lhs%free()
 !
 end subroutine

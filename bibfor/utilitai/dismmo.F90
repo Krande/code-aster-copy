@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,8 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
             (questi .eq. 'EXI_PLAQUE') .or. (questi .eq. 'EXI_TUYAU') .or. &
             (questi .eq. 'EXI_POUX') .or. (questi .eq. 'EXI_STRX') .or. &
             (questi .eq. 'EXI_STR2') .or. (questi .eq. 'EXI_THM') .or. &
-            (questi .eq. 'EXI_HHO') .or. (questi .eq. 'EXI_HHO_LINE') .or. &
+            (questi .eq. 'EXI_HHO') .or. (questi .eq. 'EXI_HHO_CSTE') .or. &
+            (questi .eq. 'EXI_HHO_LINE') .or. &
             (questi .eq. 'EXI_HHO_QUAD') .or. (questi .eq. 'EXI_NO_HHO') .or. &
             (questi .eq. 'EXI_AXIS') .or. (questi .eq. 'EXI_COQSOL') .or. &
             (questi .eq. 'EXI_IMPE_ABSO') .or. (questi .eq. 'EXI_CABLE') .or. &

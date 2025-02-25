@@ -230,7 +230,7 @@ module cara_elem_parameter_module
                                     'MEMBTR7         ', 'MEMBQU9         ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_MASSIF = 89
+    integer, parameter :: ACE_NB_MASSIF = 97
     character(len=16), parameter :: ACE_EL_MASSIF(ACE_NB_MASSIF) = [ &
                                     'MECA_HEXA8      ', 'MECA_PENTA6     ', &
                                     'MECA_PENTA18    ', 'MECA_TETRA4     ', &
@@ -265,12 +265,16 @@ module cara_elem_parameter_module
                                     'MECA3DP21_HHO222', 'MECA3DP19_HHO222', &
                                     'MECA_DPQ9_HHO111', 'MECA_DPT7_HHO111', &
                                     'MECA_DPQ9_HHO222', 'MECA_DPT7_HHO222', &
+                                    'THER3DH27_HHO000', 'THER3DT15_HHO000', &
+                                    'THER3DP21_HHO000', 'THER3DP19_HHO000', &
                                     'THER3DH27_HHO111', 'THER3DT15_HHO111', &
                                     'THER3DP21_HHO111', 'THER3DP19_HHO111', &
                                     'THER3DH27_HHO222', 'THER3DT15_HHO222', &
                                     'THER3DP21_HHO222', 'THER3DP19_HHO222', &
+                                    'THER2DQ9_HHO000 ', 'THER2DT7_HHO000 ', &
                                     'THER2DQ9_HHO111 ', 'THER2DT7_HHO111 ', &
                                     'THER2DQ9_HHO222 ', 'THER2DT7_HHO222 ', &
+                                    'THERAXQ9_HHO000 ', 'THERAXT7_HHO000 ', &
                                     'THERAXQ9_HHO111 ', 'THERAXT7_HHO111 ', &
                                     'THERAXQ9_HHO222 ', 'THERAXT7_HHO222 ', &
                                     'MEEI_HEXA20     ', 'MEEI_HEXS20     ', &

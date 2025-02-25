@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -265,6 +265,19 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_LINE') then
+                                repk = 'OUI'
+                            else
+                                repk = 'NON'
+                            end if
+                        else
+                            repk = 'NON'
+                        end if
+
+                    else if (questi .eq. 'EXI_HHO_CSTE') then
+                        if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
+                            lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
+                            call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
+                            if (formul .eq. 'HHO_CSTE') then
                                 repk = 'OUI'
                             else
                                 repk = 'NON'

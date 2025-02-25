@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -6702,6 +6702,28 @@ phen.add(
     ),
 )
 
+phen.add(
+    "3D_HHO#0",
+    Modelisation(
+        dim=(3, 3),
+        code="HT0",
+        attrs=(
+            (AT.FORMULATION, "HHO_CSTE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "3D"),
+            (AT.HHO, "OUI"),
+        ),
+        elements=(
+            (MT.HEXA27, EL.THER3DH27_HHO000),
+            (MT.TETRA15, EL.THER3DT15_HHO000),
+            (MT.PYRAM19, EL.THER3DP19_HHO000),
+            (MT.PENTA21, EL.THER3DP21_HHO000),
+            (MT.QUAD9, EL.THER3DQU9_HHO0_F),
+            (MT.TRIA7, EL.THER3DTR7_HHO0_F),
+        ),
+    ),
+)
+
 
 phen.add(
     "PLAN_HHO#2",
@@ -6737,6 +6759,44 @@ phen.add(
             (MT.QUAD9, EL.THER2DQ9_HHO111),
             (MT.TRIA7, EL.THER2DT7_HHO111),
             (MT.SEG3, EL.THER_2D_HHO1_F),
+        ),
+    ),
+)
+
+phen.add(
+    "PLAN_HHO#0",
+    Modelisation(
+        dim=(2, 2),
+        code="PT0",
+        attrs=(
+            (AT.FORMULATION, "HHO_CSTE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "PLAN"),
+            (AT.HHO, "OUI"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.THER2DQ9_HHO000),
+            (MT.TRIA7, EL.THER2DT7_HHO000),
+            (MT.SEG3, EL.THER_2D_HHO0_F),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_HHO#0",
+    Modelisation(
+        dim=(2, 2),
+        code="PA0",
+        attrs=(
+            (AT.FORMULATION, "HHO_CSTE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.THERAXQ9_HHO000),
+            (MT.TRIA7, EL.THERAXT7_HHO000),
+            (MT.SEG3, EL.THER_AX_HHO0_F),
         ),
     ),
 )
