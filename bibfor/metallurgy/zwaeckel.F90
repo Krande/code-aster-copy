@@ -103,7 +103,6 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
     else
         l_cold = ASTER_TRUE
     end if
-    !  lBoum = ASTER_FALSE
 
 ! - Initial number of steps
     lMultiStep = ASTER_FALSE
@@ -113,7 +112,6 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
     end if
 
     if (l_cold) then
-
         call metaSteelCooling(metaSteelPara, &
                               temp0, temp1, temp2, &
                               nbStep, deltaTime01, deltaTime12, &

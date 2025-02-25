@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmetl2(model, i_field, ds_inout)
 !
@@ -53,39 +52,31 @@ subroutine nmetl2(model, i_field, ds_inout)
 !
     integer :: iret
     aster_logical :: l_field_read
-    character(len=24) :: valk(3)
     character(len=24) :: field_read, field_read_cv, field_algo
-    character(len=24) :: field_type
+    character(len=24) :: fieldType
     character(len=4) :: init_type, disc_type
-    character(len=24) :: algo_name, field_disc_in, init_name
+    character(len=24) :: algo_name, fieldInDisc, init_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
     field_read_cv = '&&NMETL2.CHAMP.CONVER'
-!
+
 ! - Field to read ?
-!
     if (ds_inout%l_field_acti(i_field) .and. ds_inout%field(i_field)%l_read_init) then
-!
 ! ----- Name of field (type) in results datastructure
-!
-        field_type = ds_inout%field(i_field)%type
-!
+        fieldType = ds_inout%field(i_field)%type
+
 ! ----- Name of field for initial state
-!
         init_name = ds_inout%field(i_field)%init_name
-!
+
 ! ----- Spatial discretization of field
-!
         disc_type = ds_inout%field(i_field)%disc_type
-!
+
 ! ----- Name of field in algorithm
-!
         algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
-!
+
 ! ----- Actual state of field
-!
         init_type = ds_inout%field(i_field)%init_type
 !
 ! ----- Informations about field read in ETAT_INIT
@@ -96,38 +87,29 @@ subroutine nmetl2(model, i_field, ds_inout)
 ! ----- Read initial field
 !
         if (l_field_read) then
-!
 ! --------- Discretization of input field
-!
-            call dismoi('TYPE_CHAMP', field_read, 'CHAMP', repk=field_disc_in, arret='C', ier=iret)
-            if (iret .eq. 1) then
-                call utmess('F', 'ETATINIT_50', sk=field_read)
-            end if
-!
+            call dismoi('TYPE_CHAMP', field_read, 'CHAMP', repk=fieldInDisc, arret='C', ier=iret)
+
 ! --------- Try to convert field (discretization) if necessary and copy it
-!
-            if (field_type .eq. 'COHE_ELEM') then
+            if (fieldType .eq. 'COHE_ELEM') then
                 call xetco(field_read, field_algo, init_name)
             else
-                call nmetcv(model, init_name, field_read, field_disc_in, field_read_cv, disc_type)
+                call nmetcv(model, init_name, &
+                            fieldType, field_read, fieldInDisc, field_read_cv, disc_type)
                 if (disc_type .eq. 'NOEU') then
                     call vtcopy(field_read_cv, field_algo, ' ', iret)
                     if (iret .ne. 0) then
-                        valk(1) = field_read_cv
-                        valk(2) = field_algo
-                        call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
+                        call utmess('A', 'MECANONLINE_2', sk=fieldType)
                     end if
                 else if ((disc_type .eq. 'ELGA') .or. (disc_type .eq. 'ELEM') .or. &
                          (disc_type .eq. 'ELNO')) then
                     call copisd('CHAMP_GD', 'V', field_read_cv, field_algo)
                 else
-                    write (6, *) 'DISCRETISATION NON TRAITEE: ', field_disc_in
+                    write (6, *) 'DISCRETISATION NON TRAITEE: ', fieldInDisc
                     ASSERT(.false.)
                 end if
             end if
-!
 ! --------- New state of field
-!
             ds_inout%field(i_field)%init_type = 'READ'
         end if
 !

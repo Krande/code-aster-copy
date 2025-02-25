@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -124,6 +124,7 @@ module Metallurgy_type
 
 ! - Metallurgy - Parameters for steel
     type META_SteelParameters
+        aster_logical :: lNodeDebug = ASTER_FALSE
         real(kind=8) :: ar3 = 0.d0
         real(kind=8) :: alpha = 0.d0
         real(kind=8) :: ms0 = 0.d0

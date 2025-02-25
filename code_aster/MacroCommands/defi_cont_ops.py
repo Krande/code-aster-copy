@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
+from ..Messages import UTMESS
 from ..Objects import (
     ConnectionMesh,
     ContactAlgo,
@@ -53,6 +54,9 @@ def defi_cont_ops(self, **keywords):
     Arguments:
         keywords (dict): User's keywords.
     """
+
+    UTMESS("A", "QUALITY1_2")
+
     model = keywords["MODELE"]
     verbosity = keywords["INFO"]
     mesh = model.getMesh()

@@ -319,6 +319,15 @@ Il n'y a aucun degré de liberté de déplacement sur le modèle.
   sur un modèle dont au moins une matrice assemblée (masse ou raideur) est non-symétrique.
 """
     ),
+    57: _(
+        """
+  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous précisez un état initial (mot clé ETAT_INIT).
+  Pour le calcul du premier pas de temps, le champ des contraintes du début du pas est pris
+  dans le concept EVOL_NOLI fourni ou par le champ SIGM.
+  Le modèle sous-jacent à ce champ est différent du modèle pour le calcul.
+"""
+    ),
     58: _(
         """
 A cause des erreurs précédentes, le code s'arrête.

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmetcv(model, field_refe, field_in, field_disc_in, field_out, field_disc_out)
+    subroutine nmetcv(model, fieldRefe, fieldType, &
+                      fieldInName, fieldInDisc, fieldOutName, fieldOutDisc)
         character(len=8), intent(in) :: model
-        character(len=24), intent(in) :: field_refe
-        character(len=24), intent(in) :: field_in
-        character(len=24), intent(in) :: field_out
-        character(len=4), intent(in) :: field_disc_in
-        character(len=4), intent(in) :: field_disc_out
+        character(len=24), intent(in) :: fieldRefe
+        character(len=24), intent(in) :: fieldType
+        character(len=24), intent(in) :: fieldInName, fieldOutName
+        character(len=4), intent(in) :: fieldInDisc, fieldOutDisc
     end subroutine nmetcv
 end interface
