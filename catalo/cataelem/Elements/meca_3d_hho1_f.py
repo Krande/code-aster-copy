@@ -39,10 +39,7 @@ DDL_MECA = LocatedComponents(
 )
 
 CHHOBS = LocatedComponents(
-    phys=PHY.N3600R,
-    type="ELNO",
-    diff=True,
-    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
+    phys=PHY.N3600R, type="ELNO", diff=True, components=(("EN1", ("X[6]",)), ("EN2", ()))
 )
 
 EDEPLPG = LocatedComponents(

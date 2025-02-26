@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ module HHO_basis_module
     use HHO_monogen_module
     use HHO_quadrature_module
     use HHO_type
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -33,10 +34,11 @@ module HHO_basis_module
 #include "asterfort/binomial.h"
 #include "asterfort/HHO_basis_module.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
+#include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jevech.h"
 ! --------------------------------------------------------------------------------------------------
 !
 ! HHO - generic
@@ -100,6 +102,7 @@ module HHO_basis_module
     private :: hhoBSCellEval, hhoBSFaceEval, hhoBSCellGradEv, hhoBVCellSymGdEv, check_order
     private :: map_pt_cell, map_pt_face, orthonormalization
     private :: hhoBasisCellType, hhoBasisFaceType
+    private :: getMaxDegree
 !
 contains
 !
@@ -138,6 +141,76 @@ contains
 !
     end subroutine
 !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getMaxDegree(cell_degree, face_degree)
+!
+        implicit none
+        integer, optional, intent(out) :: cell_degree, face_degree
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Get max degree
+!
+! --------------------------------------------------------------------------------------------------
+!
+        character(len=16) :: formulation
+        integer :: cell_deg, face_deg
+!
+        call teattr('S', 'FORMULATION', formulation)
+!
+        if (formulation == 'HHO_CSTE') then
+            face_deg = 0
+            cell_deg = 1
+        elseif (formulation == 'HHO_LINE') then
+            face_deg = 1
+            cell_deg = 2
+        elseif (formulation == 'HHO_QUAD') then
+            face_deg = 2
+            cell_deg = 3
+        elseif (formulation == 'HHO_CUBI') then
+            face_deg = 3
+            cell_deg = 4
+        elseif (formulation == 'HHO_QUAR') then
+            face_deg = 4
+            cell_deg = 5
+        elseif (formulation == 'HHO_QUIN') then
+            face_deg = 5
+            cell_deg = 6
+        elseif (formulation == 'HHO_MCSTE') then
+            face_deg = 0
+            cell_deg = 1
+        elseif (formulation == 'HHO_MLINE') then
+            face_deg = 1
+            cell_deg = 2
+        elseif (formulation == 'HHO_MQUAD') then
+            face_deg = 2
+            cell_deg = 3
+        elseif (formulation == 'HHO_MCUBI') then
+            face_deg = 3
+            cell_deg = 4
+        elseif (formulation == 'HHO_MQUAR') then
+            face_deg = 4
+            cell_deg = 5
+        elseif (formulation == 'HHO_MQUIN') then
+            face_deg = 5
+            cell_deg = 6
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+        if (present(cell_degree)) then
+            cell_degree = cell_deg
+        end if
+        if (present(face_degree)) then
+            face_degree = face_deg
+        end if
+!
+    end subroutine
+!
 ! -- member functions
 !
 !
@@ -164,12 +237,15 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, size_face
+        integer :: max_deg_cell, max_deg_face
         real(kind=8) :: axes(3, 3), length_box(3)
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MAX_QP_CELL) :: basisOrthoIpg
+        type(HHO_matrix) :: basisOrthoIpg
         type(HHO_basis_cell) :: hhoBasisIner
         type(HHO_Quadrature) :: hhoQuad
 !
-        call this%hhoMono%initialize(hhoCell%ndim, MAX_DEGREE_CELL)
+        call getMaxDegree(max_deg_cell, max_deg_face)
+!
+        call this%hhoMono%initialize(hhoCell%ndim, max_deg_cell)
 !
         if (present(type)) then
             this%type = type
@@ -198,7 +274,7 @@ contains
         if (this%type == BASIS_ORTHO) then
 !
             call hhoBasisIner%initialize(hhoCell, BASIS_INERTIAL)
-            size_basis_scal = hhoBasisIner%BSSize(0, MAX_DEGREE_CELL)
+            size_basis_scal = hhoBasisIner%BSSize(0, max_deg_cell)
 !
             call tecach('NNO', 'PCHHOBS', 'L', iret, nval=1, itab=jtab)
 !
@@ -207,7 +283,7 @@ contains
                 do ib = 1, size_basis_scal
                     this%coeff_shift(ib+1) = this%coeff_shift(ib)+ib
                 end do
-                size_face = binomial(MAX_DEGREE_FACE+this%ndim-1, MAX_DEGREE_FACE)
+                size_face = binomial(max_deg_face+this%ndim-1, max_deg_face)
                 offset = hhoCell%nbfaces*(size_face*(size_face+1)/2)
                 call readVector('PCHHOBS', maxval(this%coeff_shift)-1, &
                                 this%coeff_mono, offset)
@@ -215,24 +291,25 @@ contains
 !
 ! ------------ If you have this error - add the basis field as an input of you option
                 call jevech('PCHHOBO', 'E', iret)
-
-                basisOrthoIpg = 0.d0
 !
                 if (this%ndim > 1) then
 !               Ortho-normalisation with modified Gramm-Schmidt
 !
-                    call hhoQuad%GetQuadCell(hhoCell, 2*MAX_DEGREE_CELL)
+                    call hhoQuad%GetQuadCell(hhoCell, 2*max_deg_cell)
+                    call basisOrthoIpg%initialize(MSIZE_CELL_SCAL, hhoQuad%nbQuadPoints, 0.d0)
 !
 ! --------------------- Initialize phi_i
 !
                     do ipg = 1, hhoQuad%nbQuadPoints
                         call hhoBasisIner%BSEval(hhoQuad%points(1:3, ipg), &
-                                                 0, MAX_DEGREE_CELL, basisOrthoIpg(1, ipg))
+                                                 0, max_deg_cell, basisOrthoIpg%m(1:, ipg))
                     end do
                 end if
 !
                 call orthonormalization(hhoQuad, basisOrthoIpg, size_basis_scal, this%ndim, &
                                         hhoCell%measure, this%coeff_shift, this%coeff_mono)
+!
+                call basisOrthoIpg%free()
 !
             end if
         end if
@@ -262,12 +339,15 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, nb_coeff
+        integer :: max_deg_cell, max_deg_face
         real(kind=8) :: axes(3, 2), length_box(2)
-        real(kind=8), dimension(MSIZE_CELL_SCAL, MAX_QP_FACE) :: basisOrthoIpg
+        type(HHO_matrix) :: basisOrthoIpg
         type(HHO_basis_face) :: hhoBasisIner
         type(HHO_Quadrature) :: hhoQuad
 !
-        call this%hhoMono%initialize(hhoFace%ndim, MAX_DEGREE_FACE)
+        call getMaxDegree(max_deg_cell, max_deg_face)
+!
+        call this%hhoMono%initialize(hhoFace%ndim, max_deg_face)
 !
         if (present(type)) then
             this%type = type
@@ -294,7 +374,7 @@ contains
 !
             call hhoBasisIner%initialize(hhoFace, BASIS_INERTIAL)
 !
-            size_basis_scal = hhoBasisIner%BSSize(0, MAX_DEGREE_FACE)
+            size_basis_scal = hhoBasisIner%BSSize(0, max_deg_face)
 !
             call tecach('NNO', 'PCHHOBS', 'L', iret, nval=1, itab=jtab)
 !
@@ -313,22 +393,23 @@ contains
 ! ------------ If you have this error - add the basis field as an input of your option
                 call jevech('PCHHOBO', 'E', iret)
 !
-                basisOrthoIpg = 0.d0
-!
                 if (this%ndim > 1) then
 !
-                    call hhoQuad%GetQuadFace(hhoFace, 2*MAX_DEGREE_FACE)
+                    call hhoQuad%getQuadFace(hhoFace, 2*max_deg_face)
+                    call basisOrthoIpg%initialize(MSIZE_FACE_SCAL, hhoQuad%nbQuadPoints, 0.d0)
 !
 ! --------------------- Initialize phi_i
 !
                     do ipg = 1, hhoQuad%nbQuadPoints
                         call hhoBasisIner%BSEval(hhoQuad%points(1:3, ipg), &
-                                                 0, MAX_DEGREE_FACE, basisOrthoIpg(1, ipg))
+                                                 0, max_deg_face, basisOrthoIpg%m(1:, ipg))
                     end do
                 end if
 !
                 call orthonormalization(hhoQuad, basisOrthoIpg, size_basis_scal, this%ndim, &
                                         hhoFace%measure, this%coeff_shift, this%coeff_mono)
+!
+                call basisOrthoIpg%free()
             end if
         end if
 !
@@ -1273,7 +1354,7 @@ contains
         implicit none
 !
         type(HHO_Quadrature), intent(in)                    :: hhoQuad
-        real(kind=8), intent(inout)                         :: basisIpg(MSIZE_CELL_SCAL, *)
+        type(HHO_matrix), intent(inout)                     :: basisIpg
         integer, intent(in)                                 :: nb_basis, ndim
         real(kind=8), intent(in)                            :: measure
         integer, intent(out)                                :: coeff_shift(*)
@@ -1302,18 +1383,34 @@ contains
 !
         if (ndim == 1) then
             ! Coeffficient of Legendre basis
-            coeff_shift(1:4) = [1, 2, 4, 7]
-            coeff_mono(1:6) = &
+            coeff_shift(1:8) = [1, 2, 4, 7, 11, 16, 22, 29]
+            coeff_mono(1:28) = &
                 ! ordre 0
                 (/1.d0, &
                   ! ordre 1
                   0.d0, 1.d0, &
                   ! ordre 2
-                  -0.5d0, 0.d0, 1.5d0/)
+                  -0.5d0, 0.d0, 1.5d0, &
+                  ! ordre 3
+                  0.d0, -1.5d0, 0.d0, 2.5d0, &
+                  ! ordre 4
+                  0.375d0, 0.d0, -3.75d0, 0.d0, 4.375d0, &
+                  ! ordre 5
+                  0.d0, 1.875d0, 0.d0, -8.75d0, 0.d0, 7.875d0, &
+                  ! ordre 6
+                  -0.3125d0, 0.0, 6.5625d0, 0.d0, -19.6875d0, 0.d0, 14.4375d0/)
 !
+!           Normalization is sqrt((2*n+1)/measure)
             coeff_mono(1) = coeff_mono(1)/sqrt(measure)
             coeff_mono(2:3) = coeff_mono(2:3)*sqrt(3.d0/measure)
             coeff_mono(4:6) = coeff_mono(4:6)*sqrt(5.d0/measure)
+            coeff_mono(7:10) = coeff_mono(7:10)*sqrt(7.d0/measure)
+            coeff_mono(11:15) = coeff_mono(11:15)*sqrt(9.d0/measure)
+            coeff_mono(16:21) = coeff_mono(16:21)*sqrt(11.d0/measure)
+            coeff_mono(22:28) = coeff_mono(22:28)*sqrt(13.d0/measure)
+!
+!           Set to zero unused coefficient
+            coeff_shift(nb_basis+2:8) = 0.d0
 !
         else
 !           Ortho-normalisation with modified Gramm-Schmidt
@@ -1339,27 +1436,27 @@ contains
 !
                         do ipg = 1, npg
                             ri(j) = ri(j)+hhoQuad%weights(ipg)* &
-                                    basisIpg(i, ipg)*basisIpg(j, ipg)
+                                    basisIpg%m(i, ipg)*basisIpg%m(j, ipg)
                         end do
 !
 ! --------------------- Update phi_i
 !
                         do ipg = 1, npg
-                            basisIpg(i, ipg) = basisIpg(i, ipg)-ri(j)*basisIpg(j, ipg)
+                            basisIpg%m(i, ipg) = basisIpg%m(i, ipg)-ri(j)*basisIpg%m(j, ipg)
                         end do
                     end do
 !
 ! ------------------ Compute normalization
 !
                     do ipg = 1, npg
-                        ri(i) = ri(i)+hhoQuad%weights(ipg)*basisIpg(i, ipg)*basisIpg(i, ipg)
+                        ri(i) = ri(i)+hhoQuad%weights(ipg)*basisIpg%m(i, ipg)*basisIpg%m(i, ipg)
                     end do
 !
 ! ------------------ Rescale coefficient
 !
                     ri(i) = 1.d0/sqrt(ri(i))
                     ri(1:i-1) = ri(1:i-1)*ri(i)
-                    basisIpg(i, 1:npg) = basisIpg(i, 1:npg)*ri(i)
+                    basisIpg%m(i, 1:npg) = basisIpg%m(i, 1:npg)*ri(i)
 !
 ! ------------- Compute coefficient of orthogonal basis function
 !

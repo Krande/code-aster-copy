@@ -45,7 +45,7 @@ CHHOBS = LocatedComponents(
     phys=PHY.N3600R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
+    components=(("EN1", ("X[1]",)), ("EN2", ()), ("EN3", ("X[6]"))),
 )
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
