@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -329,7 +329,7 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !   Pour mémoriser les mailles affectées.
-!           Si affe_mail(i)= -elem_supp_num     la maille est affectée et traitée
+!           Si affe_mail(i)= -elem_supp_num     la maille est affectée et a été traitée
 !                          = elem_supp_num      la maille est affectée et pas traitée
 !                          = 0                  la maille n'est pas affectée
     AS_ALLOCATE(vi=affe_mail, size=nbmail)
@@ -543,7 +543,8 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES MATRICES AUX RAIDEURS REPARTIES
     if (nbocc(ACE_RIGI_PARASOL) .ne. 0) then
-        call acearp(info_concept, lmax, noemaf, nbocc(ACE_RIGI_PARASOL), info_carte, ivr)
+        call acearp(info_concept, lmax, noemaf, nbocc(ACE_RIGI_PARASOL), info_carte, ivr, &
+                    affe_mail)
     end if
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES MATRICES AUX ELEMENTS DISCRETS
