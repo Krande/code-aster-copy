@@ -48,7 +48,16 @@ from .random_signal_utils import ACCE2SROM, acce_filtre_CP, calc_dsp_FR, calc_ds
 # COHERENCY MATRIX
 # --------------------------------------------------------------------
 def calc_coherency_matrix(frequencies, model, nom_mail, nom_group_inter, **kwargs):
+    """
+        Calculation of coherency matrix
 
+        Arguments:
+            frequencies : list of frequencies
+            model : coherency function type 
+            nom_mail : mesh name
+            nom_group_inter : group of nodes constituting the soil-structure interface
+            kwargs: other arguments from the commands
+    """
     if "NOEUDS_INTERF" in kwargs:
         noe_interf = kwargs["NOEUDS_INTERF"]
     else:
@@ -102,9 +111,19 @@ def calc_coherency_matrix(frequencies, model, nom_mail, nom_group_inter, **kwarg
     return COHE
 
 
-def CALC_COHE(freq, **kwargs):
+def CALC_COHE(puls, **kwargs):
+    """
+    Use to call calc_coherency_matrix from GENE_ACCE_SEISME
+    Convert pulsations to frequencies and call calc_coherency_matrix
+
+    Arguments :
+        pusl : pulsation values vector
+    
+    Return :
+        Coherency matrix
+    """
     coherency_matrix = calc_coherency_matrix(
-        frequencies=NP.array([freq / (2.0 * pi)]),
+        frequencies=NP.array([puls / (2.0 * pi)]),
         model=kwargs["TYPE"],
         nom_mail=kwargs["MAILLAGE"],
         nom_group_inter=kwargs["GROUP_NO_INTERF"],
@@ -121,7 +140,6 @@ def get_group_nom_coord(group_inter, nom_mail):
     liste_nom_no_int = [nom_mail.getNodeName(node) for node in liste_no_interf]
     COORD_3D = nom_mail.getCoordinates().getValues()
     coord_no_interf = NP.array([COORD_3D[3 * node : 3 * (node + 1)] for node in liste_no_interf])
-    # coord_no_interf = COORD_3D[mm.gno.get(group_inter)]
     if len(coord_no_interf[0]) == 2:
         z = NP.zeros((len(coord_no_interf[:, 0]), 1))
         coord_no_interf = NP.append(coord_no_interf, z, axis=1)

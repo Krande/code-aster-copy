@@ -156,12 +156,12 @@ def compute_pod(
         e_tot = NP.sum(energies)
 
         if info == 2:
-            aster.affiche("MESSAGE", f"FREQUENCE DE CALCUL: {freq}")
+            aster.affiche("MESSAGE", "FREQUENCE DE CALCUL: "+ str(freq))
 
         # keep only the modes than explain the precision of the cumulative energy
         for nbme, (nrj, value) in enumerate(zip(energies, values), 1):
             if info == 2:
-                aster.affiche("MESSAGE", f"VALEUR PROPRE {nbme} : {value}")
+                aster.affiche("MESSAGE", "VALEUR PROPRE "+str(nbme)+ " : "+str(value))
 
             cum_nrj += nrj
             prec = cum_nrj / e_tot
@@ -170,8 +170,8 @@ def compute_pod(
                 break
 
         if info == 2:
-            aster.affiche("MESSAGE", f"NOMBRE DE MODES POD RETENUS : {nbme}")
-            aster.affiche("MESSAGE", f"PRECISION (ENERGIE RETENUE) : {prec}")
+            aster.affiche("MESSAGE", "NOMBRE DE MODES POD RETENUS : "+str(nbme))
+            aster.affiche("MESSAGE", "PRECISION (ENERGIE RETENUE) : "+str(prec))
 
         _pvec = NP.sqrt(values[:nbme, None]) * vectors[:nbme]
         pvec.append(_pvec)
