@@ -54,6 +54,7 @@ subroutine te0020(nomopt, nomte)
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/provec.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterc/r8prem.h"
@@ -61,7 +62,7 @@ subroutine te0020(nomopt, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: lmater, jacf, idefi, ivectu
-    integer :: lorien, nno, nc, iabsc
+    integer :: lorien, nno, nc, iabsc, nbpar
     real(kind=8) :: r8bid, e, xnu, g, carsec(6), fs(14)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, a2, xiy2, xiz2
     real(kind=8) :: epx, xky, xkz, vect_y(3), norm, vect_x(3)
@@ -140,7 +141,6 @@ subroutine te0020(nomopt, nomte)
         call jevech('PEPSINF', 'L', idefi)
         call jevech('PINSTR', 'L', itemps)
         call jevech('PGEOMER', 'L', igeom)
-        call jevech('PABSCUR', 'L', iabsc)
 !       récupération de VECT_N
         call fointe('FM', zk8(idefi+3), 0, ' ', [0.d0], vect_n(1), ier)
         call fointe('FM', zk8(idefi+4), 0, ' ', [0.d0], vect_n(2), ier)
@@ -151,17 +151,23 @@ subroutine te0020(nomopt, nomte)
         nompar(3) = 'Z'
         nompar(4) = 'INST'
         valpar(4) = zr(itemps)
-        nompar(5) = 'ABSC'
-        valpar(5) = (zr(iabsc)+zr(iabsc+1))/2.d0
+!       recuperation éventuelle de l'abscisse curviligne
+        call tecach('ONO', 'PABSCUR', 'L', ier, iad=iabsc)
+        nbpar = 4
+        if (iabsc .ne. 0) then
+            nbpar = nbpar+1
+            nompar(nbpar) = 'ABSC'
+            valpar(nbpar) = (zr(iabsc)+zr(iabsc+1))/2.d0
+        end if
 !       milieu de la poutre
         valpar(1) = (zr(igeom+(2-1)*3-1+1)+zr(igeom-1+1))/2.d0
         valpar(2) = (zr(igeom+(2-1)*3-1+2)+zr(igeom-1+2))/2.d0
         valpar(3) = (zr(igeom+(2-1)*3-1+3)+zr(igeom-1+3))/2.d0
-        call fointe('FM', zk8(idefi), 5, nompar, valpar, &
+        call fointe('FM', zk8(idefi), nbpar, nompar, valpar, &
                     epx, ier)
-        call fointe('FM', zk8(idefi+1), 5, nompar, valpar, &
+        call fointe('FM', zk8(idefi+1), nbpar, nompar, valpar, &
                     xky, ier)
-        call fointe('FM', zk8(idefi+2), 5, nompar, valpar, &
+        call fointe('FM', zk8(idefi+2), nbpar, nompar, valpar, &
                     xkz, ier)
     end if
 !   Récupération des orientations alpha, beta, gamma
