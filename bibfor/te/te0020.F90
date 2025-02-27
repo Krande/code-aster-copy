@@ -117,6 +117,18 @@ subroutine te0020(nomopt, nomte)
     a2 = vale_cara(7)
     xiy2 = vale_cara(8)
     xiz2 = vale_cara(9)
+!
+!   poutres homothétiques interdites car les forces doivent être
+!   identiques aux deux noeuds
+    if (abs(a-a2) .gt. 1d3*r8prem()) then
+        call utmess('F', 'CHARGES_4')
+    end if
+    if (abs(xiy-xiy2) .gt. 1d3*r8prem()) then
+        call utmess('F', 'CHARGES_4')
+    end if
+    if (abs(xiz-xiz2) .gt. 1d3*r8prem()) then
+        call utmess('F', 'CHARGES_4')
+    end if
 
 ! --------------------------------------------------------------------------------------------------
     if (nomte .eq. 'MECA_POU_D_TGM') then
