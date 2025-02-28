@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from code_aster.Cata.Language.DataStructure import fonction_sdaster
-from code_aster.Cata.Language.Syntax import FACT, MACRO, SIMP
+from code_aster.Cata.Language.Syntax import _F, FACT, MACRO, SIMP
 from code_aster.Commands import DEFI_CONSTANTE
 from code_aster.Supervis import UserMacro
 from code_aster import CA
@@ -27,7 +27,7 @@ CA.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION", ALARME="EXCEPTION"))
 test = CA.TestCase()
 
 
-def check_ops(self, A1=None, A2=None, O1=None, O2=None, INFO=2):
+def check_ops(self, A1=None, A2=None, O1=None, O2=None, F1=None, F2=None, INFO=2):
     """Command mockup to check keywords conversion according to the 'max' attribute."""
 
     def verb(msg):
@@ -37,20 +37,28 @@ def check_ops(self, A1=None, A2=None, O1=None, O2=None, INFO=2):
     test.assertIsNone(self._result)
     if A1 is not None:
         verb(f"{A1=}")
-        test.assertIs(type(A1), float, msg="A1 should be a single float")
+        test.assertIsInstance(A1, float, msg="A1 should be a single float")
         test.assertNotIn(type(A1), (list, tuple), msg="A1 should not be a list or tuple")
     if A2 is not None:
         verb(f"{A2=}")
-        test.assertIsNot(type(A2), float, msg="A2 should not be a single float")
+        test.assertNotIsInstance(A2, float, msg="A2 should not be a single float")
         test.assertIn(type(A2), (list, tuple), msg="A2 should be a list or tuple")
     if O1 is not None:
         verb(f"{O1=}")
-        test.assertIs(type(O1), CA.Function, msg="O1 should be a Function")
+        test.assertIsInstance(O1, CA.Function, msg="O1 should be a single Function")
         test.assertNotIn(type(O1), (list, tuple), msg="O1 should not be a list or tuple")
     if O2 is not None:
         verb(f"{O2=}")
-        test.assertIsNot(type(O2), CA.Function, msg="O2 should not be a single Function")
+        test.assertNotIsInstance(O2, CA.Function, msg="O2 should not be a single Function")
         test.assertIn(type(O2), (list, tuple), msg="O2 should be a list or tuple")
+    if F1 is not None:
+        verb(f"{F1=}")
+        test.assertIsInstance(F1, dict, msg="F1 should be a single dict")
+        test.assertNotIn(type(F1), (list, tuple), msg="F1 should not be a list or tuple")
+    if F2 is not None:
+        verb(f"{F2=}")
+        test.assertNotIsInstance(F2, dict, msg="F2 should not be a single dict")
+        test.assertIn(type(F2), (list, tuple), msg="F2 should be a list or tuple")
 
     return None
 
@@ -62,6 +70,8 @@ CHECK_cata = MACRO(
     A2=SIMP(statut="f", typ="R", max="**"),
     O1=SIMP(statut="f", typ=fonction_sdaster, max=1),
     O2=SIMP(statut="f", typ=fonction_sdaster, max=2),
+    F1=FACT(statut="f", max=1, S1=SIMP(statut="o", typ="R", max=1)),
+    F2=FACT(statut="f", max="**", S2=SIMP(statut="o", typ="R", max=1)),
 )
 
 CHECK = UserMacro("CHECK", CHECK_cata, check_ops)
@@ -85,6 +95,15 @@ with test.assertRaisesRegex(CA.AsterError, "At most 1 value"):
 CHECK(O2=cst)
 CHECK(O2=(cst,))
 CHECK(O2=(cst, cst))
+
+CHECK(F1=_F(S1=1.0))
+CHECK(F1=(_F(S1=1.0),))
+with test.assertRaisesRegex(CA.AsterError, "at most 1 occurrence"):
+    CHECK(F1=(_F(S1=1.0), _F(S1=2.0)))
+
+CHECK(F2=_F(S2=1.0))
+CHECK(F2=(_F(S2=1.0),))
+CHECK(F2=(_F(S2=1.0), _F(S2=2.0)))
 
 test.printSummary()
 
