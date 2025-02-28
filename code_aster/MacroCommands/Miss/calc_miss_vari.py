@@ -22,12 +22,13 @@ from math import pi, sqrt
 import aster
 import numpy as NP
 from numpy import linalg
+from typing import List
 
 from ...Cata.Syntax import _F
 from ...CodeCommands import COMB_MATR_ASSE, CREA_CHAMP, DYNA_VIBRA, LIRE_FORC_MISS, LIRE_IMPE_MISS
 from ...Messages import UTMESS
 from ...Utilities import disable_fpe
-from ..Utils.signal_correlation_utils import CALC_COHE
+from ..Utils.signal_correlation_utils import calc_coherency_matrix
 
 
 def calc_miss_vari(self):
@@ -42,17 +43,23 @@ def calc_miss_vari(self):
         list_NOM_CMP = [self.NOM_CMP]
     self.NOM_CMP = None
 
-    # BOUCLE SUR LES FREQUENCES : Matrice de cohérence
-    PVEC = [None] * NB_FREQ
-    nbm = [None] * NB_FREQ
-    for k in range(NB_FREQ):
-        freqk = self.FREQ_INIT + self.FREQ_PAS * k
-        if self.INFO == 2:
-            aster.affiche("MESSAGE", "FREQUENCE DE CALCUL: " + str(freqk))
-        # COHERENCE
-        COHE = CALC_COHE(freqk * 2.0 * pi, **self.cohe_params)
-        # EIGENVALUE DECOMP
-        PVEC[k], nbm[k] = compute_POD(COHE, self.calc_params["PRECISION"], self.INFO)
+    frequencies = self.FREQ_INIT + self.FREQ_PAS * NP.arange(NB_FREQ)
+    kwargs = self.cohe_params
+
+    coherency_matrix = calc_coherency_matrix(
+        frequencies=frequencies,
+        model=kwargs["TYPE"],
+        nom_mail=kwargs["MAILLAGE"],
+        nom_group_inter=kwargs["GROUP_NO_INTERF"],
+        **kwargs,
+    )
+
+    PVEC = compute_pod(
+        coherency_matrix=coherency_matrix,
+        precision=self.calc_params["PRECISION"],
+        frequencies=frequencies,
+        info=self.INFO,
+    )
 
     # RECUPERATION DES MODES MECA (STATIQUES)
     nbmodd = self.mat_gene_params["NBMODD"]
@@ -69,7 +76,7 @@ def calc_miss_vari(self):
         dict_modes["NOM_CMP"] = nom_cmp
         # BOUCLE SUR LES FREQUENCES
         for k in range(NB_FREQ):
-            dict_modes["nbpod"] = nbm[k]
+            dict_modes["nbpod"] = len(PVEC[k])
             # CALCUL ISS VARI
             if self.interf_params["MODE_INTERF"] != "QUELCONQUE":
                 RESU[i_cmp] = self.compute_freqk(k, RESU[i_cmp], PVEC[k], dict_modes)
@@ -85,42 +92,67 @@ def calc_miss_vari(self):
 # --------------------------------------------------------------------------------
 #   ROUTINES
 # --------------------------------------------------------------------------------
-def compute_POD(COHE, PRECISION, INFO):
-    """compute POD"""
-    # EIGENVALUE DECOMP
-    # nbno = self.interf_params['NBNO']
-    # On desactive temporairement les FPE
-    with disable_fpe():
-        eig, vec = linalg.eig(COHE)
-        vec = NP.transpose(vec)  # les vecteurs sont en colonne dans numpy
-    eig = eig.real
-    vec = vec.real
-    # on rearrange selon un ordre decroissant
-    eig = NP.where(eig < 1.0e-10, 0.0, eig)
-    order = NP.argsort(eig)[::-1]
-    eig = NP.take(eig, order)
-    vec = NP.take(vec, order, 0)
-    # Nombre de modes POD a retenir
-    etot = NP.sum(eig**2)
-    ener = 0.0
-    nbme = 0
-    nbno = len(eig)
-    while nbme < nbno:
-        ener = eig[nbme] ** 2 + ener
-        prec = ener / etot
-        nbme = nbme + 1
-        if INFO == 2:
-            texte = "VALEUR PROPRE " + str(nbme) + " : " + str(eig[nbme - 1])
-            aster.affiche("MESSAGE", texte)
-        if prec > PRECISION:
-            break
-    if INFO == 2:
-        aster.affiche("MESSAGE", "NOMBRE DE MODES POD RETENUS : " + str(nbme))
-        aster.affiche("MESSAGE", "PRECISION (ENERGIE RETENUE) : " + str(prec))
-    PVEC = NP.zeros((nbme, nbno))
-    for k1 in range(nbme):
-        PVEC[k1, 0:nbno] = NP.sqrt(eig[k1]) * vec[k1]
-    return PVEC, nbme
+def compute_pod(
+    coherency_matrix: NP.ndarray, precision: float, frequencies: NP.ndarray, info: int
+) -> List[NP.ndarray]:
+    """compute POD
+    Args:
+        coherency_matrix : coherency matrix shape (nb_freq, nb_nodes, nb_nodes)
+        precision : unitary threshold of the sum of the energy
+        frequencies : frequencies
+        info : verbosity level
+
+    """
+
+    def iter_on_eigen_values_and_vectors_all():
+        """Resolve once the the eigenvalue problem for all frequencies"""
+        if info == 2:
+            aster.affiche("MESSAGE", "RESOLUTION DES VALEURS PROPRES POUR TOUTES LES FREQUENCES")
+
+        with disable_fpe():
+            eig, vec = linalg.eigh(coherency_matrix)
+
+        eig = eig.real
+        vec = vec.real
+
+        eig[eig < 1.0e-10] = 0.0
+        # les vecteurs sont en colonne en sortie de linalg.eigh
+        vec = NP.transpose(vec, axes=(0, 2, 1))
+        # Sort eigenvalues and eigenvectors in descending order
+        eig = eig[:, ::-1]  # shape (nb_fre, nb_nodes)
+        vec = vec[:, ::-1]
+        yield from zip(eig, vec)
+
+    pvec = []
+
+    for freq, (values, vectors) in zip(frequencies, iter_on_eigen_values_and_vectors_all()):
+        cum_nrj = 0.0
+
+        energies = values**2
+        e_tot = NP.sum(energies)
+
+        if info == 2:
+            aster.affiche("MESSAGE", "FREQUENCE DE CALCUL: " + str(freq))
+
+        # keep only the modes than explain the precision of the cumulative energy
+        for nbme, (nrj, value) in enumerate(zip(energies, values), 1):
+            if info == 2:
+                aster.affiche("MESSAGE", "VALEUR PROPRE " + str(nbme) + " : " + str(value))
+
+            cum_nrj += nrj
+            prec = cum_nrj / e_tot
+
+            if prec > precision:
+                break
+
+        if info == 2:
+            aster.affiche("MESSAGE", "NOMBRE DE MODES POD RETENUS : " + str(nbme))
+            aster.affiche("MESSAGE", "PRECISION (ENERGIE RETENUE) : " + str(prec))
+
+        _pvec = NP.sqrt(values[:nbme, None]) * vectors[:nbme]
+        pvec.append(_pvec)
+
+    return pvec
 
 
 # ---------------------------------------------------------------------
