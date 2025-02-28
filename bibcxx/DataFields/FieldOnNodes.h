@@ -801,9 +801,14 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileN
     // In case that the print file (single and absolute path) is unique between processors,
     // it must only be created on proc 0.
     if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
-        a.openFile( fileName, Binary, New );
+        if ( rank == 0 )
+            a.openFile( fileName, Binary, New );
+        AsterMPI::barrier();
+        if ( rank != 0 )
+            a.openFile( fileName, Binary, Old );
         retour = a.getLogicalUnit();
     }
+
     CommandSyntax cmdSt( "IMPR_RESU" );
 
     SyntaxMapContainer dict;

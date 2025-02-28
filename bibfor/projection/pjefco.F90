@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer :: n1, nbocc, iocc, nbno2, nbma1, nbma2
     integer :: iexi, nbNodeInterc, nbnoma2, nbnono2
 !
-    aster_logical :: l_dmax, dbg, final_occ
+    aster_logical :: l_dmax, dbg, final_occ, parallelMesh
     real(kind=8) :: dmax, dala, dmax0d
     integer, pointer :: limanu1(:) => null()
     integer, pointer :: linonu2(:) => null()
@@ -245,7 +245,8 @@ subroutine pjefco(moa1, moa2, corres, base)
             call reliem(' ', noma2, 'NU_NOEUD', 'VIS_A_VIS', iocc, &
                         2, motcle, tymocl, '&&PJEFCO.LINOTM2', nbnono2)
 
-            if (isParallelMesh(noma2) .and. nbnono2+nbnoma2 == 0) then
+            parallelMesh = isParallelMesh(noma2)
+            if (parallelMesh .and. nbnono2+nbnoma2 == 0) then
                 goto 99
             end if
 
@@ -276,7 +277,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !           intersection entre les noeuds2 des occurrences precedentes
 !           et de l'occurrence courante
             call pjreco(linonu2, nbno2, iocc, final_occ, nameListInterc, &
-                        nbNodeInterc)
+                        nbNodeInterc, parallelMesh)
 !
 !           CALCUL DU CORRESP_2_MAILLA POUR IOCC :
             call pjefca(moa1, '&&PJEFCO.LIMANU1', iocc, ncas(1))
@@ -319,7 +320,8 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
 !           -- SURCHARGE DU CORRESP_2_MAILLA :
 !           ----------------------------------------------
-            if (iocc .eq. 1) then
+            call jeexin(corre2//'.PJXX_K1', iexi)
+            if (iexi .eq. 0) then
                 call copisd('CORRESP_2_MAILLA', 'V', corre1, corre2)
             else
                 call pjfuco(corre2, corre1, 'V', corre3)

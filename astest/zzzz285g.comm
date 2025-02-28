@@ -1,0 +1,126 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# This test shows a simple way to do a parallel projection.
+# More specifically, we consider a field on a classic Mesh object. It is fully
+# available on any MPI process.
+# We want to project it onto another mesh, which is a ParallelMesh.
+# The projection is thus realized in a parallel manner for each subdomain
+
+import os.path as osp
+
+import numpy as np
+
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.Utilities import shared_tmpdir
+
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    DEBUG=_F(SDVERI="OUI"),
+    IGNORE_ALARME=("MODELISA8_10", "MODELISA4_7"),
+)
+
+test = CA.TestCase()
+
+# -------------------------------------------------------------------------------
+# Build the meshes
+
+# The initial mesh, available on every MPI process
+ma0 = CA.Mesh.buildCube(refine=4)
+# It is rotated in order to not be aligned with the axis (the projection algorithm uses an octree sort)
+ma0 = MODI_MAILLAGE(
+    reuse=ma0,
+    MAILLAGE=ma0,
+    ROTATION=(_F(POIN_1=(10.0, 0.5, 3.8), ANGLE=90, POIN_2=(0.0, 10.0, 0.0)),),
+)
+
+# The parallel mesh
+ma1 = CA.ParallelMesh.buildCube(refine=5)
+ma1 = MODI_MAILLAGE(
+    reuse=ma1,
+    MAILLAGE=ma1,
+    ROTATION=(_F(POIN_1=(10.0, 0.5, 3.8), ANGLE=90, POIN_2=(0.0, 10.0, 0.0)),),
+)
+
+# -------------------------------------------------------------------------------
+# Build the field
+
+# Extract the coords of the mesh
+coo = ma0.getCoordinatesAsSimpleFieldOnNodes()
+# Build an array as an algebraic sum the coords
+scal = coo.X + coo.Y + coo.Z
+
+# Conversion into a simple field
+tempf = CA.SimpleFieldOnNodesReal(ma0, "TEMP_R", ["TEMP"], prol_zero=True)
+tempf.setComponentValues("TEMP", scal)
+
+# Conversion into FieldOnNodes
+vec_ini = tempf.toFieldOnNodes()
+
+
+# -------------------------------------------------------------------------------
+# Project the field
+
+proj = PROJ_CHAMP(
+    METHODE="AUTO",
+    CHAM_GD=vec_ini,
+    MAILLAGE_1=ma0,
+    MAILLAGE_2=ma1,
+    VIS_A_VIS=(
+        _F(GROUP_MA_1="TOP", GROUP_MA_2="TOP"),
+        _F(GROUP_MA_1="BOTTOM", GROUP_MA_2="BOTTOM"),
+        _F(GROUP_MA_1="LEFT", GROUP_MA_2="LEFT"),
+        _F(GROUP_MA_1="RIGHT", GROUP_MA_2="RIGHT"),
+        _F(GROUP_MA_1="FRONT", GROUP_MA_2="FRONT"),
+        _F(GROUP_MA_1="BACK", GROUP_MA_2="BACK"),
+        _F(GROUP_MA_1="VOLUME", GROUP_MA_2="VOLUME"),
+    ),
+)
+
+# -------------------------------------------------------------------------------
+# Verification
+
+with shared_tmpdir("mytest_") as tmpdir:
+
+    # Print the parallel field into a single file
+    medfile = osp.join(tmpdir, "proj.med")
+    proj.printMedFile(medfile, local=False)
+
+    # Read it again as a sequential field
+    DEFI_FICHIER(ACCES="OLD", UNITE=99, FICHIER=medfile, TYPE="BINARY")
+    ma = LIRE_MAILLAGE(UNITE=99)
+    vec_new = LIRE_CHAMP(
+        MAILLAGE=ma,
+        FORMAT="MED",
+        UNITE=99,
+        NOM_MED=proj.getName(),
+        TYPE_CHAM="NOEU_DEPL_R",
+        NOM_CMP_IDEM="OUI",
+    )
+
+# Project it back to the initial mesh to allow manipulations
+proj_back = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=vec_new, MAILLAGE_1=ma, MAILLAGE_2=ma0)
+
+diff = np.max(np.abs(np.asarray(proj_back.getValues()) - np.asarray(vec_ini.getValues())))
+
+test.assertAlmostEqual(diff, 0)
+
+FIN()
