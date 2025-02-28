@@ -103,9 +103,6 @@ def compute_pod(
         info : verbosity level
 
     """
-    # Either solve the eigenvalue once or solve it for each frequency
-    # In resolving once, no message is displayed and it can take times.
-    run_all_in_once = True
 
     def iter_on_eigen_values_and_vectors_all():
         """Resolve once the the eigenvalue problem for all frequencies"""
@@ -126,42 +123,21 @@ def compute_pod(
         vec = vec[:, ::-1]
         yield from zip(eig, vec)
 
-    def iter_on_eigen_values_and_vectors():
-        """Resolve the eigenvalue problem for each frequency"""
-        for matrix in coherency_matrix:
-            aster_core.matfpe(-1)
-            eig, vec = linalg.eigh(matrix)
-            aster_core.matfpe(1)
-
-            eig = eig.real
-            vec = vec.real
-
-            eig[eig < 1.0e-10] = 0.0
-            # les vecteurs sont en colonne en sortie de linalg.eigh
-            vec = vec.T
-            # Sort eigenvalues and eigenvectors in descending order
-            eig = eig[::-1]
-            vec = vec[::-1]
-            yield eig, vec
-
-    if run_all_in_once:
-        iter_on_eigen_values_and_vectors = iter_on_eigen_values_and_vectors_all
-
     pvec = []
 
-    for freq, (values, vectors) in zip(frequencies, iter_on_eigen_values_and_vectors()):
+    for freq, (values, vectors) in zip(frequencies, iter_on_eigen_values_and_vectors_all()):
         cum_nrj = 0.0
 
         energies = values**2
         e_tot = NP.sum(energies)
 
         if info == 2:
-            aster.affiche("MESSAGE", "FREQUENCE DE CALCUL: "+ str(freq))
+            aster.affiche("MESSAGE", "FREQUENCE DE CALCUL: " + str(freq))
 
         # keep only the modes than explain the precision of the cumulative energy
         for nbme, (nrj, value) in enumerate(zip(energies, values), 1):
             if info == 2:
-                aster.affiche("MESSAGE", "VALEUR PROPRE "+str(nbme)+ " : "+str(value))
+                aster.affiche("MESSAGE", "VALEUR PROPRE " + str(nbme) + " : " + str(value))
 
             cum_nrj += nrj
             prec = cum_nrj / e_tot
@@ -170,8 +146,8 @@ def compute_pod(
                 break
 
         if info == 2:
-            aster.affiche("MESSAGE", "NOMBRE DE MODES POD RETENUS : "+str(nbme))
-            aster.affiche("MESSAGE", "PRECISION (ENERGIE RETENUE) : "+str(prec))
+            aster.affiche("MESSAGE", "NOMBRE DE MODES POD RETENUS : " + str(nbme))
+            aster.affiche("MESSAGE", "PRECISION (ENERGIE RETENUE) : " + str(prec))
 
         _pvec = NP.sqrt(values[:nbme, None]) * vectors[:nbme]
         pvec.append(_pvec)

@@ -49,14 +49,14 @@ from .random_signal_utils import ACCE2SROM, acce_filtre_CP, calc_dsp_FR, calc_ds
 # --------------------------------------------------------------------
 def calc_coherency_matrix(frequencies, model, nom_mail, nom_group_inter, **kwargs):
     """
-        Calculation of coherency matrix
+    Calculation of coherency matrix
 
-        Arguments:
-            frequencies : list of frequencies
-            model : coherency function type 
-            nom_mail : mesh name
-            nom_group_inter : group of nodes constituting the soil-structure interface
-            kwargs: other arguments from the commands
+    Arguments:
+        frequencies : list of frequencies
+        model : coherency function type
+        nom_mail : mesh name
+        nom_group_inter : group of nodes constituting the soil-structure interface
+        kwargs: other arguments from the commands
     """
     if "NOEUDS_INTERF" in kwargs:
         noe_interf = kwargs["NOEUDS_INTERF"]
@@ -113,12 +113,12 @@ def calc_coherency_matrix(frequencies, model, nom_mail, nom_group_inter, **kwarg
 
 def CALC_COHE(puls, **kwargs):
     """
-    Use to call calc_coherency_matrix from GENE_ACCE_SEISME
+    Use to call calc_coherency_matrix from CALC_MISS
     Convert pulsations to frequencies and call calc_coherency_matrix
 
     Arguments :
         pusl : pulsation values vector
-    
+
     Return :
         Coherency matrix
     """
