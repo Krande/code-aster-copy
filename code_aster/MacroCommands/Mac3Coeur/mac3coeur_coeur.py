@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -680,7 +680,8 @@ class Coeur:
         mnt_names = [i for i in gcells if i.startswith("MNT_")]
         mnt_nodes = MAILL.getNodesFromCells(mnt_names)
         mnt_x = set(coords_x[mnt_nodes])
-        assert len(mnt_x) == 2, "Invalid mesh"
+        sz = len(mnt_x)
+        assert sz == 2, "Invalid mesh %s" % sz
         self._len_mnt = round(max(mnt_x) - min(mnt_x), 8)
 
         self._is_multi_rod = len([i for i in gnodes if i.startswith("CREIBAS_")]) > 0
@@ -697,7 +698,8 @@ class Coeur:
             id_grid = "G_%s" % ac.pos_aster
             grp_grid = [i for i in gnodes if (i.startswith(id_grid) and i != id_grid)]
             ls_nodes_grid = list(set(len(MAILL.getNodes(i)) for i in grp_grid))
-            assert len(ls_nodes_grid) == 1, "Invalid mesh"
+            sz = len(ls_nodes_grid)
+            assert sz == 1, "Invalid mesh %d" % sz
             ac.nb_nodes_grid = ls_nodes_grid[0]
 
         logger.debug("<MAC3_COEUR>: nb_nodes_grid = %s" % (self.nb_nodes_grid))
@@ -1736,7 +1738,7 @@ class CoeurFactory(Mac3Factory):
         cls, type_coeur, sdtab, mesh, contact="NON", fluence_level=0.0, longueur=None
     ):
 
-        core = CoeurFactory.build(type_coeur, sdtab)
+        core = CoeurFactory.build(type_coeur, sdtab, longueur)
         model = core.affectation_modele(mesh)
         core.init_from_mesh(mesh)
         gfibre = core.definition_geom_fibre()

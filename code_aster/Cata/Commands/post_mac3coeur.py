@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,15 @@ POST_MAC3COEUR = MACRO(
             "900",
             "1300",
             "N4",
+            "EPR",
             "LIGNE900",
             "LIGNE1300",
             "LIGNEN4",
+            "LIGNEEPR",
         ),
     ),
     b_type_ligne=BLOC(
-        condition="""is_in("TYPE_COEUR", ("LIGNE900","LIGNE1300","LIGNEN4"))""",
+        condition="""is_in("TYPE_COEUR", ("LIGNE900","LIGNE1300","LIGNEN4","LIGNEEPR"))""",
         NB_ASSEMBLAGE=SIMP(statut="o", typ="I", max=1),
     ),
     RESULTAT=SIMP(statut="o", typ=evol_noli),  # SD_RESULTAT
