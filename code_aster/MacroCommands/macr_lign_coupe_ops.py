@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -801,7 +801,6 @@ def macr_lign_coupe_ops(
     if mesh is None:
         mesh = Model.getMesh()
     # le maillage est-il 2D ou 3D ?
-    n_mailla = mesh.getName()
     dime = mesh.getDimension()
     coord = mesh.getCoordinates()
     lignes = []
@@ -878,7 +877,7 @@ def macr_lign_coupe_ops(
                 )
             groups.append(l_coor_group)
 
-    if arcs != [] and (lignes != [] or groups != []):
+    if arcs and (lignes or groups):
         UTMESS("F", "POST0_16")
 
     # Création du maillage des NB_POINTS segments entre COOR_ORIG et COOR_EXTR
@@ -927,33 +926,27 @@ def macr_lign_coupe_ops(
     if NOM_CHAM[5:9] == "ELGA":
         UTMESS("A", "POST0_18", valk=[NOM_CHAM])
 
-    if l_mode_meca_sans_modele == False:
-        __recou = PROJ_CHAMP(
-            METHODE="COLLOCATION",
-            RESULTAT=RESULTAT,
-            MODELE_1=Model,
-            DISTANCE_MAX=m["DISTANCE_MAX"],
-            # issue27543 #MODELE_2=__mocou,
-            MAILLAGE_2=__macou,
-            TYPE_CHAM="NOEU",
-            NOM_CHAM=NOM_CHAM,
-            **motscles
-        )
-
+    if l_mode_meca_sans_modele:
+        motscles["MAILLAGE_1"] = mesh
     else:
-        __recou = PROJ_CHAMP(
+        motscles["MODELE_1"] = Model
+
+    __recou_list = [
+        PROJ_CHAMP(
             METHODE="COLLOCATION",
             RESULTAT=RESULTAT,
-            MAILLAGE_1=mesh,
-            DISTANCE_MAX=m["DISTANCE_MAX"],
+            DISTANCE_MAX=m.get("DISTANCE_MAX"),
+            DISTANCE_ALARME=m.get("DISTANCE_ALARME"),
             # issue27543 #MODELE_2=__mocou,
             MAILLAGE_2=__macou,
             TYPE_CHAM="NOEU",
             NOM_CHAM=NOM_CHAM,
             **motscles
         )
+        for m in LIGN_COUPE
+    ]
 
-    __remodr = __recou
+    __remodr_list = __recou_list
     icham = 0
     ioc2 = 0
     mcACTION = []
@@ -971,8 +964,9 @@ def macr_lign_coupe_ops(
     ):
         if NOM_CHAM in ("DEPL", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO", "FLUX_ELNO", "FLUX_NOEU"):
             icham = 1
+
         iocc = 0
-        for m in LIGN_COUPE:
+        for (m, __recou, __remodr) in zip(LIGN_COUPE, __recou_list, __remodr_list):
             iocc = iocc + 1
             motscles = {}
             motscles["OPERATION"] = m["OPERATION"]
