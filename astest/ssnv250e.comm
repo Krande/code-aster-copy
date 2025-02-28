@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -130,6 +130,10 @@ RESU = STAT_NON_LINE(
     ARCHIVAGE=_F(LIST_INST=REEL_ARC),
 )
 
+
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE="SIMY_ELGA")
+
+
 # TEST SUR SIYY
 TEST_RESU(
     RESU=(
@@ -154,6 +158,41 @@ TEST_RESU(
             RESULTAT=RESU,
             INST=0.70,
             NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            TYPE_TEST="MAX",
+            VALE_CALC=268.57169393403393,
+            TOLE_MACHINE=1.0e-4,
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=2.680311e02,
+            PRECISION=0.01,
+        ),
+    )
+)
+
+## TEST SUR SIMY_ELGA
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=RESU,
+            INST=0.50,
+            NOM_CHAM="SIMY_ELGA",
+            NOM_CMP="SIYY",
+            TYPE_TEST="MAX",
+            VALE_CALC=552.2128157472572,
+            TOLE_MACHINE=1.0e-4,
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=552.0310,
+            PRECISION=0.01,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=RESU,
+            INST=0.70,
+            NOM_CHAM="SIMY_ELGA",
             NOM_CMP="SIYY",
             TYPE_TEST="MAX",
             VALE_CALC=268.57169393403393,
