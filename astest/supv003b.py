@@ -97,12 +97,16 @@ CHECK(O2=(cst,))
 CHECK(O2=(cst, cst))
 
 CHECK(F1=_F(S1=1.0))
+CHECK(F1={"S1": 1.0})
 CHECK(F1=(_F(S1=1.0),))
+CHECK(F1=[{"S1": 1.0}])
 with test.assertRaisesRegex(CA.AsterError, "at most 1 occurrence"):
     CHECK(F1=(_F(S1=1.0), _F(S1=2.0)))
 
 CHECK(F2=_F(S2=1.0))
+CHECK(F2={"S2": 1.0})
 CHECK(F2=(_F(S2=1.0),))
+CHECK(F2=[{"S2": 1.0}])
 CHECK(F2=(_F(S2=1.0), _F(S2=2.0)))
 
 test.printSummary()
