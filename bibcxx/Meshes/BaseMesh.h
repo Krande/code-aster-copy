@@ -137,6 +137,11 @@ class BaseMesh : public DataStructure, public ListOfTables {
     const JeveuxContiguousCollectionLong getConnectivity() const { return _connectivity; }
 
     /**
+     * @brief Return cell type vector
+     */
+    const JeveuxVectorLong getCellTypeVector() const { return _cellsType; }
+
+    /**
      * @brief Return the connectivity, node zero based
      */
     const std::vector< VectorLong > getConnectivityZeroBased() const;

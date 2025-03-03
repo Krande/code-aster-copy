@@ -230,7 +230,7 @@ const std::vector< VectorLong > BaseMesh::getConnectivityZeroBased() const {
     }
     result.reserve( _connectivity->size() );
     for ( const auto &pair : _connectivity ) {
-        const auto &obj = pair;
+        const auto &obj = pair.second;
         obj->updateValuePointer();
         VectorLong items;
         items.reserve( obj->size() );

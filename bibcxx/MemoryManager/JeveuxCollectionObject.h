@@ -447,6 +447,9 @@ class JeveuxCollectionObject {
         : _jeveuxCOPtr( std::make_shared< JeveuxCollectionObjectClass< ValueType > >(
               collectionName, number, objectName, size ) ) {};
 
+    JeveuxCollectionObject( const JeveuxCollectionObject< ValueType > &tmp )
+        : _jeveuxCOPtr( tmp._jeveuxCOPtr ) {};
+
     ~JeveuxCollectionObject() {};
 
     JeveuxCollectionObject &operator=( const JeveuxCollectionObject< ValueType > &tmp ) {
