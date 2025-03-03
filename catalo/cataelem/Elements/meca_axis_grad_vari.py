@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -604,6 +604,11 @@ class MVAXTR6(Element):
             te=4,
             para_in=((OP.SIGM_ELNO.PCONTRR, ESIGMPG),),
             para_out=((SP.PSIEFNOC, ESIGMNC), (OP.SIGM_ELNO.PSIEFNOR, ESIGMNO)),
+        ),
+        OP.SIMY_ELGA(
+            te=6,
+            para_in=((OP.SIMY_ELGA.PCONTRR, LC.EGIG2DR), (SP.PGEOMER, LC.EGEOM2D)),
+            para_out=((OP.SIMY_ELGA.PSIEFNOR, LC.EGIG2DR),),
         ),
         OP.SING_ELEM(te=99, para_out=((SP.PSING_R, LC.ESINGUL),)),
         OP.SING_ELNO(te=99, para_out=((SP.PSINGNO, LC.ESINGNO),)),
