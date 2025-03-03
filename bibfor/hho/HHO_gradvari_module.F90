@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+! aslint: disable=C9992
+
+! WARNING: Some big arrays are larger than limit set by '-fmax-stack-var-size='.
+! The 'save' attribute has been added. They *MUST NOT* been accessed concurrently.
+
 module HHO_GV_module
 !
     use NonLin_Datastructure_type
@@ -1341,22 +1346,17 @@ contains
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, this%vari_prev, b_incx, this%vari_curr, b_incy)
-        b_n = to_blas_int(gv_total_dofs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, this%vari_incr, b_incx, this%vari_curr, &
-                   b_incy)
+        b_n = to_blas_int(gv_cbs)
+        call dcopy(b_n, this%lagv_prev, b_incx, this%lagv_curr, b_incy)
 !
         if (.not. forc_noda) then
-            b_n = to_blas_int(gv_cbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, this%lagv_prev, b_incx, this%lagv_curr, b_incy)
-            b_n = to_blas_int(gv_cbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call daxpy(b_n, 1.d0, this%vari_incr, b_incx, this%lagv_curr, &
+            b_n = to_blas_int(gv_total_dofs)
+            call daxpy(b_n, 1.d0, this%vari_incr, b_incx, this%vari_curr, &
                        b_incy)
+            b_n = to_blas_int(gv_cbs)
+            call daxpy(b_n, 1.d0, this%lagv_incr, b_incx, this%lagv_curr, &
+                       b_incy)
+
         end if
 !
     end subroutine
