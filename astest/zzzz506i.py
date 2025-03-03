@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,6 @@ SOLUT = MECA_NON_LINE(
     INFO=1,
 )
 solt = SOLUT.getField("DEPL", 1)
-solt.printMedFile(f"/tmp/solt_{rank}.resu.med")
 
 myOptions = (
     "-ksp_type fgmres  -pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps "
@@ -76,7 +75,7 @@ myOptions = (
     + "-ksp_type preonly  -pc_type lu -pc_factor_mat_solver_type mumps "
     + "-prefix_pop "
     + "-prefix_push gsnes_  "
-    + "-snes_linesearch_type bt -ksp_monitor -ksp_rtol 1.e-8 -ksp_atol 1.e-50  "
+    + "-snes_linesearch_type bt -ksp_monitor -ksp_rtol 1.e-8 -ksp_atol 1.e-12  "
     + "-prefix_pop "
 )
 

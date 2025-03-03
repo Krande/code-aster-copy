@@ -5,7 +5,7 @@
  * @file FieldOnCells.h
  * @brief Header of class for FieldOnCells
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -594,7 +594,13 @@ bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileN
     // In case that the print file (single and absolute path) is unique between processors,
     // it must only be created on proc 0.
     if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
-        a.openFile( fileName, Binary, New );
+        if ( rank == 0 )
+            a.openFile( fileName, Binary, New );
+#ifdef ASTER_HAVE_MPI
+        AsterMPI::barrier();
+#endif /* ASTER_HAVE_MPI */
+        if ( rank != 0 )
+            a.openFile( fileName, Binary, Old );
         retour = a.getLogicalUnit();
     }
     CommandSyntax cmdSt( "IMPR_RESU" );

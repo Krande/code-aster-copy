@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 
 !
 !
-interface 
-    subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc,&
-                      nbNodeInterc)
+interface
+    subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc, &
+                      nbNodeInterc, parallelMesh)
         integer, intent(in) :: listNodeOcc(*)
         integer, intent(in) :: nbNodeOcc
         integer, intent(in) :: numOcc
-        aster_logical, intent(in) ::finalOcc
+        aster_logical, intent(in) ::finalOcc, parallelMesh
         character(len=16) :: nameLNodeInterc
         integer, intent(out) :: nbNodeInterc
     end subroutine pjreco
-end interface 
+end interface
