@@ -194,6 +194,10 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
                 zr(lvalr+nbnuor*9+i-1) = factx/masg
                 zr(lvalr+nbnuor*10+i-1) = facty/masg
                 zr(lvalr+nbnuor*11+i-1) = factz/masg
+!           --- MASS_EFFE_UN_D... ---
+                zr(lvalr+nbnuor*12+i-1) = 0.d0
+                zr(lvalr+nbnuor*13+i-1) = 0.d0
+                zr(lvalr+nbnuor*14+i-1) = 0.d0
 !
                 if (itypfl .eq. 3 .or. (itypfl .eq. 4 .and. imasse .ne. 0)) then
                     lnorm = .true.

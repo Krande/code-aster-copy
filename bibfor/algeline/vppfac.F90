@@ -142,7 +142,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
                 call rsvpar(basemo, 1, nompar(iddl), ibid, rundef, &
                             k8b, l1)
                 if (l1 .eq. 100) then
-                    zr(laux1+ieq-1) = 0.D0
+                    zr(laux1+ieq-1) = 0.d0
                 else
                     call rsadpa(basemo, 'L', 1, nompar(iddl), ieq, &
                                 0, tjv=iadpar)
