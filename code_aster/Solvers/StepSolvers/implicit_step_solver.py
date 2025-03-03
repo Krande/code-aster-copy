@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,29 +20,14 @@
 from libaster import deleteTemporaryObjects
 
 from ...Utilities import profile
-
-from ..Basics import SolverOptions as SOP
+from ..TimeIntegrators import TimeScheme
 from .meca_dyna_step_solver import MecaDynaStepSolver
-from ..TimeIntegrators import IntegrationType
 
 
 class ImplicitStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
-    integration_type = IntegrationType.Implicit
-
-    @classmethod
-    def create(cls, integrator, param):
-        """Setup a solver for the given problem.
-
-        Arguments:
-            integrator : time integrator
-            param (dict) : user keywords.
-
-        Returns:
-            *StepSolver*: A relevant *StepSolver* object.
-        """
-        return cls(integrator)
+    integrator_type = TimeScheme.Implicit
 
     @profile
     def solve(self):
@@ -51,22 +36,16 @@ class ImplicitStepSolver(MecaDynaStepSolver):
         Raises:
             *ConvergenceError* exception in case of error.
         """
-
         logManager = self.createLoggingManager()
         logManager.printConvTableEntries()
+        self._iterations_solv.setLoggingManager(logManager)
+        self._iterations_solv.initialize()
+        self.oper.initializeStep()
 
-        criteria = self.get_feature(SOP.ConvergenceCriteria)
-        criteria.use(self.get_feature(SOP.OperatorsManager))
-
-        criteria.setLoggingManager(logManager)
-        criteria.initialize()
-
-        self._integrator.initializeStep()
-
-        self.current_matrix = criteria.solve(self.current_matrix, self._integrator.updateVariables)
+        self.current_matrix = self._iterations_solv.solve(
+            self.current_matrix, callback=self.oper.updateVariables
+        )
 
         deleteTemporaryObjects()
-
         logManager.printConvTableEnd()
-
-        self._integrator.setInitialState(self.phys_state)
+        self.oper.setInitialState(self.state)

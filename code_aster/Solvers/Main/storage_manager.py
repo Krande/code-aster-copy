@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,15 @@
 # --------------------------------------------------------------------
 
 from ...Messages import MessageLog
-from ...Utilities import SearchList, cmp, force_list, logger, no_new_attributes, profile
-from ..Basics import SolverFeature
-from ..Basics import SolverOptions as SOP
+from ...Utilities import SearchList, force_list, logger, no_new_attributes, profile
 
 
-class StorageManager(SolverFeature):
+class StorageManager:
     """Object that manages the storing of fields in the Result object.
 
     Arguments:
         result (~code_aster.Objects.Result): Result container.
     """
-
-    provide = SOP.Storage
 
     class Slot:
         """Container that holds objects to be saved"""

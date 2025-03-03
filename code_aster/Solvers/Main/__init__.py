@@ -17,21 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .meca_dyna_step_solver import MecaDynaStepSolver
-from ..TimeIntegrators import TimeScheme
+"""
+High-level objects.
+"""
 
+__all__ = ("ContactManager", "NonLinearOperator", "StorageManager", "TimeStepper")
 
-class ExplicitStepSolver(MecaDynaStepSolver):
-    """Solves a step, loops on iterations."""
-
-    integrator_type = TimeScheme.Explicit
-
-    def solve(self):
-        """Solve a step.
-
-        Raises:
-            *ConvergenceError* exception in case of error.
-        """
-        time, time_step = self.state.time_prev, self.state.time_step
-        self.oper.initializeStep(time, time_step)
-        self.oper.integrate()
+from .contact_manager import ContactManager
+from .non_linear_operator import NonLinearOperator
+from .storage_manager import StorageManager
+from .time_stepper import TimeStepper

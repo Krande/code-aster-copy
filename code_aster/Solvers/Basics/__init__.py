@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,24 @@
 # --------------------------------------------------------------------
 
 """
-Features definition.
+Definition of common objects for non linear operators.
 """
 
-from .base_features import BaseFeature, EventSource, Observer
+__all__ = (
+    "DispatcherMixin",
+    "EventId",
+    "EventSource",
+    "Observer",
+    "ProblemType",
+    "Context",
+    "ContextMixin",
+    "LoggingManager",
+    "PhysicalState",
+    "Residuals",
+)
+
+from .bases import DispatcherMixin, EventId, EventSource, Observer, ProblemType
+from .context import Context, ContextMixin
 from .logging_manager import LoggingManager
 from .physical_state import PhysicalState
-from .problem_dispatcher import ProblemDispatcher, ProblemType
 from .residual import Residuals
-from .solver_features import SolverFeature, SolverOptions

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,20 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .base_opers_manager import BaseOperatorsManager
-from .meca_stat_opers_manager import MecaStatOperatorsManager
-from .meca_dyna_opers_manager import MecaDynaOperatorsManager
-from .thermal_opers_manager import ThermalOperatorsManager
+"""
+Solving iterations.
+"""
+
+__all__ = (
+    "ConvergenceManager",
+    "BaseIterationSolver",
+    "NewtonSolver",
+    "RASPENSolver",
+    "SNESSolver",
+)
+
+from .convergence_manager import ConvergenceManager
+from .iteration_solver import BaseIterationSolver
+from .newton_solver import NewtonSolver
+from .raspen_solver import RASPENSolver
+from .snes_solver import SNESSolver

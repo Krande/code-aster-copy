@@ -20,26 +20,18 @@
 from ...Objects import DiscreteComputation
 from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile
-from ..Basics import SolverFeature
-from ..Basics import SolverOptions as SOP
+from .iteration_solver import BaseIterationSolver
 
 
 def Print(*args):
     print(*args, flush=True)
 
 
-class SNESSolver(SolverFeature):
+class SNESSolver(BaseIterationSolver):
     """Solves a step using PETSc SNES, loops on iterations."""
 
-    provide = SOP.ConvergenceCriteria
-
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
-
-    optional_features = [SOP.OperatorsManager]
-
-    param = logManager = None
-    matr_update_incr = prediction = None
-    current_incr = current_matrix = None
+    __needs__ = ("problem", "state", "keywords", "oper", "linear_solver")
+    solver_type = BaseIterationSolver.SubType.Snes
     _primal_incr = _resi_comp = None
     _scaling = _options = None
     local = snes = fnorm0 = None
@@ -47,9 +39,6 @@ class SNESSolver(SolverFeature):
 
     def __init__(self, local=False):
         super().__init__()
-        self.matr_update_incr = self.prediction = None
-        self.param = self.logManager = None
-        self.current_incr = self.current_matrix = None
         self._primal_incr = self._resi_comp = None
         self._scaling = self._options = None
         self.local = local
@@ -58,54 +47,8 @@ class SNESSolver(SolverFeature):
 
     def initialize(self):
         """Initialize the object for the next step."""
-        self.check_features()
         self.current_incr = 0
         # self.current_matrix = None  # keep
-
-    @property
-    def matrix_type(self):
-        """Matrix type"""
-        return self._setMatrixType()
-
-    @property
-    def opers_manager(self):
-        """OperatorsManager: Operators manager object."""
-        return self.get_feature(SOP.OperatorsManager)
-
-    def setParameters(self, param):
-        """Set parameters from user keywords.
-
-        Arguments:
-            param (dict) : user keywords.
-        """
-        self.param = param
-
-        self.prediction = self._get("NEWTON", "PREDICTION") or self._get("NEWTON", "MATRICE")
-
-        assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
-
-        self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
-
-    def setLoggingManager(self, logManager):
-        """Assign the logging manager.
-
-        Arguments:
-            logManager (LoggingManager): Logging manager.
-        """
-        self.logManager = logManager
-
-    def _setMatrixType(self):
-        """Set matrix type.
-
-        Returns:
-            str: Type of matrix to be computed.
-        """
-        if self.current_incr == 0:
-            matrix_type = "PRED_" + self.prediction
-        else:
-            matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
-
-        return matrix_type
 
     def _evalFunction(self, snes, X, F):
         # Get the solution increment from PETSc
@@ -113,26 +56,24 @@ class SNESSolver(SolverFeature):
             self._primal_incr.fromPetsc(snes.getSolutionUpdate(), local=self.local)
         # Increment the solution
         self._primal_incr.applyLagrangeScaling(1 / self._scaling)
-        self.phys_state.primal_step += self._primal_incr
+        self.state.primal_step += self._primal_incr
         # Build initial residual
-        disc_comp = DiscreteComputation(self.phys_pb)
-        residual = self.opers_manager.getResidual(self._scaling)
+        disc_comp = DiscreteComputation(self.problem)
+        residual = self.oper.getResidual(self._scaling)
         # Apply Lagrange scaling
         residual.resi.applyLagrangeScaling(1 / self._scaling)
         # Apply DirichletBC into the residual
-        diriBCs = disc_comp.getIncrementalDirichletBC(
-            self.phys_state.time_curr, self.phys_state.primal_curr
-        )
+        diriBCs = disc_comp.getIncrementalDirichletBC(self.state.time_curr, self.state.primal_curr)
         self.current_matrix.applyDirichletBC(diriBCs, residual.resi)
         # Copy to PETSc
         residual.resi.toPetsc(local=self.local).copy(F)
-        # print("internVar=", self.opers_manager._temp_internVar.getValues()[:40:8], flush=True)
+        # print("internVar=", self.oper._tmp_internVar.getValues()[:40:8], flush=True)
 
     def _evalJacobian(self, snes, X, J, P):
-        if self.current_incr % self.matr_update_incr == 0:
-            _matrix = self.opers_manager.getJacobian(self.matrix_type)
+        if self.current_incr % self.update_matr_incr == 0:
+            _matrix = self.oper.getJacobian(self.matrix_type)
             self.current_matrix = _matrix
-            self._scaling = self.opers_manager.getLagrangeScaling(self.matrix_type)
+            self._scaling = self.oper.getLagrangeScaling(self.matrix_type)
             _matrix.toPetsc(local=self.local).copy(P)
         self.current_incr += 1
         if J != P:
@@ -142,10 +83,10 @@ class SNESSolver(SolverFeature):
     def initSNES(self):
         if self.snes and self.local:
             return
-        self.opers_manager.initialize()
+        self.oper.initialize()
 
-        self._scaling = self.opers_manager.getLagrangeScaling(self.matrix_type)
-        self.current_matrix = self.opers_manager.first_jacobian
+        self._scaling = self.oper.getLagrangeScaling(self.matrix_type)
+        self.current_matrix = self.oper.first_jacobian
 
         p_jac = self.current_matrix.toPetsc(local=self.local)
 
@@ -160,7 +101,7 @@ class SNESSolver(SolverFeature):
         p_resi = p_jac.getVecRight()
         p_resi.set(0)
 
-        self._primal_incr = self.phys_state.primal_step.copy()
+        self._primal_incr = self.state.primal_step.copy()
 
         snes.setFunction(self._evalFunction, p_resi)
         snes.setJacobian(self._evalJacobian, p_jac)
@@ -173,16 +114,15 @@ class SNESSolver(SolverFeature):
 
         snes.setMonitor(_monitor) if not self.local else None
 
-        rtol = self._get("CONVERGENCE", "RESI_GLOB_RELA")
-        atol = self._get("CONVERGENCE", "RESI_GLOB_MAXI", 1.0e-24)
-        maxiter = self._get("CONVERGENCE", "ITER_GLOB_MAXI")
+        rtol = self.get_keyword("CONVERGENCE", "RESI_GLOB_RELA")
+        atol = self.get_keyword("CONVERGENCE", "RESI_GLOB_MAXI", 1.0e-24)
+        maxiter = self.get_keyword("CONVERGENCE", "ITER_GLOB_MAXI")
         snes.setTolerances(rtol=rtol, atol=atol, max_it=maxiter)
 
         OptDB = PETSc.Options()
         if not self._options:
-            linear_solver = self.get_feature(SOP.LinearSolver)
-            linear_solver.build()
-            self._options = linear_solver.getPetscOptions()
+            self.linear_solver.build()
+            self._options = self.linear_solver.getPetscOptions()
         OptDB.insertString(self._options)
         snes.setFromOptions()
 
@@ -207,16 +147,6 @@ class SNESSolver(SolverFeature):
         if snes.getConvergedReason() < 0:
             raise ConvergenceError("MECANONLINE9_7")
 
-        self.opers_manager.finalize()
+        self.oper.finalize()
 
         return self.current_matrix
-
-    def _get(self, keyword, parameter=None, default=None):
-        """Return a keyword value"""
-        args = self.param
-        if parameter is not None:
-            if args.get(keyword) is None:
-                return default
-            return _F(args[keyword]).get(parameter, default)
-
-        return args.get(keyword, default)

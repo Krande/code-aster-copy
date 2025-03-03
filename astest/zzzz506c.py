@@ -19,7 +19,7 @@
 
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Solvers import NonLinearSolver, ProblemSolver, TimeStepper, ProblemType
+from code_aster.Solvers import NonLinearOperator, TimeStepper
 from code_aster.Utilities import haveMPI
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
@@ -70,19 +70,20 @@ SOLUT = STAT_NON_LINE(
     INFO=1,
 )
 
-snl = ProblemSolver(NonLinearSolver(), CA.NonLinearResult(), pb_type=ProblemType.MecaStat)
-snl.use(CA.PhysicalProblem(model, mater))
-snl.use(CA.LinearSolver.factory(**linear_solver))
-snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
-snl.phys_pb.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
-snl.setKeywords(
+problem = CA.PhysicalProblem(model, mater)
+problem.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
+problem.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
+
+keywords = _F(
     METHODE="NEWTON",
     CONVERGENCE={"RESI_GLOB_MAXI": 1.0e-8, "ITER_GLOB_MAXI": 20},
     NEWTON={"PREDICTION": "ELASTIQUE"},
     COMPORTEMENT={"RELATION": "VMIS_ISOT_LINE"},
 )
-snl.use(TimeStepper([0.5, 1.0]))
 
+snl = NonLinearOperator.factory(problem, **keywords)
+snl.context.linear_solver = CA.LinearSolver.factory(**linear_solver)
+snl.context.stepper = TimeStepper([0.5, 1.0])
 snl.run()
 
 # =========================================================
@@ -99,8 +100,8 @@ VARI_REF = CREA_CHAMP(
 )
 
 
-SIGMA = snl.phys_state.stress
-VARI = snl.phys_state.internVar
+SIGMA = snl.state.stress
+VARI = snl.state.internVar
 
 
 # =========================================================

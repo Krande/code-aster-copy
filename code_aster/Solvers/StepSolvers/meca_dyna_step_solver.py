@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,63 +17,49 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .base_step_solver import BaseStepSolver
-from ..TimeIntegrators import IntegrationType, IntegratorName, BaseIntegrator
+from ...Utilities import logger, no_new_attributes
 from ..Basics import ProblemType
+from ..TimeIntegrators import IntegratorType, TimeScheme
+from .base_step_solver import BaseStepSolver
 
 
 class MecaDynaStepSolver(BaseStepSolver):
     """Solves a step, loops on iterations."""
 
     problem_type = ProblemType.MecaDyna
-    integration_type = IntegrationType.Unset
+    integrator_type = TimeScheme.Unset
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
-    def create(cls, param=None):
-        """Setup a solver for the given problem.
+    def factory(cls, context):
+        """Builder of MecaDynaStepSolver object.
 
-        Arguments:
-            param (dict) : user keywords.
+        Args:
+            context (Context): Context of the problem.
 
         Returns:
-            *StepSolver*: A relevant *StepSolver* object.
+            instance: New object.
         """
+        # FIXME: for multi-steps, see transient-history repository, NLIntegrators.py?ref_type=heads#L329
+        assert context.problem_type == cls.problem_type, f"unsupported type: {context.problem_type}"
+        oper = context._oper
+        assert (
+            context.problem_type == oper.problem_type
+        ), f"operators not consistent: {oper.problem_type}"
+        for kls in cls.__subclasses__():
+            logger.debug("candidate for '%s': %s", context.problem_type, kls)
+            if kls.integrator_type == oper.integrator_type:
+                return kls.builder(context)
+        raise TypeError(f"no candidate for {cls=}, type: {oper.integrator_type}")
 
-        def _setup_one(integrator):
-            for klass in cls.__subclasses__():
-                if klass.support(integrator):
-                    return klass.create(integrator, param)
-
-        schema = param.get("SCHEMA_TEMPS")
-
-        integrator_names = cls._getIntegrators(schema)
-        solvers_list = []
-
-        for name in integrator_names:
-            integrator = BaseIntegrator.create(name, schema)
-            solvers_list.append(_setup_one(integrator))
-
-        if len(solvers_list) > 2:
-            raise ValueError("only two steps supported yet")
-
-        if len(solvers_list) > 1:
-            for klass in cls.__subclasses__():
-                if klass.integration_type == IntegrationType.Multiple:
-                    solver = klass.create(solvers_list, param)
-        else:
-            solver = solvers_list[0]
-
-        return solver
-
-    def __init__(self, integrator):
-        super(MecaDynaStepSolver, self).__init__()
-        self._integrator = integrator
+    def __init__(self):
+        super().__init__()
 
     def initialize(self):
         """Initialization."""
         super().initialize()
-        self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
-        self.setInitialState(self.phys_state)
+        self.state.primal_step = self.state.createPrimal(self.problem, 0.0)
+        self.setInitialState(self.state)
 
     def setInitialState(self, initial_state):
         """Define the initial state of the integrator.
@@ -81,7 +67,7 @@ class MecaDynaStepSolver(BaseStepSolver):
         Arguments:
             initial_state (PhysicalState): State at the beginning of the iteration.
         """
-        return self._integrator.setInitialState(initial_state)
+        return self.oper.setInitialState(initial_state)
 
     def getInitialState(self):
         """Return the physical state used at the beginning of the iteration.
@@ -89,11 +75,7 @@ class MecaDynaStepSolver(BaseStepSolver):
         Returns:
             PhysicalState: Initial physical state.
         """
-        return self._integrator.getInitialState()
-
-    def solve(self):
-        """Solve a step."""
-        raise NotImplementedError
+        return self.oper.getInitialState()
 
     @classmethod
     def support(cls, integrator):
@@ -105,26 +87,18 @@ class MecaDynaStepSolver(BaseStepSolver):
         Returns:
             bool: *True* if the integrator is supported, *False* otherwise.
         """
-        return cls.integration_type == integrator.integration_type
+        return cls.integrator_type == integrator.integrator_type
 
     @classmethod
     def _getIntegrators(cls, schema):
         """Returns the list of integrators to use.
 
         Arguments:
-            schema (dict) : *SCHEMA_TEMPS* keyword.
+            schema (str) : Value of *SCHEMA_TEMPS/SCHEMA* keyword.
 
         Returns:
-            List[IntegratorName]: list of integrator names.
+            list[IntegratorType]: list of integrator names.
         """
-        assert schema["SCHEMA"] == "NEWMARK", schema["SCHEMA"]
-        integrator_name = IntegratorName.Newmark
-        return [integrator_name]
-
-    def setup(self):
-        """set up the step solver."""
-        for feat, required in self._integrator.undefined():
-            feat_obj = self.get_feature(feat, optional=(not required))
-            self._integrator.use(feat_obj)
-        # self._integrator.setup()
-        self.use(self._integrator)
+        # could be TRBDF2 and return [Tr, Bdf2]...
+        assert schema == "Newmark", schema
+        return [IntegratorType.Newmark]

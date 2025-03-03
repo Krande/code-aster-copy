@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,74 +17,68 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .base_opers_manager import BaseOperatorsManager
 from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import IntegrationError
+from ..Basics import ProblemType as PBT
+from .base_operators import BaseOperators
 
-from ..Basics import SolverOptions as SOP
 
+class MecaDynaOperators(BaseOperators):
+    """Base object that provides operators to solve a dynamics problem."""
 
-class MecaDynaOperatorsManager(BaseOperatorsManager):
-    """Solve an iteration."""
-
+    problem_type = PBT.MecaDyna
     _mass = _elem_mass = None
-    _temp_stress = _temp_internVar = None
 
     def __init__(self):
         super().__init__()
         self._elem_mass = self._mass = None
-        self._temp_stress = self._temp_internVar = None
 
     def _getElemMassMatrix(self):
         """Compute the elementary mass matrix."""
-        disc_comp = DiscreteComputation(self.phys_pb)
+        disc_comp = DiscreteComputation(self.problem)
         matr_elem_mass = disc_comp.getMassMatrix(
-            time=self.phys_state.time_curr, varc_curr=self.phys_state.internVar
+            time=self.state.time_curr, varc_curr=self.state.internVar
         )
         return matr_elem_mass
 
     def _getMassMatrix(self):
         """Compute the mass matrix."""
-        mass_matr = AssemblyMatrixDisplacementReal(self.phys_pb)
+        mass_matr = AssemblyMatrixDisplacementReal(self.problem)
         mass_matr.addElementaryMatrix(self._elem_mass)
         mass_matr.assemble()
         return mass_matr
 
     def getFunctional(self, t, dt, U, dU, d2U, scaling=1.0):
         """Computes the functional."""
-        temp_phys_state = self.getTempPhysicalState(t, dt, U, dU, d2U)
-        temp_phys_state.swap(self.phys_state)
+        temp_phys_state = self.getTmpPhysicalState(t, dt, U, dU, d2U)
+        temp_phys_state.swap(self.state)
         resi_state, internVar, stress = super().getResidual(scaling=scaling)
-        self.phys_state.swap(temp_phys_state)
-        self._temp_stress = stress
-        self._temp_internVar = internVar
+        self.state.swap(temp_phys_state)
+        self._tmp_stress = stress
+        self._tmp_internVar = internVar
         return resi_state
 
     def getStiffAndDamp(self, t, dt, U, dU, d2U, matrix_type):
         """Computes the jacobian."""
-        temp_phys_state = self.getTempPhysicalState(t, dt, U, dU, d2U)
-        temp_phys_state.swap(self.phys_state)
+        temp_phys_state = self.getTmpPhysicalState(t, dt, U, dU, d2U)
+        temp_phys_state.swap(self.state)
 
-        disc_comp = DiscreteComputation(self.phys_pb)
+        disc_comp = DiscreteComputation(self.problem)
 
         # Compute elementary matrix
         codret, matr_elem_rigi, matr_elem_dual = disc_comp.getInternalTangentMatrix(
-            self.phys_state, matrix_type=matrix_type, assemble=False
+            self.state, matrix_type=matrix_type, assemble=False
         )
 
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
-        contact_manager = self.get_feature(SOP.Contact, optional=True)
-
-        matr_elem_cont = disc_comp.getContactTangentMatrix(self.phys_state, contact_manager)
-
-        matr_elem_ext = disc_comp.getExternalTangentMatrix(self.phys_state)
-
-        self.phys_state.swap(temp_phys_state)
+        matr_elem_cont = disc_comp.getContactTangentMatrix(self.state, self.contact)
+        matr_elem_ext = disc_comp.getExternalTangentMatrix(self.state)
+        self.state.swap(temp_phys_state)
 
         # Assemble stiffness matrix
-        rigi_matr = AssemblyMatrixDisplacementReal(self.phys_pb)
+        rigi_matr = AssemblyMatrixDisplacementReal(self.problem)
         rigi_matr.addElementaryMatrix(matr_elem_rigi)
         rigi_matr.addElementaryMatrix(matr_elem_dual)
         rigi_matr.addElementaryMatrix(matr_elem_cont)
@@ -92,24 +86,22 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
         rigi_matr.assemble()
 
         # Assemble damping matrix
-        time_curr = t + dt
-
         matr_elem_damp = disc_comp.getDampingMatrix(
             massMatrix=self._elem_mass,
             stiffnessMatrix=matr_elem_rigi,
-            varc_curr=self.phys_state.externVar,
+            varc_curr=self.state.externVar,
         )
 
-        damp_matr = AssemblyMatrixDisplacementReal(self.phys_pb)
+        damp_matr = AssemblyMatrixDisplacementReal(self.problem)
         damp_matr.addElementaryMatrix(matr_elem_damp)
         damp_matr.assemble()
 
         return rigi_matr, damp_matr
 
-    def getTempPhysicalState(self, t, dt, U, dU, d2U):
+    def getTmpPhysicalState(self, t, dt, U, dU, d2U):
         """Creates a temporary physical state"""
-        # D'ou vient le primal step qui dois etre utlisée ?
-        result = self.phys_state.duplicate()
+        # D'où vient le primal step qui doit être utilisée ?
+        result = self.state.duplicate()
 
         result.time_prev = t
         result.time_step = dt
