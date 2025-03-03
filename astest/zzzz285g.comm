@@ -32,11 +32,7 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.Utilities import shared_tmpdir
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARME=("MODELISA8_10", "MODELISA4_7"),
-)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 test = CA.TestCase()
 

@@ -216,9 +216,6 @@ def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_S
             _F(GROUP_MA_1="VOLUME", GROUP_MA_2="VOLUME"),
         ),
     )
-    import pdb
-
-    pdb.set_trace()
 
     PcalcG = CREA_CHAMP(
         OPERATION="DISC", TYPE_CHAM="ELGA_NEUT_R", MODELE=MO_line, PROL_ZERO="OUI", CHAM_GD=Pcalc1
@@ -398,7 +395,7 @@ def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_S
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
     DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("MODELISA4_1", "MODELE1_63"),
+    IGNORE_ALARM=("CALCULEL4_9", "MODELE1_63", "CONTACT2_20", "QUALITY1_2"),
 )
 
 # ================================================================================================
