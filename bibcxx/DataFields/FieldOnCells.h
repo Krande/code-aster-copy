@@ -596,7 +596,9 @@ bool FieldOnCells< ValueType >::printMedFile( const std::filesystem::path &fileN
     if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
         if ( rank == 0 )
             a.openFile( fileName, Binary, New );
+#ifdef ASTER_HAVE_MPI
         AsterMPI::barrier();
+#endif /* ASTER_HAVE_MPI */
         if ( rank != 0 )
             a.openFile( fileName, Binary, Old );
         retour = a.getLogicalUnit();
