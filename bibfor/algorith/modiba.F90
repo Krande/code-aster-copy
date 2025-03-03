@@ -81,7 +81,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
     integer(kind=8) :: nbpari, nbparr, nbpark, nbpara
     parameter(nbpari=1, nbparr=21, nbpark=1, nbpara=23)
     real(kind=8) :: frequ, amort, omeg2, masg, rigg
-    real(kind=8) :: factx, facty, factz, depi, xmastr(3)
+    real(kind=8) :: factx, facty, factz, depi
     character(len=1) :: typmod
     character(len=19) :: numeq
     character(len=16) :: norm
@@ -115,8 +115,6 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
     lmat(1) = 0
     lmat(2) = 0
     lnorm = .false.
-!   --- xmastr = [0,0,0] pour forcer les masses unitaires nulles sur les 3 directions
-    xmastr = [0.d0, 0.d0, 0.d0]
 !
 !     --- CREATION DU CONCEPT MODE_MECA DE SORTIE LE CAS ECHEANT ---
 !
@@ -232,7 +230,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
         AS_ALLOCATE(vr=coef_mode, size=nbmode)
 !        --- ON NORMALISE LES DEFORMEES
         call vpnorm(norm, 'OUI', lmat(1), neq, nbmode, &
-                    zi(lddl), zr(lmod), zr(lvalr), xmastr, 0, &
+                    zi(lddl), zr(lmod), zr(lvalr), 0, &
                     0, coef_mode)
 !        --- ON STOCKE LES DEFORMEES
         call vpstor(-1, typmod, nomres, nbnuor, neq, &

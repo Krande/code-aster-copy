@@ -20,7 +20,7 @@
 !
 interface
     subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
-                      mxvect, masmod, facpar, inemodz)
+                      mxvect, masmod, facpar, masmoduni, inemodz)
         integer(kind=8) :: mxvect
         integer(kind=8) :: neq
         integer(kind=8) :: lmasse
@@ -29,6 +29,7 @@ interface
         integer(kind=8) :: nbvect
         real(kind=8) :: masmod(mxvect, *)
         real(kind=8) :: facpar(mxvect, *)
+        real(kind=8) :: masmoduni(mxvect, *)
         real(kind=8), optional :: inemodz(mxvect, *)
     end subroutine vppfac
 end interface

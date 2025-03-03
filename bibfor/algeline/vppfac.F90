@@ -17,12 +17,13 @@
 ! --------------------------------------------------------------------
 !
 subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
-                  mxvect, masmod, facpar, inemodz)
+                  mxvect, masmod, facpar, masmoduni, inemodz)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/get_equa_info.h"
@@ -41,7 +42,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 !
     integer(kind=8) :: lmasse, neq, nbvect, mxvect
     real(kind=8) :: masgen(*), vect(neq, *)
-    real(kind=8) :: masmod(mxvect, *), facpar(mxvect, *)
+    real(kind=8) :: masmod(mxvect, *), facpar(mxvect, *), masmoduni(mxvect, *)
     real(kind=8), optional ::  inemodz(mxvect, *)
 !     CALCUL DES PARAMETRES MODAUX :
 !            FACTEUR DE PARTICIPATION ET MASSE MODALE UNITAIRE
@@ -61,10 +62,10 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     character(len=16) :: nompar(3), typmas, typbas
     character(len=19) :: masse
     character(len=24) :: posddl, vecau1, vecau2
-    real(kind=8) :: rmin, rmax, raux, rval, cdg(3), coorno(3), dmass
+    real(kind=8) :: rmin, rmax, raux, rval, cdg(3), coorno(3), massTotDirUnit
     aster_logical :: gene
     character(len=24), pointer :: refn(:) => null()
-    real(kind=8) :: rundef
+    real(kind=8) :: rundef, epsi
     blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
     data nomddl/'DX      ', 'DY      ', 'DZ      ',&
@@ -77,6 +78,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
     data vecau2/'&&VPPFAC.VECTEUR.AUX2'/
 !
     rundef = r8vide()
+    epsi = r8prem()
 !
 !     ------------------------------------------------------------------
 !     ----------------- CREATION DE VECTEURS DE TRAVAIL ----------------
@@ -165,11 +167,16 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
             ia = (iddl-1)*neq
             ia2 = (iddl2-1)*neq
             ia3 = (iddl3-1)*neq
+!
+!           calcul des vecteurs de déplacement unitaire U_d
+!           voir R5.01.30(Vecteur déplacement unitaire)
             if (iddl .le. 3) then
+!               en translation
                 do ieq = 1, neq
                     zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
                 end do
             else
+!               en rotation
                 do ieq = 1, neq
                     zr(laux1+ieq-1) = 0.d0
                     call get_equa_info(nume, ieq, typeq, nume_nodez=node)
@@ -199,7 +206,8 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        dmass = ddot(b_n, zr(laux1), b_incx, zr(laux2), b_incy)
+!       masse totale dans la direction unitaire
+        massTotDirUnit = ddot(b_n, zr(laux1), b_incx, zr(laux2), b_incy)
 
         do ivect = 1, nbvect
             rval = ddot(b_n, vect(1, ivect), b_incx, zr(laux2), b_incy)
@@ -208,13 +216,21 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
                 if (iddl .le. 3) then
                     masmod(ivect, iddl) = rmax
                     facpar(ivect, iddl) = rmax
-                    ! on pourrait ajouter ici le calcul de MASS_EFFE_UN_D*
+                    if (massTotDirUnit .gt. epsi) then
+                        masmoduni(ivect, iddl) = rmax/massTotDirUnit
+                    else
+                        masmoduni(ivect, iddl) = 0.d0
+                    end if
                 else
                     iddl2 = iddl-3
                     ! INER_EFFE_D*
                     inemodz(ivect, iddl2) = rmax
                     ! INER_EFFE_UN_D*
-                    inemodz(ivect, iddl) = rmax/dmass
+                    if (massTotDirUnit .gt. epsi) then
+                        inemodz(ivect, iddl) = rmax/massTotDirUnit
+                    else
+                        inemodz(ivect, iddl) = 0.d0
+                    end if
                 end if
 
             else
@@ -222,13 +238,22 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
                 if (iddl .le. 3) then
                     masmod(ivect, iddl) = rval*raux
                     facpar(ivect, iddl) = raux
-                    ! on pourrait ajouter ici le calcul de MASS_EFFE_UN_D*
+                    if (massTotDirUnit .gt. epsi) then
+                        masmoduni(ivect, iddl) = rval*raux/massTotDirUnit
+                    else
+                        masmoduni(ivect, iddl) = 0.d0
+                    end if
                 else
                     iddl2 = iddl-3
                     ! INER_EFFE_D*
                     inemodz(ivect, iddl2) = rval*raux
                     ! INER_EFFE_UN_D*
-                    inemodz(ivect, iddl) = rval*raux/dmass
+                    inemodz(ivect, iddl) = rval*raux/massTotDirUnit
+                    if (massTotDirUnit .gt. epsi) then
+                        inemodz(ivect, iddl) = rval*raux/massTotDirUnit
+                    else
+                        inemodz(ivect, iddl) = 0.d0
+                    end if
                 end if
             end if
         end do
