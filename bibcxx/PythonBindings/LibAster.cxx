@@ -124,6 +124,7 @@
 #include "PythonBindings/MeshEntitiesInterface.h"
 #include "PythonBindings/MeshInterface.h"
 #include "PythonBindings/MeshPairingInterface.h"
+#include "PythonBindings/MeshReaderInterface.h"
 #include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/ModalBasisInterface.h"
 #include "PythonBindings/ModeResultInterface.h"
@@ -355,4 +356,5 @@ PYBIND11_MODULE( libaster, mod ) {
     exportFieldCharacteristicsToPython( mod );
     exportModelingUtilitiesToPython( mod );
     exportSyntaxSaverToPython( mod );
+    exportMeshReaderToPython( mod );
 };
