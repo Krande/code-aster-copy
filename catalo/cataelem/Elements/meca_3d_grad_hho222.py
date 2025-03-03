@@ -347,10 +347,10 @@ CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[1380]",)
 CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[1081]",))
 
 CHHOBS = LocatedComponents(
-    phys=PHY.N480_R,
+    phys=PHY.N3600R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
+    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[210]"))),
 )
 
 DEPLHHO = LocatedComponents(

@@ -34,7 +34,7 @@ DDL_THER = LocatedComponents(
 )
 
 CHHOBS = LocatedComponents(
-    phys=PHY.N480_R, type="ELNO", diff=True, components=(("EN1", ("X[6]",)), ("EN2", ()))
+    phys=PHY.N3600R, type="ELNO", diff=True, components=(("EN1", ("X[1]",)), ("EN2", ()))
 )
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)

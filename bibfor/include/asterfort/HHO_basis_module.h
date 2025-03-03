@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,5 +27,5 @@
 #define BASIS_ORTHO     3
 
 ! ---- maximal number of coefficient
-#define MAX_FACE_COEF 21
-#define MAX_CELL_COEF 250
+#define MAX_FACE_COEF 231
+#define MAX_CELL_COEF 3570

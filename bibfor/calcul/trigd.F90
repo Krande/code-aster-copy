@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,11 +52,12 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul, ino, nno)
 !                et pour l'element suivant si excart ou exchno.
 !-----------------------------------------------------------------------
     aster_logical :: change
-    integer :: cmp, ind1, nec2, nsav, ksav
-    parameter(nec2=30)
+    integer :: cmp, ind1, nec2, nsav, ksav, nmax
+    parameter(nec2=120)
     parameter(nsav=5)
+    parameter(nmax=13)
     integer :: ind2(nsav), necold(nsav)
-    integer :: dg1old(nec2, nsav), dg2old(nec2, nsav), poscmp(nec2*30, nsav)
+    integer :: dg1old(nec2, nsav), dg2old(nec2, nsav), poscmp(nec2*nmax, nsav)
     integer :: ieq, i, k
     save dg1old, dg2old, poscmp, ind2, necold
     data necold/nsav*0/
@@ -122,6 +123,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul, ino, nno)
 80  continue
 !   3. recopie des valeurs dans le champ_local :
 !   --------------------------------------------
+    ASSERT(ind2(ksav) <= nec2*nmax)
     do cmp = 1, ind2(ksav)
         if (poscmp(cmp, ksav) .gt. 0) then
             ieq = deb1-1+poscmp(cmp, ksav)

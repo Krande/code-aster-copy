@@ -39,6 +39,7 @@ module HHO_stabilization_module
 #include "blas/dposv.h"
 #include "blas/dpotrf.h"
 #include "blas/dpotrs.h"
+#include "blas/dsyrk.h"
 !
 !---------------------------------------------------------------------------------------------------
 !  HHO - stabilization
@@ -286,23 +287,35 @@ contains
                 call dgemm('N', 'N', b_m, b_n, b_k, &
                            1.d0, faceMass%m, b_lda, proj3, b_ldb, &
                            0.d0, TMP, b_ldc)
-            else
-                TMP(1:fbs, 1:total_dofs) = proj3(1:fbs, 1:total_dofs)
-            end if
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-            b_ldc = to_blas_int(stab%max_nrows)
-            b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-            b_lda = to_blas_int(MSIZE_FACE_SCAL)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(fbs)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       invH, proj3, b_lda, TMP, b_ldb, &
-                       1.d0, stab%m, b_ldc)
+                b_ldc = to_blas_int(stab%max_nrows)
+                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_m = to_blas_int(total_dofs)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(fbs)
+                call dgemm('T', 'N', b_m, b_n, b_k, &
+                           invH, proj3, b_lda, TMP, b_ldb, &
+                           1.d0, stab%m, b_ldc)
+            else
+!
+! ---- Compute stab += invH * proj3**T * proj3 since faceMass = Id
+                b_ldc = to_blas_int(stab%max_nrows)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(fbs)
+                call dsyrk('U', 'T', b_n, b_k, &
+                           invH, proj3, b_lda, &
+                           1.d0, stab%m, b_ldc)
+            end if
 !
             offset_face = offset_face+fbs
         end do
+!
+        if (faceMass%isIdentity) then
+            call stab%copySymU()
+        end if
 !
         call proj1%free()
 !
@@ -626,12 +639,15 @@ contains
                     call dgemm('N', 'N', b_m, b_n, b_k, &
                                1.d0, faceMass%m, b_lda, proj3%m, b_ldb, &
                                0.d0, TMP%m, b_ldc)
-                else
-                    call TMP%copy(proj3)
-                end if
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-                call hho_dgemm_TN(invH, proj3, TMP, 1.d0, stab)
+                    call hho_dgemm_TN(invH, proj3, TMP, 1.d0, stab)
+                else
+!
+! ---- Compute stab += invH * proj3**T * proj3
+                    call hho_dgemm_TN(invH, proj3, proj3, 1.d0, stab)
+                end if
+
 !
             end do
         end do
@@ -671,7 +687,6 @@ contains
         type(HHO_Face) :: hhoFace
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_massmat_face) :: faceMass
-        type(HHO_matrix) :: proj1
         real(kind=8) :: invH
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: traceMat
@@ -692,13 +707,8 @@ contains
         cell_offset = total_dofs-cbs+1
 !
         call stab%initialize(total_dofs, total_dofs, 0.0)
-        call proj1%initialize(cbs, total_dofs, 0.0)
+        proj3 = 0.d0
 !
-! --  Step 1: v_T
-! -- Compute proj1 =  I_Cell
-        do i = 1, cbs
-            proj1%m(i, cell_offset-1+i) = 1.d0
-        end do
 !
 ! Step 3: project on faces (eqn. 21)
         offset_face = 1
@@ -717,17 +727,8 @@ contains
             call hhoTraceMatScal(hhoCell, 0, hhoData%cell_degree(), hhoFace, 0, &
                                  hhoData%face_degree(), traceMat)
 !
-! ---- Compute proj3 = traceMat * proj1
-            proj3 = 0.d0
-            b_ldc = to_blas_int(MSIZE_FACE_SCAL)
-            b_ldb = to_blas_int(proj1%max_nrows)
-            b_lda = to_blas_int(MSIZE_FACE_SCAL)
-            b_m = to_blas_int(fbs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(cbs)
-            call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, traceMat, b_lda, proj1%m, b_ldb, &
-                       0.d0, proj3, b_ldc)
+! ---- Compute proj3 = [0 | traceMat]
+            proj3(1:fbs, cell_offset:total_dofs) = traceMat(1:fbs, 1:cbs)
 !
             if (.not. faceMass%isIdentity) then
 !
@@ -768,33 +769,49 @@ contains
                 i = i+1
             end do
 !
+            if (.not. faceMass%isIdentity) then
+!
 ! ---- Compute TMP = faceMass * proj3
-            TMP = 0.d0
-            b_ldc = to_blas_int(MSIZE_FACE_SCAL)
-            b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-            b_lda = to_blas_int(faceMass%max_nrows)
-            b_m = to_blas_int(fbs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(fbs)
-            call dgemm('N', 'N', b_m, b_n, b_k, &
-                       1.d0, faceMass%m, b_lda, proj3, b_ldb, &
-                       0.d0, TMP, b_ldc)
+                TMP = 0.d0
+                b_ldc = to_blas_int(MSIZE_FACE_SCAL)
+                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                b_lda = to_blas_int(faceMass%max_nrows)
+                b_m = to_blas_int(fbs)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(fbs)
+                call dgemm('N', 'N', b_m, b_n, b_k, &
+                           1.d0, faceMass%m, b_lda, proj3, b_ldb, &
+                           0.d0, TMP, b_ldc)
 !
 ! ---- Compute stab += invH * proj3**T * TMP
-            b_ldc = to_blas_int(stab%max_nrows)
-            b_ldb = to_blas_int(MSIZE_FACE_SCAL)
-            b_lda = to_blas_int(MSIZE_FACE_SCAL)
-            b_m = to_blas_int(total_dofs)
-            b_n = to_blas_int(total_dofs)
-            b_k = to_blas_int(fbs)
-            call dgemm('T', 'N', b_m, b_n, b_k, &
-                       invH, proj3, b_lda, TMP, b_ldb, &
-                       1.d0, stab%m, b_ldc)
+                b_ldc = to_blas_int(stab%max_nrows)
+                b_ldb = to_blas_int(MSIZE_FACE_SCAL)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_m = to_blas_int(total_dofs)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(fbs)
+                call dgemm('T', 'N', b_m, b_n, b_k, &
+                           invH, proj3, b_lda, TMP, b_ldb, &
+                           1.d0, stab%m, b_ldc)
+!
+            else
+!
+! ---- Compute stab += invH * proj3**T * proj3 since faceMass = Id
+                b_ldc = to_blas_int(stab%max_nrows)
+                b_lda = to_blas_int(MSIZE_FACE_SCAL)
+                b_n = to_blas_int(total_dofs)
+                b_k = to_blas_int(fbs)
+                call dsyrk('U', 'T', b_n, b_k, &
+                           invH, proj3, b_lda, &
+                           1.d0, stab%m, b_ldc)
+            end if
 !
             offset_face = offset_face+fbs
         end do
 !
-        call proj1%free()
+        if (faceMass%isIdentity) then
+            call stab%copySymU()
+        end if
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hdgStabScal", end-start)
