@@ -168,6 +168,8 @@ MASSE = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMEDDL)
 
 MODE2 = CALC_MODES(
     MATR_RIGI=RIGIDITE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAELEM,
     VERI_MODE=_F(SEUIL=0.0001),
     OPTION="PROCHE",
     SOLVEUR=_F(METHODE="MULT_FRONT"),
@@ -335,6 +337,127 @@ TEST_RESU(
         PRECISION=0.014999999999999999,
     )
 )
+
+# vérification que l'on a les mêmes modes avec l'option PROCHE
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=MODE2,
+        VALE_CALC=1.51156081898,
+        VALE_REFE=1.51156081898,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-3,
+    )
+)
+
+#
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=MODE2,
+        VALE_CALC=2.05245985978,
+        VALE_REFE=2.05245985978,
+        CRITERE="RELATIF",
+        PRECISION=2.0e-3,
+    )
+)
+
+#
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=MODE2,
+        VALE_CALC=2.36517404016,
+        VALE_REFE=2.36517404016,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
+
+#
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=MODE2,
+        VALE_CALC=4.84778164302,
+        VALE_REFE=4.84778164302,
+        CRITERE="RELATIF",
+        PRECISION=3.0000000000000001e-3,
+    )
+)
+
+#
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=MODE2,
+        VALE_CALC=7.48770190179,
+        VALE_REFE=7.48770190179,
+        CRITERE="RELATIF",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
+
+#
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=MODE2,
+        VALE_CALC=8.38771474821,
+        VALE_REFE=8.38771474821,
+        CRITERE="RELATIF",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
+
+#
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=MODE2,
+        VALE_CALC=8.54692623944,
+        VALE_REFE=8.54692623944,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-3,
+    )
+)
+
+#
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=MODE2,
+        VALE_CALC=15.1849791526,
+        VALE_REFE=15.1849791526,
+        CRITERE="RELATIF",
+        PRECISION=0.014999999999999999,
+    )
+)
+
 
 #
 # MASSE EFFECTIVES DX
@@ -1502,6 +1625,288 @@ TEST_RESU(
         RESULTAT=MODE1_BANDE,
         VALE_CALC=0.005797079728835811,
         VALE_REFE=valTa["INER_EFFE_UN_DZ"][7],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+
+# Validation de INER_EFFE avec option PROCHE (donc avec MODE_ITER_INV)
+
+# Calcul des masses et interties effectives par POST_MODE en donnant tout le modèle.
+# on relance POST_MODE avec MODE2 car les résultats diffèrent si on utilise les
+# résultat de MODE1
+table_inv = POST_MODE(
+    MODE=MODE2,
+    GROUP_MA=(
+        "PLAN11",
+        "PLAN12",
+        "PLAN22",
+        "PLAN21",
+        "PLAN32",
+        "PLAN31",
+        "COLI",
+        "COLH",
+        "COLG",
+        "COLF",
+        "COLE",
+        "COLD",
+        "COLC",
+        "COLB",
+        "COLA",
+        "JONCTIONS",
+    ),
+    CARA_ELEM=CARAELEM,
+    MATR_MASS=MASSE,
+)
+
+valTaInv = table_inv.EXTR_TABLE().values()
+
+# INTERTIES EFFECTIVES UNITAIRE DX EN ROTATION
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        PARA="INER_EFFE_UN_DX",
+        RESULTAT=MODE2,
+        VALE_CALC=0.07659653585824022,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DX"][0],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        PARA="INER_EFFE_UN_DX",
+        RESULTAT=MODE2,
+        VALE_CALC=6.023838481236774e-05,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DX"][1],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        PARA="INER_EFFE_UN_DX",
+        RESULTAT=MODE2,
+        VALE_CALC=0.00012120606546721392,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DX"][2],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        PARA="INER_EFFE_UN_DX",
+        RESULTAT=MODE2,
+        VALE_CALC=0.3517987258868606,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DX"][3],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        PARA="INER_EFFE_UN_DX",
+        RESULTAT=MODE2,
+        VALE_CALC=0.00030351904978930715,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DX"][4],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        PARA="INER_EFFE_UN_DX",
+        RESULTAT=MODE2,
+        VALE_CALC=0.042653941912813895,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DX"][5],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        PARA="INER_EFFE_UN_DX",
+        RESULTAT=MODE2,
+        VALE_CALC=0.0005716760280083169,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DX"][6],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        PARA="INER_EFFE_UN_DX",
+        RESULTAT=MODE2,
+        VALE_CALC=0.00015429133234750656,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DX"][7],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+
+#
+# INTERTIES EFFECTIVES UNITAIRE DY EN ROTATION
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        PARA="INER_EFFE_UN_DY",
+        RESULTAT=MODE2,
+        VALE_CALC=2.4205963398628745e-05,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DY"][0],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        PARA="INER_EFFE_UN_DY",
+        RESULTAT=MODE2,
+        VALE_CALC=0.09104034729415224,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DY"][1],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        PARA="INER_EFFE_UN_DY",
+        RESULTAT=MODE2,
+        VALE_CALC=0.00973201261279506,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DY"][2],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        PARA="INER_EFFE_UN_DY",
+        RESULTAT=MODE2,
+        VALE_CALC=2.2466010549048907e-05,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DY"][3],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        PARA="INER_EFFE_UN_DY",
+        RESULTAT=MODE2,
+        VALE_CALC=0.2685170623183155,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DY"][4],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        PARA="INER_EFFE_UN_DY",
+        RESULTAT=MODE2,
+        VALE_CALC=0.0029868201519014726,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DY"][5],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        PARA="INER_EFFE_UN_DY",
+        RESULTAT=MODE2,
+        VALE_CALC=0.03470589718546733,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DY"][6],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        PARA="INER_EFFE_UN_DY",
+        RESULTAT=MODE2,
+        VALE_CALC=0.06161123624726004,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DY"][7],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+
+#
+# INTERTIES EFFECTIVES UNITAIRE DZ EN ROTATIONS
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        PARA="INER_EFFE_UN_DZ",
+        RESULTAT=MODE2,
+        VALE_CALC=0.00430488270831332,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DZ"][0],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        PARA="INER_EFFE_UN_DZ",
+        RESULTAT=MODE2,
+        VALE_CALC=0.07920155659292528,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DZ"][1],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        PARA="INER_EFFE_UN_DZ",
+        RESULTAT=MODE2,
+        VALE_CALC=0.7080543145488676,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DZ"][2],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        PARA="INER_EFFE_UN_DZ",
+        RESULTAT=MODE2,
+        VALE_CALC=0.0006588517668532129,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DZ"][3],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        PARA="INER_EFFE_UN_DZ",
+        RESULTAT=MODE2,
+        VALE_CALC=0.016355284744778036,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DZ"][4],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        PARA="INER_EFFE_UN_DZ",
+        RESULTAT=MODE2,
+        VALE_CALC=0.00531262510797594,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DZ"][5],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        PARA="INER_EFFE_UN_DZ",
+        RESULTAT=MODE2,
+        VALE_CALC=0.11216943688832741,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DZ"][6],
+        REFERENCE="AUTRE_ASTER",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        PARA="INER_EFFE_UN_DZ",
+        RESULTAT=MODE2,
+        VALE_CALC=0.005797372676518657,
+        VALE_REFE=valTaInv["INER_EFFE_UN_DZ"][7],
         REFERENCE="AUTRE_ASTER",
     )
 )
