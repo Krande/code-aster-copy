@@ -28,6 +28,7 @@ import numpy
 
 from . import DataStructure as DS
 from .SyntaxUtils import (
+    _F,
     convert_complex,
     debug_message2,
     force_list,
@@ -439,6 +440,9 @@ class SyntaxCheckerVisitor:
                     if nmax == 1:
                         if value_is_sequence(value) and len(value) == 1:
                             value = userOcc[key] = value[0]
+                            if isinstance(value, dict):
+                                # to support [0]
+                                value = userOcc[key] = _F(value)
                     else:
                         if value is not None:
                             if not value_is_sequence(value):
