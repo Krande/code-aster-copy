@@ -619,7 +619,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     if (N_ET+N_ET+N_PC+N_EC+N_EC+N_PCN > ntot) then
-        print *, "IndexError: ntot argument must be greater than", &
+        write (6, *) "IndexError: ntot argument must be greater than", &
             N_ET+N_ET+N_PC+N_EC+N_EC+N_PCN
     else
 

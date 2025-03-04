@@ -32,6 +32,12 @@ void dintels( ASTERDOUBLE *cequi, ASTERDOUBLE *ht, ASTERDOUBLE *bw, ASTERDOUBLE 
               ASTERDOUBLE *enrobs, ASTERDOUBLE *scmaxi, ASTERDOUBLE *scmaxs, ASTERDOUBLE *ssmax,
               ASTERINTEGER *uc, ASTERDOUBLE *dnsinf, ASTERDOUBLE *dnssup, ASTERINTEGER *ntot,
               ASTERDOUBLE *nrd, ASTERDOUBLE *mrd );
+
+void dintelu( ASTERINTEGER *typco, ASTERDOUBLE *alphacc, ASTERDOUBLE *ht, ASTERDOUBLE *bw,
+              ASTERDOUBLE *enrobi, ASTERDOUBLE *enrobs, ASTERDOUBLE *facier, ASTERDOUBLE *fbeton,
+              ASTERDOUBLE *gammas, ASTERDOUBLE *gammac, ASTERINTEGER *clacier, ASTERDOUBLE *eys,
+              ASTERINTEGER *typdiag, ASTERINTEGER *uc, ASTERDOUBLE *dnsinf, ASTERDOUBLE *dnssup,
+              ASTERINTEGER *ntot, ASTERDOUBLE *nrd, ASTERDOUBLE *mrd );
 }
 
 const std::tuple< VectorReal, VectorReal >
@@ -40,8 +46,26 @@ dintels_wrapper( ASTERDOUBLE cequi, ASTERDOUBLE ht, ASTERDOUBLE bw, ASTERDOUBLE 
                  ASTERINTEGER uc, ASTERDOUBLE dnsinf, ASTERDOUBLE dnssup, ASTERINTEGER ntot ) {
     VectorReal vect_nrd( ntot, 0. );
     VectorReal vect_mrd( ntot, 0. );
+
     dintels( &cequi, &ht, &bw, &enrobi, &enrobs, &scmaxi, &scmaxs, &ssmax, &uc, &dnsinf, &dnssup,
              &ntot, vect_nrd.data(), vect_mrd.data() );
+
+    return std::make_tuple( vect_nrd, vect_mrd );
+}
+
+const std::tuple< VectorReal, VectorReal >
+dintelu_wrapper( ASTERINTEGER typco, ASTERDOUBLE alphacc, ASTERDOUBLE ht, ASTERDOUBLE bw,
+                 ASTERDOUBLE enrobi, ASTERDOUBLE enrobs, ASTERDOUBLE facier, ASTERDOUBLE fbeton,
+                 ASTERDOUBLE gammas, ASTERDOUBLE gammac, ASTERINTEGER clacier, ASTERDOUBLE eys,
+                 ASTERINTEGER typdiag, ASTERINTEGER uc, ASTERDOUBLE dnsinf, ASTERDOUBLE dnssup,
+                 ASTERINTEGER ntot ) {
+    VectorReal vect_nrd( ntot, 0. );
+    VectorReal vect_mrd( ntot, 0. );
+
+    dintelu( &typco, &alphacc, &ht, &bw, &enrobi, &enrobs, &facier, &fbeton, &gammas, &gammac,
+             &clacier, &eys, &typdiag, &uc, &dnsinf, &dnssup, &ntot, vect_nrd.data(),
+             vect_mrd.data() );
+
     return std::make_tuple( vect_nrd, vect_mrd );
 }
 
@@ -62,7 +86,7 @@ Args:
     scmaxi (float): contrainte de compression maxi du beton en fibre inf
     scmaxs (float): contrainte de compression maxi du beton en fibre sup
     ssmax (float): contrainte maxi de l'acier de flexion
-    uc (float): unite des contraintes : 0 en Pa, 1 en MPa
+    uc (int): unite des contraintes : 0 en Pa, 1 en MPa
     dnsinf (float): densité de l'acier inférieur
     dnssup (float): densité de l'acier supérieur
     ntot (int): dimensions des vecteurs
@@ -75,4 +99,46 @@ Returns:
              py::arg( "cequi" ), py::arg( "ht" ), py::arg( "bw" ), py::arg( "enrobi" ),
              py::arg( "enrobs" ), py::arg( "scmaxi" ), py::arg( "scmaxs" ), py::arg( "ssmax" ),
              py::arg( "uc" ), py::arg( "dnsinf" ), py::arg( "dnssup" ), py::arg( "ntot" ) );
+
+    mod.def( "dintelu", &dintelu_wrapper, R"(
+Construction du diagramme d'interaction d'une section ferraillée
+
+Vérification d'un ferraillage existant selon le critère : limitation des déformations (ELU).
+
+Args:
+    typco (int): codification utilisée (1 = bael91, 2 = ec2)
+    alphacc (float): coefficient de sécurité sur la résistance de calcul du béton en surpression
+    ht (float): hauteur de la section
+    bw (float): largeur de la section
+    enrobi (float): enrobage des armatures inférieures
+    enrobs (float): enrobage des armatures supérieures
+    facier (float): limite d'élasticité des aciers (contrainte)
+    fbeton (float): résistance en surpression du béton (contrainte)
+    gammas (float): coefficient de sécurité sur la résistance de calcul des aciers
+    gammac (float): coefficient de sécurité sur la résistance de calcul du béton
+    clacier (int): classe de ductilité des aciers (utilisé pour ec2).
+        0: acier peu ductile (classe a),
+        1: acier moyennement ductile (classe b),
+        3: acier fortement ductile (classe c)
+    eys (float): module d'young de l'acier
+    typdiag (int): type de diagramme utilisé pour l'acier.
+        typdiag = 1 ("b1" ==> palier incliné),
+        typdiag = 2 ("b2" ==> palier horizontal)
+    uc (int): unité des contraintes : 0 en Pa, 1 en MPa
+    dnsinf (float): densité de l'acier inférieur
+    dnssup (float): densité de l'acier supérieur
+    ntot (int): dimensions des vecteurs
+
+Returns:
+    tuple (list[float], list[float]):
+    vecteur des efforts normaux résistants (diag inter) et
+    vecteur des moments résistants (diag inter).
+    )",
+             py::arg( "typco" ), py::arg( "alphacc" ), py::arg( "ht" ), py::arg( "bw" ),
+             py::arg( "enrobi" ), py::arg( "enrobs" ), py::arg( "facier" ), py::arg( "fbeton" ),
+             py::arg( "gammas" ), py::arg( "gammac" ), py::arg( "clacier" ), py::arg( "eys" ),
+             py::arg( "typdiag" ), py::arg( "uc" ), py::arg( "dnsinf" ), py::arg( "dnssup" ),
+             py::arg( "ntot" )
+
+    );
 };
