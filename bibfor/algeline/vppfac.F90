@@ -198,18 +198,20 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
         end if
 !
 !     ------------------------------------------------------------------
-!     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION ---------
+!     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION (Ud) ----
 !     ------------------------------------------------------------------
+!       M*Ud
         call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, &
                     .false._1)
 !       masse ou inertie de rotation globale selon la direction
         b_n = to_blas_int(neq)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-!       masse totale dans la direction unitaire
+!       Ud^t*M*Ud
         massTotDirUnit = ddot(b_n, zr(laux1), b_incx, zr(laux2), b_incy)
-
+!
         do ivect = 1, nbvect
+!           Vectp(freq)^t*M*Ud
             rval = ddot(b_n, vect(1, ivect), b_incx, zr(laux2), b_incy)
             raux = masgen(ivect)
             if ((abs(raux) .lt. rmin) .or. (abs(rval) .gt. rmax)) then
