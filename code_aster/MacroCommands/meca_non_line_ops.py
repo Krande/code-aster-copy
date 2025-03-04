@@ -68,19 +68,6 @@ def _keywords_check(keywords):
         raise RuntimeError("unsupported value in METHODE")
 
 
-def _keyword_clean(obj):
-    """Return obj[0] if exists, return obj if not"""
-
-    if hasattr(obj, "__getitem__"):
-        if type(obj) is dict:
-            return obj
-        else:
-            return obj[0]
-
-    else:
-        return obj
-
-
 def meca_non_line_ops(self, **args):
     """Execute the command.
 
@@ -98,20 +85,19 @@ def meca_non_line_ops(self, **args):
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
-    # FIXME: move keywords cleanup in factory - Keep some keywords
     kwds = {
-        "ARCHIVAGE": _keyword_clean(args["ARCHIVAGE"]),
+        "ARCHIVAGE": args["ARCHIVAGE"],
         "COMPORTEMENT": args["COMPORTEMENT"],
         "CONTACT": args["CONTACT"],
-        "CONVERGENCE": _keyword_clean(args["CONVERGENCE"]),
-        "ETAT_INIT": _keyword_clean(args["ETAT_INIT"]),
+        "CONVERGENCE": args["CONVERGENCE"],
+        "ETAT_INIT": args["ETAT_INIT"],
         "INFO": args["INFO"],
         "METHODE": args["METHODE"],
-        "NEWTON": _keyword_clean(args["NEWTON"]),
-        "RECH_LINEAIRE": _keyword_clean(args["RECH_LINEAIRE"]),
-        "SOLVEUR": _keyword_clean(args["SOLVEUR"]),
+        "NEWTON": args["NEWTON"],
+        "RECH_LINEAIRE": args["RECH_LINEAIRE"],
+        "SOLVEUR": args["SOLVEUR"],
         "REUSE": args["reuse"],
-        "INCREMENT": _keyword_clean(args["INCREMENT"]),
+        "INCREMENT": args["INCREMENT"],
         "SCHEMA_TEMPS": args.get("SCHEMA_TEMPS"),
     }
     if kwds["SOLVEUR"]["METHODE"] == "PETSC":
