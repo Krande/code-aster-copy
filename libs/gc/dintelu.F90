@@ -106,8 +106,10 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     real(kind=8), allocatable :: N_P5(:), M_P5(:)
     real(kind=8), allocatable :: N_P6(:), M_P6(:)
 
-!   Initialisation des entiers
+    nrd = 0.0
+    mrd = 0.0
 
+!   Initialisation des entiers
     N_ET = 100
     N_PC = 100
     N_EC = 100
@@ -616,31 +618,36 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !Fin de Traitement des différents cas
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
+    if (N_ET+N_ET+N_PC+N_EC+N_EC+N_PCN > ntot) then
+        print *, "IndexError: ntot argument must be greater than", &
+            N_ET+N_ET+N_PC+N_EC+N_EC+N_PCN
+    else
 
-    do k = 1, N_ET
-        nrd(k) = N_P1(k)
-        mrd(k) = M_P1(k)
-    end do
-    do k = 1, N_PC
-        nrd(k+N_ET) = N_P2(k)
-        mrd(k+N_ET) = M_P2(k)
-    end do
-    do k = 1, N_EC
-        nrd(k+N_ET+N_PC) = N_P3(k)
-        mrd(k+N_ET+N_PC) = M_P3(k)
-    end do
-    do k = 1, N_EC
-        nrd(k+N_ET+N_PC+N_EC) = N_P4(k)
-        mrd(k+N_ET+N_PC+N_EC) = M_P4(k)
-    end do
-    do k = 1, N_PCN
-        nrd(k+N_ET+N_PC+N_EC+N_EC) = N_P5(k)
-        mrd(k+N_ET+N_PC+N_EC+N_EC) = M_P5(k)
-    end do
-    do k = 1, N_ET
-        nrd(k+N_ET+N_PC+N_EC+N_EC+N_PCN) = N_P6(k)
-        mrd(k+N_ET+N_PC+N_EC+N_EC+N_PCN) = M_P6(k)
-    end do
+        do k = 1, N_ET
+            nrd(k) = N_P1(k)
+            mrd(k) = M_P1(k)
+        end do
+        do k = 1, N_PC
+            nrd(k+N_ET) = N_P2(k)
+            mrd(k+N_ET) = M_P2(k)
+        end do
+        do k = 1, N_EC
+            nrd(k+N_ET+N_PC) = N_P3(k)
+            mrd(k+N_ET+N_PC) = M_P3(k)
+        end do
+        do k = 1, N_EC
+            nrd(k+N_ET+N_PC+N_EC) = N_P4(k)
+            mrd(k+N_ET+N_PC+N_EC) = M_P4(k)
+        end do
+        do k = 1, N_PCN
+            nrd(k+N_ET+N_PC+N_EC+N_EC) = N_P5(k)
+            mrd(k+N_ET+N_PC+N_EC+N_EC) = M_P5(k)
+        end do
+        do k = 1, N_ET
+            nrd(k+N_ET+N_PC+N_EC+N_EC+N_PCN) = N_P6(k)
+            mrd(k+N_ET+N_PC+N_EC+N_EC+N_PCN) = M_P6(k)
+        end do
+    end if
 
     deallocate (N_P1)
     deallocate (N_P2)

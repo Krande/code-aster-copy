@@ -279,11 +279,10 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !-----------------------------------------------------------------------
 !Fin de Traitement des différents cas
 !-----------------------------------------------------------------------
-    if (N_ET+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN > ntot) then
-        print *, "IndexError: ntot argument must be greater than", &
-            N_ET+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN
+    if (N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET > ntot) then
+        write (6, *) "IndexError: ntot argument must be greater than", &
+            N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
     else
-
         do k = 1, N_ET
             nrd(k) = N_P1(k)
             mrd(k) = M_P1(k)

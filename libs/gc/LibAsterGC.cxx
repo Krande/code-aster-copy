@@ -23,31 +23,32 @@
 #include "astercxx.h"
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
 
 extern "C" {
 void dintels( ASTERDOUBLE *cequi, ASTERDOUBLE *ht, ASTERDOUBLE *bw, ASTERDOUBLE *enrobi,
               ASTERDOUBLE *enrobs, ASTERDOUBLE *scmaxi, ASTERDOUBLE *scmaxs, ASTERDOUBLE *ssmax,
-              ASTERINTEGER uc, ASTERDOUBLE *dnsinf, ASTERDOUBLE *dnssup, ASTERINTEGER *ntot,
+              ASTERINTEGER *uc, ASTERDOUBLE *dnsinf, ASTERDOUBLE *dnssup, ASTERINTEGER *ntot,
               ASTERDOUBLE *nrd, ASTERDOUBLE *mrd );
 }
 
-const py::tuple dintels_wrap( ASTERDOUBLE *cequi, ASTERDOUBLE *ht, ASTERDOUBLE *bw,
-                              ASTERDOUBLE *enrobi, ASTERDOUBLE *enrobs, ASTERDOUBLE *scmaxi,
-                              ASTERDOUBLE *scmaxs, ASTERDOUBLE *ssmax, ASTERINTEGER uc,
-                              ASTERDOUBLE *dnsinf, ASTERDOUBLE *dnssup, ASTERINTEGER *ntot ) {
-    VectorReal vect_nrd( *ntot );
-    VectorReal vect_mrd( *ntot );
-    dintels( cequi, ht, bw, enrobi, enrobs, scmaxi, scmaxs, ssmax, uc, dnsinf, dnssup, ntot,
-             vect_nrd.data(), vect_mrd.data() );
-    return py::make_tuple( ntot, vect_nrd, vect_mrd );
+const std::tuple< VectorReal, VectorReal >
+dintels_wrapper( ASTERDOUBLE cequi, ASTERDOUBLE ht, ASTERDOUBLE bw, ASTERDOUBLE enrobi,
+                 ASTERDOUBLE enrobs, ASTERDOUBLE scmaxi, ASTERDOUBLE scmaxs, ASTERDOUBLE ssmax,
+                 ASTERINTEGER uc, ASTERDOUBLE dnsinf, ASTERDOUBLE dnssup, ASTERINTEGER ntot ) {
+    VectorReal vect_nrd( ntot, 0. );
+    VectorReal vect_mrd( ntot, 0. );
+    dintels( &cequi, &ht, &bw, &enrobi, &enrobs, &scmaxi, &scmaxs, &ssmax, &uc, &dnsinf, &dnssup,
+             &ntot, vect_nrd.data(), vect_mrd.data() );
+    return std::make_tuple( vect_nrd, vect_mrd );
 }
 
 PYBIND11_MODULE( libAsterGC, mod ) {
     mod.doc() = "This module provides some utilities for reinforced concrete structures";
 
-    mod.def( "dintels", &dintels_wrap, R"(
+    mod.def( "dintels", &dintels_wrapper, R"(
 Construction du diagramme d'interaction d'une section ferraillée
 
 Vérification d'un ferraillage existant selon le critère : limitation des contraintes (ELS).

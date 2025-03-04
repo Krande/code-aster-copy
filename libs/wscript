@@ -17,14 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
-import os.path as osp
-import re
-import shutil
-from functools import partial
-
-from waflib import Configure, Errors, Logs, Task, TaskGen, Utils
-
 
 def options(self):
     pass
@@ -41,7 +33,7 @@ def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
-    use = ["BIBCXX", "PYBIND11", "MATH", "PYEXT", "CXX"]
+    use = ["BIBCXX", "BIBFOR", "PYBIND11", "MATH", "PYEXT", "CXX"]
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 
