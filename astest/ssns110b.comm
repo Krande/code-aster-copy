@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,10 +157,47 @@ RESU = STAT_NON_LINE(
     SOLVEUR=_F(METHODE="MUMPS", PCENT_PIVOT=20),
 )
 
+L_INST2 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=10.0, NOMBRE=10)))
+
+INSTANT2 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST2), ECHEC=_F(ACTION="DECOUPE"))
+
+# TEST DU PILOTAGE
+RESU2 = STAT_NON_LINE(
+    MODELE=MODE,
+    CHAM_MATER=MATE,
+    CARA_ELEM=(ORIENTAT),
+    EXCIT=(_F(CHARGE=BATI), _F(CHARGE=TRAC, TYPE_CHARGE="FIXE_PILO")),
+    COMPORTEMENT=(
+        _F(GROUP_MA="ARMATU", RELATION="ELAS"),
+        _F(GROUP_MA="BETON", RELATION="ELAS"),
+        _F(GROUP_MA="CZM_BA", RELATION="CZM_LAB_MIX"),
+    ),
+    INCREMENT=_F(LIST_INST=INSTANT2),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    PILOTAGE=_F(
+        COEF_MULT=10,
+        ETA_PILO_MAX=10,
+        ETA_PILO_R_MIN=0.0,
+        GROUP_MA="CZM_BA",
+        PROJ_BORNES="OUI",
+        SELECTION="RESIDU",
+        TYPE="PRED_ELAS",
+    ),
+    CONVERGENCE=_F(
+        RESI_REFE_RELA=1.0e-4,
+        SIGM_REFE=1.0e6,
+        EPSI_REFE=sig_l / (E_A * section_l),
+        DEPL_REFE=GLIS_C,
+        ITER_GLOB_MAXI=10,
+    ),
+    SOLVEUR=_F(METHODE="MUMPS", PCENT_PIVOT=20),
+)
+
+
 # -----------------------------------------------------
 # POST-TRAITEMENT ET VALIDATION DES RESULTATS
 # -----------------------------------------------------
-
+# RESOLUTION CLASSIQUE
 TAB_DY = POST_RELEVE_T(
     ACTION=_F(
         INTITULE="DEPLACEMENT",
@@ -211,5 +248,48 @@ TEST_TABLE(
     TABLE=TAB_DY,
     FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=2),
 )
+
+# TEST RESOLUTION AVEC LE PILOTAGE
+
+
+TAB_DY2 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="DEPLACEMENT",
+        NOM_CHAM="DEPL",
+        OPERATION="MOYENNE_ARITH",
+        GROUP_NO="BOUT",
+        NOM_CMP="DY",
+        RESULTAT=RESU2,
+    )
+)
+
+
+plas2 = POST_ELEM(MINMAX=_F(GROUP_MA="CZM_BA", RESULTAT=RESU2, NOM_CHAM="VARI_ELGA", NOM_CMP="V1"))
+
+
+TEST_TABLE(
+    TABLE=plas2,
+    NOM_PARA="MAX_V1",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=9.99999999998597e-05,
+    VALE_REFE=GLIS_C * 0.1,
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
+)
+
+
+nume = RESU2.LIST_VARI_ACCES()["NUME_ORDRE"][-1]
+
+# Comparaison a une resolution 3D du meme probleme
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    PRECISION=0.02,
+    VALE_CALC=-0.00031493776130741234,
+    VALE_REFE=-3.1845791999999997e-4,
+    NOM_PARA="MOYENNE",
+    TABLE=TAB_DY2,
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=nume),
+)
+
 
 FIN()

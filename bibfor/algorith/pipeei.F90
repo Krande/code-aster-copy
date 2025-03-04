@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg, &
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/eicine.h"
+#include "asterfort/pipeab.h"
 #include "asterfort/pipeex.h"
 #include "asterfort/pipeou.h"
 #include "asterfort/pipetc.h"
@@ -50,7 +51,9 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg, &
 !
 !-----------------------------------------------------------------------
     integer :: g, n, i, j, kk
+    integer:: nsol, sgn(2)
     real(kind=8) :: mup(3), sup(3), mud(3), sud(3), wg, b(3, 3, 18)
+    real(kind=8):: sol(2)
 !-----------------------------------------------------------------------
 !
 !
@@ -103,6 +106,21 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg, &
         else if (compor .eq. 'CZM_EXP_MIX') then
             call pipeex(mat, sup, sud, mup, mud, &
                         vim(1, g), dtau, copilo(1, g))
+        else if (compor .eq. 'CZM_LAB_MIX') then
+            call pipeab(mat, dtau, vim(:, g), sup, sud, mup, mud, nsol, sol, sgn)
+
+            if (nsol .eq. 0) then
+                copilo(5, g) = 0.d0
+            else if (nsol .eq. 1) then
+                copilo(1, g) = dtau-sgn(1)*sol(1)
+                copilo(2, g) = sgn(1)
+            else if (nsol .eq. 2) then
+                copilo(1, g) = dtau-sgn(1)*sol(1)
+                copilo(2, g) = sgn(1)
+                copilo(3, g) = dtau-sgn(2)*sol(2)
+                copilo(4, g) = sgn(2)
+            end if
+
         else
             call utmess('F', 'MECANONLINE_59')
         end if
