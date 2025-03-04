@@ -294,7 +294,7 @@ class TimeStepper(Observer):
                     hist.setdefault(para, []).append(data[para].value)
                     crit[para] = data[para].reference
         else:
-            raise TypeError(f"unsupported event: {eid=}")
+            raise TypeError(f"unsupported event: eid={eid}")
 
     @property
     def splitting_level(self):

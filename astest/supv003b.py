@@ -36,27 +36,27 @@ def check_ops(self, A1=None, A2=None, O1=None, O2=None, F1=None, F2=None, INFO=2
 
     test.assertIsNone(self._result)
     if A1 is not None:
-        verb(f"{A1=}")
+        verb(f"A1={A1}")
         test.assertIsInstance(A1, float, msg="A1 should be a single float")
         test.assertNotIn(type(A1), (list, tuple), msg="A1 should not be a list or tuple")
     if A2 is not None:
-        verb(f"{A2=}")
+        verb(f"A2={A2}")
         test.assertNotIsInstance(A2, float, msg="A2 should not be a single float")
         test.assertIn(type(A2), (list, tuple), msg="A2 should be a list or tuple")
     if O1 is not None:
-        verb(f"{O1=}")
+        verb(f"O1={O1}")
         test.assertIsInstance(O1, CA.Function, msg="O1 should be a single Function")
         test.assertNotIn(type(O1), (list, tuple), msg="O1 should not be a list or tuple")
     if O2 is not None:
-        verb(f"{O2=}")
+        verb(f"O2={O2}")
         test.assertNotIsInstance(O2, CA.Function, msg="O2 should not be a single Function")
         test.assertIn(type(O2), (list, tuple), msg="O2 should be a list or tuple")
     if F1 is not None:
-        verb(f"{F1=}")
+        verb(f"F1={F1}")
         test.assertIsInstance(F1, dict, msg="F1 should be a single dict")
         test.assertNotIn(type(F1), (list, tuple), msg="F1 should not be a list or tuple")
     if F2 is not None:
-        verb(f"{F2=}")
+        verb(f"F2={F2}")
         test.assertNotIsInstance(F2, dict, msg="F2 should not be a single dict")
         test.assertIn(type(F2), (list, tuple), msg="F2 should be a list or tuple")
 

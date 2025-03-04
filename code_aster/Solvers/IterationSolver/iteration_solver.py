@@ -56,7 +56,7 @@ class BaseIterationSolver(ABC, ContextMixin, DispatcherMixin):
         for kls in cls.__subclasses__():
             if kls.solver_type.name == method:
                 return kls.builder(context)
-        raise TypeError(f"no candidate for {cls=}, method: {method}")
+        raise TypeError(f"no candidate for cls={cls}, method: {method}")
 
     def __init__(self):
         super().__init__()

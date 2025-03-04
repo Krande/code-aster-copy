@@ -69,7 +69,7 @@ class ExtendedLinearSolver:
         for kls in cls.__subclasses__():
             if kls.solverName() == name:
                 return kls(**kwargs)
-        raise TypeError(f"no candidate for {cls=}, solver: {name}")
+        raise TypeError(f"no candidate for cls={cls}, solver: {name}")
 
     # add profile to these methods
     factorize = profile(LinearSolver.factorize)
