@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,9 @@ subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
 !
     use endo_loca_module, only: ELE_law => CONSTITUTIVE_LAW, ELE_Init => Init
     use endo_loca_module, only: ELE_PathFollowing => PathFollowing
+
+    use vmis_isot_nl_module, only: VINL_law => CONSTITUTIVE_LAW, VINL_Init => Init
+    use vmis_isot_nl_module, only: VINL_PathFollowing => PathFollowing
 !
 !
     implicit none
@@ -47,7 +50,7 @@ subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
     real(kind=8) :: vim(lgpg, npg)
     real(kind=8) :: epsm(6), epsp(6), epsd(6)
     real(kind=8) :: copilo(5, npg)
-    real(kind=8) :: etamin, etamax, tau
+    real(kind=8) :: etamin, etamax, tau, dka
     real(kind=8) :: sigma(6)
 !
 ! ----------------------------------------------------------------------
@@ -80,6 +83,7 @@ subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
     integer :: ndimsi, nsol, sgn(2)
     real(kind=8) :: sol(2), eps0(2*ndim), eps1(2*ndim)
     type(ELE_LAW) :: ELE_ldc
+    type(VINL_LAW) :: VINL_ldc
     character(len=16) :: option
     blas_int :: b_incx, b_incy, b_n
 ! ---------------------------------------------------------------------
@@ -113,15 +117,24 @@ subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
                     copilo(5, kpg))
 !
 !
-    else if (compor(1) .eq. 'ENDO_LOCA_EXP') then
+    else if (compor(1) .eq. 'ENDO_LOCA_EXP' .or. compor(1) .eq. 'VMIS_ISOT_NL') then
 !
         eps0 = epsm(1:ndimsi)+epsp(1:ndimsi)
         eps1 = epsd(1:ndimsi)
 !
-        ELE_ldc = ELE_Init(ndimsi, option, 'NONE', kpg, 1, mate, 100, 0.d0, 0.d0)
-        call ELE_PathFollowing(ELE_ldc, vim(1, kpg)+tau, eps0, eps1, etamin, &
-                               etamax, 1.d-6, nsol, sol, sgn)
-        if (ELE_ldc%exception .ne. 0) call utmess('F', 'PILOTAGE_83')
+        if (compor(1) .eq. 'ENDO_LOCA_EXP') then
+            ELE_ldc = ELE_Init(ndimsi, option, 'NONE', kpg, 1, mate, 100, 0.d0, 0.d0)
+            call ELE_PathFollowing(ELE_ldc, vim(1, kpg)+tau, eps0, eps1, etamin, &
+                                   etamax, 1.d-6, nsol, sol, sgn)
+            if (ELE_ldc%exception .ne. 0) call utmess('F', 'PILOTAGE_83')
+
+        else if (compor(1) .eq. 'VMIS_ISOT_NL') then
+            VINL_ldc = VINL_Init(ndimsi, option, 'NONE', kpg, 1, mate, 100, 1.d-6)
+            ! Normalisation tant que le meme tau s'applique a tout le maillage
+            dka = tau*5.d-2
+            call VINL_PathFollowing(VINL_ldc, dka, vim(:, kpg), eps0, eps1, nsol, sol, sgn)
+            if (VINL_ldc%exception .ne. 0) call utmess('F', 'PILOTAGE_83')
+        end if
 !
         if (nsol .eq. 0) then
             copilo(5, kpg) = 0.d0
@@ -134,6 +147,7 @@ subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
             copilo(3, kpg) = tau-sgn(2)*sol(2)
             copilo(4, kpg) = sgn(2)
         end if
+!
 !
     else if (compor(1) .eq. 'ENDO_ORTH_BETON') then
         b_n = to_blas_int(ndimsi)
