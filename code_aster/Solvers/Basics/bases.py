@@ -57,7 +57,7 @@ class DispatcherMixin:
                 if isabstract(kls):
                     return kls.factory(context)
                 return kls.builder(context)
-        raise TypeError(f"no candidate for {cls=}, type: {context.problem_type}")
+        raise TypeError(f"no candidate for cls={cls}, type: {context.problem_type}")
 
 
 class Observer(ABC):

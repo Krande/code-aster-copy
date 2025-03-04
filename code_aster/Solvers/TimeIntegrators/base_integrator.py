@@ -74,7 +74,7 @@ class BaseIntegrator(MecaDynaOperators):
         for kls in cls.__subclasses__():
             if kls.integrator_name.name == integr:
                 return kls.builder(context)
-        raise TypeError(f"no candidate for {cls=}, scheme: {integr}")
+        raise TypeError(f"no candidate for cls={cls}, scheme: {integr}")
 
     def __init__(self):
         super().__init__()

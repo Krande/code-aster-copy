@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,60 @@ from warnings import showwarning, warn
 import numpy
 
 from .DataStructure import AsType
+
+
+class _F(dict):
+    """Wrapper to add transitional methods to emulate old *MCCOMPO* objects"""
+
+    def __getitem__(self, keyword):
+        """Operator `[]` but without failure if the *keyword* is not set.
+        Same as `get()`.
+
+        Arguments:
+            keyword (str): Simple keyword.
+
+        Returns:
+            *misc*: Value of the keyword or *None*.
+        """
+        # for backward compatibility
+        if keyword == 0:
+            return self
+        return self.get(keyword)
+
+    def cree_dict_valeurs(self, *args, **kwargs):
+        """Return a dict-like object to access to keywords."""
+        return self
+
+    def cree_dict_toutes_valeurs(self):
+        """Same as `cree_dict_valeurs()`, for compatibility."""
+        return self.cree_dict_valeurs()
+
+    @property
+    def mc_liste(self):
+        return list(self.keys())
+
+    def List_F(self):
+        """Return the object itself, for backward compatibility."""
+        return self
+
+
+class _ListFact(list):
+    """For backward compatibility to add `List_F` method to a list of
+    FactorKeywords."""
+
+    def List_F(self):
+        """Return the object itself, for backward compatibility."""
+        return self
+
+
+def ListFact(fact):
+    """Add `List_F` method to list of FactorKeywords.
+
+    It only avoids to remove all `List_F` calls that are now useless.
+    """
+    if isinstance(fact, (list, tuple)):
+        return _ListFact(fact)
+    return fact
 
 
 def warn_to_stdout(message, category, filename, lineno, file=None, line=None):
