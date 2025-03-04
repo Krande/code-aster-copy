@@ -140,7 +140,7 @@ def build_libbibc(self, env):
 
 
 def build_libaster(self, env):
-    use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx", "asterfortgc"]
+    use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx", "astergc"]
     if env.BUILD_MFRONT:
         use.append("astermfront")
     # {bibfor, bibc, bibcxx}/*.o

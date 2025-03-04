@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,22 +19,25 @@
 !
 !
 interface
-    subroutine dintels(cequi, ht, bw, enrobi, enrobs,&
-                       scmaxi, scmaxs, ssmax, uc,&
-                       dnsinf, dnssup, ntot, nrd, mrd)
-    real(kind=8) :: cequi
-    real(kind=8) :: ht
-    real(kind=8) :: bw
-    real(kind=8) :: enrobi
-    real(kind=8) :: enrobs
-    real(kind=8) :: scmaxi
-    real(kind=8) :: scmaxs
-    real(kind=8) :: ssmax
-    integer :: uc
-    real(kind=8) :: dnsinf
-    real(kind=8) :: dnssup
-    integer :: ntot
-    real(kind=8) :: nrd(1:ntot)
-    real(kind=8) :: mrd(1:ntot)
+    subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
+                       scmaxi, scmaxs, ssmax, uc, &
+                       dnsinf, dnssup, ntot, nrd, mrd) bind(C)
+        use, intrinsic :: iso_c_binding
+        implicit none
+        !
+        real(c_double), intent(in) :: cequi
+        real(c_double), intent(in) :: ht
+        real(c_double), intent(in) :: bw
+        real(c_double), intent(in) :: enrobi
+        real(c_double), intent(in) :: enrobs
+        real(c_double), intent(in) :: scmaxi
+        real(c_double), intent(in) :: scmaxs
+        real(c_double), intent(in) :: ssmax
+        integer(c_long), intent(in) :: uc
+        real(c_double), intent(in) :: dnsinf
+        real(c_double), intent(in) :: dnssup
+        integer(c_long), intent(in) :: ntot
+        real(c_double), intent(out) :: nrd(1:ntot)
+        real(c_double), intent(out) :: mrd(1:ntot)
     end subroutine dintels
 end interface

@@ -18,7 +18,7 @@
 
 subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
                    scmaxi, scmaxs, ssmax, uc, &
-                   dnsinf, dnssup, ntot, nrd, mrd)
+                   dnsinf, dnssup, ntot, nrd, mrd) bind(C)
 !______________________________________________________________________
 !
 !      DINTELS
@@ -48,22 +48,23 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !______________________________________________________________________
 !
 !
+    use, intrinsic :: iso_c_binding
     implicit none
 !
-    real(kind=8) :: cequi
-    real(kind=8) :: ht
-    real(kind=8) :: bw
-    real(kind=8) :: enrobi
-    real(kind=8) :: enrobs
-    real(kind=8) :: scmaxi
-    real(kind=8) :: scmaxs
-    real(kind=8) :: ssmax
-    integer :: uc
-    real(kind=8) :: dnsinf
-    real(kind=8) :: dnssup
-    integer :: ntot
-    real(kind=8) :: nrd(1:ntot)
-    real(kind=8) :: mrd(1:ntot)
+    real(c_double), intent(in) :: cequi
+    real(c_double), intent(in) :: ht
+    real(c_double), intent(in) :: bw
+    real(c_double), intent(in) :: enrobi
+    real(c_double), intent(in) :: enrobs
+    real(c_double), intent(in) :: scmaxi
+    real(c_double), intent(in) :: scmaxs
+    real(c_double), intent(in) :: ssmax
+    integer(c_long), intent(in) :: uc
+    real(c_double), intent(in) :: dnsinf
+    real(c_double), intent(in) :: dnssup
+    integer(c_long), intent(in) :: ntot
+    real(c_double), intent(out) :: nrd(1:ntot)
+    real(c_double), intent(out) :: mrd(1:ntot)
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -85,8 +86,10 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     real(kind=8), allocatable :: N_P5(:), M_P5(:)
     real(kind=8), allocatable :: N_P6(:), M_P6(:)
 
-!   Paramètres de calcul
+    nrd = 0.0
+    mrd = 0.0
 
+!   Paramètres de calcul
     if (uc .eq. 0) then
         unite_pa = 1.e-6
     else if (uc .eq. 1) then
@@ -276,31 +279,36 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !-----------------------------------------------------------------------
 !Fin de Traitement des différents cas
 !-----------------------------------------------------------------------
+    if (N_ET+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN > ntot) then
+        print *, "IndexError: ntot argument must be greater than", &
+            N_ET+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN
+    else
 
-    do k = 1, N_ET
-        nrd(k) = N_P1(k)
-        mrd(k) = M_P1(k)
-    end do
-    do k = 1, N_PCAC
-        nrd(k+N_ET) = N_P2(k)
-        mrd(k+N_ET) = M_P2(k)
-    end do
-    do k = 1, N_EC
-        nrd(k+N_ET+N_PCAC) = N_P3(k)
-        mrd(k+N_ET+N_PCAC) = M_P3(k)
-    end do
-    do k = 1, N_ECN
-        nrd(k+N_ET+N_PCAC+N_EC) = N_P4(k)
-        mrd(k+N_ET+N_PCAC+N_EC) = M_P4(k)
-    end do
-    do k = 1, N_PCACN
-        nrd(k+N_ET+N_PCAC+N_EC+N_ECN) = N_P5(k)
-        mrd(k+N_ET+N_PCAC+N_EC+N_ECN) = M_P5(k)
-    end do
-    do k = 1, N_ET
-        nrd(k+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN) = N_P6(k)
-        mrd(k+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN) = M_P6(k)
-    end do
+        do k = 1, N_ET
+            nrd(k) = N_P1(k)
+            mrd(k) = M_P1(k)
+        end do
+        do k = 1, N_PCAC
+            nrd(k+N_ET) = N_P2(k)
+            mrd(k+N_ET) = M_P2(k)
+        end do
+        do k = 1, N_EC
+            nrd(k+N_ET+N_PCAC) = N_P3(k)
+            mrd(k+N_ET+N_PCAC) = M_P3(k)
+        end do
+        do k = 1, N_ECN
+            nrd(k+N_ET+N_PCAC+N_EC) = N_P4(k)
+            mrd(k+N_ET+N_PCAC+N_EC) = M_P4(k)
+        end do
+        do k = 1, N_PCACN
+            nrd(k+N_ET+N_PCAC+N_EC+N_ECN) = N_P5(k)
+            mrd(k+N_ET+N_PCAC+N_EC+N_ECN) = M_P5(k)
+        end do
+        do k = 1, N_ET
+            nrd(k+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN) = N_P6(k)
+            mrd(k+N_ET+N_PCAC+N_EC+N_ECN+N_PCACN) = M_P6(k)
+        end do
+    end if
 
     deallocate (N_P1)
     deallocate (N_P2)

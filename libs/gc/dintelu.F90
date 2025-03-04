@@ -18,7 +18,7 @@
 
 subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
                    gammas, gammac, clacier, eys, typdiag, uc, &
-                   dnsinf, dnssup, ntot, nrd, mrd)
+                   dnsinf, dnssup, ntot, nrd, mrd) bind(C)
 !______________________________________________________________________
 !
 !      DINTELU
@@ -61,27 +61,28 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !______________________________________________________________________
 !
 !
+    use, intrinsic :: iso_c_binding
     implicit none
 !
-    integer :: typco
-    real(kind=8) :: alphacc
-    real(kind=8) :: ht
-    real(kind=8) :: bw
-    real(kind=8) :: enrobi
-    real(kind=8) :: enrobs
-    real(kind=8) :: facier
-    real(kind=8) :: fbeton
-    real(kind=8) :: gammas
-    real(kind=8) :: gammac
-    integer :: clacier
-    real(kind=8) :: eys
-    integer :: typdiag
-    integer :: uc
-    real(kind=8) :: dnsinf
-    real(kind=8) :: dnssup
-    integer :: ntot
-    real(kind=8) :: nrd(1:ntot)
-    real(kind=8) :: mrd(1:ntot)
+    integer(c_long), intent(in) :: typco
+    real(c_double), intent(in) :: alphacc
+    real(c_double), intent(in) :: ht
+    real(c_double), intent(in) :: bw
+    real(c_double), intent(in) :: enrobi
+    real(c_double), intent(in) :: enrobs
+    real(c_double), intent(in) :: facier
+    real(c_double), intent(in) :: fbeton
+    real(c_double), intent(in) :: gammas
+    real(c_double), intent(in) :: gammac
+    integer(c_long), intent(in) :: clacier
+    real(c_double), intent(in) :: eys
+    integer(c_long), intent(in) :: typdiag
+    integer(c_long), intent(in) :: uc
+    real(c_double), intent(in) :: dnsinf
+    real(c_double), intent(in) :: dnssup
+    integer(c_long), intent(in) :: ntot
+    real(c_double), intent(out) :: nrd(1:ntot)
+    real(c_double), intent(out) :: mrd(1:ntot)
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL

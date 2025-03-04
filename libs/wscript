@@ -41,16 +41,16 @@ def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
-    use = ["MATH"]
+    use = ["BIBCXX", "PYBIND11", "MATH", "PYEXT", "CXX"]
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 
-    srcF90 = get_srcs("**/*.F90")
+    sources = get_srcs("**/*.F90") + get_srcs("**/*.cxx")
     self(
-        features="fc fcshlib",
-        name="asterfortgc",
+        features="cxx fc cxxshlib fcshlib",
+        name="astergc",
         target="AsterGC",
-        source=srcF90,
+        source=sources,
         use=use,
         env=env.derive(),
         install_path=env.LIBPATH_ASTERGC,
