@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
 #include "asterfort/juveca.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/cafelsqp.h"
-#include "asterfort/dintels.h"
+#include "extern/dintels.h"
 #include "asterc/r8prem.h"
 !
     real(kind=8) :: cequi

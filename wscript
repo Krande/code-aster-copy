@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -158,6 +158,7 @@ def options(self):
     self.load("scotch", tooldir="waftools")
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
+    self.recurse("libs")
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")
@@ -286,6 +287,7 @@ def configure(self):
     if self.get_define("ASTER_HAVE_MPI"):
         self.env.ASRUN_MPI_VERSION = 1
 
+    self.recurse("libs")
     # bib* configure functions may add options required by prerequisites
     self.recurse("bibfor")
     self.recurse("bibcxx")
@@ -334,6 +336,7 @@ def build(self):
         )
 
     self.load("ext_aster", tooldir="waftools")
+    self.recurse("libs")
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")
