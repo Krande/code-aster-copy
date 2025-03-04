@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,6 @@ def getGravityCenter(model, cara, mater, group_ma):
         float(3) : coordinates of gravity center
     """
 
-    t_list = isinstance(group_ma, list)
-    t_tuple = isinstance(group_ma, tuple)
-    if (not t_list) & (not t_tuple):
-        group_ma = (group_ma,)
-
     if cara is not None:
         Mass_Iner = POST_ELEM(
             MODELE=model, CARA_ELEM=cara, CHAM_MATER=mater, MASS_INER=_F(GROUP_MA=group_ma)
@@ -66,13 +61,9 @@ def getGravityCenter(model, cara, mater, group_ma):
     else:
         ind = 0
 
-    # Masse = Mass_Tot['MASSE'][ind]
-    CG = [Mass_Tot["CDG_%s" % d][ind] for d in ["X", "Y", "Z"]]
-    # Iner = {}
-    # for k in ['IX_G', 'IY_G', 'IZ_G', 'IXY_G', 'IXZ_G', 'IYZ_G'] :
-    #     Iner.setdefault(k, Mass_Tot[k][ind])
+    centerCoord = [Mass_Tot["CDG_%s" % d][ind] for d in ["X", "Y", "Z"]]
 
-    return CG
+    return centerCoord
 
 
 def getNodesFromGroups(mesh, group_ma):
@@ -83,222 +74,165 @@ def getNodesFromGroups(mesh, group_ma):
         mesh (mesh): mesh associated to the mode_meca object
         group_ma (grma) : groups of elements
     Returns:
-        Nodes (list of int) : list of nodes
+        Nodes (list of int) : list of node numbers
     """
     Nodes = []
-    for nam in group_ma:
-        Nodes += mesh.getNodesFromCells(group_name=nam)
+    for name in group_ma:
+        Nodes += mesh.getNodesFromCells(group_name=name)
+
+    Nodes = list(set(Nodes))
+
     return Nodes
 
 
-def getRigidBodyModes(Nume, group_ma, returnType="CHAM", CG=None, cara=None, mater=None):
+def getRigidBodyModes(dofNumbering, group_ma, centerCoord):
     """
 
-    Build the 6 rigid body modes around the point CG
+    Build the 6 rigid body modes :
+    - 3 translation modes
+    - 3 rotation modes around the point centerCoord
 
     Arguments:
-        Nume : NUME_DDL
+        dofNumbering : dof numbering (NUME_DDL)
         group_ma (grma) : groups of elements
-    returnType : 'CHAM' pour récuperer la liste des champs aux noeuds
-                 'RESU' pour recuperer un concept MODE_MECA avec les 6 modes
-        CG : coordinates of the rotation center
-        cara (cara_elem): Elementary caracteristics associated to the mode_meca object
-        mater (cham_mater): Material field associated to the mode_meca object
+        centerCoord : coordinates of the rotation center
 
     Returns:
-        Cham : list of 6 FieldsOnNodes
+        rigidModesFields : list of 6 FieldsOnNodes
+        excludedDOF : list of dofId not on the groups
     """
-    model = Nume.getModel()
+    model = dofNumbering.getModel()
     mesh = model.getMesh()
 
-    if CG is None:
-        CG = getGravityCenter(model, cara, mater, group_ma)
+    nbMeshNodes = mesh.getNumberOfNodes()
+    nodesCoordinates = np.asarray(mesh.getCoordinates().getValues())
+    nodesCoordinates = nodesCoordinates.reshape((nbMeshNodes, 3))
 
-    # nodes coordinates
-    Nb_no = mesh.getNumberOfNodes()
-    Coord = np.asarray(mesh.getCoordinates().getValues())
-    Coord = Coord.reshape((Nb_no, 3))
-
-    XG = CG[0]
-    YG = CG[1]
-    ZG = CG[2]
-
-    # Build rigid modes on all nodes and 6 componants (even if componant doesn't existe)
-    ModRig = np.zeros((6 * Nb_no, 6))
-    ModRig[::6, 0] += 1.0  # -- Trans. X
-
-    ModRig[1::6, 1] += 1.0  # -- Trans. Y
-    ModRig[2::6, 2] += 1.0  # -- Trans. Z
+    # Build rigid modes on all nodes and 6 componants (even if componant doesn't exist)
+    rigidModesOnMesh = np.zeros((6 * nbMeshNodes, 6))
+    rigidModesOnMesh[::6, 0] += 1.0  # -- Trans. X
+    rigidModesOnMesh[1::6, 1] += 1.0  # -- Trans. Y
+    rigidModesOnMesh[2::6, 2] += 1.0  # -- Trans. Z
     # -- Rot. X
-    ModRig[3::6, 3] += 1.0
-    ModRig[1::6, 3] -= Coord[:, 2] - ZG
-    ModRig[2::6, 3] += Coord[:, 1] - YG
+    rigidModesOnMesh[3::6, 3] += 1.0
+    rigidModesOnMesh[1::6, 3] -= nodesCoordinates[:, 2] - centerCoord[2]
+    rigidModesOnMesh[2::6, 3] += nodesCoordinates[:, 1] - centerCoord[1]
     # -- Rot. Y
-    ModRig[4::6, 4] += 1.0
-    ModRig[2::6, 4] -= Coord[:, 0] - XG
-    ModRig[0::6, 4] += Coord[:, 2] - ZG
+    rigidModesOnMesh[4::6, 4] += 1.0
+    rigidModesOnMesh[2::6, 4] -= nodesCoordinates[:, 0] - centerCoord[0]
+    rigidModesOnMesh[0::6, 4] += nodesCoordinates[:, 2] - centerCoord[2]
     # -- Rot. Z
-    ModRig[5::6, 5] += 1.0
-    ModRig[1::6, 5] += Coord[:, 0] - XG
-    ModRig[0::6, 5] -= Coord[:, 1] - YG
+    rigidModesOnMesh[5::6, 5] += 1.0
+    rigidModesOnMesh[1::6, 5] += nodesCoordinates[:, 0] - centerCoord[0]
+    rigidModesOnMesh[0::6, 5] -= nodesCoordinates[:, 1] - centerCoord[1]
 
     # Filter rigid modes on groups
+    selectedNodes = getNodesFromGroups(mesh, group_ma)
+    meshNodes = mesh.getNodes()
 
-    NoGrMa = getNodesFromGroups(mesh, group_ma)
-    No = mesh.getNodes()
-
-    Eqn = Nume.getEquationNumbering()
+    Eqn = dofNumbering.getEquationNumbering()
     if isinstance(Eqn, tuple) | isinstance(Eqn, list):
         Equ = Eqn[0]
 
-    Dic = Eqn.getDOFFromNodeAndComponentId()
+    dicDOF = Eqn.getDOFFromNodeAndComponentId()
     # {(NodeId,CompId) : eqId}
-    # First DOF Id is 0
+    # First DOF/eqId Id is 0
     # Fisrt NodeId is 0
     # Fisrt Componant Id is 1
 
-    # associate pseudo DOF (100*no + icomp) to Mogrig Numbering
-    AllDDL = {100 * no + j1 + 1: 6 * i1 + j1 for i1, no in enumerate(No) for j1 in range(6)}
-    # list of pseudo DOF (100*no + icomp) of the groups
-    GrpDDL = [100 * no + j1 + 1 for i1, no in enumerate(NoGrMa) for j1 in range(6)]
+    # pseudo DOF numbering (100*NodeId + CompId) is used if a node has more than 6 DOFs
+    # associate pseudo DOF to six components DOFs numbering (6*no+ icomp) used in rigidModesOnMesh
+    pseudoToSixCompDOFs = {
+        100 * no + j1 + 1: 6 * i1 + j1 for i1, no in enumerate(meshNodes) for j1 in range(6)
+    }
+    # list of pseudo DOF of the groups (used if a node has more than 6 DOFs)
+    selectedPseudoDOFs = [
+        100 * no + j1 + 1 for i1, no in enumerate(selectedNodes) for j1 in range(6)
+    ]
     # associate pseudo DOF to real DOF Id (from EquationNumbering)
-    MdlDDL = {100 * k[0] + k[1]: Dic[k] for k in Dic.keys()}
+    pseudoToRealDOFs = {100 * k[0] + k[1]: dicDOF[k] for k in dicDOF.keys()}
 
-    indgrpDDL = []
-    indallDDL = []
+    selectedRealDOFs = []
+    selectedSixCompDOFs = []
 
-    # build the list of select groups dof Id : indgrpDDL
-    # build the list of select groups Mogrig Id : indallDDL
-    for ddl in GrpDDL:
-        # try :
-        #     #-- indice du DDL du groupe de maille dans le modele
-        #     indgrpDDL.append( MdlDDL[ddl] )
-        #     #-- indice du DDL du groupe de maille dans les champs rigides "6 DDLs"
-        #     indallDDL.append(AllDDL[ddl])
-        # except :
-        #     pass
-        if ddl in MdlDDL:
-            indgrpDDL.append(MdlDDL[ddl])
-            indallDDL.append(AllDDL[ddl])
+    # build the list of select groups dof Id : selectedRealDOFs
+    # build the list of select groups rigidModesOnMesh Id : selectedSixCompDOFs
+    for pseudoDof in selectedPseudoDOFs:
+        if pseudoDof in pseudoToRealDOFs:
+            selectedRealDOFs.append(pseudoToRealDOFs[pseudoDof])
+            selectedSixCompDOFs.append(pseudoToSixCompDOFs[pseudoDof])
 
-    NbDDL = Nume.getNumberOfDOFs()
-    # list of dofId not on the groups
-    indZero = list(set(np.arange(NbDDL)).difference(indgrpDDL))
-    indZero.sort()
+    nbDOF = dofNumbering.getNumberOfDOFs()
+    # list of dofIds not on the groups
+    excludedDOF = list(set(np.arange(nbDOF)).difference(selectedRealDOFs))
+    excludedDOF.sort()
 
-    ChamNoRig = np.zeros((NbDDL, 6))
-    ChamNoRig[indgrpDDL, :] = ModRig[indallDDL, :]
+    rigidModesOnSelectedNodes = np.zeros((nbDOF, 6))
+    rigidModesOnSelectedNodes[selectedRealDOFs, :] = rigidModesOnMesh[selectedSixCompDOFs, :]
 
-    Cham = [None] * 6
-    List_F = []
-    for i1 in range(6):
+    rigidModesFields = [None] * 6
+    for idir in range(6):
         # create a fieldOnNodes
-        Cham[i1] = CREA_CHAMP(
+        rigidModesFields[idir] = CREA_CHAMP(
             MODELE=model,
-            NUME_DDL=Nume,
+            NUME_DDL=dofNumbering,
             PROL_ZERO="OUI",
             OPERATION="AFFE",
             TYPE_CHAM="NOEU_DEPL_R",
             AFFE=(_F(TOUT="OUI", NOM_CMP="DX", VALE=0.0),),
         )
         # add values
-        Cham[i1].setValues(ChamNoRig[:, i1])
-        List_F.append(
-            {
-                "CHAM_GD": Cham[i1],
-                "MODELE": model,
-                "NOM_CHAM": "DEPL",
-                "NUME_MODE": i1 + 1,
-                "FREQ": 0.0,
-            }
-        )
+        rigidModesFields[idir].setValues(rigidModesOnSelectedNodes[:, idir])
 
-    if returnType == "CHAM":
-        return Cham, indZero
-    # elif returnType == 'RESU' :
-    #     rigidBodyResu = CREA_RESU( OPERATION='AFFE',
-    #                         TYPE_RESU='MODE_MECA',
-    #                         AFFE=List_F,
-    #                         )
-
-    #     return rigidBodyResu
+    return rigidModesFields, excludedDOF
 
 
-def getModalMassIner(MODES, rigidBodyChams, indZero, MASSE):
+def getModalMassIner(MODES, rigidBodyFields, excludedDOF, MASSE):
     """
 
-    Calcul des masses et inerties modales 'locales' des modes MODES par rapport à la matrice de masse MASSE,
-      autour du point CG
+    Calculation of the 'local' modal masses and inertias of the modes MODES with respect to the mass matrix MASSE,
+    around the centerCoord point
 
-    MODES : MODE_MECA
+    Arguments:
+        MODES : mode_meca object
+        rigidBodyFields : list of 6 fieldOnNodes
+        excludedDOF : list of excluded DOFs
+        MASSE : mass matrix
 
     Returns:
         table
 
     """
 
-    # --
-    # --  Calculs des produits Phi^T * M * Ud, où Ud sont les modes rigides (R5.01.03)
-    # --
-
-    # MASSE = MODES.getMassMatrix()
     nume_ddl = MODES.getDOFNumbering()
     model = nume_ddl.getModel()
 
     nbRigidModes = 6
-    # List_F = []
-    # Product M * Ud
+    # -- Product M * Ud
     M_Ud = [None] * nbRigidModes
     for n in range(nbRigidModes):
-        M_Ud[n] = PROD_MATR_CHAM(MATR_ASSE=MASSE, CHAM_NO=rigidBodyChams[n])
-        # List_F.append({'CHAM_GD' : rigidBodyChams[n],
-        #                 'MODELE' : model,
-        #                 'NOM_CHAM':'DEPL',
-        #                 'NUME_MODE' : n+1,
-        #                 'FREQ' : 0.0})
+        M_Ud[n] = PROD_MATR_CHAM(MATR_ASSE=MASSE, CHAM_NO=rigidBodyFields[n])
 
-    # y a t il un intéret à créer un résultat
-    # rigidBodyResu = CREA_RESU( OPERATION='AFFE',
-    #                     TYPE_RESU='MODE_MECA',
-    #                     AFFE=List_F,
-    #                     )
+    # -- directional global masse
 
-    # --
-    # -- Calcul des masses et inerties autour du point CG donné
-    # --
-
-    MasseInertie = np.zeros(6)
+    directionalglobalMasses = np.zeros(6)
 
     for n in range(nbRigidModes):
-        # fi = rigidBodyResu.getField('DEPL',n+1).getValues()
-        fi = rigidBodyChams[n].getValues()
+        fi = rigidBodyFields[n].getValues()
         ve = M_Ud[n].getValues()
-        print("vve", ve[:20])
-        MasseInertie[n] = np.dot(fi, ve)
+        directionalglobalMasses[n] = np.dot(fi, ve)
 
-    print("MasseInertie", MasseInertie)
-
-    # print('#---------------------#')
-    # print('#--  Groupes de mailles :', group_ma)
-    # print('#--  Masse :', MasseInertie[0:3])
-    # print('#--  Inerties :', MasseInertie[3:])
-
-    # -- Re normalisation des modes, des fois qu'ils soient pas normés par rapport à la masse
+    # -- normalization of modes with respect to the mass matrix to get modal generalized masses
 
     PROJ_BASE(
         BASE=MODES,
-        STOCKAGE="DIAG",  # -- pas la peine de calculer des caleurs croiées, on ne veux que la diagonale
+        STOCKAGE="DIAG",  # -- only diagonal values are needed
         MATR_ASSE_GENE=(_F(MATRICE=CO("MRed"), MATR_ASSE=MASSE),),
     )
-    NormMode = np.sqrt(np.diag(MRed.toNumpy()))
+    geneMasses = np.sqrt(np.diag(MRed.toNumpy()))
 
-    # --
-    # --    Calcul des produits Phi^T * (M * Ud)
-    # --
-
-    # --
-    # -- Projection et calcul
-    # --
+    # -- products Phi^T * (M * Ud)
+    # -- division by generalized mass
 
     nbModes = MODES.getNumberOfIndexes()
 
@@ -306,14 +240,15 @@ def getModalMassIner(MODES, rigidBodyChams, indZero, MASSE):
     valeEffe = np.zeros((nbModes, 6))
     for n in range(nbRigidModes):
         MUd = np.asarray(M_Ud[n].getValues())
-        MUd[indZero] = 0.0
+        # mass matrix transformation to be "local" (approximation)
+        MUd[excludedDOF] = 0.0
         Vale = np.zeros(nbModes)
         for m in range(nbModes):
             phi = MODES.getField("DEPL", m + 1).getValues()
-            Vale[m] = np.dot(MUd, phi) / NormMode[m]
+            Vale[m] = np.dot(MUd, phi) / geneMasses[m]
 
         valeEffe[:, n] = [Val**2 for Val in Vale]
-        valeEffeUnit[:, n] = valeEffe[:, n] / MasseInertie[n]
+        valeEffeUnit[:, n] = valeEffe[:, n] / directionalglobalMasses[n]
 
     table = CREA_TABLE(
         LISTE=(
@@ -351,10 +286,11 @@ def post_mode_ops(self, MODE, GROUP_MA, MATR_MASS, CARA_ELEM=None):
 
     mater = None
     cara = CARA_ELEM
+
+    # mater = MODE.getMaterialField() : ne fonctionne pas si passage par calc_modes_multibandes
     if massMatrix.getNumberOfElementaryMatrix() != 0:
         mater = massMatrix.getMaterialField()
 
-    # mater = MODE.getMaterialField() : ne fonctionne pas si passage par calc_modes_multibandes
     if mater is None:
         UTMESS("F", "MODAL_25")
 
@@ -365,9 +301,7 @@ def post_mode_ops(self, MODE, GROUP_MA, MATR_MASS, CARA_ELEM=None):
         group_ma = (group_ma,)
 
     gravityCenter = getGravityCenter(model, cara, mater, group_ma)
-    rigidBodyChams, indZero = getRigidBodyModes(
-        nume_ddl, group_ma, CG=gravityCenter, cara=cara, mater=mater
-    )
-    table = getModalMassIner(MODE, rigidBodyChams, indZero, MATR_MASS)
+    rigidBodyFields, excludedDOF = getRigidBodyModes(nume_ddl, group_ma, gravityCenter)
+    table = getModalMassIner(MODE, rigidBodyFields, excludedDOF, MATR_MASS)
 
     return table
