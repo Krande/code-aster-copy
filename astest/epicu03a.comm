@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1601,6 +1601,7 @@ TB_LONGI = POST_KCP(
     EPAIS_REV=EPREV,
     MATER_MDB=MAME_MET,
     EPAIS_MDB=ep_mdb,
+    UNITE_LONGUEUR="M",
     FISSURE=_F(
         FORM_FISS="SEMI_ELLIPTIQUE",
         CORRECTION="BETA_2D",
@@ -1766,6 +1767,7 @@ TB_CIRC = POST_KCP(
     EPAIS_REV=EPREV,
     MATER_MDB=MAME_MET,
     EPAIS_MDB=ep_mdb,
+    UNITE_LONGUEUR="M",
     FISSURE=_F(
         FORM_FISS="SEMI_ELLIPTIQUE",
         CORRECTION="BETA_2D",
@@ -1932,6 +1934,7 @@ TB_LONGI_3D = POST_KCP(
     EPAIS_REV=EPREV,
     MATER_MDB=MAME_MET,
     EPAIS_MDB=ep_mdb,
+    UNITE_LONGUEUR="M",
     FISSURE=_F(
         FORM_FISS="SEMI_ELLIPTIQUE",
         CORRECTION="BETA_3D",
@@ -1986,6 +1989,7 @@ TB_LONGI_BANDE = POST_KCP(
     EPAIS_REV=EPREV,
     MATER_MDB=MAME_MET,
     EPAIS_MDB=ep_mdb,
+    UNITE_LONGUEUR="M",
     FISSURE=_F(FORM_FISS="BANDE", PROFONDEUR=profondeur, ORIENTATION="LONGI"),
     K1D=(_F(TABL_MECA=S1_G, TABL_THER=TEMP_G)),
 )
@@ -2034,6 +2038,7 @@ TB_LONGI_ECRO = POST_KCP(
     EPAIS_REV=EPREV,
     MATER_MDB=MAME_MET,
     EPAIS_MDB=ep_mdb,
+    UNITE_LONGUEUR="M",
     FISSURE=_F(
         FORM_FISS="SEMI_ELLIPTIQUE",
         CORRECTION="BETA_2D",
