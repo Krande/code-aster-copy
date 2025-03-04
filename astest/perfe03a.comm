@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,12 +43,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 ################################################################################
 # DataAsterVersion
 # 9.3
-#    defi_group=1  or/and  defi_orientation=1
-#    mail_libre=1 for a free mesh of the RVE (TETRA)
 
-mail_libre = 0
-defi_groups = 0
-defi_orientations = 0
 #    prefix_nomgr specifies the prefix of the names of the grains (GROUP_MA)
 prefix_nomgr = "GRAI"
 # setting the number of germs (this can be independant from the number
@@ -69,21 +64,13 @@ TABG = RECU_TABLE(CO=MAIL, NOM_TABLE="CARA_GEOM")
 
 IMPR_TABLE(TABLE=TABG)
 
-if defi_groups == 1:
-    xmin = TABG["X_MIN", 1]
-    xmax = TABG["X_MAX", 1]
-    ymin = TABG["Y_MIN", 1]
-    ymax = TABG["Y_MAX", 1]
-    zmin = TABG["Z_MIN", 1]
-    zmax = TABG["Z_MAX", 1]
-else:
-    # 50 microns, en m
-    xmin = 0.0
-    xmax = 5e-05
-    ymin = 0.0
-    ymax = 5e-05
-    zmin = 0.0
-    zmax = 5e-05
+# 50 microns, en m
+xmin = 0.0
+xmax = 5e-05
+ymin = 0.0
+ymax = 5e-05
+zmin = 0.0
+zmax = 5e-05
 dim = zmax - zmin
 
 print("Dimensions x", xmin, xmax)
@@ -145,24 +132,16 @@ MAIL = DEFI_GROUP(
 
 
 # evaluate the elsets for each grain and add it to the mesh
-if mail_libre == 0:
-    if defi_groups == 1:
-        from perfe03a_1 import F_DEFI_GROUP
-    else:
-        from perfe03a_2 import F_DEFI_GROUP
-    MAIL = F_DEFI_GROUP(MAIL)
+from perfe03a_2 import F_DEFI_GROUP
+
+MAIL = F_DEFI_GROUP(MAIL)
 
 MO = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 # define the orientations of each elset for each germ
-if defi_orientations == 1:
-    from perfe03a_3 import F_AFFE_CARA_ELEM
+from perfe03a_3 import F_AFFE_CARA_ELEM
 
-    ORIELEM = F_AFFE_CARA_ELEM(MO, Ng, prefix_nomgr)
-else:
-    from perfe03a_3 import F_AFFE_CARA_ELEM
-
-    ORIELEM = F_AFFE_CARA_ELEM(MO)
+ORIELEM = F_AFFE_CARA_ELEM(MO)
 
 # =====  2 - MATERIAL DEFINITION ================================================
 # print "Defining the material..."
