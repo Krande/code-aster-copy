@@ -28,22 +28,19 @@
 namespace py = pybind11;
 
 extern "C" {
-void dintels( ASTERDOUBLE *cequi, ASTERDOUBLE *ht, ASTERDOUBLE *bw, ASTERDOUBLE *enrobi,
-              ASTERDOUBLE *enrobs, ASTERDOUBLE *scmaxi, ASTERDOUBLE *scmaxs, ASTERDOUBLE *ssmax,
-              ASTERINTEGER *uc, ASTERDOUBLE *dnsinf, ASTERDOUBLE *dnssup, ASTERINTEGER *ntot,
-              ASTERDOUBLE *nrd, ASTERDOUBLE *mrd );
+void dintels( double *cequi, double *ht, double *bw, double *enrobi, double *enrobs, double *scmaxi,
+              double *scmaxs, double *ssmax, long *uc, double *dnsinf, double *dnssup, long *ntot,
+              double *nrd, double *mrd );
 
-void dintelu( ASTERINTEGER *typco, ASTERDOUBLE *alphacc, ASTERDOUBLE *ht, ASTERDOUBLE *bw,
-              ASTERDOUBLE *enrobi, ASTERDOUBLE *enrobs, ASTERDOUBLE *facier, ASTERDOUBLE *fbeton,
-              ASTERDOUBLE *gammas, ASTERDOUBLE *gammac, ASTERINTEGER *clacier, ASTERDOUBLE *eys,
-              ASTERINTEGER *typdiag, ASTERINTEGER *uc, ASTERDOUBLE *dnsinf, ASTERDOUBLE *dnssup,
-              ASTERINTEGER *ntot, ASTERDOUBLE *nrd, ASTERDOUBLE *mrd );
+void dintelu( long *typco, double *alphacc, double *ht, double *bw, double *enrobi, double *enrobs,
+              double *facier, double *fbeton, double *gammas, double *gammac, long *clacier,
+              double *eys, long *typdiag, long *uc, double *dnsinf, double *dnssup, long *ntot,
+              double *nrd, double *mrd );
 }
 
 const std::tuple< VectorReal, VectorReal >
-dintels_wrapper( ASTERDOUBLE cequi, ASTERDOUBLE ht, ASTERDOUBLE bw, ASTERDOUBLE enrobi,
-                 ASTERDOUBLE enrobs, ASTERDOUBLE scmaxi, ASTERDOUBLE scmaxs, ASTERDOUBLE ssmax,
-                 ASTERINTEGER uc, ASTERDOUBLE dnsinf, ASTERDOUBLE dnssup, ASTERINTEGER ntot ) {
+dintels_wrapper( double cequi, double ht, double bw, double enrobi, double enrobs, double scmaxi,
+                 double scmaxs, double ssmax, long uc, double dnsinf, double dnssup, long ntot ) {
     VectorReal vect_nrd( ntot, 0. );
     VectorReal vect_mrd( ntot, 0. );
 
@@ -54,11 +51,9 @@ dintels_wrapper( ASTERDOUBLE cequi, ASTERDOUBLE ht, ASTERDOUBLE bw, ASTERDOUBLE 
 }
 
 const std::tuple< VectorReal, VectorReal >
-dintelu_wrapper( ASTERINTEGER typco, ASTERDOUBLE alphacc, ASTERDOUBLE ht, ASTERDOUBLE bw,
-                 ASTERDOUBLE enrobi, ASTERDOUBLE enrobs, ASTERDOUBLE facier, ASTERDOUBLE fbeton,
-                 ASTERDOUBLE gammas, ASTERDOUBLE gammac, ASTERINTEGER clacier, ASTERDOUBLE eys,
-                 ASTERINTEGER typdiag, ASTERINTEGER uc, ASTERDOUBLE dnsinf, ASTERDOUBLE dnssup,
-                 ASTERINTEGER ntot ) {
+dintelu_wrapper( long typco, double alphacc, double ht, double bw, double enrobi, double enrobs,
+                 double facier, double fbeton, double gammas, double gammac, long clacier,
+                 double eys, long typdiag, long uc, double dnsinf, double dnssup, long ntot ) {
     VectorReal vect_nrd( ntot, 0. );
     VectorReal vect_mrd( ntot, 0. );
 

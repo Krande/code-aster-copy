@@ -54,7 +54,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !      I DNSINF    DENSITE DE L'ACIER INFERIEUR
 !      I DNSSUP    DENSITE DE L'ACIER SUPERIEUR
 !
-!      O NTOT      DIMENSIONS DES VECTEURS
+!      I NTOT      DIMENSIONS DES VECTEURS
 !      O NRD       VECTEUR DES EFFORTS NORMAUX RESISTANTS (DIAG INTER)
 !      O MRD       VECTEUR DES MOMENTS RESISTANTS (DIAG INTER)
 !

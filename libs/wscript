@@ -26,7 +26,6 @@ def configure(self):
     if not self.env["PYTHON"]:
         self.fatal("load python tool first")
     self.env.LIBPATH_ASTERGC = self.env.ASTERLIBDIR
-    self.env.PYPATH_ASTERGC = self.env.ASTERLIBDIR
 
 
 def build(self):
