@@ -17,16 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine zacier(metaSteelPara, nbPhase, &
-                      temp0, temp1, temp2, &
-                      deltaTime01, deltaTime12, &
-                      metaPrev, metaCurr)
-        use Metallurgy_type
-        type(META_SteelParameters), intent(in) :: metaSteelPara
-        integer, intent(in) :: nbPhase
-        real(kind=8), intent(in) :: temp0, temp1, temp2
-        real(kind=8), intent(in) :: deltaTime01, deltaTime12
-        real(kind=8), intent(in) :: metaPrev(nbPhase+3)
-        real(kind=8), intent(out) :: metaCurr(nbPhase+3)
-    end subroutine zacier
+    subroutine metaSteelCheckPhases(nbVari, metaCurr)
+        integer, intent(in) :: nbVari
+        real(kind=8), intent(in) :: metaCurr(nbVari)
+    end subroutine metaSteelCheckPhases
 end interface

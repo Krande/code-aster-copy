@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,5 +47,11 @@ cata_msg = {
     ),
     50: _(
         """La différence entre la température de début de transformation des phases froides en austénite dans le diagramme TRC et celle donnée par DEFI_MATERIAU est supérieure de plus de %(r1)12.4E°C."""
+    ),
+    51: _(
+        """Le calcul de transformation de l'austénite pendant le chauffage a échoué malgré la tentative de découpe du pas de temps. Il faut discrétiser plus finement le transitoire thermique ou modifier les valeurs matériaux."""
+    ),
+    52: _(
+        """La phase %(i1)d de l'acier vaut %(r1)12.4E et n'est donc pas dans le domaine admissible."""
     ),
 }
