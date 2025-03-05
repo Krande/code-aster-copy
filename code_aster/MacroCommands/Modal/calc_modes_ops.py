@@ -46,7 +46,7 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
 
     # to prevent from distributed parallel solve
     matrRigi = args.get("MATR_RIGI")
-    if matrRigi is not None:
+    if matrRigi is not None and hasattr(matrRigi, "getMesh"):
         mesh = matrRigi.getMesh()
         if mesh is not None and mesh.isParallel() and MPI.ASTER_COMM_WORLD.Get_size() > 1:
             UTMESS("F", "SUPERVIS_7", valk="CALC_MODES")
