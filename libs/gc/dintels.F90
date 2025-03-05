@@ -62,9 +62,9 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     integer(c_long), intent(in) :: uc
     real(c_double), intent(in) :: dnsinf
     real(c_double), intent(in) :: dnssup
-    integer(c_long), intent(in) :: ntot
-    real(c_double), intent(out) :: nrd(1:ntot)
-    real(c_double), intent(out) :: mrd(1:ntot)
+    integer(c_long), intent(inout) :: ntot
+    real(c_double), intent(out), optional :: nrd(1:ntot)
+    real(c_double), intent(out), optional :: mrd(1:ntot)
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -108,13 +108,17 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !   Initialisation des entiers
 
-    N_ET = 100
-    N_PC = 100
-    N_EC = 100
-    N_PCAC = 100
-    N_PCACN = 100
-    N_ECN = 100
+    N_ET = 11
+    N_PC = 101
+    N_EC = ceiling(10*(scmaxneg*unite_pa))+1
+    N_PCAC = ceiling((N_PC-1)*(ht/d))+1
+    N_PCACN = ceiling((N_PC-1)*(ht/dneg))+1
+    N_ECN = ceiling(10*(scmax*unite_pa))+1
     k = 1
+    if (ntot < 0) then
+        ntot = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
+        return
+    end if
 
 !-----------------------------------------------------------------------
 !Traitement des différents cas (Pivots A / B / C)
@@ -127,7 +131,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT A - Entièrement Tendu (ET) + Moment Positif
 !---------------------------------------------------------------
 
-    N_ET = 11
     allocate (N_P1(N_ET))
     allocate (M_P1(N_ET))
 
@@ -144,9 +147,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !Traitement en PIVOT A et B - Partiellement Comprimée (PC) + Moment Positif
 !--------------------------------------------------------------------------
-
-    N_PC = 101
-    N_PCAC = CEILING((N_PC-1)*(ht/d))+1
 
     allocate (N_P2(N_PCAC))
     allocate (M_P2(N_PCAC))
@@ -178,7 +178,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT C - Entièrement Comprimée (EC) + Moment Positif
 !-------------------------------------------------------------------
 
-    N_EC = CEILING(10*(scmaxneg*unite_pa))+1
     allocate (N_P3(N_EC))
     allocate (M_P3(N_EC))
 
@@ -205,7 +204,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT C - Entièrement Comprimée (EC) + Moment Negatif
 !-------------------------------------------------------------------
 
-    N_ECN = CEILING(10*(scmax*unite_pa))+1
     allocate (N_P4(N_ECN))
     allocate (M_P4(N_ECN))
 
@@ -232,7 +230,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT A et B - Partiellement Comprimée (PC) + Moment Negatif
 !--------------------------------------------------------------------------
 
-    N_PCACN = CEILING((N_PC-1)*(ht/dneg))+1
     allocate (N_P5(N_PCACN))
     allocate (M_P5(N_PCACN))
 

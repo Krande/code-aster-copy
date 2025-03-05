@@ -34,8 +34,8 @@ interface
         integer(c_long), intent(in) :: uc
         real(c_double), intent(in) :: dnsinf
         real(c_double), intent(in) :: dnssup
-        integer(c_long), intent(in) :: ntot
-        real(c_double), intent(out) :: nrd(1:ntot)
-        real(c_double), intent(out) :: mrd(1:ntot)
+        integer(c_long), intent(inout) :: ntot
+        real(c_double), intent(out), optional :: nrd(1:ntot)
+        real(c_double), intent(out), optional :: mrd(1:ntot)
     end subroutine dintels
 end interface

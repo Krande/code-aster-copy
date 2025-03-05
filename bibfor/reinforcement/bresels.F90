@@ -265,10 +265,10 @@ subroutine bresels(cequi, effmy, effmz, effn, &
         d0neg = enrobzi
         scmaxneg = scmaxzi
 
-        N_PCAC = CEILING((N_PC-1)*(ht/d))+1
-        N_EC = CEILING(10*(scmax*unite_pa))+1
-        N_ECN = CEILING(10*(scmaxneg*unite_pa))+1
-        N_PCACN = CEILING((N_PC-1)*(ht/dneg))+1
+        N_PCAC = ceiling((N_PC-1)*(ht/d))+1
+        N_EC = ceiling(10*(scmax*unite_pa))+1
+        N_ECN = ceiling(10*(scmaxneg*unite_pa))+1
+        N_PCACN = ceiling((N_PC-1)*(ht/dneg))+1
 
         ntoty = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
         ndemiy = N_ET+N_PCac+N_EC
@@ -283,10 +283,10 @@ subroutine bresels(cequi, effmy, effmz, effn, &
         d0neg = enrobyi
         scmaxneg = scmaxyi
 
-        N_PCAC = CEILING((N_PC-1)*(bw/d))+1
-        N_EC = CEILING(10*(scmax*unite_pa))+1
-        N_ECN = CEILING(10*(scmaxneg*unite_pa))+1
-        N_PCACN = CEILING((N_PC-1)*(bw/dneg))+1
+        N_PCAC = ceiling((N_PC-1)*(bw/d))+1
+        N_EC = ceiling(10*(scmax*unite_pa))+1
+        N_ECN = ceiling(10*(scmaxneg*unite_pa))+1
+        N_PCACN = ceiling((N_PC-1)*(bw/dneg))+1
 
         ntotz = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
         ndemiz = N_ET+N_PCac+N_EC

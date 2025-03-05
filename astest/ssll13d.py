@@ -1399,7 +1399,6 @@ nrd, mrd = libAsterGC.dintelu(
     uc,
     dnsinf,
     dnssup,
-    ntot,
 )
 # print(f"returned: {nrd=}, {mrd=}")
 test.assertEqual(len(nrd), ntot, msg="size of nrd")

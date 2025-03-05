@@ -1441,7 +1441,7 @@ test.assertEqual(len(nrd_ref), ntot, msg="size of nrd ref")
 test.assertEqual(len(mrd_ref), ntot, msg="size of mrd ref")
 
 nrd, mrd = libAsterGC.dintels(
-    cequi, ht, bw, enrobi, enrobs, scmaxi, scmaxs, ssmax, uc, dnsinf, dnssup, ntot
+    cequi, ht, bw, enrobi, enrobs, scmaxi, scmaxs, ssmax, uc, dnsinf, dnssup
 )
 # print(f"returned: {nrd=}, {mrd=}")
 test.assertEqual(len(nrd), ntot, msg="size of nrd")

@@ -80,9 +80,9 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     integer(c_long), intent(in) :: uc
     real(c_double), intent(in) :: dnsinf
     real(c_double), intent(in) :: dnssup
-    integer(c_long), intent(in) :: ntot
-    real(c_double), intent(out) :: nrd(1:ntot)
-    real(c_double), intent(out) :: mrd(1:ntot)
+    integer(c_long), intent(inout) :: ntot
+    real(c_double), intent(out), optional :: nrd(1:ntot)
+    real(c_double), intent(out), optional :: mrd(1:ntot)
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -109,11 +109,6 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     nrd = 0.0
     mrd = 0.0
 
-!   Initialisation des entiers
-    N_ET = 100
-    N_PC = 100
-    N_EC = 100
-    N_PCN = 100
     k = 1
 
     if (typco .eq. 1) then
@@ -176,6 +171,15 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     m1 = (((1-xCt)**(nC+1))/(2.d0*(nC+1)))*(1-(2.d0*(1-xCt))/(nC+2))
     m2 = -((1-xCt)**(nC+1))/(nC+1)
 
+    N_ET = floor(Esu*1000)+1
+    N_PC = ceiling((ht/d)*100)+1
+    N_EC = ceiling(Xsup*100)+1
+    N_PCN = ceiling((ht/dneg)*100)+1
+    if (ntot < 0) then
+        ntot = N_ET+N_ET+N_PC+N_EC+N_EC+N_PCN
+        return
+    end if
+
 !-----------------------------------------------------------------------
 !Traitement des différents cas (Pivots A / B / C)
 !-----------------------------------------------------------------------
@@ -188,7 +192,6 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !Traitement en PIVOT A - Entièrement Tendu (ET) + Moment Positif
 !---------------------------------------------------------------
 
-    N_ET = floor(Esu*1000)+1
     allocate (N_P1(N_ET))
     allocate (M_P1(N_ET))
 
@@ -244,7 +247,6 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !Traitement en PIVOT A et B - Partiellement Comprimée (PC) + Moment Positif
 !--------------------------------------------------------------------------
 
-    N_PC = ceiling((ht/d)*100)+1
     allocate (N_P2(N_PC))
     allocate (M_P2(N_PC))
 
@@ -340,8 +342,6 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !Traitement en PIVOT C - Entièrement Comprimée (EC) + Moment Positif
 !-------------------------------------------------------------------
 
-    Xsup = piv_b/piv_c
-    N_EC = ceiling(Xsup*100)+1
     allocate (N_P3(N_EC))
     allocate (M_P3(N_EC))
 
@@ -468,7 +468,6 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !Traitement en PIVOT A et B - Partiellement Comprimée (PC) + Moment Negatif
 !--------------------------------------------------------------------------
 
-    N_PCN = ceiling((ht/dneg)*100)+1
     allocate (N_P5(N_PCN))
     allocate (M_P5(N_PCN))
 

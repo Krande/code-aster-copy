@@ -108,10 +108,10 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     d0neg = enrobi
     scmaxneg = scmaxi
 
-    N_PCAC = CEILING((N_PC-1)*(ht/d))+1
-    N_EC = CEILING(10*(scmax*unite_pa))+1
-    N_ECN = CEILING(10*(scmaxneg*unite_pa))+1
-    N_PCACN = CEILING((N_PC-1)*(ht/dneg))+1
+    N_PCAC = ceiling((N_PC-1)*(ht/d))+1
+    N_EC = ceiling(10*(scmax*unite_pa))+1
+    N_ECN = ceiling(10*(scmaxneg*unite_pa))+1
+    N_PCACN = ceiling((N_PC-1)*(ht/dneg))+1
 
     ntot = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
     ndemi = N_ET+N_PCAC+N_EC
