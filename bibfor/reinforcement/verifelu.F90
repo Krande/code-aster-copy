@@ -95,12 +95,8 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
 
-    real(kind=8) :: d, d0, dneg, d0neg
-    real(kind=8) :: Esu, Xsup, Calc
-    real(kind=8) :: piv_a, piv_b, piv_c
-    real(kind=8) :: unite_pa
-    integer :: N_ET, N_PC, N_EC, N_PCN, s
-    integer :: ntot, ndemi
+    real(kind=8) :: Calc
+    integer :: s, ntot, ndemi
     logical :: COND_OK
     real(kind=8) :: nrd0, nrd1, mrd0, mrd1
     character(24) :: pnrd, pmrd
@@ -112,49 +108,10 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     pnrd = 'POINT_NRD'
     pmrd = 'POINT_MRD'
 
-    if (typco .eq. 1) then
-!       CALCUL DES PARAMETRES POUR CODIFICATION = 'BAEL91'
-        piv_a = 10.0E-3
-        piv_b = 3.5E-3
-        piv_c = 2.0E-3
-
-    else if (typco .eq. 2) then
-!       CALCUL DES PARAMETRES POUR CODIFICATION = 'EC2'
-
-        if (uc .eq. 0) then
-            unite_pa = 1.e-6
-        elseif (uc .eq. 1) then
-            unite_pa = 1.
-        end if
-        if (clacier .eq. 0) then
-            piv_a = 0.9*2.5e-2
-        else if (clacier .eq. 1) then
-            piv_a = 0.9*5.e-2
-        else
-            piv_a = 0.9*7.5e-2
-        end if
-        piv_b = min(3.5E-3, 0.26*0.01+3.5*0.01*(((90.d0-fbeton*unite_pa)/100.d0)**4))
-        piv_c = 2.0E-3
-        if ((fbeton*unite_pa) .ge. (50.d0)) then
-            piv_c = 0.2*0.01+0.0085*0.01*((fbeton*unite_pa-50.d0)**(0.53))
-        end if
-
-    end if
-
-    Xsup = piv_b/piv_c
-    Esu = piv_a
-    N_ET = floor(Esu*1000)+1
-    N_EC = ceiling(Xsup*100)+1
-
-    d = ht-enrobi
-    d0 = enrobs
-    dneg = ht-enrobs
-    d0neg = enrobi
-
-    N_PC = ceiling((ht/d)*100)+1
-    N_PCN = ceiling((ht/dneg)*100)+1
-    ntot = N_ET+N_PC+N_EC+N_EC+N_PCN+N_ET
-    ndemi = N_ET+N_PC+N_EC
+    ntot = -1
+    call dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
+                 gammas, gammac, clacier, eys, typdiag, uc, &
+                 ntot, ndemi=ndemi)
 
     call wkvect(pnrd, ' V V R ', ntot, vr=nrd)
     call wkvect(pmrd, ' V V R ', ntot, vr=mrd)

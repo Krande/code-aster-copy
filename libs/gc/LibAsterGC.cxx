@@ -30,12 +30,14 @@ namespace py = pybind11;
 extern "C" {
 void dintels( double *cequi, double *ht, double *bw, double *enrobi, double *enrobs, double *scmaxi,
               double *scmaxs, double *ssmax, long *uc, long *ntot, double *dnsinf = nullptr,
-              double *dnssup = nullptr, double *nrd = nullptr, double *mrd = nullptr );
+              double *dnssup = nullptr, double *nrd = nullptr, double *mrd = nullptr,
+              long *ndemi = nullptr );
 
 void dintelu( long *typco, double *alphacc, double *ht, double *bw, double *enrobi, double *enrobs,
               double *facier, double *fbeton, double *gammas, double *gammac, long *clacier,
               double *eys, long *typdiag, long *uc, long *ntot, double *dnsinf = nullptr,
-              double *dnssup = nullptr, double *nrd = nullptr, double *mrd = nullptr );
+              double *dnssup = nullptr, double *nrd = nullptr, double *mrd = nullptr,
+              long *ndemi = nullptr );
 }
 
 const std::tuple< VectorReal, VectorReal >

@@ -164,9 +164,8 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
-    real(kind=8) :: unite_pa, unite_m, seuil_moment
-    real(kind=8) :: piv_a, piv_b, piv_c, Esu, d, d0, dneg, d0neg, Xsup
-    integer :: N_ET, N_PC, N_PCN, N_EC, ntoty, ndemiy, ntotz, ndemiz
+    real(kind=8) :: unite_m, seuil_moment
+    integer :: ntoty, ndemiy, ntotz, ndemiz
 
     pnrdy = 'POINT_NRD_Y'
     pmrdy = 'POINT_MRD_Y'
@@ -246,32 +245,11 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     !if ((effmy.ne.0) .and. (effmz.ne.0)) then
     if ((abs(effmy) .gt. seuil_moment) .and. (abs(effmz) .gt. seuil_moment)) then
 
-        if (uc .eq. 0) then
-            unite_pa = 1.e-6
-        elseif (uc .eq. 1) then
-            unite_pa = 1.
-        end if
         if (um .eq. 0) then
             unite_m = 1.e3
         elseif (um .eq. 1) then
             unite_m = 1.
         end if
-
-        if (clacier .eq. 0) then
-            piv_a = 0.9*2.5e-2
-        elseif (clacier .eq. 1) then
-            piv_a = 0.9*5.e-2
-        else
-            piv_a = 0.9*7.5e-2
-        end if
-
-        Esu = piv_a
-        piv_b = min(3.5E-3, 0.26*0.01+3.5*0.01*(((90.d0-fbeton*unite_pa)/100.d0)**4))
-        piv_c = 2.0E-3
-        if ((fbeton*unite_pa) .ge. (50.d0)) then
-            piv_c = 0.2*0.01+0.0085*0.01*((fbeton*unite_pa-50.d0)**(0.53))
-        end if
-        Xsup = piv_b/piv_c
 
         !Iteration Bresler
 
@@ -280,34 +258,20 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
         BRES = 1.5
 
         !Dimensionnement des vecteurs
-
-        N_ET = floor(Esu*1000)+1
-        N_EC = ceiling(Xsup*100)+1
-
         !Pour MFY
-        d = ht-enrobzi
-        d0 = enrobzs
-        dneg = ht-enrobzs
-        d0neg = enrobzi
-
-        N_PC = ceiling((ht/d)*100)+1
-        N_PCN = ceiling((ht/dneg)*100)+1
-        ntoty = N_ET+N_PC+N_EC+N_EC+N_PCN+N_ET
-        ndemiy = N_ET+N_PC+N_EC
+        ntoty = -1
+        call dintelu(typco, alphacc, ht, bw, enrobzi, enrobzs, facier, fbeton, &
+                     gammas, gammac, clacier, eys, typdiag, uc, &
+                     ntoty, ndemi=ndemiy)
 
         call wkvect(pnrdy, ' V V R ', ntoty, vr=nrdy)
         call wkvect(pmrdy, ' V V R ', ntoty, vr=mrdy)
 
         !Pour MFZ
-        d = bw-enrobyi
-        d0 = enrobys
-        dneg = bw-enrobys
-        d0neg = enrobyi
-
-        N_PC = ceiling((bw/d)*100)+1
-        N_PCN = ceiling((bw/dneg)*100)+1
-        ntotz = N_ET+N_PC+N_EC+N_EC+N_PCN+N_ET
-        ndemiz = N_ET+N_PC+N_EC
+        ntotz = -1
+        call dintelu(typco, alphacc, bw, ht, enrobyi, enrobys, facier, fbeton, &
+                     gammas, gammac, clacier, eys, typdiag, uc, &
+                     ntotz, ndemi=ndemiz)
 
         call wkvect(pnrdz, ' V V R ', ntotz, vr=nrdz)
         call wkvect(pmrdz, ' V V R ', ntotz, vr=mrdz)

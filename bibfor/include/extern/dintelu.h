@@ -19,7 +19,7 @@
 interface
     subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
                        gammas, gammac, clacier, eys, typdiag, uc, &
-                       ntot, dnsinf, dnssup, nrd, mrd) bind(C)
+                       ntot, dnsinf, dnssup, nrd, mrd, ndemi) bind(C)
         use, intrinsic :: iso_c_binding
         implicit none
 
@@ -42,5 +42,6 @@ interface
         real(c_double), intent(in), optional :: dnssup
         real(c_double), intent(out), optional :: nrd(1:ntot)
         real(c_double), intent(out), optional :: mrd(1:ntot)
+        integer(c_long), intent(out), optional :: ndemi
     end subroutine dintelu
 end interface

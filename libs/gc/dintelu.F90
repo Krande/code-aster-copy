@@ -18,7 +18,7 @@
 
 subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
                    gammas, gammac, clacier, eys, typdiag, uc, &
-                   ntot, dnsinf, dnssup, nrd, mrd) bind(C)
+                   ntot, dnsinf, dnssup, nrd, mrd, ndemi) bind(C)
 !______________________________________________________________________
 !
 !      DINTELU
@@ -83,6 +83,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     real(c_double), intent(in), optional :: dnssup
     real(c_double), intent(out), optional :: nrd(1:ntot)
     real(c_double), intent(out), optional :: mrd(1:ntot)
+    integer(c_long), intent(out), optional :: ndemi
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -177,6 +178,17 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     N_PCN = ceiling((ht/dneg)*100)+1
     if (ntot < 0) then
         ntot = N_ET+N_ET+N_PC+N_EC+N_EC+N_PCN
+        if (present(ndemi)) then
+            ndemi = N_ET+N_PC+N_EC
+        end if
+        return
+    end if
+    if (.not. present(dnsinf) .or. .not. present(dnssup)) then
+        write (6, *) "SyntaxError: dnsinf and dnssup are required"
+        return
+    end if
+    if (.not. present(nrd) .or. .not. present(mrd)) then
+        write (6, *) "SyntaxError: nrd and mrd are required"
         return
     end if
 

@@ -18,7 +18,7 @@
 
 subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
                    scmaxi, scmaxs, ssmax, uc, &
-                   ntot, dnsinf, dnssup, nrd, mrd) bind(C)
+                   ntot, dnsinf, dnssup, nrd, mrd, ndemi) bind(C)
 !______________________________________________________________________
 !
 !      DINTELS
@@ -65,6 +65,7 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     real(c_double), intent(in), optional :: dnssup
     real(c_double), intent(out), optional :: nrd(1:ntot)
     real(c_double), intent(out), optional :: mrd(1:ntot)
+    integer(c_long), intent(out), optional :: ndemi
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -117,6 +118,17 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     k = 1
     if (ntot < 0) then
         ntot = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
+        if (present(ndemi)) then
+            ndemi = N_ET+N_PCAC+N_EC
+        end if
+        return
+    end if
+    if (.not. present(dnsinf) .or. .not. present(dnssup)) then
+        write (6, *) "SyntaxError: dnsinf and dnssup are required"
+        return
+    end if
+    if (.not. present(nrd) .or. .not. present(mrd)) then
+        write (6, *) "SyntaxError: nrd and mrd are required"
         return
     end if
 
