@@ -336,7 +336,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
 
             call dintels(cequi, ht, bw, enrobzi, enrobzs, &
                          sigelsqp, sigelsqp, ssmaxz, uc, &
-                         dnszi, dnszs, ntoty, nrdy, mrdy)
+                         ntoty, dnszi, dnszs, nrdy, mrdy)
 
             s = 1
             nrd0 = nrdy(s)
@@ -391,7 +391,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
 
             call dintels(cequi, bw, ht, enrobyi, enrobys, &
                          sigelsqp, sigelsqp, ssmaxy, uc, &
-                         dnsyi, dnsys, ntotz, nrdz, mrdz)
+                         ntotz, dnsyi, dnsys, nrdz, mrdz)
 
             s = 1
             nrd0 = nrdz(s)

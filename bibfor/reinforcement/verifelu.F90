@@ -161,7 +161,7 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 
     call dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
                  gammas, gammac, clacier, eys, typdiag, uc, &
-                 dnsinf, dnssup, ntot, nrd, mrd)
+                 ntot, dnsinf, dnssup, nrd, mrd)
 
     nrd0 = nrd(1)
     nrd1 = nrd(ndemi)

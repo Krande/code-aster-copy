@@ -120,7 +120,7 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
 
     call dintels(cequi, ht, bw, enrobi, enrobs, &
                  scmaxi, scmaxs, ssmax, uc, &
-                 dnsinf, dnssup, ntot, nrd, mrd)
+                 ntot, dnsinf, dnssup, nrd, mrd)
 
     nrd0 = nrd(1)
     nrd1 = nrd(ndemi)

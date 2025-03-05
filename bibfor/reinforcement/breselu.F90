@@ -321,7 +321,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 
             call dintelu(typco, alphacc, ht, bw, enrobzi, enrobzs, facier, fbeton, &
                          gammas, gammac, clacier, eys, typdiag, uc, &
-                         dnszi, dnszs, ntoty, nrdy, mrdy)
+                         ntoty, dnszi, dnszs, nrdy, mrdy)
 
             s = 1
             nrd0 = nrdy(s)
@@ -376,7 +376,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 
             call dintelu(typco, alphacc, bw, ht, enrobyi, enrobys, facier, fbeton, &
                          gammas, gammac, clacier, eys, typdiag, uc, &
-                         dnsyi, dnsys, ntotz, nrdz, mrdz)
+                         ntotz, dnsyi, dnsys, nrdz, mrdz)
 
             s = 1
             nrd0 = nrdz(s)

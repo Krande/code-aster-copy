@@ -29,13 +29,13 @@ namespace py = pybind11;
 
 extern "C" {
 void dintels( double *cequi, double *ht, double *bw, double *enrobi, double *enrobs, double *scmaxi,
-              double *scmaxs, double *ssmax, long *uc, double *dnsinf, double *dnssup, long *ntot,
-              double *nrd = nullptr, double *mrd = nullptr );
+              double *scmaxs, double *ssmax, long *uc, long *ntot, double *dnsinf = nullptr,
+              double *dnssup = nullptr, double *nrd = nullptr, double *mrd = nullptr );
 
 void dintelu( long *typco, double *alphacc, double *ht, double *bw, double *enrobi, double *enrobs,
               double *facier, double *fbeton, double *gammas, double *gammac, long *clacier,
-              double *eys, long *typdiag, long *uc, double *dnsinf, double *dnssup, long *ntot,
-              double *nrd = nullptr, double *mrd = nullptr );
+              double *eys, long *typdiag, long *uc, long *ntot, double *dnsinf = nullptr,
+              double *dnssup = nullptr, double *nrd = nullptr, double *mrd = nullptr );
 }
 
 const std::tuple< VectorReal, VectorReal >
@@ -43,14 +43,13 @@ dintels_wrapper( double cequi, double ht, double bw, double enrobi, double enrob
                  double scmaxs, double ssmax, long uc, double dnsinf, double dnssup ) {
     long ntot = -1;
     // get size of output vectors
-    dintels( &cequi, &ht, &bw, &enrobi, &enrobs, &scmaxi, &scmaxs, &ssmax, &uc, &dnsinf, &dnssup,
-             &ntot );
+    dintels( &cequi, &ht, &bw, &enrobi, &enrobs, &scmaxi, &scmaxs, &ssmax, &uc, &ntot );
 
     VectorReal vect_nrd( ntot, 0. );
     VectorReal vect_mrd( ntot, 0. );
     // compute and fill vectors
-    dintels( &cequi, &ht, &bw, &enrobi, &enrobs, &scmaxi, &scmaxs, &ssmax, &uc, &dnsinf, &dnssup,
-             &ntot, vect_nrd.data(), vect_mrd.data() );
+    dintels( &cequi, &ht, &bw, &enrobi, &enrobs, &scmaxi, &scmaxs, &ssmax, &uc, &ntot, &dnsinf,
+             &dnssup, vect_nrd.data(), vect_mrd.data() );
 
     return std::make_tuple( vect_nrd, vect_mrd );
 }
@@ -62,13 +61,13 @@ dintelu_wrapper( long typco, double alphacc, double ht, double bw, double enrobi
     long ntot = -1;
     // get size of output vectors
     dintelu( &typco, &alphacc, &ht, &bw, &enrobi, &enrobs, &facier, &fbeton, &gammas, &gammac,
-             &clacier, &eys, &typdiag, &uc, &dnsinf, &dnssup, &ntot );
+             &clacier, &eys, &typdiag, &uc, &ntot );
 
     VectorReal vect_nrd( ntot, 0. );
     VectorReal vect_mrd( ntot, 0. );
     // compute and fill vectors
     dintelu( &typco, &alphacc, &ht, &bw, &enrobi, &enrobs, &facier, &fbeton, &gammas, &gammac,
-             &clacier, &eys, &typdiag, &uc, &dnsinf, &dnssup, &ntot, vect_nrd.data(),
+             &clacier, &eys, &typdiag, &uc, &ntot, &dnsinf, &dnssup, vect_nrd.data(),
              vect_mrd.data() );
 
     return std::make_tuple( vect_nrd, vect_mrd );

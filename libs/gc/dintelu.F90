@@ -18,7 +18,7 @@
 
 subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
                    gammas, gammac, clacier, eys, typdiag, uc, &
-                   dnsinf, dnssup, ntot, nrd, mrd) bind(C)
+                   ntot, dnsinf, dnssup, nrd, mrd) bind(C)
 !______________________________________________________________________
 !
 !      DINTELU
@@ -78,9 +78,9 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     real(c_double), intent(in) :: eys
     integer(c_long), intent(in) :: typdiag
     integer(c_long), intent(in) :: uc
-    real(c_double), intent(in) :: dnsinf
-    real(c_double), intent(in) :: dnssup
     integer(c_long), intent(inout) :: ntot
+    real(c_double), intent(in), optional :: dnsinf
+    real(c_double), intent(in), optional :: dnssup
     real(c_double), intent(out), optional :: nrd(1:ntot)
     real(c_double), intent(out), optional :: mrd(1:ntot)
 

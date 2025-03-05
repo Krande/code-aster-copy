@@ -293,7 +293,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
         call wkvect(pnrdz, ' V V R ', ntotz, vr=nrdz)
         call wkvect(pmrdz, ' V V R ', ntotz, vr=mrdz)
 
-        do while (COND .eqv. (.false.))
+        do while (.not. COND)
 
             Ass = dnsyi+dnsys+dnszi+dnszs
             nrdyzE = Acc*fcd+Ass*fyd
@@ -307,7 +307,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 
             call dintels(cequi, ht, bw, enrobzi, enrobzs, &
                          scmaxzi, scmaxzs, ssmax, uc, &
-                         dnszi, dnszs, ntoty, nrdy, mrdy)
+                         ntoty, dnszi, dnszs, nrdy, mrdy)
 
             s = 1
             nrd0 = nrdy(s)
@@ -357,7 +357,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 
             call dintels(cequi, bw, ht, enrobyi, enrobys, &
                          scmaxyi, scmaxys, ssmax, uc, &
-                         dnsyi, dnsys, ntotz, nrdz, mrdz)
+                         ntotz, dnsyi, dnsys, nrdz, mrdz)
 
             s = 1
             nrd0 = nrdz(s)
