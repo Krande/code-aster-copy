@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine op0093()
 #include "asterfort/getvis.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -117,6 +118,8 @@ subroutine op0093()
     call dismoi('NOM_MAILLA', raide, 'MATR_ASSE', repk=nomma)
     call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
     call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=neq)
+
+    if (isParallelMesh(nomma)) call utmess('F', 'SUPERVIS_7', sk='MODE_STATIQUE')
 !
 !-- FACTORISATION DE LA MATRICE DE RAIDEUR
     raidfa = '&&MOIN93.RAIDFA'
