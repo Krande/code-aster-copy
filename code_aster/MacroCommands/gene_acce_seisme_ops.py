@@ -199,7 +199,7 @@ class GeneAcceParameters:
         if "NB_ITER" in self.method_keys:
             self.simulation_keys.update({"NB_ITER": self.method_keys["NB_ITER"]})
         if "CORR_ZPA" in self.method_keys:
-            if self.method_keys["CORR_ZPA"] == 'OUI':
+            if self.method_keys["CORR_ZPA"] == "OUI":
                 self.simulation_keys.update({"CORR_ZPA": True})
         # OtherKeys remplissage
         others_keys = {}
@@ -746,13 +746,11 @@ class Simulator:
         """apply modulation and low pass filter if requested"""
         Xm = Xt * generator.modulator.fonc_modul.vale_y
 
-
         if self.FREQ_FILTRE > 0.0:
             Xm = acce_filtre_CP(Xm, generator.sampler.DT, self.FREQ_FILTRE)
 
         if self.simu_params["CORR_ZPA"]:
-
-            zpa = generator.SRO_args['ZPA'] * generator.SRO_args['NORME']
+            zpa = generator.SRO_args["ZPA"] * generator.SRO_args["NORME"]
             Xm = zpa_match((generator.sampler.liste_temps, Xm), zpa)
 
             if self.FREQ_FILTRE > 0.0:

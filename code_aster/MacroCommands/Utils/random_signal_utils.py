@@ -165,11 +165,11 @@ def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
     # CP filter/corner frequency : wcp
     wcp = fcorner * 2.0 * pi
     N = len(vale_acce)
-    ws = NP.fft.rfftfreq(N, d=dt) * 2*pi
+    ws = NP.fft.rfftfreq(N, d=dt) * 2 * pi
 
     acce_in = NP.fft.rfft(NP.array(vale_acce))
 
-    hw2 = - ws**2 * 1.0 / ((wcp**2 - ws**2) + 2.0 * amoc * 1j * wcp * ws)
+    hw2 = -(ws**2) * 1.0 / ((wcp**2 - ws**2) + 2.0 * amoc * 1j * wcp * ws)
     Yw = acce_in * hw2
 
     acce_out = NP.fft.irfft(Yw, n=N)
@@ -577,7 +577,6 @@ def iter_SRO(f_dsp, f_sro, amort, TS, Niter=10, nbliss=0):
 
 
 def smoothing(yin, Mm):
-
     print("smoothing")
 
     ysmoothed = NP.copy(yin)
@@ -895,7 +894,7 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2):
     vale_acce = f_in.vale_y
     N = len(vale_t)
     dt = vale_t[1] - vale_t[0]
-    ws = NP.fft.rfftfreq(N, d=dt) * 2*pi
+    ws = NP.fft.rfftfreq(N, d=dt) * 2 * pi
     vale_sro = []
     acce_in = NP.fft.rfft(NP.array(vale_acce))
     for fi in l_freq:
@@ -906,11 +905,14 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2):
         vale_sro.append(w_0**ideb * max(abs(acce_out)))
     f_out = t_fonction(l_freq, vale_sro, para=para_sro)
     return f_out
+
+
 #
 # -----------------------------------------------------------------
 # DSP2FR
 # -----------------------------------------------------------------
 # Ajustement d'une DSP rationelle proche de KT
+
 
 def DSP2FR(f_dsp_refe, FC):
     # ---------------------------------------------------------
@@ -1050,8 +1052,8 @@ def corrcoefmodel(Period, f_beta=None):
             f_beta = f_beta.evalfonc(1.0 / Periods)
             vale_beta = f_beta.vale_y
 
-    for (ii, Ti) in enumerate(Periods):
-        for (jj, Tj) in enumerate(Periods):
+    for ii, Ti in enumerate(Periods):
+        for jj, Tj in enumerate(Periods):
             Tmin = min(Ti, Tj)
             Tmax = max(Ti, Tj)
             C1 = 1.0 - cos(pi / 2.0 - 0.366 * log(Tmax / max(Tmin, 0.109)))
@@ -1079,13 +1081,13 @@ def corrcoefmodel(Period, f_beta=None):
     return Periods, Mat_Gx
 
 
-
 #
 # -----------------------------------------------------------------
 # CORRECTION ZPA DES SIGNAUX
 # -----------------------------------------------------------------
 #
 ## Ces fonctions permettent de corriger les zpa des signauxacce
+
 
 # create the Gaussian mask
 def def_mask(signal, y00, epsilon):
@@ -1094,16 +1096,14 @@ def def_mask(signal, y00, epsilon):
     t0_idx = NP.argmax(NP.abs(y))
 
     t0 = t[t0_idx]
-    y0 = y[t0_idx]*NP.sign(y[t0_idx])
+    y0 = y[t0_idx] * NP.sign(y[t0_idx])
     mask = 1 - (1 - y00 / y0) * NP.exp(-0.5 * ((t - t0) / epsilon) ** 2)
 
     return mask
 
-# correct the accelerogram to yield pga
-def correct_signal(signal : list,
-                   pga : float,
-                   epsilon: float):
 
+# correct the accelerogram to yield pga
+def correct_signal(signal: list, pga: float, epsilon: float):
     mask = def_mask(signal, pga, epsilon)
 
     sig = signal[1] * mask
@@ -1113,15 +1113,12 @@ def correct_signal(signal : list,
 
     return new_signal
 
-# zpa match function
-def zpa_match(signal : list,
-              pga : float,
-              epsilon: float = 0.03):
 
+# zpa match function
+def zpa_match(signal: list, pga: float, epsilon: float = 0.03):
     new_signal = correct_signal(signal, pga, epsilon)
 
-    while NP.max(NP.abs(new_signal[1])) > pga*1.001:
-
+    while NP.max(NP.abs(new_signal[1])) > pga * 1.001:
         new_signal = correct_signal(new_signal, pga, epsilon)
 
     return new_signal[1]
