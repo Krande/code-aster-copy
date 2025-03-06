@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -266,7 +266,7 @@ Assurez-vous que cette valeur par défaut correspond bien au cas que vous voulez
 """
     ),
     52: _(
-        """Maille: %(k1)-8s - Nombre de sous-points précédent: %(i1)d - Nombre de sous-points courant: %(i2)d"""
+        """Maille: %(k1)-8s - Nombre de points précédent: %(i1)d - Nombre de points courant: %(i2)d"""
     ),
     54: _(
         """

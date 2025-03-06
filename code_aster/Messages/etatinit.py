@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,18 +60,13 @@ cata_msg = {
     ),
     31: _("""      Le champ <%(k1)s> est initialisé a zéro"""),
     32: _(
-        """      Le champ <%(k1)s> est lu dans ETAT_INIT dans la structure de données résultats de nom <%(k2)s>"""
+        """      Le champ <%(k1)s> est lu dans ETAT_INIT dans la structure de données résultat donné dans la commande."""
     ),
     33: _("""      Le champ <%(k1)s> est lu dans ETAT_INIT, par un champ donné explicitement"""),
     34: _("""  Le champ de température initiale est calculé par un état stationnaire"""),
     35: _("""  Le champ de température initiale est donné par une valeur qui vaut %(r1)19.12e"""),
     36: _(
         """  Le champ <%(k1)s> est lu dans ETAT_INIT alors qu'il n'est pas nécessaire pour ce calcul. Il sera ignoré."""
-    ),
-    50: _(
-        """
-  Le champ <%(k1)s> est d'un type inconnu.
-"""
     ),
     51: _(
         """  Le champ <%(k1)s> est de type <%(k2)s> mais on attend un champ de type <%(k3)s>.

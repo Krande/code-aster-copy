@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmetl1(i_field, ds_inout)
 !
     use NonLin_Datastructure_type
@@ -28,8 +28,6 @@ subroutine nmetl1(i_field, ds_inout)
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     integer, intent(in) :: i_field
     type(NL_DS_InOut), intent(inout) :: ds_inout
@@ -49,9 +47,8 @@ subroutine nmetl1(i_field, ds_inout)
 !
     character(len=8) :: stin_evol
     integer :: ievol, iret, init_nume
-    character(len=24) :: valk(2)
     character(len=24) :: field_resu, field_algo
-    character(len=16) :: field_type
+    character(len=16) :: fieldType
     character(len=24) :: algo_name, init_name
     character(len=4) :: disc_type
 !
@@ -63,42 +60,32 @@ subroutine nmetl1(i_field, ds_inout)
 !
     stin_evol = ds_inout%stin_evol
     init_nume = ds_inout%init_nume
-!
+
 ! - Field to read ?
-!
     if (ds_inout%l_field_acti(i_field) .and. ds_inout%field(i_field)%l_read_init) then
-!
+
 ! ----- Name of field (type) in results datastructure
-!
-        field_type = ds_inout%field(i_field)%type
-!
+        fieldType = ds_inout%field(i_field)%type
+
 ! ----- Name of field for initial state
-!
         init_name = ds_inout%field(i_field)%init_name
-!
+
 ! ----- Spatial discretization of field
-!
         disc_type = ds_inout%field(i_field)%disc_type
-!
+
 ! ----- Name of field in algorithm
-!
         algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
-!
+
 ! ----- Get field in resultats datastructure
-!
-        call rsexch(' ', stin_evol, field_type, init_nume, field_resu, &
-                    ievol)
-!
+        call rsexch(' ', stin_evol, fieldType, init_nume, field_resu, ievol)
+
 ! ----- Copy field
-!
         if (ievol .eq. 0) then
             if (disc_type .eq. 'NOEU') then
                 call vtcopy(field_resu, field_algo, ' ', iret)
                 if (iret .ne. 0) then
-                    valk(1) = field_resu
-                    valk(2) = field_algo
-                    call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
+                    call utmess('A', 'MECANONLINE_2', sk=fieldType)
                 end if
             elseif ((disc_type .eq. 'ELGA') .or. &
                     (disc_type .eq. 'ELNO') .or. &

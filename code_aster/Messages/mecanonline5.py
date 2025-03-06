@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -318,6 +318,15 @@ Il n'y a aucun degré de liberté de déplacement sur le modèle.
         """
   Il n'est pas possible actuellement de calculer des modes vibratoires (MODE_VIBR)
   sur un modèle dont au moins une matrice assemblée (masse ou raideur) est non-symétrique.
+"""
+    ),
+    57: _(
+        """
+  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous précisez un état initial (mot clé ETAT_INIT).
+  Pour le calcul du premier pas de temps, le champ des contraintes du début du pas est pris
+  dans le concept EVOL_NOLI fourni ou par le champ SIGM.
+  Le modèle sous-jacent à ce champ est différent du modèle pour le calcul.
 """
     ),
     58: _(

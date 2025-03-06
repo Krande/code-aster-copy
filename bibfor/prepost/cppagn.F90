@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -378,6 +378,7 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
     coordo = maout//'.COORDO'
     call copisd('CHAMP_GD', 'G', main//'.COORDO', coordo)
     call juveca(coordo//'.VALE', nbnot*3)
+    call jeecra(coordo//'.VALE', 'LONUTI', nbnot*3)
 
 ! -------------------------------------------------------------------------------------------------
 !      CREATION DES PATCHS, DES NOUEDS MILIEUX ET
