@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,29 +17,31 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W0413
 !
-subroutine zacier(metaSteelPara, nb_phase, &
-                  tpg0, tpg1, tpg2, &
-                  dt10, dt21, &
-                  meta_prev, meta_curr)
+subroutine zacier(metaSteelPara, nbPhase, &
+                  temp0, temp1, temp2, &
+                  deltaTime01, deltaTime12, &
+                  metaPrev, metaCurr)
 !
     use Metallurgy_type
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/smcarc.h"
-#include "asterfort/metaSteelGrainSize.h"
 #include "asterfort/Metallurgy_type.h"
+#include "asterfort/metaSteelCheckPhases.h"
+#include "asterfort/metaSteelGrainSize.h"
+#include "asterfort/smcarc.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
 !
     type(META_SteelParameters), intent(in) :: metaSteelPara
-    integer, intent(in) :: nb_phase
-    real(kind=8), intent(in) :: tpg0, tpg1, tpg2
-    real(kind=8), intent(in) :: dt10, dt21
-    real(kind=8), intent(in) :: meta_prev(nb_phase+3)
-    real(kind=8), intent(out) :: meta_curr(nb_phase+3)
+    integer, intent(in) :: nbPhase
+    real(kind=8), intent(in) :: temp0, temp1, temp2
+    real(kind=8), intent(in) :: deltaTime01, deltaTime12
+    real(kind=8), intent(in) :: metaPrev(nbPhase+3)
+    real(kind=8), intent(out) :: metaCurr(nbPhase+3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,197 +52,193 @@ subroutine zacier(metaSteelPara, nb_phase, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  metaSteelPara       : material parameters for metallurgy of steel
-! In  nb_phase            : number of phases
-! In  tpg0                : temperature at time N-1
-! In  tpg1                : temperature at time N
-! In  tpg2                : temperature at time N+1
-! In  dt10                : increment of time [N-1, N]
-! In  dt21                : increment of time [N, N+1]
-! In  meta_prev           : value of internal state variable at previous time step
-! Out meta_prev           : value of internal state variable at current time step
+! In  nbPhase             : number of phases
+! In  temp0               : temperature at time N-1
+! In  temp1               : temperature at time N
+! In  temp2               : temperature at time N+1
+! In  deltaTime01         : increment of time [N-1, N]
+! In  deltaTime12         : increment of time [N, N+1]
+! In  metaPrev            : value of internal state variable at previous time step
+! Out metaPrev            : value of internal state variable at current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: vari_dumm(nb_phase+3)
-    real(kind=8) :: dmoins
-    real(kind=8) :: tpoint, zero, ti, tpi
-    real(kind=8) :: zeq1, zeq2, zaust, z2, epsi, dt21_mod
-    real(kind=8) :: un, coef_phase
-    real(kind=8) :: zeq1i, zeq2i, ti1, ti2, taux
-    integer :: i, j, nbpas, nbHist
-    aster_logical :: l_cold
+    real(kind=8), parameter :: epsi = 1.d-10, epsiTemp = 0.001d0
+    real(kind=8) :: metaDumm(nbPhase+3)
+    real(kind=8) :: dPrev, dStep, dCurr
+    real(kind=8) :: tempStep, tPoint
+    real(kind=8) :: zeq1, zeq2, zAustPrev, zAustCurr, deltaTimeStep
+    real(kind=8) :: coef_phase
+    real(kind=8) :: ti1, ti2, taux
+    integer :: iStep, j, nbStep, nbHist, nbVari
+    aster_logical :: l_cold, lMultiStep
+    real(kind=8), parameter :: un = 1.d0, zero = 0.d0
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zero = 0.d0
-    epsi = 1.d-10
-    un = 1.d0
-    ASSERT(nb_phase .eq. 6)
+    nbVari = nbPhase+3
+    ASSERT(nbPhase .eq. 6)
 
 ! - Get material parameters for steel
     nbHist = metaSteelPara%trc%nbHist
 
 ! - Temperature
-    meta_curr(nb_phase+STEEL_TEMP) = tpg2
-    meta_curr(nb_phase+TEMP_MARTENSITE) = meta_prev(nb_phase+TEMP_MARTENSITE)
-    tpoint = (tpg1-tpg0)/dt10
+    metaCurr(nbPhase+STEEL_TEMP) = temp2
+    metaCurr(nbPhase+TEMP_MARTENSITE) = metaPrev(nbPhase+TEMP_MARTENSITE)
+    tpoint = (temp1-temp0)/deltaTime01
 
 ! - Proportion of austenite
-    zaust = un-(meta_prev(PFERRITE)+meta_prev(PPERLITE)+ &
-                meta_prev(PBAINITE)+meta_prev(PMARTENS))
-!
+    zAustPrev = un-(metaPrev(PFERRITE)+metaPrev(PPERLITE)+ &
+                    metaPrev(PBAINITE)+metaPrev(PMARTENS))
+
 ! - Colding or not ?
-!
-    zeq1 = min((tpg1-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
-    zeq2 = min((tpg2-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
+    zeq1 = min((temp1-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
+    zeq2 = min((temp2-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
     if (tpoint .gt. zero) then
         l_cold = ASTER_FALSE
-    else if (tpg2 .gt. metaSteelPara%ar3) then
+    else if (temp2 .gt. metaSteelPara%ar3) then
         l_cold = ASTER_FALSE
-    else if (tpg2 .lt. metaSteelPara%ac1) then
+    else if (temp2 .lt. metaSteelPara%ac1) then
         l_cold = ASTER_TRUE
     else if (tpoint .lt. zero) then
         l_cold = ASTER_TRUE
-    else if (zaust .le. zeq2) then
+    else if (zAustPrev .le. zeq2) then
         l_cold = ASTER_FALSE
     else
         l_cold = ASTER_TRUE
     end if
+
+! - Initial number of steps
+    lMultiStep = ASTER_FALSE
+    nbStep = 1
+    if (abs(temp2-temp1) .gt. STEEL_MAX_TEMP_STEP+epsiTemp) then
+        nbStep = int(abs(temp2-temp1)/5.d0-epsiTemp)+1
+    end if
 !
     if (l_cold) then
-        if (abs(tpg2-tpg1) .gt. 5.001d0) then
-            nbpas = int(abs(tpg2-tpg1)/5.d0-0.001d0)+1
-            dt21_mod = dt21/dble(nbpas)
-            vari_dumm(:) = meta_prev(:)
-            do i = 1, nbpas
-                ti = tpg1+(tpg2-tpg1)*dble(i-1)/dble(nbpas)
-                meta_curr(nb_phase+STEEL_TEMP) = tpg1+(dble(i)*(tpg2-tpg1))/dble(nbpas)
-                tpi = (meta_curr(nb_phase+STEEL_TEMP)-ti)/dt21_mod
-                call smcarc(nbHist, nb_phase, &
-                            zr(metaSteelPara%trc%jv_ftrc), &
-                            zr(metaSteelPara%trc%jv_trc), &
-                            zr(metaSteelPara%trc%iadtrc+3), &
-                            zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadexp), &
-                            metaSteelPara, &
-                            ti, tpi, dt10, &
-                            vari_dumm, meta_curr)
-                vari_dumm(:) = meta_curr(:)
-            end do
-        else
-            call smcarc(nbHist, nb_phase, &
+        deltaTimeStep = deltaTime12/dble(nbStep)
+        metaDumm = metaPrev
+        do iStep = 1, nbStep
+            tempStep = temp1+(temp2-temp1)*dble(iStep-1)/dble(nbStep)
+            metaCurr(nbPhase+STEEL_TEMP) = temp1+ &
+                                           (dble(iStep)*(temp2-temp1))/dble(nbStep)
+            if (nbStep .eq. 1) then
+                tPoint = (temp1-temp0)/deltaTime01
+            else
+                tPoint = (metaCurr(nbPhase+STEEL_TEMP)-tempStep)/deltaTimeStep
+            end if
+            call smcarc(nbHist, nbPhase, &
                         zr(metaSteelPara%trc%jv_ftrc), &
                         zr(metaSteelPara%trc%jv_trc), &
                         zr(metaSteelPara%trc%iadtrc+3), &
                         zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadexp), &
                         metaSteelPara, &
-                        tpg1, tpoint, dt10, &
-                        meta_prev, meta_curr)
-        end if
+                        tempStep, tPoint, deltaTime01, &
+                        metaDumm, metaCurr)
+            metaDumm(:) = metaCurr(:)
+        end do
     else
-        if (abs(tpg2-tpg1) .gt. 5.001d0) then
-! ----------------SUBDIVISION EN PAS DE CING DEGRE MAX
-            nbpas = int(abs(tpg2-tpg1)/5.d0-0.001d0)+1
-            dt21_mod = dt21/dble(nbpas)
-            dmoins = meta_prev(nb_phase+SIZE_GRAIN)
-            do i = 1, nbpas
-                ti1 = tpg1+(tpg2-tpg1)*dble(i-1)/dble(nbpas)
-                ti2 = tpg1+(tpg2-tpg1)*dble(i)/dble(nbpas)
-                tpoint = (ti2-ti1)/dt21_mod
-                zeq1i = min((ti1-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
-                zeq2i = min((ti2-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
-                taux = metaSteelPara%taux_1+(metaSteelPara%taux_3-metaSteelPara%taux_1)*zeq1i
-                if ((ti1 .lt. (metaSteelPara%ac1-epsi)) .or. (zaust .ge. un)) then
-                    z2 = zaust
-                else
-                    if (zeq2i .ge. (un-epsi)) then
-                        tpoint = zero
-                    end if
-                    if (zaust .gt. zeq1i) then
-                        z2 = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))
-                        z2 = z2*exp(-dt21_mod/taux)
-                        z2 = ((-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+ &
-                              zeq2i+z2-zeq1i)* &
-                             (un-zaust)/(un-zeq1i)
-                        z2 = z2+zaust
-                    else
-                        z2 = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))-zeq1i+zaust
-                        z2 = z2*exp(-dt21_mod/taux)
-                        z2 = (-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+zeq2i+z2
-                    end if
-                end if
-! ------------- Compute size of grain
-                coef_phase = 1.d0
-                if (abs(z2) .ge. epsi) then
-                    coef_phase = (1.d0-(z2-zaust)/z2)
-                end if
-                call metaSteelGrainSize(metaSteelPara, &
-                                        ti1, dt10, dt21, &
-                                        z2, coef_phase, &
-                                        dmoins, meta_curr(nb_phase+SIZE_GRAIN))
-                if (metaSteelPara%l_grain_size) then
-                    zaust = z2
-                    dmoins = meta_curr(nb_phase+SIZE_GRAIN)
-                end if
-            end do
-        else
-            dt21_mod = dt21
+10      continue
+
+        dPrev = metaPrev(nbPhase+SIZE_GRAIN)
+        deltaTimeStep = deltaTime12/dble(nbStep)
+        dStep = dPrev
+        do iStep = 1, nbStep
+            if (nbStep .eq. 1) then
+                ti1 = temp1
+                ti2 = temp2
+                tPoint = (temp1-temp0)/deltaTime01
+            else
+                ti1 = temp1+(temp2-temp1)*dble(iStep-1)/dble(nbStep)
+                ti2 = temp1+(temp2-temp1)*dble(iStep)/dble(nbStep)
+                tpoint = (ti2-ti1)/deltaTimeStep
+            end if
+            zeq1 = min((ti1-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
+            zeq2 = min((ti2-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
             taux = metaSteelPara%taux_1+(metaSteelPara%taux_3-metaSteelPara%taux_1)*zeq1
-            if ((tpg1 .lt. (metaSteelPara%ac1-epsi)) .or. (zaust .ge. un)) then
-                z2 = zaust
+
+            if ((ti1 .lt. (metaSteelPara%ac1-epsi)) .or. (zAustPrev .ge. un)) then
+                zAustCurr = zAustPrev
             else
                 if (zeq2 .ge. (un-epsi)) then
                     tpoint = zero
                 end if
-                if (zaust .gt. zeq1) then
-                    z2 = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))
-                    z2 = z2*exp(-dt21_mod/taux)
-                    z2 = ((-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+zeq2+z2-zeq1)* &
-                         (un-zaust)/(un-zeq1)
-                    z2 = z2+zaust
+                if (zAustPrev .gt. zeq1) then
+                    zAustCurr = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))
+                    zAustCurr = zAustCurr*exp(-deltaTimeStep/taux)
+                    zAustCurr = ((-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+ &
+                                 zeq2+zAustCurr-zeq1)* &
+                                (un-zAustPrev)/(un-zeq1)
+                    zAustCurr = zAustCurr+zAustPrev
                 else
-                    z2 = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))-zeq1+zaust
-                    z2 = z2*exp(-dt21_mod/taux)
-                    z2 = (-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+zeq2+z2
+                    zAustCurr = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))-zeq1+zAustPrev
+                    zAustCurr = zAustCurr*exp(-deltaTimeStep/taux)
+                    zAustCurr = (-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+zeq2+zAustCurr
                 end if
             end if
+
 ! --------- Compute size of grain
             coef_phase = 1.d0
-            if (abs(z2) .ge. epsi) then
-                coef_phase = (1.d0-(z2-zaust)/z2)
+            if (abs(zAustCurr) .ge. epsi) then
+                coef_phase = (1.d0-(zAustCurr-zAustPrev)/zAustCurr)
             end if
             call metaSteelGrainSize(metaSteelPara, &
-                                    tpg1, dt10, dt21, &
-                                    z2, coef_phase, &
-                                    meta_prev(nb_phase+SIZE_GRAIN), meta_curr(nb_phase+SIZE_GRAIN))
+                                    ti1, deltaTime01, deltaTime12, &
+                                    zAustCurr, coef_phase, &
+                                    dPrev, dCurr)
+            metaCurr(nbPhase+SIZE_GRAIN) = dCurr
+            if (metaSteelPara%l_grain_size .and. nbStep .gt. 1) then
+                zAustPrev = zAustCurr
+                dStep = dCurr
+            end if
+        end do
+
+! ----- Save size of grain
+        metaCurr(nbPhase+SIZE_GRAIN) = dCurr
+
+! ----- Check bounds
+        if (zAustCurr .gt. (un-epsi)) then
+            zAustCurr = un
         end if
-!           REPARTITION DE DZGAMMA SUR DZALPHA
-        if (z2 .gt. (un-epsi)) then
-            z2 = un
+        if (zAustCurr .lt. 0.d0 .and. zAustCurr .ge. -STEEL_MIN_CUT) then
+            zAustCurr = 0.d0
         end if
-        if (zaust .ne. un) then
+        if (zAustCurr .lt. -STEEL_MIN_CUT) then
+            nbStep = STEEL_MAX_NB_STEP
+            if (lMultiStep) then
+                call utmess('F', 'META1_51')
+            else
+                lMultiStep = ASTER_TRUE
+                goto 10
+            end if
+        end if
+
+! ----- Compute new ferrite phases
+        if (zAustPrev .ne. un) then
             do j = 1, 4
-                meta_curr(j) = meta_prev(j)*(un-(z2-zaust)/(un-zaust))
+                metaCurr(j) = metaPrev(j)*(un-(zAustCurr-zAustPrev)/(un-zAustPrev))
             end do
         else
             do j = 1, 4
-                meta_curr(j) = meta_prev(j)
+                metaCurr(j) = metaPrev(j)
             end do
         end if
     end if
-!
+
 ! - Compute austenite
-!
-    zaust = un-meta_curr(1)-meta_curr(2)-meta_curr(3)-meta_curr(4)
-    if (zaust .le. r8prem()) then
-        zaust = 0.d0
+    zAustCurr = un-metaCurr(1)-metaCurr(2)-metaCurr(3)-metaCurr(4)
+    if (zAustCurr .le. r8prem()) then
+        zAustCurr = 0.d0
     end if
-    if (zaust .ge. 1.d0) then
-        zaust = 1.d0
+    if (zAustCurr .ge. 1.d0) then
+        zAustCurr = 1.d0
     end if
-    meta_curr(PAUSTENITE) = zaust
-!
+    metaCurr(PAUSTENITE) = zAustCurr
+
 ! - Compute sum of cold phases
-!
-    meta_curr(PSUMCOLD) = 1.d0-zaust
+    metaCurr(PSUMCOLD) = 1.d0-zAustCurr
+
+! - Check
+    call metaSteelCheckPhases(nbVari, metaCurr)
 !
 end subroutine

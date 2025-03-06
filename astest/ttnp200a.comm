@@ -545,7 +545,7 @@ TEST_RESU(
             TYPE_TEST="SOMM_ABS",
             RESULTAT=THL10,
             NOM_CHAM="META_ELNO",
-            VALE_CALC=3828.4623918798766,
+            VALE_CALC=3827.666519012434,
         ),
         _F(
             NUME_ORDRE=2,

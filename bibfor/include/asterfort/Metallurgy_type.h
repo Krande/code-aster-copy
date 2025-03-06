@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 #define META_NONE        0
 #define META_STEEL       1
 #define META_ZIRC        2
-!
-! - Phases for steel
-!
+
+! - Phases for standard steel
+#define PSTEEL_NB        5
 #define PFERRITE         1
 #define PPERLITE         2
 #define PBAINITE         3
@@ -55,3 +55,15 @@
 !
 #define COOLING          0
 #define HEATING          1
+
+! --------------------------------------------------------------------------------------------------
+!
+! Parameters for integration of metallurgical laws in CALC_META
+!
+! --------------------------------------------------------------------------------------------------
+! - Bound to cut
+#define STEEL_MIN_CUT 1.d-3
+! - Maximum temperature step
+#define STEEL_MAX_TEMP_STEP 5.d0
+! - Maximum number of sub-steps
+#define STEEL_MAX_NB_STEP 10
