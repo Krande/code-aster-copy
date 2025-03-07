@@ -36,19 +36,37 @@ void exportMeshReaderToPython( py::module_ &mod ) {
     py::class_< MeshReader, MeshReader::MeshReaderPtr >( mod, "MeshReader" )
         .def( py::init( &initFactoryPtr< MeshReader > ) )
         .def( "__pickling_disabled__", disable_pickling< MeshReader >() )
-        // .def( "testPerf", &MeshReader::testPerf)
 
-        .def( "readFromMedFile", &MeshReader::readFromMedFile,
+        .def( "readMeshFromMedFile", &MeshReader::readMeshFromMedFile,
               R"(
-Open med file in parallel
+Open med file
 
 Arguments:
+    Mesh: return mesh to fill
     path (Path|str): path to med file
-
-Returns:
-    Mesh: return mesh
+    mesh_name (str): mesh name (optional)
             )",
-              py::arg( "path" ) );
+              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "" )
+        .def( "readIncompleteMeshFromMedFile", &MeshReader::readIncompleteMeshFromMedFile,
+              R"(
+      Open med file
+      
+      Arguments:
+          IncompleteMesh: return mesh to fill
+          path (Path|str): path to med file
+          mesh_name (str): mesh name (optional)
+                  )",
+              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "" )
+        .def( "readParallelMeshFromMedFile", &MeshReader::readParallelMeshFromMedFile,
+              R"(
+      Open med file
+      
+      Arguments:
+          ParallelMesh: return mesh to fill
+          path (Path|str): path to med file
+          mesh_name (str): mesh name (optional)
+                  )",
+              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "" );
 };
 
 #endif

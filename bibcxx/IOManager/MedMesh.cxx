@@ -3,7 +3,7 @@
  * @brief Implementation de MedMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,6 +48,19 @@ MedMesh::MedMesh( const MedFilePointer &filePtr, const std::string &name, med_in
         _families.emplace_back( new MedFamily( std::string( familyname, strlen( familyname ) ),
                                                familynumber, gnames ) );
         free( groupname );
+    }
+
+    const auto jointNumber = MEDnSubdomainJoint( _filePtr.getFileId(), _name.c_str() );
+    for ( int jointId = 1; jointId <= jointNumber; ++jointId ) {
+        char jointname[MED_NAME_SIZE + 1] = "", remotemeshname[MED_NAME_SIZE + 1] = "";
+        char description[MED_COMMENT_SIZE + 1] = "";
+        med_int domainnumber = -1, nstep = -1, nocstpncorrespondence = -1;
+        MEDsubdomainJointInfo( _filePtr.getFileId(), _name.c_str(), jointId, jointname, description,
+                               &domainnumber, remotemeshname, &nstep, &nocstpncorrespondence );
+
+        _joints.emplace_back( new MedJoint( _filePtr, _name, jointId, jointname, description,
+                                            domainnumber, remotemeshname, nstep,
+                                            nocstpncorrespondence ) );
     }
 };
 
@@ -191,6 +204,22 @@ med_int MedMesh::getCellNumberForGeometricTypeAtSequence( int numdt, int numit,
                            MED_CONNECTIVITY, MED_NODAL, &changement, &transformation );
 };
 
+std::pair< med_int, med_int >
+MedMesh::getSplitCellNumberForGeometricTypeAtSequence( int numdt, int numit,
+                                                       med_geometry_type geotype ) const {
+    med_bool changement, transformation;
+    auto nbMaT =
+        MEDmeshnEntity( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_CELL, geotype,
+                        MED_CONNECTIVITY, MED_NODAL, &changement, &transformation );
+    if ( _filePtr.isParallel() ) {
+        const auto rank = getMPIRank();
+        const auto nbProcs = getMPISize();
+        return splitEntitySet( nbMaT, rank, nbProcs );
+    } else {
+        return { nbMaT, 1 };
+    }
+};
+
 med_geometry_type MedMesh::getCellTypeAtSequence( int numdt, int numit, int iterator ) const {
     char geotypename[MED_NAME_SIZE + 1] = "";
     med_geometry_type geotype = MED_NONE;
@@ -219,6 +248,20 @@ med_int MedMesh::getNodeNumberAtSequence( int numdt, int numit ) const {
     return MEDmeshnEntity( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
                            MED_NO_GEOTYPE, MED_COORDINATE, MED_NO_CMODE, &changement,
                            &transformation );
+};
+
+std::pair< med_int, med_int > MedMesh::getSplitNodeNumberAtSequence( int numdt, int numit ) const {
+    med_bool changement, transformation;
+    auto nbNoT =
+        MEDmeshnEntity( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE, MED_NO_GEOTYPE,
+                        MED_COORDINATE, MED_NO_CMODE, &changement, &transformation );
+    if ( _filePtr.isParallel() ) {
+        const auto rank = getMPIRank();
+        const auto nbProcs = getMPISize();
+        return splitEntitySet( nbNoT, rank, nbProcs );
+    } else {
+        return { nbNoT, 1 };
+    }
 };
 
 med_int MedMesh::getNodeNumberForGeometricType( med_int geoType ) const {
@@ -252,5 +295,26 @@ std::vector< double > MedMesh::readCoordinates( int numdt, int numit ) const {
     }
     return toReturn;
 }
+
+std::vector< med_int > MedMesh::getGlobalNodeNumberingAtSequence( int numdt, int numit ) const {
+    med_bool changement, transformation;
+    auto nbNoT =
+        MEDmeshnEntity( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE, MED_NO_GEOTYPE,
+                        MED_COORDINATE, MED_NO_CMODE, &changement, &transformation );
+    std::vector< med_int > globNum( nbNoT, 0 );
+    MEDmeshGlobalNumberRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, MED_NODE,
+                           MED_NO_GEOTYPE, &globNum[0] );
+    if ( _filePtr.isParallel() ) {
+        const auto rank = getMPIRank();
+        const auto nbProcs = getMPISize();
+        const auto pair = splitEntitySet( nbNoT, rank, nbProcs );
+        int nbNoL = pair.first;
+        int start = pair.second;
+        return std::vector< med_int >( globNum.begin() + start - 1,
+                                       globNum.begin() + start - 1 + nbNoL );
+    } else {
+        return globNum;
+    }
+};
 
 #endif

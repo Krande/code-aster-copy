@@ -305,7 +305,7 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
             for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
                 const auto vecPos = nbCmp * curSendList[iPos] + iCmp;
                 if ( vecPos >= sizeIn ) {
-                    throw std::runtime_error( "Index to send grower than vector size" );
+                    throw std::runtime_error( "Index to send grower than vector size " );
                 }
                 if ( sizeToKeep == 0 ) {
                     toKeep[vecPos] = false;
@@ -456,8 +456,9 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             const auto curSizeOC = getSize( occ );
             occSize[proc].push_back( curSizeOC );
             toSend += curSizeOC;
-            if ( vecPos >= sizeIn )
+            if ( vecPos >= sizeIn ) {
                 throw std::runtime_error( "Index to send grower than vector size" );
+            }
             if ( sizeToKeep == 0 ) {
                 if ( toKeep[vecPos] )
                     toRemove += curSizeOC;

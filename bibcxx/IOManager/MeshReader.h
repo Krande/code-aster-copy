@@ -26,7 +26,10 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "IOManager/MedFileReader.h"
+#include "Meshes/IncompleteMesh.h"
 #include "Meshes/Mesh.h"
+#include "Meshes/ParallelMesh.h"
 
 #include <filesystem>
 
@@ -37,6 +40,8 @@
  */
 class MeshReader {
   private:
+    void readFromMedFile( BaseMeshPtr, MedFileReader &, const std::string & );
+
   public:
     /**
      * @typedef MeshReaderPtr
@@ -50,8 +55,14 @@ class MeshReader {
     ~MeshReader() {};
 #ifdef ASTER_HAVE_MED
 
-    MeshPtr readFromMedFile( const std::filesystem::path &filename );
-    // void testPerf();
+    void readMeshFromMedFile( MeshPtr &, const std::filesystem::path &filename,
+                              const std::string &meshName = "" );
+
+    void readIncompleteMeshFromMedFile( IncompleteMeshPtr &, const std::filesystem::path &filename,
+                                        const std::string &meshName = "" );
+
+    void readParallelMeshFromMedFile( ParallelMeshPtr &, const std::filesystem::path &filename,
+                                      const std::string &meshName = "" );
 #endif
 };
 

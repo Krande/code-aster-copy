@@ -25,7 +25,8 @@
 
 #include "IOManager/MeshReader.h"
 
-#include "IOManager/MedFileReader.h"
+#include "ParallelUtilities/AsterMPI.h"
+#include "Utilities/Tools.h"
 
 #include <algorithm>
 
@@ -151,27 +152,132 @@ VectorLong medToAsterRenumbering( const med_int &medType, const VectorLong &toRe
     return out;
 }
 
-MeshPtr MeshReader::readFromMedFile( const std::filesystem::path &filename ) {
-    MeshPtr toReturn = std::make_shared< Mesh >();
+void MeshReader::readMeshFromMedFile( MeshPtr &toReturn, const std::filesystem::path &filename,
+                                      const std::string &meshName ) {
+    auto fr = MedFileReader();
+    fr.open( filename, MedReadOnly );
+    readFromMedFile( toReturn, fr, meshName );
+    toReturn->endDefinition();
+}
+
+void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
+                                                const std::filesystem::path &filename,
+                                                const std::string &meshName ) {
+    auto fr = MedFileReader();
+    fr.openParallel( filename, MedReadOnly );
+    readFromMedFile( toReturn, fr, meshName );
+
+    const auto curMesh = fr.getMesh( 0 );
+    const auto &families = curMesh->getFamilies();
+    for ( const auto &curFam : families ) {
+        toReturn->addFamily( curFam->getId(), curFam->getGroups() );
+    }
+}
+
+void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
+                                              const std::filesystem::path &filename,
+                                              const std::string &meshName ) {
+    auto fr = MedFileReader();
+    fr.open( filename, MedReadOnly );
+    readFromMedFile( toReturn, fr, meshName );
+    const auto rank = getMPIRank();
+
+    // Read opposite domains, joint information and fill node owner vector
+    const auto curMesh = fr.getMesh( 0 );
+    const auto &joints = curMesh->getJoints();
+    std::set< ASTERINTEGER > domainSet;
+    std::map< std::string, VectorLong > allJointsMap;
+    VectorLong nodeOwner( toReturn->getNumberOfNodes(), rank );
+    for ( int i = 0; i < joints.size(); ++i ) {
+        const auto &curJoint = joints[i];
+        const auto &curName = curJoint->getName();
+        if ( curJoint->getCorrespondenceNumber() != 1 || curJoint->getStepNumber() != 1 ) {
+            throw std::runtime_error( "Unexpected joint in med file " + std::string( filename ) );
+        }
+
+        domainSet.insert( curJoint->getOppositeDomain() );
+
+        const auto splitName = split( curName );
+        AS_ASSERT( splitName.size() == 2 );
+        const auto dIn = std::stoi( splitName[0] ), dOut = std::stoi( splitName[1] );
+        AS_ASSERT( dIn == rank || dOut == rank );
+
+        std::stringstream stream;
+        stream << std::hex << curJoint->getOppositeDomain();
+        std::string key = strToupper( ( dIn == rank ? "R" : "E" ) + std::string( stream.str() ) );
+        const auto corresp = curJoint->getCorrespondence( 1, 1 );
+        allJointsMap[key] = corresp;
+
+        if ( dIn == rank ) {
+            for ( int j = 0; j < corresp.size() / 2; ++j ) {
+                nodeOwner[corresp[2 * j] - 1] = -1;
+            }
+        }
+    }
+    auto domains = toVector( domainSet );
+    std::sort( domains.begin(), domains.end() );
+
+    // Read global node numbering
+    const auto globNum = curMesh->getGlobalNodeNumberingAtSequence( -1, -1 );
+
+    VectorOfVectorsLong allJoints;
+    for ( const auto &curDom : domains ) {
+        std::stringstream stream;
+        stream << std::hex << curDom;
+        const std::string curDomStr( stream.str() );
+        std::string eR( "ER" );
+        for ( const auto &eOrR : eR ) {
+            const std::string bis( 1, eOrR );
+            const std::string key = strToupper( bis + curDomStr );
+            allJoints.push_back( allJointsMap[key] );
+        }
+    }
+
+    // Add parallel informations to mesh
+    toReturn->create_joints( domains, globNum, nodeOwner, {}, allJoints );
+    toReturn->endDefinition();
+}
+
+void MeshReader::readFromMedFile( BaseMeshPtr toReturn, MedFileReader &fr,
+                                  const std::string &meshName ) {
+    const auto iM = std::dynamic_pointer_cast< IncompleteMesh >( toReturn );
+    const bool incompleteMesh = ( iM ? true : false );
+
     auto coordsToFill = toReturn->getCoordinates();
     auto coordValues = coordsToFill->getValues();
 
     // Read mesh from file
-    auto fr = MedFileReader();
-    fr.openParallel( filename, MedReadOnly );
-    const auto curMesh = fr.getMesh( 0 );
+    auto curMeshId = 0;
+    if ( meshName != "" ) {
+        const auto meshNb = fr.getMeshNumber();
+        for ( int meshId = 0; meshId < meshNb; ++meshId ) {
+            const auto curMesh = fr.getMesh( curMeshId );
+            if ( curMesh->getName() == meshName ) {
+                curMeshId = meshId;
+                break;
+            }
+        }
+    }
+    const auto curMesh = fr.getMesh( curMeshId );
     const auto seq = curMesh->getSequence( 0 );
-    const auto nodeNb = curMesh->getNodeNumberAtSequence( seq[0], seq[1] );
+    const auto nodeNbAndStart = curMesh->getSplitNodeNumberAtSequence( seq[0], seq[1] );
 
     // Read node coordinates and copy in coordValues
-    const auto nbNodes = nodeNb;
+    const auto nbNodes = nodeNbAndStart.first;
     const auto curCoords = curMesh->readCoordinates( seq[0], seq[1] );
     const auto dim = curMesh->getDimension();
     if ( dim == 3 ) {
         *( coordValues ) = curMesh->readCoordinates( seq[0], seq[1] );
     } else {
-        throw std::runtime_error( "Not yet implemented" );
+        const auto coordsToCopy = curMesh->readCoordinates( seq[0], seq[1] );
+        coordValues->allocate( nbNodes * 3 );
+        for ( int nodeId = 0; nodeId < nbNodes; ++nodeId ) {
+            for ( int curDim = 0; curDim < dim; ++curDim ) {
+                ( *coordValues )[nodeId * 3 + curDim] = coordsToCopy[nodeId * dim + curDim];
+            }
+        }
     }
+    coordsToFill->buildDescriptor();
 
     // Get cell type and sort it according to aster sort
     auto cellTypes = curMesh->getGeometricTypesAtSequence( seq[0], seq[1] );
@@ -187,18 +293,35 @@ MeshPtr MeshReader::readFromMedFile( const std::filesystem::path &filename ) {
     }
 
     // Get cell informations by type
+    const auto rank = getMPIRank();
+    const auto nbProcs = getMPISize();
     auto connectivity = toReturn->getConnectivity();
     auto cellType = toReturn->getCellTypeVector();
-    int totalSize = 0, size = 0;
+    int totalSize = 0, size = 0, cumCells = 0;
     VectorInt elemNbAndSizeVec;
+    VectorOfVectorsLong cellRange;
     for ( const auto medType : cellTypesSorted ) {
-        const auto cellNb =
+        const auto totalCells =
             curMesh->getCellNumberForGeometricTypeAtSequence( seq[0], seq[1], medType );
+        const auto cellNbAndStart =
+            curMesh->getSplitCellNumberForGeometricTypeAtSequence( seq[0], seq[1], medType );
+        if ( rank == nbProcs - 1 ) {
+            cellRange.push_back( { cellNbAndStart.second - 1 + cumCells, totalCells + cumCells } );
+        } else {
+            cellRange.push_back( { cellNbAndStart.second - 1 + cumCells,
+                                   cellNbAndStart.first * ( rank + 1 ) + cumCells } );
+        }
+        const auto cellNb = cellNbAndStart.first;
         const auto nbNodesForGeoT = curMesh->getNodeNumberForGeometricType( medType );
         totalSize += cellNb * nbNodesForGeoT;
         size += cellNb;
+        cumCells += totalCells;
         elemNbAndSizeVec.push_back( cellNb );
         elemNbAndSizeVec.push_back( nbNodesForGeoT );
+    }
+
+    if ( incompleteMesh ) {
+        iM->setCellRange( cellRange );
     }
 
     // Get families in mesh
@@ -235,14 +358,26 @@ MeshPtr MeshReader::readFromMedFile( const std::filesystem::path &filename ) {
 
     // Get node families
     auto curNFam = curMesh->getNodeFamilyAtSequence( seq[0], seq[1] );
-    for ( const auto &[index, cellFamId] : enumerate( curNFam ) ) {
-        if ( cellFamId != 0 ) {
-            cellFamily[cellFamId + familyOffset].push_back( index + 1 );
+    if ( incompleteMesh ) {
+        iM->setNodeRange(
+            { nodeNbAndStart.second - 1, nodeNbAndStart.second - 1 + nodeNbAndStart.first } );
+        VectorLong nodeFam( curNFam.begin(), curNFam.end() );
+        iM->setNodeFamily( nodeFam );
+    } else {
+        // Group informations are only needed in non IncompleteMesh case
+        auto index = 0;
+        for ( const auto &cellFamId : curNFam ) {
+            if ( cellFamId != 0 ) {
+                cellFamily[cellFamId + familyOffset].push_back( index + 1 );
+            }
+            ++index;
         }
     }
 
-    // allocate connectivity
+    // Allocate connectivity
     connectivity->allocate( size, totalSize );
+    VectorLong cellFam( size, 0 );
+    auto cellFamStart = &cellFam[0];
     cellType->allocate( size );
     int count = 0, cumElem = 1, totalCount = 0;
     ASTERINTEGER *connexPtr = nullptr;
@@ -253,9 +388,6 @@ MeshPtr MeshReader::readFromMedFile( const std::filesystem::path &filename ) {
         // Collection allocation
         for ( int cellId = 0; cellId < cellNb; ++cellId ) {
             connectivity->fastAllocateObject( cumElem + cellId, nbNodesForGeoT );
-            if ( cellId % 1000000 == 0 )
-                std::cout << "Boucle 3 " << medType << " " << cumElem + cellId << std::endl
-                          << std::flush;
         }
         // Get contiguous collection start
         if ( count == 0 ) {
@@ -278,11 +410,18 @@ MeshPtr MeshReader::readFromMedFile( const std::filesystem::path &filename ) {
         const auto &curAsterType = asterCellTypes[count];
         std::fill( cellTypePtr, cellTypePtr + cellNb, curAsterType );
 
-        // Get cell families
+        // Get cell family
         auto curFam = curMesh->getCellFamilyForGeometricTypeAtSequence( seq[0], seq[1], medType );
-        for ( const auto &[index, cellFamId] : enumerate( curFam ) ) {
-            if ( cellFamId != 0 ) {
-                cellFamily[cellFamId + familyOffset].push_back( index + cumElem );
+        if ( incompleteMesh ) {
+            std::copy( curFam.begin(), curFam.end(), cellFamStart + cumElem - 1 );
+        } else {
+            auto index = 0;
+            // Group informations are only needed in non IncompleteMesh case
+            for ( const auto &cellFamId : curFam ) {
+                if ( cellFamId != 0 ) {
+                    cellFamily[cellFamId + familyOffset].push_back( index + cumElem );
+                }
+                ++index;
             }
         }
 
@@ -291,66 +430,66 @@ MeshPtr MeshReader::readFromMedFile( const std::filesystem::path &filename ) {
         ++count;
     }
 
-    int index = 0;
-    VectorOfVectorsLong nodeIdGroupList( nodeGroupList.size(), VectorLong() );
-    VectorOfVectorsLong cellIdGroupList( cellGroupList.size(), VectorLong() );
-    // From families to groups
-    for ( const auto &cellFamVector : cellFamily ) {
-        const auto famId = index - familyOffset;
-        if ( cellFamVector.size() != 0 ) {
-            const auto &curFam = idToFamily.at( famId );
-            const auto &curGroups = curFam->getGroups();
-            for ( const auto &group : curGroups ) {
-                if ( famId > 0 ) {
-                    const auto &grpId = nodeGroupNameToGroupId.at( group );
-                    auto &curGrpToFill = nodeIdGroupList[grpId];
-                    for ( const auto &id : cellFamVector ) {
-                        curGrpToFill.push_back( id );
-                    }
-                } else if ( famId < 0 ) {
-                    const auto &grpId = cellGroupNameToGroupId.at( group );
-                    auto &curGrpToFill = cellIdGroupList[grpId];
-                    for ( const auto &id : cellFamVector ) {
-                        curGrpToFill.push_back( id );
+    if ( incompleteMesh ) {
+        iM->setCellFamily( cellFam );
+    } else {
+        int index = 0;
+        VectorOfVectorsLong nodeIdGroupList( nodeGroupList.size(), VectorLong() );
+        VectorOfVectorsLong cellIdGroupList( cellGroupList.size(), VectorLong() );
+        // From families to groups
+        for ( const auto &cellFamVector : cellFamily ) {
+            const auto famId = index - familyOffset;
+            if ( cellFamVector.size() != 0 ) {
+                const auto &curFam = idToFamily.at( famId );
+                const auto &curGroups = curFam->getGroups();
+                for ( const auto &group : curGroups ) {
+                    if ( famId > 0 ) {
+                        const auto &grpId = nodeGroupNameToGroupId.at( group );
+                        auto &curGrpToFill = nodeIdGroupList[grpId];
+                        for ( const auto &id : cellFamVector ) {
+                            curGrpToFill.push_back( id );
+                        }
+                    } else if ( famId < 0 ) {
+                        const auto &grpId = cellGroupNameToGroupId.at( group );
+                        auto &curGrpToFill = cellIdGroupList[grpId];
+                        for ( const auto &id : cellFamVector ) {
+                            curGrpToFill.push_back( id );
+                        }
                     }
                 }
             }
+            ++index;
         }
-        ++index;
+
+        // Add non empty node groups
+        VectorString nodeGroupList2;
+        VectorOfVectorsLong nodeIdGroupList2;
+        for ( int i = 0; i < nodeGroupList.size(); ++i ) {
+            if ( nodeIdGroupList[i].size() != 0 ) {
+                nodeGroupList2.push_back( nodeGroupList[i] );
+                nodeIdGroupList2.push_back( nodeIdGroupList[i] );
+            }
+        }
+        if ( nodeGroupList2.size() != 0 ) {
+            toReturn->addGroupsOfNodes( nodeGroupList2, nodeIdGroupList2 );
+        }
+
+        // Add non empty cell groups
+        VectorString cellGroupList2;
+        VectorOfVectorsLong cellIdGroupList2;
+        for ( int i = 0; i < cellGroupList.size(); ++i ) {
+            if ( cellIdGroupList[i].size() != 0 ) {
+                cellGroupList2.push_back( cellGroupList[i] );
+                cellIdGroupList2.push_back( cellIdGroupList[i] );
+            }
+        }
+        if ( cellGroupList2.size() != 0 ) {
+            toReturn->addGroupsOfCells( cellGroupList2, cellIdGroupList2 );
+        }
     }
-    if ( nodeGroupList.size() != 0 ) {
-        toReturn->addGroupsOfNodes( nodeGroupList, nodeIdGroupList );
-    }
-    if ( cellGroupList.size() != 0 ) {
-        toReturn->addGroupsOfCells( cellGroupList, cellIdGroupList );
-    }
+
     toReturn->buildInformations( dim );
     toReturn->buildNamesVectors();
-    toReturn->endDefinition();
-    return toReturn;
 }
-
-// void add_automatic_names2( NamesMapChar8 &map, int size, std::string prefix ) {
-//     map->allocate( size );
-//     if ( size > 10000000 ) {
-//         for ( auto i = 0; i < size; ++i ) {
-//             std::ostringstream oss;
-//             oss << std::hex << i + 1;
-//             std::string name = prefix + toUpper( oss.str() );
-//             map->add( i + 1, name );
-//         }
-//     } else {
-//         for ( auto i = 0; i < size; ++i ) {
-//             map->add( i + 1, prefix + std::to_string( i + 1 ) );
-//         }
-//     }
-// }
-
-// void MeshReader::testPerf() {
-//     NamesMapChar8 _nameOfNodes( NamesMapChar8( "TOTO.NOMNOE    " ) );
-//     auto nbCells = 55000000;
-//     std::cout << "nbCells " << nbCells << std::endl;
-//     add_automatic_names2( _nameOfNodes, nbCells, "N" );
-// }
 
 #endif
