@@ -3,7 +3,7 @@
  * @brief Implementation de EquationNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -353,7 +353,10 @@ VectorLong EquationNumbering::getDOFs( const bool sameRank, const VectorString &
     dofUsed.reserve( nbDof );
 
     for ( auto dof = 0; dof < nbDof; ++dof ) {
-        const auto node_id = std::abs( descr[dof].first );
+        const auto &nodeId1 = descr[dof].first;
+        if ( nodeId1 < 0 )
+            continue;
+        const auto node_id = nodeId1;
         const auto cmp_id = descr[dof].second;
         const bool l_keep_cmp = all_cmp || ( set_cmp.count( cmp_id ) > 0 );
         const bool l_keep_rank = all_rank || ( ( *nodesRank )[node_id] == rank );

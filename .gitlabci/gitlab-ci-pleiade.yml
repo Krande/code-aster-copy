@@ -71,7 +71,7 @@ compile:
       - build/mpi*/*/catalo/elem.1
       - build/mpi*/*/*.mod
       - install/*
-    expire_in: 3 days
+    expire_in: 6 hours
   rules:
     - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
@@ -91,7 +91,12 @@ doc_html:
 minimal_build:
   interruptible: true
   stage: test
-  needs: ["prepare", "compile", "check_source"]
+  needs:
+    - job: prepare
+    - job: compile
+      artifacts: false
+    - job: check_source
+      artifacts: false
   script:
     - .gitlabci/compile_minimal.sh
   rules:
@@ -148,10 +153,13 @@ verification_test:
     - job: prepare
     - job: compile
     - job: minimal_test
+      artifacts: false
       optional: true
     - job: check_source
+      artifacts: false
       optional: true
     - job: doc_html
+      artifacts: false
       optional: true
   script:
     - .gitlabci/test.sh
@@ -173,7 +181,11 @@ verification_test:
 known_failures_test:
   interruptible: true
   stage: test
-  needs: ["prepare", "compile", "minimal_test"]
+  needs:
+    - job: prepare
+    - job: compile
+    - job: minimal_test
+      artifacts: false
   script:
     - .gitlabci/test.sh
         --testlist .gitlabci/known_failures-pleiade.list

@@ -2,7 +2,7 @@
  * @file ContactNewInterface.cxx
  * @brief Interface python de ContactNew
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,25 +33,25 @@ void exportContactNewToPython( py::module_ &mod ) {
 Return the model used in the contact definition
 
 Returns:
-    Model: model
+    Model: model.
         )" )
         .def( "getMesh", &ContactNew::getMesh, R"(
 Return the mesh used in the contact definition
 
 Returns:
-    BaseMesh: mesh.
+    Mesh: mesh.
         )" )
         .def( "getFiniteElementDescriptor", &ContactNew::getFiniteElementDescriptor, R"(
 Return the finite element descriptor to define virtual cells for Lagrange multipliers
 
 Returns:
-    FiniteElementDescriptor: finite element descriptor
+    FiniteElementDescriptor: fed.
         )" )
         .def( "getNumberOfContactZones", &ContactNew::getNumberOfContactZones, R"(
 Return the number of contact zones used
 
 Returns:
-    int: number of contact zones.
+    inter: number of contact zones.
         )" )
         .def( "getContactZone", &ContactNew::getContactZone, R"(
 Return the specified contact zone
@@ -103,6 +103,9 @@ bool: enable or disable the use of friction.
         )" )
         .def_property( "hasSmoothing", &ContactNew::hasSmoothing, &ContactNew::enableSmoothing, R"(
 bool: enable or disable  the use of smoothing.
+        )" )
+        .def( "isParallel", &ContactNew::isParallel, R"(
+bool: true if parallel contact.
         )" );
 
     py::class_< FrictionNew, FrictionNewPtr, ContactNew >( mod, "FrictionNew" )

@@ -842,9 +842,12 @@ list_cmp_depl = (
     "DRGX",
     "DRGY",
     "DRGZ",
-    "HHO_DX[10]",
-    "HHO_DY[10]",
-    "HHO_DZ[10]",
+    "HHO_CX[10]",
+    "HHO_CY[10]",
+    "HHO_CZ[10]",
+    "HHO_FX[6]",
+    "HHO_FY[6]",
+    "HHO_FZ[6]",
     "HHO_VR[10]",
     "HHO_LG[10]",
     "PINCH",
@@ -917,9 +920,12 @@ comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DRGX    : rotation des grilles (élément poutre assemblage combustible)
        DRGY    : rotation des grilles (élément poutre assemblage combustible)
        DRGZ    : rotation des grilles (élément poutre assemblage combustible)
-       HHO_DX : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
-       HHO_DY : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
-       HHO_DZ : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
+       HHO_CX : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell - dir X)
+       HHO_CY : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell - dir Y)
+       HHO_CZ : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell - dir Z)
+       HHO_FX : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (face - dir X)
+       HHO_FY : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (face - dir Y)
+       HHO_FZ : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (face - dir Z)
        HHO_VR : degres de liberté HHO: VARI (cell + faces)
        HHO_LG : degres de liberté HHO: LAG_GV (cell)
        PINCH   : pinch dof for solid-shell elements
@@ -1893,8 +1899,8 @@ ETHM_R = PhysicalQuantity(
     type="R",
     components=("COEF[4]", "PRE[2]"),
     comment="""  ETHM_R Type:R Coef Echange lineaire (modelisation THM)
-       COEF :C11 C12 C21 C22 
-       PRE : PRE1 ext et PRE2 ext 
+       COEF :C11 C12 C21 C22
+       PRE : PRE1 ext et PRE2 ext
 
 """,
 )
@@ -1902,8 +1908,8 @@ ETHM_F = PhysicalQuantity(
     type="K8",
     components=("COEF[4]", "PRE[2]"),
     comment="""  ETHM_F Type:F Coef Echange lineaire (modelisation THM)
-       COEF :C11 C12 C21 C22 
-       PRE : PRE1 ext et PRE2 
+       COEF :C11 C12 C21 C22
+       PRE : PRE1 ext et PRE2
 
 """,
 )
@@ -2284,7 +2290,9 @@ N240_I = PhysicalQuantity(type="I", components=("X[240]",))
 
 N2448R = PhysicalQuantity(type="R", components=("X[2448]",))
 
-N3240R = PhysicalQuantity(type="R", components=("X[6480]",))
+N3600R = PhysicalQuantity(type="R", components=("X[3600]",))
+
+N6480R = PhysicalQuantity(type="R", components=("X[6480]",))
 
 N480_I = PhysicalQuantity(
     type="I",
@@ -3658,7 +3666,8 @@ TEMP_R = PhysicalQuantity(
         "DTX",
         "DTY",
         "DTZ",
-        "HHO_T[10]",
+        "HHO_CT[10]",
+        "HHO_FT[6]",
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3672,8 +3681,8 @@ TEMP_R = PhysicalQuantity(
        DTX : derivee de la temperature selon x (n'est pas un ddl)
        DTY : derivee de la temperature selon y (n'est pas un ddl)
        DTZ : derivee de la temperature selon z (n'est pas un ddl)
-       HHO_T : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
-
+       HHO_CT : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
+       HHO_FT : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y face)
 """,
 )
 

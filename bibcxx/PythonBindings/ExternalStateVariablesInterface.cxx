@@ -2,7 +2,7 @@
  * @file ExternalStateVariablesInterface.cxx
  * @brief Main interface for ExternalStateVariable
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -144,5 +144,24 @@ void exportExternalStateVariablesToPython( py::module_ &mod ) {
               py::arg( "evolutionParameter" ) );
     py::class_< ExternalVariableTraits >( mod, "ExternalVariableTraits" )
         .def( "getExternVarTypeStr", &ExternalVariableTraits::getExternVarTypeStr, R"()" );
-    py::enum_< externVarEnumInt >( mod, "externVarEnumInt" );
+    py::enum_< externVarEnumInt >( mod, "externVarEnumInt", R"(
+Enumeration for external variable.
+    )" )
+        .value( "Unknown", externVarEnumInt::Unknown )
+        .value( "Temperature", externVarEnumInt::Temperature )
+        .value( "Geometry", externVarEnumInt::Geometry )
+        .value( "Corrosion", externVarEnumInt::Corrosion )
+        .value( "IrreversibleStrain", externVarEnumInt::IrreversibleStrain )
+        .value( "ConcreteHydration", externVarEnumInt::ConcreteHydration )
+        .value( "Irradiation", externVarEnumInt::Irradiation )
+        .value( "SteelPhases", externVarEnumInt::SteelPhases )
+        .value( "ZircaloyPhases", externVarEnumInt::ZircaloyPhases )
+        .value( "Neutral1", externVarEnumInt::Neutral1 )
+        .value( "Neutral2", externVarEnumInt::Neutral2 )
+        .value( "Neutral3", externVarEnumInt::Neutral3 )
+        .value( "ConcreteDrying", externVarEnumInt::ConcreteDrying )
+        .value( "TotalFluidPressure", externVarEnumInt::TotalFluidPressure )
+        .value( "VolumetricStrain", externVarEnumInt::VolumetricStrain )
+        .value( "NumberOfExternVarTypes", externVarEnumInt::NumberOfExternVarTypes )
+        .export_values();
 };

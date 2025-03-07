@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -122,8 +122,7 @@ subroutine ap_infast_n(mesh, newgeo, pair_tole, dist_ratio, nb_elem_mast, &
     i_zone = 0
     ASSERT(i_zone .le. 100)
     call codent(i_zone-1, 'G', knuzo)
-    conx_inve = sdappa(1:8)//'.CM'
-!    conx_inve=sdappa(1:19)//'.CM'//knuzo(1:2)
+    conx_inve = sdappa(1:19)
     call jeveuo(conx_inve, 'L', vi=v_cninv)
     call jeveuo(jexatr(conx_inve, 'LONCUM'), 'L', vi=v_cninv_lcum)
 !    call jeveuo(sdappa(1:19)//'.LM'//knuzo(1:2),'L', vi = list_node_mast)

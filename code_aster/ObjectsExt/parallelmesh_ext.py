@@ -301,14 +301,17 @@ class ExtendedParallelMesh:
 
         return CREA_MAILLAGE(MAILLAGE=self, RESTREINT=_F(GROUP_MA=groupsOfCells), INFO=info)
 
-    def createMedCouplingMesh(self):
+    def createMedCouplingMesh(self, spacedim_3d=False):
         """Returns the MEDCoupling unstructured mesh associated to the current mesh.
+
+        Arguments:
+            spacedim_3d (*bool*): if true, space dimension of mc mesh is forced to 3
 
         Returns:
             Mesh: The MEDCoupling unstructured mesh associated to the current mesh.
         """
 
-        return convertMesh2MedCoupling(self)
+        return convertMesh2MedCoupling(self, spacedim_3d)
 
     @classmethod
     def buildSquare(cls, l=1, refine=0, info=1, deterministic=False):
@@ -443,6 +446,67 @@ class ExtendedParallelMesh:
             mesh_p = cls()
             mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
+
+    @classmethod
+    def buildRing(cls, rint=0.1, rext=1, refine=0, info=1, deterministic=False):
+        """Build the mesh of a ring.
+
+        Arguments:
+            rint [float] : internal radius (default 0.1).
+            rext [float] : external radius (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+        # Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 6
+        refine_0 = min(min_level, refine)
+        refine_1 = refine - refine_0
+
+        with shared_tmpdir("buildRing") as tmpdir:
+            filename = osp.join(tmpdir, "buildRing.med")
+            if MPI.ASTER_COMM_WORLD.rank == 0:
+                mesh = Mesh.buildRing(rint=rint, rext=rext, refine=refine_0, info=info)
+                mesh.printMedFile(filename)
+            ResultNaming.syncCounter()
+
+            # Mesh creation
+            mesh_p = cls()
+            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            return mesh_p.refine(refine_1, info)
+
+        return mesh
+
+    @classmethod
+    def buildTube(cls, height=3, rint=0.1, rext=1, refine=0, info=1, deterministic=False):
+        """Build the mesh of a tube.
+
+        Arguments:
+            height [float] : height along the z axis (default 3).
+            rint [float] : internal radius (default 0.1).
+            rext [float] : external radius (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (1 or 2). (default 1).
+        """
+        # Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 6
+        refine_0 = min(min_level, refine)
+        refine_1 = refine - refine_0
+
+        with shared_tmpdir("buildTube") as tmpdir:
+            filename = osp.join(tmpdir, "buildTube.med")
+            if MPI.ASTER_COMM_WORLD.rank == 0:
+                mesh = Mesh.buildTube(
+                    height=height, rint=rint, rext=rext, refine=refine_0, info=info
+                )
+                mesh.printMedFile(filename)
+            ResultNaming.syncCounter()
+
+            # Mesh creation
+            mesh_p = cls()
+            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            return mesh_p.refine(refine_1, info)
+
+        return mesh
 
     def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.

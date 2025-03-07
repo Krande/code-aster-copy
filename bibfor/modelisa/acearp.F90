@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
+subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     use cara_elem_carte_type
     implicit none
     type(cara_elem_info) :: infdonn
-    integer :: lmax, noemaf, nbocc, ivr(*)
+    integer :: lmax, noemaf, nbocc, ivr(*), zjdlm(*)
     type(cara_elem_carte) :: infcarte(*)
 !
 #include "asterf_types.h"
@@ -44,6 +44,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -63,8 +64,8 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     parameter(nbcar=100, nbval=12, nrd=2)
     integer :: jdc(3), jdv(3), iunite, ifm, iretour
     integer :: jdcinf, jdvinf
-    integer :: ii, iamto, idecal, in, inbn, ino, inoe, ioc, irep
-    integer :: irgno, irgto, isym, itbmp, itbno, iv
+    integer :: ii, idecal, in, inbn, ino, inoe, ioc, irep
+    integer :: irgno, isym, itbmp, itbno, iv, nummail
     integer :: jd, jdls, jj, jn
     integer :: ll, ldgm, ldnm, lokm, lorep, nbnma
     integer :: nbno, nbnoeu, nc, ncar, ncmp
@@ -80,6 +81,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     character(len=24) :: mlgnno, mlgnma
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: transl, trarot, okunite
+    aster_logical :: l_pmesh
 !
     data repdis/'GLOBAL          ', 'LOCAL           '/
     data kma/'K', 'M', 'A'/
@@ -89,6 +91,11 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     nomu = infdonn%nomu
     noma = infdonn%maillage
     ndim = infdonn%dimmod
+!   Si c'est un maillage partionné ==> PLOUF
+    l_pmesh = isParallelMesh(noma)
+    if ( l_pmesh ) then
+        call utmess('F', 'AFFECARAELEM_99')
+    endif
 !   Pour les discrets c'est obligatoirement du 2D ou 3D
     ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
 !
@@ -98,8 +105,6 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     call wkvect('&&TMPDISCRET', 'V V K24', lmax, jdls)
     call wkvect('&&TMPTABNO', 'V V K8', lmax, itbno)
     call wkvect('&&TMPRIGNO', 'V V R', 6*lmax, irgno)
-    call wkvect('&&TMPRIGTO', 'V V R', 6*noemaf, irgto)
-    call wkvect('&&TMPAMOTO', 'V V R', 6*noemaf, iamto)
     call wkvect('&&TMPTABMP', 'V V K8', lmax, itbmp)
 !
 !   Les cartes sont déjà construites : ace_crea_carte
@@ -205,8 +210,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
                     idecal = idecal+2
                 endif
                 call rairep(noma, ioc, car(nc), vale, ng, &
-                            zk24(jdls), nbno, zk8(itbno), zr(irgno), zr(irgto), &
-                            zr(iamto), rirot, ndim)
+                            zk24(jdls), zjdlm, nbno, zk8(itbno), zr(irgno), rirot, ndim)
             else if (trarot) then
                 lamass = 'M'//car(nc)(2:8)
                 ! En 3D          1  2  3  4  5  6     1  2  3  4  5  6
@@ -233,15 +237,12 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
                     idecal = idecal+3
                 endif
                 call rairep(noma, ioc, car(nc), vale, ng, &
-                            zk24(jdls), nbno, zk8(itbno), zr(irgno), zr(irgto), &
-                            zr(iamto), rirot, ndim)
+                            zk24(jdls), zjdlm, nbno, zk8(itbno), zr(irgno), rirot, ndim)
             else
                 ASSERT(.false.)
             end if
 !
-            do ino = 1, nbno
-                zk8(itbmp+ino-1) = ' '
-            end do
+            zk8(itbmp:itbmp+nbno-1) = ' '
 !
             nbnoeu = 0
             lokm = 0
@@ -253,25 +254,40 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 !
             call jelira(jexnom(noma//'.GROUPEMA', nogp), 'LONMAX', nma)
             call jeveuo(jexnom(noma//'.GROUPEMA', nogp), 'L', ldgm)
-!
             if (nma .ne. nbno) then
                 vali(1) = nbno
                 vali(2) = nma
                 call utmess('F', 'MODELISA2_10', sk=nogp, ni=2, vali=vali)
             end if
-!
+!           Boucle sur les mailles du groupe 'nogp'
             do in = 0, nma-1
+!               Le numéro de la maille
+                nummail = zi(ldgm+in)
+!               Vérification que la maille DISCRET fait partie du maillage
+                if (nummail .le. 0) then
+                    nommai = '????'
+                    call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[nogp,nommai])
+                endif
+!               Nom de la maille du discret
+                call jenuno(jexnum(mlgnma, nummail), nommai)
+!               Vérification que la maille DISCRET fait partie du modèle
+                if ( zjdlm(nummail) .eq. 0 ) then
+                    call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[nogp,nommai])
+                endif
+                zjdlm(nummail) = -abs(zjdlm(nummail))
 !               Récupère le nombre de noeud de la maille
-                call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma)
-                call jeveuo(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'L', ldnm)
-                call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
-!               Boucle sur le nb de noeud de la maille
+                call jelira(jexnum(noma//'.CONNEX', nummail), 'LONMAX', nbnma)
+                call jeveuo(jexnum(noma//'.CONNEX', nummail), 'L', ldnm)
+!               Si la maille n'a pas le bon nombre de noeud
                 if (nbnma .ne. nbnoeu) then
                     call utmess('F', 'MODELISA_20', sk=nommai)
                 end if
+!               Boucle sur le nb de noeud de la maille
                 do inbn = 1, nbnma
                     inoe = zi(ldnm+inbn-1)
+!                   Nom du noeud
                     call jenuno(jexnum(mlgnno, inoe), nomnoe)
+!                   Vérification que le noeud fait partie de la surface (sortie de rairep)
                     do ino = 1, nbno
                         if (zk8(itbno+ino-1) .eq. nomnoe) then
                             zk8(itbmp+ino-1) = nommai
@@ -280,7 +296,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
                     end do
                 end do
 !               Si on passe ici aucun des noeuds du discret appartient à la surface.
-!               Ce n'est pas normal
+!               Ce n'est pas normal ==> F
                 write (ifm, *) 'GROUP_MA :', (' '//zk24(jdls+ii-1), ii=1, ng)
                 call utmess('F', 'MODELISA_21', sk=nomnoe)
 22              continue
@@ -361,8 +377,6 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     call jedetr('&&TMPDISCRET')
     call jedetr('&&TMPTABNO')
     call jedetr('&&TMPRIGNO')
-    call jedetr('&&TMPRIGTO')
-    call jedetr('&&TMPAMOTO')
     call jedetr('&&TMPTABMP')
 !
     call jedema()
@@ -379,5 +393,9 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
            '    VALE=(', 3(1x, 1pe12.5, ','), /, &
            '          ', 3(1x, 1pe12.5, ','), '),', /, &
            '    REPERE=''', a, '''),')
+
+! 210 format(a,2x,a8,2x,a,3(2x,1pe12.5),2x,a)
+! 211 format(a,2x,a8,2x,a,3(2x,1pe12.5),2(1x,1pe12.5),2x,a)
+
 !&>
 end subroutine

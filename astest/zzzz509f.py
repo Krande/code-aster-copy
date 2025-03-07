@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ maxSteps = 5
 timeStepper = DEFI_LIST_INST(
     METHODE="AUTO",
     DEFI_LIST=_F(LIST_INST=LI1, NB_PAS_MAXI=maxSteps),
-    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=2, SUBD_NIVEAU=4),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=2, SUBD_NIVEAU=6),
 )
 
 ### >>>>>>>>>>>>>>>>>>>
@@ -283,7 +283,6 @@ CHA_DEPL2 = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=(_F(GROUP_MA=("BAS",), DX=0, 
 
 LI1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=10), _F(JUSQU_A=2.0, NOMBRE=10)))
 
-maxSteps = 6
 maxSteps = 9
 timeStepper = DEFI_LIST_INST(
     METHODE="AUTO",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,11 +83,7 @@ COMP = DEFI_FONCTION(
 )
 
 
-ACIER = DEFI_MATERIAU(
-    ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0),
-    TRACTION=_F(SIGM=COMP),
-    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
-)
+ACIER = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0), TRACTION=_F(SIGM=COMP))
 
 
 CM = AFFE_MATERIAU(MAILLAGE=M, AFFE=_F(TOUT="OUI", MATER=ACIER))
@@ -129,9 +125,11 @@ BERE = POST_BEREMIN(
     DEFORMATION="PETIT",
     GROUP_MA="s_tout",
     FILTRE_SIGM="SIGM_ELGA",
-    LIST_NUME_VARI=(1, 2),
+    NUME_VARI=2,
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
 )
 
+IMPR_TABLE(TABLE=BERE, UNITE=6)
 
 # POST_BEREMIN AVEC OPTION SIGM_ELMOY, PETIT DEF, SANS CORRECTION DE PLASTICITE
 BERE2 = POST_BEREMIN(
@@ -140,8 +138,10 @@ BERE2 = POST_BEREMIN(
     DEFORMATION="PETIT",
     GROUP_MA="s_tout",
     FILTRE_SIGM="SIGM_ELMOY",
-    LIST_NUME_VARI=(1, 2),
+    NUME_VARI=2,
+    WEIBULL=_F(M=8.0, VOLU_REFE=1.25e-4, SIGM_REFE=2630.0e0),
 )
+IMPR_TABLE(TABLE=BERE2, UNITE=6)
 
 
 # TESTS POST_BEREMIN

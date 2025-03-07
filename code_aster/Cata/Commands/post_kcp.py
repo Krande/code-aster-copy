@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ POST_KCP = MACRO(
     EPAIS_MDB=SIMP(statut="o", typ="R"),
     MATER_REV=SIMP(statut="o", typ=mater_sdaster),
     EPAIS_REV=SIMP(statut="o", typ="R"),
+    UNITE_LONGUEUR=SIMP(statut="o", typ="TXM", into=("M", "MM")),
     FISSURE=FACT(
         statut="o",
         FORM_FISS=SIMP(statut="o", typ="TXM", into=("SEMI_ELLIPTIQUE", "BANDE")),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ DDL_THER = LocatedComponents(
     phys=PHY.TEMP_R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("HHO_T[2]",)), ("EN2", ()), ("EN3", ("HHO_T[3]"))),
+    components=(("EN1", ("HHO_FT[2]",)), ("EN2", ()), ("EN3", ("HHO_FT[3]"))),
 )
 
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
@@ -42,10 +42,10 @@ CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[66]",))
 CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[66]",))
 
 CHHOBS = LocatedComponents(
-    phys=PHY.N480_R,
+    phys=PHY.N3600R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
+    components=(("EN1", ("X[3]",)), ("EN2", ()), ("EN3", ("X[21]"))),
 )
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))

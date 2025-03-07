@@ -94,13 +94,7 @@ def raiseAsterError(idmess="VIDE_1"):
 
 
 class PythonBool:
-    """Enumeration that represents an extended boolean.
-
-    Attributes:
-        FALSE (int): False is 0
-        NONE (int): None means undefined, is -1
-        TRUE (int): True is 1
-    """
+    """Enumeration that represents an extended boolean."""
 
     # Method resolution order:
     #     PythonBool
@@ -195,11 +189,12 @@ class DataStructure:
             bool: *True* if all went ok, *False* otherwise.
         """
 
-    def debugPrint(self, unit=6):
+    def debugPrint(self, unit=6, synchro=True):
         """Print the raw content of a *DataStructure* on the selected file.
 
         Args:
             unit (int): File number (default: 6, means stdout).
+            synchro (bool): To synchronize prints between processors (default: True).
         """
 
     def getDependencies(self):
@@ -411,7 +406,7 @@ class Node:
 
 
 class EntityType:
-    pass
+    """Enumeration for entity type."""
 
     # Method resolution order:
     #     EntityType
@@ -713,6 +708,9 @@ class BaseMesh(DataStructure):
         Returns:
             bool : *True* if mesh contains at least one cell of given type, else *False*
         """
+
+    def isConnection(self):
+        """Function to know if a mesh is a ConnectionMesh"""
 
     def isIncomplete(self):
         """Tell if the mesh is complete on parallel instances.
@@ -3329,6 +3327,13 @@ class FieldOnNodesReal(DataField):
             SimpleFieldOnNodesReal: field converted
         """
 
+    def transfertToConnectionMesh(self, arg0):
+        """Transfer SimpleFieldOnNodes to a ConnectionMesh
+
+        Returns:
+            SimpleFieldOnNodesReal: transfered field
+        """
+
     def transform(self, func):
         """Apply a function to each value of the object.
 
@@ -3698,6 +3703,13 @@ class ConstantFieldOnCellsReal(DataField):
 
         Returns:
             int: size of field
+        """
+
+    def toSimpleFieldOnCells(self, arg0):
+        """Convert to SimpleFieldOnCells
+
+        Returns:
+            SimpleFieldOnCellsReal: field converted
         """
 
 
@@ -5451,7 +5463,7 @@ class Contact(DataStructure):
 
 
 class ContactAlgo:
-    pass
+    """Enumeration for contact algorithm."""
 
     # Method resolution order:
     #     ContactAlgo
@@ -5519,7 +5531,7 @@ class ContactAlgo:
 
 
 class ContactVariant:
-    pass
+    """Enumeration for contact variant."""
 
     # Method resolution order:
     #     ContactVariant
@@ -5591,7 +5603,7 @@ class ContactVariant:
 
 
 class ContactType:
-    pass
+    """Enumeration for contact type."""
 
     # Method resolution order:
     #     ContactType
@@ -5657,7 +5669,7 @@ class ContactType:
 
 
 class FrictionAlgo:
-    pass
+    """Enumeration for friction algorithm."""
 
     # Method resolution order:
     #     FrictionAlgo
@@ -5725,7 +5737,7 @@ class FrictionAlgo:
 
 
 class FrictionType:
-    pass
+    """Enumeration for friction type."""
 
     # Method resolution order:
     #     FrictionType
@@ -5795,7 +5807,7 @@ class FrictionType:
 
 
 class PairingAlgo:
-    pass
+    """Enumeration for pairing algorithm."""
 
     # Method resolution order:
     #     PairingAlgo
@@ -5859,7 +5871,7 @@ class PairingAlgo:
 
 
 class InitialState:
-    pass
+    """Enumeration for initial state."""
 
     # Method resolution order:
     #     InitialState
@@ -5927,7 +5939,7 @@ class InitialState:
 
 
 class JacobianType:
-    pass
+    """Enumeration for jacobian type."""
 
     # Method resolution order:
     #     JacobianType
@@ -6339,28 +6351,28 @@ class ContactNew(DataStructure):
         """Return the finite element descriptor to define virtual cells for Lagrange multipliers
 
         Returns:
-            FiniteElementDescriptor: finite element descriptor
+            FiniteElementDescriptor: fed.
         """
 
     def getMesh(self):
         """Return the mesh used in the contact definition
 
         Returns:
-            BaseMesh: mesh.
+            Mesh: mesh.
         """
 
     def getModel(self):
         """Return the model used in the contact definition
 
         Returns:
-            Model: model
+            Model: model.
         """
 
     def getNumberOfContactZones(self):
         """Return the number of contact zones used
 
         Returns:
-            int: number of contact zones.
+            inter: number of contact zones.
         """
 
     def getVerbosity(self):
@@ -6372,6 +6384,9 @@ class ContactNew(DataStructure):
         Returns:
             integer: level of verbosity
         """
+
+    def isParallel(self):
+        """bool: true if parallel contact."""
 
     def setVerbosity(self, level):
         """Set level of verbosity:
@@ -6436,12 +6451,12 @@ class ContactZone(DataStructure):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ContactZone, arg0: str, arg1: Model) -> None
+        1. __init__(self: libaster.ContactZone, arg0: str) -> None
 
-        2. __init__(self: libaster.ContactZone, arg0: Model) -> None
+        2. __init__(self: libaster.ContactZone) -> None
         """
 
-    def build(self):
+    def build(self, arg0):
         """Build and check internal objects
 
         Returns:
@@ -6614,9 +6629,9 @@ class MeshPairing(DataStructure):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.MeshPairing, arg0: str, arg1: libaster.BaseMesh) -> None
+        1. __init__(self: libaster.MeshPairing, arg0: str) -> None
 
-        2. __init__(self: libaster.MeshPairing, arg0: libaster.BaseMesh) -> None
+        2. __init__(self: libaster.MeshPairing) -> None
         """
 
     def checkNormals(self, model):
@@ -6791,6 +6806,13 @@ class MeshPairing(DataStructure):
             str: excluded groups' names
         """
 
+    def setMesh(self, mesh):
+        """Set Mesh
+
+        Arguments:
+            mesh (BaseMesh): support mesh
+        """
+
     def setMethod(self, method):
         """Set method of pairing
 
@@ -6814,13 +6836,6 @@ class MeshPairing(DataStructure):
 
         Arguments:
             level (integer): level of verbosity
-        """
-
-    def updateCoordinates(self, disp):
-        """Update coordinates of nodes
-
-        Arguments:
-            disp (FieldOnNodesReal): nodal field of displacement
         """
 
 
@@ -9122,7 +9137,7 @@ class RitzBasis(GenericModalBasis):
 
 
 class InterfaceType:
-    pass
+    """Enumeration of interface type."""
 
     # Method resolution order:
     #     InterfaceType
@@ -9565,7 +9580,7 @@ class MechanicalLoadDescriptionReal(DataStructure):
 
 
 class Loads:
-    pass
+    """Enumeration for type of load."""
 
     # Method resolution order:
     #     Loads
@@ -10253,7 +10268,7 @@ class DistributedHydraulicFluxReal(MechanicalLoadReal):
 
 
 class PhysicalQuantityComponent:
-    pass
+    """Enumeration for physical component."""
 
     # Method resolution order:
     #     PhysicalQuantityComponent
@@ -11449,6 +11464,13 @@ class Crack(DataStructure):
     def getConfigInit(self):
         """Return the crack initial configuration"""
 
+    def getCrackFrontAbsCurv(self):
+        """Return the crack front absc curv
+
+        Returns:
+            list[float]: the crack front absc curv
+        """
+
     def getCrackFrontBasis(self):
         """Return the crack front basis
 
@@ -11583,7 +11605,7 @@ class GeneralizedModel(DataStructure):
 
 
 class Physics:
-    pass
+    """Enumeration physics."""
 
     # Method resolution order:
     #     Physics
@@ -11651,7 +11673,7 @@ class Physics:
 
 
 class Modelings:
-    pass
+    """Enumeration of modelings."""
 
     # Method resolution order:
     #     Modelings
@@ -12081,7 +12103,7 @@ class Modelings:
 
 
 class Formulation:
-    pass
+    """Enumeration of formulation."""
 
     # Method resolution order:
     #     Formulation
@@ -12159,7 +12181,7 @@ class Formulation:
 
 
 class ModelSplitingMethod:
-    pass
+    """Enumeration for model split method ."""
 
     # Method resolution order:
     #     ModelSplitingMethod
@@ -12227,7 +12249,7 @@ class ModelSplitingMethod:
 
 
 class GraphPartitioner:
-    pass
+    """Enumeration for graph partitionner."""
 
     # Method resolution order:
     #     GraphPartitioner
@@ -15323,6 +15345,126 @@ class ParallelFiniteElementDescriptor(FiniteElementDescriptor):
         """
 
 
+# class ParallelContactFEDescriptor in libaster
+
+
+class ParallelContactFEDescriptor(FiniteElementDescriptor):
+    pass
+
+    # Method resolution order:
+    #     ParallelContactFEDescriptor
+    #     FiniteElementDescriptor
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0, arg1, arg2, arg3, arg4, arg5):
+        pass
+
+    def getJointObjectName(self):
+        pass
+
+    def getJoints(self):
+        """Return the vector of joints between the curent domain and the others subdomains.
+
+        Returns:
+            list: joints between subdomains.
+        """
+
+
+# class ParallelContactNew in libaster
+
+
+class ParallelContactNew(ContactNew):
+    pass
+
+    # Method resolution order:
+    #     ParallelContactNew
+    #     ContactNew
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.ParallelContactNew, arg0: str, arg1: libaster.Model, arg2: libaster.ParallelMesh) -> None
+
+        2. __init__(self: libaster.ParallelContactNew, arg0: libaster.Model, arg1: libaster.ParallelMesh) -> None
+        """
+
+    def build(self):
+        pass
+
+    def getConnectionModel(self):
+        pass
+
+    def getParallelFiniteElementDescriptor(self):
+        """Return ParallelFiniteElementDescriptor"""
+
+    def isParallel(self):
+        """bool: true if parallel contact."""
+
+
+# class ParallelFrictionNew in libaster
+
+
+class ParallelFrictionNew(ParallelContactNew):
+    pass
+
+    # Method resolution order:
+    #     ParallelFrictionNew
+    #     ParallelContactNew
+    #     ContactNew
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.ParallelFrictionNew, arg0: str, arg1: libaster.Model, arg2: libaster.ParallelMesh) -> None
+
+        2. __init__(self: libaster.ParallelFrictionNew, arg0: libaster.Model, arg1: libaster.ParallelMesh) -> None
+        """
+
+
+# class ParallelContactPairing in libaster
+
+
+class ParallelContactPairing(ContactPairing):
+    pass
+
+    # Method resolution order:
+    #     ParallelContactPairing
+    #     ContactPairing
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.ParallelContactPairing, arg0: str, arg1: libaster.ParallelContactNew) -> None
+
+        2. __init__(self: libaster.ParallelContactPairing, arg0: libaster.ParallelContactNew) -> None
+        """
+
+    def buildFiniteElementDescriptor(self):
+        pass
+
+    def getParallelFiniteElementDescriptor(self):
+        """Return ParallelFiniteElementDescriptor"""
+
+
 # class ConnectionMesh in libaster
 
 
@@ -15412,6 +15554,9 @@ class ConnectionMesh(BaseMesh):
         Returns:
             bool: True if the group is present
         """
+
+    def isConnection(self):
+        """Function to know if a mesh is a ConnectionMesh"""
 
 
 # class ResultNaming in libaster
@@ -15706,7 +15851,7 @@ class ExternalVariableTraits:
 
 
 class externVarEnumInt:
-    pass
+    """Enumeration for external variable."""
 
     # Method resolution order:
     #     externVarEnumInt
@@ -15759,6 +15904,41 @@ class externVarEnumInt:
     @property
     def value(self):
         pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    ConcreteDrying = 11
+
+    ConcreteHydration = 4
+
+    Corrosion = 2
+
+    Geometry = 1
+
+    Irradiation = 5
+
+    IrreversibleStrain = 3
+
+    Neutral1 = 8
+
+    Neutral2 = 9
+
+    Neutral3 = 10
+
+    NumberOfExternVarTypes = 14
+
+    SteelPhases = 6
+
+    Temperature = 0
+
+    TotalFluidPressure = 12
+
+    Unknown = -1
+
+    VolumetricStrain = 13
+
+    ZircaloyPhases = 7
 
 
 # class ExternalStateVariablesResult in libaster
@@ -16615,7 +16795,7 @@ def applyBalancingStrategy(*args, **kwargs):
 
 
 class MedFileAccessType:
-    pass
+    """Enumeration med access type."""
 
     # Method resolution order:
     #     MedFileAccessType

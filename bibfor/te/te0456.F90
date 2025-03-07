@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine te0456(nomopt, nomte)
 !
     use HHO_type
     use HHO_quadrature_module
-    use HHO_postpro_module, only: hhoPostMeca, hhoPostTher, hhoPostTherElga
+    use HHO_postpro_module, only: hhoPostMeca, hhoPostTher, hhoPostTherElga, hhoPostMecaGradVari
     use HHO_init_module, only: hhoInfoInitCell
 !
     implicit none
@@ -28,6 +28,7 @@ subroutine te0456(nomopt, nomte)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/lteatt.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -52,7 +53,11 @@ subroutine te0456(nomopt, nomte)
 !
     if (nomopt == 'HHO_DEPL_MECA') then
 ! --- post-traitement
-        call hhoPostMeca(hhoCell, hhoData, nbnodes)
+        if (lteatt('TYPMOD2', 'HHO_GRAD')) then
+            call hhoPostMecaGradVari(hhoCell, hhoData, nbnodes)
+        else
+            call hhoPostMeca(hhoCell, hhoData, nbnodes)
+        end if
     else if (nomopt == 'HHO_TEMP_THER') then
         call hhoPostTher(hhoCell, hhoData, nbnodes)
     else if (nomopt == 'TEMP_ELGA') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,6 +59,7 @@ module HHO_postpro_module
 !
 ! --------------------------------------------------------------------------------------------------
     public :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher, hhoPostTherElga
+    public :: hhoPostMecaGradVari
     private :: hhoPostDeplMecaOP
 !
 contains
@@ -128,6 +129,94 @@ contains
         i = 1
         do ino = 1, nbnodes
             do idim = 1, ndim
+                zr(jvect-1+i) = post_sol(idim, ino)
+                i = i+1
+            end do
+        end do
+!
+    end subroutine
+!
+! ==================================================================================================
+! ==================================================================================================
+!
+    subroutine hhoPostMecaGradVari(hhoCell, hhoData, nbnodes)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        integer, intent(in) :: nbnodes
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics - GRAD_VARI
+!
+!   Evaluate HHO cell unknowns at the nodes
+!   In hhoCell         : a HHO Cell
+!   In hhoData         : information on HHO methods
+!   In nbnodes         : number of nodes
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_basis_cell) :: hhoBasisCell
+        integer :: mk_total_dofs, mk_cbs, mk_fbs, jvect, i, ino, ndim, idim, comp_dim
+        integer :: faces_dofs, gv_cbs, gv_fbs, gv_total_dofs
+        real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_U
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_U_dim, sol_V, sol_L
+        real(kind=8), dimension(5, 27) :: post_sol
+!
+        ndim = hhoCell%ndim
+        sol_U = 0.d0
+        sol_U_dim = 0.d0
+        sol_V = 0.d0
+        sol_L = 0.d0
+        post_sol = 0.d0
+!
+! --- number of dofs
+!
+        call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
+        call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+        comp_dim = mk_cbs/ndim
+        ASSERT(comp_dim == gv_cbs)
+        faces_dofs = mk_total_dofs-mk_cbs+gv_total_dofs-gv_cbs
+!
+! --- We get the solution on the cell
+!
+        call readVector('PDEPLPR', mk_cbs, sol_U, faces_dofs)
+        call readVector('PDEPLPR', gv_cbs, sol_V, faces_dofs+mk_cbs)
+        call readVector('PDEPLPR', gv_cbs, sol_L, faces_dofs+mk_cbs+gv_cbs)
+!
+! --- init cell basis
+!
+        call hhoBasisCell%initialize(hhoCell)
+!
+! --- Compute the solution in the cell nodes
+!
+        do idim = 1, ndim
+            sol_U_dim(1:comp_dim) = sol_U(1+(idim-1)*comp_dim:idim*comp_dim)
+            do ino = 1, nbnodes
+                post_sol(idim, ino) = hhoEvalScalCell( &
+                                      hhoBasisCell, hhoData%cell_degree(), &
+                                      hhoCell%coorno(1:3, ino), sol_U_dim, comp_dim &
+                                      )
+            end do
+        end do
+        do ino = 1, nbnodes
+            post_sol(ndim+1, ino) = hhoEvalScalCell( &
+                                    hhoBasisCell, hhoData%cell_degree(), &
+                                    hhoCell%coorno(1:3, ino), sol_V, gv_cbs &
+                                    )
+            post_sol(ndim+2, ino) = hhoEvalScalCell( &
+                                    hhoBasisCell, hhoData%cell_degree(), &
+                                    hhoCell%coorno(1:3, ino), sol_L, gv_cbs &
+                                    )
+        end do
+!
+! --- Copy of post_sol in PDEPL_R ('OUT' to fill)
+!
+        call jevech('PDEPL_R', 'E', jvect)
+!
+        i = 1
+        do ino = 1, nbnodes
+            do idim = 1, ndim+2
                 zr(jvect-1+i) = post_sol(idim, ino)
                 i = i+1
             end do

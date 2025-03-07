@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ module FE_algebra_module
 #include "asterf_types.h"
 #include "blas/dgemv.h"
 #include "blas/daxpy.h"
+#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,7 +36,7 @@ module FE_algebra_module
 !
     public :: dgemv_T_2xn, dgemv_T_3xn, dgemv_T_4xn, dgemv_T_6xn
     public :: dgemv_2x2, dgemv_3x3, dgemv_T_4x4, dgemv_T_6x6
-    public :: daxpy_1, daxpy_1x2, daxpy_1x3, daxpy_1xm
+    public :: daxpy_1, daxpy_1x2, daxpy_1x3, daxpy_1xm, dcopy_1
 !
 contains
 !
@@ -825,6 +826,72 @@ contains
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(m)
             call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+        end select
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine dcopy_1(n, x, y)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer, intent(in) :: n
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dcopy product with given size
+!   y = x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        blas_int :: b_incx, b_incy, b_n
+
+#ifdef FE_USE_BLAS
+        b_n = to_blas_int(n)
+        b_incx = to_blas_int(1)
+        b_incy = to_blas_int(1)
+        call dcopy(b_n, x, b_incx, y, b_incy)
+#else
+!
+        select case (n)
+        case (1)
+            y(1) = x(1)
+        case (2)
+            y(1) = x(1)
+            y(2) = x(2)
+        case (3)
+            y(1) = x(1)
+            y(2) = x(2)
+            y(3) = x(3)
+        case (4)
+            y(1) = x(1)
+            y(2) = x(2)
+            y(3) = x(3)
+            y(4) = x(4)
+        case (5)
+            y(1) = x(1)
+            y(2) = x(2)
+            y(3) = x(3)
+            y(4) = x(4)
+        case (6)
+            y(1) = x(1)
+            y(2) = x(2)
+            y(3) = x(3)
+            y(4) = x(4)
+            y(5) = x(5)
+            y(6) = x(6)
+        case default
+            b_n = to_blas_int(n)
+            b_incx = to_blas_int(1)
+            b_incy = to_blas_int(1)
+            call dcopy(b_n, x, b_incx, y, b_incy)
         end select
 #endif
 !

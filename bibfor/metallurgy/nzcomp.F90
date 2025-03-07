@@ -20,7 +20,8 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
                   nbPhase, nbVari, &
                   deltaTime01, deltaTime12, time2, &
                   tempInit, temp1, temp2, &
-                  metaPrev, metaCurr)
+                  metaPrev, metaCurr, &
+                  lNodeDebug_)
 !
     use Metallurgy_type
 !
@@ -34,12 +35,13 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
 #include "asterfort/Metallurgy_type.h"
 !
     integer, intent(in) :: jvMaterCode
-    type(META_MaterialParameters), intent(in) :: metaPara
+    type(META_MaterialParameters), intent(inout) :: metaPara
     integer, intent(in) :: numeComp, nbPhase, nbVari
     real(kind=8), intent(in) :: deltaTime01, deltaTime12, time2
     real(kind=8), intent(in) :: tempInit, temp1, temp2
     real(kind=8), intent(in) :: metaPrev(nbVari)
     real(kind=8), intent(out) :: metaCurr(nbVari)
+    aster_logical, optional, intent(in) :: lNodeDebug_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,6 +67,15 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: lNodeDebug
+!
+! --------------------------------------------------------------------------------------------------
+!
+    lNodeDebug = ASTER_FALSE
+    if (present(lNodeDebug_)) then
+        lNodeDebug = lNodeDebug_
+    end if
+
     select case (numeComp)
 !
     case (0)
@@ -75,6 +86,7 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
                     time2, deltaTime12, &
                     metaPrev, metaCurr)
     case (2)
+        metaPara%steel%lNodeDebug = lNodeDebug
         call zacier(metaPara%steel, nbPhase, nbVari, &
                     tempInit, temp1, temp2, &
                     deltaTime01, deltaTime12, &

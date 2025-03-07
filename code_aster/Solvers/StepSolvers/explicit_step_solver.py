@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,28 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Basics import SolverOptions as SOP
 from .meca_dyna_step_solver import MecaDynaStepSolver
-from ..TimeIntegrators import IntegrationType
+from ..TimeIntegrators import TimeScheme
 
 
 class ExplicitStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
-    integration_type = IntegrationType.Explicit
-
-    @classmethod
-    def create(cls, integrator, param):
-        """Setup a solver for the given problem.
-
-        Arguments:
-            integrator : time integrator
-            param (dict) : user keywords.
-
-        Returns:
-            *StepSolver*: A relevant *StepSolver* object.
-        """
-        return cls(integrator)
+    integrator_type = TimeScheme.Explicit
 
     def solve(self):
         """Solve a step.
@@ -46,11 +32,6 @@ class ExplicitStepSolver(MecaDynaStepSolver):
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        time, time_step = self.phys_state.time_prev, self.phys_state.time_step
-
-        # mandatory
-        criteria = self.get_feature(SOP.ConvergenceCriteria)
-        criteria.use(self.get_feature(SOP.OperatorsManager))
-
-        self._integrator.initializeStep(time, time_step)
-        self._integrator.integrate()
+        time, time_step = self.state.time_prev, self.state.time_step
+        self.oper.initializeStep(time, time_step)
+        self.oper.integrate()

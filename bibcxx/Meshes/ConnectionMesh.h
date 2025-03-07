@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -97,6 +97,24 @@ class ConnectionMesh : public BaseMesh {
     bool hasGroupOfNodes( const std::string &name, const bool local = false ) const;
 
     VectorLong getCells( const std::string name = "" ) const;
+
+    VectorLong getCells( const VectorString &names = {} ) const;
+
+    /**
+     * @brief Returns the nodes indexes of a group of cells
+     * @param name name of group of cells
+     * @param local node id in local or global numbering
+     * @param same_rank keep or not the nodes owned by the current domain
+     * @return list of nodes indexes
+     */
+    VectorLong getNodesFromCells( const std::string, const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
+
+    VectorLong getNodesFromCells( const VectorString &, const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
+
+    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
      * @brief Fonction permettant de savoir si un maillage est partiel

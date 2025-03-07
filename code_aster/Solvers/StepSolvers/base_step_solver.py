@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,49 +17,42 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Basics import LoggingManager, ProblemDispatcher, SolverFeature
-from ..Basics import SolverOptions as SOP
+from abc import ABC, abstractmethod
+
+from ...Utilities import no_new_attributes
+from ..Basics import ContextMixin, DispatcherMixin, LoggingManager
+from ..IterationSolver import BaseIterationSolver
 
 
-class BaseStepSolver(SolverFeature, ProblemDispatcher):
+class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
     """Solves a step, loops on iterations."""
 
-    provide = SOP.StepSolver
+    __needs__ = ("problem", "state", "oper", "linear_solver")
+    _iterations_solv = None
+    current_matrix = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
-    required_features = [
-        SOP.PhysicalProblem,
-        SOP.PhysicalState,
-        SOP.ConvergenceCriteria,
-        SOP.LinearSolver,
-    ]
+    @classmethod
+    def builder(cls, context):
+        """Default builder for :py:class:`ContextMixin` object.
+        Should be subclassed for non trivial constructor.
 
-    optional_features = [SOP.Contact, SOP.OperatorsManager]
+        Args:
+            context (Context): Context of the problem.
 
-    current_matrix = param = None
+        Returns:
+            instance: New object.
+        """
+        instance = super().builder(context)
+        instance._iterations_solv = BaseIterationSolver.factory(context)
+        return instance
 
     def __init__(self):
-        super(BaseStepSolver, self).__init__()
-        self.current_matrix = self.param = None
-
-    @property
-    def conv_criteria(self):
-        """ConvergenceCriteria: Convergence criteria object."""
-        return self.get_feature(SOP.ConvergenceCriteria)
-
-    def _createPrivate(self, param):
-        self.setParameters(param)
-
-    def setParameters(self, param):
-        """Set parameters from user keywords.
-
-        Arguments:
-            param (dict) : user keywords.
-        """
-        self.param = param
+        super().__init__()
+        self.current_matrix = None
 
     def initialize(self):
         """Initialization."""
-        self.check_features()
 
     def createLoggingManager(self):
         """Return a logging manager
@@ -76,24 +69,10 @@ class BaseStepSolver(SolverFeature, ProblemDispatcher):
 
         return logManager
 
+    @abstractmethod
     def solve(self):
         """Solve a step.
 
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        raise NotImplementedError
-
-    def _get(self, keyword, parameter=None, default=None):
-        """Return a keyword value"""
-        if parameter is not None:
-            if keyword in self.param and self.param.get(keyword) is not None:
-                return self.param.get(keyword).get(parameter, default)
-            else:
-                return default
-
-        return self.param.get(keyword, default)
-
-    def setup(self):
-        """set up the step solver."""
-        raise NotImplementedError

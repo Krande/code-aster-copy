@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ DDL_MECA = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        ("EN1", ("HHO_DX[6]", "HHO_DY[6]", "HHO_DZ[6]", "HHO_VR[6]")),
+        ("EN1", ("HHO_FX[6]", "HHO_FY[6]", "HHO_FZ[6]", "HHO_VR[6]")),
         ("EN2", ()),
-        ("EN3", ("HHO_DX[10]", "HHO_DY[10]", "HHO_DZ[10]", "HHO_VR[10]", "HHO_LG[10]")),
+        ("EN3", ("HHO_CX[10]", "HHO_CY[10]", "HHO_CZ[10]", "HHO_VR[10]", "HHO_LG[10]")),
     ),
 )
 
@@ -47,9 +47,9 @@ DDL_DEPL = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        ("EN1", ("HHO_DX[6]", "HHO_DY[6]", "HHO_DZ[6]")),
+        ("EN1", ("HHO_FX[6]", "HHO_FY[6]", "HHO_FZ[6]")),
         ("EN2", ()),
-        ("EN3", ("HHO_DX[10]", "HHO_DY[10]", "HHO_DZ[10]")),
+        ("EN3", ("HHO_CX[10]", "HHO_CY[10]", "HHO_CZ[10]")),
     ),
 )
 
@@ -347,13 +347,17 @@ CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[1380]",)
 CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[1081]",))
 
 CHHOBS = LocatedComponents(
-    phys=PHY.N480_R,
+    phys=PHY.N3600R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[250]"))),
+    components=(("EN1", ("X[21]",)), ("EN2", ()), ("EN3", ("X[210]"))),
 )
 
-DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
+DEPLHHO = LocatedComponents(
+    phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "VARI", "LAG_GV")
+)
+
+DEPLCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[21]",))
 
@@ -539,7 +543,7 @@ class MECA3DGVH_HHO222(Element):
             te=458,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
-                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO),
+                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLCINE),
                 (OP.HHO_CINE_R_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_DEPL),),

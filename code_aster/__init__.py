@@ -53,13 +53,15 @@ See :py:mod:`code_aster.rc` object to adjust the initialization parameters.
 
 Here is the diagram of the package organization:
 
-.. image:: ../../img/diagr_code_aster.png
+.. image:: ../../img/diagr_code_aster.svg
    :align: center
 
 """
 
+__all__ = ("libaster", "rc", "__version__")
+
 # image generated with:
-#   diagr_import --pkg --grp -g doc/img/diagr_code_aster.png \
+#   diagr_import --pkg --grp -g doc/img/diagr_code_aster.svg \
 #       code_aster/**/*.py
 
 # importing cmath may raise a fpe, maybe due to mkl...

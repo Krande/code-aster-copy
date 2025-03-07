@@ -23,15 +23,12 @@
 ******************************************************
 """
 
-from ..Solvers import SolverOptions as SOP
 from ..Objects import DirichletBC, PhysicalProblem, MechanicalLoadComplex
 from ..Utilities import injector
 
 
 @injector(PhysicalProblem)
 class ExtendedPhysicalProblem:
-    provide = SOP.PhysicalProblem
-
     def addLoadFromDict(self, dictLoad):
         """Add a load from a dict - to remove quickly
 

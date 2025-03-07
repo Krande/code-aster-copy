@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,12 @@
 # --------------------------------------------------------------------
 
 import unittest
-from enum import IntFlag, auto
 from unittest.mock import MagicMock
 
 
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.Solvers import (
-    BaseFeature,
     ConvergenceManager,
     PhysicalState,
     ProblemType,
@@ -37,118 +35,6 @@ from code_aster.Solvers import (
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
-
-
-class UnittestOptions(IntFlag):
-    """Enumeration of options for unittest."""
-
-    System = auto()
-    Storage = auto()
-    State = auto()
-    Unused = auto()
-    Contact = auto()
-
-
-class SystemDefinition(BaseFeature):
-    """Object that stores the definition of the system to be solved."""
-
-    provide = UnittestOptions.System
-
-
-class Storage(BaseFeature):
-    """Object that provides the archiving feature."""
-
-    provide = UnittestOptions.Storage
-
-
-class Anonymous:
-    """Non-Feature object"""
-
-
-class BasicTest(unittest.TestCase):
-    """Check for Feature object."""
-
-    def test01_basics(self):
-        FOP = UnittestOptions
-        opt = FOP.Storage
-        self.assertEqual(str(opt), "UnittestOptions.Storage")
-        opt |= FOP.System
-        self.assertEqual(str(opt), "UnittestOptions.Storage|System", str(opt))
-
-        syst = SystemDefinition()
-        stor = Storage()
-        # object that provides services for System + Storage
-        syssto = SystemDefinition()
-        anonym = Anonymous()
-
-        class TestFeature(BaseFeature):
-            required_features = [FOP.System, FOP.State]
-            optional_features = [FOP.Storage]
-
-        op = TestFeature()
-        self.assertEqual(len(op._use), 0)
-        op.use(syst)
-        op.use(stor)
-        op.use(syssto, FOP.Storage)
-        with self.assertRaisesRegex(TypeError, "not support.*UnittestOptions.Unused"):
-            op.use(anonym, FOP.Unused)
-        op.use(anonym, FOP.State)
-        self.assertEqual(len(op._use), 4)
-        op.use(syst)
-        self.assertEqual(len(op._use), 4)
-
-        self.assertCountEqual(op.get_features(FOP.System), [syst, syssto])
-        self.assertCountEqual(op.get_features(FOP.Storage), [stor, syssto])
-        self.assertCountEqual(op.get_features(FOP.System | FOP.Storage), [syssto])
-
-        op.discard(syssto)
-        self.assertCountEqual(op.get_features(FOP.System), [syst])
-        self.assertCountEqual(op.get_features(FOP.Storage), [stor])
-        self.assertCountEqual(op.get_features(FOP.System | FOP.Storage), [])
-
-    def test02_nonl(self):
-        FOP = UnittestOptions
-
-        class TestFeature(BaseFeature):
-            provide = FOP.System
-            required_features = [FOP.System, FOP.Storage]
-            optional_features = [FOP.Contact]
-
-        op = TestFeature()
-        op.use(object(), FOP.System)
-        with self.assertRaisesRegex(TypeError, "not support.*UnittestOptions.Unused"):
-            op.use(object(), FOP.Unused)
-        self.assertSequenceEqual(op.undefined(), [(FOP.Storage, True), (FOP.Contact, False)])
-
-        self.assertEqual(len(op.required_features), 2)
-        self.assertEqual(len(op.optional_features), 1)
-
-        class InheritedFeature(TestFeature):
-            provide = FOP.System
-            optional_features = TestFeature.optional_features + [FOP.State]
-
-        inherit = InheritedFeature()
-        self.assertEqual(len(inherit.required_features), 2)
-        self.assertEqual(len(inherit.optional_features), 2)
-
-    def test03_child(self):
-        FOP = UnittestOptions
-
-        class Main(BaseFeature):
-            provide = FOP.System
-            required_features = [FOP.Storage]
-
-        class SubFeat(BaseFeature):
-            provide = FOP.Storage
-            required_features = [FOP.Contact]
-
-        op = Main()
-        sub = SubFeat()
-        sub.use(object(), FOP.Contact)
-        op.use(sub)
-        self.assertEqual(len(op.get_features(FOP.Contact)), 0)
-        self.assertEqual(len(sub.get_features(FOP.Contact)), 1)
-        self.assertEqual(len(op.get_childs(FOP.Contact)), 1)
 
 
 class TestTimeStepper(unittest.TestCase):

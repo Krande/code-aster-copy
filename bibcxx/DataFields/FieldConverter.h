@@ -30,6 +30,7 @@
 #include "DataFields/MeshCoordinatesField.h"
 #include "DataFields/SimpleFieldOnCells.h"
 #include "DataFields/SimpleFieldOnNodes.h"
+#include "Meshes/ConnectionMesh.h"
 #include "Supervis/Exceptions.h"
 
 //////// Convert to FieldOnNodes ////////////////
@@ -153,20 +154,28 @@ toSimpleFieldOnNodes( const std::shared_ptr< SimpleFieldOnCells< ValueType > > f
 ////// Convert to SimpleFieldOnCells ////////////
 template < typename ValueType >
 std::shared_ptr< SimpleFieldOnCells< ValueType > >
-toSimpleFieldOnCells( const std::shared_ptr< ConstantFieldOnCells< ValueType > > field ) {
-    auto chs = std::make_shared< SimpleFieldOnCells< ValueType > >( field->getMesh() );
+toSimpleFieldOnCells( const ConstantFieldOnCells< ValueType > &field,
+                      const SimpleFieldOnCells< ValueType > &simpleFieldModel ) {
+    auto chs = std::make_shared< SimpleFieldOnCells< ValueType > >( field.getMesh() );
 
     // Convert to CHAM_ELEM_S
-    const std::string base = "G", kstop = "A", loc = "ELEM";
+    const std::string base = "G", kstop = "A", loc = "ELGA";
     ASTERINTEGER iret = 0;
-    std::string cesmod = " ";
+    std::string cesmod = simpleFieldModel.getName();
 
-    CALLO_CARCES( field->getName(), loc, cesmod, base, chs->getName(), kstop, &iret );
+    CALL_CARCES( field.getName(), loc, cesmod, base, chs->getName(), kstop, &iret );
 
     AS_ASSERT( iret == 0 );
 
     chs->build();
     return chs;
+}
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnCells< ValueType > >
+toSimpleFieldOnCells( const std::shared_ptr< ConstantFieldOnCells< ValueType > > field,
+                      const SimpleFieldOnCells< ValueType > &simpleFieldModel ) {
+    return toSimpleFieldOnCells( *field, simpleFieldModel );
 }
 
 template < typename ValueType >
@@ -243,6 +252,10 @@ toFieldOnCells( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field,
                 const std::string nompar = std::string() ) {
     return toFieldOnCells( *field, fed, option, nompar );
 }
+
+#ifdef ASTER_HAVE_MPI
+FieldOnNodesRealPtr transferToConnectionMesh( const FieldOnNodesRealPtr, const ConnectionMeshPtr );
+#endif /* ASTER_HAVE_MPI */
 
 using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;
 using FieldOnNodesComplex = FieldOnNodes< ASTERCOMPLEX >;

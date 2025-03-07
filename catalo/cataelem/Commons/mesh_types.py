@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,10 @@ SE3.addLocation("SIMP1", 5)
 SE3.addLocation("COTES", 4)
 SE3.addLocation("COTES1", 5)
 SE3.addLocation("COTES2", 10)
+SE3.addLocation("FPG5", 5)
+SE3.addLocation("FPG6", 6)
+SE3.addLocation("FPG7", 7)
+SE3.addLocation("FPG8", 8)
 SEG3.addElrefe(SE3)
 
 THCOSE3 = Elrefe()
@@ -181,6 +185,12 @@ TR7.addLocation("FPG6", 6)
 TR7.addLocation("FPG7", 7)
 TR7.addLocation("FPG13", 13)
 TR7.addLocation("FPG16", 16)
+TR7.addLocation("FPG19", 19)
+TR7.addLocation("FPG25", 25)
+TR7.addLocation("FPG28", 28)
+TR7.addLocation("FPG33", 33)
+TR7.addLocation("FPG37", 37)
+TR7.addLocation("FPG42", 42)
 TRIA7.addElrefe(TR7)
 
 
@@ -237,6 +247,11 @@ QU9.addLocation("FPG4", 4)
 QU9.addLocation("FPG5", 5)
 QU9.addLocation("FPG9", 9)
 QU9.addLocation("FPG9COQ", 9)
+QU9.addLocation("FPG16", 16)
+QU9.addLocation("FPG25", 25)
+QU9.addLocation("FPG36", 36)
+QU9.addLocation("FPG49", 49)
+QU9.addLocation("FPG64", 64)
 QUAD9.addElrefe(QU9)
 
 MEC3QU9H = Elrefe()
@@ -260,7 +275,7 @@ TE4.addLocation("FPG4NOS", 8)
 TE4.addLocation("FPG5", 5)
 TE4.addLocation("FPG11", 11)
 TE4.addLocation("FPG15", 15)
-TE4.addLocation("FPG23", 23)
+TE4.addLocation("FPG24", 24)
 TE4.addLocation("XFEM90", 90)
 TE4.addLocation("XFEM180", 180)
 TE4.addLocation("XFEM270", 270)
@@ -437,6 +452,10 @@ H27.addLocation("FPG8", 8)
 H27.addLocation("FPG7", 7)
 H27.addLocation("FPG27", 27)
 H27.addLocation("FPG64", 64)
+H27.addLocation("FPG125", 125)
+H27.addLocation("FPG216", 216)
+H27.addLocation("FPG343", 343)
+H27.addLocation("FPG512", 512)
 HEXA27.addElrefe(H27)
 
 # ------------------------------------------------------------
@@ -451,6 +470,15 @@ T15.addLocation("FPG4NOS", 8)
 T15.addLocation("FPG5", 5)
 T15.addLocation("FPG11", 11)
 T15.addLocation("FPG15", 15)
+T15.addLocation("FPG24", 24)
+T15.addLocation("FPG35", 35)
+T15.addLocation("FPG46", 46)
+T15.addLocation("FPG59", 59)
+T15.addLocation("FPG74", 74)
+T15.addLocation("FPG94", 94)
+T15.addLocation("FPG117", 117)
+T15.addLocation("FPG144", 144)
+T15.addLocation("FPG204", 204)
 TETRA15.addElrefe(T15)
 
 # ------------------------------------------------------------

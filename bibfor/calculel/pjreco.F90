@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc, &
-                  nbNodeInterc)
+                  nbNodeInterc, parallelMesh)
     implicit none
 ! ----------------------------------------------------------------------
 !     COMMANDE:  PROJ_CHAMP/VIS_A_VIS
@@ -52,7 +52,7 @@ subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc, &
     integer, intent(in) :: listNodeOcc(*)
     integer, intent(in) :: nbNodeOcc
     integer, intent(in) :: numOcc
-    aster_logical, intent(in) ::finalOcc
+    aster_logical, intent(in) ::finalOcc, parallelMesh
     character(len=16) :: nameLNodeInterc
     integer, intent(out) :: nbNodeInterc
 ! --------------------------------------------------------------------------------------------------
@@ -115,7 +115,9 @@ subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc, &
         AS_DEALLOCATE(vi=listNodeCopy)
     else
 !       first occ
-        ASSERT(numOcc .eq. 1)
+        if (.not. parallelMesh) then
+            ASSERT(numOcc .eq. 1)
+        end if
         nbNodeVerif = nbNodeOcc
         call wkvect(nameLNodeVerif, 'V V I', nbNodeVerif, vi=listNodeVerif)
         listNodeVerif(1:nbNodeOcc) = listNodeOcc(1:nbNodeOcc)

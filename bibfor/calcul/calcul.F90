@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -143,9 +143,6 @@ subroutine calcul(stop, option_, ligrel_, nin, lchin, &
 
 !   dbg : une variable pour provoquer des ecritures de debug
     dbg = .false.
-    ! if (option_ .eq. "RAPH_MECA") then
-    !     dbg = .true.
-    ! end if
 
     ca_ligrel_ = ligrel_
     ca_option_ = option_

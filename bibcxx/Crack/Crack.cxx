@@ -3,7 +3,7 @@
  * @brief Implementation de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -125,6 +125,11 @@ const VectorString Crack::getUpperNormNodes2() {
 const JeveuxVectorReal Crack::getCrackFrontPosition() {
     this->updateValuePointers();
     return _coorfond;
+};
+
+const JeveuxVectorReal Crack::getCrackFrontAbsCurv() {
+    this->updateValuePointers();
+    return _absfon;
 };
 
 const FieldOnNodesRealPtr Crack::getCrackFrontNodeBasis() { return _basLoc; };

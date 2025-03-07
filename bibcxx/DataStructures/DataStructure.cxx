@@ -26,6 +26,7 @@
 #include "shared_vars.h"
 
 #include "MemoryManager/JeveuxString.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
 #include <algorithm>
@@ -108,7 +109,7 @@ DataStructure::~DataStructure() {
         // Allow to see when the datastructure is really deleted.
         // In case of embraced datastructures, '_tco' is deallocated the first time
         // (no type)
-#ifdef ASTER_DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX_OBJECTS
     if ( mainDs && this->getType() != "not_found" ) {
         // Too low-level to call UTMESS.
         std::cout << "Deleting " << strip( this->getName() ) << " <" << this->getType() << "> "
@@ -173,7 +174,7 @@ std::vector< DataStructure::DataStructurePtr > DataStructure::getDependencies() 
     return _depsVector;
 }
 
-void DataStructure::debugPrint( int logicalUnit ) const {
+void DataStructure::debugPrint( int logicalUnit, bool synchro ) const {
     ASTERINTEGER unit, niveau, ipos, True, False;
     unit = (ASTERINTEGER)logicalUnit;
     niveau = 2;
@@ -183,11 +184,25 @@ void DataStructure::debugPrint( int logicalUnit ) const {
     JeveuxString< 1 > base( " " );
     JeveuxString< 3 > no( "NON" );
     std::string nameWithoutBlanks = strip( _name );
-    try {
-        CALLO_UTIMSD( &unit, &niveau, &False, &True, nameWithoutBlanks, &ipos, base, no );
-    } catch ( ... ) {
-        throw std::runtime_error( "debugPrint failed!" );
+#ifdef ASTER_HAVE_MPI
+    int rank = getMPIRank();
+    int nbProcs = getMPISize();
+    if ( !synchro )
+        rank = nbProcs = 0;
+    for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
+        if ( iProc == rank ) {
+#endif /* ASTER_HAVE_MPI */
+            try {
+                CALLO_UTIMSD( &unit, &niveau, &False, &True, nameWithoutBlanks, &ipos, base, no );
+            } catch ( ... ) {
+                throw std::runtime_error( "debugPrint failed!" );
+            }
+#ifdef ASTER_HAVE_MPI
+        }
+        if ( synchro )
+            AsterMPI::barrier();
     }
+#endif /* ASTER_HAVE_MPI */
 };
 
 void DataStructure::setType( const std::string newType ) {

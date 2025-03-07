@@ -3,7 +3,7 @@
  * @brief Interface python de ElementaryMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -54,7 +54,7 @@ void exportElementaryTermToPython( py::module_ &mod ) {
             Returns:
                 str: the local mode
         )" )
-        .def( "getValues", &ElementaryTermReal::getValues, R"(
+        .def( "getValues", py::overload_cast<>( &ElementaryTermReal::getValues, py::const_ ), R"(
             Return the values of the field.
 
             Returns:

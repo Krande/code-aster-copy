@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ DDL_MECA = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        ("EN1", ("HHO_DX[2]", "HHO_DY[2]", "HHO_VR[2]")),
+        ("EN1", ("HHO_FX[2]", "HHO_FY[2]", "HHO_VR[2]")),
         ("EN2", ()),
-        ("EN3", ("HHO_DX[3]", "HHO_DY[3]", "HHO_VR[3]", "HHO_LG[3]")),
+        ("EN3", ("HHO_CX[3]", "HHO_CY[3]", "HHO_VR[3]", "HHO_LG[3]")),
     ),
 )
 
@@ -46,9 +46,9 @@ DDL_DEPL = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        ("EN1", ("HHO_DX[2]", "HHO_DY[2]")),
+        ("EN1", ("HHO_FX[2]", "HHO_FY[2]")),
         ("EN2", ()),
-        ("EN3", ("HHO_DX[3]", "HHO_DY[3]")),
+        ("EN3", ("HHO_CX[3]", "HHO_CY[3]")),
     ),
 )
 
@@ -260,21 +260,21 @@ CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[66]",))
 CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[66]",))
 
 CHHOBS = LocatedComponents(
-    phys=PHY.N480_R,
+    phys=PHY.N3600R,
     type="ELNO",
     diff=True,
     components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
 )
 
-DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
+DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "VARI", "LAG_GV"))
+
+DEPLCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[10]",))
 
 MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_DEPL)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
-
-MVEFORC = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DEPLHHO)
 
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
@@ -414,7 +414,7 @@ class MECA_DGVQ_HHO111(Element):
             te=458,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
-                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLHHO),
+                (OP.HHO_CINE_R_MECA.PCMPVALE, DEPLCINE),
                 (OP.HHO_CINE_R_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_CINE_R_MECA.PCINE, DDL_DEPL),),

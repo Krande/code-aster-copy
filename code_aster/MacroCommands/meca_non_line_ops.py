@@ -23,33 +23,30 @@ from ..Helpers import adapt_for_mgis_behaviour
 from ..Helpers.syntax_adapters import adapt_increment_init
 from ..Messages import UTMESS
 from ..Objects import (
-    FrictionType,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
-    NonLinearResult,
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
-from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver
-from ..Solvers import ProblemType as PBT
-from ..Solvers.Post import Annealing, ComputeDisplFromHHO
-from ..Utilities import print_stats, reset_stats
+from ..Solvers import NonLinearOperator
+from ..Utilities import force_list, print_stats, reset_stats
 
 
-def _contact_check(CONTACT):
+def _contact_check(model, CONTACT):
     """Add controls to prohibit unconverted features in contact"""
     if CONTACT:
+        CONTACT = force_list(CONTACT)
+        # currently max=1 in C_CONTACT
+        if len(CONTACT) > 1 and model.getMesh().isParallel():
+            raise TypeError("Only one CONTACT factor keyword is allowed with a ParallelMesh")
         assert CONTACT[0]["ALGO_RESO_GEOM"] == "NEWTON"
-
         defi = CONTACT[0]["DEFINITION"]
-
         for zone in defi.getContactZones():
             assert not zone.hasSmoothing
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
-
         if defi.hasFriction:
             assert CONTACT[0]["ALGO_RESO_FROT"] == "NEWTON"
 
@@ -71,19 +68,6 @@ def _keywords_check(keywords):
         raise RuntimeError("unsupported value in METHODE")
 
 
-def _keyword_clean(obj):
-    """Return obj[0] if exists, return obj if not"""
-
-    if hasattr(obj, "__getitem__"):
-        if type(obj) is dict:
-            return obj
-        else:
-            return obj[0]
-
-    else:
-        return obj
-
-
 def meca_non_line_ops(self, **args):
     """Execute the command.
 
@@ -97,49 +81,30 @@ def meca_non_line_ops(self, **args):
     adapt_increment_init(args, "EVOL_NOLI")
 
     # Add controls to prohibit unconverted features
-    _contact_check(args["CONTACT"])
+    _contact_check(args["MODELE"], args["CONTACT"])
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
-    # Add parameters
-    param = {
-        "ARCHIVAGE": _keyword_clean(args["ARCHIVAGE"]),
+    kwds = {
+        "ARCHIVAGE": args["ARCHIVAGE"],
         "COMPORTEMENT": args["COMPORTEMENT"],
         "CONTACT": args["CONTACT"],
-        "CONVERGENCE": _keyword_clean(args["CONVERGENCE"]),
-        "ETAT_INIT": _keyword_clean(args["ETAT_INIT"]),
+        "CONVERGENCE": args["CONVERGENCE"],
+        "ETAT_INIT": args["ETAT_INIT"],
         "INFO": args["INFO"],
         "METHODE": args["METHODE"],
-        "NEWTON": _keyword_clean(args["NEWTON"]),
-        "RECH_LINEAIRE": _keyword_clean(args["RECH_LINEAIRE"]),
-        "SOLVEUR": _keyword_clean(args["SOLVEUR"]),
+        "NEWTON": args["NEWTON"],
+        "RECH_LINEAIRE": args["RECH_LINEAIRE"],
+        "SOLVEUR": args["SOLVEUR"],
         "REUSE": args["reuse"],
-        "INCREMENT": _keyword_clean(args["INCREMENT"]),
+        "INCREMENT": args["INCREMENT"],
+        "SCHEMA_TEMPS": args.get("SCHEMA_TEMPS"),
     }
+    if kwds["SOLVEUR"]["METHODE"] == "PETSC":
+        if kwds["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
+            kwds["SOLVEUR"]["REAC_PRECOND"] = 0
 
-    if param["SOLVEUR"]["METHODE"] == "PETSC":
-        if param["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
-            param["SOLVEUR"]["REAC_PRECOND"] = 0
-
-    if "SCHEMA_TEMPS" in args:
-        problem_type = PBT.MecaDyna
-        param["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
-    else:
-        problem_type = PBT.MecaStat
-
-    result = args.get("reuse")
-    if not result:
-        result = NonLinearResult()
-
-    # Create the problem solver
-    solver = ProblemSolver(NonLinearSolver(), result, problem_type)
-
-    # Create the physical problem (and use it in problem solver)
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
-    solver.use(phys_pb)
-
-    solver.setKeywords(**param)
-
     # Add loads
     if args["EXCIT"]:
         for load in args["EXCIT"]:
@@ -157,21 +122,9 @@ def meca_non_line_ops(self, **args):
             else:
                 raise RuntimeError("Unknown load")
 
-    # Add contact
-    contact_manager = None
-    if args["CONTACT"]:
-        definition = args["CONTACT"][0]["DEFINITION"]
-        contact_manager = ContactManager(definition, phys_pb)
-        fed_defi = definition.getFiniteElementDescriptor()
-        phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
-    solver.use(contact_manager)
+    operator = NonLinearOperator.factory(phys_pb, result=args.get("reuse"), **kwds)
+    operator.run()
 
-    # Register hooks
-    solver.use(Annealing())
-    solver.use(ComputeDisplFromHHO())
-
-    # Run computation
-    solver.run()
     print_stats()
     reset_stats()
-    return solver.result
+    return operator.result

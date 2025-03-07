@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ from .calc_modes_multi_bandes import calc_modes_multi_bandes
 from .calc_modes_post import calc_modes_post
 from .calc_modes_simult import calc_modes_simult
 from ...Messages import MasquerAlarme, RetablirAlarme, UTMESS
+from ...Utilities import MPI
 
 
 def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
@@ -42,6 +43,13 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
     l_multi_bandes = False  # logical indicating if the computation is performed
     # for DYNAMICAL modes on several bands
     sys.stdout.flush()
+
+    # to prevent from distributed parallel solve
+    matrRigi = args.get("MATR_RIGI")
+    if matrRigi is not None and hasattr(matrRigi, "getMesh"):
+        mesh = matrRigi.getMesh()
+        if mesh is not None and mesh.isParallel() and MPI.ASTER_COMM_WORLD.Get_size() > 1:
+            UTMESS("F", "SUPERVIS_7", valk="CALC_MODES")
 
     # to prepare the work of AMELIORATION='OUI'
     stop_erreur = None

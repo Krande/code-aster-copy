@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,12 @@ def post_kcp_ops(self, **kwargs):
         correction = fissure.get("CORRECTION")
     else:
         correction = "BETA_2D"  # cas défaut bande
+    UNITE_LONGUEUR = kwargs.get("UNITE_LONGUEUR")
+    if UNITE_LONGUEUR == "MM":
+        epais_mdb = epais_mdb / 1000.0
+        epais_rev = epais_rev / 1000.0
+        prof_fiss = prof_fiss / 1000.0
+        long_fiss = long_fiss / 1000.0
 
     # Preparation des parametres de la table
     listdic = []

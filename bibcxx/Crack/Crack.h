@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -115,6 +115,7 @@ class Crack : public DataStructure {
     const VectorString getUpperNormNodes2();
     const JeveuxVectorReal getCrackFrontBasis();
     const JeveuxVectorReal getCrackFrontPosition();
+    const JeveuxVectorReal getCrackFrontAbsCurv();
     const FieldOnNodesRealPtr getCrackFrontNodeBasis();
     const JeveuxVectorReal getCrackFrontRadius();
     const JeveuxVectorReal getNormal();

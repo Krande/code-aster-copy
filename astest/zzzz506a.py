@@ -17,11 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Solvers import NonLinearSolver, ProblemSolver
-from code_aster.Solvers import SolverOptions as SOP
-from code_aster.Solvers import TimeStepper, ProblemType
+from code_aster.Solvers import BaseHook, NonLinearOperator, TimeStepper
 from code_aster.Solvers.StepSolvers import MecaStatStepSolver
 
 DEBUT(
@@ -86,40 +85,40 @@ class CustomStepSolver(MecaStatStepSolver):
             print("+++ CustomStepSolver ends successfully, time:", self.phys_state.time_curr)
 
 
-def post_hook(nl_solver):
+def post_hook(nl_oper):
     """Example of hook function.
 
     Arguments:
-        phys_state (PhysicalState): Current physical state.
+        nl_oper (NonLinearOperator): Caller operator.
     """
-    print(f"calling hook at time = {nl_solver.phys_state.time_curr}...", flush=True)
+    print(f"calling hook at time = {nl_oper.state.time_curr}...", flush=True)
 
 
-class PostHook:
+class PostHook(BaseHook):
     """User object to be used as a PostStepHook."""
 
-    provide = SOP.PostStepHook
-
-    def __call__(self, nl_solver):
+    def run(self, nl_oper):
         """Example of hook."""
-        nl_solver.phys_state.debugPrint()
+        nl_oper.state.debugPrint()
 
 
-snl = ProblemSolver(NonLinearSolver(), CA.NonLinearResult(), pb_type=ProblemType.MecaStat)
-snl.use(CA.PhysicalProblem(model, mater))
-snl.use(CA.LinearSolver.factory(METHODE="MUMPS"))
-snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
-snl.phys_pb.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
-snl.setKeywords(
+problem = CA.PhysicalProblem(model, mater)
+problem.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
+problem.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE, "TYPE_CHARGE": "FIXE_CSTE"})
+
+keywords = _F(
+    SOLVEUR=_F(METHODE="MUMPS"),
     CONVERGENCE={"RESI_GLOB_RELA": 1.0e-6, "ITER_GLOB_MAXI": 20},
     NEWTON={"PREDICTION": "ELASTIQUE"},
     COMPORTEMENT={"RELATION": "VMIS_ISOT_LINE"},
     INFO=1,
 )
-snl.use(CustomStepSolver())
-snl.use(TimeStepper([0.5, 1.0]))
-snl.use(post_hook, provide=SOP.PostStepHook)
-snl.use(PostHook())
+snl = NonLinearOperator.factory(problem, **keywords)
+snl.context.stepper = TimeStepper([0.5, 1.0])
+# TODO
+# snl.context.step_solver = CustomStepSolver()
+snl.register_hook(PostHook())
+snl.register_hook(post_hook)
 snl.run()
 
 # =========================================================
@@ -136,8 +135,8 @@ VARI_REF = CREA_CHAMP(
 )
 
 
-SIGMA = snl.phys_state.stress
-VARI = snl.phys_state.internVar
+SIGMA = snl.state.stress
+VARI = snl.state.internVar
 
 
 # =========================================================

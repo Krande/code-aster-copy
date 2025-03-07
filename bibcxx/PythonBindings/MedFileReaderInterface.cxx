@@ -3,7 +3,7 @@
  * @brief Interface python de MedFileReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,7 +33,9 @@
 #ifdef ASTER_HAVE_MED
 void exportMedFileReaderToPython( py::module_ &mod ) {
 
-    py::enum_< MedFileAccessType >( mod, "MedFileAccessType" )
+    py::enum_< MedFileAccessType >( mod, "MedFileAccessType", "EntityType", R"(
+Enumeration med access type.
+    )" )
         .value( "MedReadOnly", MedReadOnly )
         .value( "MedReadWrite", MedReadWrite )
         .value( "MedCreate", MedCreate )

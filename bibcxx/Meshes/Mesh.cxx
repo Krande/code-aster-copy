@@ -3,7 +3,7 @@
  * @brief Implementation de Mesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -183,8 +183,9 @@ VectorLong Mesh::getNodesFromCells( const VectorLong &cells, const bool,
 
     for ( auto &cellId : cells ) {
         const auto cell = connecExp[cellId];
-        for ( auto &node : cell )
+        for ( auto &node : cell ) {
             auto ret = nodes.insert( node );
+        }
     }
 
     CALL_JEDEMA();

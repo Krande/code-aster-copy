@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -271,6 +271,8 @@ class Model : public DataStructure, public ListOfTables {
 #ifdef ASTER_HAVE_MPI
     ConnectionMeshPtr getConnectionMesh() const;
 #endif /* ASTER_HAVE_MPI */
+
+    JeveuxVectorLong getFiniteElementType() const { return _typeOfCells; };
 
     /**
      * @brief Get the sane base model

@@ -57,28 +57,30 @@ PARAPLAQUE = [
 
 
 def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, dir_plaque):
-    """Compute the elastic correctors for PLAQUE (Plate) case.
-
-    Thermal homogeneisation is not implemented yet; this function performs 6 MECA_STATIQUE.
-
-    The computation of the homogeneus parameters for several temperature values is done
-    by considering the temperature as a pseudo-time value.
-
-    Arguments
-    ---------
-        modme (Model): Mechanical model.
-        matme (MaterialField): Mechanical material field.
-        modth (Model): Thermal model.
-        matth (MaterialField): Thermal material field.
-        linst (ListOfFloats): List of pseudo-time values (homogeneisation temperature values).
-        groupma (list[str]): List of groups where properties are prescribed.
-        dir (str): Orientation of the normal axis of the plate element.
-
-    Returns
-    -------
-        elas (ElasticResultDict): Dict of elastic correctors.
-        ther (ThermalResultDict): Dict of thermal correctors. Empty.
     """
+    Compute the elastic correctors for PLAQUE (Plate) case.
+
+    Thermal homogenization is not implemented yet; this function performs 6
+    MECA_STATIQUE.
+
+    The computation of the homogeneous parameters for several temperature values
+    is done by considering the temperature as a pseudo-time value.
+
+    Args:
+        MODME (Model): Mechanical model.
+        CHMATME (MaterialField): Mechanical material field.
+        MODTH (Model): Thermal model.
+        CHMATTH (MaterialField): Thermal material field.
+        L_INST (list[float]): List of pseudo-time values (homogenization
+            temperature values).
+        ls_group_ma (list[str]): List of groups where properties are prescribed.
+        dir_plaque (str): Orientation of the normal axis of the plate element.
+
+    Returns:
+        ElasticResultDict: Dictionary of elastic correctors.
+        ThermalResultDict: Dictionary of thermal correctors. Empty.
+    """
+
     SYME_MECA_XX_mm = AFFE_CHAR_CINE(
         MODELE=MODME,
         MECA_IMPO=(
@@ -197,28 +199,32 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
 
 
 def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
-    """Compute the average value of material parameters on the VER mesh.
+    """
+    Compute the average value of material parameters on the VER mesh.
 
-    In order to use existing operators (CALC_CHAMP and POST_ELEM) this function works with
-    a pseudo-result as input, obtained with a 0-load boundary condition.
+    This function calculates the average values of various material parameters
+    on the Volume Element Representative (VER) mesh using a pseudo-result
+    obtained with a 0-load boundary condition. It leverages existing operators
+    (CALC_CHAMP and POST_ELEM) to perform the calculations.
 
-    List of computed parameters :
-       LAME_1 : first Lamé coefficient
-       LAME_2 : second Lamé coefficient
-       ALPHA_3K : compression modulus
-       RHO : density
-       RHO_CP : product of density with specific heat
-       LAMBDA_THER : thermal conductivity
+    List of computed parameters:
+    - LAME_1: First Lamé coefficient
+    - LAME_2: Second Lamé coefficient
+    - ALPHA_3K: Compression modulus
+    - RHO: Density
+    - RHO_CP: Product of density with specific heat
+    - LAMBDA_THER: Thermal conductivity
 
-    Arguments
-    ---------
-        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
-        groupma (list[str]): List of groups where properties are prescribed.
-        dir (str): Orientation of the normal axis of the plate element.
+    Args:
+        DEPLMATE (ElasticResult): Mechanical result from the 0-load boundary
+            condition.
+        ls_group_tout (list[str]): List of groups where properties are
+            prescribed.
+        dir_plaque (str): Orientation of the normal axis of the plate element.
 
-    Returns
-    -------
-        values (dict): average properties values as function of pseudo-time (temperature).
+    Returns:
+        dict: A dictionary containing the average properties values as a
+            function of pseudo-time (temperature).
     """
 
     LAME_1_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E*NU/((1+NU)*(1-2*NU))")
@@ -298,26 +304,37 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
 def calc_tabpara_plaque(
     DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, dir_plaque, dirthick, **fields
 ):
-    """Compute the homogeneus properties values.
+    """
+    Compute the homogeneous properties values for a plate element.
 
-    Arguments
-    ---------
-        deplmate (ElasticResult): Mechanical result from 0-load boundary condition.
-        volumever (float): Volume of VER.
-        groupma (list[str]): List of groups where properties are prescribed.
-        varcname (str): Name of command variable (TEMP | IRRA).
-        varcvalue (list[float]): List of temperature at which parameters are computed.
-        dir (str): Orientation of the normal axis of the plate element.
-        thick (float): Plate thickness.
-        **fields (ElasticResultDict, ThermalResultDict): corrector fields.
+    This function calculates the homogeneous membrane, flexural, and shear
+    properties for a plate element (PLAQ) case. It uses mechanical and thermal
+    corrector fields to compute the properties at various temperatures or
+    irradiation levels.
 
-    Returns
-    -------
-        C_HOM (list[np.ndarray]): Homogeneus membrane matrix for each temperature value.
-        D_HOM (list[np.ndarray]): Homogeneus flex matrix for each temperature value.
-        G_HOM (list[np.ndarray]): Homogeneus shear matrix for each temperature value.
-        table (Table): Aster table with all the homonegeus parameters (ready for DEFI_MATERIAU).
+    Args:
+        DEPLMATE (ElasticResult): Mechanical result from the 0-load boundary
+            condition.
+        volume_ver (float): Volume of the Volume Element Representative (VER).
+        ls_group_ma (list[str]): List of groups where properties are prescribed.
+        varc_name (str): Name of the command variable (e.g., TEMP for
+            temperature, IRRA for irradiation).
+        ls_varc (list[float]): List of values for the command variable at which
+            parameters are computed.
+        dir_plaque (str): Orientation of the normal axis of the plate element.
+        dirthick (float): Plate thickness.
+        **fields (ElasticResultDict, ThermalResultDict): Corrector fields for
+            mechanical and thermal analyses.
 
+    Returns:
+        list[np.ndarray]: Homogeneous membrane matrix for each value of the
+            command variable.
+        list[np.ndarray]: Homogeneous flexural matrix for each value of the
+            command variable.
+        list[np.ndarray]: Homogeneous shear matrix for each value of the
+            command variable.
+        Table: Aster table with all the homogeneous parameters, ready for
+            DEFI_MATERIAU.
     """
 
     CORR_MECA11_MEMB = fields["CORR_MECA11_MEMB"]

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ module HHO_Dirichlet_module
     use HHO_utils_module, only: hhoGetTypeFromModel
     use HHO_eval_module, only: hhoFuncFScalEvalQp
     use HHO_L2proj_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -64,9 +65,6 @@ module HHO_Dirichlet_module
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "blas/daxpy.h"
-#include "blas/dscal.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 !
@@ -92,11 +90,11 @@ contains
 !
     integer function hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
 !
-    implicit none
+        implicit none
 !
-    integer, intent(in) :: nb_cmp_hho_dir
-    integer, intent(in) :: nume_cmp
-    integer, intent(in) :: ndim
+        integer, intent(in) :: nb_cmp_hho_dir
+        integer, intent(in) :: nume_cmp
+        integer, intent(in) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - Dirichlet loads
@@ -109,25 +107,25 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    hhoDiriNum = 0
+        hhoDiriNum = 0
 !
-    if (ndim .ge. 2) then
-        if ((nume_cmp >= 1) .and. nume_cmp <= (nb_cmp_hho_dir)) then
-            hhoDiriNum = 1
-        else if ((nume_cmp >= nb_cmp_hho_dir+1) .and. (nume_cmp <= 2*nb_cmp_hho_dir)) then
-            hhoDiriNum = 2
-        else if (ndim == 3) then
-            if ((nume_cmp >= 2*nb_cmp_hho_dir+1) .and. (nume_cmp <= 3*nb_cmp_hho_dir)) then
-                hhoDiriNum = 3
+        if (ndim .ge. 2) then
+            if ((nume_cmp >= 1) .and. nume_cmp <= (nb_cmp_hho_dir)) then
+                hhoDiriNum = 1
+            else if ((nume_cmp >= nb_cmp_hho_dir+1) .and. (nume_cmp <= 2*nb_cmp_hho_dir)) then
+                hhoDiriNum = 2
+            else if (ndim == 3) then
+                if ((nume_cmp >= 2*nb_cmp_hho_dir+1) .and. (nume_cmp <= 3*nb_cmp_hho_dir)) then
+                    hhoDiriNum = 3
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
             else
                 ASSERT(ASTER_FALSE)
             end if
         else
             ASSERT(ASTER_FALSE)
         end if
-    else
-        ASSERT(ASTER_FALSE)
-    end if
 !
     end function
 !
@@ -156,7 +154,7 @@ contains
 !
         integer :: nume_gd, ifm, niv, nb_cmp_hho_max, offset
         integer :: i_cmp, ndim, elem_ndim, type_nume, i_func, nb_cine_func, nb_elem_mesh
-        integer :: nb_cmp_hho_dir_c, nb_cmp_hho_dir_f, nb_cmp_hho_dir
+        integer :: nb_cmp_hho_dir_c, nb_cmp_hho_dir_f, nb_cmp_hho_dir, nume_cmp_f
         character(len=8) :: name_gd, load_name, load_type, type_name, load_cine, mesh
         character(len=8), pointer :: v_field_valv(:) => null()
         character(len=8), pointer :: p_cata_nomcmp(:) => null()
@@ -340,11 +338,8 @@ contains
                                 i_func = ndim*(node_nume_loc-offset)+dim_cmp
                                 v_field_valv(i_func) = v_afcv(i_affe_cine)
                                 if (.not. isCellNode) then
-                                    hhoField%v_info_cine(3*(i_affe_cine-1)+3) = (dim_cmp-1)*nb_cm&
-                                                                                &p_hho_dir_c+nume&
-                                                                                &_cmp-(dim_cmp-1)&
-                                                                                &*nb_cmp_hho_dir_&
-                                                                                &f
+                                    nume_cmp_f = ndim*nb_cmp_hho_dir_c+nume_cmp
+                                    hhoField%v_info_cine(3*(i_affe_cine-1)+3) = nume_cmp_f
                                 end if
                             end if
                         end do
@@ -528,7 +523,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idnddl, idvddl, jcmp, max_cmp
+        integer :: idnddl, idvddl, jcmp, max_cmp_f, max_cmp_c
         integer :: iddl, i, nbcmp, ila, icmp, userDOFNbSupp, ndim
         character(len=16) :: currentDOF
         real(kind=8) :: valeDOF
@@ -555,11 +550,9 @@ contains
 ! --- Get type of HHO
 !
         call hhoGetTypeFromModel(model, hhoData, ndim)
-        max_cmp = max( &
-                  binomial(hhoData%cell_degree()+ndim, hhoData%cell_degree()), &
-                  binomial(hhoData%face_degree()+ndim-1, hhoData%face_degree()) &
-                  )
-        ASSERT(max_cmp <= nbCmpSupp)
+        max_cmp_c = binomial(hhoData%cell_degree()+ndim, hhoData%cell_degree())
+        max_cmp_f = binomial(hhoData%face_degree()+ndim-1, hhoData%face_degree())
+        ASSERT(max_cmp_f+max_cmp_c <= nbCmpSupp)
 !
 ! - Create objects
 !
@@ -598,8 +591,9 @@ contains
             end if
 !
             if (currentDOF .eq. 'DX') then
+                !! face
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = 'HHO_DX1'
+                zk8(idnddl+nbddl-1) = 'HHO_FX1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 else if (valeType .eq. 'F') then
@@ -608,10 +602,34 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-                do i = 2, max_cmp
+                do i = 2, max_cmp_f
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_DX'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_FX'//code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1) = 0.d0
+                    else if (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+                !! cell
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_CX1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                else if (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp_c
+                    nbddl = nbddl+1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_CX'//code
                     if (valeType .eq. 'R') then
                         zr(idvddl+nbddl-1) = 0.d0
                     else if (valeType .eq. 'F') then
@@ -622,8 +640,9 @@ contains
                     end if
                 end do
             else if (currentDOF .eq. 'DY') then
+                !! face
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = 'HHO_DY1'
+                zk8(idnddl+nbddl-1) = 'HHO_FY1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 else if (valeType .eq. 'F') then
@@ -632,10 +651,34 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-                do i = 2, max_cmp
+                do i = 2, max_cmp_f
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_DY'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_FY'//code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1) = 0.d0
+                    else if (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+                !! cell
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_CY1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                else if (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp_c
+                    nbddl = nbddl+1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_CY'//code
                     if (valeType .eq. 'R') then
                         zr(idvddl+nbddl-1) = 0.d0
                     else if (valeType .eq. 'F') then
@@ -649,8 +692,9 @@ contains
                 if (ndim .ne. 3) then
                     call utmess('F', 'CHARGES_57')
                 end if
+                !! face
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = 'HHO_DZ1'
+                zk8(idnddl+nbddl-1) = 'HHO_FZ1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 else if (valeType .eq. 'F') then
@@ -659,10 +703,34 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-                do i = 2, max_cmp
+                do i = 2, max_cmp_f
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_DZ'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_FZ'//code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1) = 0.d0
+                    else if (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+                !! cell
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_CZ1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                else if (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp_c
+                    nbddl = nbddl+1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_CZ'//code
                     if (valeType .eq. 'R') then
                         zr(idvddl+nbddl-1) = 0.d0
                     else if (valeType .eq. 'F') then
@@ -673,8 +741,9 @@ contains
                     end if
                 end do
             else if (currentDOF .eq. 'TEMP') then
+                !! face part
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = 'HHO_T1'
+                zk8(idnddl+nbddl-1) = 'HHO_FT1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 else if (valeType .eq. 'F') then
@@ -683,10 +752,34 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-                do i = 2, max_cmp
+                do i = 2, max_cmp_f
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_T'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_FT'//code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1) = 0.d0
+                    else if (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+                !! cell part
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_CT1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                else if (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp_c
+                    nbddl = nbddl+1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_CT'//code
                     if (valeType .eq. 'R') then
                         zr(idvddl+nbddl-1) = 0.d0
                     else if (valeType .eq. 'F') then
@@ -786,7 +879,6 @@ contains
         integer :: cbs, fbs, total_dofs, idim, iFace, nbpara, ind
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
-        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -843,10 +935,7 @@ contains
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                   rhs_face)
-            b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
+            call dcopy_1(fbs, rhs_face, rhs_cine(ind))
             ind = ind+fbs
         end do
 !
@@ -867,10 +956,7 @@ contains
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
+        call dcopy_1(cbs, rhs_cell, rhs_cine(ind))
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !
@@ -906,7 +992,6 @@ contains
         integer :: cbs, fbs, total_dofs, idim, iFace, ind, ndim
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
-        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -942,10 +1027,7 @@ contains
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                   rhs_face)
-            b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
+            call dcopy_1(fbs, rhs_face, rhs_cine(ind))
             ind = ind+fbs
         end do
 !
@@ -965,10 +1047,7 @@ contains
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
+        call dcopy_1(cbs, rhs_cell, rhs_cine(ind))
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !
@@ -1005,7 +1084,6 @@ contains
         integer :: cbs, fbs, total_dofs, iFace, ind
         real(kind=8) :: FuncValuesQP(MAX_QP_FACE), FuncValuesCellQP(MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
-        blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1034,10 +1112,7 @@ contains
 !
             call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
                                    rhs_face)
-            b_n = to_blas_int(fbs)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, rhs_face, b_incx, rhs_cine(ind), b_incy)
+            call dcopy_1(fbs, rhs_face, rhs_cine(ind))
             ind = ind+fbs
         end do
 !
@@ -1052,10 +1127,7 @@ contains
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                rhs_cell)
-        b_n = to_blas_int(cbs)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, rhs_cell, b_incx, rhs_cine(ind), b_incy)
+        call dcopy_1(cbs, rhs_cell, rhs_cine(ind))
         ind = ind+cbs
         ASSERT(ind-1 == total_dofs)
 !
@@ -1068,9 +1140,9 @@ contains
 !
     integer function hhoDiriOffset(typema)
 !
-    implicit none
+        implicit none
 !
-    character(len=8), intent(in), optional :: typema
+        character(len=8), intent(in), optional :: typema
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - AFFE_CHAR_CINE_F
@@ -1080,49 +1152,49 @@ contains
 !   In (opt) typema : type of element
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
-    character(len=8) :: typma2
+        integer :: iret
+        character(len=8) :: typma2
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---  Get type of element
 !
-    if (present(typema)) then
-        typma2 = typema
-    else
-        call teattr('S', 'TYPMA', typma2, iret)
-        ASSERT(iret == 0)
-    end if
+        if (present(typema)) then
+            typma2 = typema
+        else
+            call teattr('S', 'TYPMA', typma2, iret)
+            ASSERT(iret == 0)
+        end if
 !
-    if (typma2 == 'H27' .or. typma2 == 'HEXA27') then
-        hhoDiriOffset = 21
-    else if (typma2 == 'T15' .or. typma2 == 'TETRA15') then
-        hhoDiriOffset = 11
-    else if (typma2 == 'P21' .or. typma2 == 'PENTA21') then
-        hhoDiriOffset = 16
-    else if (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
-        hhoDiriOffset = 14
-    else if (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
-        hhoDiriOffset = 5
-    else if (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
-        hhoDiriOffset = 4
-    else
-        ASSERT(ASTER_FALSE)
-    end if
+        if (typma2 == 'H27' .or. typma2 == 'HEXA27') then
+            hhoDiriOffset = 21
+        else if (typma2 == 'T15' .or. typma2 == 'TETRA15') then
+            hhoDiriOffset = 11
+        else if (typma2 == 'P21' .or. typma2 == 'PENTA21') then
+            hhoDiriOffset = 16
+        else if (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
+            hhoDiriOffset = 14
+        else if (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
+            hhoDiriOffset = 5
+        else if (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
+            hhoDiriOffset = 4
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
-end function
-!
-!===================================================================================================
+    end function
 !
 !===================================================================================================
 !
-function hhoDiriNodeType(typema, i_node) result(isCellNode)
+!===================================================================================================
 !
-    implicit none
+    function hhoDiriNodeType(typema, i_node) result(isCellNode)
 !
-    character(len=8), intent(in), optional :: typema
-    integer, intent(in) :: i_node
-    aster_logical :: isCellNode
+        implicit none
+!
+        character(len=8), intent(in), optional :: typema
+        integer, intent(in) :: i_node
+        aster_logical :: isCellNode
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - AFFE_CHAR_CINE_F
@@ -1132,38 +1204,38 @@ function hhoDiriNodeType(typema, i_node) result(isCellNode)
 !   In (opt) typema : type of element
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
-    character(len=8) :: typma2
+        integer :: iret
+        character(len=8) :: typma2
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! ---  Get type of element
 !
-    if (present(typema)) then
-        typma2 = typema
-    else
-        call teattr('S', 'TYPMA', typma2, iret)
-        ASSERT(iret == 0)
-    end if
+        if (present(typema)) then
+            typma2 = typema
+        else
+            call teattr('S', 'TYPMA', typma2, iret)
+            ASSERT(iret == 0)
+        end if
 !
-    isCellNode = ASTER_FALSE
+        isCellNode = ASTER_FALSE
 !
-    if (typma2 == 'H27' .or. typma2 == 'HEXA27') then
-        isCellNode = i_node == 27
-    else if (typma2 == 'T15' .or. typma2 == 'TETRA15') then
-        isCellNode = i_node == 15
-    else if (typma2 == 'P21' .or. typma2 == 'PENTA21') then
-        isCellNode = i_node == 21
-    else if (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
-        isCellNode = i_node == 19
-    else if (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
-        isCellNode = i_node == 9
-    else if (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
-        isCellNode = i_node == 7
-    else
-        ASSERT(ASTER_FALSE)
-    end if
+        if (typma2 == 'H27' .or. typma2 == 'HEXA27') then
+            isCellNode = i_node == 27
+        else if (typma2 == 'T15' .or. typma2 == 'TETRA15') then
+            isCellNode = i_node == 15
+        else if (typma2 == 'P21' .or. typma2 == 'PENTA21') then
+            isCellNode = i_node == 21
+        else if (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
+            isCellNode = i_node == 19
+        else if (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
+            isCellNode = i_node == 9
+        else if (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
+            isCellNode = i_node == 7
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
-end function
+    end function
 !
 end module

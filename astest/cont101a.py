@@ -46,7 +46,8 @@ MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MOD
 
 
 # Generate pairs
-meshPair = CA.MeshPairing(Mail)
+meshPair = CA.MeshPairing()
+meshPair.setMesh(Mail)
 meshPair.setVerbosity(1)
 meshPair.setPair("CONT_BAS", "CONT_HAUT")
 meshPair.setMethod(PairingMethod.Fast)
@@ -103,7 +104,8 @@ if nbPairs != 0:
     )
 
 # Generate pairs
-meshPair = CA.MeshPairing(Mail)
+meshPair = CA.MeshPairing()
+meshPair.setMesh(Mail)
 meshPair.setVerbosity(1)
 meshPair.setPair("CONT_BAS", "CONT_HAUT")
 meshPair.setMethod(PairingMethod.Legacy)
@@ -161,7 +163,8 @@ if nbPairs != 0:
     )
 
 # Generate pairs
-meshPair = CA.MeshPairing(Mail)
+meshPair = CA.MeshPairing()
+meshPair.setMesh(Mail)
 meshPair.setVerbosity(1)
 meshPair.setPair("CONT_BAS", "CONT_HAUT")
 meshPair.setMethod(PairingMethod.BrutForce)
@@ -216,7 +219,8 @@ if nbPairs != 0:
     )
 
 # Generate pairs
-meshPair = CA.MeshPairing(Mail)
+meshPair = CA.MeshPairing()
+meshPair.setMesh(Mail)
 meshPair.setVerbosity(1)
 meshPair.setPair("CONT_HAUT", "CONT_BAS")
 # meshPair.setMethod("NEW")

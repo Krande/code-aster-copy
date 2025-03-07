@@ -130,8 +130,9 @@ class DataStructure {
     /**
      * @brief Function membre debugPrint
      * @param logicalUnit Unite logique d'impression
+     * @param synchro Synchronisation des impressions en MPI
      */
-    virtual void debugPrint( const int logicalUnit = 6 ) const;
+    virtual void debugPrint( int logicalUnit = 6, bool synchro = true ) const;
 
     /**
      * @brief Function membre getName

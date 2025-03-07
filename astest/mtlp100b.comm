@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -2000,7 +2000,7 @@ TRCMNDA = DEFI_TRC(
 )
 
 ACIER = DEFI_MATERIAU(
-    THER=_F(RHO_CP=5260000.0, LAMBDA=33.5),
+    THER=_F(LAMBDA=33.5, RHO_CP=5260000.0),
     META_ACIER=_F(
         TRC=TRCMNDA,
         AR3=830.0,
@@ -2018,11 +2018,11 @@ MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="THERMIQUE"))
+MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
 
 TIMPO = DEFI_FONCTION(
-    NOM_RESU="TEMP",
     NOM_PARA="INST",
+    NOM_RESU="TEMP",
     VALE=(0.0, 700.0, 200.0, 900.0),
     PROL_DROITE="LINEAIRE",
     PROL_GAUCHE="LINEAIRE",
@@ -2055,18 +2055,17 @@ PHASINIT = CREA_CHAMP(
 TEMPE = THER_LINEAIRE(
     MODELE=MOTH,
     CHAM_MATER=CHMAT,
-    SOLVEUR=_F(METHODE="LDLT"),
-    PARM_THETA=0.57,
     EXCIT=_F(CHARGE=CHTH1),
     INCREMENT=_F(LIST_INST=LR8, NUME_INST_FIN=40),
     ETAT_INIT=_F(VALE=700.0),
+    PARM_THETA=0.57,
 )
 
 TEMPE = CALC_META(
     reuse=TEMPE,
     MODELE=MOTH,
-    RESULTAT=TEMPE,
     CHAM_MATER=CHMAT,
+    RESULTAT=TEMPE,
     ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
     COMPORTEMENT=_F(RELATION="ACIER", TOUT="OUI"),
     OPTION="META_ELNO",
@@ -2076,7 +2075,6 @@ TEMPE = THER_LINEAIRE(
     reuse=TEMPE,
     MODELE=MOTH,
     CHAM_MATER=CHMAT,
-    SOLVEUR=_F(METHODE="LDLT"),
     PARM_THETA=0.57,
     EXCIT=_F(CHARGE=CHTH2),
     INCREMENT=_F(LIST_INST=LR8, NUME_INST_INIT=40),
@@ -2085,8 +2083,8 @@ TEMPE = THER_LINEAIRE(
 
 TEMPE = CALC_META(
     reuse=TEMPE,
-    MODELE=MOTH,
     RESULTAT=TEMPE,
+    MODELE=MOTH,
     CHAM_MATER=CHMAT,
     ETAT_INIT=_F(EVOL_THER=TEMPE, NUME_INIT=40),
     COMPORTEMENT=_F(RELATION="ACIER", TOUT="OUI"),
@@ -2095,85 +2093,58 @@ TEMPE = CALC_META(
 
 TEMPE = CALC_META(reuse=TEMPE, MODELE=MOTH, RESULTAT=TEMPE, CHAM_MATER=CHMAT, OPTION="DURT_ELNO")
 
-
 TEST_RESU(
     RESU=(
         _F(
-            NUME_ORDRE=110,
+            INST=300.0,
             REFERENCE="AUTRE_ASTER",
             RESULTAT=TEMPE,
             NOM_CHAM="META_ELNO",
             GROUP_NO="N19",
             NOM_CMP="V3",
-            VALE_CALC=0.621941559,
-            VALE_REFE=0.62629999999999997,
-            CRITERE="ABSOLU",
-            PRECISION=5.0000000000000001e-3,
+            VALE_CALC=0.6008745389494903,
+            VALE_REFE=0.6008748690508787,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-6,
             GROUP_MA="M19",
         ),
         _F(
-            NUME_ORDRE=110,
-            REFERENCE="AUTRE_ASTER",
-            RESULTAT=TEMPE,
-            NOM_CHAM="META_ELNO",
-            GROUP_NO="N593",
-            NOM_CMP="V3",
-            VALE_CALC=0.515637219,
-            VALE_REFE=0.53339999999999999,
-            CRITERE="ABSOLU",
-            PRECISION=0.02,
-            GROUP_MA="M19",
-        ),
-        _F(
-            NUME_ORDRE=165,
+            INST=300.0,
             REFERENCE="AUTRE_ASTER",
             RESULTAT=TEMPE,
             NOM_CHAM="META_ELNO",
             GROUP_NO="N13",
             NOM_CMP="V3",
-            VALE_CALC=0.772011883,
-            VALE_REFE=0.79900000000000004,
-            CRITERE="ABSOLU",
-            PRECISION=0.029999999999999999,
+            VALE_CALC=0.25673292024125083,
+            VALE_REFE=0.2567324785463885,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-4,
             GROUP_MA="M13",
         ),
         _F(
-            NUME_ORDRE=165,
+            INST=410.0,
             REFERENCE="AUTRE_ASTER",
             RESULTAT=TEMPE,
             NOM_CHAM="META_ELNO",
             GROUP_NO="N13",
             NOM_CMP="V4",
-            VALE_CALC=0.225934994,
-            VALE_REFE=0.1996,
-            CRITERE="ABSOLU",
-            PRECISION=0.029999999999999999,
+            VALE_CALC=0.22469743001710252,
+            VALE_REFE=0.22469788044648592,
+            PRECISION=1.0e-4,
+            CRITERE="RELATIF",
             GROUP_MA="M13",
         ),
         _F(
-            NUME_ORDRE=165,
+            INST=410.0,
             REFERENCE="AUTRE_ASTER",
             RESULTAT=TEMPE,
             NOM_CHAM="META_ELNO",
             GROUP_NO="N19",
             NOM_CMP="V4",
-            VALE_CALC=0.375714557,
-            VALE_REFE=0.3715,
-            CRITERE="ABSOLU",
-            PRECISION=5.0000000000000001e-3,
-            GROUP_MA="M19",
-        ),
-        _F(
-            NUME_ORDRE=165,
-            REFERENCE="AUTRE_ASTER",
-            RESULTAT=TEMPE,
-            NOM_CHAM="META_ELNO",
-            GROUP_NO="N593",
-            NOM_CMP="V4",
-            VALE_CALC=0.481536244,
-            VALE_REFE=0.46379999999999999,
-            CRITERE="ABSOLU",
-            PRECISION=0.02,
+            VALE_CALC=0.39675900764548194,
+            VALE_REFE=0.39675867588065805,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-6,
             GROUP_MA="M19",
         ),
         _F(
@@ -2183,10 +2154,10 @@ TEST_RESU(
             NOM_CHAM="DURT_ELNO",
             GROUP_NO="N1",
             NOM_CMP="HV",
-            VALE_CALC=223.642786885,
-            VALE_REFE=223.643,
-            CRITERE="ABSOLU",
-            PRECISION=5.0000000000000001e-3,
+            VALE_CALC=223.64278688524567,
+            VALE_REFE=223.642786885246,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-6,
             GROUP_MA="M1",
         ),
         _F(
@@ -2196,14 +2167,14 @@ TEST_RESU(
             NOM_CHAM="DURT_ELNO",
             GROUP_NO="N1",
             NOM_CMP="HV",
-            VALE_CALC=106.429672131,
-            VALE_REFE=106.43000000000001,
-            CRITERE="ABSOLU",
-            PRECISION=5.0000000000000001e-3,
+            VALE_CALC=106.42967213114756,
+            VALE_REFE=106.42967213114756,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-6,
             GROUP_MA="M1",
         ),
         _F(
-            NUME_ORDRE=110,
+            INST=300.0,
             REFERENCE="AUTRE_ASTER",
             RESULTAT=TEMPE,
             NOM_CHAM="DURT_ELNO",
@@ -2211,25 +2182,24 @@ TEST_RESU(
             NOM_CMP="HV",
             VALE_CALC=100.000000000,
             VALE_REFE=100.0,
-            CRITERE="ABSOLU",
-            PRECISION=5.0000000000000001e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-6,
             GROUP_MA="M1",
         ),
         _F(
-            NUME_ORDRE=165,
-            REFERENCE="NON_DEFINI",
+            INST=410.0,
+            REFERENCE="AUTRE_ASTER",
             RESULTAT=TEMPE,
             NOM_CHAM="DURT_ELNO",
             GROUP_NO="N1",
             NOM_CMP="HV",
-            VALE_CALC=309.622349866,
-            VALE_REFE=309.00999999999999,
-            CRITERE="ABSOLU",
-            PRECISION=0.65000000000000002,
+            VALE_CALC=309.8984948454616,
+            VALE_REFE=309.89853210796286,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-6,
             GROUP_MA="M1",
         ),
     )
 )
 
 FIN()
-#

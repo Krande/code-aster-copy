@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,27 +17,30 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Basics import SolverOptions as SOP
-from ..OperatorsManager import MecaDynaOperatorsManager
+from abc import abstractmethod
+from enum import IntFlag, auto
+
+from ...Utilities import no_new_attributes
+from ..Operators.meca_dyna_operators import MecaDynaOperators
 
 
-class IntegrationType:
-    """Time integrators types."""
+class TimeScheme(IntFlag):
+    """Time integrator schemes."""
 
-    Unset = 0x00
-    Implicit = 0x01
-    Explicit = 0x02
-    Multiple = 0x04
-
-
-class IntegratorName:
-    """Time integrators names."""
-
-    Unset = 0x00
-    Newmark = 0x01
+    Unset = auto()
+    Implicit = auto()
+    Explicit = auto()
+    Multiple = auto()
 
 
-class BaseIntegrator(MecaDynaOperatorsManager):
+class IntegratorType(IntFlag):
+    """Types of time integrators."""
+
+    Unset = auto()
+    Newmark = auto()
+
+
+class BaseIntegrator(MecaDynaOperators):
     """
     Integrator for systems like : M ddX = Fext - Fc(dX) - Fk(X) = funForce(X, dX)
     In case of a linear problem : M ddX = Fext - C dX - K X
@@ -48,61 +51,45 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         df : Jacobian matrix of f
     """
 
-    provide = SOP.TimeIntegrator | MecaDynaOperatorsManager.provide
+    integrator_type = TimeScheme.Unset
+    integrator_name = IntegratorType.Unset
 
-    integration_type = IntegrationType.Unset
-    integrator_name = IntegratorName.Unset
-
-    _first_jacobian = _lagr_scaling = None
     _init_state = _set_up = None
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     @classmethod
-    def create(cls, name, schema):
-        """Setup a solver for the given problem.
+    def factory(cls, context):
+        """Factory that creates the appropriate object.
 
-        Arguments:
-            name : integrator name.
-            schema (dict) : *SCHEMA_TEMPS* keyword.
+        Args:
+            context (Context): Context of the problem.
 
         Returns:
             *BaseIntegrator*: A relevant *BaseIntegrator* object.
         """
-        for klass in cls.__subclasses__():
-            if klass.integrator_name == name:
-                return klass.create(schema)
+        # FIXME: for multi-steps, should probably return a list to build a MultiStepSolver on...
+        # see transient-history repository, NLIntegrators.py?ref_type=heads#L329
+        assert context.problem_type == cls.problem_type, f"unsupported type: {context.problem_type}"
+        integr = context.get_keyword("SCHEMA_TEMPS", "SCHEMA", "").capitalize()
+        for kls in cls.__subclasses__():
+            if kls.integrator_name.name == integr:
+                return kls.builder(context)
+        raise TypeError(f"no candidate for cls={cls}, scheme: {integr}")
 
     def __init__(self):
         super().__init__()
-        self._first_jacobian = None
-        self._lagr_scaling = None
         self._set_up = False
         self._init_state = None
-
-    def initialize(self):
-        """Initializes the operator manager."""
-        self._temp_stress = self._temp_internVar = None
-        self._first_jacobian = self._lagr_scaling = None
-
-    def finalize(self):
-        """Finalizes the operator manager."""
-        self.phys_state.stress = self._temp_stress
-        self.phys_state.internVar = self._temp_internVar
-
-    @property
-    def first_jacobian(self):
-        """Returns the first computed Jacobian"""
-        assert self._first_jacobian is not None
-        return self._first_jacobian
 
     @property
     def t0(self):
         """Time at the beginning of the step."""
-        return self.phys_state.time_prev
+        return self.state.time_prev
 
     @property
     def dt(self):
         """Returns the current time step"""
-        return self.phys_state.time_step
+        return self.state.time_step
 
     def getLagrangeScaling(self, matrix_type):
         """Returns Lagrange scaling.
@@ -135,35 +122,24 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         if not self._set_up:
             self.setup()
 
+    @abstractmethod
     def initializeStep(self):
         """Define the step parameters."""
-        raise NotImplementedError
 
+    @abstractmethod
     def updateVariables(self, q, dq=None, ddq=None):
-        raise NotImplementedError
+        """Update the physical state."""
 
-    def getJacobian(self, matrix_type):
-        """Compute the jacobian matrix.
-
-        Arguments:
-            matrix_type (str): type of matrix used.
-
-        Returns:
-            AssemblyMatrixDisplacementReal: Jacobian matrix.
-        """
-        raise NotImplementedError
-
+    @abstractmethod
     def getResidual(self, scaling=1.0):
         """Compute the residue vector."""
-        raise NotImplementedError
 
     def computeAcceleration(self):
         """Computes the acceleration."""
         force = self.getFunctional(self.t0, self.dt, self.U, self.dU, self.d2U).resi
-        linear_solver = self.get_feature(SOP.LinearSolver)
         if not self._mass.isFactorized():
-            linear_solver.factorize(self._mass)
-        self.phys_state.current.d2U = linear_solver.solve(force)
+            self.linear_solver.factorize(self._mass)
+        self.state.current.d2U = self.linear_solver.solve(force)
 
     @property
     def U0(self):
@@ -210,7 +186,7 @@ class BaseIntegrator(MecaDynaOperatorsManager):
     @property
     def U(self):
         """Current primal unknowns."""
-        return self.phys_state.current.U
+        return self.state.current.U
 
     @U.setter
     def U(self, field):
@@ -219,12 +195,12 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         Arguments:
             field (FieldOnNodesReal): field value
         """
-        self.phys_state.current.U = field
+        self.state.current.U = field
 
     @property
     def dU(self):
         """Current derivative of primal unknowns."""
-        return self.phys_state.current.dU
+        return self.state.current.dU
 
     @dU.setter
     def dU(self, field):
@@ -233,12 +209,12 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         Arguments:
             field (FieldOnNodesReal): field value
         """
-        self.phys_state.current.dU = field
+        self.state.current.dU = field
 
     @property
     def d2U(self):
         """Current second derivative of primal unknowns."""
-        return self.phys_state.current.d2U
+        return self.state.current.d2U
 
     @d2U.setter
     def d2U(self, field):
@@ -247,7 +223,7 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         Arguments:
             field (FieldOnNodesReal): field value
         """
-        self.phys_state.current.d2U = field
+        self.state.current.d2U = field
 
     def setup(self):
         """set up the integrator."""

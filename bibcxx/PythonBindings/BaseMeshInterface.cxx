@@ -58,6 +58,8 @@ Return the coordinates of the mesh.
 Returns:
     MeshCoordinatesField: Field of the coordinates.
         )" )
+        .def( "isConnection", &BaseMesh::isConnection, R"(
+Function to know if a mesh is a ConnectionMesh)" )
         .def( "isIncomplete", &BaseMesh::isIncomplete, R"(
 Tell if the mesh is complete on parallel instances.
 

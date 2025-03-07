@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine te0460(nomopt, nomte)
     use HHO_stabilization_module, only: hhoStabScal, hdgStabScal
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullVec
     use HHO_init_module, only: hhoInfoInitCell
+    use HHO_matrix_module
 !
     implicit none
 !
@@ -46,10 +47,8 @@ subroutine te0460(nomopt, nomte)
     integer :: cbs, fbs, total_dofs, gbs
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)  :: gradfullvec
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL):: stabscal
-    real(kind=8), dimension(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL) :: gradrec_scal
-!
+    type(HHO_matrix) :: gradfullvec, stabscal, gradrec_scal
+
     ASSERT(nomopt == 'HHO_PRECALC_OP')
 !
 ! --- Retrieve HHO informations
@@ -61,19 +60,22 @@ subroutine te0460(nomopt, nomte)
 ! ----- Compute vectoriel Gradient reconstruction
     call hhoGradRecFullVec(hhoCell, hhoData, gradfullvec)
 !
-    call writeMatrix('PCHHOGT', gbs, total_dofs, ASTER_FALSE, gradfullvec)
+    call gradfullvec%write('PCHHOGT', ASTER_FALSE)
+    call gradfullvec%free()
 !
 ! ----- Compute Stabilizatiion
 !
     if (hhoData%cell_degree() <= hhoData%face_degree()) then
         call hhoGradRecVec(hhoCell, hhoData, gradrec_scal)
         call hhoStabScal(hhoCell, hhoData, gradrec_scal, stabscal)
+        call gradrec_scal%free()
     else if (hhoData%cell_degree() == (hhoData%face_degree()+1)) then
         call hdgStabScal(hhoCell, hhoData, stabscal)
     else
         ASSERT(ASTER_FALSE)
     end if
 !
-    call writeMatrix('PCHHOST', total_dofs, total_dofs, ASTER_TRUE, stabscal)
+    call stabscal%write('PCHHOST', ASTER_TRUE)
+    call stabscal%free()
 !
 end subroutine

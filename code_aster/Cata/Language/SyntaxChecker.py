@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ import numpy
 
 from . import DataStructure as DS
 from .SyntaxUtils import (
+    _F,
     convert_complex,
     debug_message2,
     force_list,
@@ -149,7 +150,6 @@ def isValidType(obj, expected):
 
 
 class SyntaxCheckerVisitor:
-
     """This class walks along the tree of a Command object to check its syntax.
 
     Warning: Default keywords must be added before visiting the objects.
@@ -334,7 +334,6 @@ class SyntaxCheckerVisitor:
             if valMax is not None:
                 or_equal = " or equalf" if maxIncl else ""
                 if complex in validType:
-                    ValMax = old_complex(ValMax)
                     if (i.real > valMax.real or (i.real == valMax.real and not maxIncl)) or (
                         i.imag > valMax.imag or (i.imag == valMax.imag and not maxIncl)
                     ):
@@ -351,7 +350,6 @@ class SyntaxCheckerVisitor:
             if valMin is not None:
                 or_equal = " or equalf" if minIncl else ""
                 if complex in validType:
-                    ValMin = old_complex(ValMin)
                     if (i.real < valMin.real or (i.real == valMin.real and not minIncl)) or (
                         i.imag < valMin.imag or (i.imag == valMin.imag and not minIncl)
                     ):
@@ -440,12 +438,11 @@ class SyntaxCheckerVisitor:
                 else:
                     nmax = kwd.definition.get("max", 1)
                     if nmax == 1:
-                        if (
-                            value_is_sequence(value)
-                            and len(value) == 1
-                            and not isinstance(value[0], dict)
-                        ):
+                        if value_is_sequence(value) and len(value) == 1:
                             value = userOcc[key] = value[0]
+                            if isinstance(value, dict):
+                                # to support [0]
+                                value = userOcc[key] = _F(value)
                     else:
                         if value is not None:
                             if not value_is_sequence(value):

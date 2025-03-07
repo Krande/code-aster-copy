@@ -1,0 +1,171 @@
+digraph MNL {
+    compound = "true";
+    // global+several pointers: circle
+    // mixin: note, dashed
+    // abstract: ' {abstr}', dashed
+    labelloc = "t";
+    // rankdir = "LR";
+    fontname = "Helvetica,Arial,sans-serif";
+    node [fontname = "Helvetica,Arial,sans-serif"; shape = "box";];
+    edge [fontname = "Helvetica,Arial,sans-serif";];
+    
+    subgraph bases {
+        keywords [label = "Keywords";shape = "ellipse";];
+        problem [label = "PhysicalProblem";shape = "ellipse";];
+        type [label = "ProblemType";shape = "ellipse";];
+        state [label = "PhysicalState";];
+        result [label = "Result";shape = "ellipse";];
+        contact [label = "Contact";];
+        linsolv [label = "LinearSolver";];
+        context [label = "Context";shape = "circle";];
+        timestepper [label = "TimeStepper";];
+        
+        context -> problem;
+        context -> type;
+        context -> keywords;
+        context -> state;
+        context -> result;
+        context -> timestepper;
+        context -> operators [lhead = cluster_operators;];
+        context -> contact;
+        context -> linsolv;
+    }
+    
+    mnl [label = "meca_non_line_ops";];
+    subgraph {
+        rank = "same";
+        nl_operator [label = "NonLinearOperator";];
+        mixin_pb [label = ".pb/.state/.kwds/.pbtype/.stepper/.result";style = "dashed";shape = "note";];
+        nl_operator -> mixin_pb [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
+    storage [label = "StorageManager";];
+    hook [label = "PostStepHook";];
+    
+    observ [label = "Observer";style = "dashed";shape = "note";];
+    
+    subgraph cluster_operators {
+        subgraph {
+            rank = "same";
+            operators [label = "BaseOperators {abstr}";style = "dashed";];
+            mixin_oper [label = ".pb/.state/.contact + DispatcherMixin";style = "dashed";shape = "note";];
+            operators -> mixin_oper [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        style = "dashed";
+        subgraph {
+            rank = "same";
+            statopers [label = "MecaStatOperators";];
+            theropers [label = "ThermalOperators";];
+            dynopers [label = "MecaDynaOperators {abstr}";style = "dashed";];
+        }
+        integr [label = BaseIntegrator;];
+        newmark [label = NewmarkIntegrator;];
+        
+        // subclasses
+        operators -> statopers [dir = "back"; arrowtail = "empty";];
+        operators -> dynopers [dir = "back"; arrowtail = "empty";];
+        operators -> theropers [dir = "back"; arrowtail = "empty";];
+        
+        dynopers -> integr [dir = "back"; arrowtail = "empty";];
+        integr -> newmark [dir = "back"; arrowtail = "empty";];
+    }
+    
+    subgraph cluster_stepsolv {
+        label = "StepSolver";
+        style = "dashed";
+        subgraph {
+            rank = "same";
+            mecastat [label = "MecaStatStepSolver";];
+            mecadyn [label = "MecaDynaStepSolver";];
+            ther [label = "ThermalStepSolver";];
+        }
+        subgraph {
+            rank = "same";
+            stepsolv [label = "BaseStepSolver {abstr}";style = "dashed";];
+            mixin_step [label = ".pb/.state/.oper/.linsolv + DispatcherMixin";style = "dashed";shape = "note";];
+            stepsolv -> mixin_step [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        // subclasses
+        stepsolv -> mecastat [dir = "back"; arrowtail = "empty";];
+        stepsolv -> mecadyn [dir = "back"; arrowtail = "empty";];
+        stepsolv -> ther [dir = "back"; arrowtail = "empty";];
+        
+        implicit [label = "ImplicitStepSolver";];
+        explicit [label = "ExplicitStepSolver";];
+        multi [label = "MultiStepSolver";];
+        
+        // subclasses
+        mecadyn -> implicit [dir = "back"; arrowtail = "empty";];
+        mecadyn -> explicit [dir = "back"; arrowtail = "empty";];
+        mecadyn -> multi [dir = "back"; arrowtail = "empty";];
+    }
+    
+    subgraph cluster_iter_solv {
+        label = IterationSolver;
+        style = "dashed";
+        subgraph {
+            rank = "same";
+            iter_solver [label = "BaseIterationSolver {abstr}";style = "dashed";];
+            mixin_iter [label = ".state/.kwds/.oper + DispatcherMixin";style = "dashed";shape = "note";];
+            iter_solver -> mixin_iter [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        // [style = invis]
+        subgraph {
+            rank = "same";
+            newton [label = "NewtonSolver";];
+            event [label = "EventSource";style = "dashed";shape = "note";];
+            newton -> event [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        subgraph {
+            snes [label = "SNESSolver";];
+            mixin_snes [label = "+.pb/.linsolv";style = "dashed";shape = "note";];
+            snes -> mixin_snes [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        subgraph {
+            raspen [label = "RaspenSolver";];
+            mixin_rasp [label = "+.pb/.linsolv";style = "dashed";shape = "note";];
+            raspen -> mixin_rasp [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        subgraph {
+            mixin_newt [label = "+.pb/.linsolv/.contact";style = "dashed";shape = "note";];
+            newton -> mixin_newt [dir = "back"; style = "dashed"; arrowtail = "empty";];
+        }
+        iter_solver -> newton [dir = "back"; arrowtail = "empty";];
+        iter_solver -> snes [dir = "back"; arrowtail = "empty";];
+        iter_solver -> raspen [dir = "back"; arrowtail = "empty";];
+    }
+    
+    mnl -> nl_operator;
+    subgraph {
+        rank = "same";
+        mnl -> context [xlabel = "creates"; style = "bold";];
+    }
+    nl_operator -> storage;
+    nl_operator -> stepsolv [xlabel = "loops on timesteps"; lhead = cluster_stepsolv;];
+    nl_operator -> hook;
+    
+    stepsolv -> iter_solver [ltail = cluster_stepsolv; lhead = cluster_iter_solv;];
+    
+    subgraph {
+        // rank = "same";
+        linesearch [label = "LineSearch";];
+        mixin_line [label = ".state/.kwds/.oper";style = "dashed";shape = "note";];
+        linesearch -> mixin_line [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
+    
+    subgraph {
+        // rank = "same";
+        conv_manager [label = "ConvergenceManager";];
+        mixin_conv [label = ".pb/.state/.kwds";style = "dashed";shape = "note";];
+        conv_manager -> mixin_conv [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
+    
+    newton -> linesearch;
+    newton -> conv_manager;
+    
+    subgraph {
+        // rank = "same";
+        timestepper -> observ [dir = "back"; style = "dashed"; arrowtail = "empty";];
+    }
+    // placement
+    // timestepper -> stepsolv [style = "invis";];
+}

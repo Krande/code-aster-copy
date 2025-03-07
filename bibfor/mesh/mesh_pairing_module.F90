@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -210,7 +210,7 @@ contains
 
 ! ----- List of starting cells
         AS_ALLOCATE(vi=cellSlavStart, size=nbCellSlav)
-        AS_ALLOCATE(vi=cellMastStart, size=nbCellMast)
+        AS_ALLOCATE(vi=cellMastStart, size=nbCellSlav)
 
 ! ----- Flag for slave cell usage status
 !                        0 - Never used
@@ -284,11 +284,15 @@ contains
                 if (meshPairing%debug) then
                     write (6, *) "Potential number of neighbours: ", nbSlavNeigh
                     do iSlavNeigh = 1, nbSlavNeigh
-                        cellNeighNume = meshSlavNeigh(4*(cellSlavIndx-1)+iSlavNeigh)
-                        if (cellNeighNume .eq. 0) then
-                            write (6, *) "Neighbour (", iSlavNeigh, "): "
-                        else
-                            write (6, *) "Neighbour (", iSlavNeigh, "): ", cellNeighNume
+                        cellNeighIndx = MAX_NB_NEIGH*(cellSlavIndx-1)+iSlavNeigh
+                        if (cellNeighIndx .ne. 0) then
+                            cellNeighNume = meshSlavNeigh(cellNeighIndx)
+                            if (cellNeighNume .eq. 0) then
+                                write (6, *) "Neighbour (", iSlavNeigh, "): "
+                            else
+
+                                write (6, *) "Neighbour (", iSlavNeigh, "): ", cellNeighNume
+                            end if
                         end if
                     end do
                 end if
@@ -408,16 +412,17 @@ contains
                             WRITE (6, *) "Prepare next master element"
                         end if
                         do iMastNeigh = 1, nbMastNeigh
-                            cellNeighNume = meshMastNeigh(MAX_NB_NEIGH*(cellMastIndx-1)+iMastNeigh)
-                            cellNeighIndx = cellNeighNume+1-mastIndxMini
-                            if (cellNeighNume .ne. 0 .and. &
-                                cellMastFlag(cellNeighIndx) .ne. 1) then
-                                nbMastPaired = nbMastPaired+1
-                                cellMastPaired(nbMastPaired) = cellNeighNume
-                                cellMastFlag(cellNeighIndx) = 1
-                                if (meshPairing%debug) then
-                                    WRITE (6, *) " => added: ", nbMastPaired, &
-                                        cellMastPaired(nbMastPaired)
+                            cellNeighIndx = MAX_NB_NEIGH*(cellMastIndx-1)+iMastNeigh
+                            cellNeighNume = meshMastNeigh(cellNeighIndx)
+                            if (cellNeighNume .ne. 0) then
+                                if (cellMastFlag(cellNeighNume+1-mastIndxMini) .ne. 1) then
+                                    nbMastPaired = nbMastPaired+1
+                                    cellMastPaired(nbMastPaired) = cellNeighNume
+                                    cellMastFlag(cellNeighNume+1-mastIndxMini) = 1
+                                    if (meshPairing%debug) then
+                                        WRITE (6, *) " => added: ", nbMastPaired, &
+                                            cellMastPaired(nbMastPaired)
+                                    end if
                                 end if
                             end if
                         end do
@@ -427,21 +432,20 @@ contains
                             WRITE (6, *) "Prepare next slave element"
                         end if
                         do iSlavNeigh = 1, nbSlavNeigh
-                            cellNeighNume = meshSlavNeigh(MAX_NB_NEIGH*(cellSlavIndx-1)+iSlavNeigh)
-                            cellNeighIndx = cellNeighNume+1-slavIndxMini
+                            cellNeighIndx = MAX_NB_NEIGH*(cellSlavIndx-1)+iSlavNeigh
+                            cellNeighNume = meshSlavNeigh(cellNeighIndx)
                             if (meshPairing%debug) then
                                 WRITE (6, *) " < Index:", iSlavNeigh
                                 WRITE (6, *) " < cellNeighNume:", cellNeighNume
-                                WRITE (6, *) " < cellNeighIndx: ", cellNeighIndx
-                                WRITE (6, *) " < cellSlavFlag: ", cellSlavFlag(cellNeighIndx)
                                 WRITE (6, *) " < inteNeigh: ", inteNeigh(iSlavNeigh)
                             end if
-                            if (cellNeighNume .ne. 0 .and. &
-                                cellSlavFlag(cellNeighIndx) .ne. 1 .and. &
-                                inteNeigh(iSlavNeigh) == 1) then
-                                cellNeigh(iSlavNeigh) = cellMastNume
-                                if (meshPairing%debug) then
-                                    WRITE (6, *) " => added: ", cellMastNume
+                            if (cellNeighNume .ne. 0) then
+                                if (cellSlavFlag(cellNeighNume+1-slavIndxMini) .ne. 1 .and. &
+                                    inteNeigh(iSlavNeigh) == 1) then
+                                    cellNeigh(iSlavNeigh) = cellMastNume
+                                    if (meshPairing%debug) then
+                                        WRITE (6, *) " => added: ", cellMastNume
+                                    end if
                                 end if
                             end if
                         end do
@@ -454,20 +458,17 @@ contains
                     WRITE (6, *) "Prepare next elements - Nb: ", nbSlavNeigh
                 end if
                 do iSlavNeigh = 1, nbSlavNeigh
-                    cellNeighNume = meshSlavNeigh(MAX_NB_NEIGH*(cellSlavIndx-1)+iSlavNeigh)
-                    cellNeighIndx = cellNeighNume+1-slavIndxMini
-                    if (meshPairing%debug) then
-                        write (*, *) 'Next elements - Current: ', iSlavNeigh, cellNeighNume, &
-                            cellNeigh(iSlavNeigh), cellSlavFlag(cellNeighIndx)
-                    end if
-                    if (cellNeighNume .ne. 0 .and. &
-                        cellNeigh(iSlavNeigh) .ne. 0 .and. &
-                        cellSlavFlag(cellNeighIndx) .ne. 1) then
-                        nbSlavStart = nbSlavStart+1
-                        cellSlavStart(nbSlavStart) = cellNeighNume
-                        cellSlavFlag(cellNeighIndx) = 1
-                        nbMastStart = nbMastStart+1
-                        cellMastStart(nbMastStart) = cellNeigh(iSlavNeigh)
+                    cellNeighIndx = MAX_NB_NEIGH*(cellSlavIndx-1)+iSlavNeigh
+                    cellNeighNume = meshSlavNeigh(cellNeighIndx)
+                    if (cellNeighNume .ne. 0) then
+                        if (cellNeigh(iSlavNeigh) .ne. 0 .and. &
+                            cellSlavFlag(cellNeighNume+1-slavIndxMini) .ne. 1) then
+                            nbSlavStart = nbSlavStart+1
+                            cellSlavStart(nbSlavStart) = cellNeighNume
+                            cellSlavFlag(cellNeighNume+1-slavIndxMini) = 1
+                            nbMastStart = nbMastStart+1
+                            cellMastStart(nbMastStart) = cellNeigh(iSlavNeigh)
+                        end if
                     end if
                 end do
 
@@ -816,7 +817,7 @@ contains
 ! ----- End of loop
 99      continue
 !
-        if (projPara%errorCode .eq. 1) then
+        if (projPara%debug .and. projPara%errorCode .eq. 1) then
             WRITE (6, *) "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
             WRITE (6, *) "Newton algorithm for projection"
             WRITE (6, *) " => failure "
@@ -1967,7 +1968,7 @@ contains
         integer, pointer :: cellSlavFlag(:)
         integer, intent(in) :: nbCellMast, listCellMast(nbCellMast)
         integer, intent(in) :: nbNodeMast, listNodeMast(nbNodeMast)
-        integer, intent(out) :: nbMastStart, cellMastStart(nbCellMast)
+        integer, intent(out) :: nbMastStart, cellMastStart(nbCellSlav)
         integer, intent(out) :: nbSlavStart, cellSlavStart(nbCellSlav)
 ! ----- Local
         integer :: iCellSlav, iCellMast
@@ -2709,32 +2710,17 @@ contains
         integer, intent(in) :: listCellMast(nbCellMast), listCellSlav(nbCellSlav)
         type(MESH_PAIRING), intent(inout) :: meshPairing
 ! ----- Local
-        ! aster_logical :: pair_exist, isFatal, l_recup
         aster_logical :: isFatal
-        ! integer :: nbSlavStart, nbMastStart
-        ! integer, pointer :: cellSlavStart(:) => null()
-        ! integer, pointer :: cellMastStart(:) => null()
-        ! integer, pointer :: cellMastFlag(:) => null()
-        ! integer, pointer :: cellSlavFlag(:) => null(), cellMastPaired(:) => null()
-        ! integer :: slavIndxMini, slavIndxMaxi
-        ! integer :: mastIndxMini, mastIndxMaxi
-        ! integer :: iCell, iMastNeigh, iSlavNeigh
         integer :: iCellSlav, cellSlavNume, iCellMast, cellMastNume
         real(kind=8), pointer :: nodeCoor(:) => null()
         integer, pointer :: meshTypeGeom(:) => null()
         integer, pointer :: meshConx(:) => null(), meshConxCumu(:) => null()
-        ! integer, pointer :: mastConxInv(:) => null(), mastConxInvCumu(:) => null()
         type(CELL_GEOM) :: cellSlav, cellMast
         type(CELL_GEOM) :: cellSlavLine, cellMastLine
-        ! integer :: nbSlavNeigh, nbMastPaired, inteNeigh(MAX_NB_NEIGH), nbMastNeigh
-        ! integer :: cellNeigh(MAX_NB_NEIGH), iret
         integer :: iret
         real(kind=8) :: inteArea
-        ! integer :: mastFindIndx, cellMastNume, cellMastIndx, cellSlavIndx, cellSlavNume
         integer :: nbPoinInte
         real(kind=8) :: poinInte(2, MAX_NB_INTE), poinInteReal(3, MAX_NB_INTE)
-        ! integer :: cellNeighNume, cellNeighIndx
-        ! integer, pointer :: meshMastNeigh(:) => null(), meshSlavNeigh(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         if (meshPairing%debug) then
@@ -2833,13 +2819,6 @@ contains
                 end if
             end do
         end do
-
-! ----- Clean memory
-        ! AS_DEALLOCATE(vi=cellSlavStart)
-        ! AS_DEALLOCATE(vi=cellMastStart)
-        ! AS_DEALLOCATE(vi=cellSlavFlag)
-        ! AS_DEALLOCATE(vi=cellMastFlag)
-        ! AS_DEALLOCATE(vi=cellMastPaired)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

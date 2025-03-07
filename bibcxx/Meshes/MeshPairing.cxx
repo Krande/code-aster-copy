@@ -28,9 +28,9 @@
 #include "Messages/Messages.h"
 #include "Utilities/Tools.h"
 
-MeshPairing::MeshPairing( const std::string name, const BaseMeshPtr mesh )
-    : DataStructure( name, 8, "MESH_PAIRING" ),
-      _mesh( mesh ),
+MeshPairing::MeshPairing( const std::string name )
+    : DataStructure( name, 13, "MESH_PAIRING" ),
+      _mesh( nullptr ),
       _masterInverseConnectivity( JeveuxCollectionLong( getName() + ".CM" ) ),
       _slaveInverseConnectivity( JeveuxCollectionLong( getName() + ".CS" ) ),
       _masterNeighbors( JeveuxCollectionLong( getName() + ".MN" ) ),
@@ -40,36 +40,23 @@ MeshPairing::MeshPairing( const std::string name, const BaseMeshPtr mesh )
       _masterCellsGroup( " " ),
       _zoneHaveBeenDefined( false ),
       _nbPairs( 0 ),
-      _method( PairingMethod::Fast ) {
+      _method( PairingMethod::Fast ),
+      _currentCoordinates( nullptr ) {};
 
-    _currentCoordinates = std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
-};
-
-// void MeshPairing::initPair() {
-//     if ( !surfacesHasBeenDefined() ) {
-//         throw std::runtime_error( "Surfaces are not defined." );
-//     }
-//     setPair( _slaveCellsGroup, _masterCellsGroup );
-// };
+void MeshPairing::setMesh( const BaseMeshPtr &mesh ) {
+    _mesh = mesh;
+    if ( _currentCoordinates == nullptr ) {
+        _currentCoordinates =
+            std::make_shared< MeshCoordinatesField >( *( _mesh->getCoordinates() ) );
+    }
+}
 
 void MeshPairing::setSlaveGroupOfCells( const std::string &groupName ) {
-    if ( getMesh()->hasGroupOfCells( groupName ) ) {
-        _slaveCellsGroup = groupName;
-        _slaveNodes = getMesh()->getNodesFromCells( groupName, false, true );
-        _slaveCells = getMesh()->getCells( groupName );
-    } else {
-        throw std::runtime_error( "The given group " + groupName + " doesn't exist in mesh" );
-    }
+    _slaveCellsGroup = groupName;
 };
 
 void MeshPairing::setMasterGroupOfCells( const std::string &groupName ) {
-    if ( getMesh()->hasGroupOfCells( groupName ) ) {
-        _masterCellsGroup = groupName;
-        _masterNodes = getMesh()->getNodesFromCells( groupName, false, true );
-        _masterCells = getMesh()->getCells( groupName );
-    } else {
-        throw std::runtime_error( "The given group " + groupName + " doesn't exist in mesh" );
-    }
+    _masterCellsGroup = groupName;
 };
 
 void MeshPairing::setPair( const std::string &groupNameSlav, const std::string &groupNameMast ) {
@@ -549,71 +536,68 @@ ASTERBOOL MeshPairing::buildSlaveCellsVolu() {
 };
 
 void MeshPairing::setExcludedSlaveGroupOfCells( const VectorString &groupsName ) {
-    auto mesh = getMesh();
-    for ( auto &groupName : groupsName ) {
-        if ( !( getMesh()->hasGroupOfCells( groupName ) ) ) {
-            throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
-        }
-
-        VectorLong sans_gr_i = mesh->getCells( groupName );
-        auto it = _slaveCellsExcluded.end();
-        _slaveCellsExcluded.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
-    }
-
-    _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
-    AS_ASSERT( _slaveCells.size() > 0 );
-    _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+    _excludedSlaveCells = groupsName;
 };
 
 void MeshPairing::setExcludedSlaveGroupOfNodes( const VectorString &groupsName ) {
-    auto mesh = getMesh();
-
-    std::cout << "MESH - setExcludedSlaveGroupOfNodes <" << groupsName[0] << ">" << std::endl;
-
-    // Build inverse connectivity
-    AS_ASSERT( buildInverseConnectivity() );
-    std::cout << "MESH/nodes - Avant <" << _slaveNodes.size() << ">" << std::endl;
-    std::cout << "MESH - Avant <" << _slaveCells.size() << ">" << std::endl;
-
-    for ( auto &groupName : groupsName ) {
-        if ( !( getMesh()->hasGroupOfNodes( groupName ) ) ) {
-            throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
-        }
-
-        VectorLong sans_gr_i = mesh->getNodes( groupName );
-        std::cout << "Nombre de noeuds à exclure: " << sans_gr_i.size() << std::endl;
-        for ( auto &node : sans_gr_i ) {
-            auto cellsToExclude = this->getSlaveCellsFromNode( node );
-            std::cout << " Noeud: " << node << std::endl;
-            std::cout << " Cells : " << cellsToExclude.size() << std::endl;
-            auto it = _slaveCellsExcluded.end();
-            _slaveCellsExcluded.insert( it, cellsToExclude.begin(), cellsToExclude.end() );
-        }
-    }
-
-    std::cout << "MESH - Exclus <" << _slaveCellsExcluded.size() << ">" << std::endl;
-    std::cout << "MESH - Exclus <" << _slaveCellsExcluded[0] << ">" << std::endl;
-    _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
-    std::cout << "MESH - Après <" << _slaveCells.size() << ">" << std::endl;
-    AS_ASSERT( _slaveCells.size() > 0 );
-    _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
-    std::cout << "MESH/nodes - Après <" << _slaveNodes.size() << ">" << std::endl;
+    _excludedSlaveNodes = groupsName;
 };
 
 ASTERBOOL MeshPairing::initObjects() {
+    if ( getMesh()->hasGroupOfCells( _slaveCellsGroup ) ) {
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCellsGroup, false, true );
+        _slaveCells = getMesh()->getCells( _slaveCellsGroup );
+    } else {
+        throw std::runtime_error( "The given group " + _slaveCellsGroup +
+                                  " doesn't exist in mesh" );
+    }
+    if ( getMesh()->hasGroupOfCells( _masterCellsGroup ) ) {
+        _masterNodes = getMesh()->getNodesFromCells( _masterCellsGroup, false, true );
+        _masterCells = getMesh()->getCells( _masterCellsGroup );
+    } else {
+        throw std::runtime_error( "The given group " + _masterCellsGroup +
+                                  " doesn't exist in mesh" );
+    }
+
+    if ( _excludedSlaveCells.size() != 0 ) {
+        for ( auto &groupName : _excludedSlaveCells ) {
+            if ( !( getMesh()->hasGroupOfCells( groupName ) ) ) {
+                throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
+            }
+
+            VectorLong sans_gr_i = _mesh->getCells( groupName );
+            auto it = _slaveCellsExcluded.end();
+            _slaveCellsExcluded.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
+        }
+
+        _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
+        AS_ASSERT( _slaveCells.size() > 0 );
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+    }
+
+    if ( _excludedSlaveNodes.size() != 0 ) {
+        // Build inverse connectivity
+        AS_ASSERT( buildInverseConnectivity() );
+
+        for ( auto &groupName : _excludedSlaveNodes ) {
+            if ( !( getMesh()->hasGroupOfNodes( groupName ) ) ) {
+                throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
+            }
+
+            VectorLong sans_gr_i = _mesh->getNodes( groupName );
+            for ( auto &node : sans_gr_i ) {
+                auto cellsToExclude = this->getSlaveCellsFromNode( node );
+                auto it = _slaveCellsExcluded.end();
+                _slaveCellsExcluded.insert( it, cellsToExclude.begin(), cellsToExclude.end() );
+            }
+        }
+
+        _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
+        AS_ASSERT( _slaveCells.size() > 0 );
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+    }
 
     _zoneHaveBeenDefined = true;
-
-    //     // Désactivation verif (voir issue34073)
-    //     // bool returnValue;
-    //     // returnValue = getMesh()->isSkin( groupNameMast );
-    //     // if ( !returnValue ) {
-    //     //     UTMESS( "F", "MESH4_2" );
-    //     // }
-    //     // returnValue = getMesh()->isSkin( groupNameSlav );
-    //     // if ( !returnValue ) {
-    //     //     UTMESS( "F", "MESH4_2" );
-    //     // }
 
     // Build inverse connectivity
     AS_ASSERT( buildInverseConnectivity() );

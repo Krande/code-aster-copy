@@ -47,12 +47,17 @@ from .random_signal_utils import ACCE2SROM, acce_filtre_CP, calc_dsp_FR, calc_ds
 # -------------------------------------------------------------------
 # COHERENCY MATRIX
 # --------------------------------------------------------------------
-def CALC_COHE(freq, **kwargs):
-    #    Frequency is in rad/s: freq= f*2*pi
-    #    kwargs: VITE_ONDE, PARA_ALPHA, TYPE, MAILLAGE,
-    model = kwargs["TYPE"]
-    nom_mail = kwargs["MAILLAGE"]
-    nom_group_inter = kwargs["GROUP_NO_INTERF"]
+def calc_coherency_matrix(frequencies, model, nom_mail, nom_group_inter, **kwargs):
+    """
+    Calculation of coherency matrix
+
+    Arguments:
+        frequencies : list of frequencies
+        model : coherency function type
+        nom_mail : mesh name
+        nom_group_inter : group of nodes constituting the soil-structure interface
+        kwargs: other arguments from the commands
+    """
     if "NOEUDS_INTERF" in kwargs:
         noe_interf = kwargs["NOEUDS_INTERF"]
     else:
@@ -61,63 +66,70 @@ def CALC_COHE(freq, **kwargs):
         DIST2 = kwargs["DIST"]
     else:
         DIST2 = calc_dist2(noe_interf)
-    # # ----MITA & LUCO
+    frequencies = frequencies[:, None, None]
+    dist_xi = NP.sqrt(DIST2)
     if model == "MITA_LUCO":
         # PARAMETRES fonction de coherence
         VITE_ONDE = kwargs["VITE_ONDE"]
         alpha = kwargs["PARA_ALPHA"]
-        COHE = NP.exp(-(DIST2 * (alpha * freq / VITE_ONDE) ** 2.0))
-    # ----ABRAHAMSON ROCK (EPRI)
+        COHE = NP.exp(-(DIST2 * (alpha * frequencies * 2.0 * pi / VITE_ONDE) ** 2.0))
     elif model == "ABRAHAMSON":
         p_a1 = 1.647
         p_a2 = 1.01
         p_a3 = 0.4
         p_n1 = 7.02
-        nbno = len(noe_interf)
-        freqk = freq / (2.0 * pi)
-        COHE = NP.zeros((nbno, nbno))
-        for no1 in range(nbno):
-            for no2 in range(nbno):
-                #                dist_xi = sqrt((XX[no1] - XX[no2])**2 + (YY[no1] - YY[no2])**2)
-                dist_xi = sqrt(DIST2[no1, no2])
-                p_n2 = 5.1 - 0.51 * log(dist_xi + 10.0)
-                pfc = -1.886 + 2.221 * log(4000.0 / (dist_xi + 1.0) + 1.5)
-                term1 = 1.0 + (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc)) ** p_n1
-                term2 = 1.0 + (freqk * tanh(p_a3 * dist_xi) / (p_a2 * pfc)) ** p_n2
-                COHE[no1, no2] = 1.0 / sqrt(term1 * term2)
+        p_n2 = 5.1 - 0.51 * NP.log(dist_xi + 10.0)
+        pfc = -1.886 + 2.221 * NP.log(4000.0 / (dist_xi + 1.0) + 1.5)
+        numerator = frequencies * NP.tanh(p_a3 * dist_xi)
+        term1 = 1.0 + (numerator / (p_a1 * pfc)) ** p_n1
+        term2 = 1.0 + (numerator / (p_a2 * pfc)) ** p_n2
+        COHE = 1.0 / NP.sqrt(term1 * term2)
     elif model == "ABRA_ROCHER":
         p_a1 = 1.0
         p_a2 = 40.0
         p_a3 = 0.4
         p_n2 = 16.4
-        nbno = len(noe_interf)
-        freqk = freq / (2.0 * pi)
-        COHE = NP.zeros((nbno, nbno))
-        for no1 in range(nbno):
-            for no2 in range(nbno):
-                dist_xi = sqrt(DIST2[no1, no2])
-                p_n1 = 3.8 - 0.04 * log(dist_xi + 1.0) + 0.0105 * (log(dist_xi + 1.0) - 3.6) ** 2
-                pfc = 27.9 - 4.82 * log(dist_xi + 1.0) + 1.24 * (log(dist_xi + 1.0) - 3.6) ** 2
-                term1 = 1.0 + (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc)) ** p_n1
-                term2 = 1.0 + (freqk * tanh(p_a3 * dist_xi) / (p_a2)) ** p_n2
-                COHE[no1, no2] = 1.0 / sqrt(term1 * term2)
+        log_d = NP.log(dist_xi + 1.0)
+        p_n1 = 3.8 - 0.04 * log_d + 0.0105 * (log_d - 3.6) ** 2
+        pfc = 27.9 - 4.82 * log_d + 1.24 * (log_d - 3.6) ** 2
+        numerator = frequencies * NP.tanh(p_a3 * dist_xi)
+        term1 = 1.0 + (numerator / (p_a1 * pfc)) ** p_n1
+        term2 = 1.0 + (numerator / p_a2) ** p_n2
+        COHE = 1.0 / NP.sqrt(term1 * term2)
     elif model == "ABRA_SOLMOYEN":
         p_a1 = 1.0
         p_a3 = 0.4
         p_n1 = 3.0
         p_n2 = 15.0
-        nbno = len(noe_interf)
-        freqk = freq / (2.0 * pi)
-        COHE = NP.zeros((nbno, nbno))
-        for no1 in range(nbno):
-            for no2 in range(nbno):
-                dist_xi = sqrt(DIST2[no1, no2])
-                p_a2 = 15.8 - 0.044 * dist_xi
-                pfc = 14.3 - 2.35 * log(dist_xi + 1.0)
-                term1 = 1.0 + (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc)) ** p_n1
-                term2 = 1.0 + (freqk * tanh(p_a3 * dist_xi) / (p_a2)) ** p_n2
-                COHE[no1, no2] = 1.0 / sqrt(term1 * term2)
+        p_a2 = 15.8 - 0.044 * dist_xi
+        pfc = 14.3 - 2.35 * NP.log(dist_xi + 1.0)
+
+        numerator = frequencies * NP.tanh(p_a3 * dist_xi)
+        term1 = 1.0 + (numerator / (p_a1 * pfc)) ** p_n1
+        term2 = 1.0 + (numerator / p_a2) ** p_n2
+        COHE = 1.0 / NP.sqrt(term1 * term2)
     return COHE
+
+
+def CALC_COHE(puls, **kwargs):
+    """
+    Use to call calc_coherency_matrix from CALC_MISS
+    Convert pulsations to frequencies and call calc_coherency_matrix
+
+    Arguments :
+        pusl : pulsation values vector
+
+    Return :
+        Coherency matrix
+    """
+    coherency_matrix = calc_coherency_matrix(
+        frequencies=NP.array([puls / (2.0 * pi)]),
+        model=kwargs["TYPE"],
+        nom_mail=kwargs["MAILLAGE"],
+        nom_group_inter=kwargs["GROUP_NO_INTERF"],
+        **kwargs
+    )
+    return coherency_matrix[0]
 
 
 def get_group_nom_coord(group_inter, nom_mail):

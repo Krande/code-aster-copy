@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,26 +19,33 @@
 
 """
 Useful objects used for various problem solvers.
+
+General architecture:
+
+.. image:: ../../../img/mnl.svg
+   :align: center
+
 """
 
-from .Basics import (
-    BaseFeature,
-    Observer,
-    PhysicalState,
-    ProblemType,
-    Residuals,
-    SolverFeature,
-    SolverOptions,
+__all__ = (
+    "BaseHook",
+    "BaseOperators",
+    "ContactManager",
+    "Context",
+    "ConvergenceManager",
+    "NewtonSolver",
+    "NonLinearOperator",
+    "PhysicalState",
+    "ProblemType",
+    "RASPENSolver",
+    "Residuals",
+    "SNESSolver",
+    "StorageManager",
+    "TimeStepper",
 )
-from .ProblemSolver import (
-    ContactManager,
-    ConvergenceManager,
-    IncrementalSolver,
-    NewtonSolver,
-    NonLinearSolver,
-    ProblemSolver,
-    SNESSolver,
-    RASPENSolver,
-    StorageManager,
-    TimeStepper,
-)
+
+from .Basics import Context, PhysicalState, ProblemType, Residuals
+from .IterationSolver import ConvergenceManager, NewtonSolver, RASPENSolver, SNESSolver
+from .Main import ContactManager, NonLinearOperator, StorageManager, TimeStepper
+from .Operators import BaseOperators
+from .Post import BaseHook

@@ -3,7 +3,7 @@
  * @brief Interface python de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,6 +48,12 @@ void exportCrackToPython( py::module_ &mod ) {
             Returns:
                 list[float]: the crack front Position
         )" )
+        .def( "getCrackFrontAbsCurv", &Crack::getCrackFrontAbsCurv, R"(
+            Return the crack front absc curv
+
+            Returns:
+                list[float]: the crack front absc curv
+        )" )
         .def( "getCrackFrontNodeBasis", &Crack::getCrackFrontNodeBasis, R"(
             Return the basis at each crack front node
 
@@ -61,10 +67,10 @@ void exportCrackToPython( py::module_ &mod ) {
                 float: the crack front Radius
         )" )
         .def( "getCrackTipCellsType", &Crack::getCrackTipCellsType, R"(
-            Return the crack front cell type 
+            Return the crack front cell type
 
             Returns:
-                str: the crack front cell type 
+                str: the crack front cell type
         )" )
         .def( "getLowerLipGroupName", &Crack::getLowerLipGroupName, R"(
             Return the group name used to define lower side of cracklip

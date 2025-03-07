@@ -57,6 +57,19 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
               py::arg( "groupsOfNodes" ) = VectorString(),
               py::arg( "groupsOfCells" ) = VectorString() )
         .def( "copy", &FieldOnNodesReal::copy )
+#ifdef ASTER_HAVE_MPI
+        .def(
+            "transfertToConnectionMesh",
+            []( const FieldOnNodesRealPtr f, const ConnectionMeshPtr c ) {
+                return transferToConnectionMesh( f, c );
+            },
+            R"(
+Transfer SimpleFieldOnNodes to a ConnectionMesh
+
+Returns:
+    SimpleFieldOnNodesReal: transfered field
+        )" )
+#endif /* ASTER_HAVE_MPI */
         .def(
             "toSimpleFieldOnNodes",
             []( const FieldOnNodesReal &f ) { return toSimpleFieldOnNodes( f ); },

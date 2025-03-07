@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,6 @@ class sd_nume_equa(AsBase):
         for k in range(neq):
             nuno = deeq[2 * k]
             nucmp = deeq[2 * k + 1]
-            assert nuno >= 0
             if nuno == 0:
                 assert nucmp == 0
             else:

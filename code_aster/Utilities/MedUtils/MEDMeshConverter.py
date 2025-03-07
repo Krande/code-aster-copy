@@ -23,21 +23,27 @@ import libaster
 from .. import medcoupling as medc
 
 
-def convertMesh2MedCoupling(asmesh):
+def convertMesh2MedCoupling(asmesh, spacedim_3d=False):
     """Convert a *Mesh* into a MEDCoupling mesh.
 
     Arguments:
         asmesh (*Mesh*): Mesh object to be converted.
+        spacedim_3d (*bool*): if true, space dimension of mc mesh is forced to 3
 
     Returns:
         *MEDCouplingMesh*: MEDCoupling object.
     """
     cells, groups_c, groups_n = libaster.getMedCouplingConversionData(asmesh)
 
+    if spacedim_3d:
+        spacedim = 3
+    else:
+        spacedim = asmesh.getDimension()
+
     mcmesh = medc.MEDFileUMesh()
     coords = medc.DataArrayDouble(
         asmesh.getCoordinates().getValues(), asmesh.getNumberOfNodes(), 3
-    )[:, : asmesh.getDimension()]
+    )[:, :spacedim]
 
     maxdim = max(cells.keys())
     levels = {i: i - maxdim for i in range(maxdim, -1, -1)}

@@ -1199,6 +1199,33 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ParallelContactFEDescriptor` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ParallelContactFEDescriptor
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ParallelContactNew` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ParallelContactNew
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ParallelContactPairing` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ParallelContactPairing
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ParallelDOFNumbering` object
 ********************************************************************************
 
@@ -1221,6 +1248,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ParallelFiniteElementDescriptor
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ParallelFrictionNew` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ParallelFrictionNew
    :show-inheritance:
    :members:
 

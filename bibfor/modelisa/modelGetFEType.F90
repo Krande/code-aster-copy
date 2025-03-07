@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: formul
-    character(len=16), parameter :: keywordfact = 'AFFE'
+    character(len=19), parameter :: keywordfact = 'AFFE'
     integer :: nbret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -73,10 +73,30 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
 !
 ! - New modelisation
 !
-    if (formul .eq. 'LINEAIRE') then
+    if (formul .eq. 'CONSTANTE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#0'
+    elseif (formul .eq. 'LINEAIRE') then
         modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#1'
     elseif (formul .eq. 'QUADRATIQUE') then
         modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#2'
+    elseif (formul .eq. 'CUBIQUE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#3'
+    elseif (formul .eq. 'QUARTIQUE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#4'
+    elseif (formul .eq. 'QUINTIQUE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#5'
+    elseif (formul .eq. 'CONSTANTE_MIXTE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'$0'
+    elseif (formul .eq. 'LINEAIRE_MIXTE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'$1'
+    elseif (formul .eq. 'QUADRATIQUE_MIXTE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'$2'
+    elseif (formul .eq. 'CUBIQUE_MIXTE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'$3'
+    elseif (formul .eq. 'QUARTIQUE_MIXTE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'$4'
+    elseif (formul .eq. 'QUINTIQUE_MIXTE') then
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'$5'
     elseif (formul .eq. 'U_P_PHI') then
         modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#1'
     elseif (formul .eq. 'U_P') then

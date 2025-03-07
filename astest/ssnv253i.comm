@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXY",
             TYPE_TEST="MIN",
-            VALE_CALC=402.94018513763905,
+            VALE_CALC=402.9408863842411,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=4.008297e02,
             PRECISION=0.02,
@@ -159,7 +159,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXY",
             TYPE_TEST="MIN",
-            VALE_CALC=445.9794889128454,
+            VALE_CALC=445.98013090776607,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=4.459803e02,
             PRECISION=0.02,
@@ -176,7 +176,7 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V1",
             TYPE_TEST="MAX",
-            VALE_CALC=0.11060226475929774,
+            VALE_CALC=0.11060225930214054,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=1.059917e-01,
             PRECISION=0.05,
@@ -191,7 +191,7 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V1",
             TYPE_TEST="MAX",
-            VALE_CALC=1.1339090972689716,
+            VALE_CALC=1.133909092272914,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=1.145363e00,
             PRECISION=0.02,

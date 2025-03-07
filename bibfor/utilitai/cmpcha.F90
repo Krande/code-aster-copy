@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
     integer :: nb_grel, jceld, nb_ec, jcmpgd, nb_cmp, nb_cmp_mx
     integer :: igr, imolo, jmolo, idx_gd, nb_pt, i_pt, k, iadg, i_cmp
     integer :: jdesc, long, jprno, nb_node, i_node, ncmpp
-    integer :: ngrmx, nbedit, igd, ient, debgd, dg(100), ior, kpt, kcmp
+    integer :: ngrmx, nbedit, igd, ient, debgd, dg(200), ior, kpt, kcmp
     aster_logical :: diff, l_pmesh
     character(len=8) :: gran_name, mesh
     character(len=16) :: typsd
@@ -110,8 +110,8 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
 !           UN DESCRIPTEUR_GRANDEUR (DG) "ENVELOPPE" DE TOUS LES
 !           POINTS DU CHAMP.
 !     ----------------------------------------------------------------
-    ASSERT(nb_ec .le. 100)
-    dg(1:100) = 0
+    ASSERT(nb_ec .le. 200)
+    dg(1:200) = 0
 !
 !
 !     -- 1.1 CAS DES CHAM_NO
