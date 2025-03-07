@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine cfmxr0_lac(mesh, ds_contact, ds_measure_)
 !
@@ -123,7 +122,7 @@ subroutine cfmxr0_lac(mesh, ds_contact, ds_measure_)
 ! - Create new CONT_ELEM field
 !
     call detrsd('CHAM_ELEM', celinr)
-    call alchml(ligrel_link_slav//'.CHME.LIGRE', 'CONT_ELEM', 'CT_ELEM', 'V', celinr, &
+    call alchml(ligrel_link_slav//'.CONT.LIGRE', 'CONT_ELEM', 'CT_ELEM', 'V', celinr, &
                 iret, ' ')
     ASSERT(iret .eq. 0)
 !
@@ -143,7 +142,7 @@ subroutine cfmxr0_lac(mesh, ds_contact, ds_measure_)
         nb_liel = v_celinr_celd(decal+1)
         if (v_celinr_celd(decal+3) .ne. 0) then
             ASSERT(v_celinr_celd(decal+3) .eq. ncmp)
-            call jeveuo(jexnum(ligrel_link_slav//'.CHME.LIGRE.LIEL', i_grel), &
+            call jeveuo(jexnum(ligrel_link_slav//'.CONT.LIGRE.LIEL', i_grel), &
                         'L', vi=v_ligrel_liel)
             do i_liel = 1, nb_liel
                 elem_slav_nume = v_ligrel_liel(i_liel)

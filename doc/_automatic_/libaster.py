@@ -2057,7 +2057,7 @@ class BaseDOFNumbering(DataStructure):
         2. computeNumbering(self: libaster.BaseDOFNumbering, arg0: list[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]]) -> bool
         """
 
-    def computeRenumbering(self, arg0, arg1):
+    def computeRenumbering(self, arg0, arg1, arg2, arg3):
         pass
 
     def getEquationNumbering(self):
@@ -4727,16 +4727,6 @@ class ListOfLoads(DataStructure):
         4. __init__(self: libaster.ListOfLoads, arg0: str, arg1: Model) -> None
         """
 
-    def addContactLoadDescriptor(self, FED_Slave, FED_Pair):
-        """Add contact load descriptor.
-
-        Arguments:
-            FED_Slave (FiniteElementDescriptor): Finite Element Descriptor defining
-                slave cells (in DEFI_CONTACT)
-            FED_Pair (FiniteElementDescriptor): Finite Element Descriptor defining
-                list of contact pair
-        """
-
     def addDirichletBC(self, *args, **kwargs):
         """Overloaded function.
 
@@ -4837,16 +4827,6 @@ class ListOfLoads(DataStructure):
         42. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
 
         43. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
-        """
-
-    def getContactLoadDescriptor(self):
-        """Get contact load descriptors.
-
-        Returns:
-            (FiniteElementDescriptor): Finite Element Descriptor defining
-                slave cells (in DEFI_CONTACT)
-            (FiniteElementDescriptor): Finite Element Descriptor defining
-                list of contact pair
         """
 
     def getDirichletBCs(self):
@@ -13726,6 +13706,20 @@ class PhysicalProblem:
 
         Arguments:
             loads (ListOfLoads): a pointer to the list of loads
+        """
+
+    def setVirtualCell(self, virtualCell):
+        """Set virtual cells from contact pairing
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
+        """
+
+    def setVirtualSlavCell(self, contact):
+        """Set virtual cells from contact definition
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
         """
 
     def zeroDirichletBCDOFs(self, arg0):

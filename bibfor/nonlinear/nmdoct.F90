@@ -49,7 +49,7 @@ subroutine nmdoct(listLoad, ds_contact)
     integer, parameter :: nbLoadIden = 1
     character(len=24) :: listLoadIden(LOAD_NBIDEN_MAXI)
     integer :: iLoad, iret, nbLoad
-    character(len=8) :: ligrel_link_slav, ligrel_link, ligrel_link_cont, lag12
+    character(len=8) :: ligrel_link, lag12
     character(len=24) :: loadName24, loadNameJv
     character(len=8) :: loadFunc, funcCste
     character(len=1), parameter :: jvBase = "V"
@@ -80,24 +80,6 @@ subroutine nmdoct(listLoad, ds_contact)
 ! ----- Prepare constant function
         funcCste = '&&NMDOCT'
         call createUnitFunc(funcCste, 'V', loadFunc)
-
-! ----- Add list of elements for slave surface (create in DEFI_CONTACT)
-        if (ds_contact%l_elem_slav) then
-            ligrel_link_slav = ds_contact%ligrel_elem_slav
-            listLoadIden(1) = "ELEM_TARDIF"
-            call addLoadToList(phenom, listLoad, jvBase, &
-                               ligrel_link_slav, loadFunc, &
-                               nbLoadIden, listLoadIden)
-        end if
-
-! ----- Add list of contact elements (create in MECA_NON_LINE)
-        if (ds_contact%l_elem_cont) then
-            ligrel_link_cont = ds_contact%ligrel_elem_cont(1:8)
-            listLoadIden(1) = "ELEM_TARDIF"
-            call addLoadToList(phenom, listLoad, jvBase, &
-                               ligrel_link_cont, loadFunc, &
-                               nbLoadIden, listLoadIden)
-        end if
 
 ! ----- Add list of linear relation
         if (ds_contact%l_dof_rela) then

@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nonlinDSContactInit(mesh, ds_contact)
 !
@@ -158,7 +157,7 @@ subroutine nonlinDSContactInit(mesh, ds_contact)
             ds_contact%l_elem_slav = ASTER_TRUE
             ds_contact%ligrel_elem_slav = sdcont
             ds_contact%l_elem_cont = ASTER_TRUE
-            ds_contact%ligrel_elem_cont = '&&LIGRCF.CHME.LIGRE'
+            ds_contact%ligrel_elem_cont = '&&LIGRCF.CONT.LIGRE'
             call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8=v_load_type)
             v_load_type(1) = 'ME'
             ds_contact%it_cycl_maxi = 6
@@ -170,7 +169,7 @@ subroutine nonlinDSContactInit(mesh, ds_contact)
             ds_contact%l_elem_slav = ASTER_TRUE
             ds_contact%ligrel_elem_slav = sdcont
             ds_contact%l_elem_cont = ASTER_TRUE
-            ds_contact%ligrel_elem_cont = '&&LIGRCF.CHME.LIGRE'
+            ds_contact%ligrel_elem_cont = '&&LIGRCF.CONT.LIGRE'
             call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8=v_load_type)
             v_load_type(1) = 'ME'
             call jelira(mesh//'.PATCH', 'NUTIOC', nt_patch)

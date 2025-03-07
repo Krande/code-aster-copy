@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
-!
-          interface
-            subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
-                              modele, nume_ddl_oldz,modelocz,sd_iden_relaz)
-              integer, intent(in) :: nb_ligr
-              character(len=24) ,pointer :: list_ligr(:)
-              character(len=2), intent(in) :: base
-              character(len=*), intent(inout) :: nume_ddlz
-              character(len=*), intent(in) :: nume_ddl_oldz
-              character(len=*), intent(in) :: modelocz
-              character(len=*), intent(in) :: modele
-              character(len=*) ,optional, intent(in) :: sd_iden_relaz
-            end subroutine numer2
-          end interface
+interface
+    subroutine numer2(nbLigr, listLigr, base, numeDofZ, &
+                      numeDofOldZ, modeLocZ, modelZ, idenRelaZ_)
+        integer, intent(in) :: nbLigr
+        character(len=24), pointer :: listLigr(:)
+        character(len=2), intent(in) :: base
+        character(len=*), intent(inout) :: numeDofZ
+        character(len=*), intent(in) :: numeDofOldZ
+        character(len=*), intent(in) :: modeLocZ
+        character(len=*), intent(in) :: modelZ
+        character(len=*), optional, intent(in) :: idenRelaZ_
+    end subroutine numer2
+end interface

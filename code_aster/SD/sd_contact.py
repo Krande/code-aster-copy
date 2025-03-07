@@ -48,10 +48,8 @@ class sd_contact(AsBase):
     # --------------------------------------------------------------------------------------------------#
 
     #   Objets présents quelle que soit la formulation
-    MODELE = AsVK8(SDNom(nomj=".CHME.MODEL.NOMO"), lonmax=1)
     PARACI = AsVI(SDNom(nomj=".PARACI"), lonmax=zpari)
     PARACR = AsVR(SDNom(nomj=".PARACR"), lonmax=zparr)
-    TYPE = AsVK8(SDNom(nomj=".TYPE"), lonmax=1)
 
     # --------------------------------------------------------------------------------------------------#
 
@@ -216,12 +214,13 @@ class sd_contact(AsBase):
     # --------------------------------------------------------------------------------------------------#
 
     #   Formulation DISCRETE
-
     #   Caractéristisques diverses
     CARADF = Facultatif(AsVR(SDNom(nomj=".CONTACT.CARADF")))
 
     #   Relations linéaires pour QUAD8
+    MODELE = Facultatif(AsVK8(SDNom(nomj=".CHME.MODEL.NOMO"), lonmax=1))
     RELLIN = Facultatif(sd_char_chme(SDNom(nomj=".CHME")))
+    TYPE = Facultatif(AsVK8(SDNom(nomj=".TYPE"), lonmax=1))
 
     def check_form_disc(self, checker):
         if self.formulation_disc():

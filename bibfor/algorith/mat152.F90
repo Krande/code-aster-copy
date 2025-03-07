@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,36 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mat152(option, model, moint, nocham, ivalk, &
-                  nbmo, max, may, maz, num)
+subroutine mat152(option, modelDime, modelInterface, ivalk, &
+                  nbMode, matrAsseX, matrAsseY, matrAsseZ, numeDof)
+!
     implicit none
-! AUTEUR : G.ROUSSEAU
+!
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterfort/ca2mam.h"
+#include "asterfort/calmaa.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/megeom.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/wkvect.h"
+!
+    character(len=9), intent(in) :: option
+    character(len=2), intent(in) :: modelDime
+    character(len=8), intent(in) :: modelInterface
+    integer, intent(in) :: ivalk, nbMode
+    character(len=14), intent(out) :: numeDof
+    character(len=19), intent(out) :: matrAsseX, matrAsseY, matrAsseZ
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE PERMETTANT LE CALCUL DE MATRICE ASSEMBLEES INTERVENANT
 ! DANS LE CALCUL DES COEFFICIENTS AJOUTES :
-! MAX, MAY, MAZ : MATRICES INDEPENDANTES DU MODE POUR
-! CALCULER LA MASSE AJOUTEE
+! matrAsseX, matrAsseY, matrAsseZ : MATRICES INDEPENDANTES DU MODE POUR CALCULER LA MASSE AJOUTEE
 ! BI : MATRICES MODALES INTERVENANT DANS LE CALCUL DE L AMORTISSEMENT
 !      ET DE LA RAIDEUR
 !
@@ -33,37 +54,23 @@ subroutine mat152(option, model, moint, nocham, ivalk, &
 ! IN : K* : NOCHAM : NOM DU CHAMP AUX NOEUDS DE DEPL_R
 ! IN : I  : IVALK : ADRESSE DU TABLEAU DES NOMS DES CHAMNOS
 ! IN : I  : NBMO  : NOMBRE DE MODES OU DE CHAMNOS UTILISATEURS
-! OUT : K19 : MAX,MAY,MAZ : NOMS DES MATRICES POUR LE CALCUL DE MASSE
+! OUT : K19 : matrAsseX, matrAsseY, matrAsseZ : NOMS DES MATRICES POUR LE CALCUL DE MASSE
 ! OUT : K14 : NUM : NUMEROTATION DES DDLS THERMIQUES D 'INTERFACE
-!---------------------------------------------------------------------
-#include "jeveux.h"
-#include "asterc/getexm.h"
-#include "asterfort/ca2mam.h"
-#include "asterfort/calmaa.h"
-#include "asterfort/codent.h"
-#include "asterfort/getvid.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/megeom.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/wkvect.h"
-    integer :: nbmo, imode, imade, iret
-    integer :: ivalk
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: imode, imade, iret
     integer :: n5, n6, n7
     character(len=1) :: dir
-    character(len=2) :: model
     character(len=3) :: incr
-    character(len=8) :: modmec
-    character(len=8) :: moint
-    character(len=8) :: lpain(2), lpaout(1)
-    character(len=9) :: option
-    character(len=14) :: num
-    character(len=19) :: max, may, maz
+    character(len=8) :: modeMeca
+    character(len=8) :: lpain(2)
     character(len=24) :: chgeom, lchin(2)
-    character(len=24) :: nomcha, nocham
-    character(len=24) :: ligrmo, made
-! -----------------------------------------------------------------
-!--------------------------------------------------------------
+    character(len=24) :: nomcha
+    character(len=24) :: matrAsse
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! CALCUL DES MATR_ELEM AX ET AY DANS L'OPTION FLUX_FLUI_X ET _Y
 !---------------SUR LE MODELE INTERFACE(THERMIQUE)-------------
 !
@@ -73,67 +80,56 @@ subroutine mat152(option, model, moint, nocham, ivalk, &
         call getvid(' ', 'CHAM_NO', nbval=0, nbret=n6)
         n7 = -n6
     end if
-    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
+    call getvid(' ', 'MODE_MECA', scal=modeMeca, nbret=n5)
 !------ RECUPERATION D'ARGUMENTS COMMUNS AUX CALCULS DES DEUX ---
 !-------------------------MATR_ELEM -----------------------------
 !
-    ligrmo = moint(1:8)//'.MODELE'
-    call megeom(moint(1:8), chgeom)
+    call megeom(modelInterface(1:8), chgeom)
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     lpain(2) = 'PACCELR'
-    lpaout(1) = 'PMATTTR'
-    maz = ' '
-!----------------------------------------------------------------
-!-----------CALCUL DE LA MATRICE AZ DES N(I)*N(J)*NZ-------------
-!----------------------------------------------------------------
-    if (model .eq. '3D') then
+    matrAsseX = ' '
+    matrAsseY = ' '
+    matrAsseZ = ' '
+    numeDof = " "
+
+! - CALCUL DE LA MATRICE AZ DES N(I)*N(J)*NZ
+    if (modelDime .eq. '3D') then
         dir = 'Z'
-        call calmaa(moint, ' ', dir, ligrmo, lchin(1), &
-                    lpain(1), lpaout(1), num, maz)
-!
-!
+        call calmaa(modelInterface, dir, lchin(1), &
+                    lpain(1), numeDof, matrAsseZ)
     end if
-!----------------------------------------------------------------
-!-----------CALCUL DE LA MATRICE AX DES N(I)*N(J)*NX-------------
-!----------------------------------------------------------------
-!
+
+! - CALCUL DE LA MATRICE AX DES N(I)*N(J)*NX
     dir = 'X'
-    call calmaa(moint, ' ', dir, ligrmo, lchin(1), &
-                lpain(1), lpaout(1), num, max)
-!
-!
-!----------------------------------------------------------------
-!-----------CALCUL DE LA MATRICE AY DES N(I)*N(J)*NY-------------
-!----------------------------------------------------------------
-!
+    call calmaa(modelInterface, dir, lchin(1), &
+                lpain(1), numeDof, matrAsseX)
+
+! - CALCUL DE LA MATRICE AY DES N(I)*N(J)*NY
     dir = 'Y'
-    call calmaa(moint, ' ', dir, ligrmo, lchin(1), &
-                lpain(1), lpaout(1), num, may)
+    call calmaa(modelInterface, dir, lchin(1), &
+                lpain(1), numeDof, matrAsseY)
 !
 !----------------------------------------------------------------
 !----------CALCUL DE LA MATRICE MODALE DES DN(I)*DN(J)*
 !-----------------------MODE*NORMALE-----------------------------
 !----------------------------------------------------------------
     if (option .eq. 'AMOR_AJOU' .or. option .eq. 'RIGI_AJOU') then
-!
-        call wkvect('&&MAT152.MADE', 'V V K24', nbmo, imade)
-!
-        do imode = 1, nbmo
+        call wkvect('&&MAT152.MADE', 'V V K24', nbMode, imade)
+        do imode = 1, nbMode
             incr = 'BID'
             if (n7 .gt. 0) then
                 lchin(2) = zk8(ivalk+imode-1)
             else
-                call rsexch(' ', modmec, 'DEPL', imode, nomcha, &
-                            iret)
+                call rsexch(' ', modeMeca, 'DEPL', imode, nomcha, iret)
                 lchin(2) = nomcha
             end if
             call codent(imode, 'D0', incr(1:3))
-            call ca2mam(moint, incr, ligrmo, lchin, lpain, &
-                        lpaout, num, made)
-            zk24(imade+imode-1) = made
+            call ca2mam(modelInterface, incr, lchin, lpain, &
+                        numeDof, matrAsse)
+            zk24(imade+imode-1) = matrAsse
         end do
-!
     end if
+!
     call jedema()
 end subroutine

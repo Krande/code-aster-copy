@@ -38,15 +38,16 @@ module listLoad_module
     public :: getNbLoadsFromUser, getNbLoadsFromList
     public :: getLoadKine, getLoadGround, getLoadEvolChar
     public :: getLoadDiri, createUnitFunc
-    public :: getLoadPlaneWave, addContactElements, detectMecaNeumLoad
+    public :: getLoadPlaneWave, detectMecaNeumLoad
     private :: getLoadIdenNeum
     private :: getLoadFuncUser, getLoadIdenFromList
     public :: creaListLoad, creaListLoadFSIOne, creaListLoadFromList
     public :: getNbLoadType, listLoadDebug, resizeListLoad
-    public :: setLoadToList, addLoadToList, copyListLoad, nameListLoad
+    public :: setLoadToList, addLoadToList, nameListLoad
     public :: getMecaNeum, getTherNeum, getAcouNeum
     public :: checkConsistency, getLoadParameters, addLoadMeca, addLoadTher, addLoadAcou
-    private :: getListLoadAccess
+    public :: getListLoadLigrel
+    private :: getListLoadAccess, copyListLoad
 ! ==================================================================================================
     private
 #include "asterc/getexm.h"
@@ -976,56 +977,6 @@ contains
     end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! addContactElements
-!
-! Add finite element descriptors for "late" contact elements
-!
-! In  listLoadPrep      : parameters to construct list of loads
-! In  jvBase            : JEVEUX jvBase where to create objects
-! In  funcCste          : constant function
-! In  listLoad          : list of loads
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine addContactElements(listLoadPrep, &
-                                  jvBase, funcCste, &
-                                  listLoadZ)
-!   ------------------------------------------------------------------------------------------------
-! ----- Parameters
-        type(ListLoad_Prep), intent(in) :: listLoadPrep
-        character(len=1), intent(in) :: jvBase
-        character(len=8), intent(in) :: funcCste
-        character(len=*), intent(in) :: listLoadZ
-! ----- Locals
-        character(len=4), parameter :: phenom = "MECA"
-        character(len=8) :: loadFunc
-        integer, parameter :: nbLoadIden = 1
-        character(len=24) :: listLoadIden(LOAD_NBIDEN_MAXI)
-!   ------------------------------------------------------------------------------------------------
-!
-
-! ----- Prepare constant function
-        call createUnitFunc(funcCste, jvBase, loadFunc)
-
-! ----- Add "late" finite elements from DEFI_CONT*
-        if (listLoadPrep%contactLigrelDefi .ne. ' ') then
-            listLoadIden(1) = "ELEM_TARDIF"
-            call addLoadToList(phenom, listLoadZ, jvBase, &
-                               listLoadPrep%contactLigrelDefi, loadFunc, &
-                               nbLoadIden, listLoadIden)
-        end if
-
-! ----- Add "late" finite elements from *_NON_LINE
-        if (listLoadPrep%contactLigrelSolv .ne. ' ') then
-            listLoadIden(1) = "ELEM_TARDIF"
-            call addLoadToList(phenom, listLoadZ, jvBase, &
-                               listLoadPrep%contactLigrelSolv, loadFunc, &
-                               nbLoadIden, listLoadIden)
-        end if
-!
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
 ! creaListLoad
 !
 ! Create list of loads
@@ -1099,13 +1050,18 @@ contains
         character(len=*), intent(in) :: listLoadZ
         integer, intent(out) :: nbLoad
 ! ----- Locals
+        integer :: iret
         character(len=24) :: loadInfoJv
         integer, pointer :: listLoadInfo(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
+        nbLoad = 0
         loadInfoJv = listLoadZ(1:19)//'.INFC'
-        call jeveuo(loadInfoJv, 'L', vi=listLoadInfo)
-        nbLoad = listLoadInfo(1)
+        call jeexin(loadInfoJv, iret)
+        if (iret .ne. 0) then
+            call jeveuo(loadInfoJv, 'L', vi=listLoadInfo)
+            nbLoad = listLoadInfo(1)
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -1533,8 +1489,6 @@ contains
                     listLoadInfo(nbLoad+indxLoadInList+1) = 8
                 else if (loadIden .eq. 'NEUM_SUIP') then
                     listLoadInfo(nbLoad+indxLoadInList+1) = 9
-                else if (loadIden .eq. 'ELEM_TARDIF') then
-                    listLoadInfo(nbLoad+indxLoadInList+1) = 10
                 else if (loadIden .eq. 'NEUM_SUIP_F') then
                     listLoadInfo(nbLoad+indxLoadInList+1) = 11
                 else if (loadIden .eq. 'EXCIT_SOL') then
@@ -2457,6 +2411,93 @@ contains
                 listLoadDetect(nbLoadDetect) = loadName
             end if
         end do
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getListLoadLigrel
+!
+! Get all LIGREL from list of loads
+!
+! In  listLoad          : name of datastructure for list of loads
+! IO  nbLigr            : number of LIGREL in list
+! Ptr listLigr          : list of LIGREL
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getListLoadLigrel(listLoadZ, nbLigr, listLigr)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: listLoadZ
+        integer, intent(inout) :: nbLigr
+        character(len=24), pointer :: listLigr(:)
+! ----- Locals
+        character(len=8) :: loadCommand, loadName
+        character(len=24) :: listLoad, loadLigrel, loadNameJv
+        integer :: iLoad, nbLoad, nbLigrNew, nbLigrLoad, iret
+        character(len=24), pointer :: listLigrSave(:) => null(), listLoadName(:) => null()
+        character(len=13) :: loadPreObject
+!   ------------------------------------------------------------------------------------------------
+!
+        listLoad = listLoadZ
+
+! ----- Get number of loads
+        call getNbLoadsFromList(listLoad, nbLoad)
+
+! ----- Count number of LIGREL in loads
+        nbLigrLoad = 0
+        if (nbLoad .gt. 0) then
+            loadNameJv = listLoad(1:19)//'.LCHA'
+            call jeveuo(loadNameJv, 'L', vk24=listLoadName)
+            do iLoad = 1, nbLoad
+                loadName = listLoadName(iLoad) (1:8)
+                WRITE (6, *) "loadName: ", iLoad, loadName
+                if (loadName .ne. " ") then
+                    call dismoi('TYPE_CHARGE', loadName, 'CHARGE', repk=loadCommand)
+                    loadPreObject = loadName(1:8)//'.CH'//loadCommand(1:2)
+                    loadLigrel = loadPreObject(1:13)//'.LIGRE'
+                    call jeexin(loadLigrel(1:19)//'.LIEL', iret)
+                    if (iret .gt. 0) then
+                        nbLigrLoad = nbLigrLoad+1
+                    end if
+                end if
+            end do
+        end if
+
+        if (nbLigr .eq. 0) then
+! --------- Create list
+            AS_ALLOCATE(vk24=listLigr, size=nbLigrLoad)
+        else
+! --------- Increase length og list
+            nbLigrNew = nbLigr+nbLigrLoad
+            if (nbLigrNew .gt. nbLigr) then
+                AS_ALLOCATE(vk24=listLigrSave, size=nbLigr)
+                listLigrSave(1:nbLigr) = listLigr(1:nbLigr)
+                AS_DEALLOCATE(vk24=listLigr)
+                AS_ALLOCATE(vk24=listLigr, size=nbLigrNew)
+                listLigr(1:nbLigr) = listLigrSave(1:nbLigr)
+                AS_DEALLOCATE(vk24=listLigrSave)
+            end if
+        end if
+
+! ----- Add LIGREL
+        if (nbLigrLoad .gt. 0) then
+            loadNameJv = listLoad(1:19)//'.LCHA'
+            call jeveuo(loadNameJv, 'L', vk24=listLoadName)
+            do iLoad = 1, nbLoad
+                loadName = listLoadName(iLoad) (1:8)
+                if (loadName .ne. " ") then
+                    call dismoi('TYPE_CHARGE', loadName, 'CHARGE', repk=loadCommand)
+                    loadPreObject = loadName(1:8)//'.CH'//loadCommand(1:2)
+                    loadLigrel = loadPreObject(1:13)//'.LIGRE'
+                    call jeexin(loadLigrel(1:19)//'.LIEL', iret)
+                    if (iret .gt. 0) then
+                        nbLigr = nbLigr+1
+                        listLigr(nbLigr) = loadLigrel
+                    end if
+                end if
+            end do
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

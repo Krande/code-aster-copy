@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
-!
-          interface 
-            subroutine sinoz1(modele,sigma,signo)
-              character(len=8) :: modele
-              character(len=24) :: sigma
-              character(len=24) :: signo
-            end subroutine sinoz1
-          end interface 
+interface
+    subroutine sinoz1(model, sigmElga, sigmNoeu)
+        character(len=8), intent(in) :: model
+        character(len=24), intent(in) :: sigmElga, sigmNoeu
+    end subroutine sinoz1
+end interface

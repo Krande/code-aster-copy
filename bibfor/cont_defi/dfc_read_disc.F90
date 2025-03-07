@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dfc_read_disc(sdcont, keywf, mesh, model, model_ndim, &
-                         nb_cont_zone)
+subroutine dfc_read_disc(sdcont, zoneKeyword, mesh, model, model_ndim, &
+                         nb_cont_zone, lLineRela, listRela)
 !
     implicit none
 !
@@ -35,14 +35,11 @@ subroutine dfc_read_disc(sdcont, keywf, mesh, model, model_ndim, &
 #include "asterfort/sansco.h"
 #include "asterfort/typeco.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
-    character(len=16), intent(in) :: keywf
-    integer, intent(in) :: model_ndim
-    integer, intent(in) :: nb_cont_zone
+    character(len=8), intent(in) :: sdcont, mesh, model
+    character(len=16), intent(in) :: zoneKeyword
+    integer, intent(in) :: model_ndim, nb_cont_zone
+    aster_logical, intent(out) :: lLineRela
+    character(len=19), intent(out) :: listRela
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +50,7 @@ subroutine dfc_read_disc(sdcont, keywf, mesh, model, model_ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  keywf            : factor keyword to read
+! In  zoneKeyword      : factor keyword zone of contact
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  model_ndim       : dimension of model
@@ -61,6 +58,8 @@ subroutine dfc_read_disc(sdcont, keywf, mesh, model, model_ndim, &
 ! Out nb_cont_surf     : number of surfaces of contact
 ! Out nb_cont_elem     : number of elements of contact
 ! Out nb_cont_node     : number of nodes of contact
+! Out lLineRela        : flag for linear relations
+! Out listRela         : name of object for linear relations
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,7 +77,7 @@ subroutine dfc_read_disc(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! - Read zone: nodes and elements
 !
-    call dfc_read_zone(sdcont, keywf, mesh, model, nb_cont_zone, &
+    call dfc_read_zone(sdcont, zoneKeyword, mesh, model, nb_cont_zone, &
                        nb_cont_surf, nb_cont_elem, nb_cont_node)
 !
 ! - Cleaning nodes and elements
@@ -103,7 +102,7 @@ subroutine dfc_read_disc(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! - Keyword SANS_GROUP_NO
 !
-    call sansco(sdcont, keywf, mesh)
+    call sansco(sdcont, zoneKeyword, mesh)
 !
 ! - Elements and nodes parameters
 !
@@ -115,16 +114,16 @@ subroutine dfc_read_disc(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! - Gap for beams
 !
-    call capoco(sdcont, keywf)
+    call capoco(sdcont, zoneKeyword)
 !
 ! - Gap for shells
 !
-    call cacoco(sdcont, keywf, mesh)
+    call cacoco(sdcont, zoneKeyword, mesh)
 !
 ! - Create QUAD8 linear relations
 !
     if (l_node_q8) then
-        call cacoeq(sdcont, mesh)
+        call cacoeq(sdcont, mesh, lLineRela, listRela)
     end if
 !
 end subroutine

@@ -5,7 +5,7 @@
  * @file PhysicalProblem.h
  * @brief Fichier entete de la classe PhysicalProblem
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,6 +28,7 @@
 #include "aster_pybind.h"
 
 #include "Behaviours/BehaviourProperty.h"
+#include "Contact/ContactNew.h"
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
 #include "Discretization/ElementaryCharacteristics.h"
@@ -63,6 +64,12 @@ class PhysicalProblem {
     /** @brief Numbering */
     BaseDOFNumberingPtr _dofNume;
 
+    /** @brief Virtual cells for contact (in definition) */
+    FiniteElementDescriptorPtr _virtualSlavCell;
+
+    /** @brief Virtual cells for contact (in algorithm) */
+    FiniteElementDescriptorPtr _virtualCell;
+
     /** @brief External state variable: reference field */
     FieldOnCellsRealPtr _externVarRefe;
 
@@ -86,7 +93,7 @@ class PhysicalProblem {
 
     /** @brief Add a load (mechanical or dirichlet) with function, formula */
     template < typename... Args >
-    void addLoad( const Args &... a ) {
+    void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 
@@ -108,8 +115,24 @@ class PhysicalProblem {
     /** @brief Get list of loads */
     ListOfLoadsPtr getListOfLoads() const { return _listOfLoads; };
 
-    /** @brief Get list of loads */
+    /** @brief Set list of loads */
     void setListOfLoads( const ListOfLoadsPtr loads );
+
+    /** @brief Set virtual cells for contact (definition) */
+    void setVirtualSlavCell( const FiniteElementDescriptorPtr virtualSlavCell ) {
+        _virtualSlavCell = virtualSlavCell;
+    };
+
+    /** @brief Set virtual cells for contact (algorithm) */
+    void setVirtualCell( const FiniteElementDescriptorPtr virtualCell ) {
+        _virtualCell = virtualCell;
+    };
+
+    /** @brief Get virtual cells for contact (definition) */
+    FiniteElementDescriptorPtr getVirtualSlavCell() const { return _virtualSlavCell; };
+
+    /** @brief Get virtual cells cells for contact (algorithm) */
+    FiniteElementDescriptorPtr getVirtualCell() const { return _virtualCell; };
 
     /** @brief Get behaviour properties */
     BehaviourPropertyPtr getBehaviourProperty() const { return _behavProp; };
@@ -143,25 +166,13 @@ class PhysicalProblem {
 
     void zeroDirichletBCDOFs( FieldOnNodesReal & ) const;
 
-    /**
-     * @brief To known if the the model is mechanical or not
-     *
-     * @return true The phenomen is  mechanical
-     */
+    /** @brief To known if the the model is mechanical or not */
     bool isMechanical( void ) const;
 
-    /**
-     * @brief To known if the the model is thermal or not
-     *
-     * @return true The phenomen is therman
-     */
+    /** @brief To known if the the model is thermal or not */
     bool isThermal( void ) const;
 
-    /**
-     * @brief To known if the the model is acoustic or not
-     *
-     * @return true The phenomen is acoustic
-     */
+    /** @brief To known if the the model is acoustic or not */
     bool isAcoustic( void ) const;
 };
 

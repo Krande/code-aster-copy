@@ -72,10 +72,11 @@ class ContactManager:
             fed_pair = self.pair.getParallelFiniteElementDescriptor()
         else:
             fed_pair = self.pair.getFiniteElementDescriptor()
-        phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, fed_pair)
+        phys_pb.setVirtualSlavCell(fed_defi)
+        phys_pb.setVirtualCell(fed_pair)
         model = phys_pb.getModel()
         loads = phys_pb.getListOfLoads()
-        phys_pb.getDOFNumbering().computeRenumbering(model, loads)
+        phys_pb.getDOFNumbering().computeRenumbering(model, loads, fed_defi, fed_pair)
 
         self.nb_pairing += 1
 

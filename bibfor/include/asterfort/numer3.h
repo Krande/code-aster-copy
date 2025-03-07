@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
-!
-          interface
-            subroutine numer3(modelz,list_loadz,nume_ddlz,sd_iden_relaz, base)
-              character(len=*), intent(in) :: modelz
-              character(len=*), intent(in) :: list_loadz
-              character(len=*), intent(inout) :: nume_ddlz
-              character(len=*), intent(in) :: sd_iden_relaz
-              character(len=2), intent(in) :: base
-            end subroutine numer3
-          end interface
+interface
+    subroutine numer3(modelZ, base, listLoadZ, numeDofZ, ds_contact)
+        use NonLin_Datastructure_type
+        character(len=*), intent(in) :: modelZ
+        character(len=2), intent(in) :: base
+        character(len=*), intent(inout) :: numeDofZ
+        character(len=*), intent(in) :: listLoadZ
+        type(NL_DS_Contact), intent(in) :: ds_contact
+    end subroutine numer3
+end interface

@@ -15,12 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ntnume(model, listLoad, result, nume_dof)
+!
+subroutine ntnume(model, listLoad, result, numeDof)
+!
+    use listLoad_module
 !
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/addModelLigrel.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/numero.h"
 #include "asterfort/rsnume.h"
@@ -28,7 +32,7 @@ subroutine ntnume(model, listLoad, result, nume_dof)
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: listLoad
     character(len=8), intent(in) :: result
-    character(len=24), intent(out) :: nume_dof
+    character(len=24), intent(out) :: numeDof
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,22 +45,38 @@ subroutine ntnume(model, listLoad, result, nume_dof)
 ! In  model            : name of model
 ! In  listLoad         : name of datastructure for list of loads
 ! In  result           : name of result datastructure (EVOL_THER)
-! Out nume_dof         : name of numbering object (NUME_DDL)
+! Out numeDof          : name of numbering object (NUME_DDL)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=14) :: nuposs
+    character(len=14) :: numeDofOld
     character(len=24) :: noojb
+    integer :: nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nume_dof = '12345678.NUMED'
+
+! - Generate name of numbering object (numeDof)
+    numeDof = '12345678.NUMED'
     noojb = '12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
-    nume_dof = noojb(1:14)
-    call rsnume(result, 'TEMP', nuposs)
-    call numero(nume_dof, 'VG', &
-                old_nume_ddlz=nuposs, &
-                modelz=model, list_loadz=listLoad)
+    numeDof = noojb(1:14)
+
+! - Get numbering from temperature
+    call rsnume(result, 'TEMP', numeDofOld)
+
+! - Add LIGREL from model
+    nbLigr = 0
+    call addModelLigrel(model, nbLigr, listLigr)
+
+! - Get list of LIGREL from loads
+    call getListLoadLigrel(listLoad, nbLigr, listLigr)
+
+! - Create numbering
+    call numero(numeDof, 'VG', &
+                nbLigr, listLigr, &
+                numeDofOldZ_=numeDofOld)
+    AS_DEALLOCATE(vk24=listLigr)
 !
 end subroutine

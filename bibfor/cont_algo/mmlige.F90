@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine mmlige(mesh, ds_contact, &
                   nb_cont_pair, v_list_pair, &
@@ -140,7 +139,7 @@ subroutine mmlige(mesh, ds_contact, &
 ! - Get type of element for slave contact elements
 !
     if (l_cont_lac) then
-        ligrel_elem_slav = ds_contact%ligrel_elem_slav//'.CHME.LIGRE'
+        ligrel_elem_slav = ds_contact%ligrel_elem_slav//'.CONT.LIGRE'
         call liglma(ligrel_elem_slav, nb_elem_slav, linuma, linute)
         call jeveuo(linuma, 'L', vi=v_linuma)
         call jeveuo(linute, 'L', vi=v_linute)

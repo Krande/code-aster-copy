@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
-                  ligret)
+!
+subroutine calico(sdcont, mesh, model, &
+                  model_ndim_, cont_form, &
+                  slavElemLigr, lLineRela, listRela)
 !
     implicit none
 !
@@ -29,12 +30,12 @@ subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
 #include "asterfort/caramx.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: sdcont, mesh, model
     integer, intent(in) :: model_ndim_
     integer, intent(in) :: cont_form
-    character(len=19), intent(in) :: ligret
+    character(len=19), intent(in) :: slavElemLigr
+    aster_logical, intent(out) :: lLineRela
+    character(len=19), intent(out) :: listRela
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,26 +50,26 @@ subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
 ! In  mesh             : name of mesh
 ! In  model_ndim_      : dimension of model
 ! In  cont_form        : formulation of contact
-! In  ligret           : name of special LIGREL for slave elements
+! In  slavElemLigr     : LIGREL for virtual elements (slave side)
+! Out lLineRela        : flag for linear relations
+! Out listRela         : name of object for linear relations
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: zoneKeyword = "ZONE"
     integer :: nb_cont_zone, model_ndim
-    character(len=16) :: keywf
 !
 ! --------------------------------------------------------------------------------------------------
 !
     model_ndim = 0
     nb_cont_zone = 0
-    keywf = 'ZONE'
-!
+    lLineRela = ASTER_FALSE
+    listRela = " "
+
 ! - Number of contact zones
-!
-    call getfac(keywf, nb_cont_zone)
+    call getfac(zoneKeyword, nb_cont_zone)
     if (nb_cont_zone .ne. 0) then
-!
 ! ----- Adapt space dimension
-!
         if (model_ndim_ .gt. 3) then
             call utmess('A', 'CONTACT_84')
             if (model_ndim_ .eq. 1003) then
@@ -78,7 +79,7 @@ subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
             else if (model_ndim_ .eq. 23) then
                 model_ndim = 2
             else
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             end if
         else
             model_ndim = model_ndim_
@@ -88,11 +89,11 @@ subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
         call caramx(sdcont, cont_form, nb_cont_zone)
 
 ! ----- Get parameters of contact
-        call caraco(sdcont, keywf, cont_form, nb_cont_zone)
+        call caraco(sdcont, zoneKeyword, cont_form, nb_cont_zone)
 
 ! ----- Get elements and nodes of contact, checkings
-        call limaco(sdcont, keywf, mesh, model, model_ndim, &
-                    nb_cont_zone, ligret)
+        call limaco(sdcont, zoneKeyword, mesh, model, model_ndim, &
+                    nb_cont_zone, slavElemLigr, lLineRela, listRela)
 
 ! ----- Debug print
         call surfco(sdcont, mesh)

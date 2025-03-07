@@ -888,7 +888,9 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
     // Select option for matrix
     std::string option = "RIGI_CONT";
 
-    auto [Fed_Slave, Fed_pair] = _phys_problem->getListOfLoads()->getContactLoadDescriptor();
+    auto Fed_Slave = _phys_problem->getVirtualSlavCell();
+    auto Fed_pair = _phys_problem->getVirtualCell();
+
 #ifdef ASTER_HAVE_MPI
     const auto pCFED = std::dynamic_pointer_cast< ParallelContactFEDescriptor >( Fed_pair );
     if ( pCFED ) {

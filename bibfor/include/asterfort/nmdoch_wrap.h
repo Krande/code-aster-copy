@@ -18,10 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoch_wrap(listLoadZ, jvBaseZ, &
-                           ligrel_slav0, ligrel_cont0)
+    subroutine nmdoch_wrap(listLoadZ, jvBaseZ)
         character(len=*), intent(in) :: listLoadZ
         character(len=*), intent(in) :: jvBaseZ
-        character(len=*), intent(in) :: ligrel_slav0, ligrel_cont0
     end subroutine nmdoch_wrap
 end interface

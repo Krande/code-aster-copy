@@ -27,6 +27,8 @@ subroutine op0171()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterf_types.h"
+#include "asterfort/addModelLigrel.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/cresol.h"
@@ -87,8 +89,8 @@ subroutine op0171()
     character(len=8) :: model, caraElem, materField
     character(len=24) :: mateco
     character(len=24) :: fieldInResult, vtemp, vtempm, vtempp, vec2nd
-    character(len=24) :: result, ligrmo, tempev, tempin
-    character(len=24) :: timeMap, matass, nume_dof, noojb
+    character(len=24) :: result, modelLigrel, tempev, tempin
+    character(len=24) :: timeMap, matass, numeDof, noojb
     character(len=24) :: cndirp, cnchci, cnchtp
     character(len=24) :: chlapm, chlapp, cnresi
     character(len=76) :: fmt
@@ -96,6 +98,8 @@ subroutine op0171()
     real(kind=8) :: valr(2)
     real(kind=8), pointer :: lagpm(:) => null()
     real(kind=8), pointer :: lagpp(:) => null()
+    integer :: nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
 !
     data maprec/'&&OP0171.MAPREC'/
     data cndirp, cnchtp/2*' '/
@@ -169,15 +173,26 @@ subroutine op0171()
 ! ======================================================================
 !
     timeMap = result(1:8)//'.CHTPS'
-!
-! --- NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
+
+! - Generate name of numbering object (numeDof)
     noojb = '12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
-    nume_dof = noojb(1:14)
-    call numero(nume_dof, 'VG', &
-                modelz=model, list_loadz=listLoad)
+    numeDof = noojb(1:14)
+
+! - Add LIGREL from model
+    nbLigr = 0
+    call addModelLigrel(model, nbLigr, listLigr)
+
+! - Get list of LIGREL from loads
+    call getListLoadLigrel(listLoad, nbLigr, listLigr)
+
+! - Numbering
+    call numero(numeDof, 'VG', &
+                nbLigr, listLigr)
+    AS_DEALLOCATE(vk24=listLigr)
+
 !
-    call vtcreb(vtemp, 'V', 'R', nume_ddlz=nume_dof)
+    call vtcreb(vtemp, 'V', 'R', nume_ddlz=numeDof)
 !
 !
     call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=tempev, nbret=n1)
@@ -193,9 +208,9 @@ subroutine op0171()
     end if
 ! ======================================================================
 !
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi("NOM_LIGREL", model, "MODELE", repk=modelLigrel)
     r8aux(1) = 0.d0
-    call mecact('V', chlapm, 'MODELE', ligrmo, 'NEUT_R', &
+    call mecact('V', chlapm, 'MODELE', modelLigrel, 'NEUT_R', &
                 ncmp=1, nomcmp='X1', sr=r8aux(1))
 !
     tpsnp1 = 0.d0
@@ -253,7 +268,7 @@ subroutine op0171()
 !
 ! --- ACTUALISATION EVENTUELLE DES VECTEURS ET DES MATRICES
 !
-    call nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
+    call nttcmv(model, mateco, caraElem, listLoad, numeDof, &
                 solver, timeMap, tpsthe, tpsnp1, reasvt, &
                 reasmt, creas, vtemp, vtempm, vec2nd, &
                 matass, maprec, cndirp, cnchci, cnchtp)
@@ -270,7 +285,7 @@ subroutine op0171()
 !
 ! - ITERATIONS INTERNES
 !
-        call nttain(model, mateco, caraElem, listLoad, nume_dof, &
+        call nttain(model, mateco, caraElem, listLoad, numeDof, &
                     solver, timeMap, epsr, lonch, matass, &
                     maprec, cnchci, cnresi, vtemp, vtempm, &
                     vtempp, vec2nd, chlapm, chlapp, ci1, &

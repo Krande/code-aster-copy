@@ -36,7 +36,7 @@ class ContactNew : public DataStructure {
     /** @brief Model */
     ModelPtr _model;
 
-    /** @brief Ligrel ".CHME.LIGRE" */
+    /** @brief Ligrel ".CONT.LIGRE" (virtual cells) */
     FiniteElementDescriptorPtr _FEDesc;
 
     /** @brief List of contact zones */

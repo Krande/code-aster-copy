@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmrenu(modelz, list_func_acti, list_load, &
                   ds_measure, ds_contact, nume_dof, &
@@ -61,42 +60,40 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=2), parameter :: base = "VG"
     aster_logical :: l_cont, l_cont_cont, l_cont_elem
-    character(len=24) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
-!
+
 ! - No renumbering !
-!
     l_renumber = ASTER_FALSE
-!
+
 ! - Active functionnalities
-!
     l_cont = isfonc(list_func_acti, 'CONTACT')
     l_cont_elem = isfonc(list_func_acti, 'ELT_CONTACT')
     l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
-!
+
 ! - To change numbering
-!
     if (l_cont) then
 ! ----- Start timer for preparation of contact
         call nmtime(ds_measure, 'Launch', 'Cont_Prep')
-! ----- Get identity relation datastructure
-        sd_iden_rela = ds_contact%iden_rela
+
 ! ----- Numbering to change ?
         if (l_cont_elem) then
             l_renumber = ds_contact%l_renumber
             ds_contact%l_renumber = ASTER_FALSE
         end if
+
 ! ----- Re-numbering
         if (l_renumber) then
             if (niv .ge. 2) then
                 call utmess('I', 'MECANONLINE13_36')
             end if
-            call numer3(modelz, list_load, nume_dof, sd_iden_rela, "VG")
+            call numer3(modelZ, base, list_load, nume_dof, ds_contact)
         end if
+
 ! ----- Stop timer for preparation of contact
         call nmtime(ds_measure, 'Stop', 'Cont_Prep')
         call nmrinc(ds_measure, 'Cont_Prep')

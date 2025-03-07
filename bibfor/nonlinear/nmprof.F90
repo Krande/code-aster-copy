@@ -16,20 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmprof(model, result, list_load, nume_ddl, &
-                  sd_iden_relaz)
+subroutine nmprof(model, result, listload, numeDof, ds_contact)
+!
+    use listLoad_module
+    use NonLin_Datastructure_type
+    use contactAlgo_module
 !
     implicit none
 !
+#include "asterfort/addModelLigrel.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/numero.h"
 #include "asterfort/rsnume.h"
 !
     character(len=24), intent(in) :: model
-    character(len=24), intent(out) :: nume_ddl
+    character(len=24), intent(out) :: numeDof
     character(len=8), intent(in) :: result
-    character(len=19), intent(in) :: list_load
-    character(len=*), optional, intent(in) :: sd_iden_relaz
+    character(len=19), intent(in) :: listload
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,36 +44,48 @@ subroutine nmprof(model, result, list_load, nume_ddl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out nume_ddl       : name of numbering object (NUME_DDL)
-! In  result         : name of result datastructure (EVOL_NOLI)
-! In  model          : name of model datastructure
-! In  list_load      : list of loads
-! In  sd_iden_rela   : name of object for identity relations between dof
+! Out numeDof          : name of numbering object (NUME_DDL)
+! In  result           : name of result datastructure (EVOL_NOLI)
+! In  model            : name of model datastructure
+! In  listload         : list of loads
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=14) :: nuposs
-    character(len=24) :: noojb, sd_iden_rela
+    character(len=14) :: numeDofOld
+    character(len=24) :: noojb, idenRela
+    integer :: nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sd_iden_rela = ' '
-    if (present(sd_iden_relaz)) then
-        sd_iden_rela = sd_iden_relaz
+    idenRela = ds_contact%iden_rela
+
+! - Add LIGREL from model
+    nbLigr = 0
+    call addModelLigrel(model, nbLigr, listLigr)
+
+! - Get list of LIGREL from loads
+    call getListLoadLigrel(listLoad, nbLigr, listLigr)
+
+! - Get list of LIGREL from contact
+    if (ds_contact%l_contact) then
+        call addContactLigrel(ds_contact%sdcont, ds_contact%ligrel_elem_cont, nbLigr, listLigr)
     end if
 
-! - Generate name of numbering object (nume_ddl)
-    nume_ddl = '12345678.NUMED'
+! - Generate name of numbering object (numeDof)
+    numeDof = '12345678.NUMED'
     noojb = '12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
-    nume_ddl = noojb(1:14)
-    call rsnume(result, 'DEPL', nuposs)
-!
+    numeDof = noojb(1:14)
+
+! - Get numbering from displacement
+    call rsnume(result, 'DEPL', numeDofOld)
+
 ! - Create numbering
-!
-    call numero(nume_ddl, 'VG', &
-                old_nume_ddlz=nuposs, &
-                modelz=model, list_loadz=list_load, &
-                sd_iden_relaz=sd_iden_rela)
+    call numero(numeDof, 'VG', &
+                nbLigr, listLigr, &
+                numeDofOldZ_=numeDofOld, idenRelaZ_=idenRela)
+    AS_DEALLOCATE(vk24=listLigr)
 !
 end subroutine

@@ -128,7 +128,7 @@ subroutine op0199()
 ! CALCUL DES MATRICES MODALES BI POUR L OPTION AMOR_AJOU
 !--------------------------------------------------------------
 !
-    call mat152('MASS_AJOU', model, moint, nocham, ivalk, &
+    call mat152('MASS_AJOU', model, moint, ivalk, &
                 nbmo, max, may, maz, num)
 !
     call jeexin('&&MAT152.MADE', iret)

@@ -3,7 +3,7 @@
  * @brief Fichier entete de la classe BaseDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -287,6 +287,9 @@ class BaseDOFNumbering : public DataStructure {
      */
     virtual bool computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads );
 
+    virtual bool computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
+                                   const FiniteElementDescriptorPtr defiCont );
+
     /**
      * @brief Build the Numbering of DOFs
      */
@@ -295,7 +298,9 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief renumbering of DOFs
      */
-    virtual bool computeRenumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads );
+    virtual bool computeRenumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
+                                     const FiniteElementDescriptorPtr defiCont,
+                                     const FiniteElementDescriptorPtr virtContElem );
 
     /**
      * @brief Build the Numbering of DOFs

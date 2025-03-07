@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine mat152(option, model, moint, nocham, ivalk,&
-                      nbmo, max, may, maz, num)
-        character(len=9) :: option
-        character(len=2) :: model
-        character(len=8) :: moint
-        character(len=24) :: nocham
-        integer :: ivalk
-        integer :: nbmo
-        character(len=19) :: max
-        character(len=19) :: may
-        character(len=19) :: maz
-        character(len=14) :: num
+    subroutine mat152(option, modelDime, modelInterface, ivalk, &
+                      nbMode, matrAsseX, matrAsseY, matrAsseZ, numeDof)
+        character(len=9), intent(in) :: option
+        character(len=2), intent(in) :: modelDime
+        character(len=8), intent(in) :: modelInterface
+        integer, intent(in) :: ivalk, nbMode
+        character(len=14), intent(out) :: numeDof
+        character(len=19), intent(out) :: matrAsseX, matrAsseY, matrAsseZ
     end subroutine mat152
 end interface
