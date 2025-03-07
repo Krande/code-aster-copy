@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -437,7 +437,7 @@ class CommandSyntax:
         size = len(value)
         if size > maxval:
             size = -size
-        return size, tuple(value[:maxval])
+        return size, tuple([round(i) for i in value[:maxval]])
 
     def getvr8(self, factName, simpName, occurrence, maxval):
         """Wrapper function to return a list of float numbers.
