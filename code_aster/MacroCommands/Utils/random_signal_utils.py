@@ -155,13 +155,15 @@ def gene_traj_gauss_evol1D(self, rv=None, **kwargs):
 
 
 def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
-    # ---------------------------------------------------------
-    # IN: f_in: ACCELEROGRAMME (signal temporel), pas dt
-    #     fcorner: corner frequency (Hz),
-    #     amoc: amortissement, l_freq: list of frequencies in Hz
-    # OUT: f_out: ACCELEROGRAMME filtre (signal temporel),
-    # attention: il faut de preference  2**N
-    # ---------------------------------------------------------
+    """Applies a high-pass filter to an accelerogram
+    Args:
+        vale_acce (ndarray or list): signal
+        dt (float) : time step of signal
+        fcorner (float) : the eigenfrequency (or corner frequency) of filter, Hz
+        amoc (float): the damping ration of the filter
+    Returns:
+        ndarray : the filtered signal
+    """
     # CP filter/corner frequency : wcp
     wcp = fcorner * 2.0 * pi
     N = len(vale_acce)
@@ -577,7 +579,13 @@ def iter_SRO(f_dsp, f_sro, amort, TS, Niter=10, nbliss=0):
 
 
 def smoothing(yin, Mm):
-    print("smoothing")
+    """Smoothes a function with a Hamming filter
+    Args:
+        yin (NP.ndarray):  the function to smooth
+        Mm (int): the number of steps to apply the Hamming filter on
+    Returns:
+        NP.ndarray : the smoothed function
+    """
 
     ysmoothed = NP.copy(yin)
 
@@ -877,12 +885,16 @@ def ACCE2SROM(self, f_in, xig, l_freq, ideb, METHODE_SRO):
 
 # conversion ACCE en SRO par fft et filtrage: METHODE_SRO=HARMO
 def ACCE2SRO(f_in, xig, l_freq, ideb=2):
-    # ---------------------------------------------------------
-    # IN : f_in: ACCELEROGRAMME (signal temporel)
-    #         xig: amortissement, l_freq: list of frequencies in Hz
-    # OUT: f_out: SRO for l_freq (Hz)
-    # attention: il faut de preference en 2**N
-    # ---------------------------------------------------------
+    """This function computes the response spectrum of an accelerogram
+    Args:
+        f_in(t_fonction):signal temporel (accelerogram)
+        xig(float): damping ratio
+        l_freq (list): list of frequencies for the response spectrum (Hz)
+        ideb (int):
+    Returns:
+        t_fonction : the response spectrum function (as a function of freq in Hz)
+    """
+    #
     para_sro = {
         "INTERPOL": ["LIN", "LIN"],
         "NOM_PARA": "FREQ",
@@ -1086,11 +1098,19 @@ def corrcoefmodel(Period, f_beta=None):
 # CORRECTION ZPA DES SIGNAUX
 # -----------------------------------------------------------------
 #
-## Ces fonctions permettent de corriger les zpa des signauxacce
+## Ces fonctions permettent de corriger les zpa des signaux acce
 
 
 # create the Gaussian mask
-def def_mask(signal, y00, epsilon):
+def def_mask(signal: list, y00, epsilon: float):
+    """Computes the Gaussian mask
+    Args:
+        signal : signal
+        y00    : maximum requested
+        epsilon : width of the Gaussian mask
+    Returns:
+        array: the Gaussian mask
+    """
     t = signal[0]
     y = signal[1]
     t0_idx = NP.argmax(NP.abs(y))
@@ -1104,6 +1124,15 @@ def def_mask(signal, y00, epsilon):
 
 # correct the accelerogram to yield pga
 def correct_signal(signal: list, pga: float, epsilon: float):
+    """correct the signal by applying the Gaussian mask
+    Args:
+        signal : signal to modify
+        pga    : target pga
+        epsilon : width of the Gaussian mask
+            (0.03 provides good results for seismic signals)
+    Returns:
+        list : the corrected signal
+    """
     mask = def_mask(signal, pga, epsilon)
 
     sig = signal[1] * mask
@@ -1116,6 +1145,18 @@ def correct_signal(signal: list, pga: float, epsilon: float):
 
 # zpa match function
 def zpa_match(signal: list, pga: float, epsilon: float = 0.03):
+    """This function applies the zpa correction to an accelerogram,
+        it corrects the signal to yield the target pga by applying a Gaussian mask.
+        The correction function can be called several times
+        when there are more than one exceedances.
+    Args:
+        signal : signal to modify
+        pga    : target pga
+        epsilon : width of the Gaussian mask
+            (0.03 provides good results for seismic signals)
+    Returns :
+        list : the signal with corrected maximum
+    """
     new_signal = correct_signal(signal, pga, epsilon)
 
     while NP.max(NP.abs(new_signal[1])) > pga * 1.001:
