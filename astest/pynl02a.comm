@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -244,43 +244,20 @@ for i_inst in range(1, len(l_inst)):
         #           INTEGRATION DE LA LOI DE COMPT
         # =========================================================
 
-        # remarque la destruction du container 'CONT ne detruit pas les champs de la table...
-        # ce qui augmente leur numero  a chaque fois, et declenche les erreurs de verif SD
-        # DETRUIRE(OBJET=_F(CHAINE='CONT'),INFO=1)
-        # à vérifier en >15.2... maintenant qu'il y a 'update'
-
-        if i_inst == 1 and IterNewton == 1:
-            result = CALCUL(
-                __use_namedtuple__=True,
-                OPTION=("COMPORTEMENT", "FORC_INTE_ELEM", "MATR_TANG_ELEM"),
-                MODELE=MO,
-                CHAM_MATER=CHMAT,
-                INCREMENT=_F(LIST_INST=LIST, NUME_ORDRE=i_inst),
-                EXCIT=_F(CHARGE=CHARB, FONC_MULT=RAMPE),
-                INCR_DEPL=DELTA_U,
-                DEPL=U,
-                SIGM=SIGMA,
-                VARI=VARI,
-                COMPORTEMENT=_F(RELATION="VMIS_ECMI_TRAC"),
-                INFO=2,
-            )
-        else:
-            result = CALCUL(
-                __use_namedtuple__=True,
-                OPTION=("COMPORTEMENT", "FORC_INTE_ELEM", "MATR_TANG_ELEM"),
-                MODELE=MO,
-                CHAM_MATER=CHMAT,
-                INCREMENT=_F(LIST_INST=LIST, NUME_ORDRE=i_inst),
-                EXCIT=_F(CHARGE=CHARB, FONC_MULT=RAMPE),
-                INCR_DEPL=DELTA_U,
-                DEPL=U,
-                #  reuse = CONT,
-                #  TABLE = CONT,
-                SIGM=SIGMA,
-                VARI=VARI,
-                COMPORTEMENT=_F(RELATION="VMIS_ECMI_TRAC"),
-                INFO=2,
-            )
+        result = CALCUL(
+            __use_namedtuple__=True,
+            OPTION=("COMPORTEMENT", "FORC_INTE_ELEM", "MATR_TANG_ELEM"),
+            MODELE=MO,
+            CHAM_MATER=CHMAT,
+            INCREMENT=_F(LIST_INST=LIST, NUME_ORDRE=i_inst),
+            EXCIT=_F(CHARGE=CHARB, FONC_MULT=RAMPE),
+            INCR_DEPL=DELTA_U,
+            DEPL=U,
+            SIGM=SIGMA,
+            VARI=VARI,
+            COMPORTEMENT=_F(RELATION="VMIS_ECMI_TRAC"),
+            INFO=2,
+        )
 
         # =========================================================
         #   VERIFICATION DU CODE RETOUR DE L'INTEGRATION DE LA LC
