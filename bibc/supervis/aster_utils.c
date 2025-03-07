@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -169,7 +169,15 @@ int conv_un_c8( _IN PyObject *tup, _OUT ASTERDOUBLE *val ) {
         /* On est dans le cas d'un objet Python complexe */
         /* representation : partie reelle/partie imaginaire */
         *val = (ASTERDOUBLE)PyComplex_RealAsDouble( tup );
+        if ( PyErr_Occurred() ) {
+            PyErr_Print();
+            MYABORT( "TypeError: Expecting a PyComplex" );
+        }
         *( val + 1 ) = (ASTERDOUBLE)PyComplex_ImagAsDouble( tup );
+        if ( PyErr_Occurred() ) {
+            PyErr_Print();
+            MYABORT( "TypeError: Expecting a PyComplex" );
+        }
     } else if ( PyTuple_Check( tup ) ) {
         /* On est dans le cas d'un complexe représenté par un triplet : "RI" ou "MP",x,y */
         if ( !PyArg_ParseTuple( tup, "sdd", &repres, &x, &y ) )
@@ -206,6 +214,10 @@ void convr8( _IN const int nval, _IN PyObject *tup, _OUT ASTERDOUBLE *val ) {
     for ( i = 0; i < nval; i++ ) {
         v = PyTuple_GetItem( tup, i );
         val[i] = (ASTERDOUBLE)PyFloat_AsDouble( v );
+        if ( PyErr_Occurred() ) {
+            PyErr_Print();
+            MYABORT( "TypeError: Expecting a PyFloat" );
+        }
     }
     return;
 }
@@ -227,6 +239,10 @@ void convert( _IN const int nval, _IN PyObject *tup, _OUT ASTERINTEGER *val ) {
     for ( i = 0; i < nval; i++ ) {
         v = PyTuple_GetItem( tup, i );
         val[i] = (ASTERINTEGER)PyLong_AsLong( v );
+        if ( PyErr_Occurred() ) {
+            PyErr_Print();
+            MYABORT( "TypeError: Expecting a PyLong" );
+        }
     }
     return;
 }
@@ -313,7 +329,8 @@ PyObject *MakeTupleString( long nbval, char *kval, STRING_SIZE lkval, ASTERINTEG
      *   Sorties:
      *      RETOUR fonction : tuple de string Python de longueur nbval
      *   Fonction:
-     *      Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
+     *      Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme
+     * longueur
      */
     int i;
     int len;
@@ -345,7 +362,8 @@ PyObject *MakeListString( long nbval, char *kval, STRING_SIZE lkval ) {
      *      RETOUR fonction : tuple de string Python de longueur nbval les espaces terminant la
      *      chaine sont supprimes
      *   Fonction:
-     *      Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
+     *      Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme
+     * longueur
      */
     int i;
     char *deb = kval;
@@ -368,7 +386,8 @@ PyObject *MakeTupleInt( long nbval, ASTERINTEGER *kval ) {
      *   Sorties:
      *      RETOUR fonction : tuple de int Python de longueur nbval
      *   Fonction:
-     *      Convertir un tableau de ASTERINTEGER FORTRAN en un tuple de int Python de meme longueur
+     *      Convertir un tableau de ASTERINTEGER FORTRAN en un tuple de int Python de meme
+     * longueur
      */
     int i;
     PyObject *tupl;
