@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,35 +155,26 @@ def gene_traj_gauss_evol1D(self, rv=None, **kwargs):
 
 
 def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
-    # ---------------------------------------------------------
-    # IN: f_in: ACCELEROGRAMME (signal temporel), pas dt
-    #     fcorner: corner frequency (Hz),
-    #     amoc: amortissement, l_freq: list of frequencies in Hz
-    # OUT: f_out: ACCELEROGRAMME filtre (signal temporel),
-    # attention: il faut de preference  2**N
-    # ---------------------------------------------------------
+    """Applies a high-pass filter to an accelerogram
+    Args:
+        vale_acce (ndarray or list): signal
+        dt (float) : time step of signal
+        fcorner (float) : the eigenfrequency (or corner frequency) of filter, Hz
+        amoc (float): the damping ration of the filter
+    Returns:
+        ndarray : the filtered signal
+    """
     # CP filter/corner frequency : wcp
     wcp = fcorner * 2.0 * pi
     N = len(vale_acce)
-    # discrectisation
-    OM = pi / dt
-    dw = 2.0 * OM / N
-    N2 = N // 2 + 1
-    ws0 = NP.arange(0.0, (N2 + 1) * dw, dw)
-    ws = ws0[:N2]
-    im = csqrt(-1)
-    acce_in = NP.fft.fft(NP.array(vale_acce))
-    hw2 = ws**2 * 1.0 / ((wcp**2 - ws**2) + 2.0 * amoc * im * wcp * ws)
-    liste_pairs = list(zip(-hw2, acce_in[:N2]))
-    Yw = [a * b for a, b in liste_pairs]
-    if is_even(N):  # nombre pair
-        ni = 1
-    else:  # nombre impair
-        ni = 0
-    for kk in range(N2 + 1, N + 1):
-        Yw.append(Yw[N2 - ni - 1].conjugate())
-        ni = ni + 1
-    acce_out = NP.fft.ifft(Yw).real
+    ws = NP.fft.rfftfreq(N, d=dt) * 2 * pi
+
+    acce_in = NP.fft.rfft(NP.array(vale_acce))
+
+    hw2 = -(ws**2) * 1.0 / ((wcp**2 - ws**2) + 2.0 * amoc * 1j * wcp * ws)
+    Yw = acce_in * hw2
+
+    acce_out = NP.fft.irfft(Yw, n=N)
     #      f_out = t_fonction(vale_t, acce_out, para=f_in.para)
     return acce_out
 
@@ -588,8 +579,13 @@ def iter_SRO(f_dsp, f_sro, amort, TS, Niter=10, nbliss=0):
 
 
 def smoothing(yin, Mm):
-
-    print("smoothing")
+    """Smoothes a function with a Hamming filter
+    Args:
+        yin (NP.ndarray):  the function to smooth
+        Mm (int): the number of steps to apply the Hamming filter on
+    Returns:
+        NP.ndarray : the smoothed function
+    """
 
     ysmoothed = NP.copy(yin)
 
@@ -889,12 +885,16 @@ def ACCE2SROM(self, f_in, xig, l_freq, ideb, METHODE_SRO):
 
 # conversion ACCE en SRO par fft et filtrage: METHODE_SRO=HARMO
 def ACCE2SRO(f_in, xig, l_freq, ideb=2):
-    # ---------------------------------------------------------
-    # IN : f_in: ACCELEROGRAMME (signal temporel)
-    #         xig: amortissement, l_freq: list of frequencies in Hz
-    # OUT: f_out: SRO for l_freq (Hz)
-    # attention: il faut de preference en 2**N
-    # ---------------------------------------------------------
+    """This function computes the response spectrum of an accelerogram
+    Args:
+        f_in(t_fonction):signal temporel (accelerogram)
+        xig(float): damping ratio
+        l_freq (list): list of frequencies for the response spectrum (Hz)
+        ideb (int):
+    Returns:
+        t_fonction : the response spectrum function (as a function of freq in Hz)
+    """
+    #
     para_sro = {
         "INTERPOL": ["LIN", "LIN"],
         "NOM_PARA": "FREQ",
@@ -906,41 +906,20 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2):
     vale_acce = f_in.vale_y
     N = len(vale_t)
     dt = vale_t[1] - vale_t[0]
-    # discrectisation
-    OM = pi / dt
-    dw = 2.0 * OM / N
-    N2 = N // 2 + 1
-    ws0 = NP.arange(0.0, (N2 + 1) * dw, dw)
-    ws = ws0[:N2]
+    ws = NP.fft.rfftfreq(N, d=dt) * 2 * pi
     vale_sro = []
-    im = csqrt(-1)
-    acce_in = NP.fft.fft(NP.array(vale_acce))
+    acce_in = NP.fft.rfft(NP.array(vale_acce))
     for fi in l_freq:
         w_0 = fi * 2.0 * pi
-        hw2 = 1.0 / ((w_0**2 - ws**2) + 2.0 * xig * im * w_0 * ws)
-        liste_pairs = list(zip(hw2, acce_in[:N2]))
-        Yw = [a * b for a, b in liste_pairs]
-        if is_even(N):  # nombre pair
-            ni = 1
-        else:  # nombre impair
-            ni = 0
-        for kk in range(N2 + 1, N + 1):
-            Yw.append(Yw[N2 - ni - 1].conjugate())
-            ni = ni + 1
-        acce_out = NP.fft.ifft(Yw).real
+        hw2 = 1.0 / ((w_0**2 - ws**2) + 2.0 * xig * 1j * w_0 * ws)
+        Yw = acce_in * hw2
+        acce_out = NP.fft.irfft(Yw, n=N)
         vale_sro.append(w_0**ideb * max(abs(acce_out)))
     f_out = t_fonction(l_freq, vale_sro, para=para_sro)
     return f_out
 
 
 #
-
-
-def is_even(num):
-    """Return whether the number num is even."""
-    return num % 2 == 0
-
-
 # -----------------------------------------------------------------
 # DSP2FR
 # -----------------------------------------------------------------
@@ -1085,8 +1064,8 @@ def corrcoefmodel(Period, f_beta=None):
             f_beta = f_beta.evalfonc(1.0 / Periods)
             vale_beta = f_beta.vale_y
 
-    for (ii, Ti) in enumerate(Periods):
-        for (jj, Tj) in enumerate(Periods):
+    for ii, Ti in enumerate(Periods):
+        for jj, Tj in enumerate(Periods):
             Tmin = min(Ti, Tj)
             Tmax = max(Ti, Tj)
             C1 = 1.0 - cos(pi / 2.0 - 0.366 * log(Tmax / max(Tmin, 0.109)))
@@ -1112,3 +1091,75 @@ def corrcoefmodel(Period, f_beta=None):
 
     Mat_Gx = NP.linalg.cholesky(Mat_Eps)
     return Periods, Mat_Gx
+
+
+#
+# -----------------------------------------------------------------
+# CORRECTION ZPA DES SIGNAUX
+# -----------------------------------------------------------------
+#
+## Ces fonctions permettent de corriger les zpa des signaux acce
+
+
+# create the Gaussian mask
+def def_mask(signal: list, y00, epsilon: float):
+    """Computes the Gaussian mask
+    Args:
+        signal : signal
+        y00    : maximum requested
+        epsilon : width of the Gaussian mask
+    Returns:
+        array: the Gaussian mask
+    """
+    t = signal[0]
+    y = signal[1]
+    t0_idx = NP.argmax(NP.abs(y))
+
+    t0 = t[t0_idx]
+    y0 = y[t0_idx] * NP.sign(y[t0_idx])
+    mask = 1 - (1 - y00 / y0) * NP.exp(-0.5 * ((t - t0) / epsilon) ** 2)
+
+    return mask
+
+
+# correct the accelerogram to yield pga
+def correct_signal(signal: list, pga: float, epsilon: float):
+    """correct the signal by applying the Gaussian mask
+    Args:
+        signal : signal to modify
+        pga    : target pga
+        epsilon : width of the Gaussian mask
+            (0.03 provides good results for seismic signals)
+    Returns:
+        list : the corrected signal
+    """
+    mask = def_mask(signal, pga, epsilon)
+
+    sig = signal[1] * mask
+    newsig = sig - NP.mean(sig)
+
+    new_signal = (signal[0], newsig)
+
+    return new_signal
+
+
+# zpa match function
+def zpa_match(signal: list, pga: float, epsilon: float = 0.03):
+    """This function applies the zpa correction to an accelerogram,
+        it corrects the signal to yield the target pga by applying a Gaussian mask.
+        The correction function can be called several times
+        when there are more than one exceedances.
+    Args:
+        signal : signal to modify
+        pga    : target pga
+        epsilon : width of the Gaussian mask
+            (0.03 provides good results for seismic signals)
+    Returns :
+        list : the signal with corrected maximum
+    """
+    new_signal = correct_signal(signal, pga, epsilon)
+
+    while NP.max(NP.abs(new_signal[1])) > pga * 1.001:
+        new_signal = correct_signal(new_signal, pga, epsilon)
+
+    return new_signal[1]

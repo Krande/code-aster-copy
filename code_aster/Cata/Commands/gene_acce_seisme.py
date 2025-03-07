@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -183,6 +183,7 @@ GENE_ACCE_SEISME = MACRO(
             statut="f", typ="R", defaut=(0.5, 0.2), min=1, max=2, fr=tr("coef et erreur maxi rms")
         ),
         SPEC_OSCI=SIMP(statut="o", typ=(fonction_sdaster)),
+        CORR_ZPA=SIMP(statut="f", typ="TXM", defaut="NON", into=("NON", "OUI")),
         AMOR_REDUIT=SIMP(statut="o", typ="R", val_min=0.00001, val_max=1.0),
         FREQ_PAS=SIMP(statut="f", typ="R", fr=tr("pas")),
         LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),

@@ -58,6 +58,7 @@ from .Utils.random_signal_utils import (
     gene_traj_gauss_evol1D,
     itersim_SRO,
     peak,
+    zpa_match,
 )
 from .Utils.signal_correlation_utils import (
     CALC_CORRE,
@@ -153,7 +154,7 @@ class GeneAcceParameters:
         else:
             corr_keys = {}
             corr_keys["TYPE"] = "SCALAR"
-        self.simulation_keys = {"CORR_KEYS": corr_keys}
+        self.simulation_keys = {"CORR_KEYS": corr_keys, "CORR_ZPA": False}
 
         if kwargs.get("DSP"):
             self.cas = "DSP"
@@ -189,12 +190,17 @@ class GeneAcceParameters:
                 if "SPEC_UNIQUE" in others:
                     others.remove("SPEC_UNIQUE")
                 self.simulation_keys.update({"SPEC_METHODE": "SPEC_UNIQUE"})
+
             method_keys = GeneratorKeys.cree_dict_valeurs(GeneratorKeys.mc_liste)
+
         self.method_keys = {}
         for key in method_keys:
             self.method_keys[key] = method_keys[key]
         if "NB_ITER" in self.method_keys:
             self.simulation_keys.update({"NB_ITER": self.method_keys["NB_ITER"]})
+        if "CORR_ZPA" in self.method_keys:
+            if self.method_keys["CORR_ZPA"] == "OUI":
+                self.simulation_keys.update({"CORR_ZPA": True})
         # OtherKeys remplissage
         others_keys = {}
         for key in others:
@@ -388,6 +394,8 @@ class GeneratorSpectrum(Generator):
         spec_osci = self.method_params.get("SPEC_OSCI")
         l_freq_sro, sro_ref = spec_osci.Valeurs()
         ZPA = sro_ref[-1]
+        self.SRO_args.update({"ZPA": ZPA})
+
         F_MIN = l_freq_sro[0]
         if self.sampler.FREQ_COUP > l_freq_sro[-1]:
             sro_ref = NP.append(sro_ref, ZPA)
@@ -721,8 +729,8 @@ class Simulator:
     def __init__(self, simu_params):
         self.simu_params = simu_params
         self.ntir = 0
-        self.TYPE = self.simu_params["CORR_KEYS"]["TYPE"]
-        self.DEFI_COHE = self.simu_params["CORR_KEYS"]
+        self.TYPE = simu_params["CORR_KEYS"]["TYPE"]
+        self.DEFI_COHE = simu_params["CORR_KEYS"]
         self.INFO = simu_params["INFO"]
         self.nbtirage = simu_params["NB_TIRAGE"]
         self.FREQ_FILTRE = simu_params["FREQ_FILTRE"]
@@ -737,8 +745,17 @@ class Simulator:
     def process_TimeHistory(self, generator, Xt):
         """apply modulation and low pass filter if requested"""
         Xm = Xt * generator.modulator.fonc_modul.vale_y
+
         if self.FREQ_FILTRE > 0.0:
             Xm = acce_filtre_CP(Xm, generator.sampler.DT, self.FREQ_FILTRE)
+
+        if self.simu_params["CORR_ZPA"]:
+            zpa = generator.SRO_args["ZPA"] * generator.SRO_args["NORME"]
+            Xm = zpa_match((generator.sampler.liste_temps, Xm), zpa)
+
+            if self.FREQ_FILTRE > 0.0:
+                Xm = acce_filtre_CP(Xm, generator.sampler.DT, self.FREQ_FILTRE)
+
         return Xm
 
     def build_TimeHistory(self):
