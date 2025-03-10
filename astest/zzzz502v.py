@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -258,12 +258,12 @@ test.assertAlmostEqual(xi.norm(), pRef_i.norm(), places=5)
 # Owe Axelsson · Maya Neytcheva · Bashir Ahmad, Numer Algor (2014)
 # -----
 class C2R(object):
-    def create(self, pc, mat_r=mat_r, K=A):
+    def create(self, pc, mat_r=mat_r, K=None):
         self.mat_r = mat_r
         self.ksp = PETSc.KSP().create(comm=mat_r.getComm())
-        K, _ = pc.getOperators()
-        A = K.getNestSubMatrix(0, 0)
-        B = K.getNestSubMatrix(1, 0)
+        K_, _ = pc.getOperators()
+        A = K_.getNestSubMatrix(0, 0)
+        B = K_.getNestSubMatrix(1, 0)
         H = A + B
         self.ksp.setOperators(H, H)
         self.ksp.setType("fgmres")
@@ -271,7 +271,7 @@ class C2R(object):
         self.ksp.setTolerances(max_it=5, rtol=1.0e-3)
         self.ksp.setTabLevel(1)
         self.ksp.setFromOptions()
-        l = K.getNestISs()
+        l = K_.getNestISs()
         self.i1, self.i2 = l[0][0], l[0][1]
         self.A = A
 
