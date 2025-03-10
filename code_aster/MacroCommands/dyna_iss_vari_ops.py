@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,16 +21,12 @@
 
 """Commande DYNA_ISS_VARI"""
 
-import os
 import sys
 import traceback
 from math import ceil, floor, pi
 
-import numpy as NP
-
 import aster
-from ..Objects.table_py import Table
-from ..Messages import UTMESS
+import numpy as NP
 
 from ..Cata.Syntax import _F
 from ..Commands import (
@@ -43,7 +39,7 @@ from ..Commands import (
     LIRE_IMPE_MISS,
     REST_SPEC_TEMP,
 )
-from ..SD.sd_maillage import sd_maillage
+from ..Messages import UTMESS
 from .Miss.calc_miss_vari import calc_miss_vari, compute_force_vari
 from .Utils.signal_correlation_utils import calc_dist2, get_group_nom_coord
 
@@ -95,7 +91,6 @@ class DynaISSParameters:
 
 
 class Generator:
-
     """Base class Generator"""
 
     @staticmethod
@@ -187,7 +182,6 @@ class Generator:
 #         CLASSE TRANS
 #     -----------------------------------------------------------------
 class GeneratorTRANS(Generator):
-
     """TRANS class"""
 
     def sampling(self):
@@ -530,7 +524,6 @@ class GeneratorTRANS(Generator):
 #         CLASSE SPEC
 #     -----------------------------------------------------------------
 class GeneratorSPEC(Generator):
-
     """SPEC class"""
 
     def sampling(self):
