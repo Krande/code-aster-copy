@@ -247,8 +247,8 @@ if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
             plt.title("%s convergence error for HHO" % norm)
 
             # save plot
-            savedir = "/tmp/" or os.getcwd()
-            plt.savefig(os.path.join(savedir, "%s_error.png" % norm))
+            # savedir = "/tmp/" or os.getcwd()
+            # plt.savefig(os.path.join(savedir, "%s_error.png" % norm))
             plt.clf()
 
 # close
