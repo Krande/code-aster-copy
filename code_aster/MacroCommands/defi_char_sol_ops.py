@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,8 +98,6 @@ def defi_char_sol_ops(self, TITRE=None, INFO=None, **args):
         # llcara ='OUI' ou 'NON'
         if args["LONG_CARA"] is not None:
             llcara = "OUI"
-    if args["RESU_INIT"] is not None:
-        lresu = "OUI"
 
     if ltranin == "OUI":
         utranin = args["UNITE_TRAN_INIT"]
@@ -123,10 +121,7 @@ def defi_char_sol_ops(self, TITRE=None, INFO=None, **args):
         NPC = NCOU + 3
         # if args['NOM_CMP'] == 'DX':
         #  coef = 0.5
-        if args["NOM_CMP"] == "DX":
-            coef = 1.0
-        else:
-            coef = 1.0
+        coef = 1.0
         coef2 = -1.0 * coef
 
         if lforcn == "OUI":
@@ -169,7 +164,6 @@ def defi_char_sol_ops(self, TITRE=None, INFO=None, **args):
 
         else:
             l_para = []
-            l_foncx = []
             l_vitex = []
             l_deplx = []
 

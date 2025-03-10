@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,6 @@ import aster
 from libaster import AsterError
 from ..Messages import UTMESS
 
-from ..Cata.DataStructure import fonction_c, formule, formule_c, nappe_sdaster
-from ..Cata.Syntax import _F
 from ..Commands import CALC_FONC_INTERP, DEFI_LIST_REEL
 from ..Helpers import LogicalUnitFile, ReservedUnitUsed
 from ..Objects.table_graph import AjoutParaCourbe, Graph
@@ -40,7 +38,6 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
     colonnes de table...
     Erreurs<S> dans IMPR_FONCTION pour ne pas perdre la base.
     """
-    macro = "IMPR_FONCTION"
     # ----------------------------------------------
     # 0. Traitement des arguments, initialisations
     # 0.1. Fichier
@@ -51,11 +48,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
         if INFO == 2:
             aster.affiche("MESSAGE", " Nom du fichier :" + nomfich)
     if nomfich and os.path.exists(nomfich) and os.stat(nomfich).st_size != 0:
-        if FORMAT == "XMGRACE":
-            niv = "I"
-        else:
-            niv = "I"
-        UTMESS(niv, "FONCT0_1", valk=nomfich)
+        UTMESS("I", "FONCT0_1", valk=nomfich)
 
     # 0.2. Récupération des valeurs sous COURBE
     unparmi = ("FONCTION", "LIST_RESU", "FONC_X", "ABSCISSE", "NAPPE", "NAPPE_LISSEE")

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,8 @@
 import os
 from math import radians
 
+import libaster
 import numpy as NP
-
-from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 from ..Cata.Syntax import _F
 from ..Commands import (
@@ -41,6 +40,7 @@ from ..Commands import (
     RECU_TABLE,
 )
 from ..Helpers.LogicalUnit import FileAccess, LogicalUnitFile
+from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from .Fracture.post_endo_fiss_utils import (
     NoMaximaError,
     ThresholdTooHighError,
@@ -377,7 +377,7 @@ def cherche_trajet(
                 **motclefs2
             )
 
-        except E_Exception.error as e:
+        except libaster.AsterError as e:
             # All points outside the material
             if e.id_message != "CALCULEL3_97":
                 if dirRech == 1:
@@ -523,7 +523,7 @@ def calcul_ouverture(
     # ---------------------------
     # DEVELOPER PARAMETERS
     #
-    if strong_flag == True:
+    if strong_flag:
         # for the "strong" method, give here necessary parameters :
         #   caracteristic- and orthogonal line lengths
         #   default values : those used for crack path search
@@ -557,7 +557,6 @@ def calcul_ouverture(
     (lst_tanPoi, lst_normPoi) = versDirMoy(CoxCrete, CoyCrete, CozCrete, dnor)
 
     motclefs = {}
-    ChampsResu = __RESUIN.LIST_CHAMPS()
 
     methodeProj = "COLLOCATION"
     methodeProjVI = "COLLOCATION"
@@ -569,7 +568,7 @@ def calcul_ouverture(
     nbPrec = NP.finfo(NP.float64).precision
     distMax = 10.0 ** (-nbPrec + 2)
 
-    if strong_flag == True:
+    if strong_flag:
         composante = "EPYY"
         champ = "EPSI_NOEU"
         typeChamp = "NOEU_EPSI_R"
@@ -652,7 +651,7 @@ def calcul_ouverture(
             YtotOrtho1 = NP.delete(YtotOrtho1, idxCentre)
             ChampOrtho = NP.delete(ChampOrtho, idxCentre)
 
-        if strong_flag == False:
+        if not strong_flag:
             try:
                 # Projection of the damage field on the orthogonal profile
                 #    and extraction of this field from the result concept
@@ -705,7 +704,7 @@ def calcul_ouverture(
             lstOuvFiss.append(ouvFiss)
             lstErr.append(errOuv)
 
-    if strong_flag == False:
+    if not strong_flag:
         return lstOuvFiss
     else:  # methode strong
         return lstOuvFiss, lstErr
@@ -891,39 +890,25 @@ def post_endo_fiss_ops(
             self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeChampTrajet, infoPlan, inst
         )
         if OUVERTURE == "OUI":
-            if strong_flag == False:
-                lstOuvFiss = calcul_ouverture(
-                    self,
-                    NOM_CHAM,
-                    NOM_CMP,
-                    dRECHERCHE,
-                    __RESUIN,
-                    __mail,
-                    infoPlan,
-                    inst,
-                    CoxCrete,
-                    CoyCrete,
-                    CozCrete,
-                    dime,
-                    strong_flag,
-                )
+            res = calcul_ouverture(
+                self,
+                NOM_CHAM,
+                NOM_CMP,
+                dRECHERCHE,
+                __RESUIN,
+                __mail,
+                infoPlan,
+                inst,
+                CoxCrete,
+                CoyCrete,
+                CozCrete,
+                dime,
+                strong_flag,
+            )
+            if not strong_flag:
+                lstOuvFiss = res
             else:
-                lstOuvFiss, lstErr = calcul_ouverture(
-                    self,
-                    NOM_CHAM,
-                    NOM_CMP,
-                    dRECHERCHE,
-                    __RESUIN,
-                    __mail,
-                    infoPlan,
-                    inst,
-                    nume_ordre,
-                    CoxCrete,
-                    CoyCrete,
-                    CozCrete,
-                    dime,
-                    strong_flag,
-                )
+                lstOuvFiss, lstErr = res
         XcreteTot.append(CoxCrete)
         YcreteTot.append(CoyCrete)
         ZcreteTot.append(CozCrete)
@@ -940,7 +925,7 @@ def post_endo_fiss_ops(
             if "-" in lstOuvFiss:
                 UTMESS("A", "POST0_33", nomFissure)
             lstOuverture.append(lstOuvFiss)
-            if strong_flag == True:
+            if strong_flag:
                 lstErreur.append(lstErr)
 
     lstX = []
@@ -949,7 +934,7 @@ def post_endo_fiss_ops(
     lstEndo = []
     if OUVERTURE == "OUI":
         lstO = []
-        if strong_flag == True:
+        if strong_flag:
             lstE = []
 
     for i in range(len(XcreteTot)):
@@ -959,7 +944,7 @@ def post_endo_fiss_ops(
         lstEndo = lstEndo + EndocreteTot[i]
         if OUVERTURE == "OUI":
             lstO = lstO + lstOuverture[i]
-            if strong_flag == True:
+            if strong_flag:
                 lstE = lstE + lstErreur[i]
 
     # -----------------------------------------------------
@@ -978,7 +963,7 @@ def post_endo_fiss_ops(
         )
 
     else:
-        if strong_flag == False:
+        if not strong_flag:
             tabRes = CREA_TABLE(
                 LISTE=(
                     _F(PARA="FISSURE", LISTE_K=lstFissure),

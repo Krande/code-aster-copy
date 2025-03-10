@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -332,7 +332,6 @@ def macr_ecrevisse_ops(self, **args):
                 motclefmater["MAILLAGE"] = CHAM_MATER.getMesh()
 
                 # Set external state variables
-                motclefmater["AFFE_VARC"] = []
                 motclefmater["AFFE_VARC"] = [_F(NOM_VARC="TEMP", VALE_REF=TEMP_INIT, EVOL=_RTHMPJ)]
 
                 __MATMEC = AFFE_MATERIAU(**motclefmater)
@@ -518,7 +517,7 @@ def macr_ecrevisse_ops(self, **args):
                 # "TEMP_PRESS","EXPLICITE","TEMP","PRESS"
                 ErreurT = max_T_diff_01 / MacrTempRef
                 ErreurP = max_P_diff_01 / MacrPresRef
-                ErreurG = (ErreurT ** 2 + ErreurP ** 2) ** 0.5
+                ErreurG = (ErreurT**2 + ErreurP**2) ** 0.5
                 if MacrCritere == "TEMP":
                     Erreur = ErreurT
                 elif MacrCritere == "PRESS":
