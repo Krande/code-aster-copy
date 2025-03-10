@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,6 +78,8 @@ if ImprRepeOut:
     )
     IMPR_RESU(UNITE=unit2, FORMAT="MED", RESU=_F(MAILLAGE=maill))
     DEFI_FICHIER(ACTION="LIBERER", UNITE=unit2)
+
+
 #
 # Fonctions de contraintes LINEAIRE en espace.
 # Les fonctions d'interpolations sont linéaires sur les éléments.
@@ -143,6 +145,8 @@ Mg = NP.matrix(
 )
 # Matrice de Passage
 Pabg = Ma * Mb * Mg
+
+
 #
 def SIxxp(x, y, z):
     Sigma0 = NP.matrix(
@@ -294,26 +298,15 @@ carelem = AFFE_CARA_ELEM(
     MODELE=model2D, COQUE=_F(GROUP_MA="COQUE", EPAIS=1.0, COQUE_NCOU=8, ANGL_REP=(Alpha, Beta))
 )
 #
-if ImprRepeOut:
-    PJSIEFN = PROJ_CHAMP(
-        PROJECTION="OUI",
-        METHODE="SOUS_POINT",
-        MODELE_1=model3d,
-        MODELE_2=model2D,
-        CHAM_GD=CHSIEFN,
-        CARA_ELEM=carelem,
-        INFO=2,
-    )
-else:
-    PJSIEFN = PROJ_CHAMP(
-        PROJECTION="OUI",
-        METHODE="SOUS_POINT",
-        MODELE_1=model3d,
-        MODELE_2=model2D,
-        CHAM_GD=CHSIEFN,
-        CARA_ELEM=carelem,
-        INFO=2,
-    )
+PJSIEFN = PROJ_CHAMP(
+    PROJECTION="OUI",
+    METHODE="SOUS_POINT",
+    MODELE_1=model3d,
+    MODELE_2=model2D,
+    CHAM_GD=CHSIEFN,
+    CARA_ELEM=carelem,
+    INFO=2,
+)
 #
 if ImprRepeOut:
     IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=PJSIEFN))

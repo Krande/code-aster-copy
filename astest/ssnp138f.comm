@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ VAL_CALC = [
     2.5646930550303e05,
     0.284954091096,
     -100.3492252747,
-    --100.3492252795,
+    100.3492252795,
     2.5625235045131e05,
     2.5625235045131e05,
     0.283946487742,
