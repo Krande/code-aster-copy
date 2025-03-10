@@ -42,9 +42,9 @@ from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 # verification que les points de la ligne de coupe sont dans la matiere
 
 
-def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM,  __macou):
+def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
     motscles = {}
-    if m["NOM_CMP"] :
+    if m["NOM_CMP"]:
         motscles["NOM_CMP"] = m["NOM_CMP"]
     else:
         motscles["TOUT_CMP"] = "OUI"
@@ -65,7 +65,7 @@ def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM,  __macou):
 
     # dictc=table (extraite de dictb) contenant uniquement des noeuds dans la
     # matière
-    if m["NOM_CMP"] :
+    if m["NOM_CMP"]:
         dictc = getattr(dictb, m["NOM_CMP"][0]).NON_VIDE()
         lno_c2 = set(dictc.NOEUD.values())
     else:  # TOUT_CMP='OUI'
@@ -141,12 +141,7 @@ def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM,  __macou):
         UTMESS("A", "POST0_24", vali=[iocc, reste], valk=[indent.join(l_surlig)])
 
     __macou = DEFI_GROUP(
-        reuse=__macou,
-        MAILLAGE=__macou,
-        CREA_GROUP_NO=_F(
-            NOM=newgrp,
-            NOEUD=l_matiere[: nderm + 1],
-        )
+        reuse=__macou, MAILLAGE=__macou, CREA_GROUP_NO=_F(NOM=newgrp, NOEUD=l_matiere[: nderm + 1])
     )
 
     return
@@ -708,7 +703,7 @@ def macr_lign_coupe_ops(
 
     l_mode_meca_sans_modele = False
 
-    if RESULTAT :
+    if RESULTAT:
         if "NUME_ORDRE" in args:
             mcORDR["NUME_ORDRE"] = args["NUME_ORDRE"]
         elif "NUME_MODE" in args:
@@ -747,10 +742,10 @@ def macr_lign_coupe_ops(
             if not MODELE:
                 model = model_resu
 
-        if not mesh :
+        if not mesh:
             raise Exception("Empty mesh")
 
-    elif CHAM_GD :
+    elif CHAM_GD:
         mcORDR["TOUT_ORDRE"] = "OUI"
         if not MODELE:
             UTMESS("F", "POST0_10")
@@ -797,7 +792,7 @@ def macr_lign_coupe_ops(
         RESULTAT = __resuch
 
     # Maillage sur lequel s'appuie le résultat à projeter
-    if not mesh :
+    if not mesh:
         mesh = model.getMesh()
     # le maillage est-il 2D ou 3D ?
     dime = mesh.getDimension()
@@ -865,7 +860,7 @@ def macr_lign_coupe_ops(
                     NOM=str(m["GROUP_MA"]),
                     GROUP_MA=m["GROUP_MA"],
                     ORIGINE="SANS",
-                    **argsup
+                    **argsup,
                 ),
             )
 
@@ -917,9 +912,9 @@ def macr_lign_coupe_ops(
     motscles["VIS_A_VIS"] = []
     if "VIS_A_VIS" in args:
         for v in args["VIS_A_VIS"]:
-            if v["GROUP_MA_1"] :
+            if v["GROUP_MA_1"]:
                 motscles["VIS_A_VIS"].append(_F(GROUP_MA_1=v["GROUP_MA_1"], TOUT_2="OUI"))
-            elif v["MAILLE_1"] :
+            elif v["MAILLE_1"]:
                 motscles["VIS_A_VIS"].append(_F(MAILLE_1=v["MAILLE_1"], TOUT_2="OUI"))
 
     if NOM_CHAM[5:9] == "ELGA":
@@ -940,7 +935,7 @@ def macr_lign_coupe_ops(
             MAILLAGE_2=__macou,
             TYPE_CHAM="NOEU",
             NOM_CHAM=NOM_CHAM,
-            **motscles
+            **motscles,
         )
         for m in LIGN_COUPE
     ]
@@ -961,24 +956,26 @@ def macr_lign_coupe_ops(
         "dyna_trans",
     ):
 
-        for (iocc, (m, __recou, __remodr)) in enumerate(zip(LIGN_COUPE, __recou_list, __remodr_list)):
+        for (iocc, (m, __recou, __remodr)) in enumerate(
+            zip(LIGN_COUPE, __recou_list, __remodr_list)
+        ):
             motscles = {}
             motscles["OPERATION"] = m["OPERATION"]
-            if m["NOM_CMP"] :
+            if m["NOM_CMP"]:
                 motscles["NOM_CMP"] = m["NOM_CMP"]
-                if m["TRAC_NOR"] :
+                if m["TRAC_NOR"]:
                     motscles["TRAC_NOR"] = m["TRAC_NOR"]
-                elif m["TRAC_DIR"] :
+                elif m["TRAC_DIR"]:
                     motscles["TRAC_DIR"] = m["TRAC_DIR"]
                     motscles["DIRECTION"] = m["DIRECTION"]
-            elif m["INVARIANT"] :
+            elif m["INVARIANT"]:
                 motscles["INVARIANT"] = m["INVARIANT"]
-            elif m["RESULTANTE"] :
+            elif m["RESULTANTE"]:
                 motscles["RESULTANTE"] = m["RESULTANTE"]
-                if m["MOMENT"] :
+                if m["MOMENT"]:
                     motscles["MOMENT"] = m["MOMENT"]
                     motscles["POINT"] = m["POINT"]
-            elif m["ELEM_PRINCIPAUX"] :
+            elif m["ELEM_PRINCIPAUX"]:
                 motscles["ELEM_PRINCIPAUX"] = m["ELEM_PRINCIPAUX"]
             else:
                 motscles["TOUT_CMP"] = "OUI"
@@ -990,12 +987,10 @@ def macr_lign_coupe_ops(
                 ioc2 += 1
                 nomgrma = " "
                 groupe = f"LICOF{ioc2}"
-                crea_grp_matiere(
-                    f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou
-                )
+                crea_grp_matiere(f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou)
 
             # on definit l'intitulé
-            if m["INTITULE"] :
+            if m["INTITULE"]:
                 intitl = m["INTITULE"]
             elif m["TYPE"] in ("GROUP_NO", "GROUP_MA"):
                 intitl = groupe
@@ -1005,7 +1000,14 @@ def macr_lign_coupe_ops(
             # Expression des contraintes aux noeuds ou des déplacements dans le
             # repere local
             if m["REPERE"] != "GLOBAL":
-                if NOM_CHAM in ("DEPL", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO", "FLUX_ELNO", "FLUX_NOEU"):
+                if NOM_CHAM in (
+                    "DEPL",
+                    "SIEF_ELNO",
+                    "SIGM_NOEU",
+                    "SIGM_ELNO",
+                    "FLUX_ELNO",
+                    "FLUX_NOEU",
+                ):
                     if m["REPERE"] == "POLAIRE":
                         mcACTION.append(
                             _F(
@@ -1014,20 +1016,18 @@ def macr_lign_coupe_ops(
                                 REPERE=m["REPERE"],
                                 GROUP_NO=groupe,
                                 NOM_CHAM=NOM_CHAM,
-                                **motscles
+                                **motscles,
                             )
                         )
                     else:
-                        __remodr = crea_resu_local(
-                            dime, NOM_CHAM, m, __recou, __macou, nomgrma
-                        )
+                        __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou, __macou, nomgrma)
                         mcACTION.append(
                             _F(
                                 INTITULE=intitl,
                                 RESULTAT=__remodr,
                                 GROUP_NO=groupe,
                                 NOM_CHAM=NOM_CHAM,
-                                **motscles
+                                **motscles,
                             )
                         )
 
@@ -1039,7 +1039,7 @@ def macr_lign_coupe_ops(
                             RESULTAT=__recou,
                             GROUP_NO=groupe,
                             NOM_CHAM=NOM_CHAM,
-                            **motscles
+                            **motscles,
                         )
                     )
 
@@ -1052,7 +1052,7 @@ def macr_lign_coupe_ops(
                         RESULTAT=__recou,
                         GROUP_NO=groupe,
                         NOM_CHAM=NOM_CHAM,
-                        **motscles
+                        **motscles,
                     )
                 )
 
