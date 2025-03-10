@@ -102,11 +102,13 @@ EDEFONO = LocatedComponents(phys=PHY.EPSI_R, type="ELNO", components=("EPXX",))
 
 
 CEPSINR = LocatedComponents(
-    phys=PHY.EPSI_R, type="ELGA", location="RIGI", components=("EPX", "KY", "KZ")
+    phys=PHY.EPSI_R, type="ELEM", components=("EPX", "KY", "KZ", "VECT_2_X", "VECT_2_Y", "VECT_2_Z")
 )
 
 
-CEPSINF = LocatedComponents(phys=PHY.EPSI_F, type="ELEM", components=("EPX", "KY", "KZ"))
+CEPSINF = LocatedComponents(
+    phys=PHY.EPSI_F, type="ELEM", components=("EPX", "KY", "KZ", "VECT_2_X", "VECT_2_Y", "VECT_2_Z")
+)
 
 
 EDFVCPG = LocatedComponents(phys=PHY.EPSI_R, type="ELGA", location="RIGI", components=("EPTHER_L",))
@@ -306,6 +308,7 @@ class MECA_POU_D_EM(Element):
                 (OP.CHAR_MECA_EPSI_F.PNBSP_I, ENBSP_I),
                 (OP.CHAR_MECA_EPSI_F.PVARCPR, LC.ZVARCPG),
                 (SP.PINSTR, CTEMPSR),
+                (SP.PABSCUR, CABSCUR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

@@ -1161,6 +1161,9 @@ EPSI_F = PhysicalQuantity(
         "EPX",
         "KY",
         "KZ",
+        "VECT_2_X",
+        "VECT_2_Y",
+        "VECT_2_Z",
     ),
     comment="""  EPSI_F Type:K8 Deformation (fonction)
        EPXX : epsilon_xx deformation d'un milieu continu
@@ -1178,6 +1181,9 @@ EPSI_F = PhysicalQuantity(
        EPX Poutre: elongation selon l'axe de la poutre
        KY Poutre: courbure selon l'axe Y
        KZ Poutre: courbure selon l'axe Z
+       VECT_2_X : Première composante du vecteur VECT_Y (PRE_EPSI)
+       VECT_2_Y : Deuxième composante du vecteur VECT_Y (PRE_EPSI)
+       VECT_2_Z : Troisième composante du vecteur VECT_Y (PRE_EPSI)
 """,
 )
 

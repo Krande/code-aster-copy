@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -97,10 +97,6 @@ CalculPtr DiscreteComputation::createCalculForNonLinear( const std::string optio
     }
 
     // Add external state variables
-    if ( currMater->hasExternalStateVariableWithReference() ) {
-        AS_ASSERT( currExternVarRefe );
-        calcul->addInputField( "PVARCRR", currExternVarRefe );
-    }
     if ( currMater->hasExternalStateVariable() ) {
         if ( !varc_prev || !varc_prev->exists() ) {
             raiseAsterError(
@@ -109,7 +105,10 @@ CalculPtr DiscreteComputation::createCalculForNonLinear( const std::string optio
         if ( !varc_curr || !varc_curr->exists() ) {
             raiseAsterError( "External state variables vector for end of time step is missing" );
         }
-        AS_ASSERT( currExternVarRefe );
+        if ( currMater->hasExternalStateVariableWithReference() ) {
+            AS_ASSERT( currExternVarRefe );
+            calcul->addInputField( "PVARCRR", currExternVarRefe );
+        }
         calcul->addInputField( "PVARCMR", varc_prev );
         calcul->addInputField( "PVARCPR", varc_curr );
     }

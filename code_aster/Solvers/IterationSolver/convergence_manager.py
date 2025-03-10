@@ -379,17 +379,19 @@ class ConvergenceManager(ContextMixin):
         cmp2dof = nume_equa.getDOFFromNodeAndComponent()
 
         disc_comp = DiscreteComputation(self.problem)
+        varc = None
         if self.state.externVar:
-            varc = disc_comp.getExternalStateVariablesForces(
-                self.state.time_curr, self.state.externVar
-            ).getValues()
+            if self.problem.getMaterialField().hasExternalStateVariableForLoad():
+                varc = disc_comp.getExternalStateVariablesForces(
+                    self.state.time_curr, self.state.externVar
+                ).getValues()
 
         for [iNode, cmp], ieq in cmp2dof.items():
             f_int = 0.0
             f_ext = 0.0
             f_cont = 0.0
             f_mass = 0.0
-            if self.state.externVar:
+            if varc:
                 f_varc = varc[ieq]
             else:
                 f_varc = 0.0

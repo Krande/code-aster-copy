@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,8 +19,10 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import MechanicalLoadFunction, ParallelMechanicalLoadFunction, ConnectionMesh, Model
+from ..CodeCommands.defi_constante import DEFI_CONSTANTE
+from ..Objects import ConnectionMesh, MechanicalLoadFunction, Model, ParallelMechanicalLoadFunction
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
 from .affe_char_meca import MechanicalLoadDefinition, _getGroups
 
 
@@ -28,6 +30,24 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.MechanicalLoadFunc`."""
 
     command_name = "AFFE_CHAR_MECA_F"
+
+    def adapt_syntax(self, keywords):
+        """Hook to adapt syntax *after* syntax checking.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        if "PRE_EPSI" not in keywords:
+            return
+        pre_epsi = force_list(keywords["PRE_EPSI"])
+        for fact in pre_epsi:
+            vect_n = fact.get("VECT_N", [])
+            # Replace a list of real by constant functions
+            for ic, value in enumerate(vect_n):
+                fact[f"VECT_N{ic+1}"] = DEFI_CONSTANTE(VALE=value)
+        # check syntax after changing the keywords
+        self.check_syntax(keywords)
 
     def create_result(self, keywords):
         """Initialize the result.

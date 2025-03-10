@@ -33,11 +33,11 @@ mot-clef facteur vide dans l'opérateur AFFE_CHAR_MECA, AFFE_CHAR_THER ou AFFE_C
     ),
     4: _(
         """
-Le type de chargement PRE_EPSI doit avoir la
-même valeur aux deux noeuds d'un même élément de poutre.
-
-Valeur au noeud 1 pour la composante %(k1)s : %(r1)f
-Valeur au noeud 2 pour la composante %(k1)s : %(r2)f
+Le type de chargement PRE_EPSI doit avoir la même valeur aux deux noeuds d'un même élément de poutre.
+S'il est appliqué sur des poutres homothétiques, les valeurs des paramètres de sections doivent être telles que :
+    - A1  = A2
+    - IY1 = IY2
+    - IZ1 = IZ2
 
 Pour les poutres, le code ne sait pas encore traiter ce type de chargement variable sur l'élément.
 """

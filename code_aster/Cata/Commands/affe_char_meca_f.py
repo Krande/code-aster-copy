@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -410,7 +410,9 @@ AFFE_CHAR_MECA_F = OPER(
                 "KXX",
                 "KYY",
                 "KXY",
+                "VECT_N",
             ),
+            PRESENT_ABSENT("VECT_N", "KY", "KZ"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
@@ -429,6 +431,18 @@ AFFE_CHAR_MECA_F = OPER(
         KXX=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         KYY=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         KXY=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        #
+        VECT_N=SIMP(statut="f", typ="R", min=3, max=3),
+        # hidden keywords
+        VECT_N1=SIMP(statut="c", typ=fonction_sdaster),
+        VECT_N2=SIMP(statut="c", typ=fonction_sdaster),
+        VECT_N3=SIMP(statut="c", typ=fonction_sdaster),
+        b_n=BLOC(
+            condition="""exists("VECT_N")""",
+            regles=(AU_MOINS_UN("KN1", "KN2"),),
+            KN1=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+            KN2=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        ),
     ),
     FORCE_POUTRE=FACT(
         statut="f",
