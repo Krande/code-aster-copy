@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -159,33 +159,6 @@ for solver in solvers:
     depl_p = resu_p.getField("DEPL", 1)
 
     test.assertAlmostEqual(depl.norm("NORM_2"), depl_p.norm("NORM_2"))
-
-
-# solveur="mumps"
-# resu_p = computation(mesh_p2, {'SOLVEUR': {'METHODE': 'MUMPS', 'TYPE_RESOL': 'NONSYM'}})
-
-# depl_p = resu_p.getField('DEPL', 1)
-# test.assertAlmostEqual(57.43703668883686, depl_p.norm("NORM_2"))
-
-# import os
-# if (nbproc > 1):
-#     if (rank==0):
-#         os.system( """cp fort.41 /home/C00976/tmp/{}41.txt """.format(solveur) )
-#         os.system( """cp fort.11 /home/C00976/tmp/{}11.txt """.format(solveur) )
-#     if (rank==1):
-#         os.system( """cp fort.42 /home/C00976/tmp/{}42.txt """.format(solveur) )
-#         os.system( """cp fort.12 /home/C00976/tmp/{}12.txt """.format(solveur) )
-# else:
-#     os.system( """cp fort.41 /home/C00976/tmp/{}41.txt ; LANG=en_US.UTF-8  sort -g /home/C00976/tmp/{}41.txt | sort -s -n -k 1,2 > /home/C00976/tmp/{}_sorted4.txt""".format(solveur,solveur,solveur) )
-#     os.system( """cp fort.11 /home/C00976/tmp/{}0.txt ; LANG=en_US.UTF-8  sort -g /home/C00976/tmp/{}0.txt | sort -s -n -k 1,4 > /home/C00976/tmp/{}_sorted1.txt""".format(solveur,solveur,solveur) )
-
-# import time
-# time.sleep(1)
-
-# if (nbproc > 1):
-#     if (rank==0):
-#         os.system( """cat /home/C00976/tmp/{}42.txt >> /home/C00976/tmp/{}41.txt ; LANG=en_US.UTF-8  sort -g /home/C00976/tmp/{}41.txt | sort -s -n -k 1,2 > /home/C00976/tmp/{}_sorted4.txt""".format(solveur,solveur,solveur,solveur) )
-#         os.system( """cat /home/C00976/tmp/{}12.txt >> /home/C00976/tmp/{}11.txt ; LANG=en_US.UTF-8  sort -g /home/C00976/tmp/{}11.txt | sort -s -n -k 1,4 > /home/C00976/tmp/{}_sorted1.txt""".format(solveur,solveur,solveur,solveur) )
 
 
 test.printSummary()
