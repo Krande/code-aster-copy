@@ -322,20 +322,8 @@ class PhysicalQuantityManager:
     def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
-    def getAllPhysicalQuantityNames():
-        pass
-
-    def getComponentNames(self):
-        pass
-
-    def getNumberOfEncodedInteger(self):
-        pass
-
-    def getPhysicalQuantityName(self):
-        pass
-
-    def hasQuantityOfName(self):
-        pass
+    # ----------------------------------------------------------------------
+    # Static methods defined here:
 
 
 # class Node in libaster
