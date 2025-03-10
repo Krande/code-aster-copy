@@ -695,7 +695,7 @@ def macr_lign_coupe_ops(
 
     mcORDR = {}
 
-    model = None
+    model = MODELE
     mesh = None
 
     l_mode_meca_sans_modele = False
