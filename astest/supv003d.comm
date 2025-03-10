@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from code_aster.Commands import *
+from code_aster import CA
+
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 #######################################################################
@@ -25,23 +28,23 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 # de la premiere execution en plus des concepts ASTER standards       #
 #######################################################################
 
-import aster
+test = CA.TestCase()
 
-MA = LIRE_MAILLAGE(FORMAT="ASTER")
+MA = LIRE_MAILLAGE(FORMAT="ASTER", INFO=2)
 
 coord = MA.getCoordinates().getValues()
-assert (min(coord) == 0.0, coord)
-assert (max(coord) == 0.1, coord)
+test.assertEqual(min(coord), 0.0, msg=str(coord))
+test.assertEqual(max(coord), 0.1, msg=str(coord))
 
 conn = MA.getConnectivity()
-assert MA.getNumberOfCells() == 1
-assert (conn[0] == (0, 1), conn)
+test.assertEqual(MA.getNumberOfCells(), 1)
+test.assertSequenceEqual(conn[0], (0, 1), msg=str(conn))
 
 nommai = MA.getGroupsOfCells()
-assert (nommai == ("ELN1",), nommai)
+test.assertSequenceEqual(nommai, ("RESSORT",), msg=str(nommai))
 
 nomno = MA.getGroupsOfNodes()
-assert (nomno == ("NO1", "NO2"), nomno)
+test.assertSequenceEqual(nomno, ("NO1", "NO2"), msg=str(nomno))
 
 UN = 1
 DEUX = 2
@@ -51,7 +54,7 @@ I02 = DEFI_LIST_ENTI(VALE=UN)
 I03 = DEFI_LIST_ENTI(VALE=(5, 6, 7))
 
 vale = I02.getValues()
-assert (vale == (1,), vale)
+test.assertSequenceEqual(vale, (1,), msg=str(vale))
 
 FO3 = DEFI_FONCTION(NOM_PARA="X", NOM_RESU="Y", VALE=TUP)
 
@@ -76,11 +79,13 @@ TEST_FONCTION(
 # on passe dans la programmation de la methode Parametres de la SD fonction
 # on ne teste pas les valeurs retournees
 dicpara = FO4.Parametres()
-assert dicpara["PROL_DROITE"] == "EXCLU", dicpara
-assert dicpara["NOM_PARA"] == "X", dicpara
-assert dicpara["INTERPOL"] == ["LIN", "LIN"], dicpara
+test.assertEqual(dicpara["PROL_DROITE"], "EXCLU", msg=str(dicpara))
+test.assertEqual(dicpara["NOM_PARA"], "X", msg=str(dicpara))
+test.assertSequenceEqual(dicpara["INTERPOL"], ["LIN", "LIN"], msg=str(dicpara))
 
 # on vérifie que la variable x sera accessible en POURSUITE
 x = 34.5
+
+test.printSummary()
 
 FIN()
