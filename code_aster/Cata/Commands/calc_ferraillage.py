@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,7 @@ from ..Language.Syntax import *
 def calc_ferraillage_prod(RESULTAT, **args):
     if args.get("__all__"):
         return (evol_elas, evol_noli, dyna_trans, mult_elas)
-
-    if AsType(RESULTAT) is not None:
-        return AsType(RESULTAT)
-    raise AsException("type de concept resultat non prevu")
+    return AsType(RESULTAT)
 
 
 CALC_FERRAILLAGE = OPER(

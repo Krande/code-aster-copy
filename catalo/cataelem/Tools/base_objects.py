@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,6 @@ from cataelem.Tools.modifier import ChangeComponentsVisitor
 
 
 class BaseCataEntity:
-
     """Abstract class for all elements of the catalog"""
 
     _currentId = -1
@@ -110,7 +109,6 @@ class BaseCataEntity:
 
 # Catalog entities
 class MeshType(BaseCataEntity):
-
     """Define a type of mesh"""
 
     _currentId = -1
@@ -168,7 +166,6 @@ class MeshType(BaseCataEntity):
 
 
 class PhysicalQuantity(BaseCataEntity):
-
     """Definition of a physical quantity"""
 
     _currentId = -1
@@ -208,7 +205,6 @@ class PhysicalQuantity(BaseCataEntity):
 
 
 class ArrayOfQuantities(BaseCataEntity):
-
     """Definition of a elementary quantity, based on a physical quantity"""
 
     _currentId = -1
@@ -243,7 +239,6 @@ class ArrayOfQuantities(BaseCataEntity):
 
 
 class Attribute(BaseCataEntity):
-
     """Definition of an attribute"""
 
     _currentId = -1
@@ -270,7 +265,6 @@ class Attribute(BaseCataEntity):
 
 
 class SetOfNodes(BaseCataEntity):
-
     """Definition of a set of nodes"""
 
     _currentId = -1
@@ -292,7 +286,6 @@ class SetOfNodes(BaseCataEntity):
 
 
 class LocatedComponents(BaseCataEntity):
-
     """Definition of a local mode"""
 
     _currentId = -1
@@ -388,7 +381,6 @@ class LocatedComponents(BaseCataEntity):
 
 
 class ArrayOfComponents(BaseCataEntity):
-
     """Definition of a elementary mode, vector or matrix based on a local mode"""
 
     _currentId = -1
@@ -437,7 +429,6 @@ class ArrayOfComponents(BaseCataEntity):
 
 
 class InputParameter(BaseCataEntity):
-
     """Definition of an input parameter of an option"""
 
     _currentId = -1
@@ -470,7 +461,6 @@ class InputParameter(BaseCataEntity):
 
 
 class OutputParameter(BaseCataEntity):
-
     """Definition of an output parameter of an option"""
 
     _currentId = -1
@@ -504,7 +494,6 @@ class OutputParameter(BaseCataEntity):
 
 
 class Option(BaseCataEntity):
-
     """Definition of an calculation option"""
 
     _currentId = -1
@@ -572,7 +561,6 @@ class Option(BaseCataEntity):
 
 
 class CondCalcul:
-
     """Definition of the set of elements that must (or not) compute an option"""
 
     _currentId = -1
@@ -600,7 +588,6 @@ class CondCalcul:
 
 
 class Elrefe(BaseCataEntity):
-
     """Define a reference element"""
 
     _currentId = -1
@@ -625,7 +612,6 @@ class Elrefe(BaseCataEntity):
 
 
 class ElrefeLoc:
-
     """Definition of a "local" reference element"""
 
     _currentId = -1
@@ -670,7 +656,6 @@ class ElrefeLoc:
 
 
 class Calcul:
-
     """Definition of an elementary calculation"""
 
     _currentId = -1
@@ -733,7 +718,6 @@ class Calcul:
 
 
 class Element(BaseCataEntity):
-
     """Definition of a finite element by subclassing
     Subclasses must defined:
     - meshType
@@ -827,7 +811,7 @@ class Element(BaseCataEntity):
         """Change a calculation on this element"""
         optname = calc.option.name
         orig = self._calculs.get(optname)
-        assert orig, "Element '{0}': unknown option '{1}'".format(self._name)
+        assert orig, "Element '{0}': unknown option '{1}'".format(self._name, optname)
         if calc.te < 0:
             assert not calc.para_in, calc.para_in
             assert not calc.para_out, calc.para_out
@@ -887,7 +871,6 @@ class Element(BaseCataEntity):
 
 
 class Modelisation:
-
     """Definition of the properties of a modelisation"""
 
     _currentId = -1
@@ -943,7 +926,6 @@ class Modelisation:
 
 
 class Phenomenon(BaseCataEntity):
-
     """Definition of the modelisations of a phenomenon"""
 
     _currentId = -1
@@ -979,7 +961,6 @@ class Phenomenon(BaseCataEntity):
 
 # some utilities
 class AbstractEntityStore:
-
     """Helper class to give access to entities by name"""
 
     __slots__ = ("_entities", "entityType", "subTypes")

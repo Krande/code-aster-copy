@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -36,10 +36,7 @@ class CalcFerraillage(ExecuteCommand):
         if "reuse" in keywords:
             self._result = keywords["reuse"]
         else:
-            if keywords["RESULTAT"].getType() == "EVOL_ELAS":
-                self._result = type(keywords["RESULTAT"])()
-            else:
-                self._result = type(keywords["RESULTAT"])()
+            self._result = type(keywords["RESULTAT"])()
 
     def post_exec(self, keywords):
         """Execute the command.
