@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ import os
 import random
 from math import factorial, log, pi
 
-import aster
 import numpy as np
 
 from ..Cata.Syntax import _F
@@ -1803,19 +1802,9 @@ def calc_bt_ops(self, **args):
         motscles["BARRE"] = []
 
         for i_ in range(__NE):
-            if (i_ + 1) == __NE:
-                motscles["BARRE"].append(
-                    _F(CARA=H, GROUP_MA=__group[i_], SECTION=RECTANGLE, VALE=__S[i_])
-                )
-                # % (i_ + 1, __S[i_])]
-
-            else:
-                motscles["BARRE"].append(
-                    _F(CARA=H, GROUP_MA=__group[i_], SECTION=RECTANGLE, VALE=__S[i_])
-                )
-                # motscles["BARRE"] =  motscles["BARRE"] + \
-                # [('_F(CARA=(\'H\'), GROUP_MA=(\'EG_%d\'), SECTION=\'RECTANGLE\', VALE=(%.8f)),')
-                # % (i_ + 1, __S[i_])]
+            motscles["BARRE"].append(
+                _F(CARA=H, GROUP_MA=__group[i_], SECTION=RECTANGLE, VALE=__S[i_])
+            )
 
         # Assigning sections
         __carael = AFFE_CARA_ELEM(MODELE=__model, **motscles)
@@ -1851,11 +1840,7 @@ def calc_bt_ops(self, **args):
         BC1["FORCE_NODALE"] = []
 
         for i_ in range(len(N_L[:, 0])):
-            if i_ == (len(N_L[:, 0]) - 1):
-                BC1["FORCE_NODALE"].append(_F(FX=N_L[i_, 1], FY=N_L[i_, 2], GROUP_NO=__group[i_]))
-
-            else:
-                BC1["FORCE_NODALE"].append(_F(FX=N_L[i_, 1], FY=N_L[i_, 2], GROUP_NO=__group[i_]))
+            BC1["FORCE_NODALE"].append(_F(FX=N_L[i_, 1], FY=N_L[i_, 2], GROUP_NO=__group[i_]))
 
         __group = []
         for i_ in range(len(N_S[:, 0])):
@@ -1864,25 +1849,14 @@ def calc_bt_ops(self, **args):
         BC1["DDL_IMPO"] = []
 
         for i_ in range(len(N_S[:, 0])):
-            if i_ == (len(N_S[:, 0]) - 1):
-                if (N_S[i_, 1] < 10e9) and (N_S[i_, 2] < 10e9):
-                    BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], DY=N_S[i_, 2], GROUP_NO=__group[i_]))
+            if (N_S[i_, 1] < 10e9) and (N_S[i_, 2] < 10e9):
+                BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], DY=N_S[i_, 2], GROUP_NO=__group[i_]))
 
-                elif (N_S[i_, 1] < 10e9) and (N_S[i_, 2] == 10e9):
-                    BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], GROUP_NO=__group[i_]))
+            elif (N_S[i_, 1] < 10e9) and (N_S[i_, 2] == 10e9):
+                BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], GROUP_NO=__group[i_]))
 
-                elif (N_S[i_, 1] == 10e9) and (N_S[i_, 2] < 10e9):
-                    BC1["DDL_IMPO"].append(_F(DY=N_S[i_, 2], GROUP_NO=__group[i_]))
-
-            else:
-                if (N_S[i_, 1] < 10e9) and (N_S[i_, 2] < 10e9):
-                    BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], DY=N_S[i_, 2], GROUP_NO=__group[i_]))
-
-                elif (N_S[i_, 1] < 10e9) and (N_S[i_, 2] == 10e9):
-                    BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], GROUP_NO=__group[i_]))
-
-                elif (N_S[i_, 1] == 10e9) and (N_S[i_, 2] < 10e9):
-                    BC1["DDL_IMPO"].append(_F(DY=N_S[i_, 2], GROUP_NO=__group[i_]))
+            elif (N_S[i_, 1] == 10e9) and (N_S[i_, 2] < 10e9):
+                BC1["DDL_IMPO"].append(_F(DY=N_S[i_, 2], GROUP_NO=__group[i_]))
 
         # Boundary conditions
         __bc = AFFE_CHAR_MECA(MODELE=__model, **BC1)
@@ -1958,19 +1932,9 @@ def calc_bt_ops(self, **args):
         motscles["BARRE"] = []
 
         for i_ in range(__NE):
-            if (i_ + 1) == __NE:
-                motscles["BARRE"].append(
-                    _F(CARA=H, GROUP_MA=__group[i_], SECTION=RECTANGLE, VALE=__S[i_])
-                )
-                # % (i_ + 1, __S[i_])]
-
-            else:
-                motscles["BARRE"].append(
-                    _F(CARA=H, GROUP_MA=__group[i_], SECTION=RECTANGLE, VALE=__S[i_])
-                )
-                # motscles["BARRE"] =  motscles["BARRE"] + \
-                # [('_F(CARA=(\'H\'), GROUP_MA=(\'EG_%d\'), SECTION=\'RECTANGLE\', VALE=(%.8f)),')
-                # % (i_ + 1, __S[i_])]
+            motscles["BARRE"].append(
+                _F(CARA=H, GROUP_MA=__group[i_], SECTION=RECTANGLE, VALE=__S[i_])
+            )
 
         # Assigning sections
         __carael = AFFE_CARA_ELEM(MODELE=__model, **motscles)
@@ -2005,11 +1969,7 @@ def calc_bt_ops(self, **args):
         BC1["FORCE_NODALE"] = []
 
         for i_ in range(len(N_L[:, 0])):
-            if i_ == (len(N_L[:, 0]) - 1):
-                BC1["FORCE_NODALE"].append(_F(FX=N_L[i_, 1], FY=N_L[i_, 2], GROUP_NO=__group[i_]))
-
-            else:
-                BC1["FORCE_NODALE"].append(_F(FX=N_L[i_, 1], FY=N_L[i_, 2], GROUP_NO=__group[i_]))
+            BC1["FORCE_NODALE"].append(_F(FX=N_L[i_, 1], FY=N_L[i_, 2], GROUP_NO=__group[i_]))
 
         __group = []
         for i_ in range(len(N_S[:, 0])):
@@ -2018,25 +1978,14 @@ def calc_bt_ops(self, **args):
         BC1["DDL_IMPO"] = []
 
         for i_ in range(len(N_S[:, 0])):
-            if i_ == (len(N_S[:, 0]) - 1):
-                if (N_S[i_, 1] < 10e9) and (N_S[i_, 2] < 10e9):
-                    BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], DY=N_S[i_, 2], GROUP_NO=__group[i_]))
+            if (N_S[i_, 1] < 10e9) and (N_S[i_, 2] < 10e9):
+                BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], DY=N_S[i_, 2], GROUP_NO=__group[i_]))
 
-                elif (N_S[i_, 1] < 10e9) and (N_S[i_, 2] == 10e9):
-                    BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], GROUP_NO=__group[i_]))
+            elif (N_S[i_, 1] < 10e9) and (N_S[i_, 2] == 10e9):
+                BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], GROUP_NO=__group[i_]))
 
-                elif (N_S[i_, 1] == 10e9) and (N_S[i_, 2] < 10e9):
-                    BC1["DDL_IMPO"].append(_F(DY=N_S[i_, 2], GROUP_NO=__group[i_]))
-
-            else:
-                if (N_S[i_, 1] < 10e9) and (N_S[i_, 2] < 10e9):
-                    BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], DY=N_S[i_, 2], GROUP_NO=__group[i_]))
-
-                elif (N_S[i_, 1] < 10e9) and (N_S[i_, 2] == 10e9):
-                    BC1["DDL_IMPO"].append(_F(DX=N_S[i_, 1], GROUP_NO=__group[i_]))
-
-                elif (N_S[i_, 1] == 10e9) and (N_S[i_, 2] < 10e9):
-                    BC1["DDL_IMPO"].append(_F(DY=N_S[i_, 2], GROUP_NO=__group[i_]))
+            elif (N_S[i_, 1] == 10e9) and (N_S[i_, 2] < 10e9):
+                BC1["DDL_IMPO"].append(_F(DY=N_S[i_, 2], GROUP_NO=__group[i_]))
 
         # Boundary conditions
         __bc = AFFE_CHAR_MECA(MODELE=__model, **BC1)
