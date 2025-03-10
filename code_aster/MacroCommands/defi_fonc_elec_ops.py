@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ from math import cos, exp, pi
 import numpy
 
 from ..CodeCommands import DEFI_FONCTION
-from ..Messages import UTMESS
 
 
 def FcompletGR1(T, I1, I2, FR, TR, PHI1, PHI2, TAU1, TAU2):
@@ -71,7 +70,7 @@ def FcontinuGR2(T, I1, I2, TR, PHI1, PHI2, TAU1, TAU2, D):
 # réenclenchement et l'instant de fin de réenclenchement. Sinon 0.
 
 
-def FcompletGR2R(T, I1R, I2R, FR, TRR, PHIR1, PHI2R, TAU1R, TAU2R, D):
+def FcompletGR2R(T, I1R, I2R, FR, TRR, PHI1R, PHI2R, TAU1R, TAU2R, D):
     fxt = 4.0e-7 * I1R * I2R / D
     fxt = fxt * (
         cos(2 * pi * FR * (T - TRR) + PHI1R * pi / 180.0)
@@ -204,12 +203,12 @@ def defi_fonc_elec_ops(
                     if temps[i] > TINI:
                         if temps[i] < TFIN:
                             fff[i] = fff[i] + FcompletGR2(
-                                temps[i], I1, I2, TR, PHI1, PHI2, TAU1, TAU2, DIST
+                                temps[i], I1, I2, FREQ, TR, PHI1, PHI2, TAU1, TAU2, DIST
                             )
                     if temps[i] > TINIR:
                         if temps[i] < TFINR:
                             fff[i] = fff[i] + FcompletGR2R(
-                                temps[i], I1R, I2R, TRR, PHI1R, PHI2R, TAU1R, TAU2R, DIST
+                                temps[i], I1R, I2R, FREQ, TRR, PHI1R, PHI2R, TAU1R, TAU2R, DIST
                             )
     #
     vale = []

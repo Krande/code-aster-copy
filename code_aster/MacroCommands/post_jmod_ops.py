@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -266,12 +266,8 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, is_symmetric, closedCrack):
     TLIPSUP = {}
     TLIPINF = {}
 
-    if NB_COUCHES < 10:
-        nodeNum = 100
-        lip_sup_nodes = FOND_FISS.getUpperNormNodes2()
-    else:
-        nodeNum = 100
-        lip_sup_nodes = FOND_FISS.getUpperNormNodes2()
+    nodeNum = 100
+    lip_sup_nodes = FOND_FISS.getUpperNormNodes2()
 
     if lip_sup_nodes is None:
         UTMESS("F", "RUPTURE0_11")
@@ -2168,8 +2164,6 @@ def post_jmod_ops(
     grad_elno_type_j04 = "NON"
     grad_elno_type_j05 = "NON"
 
-    start_post_j = time.time()
-
     if OPTION != "JMOD":
         j_correction = "NON"
     else:
@@ -2253,7 +2247,7 @@ def post_jmod_ops(
                     MATER = curMater
                     break
         else:
-            bid, MODELISATION = aster.postkutil(0, RESULTAT.getName(), nom_fiss)
+            _, MODELISATION = aster.postkutil(0, RESULTAT.getName(), nom_fiss)
             UTMESS("A", "RUPTURE0_1", valk=[MATER.getName()])
 
         e = MATER.getValueReal("ELAS", "E")
@@ -2288,8 +2282,8 @@ def post_jmod_ops(
             LPfissSup = copy.copy(Pfiss)
 
             for ino in Pfiss:
-                l = [elem for elem in PropadirSup[ino] if elem != ""]
-                LPfissSup += l
+                lst = [elem for elem in PropadirSup[ino] if elem != ""]
+                LPfissSup += lst
 
             LPfissSup = list(set(LPfissSup))
             dicLPfissSup = RESULTAT.LIST_VARI_ACCES()
@@ -2343,8 +2337,8 @@ def post_jmod_ops(
             LPfissInf = copy.copy(Pfiss)
 
             for ino in Pfiss:
-                l = [elem for elem in PropadirInf[ino] if elem != ""]
-                LPfissInf += l
+                lst = [elem for elem in PropadirInf[ino] if elem != ""]
+                LPfissInf += lst
 
             LPfissInf = list(set(LPfissInf))
             dicLPfissInf = RESULTAT.LIST_VARI_ACCES()
@@ -4219,19 +4213,15 @@ def post_jmod_ops(
         print("Macro POST_JMOD - Calculate J-integral in 3D")
 
         #   Get symmetry problem
-        post_j_marker0 = time.time()
-
         if is_symmetric:
             XMULT = 2.0
         else:
             XMULT = 1.0
 
         #   Get element type
-
         elemType = FOND_FISS.getCrackTipCellsType()
 
         #   Constraint of number of NB_COUCHES
-
         if elemType == "SEG2":
             if NB_COUCHES >= 20:
                 UTMESS("F", "RUPTURE4_11")
@@ -4310,7 +4300,6 @@ def post_jmod_ops(
                 np.array(TVECTEUR[iVect]) * (min(normVect) / normVect[iVect - 1])
             ).tolist()
 
-        post_j_marker1 = time.time()
         #   --------------------------------------------------------------------------
         #   DOMAIN CALCULATION AND CRACK PROPAGATION VECTORS
         #
@@ -4533,8 +4522,6 @@ def post_jmod_ops(
 
             ElemsTMAIL = MAIL.getCells("TMAIL")
             listElemTMAIL = [MAIL.getCellName(iElem) for iElem in ElemsTMAIL]
-
-            post_j_marker2 = time.time()
 
             #       -----------------------------------
             #       Propagation vectors
@@ -5337,7 +5324,6 @@ def post_jmod_ops(
                         for iKey in TVECGLOB.keys():
                             TQGLOB[iKey] = (np.array(TVECGLOB[iKey]) * XMULT / XAIRE).tolist()
 
-        post_j_marker3 = time.time()
         #   --------------------------------------------------------------------------
         #   GET CALCULATED INSTANTS
         #
@@ -5790,14 +5776,4 @@ def post_jmod_ops(
         if j_correction == "OUI":
             del_group_ma(self, MAIL, "TMAIL_CONT3")
             del_group_ma(self, MAIL, "TMAIL_IMPR")
-    # -----------------------------------------------------------------------------
-    # print("tab_result",tab_result)
-    end_post_j = time.time()
-
-    # print("POST_J elapsed Time total=",end_post_j-start_post_j)
-    # print("POST_J elapsed Time Initialization=",post_j_marker0-start_post_j)
-    # print("POST_J elapsed Time for Virtual Crack propagation direction=",post_j_marker1-post_j_marker0)
-    # print("POST_J elapsed Time for Domain calculation=",post_j_marker2-post_j_marker1)
-    # print("POST_J elapsed Time for Propagation vectors=",post_j_marker3-post_j_marker2)
-    # print("POST_J elapsed Time for J-Integral calculation=",end_post_j-post_j_marker3)
     return tab_result

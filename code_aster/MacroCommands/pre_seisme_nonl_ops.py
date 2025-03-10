@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,19 +21,8 @@ import pprint
 import sys
 import traceback
 
-import aster
-import numpy as NP
 from libaster import AsterError
 
-from ..Cata.DataStructure import (
-    cara_elem,
-    cham_mater,
-    fonction_c,
-    fonction_sdaster,
-    maillage_sdaster,
-    modele_sdaster,
-    nappe_sdaster,
-)
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
     AFFE_CARA_ELEM,
@@ -85,7 +74,6 @@ def pre_seisme_nonl_ops(self, **args):
 
 
 class PreSeismeNonL:
-
     """Define a general methods for a PRE_SEISME_NONL calculation."""
 
     option_calcul = None
@@ -145,7 +133,7 @@ class PreSeismeNonL:
         """Execute the eigenmodes calculation"""
         raise NotImplementedError("must be defined in a derivated class")
 
-    def set_type(self, txt):
+    def set_type(self):
         """Define different type of loads"""
         raise NotImplementedError("must be defined in a derivated class")
 
@@ -155,7 +143,6 @@ class PreSeismeNonL:
 
 
 class PreCalcMiss(PreSeismeNonL):
-
     """Define the interface modal basis used for the soil impedance calculation (PRE_CALC_MISS)."""
 
     option_calcul = "PRE_CALC_MISS"
@@ -190,7 +177,6 @@ class PreCalcMiss(PreSeismeNonL):
 
 
 class PostCalcMiss(PreSeismeNonL):
-
     """Define the numerical model necessary for a transient nonlinear calculation (POST_CALC_MISS)."""
 
     option_calcul = "POST_CALC_MISS"
@@ -211,12 +197,11 @@ class PostCalcMiss(PreSeismeNonL):
     def calc_base_modale(self):
         """Execute the eigenmodes calculation"""
 
-    def set_type(self, txt):
+    def set_type(self):
         """Set the type of MISS calculation"""
 
 
 class BaseModale:
-
     """Define a modal basis."""
 
     def __init__(self, parent, param, model=None, nb_modes=None, typ=None, bamo=None):
@@ -272,7 +257,7 @@ class BaseModale:
         for key in charge:
             if key == "LIAISON_SOLIDE":
                 msg_error = "\n\nLe mot-clé GROUP_NO_CENT est obligatoire lorsqu'une LIAISON_SOLIDE est définie"
-                assert ("GROUP_NO_CENT" in self.param["PRE_CALC_MISS"]) == True, msg_error
+                assert "GROUP_NO_CENT" in self.param["PRE_CALC_MISS"], msg_error
                 return True
         return False
 
@@ -393,7 +378,6 @@ class BaseModale:
 
 
 class MacroElement:
-
     """Define a sub-structure, also known as super-element or macro-element."""
 
     def __init__(self, parent, param, BaMo=None):
@@ -443,7 +427,6 @@ class MacroElement:
 
 
 class Properties:
-
     """Define a dictionary containing the keywords of the model properties."""
 
     def __init__(self, **kwargs):
@@ -457,9 +440,6 @@ class Properties:
 
     def __getitem__(self, key):
         return self._keywords.get(key)
-
-    def __setitem__(self, key):
-        return self._keywords[key]
 
     def get_nested_key(self, path):
         """Get a value from a nested dictionary"""
@@ -492,7 +472,6 @@ class Properties:
 
 
 class Model:
-
     """Define a numerical model."""
 
     option_calcul = None
@@ -862,7 +841,6 @@ class StatDyna:
 
 
 class ModelMacrElem(Model):
-
     """Define a numerical model combined with superelements."""
 
     option_calcul = "Macro_Element"
@@ -959,7 +937,6 @@ class ModelMacrElem(Model):
 
 
 class ModelDynaReduc(ModelMacrElem):
-
     """Define a numerical model that uses dynamic reduction with superelements."""
 
     option_calcul = "Reduction_Dynamique"
@@ -988,7 +965,6 @@ class ModelDynaReduc(ModelMacrElem):
 
 
 class ModelBaMoReduc(ModelDynaReduc):
-
     """Define a numerical model that uses dynamic reduction without superelements."""
 
     option_calcul = "Base_Modale"
@@ -1010,7 +986,6 @@ class ModelBaMoReduc(ModelDynaReduc):
 
 
 class ModelBaseModale(ModelMacrElem):
-
     """Define a numerical model that uses static reduction without superelements."""
 
     option_calcul = "Base_Modale"
@@ -1032,7 +1007,6 @@ class ModelBaseModale(ModelMacrElem):
 
 
 class Mesh:
-
     """Define the mesh of the numerical model."""
 
     def __init__(self, parent, param, mael=None):
@@ -1134,7 +1108,7 @@ class Mesh:
 
     def add_fiction_mesh(self):
         """Add fictitious cells and nodes to the mesh"""
-        if self.check_ficti_nodes() == False:
+        if not self.check_ficti_nodes():
             return None
 
         nb_new_nodes = self.get_nb_ficti_no()
