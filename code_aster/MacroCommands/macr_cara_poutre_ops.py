@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
     AFFE_CHAR_THER,
@@ -1149,9 +1148,8 @@ def macr_cara_poutre_ops(
                         IMPR_TABLE(TABLE=nomres)
                     ImprTable = True
                     NomResultat = "TabCara"
-                    UTMESS(
-                        "A", "POUTRE0_13", valr=[alpha, -alpha], valk=[NomResultat, NomMaillageNew]
-                    )
+                    dict_args = dict(valr=[alpha, -alpha], valk=[NomResultat, NomMaillageNew])
+                    UTMESS("A", "POUTRE0_13", **dict_args)
     #
     # On retourne une table contenant toutes les caractéristiques calculées
     else:

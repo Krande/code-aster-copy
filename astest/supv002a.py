@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -246,20 +246,18 @@ def get_cata_msg(catamess):
         importlib.reload(mod)
         cata_msg = getattr(mod, "cata_msg", {})
     except UnicodeDecodeError:
-        UTMESS(
-            "F",
-            "CATAMESS_1",
+        dict_args = dict(
             valk=(
                 "Encodage invalide pour le fichier de messages : '%s'" % catamess,
                 traceback.format_exc(),
-            ),
+            )
         )
+        UTMESS("F", "CATAMESS_1", **dict_args)
     except Exception:
-        UTMESS(
-            "F",
-            "CATAMESS_1",
-            valk=("Nom du fichier de messages : '%s'" % catamess, traceback.format_exc()),
+        dict_args = dict(
+            valk=("Nom du fichier de messages : '%s'" % catamess, traceback.format_exc())
         )
+        UTMESS("F", "CATAMESS_1", **dict_args)
     return cata_msg
 
 
@@ -386,7 +384,7 @@ def check_catamess(checker, lang, l_cata):
             continue
         cata_msg = get_cata_msg(catamess)
         for key, msg in list(cata_msg.items()):
-            if type(msg) == dict:
+            if type(msg) is dict:
                 msg = msg["message"]
             check_msg(checker, catamess, msg, key, lang)
 
@@ -394,20 +392,17 @@ def check_catamess(checker, lang, l_cata):
 def timekeeper(pid, delay):
     """Kill 'pid' if it times out"""
     time.sleep(delay)
-    UTMESS(
-        "E",
-        "CATAMESS_1",
-        valk=(
-            """
+    valk = (
+        """
 The process %d timed out after %d seconds.
 
 It probably blocks reading the response of aspell on its stdout...
 Try run with INFO=2 to have all the details.
 """
-            % (pid, delay),
-            """Interruption : kill the main process!""",
-        ),
+        % (pid, delay),
+        """Interruption : kill the main process!""",
     )
+    UTMESS("E", "CATAMESS_1", valk=valk)
     os.kill(pid, signal.SIGTERM)
 
 
@@ -479,11 +474,8 @@ def supv002_ops(self, ERREUR, **kwargs):
     if warns:
         UTMESS("A", "CATAMESS_1", valk=("Liste des alarmes et des erreurs par message", warns))
     if nbnew > 0:
-        UTMESS(
-            "A",
-            "CATAMESS_1",
-            valk=("Liste des nouvelles erreurs introduites à corriger :", str(new)),
-        )
+        valk = ("Liste des nouvelles erreurs introduites à corriger :", str(new))
+        UTMESS("A", "CATAMESS_1", valk=valk)
     if torm:
         UTMESS(
             "A",

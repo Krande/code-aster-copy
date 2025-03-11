@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -906,12 +906,8 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             Gs = Gs / Gs_max
 
             if not (Gs <= 1.0 or abs(Gs - 1.0) <= 1.0e-8):
-                UTMESS(
-                    "F",
-                    "COMPOR2_36",
-                    valk=(typessai, "cisaillement", "EPSI_ELAS"),
-                    valr=(GAMMA_ELAS),
-                )
+                dict_args = dict(valk=(typessai, "cisaillement", "EPSI_ELAS"), valr=(GAMMA_ELAS))
+                UTMESS("F", "COMPOR2_36", **dict_args)
 
             # taux d'amortissement D (aire delta_W : methode des trapezes)
             # ------------------------------------------------------

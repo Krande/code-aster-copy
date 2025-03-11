@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -141,9 +141,8 @@ def check_dis_ecro_trac(keywords):
 
     # jean-luc.flejou@edf.fr
     def _message(num, mess=""):
-        UTMESS(
-            "F", "DISCRETS_62", valk=("DIS_ECRO_TRAC", "FX=f(DX) | FTAN=f(DTAN)", mess), vali=num
-        )
+        dict_args = dict(valk=("DIS_ECRO_TRAC", "FX=f(DX) | FTAN=f(DTAN)", mess), vali=num)
+        UTMESS("F", "DISCRETS_62", **dict_args)
 
     precis = 1.0e-08
     if "FX" in keywords:

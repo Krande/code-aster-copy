@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,9 +57,8 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
     for i in range(1, nbfiss):
         nom_ma_i = get_nom_maillage_sdfiss(FISSURE[i])
         if nom_ma_i != nom_ma:
-            UTMESS(
-                "F", "XFEM2_10", valk=(FISSURE[0].getName(), nom_ma, FISSURE[i].getName(), nom_ma_i)
-            )
+            dict_args = dict(valk=(FISSURE[0].getName(), nom_ma, FISSURE[i].getName(), nom_ma_i))
+            UTMESS("F", "XFEM2_10", **dict_args)
 
     # indicateur de type 'DISTANCE'
     if TYPE == "DISTANCE":
