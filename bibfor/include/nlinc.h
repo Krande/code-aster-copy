@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@
 !
 
     data params /'ANG_INIT', 'ANG_ROTA', 'AS_C    ', 'AS_DX_MX', 'AS_K1   ', &
-                 'AS_K2   ', 'AS_ALPHA', 'AS_FX_0 ', 'BKL_FLIM', 'BKL_FPFL', &
-                 'BKL_DEF ', 'NOM_CMP ', 'COOR_NO1', 'COOR_NO2', 'COOR_ORI', &
+                 'AS_K2   ', 'AS_ALPHA', 'AS_FX_0 ', 'BKL_FLIM', 'BKL_FRIG', &
+                 'BKL_FAMO', 'NOM_CMP ', 'COOR_NO1', 'COOR_NO2', 'COOR_ORI', &
                  'DAMP_NOR', 'DAMP_TAN', 'ISOTFXDX', 'FUNC_NAM', 'DIST_NO1', &
                  'DIST_NO2', 'DVSC_A  ', 'DVSC_C  ', 'DVSC_K1 ', 'DVSC_K2 ', &
                  'DVSC_K3 ', 'FRIC_DYN', 'FRIC_STA', 'FRIC_UNI', 'FV_FONCT', &
@@ -52,8 +52,8 @@
 !   I               : Integer
 !   K8, K16, K24    : Character
     data partyp /'R  ', 'K24', 'R  ', 'R  ', 'R  ', &
-                 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                 'R  ', 'K24', 'R  ', 'R  ', 'R  ', &
+                 'R  ', 'R  ', 'R  ', 'K24', 'K24', &
+                 'K24', 'K24', 'R  ', 'R  ', 'R  ', &
                  'R  ', 'R  ', 'R  ', 'K8 ', 'R  ', &
                  'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
                  'R  ', 'R  ', 'R  ', 'I  ', 'K24', &
