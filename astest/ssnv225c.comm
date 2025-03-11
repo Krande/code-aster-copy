@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,6 @@ tref = 4000
 ep0val = feps * exp(-Qeps / (8.314 * (Tdegc + 273.0)))
 Kcoef = aK * (Tdegc + 273.0) + bK
 A0 = fA * exp(-QA / (8.314 * (Tdegc + 273.0)))
-ep0val
 sig0val = f0 * exp(-Q0 / (8.314 * (Tdegc + 273.0)))
 
 

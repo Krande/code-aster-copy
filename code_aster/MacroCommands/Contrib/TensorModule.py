@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,21 +114,19 @@ class Tensor:
 
     def __cmp__(self, other):
         if not isTensor(other):
-            return NotImplemented
+            return NotImplementedError()
         if self.rank != other.rank:
             return 1
-        else:
-            return not NP.logical_and.reduce(NP.equal(self.array, other.array).flat)
+        return not NP.logical_and.reduce(NP.equal(self.array, other.array).flat)
 
     def __len__(self):
         return 3
 
     def __getitem__(self, index):
         elements = self.array[index]
-        if type(elements) == type(self.array):
+        if type(elements) is type(self.array):
             return Tensor(elements)
-        else:
-            return elements
+        return elements
 
     def dot(self, other):
         if isTensor(other):

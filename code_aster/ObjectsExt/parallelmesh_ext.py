@@ -474,8 +474,6 @@ class ExtendedParallelMesh:
             mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
-        return mesh
-
     @classmethod
     def buildTube(cls, height=3, rint=0.1, rext=1, refine=0, info=1, deterministic=False):
         """Build the mesh of a tube.
@@ -505,8 +503,6 @@ class ExtendedParallelMesh:
             mesh_p = cls()
             mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
-
-        return mesh
 
     def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.

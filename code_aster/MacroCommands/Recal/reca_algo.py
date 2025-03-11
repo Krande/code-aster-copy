@@ -283,23 +283,22 @@ def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
     """
 
     #   if ((iter < max_iter) or (residu < prec)):
-    if 1 == 1:
-        Hessien = NP.dot(NP.transpose(A), A)
+    Hessien = NP.dot(NP.transpose(A), A)
 
-        # Desactive temporairement les FPE qui pourraient etre generees (a
-        # tord!) par blas
-        with disable_fpe():
-            valeurs_propres, vecteurs_propres = linalg.eig(Hessien)
-            vecteurs_propres = NP.transpose(
-                vecteurs_propres
-            )  # numpy et Numeric n'ont pas la meme convention
-            sensible = NP.nonzero(
-                NP.greater(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-1)
-            )[0]
-            insensible = NP.nonzero(
-                NP.less(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-2)
-            )[0]
+    # Desactive temporairement les FPE qui pourraient etre generees (a
+    # tord!) par blas
+    with disable_fpe():
+        valeurs_propres, vecteurs_propres = linalg.eig(Hessien)
+        vecteurs_propres = NP.transpose(
+            vecteurs_propres
+        )  # numpy et Numeric n'ont pas la meme convention
+        sensible = NP.nonzero(NP.greater(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-1))[
+            0
+        ]
+        insensible = NP.nonzero(NP.less(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-2))[
+            0
+        ]
 
-        Messg.affiche_calcul_etat_final(
-            para, Hessien, valeurs_propres, vecteurs_propres, sensible, insensible
-        )
+    Messg.affiche_calcul_etat_final(
+        para, Hessien, valeurs_propres, vecteurs_propres, sensible, insensible
+    )

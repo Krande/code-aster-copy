@@ -609,7 +609,6 @@ IMPR_FONCTION(
 
 # Impression des deplacements
 # ----------------------------
-# DEFI_FICHIER(UNITE=80, TYPE="BINARY", FICHIER="/tmp/resu.resu.med")
 
 IMPR_RESU(
     FORMAT="MED",

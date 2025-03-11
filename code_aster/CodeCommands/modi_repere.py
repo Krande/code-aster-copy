@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -44,10 +44,7 @@ class ModiRepere(ExecuteCommand):
         if "reuse" in keywords:
             self._result = keywords["reuse"]
         elif "RESULTAT" in keywords:
-            if keywords["RESULTAT"].getType() == "EVOL_ELAS":
-                self._result = type(keywords["RESULTAT"])()
-            else:
-                self._result = type(keywords["RESULTAT"])()
+            self._result = type(keywords["RESULTAT"])()
         else:
             self._result = type(keywords["CHAM_GD"])()
 

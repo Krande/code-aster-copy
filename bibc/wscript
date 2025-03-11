@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,26 +55,29 @@ def configure(self):
     opts = self.options
     # preserve symbols in the dyn table for stdcalls
     if sys.platform != "darwin":
-        self.env.append_unique("LINKFLAGS", ["-Wl,--export-dynamic"])
+        self.add_linkflags("-Wl,--export-dynamic")
     else:
         # '--export-dynamic' is '-export_dynamic' in OS X linker
         # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
-        self.env.append_unique("LINKFLAGS", ["-Wl,-export_dynamic"])
+        self.add_linkflags("-Wl,-export_dynamic")
 
     # prefer memory usage over speed
-    self.env.append_unique("LINKFLAGS", ["-Wl,--no-keep-memory"])
+    self.add_linkflags("-Wl,--no-keep-memory")
+    # this option removes the warning about executable stack because of nested functions
+    # https://sourceware.org/bugzilla/show_bug.cgi?id=29072
+    self.add_linkflags("-Wl,--no-warn-execstack")
 
-    self.env.append_unique("LINKFLAGS_LIBASTER", ["-Wl,--no-as-needed"])
+    self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
 
     if "ifort" in self.env.FC_NAME.lower():
-        self.env.append_value("LINKFLAGS_fcprogram", ["-nofor-main"])
+        self.add_linkflags("-nofor-main", dest="LINKFLAGS_fcprogram")
         if opts.embed_all or opts.embed_aster:
-            self.env.append_value("LINKFLAGS_fcprogram", ["-static-intel"])
+            self.add_linkflags("-static-intel", dest="LINKFLAGS_fcprogram")
             if self.get_define("ASTER_HAVE_MPI"):
-                self.env.append_value("LINKFLAGS_fcprogram", ["-static-mpi"])
+                self.add_linkflags("-static-mpi", dest="LINKFLAGS_fcprogram")
     self.check_c_compiler_flags()
 
 
@@ -83,6 +86,23 @@ def check_bibc_depends(self):
     """check dependencies of bibc"""
     # never in static
     self.check_cc(uselib_store="SYS", lib="dl")
+
+
+@Configure.conf
+def add_linkflags(self, linkflags, dest="LINKFLAGS"):
+    """Add linkflags if they are supported by the active compiler."""
+    if not linkflags:
+        return
+    linkflags = Utils.to_list(linkflags)
+
+    self.start_msg("Checking for linkflags")
+    supportedFlags = []
+    for flags in linkflags:
+        flags = Utils.to_list(flags)
+        if self.check_cxx(linkflags=["-Werror"] + flags, mandatory=False):
+            supportedFlags += flags
+    self.end_msg(" ".join(supportedFlags))
+    self.env.append_unique(dest, supportedFlags)
 
 
 PYMAIN = "supervis/python.c"
@@ -140,7 +160,7 @@ def build_libbibc(self, env):
 
 
 def build_libaster(self, env):
-    use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx"]
+    use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx", "astergc"]
     if env.BUILD_MFRONT:
         use.append("astermfront")
     # {bibfor, bibc, bibcxx}/*.o
@@ -194,10 +214,10 @@ def check_optimization_cflags(self):
     flags = ["-g", "-O0"] + Utils.to_list(self.env["CFLAGS_ASTER_DEBUG"])
     if self.options.enable_coverage:
         flags.append("--coverage")
-        self.env.append_unique("LINKFLAGS", "--coverage")
+        self.add_linkflags("--coverage")
     if self.options.enable_asan:
         flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
-        self.env.append_unique("LINKFLAGS", ["-fsanitize=address", "-fno-omit-frame-pointer"])
+        self.add_linkflags(["-fsanitize=address", "-fno-omit-frame-pointer"])
     self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
 

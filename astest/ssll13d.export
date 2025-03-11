@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm ssll13d.comm D 1
+F comm ssll13d.py D 1
 F mmed ssll13a.mmed D 20

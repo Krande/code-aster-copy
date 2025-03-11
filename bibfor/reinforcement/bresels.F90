@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 #include "asterfort/juveca.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/cafels.h"
-#include "asterfort/dintels.h"
+#include "extern/dintels.h"
 #include "asterc/r8prem.h"
 !
     real(kind=8) :: cequi
@@ -149,9 +149,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
-    real(kind=8) :: unite_pa, unite_m, seuil_moment
-    real(kind=8) :: d, d0, dneg, d0neg, scmax, scmaxneg
-    integer :: N_ET, N_PC, N_PCAC, N_EC, N_ECN, N_PCACN
+    real(kind=8) :: unite_m, seuil_moment
     integer :: ntoty, ndemiy, ntotz, ndemiz
 
     pnrdy = 'POINT_NRD_Y'
@@ -242,58 +240,32 @@ subroutine bresels(cequi, effmy, effmz, effn, &
         BRES = 1.5
 
         !Dimensionnement des vecteurs
-
-        if (uc .eq. 0) then
-            unite_pa = 1.e-6
-        elseif (uc .eq. 1) then
-            unite_pa = 1.
-        end if
         if (um .eq. 0) then
             unite_m = 1.e3
         elseif (um .eq. 1) then
             unite_m = 1.
         end if
 
-        N_ET = 11
-        N_PC = 101
+        ! Pour MFY
+        ! compute vectors sizes
+        ntoty = -1
+        call dintels(cequi, ht, bw, enrobzi, enrobzs, &
+                     scmaxzi, scmaxzs, ssmax, uc, &
+                     ntoty, ndemi=ndemiy)
 
-        !Pour MFY
-        d = ht-enrobzi
-        d0 = enrobzs
-        scmax = scmaxzs
-        dneg = ht-enrobzs
-        d0neg = enrobzi
-        scmaxneg = scmaxzi
-
-        N_PCAC = CEILING((N_PC-1)*(ht/d))+1
-        N_EC = CEILING(10*(scmax*unite_pa))+1
-        N_ECN = CEILING(10*(scmaxneg*unite_pa))+1
-        N_PCACN = CEILING((N_PC-1)*(ht/dneg))+1
-
-        ntoty = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
-        ndemiy = N_ET+N_PCac+N_EC
         call wkvect(pnrdy, ' V V R ', ntoty, vr=nrdy)
         call wkvect(pmrdy, ' V V R ', ntoty, vr=mrdy)
 
-        !Pour MFZ
-        d = bw-enrobyi
-        d0 = enrobys
-        scmax = scmaxys
-        dneg = bw-enrobys
-        d0neg = enrobyi
-        scmaxneg = scmaxyi
-
-        N_PCAC = CEILING((N_PC-1)*(bw/d))+1
-        N_EC = CEILING(10*(scmax*unite_pa))+1
-        N_ECN = CEILING(10*(scmaxneg*unite_pa))+1
-        N_PCACN = CEILING((N_PC-1)*(bw/dneg))+1
-
-        ntotz = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
-        ndemiz = N_ET+N_PCac+N_EC
+        ! Pour MFZ
+        ! compute vectors sizes
+        ntotz = -1
+        call dintels(cequi, bw, ht, enrobyi, enrobys, &
+                     scmaxyi, scmaxys, ssmax, uc, &
+                     ntotz, ndemi=ndemiz)
         call wkvect(pnrdz, ' V V R ', ntotz, vr=nrdz)
         call wkvect(pmrdz, ' V V R ', ntotz, vr=mrdz)
 
-        do while (COND .eqv. (.false.))
+        do while (.not. COND)
 
             Ass = dnsyi+dnsys+dnszi+dnszs
             nrdyzE = Acc*fcd+Ass*fyd
@@ -307,7 +279,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 
             call dintels(cequi, ht, bw, enrobzi, enrobzs, &
                          scmaxzi, scmaxzs, ssmax, uc, &
-                         dnszi, dnszs, ntoty, nrdy, mrdy)
+                         ntoty, dnszi, dnszs, nrdy, mrdy)
 
             s = 1
             nrd0 = nrdy(s)
@@ -357,7 +329,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 
             call dintels(cequi, bw, ht, enrobyi, enrobys, &
                          scmaxyi, scmaxys, ssmax, uc, &
-                         dnsyi, dnsys, ntotz, nrdz, mrdz)
+                         ntotz, dnsyi, dnsys, nrdz, mrdz)
 
             s = 1
             nrd0 = nrdz(s)

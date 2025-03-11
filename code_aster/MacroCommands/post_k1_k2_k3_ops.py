@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from math import pi
 import numpy as NP
 
 import aster
-from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ..Messages import UTMESS, MasquerAlarme
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
@@ -32,14 +32,11 @@ from ..CodeCommands import (
     CALC_TABLE,
     CREA_MAILLAGE,
     CREA_TABLE,
-    FORMULE,
     MACR_LIGN_COUPE,
     POST_RELEVE_T,
     PROJ_CHAMP,
 )
-from ..Messages import UTMESS
 from ..Objects import ModeResult
-from ..Objects.table_py import Table, merge
 from ..Utilities.misc import get_titre_concept
 from .Fracture.post_k_varc import POST_K_VARC
 
@@ -898,12 +895,12 @@ def get_liste_inst(tabsup, args):
     elif args.get("INST") is not None or args.get("LIST_INST") is not None:
         CRITERE = args.get("CRITERE")
         PRECISION = args.get("PRECISION")
-        if args.get("INST") != None:
+        if args.get("INST") is not None:
             l_inst = args.get("INST")
-        elif args.get("LIST_INST") != None:
+        elif args.get("LIST_INST") is not None:
             l_inst = args.get("LIST_INST").getValues()
 
-        if type(l_inst) == tuple:
+        if type(l_inst) is tuple:
             l_inst = list(l_inst)
 
         for i, inst in enumerate(l_inst):
@@ -978,7 +975,7 @@ def get_liste_freq(tabsup, args):
         elif args.get("LIST_FREQ") is not None:
             l_freq = args.get("LIST_FREQ").getValues()
 
-        if type(l_freq) == tuple:
+        if type(l_freq) is tuple:
             l_freq = list(l_freq)
 
         for i, freq in enumerate(l_freq):
@@ -1089,8 +1086,6 @@ def get_propmat_varc_fem(
     assert type(valpar) is float
 
     # valeur des parametres elastiques fonctions de la varc
-    nompar = nompar
-    valpar = valpar
     nomres = ["E", "NU"]
     valres, _ = MATER.RCVALE("ELAS", nompar, valpar, nomres, 2)
     e = valres[0]
@@ -1764,7 +1759,7 @@ def is_present_varc(RESULTAT):
     """
 
     chamat = RESULTAT.getMaterialField()
-    assert not (chamat.getName() in ["#AUCUN", "#PLUSIEURS"])
+    assert chamat.getName() not in ["#AUCUN", "#PLUSIEURS"]
     return chamat.hasExternalStateVariable()
 
 
@@ -2147,7 +2142,7 @@ def post_k1_k2_k3_ops(
     #  V. BOUCLE SUR NOEUDS DU FOND
     #  ------------------------------------------------------------------
 
-    if isinstance(RESULTAT, ModeResult) == True:
+    if isinstance(RESULTAT, ModeResult):
         type_para = "FREQ"
     else:
         type_para = "INST"

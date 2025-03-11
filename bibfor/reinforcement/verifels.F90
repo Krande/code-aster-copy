@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
 !
     implicit none
 !
-#include "asterfort/dintels.h"
+#include "extern/dintels.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
@@ -77,10 +77,8 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
 
-    real(kind=8) :: d, d0, dneg, d0neg, scmax, scmaxneg
-    real(kind=8) :: unite_pa, Calc
-    integer :: N_ET, N_PC, N_PCAC, N_PCACN, N_EC, N_ECN, s
-    integer :: ntot, ndemi
+    real(kind=8) :: Calc
+    integer :: s, ntot, ndemi
     logical :: COND_OK
     real(kind=8) :: nrd0, nrd1, mrd0, mrd1
     character(24) :: pnrd, pmrd
@@ -92,35 +90,16 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     pnrd = 'POINT_NRD'
     pmrd = 'POINT_MRD'
 
-    if (uc .eq. 0) then
-        unite_pa = 1.e-6
-    elseif (uc .eq. 1) then
-        unite_pa = 1.
-    end if
-
-    N_ET = 11
-    N_PC = 101
-
-    d = ht-enrobi
-    d0 = enrobs
-    scmax = scmaxs
-    dneg = ht-enrobs
-    d0neg = enrobi
-    scmaxneg = scmaxi
-
-    N_PCAC = CEILING((N_PC-1)*(ht/d))+1
-    N_EC = CEILING(10*(scmax*unite_pa))+1
-    N_ECN = CEILING(10*(scmaxneg*unite_pa))+1
-    N_PCACN = CEILING((N_PC-1)*(ht/dneg))+1
-
-    ntot = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
-    ndemi = N_ET+N_PCAC+N_EC
+    ntot = -1
+    call dintels(cequi, ht, bw, enrobi, enrobs, &
+                 scmaxi, scmaxs, ssmax, uc, &
+                 ntot, ndemi=ndemi)
     call wkvect(pnrd, ' V V R ', ntot, vr=nrd)
     call wkvect(pmrd, ' V V R ', ntot, vr=mrd)
 
     call dintels(cequi, ht, bw, enrobi, enrobs, &
                  scmaxi, scmaxs, ssmax, uc, &
-                 dnsinf, dnssup, ntot, nrd, mrd)
+                 ntot, dnsinf, dnssup, nrd, mrd)
 
     nrd0 = nrd(1)
     nrd1 = nrd(ndemi)
@@ -175,7 +154,7 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
 
 998 continue
 
-    if (COND_OK .eqv. (.true.)) then
+    if (COND_OK) then
         verif = 0
     else
         verif = 1

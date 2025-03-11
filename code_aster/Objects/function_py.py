@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -167,7 +167,7 @@ class t_fonction:
             raise AsterError(
                 "FONCT0_28", "composition de fonctions : NOM_RESU1 et NOM_PARA2 incohérents"
             )
-        para["NOM_PARA"] == other.para["NOM_PARA"]
+        para["NOM_PARA"] = other.para["NOM_PARA"]
         return t_fonction(other.vale_x, list(map(self, other.vale_y)), para)
 
     def __call__(self, val, tol=1.0e-6):
@@ -491,7 +491,6 @@ class t_fonction:
         """pour les corrections d'accélérogrammes
         suppression de la tendance moyenne d'une fonction
         """
-        para = copy.copy(self.para)
         xy = NP.sum(self.vale_x * self.vale_y)
         x0 = NP.sum(self.vale_x)
         y0 = NP.sum(self.vale_y)
@@ -980,8 +979,8 @@ def fractile(l_f, fract):
         l_vale_y.append(vale_y)
     tab_val = NP.transpose(NP.array(l_vale_y))
     tab_val = tab_val.tolist()
-    for l in tab_val:
-        l.sort()
+    for ll in tab_val:
+        ll.sort()
     vale_y = []
     if fract >= 1.0:
         for l_val in tab_val:

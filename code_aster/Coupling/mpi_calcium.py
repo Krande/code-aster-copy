@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -169,12 +169,8 @@ class MPICalcium:
                 if op == MPICalcium.LAND:
                     if b0 and b1:
                         return True
-                    else:
-                        return False
-                else:
-                    raise NotImplemented()
-            else:
-                raise NotImplemented()
+                    return False
+            raise NotImplementedError()
 
     def __init__(self, comm, sub_comm, other_root, logfunc=None):
         self.log = logfunc if logfunc else logger
