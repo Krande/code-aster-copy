@@ -1118,12 +1118,17 @@ class DiscreteComputation:
               ElementaryMatrix: elementary elastic Stiffness matrix
         """
 
-    def getExternalStateVariablesForces(self, time_curr, varc_curr, mode=0, mask=None):
+    def getExternalStateVariablesForces(
+        self, time_curr, varc_curr, varc_prev=None, vari_curr=None, stress=None, mode=0, mask=None
+    ):
         """Compute load from external state variables
 
         Arguments:
               time_curr (float): Current time
               varc_curr (FieldOnCellsReal): external state variables at current time
+              varc_prev (FieldOnCells): external state variables at begin of current time
+              vari_curr (FieldOnCellsReal): internal state variables at current time
+              stress (FieldOnCellsReal): stress at current time
               mode (int): fourier mode
               mask (FieldOnCellsLongPtr): mask to assemble
 

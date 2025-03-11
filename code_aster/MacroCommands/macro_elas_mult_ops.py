@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -228,7 +228,7 @@ def macro_elas_mult_ops(
                     nh = motscles["MODE_FOURIER"]
 
                 __nomasv += DiscreteComputation(__phys_pb).getExternalStateVariablesForces(
-                    1.0, __varc, nh
+                    1.0, __varc, mode=nh
                 )
 
             else:

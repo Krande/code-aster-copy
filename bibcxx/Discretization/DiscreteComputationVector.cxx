@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -149,7 +149,9 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time_curr,
 
 FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
     const ASTERDOUBLE time_curr, const FieldOnCellsRealPtr varc_curr,
-    const ASTERINTEGER mode_fourier, const FieldOnCellsLongPtr maskField ) const {
+    const FieldOnCellsRealPtr varc_prev, const FieldOnCellsRealPtr vari_curr,
+    const FieldOnCellsRealPtr stress_prev, const ASTERINTEGER mode_fourier,
+    const FieldOnCellsLongPtr maskField ) const {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -157,6 +159,7 @@ FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
     auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
+    auto currBehav = _phys_problem->getBehaviourProperty();
 
     // Some checks
     AS_ASSERT( currMater );
@@ -200,9 +203,18 @@ FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
             // Add input fields
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-            calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+            calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
             calcul->addFourierModeField( mode_fourier );
             calcul->addInputField( "PVARCPR", varc_curr );
+            if ( varc_prev ) {
+                calcul->addInputField( "PVARCMR", varc_prev );
+            }
+            if ( vari_curr ) {
+                calcul->addInputField( "PVARIPR", vari_curr );
+            }
+            if ( stress_prev ) {
+                calcul->addInputField( "PCONTMR", stress_prev );
+            }
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
             }
