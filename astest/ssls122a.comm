@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,9 +114,7 @@ MA = DEFI_GROUP(
     CREA_GROUP_MA=(_F(GROUP_MA="PLAQ_P1", NOM="PLAQ_P1S"),),
 )
 
-MAIL = CREA_MAILLAGE(
-    MAILLAGE=MA, INFO=2, CREA_MAILLE=_F(NOM="PLAQ_P1I", GROUP_MA="PLAQ_P1S", PREF_MAILLE="S")
-)
+MAIL = CREA_MAILLAGE(MAILLAGE=MA, INFO=2, CREA_MAILLE=_F(NOM="PLAQ_P1I", GROUP_MA="PLAQ_P1S"))
 
 MAIL = DEFI_GROUP(
     reuse=MAIL,

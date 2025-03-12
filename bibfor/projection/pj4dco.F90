@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ subroutine pj4dco(typeSelect, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
@@ -294,7 +295,7 @@ subroutine pj4dco(typeSelect, &
                             loin = .false.
                             l_dmax = .true.
                             nbtrou = 0
-                            call jenuno(jexnum(mesh2//'.NOMNOE', iNode2), nodeName2)
+                            nodeName2 = int_to_char8(iNode2)
                             call utmess('A', 'CALCULEL5_47', si=vinterc(nbInterc_+1), sk=nodeName2)
                             exit
                         end if
@@ -314,7 +315,7 @@ subroutine pj4dco(typeSelect, &
             cycle
         end if
         if (nbtrou .eq. 0) then
-            call jenuno(jexnum(mesh2//'.NOMNOE', iNode2), nodeName2)
+            nodeName2 = int_to_char8(iNode2)
             call utmess('F', 'PROJECTION4_56', sk=nodeName2)
         end if
         zi(iaconb-1+iNode2) = 3

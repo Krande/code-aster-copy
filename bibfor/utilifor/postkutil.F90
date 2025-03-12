@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xtmafi.h"
+#include "asterfort/char8_to_int.h"
     integer, intent(in) :: imater
     character(len=*), intent(in) :: nomres
     character(len=*), intent(in) :: nomfis
@@ -203,7 +204,8 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !
 !           recup des mailles connectees au noeud courant
             k8noeu = vnofon(ino)
-            call jenonu(jexnom(noma//'.NOMNOE', k8noeu), inoeu)
+            inoeu = char8_to_int(k8noeu)
+            inoeu = char8_to_int(k8noeu)
             call jelira(jexnum(cnxinv, inoeu), 'LONMAX', nmanoe)
             call jeveuo(jexnum(cnxinv, inoeu), 'L', jmanoe)
 !           on s'assure que le noeud n'est pas orphelin
@@ -237,7 +239,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !
 !           recup des mailles connectees au noeud courant
             k8noeu = vnofon(ino)
-            call jenonu(jexnom(noma//'.NOMNOE', k8noeu), inoeu)
+            inoeu = char8_to_int(k8noeu)
             call jelira(jexnum(cnxinv, inoeu), 'LONMAX', nmanoe)
             call jeveuo(jexnum(cnxinv, inoeu), 'L', jmanoe)
 !           on s'assure que le noeud n'est pas orphelin

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine getKinematicValues(keywordFact, ioc, &
 #include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=16), intent(in) :: keywordFact
     integer, intent(in) :: ioc
@@ -118,7 +119,7 @@ subroutine getKinematicValues(keywordFact, ioc, &
                 do i_node = 1, userNodeNb
                     nodeNume = zi(idino-1+i_node)
                     if (zl(jnoxfl-1+2*nodeNume)) then
-                        call jenuno(jexnum(mesh//'.NOMNOE', nodeNume), nodeName)
+                        nodeName = int_to_char8(nodeNume)
                         call utmess('F', 'ALGELINE2_22', nk=2, valk=[currentDOF, nodeName])
                     end if
                 end do

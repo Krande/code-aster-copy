@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,8 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
 #include "asterfort/tremno.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=19) :: ssch19, sdlieu, sdeval
 !
@@ -57,7 +59,6 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
     character(len=24) :: oupnsp
     character(len=24) :: valk
     character(len=19) :: sdemno
-    character(len=15) :: nrepma
     character(len=8) :: mailla
     character(len=4) :: docu
 !
@@ -136,7 +137,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
 !
     call wkvect(nnumnd, 'V V I', nbnpst, anumnd)
     do i = 1, nbnpst, 1
-        call jenonu(jexnom(mailla//'.NOMNOE', zk8(adesc+i-1)), zi(anumnd+i-1))
+        zi(anumnd+i-1) = char8_to_int(zk8(adesc+i-1))
     end do
     call wkvect(oupadr, 'V V I', nbnpst, aopadr)
     call jeveuo(invale, 'L', aivale)
@@ -169,7 +170,6 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
         call jeveuo(inpnco, 'L', aipnco)
         call jeveuo(inpnsp, 'L', aipnsp)
         nnmail = sdeval//'.MAIL'
-        nrepma = mailla//'.NOMMAI'
         do i = 1, nbnpst, 1
             pt = 1
             trouve = .false.
@@ -219,7 +219,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
             call jeveuo(jexnum(nnmail, i), 'E', anmail)
             call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir+i-1)), 'L', anuma)
             do j = 1, l, 1
-                call jenuno(jexnum(nrepma, zi(anuma+j-1)), zk8(anmail+j-1))
+                zk8(anmail+j-1) = int_to_char8(zi(anuma+j-1))
             end do
         end do
         call jedetr(sdemno//'.VACP')

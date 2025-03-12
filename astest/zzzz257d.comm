@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -135,7 +135,7 @@ FMOINZ = FORMULE(
 
 MAI = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIB = CREA_MAILLAGE(MAILLAGE=MAI, LINE_QUAD=_F(TOUT="OUI", PREF_NOEUD="QN", PREF_NUME=1))
+MAIB = CREA_MAILLAGE(MAILLAGE=MAI, LINE_QUAD=_F(TOUT="OUI"))
 
 MAIB = MODI_MAILLAGE(
     reuse=MAIB, MAILLAGE=MAIB, MODI_MAILLE=_F(OPTION="NOEUD_QUART", GROUP_MA_FOND="FONDFISS")

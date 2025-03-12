@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh, &
 #include "asterfort/umalma.h"
 #include "asterfort/vtgpld.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara, deform
@@ -56,14 +57,14 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh, &
 !
     integer :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
     integer :: nbmail, jma, im, nume, nb, ifm, niv, mxval1, nbpar1, mxval2, nbpar2, iorig, nre
-    integer :: icage, nbtot
+    integer :: icage, nbtot, nbMaiT
     parameter(mxval1=16, nbpar1=18)
     parameter(mxval2=25, nbpar2=27)
     real(kind=8) :: zero, orig(3), r8b
     character(len=8) :: k8b, noma, lpain(16), lpaout(5), typarr(nbpar2), valk(2)
     character(len=16) :: noparr(nbpar2)
     character(len=19) :: chelem, chdef
-    character(len=24) :: lchin(16), lchout(1), mlggma, mlgnma, valk2(2)
+    character(len=24) :: lchin(16), lchout(1), mlggma, valk2(2)
     character(len=24) :: chgeom, chgeo2, chcara(18), chharm, ligrel
     complex(kind=8) :: c16b
     real(kind=8), pointer :: trav1(:) => null()
@@ -92,7 +93,6 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh, &
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 60
     noma = chgeom(1:8)
-    mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
 !
     call exlim3('MASS_INER', 'V', modele, ligrel)
@@ -236,13 +236,13 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh, &
             call getvem(noma, 'MAILLE', 'MASS_INER', 'MAILLE', iocc, &
                         nbmail, zk8(jma), nm)
             valk(2) = 'MAILLE'
+            call jelira(noma//'.TYPMAIL', 'LONMAX', nbMaiT)
             do im = 1, nbmail
-                call jeexin(jexnom(mlgnma, zk8(jma+im-1)), iret)
-                if (iret .eq. 0) then
+                nume = char8_to_int(zk8(jma+im-1))
+                if ((nume .gt. nbMaiT) .or. (nume .le. 0)) then
                     call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
                     goto 40
                 end if
-                call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)
                 call pemica(chelem, mxvale, trav1, 1, [nume], &
                             orig, iorig, icage)
                 valk(1) = zk8(jma+im-1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: npara
     character(len=*) :: cnsf, lpara(npara), cnsr
@@ -189,7 +190,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
                             x, ier)
                 if (ier .ne. 0) then
                     call utmess('F+', 'FONCT0_9', sk=fo)
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), valk)
+                    valk = int_to_char8(ino)
                     call utmess('F', 'FONCT0_53', sk=valk)
                 end if
 !

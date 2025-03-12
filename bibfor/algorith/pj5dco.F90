@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ subroutine pj5dco(mo1, mo2, corres)
 #include "asterfort/pj3da4.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=16) :: corres
     character(len=8) :: mo1, mo2
@@ -111,10 +113,10 @@ subroutine pj5dco(mo1, mo2, corres)
     lisou2 = 'NOEUD_MESURE_VIS'
 
     do inode = 1, nno1
-        call jenuno(jexnum(m1//'.NOMNOE', inode), zk8(llin1-1+inode))
+        zk8(llin1-1+inode) = int_to_char8(inode)
     end do
     do inode = 1, nno2
-        call jenuno(jexnum(m2//'.NOMNOE', inode), zk8(llin2-1+inode))
+        zk8(llin2-1+inode) = int_to_char8(inode)
     end do
 
     call pacoa2(lisin1, lisin2, nno1, nno2, m1, &
@@ -144,12 +146,12 @@ subroutine pj5dco(mo1, mo2, corres)
 !     2. RECHECHE DE LA MAILLE LE PLUS PROCHE DU NOEUD MESURE
 !     ------------------------------------------------
     do inode = 1, nbtr
-        call jenonu(jexnom(m2//'.NOMNOE', zk8(out2-1+inode)), numnoe)
+        numnoe = char8_to_int(zk8(out2-1+inode))
         do i = 1, nbdim
             m(i) = zr(jcoo2-1+(numnoe-1)*nbdim+i)
         end do
 
-        call jenonu(jexnom(m1//'.NOMNOE', zk8(out1-1+inode)), numnoe)
+        numnoe = char8_to_int(zk8(out1-1+inode))
         call exmano(m1, numnoe, numano, nbmano)
         if (nbmano .eq. 0) then
             call utmess('F', 'ALGORITH9_92')

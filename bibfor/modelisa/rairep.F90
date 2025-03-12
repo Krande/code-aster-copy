@@ -50,6 +50,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +68,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
     real(kind=8) :: xx, yy, zz, xyzg(3)
 !
     character(len=8) :: k8b, nomnoe, typm, nommai
-    character(len=24) :: nomgr, magrno, manono, magrma, manoma, matyma, mlgnma
+    character(len=24) :: nomgr, magrno, magrma, manoma, matyma
 !
     aster_logical :: lfonc, trans
 !
@@ -87,11 +88,9 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
     lfonc = .false.
 !
     magrno = noma//'.GROUPENO'
-    manono = noma//'.NOMNOE'
     magrma = noma//'.GROUPEMA'
     manoma = noma//'.CONNEX'
     matyma = noma//'.TYPMAIL'
-    mlgnma = noma//'.NOMMAI'
 !
 !   Coordonnées des noeuds
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coord)
@@ -106,7 +105,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
         call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
-        call jenuno(jexnum(manono, inoe), nomnoe)
+        nomnoe = int_to_char8(inoe)
         xyzg(1) = coord(3*(inoe-1)+1)
         xyzg(2) = coord(3*(inoe-1)+2)
         xyzg(3) = coord(3*(inoe-1)+3)
@@ -143,7 +142,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
                 nommai = '????'
                 call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[ligrma(ii), nommai])
             else if (zjdlm(num_maille) .eq. 0) then
-                call jenuno(jexnum(mlgnma, num_maille), nommai)
+                nommai = int_to_char8(num_maille)
                 call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[ligrma(ii), nommai])
             end if
             NbMaille = NbMaille+1
@@ -193,7 +192,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
                 posi = nb_ma_surf
             else
 !               MESSAGE <A> si une maille est en double
-                call jenuno(jexnum(mlgnma, num_maille), nommai)
+                nommai = int_to_char8(num_maille)
                 call utmess('A', 'AFFECARAELEM_24', si=ioc, nk=2, valk=[ligrma(ii), nommai])
                 cycle cymaille
             end if
@@ -342,7 +341,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
             r5 = 0.0d0
             r6 = 0.0d0
         end if
-        call jenuno(jexnum(manono, inoe), nomnoe)
+        nomnoe = int_to_char8(inoe)
         rignoe(6*(ij-1)+1) = r1
         rignoe(6*(ij-1)+2) = r2
         rignoe(6*(ij-1)+3) = r3

@@ -53,6 +53,7 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/apsave_pair.h"
 #include "asterfort/apsave_patch.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
@@ -227,13 +228,13 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
         if (nbSlavStart .eq. 0) then
             write (*, *) ". No more slave start element "
         else
-            call jenuno(jexnum(mesh//'.NOMMAI', cellSlavStart(1)), elem_slav_name)
+            elem_slav_name = int_to_char8(cellSlavStart(1))
             write (*, *) ". Start slave element: ", elem_slav_name
         end if
         if (nbMastStart .eq. 0) then
             write (*, *) ". No more master start element "
         else
-            call jenuno(jexnum(mesh//'.NOMMAI', cellMastStart(1)), elem_mast_name)
+            elem_mast_name = int_to_char8(cellMastStart(1))
             write (*, *) ". Start master element: ", elem_mast_name
         end if
     end if
@@ -281,6 +282,7 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
                     elem_slav_coor)
         if (debug) then
             call jenuno(jexnum(mesh//'.NOMMAI', cellSlavNume), elem_slav_name)
+            cellSlavNume = int_to_char8(elem_slav_nume)
             write (*, *) "Current slave element: ", cellSlavNume, elem_slav_name, &
                 '(type : ', elem_slav_code, ')'
         end if
@@ -333,7 +335,7 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
                 if (cellNeighIndx .ne. 0) then
                     cellNeighNume = meshSlavNeigh(cellNeighIndx)
                     if (cellNeighNume .ne. 0) then
-                        call jenuno(jexnum(mesh//'.NOMMAI', cellNeighNume), elem_name)
+                        elem_name = int_to_char8(cellNeighNume)
                     else
                         elem_name = 'None'
                     end if
@@ -379,6 +381,7 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
             call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
             if (debug) then
                 call jenuno(jexnum(mesh//'.NOMMAI', cellMastNume), elem_mast_name)
+                elem_mast_name = int_to_char8(cellMastNume)
                 write (*, *) "Current master element: ", cellMastNume, elem_mast_name, &
                     '(type : ', elem_mast_type, ')'
             end if
@@ -389,6 +392,7 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
                     cellNeighNume = meshMastNeigh((cellMastIndx-1)*4+iMastNeigh)
                     if (cellNeighNume .ne. 0) then
                         call jenuno(jexnum(mesh//'.NOMMAI', cellNeighNume), elem_name)
+                        elem_name = int_to_char8(cellNeighNume)
                     else
                         elem_name = 'None'
                     end if

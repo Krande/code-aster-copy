@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
 #include "asterfort/oreino.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: iocc, nbtrou, linoeu(*)
     character(len=*) :: mcf
@@ -62,7 +63,6 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
     real(kind=8) :: vecty(3), tole
     character(len=8) :: courbe, crit
     character(len=24) :: nomgrn
-    character(len=15) :: nrepnd
     character(len=17) :: nrepgn
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: list_n(:) => null()
@@ -73,7 +73,6 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
 !
     nbtnd = 0
     nrepgn = nmaila//'.GROUPENO'
-    nrepnd = nmaila//'.NOMNOE'
     libre = 1
 !   INDICATEUR DE COMMANDE POUR OREINO: 2-POST_RELEVE_T/PRECISION
     iera = 2
@@ -112,7 +111,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
 !
     if (nbneud .ne. 0) then
         do i = 1, nbneud, 1
-            call jenonu(jexnom(nrepnd, zk8(aneud+i-1)), numnd)
+            numnd = char8_to_int(zk8(aneud+i-1))
             zi(alndtp+i-1) = numnd
         end do
     end if

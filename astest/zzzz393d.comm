@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ MA0 = LIRE_MAILLAGE(FORMAT="MED")
 MA = CREA_MAILLAGE(
     MAILLAGE=MA0,
     CREA_MAILLE=(
-        _F(NOM="DKT_X", GROUP_MA="COQ_X", PREF_MAILLE="B"),
-        _F(NOM="DKT_Y", GROUP_MA="COQ_Y", PREF_MAILLE="B"),
-        _F(NOM="DKT_Z", GROUP_MA="COQ_Z", PREF_MAILLE="B"),
+        _F(NOM="DKT_X", GROUP_MA="COQ_X"),
+        _F(NOM="DKT_Y", GROUP_MA="COQ_Y"),
+        _F(NOM="DKT_Z", GROUP_MA="COQ_Z"),
     ),
 )
 

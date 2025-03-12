@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi, &
 ! --------------------------------------------------------------------------------------------------
 !
     call jeveuo(nomaas//'.TYPMAIL', 'L', vi=typmail)
-    call jelira(nomaas//'.NOMMAI', 'NOMUTI', nbmail)
+    call jelira(nomaas//'.TYPMAIL', 'LONMAX', nbmail)
     call jeveuo(jexatr(nomaas//'.CONNEX', 'LONCUM'), 'L', jpoin)
     call jeveuo(nomaas//'.CONNEX', 'L', vi=connex)
 !

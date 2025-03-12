@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,9 +94,7 @@ HENRY = DEFI_CONSTANTE(VALE=1.0)
 MAILINI = LIRE_MAILLAGE(FORMAT="MED")
 
 
-MAIL = CREA_MAILLAGE(
-    MAILLAGE=MAILINI, MODI_MAILLE=(_F(TOUT="OUI", OPTION="TRIA6_7", PREF_NOEUD="NT"),)
-)
+MAIL = CREA_MAILLAGE(MAILLAGE=MAILINI, MODI_MAILLE=(_F(TOUT="OUI", OPTION="TRIA6_7"),))
 MAIL = DEFI_GROUP(
     reuse=MAIL,
     MAILLAGE=MAIL,

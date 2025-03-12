@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,10 +56,11 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: ifm, ifl
     character(len=24) :: cooval, coodsc, grpnoe, grpmai, connex
-    character(len=24) :: titre, nommai, nomnoe, typmai
+    character(len=24) :: titre, typmai
     character(len=24) :: adapma
     character(len=8) :: nomu
 !     OUT
@@ -220,7 +221,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
     call jemarq()
 !
-    call sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
+    call sdmail(nomu, cooval, coodsc, &
                 grpnoe, gpptnn, grpmai, gpptnm, &
                 connex, titre, typmai, adapma)
 !
@@ -436,16 +437,6 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !     ET DES OBJETS PERMANENTS NON TRANSCODABLES SUR LA GLOBALE
 !     -------------------------------------------------------------
 !
-! -   OBJET NOMMAI    = REPERTOIRE NOMS DE MAILLES  K8 SUR GLOBALE
-!
-    call jecreo(nommai, 'G N K8')
-    call jeecra(nommai, 'NOMMAX', nbmail)
-!
-! -   OBJET NOMNOE    = REPERTOIRE NOMS DE NOEUDS K8 SUR GLOBALE
-!
-    call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
-!
 ! -   OBJET TITRE             = VECTEUR DE K80
 !
     call jecreo(titre, 'G V K80')
@@ -585,7 +576,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
     call stkcoo(ifl, icl, iv, rv, cv, &
                 cnl, mclcoo, nbmcoo, numneu, cooval, &
-                nomnoe, irtet)
+                irtet)
     if (irtet .eq. 1) then
         goto 800
     else if (irtet .eq. 2) then
@@ -659,13 +650,13 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
         call jenuno(jexnum(conxv, i), nomn)
         call jeveuo(jexnum(conxv, i), 'L', jvcnx)
         call jelira(jexnum(conxv, i), 'LONMAX', nbno)
-        call jenonu(jexnom(nomu//'.NOMMAI', nomn), ibid)
+        ibid = char8_to_int(nomn)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbno)
         call jeecra(jexnum(connex, ibid), 'LONUTI', nbno)
         call jeveuo(jexnum(connex, ibid), 'E', jgcnx)
         do j = 1, nbno
             nom = zk8(jvcnx+j-1)
-            call jenonu(jexnom(nomnoe, nom), num)
+            num = char8_to_int(nom)
             zi(jgcnx+j-1) = num
             if (num .eq. 0) then
                 valk(1) = nom
@@ -698,7 +689,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
                 do im1 = 1, nbno
                     nom1 = zk8(jvg+im1-1)
                     ASSERT(nom1 .ne. ' ')
-                    call jenonu(jexnom(nomnoe, nom1), num)
+                    num = char8_to_int(nom1)
                     if (num .eq. 0) then
                         ier = ier+1
                         valk(1) = nom1
@@ -751,7 +742,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
                 nbma1 = 0
                 do im1 = 1, nbma
                     nom1 = zk8(jvg+im1-1)
-                    call jenonu(jexnom(nommai, nom1), num)
+                    num = char8_to_int(nom1)
                     if (num .eq. 0) then
                         ier = ier+1
                         valk(1) = nom1

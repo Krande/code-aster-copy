@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,9 +43,9 @@ MA = DEFI_GROUP(
     reuse=MA, MAILLAGE=MA, CREA_GROUP_MA=(_F(NOM="MORIG", TOUT="OUI", TYPE_MAILLE="POI1"),)
 )
 
-MA2 = CREA_MAILLAGE(MAILLAGE=MA, CREA_MAILLE=_F(NOM="ACPLUS", GROUP_MA="GRMA1", PREF_MAILLE="B"))
+MA2 = CREA_MAILLAGE(MAILLAGE=MA, CREA_MAILLE=_F(NOM="ACPLUS", GROUP_MA="GRMA1"))
 
-MA3 = CREA_MAILLAGE(MAILLAGE=MA2, CREA_MAILLE=_F(NOM="ACMOINS", GROUP_MA="GRMA1", PREF_MAILLE="C"))
+MA3 = CREA_MAILLAGE(MAILLAGE=MA2, CREA_MAILLE=_F(NOM="ACMOINS", GROUP_MA="GRMA1"))
 
 MA4 = CREA_MAILLAGE(MAILLAGE=MA3, QUAD_LINE=_F(GROUP_MA=("GRMA1", "GRMA3", "ACMOINS", "ACPLUS")))
 

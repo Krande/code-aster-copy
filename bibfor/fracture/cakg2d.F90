@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,6 +59,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: modele, fondf, result, symech
     character(len=8) :: noeud
@@ -121,7 +122,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     character(len=19) :: pmilto
     character(len=19) :: pinter, ainter, cface, longco, baseco, stano
     character(len=24) :: chgeom, chfond, celmod, sigelno, sigseno
-    character(len=24) :: ligrmo, nomno, norma
+    character(len=24) :: ligrmo, norma
     character(len=24) :: obj1, obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
     real(kind=8), pointer :: valg(:) => null()
@@ -239,7 +240,6 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     obj1 = modele//'.MODELE    .LGRF'
     call jeveuo(obj1, 'L', iadrma)
     noma = zk8(iadrma)
-    nomno = noma//'.NOMNOE'
     coorn = noma//'.COORDO    .VALE'
     coord = noma//'.COORDO    .DESC'
     call jeveuo(coorn, 'L', iadrco)
@@ -259,7 +259,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
             call utmess('F', 'RUPTURE1_10')
         end if
         call jeveuo(obj2, 'L', iadrno)
-        call jenonu(jexnom(nomno, zk8(iadrno)), nunoff)
+        nunoff = char8_to_int(zk8(iadrno))
 !
 !       OBJET CONTENANT LA BASE LOCALE AU FOND DE FISSURE
 !       SI L'OBJET NORMALE EXISTE, ON LE PREND

@@ -43,6 +43,7 @@ subroutine mmlige(mesh, ds_contact, &
 #include "asterfort/mmelem_data_l.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -206,8 +207,8 @@ subroutine mmlige(mesh, ds_contact, &
         typg_mast_nume = v_mesh_typmail(elem_mast_nume)
         call jenuno(jexnum('&CATA.TM.NOMTM', typg_slav_nume), typg_slav_name)
         call jenuno(jexnum('&CATA.TM.NOMTM', typg_mast_nume), typg_mast_name)
-        call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
-        call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
+        elem_mast_name = int_to_char8(elem_mast_nume)
+        elem_slav_name = int_to_char8(elem_slav_nume)
 !
 ! ----- Identify contact element
 !

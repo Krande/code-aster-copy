@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: vali(2)
 !
@@ -135,7 +136,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
     do i = 1, nbd
 !     --- BOUCLE SUR LES NOEUDS DE L'INTERFACE DROITE ---
         nunod = zi(ltnd+i-1)
-        call jenuno(jexnum(mailla//'.NOMNOE', nunod), nomnod)
+        nomnod = int_to_char8(nunod)
 !
         xd = vale(1+3*(nunod-1))
         yd = vale(1+3*(nunod-1)+1)
@@ -146,7 +147,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
         do j = 1, nbd
 !       --- BOUCLE SUR LES NOEUDS DE L'INTERFACE GAUCHE ---
             nunog = zi(ltng+j-1)
-            call jenuno(jexnum(mailla//'.NOMNOE', nunog), nomnog)
+            nomnog = int_to_char8(nunog)
             xg = vale(1+3*(nunog-1))
             yg = vale(1+3*(nunog-1)+1)
             zg = vale(1+3*(nunog-1)+2)
@@ -177,7 +178,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
         if (zi(llistb-1+jnode) .ne. 0) then
 !       --- CAS OU JNODE EST DEJA UN VIS-A-VIS ---
             nunog = zi(ltng+zi(llistb-1+jnode)-1)
-            call jenuno(jexnum(mailla//'.NOMNOE', nunog), nomnog)
+            nomnog = int_to_char8(nunog)
             valk(1) = nomnj
             valk(2) = nomnod
             valk(3) = nomnog
@@ -188,7 +189,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
 !       ONT ETE DONNES DANS UN ORDRE DE NON CORRESPONDANCE
         if (jnode .ne. i) ordre = .false.
         nunog = zi(ltng+jnode-1)
-        call jenuno(jexnum(mailla//'.NOMNOE', nunog), nomnog)
+        nomnog = int_to_char8(nunog)
         xg = vale(1+3*(nunog-1))
         yg = vale(1+3*(nunog-1)+1)
         zg = vale(1+3*(nunog-1)+2)

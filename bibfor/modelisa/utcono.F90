@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim, &
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: iocc, ndim, iret
     real(kind=8) :: coor(*)
@@ -43,7 +44,7 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim, &
     integer :: vali(2)
     character(len=8) :: k8b, noeud
     character(len=16) :: concep, cmd
-    character(len=24) :: coord, nomnoe, nomgrn
+    character(len=24) :: coord, nomgrn
     character(len=24) :: valk(3)
 !     ------------------------------------------------------------------
     call jemarq()
@@ -73,13 +74,13 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim, &
     end if
 !
     coord = nomail//'.COORDO    .VALE'
-    nomnoe = nomail//'.NOMNOE         '
     call jeveuo(coord, 'L', jcoor)
 !
     call getvtx(mcfac, mocle(2), iocc=iocc, nbval=0, nbret=n2)
     if (n2 .ne. 0) then
         call getvtx(mcfac, mocle(2), iocc=iocc, scal=noeud, nbret=n2)
-        call jenonu(jexnom(nomnoe, noeud), numno)
+        numno = char8_to_int(noeud)
+        numno = char8_to_int(noeud)
         if (numno .eq. 0) then
             call getres(k8b, concep, cmd)
             valk(1) = mcfac
@@ -114,7 +115,7 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim, &
             vali(1) = iocc
             call utmess('A', 'MODELISA9_29', nk=2, valk=valk, si=vali(1))
         end if
-        call jenonu(jexnom(nomnoe, k8b), numno)
+        numno = char8_to_int(k8b)
         do i = 1, ndim
             coor(i) = zr(jcoor+3*(numno-1)+i-1)
         end do

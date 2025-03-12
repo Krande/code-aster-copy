@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn, &
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xprcnu.h"
+#include "asterfort/assert.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma
     character(len=19) :: noesom, cnxinv
@@ -143,8 +145,9 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn, &
     call wkvect(noesom, 'V V L', nbno, jnosom)
     do ino = 1, nbno
         zl(jnosom-1+ino) = .true.
-        call jenuno(jexnum(noma//'.NOMNOE', ino), nomno)
+        nomno = int_to_char8(ino)
         if (nomno(1:2) .eq. 'NS') zl(jnosom-1+ino) = .false.
+        ASSERT(.false.)
 !
     end do
 !

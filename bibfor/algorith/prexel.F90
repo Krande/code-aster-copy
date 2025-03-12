@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax, &
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: ioc, ispmax, ispmin, isamax, isamin
     real(kind=8) :: valmin, valmax, vaamin, vaamax
@@ -189,15 +190,15 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax, &
 !
     if (imamax .eq. 0) call utmess('F', 'POSTRELE_19')
 !
-    call jenuno(jexnum(ma//'.NOMMAI', imamax), mamax)
-    call jenuno(jexnum(ma//'.NOMMAI', imamin), mamin)
-    call jenuno(jexnum(ma//'.NOMNOE', iptmax), nomax)
-    call jenuno(jexnum(ma//'.NOMNOE', iptmin), nomin)
+    mamax = int_to_char8(imamax)
+    mamin = int_to_char8(imamin)
+    nomax = int_to_char8(iptmax)
+    nomin = int_to_char8(iptmin)
 !
-    call jenuno(jexnum(ma//'.NOMMAI', imaaax), maamax)
-    call jenuno(jexnum(ma//'.NOMMAI', imaain), maamin)
-    call jenuno(jexnum(ma//'.NOMNOE', ipamax), noamax)
-    call jenuno(jexnum(ma//'.NOMNOE', ipamin), noamin)
+    maamax = int_to_char8(imaaax)
+    maamin = int_to_char8(imaain)
+    noamax = int_to_char8(ipamax)
+    noamin = int_to_char8(ipamin)
 !
 ! --- MENAGE
     call detrsd('CHAM_ELEM_S', chams1)

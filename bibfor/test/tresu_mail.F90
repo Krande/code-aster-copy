@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,20 +60,21 @@ subroutine tresu_mail(nommai, tbtxt, refi, iocc, &
 !   -- calcul de la valeur (entiere) a tester : nb1
 !   ------------------------------------------------
     if (cara .eq. 'NB_MAILLE') then
-        call jeexin(nommai//'.NOMMAI', iexi)
+        call jeexin(nommai//'.TYPMAIL', iexi)
         if (iexi .eq. 0) then
             nb1 = 0
             goto 100
         end if
-        call jelira(nommai//'.NOMMAI', 'NOMMAX', nb1)
+        call jelira(nommai//'.TYPMAIL', 'LONMAX', nb1)
 
     elseif (cara .eq. 'NB_NOEUD') then
-        call jeexin(nommai//'.NOMNOE', iexi)
+        call jeexin(nommai//'.COORDO', iexi)
         if (iexi .eq. 0) then
             nb1 = 0
             goto 100
         end if
-        call jelira(nommai//'.NOMNOE', 'NOMMAX', nb1)
+        call jelira(nommai//'.COORDO', 'NUTIOC', nb1)
+        nb1 = nb1/3
 
     elseif (cara .eq. 'NB_GROUP_MA') then
         call jeexin(nommai//'.GROUPEMA', iexi)

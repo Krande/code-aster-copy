@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,6 +55,7 @@ subroutine irchml(fileUnit, &
 #include "asterfort/ircecl.h"
 #include "asterfort/ircerl.h"
 #include "asterfort/irsspt.h"
+#include "asterfort/int_to_char8.h"
 !
     integer, intent(in) :: fileUnit
     character(len=*), intent(in) :: fieldNameZ, fieldTypeZ
@@ -276,11 +277,11 @@ subroutine irchml(fileUnit, &
 !
     AS_ALLOCATE(vk8=meshCellName, size=meshCellNb)
     do iCell = 1, meshCellNb
-        call jenuno(jexnum(meshName//'.NOMMAI', iCell), meshCellName(iCell))
+        meshCellName(iCell) = int_to_char8(iCell)
     end do
     AS_ALLOCATE(vk8=meshNodeName, size=meshNodeNb)
     do iNode = 1, meshNodeNb
-        call jenuno(jexnum(meshName//'.NOMNOE', iNode), meshNodeName(iNode))
+        meshNodeName(iNode) = int_to_char8(iNode)
     end do
 !
 ! - Get list of elements

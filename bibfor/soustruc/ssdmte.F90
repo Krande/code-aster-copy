@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine ssdmte(mag)
 !        - TERMINER LE TRAITEMENT
 !          DES COMMANDES DEFI_MAILLAGE ET CONC_MAILLAGE.
 !        - CREER LES OBJETS :
-!            BASE GLOBALE : .COORDO , .NOMNOE
+!            BASE GLOBALE : .COORDO
 !        - MODIFIER LES OBJETS :
 !            BASE GLOBALE : .SUPMAIL, .GROUPENO ET .CONNEX
 !            POUR TENIR COMPTE DES NOEUDS CONFONDUS.
@@ -80,7 +80,6 @@ subroutine ssdmte(mag)
     character(len=8), pointer :: vnomacr(:) => null()
     integer, pointer :: noeud_conf(:) => null()
     integer, pointer :: conx(:) => null()
-    character(len=8), pointer :: nomnoe_2(:) => null()
     real(kind=8), pointer :: coordo_2(:) => null()
     integer, pointer :: dime(:) => null()
     integer, pointer :: dime_2(:) => null()
@@ -94,7 +93,6 @@ subroutine ssdmte(mag)
     nbsma = dime(4)
     call jeveuo(mag//'.COORDO_2', 'L', vr=coordo_2)
     call jeveuo(mag//'.NOEUD_CONF', 'E', vi=noeud_conf)
-    call jeveuo(mag//'.NOMNOE_2', 'L', vk8=nomnoe_2)
 !
     if (nbsma .gt. 0) call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
     if (nbsma .gt. 0) call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
@@ -109,9 +107,6 @@ subroutine ssdmte(mag)
     nbnop2 = ico
     nbnot2 = nbnop2+nbnola
     nbnoco = nbnoph-nbnop2
-!
-    call jecreo(mag//'.NOMNOE', 'G N K8')
-    call jeecra(mag//'.NOMNOE', 'NOMMAX', nbnot2)
 !
 !
 !     -- CREATION DE .TYPL :
@@ -155,24 +150,10 @@ subroutine ssdmte(mag)
                 jno = noeud_conf(ino)
                 if (ino .ne. jno) goto 3
                 ico = ico+1
-                if (nomnoe_2(ino) .ne. ' ') then
-                    nomnoe = nomnoe_2(ino)
-                else
-                    nomnoe = 'N?'
-                    call codent(ico, 'G', nomnoe(2:8))
-                end if
-                call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
                 do k = 1, 3
                     zr(iavale-1+3*(ico-1)+k) = coordo_2(3*(ino-1)+k)
                 end do
 3           end do
-!     -- NOM DES NOEUDS DE LAGRANGE :
-            nomnoe = '&?'
-            do 4, ino = 1, nbnola
-                call codent(ino, 'G', nomnoe(2:8))
-                call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
-4           end do
-!
 !
 !     -- ON OTE LA "RECURSIVITE" DE .NOEUD_CONF:
 !     ------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ module LoadKinematic_module
 #include "asterfort/pj3dcoSupInf.h"
 #include "asterfort/pj4dco.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 contains
 ! ==================================================================================================
 ! --------------------------------------------------------------------------------------------------
@@ -932,7 +933,7 @@ contains
 
 ! ----- Current slave node
             nodeSlavNume = iLink
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavName = int_to_char8(nodeSlavNume)
 
 ! ----- Coefficient for slave node
             kineListRela%nodeName(1) = nodeSlavName
@@ -945,7 +946,7 @@ contains
             do iNodeMast = 1, nbNodeMast
                 nodeMastNume = pjefNu(shifNodeMast+iNodeMast)
                 nodeMastCoef = pjefCf(shifNodeMast+iNodeMast)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                nodeMastName = int_to_char8(nodeMastNume)
 !           SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
                 if (nodeMastNume .eq. nodeSlavNume) then
                     if (abs(kineListRela%coefMultReal(iNodeMast+1)-1.0d0) .lt. 1.0d-02) then
@@ -1111,7 +1112,7 @@ contains
 
 ! ----- Current slave node
             nodeSlavNume = iLink
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavName = int_to_char8(nodeSlavNume)
 
 ! ----- Set local coordinate system
             if (useNormal) then
@@ -1151,7 +1152,7 @@ contains
                     do iNodeMast = 1, nbNodeMast
                         nodeMastNume = pjefNu(shifNodeMast+iNodeMast)
                         nodeMastCoef = pjefCf(shifNodeMast+iNodeMast)
-                        call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                        nodeMastName = int_to_char8(nodeMastNume)
                         if (nodeMastNume .eq. nodeSlavNume) then
                             if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
                                 call utmess('A', 'CHARGES7_1')
@@ -1245,7 +1246,7 @@ contains
 
 ! ----- Current slave node
             nodeSlavNume = iLink
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavName = int_to_char8(nodeSlavNume)
 
 ! ----- Number of master nodes
             nbNodeMast = pjefNb(iLink)
@@ -1309,7 +1310,7 @@ contains
                 do iNodeMastDisp = 1, nbNodeMastDisp
                     nodeMastNume = pjefNu(shiftNodeMast+iNodeMastDisp)
                     nodeMastCoef = ff(iNodeMastDisp)
-                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    nodeMastName = int_to_char8(nodeMastNume)
                     if (nodeMastNume .eq. nodeSlavNume) then
                         if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
                             call utmess('A', 'CHARGES7_1')
@@ -1326,7 +1327,7 @@ contains
                 do iNodeMastRota = 1, nbNodeMastRota
                     nodeMastNume = pjefNu(shiftNodeMast+iNodeMastRota)
                     nodeMastCoef = pjefCf(shiftNodeMast+iNodeMastRota)
-                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    nodeMastName = int_to_char8(nodeMastNume)
                     kineListRela%nodeName(iTerm-1+1) = nodeMastName
                     kineListRela%nodeName(iTerm-1+2) = nodeMastName
                     kineListRela%dofName(iTerm-1+1) = dofRotaName(1, iDime)
@@ -1430,7 +1431,7 @@ contains
 
 ! ----- Current slave node
             nodeSlavNume = iLink
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavName = int_to_char8(nodeSlavNume)
 
 ! ----- Number of master nodes
             nbNodeMast = pjefNb(iLink)
@@ -1455,7 +1456,7 @@ contains
                 do iNodeMast = 1, nbNodeMast
                     nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
                     nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
-                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    nodeMastName = int_to_char8(nodeMastNume)
                     if (nodeMastNume .eq. nodeSlavNume) then
                         if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
                             call utmess('A', 'CHARGES7_1')
@@ -1508,7 +1509,7 @@ contains
             do iNodeMastSup = 1, nbNodeMastSup
                 nodeMastNume = pjef1Nu(shiftNodeMastSup+iNodeMastSup)
                 nodeMastCoef = pjef1Cf(shiftNodeMastSup+iNodeMastSup)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                nodeMastName = int_to_char8(nodeMastNume)
                 iTerm = iTerm+1
                 kineListRela%nodeName(iTerm) = nodeMastName
                 kineListRela%dofName(iTerm) = 'DX'
@@ -1527,7 +1528,7 @@ contains
             do iNodeMastInf = 1, nbNodeMastInf
                 nodeMastNume = pjef2Nu(shiftNodeMastInf+iNodeMastInf)
                 nodeMastCoef = pjef2Cf(shiftNodeMastInf+iNodeMastInf)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                nodeMastName = int_to_char8(nodeMastNume)
                 iTerm = iTerm+1
                 kineListRela%nodeName(iTerm) = nodeMastName
                 kineListRela%dofName(iTerm) = 'DX'
@@ -1567,7 +1568,7 @@ contains
             do iNodeMastSup = 1, nbNodeMastSup
                 nodeMastNume = pjef1Nu(shiftNodeMastSup+iNodeMastSup)
                 nodeMastCoef = pjef1Cf(shiftNodeMastSup+iNodeMastSup)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                nodeMastName = int_to_char8(nodeMastNume)
                 iTerm = iTerm+1
                 kineListRela%nodeName(iTerm) = nodeMastName
                 kineListRela%dofName(iTerm) = 'DX'
@@ -1586,7 +1587,7 @@ contains
             do iNodeMastInf = 1, nbNodeMastInf
                 nodeMastNume = pjef2Nu(shiftNodeMastInf+iNodeMastInf)
                 nodeMastCoef = pjef2Cf(shiftNodeMastInf+iNodeMastInf)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                nodeMastName = int_to_char8(nodeMastNume)
                 iTerm = iTerm+1
                 kineListRela%nodeName(iTerm) = nodeMastName
                 kineListRela%dofName(iTerm) = 'DX'
@@ -1675,7 +1676,7 @@ contains
 
 ! ----- Current slave node
             nodeSlavNume = iLink
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavName = int_to_char8(nodeSlavNume)
 
 ! ----- Number of master nodes
             nbNodeMast = pjefNb(iLink)
@@ -1722,7 +1723,7 @@ contains
                 do iNodeMast = 1, nbNodeMast
                     nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
                     nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
-                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    nodeMastName = int_to_char8(nodeMastNume)
                     if (nodeMastNume .eq. nodeSlavNume) then
                         if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
                             call utmess('A', 'CHARGES7_1')
@@ -1775,7 +1776,7 @@ contains
                 do iNodeMast = 1, nbNodeMast
                     nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
                     nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
-                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    nodeMastName = int_to_char8(nodeMastNume)
                     if (nodeMastNume .eq. nodeSlavNume) then
                         if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
                             call utmess('A', 'CHARGES7_1')
@@ -1904,7 +1905,7 @@ contains
 
 ! --------- Current slave node
                 node2Nume = iNode2
-                call jenuno(jexnum(mesh//'.NOMNOE', node2Nume), node2Name)
+                node2Name = int_to_char8(node2Nume)
                 cell1Nume = cell1List(node2Nume)
                 if (cell1Nume .eq. 0) cycle
                 if (hasExcent) then
@@ -1953,7 +1954,7 @@ contains
 
 ! ----------------- Current master node
                         node1Nume = node1List(idecal+iNode1)
-                        call jenuno(jexnum(mesh//'.NOMNOE', node1Nume), node1Name)
+                        node1Name = int_to_char8(node1Nume)
                         coeffi = nodeCoef(idecal+iNode1)
                         if (node1Nume .eq. node2Nume) then
                             call utmess("A", "CHARGES7_13")

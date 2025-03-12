@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -251,7 +251,8 @@ subroutine op0144()
     call dismoi('REF_RIGI_PREM', nombm, 'RESU_DYNA', repk=matria)
 !
     call dismoi('NOM_MAILLA', matria, 'MATR_ASSE', repk=mailla)
-    call jelira(mailla//'.NOMNOE', 'NOMUTI', nbnoeu)
+    call jelira(mailla//'.COORDO', 'NUTIOC', nbnoeu)
+    nbnoeu = nbnoeu/3
     long = 6*nbnoeu
 !
     gran = 'DEPL_R  '

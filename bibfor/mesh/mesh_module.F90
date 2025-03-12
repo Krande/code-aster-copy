@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,8 @@ module mesh_module
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "blas/ddot.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -235,7 +237,7 @@ contains
                     suppNodeNume(iNode) = meshConnex(nodeFirst+iNode-1)
                 end do
                 call jenuno(jexnum('&CATA.TM.NOMTM', meshCellType(suppNume)), suppCellType)
-                call jenuno(jexnum(mesh//'.NOMMAI', skinNume), cellName)
+                cellName = int_to_char8(skinNume)
 !
 ! --------- Get sign of normal from skin cell to its volumic support
                 call getSignNormalSkinToSupport(modelDime, skinNodeNume, suppNodeNume, &
@@ -603,16 +605,6 @@ contains
         lPrefCellNume = ASTER_FALSE
         prefCellName = ' '
         prefCellNume = -1
-        call getvtx(keywfact, 'PREF_MAILLE', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            call getvtx(keywfact, 'PREF_MAILLE', iocc=iocc, scal=prefCellName)
-            lPrefCellName = ASTER_TRUE
-        end if
-        call getvis(keywfact, 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            lPrefCellNume = ASTER_TRUE
-            call getvis(keywfact, 'PREF_NUME', iocc=iocc, scal=prefCellNume)
-        end if
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -648,13 +640,7 @@ contains
             if (lenPrefName+lenPrefPrev .gt. 8) then
                 call utmess('F', 'MESH2_1')
             end if
-            cellName = prefCellName(1:lenPrefName)//knume
-        else if (lPrefCellName) then
-            lenPrefPrev = lxlgut(cellName)-1
-            if (lenPrefName+lenPrefPrev .gt. 8) then
-                call utmess('F', 'MESH2_1')
-            end if
-            cellName = prefCellName(1:lenPrefName)//cellName(2:8)
+            cellName = knume
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -690,16 +676,6 @@ contains
         lPrefNodeNume = ASTER_FALSE
         prefNodeName = ' '
         prefNodeNume = -1
-        call getvtx(keywfact, 'PREF_NOEUD', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            lPrefNodeName = ASTER_TRUE
-            call getvtx(keywfact, 'PREF_NOEUD', iocc=iocc, scal=prefNodeName)
-        end if
-        call getvis(keywfact, 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            lPrefNodeNume = ASTER_TRUE
-            call getvis(keywfact, 'PREF_NUME', iocc=iocc, scal=prefNodeNume)
-        end if
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -735,13 +711,7 @@ contains
             if (lenPrefName+lenPrefPrev .gt. 8) then
                 call utmess('F', 'MESH2_1')
             end if
-            nodeName = prefNodeName(1:lenPrefName)//knume
-        else if (lPrefNodeName) then
-            lenPrefPrev = lxlgut(nodeName)-1
-            if (lenPrefName+lenPrefPrev .gt. 8) then
-                call utmess('F', 'MESH2_1')
-            end if
-            nodeName = prefNodeName(1:lenPrefPrev)//nodeName(2:8)
+            nodeName = knume
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -858,7 +828,7 @@ contains
         call utnono(" ", mesh, 'NOEUD', nodeGroup, nodeName, &
                     iret)
         if (iret .eq. 0) then
-            call jenonu(jexnom(mesh//'.NOMNOE', nodeName), nodeNume)
+            nodeNume = char8_to_int(nodeName)
         else if (iret .eq. 10) then
             call utmess('F', 'MESH3_1', sk=nodeGroup)
         else if (iret .eq. 1) then

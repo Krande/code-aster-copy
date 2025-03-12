@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
     character(len=9) :: car(nbcar)
     character(len=16) :: rep, repdis(nrd), concep, cmd, sym, symdis(nrd)
     character(len=19) :: cart(3), ligmo, cartdi
-    character(len=24) :: tmpdis, mlggno, mlgnno
+    character(len=24) :: tmpdis, mlggno
 !
 ! --------------------------------------------------------------------------------------------------
     data repdis/'GLOBAL          ', 'LOCAL           '/
@@ -86,7 +86,6 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
     call getres(nomu, concep, cmd)
     tmpdis = nomu//'.DISCRET'
     mlggno = noma//'.GROUPENO'
-    mlgnno = noma//'.NOMNOE'
     ligmo = nomo//'.MODELE    '
 !
 !   Vérification des dimensions / modélisations

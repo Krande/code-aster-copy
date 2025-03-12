@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,7 +140,7 @@ MU2 = DEFI_MATERIAU(
 
 CHMUL2 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MU2))
 
-MA3 = CREA_MAILLAGE(MAILLAGE=MA, CREA_MAILLE=_F(NOM="PLAQ2", GROUP_MA="PLAQ1", PREF_MAILLE="MAIL"))
+MA3 = CREA_MAILLAGE(MAILLAGE=MA, CREA_MAILLE=_F(NOM="PLAQ2", GROUP_MA="PLAQ1"))
 
 MO3 = AFFE_MODELE(MAILLAGE=MA3, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DKT"))
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine orilgm(noma)
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: noma
 ! ======================================================================
@@ -65,7 +66,7 @@ subroutine orilgm(noma)
     aster_logical :: reorie, orivec
     character(len=8) :: k8b
     character(len=16) :: mofac, mofb3d, mofc3d
-    character(len=24) :: nomnoe, grmama, nnoeud, gmat
+    character(len=24) :: grmama, nnoeud, gmat
     character(len=24) :: valk(2)
     integer, pointer :: listCellNume(:) => null()
 !
@@ -89,7 +90,6 @@ subroutine orilgm(noma)
 !
 ! --- RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
 !     ------------------------------------------
-    nomnoe = noma//'.NOMNOE'
     grmama = noma//'.GROUPEMA'
 !
 ! --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
@@ -186,7 +186,8 @@ subroutine orilgm(noma)
             call getvtx(mofc3d, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
             if (n2 .ne. 0) then
                 call getvtx(mofc3d, 'NOEUD', iocc=iocc, scal=nnoeud, nbret=n2)
-                call jenonu(jexnom(nomnoe, nnoeud), noeud)
+                noeud = char8_to_int(nnoeud)
+
                 if (noeud .eq. 0) then
                     call utmess('F', 'MODELISA5_97', sk=nnoeud)
                 end if
@@ -201,7 +202,7 @@ subroutine orilgm(noma)
                     valk(2) = k8b
                     call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
                 end if
-                call jenonu(jexnom(nomnoe, k8b), noeud)
+                noeud = char8_to_int(k8b)
             end if
         end if
         call getvem(noma, 'GROUP_MA', mofc3d, 'GROUP_MA', iocc, &

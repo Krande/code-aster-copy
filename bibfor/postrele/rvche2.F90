@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbel, numail(*), nbnac, nnoeud(*)
     character(len=*) :: chelez, nomjv
@@ -175,8 +176,8 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
                     xnormr = xnormr+axer(i)*axer(i)
                 end do
                 if (xnormr .lt. epsi) then
-                    call jenuno(jexnum(nomma//'.NOMMAI', imail), nomail)
-                    call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
+                    nomail = int_to_char8(imail)
+                    nonoeu = int_to_char8(nunoe)
                     valk(1) = nomail
                     valk(2) = nonoeu
                     valr = vale(1+3*(nunoe-1))
@@ -194,8 +195,8 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
                 end do
                 xnormr = sqrt(xnormr)
                 if (xnormr .lt. epsi) then
-                    call jenuno(jexnum(nomma//'.NOMMAI', imail), nomail)
-                    call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
+                    nomail = int_to_char8(imail)
+                    nonoeu = int_to_char8(nunoe)
                     valk(1) = nomail
                     valk(2) = nonoeu
                     valr = vale(1+3*(nunoe-1))

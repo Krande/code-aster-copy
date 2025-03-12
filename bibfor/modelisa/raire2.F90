@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
 #include "asterfort/jexnum.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 #include "blas/ddot.h"
 !
     integer :: nbgr, nbno, nbnoeu, tabnoe(nbnoeu)
@@ -47,7 +48,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
 !
     character(len=8) :: k8b
     character(len=8) :: nomnoe
-    character(len=24) :: nomgr, magrno, manono, magrma, manoma
+    character(len=24) :: nomgr, magrno, magrma, manoma
     real(kind=8) :: zero, x(8), y(8), z(8), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
     aster_logical :: lfonc
@@ -83,7 +84,6 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
 !        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
     call compma(noma, nbgr, ligrma, nbma)
     magrno = noma//'.GROUPENO'
-    manono = noma//'.NOMNOE'
     magrma = noma//'.GROUPEMA'
     manoma = noma//'.CONNEX'
     noemax = 0
@@ -110,7 +110,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
     else if (nno .ne. 0) then
         call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1, &
                     1, nomnoe, nno)
-        call jenonu(jexnom(manono, nomnoe), inoe)
+        inoe = char8_to_int(nomnoe)
         xg = vale(1+3*(inoe-1)+1-1)
         yg = vale(1+3*(inoe-1)+2-1)
         zg = vale(1+3*(inoe-1)+3-1)

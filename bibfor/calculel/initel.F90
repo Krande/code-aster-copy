@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine initel(ligrel, l_calc_rigi)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=19), intent(in) :: ligrel
@@ -156,7 +157,7 @@ subroutine initel(ligrel, l_calc_rigi)
             do ino = 1, nbnoma
                 nuno = connex(zi(iconx2+numa-1)+ino-1)
                 if (vprin(nuno) .ne. 1) then
-                    call jenuno(jexnum(ma//'.NOMMAI', numa), nomail)
+                    nomail = int_to_char8(numa)
                     call utmess('A', 'MODELE1_63', sk=nomail)
                     goto 71
                 end if

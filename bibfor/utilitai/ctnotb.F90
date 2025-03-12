@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
+#include "asterfort/int_to_char8.h"
 !
     integer, parameter :: ndim = 3
     integer :: nbcmp, nbno, nbval
@@ -217,7 +218,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
                     table_vali(1) = zi(jniord+i-1)
                     if (typac .eq. 'MODE') table_vali(1+1) = zi(jival+i-1)
                 end if
-                call jenuno(jexnum(noma//'.NOMNOE', ino), kno)
+                kno = int_to_char8(ino)
                 table_valk(kk+1) = kno
 !
 !

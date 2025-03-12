@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm, &
 !
 !        SOIT LA NUMEROTATION IMPLICITE TOTALE :
 !          1- LE NOEUD FACTICE 0
-!          1- LES NOEUDS PHYSIQUES DU MAILLAGE (NI) / ORDRE DE .NOMNOE
+!          1- LES NOEUDS PHYSIQUES DU MAILLAGE (NI)
 !          3- LES NOEUDS TARDIFS DU MAILLAGE (&I)   /
 !          4- LES NOEUDS TARDIFS DU MODELE   (&LMI)
 !          5- LES NOEUDS TARDIFS DE LA CHARGE 1 (&LCH1I)

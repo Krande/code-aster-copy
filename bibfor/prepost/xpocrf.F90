@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 #include "asterfort/jexnum.h"
 #include "asterfort/ltnotb.h"
 #include "asterfort/utmess.h"
+#include "asterfort/assert.h"
 !
     character(len=8) :: modele, maxfem
     integer :: mftot, nftot
@@ -86,18 +87,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg2)
 !
     if ((nftot .gt. 0) .and. (mftot .gt. 0)) then
-!
-!       ATTRIBUTION DU NOM DES NOEUDS DU FOND DE FISSURE
-        do ino = 1, nftot
-            call codent(ino, 'G', chn)
-            call jecroc(jexnom(maxfem//'.NOMNOE', 'NF'//chn))
-        end do
-!       ATTRIBUTION DU NOM DES MAILLES DU FOND DE FISSURE
-        do ima = 1, mftot
-            call codent(ima, 'G', chn)
-            call jecroc(jexnom(maxfem//'.NOMMAI', 'MF'//chn))
-        end do
-!
+        ASSERT(.false.)
         ncompt = 0
         icompt = 0
         coord2 = maxfem//'.COORDO'

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ test = CA.TestCase()
 
 test.assertTrue(meshHE8.checkJoints())
 
-mesh = CREA_MAILLAGE(MAILLAGE=meshHE8, INFO=1, MODI_HHO=_F(TOUT="OUI", PREF_NOEUD="AN"))
+mesh = CREA_MAILLAGE(MAILLAGE=meshHE8, INFO=1, MODI_HHO=_F(TOUT="OUI"))
 mesh.debugPrint()
 
 geomFieldNode = CREA_CHAMP(

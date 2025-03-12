@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ MATRI3 = CREA_MAILLAGE(MAILLAGE=MAP, MODI_MAILLE=_F(TOUT="OUI", OPTION="QUAD_TRI
 #
 # TRANSFO EN TRIA6
 
-MATRI6 = CREA_MAILLAGE(MAILLAGE=MATRI3, LINE_QUAD=_F(TOUT="OUI", PREF_NOEUD="NW"))
+MATRI6 = CREA_MAILLAGE(MAILLAGE=MATRI3, LINE_QUAD=_F(TOUT="OUI"))
 #
 # TRANSFO EN TRIA7
 
-MA2 = CREA_MAILLAGE(MAILLAGE=MATRI6, MODI_MAILLE=_F(TOUT="OUI", OPTION="TRIA6_7", PREF_NOEUD="NT"))
+MA2 = CREA_MAILLAGE(MAILLAGE=MATRI6, MODI_MAILLE=_F(TOUT="OUI", OPTION="TRIA6_7"))
 
 # Pertubation legere des coordonnes du maillage
 MA2 = MODI_MAILLAGE(reuse=MA2, MAILLAGE=MA2, DEFORME=_F(OPTION="TRAN", ALEA=1.0e-8))

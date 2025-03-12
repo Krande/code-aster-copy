@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: iret
     character(len=*) :: cns1z, basez, cns2z
@@ -262,8 +264,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             ino1 = zi(lnoeum-1+jddl)
             kcmp = zk8(lrangm-1+jddl)
 ! ICI ON SUPPOSE QUE LES NOEUDS INTERFACES ONT LE MEME NOM
-            call jenuno(jexnum(ma2//'.NOMNOE', ino1), nono)
-            call jenonu(jexnom(ma1//'.NOMNOE', nono), ino1)
+            nono = int_to_char8(ino1)
+            ino1 = char8_to_int(nono)
 !
             do icmp = 1, ncmp
                 if (cns1c(icmp) .eq. kcmp) then

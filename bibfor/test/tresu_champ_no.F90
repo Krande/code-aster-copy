@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
 #include "asterfort/nbec.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 #include "jeveux.h"
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
@@ -140,7 +141,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
 !
 !        -- RECUPERATION DU NUMERO DU NOEUD:
     l_ok = ASTER_FALSE
-    call jenonu(jexnom(nomma//'.NOMNOE', nonoeu(1:8)), ino)
+    ino = char8_to_int(nonoeu(1:8))
     inog = ino
     call asmpi_comm_vect('MPI_MAX', 'I', sci=inog)
     if (inog .eq. 0) then

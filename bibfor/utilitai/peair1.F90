@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbma, lisma(*)
     real(kind=8) :: aire, long
@@ -53,7 +54,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
     real(kind=8) :: vgn2(3)
     real(kind=8) :: x1, y1, z1, x2, y2, z2, xxl
     character(len=8) :: nomail, typel
-    character(len=24) :: mlgnma, mlgcnx, mlgcoo
+    character(len=24) :: mlgcnx, mlgcoo
     character(len=24) :: valk(2)
     integer, pointer :: mailles(:) => null()
     integer, pointer :: noeud1(:) => null()
@@ -71,7 +72,6 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
     orig(2) = zero
     orig(3) = zero
 !
-    mlgnma = mesh//'.NOMMAI'
     mlgcnx = mesh//'.CONNEX'
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
@@ -87,7 +87,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
     nbel = 0
     do ima = 1, nbma
         numa = lisma(ima)
-        call jenuno(jexnum(mesh//'.NOMMAI', numa), nomail)
+        nomail = int_to_char8(numa)
 !
 !        TYPE DE LA MAILLE COURANTE :
 !
@@ -95,7 +95,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
         call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
 !
         if (typel(1:3) .ne. 'SEG') then
-            call jenuno(jexnum(mlgnma, numa), nomail)
+            nomail = int_to_char8(numa)
             valk(1) = nomail
             valk(2) = typel
             call utmess('F', 'UTILITY_1', nk=2, valk=valk)

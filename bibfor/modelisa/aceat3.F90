@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap, &
 #include "asterfort/nocart.h"
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8) :: noma, nomu, crit
@@ -61,7 +62,7 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap, &
 ! IN  NMMT   : INDIQUE SI MODI_METRIQUE POUR CHAQUE MAILLE
 ! ----------------------------------------------------------------------
     character(len=8) :: nommai, nomno1, nomno2, nomno3, nomno4
-    character(len=19) :: cartor, mlgnma, mlgnno
+    character(len=19) :: cartor
     character(len=24) :: tmpnor, tmpvor
     integer :: jdcmpo, jdvlvo, izk, iok1, iok2, ipa, imfin, i, ima, nummai
     integer :: no1, no2, no3, icoude, im0, nbdroi, nbcoud
@@ -76,8 +77,6 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap, &
 !     VERIFICATION QUE LES NOEUDS DONNES SONT DES EXTREMITES
 ! --- AFFECTATION DES VALEURS DU TAMPON DANS LA CARTE ORIENTATION :
 !     -------------------------------------------------------------
-    mlgnma = noma//'.NOMMAI'
-    mlgnno = noma//'.NOMNOE'
     cartor = nomu//'.CARORIEN'
     tmpnor = cartor//'.NCMP'
     tmpvor = cartor//'.VALV'
@@ -238,7 +237,7 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap, &
             else if (nmmt(nummai) .eq. 1) then
                 icoud2 = icoude
             else
-                call jenuno(jexnum(mlgnma, nummai), nommai)
+                nommai = int_to_char8(nummai)
                 call utmess('F', 'MODELISA_26', sk=nommai)
             end if
 !
@@ -251,12 +250,12 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap, &
             call nocart(cartor, 3, nbcmp, mode='NUM', nma=1, limanu=[nummai])
 !
             if (ivr(3) .eq. 2) then
-                call jenuno(jexnum(mlgnma, nummai), nommai)
-                call jenuno(jexnum(mlgnno, no1), nomno1)
-                call jenuno(jexnum(mlgnno, no2), nomno2)
-                call jenuno(jexnum(mlgnno, no3), nomno3)
+                nommai = int_to_char8(nummai)
+                nomno1 = int_to_char8(no1)
+                nomno2 = int_to_char8(no2)
+                nomno3 = int_to_char8(no3)
                 if (nno .eq. 4) then
-                    call jenuno(jexnum(mlgnno, no4), nomno4)
+                    nomno4 = int_to_char8(no4)
                 else
                     nomno4 = ' '
                 end if

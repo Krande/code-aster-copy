@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -275,50 +275,6 @@ subroutine asmaco(ma1, ma2, mag)
     nbno = zi(iadime-1+1)
     nbn1 = dim1(1)
     nbn2 = dim2(1)
-!CC   ------------------------------------------------------------------
-!CC   --OBJET .NOMMAI:
-!CC   ON SUPPRIME LES NBNGM MAILLES DU GROUP_MA A COLLER DANS LES 2
-!CC   MAILLAGES
-!CC   ------------------------------------------------------------------
-    if (nbma .gt. 0) then
-        call jecreo(mag//'.NOMMAI', 'G N K8')
-        call jeecra(mag//'.NOMMAI', 'NOMMAX', nbma)
-        do i = 1, nbm1-nbngm
-            call codent(i, 'G', kind)
-            noma = 'M'//kind
-            call jecroc(jexnom(mag//'.NOMMAI', noma))
-        end do
-        if (elim) then
-            decal = nbngm
-        else
-            decal = 0
-        end if
-        do i = 1, nbm2-decal
-            call codent(nbm1-nbngm+i, 'G', kind)
-            noma = 'M'//kind
-            call jecroc(jexnom(mag//'.NOMMAI', noma))
-        end do
-    end if
-!CC   ------------------------------------------------------------------
-!CC   --OBJET .NOMNOE :
-!CC   TOUS LES NOEUDS DES 2 MAILLAGES SONT CONSERVES, Y COMPRIS CEUX
-!CC   DU MAILLAGE 2 REDONDANTS AVEC CEUX DU MAILLAGE 1
-!CC   (AU NOMBRE DE NNODIF)
-!CC   ------------------------------------------------------------------
-    if (nbno .gt. 0) then
-        call jecreo(mag//'.NOMNOE', 'G N K8')
-        call jeecra(mag//'.NOMNOE', 'NOMMAX', nbno)
-        do i = 1, nbn1
-            call codent(i, 'G', kind)
-            nono = 'N'//kind
-            call jecroc(jexnom(mag//'.NOMNOE', nono))
-        end do
-        do i = 1, nbn2
-            call codent(nbn1+i, 'G', kind)
-            nono = 'N'//kind
-            call jecroc(jexnom(mag//'.NOMNOE', nono))
-        end do
-    end if
 !CC   ------------------------------------------------------------------
 !CC   --OBJET .CONNEX :
 !CC   ON NE RETIENT QUE LES MAILLES HORS DES 2 GROUP_MA CGPM1 ET CGPM2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine gverlc(resu, compor, iord0)
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     integer, intent(in) :: iord0
@@ -131,7 +132,7 @@ subroutine gverlc(resu, compor, iord0)
                 if (calv(iadc) .eq. 'ELAS') then
                     goto 10
                 else
-                    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                    nomail = int_to_char8(ima)
                     valk(1) = 'ELAS'
                     valk(2) = calv(iadc)
                     valk(3) = nomail
@@ -190,7 +191,7 @@ subroutine gverlc(resu, compor, iord0)
                             goto 20
                         else
 !--------------------Validity NOOK-> Fatal Error
-                            call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                            nomail = int_to_char8(ima)
                             valk(1) = resv(1+iadr-1+1)
                             valk(2) = nomail
                             if (cdefnook .eq. 0) then
@@ -200,7 +201,7 @@ subroutine gverlc(resu, compor, iord0)
                         end if
                     else
 !--------------If not same deformation
-                        call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                        nomail = int_to_char8(ima)
                         valk(1) = resv(1+iadr-1+1)
                         valk(2) = calv(1+iadc-1+1)
                         valk(3) = nomail
@@ -225,7 +226,7 @@ subroutine gverlc(resu, compor, iord0)
 !
 ! ----------------- If not same comportment -> Alarm and check deformation validity
 !
-                    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                    nomail = int_to_char8(ima)
                     valk(1) = resv(iadr)
                     valk(2) = calv(iadc)
                     valk(3) = nomail
@@ -239,7 +240,7 @@ subroutine gverlc(resu, compor, iord0)
                     if (resv(1+iadr-1+1) .eq. calv(1+iadc-1+1)) then
                         if (calv(1+iadc-1+1) (1:5) .ne. 'PETIT') then
 ! ------------------Same non licite deformation -> Fatal Error
-                            call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                            nomail = int_to_char8(ima)
                             valk(1) = resv(1+iadr-1+1)
                             valk(2) = nomail
                             if (cdefnook .eq. 0) then
@@ -249,7 +250,7 @@ subroutine gverlc(resu, compor, iord0)
                         end if
                     else
 ! ----------Non same deformation -> Check validity
-                        call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                        nomail = int_to_char8(ima)
                         valk(1) = resv(1+iadr-1+1)
                         valk(2) = calv(1+iadc-1+1)
                         valk(3) = nomail

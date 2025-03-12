@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine fonno8(resu, noma, tablev, vect)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/panbno.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: noma, resu
     integer :: tablev(2)
@@ -84,7 +85,7 @@ subroutine fonno8(resu, noma, tablev, vect)
 !
         do ilev = 1, nblev
             comp = 0
-            call jenonu(jexnom(noma//'.NOMMAI', mail(ilev)), iret)
+            iret = char8_to_int(mail(ilev))
             call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', iamase)
             ityp = iatyma-1+iret
 !
@@ -122,7 +123,7 @@ subroutine fonno8(resu, noma, tablev, vect)
     else
         ASSERT(.FALSE.)
     end if
-    call jenonu(jexnom(noma//'.NOMNOE', zk8(jfon)), iret)
+    iret = char8_to_int(zk8(jfon))
 !
     vect(1) = xg/nbnott(1)-vale((iret-1)*3+1)
     vect(2) = yg/nbnott(1)-vale((iret-1)*3+2)

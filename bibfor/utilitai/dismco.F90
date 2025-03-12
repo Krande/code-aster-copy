@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: repi, ierd
     character(len=*) :: nomob, repk
@@ -99,7 +100,7 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
                     1, 1, iadc)
 !
         if (iadc .gt. 0) then
-            call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+            nomail = int_to_char8(ima)
             if (cesv(1+iadc-1+2) (1:9) .eq. 'COMP_INCR') then
                 incr = .true.
             end if

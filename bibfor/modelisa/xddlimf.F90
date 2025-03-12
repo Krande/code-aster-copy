@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xdvois.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: ino, jnoxfv, ndim
     real(kind=8) :: lsn(4), lst(4), valimr, direct(3)
@@ -404,7 +405,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
                 do j = 1, ndim
                     geom(ndim*(i-1)+j) = zr(iadrco-1+3*(connex(zi(jconx2+numac-1)+i-1)-1)+j)
                 end do
-                call jenuno(jexnum(mesh//'.NOMNOE', connex(zi(jconx2+numac-1)+i-1)), name_node)
+                name_node = int_to_char8(connex(zi(jconx2+numac-1)+i-1))
                 name_ma(i) = name_node
 !     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
 !            ASSERT(ncompn.eq.5)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
     integer :: ifm
     character(len=8) :: noma
     integer :: iptc
@@ -77,9 +78,9 @@ subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
 ! --- ACCES A L'ELEMENT EN COURS
 !
     nummae = nint(zr(jtabf+ztabf*(iptc-1)+1))
-    call jenuno(jexnum(noma//'.NOMMAI', nummae), nomesc)
+    nomesc = int_to_char8(nummae)
     nummam = nint(zr(jtabf+ztabf*(iptc-1)+2))
-    call jenuno(jexnum(noma//'.NOMMAI', nummam), nommai)
+    nommai = int_to_char8(nummam)
     write (ifm, 1000) iptc, nomesc, nommai
 !
 ! --- POINT DE CONTACT EN COURS
@@ -95,19 +96,19 @@ subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
 ! --- FORMATS AFFICHAGE
 !
 1000 format(' <CONTACT>     * LA MAILLE DE CONTACT ', i5,&
-    &        '(', a8, '/', a8, ')')
+&        '(', a8, '/', a8, ')')
 1001 format(' <CONTACT>        A POUR PROPRIETES')
 !
 1002 format(' <CONTACT>          - LAMBDA         : ', e10.3,&
-    &        ' - COEF_AUGM_CONT :  ', e10.3,&
-    &        ' - COEF_AUGM_FROT :  ', e10.3,&
-    &        ' - JEU SUPP.      :  ', e10.3)
+&        ' - COEF_AUGM_CONT :  ', e10.3,&
+&        ' - COEF_AUGM_FROT :  ', e10.3,&
+&        ' - JEU SUPP.      :  ', e10.3)
 !
 1003 format(' <CONTACT>          AVEC FORMULATION EN VITESSE  ',&
-    &        ' - INC. DE TEMPS  :  ', e10.3,&
-    &        ' - THETA          :  ', e10.3)
+&        ' - INC. DE TEMPS  :  ', e10.3,&
+&        ' - THETA          :  ', e10.3)
 1004 format(' <CONTACT>          AVEC FORMULATION EN DEPLACEMENT  ',&
-    &        ' - INC. DE TEMPS  :  ', e10.3)
+&        ' - INC. DE TEMPS  :  ', e10.3)
 !
     call jedema()
 !

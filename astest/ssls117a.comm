@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ MA0 = LIRE_MAILLAGE(VERI_MAIL=_F(VERIF="OUI"), FORMAT="MED")
 
 # creation de plaq2 : meme noeuds que plaq1 mais mailles distinctes
 
-MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_MAILLE=_F(NOM="PLAQ2", PREF_MAILLE="B", GROUP_MA="PLAQ1"))
+MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_MAILLE=_F(NOM="PLAQ2"))
 
 MA1 = DEFI_GROUP(
     reuse=MA1,

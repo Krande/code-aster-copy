@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: modsta, mailla, numddl
     integer :: numexi, neq, iddeeq
@@ -59,7 +60,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
 ! OUT : PSIDE  : VALEURS DU VECTEUR PSI*DELTA
     real(kind=8) :: xnorm, depl(6)
     character(len=8) :: nomnoe
-    character(len=24) :: magrno, manono
+    character(len=24) :: magrno
     character(len=24) :: valk(3)
     character(len=8) :: kbid
     integer :: ibid, iordr(1), ier
@@ -87,7 +88,6 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
     call jemarq()
     epsi = 1.d-4
     magrno = ' '
-    manono = ' '
     ier = 0
 !
 !     --- RECUPERATION DE LA DIRECTION SISMIQUE  ---
@@ -132,13 +132,12 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
             call compno(mailla, nbgr, group_no, nbno)
             call wkvect('&&TRMULT.NOEUD', 'V V K8', nbno, idno)
             magrno = mailla//'.GROUPENO'
-            manono = mailla//'.NOMNOE'
             ii = -1
             do i = 1, nbgr
                 call jelira(jexnom(magrno, group_no(i)), 'LONUTI', nb)
                 call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
                 do in = 0, nb-1
-                    call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
+                    nomnoe = int_to_char8(zi(ldgn+in))
                     ii = ii+1
                     zk8(idno+ii) = nomnoe
                 end do

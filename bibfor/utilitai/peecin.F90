@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,7 @@ subroutine peecin(resu, modele, mate, mateco, cara, nh, nbocc)
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara
@@ -67,7 +68,7 @@ subroutine peecin(resu, modele, mate, mateco, cara, nh, nbocc)
 !
     integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
     integer :: ie, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, lfreq, nbparr, nbpard
-    integer :: nbpaep, iocc, jma, nf, inume, ier
+    integer :: nbpaep, iocc, jma, nf, inume, ier, nbMaiT
     parameter(nbpaep=2, nbparr=6, nbpard=4)
     real(kind=8) :: prec, xfreq, varpep(nbpaep), valer(3), inst
     real(kind=8) :: rundf
@@ -79,7 +80,7 @@ subroutine peecin(resu, modele, mate, mateco, cara, nh, nbocc)
     character(len=19) :: chelem, knum, kins, field_node, field_elem, ligrel, chvarc, chvref
     character(len=19) :: chdisp, chvite
     character(len=24) :: chmasd, chfreq, typcha, chtime, chgeom, chcara(18)
-    character(len=24) :: chtemp, opt, mlggma, mlgnma, chharm, nomgrm, valk2(2)
+    character(len=24) :: chtemp, opt, mlggma, chharm, nomgrm, valk2(2)
     aster_logical :: exitim, l_modal
     complex(kind=8) :: c16b
 !
@@ -132,7 +133,6 @@ subroutine peecin(resu, modele, mate, mateco, cara, nh, nbocc)
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 90
     noma = chgeom(1:8)
-    mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
 !
     call exlim3('ENER_CIN', 'V', modele, ligrel)
@@ -359,14 +359,14 @@ subroutine peecin(resu, modele, mate, mateco, cara, nh, nbocc)
                 call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc, &
                             nbma, zk8(jma), nm)
                 valk(2) = 'MAILLE'
+                call jelira(noma//'.TYPMAIL', 'LONMAX', nbMaiT)
                 do im = 1, nbma
                     nommai = zk8(jma+im-1)
-                    call jeexin(jexnom(mlgnma, nommai), iret)
-                    if (iret .eq. 0) then
+                    nume = char8_to_int(nommai)
+                    if ((nume .gt. nbMaiT) .or. (nume .le. 0)) then
                         call utmess('A', 'UTILITAI3_49', sk=nommai)
                         goto 50
                     end if
-                    call jenonu(jexnom(mlgnma, nommai), nume)
                     call peenca(chelem, nbpaep, varpep, 1, [nume])
                     valk(1) = nommai
                     if (nr .ne. 0) then

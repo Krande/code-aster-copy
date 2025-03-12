@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -149,9 +149,7 @@ MAIL1 = LIRE_MAILLAGE(FORMAT="MED")
 
 MAIL1 = DEFI_GROUP(reuse=MAIL1, MAILLAGE=MAIL1, CREA_GROUP_MA=(_F(NOM="PLAQUE", TOUT="OUI")))
 
-MAILL = CREA_MAILLAGE(
-    MAILLAGE=MAIL1, CREA_MAILLE=_F(NOM="GRILLE", GROUP_MA="PLAQUE", PREF_MAILLE="B")
-)
+MAILL = CREA_MAILLAGE(MAILLAGE=MAIL1, CREA_MAILLE=_F(NOM="GRILLE", GROUP_MA="PLAQUE"))
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MAILL, AFFE=_F(TOUT="OUI", MATER=MATER))
 

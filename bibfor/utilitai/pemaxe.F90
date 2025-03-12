@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbcmp, nuord, nbmail, numemail(*)
     character(len=8) :: nomcmp(nbcmp), modele, lieu
@@ -89,7 +90,6 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
     character(len=7) :: chnuma
     character(len=8) :: noma, k8b, nomgd, nomva, knmin, knmax
     character(len=19) :: cesout
-    character(len=24) :: nommai
     aster_logical :: exist, l_pmesh
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
@@ -114,8 +114,6 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
     call asmpi_info(rank=mrank, size=msize)
     rank = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-!
-    nommai = noma//'.NOMMAI'
 !
 ! --- CREATION D'UN TABLEAU D'INDICES POUR REPERER
 !     LES MAILLES DU POST TRAITEMENT
@@ -219,9 +217,9 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
             if (l_pmesh) then
                 ! Pas de numerotation globale
                 call codent(nmax, "G", chnuma)
-                knmax = 'M'//chnuma
+                knmax = chnuma
             else
-                call jenuno(jexnum(nommai, nmax), knmax)
+                knmax = int_to_char8(nmax)
             end if
         else
             knmax = ' '
@@ -230,9 +228,9 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
             if (l_pmesh) then
                 ! Pas de numerotation globale
                 call codent(nmin, "G", chnuma)
-                knmin = 'M'//chnuma
+                knmin = chnuma
             else
-                call jenuno(jexnum(nommai, nmin), knmin)
+                knmin = int_to_char8(nmin)
             end if
         else
             knmin = ' '

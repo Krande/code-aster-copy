@@ -30,11 +30,6 @@ cata_msg = {
  la (super)maille :  %(k1)s  est en double.
 """
     ),
-    3: _(
-        """
- la maille :  %(k1)s  est en double.
-"""
-    ),
     4: _(
         """
  le GROUP_MA :  %(k1)s  est en double. on ignore le second.

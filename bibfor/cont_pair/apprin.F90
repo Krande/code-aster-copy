@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine apprin(mesh, newgeo, pair_tole, nb_elem_mast, &
 #include "asterfort/apcoor.h"
 #include "asterfort/aptype.h"
 #include "asterfort/prjint.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
@@ -123,7 +124,7 @@ subroutine apprin(mesh, newgeo, pair_tole, nb_elem_mast, &
         elem_slav_indx = elem_slav_nume+1-slav_indx_mini
         elem_type_nume = v_mesh_typmail(elem_slav_nume)
         if (debug) then
-            call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
+            elem_slav_name = int_to_char8(elem_slav_nume)
             write (*, *) "Slave element", i_elem_slav, elem_slav_nume, elem_slav_name
         end if
 !
@@ -172,7 +173,7 @@ subroutine apprin(mesh, newgeo, pair_tole, nb_elem_mast, &
                 elem_mast_indx = elem_mast_nume+1-mast_indx_mini
                 elem_type_nume = v_mesh_typmail(elem_mast_nume)
                 if (debug) then
-                    call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+                    elem_mast_name = int_to_char8(elem_mast_nume)
                     write (*, *) "Master element", i_elem_mast, elem_mast_nume, elem_mast_name
                 end if
 !
@@ -226,8 +227,8 @@ subroutine apprin(mesh, newgeo, pair_tole, nb_elem_mast, &
                         elem_slav_start(1) = elem_slav_nume
                         nb_slav_start = 1
                         elem_slav_flag(elem_slav_indx) = 1
-                        call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
-                        call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
+                        elem_mast_name = int_to_char8(elem_mast_nume)
+                        elem_slav_name = int_to_char8(elem_slav_nume)
                         if (debug) then
                             write (*, *) "Depart trouvé(M/S): ", elem_mast_name, elem_slav_name
                         end if

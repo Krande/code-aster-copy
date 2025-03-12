@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,11 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
 #include "asterfort/cleanListOfGrpNo.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: meshz, typez_objet
     integer, intent(inout) :: list_size
@@ -46,9 +48,9 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
 !                       MAILLE OU NOEUD OU GROUP_NO OU GROUP_MA
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, ino, ima
+    integer :: iret, ino, ima, nbno, nbma
     character(len=8) :: mesh, type_obj
-    character(len=24) :: noeuma, grnoma, mailma, grmama, object
+    character(len=24) :: grnoma, grmama, object
     character(len=24) :: valk(2)
     aster_logical :: l_parallel_mesh
     aster_logical, parameter :: l_stop = ASTER_TRUE
@@ -61,9 +63,7 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
         goto 999
     end if
 !
-    noeuma = mesh//'.NOMNOE'
     grnoma = mesh//'.GROUPENO'
-    mailma = mesh//'.NOMMAI'
     grmama = mesh//'.GROUPEMA'
 !
     l_parallel_mesh = isParallelMesh(mesh)
@@ -98,17 +98,12 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
             call utmess('F', 'MODELISA7_86')
         end if
 !
-        call jeexin(noeuma, iret)
-        if ((list_size .ne. 0) .and. (iret .eq. 0)) then
-            valk(1) = type_obj
-            valk(2) = mesh
-            call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
-        end if
-!
+        call jelira(mesh//'.COORDO', 'NUTIOC', nbno)
+        nbno = nbno/3
         do ino = 1, list_size
             object = list_obj(ino)
-            call jenonu(jexnom(noeuma, object), iret)
-            if (iret .eq. 0) then
+            iret = char8_to_int(object)
+            if ((iret .gt. nbno) .or. (iret .le. 0)) then
                 valk(1) = object
                 valk(2) = mesh
                 call utmess('F', 'MODELISA7_76', nk=2, valk=valk)
@@ -144,17 +139,11 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
             call utmess('F', 'MODELISA7_86')
         end if
 !
-        call jeexin(mailma, iret)
-        if ((list_size .ne. 0) .and. (iret .eq. 0)) then
-            valk(1) = type_obj
-            valk(2) = mesh
-            call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
-        end if
-!
+        call jelira(mesh//'.TYPMAIL', 'LONMAX', nbma)
         do ima = 1, list_size
             object = list_obj(ima)
-            call jenonu(jexnom(mailma, object), iret)
-            if (iret .eq. 0) then
+            iret = char8_to_int(object)
+            if ((iret .gt. nbma) .or. (iret .le. 0)) then
                 valk(1) = object
                 valk(2) = mesh
                 call utmess('F', 'MODELISA6_10', nk=2, valk=valk)

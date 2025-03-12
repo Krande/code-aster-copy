@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -160,8 +160,9 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
     end if
 !
     call jeveuo(loadLigrel//'.NBNO', 'E', jnbno)
-    nomnoe = mesh//'.NOMNOE'
-    call jelira(nomnoe, 'NOMMAX', nbnoeu)
+    nomnoe = mesh//'.COORDO'
+    call jelira(nomnoe, 'LONMAX', nbnoeu)
+    nbnoeu = nbnoeu/3
 !
     mesnoe = '&&CAFONO.MES_NOEUDS'
     motcls(1) = 'GROUP_NO'

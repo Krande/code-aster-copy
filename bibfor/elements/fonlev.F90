@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ subroutine fonlev(resu, noma, nbnoff)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: resu, noma
     integer :: nbnoff
@@ -59,7 +61,7 @@ subroutine fonlev(resu, noma, nbnoff)
     character(len=6) :: nompro
     character(len=8) :: maille, type, noeug, typmcl(2), motcle(2)
     character(len=9) :: typlev(2), motfac, valk(2)
-    character(len=24) :: nomobj, grouma, nommai, conec, trav, trav2
+    character(len=24) :: nomobj, grouma, conec, trav, trav2
     character(len=8), pointer :: inf(:) => null()
     character(len=8), pointer :: sup(:) => null()
 !     -----------------------------------------------------------------
@@ -72,7 +74,6 @@ subroutine fonlev(resu, noma, nbnoff)
 !     INITIALISATION DE VARIABLES
 !     ------------------------------------------------------------------
     grouma = noma//'.GROUPEMA'
-    nommai = noma//'.NOMMAI'
     conec = noma//'.CONNEX'
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 !
@@ -130,8 +131,8 @@ subroutine fonlev(resu, noma, nbnoff)
 !
 !
             do i = 1, nbmai
-                call jenuno(jexnum(nommai, zi(jadr-1+i)), maille)
-                call jenonu(jexnom(nommai, maille), ibid)
+                maille = int_to_char8(zi(jadr-1+i))
+                ibid = char8_to_int(maille)
                 ityp = iatyma-1+ibid
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
                 typma = type(1:4)
@@ -197,8 +198,8 @@ subroutine fonlev(resu, noma, nbnoff)
             do i = 1, nbnoff
                 compta = 0
                 do j = 1, nbmal
-                    call jenuno(jexnum(nommai, zi(jadr-1+j)), maille)
-                    call jenonu(jexnom(nommai, maille), ibid)
+                    maille = int_to_char8(zi(jadr-1+j))
+                    ibid = char8_to_int(maille)
                     ityp = iatyma-1+ibid
                     call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
                     call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
@@ -210,9 +211,9 @@ subroutine fonlev(resu, noma, nbnoff)
                         call utmess('F', 'RUPTURE0_65', nk=2, valk=valk)
                     end if
                     call jeveuo(jexnum(conec, ibid), 'L', iamase)
-                    call jenuno(jexnum(noma//'.NOMNOE', zi(iamase)), noeug)
+                    noeug = int_to_char8(zi(iamase))
                     do k = 1, nn
-                        call jenuno(jexnum(noma//'.NOMNOE', zi(iamase-1+k)), noeug)
+                        noeug = int_to_char8(zi(iamase-1+k))
                         if (noeug .eq. zk8(jnoe1-1+i)) then
                             compta = compta+1
                             goto 610

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ MALINE = MODI_MAILLAGE(
 # PREF_NOEUD sert a definir le prefix du nom des noeuds milieux. Par defaut
 # c'est NS. Pour les gros maillages, il est préférable de mettre un prefix
 # en une seule lettre. Z est libre donc on peut l'utiliser.
-MA = CREA_MAILLAGE(MAILLAGE=MALINE, LINE_QUAD=_F(TOUT="OUI", PREF_NOEUD="Z"))
+MA = CREA_MAILLAGE(MAILLAGE=MALINE, LINE_QUAD=_F(TOUT="OUI"))
 
 # Barsoum
 MA = MODI_MAILLAGE(

@@ -75,6 +75,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 ! --------------------------------------------------------------------------------------------------
     integer :: i, idw, ier, iisec, ioc, isec, itabl
     integer :: ivect, ixma, j
@@ -132,10 +134,10 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
     AS_ALLOCATE(vr=vale, size=nbval)
 !
     modmai = nomo//'.MAILLE'
-    mlgnma = noma//'.NOMMAI'
+    mlgnma = noma//'.TYPMAIL'
     mlggma = noma//'.GROUPEMA'
     ier = 0
-    call jelira(mlgnma, 'NOMMAX', nbmail)
+    call jelira(mlgnma, 'LONMAX', nbmail)
     call jeexin(modmai, ixma)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !
@@ -235,7 +237,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
                 call jelira(jexnom(mlggma, barre(i)), 'LONUTI', nbmagr)
                 groupe: do j = 1, nbmagr
                     nummai = zi(jdgm+j-1)
-                    call jenuno(jexnum(mlgnma, nummai), nommai)
+                    nommai = int_to_char8(nummai)
                     nutyel = zi(jdme+nummai-1)
                     do k = 1, nbtel
                         if (nutyel .eq. ntyele(k)) then
@@ -321,7 +323,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
     zk8(jdcbaf) = 'FCXP'
     do i = 1, nbaaff
         call jenuno(jexnum(tmpgen, i), nommai)
-        call jenonu(jexnom(mlgnma, nommai), nummai)
+        nummai = char8_to_int(nommai)
         zjdlm(nummai) = -1
         call jeveuo(jexnum(tmpgen, i), 'L', jdge)
         zr(jdvba) = zr(jdge)

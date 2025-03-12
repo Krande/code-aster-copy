@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 #include "blas/dcopy.h"
 !
     integer :: nh, nbocc
@@ -76,7 +77,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
 !
     integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
     integer :: ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
-    integer :: iocc, jma, icheml, ier
+    integer :: iocc, jma, icheml, ier, nbMaiT
     parameter(nbpaep=2, nbparr=6, nbpard=4)
     real(kind=8) :: prec, varpep(nbpaep), inst, valer(3), rundf
     character(len=1) :: base
@@ -87,7 +88,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
     character(len=19) :: chelem, knum, kins, ligrel, tabtyp(3), chvarc, chvref, ligrel2
     character(len=19) :: field_node, field_elem
     character(len=24) :: chtime, typcha, chgeom, chcara(18), chtemp, chharm, chdisp
-    character(len=24) :: compor, mlggma, mlgnma, nomgrm, valk2(2)
+    character(len=24) :: compor, mlggma, nomgrm, valk2(2)
     aster_logical :: exitim, l_temp
     complex(kind=8) :: c16b
 !
@@ -164,7 +165,6 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 90
     noma = chgeom(1:8)
-    mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
 !
     call exlim3('ENER_POT', 'V', modele, ligrel)
@@ -289,10 +289,11 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
             call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc, &
                         nbma, zk8(jma), nm)
             nbmasum = nbmasum+nbma
+            call jelira(noma//'.TYPMAIL', 'LONMAX', nbMaiT)
             do im = 1, nbma
                 nommai = zk8(jma+im-1)
-                call jeexin(jexnom(mlgnma, nommai), iret)
-                if (iret .eq. 0) then
+                nume = char8_to_int(zk8(jma+im-1))
+                if ((nume .gt. nbMaiT) .or. (nume .le. 0)) then
                     call utmess('A', 'UTILITAI3_49', sk=nommai)
                     zk8(jmim-1+im+decalim) = k8X
                     goto 150
@@ -559,7 +560,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
                 do im = 1, nbma
                     nommai = zk8(jmim-1+im+decalim)
                     if (nommai .ne. k8X) then
-                        call jenonu(jexnom(mlgnma, nommai), nume)
+                        nume = char8_to_int(nommai)
                         call peenca2(chelem, nbpaep, varpep, 1, [nume], &
                                      ligrel2, nbgr, ztot, ind, nbproc, &
                                      rang)

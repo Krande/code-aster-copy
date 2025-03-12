@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,6 +86,8 @@ subroutine op0167()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,7 +119,7 @@ subroutine op0167()
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
     character(len=24), parameter :: jvNodeNume = '&&OP0167.LISTNODE'
     integer :: nbCellIn, nbCellOut, nbCell, nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
-    integer :: nbNodeInCellOut, nbNodeInCellIn, iCount, hugeValue
+    integer :: nbNodeInCellOut, nbNodeInCellIn, iCount, hugeValue, nbCellOut2
     integer :: nbGrCellFromCreaCell, nbGrCellFromCreaPoi1, nbGrCellIn, nbGrCellOut
     integer :: nbGrNodeIn, nbGrNodeOut
     integer :: nbCellInGrOut, nbCellInGrIn, nbNodeInGrOut, nbNodeInGrIn
@@ -697,7 +699,7 @@ subroutine op0167()
             do iCell = 1, nbCell
 ! ------------- Cell to copy
                 cellNumeIn = listCellNume(iCell)
-                call jenuno(jexnum(meshIn//'.NOMMAI', cellNumeIn), cellNameIn)
+                cellNameIn = int_to_char8(cellNumeIn)
 
 ! ------------- Create name for new cell
                 cellNameOut = cellNameIn
@@ -706,7 +708,7 @@ subroutine op0167()
                                       prefCellName, prefCellNume)
 
 ! ------------- Check if name of cell exist
-                call jenonu(jexnom(meshIn//'.NOMMAI', cellNameOut), cellNumeOut)
+                cellNumeOut = char8_to_int(cellNameOut)
                 if (cellNumeOut .ne. 0) then
                     call utmess('F', 'MESH2_2', sk=cellNameOut)
                 end if
@@ -773,7 +775,7 @@ subroutine op0167()
                 creaGrPoi1NbCell(iOcc) = nbNode
                 do iNode = 1, nbNode
                     nodeNumeIn = listNodeNume(iNode)
-                    call jenuno(jexnum(meshIn//'.NOMNOE', nodeNumeIn), nodeNameIn)
+                    nodeNameIn = int_to_char8(nodeNumeIn)
                     cellNameOut = nodeNameIn
                     creaGrPoi1CellName(cellShift+iNode) = cellNameOut
                 end do
@@ -789,9 +791,9 @@ subroutine op0167()
             else
                 nbCellAddPoi1 = nbCellAddPoi1+1
             end if
-            call jenuno(jexnum(meshIn//'.NOMNOE', iNode), nodeNameIn)
+            nodeNameIn = int_to_char8(iNode)
             cellNameIn = nodeNameIn
-            call jenonu(jexnom(meshIn//'.NOMMAI', cellNameIn), cellNumeIn)
+            cellNumeIn = char8_to_int(cellNameIn)
             if (cellNumeIn .eq. 0) then
                 creaPoi1Name(nbCellAddPoi1) = cellNameIn
             else
@@ -852,40 +854,6 @@ subroutine op0167()
         nbproc = to_aster_int(msize)
     end if
 
-! - Repertory of name of nodes
-    if (nbNodeOut .eq. nbNodeIn) then
-        call jedupo(meshIn//'.NOMNOE', 'G', meshOut//'.NOMNOE', ASTER_FALSE)
-    else
-        call jecreo(meshOut//'.NOMNOE', 'G N K8')
-        call jeecra(meshOut//'.NOMNOE', 'NOMMAX', nbNodeOut, ' ')
-! ----- Copy previous nodes
-        do iNode = 1, nbNodeIn
-            call jenuno(jexnum(meshIn//'.NOMNOE', iNode), nodeNameIn)
-            nodeNameOut = nodeNameIn
-            call jeexin(jexnom(meshOut//'.NOMNOE', nodeNameOut), iret)
-            ASSERT(iret .eq. 0)
-            call jecroc(jexnom(meshOut//'.NOMNOE', nodeNameOut))
-        end do
-! ----- Add new nodes
-        do iNode = nbNodeIn+1, nbNodeOut
-            call codent(creaNodeNume(iNode-nbNodeIn), 'G', knume)
-            if (creaNodeName(iNode-nbNodeIn) .eq. creaNodeName(iNode-nbNodeIn+1)) then
-                creaNodeNume(iNode-nbNodeIn+1) = creaNodeNume(iNode-nbNodeIn)+1
-            end if
-            prefNodeName = creaNodeName(iNode-nbNodeIn)
-            if (lxlgut(knume)+lxlgut(prefNodeName) .gt. 8) then
-                call utmess('F', 'MESH2_1')
-            end if
-            nodeNameOut = prefNodeName(1:lxlgut(prefNodeName))//knume
-            call jeexin(jexnom(meshOut//'.NOMNOE', nodeNameOut), nodeNumeOut)
-            if (nodeNumeOut .eq. 0) then
-                call jecroc(jexnom(meshOut//'.NOMNOE', nodeNameOut))
-            else
-                call utmess('F', 'MESH2_3', sk=nodeNameOut)
-            end if
-        end do
-    end if
-
 ! - Coordinates of nodes
     call jedupo(meshIn//'.COORDO    .DESC', 'G', meshOut//'.COORDO    .DESC', ASTER_FALSE)
     if (nbNodeOut .eq. nbNodeIn) then
@@ -906,8 +874,6 @@ subroutine op0167()
 !
 
 ! - Create cells
-    call jecreo(meshOut//'.NOMMAI', 'G N K8')
-    call jeecra(meshOut//'.NOMMAI', 'NOMMAX', nbCellOut, ' ')
     call wkvect(meshOut//'.TYPMAIL', 'G V I', nbCellOut, vi=meshTypmailOut)
     call jecrec(meshOut//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE', nbCellOut)
     call jeecra(meshOut//'.CONNEX', 'NUTIOC', nbCellOut)
@@ -923,11 +889,9 @@ subroutine op0167()
     do iCell = 1, nbCellIn
 
 ! ----- Copy name of cell
-        call jenuno(jexnum(meshIn//'.NOMMAI', iCell), cellNameIn)
-        call jenonu(jexnom(meshIn//'.NOMMAI', cellNameIn), cellNumeIn)
+        cellNumeIn = char8_to_int(cellNameIn)
         cellNameOut = cellNameIn
-        call jecroc(jexnom(meshOut//'.NOMMAI', cellNameOut))
-        call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
+        cellNumeOut = char8_to_int(cellNameOut)
 
 ! ----- Copy type of cell
         meshTypmailOut(cellNumeOut) = meshTypmailIn(cellNumeIn)
@@ -953,18 +917,16 @@ subroutine op0167()
     cellShift = cellShift+nbCellIn
 
 ! - Create cell from "CREA_MAILLE"
+    call jelira(meshOut//'.TYPEMAIL', 'LONMAX', nbCellOut2)
     do iCell = 1, nbCellCrea
         cellNameOut = creaCellName(iCell)
         cellNumeIn = creaCellNume(iCell)
 
 ! ----- Create name of new cell
-        call jeexin(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
-        if (cellNumeOut .eq. 0) then
-            call jecroc(jexnom(meshOut//'.NOMMAI', cellNameOut))
-        else
+        cellNumeOut = char8_to_int(cellNameOut)
+        if ((cellNumeOut .gt. nbCellOut2) .or. (cellNumeOut .le. 0)) then
             call utmess('F', 'MESH2_2', sk=cellNameOut)
         end if
-        call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
 
 ! ----- Copy type of new cell
         meshTypmailOut(cellNumeOut) = meshTypmailIn(cellNumeIn)
@@ -1030,13 +992,10 @@ subroutine op0167()
         nodeNameOut = cellNameOut
 
 ! ----- Create name of new cell
-        call jeexin(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
-        if (cellNumeOut .eq. 0) then
-            call jecroc(jexnom(meshOut//'.NOMMAI', cellNameOut))
-        else
+        cellNumeOut = char8_to_int(cellNameOut)
+        if ((cellNumeOut .gt. nbCellOut2) .or. (cellNumeOut .le. 0)) then
             call utmess('F', 'MESH2_2', sk=cellNameOut)
         end if
-        call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
 
 ! ----- Set type of cell
         meshTypmailOut(cellNumeOut) = MT_POI1
@@ -1045,7 +1004,7 @@ subroutine op0167()
         nbNodeInCellOut = 1
         call jeecra(jexnum(meshOut//'.CONNEX', cellNumeOut), 'LONMAX', nbNodeInCellOut)
         call jeveuo(jexnum(meshOut//'.CONNEX', cellNumeOut), 'E', jvConnexOut)
-        call jenonu(jexnom(meshOut//'.NOMNOE', nodeNameOut), nodeNumeOut)
+        nodeNumeOut = char8_to_int(nodeNameOut)
         zi(jvConnexOut) = nodeNumeOut
 
 ! ----- Add parallel informations
@@ -1081,7 +1040,7 @@ subroutine op0167()
         end do
         do iCell = 1, nbCellAddPoi1
             cellNameOut = creaPoi1Name(iCell)
-            call jeexin(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
+            cellNumeOut = char8_to_int(cellNameOut)
             if (cellOwner(cellNumeOut) .eq. rank) then
                 globalCellId(cellNumeOut) = iCount
                 iCount = iCount+1
@@ -1152,7 +1111,7 @@ subroutine op0167()
         call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi=cellInGrOut)
         do iCell = 1, nbCellInGrOut
             cellNameOut = creaCellName(iCell+cellShift)
-            call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellInGrOut(iCell))
+            cellInGrOut(iCell) = char8_to_int(cellNameOut)
         end do
         cellShift = cellShift+nbCellInGrOut
     end do
@@ -1179,7 +1138,7 @@ subroutine op0167()
             call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi=cellInGrOut)
             do iCell = 1, nbCellInGrOut
                 cellNameOut = creaGrPoi1CellName(iCell+cellShift)
-                call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellInGrOut(iCell))
+                cellInGrOut(iCell) = char8_to_int(cellNameOut)
             end do
             cellShift = cellShift+nbCellInGrOut
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbcrsv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: modele, conceptin, nomtb
     character(len=16) :: nsymb
@@ -176,7 +177,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
         indma = indiis(zi(jlma), ima, 1, nbma)
         if (indma .eq. 0) cycle
 
-        call jenuno(jexnum(noma//'.NOMMAI', ima), kma)
+        kma = int_to_char8(ima)
         table_valk(kk+1) = kma
 
 !       NOMBRE DE POINTS DE LA MAILLE IMA : NBPT
@@ -211,7 +212,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
         do ipt = 1, nbpt
 !           NUMERO DU POINT (DU MAILLAGE GLOBAL): INOT
             inot = connex(zi(jconx2-1+ima)+ipt-1)
-            call jenuno(jexnum(noma//'.NOMNOE', inot), kno)
+            kno = int_to_char8(inot)
             table_valk(kk+2) = kno
             ispt = 1
             kcp = 0

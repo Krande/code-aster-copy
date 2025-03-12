@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
+#include "asterfort/int_to_char8.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
@@ -85,7 +86,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
     character(len=8) :: tchoc, kvide, typval, mailla
     character(len=8) :: noeud(2)
     character(len=8) :: cmp(6)
-    character(len=24) :: magrno, manono, grno
+    character(len=24) :: magrno, grno
     real(kind=8) :: orig(3)
     complex(kind=8) :: cbid
     real(kind=8), pointer :: ei2(:) => null()
@@ -205,10 +206,9 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
             if (ier .eq. 1) then
                 call dismoi('NOM_MAILLA', matm, 'MATR_ASSE', repk=mailla)
                 magrno = mailla//'.GROUPENO'
-                manono = mailla//'.NOMNOE'
                 call jelira(jexnom(magrno, grno), 'LONUTI', ier, kvide)
                 call jeveuo(jexnom(magrno, grno), 'L', ldgn)
-                call jenuno(jexnum(manono, zi(ldgn)), noeud(1))
+                noeud(1) = int_to_char8(zi(ldgn))
             else
                 call getvtx('CHOC', 'NOEUD', iocc=k, scal=noeud(1))
             end if

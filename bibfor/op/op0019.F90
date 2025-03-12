@@ -148,12 +148,13 @@ subroutine op0019()
     noma = zk8(jdnm)
     l_pmesh = isParallelMesh(noma)
 !   Construction des noms jeveux du concept maillage associé
-    mlgnma = noma//'.NOMMAI'
-    mlgnno = noma//'.NOMNOE'
+    mlgnma = noma//'.TYPMAIL'
+    mlgnno = noma//'.COORDO'
 !   Nombre de mailles du maillage
-    call jelira(mlgnma, 'NOMMAX', nbmail)
+    call jelira(mlgnma, 'LONMAX', nbmail)
 !   Nombre de noeuds du maillage
-    call jelira(mlgnno, 'NOMMAX', nbnoeu)
+    call jelira(mlgnno, 'NUTIOC', nbnoeu)
+    nbnoeu = nbnoeu/3
 !   Récupération de la dimension géométrique du modèle
     call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ireponse)
     info_concept%dimmod = ireponse

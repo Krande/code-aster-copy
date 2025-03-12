@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine resvoi(moz, maz, chvoiz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: moz, maz, chvoiz
 ! ......................................................................
@@ -317,7 +318,7 @@ subroutine resvoi(moz, maz, chvoiz)
 !
 803                             continue
                                 if (nbvois .gt. 1) then
-                                    call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
+                                    nomma = int_to_char8(ima)
                                     valk(1) = nomma
                                     vali(1) = ifa
                                     vali(2) = nbvois
@@ -413,7 +414,7 @@ subroutine resvoi(moz, maz, chvoiz)
 603                                     continue
                                     end do
                                     if (nbvois .gt. 1) then
-                                        call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
+                                        nomma = int_to_char8(ima)
                                         valk(1) = nomma
                                         vali(1) = ino
                                         vali(2) = nbvois

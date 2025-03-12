@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine stkcoo(ifl, icl, iv, rv, cv, &
                   cnl, mcl, nbm, num, coo, &
-                  nno, irteti)
+                  irteti)
     implicit none
 !       SECONDE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE COORDONNEE
 !       ----------------------------------------------------------------
@@ -26,7 +26,6 @@ subroutine stkcoo(ifl, icl, iv, rv, cv, &
 !               MCL             = MOTS CLES TYPE COORDONNEE
 !               NBM             = NB DE MOTS CLES TYPE COORDONNEE
 !               COO             = NOMU.COORDO.VALE
-!               NNO             = NOMU.NOMNOE
 !               NUM             = NUMERO DU NOEUD COURANT
 !       OUT     (RETURN)        = MOT CLE SUIVANT (MOT CLE NON RECONNU)
 !               (RETURN 1)      = EXIT            (MOT CLE FIN TROUVE)
@@ -53,7 +52,7 @@ subroutine stkcoo(ifl, icl, iv, rv, cv, &
     character(len=8) :: mcl(nbm), nomn
     character(len=14) :: cnl
     character(len=*) :: cv
-    character(len=24) :: coo, nno, nom
+    character(len=24) :: coo, nom
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, icl, idec, ifl, iret
@@ -99,17 +98,6 @@ subroutine stkcoo(ifl, icl, iv, rv, cv, &
         goto 1
     else if (irtet .eq. 2) then
         goto 2
-    end if
-!
-! - CREATION DE NOM_DU_NOEUD DANS LE REPERTOIRE NOMNOE
-!
-    nomn = '        '
-    nomn(1:iv) = cv(1:iv)
-    call jeexin(jexnom(nno, nomn), iret)
-    if (iret .eq. 0) then
-        call jecroc(jexnom(nno, nomn))
-    else
-        call utmess('F', 'MODELISA7_10', sk=nomn)
     end if
 !
 ! - INCREMENTATION NUMERO DU NOEUD

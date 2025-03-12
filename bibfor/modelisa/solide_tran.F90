@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
 #include "asterfort/coor_bary.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=2), intent(in)  :: type_geo
@@ -139,14 +140,14 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
 !   ---------------------------------------------------------
     do ka = 1, dim
         numnoe_a = linocara(ka)
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
+        nomnoe_a = int_to_char8(numnoe_a)
         xa = coor(3*(numnoe_a-1)+1)
         ya = coor(3*(numnoe_a-1)+2)
         if (l3d) za = coor(3*(numnoe_a-1)+3)
 
         do kb = ka+1, dim+1
             numnoe_b = linocara(kb)
-            call jenuno(jexnum(noma//'.NOMNOE', numnoe_b), nomnoe_b)
+            nomnoe_b = int_to_char8(numnoe_b)
             xb = coor(3*(numnoe_b-1)+1)
             yb = coor(3*(numnoe_b-1)+2)
             if (l3d) zb = coor(3*(numnoe_b-1)+3)
@@ -212,7 +213,7 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
     nunocara = 0
     do k = 1, dim+1
         numnoe_a = linocara(k)
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
+        nomnoe_a = int_to_char8(numnoe_a)
         lisno(1+k) = nomnoe_a
         nunocara(numnoe_a) = 1
     end do
@@ -225,7 +226,7 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
 
         call coor_bary(coor, xm, dim, linocara, cobary)
 
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
+        nomnoe_m = int_to_char8(numnoe_m)
         lisno(1) = nomnoe_m
 
         coer(1) = -1.d0
@@ -261,7 +262,7 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
 !   ----------------------------------------------
     ASSERT(size(nom_noeuds) .ge. dim+1)
     do k = 1, dim+1
-        call jenuno(jexnum(noma//'.NOMNOE', linocara(k)), nomnoe_a)
+        nomnoe_a = int_to_char8(linocara(k))
         nom_noeuds(k) = nomnoe_a
     end do
 

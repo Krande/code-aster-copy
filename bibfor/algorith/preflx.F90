@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3, &
 #include "asterfort/rccome.h"
 #include "asterfort/reseci.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: nmnoe1, nmnoe2, chamat, celem, mailla, mater
     character(len=16) :: graexc, kbid
@@ -99,14 +100,14 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3, &
             inoe1 = iexc1
         end if
         nmnoe1 = zk8(ilnoex-1+inoe1)
-        call jenonu(jexnom(mailla//'.NOMNOE', nmnoe1), inuno1)
+        inuno1 = char8_to_int(nmnoe1)
 !
 !----RECUPERATION DE DX DISTANCE ENTRE LES DEUX POINTS DE LA SOURCE
 !
         if ((graexc .eq. 'SOUR_PRESS') .or. (graexc .eq. 'SOUR_FORCE')) then
 !
             nmnoe2 = zk8(ilnoex-1+inoe1+1)
-            call jenonu(jexnom(mailla//'.NOMNOE', nmnoe2), inuno2)
+            inuno2 = char8_to_int(nmnoe2)
             call jeveuo(mailla//'.COORDO    .VALE', 'L', iad1)
             x1 = zr(iad1-1+(inuno1-1)*3+1)
             y1 = zr(iad1-1+(inuno1-1)*3+2)

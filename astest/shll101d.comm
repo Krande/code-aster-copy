@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 MAI1 = LIRE_MAILLAGE(FORMAT="ASTER")
-MAI2 = CREA_MAILLAGE(MAILLAGE=MAI1, LINE_QUAD=_F(TOUT="OUI", PREF_NOEUD="NM"))
+MAI2 = CREA_MAILLAGE(MAILLAGE=MAI1, LINE_QUAD=_F(TOUT="OUI"))
 MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAI2, MODI_MAILLE=_F(TOUT="OUI", OPTION="SEG3_4"))
 
 MAILLAGE = DEFI_GROUP(reuse=MAILLAGE, MAILLAGE=MAILLAGE, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))

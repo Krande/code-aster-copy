@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     real(kind=8) :: val(3), epsi
     character(len=8) :: nomu, car, crit
     character(len=16) :: concep, cmd, nunoel
-    character(len=24) :: mlgnma, mlgnno, mlggno, mlgcoo, mlgcnx, modmai, nomlu
+    character(len=24) :: mlggno, mlgcoo, mlgcnx, modmai, nomlu
     character(len=24) :: nomnoe
     integer, pointer :: eltuy(:) => null()
     integer, pointer :: lismapart(:) => null()
@@ -91,12 +91,10 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     call getres(nomu, concep, cmd)
 !
 !   Reconstruction des noms jeveux du concept maillage associe
-    mlgnma = noma//'.NOMMAI'
-    mlgnno = noma//'.NOMNOE'
     mlgcnx = noma//'.CONNEX'
     mlggno = noma//'.GROUPENO'
     mlgcoo = noma//'.COORDO    .VALE'
-    call jelira(mlgnma, 'NOMMAX', nbmail)
+    call jelira(noma//'.CONNEX', 'NUTIOC', nbmail)
     call jeveuo(mlgcoo, 'L', jdco)
 !
     modmai = nomo//'.MAILLE'

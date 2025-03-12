@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=1) :: base
     character(len=8) :: nomgd, ma
@@ -248,7 +249,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
             do ili = 1, nblig
                 if (zi(jobj2+ili-1) .eq. 1) then
                     nono = zk8(jcolno+ili-1)
-                    call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
+                    nuno = char8_to_int(nono)
                     ASSERT(nuno .gt. 0)
                     cnsv(1+(nuno-1)*ncmp+icmp-1) = zr(jobj3+ili-1)
                     zl(jcnsl+(nuno-1)*ncmp+icmp-1) = .true.
@@ -271,14 +272,14 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
             end if
             do ili = 1, nblig
                 noma = zk8(jcolma+ili-1)
-                call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
+                numa = char8_to_int(noma)
                 nbno = zi(jcon2-1+numa+1)-zi(jcon2-1+numa)
                 if (lpoin) then
                     ipt = zi(jcolpt-1+ili)
                 else
                     ASSERT(lnoeu)
                     nono = zk8(jcolno-1+ili)
-                    call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
+                    nuno = char8_to_int(nono)
                     ipt = indiis(zi(jcon1-1+zi(jcon2-1+numa)), nuno, 1, &
                                  nbno)
                     zi(jcolpt-1+ili) = ipt
@@ -306,7 +307,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
                 ASSERT(ksp .gt. 0)
                 nbssp = max(nbssp, ksp)
                 noma = zk8(jcolma+ili-1)
-                call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
+                numa = char8_to_int(noma)
                 ASSERT(numa .gt. 0)
                 sp_tot(numa) = max(sp_tot(numa), ksp)
             end do
@@ -323,7 +324,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
                 kpt = zi(jcolpt+ili-1)
                 ASSERT(kpt .gt. 0)
                 noma = zk8(jcolma+ili-1)
-                call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
+                numa = char8_to_int(noma)
                 pg_tot(numa) = max(pg_tot(numa), kpt)
             end do
         end if
@@ -366,7 +367,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
                 if (zi(jobj2+ili-1) .eq. 0) goto 70
 !
                 noma = zk8(jcolma+ili-1)
-                call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
+                numa = char8_to_int(noma)
 !
                 ipt = 1
                 if (lpoin) ipt = zi(jcolpt+ili-1)

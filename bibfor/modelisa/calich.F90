@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine calich(chargz, phenom)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=*), intent(in) :: chargz
@@ -69,7 +70,6 @@ subroutine calich(chargz, phenom)
     character(len=8) :: charge, nomgd
     character(len=16) :: motfac
     character(len=19) :: lisrel, cham19, numeq
-    character(len=24) :: noeuma
     complex(kind=8) :: betac
 !
 !-----------------------------------------------------------------------
@@ -225,10 +225,6 @@ subroutine calich(chargz, phenom)
 ! ---     VECTEUR DES DIMENSIONS DE CES DIRECTIONS
         AS_ALLOCATE(vi=dime, size=nbterm)
 !
-! ---   COLLECTION DES NOMS DES NOEUDS DU MAILLAGE
-!       ------------------------------------------
-        noeuma = noma//'.NOMNOE'
-!
 ! ---   AFFECTATION DES TABLEAUX DE TRAVAIL :
 !       -----------------------------------
         k = 0
@@ -252,7 +248,7 @@ subroutine calich(chargz, phenom)
 !
 ! ---       RECUPERATION DU NOM DU NOEUD INO
 !
-                call jenuno(jexnum(noeuma, ino), nomnoe)
+                nomnoe = int_to_char8(ino)
 !
                 vale = vvale(iequa)
 !

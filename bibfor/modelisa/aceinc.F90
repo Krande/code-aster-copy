@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,8 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 #include "asterfort/utmess.h"
 #include "asterfort/vafcar.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
     integer :: ii, ioc, ixma, jj, iid, iif
@@ -79,9 +81,9 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 !
 !   reconstruction des noms jeveux du concept maillage et modele
     modmai = nomo//'.MAILLE'
-    mlgnma = noma//'.NOMMAI'
+    mlgnma = noma//'.TYPMAIL'
     mlggma = noma//'.GROUPEMA'
-    call jelira(mlgnma, 'NOMMAX', nbmail)
+    call jelira(mlgnma, 'LONMAX', nbmail)
     call jeexin(modmai, ixma)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !
@@ -124,7 +126,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
                     call jelira(jexnom(mlggma, zk24(jdls+ii-1)), 'LONUTI', nbmagr)
                     do jj = 1, nbmagr
                         nummai = zi(jdgm+jj-1)
-                        call jenuno(jexnum(mlgnma, nummai), nommai)
+                        nommai = int_to_char8(nummai)
                         nutyel = zi(jdme+nummai-1)
                         if (mcl .ne. ACE_ORIENTATION) zjdlm(nummai) = -abs(zjdlm(nummai))
                         call vafcar('MAILLE', mcl, nommai, nutyel, ntyele, car, ncara, &
@@ -139,7 +141,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
                 if (mcl .eq. ACE_MEMBRANE) locamb = .true.
                 do ii = 1, nm
                     nommai = zk24(jdls+ii-1)
-                    call jenonu(jexnom(mlgnma, nommai), nummai)
+                    nummai = char8_to_int(nommai)
                     nutyel = zi(jdme+nummai-1)
                     if (mcl .ne. ACE_ORIENTATION) zjdlm(nummai) = -abs(zjdlm(nummai))
                     call vafcar('MAILLE', mcl, nommai, nutyel, ntyele, car, ncara, &
@@ -153,7 +155,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 ! --- VERIFICATION QUE TOUS LES ELEMENTS SONT AFFECTES :
 !     --------------------------------------------------
     do nummai = 1, nbmail
-        call jenuno(jexnum(mlgnma, nummai), nommai)
+        nommai = int_to_char8(nummai)
         if (nbocc(ACE_POUTRE) .ne. 0) then
             iid = 1
             iif = ACE_NB_POUTRE

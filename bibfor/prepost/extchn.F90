@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 #include "asterfort/rvrecu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbn, nbc, numnd(*), iocc
     character(len=6) :: indic
@@ -281,7 +282,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !
         do i = 1, nbn, 1
 !
-            call jenonu(jexnom(nmaila//'.NOMNOE', nnoeud(i)), numnd(i))
+            numnd(i) = char8_to_int(nnoeud(i))
 !
         end do
 !

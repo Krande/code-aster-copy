@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,6 +59,8 @@ subroutine lridea(fileUnit, &
 #include "asterfort/utmess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     integer, intent(in) :: fileUnit
     character(len=8), intent(in) :: resultName
@@ -472,11 +474,11 @@ subroutine lridea(fileUnit, &
 !
             nomno = 'NXXXXXXX'
             call codent(inoide, 'G', nomno(2:8))
-            call jenonu(jexnom(meshAst//'.NOMNOE', nomno), inoast)
+            inoast = char8_to_int(nomno)
 !  ON ESSAIE DE RECUPERER LE NUMERO DU NOEUD DIRECTEMENT
 !  SI ON NE LE TROUVE PAS VIA NXXXX
             if (inoast .eq. 0) then
-                call jenuno(jexnum(meshAst//'.NOMNOE', inoide), nomnob)
+                nomnob = int_to_char8(inoide)
                 if (nomnob .ne. nomnoa) then
                     call utmess('F', 'PREPOST3_40')
                 end if
@@ -527,7 +529,7 @@ subroutine lridea(fileUnit, &
             if (ielide .eq. -1) goto 150
             cellName = 'MXXXXXXX'
             call codent(ielide, 'G', cellName(2:8))
-            call jenonu(jexnom(meshAst//'.NOMMAI', cellName), cellNume)
+            cellNume = char8_to_int(cellName)
 !  ON ESSAIE DE RECUPERER LE NUMERO DE LA MAILLE DIRECTEMENT
 !  SI ON NE LE TROUVE PAS VIA MXXXX
             if (cellNume .eq. 0) cellNume = ielide

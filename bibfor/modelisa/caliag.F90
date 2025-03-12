@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine caliag(fonrez, chargz, phenom)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=*), intent(in) :: fonrez
@@ -369,7 +370,7 @@ subroutine caliag(fonrez, chargz, phenom)
             idg2 = jprnm-1+(ino2-1)*nbec+1
 !
             if (iexcm1 .eq. 0) then
-                call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
+                nomno1 = int_to_char8(ino1)
                 call utmess('F', 'CHARGES2_33', sk=nomno1)
             end if
             nbnor(2*(j-1)+1) = 3
@@ -378,7 +379,7 @@ subroutine caliag(fonrez, chargz, phenom)
             end if
 !
             if (iexcm2 .eq. 0) then
-                call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
+                nomno2 = int_to_char8(ino2)
                 call utmess('F', 'CHARGES2_33', sk=nomno2)
             end if
             nbnor(2*(j-1)+2) = 3
@@ -395,7 +396,7 @@ subroutine caliag(fonrez, chargz, phenom)
 ! --- PREMIER NOEUD DE LA RELATION ---
 !
             ino1 = zi(idconi+2*(j-1)+1)
-            call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
+            nomno1 = int_to_char8(ino1)
             cmp = zk8(iddl1)
             if (cmp .eq. 'DNOR') then
                 call jeveuo(jexnum(conr, iocc), 'L', idconr)
@@ -420,7 +421,7 @@ subroutine caliag(fonrez, chargz, phenom)
 ! --- DEUXIEME NOEUD DE LA RELATION ---
 !
             ino2 = zi(idconi+2*(j-1)+2)
-            call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
+            nomno2 = int_to_char8(ino2)
             cmp = zk8(iddl2)
             if (cmp .eq. 'DNOR') then
                 call jeveuo(jexnum(conr, iocc), 'L', idconr)
@@ -465,9 +466,9 @@ subroutine caliag(fonrez, chargz, phenom)
             call utmess('I', 'CHARGES2_35', si=iocc)
             do j = 1, nbno
                 ino1 = zi(idconi+2*(j-1)+1)
-                call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
+                nomno1 = int_to_char8(ino1)
                 ino2 = zi(idconi+2*(j-1)+2)
-                call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
+                nomno2 = int_to_char8(ino2)
                 valk(1) = nomno1
                 valk(2) = nomno2
                 call utmess('I', 'CHARGES2_36', nk=2, valk=valk)

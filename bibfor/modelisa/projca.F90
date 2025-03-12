@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,6 +82,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
     character(len=8) :: mailla, caelem
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
     integer :: nbnobe, icabl, nbmabe, nbnoca(*)
@@ -96,7 +97,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla, &
     real(kind=8) :: dmax_cable
     complex(kind=8) :: cbid
     character(len=8) :: nnoeca, voisin(2)
-    character(len=24) :: coorno, nomama, nonoca, nonoma
+    character(len=24) :: coorno, nonoca
     aster_logical :: encore
 !
     character(len=24) :: param(4), parcr
@@ -123,8 +124,6 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla, &
 ! ---
     coorno = mailla//'.COORDO    .VALE'
     call jeveuo(coorno, 'L', jcoor)
-    nomama = mailla//'.NOMMAI'
-    nonoma = mailla//'.NOMNOE'
 !
 ! 1.2 DONNEES RELATIVES AU CABLE
 ! ---
@@ -242,8 +241,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla, &
 !
 ! 2.2.6  MISE A JOUR DE LA SD TABLE
 ! .....
-        call jenuno(jexnum(nomama, numail), voisin(1))
-        call jenuno(jexnum(nonoma, noebe), voisin(2))
+        voisin(1) = int_to_char8(numail)
+        voisin(2) = int_to_char8(noebe)
         call tbajli(tablca, 4, param, [iproj], [excent], &
                     [cbid], voisin(1), ideca+inoca)
 !

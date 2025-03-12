@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,20 +86,10 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
 !     COPIE DES VECTEURS
 !     ---------------------------------------------------------------
 !
-!     .NOMMAI ET .TYPMAIL
+!     .TYPMAIL
     do i = 1, nbma
         if (dirma(i) .ne. 0) then
-            call jenuno(jexnum(ma1//'.NOMMAI', dirma(i)), noma2)
-            call jecroc(jexnom(ma2//'.NOMMAI', noma2))
             typm2(dirma(i)) = typm1(i)
-        end if
-    end do
-!
-!     .NOMNOE
-    do i = 1, nbno
-        if (dirno(i) .ne. 0) then
-            call jenuno(jexnum(ma1//'.NOMNOE', dirno(i)), nono2)
-            call jecroc(jexnom(ma2//'.NOMNOE', nono2))
         end if
     end do
 !

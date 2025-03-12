@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ module crea_maillage_module
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -547,7 +548,7 @@ contains
         this%nb_total_nodes = this%nb_nodes
         owner = 0
         do i_node = 1, nb_node_mesh
-            call jenuno(jexnum(mesh_in//'.NOMNOE', i_node), name)
+            name = int_to_char8(i_node)
             if (this%isHPC) then
                 owner = v_noex(i_node)
             end if
@@ -1069,8 +1070,7 @@ contains
         this%cells(this%nb_total_cells)%id = this%nb_total_cells
         this%cells(this%nb_total_cells)%ss_id = cell_index
         this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
-        call jenuno(jexnum(this%mesh_in//'.NOMMAI', cell_id), &
-                    this%cells(this%nb_total_cells)%name)
+        this%cells(this%nb_total_cells)%name = int_to_char8(cell_id)
 !
     end subroutine
 !
@@ -1425,9 +1425,9 @@ contains
             call cpu_time(start)
         end if
 !
-        call sdmail(mesh_out, nommai, nomnoe, cooval, coodsc, &
-                    grpnoe, gpptnn, grpmai, gpptnm, &
-                    connex, titre, typmai, adapma)
+        call sdmail(mesh_out, cooval, coodsc, grpnoe, gpptnn, &
+                    grpmai, gpptnm, connex, titre, typmai, &
+                    adapma)
 !
 ! --- Create nodes
 !

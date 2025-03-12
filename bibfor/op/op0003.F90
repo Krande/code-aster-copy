@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -180,8 +180,8 @@ subroutine op0003()
 !
     if (nbln .ne. 0) then
         call getvid(' ', 'MAILLAGE', scal=nommai, nbret=ibid)
-        nommas = nommai//'.NOMMAI'
-        call jelira(nommas, 'NOMUTI', nbrma)
+        nommas = nommai//'.TYPMAIL'
+        call jelira(nommas, 'LONMAX', nbrma)
 !
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nblv, jval)
         call wkvect('&&OP0003.NOEUDS_LUES', 'V V K8', nbln, jnoe)

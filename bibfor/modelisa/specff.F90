@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -181,7 +181,8 @@ subroutine specff(casint, nomu, spectr, base, nuor, &
 ! --- 5.2.CREATION D'UNE LISTE ORDONNEE DE NOEUDS : ORDRE CROISSANT
 ! ---     DU PARAMETRE LE LONG DE L'AXE DIRECTEUR DE LA POUTRE
 !
-    call jelira(noma//'.NOMNOE', 'NOMUTI', nbn)
+    call jelira(noma//'.COORDO', 'LONMAX', nbn)
+    nbn = nbn/3
     if (nbn .lt. 3) then
         call utmess('F', 'MODELISA7_6')
     end if

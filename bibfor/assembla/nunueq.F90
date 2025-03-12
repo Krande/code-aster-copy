@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine nunueq(mesh, nume_equa, nb_equa, igds, sd_iden_relaz)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -126,7 +127,7 @@ subroutine nunueq(mesh, nume_equa, nb_equa, igds, sd_iden_relaz)
                                 i_cmp = i_cmp_glob
                             end if
                         end do
-                        call jenonu(jexnom(mesh(1:8)//'.NOMNOE', node_name_term), i_node)
+                        i_node = char8_to_int(node_name_term)
                         v_rela_aux((i_node-1)*ncmpmx+i_cmp) = i_rela
                     end do
                     istart = istart+nb_term*2

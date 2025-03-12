@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine surfll(sdcont_defi, mesh, unit_msg, nb_cont_zone, nb_cont_elem, &
 #include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -131,13 +132,13 @@ subroutine surfll(sdcont_defi, mesh, unit_msg, nb_cont_zone, nb_cont_elem, &
         write (unit_msg, 135) nb_elem, chain1, ' ET ', nb_node, chain2
         do i_elem = 1, nb_elem
             elem_nume = v_sdcont_mailco(jdecma+i_elem)
-            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), v_trav_elem(i_elem))
+            v_trav_elem(i_elem) = int_to_char8(elem_nume)
         end do
         write (unit_msg, 104) '     LISTE DES MAILLES : '
         write (unit_msg, 105) (v_trav_elem(i_elem), i_elem=1, nb_elem)
         do i_node = 1, nb_node
             node_nume = v_sdcont_noeuco(jdecno+i_node)
-            call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume), v_work_node(i_node))
+            v_work_node(i_node) = int_to_char8(node_nume)
         end do
         write (unit_msg, 104) '     LISTE DES NOEUDS  : '
         write (unit_msg, 105) (v_work_node(i_node), i_node=1, nb_node)
@@ -161,13 +162,13 @@ subroutine surfll(sdcont_defi, mesh, unit_msg, nb_cont_zone, nb_cont_elem, &
         write (unit_msg, 135) nb_elem, chain1, ' ET ', nb_node, chain2
         do i_elem = 1, nb_elem
             elem_nume = v_sdcont_mailco(jdecma+i_elem)
-            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), v_trav_elem(i_elem))
+            v_trav_elem(i_elem) = int_to_char8(elem_nume)
         end do
         write (unit_msg, 104) '     LISTE DES MAILLES : '
         write (unit_msg, 105) (v_trav_elem(i_elem), i_elem=1, nb_elem)
         do i_node = 1, nb_node
             node_nume = v_sdcont_noeuco(jdecno+i_node)
-            call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume), v_work_node(i_node))
+            v_work_node(i_node) = int_to_char8(node_nume)
         end do
         write (unit_msg, 104) '     LISTE DES NOEUDS  : '
         write (unit_msg, 105) (v_work_node(i_node), i_node=1, nb_node)

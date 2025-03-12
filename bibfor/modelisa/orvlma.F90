@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbCell, noeud, norien
     integer, pointer :: listCellNume(:)
@@ -66,7 +67,7 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
     aster_logical :: hasSkin1D, hasSkin2D, reorie
     character(len=2) :: kdim
     character(len=8) :: cellTypeName, nomail
-    character(len=24) :: mailma, nomavo
+    character(len=24) :: nomavo
     character(len=24) :: valk(2)
     integer, pointer :: typmail(:) => null()
 !
@@ -77,7 +78,6 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
     call jemarq()
 !
     call infniv(ifm, niv)
-    mailma = noma//'.NOMMAI'
     reorie = .true.
     zero = 0
 !
@@ -126,7 +126,7 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
         else if (cellTypeName(1:3) .eq. 'SEG') then
             hasSkin1D = .true.
         else
-            call jenuno(jexnum(mailma, cellNume), nomail)
+            nomail = int_to_char8(cellNume)
             valk(1) = nomail
             valk(2) = cellTypeName
             call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
@@ -171,7 +171,7 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
             zi(kdeb+nbmaor-1) = iCell
             zi(lori-1+iCell) = 1
             if (niv .eq. 2) then
-                call jenuno(jexnum(mailma, cellNume), nomail)
+                nomail = int_to_char8(cellNume)
                 write (ifm, *) 'LA MAILLE '//nomail//&
      &                       ' A ETE ORIENTEE PAR RAPPORT AU VECTEUR'
             end if
@@ -183,7 +183,7 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
             zi(kdeb+nbmaor-1) = iCell
             zi(lori-1+iCell) = 1
             if (niv .eq. 2) then
-                call jenuno(jexnum(mailma, cellNume), nomail)
+                nomail = int_to_char8(cellNume)
                 write (ifm, *) 'LA MAILLE '//nomail//&
      &                       ' EST ORIENTEE PAR RAPPORT AU VECTEUR'
             end if
@@ -226,7 +226,7 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
                     lliste = lliste+1
                     zi(jori+lliste) = im2
                     if (reorie .and. niv .eq. 2) then
-                        call jenuno(jexnum(mailma, numail), nomail)
+                        nomail = int_to_char8(numail)
                         if (ico .lt. 0) then
                             write (ifm, *) 'LA MAILLE ', nomail, ' A ETE REORIENTEE'
                         else

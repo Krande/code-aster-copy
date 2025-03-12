@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ MA0 = MODI_MAILLAGE(
     MAILLAGE=MA0,
     ORIE_NORM_COQUE=_F(GROUP_MA="SDAL", VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="C1"),
 )
-MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_MAILLE=_F(NOM="ARMA", GROUP_MA="SDAL", PREF_MAILLE="A"))
+MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_MAILLE=_F(NOM="ARMA", GROUP_MA="SDAL"))
 IMPR_RESU(FORMAT="RESULTAT", RESU=_F(MAILLAGE=MA1))
 MO1 = AFFE_MODELE(
     MAILLAGE=MA1,

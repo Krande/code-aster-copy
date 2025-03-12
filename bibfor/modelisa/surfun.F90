@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine surfun(char, noma)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: char
     character(len=8) :: noma
@@ -53,7 +54,7 @@ subroutine surfun(char, noma)
     integer :: jcmpg, jcoefg, jcoefd, jpoin, jnoeu
     integer :: nnocu, ncmpg
     integer :: numno, nbcmp, jdecal
-    character(len=24) :: noeuma, deficu
+    character(len=24) :: deficu
     integer :: ino, icmp
     integer :: lgbloc
     character(len=8) :: nomno
@@ -66,14 +67,12 @@ subroutine surfun(char, noma)
 ! --- INITIALISATIONS
 !
     deficu = char(1:8)//'.UNILATE'
-    noeuma = noma//'.NOMNOE'
     lgbloc = cudisi(deficu, 'NB_RESOL')
     nnocu = cudisi(deficu, 'NNOCU')
     ncmpg = cudisi(deficu, 'NCMPG')
 !
 ! --- ACCES SD
 !
-    noeuma = noma//'.NOMNOE'
     noeucu = deficu(1:16)//'.LISNOE'
     poincu = deficu(1:16)//'.POINOE'
     cmpgcu = deficu(1:16)//'.CMPGCU'
@@ -111,7 +110,7 @@ subroutine surfun(char, noma)
         do ino = 1, nnocu
 !
             numno = zi(jnoeu+ino-1)
-            call jenuno(jexnum(noeuma, numno), nomno)
+            nomno = int_to_char8(numno)
 !
 !
             write (ifm, 1030) nomno

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=24) :: xdicmp, xdncmp, vcheff
     integer :: i, ier
@@ -61,7 +62,6 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     character(len=24) :: ncheff, ndesc, valk(7), nomgrn
     character(len=19) :: nchp19
     character(len=16) :: nchsym, tresu
-    character(len=15) :: nrepnd
     character(len=8) :: nresu, nomcmp, nmaich, nomnd
     character(len=4) :: docu
     integer :: acheff, alneud, anumcp, anomcp, nbcmp
@@ -188,10 +188,9 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             call wkvect('&&OP0051.NOM.NEUD', 'V V K8', nbneud, alneud)
             call getvtx('ACTION', 'NOEUD', iocc=i, nbval=nbneud, vect=zk8(alneud), &
                         nbret=n1)
-            nrepnd = nmaich//'.NOMNOE'
             do k = 1, nbneud, 1
                 nomnd = zk8(alneud+k-1)
-                call jenonu(jexnom(nrepnd, nomnd), n1)
+                n1 = char8_to_int(nomnd)
                 if (n1 .eq. 0) then
                     call utmess('A', 'POSTRELE_51', sk=nomnd, si=i)
                     ier = 0

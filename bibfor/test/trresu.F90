@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,8 @@ subroutine trresu(ific, nocc)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/isParallelMesh.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
     integer, intent(in) :: ific, nocc
 !     COMMANDE:  TEST_RESU
 !                MOT CLE FACTEUR "RESU"
@@ -503,7 +505,7 @@ subroutine trresu(ific, nocc)
                             call jelira(jexnom(mesh//'.GROUPEMA', nogrma), 'LONUTI', ival=n1b)
                             if (n1b .ne. 1) call utmess('F', 'TEST0_20', sk=nogrma, si=n1b)
                             call jeveuo(jexnom(mesh//'.GROUPEMA', nogrma), 'L', jnuma)
-                            call jenuno(jexnum(mesh//'.NOMMAI', zi(jnuma)), cellName)
+                            cellName = int_to_char8(zi(jnuma))
                         else
                             ASSERT(l_parallel_mesh)
                             call getvtx('RESU', 'GROUP_MA', iocc=iocc, nbval=1, scal=nogrma, &
@@ -523,7 +525,7 @@ subroutine trresu(ific, nocc)
                         if (iret .ne. 0) then
                             call utmess('F', 'RESULT1_5')
                         end if
-                        call jenonu(jexnom(mesh//'.NOMMAI', cellName), cellNume)
+                        cellNume = char8_to_int(cellName)
 
 ! --------------------- Get name of internal state variables
                         if (hasMFront(compor)) then

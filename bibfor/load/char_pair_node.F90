@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine char_pair_node(mesh, nb_node, &
 #include "asterfort/parotr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 ! Person in charge: mickael.abbas at edf.fr
 !
@@ -142,7 +143,7 @@ subroutine char_pair_node(mesh, nb_node, &
 !
         if (ino_mini .eq. 0) then
             i_error = 1
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_1), name_node_1)
+            name_node_1 = int_to_char8(nume_node_1)
             call utmess('E', 'CHARGES2_50', sk=name_node_1)
             goto 99
         end if
@@ -158,9 +159,9 @@ subroutine char_pair_node(mesh, nb_node, &
             zi(j_node_inv-1+ino_mini) = nume_node_2
         else
             ier = ier+1
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_1), name_node_1)
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_a), name_node_a)
+            name_node_1 = int_to_char8(nume_node_1)
+            name_node_2 = int_to_char8(nume_node_2)
+            name_node_a = int_to_char8(nume_node_a)
             valk(1) = name_node_2
             valk(2) = name_node_1
             valk(3) = name_node_a
@@ -210,7 +211,7 @@ subroutine char_pair_node(mesh, nb_node, &
 !
         if (ino_mini .eq. 0) then
             i_error = 1
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
+            name_node_2 = int_to_char8(nume_node_2)
             call utmess('F', 'CHARGES2_50', sk=name_node_2)
             goto 99
         end if
@@ -226,9 +227,9 @@ subroutine char_pair_node(mesh, nb_node, &
             zi(j_node_inv-1+ino_mini) = nume_node_1
         else
             ier = ier+1
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_1), name_node_1)
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_a), name_node_a)
+            name_node_1 = int_to_char8(nume_node_1)
+            name_node_2 = int_to_char8(nume_node_2)
+            name_node_a = int_to_char8(nume_node_a)
             valk(1) = name_node_1
             valk(2) = name_node_2
             valk(3) = name_node_a
@@ -249,13 +250,13 @@ subroutine char_pair_node(mesh, nb_node, &
         iexcor = 0
         nume_node_1 = zi(j_node_o1-1+ino_1)
         nume_node_2 = zi(j_node_o2-1+ino_1)
-        call jenuno(jexnum(mesh//'.NOMNOE', nume_node_1), name_node_1)
-        call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
+        name_node_1 = int_to_char8(nume_node_1)
+        name_node_2 = int_to_char8(nume_node_2)
         do ino_2 = 1, nb_node
             nume_node_3 = zi(j_node_o3-1+ino_2)
             nume_node_4 = zi(j_node_o4-1+ino_2)
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_3), name_node_3)
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node_4), name_node_4)
+            name_node_3 = int_to_char8(nume_node_3)
+            name_node_4 = int_to_char8(nume_node_4)
             if (nume_node_2 .eq. nume_node_3) then
                 iexcor = 1
                 if (nume_node_1 .ne. nume_node_4) then

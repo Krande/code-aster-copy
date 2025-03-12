@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 #include "asterfort/nbgrel.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xtmafi.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: modmes, modthx, modmex
 !
@@ -276,7 +277,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
         nutyelm = mmes(imx)
 !
         if (nutyelm .eq. 0) then
-            call jenuno(jexnum(noma//'.NOMMAI', imx), nommax)
+            nommax = int_to_char8(imx)
             valk8(1) = nommax
             valk8(2) = modthx
             valk8(3) = modmes

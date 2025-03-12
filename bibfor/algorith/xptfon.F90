@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln, &
 #include "asterfort/xtailm.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
@@ -412,7 +413,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln, &
 !
 !             IMPRESSION DES POINTS DU FOND APPARTENANT A LA MAILLE
                     if (ifq .eq. nbf) then
-                        call jenuno(jexnum(noma//'.NOMMAI', nmaabs), nommai)
+                        nommai = int_to_char8(nmaabs)
                         call utmess('I', 'XFEM_51', sk=nommai, si=nbptma)
 !
                         write (ifm, 797)

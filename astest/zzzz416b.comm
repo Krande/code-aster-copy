@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ MESH = CREA_MAILLAGE(
     MAILLAGE=MESH0,
     INFO=2,
     COQUE_SOLIDE=(
-        _F(GROUP_MA="PlancherTop", GROUP_MA_SURF="SurfTop", PREF_NOEUD="NS"),
-        _F(GROUP_MA="PlancherBottom", GROUP_MA_SURF="SurfMiddle", PREF_NOEUD="NT"),
-        _F(GROUP_MA="MurLeft", GROUP_MA_SURF="PiedLeft", PREF_NOEUD="NU"),
-        _F(GROUP_MA="MurRight", GROUP_MA_SURF="PiedRight", PREF_NOEUD="NV"),
+        _F(GROUP_MA="PlancherTop", GROUP_MA_SURF="SurfTop"),
+        _F(GROUP_MA="PlancherBottom", GROUP_MA_SURF="SurfMiddle"),
+        _F(GROUP_MA="MurLeft", GROUP_MA_SURF="PiedLeft"),
+        _F(GROUP_MA="MurRight", GROUP_MA_SURF="PiedRight"),
     ),
 )
 

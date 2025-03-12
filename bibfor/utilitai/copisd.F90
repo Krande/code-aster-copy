@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -402,9 +402,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
         call jedup1(k81//'.ADAPTATION', bas2, k82//'.ADAPTATION')
         call jedup1(k81//'.DIME', bas2, k82//'.DIME')
-        call jedup1(k81//'.NOMNOE', bas2, k82//'.NOMNOE')
         call cpclma(k81, k82, 'GROUPENO', bas2)
-        call jedup1(k81//'.NOMMAI', bas2, k82//'.NOMMAI')
         call jedup1(k81//'.TYPMAIL', bas2, k82//'.TYPMAIL')
         call jedup1(k81//'.CONNEX', bas2, k82//'.CONNEX')
         call cpclma(k81, k82, 'GROUPEMA', bas2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
 #include "asterfort/jexnum.h"
 #include "asterfort/rvabsc.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=24) :: nlsnac, sdlieu
     character(len=8) :: typco, mailla
@@ -102,7 +103,7 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
         call jeveuo(nlsnac, 'L', anumnd)
         call wkvect(ndesc, 'V V K8', nbpt, adesc)
         do ipt = 1, nbpt, 1
-            call jenuno(jexnum(mailla//'.NOMNOE', zi(anumnd+ipt-1)), zk8(adesc+ipt-1))
+            zk8(adesc+ipt-1) = int_to_char8(zi(anumnd+ipt-1))
         end do
 !
         call jecrec(nabsc, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &

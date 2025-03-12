@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ subroutine carbe3(charge)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: charge
 !
@@ -62,7 +64,7 @@ subroutine carbe3(charge)
     character(len=15) :: coordo
     character(len=16) :: motfac, concep, nomcmd
     character(len=19) :: lisrel
-    character(len=24) :: ddlstr, grouno, noeuma, gromai
+    character(len=24) :: ddlstr, grouno, gromai
     complex(kind=8) :: betac
     integer :: ifm, niv, iret
     integer :: idxrbe, idxlig, idxcol, idxvec, idxnoe, idxgro, idxter
@@ -119,7 +121,6 @@ subroutine carbe3(charge)
 !
     call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=noma)
 !
-    noeuma = noma//'.NOMNOE'
     grouno = noma//'.GROUPENO'
     coordo = noma//'.COORDO'
     call jeveuo(coordo//'    .VALE', 'L', vr=vale)
@@ -211,7 +212,7 @@ subroutine carbe3(charge)
             if (nbent .ne. 1) then
                 call utmess('F', 'MODELISA10_9', sk=gromai, si=nbent)
             end if
-            call jenuno(jexnum(noeuma, zi(jnogro-1+1)), noemai)
+            noemai = int_to_char8(zi(jnogro-1+1))
         end if
 !
         call getvtx(motfac, 'NOEUD_MAIT', iocc=idxrbe, nbval=0, nbret=nbent)
@@ -220,7 +221,7 @@ subroutine carbe3(charge)
                         1, noemai, nbent)
         end if
 !
-        call jenonu(jexnom(noma//'.NOMNOE', noemai), posmai)
+        posmai = char8_to_int(noemai)
         coomai(1) = vale(3*(posmai-1)+1)
         coomai(2) = vale(3*(posmai-1)+2)
         coomai(3) = vale(3*(posmai-1)+3)
@@ -266,7 +267,7 @@ subroutine carbe3(charge)
                 nbnoeu = nbnoeu+nbent
                 do idxnoe = 1, nbent
                     cntnoe = cntnoe+1
-                    call jenuno(jexnum(noeuma, zi(jnogro-1+idxnoe)), nomnoe)
+                    nomnoe = int_to_char8(zi(jnogro-1+idxnoe))
                     zk8(jnoesc+cntnoe-1) = nomnoe
                 end do
             end do
@@ -359,7 +360,7 @@ subroutine carbe3(charge)
 !       -----------------------------------------------
         lc = 0
         do idxnoe = 1, nbnoeu
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoesc-1+idxnoe)), posesc)
+            posesc = char8_to_int(zk8(jnoesc-1+idxnoe))
             cooesc(1) = vale(3*(posesc-1)+1)
             cooesc(2) = vale(3*(posesc-1)+2)
             cooesc(3) = vale(3*(posesc-1)+3)

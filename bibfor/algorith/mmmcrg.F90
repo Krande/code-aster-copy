@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
     character(len=8) :: noma
     character(len=19) :: depplu, ddepla
     character(len=16) :: ngeom
@@ -94,7 +95,7 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
     if (numnoe .eq. 0) then
         nomnoe = ' '
     else
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+        nomnoe = int_to_char8(numnoe)
     end if
     ngeom = nomnoe//'        '
     vgeom = vmaxi

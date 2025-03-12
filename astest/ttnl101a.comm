@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,7 @@ MESH_Q4 = LIRE_MAILLAGE(FORMAT="MED")
 
 MESH_Q8 = CREA_MAILLAGE(MAILLAGE=MESH_Q4, LINE_QUAD=_F(TOUT="OUI"))
 
-MESH_Q9 = CREA_MAILLAGE(
-    MAILLAGE=MESH_Q8, MODI_MAILLE=_F(OPTION="QUAD8_9", PREF_NOEUD="NM", TOUT="OUI")
-)
+MESH_Q9 = CREA_MAILLAGE(MAILLAGE=MESH_Q8, MODI_MAILLE=_F(OPTION="QUAD8_9"))
 
 
 rho_cp = 2.0

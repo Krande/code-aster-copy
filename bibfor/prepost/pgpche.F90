@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine pgpche(sd_pgp, iobs)
 #include "asterfort/rsexch.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/int_to_char8.h"
 
 !   ====================================================================
 !   = 0 =   Variable declarations and initialization
@@ -124,14 +125,14 @@ subroutine pgpche(sd_pgp, iobs)
             dec3 = (im-1)*nbptmx
             ima = lmai(im)
             nbpt = zi(jcsd-1+5+4*(ima-1)+1)
-            call jenuno(jexnum(maillage//'.NOMMAI', ima), nomma)
+            nomma = int_to_char8(ima)
             if (typch .eq. 'ELNO') then
                 call jeveuo(jexnum(maillage//'.CONNEX', ima), 'L', jconn)
             end if
             do ipt = 1, nbpt
                 if (typch .eq. 'ELNO') then
                     inod = zi(jconn+ipt-1)
-                    call jenuno(jexnum(maillage//'.NOMNOE', inod), nomnod)
+                    nomnod = int_to_char8(inod)
                 else
                     call codent(ipt, 'G', k_ipt)
                     nomnod = 'PT '//k_ipt

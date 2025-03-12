@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -133,9 +133,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno, &
     do ifiss = 1, nfiss
         zi(jdirno-1+(2+nfiss)*(inn-1)+2+ifiss) = he(ifiss)
     end do
-    call codlet(inntot, 'G', chn)
 !
-    call jecroc(jexnom(maxfem//'.NOMNOE', nm//chn))
     do j = 1, 3
         zr(iacoo2-1+3*(nbnoc+inntot-1)+j) = co(j)
     end do

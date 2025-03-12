@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ subroutine asmael(ma1, ma2, mag)
 #include "asterfort/ssdmte.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: ma1, ma2, mag
 !
@@ -194,32 +196,6 @@ subroutine asmael(ma1, ma2, mag)
                     zi(iasupm-1+ii) = zi(iasup2-1+ii)+nbn1+nbl1
                 end if
             end do
-        end do
-    end if
-!
-!
-!     --OBJET .NOMMAI:
-!     ----------------
-    ico = 0
-    if (nbma .gt. 0) then
-        call jecreo(mag//'.NOMMAI', 'G N K8')
-        call jeecra(mag//'.NOMMAI', 'NOMMAX', nbma)
-        do i = 1, nbm1
-            call jenuno(jexnum(ma1//'.NOMMAI', i), noma)
-            call jecroc(jexnom(mag//'.NOMMAI', noma))
-            ico = ico+1
-        end do
-        do i = 1, nbm2
-            call jenuno(jexnum(ma2//'.NOMMAI', i), noma)
-            if (ico .eq. 0) then
-                iret = 0
-            else
-                call jenonu(jexnom(mag//'.NOMMAI', noma), iret)
-            end if
-            if (iret .gt. 0) then
-                call utmess('F', 'SOUSTRUC_3', sk=noma)
-            end if
-            call jecroc(jexnom(mag//'.NOMMAI', noma))
         end do
     end if
 !
@@ -401,13 +377,13 @@ subroutine asmael(ma1, ma2, mag)
         zi(iancnf-1+i) = i
     end do
     do i = 1, nbn1
-        call jenuno(jexnum(ma1//'.NOMNOE', i), nono)
+        nono = int_to_char8(i)
         zk8(ianon2-1+i) = nono
     end do
     do i = 1, nbn2
-        call jenuno(jexnum(ma2//'.NOMNOE', i), nono)
+        nono = int_to_char8(i)
         zk8(ianon2-1+nbn1+i) = nono
-        call jenonu(jexnom(ma1//'.NOMNOE', nono), itrou)
+        itrou = char8_to_int(nono)
         if (itrou .gt. 0) then
             zi(iancnf-1+nbn1+i) = itrou
         end if

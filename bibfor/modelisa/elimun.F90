@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu, &
 #include "asterfort/palino.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma, nomo
     character(len=16) :: motfac
@@ -164,7 +165,7 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu, &
         do ino = 1, nbno
             numno1 = zi(jnl-2+jdebut+ino)
             if (numno1 .ne. 0) then
-                call jenuno(jexnum(noma//'.NOMNOE', numno1), nomnoe)
+                nomnoe = int_to_char8(numno1)
                 nb = 0
                 do icmp = 1, nbcmp
 !

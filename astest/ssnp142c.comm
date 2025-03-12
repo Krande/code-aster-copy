@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,8 +76,7 @@ MA_TMP = DEFI_GROUP(
 
 # LE NOUVEUA MAILLAGE EST CREE, LA OU LE JOINT EST DEJA MAILLE
 MA = CREA_MAILLAGE(
-    MAILLAGE=MA_TMP,
-    CREA_FISS=_F(NOM="JOINT", GROUP_NO_2="JOINT_H", GROUP_NO_1="JOINT_B", PREF_MAILLE="MJ"),
+    MAILLAGE=MA_TMP, CREA_FISS=_F(NOM="JOINT", GROUP_NO_2="JOINT_H", GROUP_NO_1="JOINT_B")
 )
 
 

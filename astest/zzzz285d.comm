@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,18 +62,18 @@ for bord in ("BDRO", "BCOU"):
         elif typmail == "QUA":
             MA1_1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=19)
             MA2_1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=21)
-            MA1 = CREA_MAILLAGE(MAILLAGE=MA1_1, LINE_QUAD=_F(TOUT="OUI", PREF_NOEUD="NS"))
-            MA2 = CREA_MAILLAGE(MAILLAGE=MA2_1, LINE_QUAD=_F(TOUT="OUI", PREF_NOEUD="NS"))
+            MA1 = CREA_MAILLAGE(MAILLAGE=MA1_1, LINE_QUAD=_F(TOUT="OUI"))
+            MA2 = CREA_MAILLAGE(MAILLAGE=MA2_1, LINE_QUAD=_F(TOUT="OUI"))
             DETRUIRE(NOM=(MA1_1, MA2_1))
         elif typmail == "QUP":
             MA1_1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=19)
             MA2_1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=21)
             MA1_2 = CREA_MAILLAGE(MAILLAGE=MA1_1, LINE_QUAD=_F(TOUT="OUI"))
             MA2_2 = CREA_MAILLAGE(MAILLAGE=MA2_1, LINE_QUAD=_F(TOUT="OUI"))
-            MA1_3 = CREA_MAILLAGE(MAILLAGE=MA1_2, HEXA20_27=_F(TOUT="OUI", PREF_NOEUD="NX"))
-            MA2_3 = CREA_MAILLAGE(MAILLAGE=MA2_2, HEXA20_27=_F(TOUT="OUI", PREF_NOEUD="NX"))
-            MA1 = CREA_MAILLAGE(MAILLAGE=MA1_3, PENTA15_18=_F(TOUT="OUI", PREF_NOEUD="NY"))
-            MA2 = CREA_MAILLAGE(MAILLAGE=MA2_3, PENTA15_18=_F(TOUT="OUI", PREF_NOEUD="NY"))
+            MA1_3 = CREA_MAILLAGE(MAILLAGE=MA1_2, HEXA20_27=_F(TOUT="OUI"))
+            MA2_3 = CREA_MAILLAGE(MAILLAGE=MA2_2, HEXA20_27=_F(TOUT="OUI"))
+            MA1 = CREA_MAILLAGE(MAILLAGE=MA1_3, PENTA15_18=_F(TOUT="OUI"))
+            MA2 = CREA_MAILLAGE(MAILLAGE=MA2_3, PENTA15_18=_F(TOUT="OUI"))
             DETRUIRE(NOM=(MA1_1, MA1_2, MA1_3, MA2_1, MA2_2, MA2_3))
         else:
             assert 0, typmail

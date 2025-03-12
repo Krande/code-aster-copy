@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbma, listma(*)
     character(len=8) :: nomres, noma
@@ -45,7 +46,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
     complex(kind=8) :: c16b
     character(len=8) :: valek(3), typara(npara)
     character(len=16) :: nopara(npara)
-    character(len=24) :: connex, nommai, nomnoe
+    character(len=24) :: connex
     integer, pointer :: cesd(:) => null()
     integer, pointer :: cind(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
@@ -62,8 +63,6 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, npara, nopara, typara)
 !
-    nommai = noma//'.NOMMAI         '
-    nomnoe = noma//'.NOMNOE         '
     connex = noma//'.CONNEX         '
     call jeveuo(connex, 'L', jconx1)
     call jeveuo(jexatr(connex, 'LONCUM'), 'L', jconx2)
@@ -83,7 +82,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
     do im = 1, nbma
 !
         ima = listma(im)
-        call jenuno(jexnum(nommai, ima), valek(1))
+        valek(1) = int_to_char8(ima)
 !
         nbpt = cesd(5+4*(ima-1)+1)
         decal = cesd(5+4*(ima-1)+4)
@@ -107,7 +106,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
             end if
 !
             ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
-            call jenuno(jexnum(nomnoe, ino), valek(3))
+            valek(3) = int_to_char8(ino)
 !
             do icmp = 1, nbcmp
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -361,45 +361,6 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
     zi(iadime-1+1) = nbnoeu
     zi(iadime-1+3) = nbmail
     zi(iadime-1+6) = nbcoor
-!
-!
-!     3.2 CREATION DES OBJETS .NOMNOE ET .NOMMAI :
-!     --------------------------------------------
-    call jecreo(ma2//'.NOMNOE', 'G N K8')
-    call jeecra(ma2//'.NOMNOE', 'NOMMAX', nbnoeu)
-    call jecreo(ma2//'.NOMMAI', 'G N K8')
-    call jeecra(ma2//'.NOMMAI', 'NOMMAX', nbmail)
-!
-
-    nom = 'N'
-    if (nbnoeu .ge. 10000000) then
-!       -- PLUS DE 10 MILLIONS DE NOEUDS, ON PASSE EN BASE 36
-        do k = 1, nbnoeu
-            call codlet(k, 'G', nom(2:8))
-            call jecroc(jexnom(ma2//'.NOMNOE', nom))
-        end do
-    else
-!       -- MOINS DE 10 MILLIONS DE NOEUDS, ON RESTE EN BASE 10
-        do k = 1, nbnoeu
-            call codent(k, 'G', nom(2:8))
-            call jecroc(jexnom(ma2//'.NOMNOE', nom))
-        end do
-    end if
-
-    nom = 'M'
-    if (nbmail .ge. 10000000) then
-!       -- PLUS DE 10 MILLIONS DE MAILLES, ON PASSE EN BASE 36
-        do k = 1, nbmail
-            call codlet(k, 'G', nom(2:8))
-            call jecroc(jexnom(ma2//'.NOMMAI', nom))
-        end do
-    else
-!       -- MOINS DE 10 MILLIONS DE MAILLES, ON RESTE EN BASE 10
-        do k = 1, nbmail
-            call codent(k, 'G', nom(2:8))
-            call jecroc(jexnom(ma2//'.NOMMAI', nom))
-        end do
-    end if
 !
 !
 !     3.3 CREATION DES OBJETS  .CONNEX ET .TYPMAIL

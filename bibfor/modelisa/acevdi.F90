@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,13 +66,15 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 ! --------------------------------------------------------------------------------------------------
     integer ::  i3d, i2d, ndim1, ioc, nc, ng, nm, nsom, nbmail, un
     integer :: n1, ima, nbgrm, ig, jmail, numa, nutyma, lmax2
     character(len=4) :: type
     character(len=8) :: k8b, nomu, noma, nomo, nomail, typel
     character(len=16) :: concep, cmd
-    character(len=24) :: grmama, mailma, cara, nogrm
+    character(len=24) :: grmama, cara, nogrm
     character(len=24) :: valk(4)
     aster_logical :: l_parallel_mesh
 ! --------------------------------------------------------------------------------------------------
@@ -89,7 +91,6 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
     nlj = 0
     un = 1
     grmama = noma//'.GROUPEMA'
-    mailma = noma//'.NOMMAI'
     l_parallel_mesh = isParallelMesh(noma)
 !
 !   Vecteur du type des mailles du maillage :
@@ -130,7 +131,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
             do ima = 1, nbmail
                 nomail = zk8(jmail+ima-1)
                 call verima(noma, nomail, un, 'MAILLE')
-                call jenonu(jexnom(mailma, nomail), numa)
+                numa = char8_to_int(nomail)
                 nutyma = typmail(numa)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
                 if (typel(1:4) .ne. type) then
@@ -160,7 +161,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
                     nutyma = typmail(numa)
                     call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
                     if (typel(1:4) .ne. type) then
-                        call jenuno(jexnum(mailma, numa), nomail)
+                        nomail = int_to_char8(numa)
                         valk(1) = nomail
                         valk(2) = type
                         valk(3) = typel

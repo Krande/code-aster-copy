@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
 #include "asterfort/nmobsz.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/isParallelMesh.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
@@ -215,7 +216,7 @@ subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
 ! --------- Current node
 !
             node_nume = v_list_node(i_node)
-            call jenuno(jexnum(meshz(1:8)//'.NOMNOE', node_nume), node_name)
+            node_name = int_to_char8(node_nume)
             if (l_pmesh) then
                 nume_glob = v_nonulg(node_nume)
             end if
@@ -262,7 +263,7 @@ subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
 ! ------------- Current element
 !
                 elem_nume = v_list_elem(i_elem)
-                call jenuno(jexnum(meshz(1:8)//'.NOMMAI', elem_nume), elem_name)
+                elem_name = int_to_char8(elem_nume)
 !
 ! ------------- Real number of point/subpoint for current element
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid(1), icomp, iloci, ilocj, inoa
@@ -165,7 +166,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
         do j = 1, 6
             if (xta(j) .gt. 0.d0 .and. xa(j) .eq. 0.d0) then
                 noer = zi(lldesc+inoa-1)
-                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                nomnoe = int_to_char8(noer)
                 tyd = typddl(j)
                 call utmess('E', 'ALGORITH14_94')
                 valk(1) = tyd
@@ -176,7 +177,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
             if (xa(j) .gt. 0.d0 .and. xta(j) .eq. 0.d0) then
                 noer = zi(lldesc+inoa-1)
-                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                nomnoe = int_to_char8(noer)
                 tyd = typddl(j)
                 call utmess('E', 'ALGORITH14_94')
                 valk(1) = tyd

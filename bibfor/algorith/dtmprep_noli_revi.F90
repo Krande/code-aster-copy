@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/utnono.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/char8_to_int.h"
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
@@ -129,7 +130,7 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
         if (iret .eq. 1) call utmess('F', 'ALGORITH5_57', sk=nomgr1)
     end if
 
-    call jenonu(jexnom(mesh1//'.NOMNOE', noeu), inod)
+    inod = char8_to_int(noeu)
 
     call nlsav(sd_nl, _NO1_NAME, 1, iocc=i, kscal=noeu)
     call nlsav(sd_nl, _CMP_NAME, 1, iocc=i, kscal=comp(1:8))
