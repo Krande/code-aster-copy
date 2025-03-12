@@ -311,6 +311,8 @@ FORMULATION = Attribute(
         "U_PSI",
         "DIL",
         "DIL_INCO",
+        "STA",
+        "STA_INCO",
     ),
     comment="""
   FORMULATION =  'HHO_CSTE'  : formulation constante for HHO (0/0/0)
@@ -323,6 +325,8 @@ FORMULATION = Attribute(
   FORMULATION =  'U_PSI'  : formulation displacement/speed potential
   FORMULATION =  'DIL'       : formulation 'old' for DIL
   FORMULATION =  'DIL_INCO'  : formulation incompressible for DIL
+  FORMULATION =  'STA'       : formulation standard for MIXTE_STAB
+  FORMULATION =  'STA_INCO'  : formulation incompressible for MIXTE_STAB
 """,
 )
 

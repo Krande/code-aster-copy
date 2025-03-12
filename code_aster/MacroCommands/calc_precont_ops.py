@@ -438,8 +438,23 @@ def calc_precont_ops(
             MODELE=MODELE,
             AFFE=_F(
                 TOUT="OUI",
-                NOM_CMP=("DX", "DY", "DZ", "DRX", "DRY", "DRZ", "GLIS", "SITY"),
-                VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                NOM_CMP=(
+                    "DX",
+                    "DY",
+                    "DZ",
+                    "DRX",
+                    "DRY",
+                    "DRZ",
+                    "GLIS",
+                    "SITY",
+                    "EPXX",
+                    "EPYY",
+                    "EPZZ",
+                    "EPXY",
+                    "EPYZ",
+                    "EPXZ",
+                ),
+                VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
             ),
         )
 

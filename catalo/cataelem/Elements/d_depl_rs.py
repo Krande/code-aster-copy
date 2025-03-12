@@ -148,6 +148,12 @@ for cmp in (
     "WO4",
     "WO5",
     "WO6",
+    "EPXX",
+    "EPYY",
+    "EPZZ",
+    "EPXY",
+    "EPXZ",
+    "EPYZ",
 ):
 
     # ----------------

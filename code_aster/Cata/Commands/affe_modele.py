@@ -83,6 +83,7 @@ AFFE_MODELE = OPER(
                     "3D_INCO_UPG",
                     "3D_INCO_UP",
                     "3D_INCO_UPO",
+                    "3D_MIX_STA",
                     "3D_SI",
                     "3D_GRAD_VARI",
                     "3D_GRAD_INCO",
@@ -129,6 +130,7 @@ AFFE_MODELE = OPER(
                     "D_PLAN_INCO_UP",
                     "D_PLAN_INCO_UPO",
                     "D_PLAN_SI",
+                    "D_PLAN_MIX_STA",
                     "DIS_T",
                     "DIS_TR",
                     "DKT",
@@ -290,6 +292,13 @@ AFFE_MODELE = OPER(
                 fr=tr("DIL formulation"),
                 FORMULATION=SIMP(
                     statut="f", typ="TXM", max=1, into=("DIL", "DIL_INCO"), defaut="DIL"
+                ),
+            ),
+            b_formu_stab=BLOC(
+                condition="""equal_to('MODELISATION', ('D_PLAN_MIX_STA', '3D_MIX_STA', ))""",
+                fr=tr("MIX STA formulation"),
+                FORMULATION=SIMP(
+                    statut="f", typ="TXM", max=1, into=("STA", "STA_INCO"), defaut="STA"
                 ),
             ),
         ),

@@ -4980,13 +4980,14 @@ DEFI_MATERIAU = MACRO(
     ),
     NON_LOCAL=FACT(
         statut="f",
-        regles=(AU_MOINS_UN("LONG_CARA", "C_GONF", "C_GRAD_VARI", "PENA_LAGR"),),
+        regles=(AU_MOINS_UN("LONG_CARA", "C_GONF", "C_GRAD_VARI", "PENA_LAGR", "TAU_EPSI"),),
         LONG_CARA=SIMP(statut="f", typ="R"),
         C_GRAD_VARI=SIMP(statut="f", typ="R"),
         PENA_LAGR=SIMP(statut="f", typ="R"),  # defaut= 1.0E3 dans fortran
         PENA_LAGR_INCO=SIMP(statut="f", typ="R", defaut=0.0),
         C_GONF=SIMP(statut="f", typ="R"),
         COEF_RIGI_MINI=SIMP(statut="f", typ="R"),
+        TAU_EPSI=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
     ),
     ECRO_NL=FACT(
         statut="f",

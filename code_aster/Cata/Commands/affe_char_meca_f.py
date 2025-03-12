@@ -142,6 +142,12 @@ AFFE_CHAR_MECA_F = OPER(
         K3=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         LAGS_C=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         GLIS=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        EPXX=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        EPYY=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        EPZZ=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        EPXY=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        EPXZ=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        EPYZ=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     FACE_IMPO=FACT(
         statut="f",

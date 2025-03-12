@@ -75,6 +75,8 @@ subroutine terefe(refe_name, type_elem, refe_vale)
             index = 1
         else if (type_elem .eq. 'MECA_DIL') then
             index = 1
+        else if (type_elem .eq. 'MECA_MIXSTA') then
+            index = 1
         else
             ASSERT(.false.)
         end if
@@ -157,6 +159,8 @@ subroutine terefe(refe_name, type_elem, refe_vale)
             index = 3
         else if (type_elem .eq. 'MECA_DIL') then
             index = 3
+        else if (type_elem .eq. 'MECA_MIXSTA') then
+            index = 2
         else
             ASSERT(.false.)
         end if

@@ -1444,6 +1444,34 @@ phen.add(
 )
 
 phen.add(
+    "3D_MIX_STA#1",
+    Modelisation(
+        dim=(3, 3),
+        code="3MV",
+        attrs=((AT.NBSIGM, "6"), (AT.TYPMOD, "3D"), (AT.FORMULATION, "STA")),
+        elements=(
+            (MT.HEXA8, EL.MEMS_HEXA8),
+            (MT.PENTA6, EL.MEMS_PENTA6),
+            (MT.TETRA4, EL.MEMS_TETRA4),
+            (MT.PYRAM5, EL.MEMS_PYRAM5),
+            (MT.QUAD4, EL.MECA_FACE4),
+            (MT.TRIA3, EL.MECA_FACE3),
+            (MT.SEG2, EL.MECA_ARETE2),
+        ),
+    ),
+)
+
+phen.add(
+    "3D_MIX_STA#2",
+    Modelisation(
+        dim=(3, 3),
+        code="3SI",
+        attrs=((AT.NBSIGM, "6"), (AT.TYPMOD, "3D"), (AT.FORMULATION, "STA_INCO")),
+        elements=((MT.HEXA8, EL.MEMI_HEXA8), (MT.QUAD4, EL.MECA_FACE4), (MT.SEG2, EL.MECA_ARETE2)),
+    ),
+)
+
+phen.add(
     "3D_SI",
     Modelisation(
         dim=(3, 3),
@@ -5714,6 +5742,35 @@ phen.add(
     ),
 )
 
+phen.add(
+    "D_PLAN_MIX_STA#1",
+    Modelisation(
+        dim=(2, 2),
+        code="2MV",
+        attrs=(
+            (AT.NBSIGM, "4"),
+            (AT.D_PLAN, "OUI"),
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.FORMULATION, "STA"),
+        ),
+        elements=((MT.QUAD4, EL.MEMS_QU4), (MT.TRIA3, EL.MEMS_TR3), (MT.SEG2, EL.MEPLSE2)),
+    ),
+)
+
+phen.add(
+    "D_PLAN_MIX_STA#2",
+    Modelisation(
+        dim=(2, 2),
+        code="2SI",
+        attrs=(
+            (AT.NBSIGM, "4"),
+            (AT.D_PLAN, "OUI"),
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.FORMULATION, "STA_INCO"),
+        ),
+        elements=((MT.QUAD4, EL.MEMI_QU4), (MT.SEG2, EL.MEPLSE2)),
+    ),
+)
 
 phen.add(
     "D_PLAN_GRAD_HH#1",

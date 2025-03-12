@@ -72,6 +72,7 @@ const char *const ModelingNames[nbModelings] = {
     "3D_JOINT_HYME",
     "3D_SECH",
     "3D_SECH_DIAG",
+    "3D_MIX_STA",
     "3D_SI",
     "3D_THH2D",
     "3D_THH2MD",
@@ -181,6 +182,7 @@ const char *const ModelingNames[nbModelings] = {
     "D_PLAN_INCO_UP",
     "D_PLAN_INCO_UPG",
     "D_PLAN_INCO_UPO",
+    "D_PLAN_MIX_STA",
     "D_PLAN_SI",
     "D_PLAN_THH2D",
     "D_PLAN_THH2MD",
@@ -268,6 +270,7 @@ const Modelings MechanicsModelings[nbModelingsMechanics] = { PlanarBar,
                                                              INTERFACE_S_3D,
                                                              JOINT_3D,
                                                              JOINT_HYME_3D,
+                                                             MIX_STA_3D,
                                                              SI_3D,
                                                              THH2D_3D,
                                                              THH2MD_3D,
@@ -372,6 +375,7 @@ const Modelings MechanicsModelings[nbModelingsMechanics] = { PlanarBar,
                                                              D_PLAN_INCO_UP,
                                                              D_PLAN_INCO_UPG,
                                                              D_PLAN_INCO_UPO,
+                                                             D_PLAN_MIX_STA,
                                                              D_PLAN_SI,
                                                              D_PLAN_THH2D,
                                                              D_PLAN_THH2MD,
@@ -420,6 +424,6 @@ const Modelings AcousticModelings[nbModelingsAcoustic] = { Tridimensional,
                                                            TridimensionalAbsorbingBoundary, Planar,
                                                            PLAN_ABSO };
 
-const char *const FormulationNames[nbFormulation] = {
-    "", "LINEAIRE", "QUADRATIQUE", "U_P_PHI", "U_P", "U_PSI", "DIL", "DIL_INCO"
-};
+const char *const FormulationNames[nbFormulation] = { "",    "LINEAIRE", "QUADRATIQUE", "U_P_PHI",
+                                                      "U_P", "U_PSI",    "DIL",         "DIL_INCO",
+                                                      "STA", "STA_INCO" };

@@ -104,6 +104,12 @@ def C_NOM_DDL_INTO(phenomene, with_dnor=None, select_dof=None):
                 "PRES33",
                 "LH1",
                 "GLIS",
+                "EPXX",
+                "EPYY",
+                "EPZZ",
+                "EPXY",
+                "EPXZ",
+                "EPYZ",
             ]
         elif select_dof == "DEPL":
             dof_name = ["DX", "DY", "DZ", "DRX", "DRY", "DRZ"]

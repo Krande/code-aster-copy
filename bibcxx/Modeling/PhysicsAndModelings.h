@@ -90,6 +90,7 @@ enum Modelings {
     JOINT_HYME_3D,
     SECH_3D,
     SECH_3D_DIAG,
+    MIX_STA_3D,
     SI_3D,
     THH2D_3D,
     THH2MD_3D,
@@ -199,6 +200,7 @@ enum Modelings {
     D_PLAN_INCO_UP,
     D_PLAN_INCO_UPG,
     D_PLAN_INCO_UPO,
+    D_PLAN_MIX_STA,
     D_PLAN_SI,
     D_PLAN_THH2D,
     D_PLAN_THH2MD,
@@ -241,14 +243,14 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 197;
+const int nbModelings = 199;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
  */
 extern const char *const ModelingNames[nbModelings];
 
-const int nbModelingsMechanics = 185;
+const int nbModelingsMechanics = 187;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
 const int nbModelingsThermal = 17;
@@ -261,8 +263,8 @@ extern const Modelings AcousticModelings[nbModelingsAcoustic];
  * @enum Formulation
  * @author Nicolas Sellenet
  */
-enum Formulation { NoFormulation, Linear, Quadratic, UPPhi, UP, UPsi, Dil, DilInco };
-const int nbFormulation = 8;
+enum Formulation { NoFormulation, Linear, Quadratic, UPPhi, UP, UPsi, Dil, DilInco, Sta, StaInco };
+const int nbFormulation = 10;
 /**
  * @var FormulationNames
  * @brief Nom Aster des differentes physiques disponibles
