@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+import os.path as osp
+
+import numpy as np
+
+
+from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Utilities import PETSc, SLEPc, petscInitialize
-import numpy as np
+from code_aster.Utilities import PETSc, SLEPc, get_shared_tmpdir
+from code_aster.Applications.dynamic_substructuring import macPlot
 
 CA.init("--test")
 
@@ -27,12 +33,178 @@ CA.init("--test")
 
 test = CA.TestCase()
 
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-MAILLAG = LIRE_MAILLAGE(PARTITIONNEUR="PTSCOTCH")
+# Definition of the material
+scaling = 1.0e10
+acier = DEFI_MATERIAU(ELAS=_F(E=190.0e9 / scaling, NU=0.3, RHO=7800.0 / scaling))
 
-# MAILLAG = MAILLAG.refine()
+rhof = 732.0 / scaling
+eau = DEFI_MATERIAU(FLUIDE=_F(CELE_R=970.0, RHO=rhof))
 
-MODELEG = AFFE_MODELE(
+# The distributed modes are build first then the legacy ones, since
+# the legacy ones are used to check the distributed ones
+for dist in (True, False):
+
+    # --------------------------------------------------------------------
+    # Common section
+    # --------------------------------------------------------------------
+
+    MAIL = LIRE_MAILLAGE(PARTITIONNEUR="PTSCOTCH") if dist else LIRE_MAILLAGE()
+
+    MODEL = AFFE_MODELE(
+        AFFE=(
+            _F(GROUP_MA=("s1Tuyau", "Tuyau"), MODELISATION="3D", PHENOMENE="MECANIQUE"),
+            _F(
+                FORMULATION="U_P",
+                GROUP_MA=("s1Eau", "Eau"),
+                MODELISATION="3D_FLUIDE",
+                PHENOMENE="MECANIQUE",
+            ),
+            _F(
+                FORMULATION="U_P",
+                GROUP_MA=("IFS_2D",),
+                MODELISATION="FLUI_STRU",
+                PHENOMENE="MECANIQUE",
+            ),
+        ),
+        MAILLAGE=MAIL,
+    )
+
+    CHMAT = AFFE_MATERIAU(
+        AFFE=(_F(GROUP_MA=("Tuyau"), MATER=(acier,)), _F(GROUP_MA=("IFS_2D", "Eau"), MATER=(eau,))),
+        MODELE=MODEL,
+    )
+
+    CL = AFFE_CHAR_MECA(
+        DDL_IMPO=(
+            _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("s1Tuyau", "s2Tuyau")),
+            _F(GROUP_MA=("s1Eau", "s2Eau"), PRES=0.0),
+        ),
+        MODELE=MODEL,
+        DOUBLE_LAGRANGE="NON",
+    )
+
+    ASSEMBLAGE(
+        CHAM_MATER=CHMAT,
+        CHARGE=CL,
+        MATR_ASSE=(
+            _F(MATRICE=CO("MASS"), OPTION="MASS_MECA"),
+            _F(MATRICE=CO("STIFF"), MODE_FOURIER=0, OPTION="RIGI_MECA"),
+        ),
+        MODELE=MODEL,
+        NUME_DDL=CO("NDDL"),
+    )
+
+    nModes = 6
+
+    # --------------------------------------------------------------------
+    # Distributed HPC
+    # --------------------------------------------------------------------
+    if dist:
+        # Transfer the assembly matrix to PETSc
+        K = STIFF.toPetsc()
+        M = MASS.toPetsc()
+
+        comm = K.comm
+
+        # define the Eigenvalue Problem Solver
+        eps = SLEPc.EPS().create(comm)
+        if False:  # want to try Arpack ?
+            eps.setType(SLEPc.EPS.Type.ARPACK)
+
+        eps.setOperators(K, M)
+        eps.setDimensions(nModes)
+        eps.setWhichEigenpairs(SLEPc.EPS.Which.TARGET_MAGNITUDE)
+        eps.setTarget(0)
+        # define the Spectral Transform
+        st = eps.getST()
+        st.setType(SLEPc.ST.Type.SINVERT)
+        st.setShift(5.0)
+        st.getKSP().setType("preonly")
+        st.getKSP().getPC().setType("lu")
+        st.getKSP().getPC().setFactorSolverType("mumps")
+
+        # Build and save
+        eps.setFromOptions()
+        eps.solve()
+
+        # Retrieve eigenvalues
+        nconv = eps.getConverged()
+        eps.view()
+
+        Print = PETSc.Sys.Print
+
+        # Prepare the results
+        eigs = []
+        mode = CA.FieldOnNodesReal(NDDL)
+        vr = mode.toPetsc()
+        vi = mode.toPetsc()
+        eigvecs = [None] * nconv
+
+        if nconv > 0:
+            # Print the eigenvalues
+            Print()
+            Print("        k          ||Ax-kx||/||kx|| ")
+            Print("----------------- ------------------")
+            for i in range(nModes):
+                k = eps.getEigenpair(i, vr, vi)
+                error = eps.computeError(i)
+                eigvecs[i] = mode.copy()
+                if k.imag != 0.0:
+                    Print(" %9f%+9f j %12g" % (k.real, k.imag, error))
+                    Print("But we should not pass here...")
+                    assert False
+                else:
+                    Print(" %12f      %12g" % (np.sqrt(k.real) / 2.0 / np.pi, error))
+                    eigs.append(np.sqrt(k.real) / 2.0 / np.pi)
+                    eigvecs[i].fromPetsc(vr)
+            Print()
+
+        # Store results in code_aster datastructure
+        mc_affe = [
+            {"NOM_CHAM": "DEPL", "CHAM_GD": eigvecs[i], "NUME_MODE": i, "FREQ": eigs[i]}
+            for i in range(nModes)
+        ]
+        modes_dist = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MODE_MECA", AFFE=mc_affe)
+
+    # --------------------------------------------------------------------
+    # Legacy HPC
+    # --------------------------------------------------------------------
+    else:
+        modes_lgc = CALC_MODES(
+            CALC_FREQ=_F(NMAX_FREQ=nModes),
+            MATR_MASS=MASS,
+            MATR_RIGI=STIFF,
+            TYPE_RESU="DYNAMIQUE",
+            SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
+            VERI_MODE=_F(STOP_ERREUR="NON"),
+        )
+
+# Check that the two sets of frequencies are identical
+ref = modes_lgc.getAccessParameters()["FREQ"]
+for idx, v in enumerate(ref):
+    test.assertAlmostEqual(v, eigs[idx], places=4)
+
+# TODO change it when issue34517 is fixed
+tmpdir = ""
+if rank == 0:
+    tmpdir = get_shared_tmpdir("foo", "/tmp")
+tmpdir = MPI.ASTER_COMM_WORLD.bcast(tmpdir)
+filename = osp.join(tmpdir, "modes_dist.resu.med")
+# Print the distributed modes into a single file
+modes_dist.printMedFile(filename, local=False)
+
+
+# --------------------------------------------------------------------
+#       Verification of the modes
+
+# Read the distributed modes from the file into a sequential field
+DEFI_FICHIER(UNITE=81, TYPE="BINARY", FICHIER=filename, ACCES="OLD")
+# Read the sequential mesh
+ma = LIRE_MAILLAGE(UNITE=81)
+# Build the sequential model
+mo = AFFE_MODELE(
     AFFE=(
         _F(GROUP_MA=("s1Tuyau", "Tuyau"), MODELISATION="3D", PHENOMENE="MECANIQUE"),
         _F(
@@ -45,106 +217,46 @@ MODELEG = AFFE_MODELE(
             FORMULATION="U_P", GROUP_MA=("IFS_2D",), MODELISATION="FLUI_STRU", PHENOMENE="MECANIQUE"
         ),
     ),
-    MAILLAGE=MAILLAG,
+    MAILLAGE=ma,
 )
 
-# -- DEFINITION DU MATERIAU
-scaling = 1.0e10
-acier = DEFI_MATERIAU(ELAS=_F(E=190.0e9 / scaling, NU=0.3, RHO=7800.0 / scaling))
+NUME = NUME_DDL(MODELE=mo)
+# Read the distributed modes from the file as sequential fields
+modes_dist_seq = LIRE_RESU(
+    FORMAT="MED",
+    UNITE=81,
+    FORMAT_MED=_F(NOM_CHAM="DEPL", NOM_RESU=modes_dist.getName()),
+    TYPE_RESU="MODE_MECA",
+    TOUT_ORDRE="OUI",
+    PROL_ZERO="NON",
+    # MAILLAGE=ma,
+    MODELE=mo,
+)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=81)
 
-eau = DEFI_MATERIAU(FLUIDE=_F(CELE_R=970.0, RHO=732.0 / scaling))
 
-
-CHAMATG = AFFE_MATERIAU(
-    AFFE=(_F(GROUP_MA=("Tuyau"), MATER=(acier,)), _F(GROUP_MA=("IFS_2D", "Eau"), MATER=(eau,))),
-    MODELE=MODELEG,
+# Project the distributed modes onto the original mesh with the original DOFNumbering
+# TODO suppress projection when issue34518 is fixed
+modes_dist_proj = PROJ_CHAMP(
+    METHODE="AUTO", RESULTAT=modes_dist_seq, MAILLAGE_1=ma, MAILLAGE_2=MAIL, NUME_DDL=NDDL
 )
 
-CL = AFFE_CHAR_MECA(
-    DDL_IMPO=(
-        _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("s1Tuyau", "s2Tuyau")),
-        _F(GROUP_MA=("s1Eau", "s2Eau"), PRES=0.0),
-    ),
-    MODELE=MODELEG,
+# Compute the MAC between the lgc and dist sets of modes
+mac = macPlot(
+    modes_lgc,
+    modes_dist_proj,
+    MASS,
+    fluid_material=eau,
+    name1="Legacy hpc",
+    name2="Distributed hpc",
+    dof=["DX", "DY", "DZ", "PRES"],
 )
 
-ASSEMBLAGE(
-    CHAM_MATER=CHAMATG,
-    CHARGE=CL,
-    MATR_ASSE=(
-        _F(MATRICE=CO("MASS"), OPTION="MASS_MECA"),
-        _F(MATRICE=CO("STIFF"), MODE_FOURIER=0, OPTION="RIGI_MECA"),
-    ),
-    MODELE=MODELEG,
-    NUME_DDL=CO("NDDL"),
-)
+# Check that the two sets of modes are identical
+for i in range(nModes):
+    for j in range(nModes):
+        test.assertAlmostEqual(mac[i, j], 1.0 if i == j else 0.0)
 
-nModes = 6
-compute_ref = False
-if compute_ref:
-    modes = CALC_MODES(
-        CALC_FREQ=_F(NMAX_FREQ=nModes),
-        MATR_MASS=MASS,
-        MATR_RIGI=STIFF,
-        TYPE_RESU="DYNAMIQUE",
-        SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
-        VERI_MODE=_F(STOP_ERREUR="NON"),
-    )
-
-# Transfer the assembly matrix to PETSc
-K = STIFF.toPetsc()
-M = MASS.toPetsc()
-
-comm = K.comm
-
-# define the Eigenvalue Problem Solver
-eps = SLEPc.EPS().create(comm)
-if False:  # want to try Arpack ?
-    eps.setType(SLEPc.EPS.Type.ARPACK)
-eps.setOperators(K, M)
-eps.setDimensions(nModes)
-eps.setWhichEigenpairs(SLEPc.EPS.Which.TARGET_MAGNITUDE)
-eps.setTarget(0)
-# define the Spectral Transform
-st = eps.getST()
-st.setType(SLEPc.ST.Type.SINVERT)
-st.setShift(5.0)
-st.getKSP().setType("preonly")
-st.getKSP().getPC().setType("lu")
-st.getKSP().getPC().setFactorSolverType("mumps")
-
-# Build and save
-eps.setFromOptions()
-eps.solve()
-
-# Retrieve eigenvalues
-nconv = eps.getConverged()
-eps.view()
-
-Print = PETSc.Sys.Print
-ref = [1.31117e01, 2.84234e01, 3.71644e01, 5.50777e01, 6.87567e01, 6.95364e01]
-calc = []
-if nconv > 0:
-    # Create the results vectors
-    vr, vi = K.getVecs()
-    # Print the eigenvalues
-    Print()
-    Print("        k          ||Ax-kx||/||kx|| ")
-    Print("----------------- ------------------")
-    for i in range(nconv):
-        k = eps.getEigenpair(i, vr, vi)
-        error = eps.computeError(i)
-        if k.imag != 0.0:
-            Print(" %9f%+9f j %12g" % (k.real, k.imag, error))
-            Print("But we should not pass here...")
-            assert False
-        else:
-            Print(" %12f      %12g" % (np.sqrt(k.real) / 2.0 / np.pi, error))
-            calc.append(np.sqrt(k.real) / 2.0 / np.pi)
-    Print()
-
-# Verification
-for idx, v in enumerate(ref):
-    test.assertAlmostEqual(v, calc[idx], places=4)
+print("MAC=", mac)
 
 FIN()

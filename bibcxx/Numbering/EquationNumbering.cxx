@@ -157,7 +157,7 @@ SetLong EquationNumbering::getComponentsId() const {
 };
 
 /**
- * @brief Maps between name of components and the nimber
+ * @brief Maps between name of components and the number
  */
 std::map< std::string, ASTERINTEGER > EquationNumbering::getComponentsNameToId() const {
     std::map< std::string, ASTERINTEGER > ret;
@@ -168,6 +168,22 @@ std::map< std::string, ASTERINTEGER > EquationNumbering::getComponentsNameToId()
     }
 
     return ret;
+};
+
+/**
+ * @brief Get Rows owned locally (aka not Ghost)
+ */
+VectorLong EquationNumbering::getNoGhostDOFs( const bool local ) const {
+    // throw std::runtime_error( "No ghost DOF in sequential" );
+    const ASTERINTEGER nb_eq = this->getNumberOfDOFs( true );
+
+    VectorLong dof;
+    dof.reserve( nb_eq );
+
+    for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+        dof.push_back( i_eq );
+    }
+    return dof;
 };
 
 std::map< ASTERINTEGER, std::string > EquationNumbering::getComponentsIdToName() const {
