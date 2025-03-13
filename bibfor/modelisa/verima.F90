@@ -98,7 +98,7 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
             call utmess('F', 'MODELISA7_86')
         end if
 !
-        call jelira(mesh//'.COORDO', 'NUTIOC', nbno)
+        call jelira(mesh//'.COORDO    .VALE', 'LONMAX', nbno)
         nbno = nbno/3
         do ino = 1, list_size
             object = list_obj(ino)

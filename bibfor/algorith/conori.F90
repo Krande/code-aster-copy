@@ -171,7 +171,7 @@ subroutine conori(ma)
         end if
 !     ------------------------------------------------------------------
         call jelira(ma//'.TYPMAIL', 'LONMAX', nbmar)
-        call jelira(ma//'.COORDO', 'LONMAX', nbnoe)
+        call jelira(ma//'.COORDO    .VALE', 'LONMAX', nbnoe)
         nbnoe = nbnoe/3
 !
         call wkvect('&&OP0154.NOE', 'V V I', nbnoe, inoe)

@@ -153,7 +153,7 @@ subroutine cafaci(load, mesh, model, valeType)
 !
 ! - Local coordinate system (dummy)
 !
-    call jelira(mesh//'.COORDO', 'NUTIOC', nbnoeu)
+    call jelira(mesh//'.COORDO    .VALE', 'LONMAX', nbnoeu)
     nbnoeu = nbnoeu/3
     call wkvect('&&CAFACI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !

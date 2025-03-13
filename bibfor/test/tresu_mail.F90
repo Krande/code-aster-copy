@@ -73,7 +73,7 @@ subroutine tresu_mail(nommai, tbtxt, refi, iocc, &
             nb1 = 0
             goto 100
         end if
-        call jelira(nommai//'.COORDO', 'NUTIOC', nb1)
+        call jelira(nommai//'.COORDO    .VALE', 'LONMAX', nb1)
         nb1 = nb1/3
 
     elseif (cara .eq. 'NB_GROUP_MA') then

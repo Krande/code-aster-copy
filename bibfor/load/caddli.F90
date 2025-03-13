@@ -160,7 +160,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
 ! - Local coordinate system (dummy)
 !
-    call jelira(mesh//'.COORDO', 'LONMAX', nbnoeu)
+    call jelira(mesh//'.COORDO    .VALE', 'LONMAX', nbnoeu)
     nbnoeu = nbnoeu/3
     call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !

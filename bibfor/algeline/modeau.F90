@@ -258,7 +258,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base, &
     call dismoi('NOM_NUME_DDL', matria, 'MATR_ASSE', repk=numddl)
     call dismoi('NB_EQUA', matria, 'MATR_ASSE', repi=neq)
 !
-    call jelira(noma//'.COORDO', 'NUTIOC', nbnoe)
+    call jelira(noma//'.COORDO    .VALE', 'LONMAX', nbnoe)
     nbnoe = nbnoe/3
     call wkvect('&&MODEAU.TEMP.DPLA', 'V V R', 6*nbnoe*nbm, idpla)
     call extmod(base, numddl, nuor, nbm, zr(idpla), &

@@ -291,7 +291,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor, &
     call dismoi('NOM_NUME_DDL', matria, 'MATR_ASSE', repk=numddl)
     call dismoi('NB_EQUA', matria, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_MAILLA', matria, 'MATR_ASSE', repk=mailla)
-    call jelira(mailla//'.COORDO', 'NUTIOC', nbnoe)
+    call jelira(mailla//'.COORDO    .VALE', 'LONMAX', nbnoe)
     nbnoe = nbnoe/3
     call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !

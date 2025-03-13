@@ -141,7 +141,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
             zk24(krefe+i) = zk24(jrefe+i)
         end do
         call dismoi('NOM_MAILLA', nomch(1), 'CHAMP', repk=noma)
-        call jelira(noma//'.COORDO', 'LONMAX', nbnoeu)
+        call jelira(noma//'.COORDO    .VALE', 'LONMAX', nbnoeu)
         nbnoeu = nbnoeu/3
 !
 !        --- BOUCLE SUR LES CHAMPS A RECOMBINER ---

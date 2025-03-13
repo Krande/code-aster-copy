@@ -142,7 +142,7 @@ subroutine caddlp(load, mesh, model, valeType)
 !
 ! - Local coordinate system
 !
-    call jelira(mesh//'.COORDO', 'LONMAX', nbnoeu, k8bid)
+    call jelira(mesh//'.COORDO    .VALE', 'LONMAX', nbnoeu, k8bid)
     nbnoeu = nbnoeu/3
     call wkvect('&&CADDLP.DIRECT', 'V V R', 3*nbnoeu, jdirec)
     AS_ALLOCATE(vi=dimension, size=nbnoeu)
