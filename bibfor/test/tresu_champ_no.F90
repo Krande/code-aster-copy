@@ -141,7 +141,10 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
 !
 !        -- RECUPERATION DU NUMERO DU NOEUD:
     l_ok = ASTER_FALSE
-    ino = char8_to_int(nonoeu(1:8))
+    ino = 0
+    if (nonoeu(1:8) .ne. ' ') then
+        ino = char8_to_int(nonoeu(1:8))
+    end if
     inog = ino
     call asmpi_comm_vect('MPI_MAX', 'I', sci=inog)
     if (inog .eq. 0) then
