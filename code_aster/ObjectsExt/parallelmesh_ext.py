@@ -85,31 +85,37 @@ class ExtendedParallelMesh:
         """
         return self.getCoordinates().toFieldOnNodes(self).toSimpleFieldOnNodes()
 
-    def plot(self, command="gmsh", local=False):
+    def plot(self, command="gmsh", local=False, split=False):
         """Plot the mesh.
 
         Arguments:
             command (str): Program to be executed to plot the mesh.
-            local (bool): Only the local mesh is plotted if *True*. Otherwise
-                all parts are plotted together.
+            local (bool): Print in separate files if *True*. Otherwise an unique file is used.
+            split (bool): Display each subdomain separately if *True*. Otherwise the global mesh is displayed.
         """
         comm = MPI.ASTER_COMM_WORLD
+        opt = "Mesh.VolumeEdges = 1;Mesh.VolumeFaces=1;Mesh.SurfaceEdges=1;Mesh.SurfaceFaces=1;"
         if local:
-            # will be removed when 'tmpf' object will be deleted
-            tmpf = tempfile.NamedTemporaryFile(suffix=".med")
-            filename = tmpf.name
-            # to avoid then warning on existing file
-            os.remove(filename)
-            self.printMedFile(filename)
-            subprocess.run([ExecutionParameter().get_option(f"prog:{command}"), filename])
+            if split:
+                with shared_tmpdir("mesh") as tmpdir:
+                    filename = osp.join(tmpdir, f"subd_{comm.rank}.med")
+                    self.printMedFile(filename, local=True)
+                    comm.Barrier()
+                    if comm.rank == 0:
+                        for i in range(comm.size):
+                            ff = osp.join(tmpdir, f"subd_{i}.med")
+                            subprocess.run(
+                                [
+                                    ExecutionParameter().get_option(f"prog:{command}"),
+                                    "-string",
+                                    opt,
+                                    ff,
+                                ]
+                            )
+            else:
+                self.getOwnerField().plot(command=command, local=local, split=split)
         else:
-            with shared_tmpdir("meshplot") as tmpdir:
-                filename = osp.join(tmpdir, f"{comm.rank}.med")
-                self.printMedFile(filename, local=True)
-                comm.Barrier()
-                if comm.rank == 0:
-                    files = [osp.join(tmpdir, f"{i}.med") for i in range(comm.size)]
-                    subprocess.run([ExecutionParameter().get_option(f"prog:{command}")] + files)
+            self.getOwnerField().plot(command=command, local=local, split=split)
         print("waiting for all plotting processes...")
         comm.Barrier()
 
