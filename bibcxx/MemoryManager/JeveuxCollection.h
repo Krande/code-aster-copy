@@ -125,6 +125,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
     ASTERINTEGER _capacity;
     ASTERINTEGER _totalSize;
     JeveuxCollObjValType _temporaryCollectionObject;
+    JeveuxCollObjValType _temporaryEndCollectionObject;
     /**
      * @brief Pointeur vers un NamesMap
      * @todo ASTERINTEGER par defaut : pas terrible
@@ -198,7 +199,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
           _namesMap( 0 ),
           _capacity( 0 ),
           _totalSize( 0 ),
-          _temporaryCollectionObject() {}
+          _temporaryCollectionObject(),
+          _temporaryEndCollectionObject() {}
 
     /**
      * @brief Constructeur dans le cas où AccessType est un NamesMap
@@ -212,7 +214,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
           _namesMap( ptr ),
           _capacity( 0 ),
           _totalSize( 0 ),
-          _temporaryCollectionObject() {};
+          _temporaryCollectionObject(),
+          _temporaryEndCollectionObject() {};
 
     ~JeveuxCollectionClass() {
         // #ifdef ASTER_DEBUG_CXX_OBJECTS
@@ -616,8 +619,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         if ( position >= _objectCount + 1 ) {
             auto obj = JeveuxCollObjValType();
             const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
-                ->_temporaryCollectionObject = obj;
-            return _temporaryCollectionObject;
+                ->_temporaryEndCollectionObject = obj;
+            return _temporaryEndCollectionObject;
         }
         if ( _temporaryCollectionObject.operator->() == nullptr ) {
             auto obj = JeveuxCollObjValType( _name, position, _isNamed );
@@ -647,8 +650,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         if ( position >= _objectCount + 1 ) {
             auto obj = JeveuxCollObjValType();
             const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
-                ->_temporaryCollectionObject = obj;
-            return _temporaryCollectionObject;
+                ->_temporaryEndCollectionObject = obj;
+            return _temporaryEndCollectionObject;
         }
         if ( _temporaryCollectionObject.operator->() == nullptr ) {
             auto obj = JeveuxCollObjValType( _name, position, _isNamed );
@@ -686,8 +689,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         if ( position >= _objectCount + 1 ) {
             auto obj = JeveuxCollObjValType();
             const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
-                ->_temporaryCollectionObject = obj;
-            return _temporaryCollectionObject;
+                ->_temporaryEndCollectionObject = obj;
+            return _temporaryEndCollectionObject;
         }
         if ( _temporaryCollectionObject.operator->() == nullptr ) {
             auto obj = JeveuxCollObjValType( _name, position, _isNamed );
@@ -725,8 +728,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         if ( position >= _objectCount + 1 ) {
             auto obj = JeveuxCollObjValType();
             const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
-                ->_temporaryCollectionObject = obj;
-            return _temporaryCollectionObject;
+                ->_temporaryEndCollectionObject = obj;
+            return _temporaryEndCollectionObject;
         }
         if ( _temporaryCollectionObject.operator->() == nullptr ) {
             auto obj = JeveuxCollObjValType( _name, position, _isNamed );
