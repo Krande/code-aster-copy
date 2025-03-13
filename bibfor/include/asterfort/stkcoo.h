@@ -21,7 +21,7 @@
 interface
     subroutine stkcoo(ifl, icl, iv, rv, cv,&
                       cnl, mcl, nbm, num, coo,&
-                      irteti)
+                      nno, irteti)
         integer :: nbm
         integer :: ifl
         integer :: icl
@@ -32,6 +32,7 @@ interface
         character(len=8) :: mcl(nbm)
         integer :: num
         character(len=24) :: coo
+        character(len=24) :: nno
         integer :: irteti
     end subroutine stkcoo
 end interface

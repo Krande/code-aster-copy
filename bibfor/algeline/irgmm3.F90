@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C9992
+! aslint: disable=C0110
 !
 subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
                   nobj, nbel, versio)

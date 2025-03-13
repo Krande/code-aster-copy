@@ -60,7 +60,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
     integer :: ifm, ifl
     character(len=24) :: cooval, coodsc, grpnoe, grpmai, connex
-    character(len=24) :: titre, typmai
+    character(len=24) :: titre, nomnoe, typmai
     character(len=24) :: adapma
     character(len=8) :: nomu
 !     OUT
@@ -437,6 +437,13 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !     ET DES OBJETS PERMANENTS NON TRANSCODABLES SUR LA GLOBALE
 !     -------------------------------------------------------------
 !
+!
+! -   OBJET NOMNOE    = REPERTOIRE NOMS DE NOEUDS K8 SUR GLOBALE
+!
+    nomnoe = "&&LRMAST.NOMNOE_"
+    call jecreo(nomnoe, 'G N K8')
+    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
+!
 ! -   OBJET TITRE             = VECTEUR DE K80
 !
     call jecreo(titre, 'G V K80')
@@ -576,7 +583,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
     call stkcoo(ifl, icl, iv, rv, cv, &
                 cnl, mclcoo, nbmcoo, numneu, cooval, &
-                irtet)
+                nomnoe, irtet)
     if (irtet .eq. 1) then
         goto 800
     else if (irtet .eq. 2) then
@@ -656,7 +663,8 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
         call jeveuo(jexnum(connex, ibid), 'E', jgcnx)
         do j = 1, nbno
             nom = zk8(jvcnx+j-1)
-            num = char8_to_int(nom)
+            call jenonu(jexnom(nomnoe, nom), num)
+            ! num = char8_to_int(nom)
             zi(jgcnx+j-1) = num
             if (num .eq. 0) then
                 valk(1) = nom
@@ -799,6 +807,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
     call jedetr(nomu//'.GROUPMAV')
     call jedetr(gpptnv)
     call jedetr(gpptmv)
+    call jedetr(nomnoe)
 !
 ! FERMETURE DU FICHIER
 !

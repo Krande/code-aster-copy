@@ -917,7 +917,7 @@ subroutine op0167()
     cellShift = cellShift+nbCellIn
 
 ! - Create cell from "CREA_MAILLE"
-    call jelira(meshOut//'.TYPEMAIL', 'LONMAX', nbCellOut2)
+    call jelira(meshOut//'.TYPMAIL', 'LONMAX', nbCellOut2)
     do iCell = 1, nbCellCrea
         cellNameOut = creaCellName(iCell)
         cellNumeIn = creaCellNume(iCell)

@@ -114,7 +114,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
 !
     noma = b8
     noma(1:iv) = cv(1:iv)
-    call jelira(typ(1:8)//'.TYPEMAIL', 'LONMAX', iret)
+    call jelira(typ(1:8)//'.TYPMAIL', 'LONMAX', iret)
     iret2 = char8_to_int(noma)
     if (iret2 .le. iret) then
         call jecroc(jexnom(cnx, noma))

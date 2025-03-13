@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C9992
+! aslint: disable=C0110
 !
 subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
                   nobj, nbel, versio)
@@ -54,7 +54,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol
     aster_logical :: logic
     character(len=1) :: base
-    character(len=8) :: k8b, nomg, typm, typm2
+    character(len=8) :: k8b, typm, typm2
     character(len=24) :: typmai, connex, nodime, cooval, coodsc
     character(len=24) :: titre, numold
     character(len=24) :: typmav, connev, nodimv, coovav, coodsv
