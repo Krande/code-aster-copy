@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
-                  ligrma, nbno, tabnoe, rignoe, rigto, &
-                  ndim)
+                  ligrma, nbno, tabnoe, rignoe, ndim)
+!
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,9 +43,8 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     integer :: ioc, nbgr, nbno, ndim
     character(len=8) :: noma, tabnoe(*)
     character(len=24) :: ligrma(nbgr)
-    real(kind=8) :: rignoe(*), rigto(*)
+    real(kind=8) :: rignoe(*)
     aster_logical :: lvale
-!
 !
     character(len=8) :: nomnoe, typm
     character(len=8) :: nompar(3)
@@ -54,17 +53,18 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     real(kind=8) :: a(3), b(3), c(3), u(3)
     integer :: appui
 !
-!-----------------------------------------------------------------------
-    integer :: i, ii, iunite
+! --------------------------------------------------------------------------------------------------
+    integer :: ii, iunite
     integer :: ij, im, in, inoe, iret
     integer :: ldgm, ldnm, ltyp, nb, nbma
-    integer :: nfg, nm, nn, noemax, ntopo, numa
-!
+    integer :: nm, nn, noemax, ntopo, numa
 !
     real(kind=8) :: coef, hc, r1, r2, r3, r4, r5, r6
     real(kind=8) :: surf, surtot, xc
     real(kind=8) :: yc, z0
     real(kind=8) :: surtxx, surtxy, surtxz, surtyy, surtyz, surtzz
+    character(len=8) :: fongro
+!
     real(kind=8), pointer :: coeno(:) => null()
     real(kind=8), pointer :: coenxx(:) => null()
     real(kind=8), pointer :: coenxy(:) => null()
@@ -72,7 +72,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     real(kind=8), pointer :: coenyy(:) => null()
     real(kind=8), pointer :: coenyz(:) => null()
     real(kind=8), pointer :: coenzz(:) => null()
-    character(len=8), pointer :: fongro(:) => null()
     integer, pointer :: parno(:) => null()
     real(kind=8), pointer :: surma1(:) => null()
     real(kind=8), pointer :: surma2(:) => null()
@@ -82,17 +81,12 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     real(kind=8), pointer :: surma6(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    blas_int :: b_incx, b_incy, b_n
-!-----------------------------------------------------------------------
+    blas_int :: blas_1, blas_3
+! --------------------------------------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
     iunite = 6
-!
-!
-!     --- ON RECUPERE LES POINTS D'ANCRAGE ---
-!
-!
-!        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
+!   ON RECUPERE LES POINTS D'ANCRAGE, ON ECLATE LE GROUP_NO EN NOEUDS
     call compma(noma, nbgr, ligrma, nbma)
     manono = noma//'.NOMNOE'
     magrma = noma//'.GROUPEMA'
@@ -101,34 +95,29 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
 !
     noemax = 0
 !
+    blas_3 = to_blas_int(3)
+    blas_1 = to_blas_int(1)
 !
-!     --- DESCRIPTION NOEUDS STRUCTURE ---
+!   DESCRIPTION NOEUDS STRUCTURE
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
-!
-!       RECUPERATION DES COEFS OU FONCTIONS DE GROUPE
-!
-!      CALL GETVR8('MASS_AJOU','Z0',IOC,IARG,1,Z0,NCG)
+!   RECUPERATION DES COEFS OU FONCTIONS DE GROUPE
     z0 = zero
-!    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=0, nbret=nfg)
-    nbgr = 1
-    AS_ALLOCATE(vk8=fongro, size=nbgr)
-    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro, &
-                nbret=nfg)
-!
-!
+    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, scal=fongro)
 !
     if (ndim .eq. 2) then
         appui = 1
     else
-!     LA DIMENSION DE L'APPUI N'EST PAS ENCORE DETERMINEE
+!       LA DIMENSION DE L'APPUI N'EST PAS ENCORE DETERMINEE
         appui = -1
     end if
 !
     call jeveuo(matyma, 'L', ltyp)
-    do i = 1, nbgr
-        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
-        call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
+!   Dans le catalogue max=1 ==> nbgr=1
+!   On garde la boucle si future évolution
+    do ii = 1, nbgr
+        call jelira(jexnom(magrma, ligrma(ii)), 'LONUTI', nb)
+        call jeveuo(jexnom(magrma, ligrma(ii)), 'L', ldgm)
         do in = 0, nb-1
             numa = zi(ldgm+in)
             ASSERT(numa .gt. 0)
@@ -139,7 +128,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
             call dismoi('DIM_TOPO', typm, 'TYPE_MAILLE', repi=ntopo)
 !
             if (appui .eq. -1) then
-!            LA DIMENSION DE LA PREMIERE MAILLE DEFINIT L'APPUI
+!               LA DIMENSION DE LA PREMIERE MAILLE DEFINIT L'APPUI
                 appui = ntopo
             else if ((appui .eq. 1) .or. (appui .eq. 2)) then
                 if (appui .ne. ntopo) then
@@ -163,14 +152,9 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     AS_ALLOCATE(vr=coenyy, size=noemax)
     AS_ALLOCATE(vr=coenyz, size=noemax)
     AS_ALLOCATE(vr=coenzz, size=noemax)
-!
-!        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
-!
+!   TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
     AS_ALLOCATE(vi=parno, size=noemax)
-!
-!
-!     CALCUL DES SURFACES ELEMENTAIRES ET DE LA SURFACE TOTALE
-!
+!   CALCUL DES SURFACES ELEMENTAIRES ET DE LA SURFACE TOTALE
     AS_ALLOCATE(vr=surmai, size=nbma)
     AS_ALLOCATE(vr=surma1, size=nbma)
     AS_ALLOCATE(vr=surma2, size=nbma)
@@ -186,9 +170,9 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     surtyy = zero
     surtyz = zero
     surtzz = zero
-    do i = 1, nbgr
-        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
-        call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
+    do ii = 1, nbgr
+        call jelira(jexnom(magrma, ligrma(ii)), 'LONUTI', nb)
+        call jeveuo(jexnom(magrma, ligrma(ii)), 'L', ldgm)
         do in = 0, nb-1
             im = im+1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
@@ -215,18 +199,12 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
                 b(1) = x(2)-x(1)
                 b(2) = y(2)-y(1)
                 b(3) = zero
-                b_n = to_blas_int(3)
-                b_incx = to_blas_int(1)
-                b_incy = to_blas_int(1)
-                surf = ddot(b_n, b, b_incx, b, b_incy)
+                surf = ddot(blas_3, b, blas_1, b, blas_1)
                 surmai(im) = sqrt(surf)
                 c(1) = y(1)-y(2)
                 c(2) = x(2)-x(1)
                 c(3) = zero
-                b_n = to_blas_int(3)
-                b_incx = to_blas_int(1)
-                b_incy = to_blas_int(1)
-                surf = ddot(b_n, c, b_incx, c, b_incy)
+                surf = ddot(blas_3, c, blas_1, c, blas_1)
                 c(1) = c(1)/sqrt(surf)
                 c(2) = c(2)/sqrt(surf)
                 c(3) = c(3)/sqrt(surf)
@@ -246,10 +224,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
                     ASSERT(.false.)
                 end if
                 call provec(a, b, c)
-                b_n = to_blas_int(3)
-                b_incx = to_blas_int(1)
-                b_incy = to_blas_int(1)
-                surf = ddot(b_n, c, b_incx, c, b_incy)
+                surf = ddot(blas_3, c, blas_1, c, blas_1)
                 c(1) = c(1)/sqrt(surf)
                 c(2) = c(2)/sqrt(surf)
                 c(3) = c(3)/sqrt(surf)
@@ -264,7 +239,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
             nompar(1) = 'X'
             nompar(2) = 'Y'
             nompar(3) = 'Z'
-            call fointe('F ', fongro(i), 3, nompar, u, &
+            call fointe('F ', fongro, 3, nompar, u, &
                         coef, iret)
             surmai(im) = surmai(im)*coef
             if (lvale) then
@@ -287,15 +262,13 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
         end do
     end do
 !
-    write (iunite, 1010) surtxx, surtxy, surtxz, surtyy, surtyz, surtzz
+    write (iunite, 100) surtxx, surtxy, surtxz, surtyy, surtyz, surtzz
 !
-!
-!     CALCUL DES PONDERATIONS ELEMENTAIRES
-!
+!   CALCUL DES PONDERATIONS ELEMENTAIRES
     im = 0
-    do i = 1, nbgr
-        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
-        call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
+    do ii = 1, nbgr
+        call jelira(jexnom(magrma, ligrma(ii)), 'LONUTI', nb)
+        call jeveuo(jexnom(magrma, ligrma(ii)), 'L', ldgm)
         do in = 0, nb-1
             im = im+1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
@@ -351,18 +324,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
             r6 = zero
         end if
         call jenuno(jexnum(manono, ij), nomnoe)
-        rigto(6*(ij-1)+1) = r1+rigto(6*(ij-1)+1)
-        rigto(6*(ij-1)+2) = r2+rigto(6*(ij-1)+2)
-        rigto(6*(ij-1)+3) = r3+rigto(6*(ij-1)+3)
-        rigto(6*(ij-1)+4) = r4+rigto(6*(ij-1)+4)
-        rigto(6*(ij-1)+5) = r5+rigto(6*(ij-1)+5)
-        rigto(6*(ij-1)+6) = r6+rigto(6*(ij-1)+6)
-        r1 = rigto(6*(ij-1)+1)
-        r2 = rigto(6*(ij-1)+2)
-        r3 = rigto(6*(ij-1)+3)
-        r4 = rigto(6*(ij-1)+4)
-        r5 = rigto(6*(ij-1)+5)
-        r6 = rigto(6*(ij-1)+6)
         rignoe(6*(ii-1)+1) = r1
         rignoe(6*(ii-1)+2) = r2
         rignoe(6*(ii-1)+3) = r3
@@ -374,7 +335,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     end do
     nbno = ii
 !
-    AS_DEALLOCATE(vk8=fongro)
     AS_DEALLOCATE(vr=coeno)
     AS_DEALLOCATE(vr=coenxx)
     AS_DEALLOCATE(vr=coenxy)
@@ -392,6 +352,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     AS_DEALLOCATE(vr=surma6)
 !
     call jedema()
-1010 format(' MXX= ', 1pe12.5, ' MXY= ', 1pe12.5, ' MXZ= ', 1pe12.5/,&
-&       ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
+!
+100 format(' MXX= ', 1pe12.5, ' MXY= ', 1pe12.5, ' MXZ= ', 1pe12.5/, &
+           ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
 end subroutine

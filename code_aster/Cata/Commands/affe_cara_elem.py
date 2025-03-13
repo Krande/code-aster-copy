@@ -1249,7 +1249,7 @@ AFFE_CARA_ELEM = OPER(
     # ==============================================================================
     MASS_AJOU=FACT(
         statut="f",
-        max="**",
+        max=1,
         GROUP_MA=SIMP(
             statut="o",
             typ=grma,
@@ -1259,7 +1259,7 @@ AFFE_CARA_ELEM = OPER(
         GROUP_MA_POI1=SIMP(
             statut="o", typ=grma, max=1, fr=tr("Mailles de type point correspondant aux discrets")
         ),
-        FONC_GROUP=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        FONC_GROUP=SIMP(statut="o", max=1, typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     #
     # ==============================================================================
