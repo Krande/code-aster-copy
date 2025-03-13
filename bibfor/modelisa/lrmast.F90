@@ -664,7 +664,6 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
         do j = 1, nbno
             nom = zk8(jvcnx+j-1)
             call jenonu(jexnom(nomnoe, nom), num)
-            ! num = char8_to_int(nom)
             zi(jgcnx+j-1) = num
             if (num .eq. 0) then
                 valk(1) = nom
@@ -697,7 +696,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
                 do im1 = 1, nbno
                     nom1 = zk8(jvg+im1-1)
                     ASSERT(nom1 .ne. ' ')
-                    num = char8_to_int(nom1)
+                    call jenonu(jexnom(nomnoe, nom1), num)
                     if (num .eq. 0) then
                         ier = ier+1
                         valk(1) = nom1
