@@ -353,7 +353,6 @@ class ExtendedMesh:
         """
         mr = MeshReader()
         mr.readMeshFromMedFile(self, os.fspath(filename), meshname)
-        # mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.

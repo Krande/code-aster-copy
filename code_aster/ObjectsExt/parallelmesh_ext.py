@@ -139,7 +139,6 @@ class ExtendedParallelMesh:
         else:
             mr = MeshReader()
             mr.readParallelMeshFromMedFile(self, os.fspath(filename), meshname)
-            # mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,
@@ -603,5 +602,3 @@ class ExtendedIncompleteMesh:
         """
         mr = MeshReader()
         mr.readIncompleteMeshFromMedFile(self, os.fspath(filename), meshname)
-        # mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
-        self.debugPrint()
