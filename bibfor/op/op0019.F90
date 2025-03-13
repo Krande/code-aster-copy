@@ -572,7 +572,7 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES MATRICES AUX MASSES REPARTIES
     if (nbocc(ACE_MASS_AJOU) .ne. 0) then
-        call aceamr(info_concept, lmax, noemf3, nbocc(ACE_MASS_AJOU), info_carte, ivr)
+        call aceamr(info_concept, lmax, nbocc(ACE_MASS_AJOU), info_carte, ivr)
     end if
 ! --------------------------------------------------------------------------------------------------
 !   COMPACTAGE DE LA CARTE : '.CVENTCXF'
