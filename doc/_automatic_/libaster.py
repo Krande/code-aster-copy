@@ -17465,3 +17465,50 @@ class SyntaxSaver:
 
     def __init__(self, arg0, arg1, arg2):
         pass
+
+
+# class MeshReader in libaster
+
+
+class MeshReader:
+    pass
+
+    # Method resolution order:
+    #     MeshReader
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def __pickling_disabled__(self):
+        pass
+
+    def readIncompleteMeshFromMedFile(self, mesh, path, mesh_name=""):
+        """Open med file
+
+        Arguments:
+            IncompleteMesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+        """
+
+    def readMeshFromMedFile(self, mesh, path, mesh_name=""):
+        """Open med file
+
+        Arguments:
+            Mesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+        """
+
+    def readParallelMeshFromMedFile(self, mesh, path, mesh_name=""):
+        """Open med file
+
+        Arguments:
+            ParallelMesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+        """

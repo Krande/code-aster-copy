@@ -403,6 +403,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MeshReader` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MeshReader
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ModelSplitingMethod` object
 ********************************************************************************
 
