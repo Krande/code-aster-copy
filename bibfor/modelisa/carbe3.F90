@@ -368,9 +368,10 @@ subroutine carbe3(charge)
             zr(jcoore-1+3*(idxnoe-1)+2) = cooesc(2)-coomai(2)
             zr(jcoore-1+3*(idxnoe-1)+3) = cooesc(3)-coomai(3)
             norme = zr(jcoore-1+3*(idxnoe-1)+1)*zr(jcoore-1+3*(idxnoe-1) &
-                                         +1)+zr(jcoore-1+3*(idxnoe-1)+2)*zr(jcoore-1+3*(idxnoe-1)+ &
-                                          2)+zr(jcoore-1+3*(idxnoe-1)+3)*zr(jcoore-1+3*(idxnoe-1)+ &
-                                                                                                  3)
+                                                   +1)+zr(jcoore-1+3*(idxnoe-1)+2)* &
+                    zr(jcoore-1+3*(idxnoe-1)+ &
+                       2)+zr(jcoore-1+3*(idxnoe-1)+3)* &
+                    zr(jcoore-1+3*(idxnoe-1)+3)
             if (norme .ne. 0.0d0) then
                 norme = sqrt(norme)
             end if

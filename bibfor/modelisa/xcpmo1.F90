@@ -86,10 +86,10 @@ subroutine xcpmo1(modmes, modthx, modmex)
     character(len=8), pointer :: fiss(:) => null()
 !
     integer :: nma3d, nma2d, nma1d, nenrch
-    parameter ( nma3d  = 4 )
-    parameter ( nma2d  = 2 )
-    parameter ( nma1d  = 1 )
-    parameter ( nenrch = 3 )
+    parameter(nma3d=4)
+    parameter(nma2d=2)
+    parameter(nma1d=1)
+    parameter(nenrch=3)
 !   nma3d : HEXA8, PENTA6, PYRAM5, TETRA4 -> 4
 !   nma2d : TRIA3, QUAD4 -> 2
 !   nma1d : SEG2 -> 1
@@ -102,42 +102,42 @@ subroutine xcpmo1(modmes, modthx, modmex)
 ! ---------------------------------------------------------------------
 !
     integer :: nel3dthx, nelplthx, nelaxthx
-    parameter ( nel3dthx = (nma3d+nma2d)*nenrch )
-    parameter ( nelplthx = (nma2d+nma1d)*nenrch )
-    parameter ( nelaxthx = (nma2d+nma1d)*nenrch )
+    parameter(nel3dthx=(nma3d+nma2d)*nenrch)
+    parameter(nelplthx=(nma2d+nma1d)*nenrch)
+    parameter(nelaxthx=(nma2d+nma1d)*nenrch)
     character(len=16) :: ele3dthx(nel3dthx)
     character(len=16) :: eleplthx(nelplthx)
     character(len=16) :: eleaxthx(nelaxthx)
 !
 !   elements 3D lineaires thermiques X-FEM
 !   -------------------------------------------------------------------
-    data ele3dthx/&
-!   principaux
-    &'THER_XH_HEXA8   ','THER_XT_HEXA8   ','THER_XHT_HEXA8  ',&
-    &'THER_XH_PENTA6  ','THER_XT_PENTA6  ','THER_XHT_PENTA6 ',&
-    &'THER_XH_PYRAM5  ','THER_XT_PYRAM5  ','THER_XHT_PYRAM5 ',&
-    &'THER_XH_TETRA4  ','THER_XT_TETRA4  ','THER_XHT_TETRA4 ',&
-!   de bord
-    &'THER_XH_FACE4   ','THER_XT_FACE4   ','THER_XHT_FACE4  ',&
-    &'THER_XH_FACE3   ','THER_XT_FACE3   ','THER_XHT_FACE3  '/
+    data ele3dthx/ &
+        !   principaux
+        'THER_XH_HEXA8   ', 'THER_XT_HEXA8   ', 'THER_XHT_HEXA8  ', &
+        'THER_XH_PENTA6  ', 'THER_XT_PENTA6  ', 'THER_XHT_PENTA6 ', &
+        'THER_XH_PYRAM5  ', 'THER_XT_PYRAM5  ', 'THER_XHT_PYRAM5 ', &
+        'THER_XH_TETRA4  ', 'THER_XT_TETRA4  ', 'THER_XHT_TETRA4 ', &
+        !   de bord
+        'THER_XH_FACE4   ', 'THER_XT_FACE4   ', 'THER_XHT_FACE4  ', &
+        'THER_XH_FACE3   ', 'THER_XT_FACE3   ', 'THER_XHT_FACE3  '/
 !
 !   elements PLAN lineaires thermiques X-FEM
 !   -------------------------------------------------------------------
-    data eleplthx/&
-!   principaux
-    &'THPLQU4_XH      ','THPLQU4_XT      ','THPLQU4_XHT     ',&
-    &'THPLTR3_XH      ','THPLTR3_XT      ','THPLTR3_XHT     ',&
-!   de bord
-    &'THPLSE2_XH      ','THPLSE2_XT      ','THPLSE2_XHT     '/
+    data eleplthx/ &
+        !   principaux
+        'THPLQU4_XH      ', 'THPLQU4_XT      ', 'THPLQU4_XHT     ', &
+        'THPLTR3_XH      ', 'THPLTR3_XT      ', 'THPLTR3_XHT     ', &
+        !   de bord
+        'THPLSE2_XH      ', 'THPLSE2_XT      ', 'THPLSE2_XHT     '/
 !
 !   elements AXIS lineaires thermiques X-FEM
 !   -------------------------------------------------------------------
-    data eleaxthx/&
-!   principaux
-    &'THAXQU4_XH      ','THAXQU4_XT      ','THAXQU4_XHT     ',&
-    &'THAXTR3_XH      ','THAXTR3_XT      ','THAXTR3_XHT     ',&
-!   de bord
-    &'THAXSE2_XH      ','THAXSE2_XT      ','THAXSE2_XHT     '/
+    data eleaxthx/ &
+        !   principaux
+        'THAXQU4_XH      ', 'THAXQU4_XT      ', 'THAXQU4_XHT     ', &
+        'THAXTR3_XH      ', 'THAXTR3_XT      ', 'THAXTR3_XHT     ', &
+        !   de bord
+        'THAXSE2_XH      ', 'THAXSE2_XT      ', 'THAXSE2_XHT     '/
 !
 ! ---------------------------------------------------------------------
 ! ---------------------------------------------------------------------
@@ -146,44 +146,44 @@ subroutine xcpmo1(modmes, modthx, modmex)
 ! ---------------------------------------------------------------------
 !
     integer :: nel3dmex, nelplmex, nelaxmex
-    parameter ( nel3dmex = (  nma3d+nma2d)*nenrch )
-    parameter ( nelplmex = (2*nma2d+nma1d)*nenrch )
-    parameter ( nelaxmex = (  nma2d+nma1d)*nenrch )
+    parameter(nel3dmex=(nma3d+nma2d)*nenrch)
+    parameter(nelplmex=(2*nma2d+nma1d)*nenrch)
+    parameter(nelaxmex=(nma2d+nma1d)*nenrch)
     character(len=16) :: ele3dmex(nel3dmex)
     character(len=16) :: eleplmex(nelplmex)
     character(len=16) :: eleaxmex(nelaxmex)
 !
 !   elements 3D lineaires mecaniques X-FEM
 !   -------------------------------------------------------------------
-    data ele3dmex/&
-!   principaux
-    &'MECA_XH_HEXA8   ','MECA_XT_HEXA8   ','MECA_XHT_HEXA8  ',&
-    &'MECA_XH_PENTA6  ','MECA_XT_PENTA6  ','MECA_XHT_PENTA6 ',&
-    &'MECA_XH_PYRAM5  ','MECA_XT_PYRAM5  ','MECA_XHT_PYRAM5 ',&
-    &'MECA_XH_TETRA4  ','MECA_XT_TETRA4  ','MECA_XHT_TETRA4 ',&
-!   de bord
-    &'MECA_XH_FACE4   ','MECA_XT_FACE4   ','MECA_XHT_FACE4  ',&
-    &'MECA_XH_FACE3   ','MECA_XT_FACE3   ','MECA_XHT_FACE3  '/
+    data ele3dmex/ &
+        !   principaux
+        'MECA_XH_HEXA8   ', 'MECA_XT_HEXA8   ', 'MECA_XHT_HEXA8  ', &
+        'MECA_XH_PENTA6  ', 'MECA_XT_PENTA6  ', 'MECA_XHT_PENTA6 ', &
+        'MECA_XH_PYRAM5  ', 'MECA_XT_PYRAM5  ', 'MECA_XHT_PYRAM5 ', &
+        'MECA_XH_TETRA4  ', 'MECA_XT_TETRA4  ', 'MECA_XHT_TETRA4 ', &
+        !   de bord
+        'MECA_XH_FACE4   ', 'MECA_XT_FACE4   ', 'MECA_XHT_FACE4  ', &
+        'MECA_XH_FACE3   ', 'MECA_XT_FACE3   ', 'MECA_XHT_FACE3  '/
 !
 !   elements C_PLAN/D_PLAN lineaires mecaniques X-FEM
 !   -------------------------------------------------------------------
-    data eleplmex/&
-!   principaux
-    &'MECPQU4_XH      ','MECPQU4_XT      ','MECPQU4_XHT     ',&
-    &'MECPTR3_XH      ','MECPTR3_XT      ','MECPTR3_XHT     ',&
-    &'MEDPQU4_XH      ','MEDPQU4_XT      ','MEDPQU4_XHT     ',&
-    &'MEDPTR3_XH      ','MEDPTR3_XT      ','MEDPTR3_XHT     ',&
-!   de bord
-    &'MEPLSE2_XH      ','MEPLSE2_XT      ','MEPLSE2_XHT     '/
+    data eleplmex/ &
+        !   principaux
+        'MECPQU4_XH      ', 'MECPQU4_XT      ', 'MECPQU4_XHT     ', &
+        'MECPTR3_XH      ', 'MECPTR3_XT      ', 'MECPTR3_XHT     ', &
+        'MEDPQU4_XH      ', 'MEDPQU4_XT      ', 'MEDPQU4_XHT     ', &
+        'MEDPTR3_XH      ', 'MEDPTR3_XT      ', 'MEDPTR3_XHT     ', &
+        !   de bord
+        'MEPLSE2_XH      ', 'MEPLSE2_XT      ', 'MEPLSE2_XHT     '/
 !
 !   elements AXIS lineaires mecaniques X-FEM
 !   -------------------------------------------------------------------
-    data eleaxmex/&
-!   principaux
-    &'MEAXQU4_XH      ','MEAXQU4_XT      ','MEAXQU4_XHT     ',&
-    &'MEAXTR3_XH      ','MEAXTR3_XT      ','MEAXTR3_XHT     ',&
-!   de bord
-    &'MEAXSE2_XH      ','MEAXSE2_XT      ','MEAXSE2_XHT     '/
+    data eleaxmex/ &
+        !   principaux
+        'MEAXQU4_XH      ', 'MEAXQU4_XT      ', 'MEAXQU4_XHT     ', &
+        'MEAXTR3_XH      ', 'MEAXTR3_XT      ', 'MEAXTR3_XHT     ', &
+        !   de bord
+        'MEAXSE2_XH      ', 'MEAXSE2_XT      ', 'MEAXSE2_XHT     '/
 !
 ! ---------------------------------------------------------------------
 ! ---------------------------------------------------------------------
@@ -192,9 +192,9 @@ subroutine xcpmo1(modmes, modthx, modmex)
 ! ---------------------------------------------------------------------
 !
     integer :: nel3dmec, nelplmec, nelaxmec
-    parameter ( nel3dmec =   nma3d+nma2d )
-    parameter ( nelplmec = 2*nma2d+nma1d )
-    parameter ( nelaxmec =   nma2d+nma1d )
+    parameter(nel3dmec=nma3d+nma2d)
+    parameter(nelplmec=2*nma2d+nma1d)
+    parameter(nelaxmec=nma2d+nma1d)
     character(len=16) :: ele3dmec(nel3dmec)
     character(len=16) :: eleplmec(nelplmec)
     character(len=16) :: eleaxmec(nelaxmec)
@@ -205,35 +205,35 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !
 !   elements 3D lineaires mecaniques classiques
 ! ---------------------------------------------------------------------
-    data ele3dmec/&
-!   principaux
-    &'MECA_HEXA8      ',&
-    &'MECA_PENTA6     ',&
-    &'MECA_PYRAM5     ',&
-    &'MECA_TETRA4     ',&
-!   de bord
-    &'MECA_FACE4      ',&
-    &'MECA_FACE3      '/
+    data ele3dmec/ &
+        !   principaux
+        'MECA_HEXA8      ', &
+        'MECA_PENTA6     ', &
+        'MECA_PYRAM5     ', &
+        'MECA_TETRA4     ', &
+        !   de bord
+        'MECA_FACE4      ', &
+        'MECA_FACE3      '/
 !
 !   elements C_PLAN/D_PLAN lineaires mecaniques classiques
 ! ---------------------------------------------------------------------
-    data eleplmec/&
-!   principaux
-    &'MECPQU4         ',&
-    &'MECPTR3         ',&
-    &'MEDPQU4         ',&
-    &'MEDPTR3         ',&
-!   de bord
-    &'MEPLSE2         '/
+    data eleplmec/ &
+        !   principaux
+        'MECPQU4         ', &
+        'MECPTR3         ', &
+        'MEDPQU4         ', &
+        'MEDPTR3         ', &
+        !   de bord
+        'MEPLSE2         '/
 !
 !   elements AXIS lineaires mecaniques classiques
 ! ---------------------------------------------------------------------
-    data eleaxmec/&
-!   principaux
-    &'MEAXQU4         ',&
-    &'MEAXTR3         ',&
-!   de bord
-    &'MEAXSE2         '/
+    data eleaxmec/ &
+        !   principaux
+        'MEAXQU4         ', &
+        'MEAXTR3         ', &
+        !   de bord
+        'MEAXSE2         '/
 !
 ! ---------------------------------------------------------------------
 ! - Debut code
@@ -282,9 +282,9 @@ subroutine xcpmo1(modmes, modthx, modmex)
             valk8(2) = modthx
             valk8(3) = modmes
             call utmess('F', 'XFEM_85', nk=3, valk=valk8)
-        endif
+        end if
 !
-    enddo
+    end do
 !
 ! - copie integrale du contenu de modmes dans modmex
 !
@@ -297,7 +297,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
     call exisd('PARTITION', modmex//'.PARTSD', iexi)
     if (iexi .ne. 0) then
         call detrsd('PARTITION', modmex//'.PARTSD')
-    endif
+    end if
 !
 ! - recuperation du '.MAILLE' de modmex
 !
@@ -320,41 +320,41 @@ subroutine xcpmo1(modmes, modthx, modmex)
         if (indk16(ele3dmec, ktyelm, 1, nel3dmec) .gt. 0) then
             if (indk16(ele3dthx, ktyelt, 1, nel3dthx) .eq. 0) then
                 ASSERT(.false.)
-            endif
+            end if
             ktyelm = ktyelm(1:4)//ktyelt(5:16)
             if (indk16(ele3dmex, ktyelm, 1, nel3dmex) .eq. 0) then
                 ASSERT(.false.)
-            endif
+            end if
 !
 !       MECANIQUE C_PLAN/D_PLAN
         else if (indk16(eleplmec, ktyelm, 1, nelplmec) .gt. 0) then
             if (indk16(eleplthx, ktyelt, 1, nelplthx) .eq. 0) then
                 ASSERT(.false.)
-            endif
+            end if
             ktyelm = ktyelm(1:4)//ktyelt(5:16)
             if (indk16(eleplmex, ktyelm, 1, nelplmex) .eq. 0) then
                 ASSERT(.false.)
-            endif
+            end if
 !
 !       MECANIQUE AXIS
         else if (indk16(eleaxmec, ktyelm, 1, nelaxmec) .gt. 0) then
             if (indk16(eleaxthx, ktyelt, 1, nelaxthx) .eq. 0) then
                 ASSERT(.false.)
-            endif
+            end if
             ktyelm = ktyelm(1:4)//ktyelt(5:16)
             if (indk16(eleaxmex, ktyelm, 1, nelaxmex) .eq. 0) then
                 ASSERT(.false.)
-            endif
+            end if
 !
         else
             ASSERT(.false.)
 !
-        endif
+        end if
 !
         call jenonu(jexnom('&CATA.TE.NOMTE', ktyelm), nutyelm)
         mmex(imx) = nutyelm
 !
-    enddo
+    end do
 !
 ! - ligrel temporaire ligrtp (remplacera celui de modmex : ligmex)
 !
@@ -363,10 +363,10 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !
     nbelmx = 0
     do igr = 1, nbgrel(ligmex)
-        nbelmx = nbelmx + nbelem(ligmex, igr)
-    enddo
+        nbelmx = nbelmx+nbelem(ligmex, igr)
+    end do
 !
-    call jecrec(lieltp, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(lieltp, 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbelmx)
     call jeecra(lieltp, 'LONT', 2*nbelmx)
 !
@@ -382,7 +382,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
     end do
 !
     call jelira(lieltp, 'NUTIOC', nbel2)
-    ASSERT( nbel2 .eq. nbelmx )
+    ASSERT(nbel2 .eq. nbelmx)
 !
     call jedupo(ligmex//'.NBNO', 'G', ligrtp//'.NBNO', .false._1)
     call jedupo(ligmex//'.LGRF', 'G', ligrtp//'.LGRF', .false._1)

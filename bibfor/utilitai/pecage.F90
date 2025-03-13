@@ -72,24 +72,30 @@ subroutine pecage(resu, modele, nbocc)
     real(kind=8), pointer :: trav1(:) => null()
 !     ------------------------------------------------------------------
     character(len=16), parameter :: noparr(nbparr) = &
-                 (/'LIEU            ', 'ENTITE          ', 'A_M             ', 'CDG_Y_M         ', &
-                   'CDG_Z_M         ', 'IY_G_M          ', 'IZ_G_M          ', 'IYZ_G_M         ', &
-                   'Y_MAX           ', 'Z_MAX           ', 'Y_MIN           ', 'Z_MIN           ', &
-                   'R_MAX           ', 'A               ', 'CDG_Y           ', 'CDG_Z           ', &
-                   'IY_G            ', 'IZ_G            ', 'IYZ_G           ', 'IY              ', &
-                   'IZ              ', 'ALPHA           ', 'Y_P             ', 'Z_P             ', &
-                   'IY_P            ', 'IZ_P            ', 'IYZ_P           ', 'JX              ', &
-                   'AY              ', 'AZ              ', 'EY              ', 'EZ              ', &
-                   'PCTY            ', 'PCTZ            ', 'JG              ', 'KY              ', &
-                   'KZ              ', 'IYR2_G          ', 'IZR2_G          ', 'IYR2            ', &
-                   'IZR2            ', 'IYR2_P          ', 'IZR2_P          ', 'RY              ', &
-                    'RZ              ', 'NOM_OBJET       ', 'TYPE_OBJET      ', 'NOM_SD          '/)
+                                    (/'LIEU            ', 'ENTITE          ', 'A_M             ', &
+                                      'CDG_Y_M         ', 'CDG_Z_M         ', 'IY_G_M          ', &
+                                      'IZ_G_M          ', 'IYZ_G_M         ', 'Y_MAX           ', &
+                                      'Z_MAX           ', 'Y_MIN           ', 'Z_MIN           ', &
+                                      'R_MAX           ', 'A               ', 'CDG_Y           ', &
+                                      'CDG_Z           ', 'IY_G            ', 'IZ_G            ', &
+                                      'IYZ_G           ', 'IY              ', 'IZ              ', &
+                                      'ALPHA           ', 'Y_P             ', 'Z_P             ', &
+                                      'IY_P            ', 'IZ_P            ', 'IYZ_P           ', &
+                                      'JX              ', 'AY              ', 'AZ              ', &
+                                      'EY              ', 'EZ              ', 'PCTY            ', &
+                                      'PCTZ            ', 'JG              ', 'KY              ', &
+                                      'KZ              ', 'IYR2_G          ', 'IZR2_G          ', &
+                                      'IYR2            ', 'IZR2            ', 'IYR2_P          ', &
+                                      'IZR2_P          ', 'RY              ', 'RZ              ', &
+                                      'NOM_OBJET       ', 'TYPE_OBJET      ', 'NOM_SD          '/)
     character(len=3), parameter :: typarr(nbparr) = &
-                           (/'K24', 'K8 ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'K16', 'K16', 'K8 '/)
+                                   (/'K24', 'K8 ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'K16', 'K16', 'K8 '/)
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -160,7 +160,8 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
         nbsurchpoi1 = 0
         nbsurchpoi2 = 0
         do iocc = 2, nbocc
-          call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=iocc, nbval=lmax, vect=grplmax, nbret=nbgrp)
+            call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=iocc, nbval=lmax, vect=grplmax, &
+                        nbret=nbgrp)
 !           on éclate les GROUP_MA en mailles
             do ii = 1, nbgrp
                 kk = compte_maille
@@ -184,7 +185,8 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
                             vmessi(3) = nbdisc
                             vmessi(4) = kk
                             vmessk(1) = grplmax(ii)
-                           call utmess('F', 'AFFECARAELEM_21', nk=1, valk=vmessk, ni=4, vali=vmessi)
+                            call utmess('F', 'AFFECARAELEM_21', nk=1, valk=vmessk, ni=4, &
+                                        vali=vmessi)
                         end if
                         lstnummaipoi1(compte_maille) = imail
                     end if

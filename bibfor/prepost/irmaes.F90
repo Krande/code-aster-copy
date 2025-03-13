@@ -303,7 +303,8 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi, &
         if (nmatyp(ityp) .eq. 0) cycle cletype
         ! CAS : GRILLE, COQUE, TUYAU, PMF
         okgr = (nummai .eq. 0) .and. (nbcouc .eq. 1) .and. (nbsect .eq. 0) .and. (nbsp .eq. 1)
-       okcq = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .eq. 0) .and. (nbsp .eq. 3*nbcouc)
+        okcq = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .eq. 0) .and. &
+               (nbsp .eq. 3*nbcouc)
         oktu = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .ge. 1)
         okpf = (nummai .ne. 0) .and. (nbcouc .eq. 0) .and. (nbsect .eq. 0)
         if (.not. (okgr .or. okcq .or. oktu .or. okpf)) cycle cletype

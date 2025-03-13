@@ -27,7 +27,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
     aster_logical :: locaco, locagb, locamb
     character(len=8) :: noma, nomo
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 !     AFFE_CARA_ELEM
 !     INCREMENTATION DES COMPTEURS D'APPELS A NOCART
@@ -35,7 +35,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 !     VERIFICATION QUE TOUS LES ELEMENTS DU MODELE ONT ETE AFFECTES
 !        PAR DES CARACTERISTIQUES.
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
 #include "jeveux.h"
@@ -59,19 +59,19 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
     integer :: ii, ioc, ixma, jj, iid, iif
     integer :: jdgm, jdls, jdme
     integer :: mcl, nbmagr, nbmail
     integer :: ncar, ncara, ng, nm
     integer :: nummai, nutyel
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
     integer, parameter :: nbcar = 100
     character(len=6) :: kioc
     character(len=8) :: car(nbcar)
     character(len=24) :: mlgnma, mlggma
     character(len=24) :: modmai, nommai
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -108,11 +108,13 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
                 call getvtx(ACE_MCLEF(mcl), 'GROUP_MA_POI1', iocc=ioc, nbval=lmax, &
                             vect=zk24(jdls), nbret=ng)
             else
-                call getvem(noma, 'GROUP_MA', ACE_MCLEF(mcl), 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
-                call getvem(noma, 'MAILLE', ACE_MCLEF(mcl), 'MAILLE', ioc, lmax, zk24(jdls), nm)
+                call getvem(noma, 'GROUP_MA', ACE_MCLEF(mcl), 'GROUP_MA', ioc, lmax, &
+                            zk24(jdls), ng)
+                call getvem(noma, 'MAILLE', ACE_MCLEF(mcl), 'MAILLE', ioc, lmax, &
+                            zk24(jdls), nm)
             end if
-            if (mcl .eq. ACE_POUTRE .or. mcl .eq. ACE_DISCRET .or. mcl .eq. ACE_ORIENTATION .or. &
-                mcl .eq. ACE_DISCRET_2D .or. mcl .eq. ACE_RIGI_PARASOL) then
+            if (mcl .eq. ACE_POUTRE .or. mcl .eq. ACE_DISCRET .or. mcl .eq. &
+                ACE_ORIENTATION .or. mcl .eq. ACE_DISCRET_2D .or. mcl .eq. ACE_RIGI_PARASOL) then
                 call getvtx(ACE_MCLEF(mcl), 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
                 if (ncar .gt. 0) ncara = ncar
             end if
@@ -195,7 +197,8 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
             end do
         end if
         if (nbocc(ACE_RIGI_MISS_3D) .ne. 0) then
-           iid = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ACE_NB_CABLE+ACE_NB_BARRE+ACE_NB_MASSIF+1
+            iid = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ACE_NB_CABLE+ACE_NB_BARRE+ &
+                  ACE_NB_MASSIF+1
             iif = ACE_NB_TYPE_ELEM
             do ii = iid, iif
                 if (zjdlm(nummai) .eq. ntyele(ii)) then

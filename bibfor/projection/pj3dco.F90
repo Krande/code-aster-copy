@@ -132,15 +132,18 @@ subroutine pj3dco(typeSelect, &
     do iCell1 = 1, nbCell1
         if (listCell1(iCell1) .ne. 0) then
             cellTypeNume = typmail(iCell1)
-            if ((cellTypeNume .eq. cellListType(1)) .or. (cellTypeNume .eq. cellListType(2))) then
+            if ((cellTypeNume .eq. cellListType(1)) .or. &
+                (cellTypeNume .eq. cellListType(2))) then
                 nbTetra = nbTetra+1
-        else if ((cellTypeNume .eq. cellListType(3)) .or. (cellTypeNume .eq. cellListType(4)) .or. &
-                     (cellTypeNume .eq. cellListType(5))) then
+            else if ((cellTypeNume .eq. cellListType(3)) .or. (cellTypeNume .eq. cellListType(4)) &
+                     .or. (cellTypeNume .eq. cellListType(5))) then
                 nbTetra = nbTetra+3
-        else if ((cellTypeNume .eq. cellListType(6)) .or. (cellTypeNume .eq. cellListType(7)) .or. &
-                 (cellTypeNume .eq. cellListType(8)) .or. (cellTypeNume .eq. cellListType(11))) then
+            else if ((cellTypeNume .eq. cellListType(6)) .or. (cellTypeNume .eq. cellListType(7)) &
+                     .or. (cellTypeNume .eq. cellListType(8)) .or. &
+                     (cellTypeNume .eq. cellListType(11))) then
                 nbTetra = nbTetra+6
-        else if ((cellTypeNume .eq. cellListType(9)) .or. (cellTypeNume .eq. cellListType(10))) then
+            else if ((cellTypeNume .eq. cellListType(9)) .or. &
+                     (cellTypeNume .eq. cellListType(10))) then
                 nbTetra = nbTetra+2
             else
                 call utmess('F', 'PROJECTION4_1')
@@ -177,8 +180,8 @@ subroutine pj3dco(typeSelect, &
                 zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
                 zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
                 zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
-        else if ((cellTypeNume .eq. cellListType(3)) .or. (cellTypeNume .eq. cellListType(4)) .or. &
-                     (cellTypeNume .eq. cellListType(5))) then
+            else if ((cellTypeNume .eq. cellListType(3)) .or. (cellTypeNume .eq. cellListType(4)) &
+                     .or. (cellTypeNume .eq. cellListType(5))) then
                 nbTetra = nbTetra+1
                 zi(iate4+(nbTetra-1)*6+5) = iCell1
                 zi(iate4+(nbTetra-1)*6+6) = 1
@@ -200,8 +203,9 @@ subroutine pj3dco(typeSelect, &
                 zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
                 zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+5)
                 zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
-        else if ((cellTypeNume .eq. cellListType(6)) .or. (cellTypeNume .eq. cellListType(7)) .or. &
-                 (cellTypeNume .eq. cellListType(8)) .or. (cellTypeNume .eq. cellListType(11))) then
+            else if ((cellTypeNume .eq. cellListType(6)) .or. (cellTypeNume .eq. cellListType(7)) &
+                     .or. (cellTypeNume .eq. cellListType(8)) .or. &
+                     (cellTypeNume .eq. cellListType(11))) then
                 nbTetra = nbTetra+1
                 zi(iate4+(nbTetra-1)*6+5) = iCell1
                 zi(iate4+(nbTetra-1)*6+6) = 1
@@ -244,7 +248,8 @@ subroutine pj3dco(typeSelect, &
                 zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
                 zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+7)
                 zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
-        else if ((cellTypeNume .eq. cellListType(9)) .or. (cellTypeNume .eq. cellListType(10))) then
+            else if ((cellTypeNume .eq. cellListType(9)) .or. &
+                     (cellTypeNume .eq. cellListType(10))) then
                 nbTetra = nbTetra+1
                 zi(iate4+(nbTetra-1)*6+5) = iCell1
                 zi(iate4+(nbTetra-1)*6+6) = 1

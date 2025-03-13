@@ -293,7 +293,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln, &
                                  nunopc+nunopa*nunopd+nunopb*nunopd+nunopc* &
                                  nunopd
                     end if
-                   if ((snuno .eq. snunop) .and. (pnuno .eq. pnunop) .and. (inuno .eq. inunop)) then
+                    if ((snuno .eq. snunop) .and. (pnuno .eq. pnunop) .and. (inuno .eq. &
+                                                                             inunop)) then
                         indic = .true.
                     end if
 !           VERIFICATION POUR UN POINT ARETE (cf Doc R7.02.12)

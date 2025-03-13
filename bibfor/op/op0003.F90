@@ -270,7 +270,8 @@ subroutine op0003()
     if (interp(2) .eq. 'LOG' .and. (nbvc .ne. 0)) then
         call utmess('F', 'UTILITAI5_92')
     end if
-    if ((interp(1).eq.'LOG'.and.min1.le.0.d0) .or. (interp(2).eq.'LOG'.and.(min2.le.0.d0))) then
+    if ((interp(1) .eq. 'LOG' .and. min1 .le. 0.d0) .or. (interp(2) .eq. 'LOG' .and. &
+                                                          (min2 .le. 0.d0))) then
         call utmess('F', 'UTILITAI2_71')
     end if
 !

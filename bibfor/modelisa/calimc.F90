@@ -336,8 +336,7 @@ subroutine calimc(chargz)
                                 if (icmp2 .gt. nueq2) goto 28
                                 vale = vale+zr( &
                                        idbase+(imod-1)*neq+iddl2-1+icmp2-1)*zr(idbase+(imod2-1)&
-                                                                             &*neq+iddl2-1+icmp2-1 &
-                                                                               )
+                                                                              &*neq+iddl2-1+icmp2-1)
                             end do
 28                          continue
                         end do
