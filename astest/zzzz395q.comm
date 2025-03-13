@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -131,9 +131,11 @@ modeSiefPOD_3 = CREA_CHAMP(
     NUME_ORDRE=3,
 )
 
-coefSiefPOD_1 = -1.31805e05
-coefSiefPOD_2 = +9.73105e02
-coefSiefPOD_3 = +1.80054e02
+# on the last step
+coefs = coorReduPOD.EXTR_TABLE().NUME_SNAP == stnl.getNumberOfIndexes()
+coefs.sort("NUME_MODE")
+
+coefSiefPOD_1, coefSiefPOD_2, coefSiefPOD_3 = coefs.COOR_REDUIT.values()
 
 recombSiefPOD = CREA_CHAMP(
     OPERATION="ASSE",
@@ -174,9 +176,12 @@ modeSiefPODINCR_3 = CREA_CHAMP(
     NUME_ORDRE=3,
 )
 
-coefSiefPODINCR_1 = 1.31732e05
-coefSiefPODINCR_2 = 4.46687e03
-coefSiefPODINCR_3 = 6.44630e02
+# on the last step
+# FIXME 22 vs 11 coordinates?
+coefs = coorReduPODINCR.EXTR_TABLE().NUME_SNAP == stnl.getNumberOfIndexes() * 2
+coefs.sort("NUME_MODE")
+
+coefSiefPODINCR_1, coefSiefPODINCR_2, coefSiefPODINCR_3 = coefs.COOR_REDUIT.values()
 
 recombSiefPODINCR = CREA_CHAMP(
     OPERATION="ASSE",

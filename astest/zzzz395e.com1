@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,17 @@
 # --------------------------------------------------------------------
 # person_in_charge: mickael.abbas at edf.fr
 
+import numpy as np
+
 POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
-try:
-    stnl.getElementaryCharacteristics(1)
-except IndexError:
-    pass
+nsnap = stnl.getNumberOfIndexes()
 
 # Tests de la base primale (DEPL) obtenue par POD
+
+print(coor_p.EXTR_TABLE())
+values = (coor_p.EXTR_TABLE().NUME_SNAP == nsnap).COOR_REDUIT.values()
+
 TEST_RESU(
     RESU=(
         _F(
@@ -34,7 +37,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DX",
-            VALE_CALC=-0.0257251188973,
+            VALE_CALC=0.0257251188973 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_p,
@@ -42,7 +45,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DY",
-            VALE_CALC=-0.0734358940147,
+            VALE_CALC=0.0734358940147 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_p,
@@ -50,7 +53,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DZ",
-            VALE_CALC=-0.195501268186,
+            VALE_CALC=0.195501268186 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_p,
@@ -58,7 +61,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DX",
-            VALE_CALC=-0.000562278273951,
+            VALE_CALC=0.000562278273951 * np.sign(values[1]),
         ),
         _F(
             RESULTAT=base_p,
@@ -66,7 +69,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DY",
-            VALE_CALC=0.00520149316886,
+            VALE_CALC=-0.00520149316886 * np.sign(values[1]),
         ),
         _F(
             RESULTAT=base_p,
@@ -74,13 +77,16 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DZ",
-            VALE_CALC=-0.0201730121515,
+            VALE_CALC=0.0201730121515 * np.sign(values[1]),
         ),
     )
 )
 
 # Tests de la base primale (DEPL) obtenue par POD_INCR
 
+print(coor_p1.EXTR_TABLE())
+values = (coor_p1.EXTR_TABLE().NUME_SNAP == nsnap).COOR_REDUIT.values()
+
 TEST_RESU(
     RESU=(
         _F(
@@ -89,7 +95,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DX",
-            VALE_CALC=(-0.0257339494656, 0.0257339494656),
+            VALE_CALC=0.0257339494656 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_p1,
@@ -97,7 +103,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DY",
-            VALE_CALC=(-0.0734242571905, 0.0734242571905),
+            VALE_CALC=0.0734242571905 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_p1,
@@ -105,7 +111,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DZ",
-            VALE_CALC=(-0.195508515288, 0.195508515288),
+            VALE_CALC=0.195508515288 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_p1,
@@ -113,7 +119,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DX",
-            VALE_CALC=(-0.00219717034695, 0.00219717034695),
+            VALE_CALC=-0.00219717034695 * np.sign(values[1]),
         ),
         _F(
             RESULTAT=base_p1,
@@ -121,7 +127,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DY",
-            VALE_CALC=(0.0032633633912, -0.0032633633912),
+            VALE_CALC=-0.0032633633912 * np.sign(values[1]),
         ),
         _F(
             RESULTAT=base_p1,
@@ -129,13 +135,16 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DZ",
-            VALE_CALC=(-0.0213200068417, 0.0213200068417),
+            VALE_CALC=0.0213200068417 * np.sign(values[1]),
         ),
     )
 )
 
 # Tests de la base duale (SIEF_NOEU) obtenue par POD
 
+print(coor_d.EXTR_TABLE(), flush=True)
+values = (coor_d.EXTR_TABLE().NUME_SNAP == nsnap).COOR_REDUIT.values()
+
 TEST_RESU(
     RESU=(
         _F(
@@ -144,7 +153,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXX",
-            VALE_CALC=0.0283450264009,
+            VALE_CALC=-0.0283450264009 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d,
@@ -152,7 +161,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIYY",
-            VALE_CALC=0.0283170359222,
+            VALE_CALC=-0.0283170359222 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d,
@@ -160,7 +169,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIZZ",
-            VALE_CALC=0.0266137782934,
+            VALE_CALC=-0.0266137782934 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d,
@@ -168,7 +177,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXY",
-            VALE_CALC=1.75375613041e-05,
+            VALE_CALC=-1.75375613041e-05 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d,
@@ -176,7 +185,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXZ",
-            VALE_CALC=-4.48907682761e-07,
+            VALE_CALC=4.48907682761e-07 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d,
@@ -184,7 +193,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIYZ",
-            VALE_CALC=-1.63604564979e-05,
+            VALE_CALC=1.63604564979e-05 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d,
@@ -192,7 +201,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXX",
-            VALE_CALC=-0.0734894457675,
+            VALE_CALC=-0.0734894457675 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d,
@@ -200,7 +209,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIYY",
-            VALE_CALC=-0.0751650710199,
+            VALE_CALC=-0.0751650710199 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d,
@@ -208,7 +217,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIZZ",
-            VALE_CALC=-0.00124382365447,
+            VALE_CALC=-0.00124382365447 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d,
@@ -216,7 +225,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXY",
-            VALE_CALC=0.00155980842728,
+            VALE_CALC=0.00155980842728 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d,
@@ -224,7 +233,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXZ",
-            VALE_CALC=0.000187281727054,
+            VALE_CALC=0.000187281727054 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d,
@@ -232,13 +241,16 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIYZ",
-            VALE_CALC=0.00153482671155,
+            VALE_CALC=0.00153482671155 * np.sign(values[2]),
         ),
     )
 )
 
 # Tests de la base duale (SIEF_NOEU) obtenue par POD_INCR
 
+print(coor_d1.EXTR_TABLE())
+values = (coor_d1.EXTR_TABLE().NUME_SNAP == nsnap).COOR_REDUIT.values()
+
 TEST_RESU(
     RESU=(
         _F(
@@ -247,7 +259,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXX",
-            VALE_CALC=0.0283328462259,
+            VALE_CALC=-0.0283328462259 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -255,7 +267,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIYY",
-            VALE_CALC=0.0283057761468,
+            VALE_CALC=-0.0283057761468 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -263,7 +275,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIZZ",
-            VALE_CALC=0.0265982959044,
+            VALE_CALC=-0.0265982959044 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -271,7 +283,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXY",
-            VALE_CALC=1.70612598983e-05,
+            VALE_CALC=-1.70612598983e-05 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -279,7 +291,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXZ",
-            VALE_CALC=-5.45653879692e-07,
+            VALE_CALC=5.45653879692e-07 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -287,7 +299,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIYZ",
-            VALE_CALC=-1.79275940803e-05,
+            VALE_CALC=1.79275940803e-05 * np.sign(values[0]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -295,7 +307,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXX",
-            VALE_CALC=0.0721861604536,
+            VALE_CALC=-0.0721861604536 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -303,7 +315,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIYY",
-            VALE_CALC=0.0738057595491,
+            VALE_CALC=-0.0738057595491 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -311,7 +323,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIZZ",
-            VALE_CALC=-0.00136545283785,
+            VALE_CALC=0.00136545283785 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -319,7 +331,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXY",
-            VALE_CALC=-0.00148511123601,
+            VALE_CALC=0.00148511123601 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -327,7 +339,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIXZ",
-            VALE_CALC=-9.97027338393e-05,
+            VALE_CALC=9.97027338393e-05 * np.sign(values[2]),
         ),
         _F(
             RESULTAT=base_d1,
@@ -335,7 +347,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N27",
             NOM_CMP="SIYZ",
-            VALE_CALC=-0.00169432162924,
+            VALE_CALC=0.00169432162924 * np.sign(values[2]),
         ),
     )
 )
