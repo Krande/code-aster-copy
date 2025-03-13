@@ -604,6 +604,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
 
         for ( int key = 1; key <= size(); ++key ) {
             ret.push_back( this->operator[]( key ) );
+            const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
+                ->_temporaryCollectionObject = JeveuxCollObjValType();
         }
 
         return ret;
