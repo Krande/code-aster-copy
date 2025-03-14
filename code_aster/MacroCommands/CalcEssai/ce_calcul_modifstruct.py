@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,6 @@ nprec = 10
 
 
 class CalcEssaiModifStruct:
-
     """!Classe qui s'occupe des calculs de modification structurale"""
 
     def __init__(self, macro, ce_objects, mess, outputs):
@@ -677,7 +676,7 @@ class CalcEssaiModifStruct:
     def calc_modes_modele_couple(self, mode_simult, calc_freq):
         if "NMAX_FREQ" in calc_freq:
             if calc_freq["NMAX_FREQ"] <= 0:
-                calc_freq["NMAX_FREQ"] == 10  # valeur par defaut
+                calc_freq["NMAX_FREQ"] = 10  # valeur par defaut
 
         self.modes_modele_couple(mode_simult, calc_freq)
 
@@ -690,7 +689,6 @@ class CalcEssaiModifStruct:
 
 
 class CopyModelMeca:
-
     """Cette classe tente de recreer un sd_modele et toutes ses
     caracteristiques a partir d'un 'modele'.
     on peut surcharger chaque etape pour adapter cette creation

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -200,8 +200,6 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'L', lmat)
             end if
-        else
-            call dismoi('NUME_DDL', resuin, 'RESU_DYNA', repk=numref)
         end if
         if (resultType .eq. 'DYNA_TRANS') exitim = .true.
     else if (resultType .eq. 'DYNA_HARMO') then
@@ -215,24 +213,27 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
         end if
     end if
     if (resultType .eq. 'MODE_MECA' .or. resultType .eq. 'DYNA_TRANS') then
+        call dismoi('NUME_DDL', resuin, 'RESU_DYNA', repk=numref, arret='C')
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call dismoi('BASE_MODALE', resuin, 'RESU_DYNA', repk=basemo, arret='C')
+            ! TRAITEMENT DE ELIM_LAGR (traité comme un cas particulier de projection modale)
+            call dismoi('BASE_MODALE', resuin, 'RESU_DYNA', repk=basemo)
             call gettco(basemo, typrep)
-            ! --- TRAITEMENT DE ELIM_LAGR
             if (typrep(1:16) .eq. 'MAILLAGE_SDASTER') then
-                call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=massgen)
-                call gettco(massgen, typmat)
-                if (typmat .eq. 'MATR_ASSE_ELIM_R') then
-                    ! on recupère le nom de la matrice de masse d'origine
-                    call jeveuo(massgen//'.REFA', 'L', vk24=refa)
-                    masse = refa(20) (1:19)
-                    call mtdscr(masse)
-                    call jeveuo(masse(1:19)//'.&INT', 'L', lmat)
+                call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=massgen, arret='C')
+                if (massgen .ne. ' ') then
+                    call gettco(massgen, typmat)
+                    if (typmat .eq. 'MATR_ASSE_ELIM_R') then
+                        ! nom de la matrice de masse d'origine
+                        call jeveuo(massgen//'.REFA', 'L', vk24=refa)
+                        masse = refa(20) (1:19)
+                        call mtdscr(masse)
+                        call jeveuo(masse(1:19)//'.&INT', 'L', lmat)
+                        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numref)
+                    end if
                 end if
             end if
         end if
-        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numref)
     end if
     carac = ' '
     charge = ' '

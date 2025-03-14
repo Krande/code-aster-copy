@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -270,7 +270,7 @@ def test_convergence(gradient_init, erreur, A, s):
     except:
         UTMESS("F", "RECAL0_19")
         return
-    epsilon = epsilon ** 0.5
+    epsilon = epsilon**0.5
     return epsilon
 
 
@@ -286,25 +286,20 @@ def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
     """
 
     #   if ((iter < max_iter) or (residu < prec)):
-    if 1 == 1:
-        Hessien = NP.dot(NP.transpose(A), A)
+    Hessien = NP.dot(NP.transpose(A), A)
 
-        # Desactive temporairement les FPE qui pourraient etre generees (a
-        # tord!) par blas
-        aster_core.matfpe(-1)
-        valeurs_propres, vecteurs_propres = linalg.eig(Hessien)
-        vecteurs_propres = NP.transpose(
-            vecteurs_propres
-        )  # numpy et Numeric n'ont pas la meme convention
-        sensible = NP.nonzero(NP.greater(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-1))[
-            0
-        ]
-        insensible = NP.nonzero(NP.less(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-2))[
-            0
-        ]
-        # Reactive les FPE
-        aster_core.matfpe(1)
+    # Desactive temporairement les FPE qui pourraient etre generees (a
+    # tord!) par blas
+    aster_core.matfpe(-1)
+    valeurs_propres, vecteurs_propres = linalg.eig(Hessien)
+    vecteurs_propres = NP.transpose(
+        vecteurs_propres
+    )  # numpy et Numeric n'ont pas la meme convention
+    sensible = NP.nonzero(NP.greater(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-1))[0]
+    insensible = NP.nonzero(NP.less(abs(valeurs_propres / max(abs(valeurs_propres))), 1.0e-2))[0]
+    # Reactive les FPE
+    aster_core.matfpe(1)
 
-        Messg.affiche_calcul_etat_final(
-            para, Hessien, valeurs_propres, vecteurs_propres, sensible, insensible
-        )
+    Messg.affiche_calcul_etat_final(
+        para, Hessien, valeurs_propres, vecteurs_propres, sensible, insensible
+    )

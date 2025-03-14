@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -213,8 +213,6 @@ class BaseGeneralizedAssemblyMatrix:
 
         raise RuntimeError("EXTR_MATR_GENE() is replaced by toNumpy()")
 
-        return None
-
     @deprecated(case=1, help="Use 'fromNumpy() instead.")
     def RECU_MATR(self, matrix):
         """Returns the matrix values as `numpy.array`."""
@@ -226,8 +224,6 @@ class BaseGeneralizedAssemblyMatrix:
         """Returns the matrix values as `numpy.array`."""
 
         raise RuntimeError("RECU_MATR_GENE() is replaced by fromNumpy()")
-
-        return None
 
 
 @injector(GeneralizedAssemblyMatrixComplex)
