@@ -190,6 +190,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                         nbret=n1)
             do k = 1, nbneud, 1
                 nomnd = zk8(alneud+k-1)
+                write (6, *) "nomnd ", nomnd
                 n1 = char8_to_int(nomnd)
                 if (n1 .eq. 0) then
                     call utmess('A', 'POSTRELE_51', sk=nomnd, si=i)

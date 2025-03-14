@@ -229,7 +229,7 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
                 call utmess('F', 'ALGELINE_65', sk=k8b)
             end if
 !
-            ima2 = char8_to_int(nomg)
+            ima2 = imav
             zi(idlima+i-1) = ima2
             zi(iatyma-1+ima2) = numel
 !    STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE

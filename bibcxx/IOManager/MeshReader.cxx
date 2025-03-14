@@ -153,19 +153,19 @@ VectorLong medToAsterRenumbering( const med_int &medType, const VectorLong &toRe
 }
 
 void MeshReader::readMeshFromMedFile( MeshPtr &toReturn, const std::filesystem::path &filename,
-                                      const std::string &meshName ) {
+                                      const std::string &meshName, int verbosity ) {
     auto fr = MedFileReader();
     fr.open( filename, MedReadOnly );
-    _readMesh( toReturn, fr, meshName );
+    _readMesh( toReturn, fr, meshName, verbosity );
     toReturn->endDefinition();
 }
 
 void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
                                                 const std::filesystem::path &filename,
-                                                const std::string &meshName ) {
+                                                const std::string &meshName, int verbosity ) {
     auto fr = MedFileReader();
     fr.openParallel( filename, MedReadOnly );
-    _readMesh( toReturn, fr, meshName );
+    _readMesh( toReturn, fr, meshName, verbosity );
 
     const auto curMesh = fr.getMesh( 0 );
     const auto &families = curMesh->getFamilies();
@@ -176,10 +176,10 @@ void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
 
 void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
                                               const std::filesystem::path &filename,
-                                              const std::string &meshName ) {
+                                              const std::string &meshName, int verbosity ) {
     auto fr = MedFileReader();
     fr.open( filename, MedReadOnly );
-    _readMesh( toReturn, fr, meshName );
+    _readMesh( toReturn, fr, meshName, verbosity );
     const auto rank = getMPIRank();
 
     // Read opposite domains, joint information and fill node owner vector
@@ -238,7 +238,8 @@ void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
     toReturn->endDefinition();
 }
 
-void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::string &meshName ) {
+void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::string &meshName,
+                            int verbosity ) {
     const auto iM = std::dynamic_pointer_cast< IncompleteMesh >( toReturn );
     const bool incompleteMesh = ( iM ? true : false );
 
@@ -466,6 +467,7 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         for ( int i = 0; i < nodeGroupList.size(); ++i ) {
             if ( nodeIdGroupList[i].size() != 0 ) {
                 nodeGroupList2.push_back( nodeGroupList[i] );
+                std::sort( nodeIdGroupList[i].begin(), nodeIdGroupList[i].end() );
                 nodeIdGroupList2.push_back( nodeIdGroupList[i] );
             }
         }
@@ -479,6 +481,7 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         for ( int i = 0; i < cellGroupList.size(); ++i ) {
             if ( cellIdGroupList[i].size() != 0 ) {
                 cellGroupList2.push_back( cellGroupList[i] );
+                std::sort( cellIdGroupList[i].begin(), cellIdGroupList[i].end() );
                 cellIdGroupList2.push_back( cellIdGroupList[i] );
             }
         }
@@ -489,6 +492,7 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
 
     toReturn->buildInformations( dim );
     toReturn->buildNamesVectors();
+    toReturn->show( verbosity );
 }
 
 #endif

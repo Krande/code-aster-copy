@@ -353,8 +353,8 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMedFamilyToPython( mod );
     exportMedVectorToPython( mod );
 #endif /* ASTER_HAVE_MED */
+    exportMeshReaderToPython( mod );
     exportFieldCharacteristicsToPython( mod );
     exportModelingUtilitiesToPython( mod );
     exportSyntaxSaverToPython( mod );
-    exportMeshReaderToPython( mod );
 };

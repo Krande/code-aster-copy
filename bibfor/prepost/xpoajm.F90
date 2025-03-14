@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,8 +147,6 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im, &
         inm = inm+1
         inmtot = inmtot+1
         ASSERT(inm .le. nnm)
-        call codent(inmtot, 'G', chn)
-        call jecroc(jexnom(maxfem//'.NOMMAI', prefno(4)//chn))
         zi(jtypm2-1+nbmac+inmtot) = itypse
         ma2con = maxfem//'.CONNEX'
         call jeecra(jexnum(ma2con, nbmac+inmtot), 'LONMAX', nnose)

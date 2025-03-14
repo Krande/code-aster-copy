@@ -31,6 +31,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
@@ -97,7 +98,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
     integer :: jmail, jtypm, iatyma
     integer :: ier, im, n1, n2, n3, nid, nig, nbnot
     integer :: nunori, trouv, ibid, in, nd
-    integer :: iret, ima
+    integer :: iret, ima, nbmato
     integer :: jcour2
     character(len=8) :: k8b, nomma, typmp
     character(len=16) :: k16bid, nomcmd, orig
@@ -147,9 +148,11 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 !     ------------------------------------------------------------------
     typmp = ' '
     ier = 0
+    call jelira(typp, 'LONMAX', nbmato)
     do im = 1, nbma
         nomma = zk8(jmail-1+im)
-        lexist = char8_to_int(nomma) .gt. nbma
+        write (6, *) "nomma ", nomma, char8_to_int(nomma), nbma
+        lexist = char8_to_int(nomma) .gt. nbmato
         if (lexist) then
             ier = ier+1
             call utmess('E', 'ELEMENTS5_19', sk=nomma, si=iocc)

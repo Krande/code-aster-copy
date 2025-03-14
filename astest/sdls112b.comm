@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -221,7 +221,7 @@ MASSE = POST_ELEM(MASS_INER=_F(TOUT="OUI"), MODELE=MODFEM, CHAM_MATER=CHMAT, CAR
 # situes "a cote" de noeuds experimentaux. La liste de ces noeuds
 # reduite a ete obtenue grace au tableau de correspondance imprime dans
 # PROJ_MESU_MODAL
-l_noeud = (124, 137, 144, 142, 112, 103, 12, 9, 1, 25, 34, 62, 63, 43, 94, 77, 88, 90, 85)
+l_noeud = (124, 129, 134, 133, 112, 103, 12, 9, 1, 25, 34, 62, 63, 43, 94, 77, 88, 90, 85)
 
 ## on peut aussi realiser l'expansion avec une liste de noeuds complete
 ## mais il faudra regulariser le probleme dans MACRO_EXPANS sous risque

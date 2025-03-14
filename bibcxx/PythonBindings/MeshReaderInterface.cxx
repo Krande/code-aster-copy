@@ -30,13 +30,13 @@
 // Not DataStructures
 // aslint: disable=C3006
 
-#ifdef ASTER_HAVE_MED
 void exportMeshReaderToPython( py::module_ &mod ) {
 
     py::class_< MeshReader, MeshReader::MeshReaderPtr >( mod, "MeshReader" )
         .def( py::init( &initFactoryPtr< MeshReader > ) )
         .def( "__pickling_disabled__", disable_pickling< MeshReader >() )
 
+#ifdef ASTER_HAVE_MED
         .def( "readMeshFromMedFile", &MeshReader::readMeshFromMedFile,
               R"(
 Open med file
@@ -45,8 +45,10 @@ Arguments:
     Mesh: return mesh to fill
     path (Path|str): path to med file
     mesh_name (str): mesh name (optional)
+    verbosity (int): verbosity (optional)
             )",
-              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "" )
+              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
+              py::arg( "verbosity" ) = 0 )
         .def( "readIncompleteMeshFromMedFile", &MeshReader::readIncompleteMeshFromMedFile,
               R"(
       Open med file
@@ -55,8 +57,10 @@ Arguments:
           IncompleteMesh: return mesh to fill
           path (Path|str): path to med file
           mesh_name (str): mesh name (optional)
+          verbosity (int): verbosity (optional)
                   )",
-              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "" )
+              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
+              py::arg( "verbosity" ) = 0 )
         .def( "readParallelMeshFromMedFile", &MeshReader::readParallelMeshFromMedFile,
               R"(
       Open med file
@@ -65,8 +69,9 @@ Arguments:
           ParallelMesh: return mesh to fill
           path (Path|str): path to med file
           mesh_name (str): mesh name (optional)
+          verbosity (int): verbosity (optional)
                   )",
-              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "" );
-};
-
+              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
+              py::arg( "verbosity" ) = 0 );
 #endif
+};

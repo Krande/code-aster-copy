@@ -3,7 +3,7 @@
  * @brief Implementation de MaterialField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -68,9 +68,19 @@ listOfPartOfMaterialField MaterialField::getVectorOfPartOfMaterialField() const 
     return toReturn;
 };
 
+ASTERINTEGER nameToId( const std::string &name ) {
+    if ( name[0] == 'M' || name[1] == 'N' ) {
+        const std::string tmp( name.substr( 1, name.size() - 1 ) );
+        return std::atoi( tmp.c_str() );
+    } else {
+        return std::atoi( name.c_str() );
+    }
+};
+
 MaterialPtr MaterialField::getMaterialOnCell( const std::string cellName ) const {
-    const auto cellNames = _mesh->getCellNameMap();
-    ASTERINTEGER cellId = cellNames->getIndexFromString( cellName );
+    // const auto cellNames = _mesh->getCellNameMap();
+    ASTERINTEGER cellId = nameToId( cellName );
+    std::cout << "cellId " << cellId << std::endl << std::flush;
     _champ_mat->build();
     auto size = _champ_mat->size();
     ASTERINTEGER pos = size - 1;

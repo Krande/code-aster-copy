@@ -57,8 +57,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
     typedef JeveuxCollection< ASTERINTEGER, NamesMapChar24 > JeveuxCollectionLongNamePtr;
     /** @brief Objet Jeveux '.DIME' */
     JeveuxVectorLong _dimensionInformations;
-    /** @brief Pointeur de nom Jeveux '.NOMNOE' */
-    NamesMapChar8 _nameOfNodes;
     /** @brief Champ aux noeuds '.COORDO' */
     MeshCoordinatesFieldPtr _coordinates;
     /** @brief Pointeur de nom Jeveux '.PTRNOMNOE' */
@@ -67,8 +65,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
     JeveuxCollectionLongNamePtr _groupsOfNodes;
     /** @brief Collection Jeveux '.CONNEX' */
     JeveuxContiguousCollectionLong _connectivity;
-    /** @brief Pointeur de nom Jeveux '.NOMMAIL' */
-    NamesMapChar8 _nameOfCells;
     /** @brief Objet Jeveux '.TYPMAIL' */
     JeveuxVectorLong _cellsType;
     /** @brief Pointeur de nom Jeveux '.PTRNOMMAI' */
@@ -197,14 +193,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the number of cells
      */
     ASTERINTEGER getNumberOfCells() const;
-
-    /**
-     * @brief Get all the names of nodes
-     * @return NamesMapChar8 _nameOfNodes
-     */
-    const NamesMapChar8 &getNameOfNodesMap() const { return _nameOfNodes; };
-
-    const NamesMapChar8 &getCellNameMap() const { return _nameOfCells; };
 
     std::string getNodeName( const ASTERINTEGER &index ) const;
 

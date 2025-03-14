@@ -147,7 +147,6 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn, &
         zl(jnosom-1+ino) = .true.
         nomno = int_to_char8(ino)
         if (nomno(1:2) .eq. 'NS') zl(jnosom-1+ino) = .false.
-        ASSERT(.false.)
 !
     end do
 !

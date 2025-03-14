@@ -87,7 +87,6 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg2)
 !
     if ((nftot .gt. 0) .and. (mftot .gt. 0)) then
-        ASSERT(.false.)
         ncompt = 0
         icompt = 0
         coord2 = maxfem//'.COORDO'

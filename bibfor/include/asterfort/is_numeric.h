@@ -15,29 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
 !
-function char8_to_int(to_convert)
 !
-    implicit none
-#include "asterfort/is_numeric.h"
-#include "asterfort/assert.h"
-!
-    character(len=8), intent(in) :: to_convert
-    integer :: char8_to_int
-    if (to_convert .ne. ' ') then
-        if (to_convert(1:1) .eq. 'M' .or. to_convert(1:1) .eq. 'N') then
-            if (.not. is_numeric(to_convert(2:8))) then
-                ASSERT(.false.)
-            end if
-            read (to_convert(2:8), *) char8_to_int
-        else
-            if (.not. is_numeric(to_convert)) then
-                ASSERT(.false.)
-            end if
-            read (to_convert(1:8), *) char8_to_int
-        end if
-    else
-        char8_to_int = 0
-    end if
-!
-end function
+interface
+function is_numeric(string)
+character(len=*), intent(in) :: string
+logical :: is_numeric
+end function is_numeric
+end interface

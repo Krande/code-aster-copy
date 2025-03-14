@@ -216,6 +216,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
                 call utmess('F', 'ALGELINE_65', sk=k8b)
             end if
 !
+            ima2 = imav
             zi(iatyma-1+ima2) = numel
 !    STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
             zi(jnumol-1+ima2) = ima

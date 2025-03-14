@@ -23,6 +23,7 @@ function int_to_char8(to_convert)
     integer, intent(in) :: to_convert
     character(len=8) :: int_to_char8
     write (int_to_char8, 10) to_convert
+    int_to_char8 = adjustl(int_to_char8)
 10  format(I8)
 !
 end function

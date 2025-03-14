@@ -632,11 +632,7 @@ class Coeur:
         _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
 
         dict_creic = [
-            {
-                "GROUP_MA": "CREI_%s" % ac.pos_aster,
-                "NOM": "CREIC_%s" % ac.pos_aster,
-                "PREF_MAILLE": "MM",
-            }
+            {"GROUP_MA": "CREI_%s" % ac.pos_aster, "NOM": "CREIC_%s" % ac.pos_aster}
             for ac in self.collAC
         ]
 

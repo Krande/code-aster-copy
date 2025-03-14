@@ -19,7 +19,7 @@
 !
 subroutine op0167()
 !
-    use mesh_module, only: checkInclude, createNameOfCell, &
+    use mesh_module, only: checkInclude, &
                            getCellOptionForName, getNodeOptionForName
     use SolidShell_Mesh_module, only: orieHexa9
     use crea_maillage_module
@@ -704,16 +704,10 @@ subroutine op0167()
                 cellNameIn = int_to_char8(cellNumeIn)
 
 ! ------------- Create name for new cell
-                cellNameOut = cellNameIn
-                call createNameOfCell(cellNameOut, &
-                                      lPrefCellName, lPrefCellNume, &
-                                      prefCellName, prefCellNume)
+                cellNameOut = int_to_char8(nbCellIn+iCell)
 
 ! ------------- Check if name of cell exist
                 cellNumeOut = char8_to_int(cellNameOut)
-                if (cellNumeOut .ne. 0) then
-                    call utmess('F', 'MESH2_2', sk=cellNameOut)
-                end if
 
 ! ------------- A new cell
                 nbCellCrea = nbCellCrea+1
@@ -782,8 +776,7 @@ subroutine op0167()
                     nodeNameIn = int_to_char8(nodeNumeIn)
                     cellNameOut = nodeNameIn
                     creaGrPoi1CellName(cellShift+iNode) = cellNameOut
-                    creaPoi1Ref(cellShift+iNode) = nodeNumeIn
-                    creaPoi1Ref2(nodeNumeIn) = cellShift+iNode
+                    creaPoi1Ref((iocc-1)*nbNodeIn+nodeNumeIn) = cellShift+iNode
                 end do
                 cellShift = cellShift+nbNode
             end if
@@ -797,10 +790,12 @@ subroutine op0167()
             else
                 nbCellAddPoi1 = nbCellAddPoi1+1
             end if
-            creaPoi1Name(nbCellAddPoi1) = int_to_char8(nbCellAddPoi1+nbCellIn+nbCellCrea)
-            saveValue = creaPoi1Ref(creaPoi1Ref2(iNode))
-            creaPoi1Ref(creaPoi1Ref2(iNode)) = nbCellAddPoi1
-            creaPoi1Ref2(nbCellAddPoi1) = saveValue
+            nodeNameIn = int_to_char8(nbCellIn+nbCellCrea+nbCellAddPoi1)
+            cellNameIn = nodeNameIn
+            cellNumeIn = char8_to_int(cellNameIn)
+            creaPoi1Name(nbCellAddPoi1) = cellNameIn
+            creaPoi1Ref(nbCellAddPoi1) = nodeNumeIn
+            creaPoi1Ref2(iNode) = nbCellAddPoi1
         end do
         AS_DEALLOCATE(vl=creaPoi1Flag)
     end if
@@ -1004,7 +999,8 @@ subroutine op0167()
         nbNodeInCellOut = 1
         call jeecra(jexnum(meshOut//'.CONNEX', cellNumeOut), 'LONMAX', nbNodeInCellOut)
         call jeveuo(jexnum(meshOut//'.CONNEX', cellNumeOut), 'E', jvConnexOut)
-        nodeNumeOut = creaPoi1Ref2(iCell)
+        nodeNumeOut = creaPoi1Ref(iCell)
+        !nodeNumeOut = creaPoi1Ref2(iCell)
         zi(jvConnexOut) = nodeNumeOut
 
 ! ----- Add parallel informations
@@ -1137,8 +1133,9 @@ subroutine op0167()
             call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONUTI', nbCellInGrOut)
             call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi=cellInGrOut)
             do iCell = 1, nbCellInGrOut
-                cellNameOut = creaGrPoi1CellName(iCell+cellShift)
-                cellInGrOut(iCell) = char8_to_int(creaPoi1Name(creaPoi1Ref(iCell+cellShift)))
+                nodeNumeIn = char8_to_int(creaGrPoi1CellName(cellShift+iCell))
+                cellNameOut = creaPoi1Name(creaPoi1Ref2(nodeNumeIn))
+                cellInGrOut(iCell) = char8_to_int(cellNameOut)
             end do
             cellShift = cellShift+nbCellInGrOut
         end if

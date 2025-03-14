@@ -42,12 +42,10 @@ BaseMesh::BaseMesh( const std::string &name, const std::string &type )
     : DataStructure( name, 8, type ),
       ListOfTables( name ),
       _dimensionInformations( JeveuxVectorLong( getName() + ".DIME      " ) ),
-      _nameOfNodes( NamesMapChar8( getName() + ".NOMNOE    " ) ),
       _coordinates( new MeshCoordinatesField( getName() + ".COORDO    " ) ),
       _nameOfGrpNodes( NamesMapChar24( getName() + ".PTRNOMNOE " ) ),
       _groupsOfNodes( JeveuxCollectionLongNamePtr( getName() + ".GROUPENO  ", _nameOfGrpNodes ) ),
       _connectivity( JeveuxContiguousCollectionLong( getName() + ".CONNEX    " ) ),
-      _nameOfCells( NamesMapChar8( getName() + ".NOMMAI    " ) ),
       _cellsType( JeveuxVectorLong( getName() + ".TYPMAIL   " ) ),
       _nameOfGrpCells( NamesMapChar24( getName() + ".PTRNOMMAI " ) ),
       _groupsOfCells( JeveuxCollectionLongNamePtr( getName() + ".GROUPEMA  ", _nameOfGrpCells ) ),
@@ -261,11 +259,11 @@ const std::vector< VectorLong > BaseMesh::getMedConnectivityZeroBased() const {
 }
 
 std::string BaseMesh::getNodeName( const ASTERINTEGER &index ) const {
-    return strip( _nameOfNodes->getStringFromIndex( index + 1 ) );
+    return strip( std::to_string( index + 1 ) );
 };
 
 std::string BaseMesh::getCellName( const ASTERINTEGER &index ) const {
-    return strip( _nameOfCells->getStringFromIndex( index + 1 ) );
+    return strip( std::to_string( index + 1 ) );
 };
 
 ASTERINTEGER BaseMesh::getCellType( const ASTERINTEGER &index ) const {
@@ -386,9 +384,6 @@ void BaseMesh::initDefinition( const int &dim, const VectorReal &coord,
     const JeveuxVectorReal values( "&&TMP", coord );
     _coordinates->assign( values );
 
-    add_automatic_names( _nameOfNodes, nbNodes, "N" );
-    add_automatic_names( _nameOfCells, nbCells, "M" );
-
     // created to the max capacity, groups may be added by several calls to addGroupsOfxxx
     if ( nbGrpCells > 0 ) {
         _groupsOfCells->allocate( nbGrpCells );
@@ -415,16 +410,7 @@ bool BaseMesh::buildInformations( const int &dim ) {
     return true;
 }
 
-bool BaseMesh::buildNamesVectors() {
-    if ( _nameOfNodes->exists() || _nameOfCells->exists() )
-        return false;
-    int nbNodes = _coordinates->size() / 3;
-    int nbCells = _cellsType->size();
-
-    add_automatic_names( _nameOfNodes, nbNodes, "N" );
-    add_automatic_names( _nameOfCells, nbCells, "M" );
-    return true;
-}
+bool BaseMesh::buildNamesVectors() { return true; }
 
 void BaseMesh::show( const int verbosity ) const {
     ASTERINTEGER level( verbosity );

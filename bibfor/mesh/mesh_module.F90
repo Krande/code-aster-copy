@@ -633,17 +633,13 @@ contains
         character(len=8) :: knume
 !   ------------------------------------------------------------------------------------------------
         lenPrefName = lxlgut(prefCellName)
-        if (lPrefCellNume) then
-            call codent(prefCellNume, 'G', knume)
-            prefCellNume = prefCellNume+1
-            lenPrefPrev = lxlgut(knume)
-            if (lenPrefName+lenPrefPrev .gt. 8) then
-                call utmess('F', 'MESH2_1')
-            end if
-            cellName = knume
-        else
-            ASSERT(ASTER_FALSE)
+        call codent(prefCellNume, 'G', knume)
+        prefCellNume = prefCellNume+1
+        lenPrefPrev = lxlgut(knume)
+        if (lenPrefName+lenPrefPrev .gt. 8) then
+            call utmess('F', 'MESH2_1')
         end if
+        cellName = knume
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------

@@ -347,25 +347,26 @@ void ContactPairing::createVirtualElemForContact(
 
             // Get nodes
             auto slav_cell_con = ( *meshConnectivity )[slavCellUsedNume + 1];
+            auto toAdd1 = slav_cell_con->toVector();
+            slav_cell_con = JeveuxCollectionObject< long int >();
             auto mast_cell_con = ( *meshConnectivity )[mastCellNume + 1];
+            auto toAdd2 = mast_cell_con->toVector();
 
             // Contact element on zone
             VectorLong contactElemZone;
-            contactElemZone.reserve( slav_cell_con->size() + mast_cell_con->size() + 1 );
+            contactElemZone.reserve( toAdd1.size() + toAdd2.size() + 1 );
 
             // Copy slave nodes to contact element
-            auto toAdd = slav_cell_con->toVector();
-            contactElemZone.insert( contactElemZone.end(), toAdd.begin(), toAdd.end() );
+            contactElemZone.insert( contactElemZone.end(), toAdd1.begin(), toAdd1.end() );
 
             // Add slave nodes to list of paired nodes
-            slaveNodePaired.insert( toAdd.begin(), toAdd.end() );
+            slaveNodePaired.insert( toAdd1.begin(), toAdd1.end() );
 
             // Add slave cell to list of paired cells
             slaveCellPaired.insert( slavCellNume );
 
             // Copy master nodes to contact element
-            toAdd = mast_cell_con->toVector();
-            contactElemZone.insert( contactElemZone.end(), toAdd.begin(), toAdd.end() );
+            contactElemZone.insert( contactElemZone.end(), toAdd2.begin(), toAdd2.end() );
 
             // Add type of contact element
             contactElemZone.push_back( typeElemNume );
