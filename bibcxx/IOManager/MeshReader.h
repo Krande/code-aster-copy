@@ -41,7 +41,7 @@
 #ifdef ASTER_HAVE_MED
 class MeshReader {
   private:
-    void readFromMedFile( BaseMeshPtr, MedFileReader &, const std::string & );
+    void _readMesh( BaseMeshPtr, MedFileReader &, const std::string & );
 
   public:
     /**
@@ -64,12 +64,12 @@ class MeshReader {
     void readParallelMeshFromMedFile( ParallelMeshPtr &, const std::filesystem::path &filename,
                                       const std::string &meshName = "" );
 };
-#endif
 
 /**
  * @typedef MeshReaderPtr
  * @brief Pointeur intelligent vers un MeshReader
  */
 typedef std::shared_ptr< MeshReader > MeshReaderPtr;
+#endif
 
 #endif /* MESHREADER_H_ */
