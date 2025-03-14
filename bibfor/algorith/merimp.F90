@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine merimp(l_xfem, l_dyna, &
 #include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
@@ -164,10 +165,10 @@ subroutine merimp(l_xfem, l_dyna, &
 ! - Get structural variables from previous iteration
 !
     call exisd('CHAMP_GD', stru_curr(1:19), iret)
-    if (iret .ne. 0) then
+    if (iret .ne. 0 .and. iter_newt .ge. 2) then
         call copisd('CHAMP_GD', 'V', stru_curr(1:19), stru_iter(1:19))
     else
-        call copisd('CHAMP_GD', 'V', stru_prev(1:19), stru_iter(1:19))
+        call detrsd('CHAMP', stru_iter(1:19))
     end if
 !
 ! - Extend elementary field for internal variables
