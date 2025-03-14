@@ -68,7 +68,7 @@ subroutine tresu_mail(nommai, tbtxt, refi, iocc, &
         call jelira(nommai//'.TYPMAIL', 'LONMAX', nb1)
 
     elseif (cara .eq. 'NB_NOEUD') then
-        call jeexin(nommai//'.COORDO', iexi)
+        call jeexin(nommai//'.COORDO    .VALE', iexi)
         if (iexi .eq. 0) then
             nb1 = 0
             goto 100

@@ -173,8 +173,8 @@ subroutine op0148()
     iv = 1
     write (nomcha, '(A8,A5,2I3.3)') base(1:8), '.C01.', zi(inumo), iv
     call dismoi("NOM_MAILLA", nomcha, "CHAM_NO", repk=nommai)
-    nomnoe = nommai//'.COORDO'
-    call jelira(nomnoe, 'NUTIOC', nbp)
+    nomnoe = nommai//'.COORDO    .VALE'
+    call jelira(nomnoe, 'LONMAX', nbp)
     nbp = nbp/3
 !
 !

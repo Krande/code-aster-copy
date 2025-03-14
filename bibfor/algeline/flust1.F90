@@ -144,8 +144,8 @@ subroutine flust1(melflu, typflu, base, nuor, amor, &
 !
 !-----RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !
-    nomnoe = mailla//'.COORDO'
-    call jelira(nomnoe, 'NUTIOC', lnoe)
+    nomnoe = mailla//'.COORDO    .VALE'
+    call jelira(nomnoe, 'LONMAX', lnoe)
     lnoe = lnoe/3
 !
 !-----CREATION ET REMPLISSAGE DES OBJETS DE TRAVAIL DEPENDANT DU

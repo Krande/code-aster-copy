@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ class sd_maillage(sd_titre):
     DIME = AsVI(lonmax=6)
 
     # un sd_maillage a toujours des noeuds :
-    NOMNOE = AsPn(ltyp=8)
     COORDO = sd_cham_geom()
 
     # normalement, un sd_maillage a toujours une "sd_l_table" contenant des
@@ -47,7 +46,6 @@ class sd_maillage(sd_titre):
     # si le sd_maillage a des mailles :
     CONNEX = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
     TYPMAIL = Facultatif(AsVI())
-    NOMMAI = Facultatif(AsPn(ltyp=8))
 
     # si le sd_maillage a des patchs:
     PATCH = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
@@ -94,14 +92,12 @@ class sd_maillage(sd_titre):
 
     def check_NOEUDS(self, checker):
         nb_no, nb_nl, nb_ma, nb_sm, nb_sm_mx, dim_coor = self.u_dime()
-        assert self.NOMNOE.nomuti == nb_no + nb_nl, (nb_no, nb_nl)
         assert self.COORDO.VALE.lonmax == 3 * nb_no, nb_no
 
     def check_MAILLES(self, checker):
         nb_no, nb_nl, nb_ma, nb_sm, nb_sm_mx, dim_coor = self.u_dime()
         if nb_ma == 0:
             return
-        assert self.NOMMAI.nommax == nb_ma, nb_ma
         assert self.TYPMAIL.lonmax == nb_ma, nb_ma
         assert self.CONNEX.nmaxoc == nb_ma, nb_ma
 

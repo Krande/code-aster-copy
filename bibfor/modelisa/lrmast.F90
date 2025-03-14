@@ -60,7 +60,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
     integer :: ifm, ifl
     character(len=24) :: cooval, coodsc, grpnoe, grpmai, connex
-    character(len=24) :: titre, nomnoe, typmai
+    character(len=24) :: titre, nomnoe, nommai, typmai
     character(len=24) :: adapma
     character(len=8) :: nomu
 !     OUT
@@ -435,12 +435,17 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
 !  3  CREATION  DES OBJETS TEMPORAIRES A TRANSCODER SUR LA VOLATILE
 !     ET DES OBJETS PERMANENTS NON TRANSCODABLES SUR LA GLOBALE
-!     -------------------------------------------------------------
+!     --------------------------------------------------------------
 !
+! -   OBJET NOMMAI    = REPERTOIRE NOMS DE MAILLES  K8 SUR GLOBALE
+!
+    nommai = '&&LRMAST.NOMMAI'
+    call jecreo(nommai, 'G N K8')
+    call jeecra(nommai, 'NOMMAX', nbmail)
 !
 ! -   OBJET NOMNOE    = REPERTOIRE NOMS DE NOEUDS K8 SUR GLOBALE
 !
-    nomnoe = "&&LRMAST.NOMNOE_"
+    nomnoe = '&&LRMAST.NOMNOE'
     call jecreo(nomnoe, 'G N K8')
     call jeecra(nomnoe, 'NOMMAX', nbnoeu)
 !
@@ -601,7 +606,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
     call stkmai(ifl, icl, iv, rv, cv, &
                 cnl, mclmai, nbmmai, numele, numnod, &
-                conxv, typmai, fmtmai, irtet)
+                conxv, typmai, fmtmai, irtet, nommai)
     if (irtet .eq. 1) then
         goto 800
     else if (irtet .eq. 2) then
@@ -657,7 +662,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
         call jenuno(jexnum(conxv, i), nomn)
         call jeveuo(jexnum(conxv, i), 'L', jvcnx)
         call jelira(jexnum(conxv, i), 'LONMAX', nbno)
-        ibid = char8_to_int(nomn)
+        call jenonu(jexnom(nommai, nomn), ibid)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbno)
         call jeecra(jexnum(connex, ibid), 'LONUTI', nbno)
         call jeveuo(jexnum(connex, ibid), 'E', jgcnx)
@@ -749,7 +754,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
                 nbma1 = 0
                 do im1 = 1, nbma
                     nom1 = zk8(jvg+im1-1)
-                    num = char8_to_int(nom1)
+                    call jenonu(jexnom(nommai, nom1), num)
                     if (num .eq. 0) then
                         ier = ier+1
                         valk(1) = nom1
@@ -807,6 +812,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
     call jedetr(gpptnv)
     call jedetr(gpptmv)
     call jedetr(nomnoe)
+    call jedetr(nommai)
 !
 ! FERMETURE DU FICHIER
 !

@@ -68,7 +68,7 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     call dismoi('NOM_NUME_DDL', matria, 'MATR_ASSE', repk=numddl)
     call dismoi('NB_EQUA', matria, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_MAILLA', matria, 'MATR_ASSE', repk=mailla)
-    nomnoe = mailla//'.COORDO'
+    nomnoe = mailla//'.COORDO    .VALE'
     call jelira(nomnoe, 'LONMAX', lnoe)
     lnoe = lnoe/3
 !

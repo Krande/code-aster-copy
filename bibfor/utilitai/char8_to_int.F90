@@ -22,10 +22,16 @@ function char8_to_int(to_convert)
 !
     character(len=8), intent(in) :: to_convert
     integer :: char8_to_int
-    if (to_convert(1:1) .eq. 'M' .or. to_convert(1:1) .eq. 'N') then
-        read (to_convert(2:8), *) char8_to_int
+    write (6, *) "to_convert ", to_convert
+    flush (6)
+    if (to_convert .ne. ' ') then
+        if (to_convert(1:1) .eq. 'M' .or. to_convert(1:1) .eq. 'N') then
+            read (to_convert(2:8), *) char8_to_int
+        else
+            read (to_convert(1:8), *) char8_to_int
+        end if
     else
-        read (to_convert(1:8), *) char8_to_int
+        char8_to_int = 0
     end if
 !
 end function

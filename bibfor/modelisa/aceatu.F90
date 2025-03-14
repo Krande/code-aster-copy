@@ -94,7 +94,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     mlgcnx = noma//'.CONNEX'
     mlggno = noma//'.GROUPENO'
     mlgcoo = noma//'.COORDO    .VALE'
-    call jelira(noma//'.CONNEX', 'NUTIOC', nbmail)
+    call jelira(noma//'.TYPMAIL', 'LONMAX', nbmail)
     call jeveuo(mlgcoo, 'L', jdco)
 !
     modmai = nomo//'.MAILLE'

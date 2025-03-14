@@ -18,7 +18,7 @@
 
 subroutine stkmai(ifl, icl, iv, rv, cv, &
                   cnl, mcl, nbm, nume, numn, &
-                  cnx, typ, fmt, irteti)
+                  cnx, typ, fmt, irteti, nommai)
     implicit none
 !       SECONDE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE MAILLE
 !       ----------------------------------------------------------------
@@ -58,7 +58,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
     integer :: deblig, fmt(nbm)
     character(len=14) :: cnl
     character(len=*) :: cv
-    character(len=24) :: cnx, typ, nom
+    character(len=24) :: cnx, typ, nom, nommai
     save b8
 !
 !-----------------------------------------------------------------------
@@ -114,9 +114,9 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
 !
     noma = b8
     noma(1:iv) = cv(1:iv)
-    call jelira(typ(1:8)//'.TYPMAIL', 'LONMAX', iret)
-    iret2 = char8_to_int(noma)
-    if (iret2 .le. iret) then
+    call jeexin(jexnom(nommai, noma), iret)
+    if (iret .eq. 0) then
+        call jecroc(jexnom(nommai, noma))
         call jecroc(jexnom(cnx, noma))
         call jeecra(jexnom(cnx, noma), 'LONMAX', fmt(numtcl))
     else

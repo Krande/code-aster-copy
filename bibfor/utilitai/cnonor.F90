@@ -149,8 +149,8 @@ subroutine cnonor(nomo, gran, base, cno)
 !
 !-----------------------------------------------------------------------
 !
-    nomnoe = noma//'.COORDO'
-    call jelira(nomnoe, 'NUTIOC', nbnoeu)
+    nomnoe = noma//'.COORDO    .VALE'
+    call jelira(nomnoe, 'LONMAX', nbnoeu)
     nbnoeu = nbnoeu/3
     typval = 'R'
 !

@@ -50,6 +50,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=19), intent(in) :: loadLigrel
@@ -160,7 +161,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
     end if
 !
     call jeveuo(loadLigrel//'.NBNO', 'E', jnbno)
-    nomnoe = mesh//'.COORDO'
+    nomnoe = mesh//'.COORDO    .VALE'
     call jelira(nomnoe, 'LONMAX', nbnoeu)
     nbnoeu = nbnoeu/3
 !
@@ -262,7 +263,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 !
         l_occu_void = .true.
         do jj = 1, nbno
-            call jenonu(jexnom(nomnoe, zk8(jno-1+jj)), ino)
+            ino = char8_to_int(zk8(jno-1+jj))
             noms_noeuds(ino) = zk8(jno-1+jj)
             call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm-1+(ino-1)*nbec+1), nbcomp, &
                         valeType, zk8(jno-1+jj), ino, nsurch, forimp, &
@@ -334,7 +335,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
         if (desgi(ino) .ne. 0) then
 !
             nomn = noms_noeuds(ino)
-            call jenonu(jexnom(nomnoe, nomn), in)
+            in = char8_to_int(nomn)
             idgex = jprnm-1+(in-1)*nbec+1
 !
             do i = 1, 6
