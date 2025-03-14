@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
-                  rigma, rigma2, rigto)
+                  rigma, rigma2)
     implicit none
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
@@ -37,22 +37,19 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
     integer :: ifreq, nfreq
     character(len=8) :: noma
     character(len=24) :: nogr
-    real(kind=8) :: rigma(*), rigma2(*), rigto(*)
-!      REAL*8       FREQ, RIGMA(*), RIGTO(*)
-!     ------------------------------------------------------------------
+    real(kind=8) :: rigma(*), rigma2(*)
 !
     character(len=8) :: nommai
     character(len=24) :: mlgnma, magrma, manoma, tabrig
 !
-!
-!-----------------------------------------------------------------------
+! -----------------------------------------------------------------------
     integer :: i1, ifr, ii, ij, im, in
     integer :: inoe, iret, jrig, ldgm, ldnm
     integer :: nb, nbmode, nbno, noemax
     real(kind=8) :: r1, r2, r3
     integer, pointer :: noeud(:) => null()
     integer, pointer :: parno(:) => null()
-!-----------------------------------------------------------------------
+! -----------------------------------------------------------------------
     call jemarq()
     ifr = iunifi('RESULTAT')
 !
@@ -99,7 +96,6 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
     end do
 !
 !     LECTURE DES RIGIDITES ELEMENTAIRES
-!
     tabrig = '&&ACEARM.RIGM'
     call jeexin(tabrig, iret)
     if (iret .eq. 0) call irmiim(ifmis, ifreq, nfreq, nbno, tabrig)
@@ -107,8 +103,7 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
     nbmode = 3*nbno
     im = 0
     i1 = 0
-!      CALL JELIRA(JEXNOM(MAGRMA,NOGR),'LONUTI',NB,K8B)
-!      CALL JEVEUO(JEXNOM(MAGRMA,NOGR),'L',LDGM)
+!
     do in = 0, nb-1
         im = zi(ldgm+in)
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
@@ -118,36 +113,21 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
         rigma(3*in+1) = zr(jrig+(3*i1-3)*nbmode+3*i1-3)
         rigma(3*in+2) = zr(jrig+(3*i1-2)*nbmode+3*i1-2)
         rigma(3*in+3) = zr(jrig+(3*i1-1)*nbmode+3*i1-1)
-    end do
-!
-    do in = 0, nb-1
-        im = zi(ldgm+in)
-        call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-        do ii = 1, nbno
-            if (zi(ldnm) .eq. noeud(ii)) i1 = ii
-        end do
+
         r1 = rigma(3*in+1)
         r2 = rigma(3*in+2)
         r3 = rigma(3*in+3)
-!
-        rigto(3*(im-1)+1) = r1+rigto(3*(im-1)+1)
-        rigto(3*(im-1)+2) = r2+rigto(3*(im-1)+2)
-        rigto(3*(im-1)+3) = r3+rigto(3*(im-1)+3)
-!
-        r1 = rigto(3*(im-1)+1)+rigma2(3*(i1-1)+1)
-        r2 = rigto(3*(im-1)+2)+rigma2(3*(i1-1)+2)
-        r3 = rigto(3*(im-1)+3)+rigma2(3*(i1-1)+3)
-!
-        rigma(3*in+1) = r1
-        rigma(3*in+2) = r2
-        rigma(3*in+3) = r3
+
+        rigma(3*in+1) = r1+rigma2(3*(i1-1)+1)
+        rigma(3*in+2) = r2+rigma2(3*(i1-1)+2)
+        rigma(3*in+3) = r3+rigma2(3*(i1-1)+3)
         call jenuno(jexnum(mlgnma, im), nommai)
-        write (ifr, 1000) nommai, r1, r2, r3
+        write (ifr, 100) nommai, r1, r2, r3
     end do
 !
-1000 format(2x, '_F ( MAILLE=''', a8, ''',', 1x, 'CARA= ''K_T_D_N'' , ',&
-    &      /7x, 'VALE=(', 1x, 3(1x, 1pe12.5, ','), 1x, '),',&
-    &      /'   ),')
+100 format(2x, '_F ( MAILLE=''', a8, ''',', 1x, 'CARA= ''K_T_D_N'' , ', &
+           /7x, 'VALE=(', 1x, 3(1x, 1pe12.5, ','), 1x, '),', &
+           /'   ),')
 !
     AS_DEALLOCATE(vi=parno)
     AS_DEALLOCATE(vi=noeud)

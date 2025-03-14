@@ -1239,7 +1239,7 @@ AFFE_CARA_ELEM = OPER(
     # ==============================================================================
     RIGI_MISS_3D=FACT(
         statut="f",
-        max="**",
+        max=1,
         GROUP_MA_POI1=SIMP(statut="o", typ=grma, max=1),
         GROUP_MA_SEG2=SIMP(statut="f", typ=grma, max=1),
         FREQ_EXTR=SIMP(statut="o", typ="R", max=1),

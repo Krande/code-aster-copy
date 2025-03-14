@@ -562,7 +562,7 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES MATRICES AUX RAIDEURS MISS
     if (nbocc(ACE_RIGI_MISS_3D) .ne. 0) then
-        call acearm(info_concept, lmax, noemf2, nbocc(ACE_RIGI_MISS_3D), info_carte, ivr)
+        call acearm(info_concept, lmax, nbocc(ACE_RIGI_MISS_3D), info_carte, ivr)
     end if
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "MEMBRANE"
