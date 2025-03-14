@@ -37,13 +37,27 @@ MedMesh::MedMesh( const MedFilePointer &filePtr, const std::string &name, med_in
     : _name( name ), _filePtr( filePtr ), _dim( dim ) {
     const auto famNumber = MEDnFamily( _filePtr.getFileId(), _name.c_str() );
     char *groupname;
+    char familyname[MED_NAME_SIZE + 1] = "";
+    med_int familynumber;
     for ( int i = 1; i <= famNumber; ++i ) {
         const auto nbGrp = MEDnFamilyGroup( _filePtr.getFileId(), _name.c_str(), i );
-        groupname = (char *)malloc( ( nbGrp * MED_LNAME_SIZE + 1 ) * sizeof( char ) );
-        char familyname[MED_NAME_SIZE + 1] = "";
-        med_int familynumber;
-        MEDfamilyInfo( _filePtr.getFileId(), _name.c_str(), i, familyname, &familynumber,
-                       groupname );
+        groupname = (char *)malloc( sizeof( char ) * MED_LNAME_SIZE * nbGrp + 1 );
+        const auto cret = MEDfamilyInfo( _filePtr.getFileId(), _name.c_str(), i, familyname,
+                                         &familynumber, groupname );
+        if ( cret < 0 ) {
+            const auto natt = MEDnFamily23Attribute( _filePtr.getFileId(), _name.c_str(), i );
+            med_int *attval, *attide;
+            char *attdes;
+            attide = (med_int *)malloc( sizeof( med_int ) * natt );
+            attval = (med_int *)malloc( sizeof( med_int ) * natt );
+            attdes = (char *)malloc( MED_COMMENT_SIZE * natt + 1 );
+            med_int attributenumber = 0, attributevalue = 0;
+            MEDfamily23Info( _filePtr.getFileId(), _name.c_str(), i, familyname, attide, attval,
+                             attdes, &familynumber, groupname );
+            free( attide );
+            free( attval );
+            free( attdes );
+        }
         const auto gnames = splitChar( groupname, nbGrp, MED_LNAME_SIZE );
         _families.emplace_back( new MedFamily( std::string( familyname, strlen( familyname ) ),
                                                familynumber, gnames ) );

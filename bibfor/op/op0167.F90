@@ -121,7 +121,7 @@ subroutine op0167()
     integer :: nbCellIn, nbCellOut, nbCell, nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
     integer :: nbNodeInCellOut, nbNodeInCellIn, iCount, hugeValue, nbCellOut2
     integer :: nbGrCellFromCreaCell, nbGrCellFromCreaPoi1, nbGrCellIn, nbGrCellOut
-    integer :: nbGrNodeIn, nbGrNodeOut
+    integer :: nbGrNodeIn, nbGrNodeOut, saveValue
     integer :: nbCellInGrOut, nbCellInGrIn, nbNodeInGrOut, nbNodeInGrIn
     integer :: nbNodeCrea, nbNodeIn, nbNodeOut, nbNode
     integer :: nbField, oldInsideCells, newInsideCells
@@ -147,6 +147,8 @@ subroutine op0167()
     character(len=8), pointer :: creaNodeName(:) => null()
     integer, pointer :: creaNodeNume(:) => null()
     character(len=8), pointer :: creaPoi1Name(:) => null(), creaGrPoi1CellName(:) => null()
+    integer, pointer :: creaPoi1Ref(:) => null()
+    integer, pointer :: creaPoi1Ref2(:) => null()
     aster_logical, pointer :: creaPoi1Flag(:) => null()
     integer, pointer :: creaGrPoi1NbCell(:) => null()
     character(len=24), pointer :: creaGrPoi1GrName(:) => null()
@@ -295,8 +297,8 @@ subroutine op0167()
             call utmess('F', 'MESH1_8')
         end if
         keywfact = 'LINE_QUAD'
-        call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
-        call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNodeNume)
+        prefNodeName = 'N'
+        prefNodeNume = 1
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
         if (nbCell .ne. nbCellIn) then
             call utmess('A', 'MESH1_4', sk=keywfact)
@@ -334,8 +336,8 @@ subroutine op0167()
                 call utmess('A', 'MESH1_11', sk=keywfact)
             end if
 !
-            call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
-            call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNodeNume)
+            prefNodeName = 'N'
+            prefNodeNume = 1
 !
             call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
             call jeveuo(jvCellNume, 'L', vi=listCellNume)
@@ -389,8 +391,8 @@ subroutine op0167()
 ! --------- Get parameters
             call getelem(meshIn, keywfact, iocc, 'F', jvCellNume, nbCell)
             call jeveuo(jvCellNume, 'L', vi=listCellNume)
-            call getvtx(keywfact, 'PREF_NOEUD', iocc=iocc, scal=prefNodeName)
-            call getvis(keywfact, 'PREF_NUME', iocc=iocc, scal=prefNodeNume)
+            prefNodeName = 'N'
+            prefNodeNume = 1
 
 ! --------- Convert cells
             call meshSolidShell%convert_cells(nbCell, listCellNume, prefNodeName, prefNodeNume)
@@ -454,7 +456,7 @@ subroutine op0167()
             call utmess('A', 'MESH1_4', sk=keywfact)
         end if
         call jeveuo(jvCellNume, 'L', vi=listCellNume)
-        call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
+        prefNodeName = 'N'
         prefNodeNume = 1
         call cmhho(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
         goto 350
@@ -513,8 +515,8 @@ subroutine op0167()
             if (answer .eq. 'OUI') then
                 call utmess('A', 'MESH1_10')
             end if
-            call getvtx(keywfact, 'PREF_MAILLE', iocc=iOccQuadTria, scal=prefCellName)
-            call getvis(keywfact, 'PREF_NUME', iocc=iOccQuadTria, scal=prefCellNume)
+            prefCellName = 'M'
+            prefCellNume = 1
             call getelem(meshIn, keywfact, iOccQuadTria, 'F', jvCellNume, nbCell)
             if (nbCell .ne. nbCellIn) then
                 call utmess('A', 'MESH1_4', sk=keywfact)
@@ -539,9 +541,9 @@ subroutine op0167()
         ASSERT(nbOccCoquVolu .eq. 1)
         keywfact = 'COQU_VOLU'
         call getvr8(keywfact, 'EPAIS', iocc=1, scal=epais)
-        call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
-        call getvtx(keywfact, 'PREF_MAILLE', iocc=1, scal=prefCellName)
-        call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNume)
+        prefCellName = 'M'
+        prefNodeName = 'N'
+        prefNume = 1
         call getvtx(keywfact, 'PLAN', iocc=1, scal=plan)
         if (plan .eq. 'MOY') then
             trans = 'INF'
@@ -754,6 +756,8 @@ subroutine op0167()
         AS_ALLOCATE(vk8=creaGrPoi1CellName, size=nbOccCreaPoi1*nbNodeIn)
         AS_ALLOCATE(vl=creaPoi1Flag, size=nbNodeIn)
         AS_ALLOCATE(vk8=creaPoi1Name, size=nbNodeIn)
+        AS_ALLOCATE(vi=creaPoi1Ref, size=nbOccCreaPoi1*nbNodeIn)
+        AS_ALLOCATE(vi=creaPoi1Ref2, size=nbOccCreaPoi1*nbNodeIn)
         do iocc = 1, nbOccCreaPoi1
 
 ! --------- Get list of nodes to create POI1
@@ -778,6 +782,8 @@ subroutine op0167()
                     nodeNameIn = int_to_char8(nodeNumeIn)
                     cellNameOut = nodeNameIn
                     creaGrPoi1CellName(cellShift+iNode) = cellNameOut
+                    creaPoi1Ref(cellShift+iNode) = nodeNumeIn
+                    creaPoi1Ref2(nodeNumeIn) = cellShift+iNode
                 end do
                 cellShift = cellShift+nbNode
             end if
@@ -791,14 +797,10 @@ subroutine op0167()
             else
                 nbCellAddPoi1 = nbCellAddPoi1+1
             end if
-            nodeNameIn = int_to_char8(iNode)
-            cellNameIn = nodeNameIn
-            cellNumeIn = char8_to_int(cellNameIn)
-            if (cellNumeIn .eq. 0) then
-                creaPoi1Name(nbCellAddPoi1) = cellNameIn
-            else
-                call utmess('F', 'MESH1_14', sk=cellNameIn)
-            end if
+            creaPoi1Name(nbCellAddPoi1) = int_to_char8(nbCellAddPoi1+nbCellIn+nbCellCrea)
+            saveValue = creaPoi1Ref(creaPoi1Ref2(iNode))
+            creaPoi1Ref(creaPoi1Ref2(iNode)) = nbCellAddPoi1
+            creaPoi1Ref2(nbCellAddPoi1) = saveValue
         end do
         AS_DEALLOCATE(vl=creaPoi1Flag)
     end if
@@ -889,7 +891,8 @@ subroutine op0167()
     do iCell = 1, nbCellIn
 
 ! ----- Copy name of cell
-        cellNumeIn = char8_to_int(cellNameIn)
+        cellNumeIn = iCell
+        cellNameIn = int_to_char8(cellNumeIn)
         cellNameOut = cellNameIn
         cellNumeOut = char8_to_int(cellNameOut)
 
@@ -993,9 +996,6 @@ subroutine op0167()
 
 ! ----- Create name of new cell
         cellNumeOut = char8_to_int(cellNameOut)
-        if ((cellNumeOut .gt. nbCellOut2) .or. (cellNumeOut .le. 0)) then
-            call utmess('F', 'MESH2_2', sk=cellNameOut)
-        end if
 
 ! ----- Set type of cell
         meshTypmailOut(cellNumeOut) = MT_POI1
@@ -1004,7 +1004,7 @@ subroutine op0167()
         nbNodeInCellOut = 1
         call jeecra(jexnum(meshOut//'.CONNEX', cellNumeOut), 'LONMAX', nbNodeInCellOut)
         call jeveuo(jexnum(meshOut//'.CONNEX', cellNumeOut), 'E', jvConnexOut)
-        nodeNumeOut = char8_to_int(nodeNameOut)
+        nodeNumeOut = creaPoi1Ref2(iCell)
         zi(jvConnexOut) = nodeNumeOut
 
 ! ----- Add parallel informations
@@ -1138,7 +1138,7 @@ subroutine op0167()
             call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi=cellInGrOut)
             do iCell = 1, nbCellInGrOut
                 cellNameOut = creaGrPoi1CellName(iCell+cellShift)
-                cellInGrOut(iCell) = char8_to_int(cellNameOut)
+                cellInGrOut(iCell) = char8_to_int(creaPoi1Name(creaPoi1Ref(iCell+cellShift)))
             end do
             cellShift = cellShift+nbCellInGrOut
         end if
@@ -1240,6 +1240,8 @@ subroutine op0167()
     AS_DEALLOCATE(vk24=creaGrPoi1GrName)
     AS_DEALLOCATE(vk8=creaGrPoi1CellName)
     AS_DEALLOCATE(vk8=creaPoi1Name)
+    AS_DEALLOCATE(vi=creaPoi1Ref)
+    AS_DEALLOCATE(vi=creaPoi1Ref2)
 !
     call jedema()
 !

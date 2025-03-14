@@ -67,7 +67,6 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
 #include "asterfort/cppy13_1.h"
 #include "asterfort/cppy13_2.h"
 #include "asterfort/coppat.h"
-#include "asterfort/char8_to_int.h"
 !
 !
     character(len=8), intent(in) :: main
@@ -971,8 +970,7 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
                 ind = ind+nbnwma
             else
 ! ---------------------- RECOPIE A L'IDENTIQUE
-                numa = char8_to_int(nomma)
-                zi(jgmao+ind-1) = numa
+                zi(jgmao+ind-1) = zi(jgma+incc-1)
                 ind = ind+1
             end if
         end do
