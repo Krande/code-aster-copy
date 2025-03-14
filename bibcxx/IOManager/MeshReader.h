@@ -38,6 +38,7 @@
  * @brief Med file interface
  * @author Nicolas Sellenet
  */
+#ifdef ASTER_HAVE_MED
 class MeshReader {
   private:
     void readFromMedFile( BaseMeshPtr, MedFileReader &, const std::string & );
@@ -53,7 +54,6 @@ class MeshReader {
     MeshReader() {};
 
     ~MeshReader() {};
-#ifdef ASTER_HAVE_MED
 
     void readMeshFromMedFile( MeshPtr &, const std::filesystem::path &filename,
                               const std::string &meshName = "" );
@@ -63,8 +63,8 @@ class MeshReader {
 
     void readParallelMeshFromMedFile( ParallelMeshPtr &, const std::filesystem::path &filename,
                                       const std::string &meshName = "" );
-#endif
 };
+#endif
 
 /**
  * @typedef MeshReaderPtr
