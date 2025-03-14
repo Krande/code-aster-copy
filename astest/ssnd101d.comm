@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ TABDEPZ0 = CALC_TABLE(
     reuse=TABDEPZ0,
     TABLE=TABDEPZ0,
     ACTION=(
-        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="NZ2"),
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="6"),
         _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DX")),
     ),
 )

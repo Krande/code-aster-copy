@@ -263,7 +263,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 !
         l_occu_void = .true.
         do jj = 1, nbno
-            ino = char8_to_int(zk8(jno-1+jj))
+            ino = char8_to_int(zk8(jno-1+jj), mesh, "NOEUD")
             noms_noeuds(ino) = zk8(jno-1+jj)
             call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm-1+(ino-1)*nbec+1), nbcomp, &
                         valeType, zk8(jno-1+jj), ino, nsurch, forimp, &
@@ -335,7 +335,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
         if (desgi(ino) .ne. 0) then
 !
             nomn = noms_noeuds(ino)
-            in = char8_to_int(nomn)
+            in = char8_to_int(nomn, mesh, "NOEUD")
             idgex = jprnm-1+(in-1)*nbec+1
 !
             do i = 1, 6

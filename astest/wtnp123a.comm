@@ -192,9 +192,9 @@ MAIL = DEFI_GROUP(
     MAILLAGE=MAIL,
     CREA_GROUP_NO=(
         _F(GROUP_MA="BAS", NOM="NSBAS", CRIT_NOEUD="MILIEU"),
-        _F(NOM="NT335", NOEUD="NT335"),
-        _F(NOM="NT551", NOEUD="NT551"),
-        _F(NOM="NT566", NOEUD="NT566"),
+        _F(NOM="NT335", NOEUD="N3450"),
+        _F(NOM="NT551", NOEUD="N3666"),
+        _F(NOM="NT566", NOEUD="N3681"),
     ),
 )
 # ======================================

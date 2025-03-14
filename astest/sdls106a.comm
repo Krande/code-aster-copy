@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -281,9 +281,9 @@ SQUEL = DEFI_SQUELETTE(
 DEFI_GROUP(
     MAILLAGE=SQUEL,
     CREA_GROUP_NO=(
-        _F(NOM="NO1", NOEUD=("NO1")),
-        _F(NOM="NO2", NOEUD=("NO2")),
-        _F(NOM="NO3", NOEUD=("NO3")),
+        _F(NOM="NO1", NOEUD=("N1")),
+        _F(NOM="NO2", NOEUD=("N2")),
+        _F(NOM="NO3", NOEUD=("N3")),
     ),
 )
 
@@ -297,7 +297,7 @@ MODGLO = NORM_MODE(
     reuse=MODGLO,
     MODE=MODGLO,
     NORME="TRAN",
-    MODE_SIGNE=_F(NOEUD="NO616", NOM_CMP="DZ", SIGNE="POSITIF"),
+    MODE_SIGNE=_F(NOEUD="N616", NOM_CMP="DZ", SIGNE="POSITIF"),
 )
 
 #
@@ -311,9 +311,9 @@ SQUELBIS = DEFI_SQUELETTE(
     MODELE_GENE=MODEGE, SQUELETTE=SQUEL, RECO_GLOBAL=_F(TOUT="OUI", DIST_REFE=0.1)
 )
 
-DEFI_GROUP(MAILLAGE=SQUEL, CREA_GROUP_NO=(_F(NOM="NO1292", NOEUD=("NO1292")),))
+DEFI_GROUP(MAILLAGE=SQUEL, CREA_GROUP_NO=(_F(NOM="NO1292", NOEUD=("N1292")),))
 
-DEFI_GROUP(MAILLAGE=SQUELBIS, CREA_GROUP_NO=(_F(NOM="NO1292", NOEUD=("NO1292")),))
+DEFI_GROUP(MAILLAGE=SQUELBIS, CREA_GROUP_NO=(_F(NOM="NO1292", NOEUD=("N1292")),))
 
 #
 #
@@ -323,7 +323,7 @@ MODGLBIS = NORM_MODE(
     reuse=MODGLBIS,
     MODE=MODGLBIS,
     NORME="TRAN",
-    MODE_SIGNE=_F(NOEUD="NO616", NOM_CMP="DZ", SIGNE="POSITIF"),
+    MODE_SIGNE=_F(NOEUD="N616", NOM_CMP="DZ", SIGNE="POSITIF"),
 )
 
 

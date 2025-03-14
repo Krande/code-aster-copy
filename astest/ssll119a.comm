@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -792,7 +792,7 @@ for mode in ["POU_D_E", "POU_D_T", "POU_D_TG", "POU_D_EM", "POU_D_TGM"]:
     TEST_TABLE(
         TABLE=TAB_MEQ1,
         NOM_PARA="MT",
-        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N1")),
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="1"), _F(NOM_PARA="NOEUD", VALE_K="1")),
         REFERENCE="AUTRE_ASTER",
         VALE_REFE=r_non_reg[mode]["MT"][0],
         VALE_CALC=r_non_reg[mode]["MT"][0],
@@ -800,7 +800,7 @@ for mode in ["POU_D_E", "POU_D_T", "POU_D_TG", "POU_D_EM", "POU_D_TGM"]:
     TEST_TABLE(
         TABLE=TAB_MEQ1,
         NOM_PARA="MT",
-        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="1"), _F(NOM_PARA="NOEUD", VALE_K="2")),
         REFERENCE="AUTRE_ASTER",
         VALE_REFE=r_non_reg[mode]["MT"][1],
         VALE_CALC=r_non_reg[mode]["MT"][1],
@@ -810,7 +810,7 @@ for mode in ["POU_D_E", "POU_D_T", "POU_D_TG", "POU_D_EM", "POU_D_TGM"]:
     TEST_TABLE(
         TABLE=TAB_MEQ2,
         NOM_PARA="MFY",
-        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N1")),
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="1"), _F(NOM_PARA="NOEUD", VALE_K="1")),
         REFERENCE="AUTRE_ASTER",
         VALE_REFE=r_non_reg[mode]["MFY"][0],
         VALE_CALC=r_non_reg[mode]["MFY"][0],
@@ -818,7 +818,7 @@ for mode in ["POU_D_E", "POU_D_T", "POU_D_TG", "POU_D_EM", "POU_D_TGM"]:
     TEST_TABLE(
         TABLE=TAB_MEQ2,
         NOM_PARA="MFY",
-        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="1"), _F(NOM_PARA="NOEUD", VALE_K="2")),
         REFERENCE="AUTRE_ASTER",
         VALE_REFE=r_non_reg[mode]["MFY"][1],
         VALE_CALC=r_non_reg[mode]["MFY"][1],
@@ -828,7 +828,7 @@ for mode in ["POU_D_E", "POU_D_T", "POU_D_TG", "POU_D_EM", "POU_D_TGM"]:
     TEST_TABLE(
         TABLE=TAB_MEQ3,
         NOM_PARA="MFZ",
-        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N1")),
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="1"), _F(NOM_PARA="NOEUD", VALE_K="1")),
         REFERENCE="AUTRE_ASTER",
         VALE_REFE=r_non_reg[mode]["MFZ"][0],
         VALE_CALC=r_non_reg[mode]["MFZ"][0],
@@ -836,7 +836,7 @@ for mode in ["POU_D_E", "POU_D_T", "POU_D_TG", "POU_D_EM", "POU_D_TGM"]:
     TEST_TABLE(
         TABLE=TAB_MEQ3,
         NOM_PARA="MFZ",
-        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="1"), _F(NOM_PARA="NOEUD", VALE_K="2")),
         REFERENCE="AUTRE_ASTER",
         VALE_REFE=r_non_reg[mode]["MFZ"][1],
         VALE_CALC=r_non_reg[mode]["MFZ"][1],

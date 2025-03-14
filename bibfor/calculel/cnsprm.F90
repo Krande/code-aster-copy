@@ -264,8 +264,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             ino1 = zi(lnoeum-1+jddl)
             kcmp = zk8(lrangm-1+jddl)
 ! ICI ON SUPPOSE QUE LES NOEUDS INTERFACES ONT LE MEME NOM
-            nono = int_to_char8(ino1)
-            ino1 = char8_to_int(nono)
+            nono = int_to_char8(ino1, ma2, 'NOEUD')
+            ino1 = char8_to_int(nono, ma1, 'NOEUD')
 !
             do icmp = 1, ncmp
                 if (cns1c(icmp) .eq. kcmp) then

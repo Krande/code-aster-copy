@@ -27,6 +27,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -59,6 +60,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
     character(len=24) :: oupnsp
     character(len=24) :: valk
     character(len=19) :: sdemno
+    character(len=15) :: nrepma
     character(len=8) :: mailla
     character(len=4) :: docu
 !
@@ -67,10 +69,10 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
     integer :: arefe, adesc, nbcmp, i, anumnd, acmpgd, lpt, aopnb2
     integer :: nbmpst, nbnpst, nbocer, n, m, adrin, adrou, nbm, numm
     integer :: nbtcmp, sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
-    integer :: indi1, indi2
+    integer :: indi1, indi2, ier
     integer :: vali, ilong, k, l, lnc, ncom, nspm
 !
-    aster_logical :: trouve
+    aster_logical :: trouve, lnomnoe, lnommai
 !
     character(len=1) :: cbid
     integer, pointer :: nund(:) => null()
@@ -135,9 +137,18 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
         end do
     end do
 !
+    call jeexin(mailla//'.NOMNOE', ier)
+    lnomnoe = .false.
+    if (ier .ne. 0) then
+        lnomnoe = .true.
+    end if
     call wkvect(nnumnd, 'V V I', nbnpst, anumnd)
     do i = 1, nbnpst, 1
-        zi(anumnd+i-1) = char8_to_int(zk8(adesc+i-1))
+        if (lnomnoe) then
+            call jenonu(jexnom(mailla//'.NOMNOE', zk8(adesc+i-1)), zi(anumnd+i-1))
+        else
+            zi(anumnd+i-1) = char8_to_int(zk8(adesc+i-1))
+        end if
     end do
     call wkvect(oupadr, 'V V I', nbnpst, aopadr)
     call jeveuo(invale, 'L', aivale)
@@ -170,6 +181,12 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
         call jeveuo(inpnco, 'L', aipnco)
         call jeveuo(inpnsp, 'L', aipnsp)
         nnmail = sdeval//'.MAIL'
+        nrepma = mailla//'.NOMMAI'
+        call jeexin(nrepma, ier)
+        lnommai = .false.
+        if (ier .ne. 0) then
+            lnommai = .true.
+        end if
         do i = 1, nbnpst, 1
             pt = 1
             trouve = .false.
@@ -219,7 +236,11 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
             call jeveuo(jexnum(nnmail, i), 'E', anmail)
             call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir+i-1)), 'L', anuma)
             do j = 1, l, 1
-                zk8(anmail+j-1) = int_to_char8(zi(anuma+j-1))
+                if (lnommai) then
+                    call jenuno(jexnum(nrepma, zi(anuma+j-1)), zk8(anmail+j-1))
+                else
+                    zk8(anmail+j-1) = int_to_char8(zi(anuma+j-1))
+                end if
             end do
         end do
         call jedetr(sdemno//'.VACP')

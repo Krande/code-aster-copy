@@ -48,11 +48,11 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
 !                       MAILLE OU NOEUD OU GROUP_NO OU GROUP_MA
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, ino, ima, nbno, nbma
+    integer :: iret, ino, ima, nbno, nbma, ier2
     character(len=8) :: mesh, type_obj
-    character(len=24) :: grnoma, grmama, object
+    character(len=24) :: noeuma, grnoma, mailma, grmama, object
     character(len=24) :: valk(2)
-    aster_logical :: l_parallel_mesh
+    aster_logical :: l_parallel_mesh, lnomnoe, lnommai
     aster_logical, parameter :: l_stop = ASTER_TRUE
 ! ----------------------------------------------------------------------
 !
@@ -63,8 +63,20 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
         goto 999
     end if
 !
+    noeuma = mesh//'.NOMNOE'
     grnoma = mesh//'.GROUPENO'
+    mailma = mesh//'.NOMMAI'
     grmama = mesh//'.GROUPEMA'
+    call jeexin(noeuma, ier2)
+    lnomnoe = .false.
+    if (ier2 .ne. 0) then
+        lnomnoe = .true.
+    end if
+    call jeexin(mailma, ier2)
+    lnommai = .false.
+    if (ier2 .ne. 0) then
+        lnommai = .true.
+    end if
 !
     l_parallel_mesh = isParallelMesh(mesh)
 !
@@ -102,7 +114,11 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
         nbno = nbno/3
         do ino = 1, list_size
             object = list_obj(ino)
-            iret = char8_to_int(object)
+            if (lnomnoe) then
+                call jenonu(jexnom(noeuma, object), iret)
+            else
+                iret = char8_to_int(object)
+            end if
             if ((iret .gt. nbno) .or. (iret .le. 0)) then
                 valk(1) = object
                 valk(2) = mesh
@@ -142,7 +158,11 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
         call jelira(mesh//'.TYPMAIL', 'LONMAX', nbma)
         do ima = 1, list_size
             object = list_obj(ima)
-            iret = char8_to_int(object)
+            if (lnommai) then
+                call jenonu(jexnom(mailma, object), iret)
+            else
+                iret = char8_to_int(object)
+            end if
             if ((iret .gt. nbma) .or. (iret .le. 0)) then
                 valk(1) = object
                 valk(2) = mesh

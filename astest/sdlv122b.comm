@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,14 +43,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
 #
-MAIL0 = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=19)
-MAIL = CREA_MAILLAGE(
-    MAILLAGE=MAIL0,
-    CREA_POI1=(
-        _F(NOM_GROUP_MA="NPOINT1", GROUP_NO=("NPOINT1",)),
-        _F(NOM_GROUP_MA="NPOINT2", GROUP_NO=("NPOINT2",)),
-    ),
-)
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=19)
 
 #
 MODELE = AFFE_MODELE(
@@ -150,7 +143,7 @@ BASE = CALC_CHAMP(
 #
 MAILMES0 = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=33)
 MAILMESU = CREA_MAILLAGE(
-    MAILLAGE=MAILMES0, CREA_POI1=_F(NOM_GROUP_MA="N3N4N5", NOEUD=("N3", "N4", "N5"))
+    MAILLAGE=MAILMES0, CREA_POI1=_F(NOM_GROUP_MA="N3N4N5", NOEUD=("N1", "N2", "N3"))
 )
 
 MAILMESU = DEFI_GROUP(
@@ -193,7 +186,7 @@ REPGENE = PROJ_MESU_MODAL(
         #                                       NOM_PARA = 'INST',
         NOM_CHAM="SIEF_NOEU",
     ),
-    CORR_MANU=_F(NOEU_MESURE="N4", NOEU_CALCUL="N75"),
+    CORR_MANU=_F(NOEU_MESURE="N2", NOEU_CALCUL="N75"),
 )
 
 #

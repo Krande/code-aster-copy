@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -585,7 +585,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_Y"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_Y"), _F(NOM_PARA="NOEUD", VALE_K="31")),
 )
 
 TEST_TABLE(
@@ -593,7 +593,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_RADIAL"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_RADIAL"), _F(NOM_PARA="NOEUD", VALE_K="31")),
 )
 
 TEST_TABLE(
@@ -601,7 +601,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_ANGULAIRE"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_ANGULAIRE"), _F(NOM_PARA="NOEUD", VALE_K="31")),
 )
 
 TEST_TABLE(
@@ -609,7 +609,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_Y"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_Y"), _F(NOM_PARA="NOEUD", VALE_K="31")),
 )
 
 TEST_TABLE(
@@ -617,7 +617,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_RADIAL"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_RADIAL"), _F(NOM_PARA="NOEUD", VALE_K="31")),
 )
 
 TEST_TABLE(
@@ -625,7 +625,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_ANGULAIRE"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_ANGULAIRE"), _F(NOM_PARA="NOEUD", VALE_K="31")),
 )
 #
 #

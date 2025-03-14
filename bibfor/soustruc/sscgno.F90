@@ -471,7 +471,7 @@ subroutine sscgno(ma, nbgnin)
             nbno = 0
             do im1 = 1, n2
                 nom1 = l_noeud(im1)
-                num = char8_to_int(nom1)
+                num = char8_to_int(nom1, ma, "NOEUD")
                 noeud2(num) = noeud2(num)+1
                 if (noeud2(num) .eq. 2) then
                     valk(1) = nom1
@@ -606,7 +606,7 @@ subroutine sscgno(ma, nbgnin)
                 if (ireste .ne. 0 .and. jjj .eq. nbline) nbcol = ireste
                 do iii = 1, nbcol
                     kkk = kkk+1
-                    nono = int_to_char8(zi(iagno-1+kkk))
+                    nono = int_to_char8(zi(iagno-1+kkk), ma, "NOEUD")
                     card((iii-1)*10+1:) = ' '//nono//' '
                 end do
                 write (ifm, '(A)') card(:10*nbcol)

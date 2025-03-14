@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,40 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 MAIL1 = LIRE_MAILLAGE(UNITE=23, FORMAT="ASTER")
+nLabels = ["N" + str(i) for i in range(MAIL1.getNumberOfNodes())]
+MAIL1.addNodeLabels(nLabels)
 
 MAIL2 = LIRE_MAILLAGE(FORMAT="ASTER")
+MAIL2.addNodeLabels(
+    [
+        "NA1",
+        "NA2",
+        "NA3",
+        "NA4",
+        "NA5",
+        "NA6",
+        "NA7",
+        "NA8",
+        "NA9",
+        "NA10",
+        "NA11",
+        "NA12",
+        "NA13",
+        "NB1",
+        "NB2",
+        "NB3",
+        "NB4",
+        "NB5",
+        "NB6",
+        "NB7",
+        "NB8",
+        "NB9",
+        "NB10",
+        "NB11",
+        "NB12",
+        "NB13",
+    ]
+)
 
 MAILLAGE = ASSE_MAILLAGE(MAILLAGE_1=MAIL1, MAILLAGE_2=MAIL2, OPERATION="SOUS_STR")
 

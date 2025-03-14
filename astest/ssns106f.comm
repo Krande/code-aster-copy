@@ -77,7 +77,7 @@ MA = CREA_MAILLAGE(
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_MA=(_F(NOM="GM1", MAILLE="G9"),),
+    CREA_GROUP_MA=(_F(NOM="GM1", MAILLE="M57"),),
     CREA_GROUP_NO=(_F(NOM="N2", NOEUD="N2"),),
 )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -366,8 +366,8 @@ RN11ZB = REST_SPEC_PHYS(
     OPTION="TOUT_TOUT",
 )
 
-REP1 = RECU_FONCTION(INTE_SPEC=RN11XB, NOEUD_I="N11", NOM_CMP_I="DX")
-REP2 = RECU_FONCTION(INTE_SPEC=RN11ZB, NOEUD_I="N11", NOM_CMP_I="DZ")
+REP1 = RECU_FONCTION(INTE_SPEC=RN11XB, NOEUD_I="11", NOM_CMP_I="DX")
+REP2 = RECU_FONCTION(INTE_SPEC=RN11ZB, NOEUD_I="11", NOM_CMP_I="DZ")
 
 
 # EXTRACTIONS ET TESTS:
@@ -487,8 +487,8 @@ RN11Z = REST_SPEC_PHYS(
     OPTION="TOUT_TOUT",
 )
 
-REP3 = RECU_FONCTION(INTE_SPEC=RN11X, NOEUD_I="N11", NOM_CMP_I="DX")
-REP4 = RECU_FONCTION(INTE_SPEC=RN11Z, NOEUD_I="N11", NOM_CMP_I="DZ")
+REP3 = RECU_FONCTION(INTE_SPEC=RN11X, NOEUD_I="11", NOM_CMP_I="DX")
+REP4 = RECU_FONCTION(INTE_SPEC=RN11Z, NOEUD_I="11", NOM_CMP_I="DZ")
 
 TEST_FONCTION(
     VALEUR=(

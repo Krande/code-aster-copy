@@ -17,8 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    function int_to_char8(to_convert)
+    function int_to_char8(to_convert, nommai, typent)
         integer, intent(in) :: to_convert
+        character(len=8), optional, intent(in) :: nommai
+        character(len=*), optional, intent(in) :: typent
         character(len=8) :: int_to_char8
     end function int_to_char8
 end interface

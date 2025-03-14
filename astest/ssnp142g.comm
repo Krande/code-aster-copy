@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_NO=(_F(NOM="NS276", NOEUD="NS276"), _F(NOM="NS275", NOEUD="NS275")),
+    CREA_GROUP_NO=(_F(NOM="NS276", NOEUD="N2258"), _F(NOM="NS275", NOEUD="N2257")),
 )
 
 MA = DEFI_GROUP(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,9 @@ DEFI_GROUP(
     reuse=MA1,
     MAILLAGE=MA1,
     CREA_GROUP_NO=(
-        _F(NOM="B", NOEUD="N18"),
-        _F(NOM="C", NOEUD="N10"),
-        _F(NOM="BX", NOEUD=("N27", "N46", "N18")),
+        _F(NOM="B", NOEUD="N17"),
+        _F(NOM="C", NOEUD="N9"),
+        _F(NOM="BX", NOEUD=("N26", "N45", "N17")),
     ),
 )
 
@@ -46,10 +46,10 @@ DEFI_GROUP(
     reuse=MA2,
     MAILLAGE=MA2,
     CREA_GROUP_NO=(
-        _F(NOM="E", NOEUD="N46"),
-        _F(NOM="A", NOEUD="N27"),
-        _F(NOM="D", NOEUD="N34"),
-        _F(NOM="AXSANSA", NOEUD=("N18", "N46", "N57", "N76")),
+        _F(NOM="E", NOEUD="N45"),
+        _F(NOM="A", NOEUD="N26"),
+        _F(NOM="D", NOEUD="N33"),
+        _F(NOM="AXSANSA", NOEUD=("N17", "N45", "N56", "N75")),
     ),
 )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ CHMA = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATR))
 FORC100X = AFFE_CHAR_MECA(
     MODELE=MO,
     DDL_IMPO=_F(NOEUD="N1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-    FORCE_NODALE=_F(NOEUD="N2", FX=100.0e0),
+    FORCE_NODALE=_F(NOEUD="N11", FX=100.0e0),
 )
 
 #
@@ -59,7 +59,7 @@ FORC100X = AFFE_CHAR_MECA(
 FOR100Y = AFFE_CHAR_MECA(
     MODELE=MO,
     DDL_IMPO=_F(NOEUD="N1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-    FORCE_NODALE=_F(NOEUD="N2", FY=100.0e0),
+    FORCE_NODALE=_F(NOEUD="N11", FY=100.0e0),
 )
 
 #
@@ -68,7 +68,7 @@ FOR100Y = AFFE_CHAR_MECA(
 MOM100X = AFFE_CHAR_MECA(
     MODELE=MO,
     DDL_IMPO=_F(NOEUD="N1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-    FORCE_NODALE=_F(NOEUD="N2", MX=100.0e0),
+    FORCE_NODALE=_F(NOEUD="N11", MX=100.0e0),
 )
 
 #
@@ -77,7 +77,7 @@ MOM100X = AFFE_CHAR_MECA(
 MOM100Y = AFFE_CHAR_MECA(
     MODELE=MO,
     DDL_IMPO=_F(NOEUD="N1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-    FORCE_NODALE=_F(NOEUD="N2", MY=100.0e0, FX=0.0e0),
+    FORCE_NODALE=_F(NOEUD="N11", MY=100.0e0, FX=0.0e0),
 )
 
 #

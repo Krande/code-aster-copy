@@ -63,9 +63,11 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
     real(kind=8) :: vecty(3), tole
     character(len=8) :: courbe, crit
     character(len=24) :: nomgrn
+    character(len=15) :: nrepnd
     character(len=17) :: nrepgn
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: list_n(:) => null()
+    aster_logical lnomnoe
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -73,6 +75,12 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
 !
     nbtnd = 0
     nrepgn = nmaila//'.GROUPENO'
+    nrepnd = nmaila//'.NOMNOE'
+    call jeexin(nrepnd, ier)
+    lnomnoe = .false.
+    if (ier .ne. 0) then
+        lnomnoe = .true.
+    end if
     libre = 1
 !   INDICATEUR DE COMMANDE POUR OREINO: 2-POST_RELEVE_T/PRECISION
     iera = 2
@@ -111,7 +119,11 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
 !
     if (nbneud .ne. 0) then
         do i = 1, nbneud, 1
-            numnd = char8_to_int(zk8(aneud+i-1))
+            if (lnomnoe) then
+                call jenonu(jexnom(nrepnd, zk8(aneud+i-1)), numnd)
+            else
+                numnd = char8_to_int(zk8(aneud+i-1))
+            end if
             zi(alndtp+i-1) = numnd
         end do
     end if

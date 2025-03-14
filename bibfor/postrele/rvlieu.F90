@@ -67,14 +67,20 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
     character(len=19) :: sdcour
     character(len=10) :: iden
     character(len=4) :: docu
-    integer :: aabsc, arefe, adesc, acoor
+    integer :: aabsc, arefe, adesc, acoor, ier
     integer :: ansdl, adr, anumnd, anume
     integer :: nbsd, isd, nbpt, ipt
     real(kind=8) :: zero
+    aster_logical lnomnoe
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
     call jemarq()
+    call jeexin(mailla//'.NOMNOE', ier)
+    lnomnoe = .false.
+    if (ier .ne. 0) then
+        lnomnoe = .true.
+    end if
     zero = 0.0d0
     lnumnd = '&&RVLIEU.LISTE.NUM.NOEUD'
     ASSERT(typco .ne. 'CHEMIN')
@@ -103,7 +109,11 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
         call jeveuo(nlsnac, 'L', anumnd)
         call wkvect(ndesc, 'V V K8', nbpt, adesc)
         do ipt = 1, nbpt, 1
-            zk8(adesc+ipt-1) = int_to_char8(zi(anumnd+ipt-1))
+            if (lnomnoe) then
+                call jenuno(jexnum(mailla//'.NOMNOE', zi(anumnd+ipt-1)), zk8(adesc+ipt-1))
+            else
+                zk8(adesc+ipt-1) = int_to_char8(zi(anumnd+ipt-1))
+            end if
         end do
 !
         call jecrec(nabsc, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &

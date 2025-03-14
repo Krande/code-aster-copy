@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -121,11 +121,7 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit, &
 !
 !      NOM DE LA MAILLE CREEE
         call codent(mainit-1+ma, 'G', knume)
-        lgma = lxlgut(knume)
-        if (lgma+lgpref .gt. 8) then
-            call utmess('F', 'ALGELINE_17')
-        end if
-        zk8(inoma-1+ma) = prefix(1:lgpref)//knume
+        zk8(inoma-1+ma) = knume
 !
 !      TYPE DE LA NOUVELLE MAILLE : QUAD4
         zi(ityma-1+ma) = tyqua4

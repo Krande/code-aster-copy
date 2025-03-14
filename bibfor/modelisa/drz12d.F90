@@ -138,14 +138,14 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
 30  continue
 !
-    nomnoe_a = int_to_char8(numnoe_a)
+    nomnoe_a = int_to_char8(numnoe_a, noma, 'NOEUD')
     nom_noeuds(1) = nomnoe_a
 !
 ! - Loop on nodes
 !
     do i_no = 1, nb_node
         numnoe_m = zi(jlino+i_no-1)
-        nomnoe_m = int_to_char8(numnoe_m)
+        nomnoe_m = int_to_char8(numnoe_m, noma, 'NOEUD')
 !
         if (numnoe_m .ne. numnoe_a) then
 !

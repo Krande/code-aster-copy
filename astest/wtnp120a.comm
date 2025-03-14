@@ -227,11 +227,11 @@ MAIL = DEFI_GROUP(
         _F(GROUP_MA="DROIT"),
         _F(GROUP_MA="TOUT"),
         _F(NOM="N678", NOEUD="N678"),
-        _F(NOM="NQ182", NOEUD="NQ182"),
+        _F(NOM="NQ182", NOEUD="N1185"),
         _F(NOM="N783", NOEUD="N783"),
-        _F(NOM="NQ21", NOEUD="NQ21"),
+        _F(NOM="NQ21", NOEUD="N1024"),
         _F(NOM="N727", NOEUD="N727"),
-        _F(NOM="NQ25", NOEUD="NQ25"),
+        _F(NOM="NQ25", NOEUD="N1028"),
         _F(
             NOM="MIL",
             NOEUD=(

@@ -763,6 +763,20 @@ class Mesh(BaseMesh):
         2. __init__(self: libaster.Mesh, arg0: str) -> None
         """
 
+    def addCellLabels(self, cell_labels):
+        """Add cell labels.
+
+        Arguments:
+            cell_labels (list) : Cell labels.
+        """
+
+    def addNodeLabels(self, node_labels):
+        """Add node labels.
+
+        Arguments:
+            node_labels (list) : Node labels.
+        """
+
     def convertToBiQuadratic(self, info=1):
         """Convert the mesh to a bi-quadratic one.
         For cells that have no bi-quadratic version, the quadratic version is used.

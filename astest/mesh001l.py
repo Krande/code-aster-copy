@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ test = CA.TestCase()
 
 
 medfile = "mesh001l.mmed"
-create_mesh(20, medfile)
+create_mesh(5, medfile)
 
 DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY", ACCES="OLD")
 
@@ -69,5 +69,4 @@ for grp in grpCells:
     test.assertTrue(len(mesh.getCells(grp)) == 1)
 
 test.printSummary()
-
 CA.close()

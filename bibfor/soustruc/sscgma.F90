@@ -167,7 +167,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             ier = 0
             do im1 = 1, n2
                 nom1 = l_maille(im1)
-                num = char8_to_int(nom1)
+                num = char8_to_int(nom1, ma, "MAILLE")
                 if (num .eq. 0) then
                     ier = ier+1
                     call utmess('E', 'SOUSTRUC_31', sk=nom1)
@@ -554,7 +554,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 if (ireste .ne. 0 .and. jjj .eq. nbline) nbcol = ireste
                 do iii = 1, nbcol
                     kkk = kkk+1
-                    noma = int_to_char8(zi(jlisma-1+kkk))
+                    noma = int_to_char8(zi(jlisma-1+kkk), ma, "MAILLE")
                     card((iii-1)*10+1:) = ' '//noma//' '
                 end do
                 write (ifm, '(A)') card(:10*nbcol)

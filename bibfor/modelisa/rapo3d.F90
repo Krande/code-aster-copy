@@ -285,7 +285,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     end if
     call jeveuo('&&RAPO3D.NO2', 'L', jno2)
     noepou = zk8(jno2)
-    numnop = char8_to_int(noepou)
+    numnop = char8_to_int(noepou, noma, 'NOEUD')
     call jedetr('&&RAPO3D.NO2')
 !   --- coordonnees du noeud poutre
     xpou = vale(3*(numnop-1)+1)
@@ -299,7 +299,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     if (option .eq. 'PLAQ_POUT_ORTH') then
         do i = 1, lonlis
 !           NUMERO DU NOEUD COURANT DE LA LISTE
-            ino = char8_to_int(zk8(ilisno+i-1))
+            ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !           IL DOIT ETRE DIFFERENT DU NOEUD DE LA POUTRE
             if (ino .eq. numnop) then
                 valk(1) = noepou
@@ -323,7 +323,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     else
         do i = 1, lonlis
 !           NUMERO DU NOEUD COURANT DE LA LISTE
-            ino = char8_to_int(zk8(ilisno+i-1))
+            ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
             dg = prnm((ino-1)*nbec+1)
             do j = 4, 6
                 icmp(j) = indik8(nomcmp, cmp(j), 1, nddla)
@@ -537,7 +537,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
-        ino = char8_to_int(zk8(ilisno+i-1))
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -561,7 +561,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
-        ino = char8_to_int(zk8(ilisno+i-1))
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -585,7 +585,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
-        ino = char8_to_int(zk8(ilisno+i-1))
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -616,7 +616,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA COQUE
     do i = 1, lonlis
-        ino = char8_to_int(zk8(ilisno+i-1))
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -656,7 +656,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE SURFACE DU MASSIF
     do i = 1, lonlis
-        ino = char8_to_int(zk8(ilisno+i-1))
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -696,7 +696,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE SURFACE DU MASSIF
     do i = 1, lonlis
-        ino = char8_to_int(zk8(ilisno+i-1))
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -741,7 +741,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         nbterm = 3*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
         do i = 1, lonlis
-            ino = char8_to_int(zk8(ilisno+i-1))
+            ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
             ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -777,7 +777,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         nbterm = 3*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
         do i = 1, lonlis
-            ino = char8_to_int(zk8(ilisno+i-1))
+            ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
             ival = zi(iaprno+(ino-1)*(nbec+2))
 !

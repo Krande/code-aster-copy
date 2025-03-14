@@ -237,7 +237,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
                 end if
-                ima = char8_to_int(karg)
+                ima = char8_to_int(karg, ma, "MAILLE")
                 zi4(itrma-1+ima) = 1
 !
             else if (typmcl .eq. 'GROUP_MA') then
@@ -261,7 +261,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
                 end if
-                ino = char8_to_int(karg)
+                ino = char8_to_int(karg, ma, "NOEUD")
                 indic_noeud(ino) = 1
 !
             else if (typmcl .eq. 'GROUP_NO') then
@@ -358,7 +358,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
             do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
                     lma = lma+1
-                    zk8(itbma-1+lma) = int_to_char8(ima)
+                    zk8(itbma-1+lma) = int_to_char8(ima, ma, "MAILLE")
                 end if
             end do
         end if
@@ -373,7 +373,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (zi4(itrma-1+ima) .ne. 0) then
                     if (maille(ima) .eq. 0) then
                         ier = ier+1
-                        noent = int_to_char8(ima)
+                        noent = int_to_char8(ima, ma, "MAILLE")
                         write (ifm, *) ' MAILLE : ', noent
                     end if
                 end if
@@ -433,7 +433,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
             do ino = 1, nbno
                 if (indic_noeud(ino) .ne. 0) then
                     lno = lno+1
-                    zk8(itbno-1+lno) = int_to_char8(ino)
+                    zk8(itbno-1+lno) = int_to_char8(ino, ma, "NOEUD")
                 end if
             end do
         end if
@@ -455,7 +455,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 !             LE NOEUD NE PORTE AUCUNE COMPOSANTE DE LA GRANDEUR
 !             ASSOCIEE AU PHENOMENE
                     ier = ier+1
-                    noent = int_to_char8(ino)
+                    noent = int_to_char8(ino, ma, "NOEUD")
                     write (ifm, *) ' NOEUD : ', noent
                 end if
 191             continue

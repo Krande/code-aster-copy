@@ -363,6 +363,17 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
             zi(jcnnpa+inc-1) = zi(odcnpa+inc-1)
         end do
     end if
+! --- REPERTOIRE DE NOM DES NOEUDS : COPIE DE LA PARTIE COMMUNE -----------------------------------
+    nomnoi = main//'.NOMNOE'
+    nomnoe = maout//'.NOMNOE'
+    call jedetr(nomnoe)
+    call jecreo(nomnoe, 'G N K8')
+    call jeecra(nomnoe, 'NOMMAX', nbnot)
+!
+    do inc = 1, nbno
+        call jenuno(jexnum(nomnoi, inc), nomnd)
+        call jecroc(jexnom(nomnoe, nomnd))
+    end do
 ! --- CHAM_GEOM : RECOPIE DE LA PARTIE COMMUNE ----------------------------------------------------
     coordo = maout//'.COORDO'
     call copisd('CHAMP_GD', 'G', main//'.COORDO', coordo)
@@ -585,6 +596,7 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
 ! -------------------------------------------------------------------------------------------------
     call codent(izone, 'G', knuzo)
     call jedetr(maout//'.CONNEX')
+    call jedetr(maout//'.NOMMAI')
     call jecrec(maout//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmat)
     call jeecra(maout//'.CONNEX', 'NUTIOC', nbmat)
@@ -597,6 +609,8 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
     call juveca(maout//'.TYPMAIL', nbmat)
     call jeecra(maout//'.TYPMAIL', 'LONUTI', nbmat)
     call jeveuo(maout//'.TYPMAIL', 'E', jtpmao)
+    call jecreo(maout//'.NOMMAI', 'G N K8')
+    call jeecra(maout//'.NOMMAI', 'NOMMAX', nbmat)
 !
     call jelira(main//'.CONNEX', 'LONT', aux)
     call jeecra(maout//'.CONNEX', 'LONT', aux+conlen)
@@ -797,6 +811,23 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
             do incc = 0, nbnwma-1
                 call jeveuo(jexnum(conloc, zi(jlimane+incc)), 'L', jconloc)
                 zi(jlimane+incc) = ind+incc
+! ---------------------- NOM DE LA MAILLE
+                if (incc .eq. 0) then
+                    call jenuno(jexnum(main//'.NOMMAI', inc), nomma)
+                    call jecroc(jexnom(maout//'.NOMMAI', nomma))
+                else
+                    call codent(nma+ind1, 'G', knume)
+                    if (knume(1:1) == '*') then
+                        ASSERT(.false.)
+                    end if
+                    lgma = lxlgut(knume)
+                    if (lgma+1 .gt. 8) then
+                        call utmess('F', 'ALGELINE_16')
+                    end if
+                    nomma = 'C'//knume(1:lgma)
+                    call jecroc(jexnom(maout//'.NOMMAI', nomma))
+                    ind1 = ind1+1
+                end if
 ! ----------------------- CONNECTIVITE MAILLE-PATCH
                 if (ntrou(inc) .eq. 1) then
                     zi(jcnmpa+ind+incc-1) = zi(jlimane-1+nbnwma+1)
@@ -815,6 +846,8 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
         else
 ! --------------COPIE A L'IDENTIQUE
             zi(jtpmao+ind-1) = zi(jtypma+inc-1)
+            call jenuno(jexnum(main//'.NOMMAI', inc), nomma)
+            call jecroc(jexnom(maout//'.NOMMAI', nomma))
             call jeveuo(jexnum(main//'.CONNEX', inc), 'L', jcnmai)
             call jelira(jexnum(main//'.CONNEX', inc), 'LONMAX', aux)
             call jeecra(jexnum(maout//'.CONNEX', ind), 'LONMAX', aux)
@@ -970,7 +1003,10 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
                 ind = ind+nbnwma
             else
 ! ---------------------- RECOPIE A L'IDENTIQUE
-                zi(jgmao+ind-1) = zi(jgma+incc-1)
+                call jenuno(jexnum(main//'.NOMMAI', zi(jgma+incc-1)), &!??
+                            nomma)
+                call jenonu(jexnom(maout//'.NOMMAI', nomma), numa)!??
+                zi(jgmao+ind-1) = numa
                 ind = ind+1
             end if
         end do

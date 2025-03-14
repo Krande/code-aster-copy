@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -537,7 +537,7 @@ MAI = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=22, INFO=2)
 
 MAI_POI = CREA_MAILLAGE(MAILLAGE=MAI, INFO=2, CREA_POI1=_F(GROUP_NO="A", NOM_GROUP_MA="POI_A"))
 
-MAI_POI = DEFI_GROUP(reuse=MAI_POI, MAILLAGE=MAI_POI, CREA_GROUP_MA=(_F(NOM="N1", MAILLE="N1"),))
+MAI_POI = DEFI_GROUP(reuse=MAI_POI, MAILLAGE=MAI_POI, CREA_GROUP_MA=(_F(NOM="N1", MAILLE="M2"),))
 
 CHMAT_DI = AFFE_MATERIAU(MAILLAGE=MAI_POI, AFFE=_F(TOUT="OUI", MATER=MATE))
 

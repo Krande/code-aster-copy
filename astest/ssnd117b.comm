@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -187,7 +187,7 @@ TABDEPL1 = CALC_TABLE(
     reuse=TABDEPL1,
     TABLE=TABDEPL1,
     ACTION=(
-        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="N2"),
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2"),
         _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DY", "DZ")),
     ),
 )
@@ -227,7 +227,7 @@ TABDEPL2 = CALC_TABLE(
     reuse=TABDEPL2,
     TABLE=TABDEPL2,
     ACTION=(
-        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="N4"),
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="4"),
         _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DY", "DZ")),
     ),
 )
@@ -267,7 +267,7 @@ TABDEPL3 = CALC_TABLE(
     reuse=TABDEPL3,
     TABLE=TABDEPL3,
     ACTION=(
-        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="N5"),
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="5"),
         _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DY", "DZ")),
     ),
 )
@@ -307,7 +307,7 @@ TABDEPL4 = CALC_TABLE(
     reuse=TABDEPL4,
     TABLE=TABDEPL4,
     ACTION=(
-        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="N6"),
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="6"),
         _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DY", "DZ")),
     ),
 )

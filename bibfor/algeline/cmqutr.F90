@@ -59,6 +59,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     integer :: ino, ima2, imav, iatyma, jvg, jtypm, jdime, jopt, jnpt
     integer :: nbno, ier, jgg, im, j, lgpref, lgnd, nbmag, nbgrm, ifm, niv, iq4
     integer :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
+    integer :: nbmais
     aster_logical :: logic
     character(len=1) :: base
     character(len=24) :: valk
@@ -164,6 +165,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
         if (iq9 .ne. 0) write (ifm, 502) iq9, 'QUAD9', 6*iq9, 'TRIA3'
     end if
 !
+    nbmais = nbmail
     nbmail = nbmail+nbtri
 !
     call jedupo(nodimv, base, nodime, logic)
@@ -235,7 +237,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !====
 !
     lgpref = lxlgut(prefix)
-    imav = ndinit-1
+    imav = 1
 !
     do ima = 1, nbmat
 !
@@ -261,7 +263,9 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !
 ! 5.2.1. ==> TYPE DE MAILLE ET CONNECTIVITE
 !
-            ima2 = char8_to_int(nima)
+            ! ima2 = char8_to_int(nima)
+            ima2 = imav
+            imav = imav+1
             zi(iatyma-1+ima2) = zi(jtypm+ima-1)
 !
             call jeecra(jexnum(connex, ima2), 'LONMAX', ival=nbpt)
@@ -291,15 +295,8 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
             nbpt = 3
             nbtri = zi(jdec-1+ima)
             do i = 1, nbtri
+                ima2 = imav
                 imav = imav+1
-                call codent(imav, 'G', knume)
-                lgnd = lxlgut(knume)
-                if (lgnd+lgpref .gt. 8) then
-                    call utmess('F', 'ALGELINE_17')
-                end if
-                nomg = prefix(1:lgpref)//knume
-!
-                ima2 = char8_to_int(nomg)
                 zi(iatyma-1+ima2) = typtri
 !
                 call jeecra(jexnum(connex, ima2), 'LONMAX', ival=nbpt)

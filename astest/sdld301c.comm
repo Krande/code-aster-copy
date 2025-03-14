@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -203,7 +203,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=MODE_STA,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P2",
@@ -213,7 +213,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=MODE_STA,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P3",
@@ -223,7 +223,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=MODE_STA,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P2",
@@ -233,7 +233,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=MODE_STA,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P3",
@@ -265,7 +265,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=MODE_CO2,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P2",
@@ -275,7 +275,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=MODE_CO2,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P3",
@@ -285,7 +285,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=MODE_CO2,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P2",
@@ -295,7 +295,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=MODE_CO2,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P3",

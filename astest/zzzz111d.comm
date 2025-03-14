@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,7 @@ TEST_TABLE(
     VALE_REFE_I=0,
     NOM_PARA="INDICE_PROJECTION",
     TABLE=TABL_CA,
-    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="N101"),
+    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="10"),
 )
 
 TEST_TABLE(
@@ -123,7 +123,7 @@ TEST_TABLE(
     VALE_REFE_I=2,
     NOM_PARA="INDICE_PROJECTION",
     TABLE=TABL_CA,
-    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="N105"),
+    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="11"),
 )
 
 TEST_TABLE(
@@ -134,7 +134,7 @@ TEST_TABLE(
     VALE_REFE=0.1,
     NOM_PARA="EXCENTRICITE",
     TABLE=TABL_CA,
-    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="N105"),
+    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="11"),
 )
 
 TEST_TABLE(
@@ -144,7 +144,7 @@ TEST_TABLE(
     VALE_REFE_I=0,
     NOM_PARA="INDICE_PROJECTION",
     TABLE=TABL_CA,
-    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="N109"),
+    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="12"),
 )
 
 FIN()

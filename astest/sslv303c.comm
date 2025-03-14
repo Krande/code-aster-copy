@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -177,7 +177,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="SIXX",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N943"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="943"),
 )
 
 TEST_TABLE(
@@ -187,7 +187,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N943"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="943"),
 )
 
 TEST_TABLE(
@@ -197,7 +197,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="SIZZ",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N943"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="943"),
 )
 
 #
@@ -275,7 +275,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="SIXX",
     TABLE=T2,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N943"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="943"),
 )
 
 TEST_TABLE(
@@ -285,7 +285,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="SIYY",
     TABLE=T2,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N943"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="943"),
 )
 
 TEST_TABLE(
@@ -295,7 +295,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="SIZZ",
     TABLE=T2,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N943"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="943"),
 )
 
 FIN()

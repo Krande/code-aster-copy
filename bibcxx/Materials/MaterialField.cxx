@@ -80,7 +80,6 @@ ASTERINTEGER nameToId( const std::string &name ) {
 MaterialPtr MaterialField::getMaterialOnCell( const std::string cellName ) const {
     // const auto cellNames = _mesh->getCellNameMap();
     ASTERINTEGER cellId = nameToId( cellName );
-    std::cout << "cellId " << cellId << std::endl << std::flush;
     _champ_mat->build();
     auto size = _champ_mat->size();
     ASTERINTEGER pos = size - 1;

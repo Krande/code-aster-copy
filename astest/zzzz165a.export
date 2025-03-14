@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm zzzz165a.comm D 1
-F msup zzzz165a.msup D 19
-F libr zzzz165a.56 D 56
+F mmed zzzz165a.med D 20

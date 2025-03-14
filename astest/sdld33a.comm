@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -304,7 +304,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=1.000000000,
             VALE_REFE=1.0,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -314,7 +314,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.500000000,
             VALE_REFE=0.5,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -325,7 +325,7 @@ TEST_RESU(
             VALE_CALC=2.77555756e-17,
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -335,7 +335,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.500000000,
             VALE_REFE=0.5,
-            NOEUD_CMP=("P3", "DX"),
+            NOEUD_CMP=("3", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -345,7 +345,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=1.000000000,
             VALE_REFE=1.0,
-            NOEUD_CMP=("P3", "DX"),
+            NOEUD_CMP=("3", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -355,7 +355,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.500000000,
             VALE_REFE=0.5,
-            NOEUD_CMP=("P3", "DX"),
+            NOEUD_CMP=("3", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -365,7 +365,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.500000000,
             VALE_REFE=0.5,
-            NOEUD_CMP=("P5", "DX"),
+            NOEUD_CMP=("5", "DX"),
         ),
     )
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,11 +88,11 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_NO=(
-        _F(NOEUD=("NO2", "NO4", "NO8", "NS7", "NS8", "NS9"), NOM="DROITE"),
-        _F(NOEUD=("NO1", "NO3", "NO7", "NS1", "NS2", "NS3"), NOM="GAUCHE"),
-        _F(NOEUD=("NS2"), NOM="NS2"),
-        _F(NOEUD=("NS14"), NOM="NS14"),
-        _F(NOEUD=("NS15"), NOM="NS15"),
+        _F(NOEUD=("N2", "N4", "N8", "N16", "N17", "N18"), NOM="DROITE"),
+        _F(NOEUD=("N1", "N3", "N7", "N10", "N11", "N12"), NOM="GAUCHE"),
+        _F(NOEUD=("N11"), NOM="NS2"),
+        _F(NOEUD=("N23"), NOM="NS14"),
+        _F(NOEUD=("N24"), NOM="NS15"),
     ),
 )
 
@@ -145,9 +145,9 @@ LIAISON = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=(_F(GROUP_MA="GAUCHE2", DX=0, DY=0
 PAM_J = AFFE_CHAR_CINE(
     MODELE=MO,
     MECA_IMPO=(
-        _F(NOEUD="NS13", PRE1=press),
+        _F(NOEUD="N22", PRE1=press),
         #                _F(NOEUD='NS1',  PRE1=press*1.0000001 ),
-        _F(NOEUD="NS15", PRE1=press * 1.0000002),
+        _F(NOEUD="N24", PRE1=press * 1.0000002),
     ),
 )
 

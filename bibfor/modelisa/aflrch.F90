@@ -351,7 +351,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
         end if
         do ino = 1, nbterm
             nomnoe = zk8(idnoeu+ino-1)
-            in = char8_to_int(nomnoe)
+            in = char8_to_int(nomnoe, noma, "NOEUD")
 !
             cmp = zk8(iddl+ino-1)
 !

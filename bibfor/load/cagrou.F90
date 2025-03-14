@@ -143,7 +143,7 @@ subroutine cagrou(load, mesh, vale_type, phenom)
 ! ----- First node
 !
         node_nume(1) = zi(jlino-1+1)
-        node_name(1) = int_to_char8(node_nume(1))
+        node_name(1) = int_to_char8(node_nume(1), mesh, 'NOEUD')
 !
 ! ----- Loop on dof
 !
@@ -152,7 +152,7 @@ subroutine cagrou(load, mesh, vale_type, phenom)
             dof_name(2) = zk8(jlidof-1+i_dof)
             do i_no = 2, nb_node
                 node_nume(2) = zi(jlino-1+i_no)
-                node_name(2) = int_to_char8(node_nume(2))
+                node_name(2) = int_to_char8(node_nume(2), mesh, 'NOEUD')
                 call afrela(coef_real_unit, coef_cplx_unit, dof_name, node_name, repe_type, &
                             repe_defi, nb_term, vale_real_zero, vale_cplx_zero, vale_func_zero, &
                             coef_type, vale_type, 0.d0, list_rela)

@@ -98,7 +98,7 @@ MAIL = DEFI_GROUP(
     MAILLAGE=MAIL,
     CREA_GROUP_NO=(
         _F(NOM="N304", NOEUD="N304"),
-        _F(NOM="NQ95", NOEUD="NQ95"),
+        _F(NOM="NQ95", NOEUD="N598"),
         _F(NOM="N293", NOEUD="N293"),
         _F(NOM="N469", NOEUD="N469"),
     ),

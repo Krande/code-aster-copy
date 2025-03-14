@@ -201,7 +201,7 @@ class PostBeremin:
         """Define fondfiss information (X Y Z ABSCURV ABSCURVNORM) for table output METHODE_2D"""
 
         frontnodes = self._fondfiss.getCrackFrontNodes()
-        frontnodes = [int(x[1:]) - 1 for x in frontnodes]
+        frontnodes = [int(x) - 1 for x in frontnodes]
         frontpos = self._fondfiss.getCrackFrontPosition()
         frontabscurv = self._fondfiss.getCrackFrontAbsCurv()
         abscurvmax = max(frontabscurv)

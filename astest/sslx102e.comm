@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -175,21 +175,21 @@ TEST_TABLE(
     VALE_CALC=2.4669563248862,
     NOM_PARA="ABSC_CURV",
     TABLE=EVOL,
-    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="NS1"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="38"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
 )
 
 TEST_TABLE(
     VALE_CALC=0.20604091457393,
     NOM_PARA="ABSC_CURV",
     TABLE=EVOL,
-    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="NS18"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="55"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
 )
 
 TEST_TABLE(
     VALE_CALC=2.8790381540341,
     NOM_PARA="ABSC_CURV",
     TABLE=EVOL,
-    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N37"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="37"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
 )
 
 # ----------------------------------------------------------------------------

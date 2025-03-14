@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,7 +208,7 @@ TEST_FICHIER(
     VALE_CALC_I=2039,
     NB_VALE=32,
     VALE_CALC=16.0,
-    VALE_CALC_K="a87f41c8ae18a24c97b9f21d5c0f692e",
+    VALE_CALC_K="ae75fa668ef06f237e1010e4cc587aa5",
 )
 
 # 3.2 : Pour valider l'orientation du pourtour, on utilise MACR_LIGN_COUP :

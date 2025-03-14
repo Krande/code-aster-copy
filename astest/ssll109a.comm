@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ for i, (vrefe, vcalc) in enumerate(zip(REFE, CALC)):
         VALE_REFE=vrefe,
         NOM_PARA="DX",
         TABLE=TAB_DX,
-        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N%d" % (i + 1)),
+        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="%d" % (i + 1)),
     )
 
 FIN()

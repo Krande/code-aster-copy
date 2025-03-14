@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -154,7 +154,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO1_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N186"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="186"),
 )
 
 TEST_TABLE(
@@ -164,7 +164,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO1_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N182"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="182"),
 )
 
 TEST_TABLE(
@@ -174,7 +174,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO1_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N174"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="174"),
 )
 
 TEST_TABLE(
@@ -184,7 +184,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO1_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N155"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="155"),
 )
 
 TEST_TABLE(
@@ -194,7 +194,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO1_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N121"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="121"),
 )
 
 TEST_TABLE(
@@ -204,7 +204,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO2_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N186"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="186"),
 )
 
 TEST_TABLE(
@@ -214,7 +214,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO2_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N182"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="182"),
 )
 
 TEST_TABLE(
@@ -224,7 +224,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO2_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N174"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="174"),
 )
 
 TEST_TABLE(
@@ -234,7 +234,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO2_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N155"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="155"),
 )
 
 TEST_TABLE(
@@ -244,7 +244,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="G",
     TABLE=GLO2_LE5,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N121"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="121"),
 )
 
 FIN()

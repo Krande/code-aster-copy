@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -296,7 +296,7 @@ SKEL = DEFI_SQUELETTE(
 SKEL = DEFI_GROUP(
     reuse=SKEL,
     MAILLAGE=SKEL,
-    CREA_GROUP_NO=(_F(NOM="NO1", NOEUD="NO1"), _F(NOM="NO43", NOEUD="NO43")),
+    CREA_GROUP_NO=(_F(NOM="NO1", NOEUD="N1"), _F(NOM="NO43", NOEUD="N43")),
 )
 
 MODPHY = REST_SOUS_STRUC(RESU_GENE=RESGEN, TOUT_ORDRE="OUI", TOUT_CHAM="OUI", SQUELETTE=SKEL)

@@ -126,6 +126,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
     ASTERINTEGER _totalSize;
     JeveuxCollObjValType _temporaryCollectionObject;
     JeveuxCollObjValType _temporaryEndCollectionObject;
+    VectorLong _indirection;
     /**
      * @brief Pointeur vers un NamesMap
      * @todo ASTERINTEGER par defaut : pas terrible
@@ -284,16 +285,24 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
     /**
      * @brief
      */
-    auto begin() const { return iterator< ValueType, AccessType, MemoryType >( this, 1 ); };
-
-    auto end() const {
-        return iterator< ValueType, AccessType, MemoryType >( this, _objectCount + 1 );
+    auto begin() const {
+        const auto firstPos = _indirection[0];
+        return iterator< ValueType, AccessType, MemoryType >( this, firstPos );
     };
 
-    auto cbegin() const { return const_iterator< ValueType, AccessType, MemoryType >( this, 1 ); };
+    auto end() const {
+        const auto lastPos = _indirection[_objectCount - 1];
+        return iterator< ValueType, AccessType, MemoryType >( this, lastPos + 1 );
+    };
+
+    auto cbegin() const {
+        const auto firstPos = _indirection[0];
+        return const_iterator< ValueType, AccessType, MemoryType >( this, firstPos );
+    };
 
     auto cend() const {
-        return const_iterator< ValueType, AccessType, MemoryType >( this, _objectCount + 1 );
+        const auto lastPos = _indirection[_objectCount - 1];
+        return const_iterator< ValueType, AccessType, MemoryType >( this, lastPos + 1 );
     };
 
     /**
@@ -412,6 +421,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         JeveuxCollObjValType obj( _name, newIndex, name, nbValues );
 
         _mapNumObject[std::string( strip( name.c_str() ) )] = newIndex;
+        _indirection.push_back( newIndex );
 
         ++_objectCount;
 
@@ -447,6 +457,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         }
 
         JeveuxCollObjValType obj( _name, index, nbValues );
+        _indirection.push_back( index );
 
         ++_objectCount;
 
@@ -478,6 +489,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         ValueType *valuePtr;
 
         CALLO_JUCROC_WRAP( _name, nameOfObject, &ibid, &taille, (void *)( &valuePtr ) );
+        _indirection.push_back( index );
 
         ++_objectCount;
     };
@@ -542,6 +554,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
 
         _capacity = 0;
         _objectCount = 0;
+        _indirection.clear();
     };
 
     /**
@@ -567,7 +580,10 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
      */
     bool contains( const ASTERINTEGER &number ) const;
 
-    void updateValuePointer() const {}
+    void updateValuePointer() const {
+        const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )->build(
+            true );
+    }
 
     /**
      * @brief Methode permettant d'obtenir la liste des objets nommés dans la
@@ -618,7 +634,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         }
 
 #endif
-        if ( position >= _objectCount + 1 ) {
+        const auto lastPos = _indirection[_objectCount - 1];
+        if ( position >= lastPos + 1 ) {
             auto obj = JeveuxCollObjValType();
             const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
                 ->_temporaryEndCollectionObject = obj;
@@ -649,7 +666,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         }
 
 #endif
-        if ( position >= _objectCount + 1 ) {
+        const auto lastPos = _indirection[_objectCount - 1];
+        if ( position >= lastPos + 1 ) {
             auto obj = JeveuxCollObjValType();
             const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
                 ->_temporaryEndCollectionObject = obj;
@@ -688,7 +706,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
             AS_ABORT( "Name not in collection: " + name );
         }
         const auto position = curIter->second;
-        if ( position >= _objectCount + 1 ) {
+        const auto lastPos = _indirection[_objectCount - 1];
+        if ( position >= lastPos + 1 ) {
             auto obj = JeveuxCollObjValType();
             const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
                 ->_temporaryEndCollectionObject = obj;
@@ -727,7 +746,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
             AS_ABORT( "Name not in collection: " + name );
         }
         const auto position = curIter->second;
-        if ( position >= _objectCount + 1 ) {
+        const auto lastPos = _indirection[_objectCount - 1];
+        if ( position >= lastPos + 1 ) {
             auto obj = JeveuxCollObjValType();
             const_cast< JeveuxCollectionClass< ValueType, AccessType, MemoryType > * >( this )
                 ->_temporaryEndCollectionObject = obj;
@@ -806,7 +826,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         auto size = this->size();
 
         for ( int i = 1; i <= _objectCount; ++i ) {
-            const auto obj1 = this->operator[]( i );
+            const auto curPos = _indirection[i - 1];
+            const auto obj1 = this->operator[]( curPos );
             if ( !toCompar.contains( i ) ) {
                 return false;
             }
@@ -824,7 +845,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         auto size = this->size();
 
         for ( int i = 1; i <= _objectCount; ++i ) {
-            const auto obj1 = this->operator[]( i );
+            const auto curPos = _indirection[i - 1];
+            const auto obj1 = this->operator[]( curPos );
             ( *obj1 ) *= scal;
         }
 
@@ -891,8 +913,10 @@ bool JeveuxCollectionClass< ValueType, AccessType, MemoryType >::build( bool for
     }
 
     _objectCount = 0;
+    _indirection.clear();
     for ( ASTERINTEGER i = 1; i <= _capacity; ++i ) {
         if ( contains( i ) ) {
+            _indirection.push_back( i );
             ++_objectCount;
 
             if ( _isNamed ) {

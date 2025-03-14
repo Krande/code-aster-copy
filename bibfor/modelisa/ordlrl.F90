@@ -203,7 +203,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
         do ino = 1, nbterm
             nomnoe = zk8(idnoeu+ino-1)
-            in = char8_to_int(nomnoe)
+            in = char8_to_int(nomnoe, noma, "NOEUD")
             noeud_rela(ino) = in
             cmp = zk8(iddl+ino-1)
             icmp = indik8(nomcmp, cmp, 1, nbcmp)

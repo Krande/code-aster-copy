@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,8 @@ matcoeff = PROJ_CHAMP(
 Uimpose = 1.0e-03
 un8 = 1.0 / 8.0
 Relation = {}
-Relation[0] = (30, 10, 9, 6, 7, 23, 26, 27, 29)
-Relation[1] = (31, 23, 26, 27, 29, 14, 18, 20, 17)
+Relation[0] = (28, 9, 8, 5, 6, 21, 24, 25, 27)
+Relation[1] = (29, 21, 24, 25, 27, 12, 16, 18, 15)
 
 Liaison = {}
 for nb in list(Relation.keys()):

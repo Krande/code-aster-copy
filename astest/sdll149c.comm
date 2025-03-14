@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -437,9 +437,9 @@ SQUEL = DEFI_GROUP(
     reuse=SQUEL,
     MAILLAGE=SQUEL,
     CREA_GROUP_NO=(
-        _F(NOM="NO20", NOEUD="NO20"),
-        _F(NOM="NO268", NOEUD="NO268"),
-        _F(NOM="NO10", NOEUD="NO10"),
+        _F(NOM="NO20", NOEUD="N20"),
+        _F(NOM="NO268", NOEUD="N268"),
+        _F(NOM="NO10", NOEUD="N10"),
     ),
 )
 

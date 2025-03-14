@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -311,8 +311,8 @@ TABMO = CREA_TABLE(
 TABM10N12 = CALC_TABLE(
     TABLE=TABMO,
     ACTION=(
-        _F(OPERATION="FILTRE", NOM_PARA="MAILLE", VALE_K="M10"),
-        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", VALE_K="N12"),
+        _F(OPERATION="FILTRE", NOM_PARA="MAILLE", VALE_K="10"),
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", VALE_K="12"),
     ),
 )
 # IMPR_TABLE(UNITE=6, TABLE=TABM10N12)
@@ -339,7 +339,7 @@ TEST_TABLE(TABLE=TABM10N12MAX, NOM_PARA="MFZ", VALE_CALC=125.7293341104791)
 TEST_TABLE(
     TABLE=TAB_MEQ,
     NOM_PARA="MFZ",
-    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M10"), _F(NOM_PARA="NOEUD", VALE_K="N12")),
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="10"), _F(NOM_PARA="NOEUD", VALE_K="12")),
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=125.7293341104791,
     VALE_CALC=125.7293341104791,
@@ -350,7 +350,7 @@ TEST_TABLE(TABLE=TABM10N12MAX, NOM_PARA="MEQ", VALE_CALC=125.7293341104791)
 TEST_TABLE(
     TABLE=TAB_MEQ,
     NOM_PARA="MEQ",
-    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M10"), _F(NOM_PARA="NOEUD", VALE_K="N12")),
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="10"), _F(NOM_PARA="NOEUD", VALE_K="12")),
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=125.7293341104791,
     VALE_CALC=125.7293341104791,

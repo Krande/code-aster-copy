@@ -18,8 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    function char8_to_int(to_convert)
-        character(len=8) :: to_convert
+    function char8_to_int(to_convert, nommai, typent)
+        character(len=8), intent(in) :: to_convert
+        character(len=8), optional, intent(in) :: nommai
+        character(len=*), optional, intent(in) :: typent
         integer :: char8_to_int
     end function char8_to_int
 end interface

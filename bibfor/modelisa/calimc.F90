@@ -175,7 +175,7 @@ subroutine calimc(chargz)
         call jeveuo(macrel//'.LINO', 'L', vi=lino)
         do i = 1, nbndef
             i2 = i+nbndyn
-            nomnol = int_to_char8(lino(i2))
+            nomnol = int_to_char8(lino(i2), mailla, 'NOEUD')
             do j = 1, nec
                 ncmpsd(1+2*nec*(i-1)+2*j-2) = nomnol
                 ncmpsd(1+2*nec*(i-1)+2*j-1) = liscmp(j)
@@ -183,7 +183,7 @@ subroutine calimc(chargz)
         end do
         AS_ALLOCATE(vk8=ncmpin, size=2*nbnoe*nec)
         do i = 1, nbnoe
-            nomnol = int_to_char8(idc_defo(i))
+            nomnol = int_to_char8(idc_defo(i), mailla, 'NOEUD')
             do j = 1, nec
                 ncmpin(1+2*nec*(i-1)+2*j-2) = nomnol
                 ncmpin(1+2*nec*(i-1)+2*j-1) = liscmp(j)
@@ -244,7 +244,7 @@ subroutine calimc(chargz)
                 k = 0
                 nomnoe = ncmpin(1+2*nec*(i-1)+2*j-2)
                 nomcmp = ncmpin(1+2*nec*(i-1)+2*j-1)
-                inoe = char8_to_int(nomnoe)
+                inoe = char8_to_int(nomnoe, mailla, 'NOEUD')
                 if (nomcmp .eq. 'DX') icmp = 1
                 if (nomcmp .eq. 'DY') icmp = 2
                 if (nomcmp .eq. 'DZ') icmp = 3
@@ -294,7 +294,7 @@ subroutine calimc(chargz)
                 imod = nbmdyn+(i-1)*nec+j
                 do i2 = 1, nbnoe
                     nomnoe = ncmpin(1+2*nec*(i2-1))
-                    inoe = char8_to_int(nomnoe)
+                    inoe = char8_to_int(nomnoe, mailla, 'NOEUD')
                     iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                     nueq = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                     do j2 = 1, nec
@@ -322,7 +322,7 @@ subroutine calimc(chargz)
                         vale = zero
                         do i3 = 1, nbnoe
                             nmnoe2 = ncmpin(1+2*nec*(i3-1))
-                            inoe = char8_to_int(nmnoe2)
+                            inoe = char8_to_int(nmnoe2, mailla, 'NOEUD')
                             iddl2 = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                             nueq2 = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                             do j3 = 1, nec

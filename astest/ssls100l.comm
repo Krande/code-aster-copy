@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -370,7 +370,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MXX",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N1"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1"),
 )
 
 TEST_TABLE(
@@ -380,7 +380,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MYY",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N1"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1"),
 )
 
 TEST_TABLE(
@@ -390,7 +390,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MXX",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="2"),
 )
 
 TEST_TABLE(
@@ -400,7 +400,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MYY",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="2"),
 )
 
 TEST_TABLE(
@@ -410,7 +410,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MXX",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N4"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="4"),
 )
 
 TEST_TABLE(
@@ -420,7 +420,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MYY",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N4"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="4"),
 )
 
 TEST_TABLE(
@@ -430,7 +430,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MXX",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N9"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="9"),
 )
 
 TEST_TABLE(
@@ -440,7 +440,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MYY",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N9"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="9"),
 )
 
 TEST_TABLE(
@@ -450,7 +450,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MXX",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N36"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="36"),
 )
 
 TEST_TABLE(
@@ -460,7 +460,7 @@ TEST_TABLE(
     REFERENCE="NON_DEFINI",
     NOM_PARA="MYY",
     TABLE=RELEVE_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N36"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="36"),
 )
 
 #

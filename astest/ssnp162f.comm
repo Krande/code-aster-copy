@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_NO=(
-        _F(NOEUD=("NO2", "NO4", "NO8"), NOM="DROITE"),
-        _F(NOEUD=("NO1", "NO3", "NO7"), NOM="GAUCHE"),
+        _F(NOEUD=("N2", "N4", "N8"), NOM="DROITE"),
+        _F(NOEUD=("N1", "N3", "N7"), NOM="GAUCHE"),
     ),
 )
 

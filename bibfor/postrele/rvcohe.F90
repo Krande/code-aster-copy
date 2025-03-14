@@ -62,12 +62,13 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     character(len=24) :: ncheff, ndesc, valk(7), nomgrn
     character(len=19) :: nchp19
     character(len=16) :: nchsym, tresu
+    character(len=15) :: nrepnd
     character(len=8) :: nresu, nomcmp, nmaich, nomnd
     character(len=4) :: docu
     integer :: acheff, alneud, anumcp, anomcp, nbcmp
     integer :: nbgrpn, nbneud, grel, nbgrel, jceld, amod, mod
-    integer :: j, k, n1, ngrn, iexi
-    aster_logical :: chelok, parMesh
+    integer :: j, k, n1, ngrn, iexi, ier2
+    aster_logical :: chelok, parMesh, lnomnoe
     character(len=24), pointer :: grpn(:) => null()
 !
 !=====================================================================
@@ -188,10 +189,19 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             call wkvect('&&OP0051.NOM.NEUD', 'V V K8', nbneud, alneud)
             call getvtx('ACTION', 'NOEUD', iocc=i, nbval=nbneud, vect=zk8(alneud), &
                         nbret=n1)
+            nrepnd = nmaich//'.NOMNOE'
+            call jeexin(nrepnd, ier2)
+            lnomnoe = .false.
+            if (ier2 .ne. 0) then
+                lnomnoe = .true.
+            end if
             do k = 1, nbneud, 1
                 nomnd = zk8(alneud+k-1)
-                write (6, *) "nomnd ", nomnd
-                n1 = char8_to_int(nomnd)
+                if (lnomnoe) then
+                    call jenonu(jexnom(nrepnd, nomnd), n1)
+                else
+                    n1 = char8_to_int(nomnd)
+                end if
                 if (n1 .eq. 0) then
                     call utmess('A', 'POSTRELE_51', sk=nomnd, si=i)
                     ier = 0

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ DEBUT(
 MAILLAG0 = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MAILLAG0 = DEFI_GROUP(
-    reuse=MAILLAG0, MAILLAGE=MAILLAG0, CREA_GROUP_NO=_F(NOM="GROUP_NO_GN5", NOEUD="NO5")
+    reuse=MAILLAG0, MAILLAGE=MAILLAG0, CREA_GROUP_NO=_F(NOM="GROUP_NO_GN5", NOEUD="N5")
 )
 
 
@@ -46,11 +46,11 @@ MAILLAGE = DEFI_GROUP(
     reuse=MAILLAGE,
     MAILLAGE=MAILLAGE,
     CREA_GROUP_NO=(
-        _F(NOM="NO1", NOEUD="NO1"),
-        _F(NOM="NO3", NOEUD="NO3"),
-        _F(NOM="NO2", NOEUD="NO2"),
-        _F(NOM="NO4", NOEUD="NO4"),
-        _F(NOM="NO5", NOEUD="NO5"),
+        _F(NOM="NO1", NOEUD="N1"),
+        _F(NOM="NO3", NOEUD="N3"),
+        _F(NOM="NO2", NOEUD="N2"),
+        _F(NOM="NO4", NOEUD="N4"),
+        _F(NOM="NO5", NOEUD="N5"),
     ),
 )
 

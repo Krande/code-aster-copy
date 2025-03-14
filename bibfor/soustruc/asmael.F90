@@ -376,14 +376,34 @@ subroutine asmael(ma1, ma2, mag)
     do i = 1, nbno
         zi(iancnf-1+i) = i
     end do
+    call jeexin(ma1//'.NOMNOE', iret)
+    if (iret .eq. 0) then
+        call jecreo(ma1//'.NOMNOE', 'V N K8')
+        call jeecra(ma1//'.NOMNOE', 'NOMMAX', nbn1)
+        do i = 1, nbn1
+            nono = int_to_char8(i)
+            nono = 'N'//nono(1:7)
+            call jecroc(jexnom(ma1//'.NOMNOE', nono))
+        end do
+    end if
     do i = 1, nbn1
-        nono = int_to_char8(i)
+        nono = int_to_char8(i, ma1, 'NOEUD')
         zk8(ianon2-1+i) = nono
     end do
+    call jeexin(ma2//'.NOMNOE', iret)
+    if (iret .eq. 0) then
+        call jecreo(ma2//'.NOMNOE', 'V N K8')
+        call jeecra(ma2//'.NOMNOE', 'NOMMAX', nbn2)
+        do i = 1, nbn2
+            nono = int_to_char8(i)
+            nono = 'N'//nono(1:7)
+            call jecroc(jexnom(ma2//'.NOMNOE', nono))
+        end do
+    end if
     do i = 1, nbn2
-        nono = int_to_char8(i)
+        nono = int_to_char8(i, ma2, 'NOEUD')
         zk8(ianon2-1+nbn1+i) = nono
-        itrou = char8_to_int(nono)
+        itrou = char8_to_int(nono, ma1, 'NOEUD')
         if (itrou .gt. 0) then
             zi(iancnf-1+nbn1+i) = itrou
         end if

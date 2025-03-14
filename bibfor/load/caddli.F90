@@ -221,7 +221,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
-                name_node = int_to_char8(nume_node)
+                name_node = int_to_char8(nume_node, mesh, "NOEUD")
                 cmp_nb = 0
                 cmp_nb_depl = 0
                 cmp_nb_rota = 0
@@ -309,7 +309,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
-                name_node = int_to_char8(nume_node)
+                name_node = int_to_char8(nume_node, mesh, "NOEUD")
                 call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node, &
                             zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)), &
                             coef_type, cmp_nb, cmp_name, cmp_acti, valeType, &

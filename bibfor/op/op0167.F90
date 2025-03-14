@@ -704,7 +704,7 @@ subroutine op0167()
                 cellNameIn = int_to_char8(cellNumeIn)
 
 ! ------------- Create name for new cell
-                cellNameOut = int_to_char8(nbCellIn+iCell)
+                cellNameOut = int_to_char8(nbCellIn+nbCellCrea+1)
 
 ! ------------- Check if name of cell exist
                 cellNumeOut = char8_to_int(cellNameOut)

@@ -511,7 +511,7 @@ TEST_TABLE(
     VALE_CALC=14387.843158606,
     NOM_PARA="VOLUME_CONCERNE",
     TABLE=COUI_MOY,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="LIEU", VALE_K="M254")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="LIEU", VALE_K="254")),
 )
 
 # --------------------------------------------------

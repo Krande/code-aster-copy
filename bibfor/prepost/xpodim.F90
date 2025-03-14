@@ -180,8 +180,13 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
         ASSERT(dime(4) .eq. 0)
         ASSERT(dime(5) .eq. 0)
 !
-!       CREATION DES .TYPMAIL, .COORDO  .CONNEX
+!       CREATION DES .NOMMAI, .NOMNOE, .TYPMAIL, .COORDO  .CONNEX
 !       DU MAILLAGE 2
+        call jecreo(maxfem//'.NOMMAI', 'G N K8')
+        call jeecra(maxfem//'.NOMMAI', 'NOMMAX', nbma2)
+!
+        call jecreo(maxfem//'.NOMNOE', 'G N K8')
+        call jeecra(maxfem//'.NOMNOE', 'NOMMAX', nbno2)
 !
         coord2 = maxfem//'.COORDO'
         call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igeomr)
@@ -245,7 +250,9 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
 !
 !
         if (niv .gt. 1) then
+            write (ifm, *) 'CREATION .NOMAI DE LONGUEUR ', nbma2
             write (ifm, *) 'CREATION .TYPMAIL DE LONGUEUR ', nbma2
+            write (ifm, *) 'CREATION .NOMNOE DE LONGUEUR ', nbno2
             write (ifm, *) 'CREATION .COORDO.VALE DE LONGUEUR ', 3*nbno2
             write (ifm, *) 'CREATION .CONNEX DE LONGUEUR ', ncotot
             write (ifm, *) 'CREATION .GROUPEMA ', nbgma2

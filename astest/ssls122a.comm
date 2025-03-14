@@ -121,7 +121,7 @@ MAIL = DEFI_GROUP(
     MAILLAGE=MAIL,
     CREA_GROUP_MA=(
         _F(NOM="M20", MAILLE="M23"),
-        _F(NOM="SM1", MAILLE="S4"),
+        _F(NOM="SM1", MAILLE="M28"),
         _F(NOM="M19", MAILLE="M22"),
     ),
     CREA_GROUP_NO=(_F(NOM="N1", NOEUD="N1"),),

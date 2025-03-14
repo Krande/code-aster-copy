@@ -86,6 +86,10 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham, &
 !
 !
 !       PREFERENCES POUR LE NOMAGE DES NOUVELLES ENTITES
+        call getvtx(' ', 'PREF_NOEUD_X', scal=prefno(1), nbret=ibid)
+        call getvtx(' ', 'PREF_NOEUD_M', scal=prefno(2), nbret=ibid)
+        call getvtx(' ', 'PREF_NOEUD_P', scal=prefno(3), nbret=ibid)
+        call getvtx(' ', 'PREF_MAILLE_X', scal=prefno(4), nbret=ibid)
         call getvtx(' ', 'PREF_GROUP_CO', scal=nogrfi, nbret=ibid)
 !
 !     ------------------------------------------------------------------

@@ -110,7 +110,7 @@ MAIL = DEFI_GROUP(
         _F(GROUP_MA="MGAUCHE"),
         _F(GROUP_MA="TOUT", NOM="NS", CRIT_NOEUD="MILIEU"),
         _F(GROUP_MA="TOUT", NOM="NK", CRIT_NOEUD="CENTRE"),
-        _F(NOM="NQ95", NOEUD="NQ95"),
+        _F(NOM="NQ95", NOEUD="N598"),
     ),
 )
 

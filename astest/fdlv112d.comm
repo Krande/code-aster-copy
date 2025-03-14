@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -391,7 +391,7 @@ RN253Xi = REST_SPEC_PHYS(
     OPTION="TOUT_TOUT",
 )
 
-REP1i = RECU_FONCTION(INTE_SPEC=RN253Xi, NOEUD_I="N253", NOM_CMP_I="DX")
+REP1i = RECU_FONCTION(INTE_SPEC=RN253Xi, NOEUD_I="253", NOM_CMP_I="DX")
 
 RN253X = REST_SPEC_PHYS(
     MODE_MECA=bamo,
@@ -403,7 +403,7 @@ RN253X = REST_SPEC_PHYS(
     OPTION="TOUT_TOUT",
 )
 
-REP1 = RECU_FONCTION(INTE_SPEC=RN253X, NOEUD_I="N253", NOM_CMP_I="DX")
+REP1 = RECU_FONCTION(INTE_SPEC=RN253X, NOEUD_I="253", NOM_CMP_I="DX")
 
 TEST_FONCTION(
     VALEUR=(

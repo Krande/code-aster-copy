@@ -78,7 +78,7 @@ exc = -epai / 2.0 + enro
 MA1 = DEFI_GROUP(
     reuse=MA1,
     MAILLAGE=MA1,
-    CREA_GROUP_MA=(_F(NOM="AM27", MAILLE="A27"), _F(NOM="M27", MAILLE="M27")),
+    CREA_GROUP_MA=(_F(NOM="AM27", MAILLE="M57"), _F(NOM="M27", MAILLE="M27")),
 )
 
 CA1 = AFFE_CARA_ELEM(

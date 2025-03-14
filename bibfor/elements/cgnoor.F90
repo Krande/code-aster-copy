@@ -151,7 +151,6 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
     call jelira(typp, 'LONMAX', nbmato)
     do im = 1, nbma
         nomma = zk8(jmail-1+im)
-        write (6, *) "nomma ", nomma, char8_to_int(nomma), nbma
         lexist = char8_to_int(nomma) .gt. nbmato
         if (lexist) then
             ier = ier+1

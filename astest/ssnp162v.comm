@@ -37,10 +37,10 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_NO=(
-        _F(NOEUD=("NO2", "NO4", "NO10", "NO8", "NS2", "NS6", "NS10", "NS7"), NOM="DROITE"),
-        _F(NOEUD=("NO1", "NO3", "NO9", "NO7", "NS4", "NS5", "NS12", "NS8"), NOM="GAUCHE"),
-        _F(NOEUD=("NS17"), NOM="NS17"),
-        _F(NOEUD=("NS18"), NOM="NS18"),
+        _F(NOEUD=("N2", "N4", "N10", "N8", "N14", "N18", "N22", "N19"), NOM="DROITE"),
+        _F(NOEUD=("N1", "N3", "N9", "N7", "N16", "N17", "N24", "N20"), NOM="GAUCHE"),
+        _F(NOEUD=("N29"), NOM="NS17"),
+        _F(NOEUD=("N30"), NOM="NS18"),
     ),
 )
 

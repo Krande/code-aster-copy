@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -225,56 +225,53 @@ TEST_TABLE(
     VALE_CALC=-4.9981316624925e06,
     NOM_PARA="SIXX",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N1"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1"),
 )
 
 TEST_TABLE(
-    VALE_CALC=5.7570926620307e05,
-    NOM_PARA="SIYY",
-    TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N1"),
+    VALE_CALC=5.7570926620307e05, NOM_PARA="SIYY", TABLE=T1, FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1")
 )
 
 TEST_TABLE(
     VALE_CALC=-5.6946542347666e06,
     NOM_PARA="SIZZ",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N1"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1"),
 )
 
 TEST_TABLE(
     VALE_CALC=-3.7539887511992e06,
     NOM_PARA="SIXY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N1"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1"),
 )
 
 TEST_TABLE(
     VALE_CALC=-5.4649031185508e06,
     NOM_PARA="SIXX",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N169"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="169"),
 )
 
 TEST_TABLE(
     VALE_CALC=-5.3023593071806e05,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N169"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="169"),
 )
 
 TEST_TABLE(
     VALE_CALC=-6.1446033365353e06,
     NOM_PARA="SIZZ",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N169"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="169"),
 )
 
 TEST_TABLE(
     VALE_CALC=1.5100760079765e06,
     NOM_PARA="SIXY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N169"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="169"),
 )
 
 FIN()

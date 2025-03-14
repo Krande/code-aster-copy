@@ -402,7 +402,15 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
         call jedup1(k81//'.ADAPTATION', bas2, k82//'.ADAPTATION')
         call jedup1(k81//'.DIME', bas2, k82//'.DIME')
+        call jeexin(k81//'.NOMNOE', iexi)
+        if (iexi .ne. 0) then
+            call jedup1(k81//'.NOMNOE', bas2, k82//'.NOMNOE')
+        end if
         call cpclma(k81, k82, 'GROUPENO', bas2)
+        call jeexin(k81//'.NOMMAI', iexi)
+        if (iexi .ne. 0) then
+            call jedup1(k81//'.NOMMAI', bas2, k82//'.NOMMAI')
+        end if
         call jedup1(k81//'.TYPMAIL', bas2, k82//'.TYPMAIL')
         call jedup1(k81//'.CONNEX', bas2, k82//'.CONNEX')
         call cpclma(k81, k82, 'GROUPEMA', bas2)

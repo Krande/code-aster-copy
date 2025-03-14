@@ -32,13 +32,13 @@
 
 void exportMeshReaderToPython( py::module_ &mod ) {
 
-    py::class_< MeshReader, MeshReader::MeshReaderPtr >( mod, "MeshReader" )
-        .def( py::init( &initFactoryPtr< MeshReader > ) )
-        .def( "__pickling_disabled__", disable_pickling< MeshReader >() )
+    py::class_< MeshReader, MeshReader::MeshReaderPtr > c1( mod, "MeshReader" );
+    c1.def( py::init( &initFactoryPtr< MeshReader > ) );
+    c1.def( "__pickling_disabled__", disable_pickling< MeshReader >() );
 
 #ifdef ASTER_HAVE_MED
-        .def( "readMeshFromMedFile", &MeshReader::readMeshFromMedFile,
-              R"(
+    c1.def( "readMeshFromMedFile", &MeshReader::readMeshFromMedFile,
+            R"(
 Open med file
 
 Arguments:
@@ -47,10 +47,10 @@ Arguments:
     mesh_name (str): mesh name (optional)
     verbosity (int): verbosity (optional)
             )",
-              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
-              py::arg( "verbosity" ) = 0 )
-        .def( "readIncompleteMeshFromMedFile", &MeshReader::readIncompleteMeshFromMedFile,
-              R"(
+            py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
+            py::arg( "verbosity" ) = 0 );
+    c1.def( "readIncompleteMeshFromMedFile", &MeshReader::readIncompleteMeshFromMedFile,
+            R"(
       Open med file
       
       Arguments:
@@ -59,10 +59,10 @@ Arguments:
           mesh_name (str): mesh name (optional)
           verbosity (int): verbosity (optional)
                   )",
-              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
-              py::arg( "verbosity" ) = 0 )
-        .def( "readParallelMeshFromMedFile", &MeshReader::readParallelMeshFromMedFile,
-              R"(
+            py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
+            py::arg( "verbosity" ) = 0 );
+    c1.def( "readParallelMeshFromMedFile", &MeshReader::readParallelMeshFromMedFile,
+            R"(
       Open med file
       
       Arguments:
@@ -71,7 +71,7 @@ Arguments:
           mesh_name (str): mesh name (optional)
           verbosity (int): verbosity (optional)
                   )",
-              py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
-              py::arg( "verbosity" ) = 0 );
+            py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
+            py::arg( "verbosity" ) = 0 );
 #endif
 };

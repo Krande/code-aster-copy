@@ -322,12 +322,12 @@ subroutine lect58(fileUnit, &
         if (label .eq. 0) then
             ligne = rec(irec)
             labk8 = ligne(32:41)
-            label = char8_to_int(labk8)
+            label = char8_to_int(labk8, meshAst, "NOEUD")
         else
 ! PRE_IDEAS RAJOUTE UN 'N' DEVANT LE NUMERO DU NOEUD (VOIR ECRNEU)
             call codnop(labk8, prfnoe, 1, 1)
             call codent(label, 'G', labk8(2:8))
-            label = char8_to_int(labk8)
+            label = char8_to_int(labk8, meshAst, "NOEUD")
         end if
         zi(lcorr-1+nbmesu) = label
 !

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -486,11 +486,9 @@ Vlff = POST_RELEVE_T(
     )
 )
 
-TEST_TABLE(
-    VALE_CALC=2.10962e-3, NOM_PARA="V1", TABLE=Vlff, FILTRE=_F(NOM_PARA="NOEUD", VALE_K="NO1")
-)
+TEST_TABLE(VALE_CALC=2.10962e-3, NOM_PARA="V1", TABLE=Vlff, FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1"))
 
-TEST_TABLE(VALE_CALC=1.0, NOM_PARA="V2", TABLE=Vlff, FILTRE=_F(NOM_PARA="NOEUD", VALE_K="NO1"))
+TEST_TABLE(VALE_CALC=1.0, NOM_PARA="V2", TABLE=Vlff, FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1"))
 
 TEST_RESU(
     RESU=(

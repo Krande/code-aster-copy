@@ -474,11 +474,11 @@ subroutine lridea(fileUnit, &
 !
             nomno = 'NXXXXXXX'
             call codent(inoide, 'G', nomno(2:8))
-            inoast = char8_to_int(nomno)
+            inoast = char8_to_int(nomno, meshAst, 'NOEUD')
 !  ON ESSAIE DE RECUPERER LE NUMERO DU NOEUD DIRECTEMENT
 !  SI ON NE LE TROUVE PAS VIA NXXXX
             if (inoast .eq. 0) then
-                nomnob = int_to_char8(inoide)
+                nomnob = int_to_char8(inoide, meshAst, 'NOEUD')
                 if (nomnob .ne. nomnoa) then
                     call utmess('F', 'PREPOST3_40')
                 end if
@@ -529,7 +529,7 @@ subroutine lridea(fileUnit, &
             if (ielide .eq. -1) goto 150
             cellName = 'MXXXXXXX'
             call codent(ielide, 'G', cellName(2:8))
-            cellNume = char8_to_int(cellName)
+            cellNume = char8_to_int(cellName, meshAst, 'MAILLE')
 !  ON ESSAIE DE RECUPERER LE NUMERO DE LA MAILLE DIRECTEMENT
 !  SI ON NE LE TROUVE PAS VIA MXXXX
             if (cellNume .eq. 0) cellNume = ielide

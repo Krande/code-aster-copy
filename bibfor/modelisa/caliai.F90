@@ -153,7 +153,7 @@ subroutine caliai(fonree, charge, phenom)
         call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=v_trav, &
                     nbret=nno)
         do ino = 1, nno
-            iret = char8_to_int(v_trav(ino))
+            iret = char8_to_int(v_trav(ino), noma, "NOEUD")
             if (iret .eq. 0) then
                 valk(1) = motcle
                 valk(2) = v_trav(ino)
@@ -241,7 +241,7 @@ subroutine caliai(fonree, charge, phenom)
                 do k = 1, n
                     in = zi(jgr0-1+k)
                     indnoe = indnoe+1
-                    nomnoe = int_to_char8(in)
+                    nomnoe = int_to_char8(in, noma, "NOEUD")
                     liste2(indnoe) = nomnoe
                     if (typco2 .eq. 'FONC') then
                         valpar(1) = vvale(3*(in-1)+1)
@@ -281,7 +281,7 @@ subroutine caliai(fonree, charge, phenom)
                             nbno, liste2, n)
                 if (typco2 .eq. 'FONC') then
                     do k = 1, n
-                        in = char8_to_int(liste2(k))
+                        in = char8_to_int(liste2(k), noma, "NOEUD")
                         valpar(1) = vvale(3*(in-1)+1)
                         valpar(2) = vvale(3*(in-1)+2)
                         valpar(3) = vvale(3*(in-1)+3)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -170,6 +170,7 @@ MODEIDE = EXTR_MODE(FILTRE_MODE=_F(MODE=MODMESU, NUME_MODE=_nume_mode))
 # ********************************
 
 MAILSUP = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
+MAILSUP.addNodeLabels(["NO1", "NO2", "NO3", "NO4", "NO5", "NO6", "NO7", "NO8", "NO9", "NO10"])
 
 MODLSUP = AFFE_MODELE(
     MAILLAGE=MAILSUP,
@@ -255,12 +256,14 @@ MAILCOND = DEFI_MAILLAGE(
     DEFI_SUPER_MAILLE=_F(MACR_ELEM=SSEXP, SUPER_MAILLE="SUMAIL"),
     DEFI_NOEUD=_F(TOUT="OUI", INDEX=(1, 0, 1, 8)),
 )
+MAILCOND.addNodeLabels(["NO9", "NO8", "NO7"])
 
 # **********************************
 # CREATION DU MODELE COUPLE (MESURE + MODIFICATION)
 # **********************************
 
 MAILX = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=24)
+MAILX.addNodeLabels(["NO7", "NO8", "NO9"])
 
 MAILCPL = ASSE_MAILLAGE(MAILLAGE_1=MAILCOND, MAILLAGE_2=MAILX, OPERATION="SOUS_STR")
 
@@ -321,6 +324,7 @@ MODERETR = DEPL_INTERNE(DEPL_GLOBAL=MODECPL, SUPER_MAILLE="SUMAIL")
 # CREATION MODELE FICTIF DE L INTERFACE
 
 MAILINT = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=26)
+MAILINT.addNodeLabels(["NO7", "NO8", "NO9"])
 
 MODLINT = AFFE_MODELE(
     MAILLAGE=MAILINT, AFFE=_F(GROUP_MA="VISUAL", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR")

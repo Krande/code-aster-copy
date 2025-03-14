@@ -244,19 +244,27 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
     const bool incompleteMesh = ( iM ? true : false );
 
     auto coordsToFill = toReturn->getCoordinates();
+    if ( coordsToFill->exists() ) {
+        throw std::runtime_error( "not empty" );
+    }
     auto coordValues = coordsToFill->getValues();
 
     // Read mesh from file
-    auto curMeshId = 0;
+    auto curMeshId = -1;
     if ( meshName != "" ) {
         const auto meshNb = fr.getMeshNumber();
         for ( int meshId = 0; meshId < meshNb; ++meshId ) {
-            const auto curMesh = fr.getMesh( curMeshId );
+            const auto curMesh = fr.getMesh( meshId );
             if ( curMesh->getName() == meshName ) {
                 curMeshId = meshId;
                 break;
             }
         }
+        if ( curMeshId == -1 ) {
+            throw std::runtime_error( "Mesh " + meshName + " not found" );
+        }
+    } else {
+        curMeshId = 0;
     }
     const auto curMesh = fr.getMesh( curMeshId );
     const auto seq = curMesh->getSequence( 0 );
@@ -379,15 +387,20 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
     VectorLong cellFam( size, 0 );
     auto cellFamStart = &cellFam[0];
     cellType->allocate( size );
-    int count = 0, cumElem = 1, totalCount = 0;
+    int count = 0, cumElem = 1, totalCount = 0, count2 = 0;
     ASTERINTEGER *connexPtr = nullptr;
     for ( const auto medType : cellTypesSorted ) {
-        const auto &cellNb = elemNbAndSizeVec[count * 2];
-        const auto &nbNodesForGeoT = elemNbAndSizeVec[count * 2 + 1];
+        const auto &cellNb = elemNbAndSizeVec[count2 * 2];
+        const auto &nbNodesForGeoT = elemNbAndSizeVec[count2 * 2 + 1];
+        ++count2;
+        if ( cellNb == 0 )
+            continue;
 
         // Collection allocation
         for ( int cellId = 0; cellId < cellNb; ++cellId ) {
-            connectivity->fastAllocateObject( cumElem + cellId, nbNodesForGeoT );
+            if ( nbNodesForGeoT != 0 ) {
+                connectivity->fastAllocateObject( cumElem + cellId, nbNodesForGeoT );
+            }
         }
         // Get contiguous collection start
         if ( count == 0 ) {
@@ -407,7 +420,7 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
 
         // Fill cell type
         auto cellTypePtr = &( ( *cellType )[cumElem - 1] );
-        const auto &curAsterType = asterCellTypes[count];
+        const auto &curAsterType = asterCellTypes[count2 - 1];
         std::fill( cellTypePtr, cellTypePtr + cellNb, curAsterType );
 
         // Get cell family
@@ -490,7 +503,8 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         }
     }
 
-    toReturn->buildInformations( dim );
+    const auto dim2 = ( dim == 3 ? 3 : 2 );
+    toReturn->buildInformations( dim2 );
     toReturn->buildNamesVectors();
     toReturn->show( verbosity );
 }

@@ -155,15 +155,15 @@ for LeQuadrant in [0, 1, 2, 3, 4]:
 
     dgrd = pi / 180.0
     Valeurs = [
-        ("S0x1", "Sx1", Alpha * dgrd),
-        ("S0y1", "Sy1", Alpha * dgrd),
-        ("S0z1", "Sz1", Alpha * dgrd),
-        ("S0x1y1z1", "Sx1y1z1", Alpha * dgrd),
+        ("S0x1", "1", Alpha * dgrd),
+        ("S0y1", "2", Alpha * dgrd),
+        ("S0z1", "3", Alpha * dgrd),
+        ("S0x1y1z1", "4", Alpha * dgrd),
         #
-        ("S0x2", "Sx2", -0.5 * pi),
-        ("S0y2", "Sy2", -0.5 * pi),
-        ("S0z2", "Sz2", 0.5 * pi),
-        ("S0x2y2z2", "Sx2y2z2", 0.5 * pi),
+        ("S0x2", "5", -0.5 * pi),
+        ("S0y2", "6", -0.5 * pi),
+        ("S0z2", "7", 0.5 * pi),
+        ("S0x2y2z2", "8", 0.5 * pi),
     ]
 
     # Test sur la TABLE et sur le CHAMP

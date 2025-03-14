@@ -117,7 +117,7 @@ subroutine orilma(noma, ndim, listCellNume, nbCell, norien, &
     hasSkin2D = .false.
     do iCell = 1, nbCell
         cellNume = listCellNume(iCell)
-        nomail = int_to_char8(cellNume)
+        nomail = int_to_char8(cellNume, noma, 'MAILLE')
         ori3(iCell) = nomail
         ori1(iCell) = zi(p2+cellNume+1-1)-zi(p2+cellNume-1)
         ori2(iCell) = zi(p2+cellNume-1)

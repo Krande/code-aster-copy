@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ MA = LIRE_MAILLAGE(FORMAT="ASTER", INFO=2)
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_MA=(_F(NOM="SIANA", MAILLE="SIANA"), _F(NOM="SNCNCC", MAILLE="SNCNCC")),
+    CREA_GROUP_MA=(_F(NOM="SIANA", MAILLE="M2"), _F(NOM="SNCNCC", MAILLE="M9")),
 )
 
 MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"))

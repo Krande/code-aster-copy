@@ -5,7 +5,7 @@
  * @file Mesh.h
  * @brief Fichier entete de la classe Mesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -39,10 +39,18 @@
  */
 class Mesh : public BaseMesh {
   protected:
+    /** @brief Pointeur de nom Jeveux '.NOMNOE' */
+    NamesMapChar8 _nameOfNodes;
+    /** @brief Pointeur de nom Jeveux '.NOMMAIL' */
+    NamesMapChar8 _nameOfCells;
+
     /**
      * @brief Constructeur
      */
-    Mesh( const std::string name, const std::string type ) : BaseMesh( name, type ) {};
+    Mesh( const std::string name, const std::string type )
+        : BaseMesh( name, type ),
+          _nameOfNodes( getName() + ".NOMNOE" ),
+          _nameOfCells( getName() + ".NOMMAI" ) {};
 
   public:
     /**
@@ -54,12 +62,18 @@ class Mesh : public BaseMesh {
     /**
      * @brief Constructeur
      */
-    Mesh() : BaseMesh( ResultNaming::getNewResultName(), "MAILLAGE" ) {};
+    Mesh()
+        : BaseMesh( ResultNaming::getNewResultName(), "MAILLAGE" ),
+          _nameOfNodes( getName() + ".NOMNOE" ),
+          _nameOfCells( getName() + ".NOMMAI" ) {};
 
     /**
      * @brief Constructeur
      */
-    Mesh( const std::string name ) : BaseMesh( name, "MAILLAGE" ) {};
+    Mesh( const std::string name )
+        : BaseMesh( name, "MAILLAGE" ),
+          _nameOfNodes( getName() + ".NOMNOE" ),
+          _nameOfCells( getName() + ".NOMMAI" ) {};
 
     bool hasGroupOfCells( const std::string &name, const bool local = false ) const;
 
@@ -164,6 +178,14 @@ class Mesh : public BaseMesh {
     MeshPtr convertToQuadratic( const ASTERINTEGER info = 1 );
 
     MeshPtr convertToBiQuadratic( const ASTERINTEGER info = 1 );
+
+    void addNodeLabels( const VectorString &labels );
+
+    void addCellLabels( const VectorString &labels );
+
+    std::string getNodeName( const ASTERINTEGER &index ) const;
+
+    std::string getCellName( const ASTERINTEGER &index ) const;
 };
 
 /**
