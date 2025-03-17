@@ -30,29 +30,29 @@
 #define MAX_FACE 6
 !
 ! --- Maximum number of componants for scalar cell function (order=3 and dim=3)
-#define MSIZE_CELL_SCAL 84
+#define MSIZE_CELL_SCAL 20
 ! --- Maximum number of componants for scalar face function (order=2 and dim=3)
-#define MSIZE_FACE_SCAL 21
+#define MSIZE_FACE_SCAL 6
 ! --- Maximum number of total dofs for a HHO function (dim=3,  and order=2 for a face)
 ! --- Max size for a hexahedron:   6 (nb faces) * 6 (face dofs)
-#define MSIZE_FDOFS_SCAL 126
+#define MSIZE_FDOFS_SCAL 36
 ! --- Maximum number of total dofs for a HHO function (dim=3, order=2 for a cell
 ! --- and order=2 for a face)
 ! --- Max size for a hexahedron:  10 (cell dofs) + 6 (nb faces) * 6 (face dofs)
-#define MSIZE_TDOFS_SCAL 210
+#define MSIZE_TDOFS_SCAL 46
 !
 ! --- vector function
 ! --- Maximum number of componants for vector cell function (order=3 and dim=3)
-#define MSIZE_CELL_VEC 252
+#define MSIZE_CELL_VEC 60
 ! --- Maximum number of componants for vector face function (order=2 and dim=3)
-#define MSIZE_FACE_VEC 63
+#define MSIZE_FACE_VEC 18
 ! --- Maximum number of total dofs for vector faces (dim=3,  and order=2 for a face)
 ! --- Max size for a hexahedron:   6 (nb faces) * 6 (face dofs)
-#define MSIZE_FDOFS_VEC 378
+#define MSIZE_FDOFS_VEC 108
 ! --- Maximum number of total dofs for a HHO function (dim=3, order=2 for a cell
 ! --- and order=2 for a face)
 ! --- Max size for a hexahedron:  30 (cell dofs) + 6 (nb faces) * 18 (face dofs)
-#define MSIZE_TDOFS_VEC 630
+#define MSIZE_TDOFS_VEC 138
 
 ! --- Maximum number of total dofs for a HHO function (dim=3, order=2 for a cell
 ! --- and order=2 for a face)
@@ -64,11 +64,11 @@
 !
 ! --- matrix function
 ! --- Maximum number of componants for matrix cell function (order=3 and dim=3)
-#define MSIZE_CELL_MAT 756
+#define MSIZE_CELL_MAT 180
 !
 ! --- maximum number of quadrature points
-#define MAX_QP 1000
+#define MAX_QP 115
 ! --- maximum number of quadrature points on a face QUAD = 16
 #define MAX_QP_FACE 32
 ! --- maximum number of quadrature points on a cell HEXA = 64
-#define MAX_QP_CELL 1000
+#define MAX_QP_CELL 115
