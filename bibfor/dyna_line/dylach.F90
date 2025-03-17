@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dylach(nomo, mate, mateco, carele, lischa, numedd, &
-                  vediri, veneum, vevoch, vassec)
 !
+subroutine dylach(modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ, &
+                  numedd, vediri, veneum, vevoch, vassec)
 !
     implicit none
+!
 #include "jeveux.h"
 #include "asterfort/asvepr.h"
 #include "asterfort/jedema.h"
@@ -28,9 +28,8 @@ subroutine dylach(nomo, mate, mateco, carele, lischa, numedd, &
 #include "asterfort/veassc.h"
 #include "asterfort/vechms.h"
 #include "asterfort/vedimd.h"
-    character(len=8) :: nomo
-    character(len=24) :: mate, mateco, carele
-    character(len=19) :: lischa
+!
+    character(len=*) :: modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ
     character(len=*) :: numedd
     character(len=19) :: vediri, veneum, vevoch, vassec
 !
@@ -55,7 +54,9 @@ subroutine dylach(nomo, mate, mateco, carele, lischa, numedd, &
 !
 !
 !
-!
+    character(len=8) :: nomo
+    character(len=24) :: mate, mateco, carele
+    character(len=19) :: lischa
     real(kind=8) :: partps(3), instan
     character(len=19) :: k19bid
 !
@@ -65,6 +66,11 @@ subroutine dylach(nomo, mate, mateco, carele, lischa, numedd, &
 !
 ! --- INITIALISATIONS
 !
+    nomo = modelZ
+    mate = materFieldZ
+    mateco = materCodeZ
+    carele = caraElemZ
+    lischa = listLoadZ
     instan = 0.d0
     partps(1) = instan
     partps(2) = 0.d0

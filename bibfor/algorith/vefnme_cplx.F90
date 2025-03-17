@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vefnme_cplx(option, base, model, mate, carele, &
-                       compor, nh, ligrelz, varicomz, &
+subroutine vefnme_cplx(option, base, &
+                       model, mate, carael, &
+                       comporZ, nh, ligrelz, varicomz, &
                        sigmaz, strxz, deplz, vecelz)
 !
     use HHO_precalc_module, only: hhoAddInputField
@@ -50,11 +51,11 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=16), intent(in) :: option
     character(len=1), intent(in) :: base
     character(len=8), intent(in) :: model
-    character(len=24), intent(in) :: carele
+    character(len=8), intent(in) :: carael
     character(len=24), intent(in) :: mate
     character(len=*), intent(in) :: ligrelz
     integer, intent(in) :: nh
-    character(len=19), intent(in) :: compor
+    character(len=*), intent(in) :: comporZ
     character(len=*), intent(in) :: sigmaz
     character(len=*), intent(in) :: varicomz
     character(len=*), intent(in) :: strxz
@@ -94,9 +95,9 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=19) :: lchout(nbout), lchin(nbxin)
 !
     character(len=8) :: k8bla, mesh
-    character(len=8) :: newnom, nomgd, carael
+    character(len=8) :: newnom, nomgd
     character(len=19) :: numhar, ligrel_local, ligrel
-    character(len=19) :: chgeom, chcara(18), vecele, veceli
+    character(len=19) :: chgeom, chcara(18), vecele, veceli, compor
     character(len=19) :: lchinr(nbxin), lchini(nbxin)
     character(len=16) :: optio2
     integer :: iret, inddec(nbxin), iexi, k, nbin
@@ -115,12 +116,12 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 !
 ! - Initializations
 !
-    carael = carele(1:8)
     sigma = sigmaz
     varicom = varicomz
     strx = strxz
     depl = deplz
     ligrel = ligrelz
+    compor = comporZ
     newnom = '.0000000'
     numhar = '&&VEFNME.NUME_HARM'
     k8bla = ' '
@@ -161,7 +162,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 !
 ! - <CARTE> for structural elements
 !
-    call mecara(carele(1:8), chcara)
+    call mecara(carael, chcara)
 !
 ! - <CARTE> for Fourier mode
 !
