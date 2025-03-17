@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
-                      lpain, lpaout, num, maa)
-        character(len=*) :: moint
-        character(len=*) :: mate
-        character(len=1) :: dir
-        character(len=24) :: ligrmo
-        character(len=24) :: lchin(1)
-        character(len=8) :: lpain(1)
-        character(len=8) :: lpaout(1)
-        character(len=14) :: num
-        character(len=19) :: maa
+    subroutine calmaa(modelInterfaceZ, dir, &
+                      lchin, lpain, numeDof, matrAsse)
+        character(len=*), intent(in) :: modelInterfaceZ
+        character(len=1), intent(in) :: dir
+        character(len=24), intent(in) :: lchin(1)
+        character(len=8), intent(in) :: lpain(1)
+        character(len=14), intent(out) :: numeDof
+        character(len=19), intent(out) :: matrAsse
     end subroutine calmaa
 end interface

@@ -26,6 +26,7 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/GetIOField.h"
 #include "asterfort/jelira.h"
@@ -66,8 +67,7 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4), parameter :: phenom = "MECA"
-    integer :: nb_field, nb_field_resu, nbLoad
+    integer :: nb_field, nb_field_resu
     integer :: i_field, i_field_resu
     integer, pointer :: xfem_cont(:) => null()
     aster_logical :: l_find, l_xfem_cohe
@@ -80,13 +80,10 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
     nb_field = ds_inout%nb_field
     listLoadResu = ds_inout%listLoadResu
 
-! - Special copy of list of loads for save in results datastructure
-    call getNbLoadsFromList(listLoad, nbLoad)
-    call creaListLoad(phenom, 'G', nbLoad, listLoadResu)
-    call copyListLoad(phenom, listLoad, listLoadResu)
-!
+! - Copy of list of loads for save in results datastructure
+    call copisd('LISTE_CHARGES', 'G', listLoad, listLoadResu)
+
 ! - Select fields depending on active functionnalities
-!
     call nmetac(list_func_acti, sddyna, ds_contact, ds_inout)
 !
 ! - Set localization for cohesive XFEM fields

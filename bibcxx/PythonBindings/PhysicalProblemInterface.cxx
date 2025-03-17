@@ -3,7 +3,7 @@
  * @brief Interface python de PhysicalProblem
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,7 +36,6 @@ void exportPhysicalProblemToPython( py::module_ &mod ) {
     c1.def( py::init( &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr > ) );
     c1.def( py::init( &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr,
                                        ElementaryCharacteristicsPtr > ) );
-
     c1.def( define_pickling< PhysicalProblem >() );
 
     c1.def( "getModel", &PhysicalProblem::getModel, R"(
@@ -189,6 +188,20 @@ Arguments:
     // -----------------------------------------------------------------------------------------
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
+    c1.def( "setVirtualSlavCell", &PhysicalProblem::setVirtualSlavCell, R"(
+        Set virtual cells from contact definition
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
+                )",
+            py::arg( "contact" ) );
+    c1.def( "setVirtualCell", &PhysicalProblem::setVirtualCell, R"(
+        Set virtual cells from contact pairing
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
+                )",
+            py::arg( "virtualCell" ) );
 #ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );
     addParallelThermalLoadToInterface( c1 );

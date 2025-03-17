@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ssrige(nomu)
+subroutine ssrige(macrElem)
 !
     implicit none
 !
@@ -40,7 +40,7 @@ subroutine ssrige(nomu)
 #include "asterfort/ssriu1.h"
 #include "asterfort/ssriu2.h"
 !
-    character(len=8) :: nomu
+    character(len=8), intent(in) :: macrElem
 ! ----------------------------------------------------------------------
 !     BUT: TRAITER LE MOT CLEF "RIGI_MECA" DE L'OPERATEUR MACR_ELEM_STAT
 !          CALCULER LA MATRICE DE RIGIDITE CONDENSEE DU MACR_ELEM_STAT.
@@ -52,13 +52,16 @@ subroutine ssrige(nomu)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=24), parameter :: renumRCMK = "RCMK"
     integer :: nbLoad
+    integer, parameter :: nbMatrElem = 1
+    character(len=24), pointer :: listMatrElem(:) => null()
     real(kind=8) :: rtbloc
     character(len=1), parameter :: base = 'V'
     character(len=19), parameter :: matrElem = '&&MATEL'
     character(len=19), parameter :: comporMult = ' '
     character(len=8) :: model, caraElem, mate
-    character(len=14) :: nu
+    character(len=14) :: numeDof
     character(len=19) :: matrAsse
     character(len=24) :: mateco
     real(kind=8) :: time
@@ -67,20 +70,20 @@ subroutine ssrige(nomu)
     real(kind=8), pointer :: varm(:) => null()
     character(len=8), pointer :: refm(:) => null()
     character(len=24), pointer :: listLoadK24(:) => null()
-    character(len=24) :: listElemCalc
+    character(len=24) :: modelLigrel
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 
-    nu = nomu
-    matrAsse = nomu//'.RIGIMECA'
+    numeDof = macrElem
+    matrAsse = macrElem//'.RIGIMECA'
 !
-    call jeveuo(nomu//'.DESM', 'L', vi=desm)
+    call jeveuo(macrElem//'.DESM', 'L', vi=desm)
     nbLoad = desm(6)
     ASSERT(nbLoad .le. 1)
 !
-    call jeveuo(nomu//'.REFM', 'E', vk8=refm)
+    call jeveuo(macrElem//'.REFM', 'E', vk8=refm)
     model = refm(1)
     caraElem = refm(4)
     mate = refm(3)
@@ -90,7 +93,7 @@ subroutine ssrige(nomu)
         call rcmfmc(mate, mateco, l_ther_=ASTER_FALSE)
     end if
 !
-    call jeveuo(nomu//'.VARM', 'L', vr=varm)
+    call jeveuo(macrElem//'.VARM', 'L', vr=varm)
     time = varm(2)
 
     if (nbLoad .ne. 0) then
@@ -98,40 +101,44 @@ subroutine ssrige(nomu)
         AS_ALLOCATE(vk24=listLoadK24, size=nbLoad)
         listLoadK24(1) = refm(10)
     end if
-!
-!   -- CALCULS MATRICES ELEMENTAIRES DE RIGIDITE:
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk=listElemCalc)
+
+! - Elementary matrices for rigidity
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
     call merime(model, nbLoad, listLoadK24, mate, mateco, caraElem, &
-                time, comporMult, matrElem, modeFourier, base, listElemCalc)
-!
-!   -- NUME_DDL:
-    call numddl(nu, 'GG', 1, matrElem)
+                time, comporMult, matrElem, modeFourier, base, modelLigrel)
+
+! - Get list of LIGREL from elementary matrices
+    AS_ALLOCATE(vk24=listMatrElem, size=nbMatrElem)
+    listMatrElem(1) = matrElem
+
+! - Create numbering from elementary matrix
+    call numddl(numeDof, renumRCMK, 'GG', nbMatrElem, listMatrElem)
+    AS_DEALLOCATE(vk24=listMatrElem)
 !
 !   -- ON MET LES DDLS INTERNES AVANT LES EXTERNES
 !      AVANT DE CONSTRUIRE LE PROFIL :
-    call ssriu1(nomu)
-    call promor(nu, 'G')
+    call ssriu1(macrElem)
+    call promor(numeDof, 'G')
     rtbloc = varm(1)
-    call smosli(nu//'.SMOS', nu//'.SLCS', 'G', rtbloc)
+    call smosli(numeDof//'.SMOS', numeDof//'.SLCS', 'G', rtbloc)
 !
 !   -- ASSEMBLAGE:
-    call assmam('G', matrAsse, 1, matrElem, [1.d0], nu, 'ZERO', 1)
+    call assmam('G', matrAsse, 1, matrElem, [1.d0], numeDof, 'ZERO', 1)
 
 !   -- IL FAUT COMPLETER LA MATRICE SI LES CALCULS SONT DISTRIBUES:
     call sdmpic('MATR_ASSE', matrAsse)
 !
-!
-    call ssriu2(nomu)
+    call ssriu2(macrElem)
 !
 !   -- MISE A JOUR DE .REFM(5) ET REFM(6)
-    refm(5) = nu(1:8)
+    refm(5) = macrElem
     refm(6) = 'OUI_RIGI'
 !
 !
-    call jedetr(nomu//'      .NEWN')
-    call jedetr(nomu//'      .OLDN')
-    call jedetr(nu//'     .ADNE')
-    call jedetr(nu//'     .ADLI')
+    call jedetr(macrElem//'      .NEWN')
+    call jedetr(macrElem//'      .OLDN')
+    call jedetr(numeDof//'     .ADNE')
+    call jedetr(numeDof//'     .ADLI')
     call jedetr(matrAsse(1:19)//'.LILI')
     call detrsd('MATR_ELEM', matrElem)
     AS_DEALLOCATE(vk24=listLoadK24)

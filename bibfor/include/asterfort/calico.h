@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine calico(sdcont, mesh, model, model_ndim_, cont_form,&
-                      ligret)
-        character(len=8), intent(in) :: sdcont
-        character(len=8), intent(in) :: mesh
-        character(len=8), intent(in) :: model
+    subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
+                      slavElemLigr, lLineRela, listRela)
+        character(len=8), intent(in) :: sdcont, mesh, model
         integer, intent(in) :: model_ndim_
         integer, intent(in) :: cont_form
-        character(len=19), intent(in) :: ligret
+        character(len=19), intent(in) :: slavElemLigr
+        aster_logical, intent(out) :: lLineRela
+        character(len=19), intent(out) :: listRela
     end subroutine calico
 end interface

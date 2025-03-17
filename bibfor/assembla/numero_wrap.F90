@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,23 +15,24 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine numero_wrap(nume_ddlz, base, &
-                       old_nume_ddlz, modelocz, &
-                       modelz, list_loadz)
+! person_in_charge: nicolas.sellenet at edf.fr
+!
+subroutine numero_wrap(numeDofZ, base, &
+                       modelZ, listLoadZ, &
+                       contactZ)
+!
+    use listLoad_module
+    use contactAlgo_module
 !
     implicit none
 !
+#include "asterfort/addModelLigrel.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/numero.h"
 !
-! person_in_charge: nicolas.sellenet at edf.fr
-!
-    character(len=*), intent(inout) :: nume_ddlz
+    character(len=*), intent(inout) :: numeDofZ
     character(len=2), intent(in) :: base
-    character(len=*), intent(in) :: modelz
-    character(len=*), intent(in) :: list_loadz
-    character(len=*), intent(in) :: old_nume_ddlz
-    character(len=*), intent(in) :: modelocz
+    character(len=*), intent(in) :: modelZ, listLoadZ, contactZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,25 +42,40 @@ subroutine numero_wrap(nume_ddlz, base, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  nume_ddl       : name of numbering object (NUME_DDL)
+! IO  numeDof        : name of numbering object (NUME_DDL)
 ! In  base           : JEVEUX base to create objects
 !                      base(1:1) => NUME_EQUA objects
 !                      base(2:2) => NUME_DDL objects
-! In  old_nume_ddl   : name of previous nume_ddl object
-! In  modelocz       : local mode for GRANDEUR numbering
+! In  numeDofOld     : name of previous numeDof object
+! In  modeLoc        : local mode for GRANDEUR numbering
 ! In  model          : name of model
-! In  list_load      : list of loads
-! In  list_matr_elem : list of elementary matrixes
-! In  nb_matr_elem   : number of elementary matrixes
-! In  sd_iden_rela   : name of object for identity relations between dof
-!
-! If old_nume_ddl is present
-!   -> try to know if NUME_EQUA in old_nume_ddl can be reuse
-!      In this case nume_ddl = old_nume_ddl
+! In  listLoad       : list of loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call numero(nume_ddlz, base, old_nume_ddlz, modelocz, &
-                modelz, list_loadz)
+    integer :: nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
+    character(len=24) :: virtualCell
+!
+! --------------------------------------------------------------------------------------------------
+!
+    nbLigr = 0
+
+! - Add LIGREL from model
+    call addModelLigrel(modelZ, nbLigr, listLigr)
+
+! - Get list of LIGREL from loads
+    call getListLoadLigrel(listLoadZ, nbLigr, listLigr)
+
+! - Get list of LIGREL from contact
+    if (contactZ .ne. " ") then
+        virtualCell = "None"
+        call addContactLigrel(contactZ, virtualCell, nbLigr, listLigr)
+    end if
+
+! - Numbering
+    call numero(numeDofZ, base, &
+                nbLigr, listLigr)
+    AS_DEALLOCATE(vk24=listLigr)
 !
 end subroutine

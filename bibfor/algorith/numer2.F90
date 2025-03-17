@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
-                  nume_ddl_oldz, modelocz, modele, sd_iden_relaz)
+!
+subroutine numer2(nbLigr, listLigr, base, numeDofZ, &
+                  numeDofOldZ, modeLocZ, modelZ, idenRelaZ_)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterc/cheksd.h"
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
@@ -34,16 +34,12 @@ subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
 #include "asterfort/nugllo.h"
 #include "asterfort/promor.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
-!
-    integer, intent(in) :: nb_ligr
-    character(len=24), pointer :: list_ligr(:)
+    integer, intent(in) :: nbLigr
+    character(len=24), pointer :: listLigr(:)
     character(len=2), intent(in) :: base
-    character(len=*), intent(inout) :: nume_ddlz
-    character(len=*), intent(in) :: nume_ddl_oldz
-    character(len=*), intent(in) :: modelocz
-    character(len=*), intent(in) :: modele
-    character(len=*), optional, intent(in) :: sd_iden_relaz
+    character(len=*), intent(inout) :: numeDofZ
+    character(len=*), intent(in) :: numeDofOldZ, modeLocZ, modelZ
+    character(len=*), optional, intent(in) :: idenRelaZ_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,94 +49,90 @@ subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nb_ligr        : number of LIGREL in list
-! In  list_ligr      : pointer to list of LIGREL
+! In  nbLigr         : number of LIGREL in list
+! Ptr listLigr       : pointer to list of LIGREL
 ! In  base           : JEVEUX base to create objects
 !                      base(2:2) => NUME_EQUA objects
 !                      base(1:1) => NUME_DDL objects
-! IO  nume_ddl       : name of numbering object (NUME_DDL)
+! IO  numeDof        : name of numbering object (NUME_DDL)
 ! In  modeloc        : local mode for GRANDEUR numbering
-! In  nume_ddl_old   : name of previous nume_ddl object
-! In  sd_iden_rela   : name of object for identity relations between dof
+! In  numeDofOld     : name of previous numeDof object
+! In  idenRela       : name of object for identity relations between dof
 !
-! If nume_ddl_old is present
-!   -> try to know if NUME_EQUA in nume_ddl_old can be reuse
-!      In this case nume_ddl = nume_ddl_old
+! If numeDofOld is present
+!   -> try to know if NUME_EQUA in numeDofOld can be reuse
+!      In this case numeDof = numeDofOld
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: nume_equa, nume_equa_old
-    character(len=14) :: nume_ddl, nume_ddl_old, moloc
-    character(len=24) :: sd_iden_rela
+    aster_logical, parameter :: debug = ASTER_FALSE
+    character(len=24), parameter :: renumSans = "SANS"
+    character(len=19) :: numeEqua, numeEquaOld
+    character(len=14) :: numeDof, numeDofOld, modeLoc
+    character(len=24) :: idenRela
     character(len=3) :: matd
+    character(len=8) :: model
     aster_logical :: l_matr_dist, printt
-    aster_logical, parameter :: verbose = ASTER_FALSE, debug = ASTER_FALSE
     integer :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-    nume_ddl = nume_ddlz
-    moloc = modelocz
-    nume_ddl_old = nume_ddl_oldz
-    nume_equa = nume_ddl//'.NUME'
-    nume_equa_old = nume_ddl_old//'.NUME'
-!
-    call detrsd('NUME_DDL', nume_ddl)
-!
-! - Identity relations between dof
-!
-    sd_iden_rela = ' '
-    if (present(sd_iden_relaz)) then
-        sd_iden_rela = sd_iden_relaz
+
+! - Initializations
+    model = modelZ
+    numeDof = numeDofZ
+    modeLoc = modeLocZ
+    numeDofOld = numeDofOldZ
+    numeEqua = numeDof//'.NUME'
+    numeEquaOld = numeDofOld//'.NUME'
+    idenRela = ' '
+    if (present(idenRelaZ_)) then
+        idenRela = idenRelaZ_
     end if
-!
-    call matdis(matd, verbose)
+
+! - Delete previous numbering
+    call detrsd('NUME_DDL', numeDof)
+
+! - For MATR_DISTRIBUE
+    call matdis(matd, debug)
     ASSERT(matd .eq. 'OUI' .or. matd .eq. 'NON')
-    if (matd .eq. 'OUI') then
-        l_matr_dist = .true.
-    else
-        l_matr_dist = .false.
-    end if
-!
+    l_matr_dist = matd .eq. 'OUI'
+
 ! - Create NUME_EQUA objects
-!
-    call nueffe(nb_ligr, list_ligr, base, nume_ddl, 'SANS', &
-                modele, modelocz=moloc, sd_iden_relaz=sd_iden_rela)
-!
+    call nueffe(nbLigr, listLigr, base, numeDof, renumSans, model, &
+                modeLocZ_=modeLoc, idenRelaZ_=idenRela)
+
 ! - Create NUML_EQUA objects
-!
     if (l_matr_dist) then
-        call nugllo(nume_ddlz, base)
+        call nugllo(numeDofZ, base)
     end if
-!
-! - Trying to reuse old nume_ddl
-!
-    if (nume_ddl_old .ne. ' ') then
-        if (idensd('NUME_EQUA', nume_equa, nume_equa_old)) then
-            call detrsd('NUME_DDL', nume_ddl)
-            call jedupo(nume_ddl//'     .ADNE', 'V', nume_ddl_old//'     .ADNE', .false._1)
-            call jedupo(nume_ddl//'     .ADLI', 'V', nume_ddl_old//'     .ADLI', .false._1)
-            call jedetr(nume_ddl//'     .ADLI')
-            call jedetr(nume_ddl//'     .ADNE')
-            nume_ddl = nume_ddl_old
+
+! - Trying to reuse old numeDof
+    if (numeDofOld .ne. ' ') then
+        if (idensd('NUME_EQUA', numeEqua, numeEquaOld)) then
+            call detrsd('NUME_DDL', numeDof)
+            call jedupo(numeDof//'     .ADNE', 'V', numeDofOld//'     .ADNE', .false._1)
+            call jedupo(numeDof//'     .ADLI', 'V', numeDofOld//'     .ADLI', .false._1)
+            call jedetr(numeDof//'     .ADLI')
+            call jedetr(numeDof//'     .ADNE')
+            numeDof = numeDofOld
         end if
     end if
-!
+
 ! - Create matrix topology
-!
-    printt = moloc .eq. ' '
-    call promor(nume_ddl, base(1:1), printt)
-!
+    printt = modeLoc .eq. ' '
+    call promor(numeDof, base(1:1), printt)
+
 ! - Cleaning
+    call jedetr(numeDof//'     .ADLI')
+    call jedetr(numeDof//'     .ADNE')
 !
-    call jedetr(nume_ddl//'     .ADLI')
-    call jedetr(nume_ddl//'     .ADNE')
+    numeDofZ = numeDof
 !
-    nume_ddlz = nume_ddl
-!
-    if (debug) call cheksd(nume_ddlz, 'SD_NUME_DDL', iret)
+    if (debug) then
+        call cheksd(numeDofZ, 'SD_NUME_DDL', iret)
+    end if
 !
     call jedema()
 end subroutine

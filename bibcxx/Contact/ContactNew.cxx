@@ -70,7 +70,7 @@ bool ContactNew::build() {
     if ( !_model->isMechanical() )
         UTMESS( "F", "CONTACT1_2" );
     _FEDesc =
-        std::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE", _model->getMesh() );
+        std::make_shared< FiniteElementDescriptor >( getName() + ".CONT.LIGRE", _model->getMesh() );
 
     auto mesh = getMesh();
 

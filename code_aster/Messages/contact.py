@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,6 +110,9 @@ Vous devez utilisez l'option NORMALE :
 - FIXE : qui décrit une normale constante pour la poutre
 - ou VECT_Y: qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
 """
+    ),
+    64: _(
+        """Vous définissez le contact sur un modèle qui n'est pas mécanique, ce n'est pas possible."""
     ),
     84: _(
         """

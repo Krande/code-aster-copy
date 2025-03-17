@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine limaco(sdcont, keywf, mesh, model, model_ndim, &
-                  nb_cont_zone, ligret)
+!
+subroutine limaco(sdcont, zoneKeyword, mesh, model, model_ndim, &
+                  nb_cont_zone, slavElemLigr, lLineRela, listRela)
 !
     implicit none
 !
@@ -28,13 +28,12 @@ subroutine limaco(sdcont, keywf, mesh, model, model_ndim, &
 #include "asterfort/dfc_read_disc.h"
 #include "asterfort/dfc_read_lac.h"
 !
-    character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
-    character(len=16), intent(in) :: keywf
-    character(len=19), intent(in) :: ligret
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: model_ndim
+    character(len=8), intent(in) :: sdcont, mesh, model
+    character(len=16), intent(in) :: zoneKeyword
+    character(len=19), intent(in) :: slavElemLigr
+    integer, intent(in) :: nb_cont_zone, model_ndim
+    aster_logical, intent(out) :: lLineRela
+    character(len=19), intent(out) :: listRela
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,13 +43,15 @@ subroutine limaco(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywf            : factor keyword to read
+! In  zoneKeyword      : factor keyword zone of contact
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
 ! In  nb_cont_zone     : number of zones of contact
 ! In  model            : name of model
 ! In  mesh             : name of mesh
 ! In  model_ndim       : dimension of model
-! In  ligret           : special LIGREL for slaves elements
+! In  slavElemLigr     : LIGREL for virtual elements (slave side)
+! Out lLineRela        : flag for linear relations
+! Out listRela         : name of object for linear relations
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,18 +60,20 @@ subroutine limaco(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    lLineRela = ASTER_FALSE
+    listRela = " "
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     cont_form = cfdisi(sdcont_defi, 'FORMULATION')
 !
     if (cont_form .eq. 1) then
-        call dfc_read_disc(sdcont, keywf, mesh, model, model_ndim, &
-                           nb_cont_zone)
+        call dfc_read_disc(sdcont, zoneKeyword, mesh, model, model_ndim, &
+                           nb_cont_zone, lLineRela, listRela)
     elseif (cont_form .eq. 2) then
-        call dfc_read_cont(sdcont, keywf, mesh, model, model_ndim, &
-                           ligret, nb_cont_zone)
+        call dfc_read_cont(sdcont, zoneKeyword, mesh, model, model_ndim, &
+                           slavElemLigr, nb_cont_zone)
     elseif (cont_form .eq. 5) then
-        call dfc_read_lac(sdcont, keywf, mesh, model, model_ndim, &
-                          ligret, nb_cont_zone)
+        call dfc_read_lac(sdcont, zoneKeyword, mesh, model, model_ndim, &
+                          slavElemLigr, nb_cont_zone)
     else
         ASSERT(ASTER_FALSE)
     end if

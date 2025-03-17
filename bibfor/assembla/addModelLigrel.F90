@@ -16,47 +16,42 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem)
+subroutine addModelLigrel(modelZ, nbLigr, listLigr)
 !
     implicit none
 !
+#include "asterfort/assert.h"
+#include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/numddl.h"
-#include "asterfort/promor.h"
+#include "asterfort/dismoi.h"
 !
-    character(len=*), intent(in) :: numeDofZ, jvListOfMatrZ
-    integer, intent(in) :: nbMatrElem
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Factor
-!
-! Numbering - Create NUME_EQUA objects with matrix
+    character(len=*), intent(in) :: modelZ
+    integer, intent(inout) :: nbLigr
+    character(len=24), pointer :: listLigr(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  numeDof       : name of numeDof object
-! In  jvListOfMatr  : name of JEVEUX name for list of elementary matrixes
-! In  nbMatrElem    : number of elementary matrixes
+! Add LIGREL from model
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24), parameter :: renumSans = "SANS"
-    character(len=14) :: numeDof
-    character(len=24), pointer :: listMatrElem(:) => null()
+! In  model             : name of model datastructure
+! IO  nbLigr            : number of LIGREL in list
+! Ptr listLigr          : list of LIGREL
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    numeDof = numeDofZ
+    character(len=24) :: modelLigrel
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call dismoi("NOM_LIGREL", modelZ, "MODELE", repk=modelLigrel)
 
-! - Get list of matrix
-    call jeveuo(jvListOfMatrZ, 'L', vk24=listMatrElem)
-
-! - CALCUL DE LA NUMEROTATION PROPREMENT DITE :
-    call numddl(numeDof, renumSans, 'GG', nbMatrElem, listMatrElem)
-
-! - CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
-    call promor(numeDof, 'G')
+! - On met toujours le modèle en premier dans la liste
+! - Affreuse glute (tant qu'on stockera le modèle dans NUME_EQUA/REFN) (voir numero.F90)
+    ASSERT(nbLigr .eq. 0)
+    AS_ALLOCATE(vk24=listLigr, size=1)
+    nbLigr = 1
+    listLigr(nbLigr) = modelLigrel
 !
 end subroutine

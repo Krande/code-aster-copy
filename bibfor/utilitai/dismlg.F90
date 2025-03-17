@@ -85,6 +85,9 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     nomob = nomobz
 
     call exisd('LIGREL', nomob, iexi)
+    if (iexi .ne. 1) then
+        WRITE (6, *) "LIGREL <", nomob, ">"
+    end if
     ASSERT(iexi .eq. 1)
 
     if (questi .eq. 'NOM_MAILLA') then
@@ -475,6 +478,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         else if (phenom(1:4) .eq. 'ACOU') then
             repk = 'ACOUSTIQUE'
         else
+            WRITE (6, *) "DISMOI: ", nomob, phenom
             ierd = 1
             goto 99
         end if

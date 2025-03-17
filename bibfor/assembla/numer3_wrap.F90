@@ -15,48 +15,56 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem)
+subroutine numer3_wrap(numeDofZ, base, &
+                       modelZ, listLoadZ, &
+                       defiContZ, virtContElemZ)
+!
+    use NonLin_Datastructure_type
 !
     implicit none
 !
-#include "asterfort/as_deallocate.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/numddl.h"
-#include "asterfort/promor.h"
+#include "asterf_types.h"
+#include "asterfort/numer3.h"
 !
-    character(len=*), intent(in) :: numeDofZ, jvListOfMatrZ
-    integer, intent(in) :: nbMatrElem
+    character(len=*), intent(inout) :: numeDofZ
+    character(len=2), intent(in) :: base
+    character(len=*), intent(in) :: modelZ, listLoadZ, defiContZ, virtContElemZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Factor
 !
-! Numbering - Create NUME_EQUA objects with matrix
+! (re)-Numbering
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  numeDof       : name of numeDof object
-! In  jvListOfMatr  : name of JEVEUX name for list of elementary matrixes
-! In  nbMatrElem    : number of elementary matrixes
+! IO  numeDof          : name of numbering object (NUME_DDL)
+! In  base             : JEVEUX base to create objects
+!                         base(1:1) => NUME_EQUA objects
+!                         base(2:2) => NUME_DDL objects
+! In  model            : name of model
+! In  listLoad         : list of loads
+! In  defiCont         : name of datastructure from DEFI_CONT
+! In  virtContElem     : name of virtual elements for contact (in solving)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24), parameter :: renumSans = "SANS"
-    character(len=14) :: numeDof
-    character(len=24), pointer :: listMatrElem(:) => null()
+    type(NL_DS_Contact) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    numeDof = numeDofZ
 
-! - Get list of matrix
-    call jeveuo(jvListOfMatrZ, 'L', vk24=listMatrElem)
+! - Prepare datastructure from contact
+    if (defiContZ .ne. " ") then
+        ds_contact%l_contact = ASTER_TRUE
+        ds_contact%iden_rela = " "
+        ds_contact%sdcont = defiContZ(1:8)
+        ds_contact%ligrel_elem_cont = virtContElemZ
+    end if
 
-! - CALCUL DE LA NUMEROTATION PROPREMENT DITE :
-    call numddl(numeDof, renumSans, 'GG', nbMatrElem, listMatrElem)
-
-! - CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
-    call promor(numeDof, 'G')
+! - Numbering
+    call numer3(modelZ, base, listLoadZ, numeDofZ, ds_contact)
 !
 end subroutine

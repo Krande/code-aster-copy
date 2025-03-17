@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,85 +15,76 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine numddl(nume_ddlz, base, nb_matr, list_matr)
+!
+subroutine numddl(numeDofZ, renumZ, base, nbMatrElem, listMatrElem)
 !
     implicit none
 !
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/crnulg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gettco.h"
 #include "asterfort/nueffe.h"
 #include "asterfort/numoch.h"
-#include "asterc/getres.h"
-!
-! aslint: disable=W1306
+#include "asterfort/utmess.h"
 !
     character(len=2), intent(in) :: base
-    character(len=*), intent(in) :: nume_ddlz
-    character(len=*), intent(in) :: list_matr(*)
-    integer, intent(in) :: nb_matr
+    character(len=*), intent(in) :: numeDofZ, renumZ
+    character(len=24), pointer :: listMatrElem(:)
+    integer, intent(in) :: nbMatrElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Factor
 !
-! Numbering - Create NUME_EQUA objects
+! Create numbering from list of elementary matrices
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nume_ddl       : name of nume_ddl object
+! In  numeDof        : name of numeDof object
+! In  renum          : method for renumbering equations (SANS/RCMK)
 ! In  base           : JEVEUX base to create objects
 !                      base(1:1) => NUME_EQUA objects
 !                      base(2:2) => NUME_DDL objects
-! In  list_matr      : list of elementary matrixes
-! In  nb_matr        : number of elementary matrixes
-!                       SANS/RCMKs
+! Ptr listMatrElem   : list of elementary matrixes
+! In  nbMatrElem     : number of elementary matrixes
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: list_matr_elem(nb_matr)
-    integer :: nb_ligr
-    character(len=24), pointer :: list_ligr(:) => null()
-    integer :: i_matr
-    character(len=4) :: renum
-    character(len=8) :: nomres
-    character(len=8) :: nommai, nommod
-    character(len=14) :: nume_ddl
+    integer :: nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
+    integer :: iMatrElem
+    character(len=8) :: mesh, model, modelNew
+    character(len=14) :: numeDof
     character(len=16) :: typsd
-    character(len=16) :: typres, nomcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    do i_matr = 1, nb_matr
-        list_matr_elem(i_matr) = list_matr(i_matr)
+
+! - Extract list of LIGREL from elementary matrixes
+    call numoch(listMatrElem, nbMatrElem, listLigr, nbLigr)
+
+! - Get model
+    ASSERT(nbMatrElem .ge. 1)
+    call dismoi('NOM_MODELE', listMatrElem(1), 'MATR_ELEM', repk=model)
+    do iMatrElem = 2, nbMatrElem
+        call dismoi('NOM_MODELE', listMatrElem(1), 'MATR_ELEM', repk=modelNew)
+        if (modelNew .ne. model) then
+            call utmess("F", "ASSEMBLA_2")
+        end if
     end do
-!
-! - Create list of LIGREL for numbering
-!
-    call numoch(list_matr_elem, nb_matr, list_ligr, nb_ligr)
-!
+
 ! - Numbering - Create NUME_EQUA objects
-!
+    call nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, model)
+    AS_DEALLOCATE(vk24=listLigr)
 
-    call getres(nomres, typres, nomcom)
-    if (nomcom .eq. 'MACR_ELEM_STAT') then
-        renum = 'RCMK'
-    else
-        renum = 'SANS'
-    end if
-
-    call dismoi('NOM_MODELE', list_matr_elem(1), 'MATR_ELEM', repk=nommod)
-    call nueffe(nb_ligr, list_ligr, base, nume_ddlz, renum, nommod)
-!
-    call dismoi('NOM_MAILLA', nommod, 'MODELE', repk=nommai)
-    call gettco(nommai, typsd)
+! - Numbering - Create parallel object
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call gettco(mesh, typsd)
     if (typsd .eq. 'MAILLAGE_P') then
-        nume_ddl = nume_ddlz
-        call crnulg(nume_ddl)
+        numeDof = numeDofZ
+        call crnulg(numeDof)
     end if
-!
-    AS_DEALLOCATE(vk24=list_ligr)
 !
 end subroutine

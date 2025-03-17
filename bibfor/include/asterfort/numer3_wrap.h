@@ -17,8 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine numecn(modelZ, champZ, numeEquaZ)
-        character(len=*), intent(in) :: modelZ, champZ
-        character(len=*), intent(out):: numeEquaZ
-    end subroutine numecn
+    subroutine numer3_wrap(numeDofZ, base, &
+                           modelZ, listLoadZ, &
+                           contactZ, virtContElemZ)
+        character(len=*), intent(inout) :: numeDofZ
+        character(len=2), intent(in) :: base
+        character(len=*), intent(in) :: modelZ, listLoadZ, contactZ, virtContElemZ
+    end subroutine numer3_wrap
 end interface

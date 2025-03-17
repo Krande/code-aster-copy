@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cacoeq(sdcont, mesh)
+!
+subroutine cacoeq(sdcont, mesh, lLineRela, listRela)
 !
     implicit none
 !
@@ -37,10 +37,9 @@ subroutine cacoeq(sdcont, mesh)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: sdcont, mesh
+    aster_logical, intent(out) :: lLineRela
+    character(len=19), intent(out) :: listRela
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,6 +51,8 @@ subroutine cacoeq(sdcont, mesh)
 !
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
 ! In  mesh             : name of mesh
+! Out lLineRela        : flag for linear relations
+! Out listRela         : name of object for linear relations
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,8 +60,6 @@ subroutine cacoeq(sdcont, mesh)
     complex(kind=8) :: vale_cplx, coef_cplx(3)
     character(len=4) :: vale_type, type_coef
     character(len=8) :: vale_func, dof_name(3), node_name(3), type_name, type_name_c
-    character(len=19) :: list_rela
-    aster_logical :: l_line_rela
     real(kind=8) :: coef_real(3), repe_defi(6), vale_real
     integer :: i_excl, i_zone, i_node_quad, i_elem, i_elem_c
     integer :: elem_nume, type_nume, repe_type(3)
@@ -93,7 +92,8 @@ subroutine cacoeq(sdcont, mesh)
     repe_type(2) = 0
     repe_type(3) = 0
     type_coef = 'REEL'
-    list_rela = '&&CACOEQ.RLLISTE'
+    lLineRela = ASTER_FALSE
+    listRela = '&&CACOEQ.RLLISTE'
     connex_inv = '&&CACOEQ.CONINV'
     nb_node_quad = 0
 !
@@ -148,10 +148,10 @@ subroutine cacoeq(sdcont, mesh)
 ! ----- Nodes to link ?
 !
         if (node_nume(2) .eq. 0) then
-            l_line_rela = .false.
+            lLineRela = .false.
             goto 30
         else
-            l_line_rela = .true.
+            lLineRela = .true.
         end if
 !
 ! ----- Name of the three nodes
@@ -167,7 +167,7 @@ subroutine cacoeq(sdcont, mesh)
             call cfmmex(sdcont_defi, 'CONT', i_zone, node_nume(2), suppo2)
             call cfmmex(sdcont_defi, 'CONT', i_zone, node_nume(3), suppo3)
             if ((suppo1 .eq. 1) .or. (suppo2 .eq. 1) .or. (suppo3 .eq. 1)) then
-                l_line_rela = .false.
+                lLineRela = .false.
                 goto 30
             end if
         end do
@@ -214,24 +214,23 @@ subroutine cacoeq(sdcont, mesh)
         dof_name(3) = 'DX'
         call afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
                     repe_defi, 3, vale_real, vale_cplx, vale_func, &
-                    type_coef, vale_type, 0.d0, list_rela)
+                    type_coef, vale_type, 0.d0, listRela)
         dof_name(1) = 'DY'
         dof_name(2) = 'DY'
         dof_name(3) = 'DY'
         call afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
                     repe_defi, 3, vale_real, vale_cplx, vale_func, &
-                    type_coef, vale_type, 0.d0, list_rela)
+                    type_coef, vale_type, 0.d0, listRela)
         dof_name(1) = 'DZ'
         dof_name(2) = 'DZ'
         dof_name(3) = 'DZ'
         call afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
                     repe_defi, 3, vale_real, vale_cplx, vale_func, &
-                    type_coef, vale_type, 0.d0, list_rela)
+                    type_coef, vale_type, 0.d0, listRela)
 30      continue
     end do
 !
-    if (l_line_rela) then
-        call aflrch(list_rela, sdcont, 'NLIN')
+    if (lLineRela) then
         call cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
         call jedetr(connex_inv)
     end if

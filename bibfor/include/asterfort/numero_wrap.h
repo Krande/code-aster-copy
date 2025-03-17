@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine numero_wrap(nume_ddlz    , base,&
-                           old_nume_ddlz, modelocz    ,&
-                           modelz       , list_loadz)
-        character(len=*), intent(inout) :: nume_ddlz
+    subroutine numero_wrap(numeDofZ, base, &
+                           modelZ, listLoadZ, &
+                           contactZ)
+        character(len=*), intent(inout) :: numeDofZ
         character(len=2), intent(in) :: base
-        character(len=*), intent(in) :: modelz
-        character(len=*), intent(in) :: list_loadz
-        character(len=*), intent(in) :: old_nume_ddlz
-        character(len=*), intent(in) :: modelocz
+        character(len=*), intent(in) :: modelZ, listLoadZ, contactZ
     end subroutine numero_wrap
 end interface

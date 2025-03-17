@@ -27,18 +27,20 @@ subroutine crcoch()
 !           "DYNA_TRANS"   "EVOL_CHAR"
 !
 ! --- ------------------------------------------------------------------
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/crcoch_getloads.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fondpl.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -61,9 +63,8 @@ subroutine crcoch()
 #include "asterfort/vechme.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/crcoch_getloads.h"
 #include "blas/dcopy.h"
+#include "jeveux.h"
 !
     integer :: ibid, ier, icompt, iret, numini, numfin
     integer :: n1, nis, nbinst, nbval, nume, j, ie
@@ -91,7 +92,6 @@ subroutine crcoch()
     character(len=24) :: vechmp, vachmp, cnchmp, chargt
     real(kind=8), pointer :: val(:) => null()
     character(len=8), pointer :: v_ondp(:) => null()
-    character(len=4), parameter :: phenom = "MECA"
 !
     data linst, listr8, lcpt, londp/'&&CRCOCH_LINST', '&&CRCOCH_LISR8',&
      &     '&&CPT_CRCOCH', '&&CRCOCH_LONDP'/
@@ -324,8 +324,7 @@ subroutine crcoch()
         zr(iad) = tps
 
 ! ----- Copy of list of loads for save in results datastructure
-        call creaListLoad(phenom, 'G', nbLoad, listLoadResu)
-        call copyListLoad(phenom, listLoad, listLoadResu)
+        call copisd('LISTE_CHARGES', 'G', listLoad, listLoadResu)
 
 ! ----- Save parameters in results datastructure
         call rssepa(resu, icompt, model, materField, caraElem, listLoadResu)

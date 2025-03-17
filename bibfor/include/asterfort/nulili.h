@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nulili(nb_ligr, list_ligr, lili, base , gran_name,&
-                      igds   , mesh     , nec , nlili, modelocz)
-        integer, intent(in) :: nb_ligr
-        character(len=24), pointer :: list_ligr(:)
+    subroutine nulili(nbLigr, listLigr, lili, base, gran_name, &
+                      igds, mesh, nec, nlili, modeLocZ_)
+        integer, intent(in) :: nbLigr
+        character(len=24), pointer :: listLigr(:)
         character(len=24), intent(in):: lili
         character(len=1), intent(in):: base
         character(len=8), intent(out) :: gran_name
@@ -30,6 +28,6 @@ interface
         character(len=8), intent(out) :: mesh
         integer, intent(out) :: nec
         integer, intent(out) :: nlili
-        character(len=*), optional, intent(in) :: modelocz
+        character(len=*), optional, intent(in) :: modeLocZ_
     end subroutine nulili
 end interface

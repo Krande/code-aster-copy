@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mmprel_lac(sdcont, mesh, model, ligret)
+!
+subroutine mmprel_lac(sdcont, mesh, model, slavElemLigr)
 !
     implicit none
 !
@@ -38,12 +38,8 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
 #include "asterfort/jelira.h"
 #include "asterfort/get_patchzi_num.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: model
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligret
+    character(len=8), intent(in) :: sdcont, model, mesh
+    character(len=19), intent(in) :: slavElemLigr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +52,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
 ! In  model            : name of model
 ! In  mesh             : name of mesh
-! In  ligret           : special LIGREL for slaves elements
+! In  slavElemLigr     : LIGREL for virtual elements (slave side)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,37 +84,30 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
     sdcont_ptrdclac = sdcont_defi(1:16)//'.PTRDCLC'
     call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 
-!
 ! - Access to mesh (patches)
-!
     call jeveuo(jexnum(mesh//'.PATCH', 1), 'L', vi=v_mesh_lpatch)
     nmgrma = '&&OP0060.NMMA'
-!
+
 ! - Parameters
-!
     model_ndim = cfdisi(sdcont_defi, 'NDIM')
     nb_cont_elem = cfdisi(sdcont_defi, 'NMACO')
     nt_elem_slav = cfdisi(sdcont_defi, 'NTMAE')
     nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
-!
+
 ! - Check compatiblity DECOUPE_LAC<=>DEFI_CONTACT
-!
     call jelira(mesh//'.PTRNOMPAT', 'LONMAX', nb_dcl_zi)
     if (nb_dcl_zi .ne. nb_cont_zone) then
         call utmess('F', 'CONTACT2_17')
     end if
-!
+
 ! - Create pointer index DECOUPE_LAC<=>DEFI_CONTACT
-!
     call wkvect(sdcont_ptrdclac, 'G V I', nb_cont_zone, vi=vi_ptrdclac)
-!
+
 ! - Create list of slave elements
-!
     nb_list_elem = 4
     call wkvect(list_elem, 'V V I', nb_list_elem, vi=v_list_elem)
-!
+
 ! - Set list of slave elements
-!
     nt_sub_elem = 0
     do i_zone = 1, nb_cont_zone
 !
@@ -127,7 +116,8 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
         call getvtx('ZONE', 'GROUP_MA_ESCL', iocc=1, nbval=0, nbret=nb_grma)
         ASSERT(nb_grma .eq. -1)
         call wkvect(nmgrma, 'V V K24', -nb_grma, jngrma)
-     call getvtx('ZONE', 'GROUP_MA_ESCL', iocc=i_zone, nbval=-nb_grma, vect=zk24(jngrma), nbret=n1b)
+        call getvtx('ZONE', 'GROUP_MA_ESCL', iocc=i_zone, nbval=-nb_grma, &
+                    vect=zk24(jngrma), nbret=n1b)
         ASSERT(n1b .eq. -nb_grma)
 
         call get_patchzi_num(mesh, zk24(jngrma), nupatch_zi)
@@ -135,17 +125,14 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
 
         nb_patch = v_mesh_lpatch(2*(nupatch_zi-1)+2)
         jdecpa = v_mesh_lpatch(2*(nupatch_zi-1)+1)
-!
+
 ! ----- Acces to slave elements in zone
-!
         nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
         jdecme = mminfi(sdcont_defi, 'JDECME', i_zone)
         nb_sub_elem = 0
         i_elem_slav = 1
         do i_patch = 1, nb_patch
-!
 ! --------- Get current patch
-!
             call jeveuo(jexnum(mesh//'.PATCH', jdecpa+i_patch-1), 'L', vi=v_mesh_patch)
             patch_type = v_mesh_patch(1)
 !
@@ -157,7 +144,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 1
                 i_elem_slav = i_elem_slav+1
                 modeli = 'CONT_LAC_SL_2D'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 elem_slav_indx = jdecme+i_elem_slav
                 elem_slav_nume = v_sdcont_mailco(elem_slav_indx)
@@ -165,7 +152,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 1
                 i_elem_slav = i_elem_slav+1
                 modeli = 'CONT_LAC_SL_2DB'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 nb_sub_elem = nb_sub_elem+2
             elseif (patch_type .eq. 12) then
@@ -176,7 +163,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 1
                 i_elem_slav = i_elem_slav+1
                 modeli = 'CONT_LAC_SL_2D'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 elem_slav_indx = jdecme+i_elem_slav
                 elem_slav_nume = v_sdcont_mailco(elem_slav_indx)
@@ -184,7 +171,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 1
                 i_elem_slav = i_elem_slav+1
                 modeli = 'CONT_LAC_SL_2DT'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 elem_slav_indx = jdecme+i_elem_slav
                 elem_slav_nume = v_sdcont_mailco(elem_slav_indx)
@@ -192,7 +179,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 1
                 i_elem_slav = i_elem_slav+1
                 modeli = 'CONT_LAC_SL_2DB'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 nb_sub_elem = nb_sub_elem+3
             elseif (patch_type .eq. 9 .or. patch_type .eq. 14) then
@@ -204,7 +191,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 1
                 i_elem_slav = i_elem_slav+1
                 modeli = 'CONT_LAC_SL_2D'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 nb_sub_elem = nb_sub_elem+1
             elseif (patch_type .eq. 18 .or. patch_type .eq. 19) then
@@ -218,7 +205,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 3
                 i_elem_slav = i_elem_slav+3
                 modeli = 'CONT_LAC_SL_3D'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 nb_sub_elem = nb_sub_elem+3
             elseif (patch_type .eq. 27) then
@@ -229,7 +216,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 1
                 i_elem_slav = i_elem_slav+1
                 modeli = 'CONT_LAC_SL_3D'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 nb_sub_elem = nb_sub_elem+1
             else if (patch_type .eq. 25 .or. patch_type .eq. 26) then
@@ -243,7 +230,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 4
                 i_elem_slav = i_elem_slav+4
                 modeli = 'CONT_LAC_SL_3D'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 elem_slav_indx = jdecme+i_elem_slav
                 elem_slav_nume = v_sdcont_mailco(elem_slav_indx)
@@ -251,7 +238,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 1
                 i_elem_slav = i_elem_slav+1
                 modeli = 'CONT_LAC_SL_3DB'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 nb_sub_elem = nb_sub_elem+5
             else if (patch_type .eq. 125 .or. patch_type .eq. 126) then
@@ -265,7 +252,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
                 nb_list_elem = 4
                 i_elem_slav = i_elem_slav+4
                 modeli = 'CONT_LAC_SL_3D'
-                call ajellt(ligret, mesh, nb_list_elem, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_list_elem, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
                 nb_sub_elem = nb_sub_elem+4
             else

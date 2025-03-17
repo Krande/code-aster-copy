@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,9 @@ cata_msg = {
 
   Conseil : Changer de solveur
 """
+    ),
+    2: _(
+        """On ne peut pas créer la numérotation sur les matrices élémentaires car le modèle n'est pas le même."""
     ),
     3: _(
         """
@@ -163,7 +166,7 @@ Si vous utilisez directement la commande ASSE_VECTEUR ou la commande DYNA_VIBRA 
    Êtes-vous sur d'avoir indiqué cette charge à la commande NUME_DDL ?
       - Soit en utilisant le mot-clé CHARGE (associé à MODELE) de l'opérateur NUME_DDL.
       - Soit en utilisant le mot-clé MATR_RIGI (de NUME_DDL) avec une matrice élémentaire
-      issue de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' à laquelle vous avez indiqué 
+      issue de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' à laquelle vous avez indiqué
       cette charge via le mot-clé CHARGE"""
     ),
     63: _(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
-!
-          interface 
-            subroutine ldlt_renum(nu1z,nu2z,perm,basp)
-              character(len=*), intent(in) :: nu1z
-              character(len=*) ,optional, intent(in) :: nu2z
-              character(len=24) ,optional, intent(in) :: perm
-              character(len=1) ,optional, intent(in) :: basp
-            end subroutine ldlt_renum
-          end interface 
+interface
+    subroutine ldlt_renum(numeDof1Z, numeDof2Z_, perm_, permJvBase_)
+        character(len=*), intent(in) :: numeDof1Z
+        character(len=*), intent(in), optional :: numeDof2Z_
+        character(len=24), intent(in), optional :: perm_
+        character(len=1), intent(in), optional :: permJvBase_
+    end subroutine ldlt_renum
+end interface
