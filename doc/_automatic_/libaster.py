@@ -1888,6 +1888,13 @@ class EquationNumbering(DataStructure):
     def getModel(self):
         pass
 
+    def getNoGhostDOFs(self, local=False):
+        """Returns the indexes of the DOFs owned locally (aka not ghost).
+
+        Returns:
+        int: indexes of the DOFs owned locally.
+        """
+
     def getNodeAndComponentFromDOF(self, *args, **kwargs):
         """Overloaded function.
 
@@ -2207,6 +2214,13 @@ class DOFNumbering(BaseDOFNumbering):
 
         Returns:
             [int]: indexes of the Lagrange multipliers dof.
+        """
+
+    def getNoGhostDOFs(self, local=False):
+        """Returns the indexes of the DOFs owned locally (aka not ghost).
+
+        Returns:
+          int: indexes of the DOFs owned locally.
         """
 
     def getNodeAndComponentFromDOF(self, *args, **kwargs):
@@ -11124,6 +11138,9 @@ class MeshesMapping(DataStructure):
 
         2. __init__(self: libaster.MeshesMapping, arg0: str) -> None
         """
+
+    def getFirstMesh(self):
+        pass
 
     def getSecondMesh(self):
         pass
