@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+
+import numpy as np
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
@@ -90,20 +92,18 @@ TSIEF = CREA_TABLE(
 )
 
 # Coordonnées des Points de Gauss sur l'axe X
-LongPoutre = 3.0
-xpg = pow(3.0 / 5.0, 0.5)
-Points = {1: LongPoutre * (1.0 - xpg) * 0.5, 2: LongPoutre * 0.5, 3: LongPoutre * (1.0 + xpg) * 0.5}
-
-import numpy as NP
+long_poutre = 3.0
+xpg = (1.0 / 3.0) ** 0.5
+points_gauss = (long_poutre * (1.0 + xpg) * 0.5, long_poutre * (1.0 - xpg) * 0.5)
 
 # Coordonnées des Sous-Points !!!
-def CoordFibre(ifib):
+def coord_fibre(ifib):
     Rint = Rext - Ep
     # index des coordonnées
     numAng = ((ifib - 1) % (2 * Nsect + 1)) / (2.0 * Nsect)
     numCou = ((ifib - 1) // (2 * Nsect + 1)) / (2.0 * Ncou)
-    y = (Rint + Ep * numCou) * NP.cos(2.0 * NP.pi * numAng)
-    z = -(Rint + Ep * numCou) * NP.sin(2.0 * NP.pi * numAng)
+    y = (Rint + Ep * numCou) * np.cos(2.0 * np.pi * numAng)
+    z = -(Rint + Ep * numCou) * np.sin(2.0 * np.pi * numAng)
     if abs(y) < 1.0e-08:
         y = 0.0
     if abs(z) < 1.0e-08:
@@ -112,10 +112,10 @@ def CoordFibre(ifib):
 
 
 Nbfibre = (2 * Ncou + 1) * (2 * Nsect + 1)
-for ipt in [1, 2, 3]:
-    xx = Points[ipt]
+for ipt in range(2):
+    xx = points_gauss[ipt]
     for ifib in range(1, Nbfibre + 1):
-        yy, zz = CoordFibre(ifib)
+        yy, zz = coord_fibre(ifib)
         #
         val_sief = ((xx, "SIXX"), (yy, "SIYY"), (xx * yy, "SIXY"), (xx * zz, "SIXZ"))
         for siefv, siefc in val_sief:
@@ -128,7 +128,10 @@ for ipt in [1, 2, 3]:
                 VALE_REFE=siefv,
                 NOM_PARA=siefc,
                 TABLE=TSIEF,
-                FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt), _F(NOM_PARA="SOUS_POINT", VALE_I=ifib)),
+                FILTRE=(
+                    _F(NOM_PARA="POINT", VALE_I=ipt + 1),
+                    _F(NOM_PARA="SOUS_POINT", VALE_I=ifib),
+                ),
                 **motclef
             )
 
@@ -144,9 +147,9 @@ TFibre = CREA_TABLE(
 )
 
 ifib = 103
-yy, zz = CoordFibre(ifib)
-for ipt in [1, 2, 3]:
-    xx = Points[ipt]
+yy, zz = coord_fibre(ifib)
+for ipt in range(2):
+    xx = points_gauss[ipt]
     #
     val_sief = (
         (xx, "SIXX"),
@@ -167,7 +170,7 @@ for ipt in [1, 2, 3]:
             VALE_REFE=siefv,
             NOM_PARA=siefc,
             TABLE=TFibre,
-            FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt), _F(NOM_PARA="SOUS_POINT", VALE_I=1)),
+            FILTRE=(_F(NOM_PARA="POINT", VALE_I=ipt + 1), _F(NOM_PARA="SOUS_POINT", VALE_I=1)),
             **motclef
         )
 
