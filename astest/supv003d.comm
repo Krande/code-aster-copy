@@ -86,6 +86,18 @@ test.assertSequenceEqual(dicpara["INTERPOL"], ["LIN", "LIN"], msg=str(dicpara))
 # on vérifie que la variable x sera accessible en POURSUITE
 x = 34.5
 
-test.printSummary()
 
+# Check for float to int conversion (#34499)
+nbpas = 4
+nbarch = nbpas / 2
+
+# accept float if int(value) == value
+list0 = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=nbarch))
+values = list0.getValues()
+test.assertEqual(len(values), round(nbarch) + 1, msg="check length")
+
+with test.assertRaisesRegex(CA.AsterError, "(NOMBRE.*Unexpected type|SUPERVIS_99)"):
+    DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2.000001))
+
+test.printSummary()
 FIN()
