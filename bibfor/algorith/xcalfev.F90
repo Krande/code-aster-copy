@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,6 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
     aster_logical :: lderiv, l_not_zero, lshift, lctlin, lbid
     aster_logical :: lcourb
     character(len=8) :: method
-    real(kind=8) :: courb(3, 3, 3)
 !----------------------------------------------------------------
 !
     lctlin = is_enr_line()
@@ -130,8 +129,7 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
     lcourb = lcourb .and. lderiv
     if (lderiv) then
         call coor_cyl(ndim, nnop, basloc, geom, ff, &
-                      p_g, invp_g, rr, th, l_not_zero, &
-                      courb, dfdi, lcourb)
+                      p_g, invp_g, rr, th, l_not_zero, lcourb)
     else
         call coor_cyl(ndim, nnop, basloc, geom, ff, &
                       p_g, invp_g, rr, th, l_not_zero)
@@ -139,7 +137,8 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
 !
     if (.not. l_not_zero) goto 999
 !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
 !  CORRECTION POUR LE CONTACT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (present(face)) then
@@ -225,7 +224,9 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
                     do i = 1, ndim
                         do j = 1, ndim
                             do k = 1, ndim
-                  dkdgl_g(alp, i, j) = dkdgl_g(alp, i, j)+p_g(i, k)*fkpo_n(ino, alp, k)*dfdi(ino, j)
+                                dkdgl_g(alp, i, j) = dkdgl_g(alp, i, j)+ &
+                                                     p_g(i, k)*fkpo_n(ino, alp, k)* &
+                                                     dfdi(ino, j)
                             end do
                         end do
                     end do
@@ -265,7 +266,9 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
                 do j = 1, ndim
                     do k = 1, ndim
                         do l = 1, 2
-               dkdgl(ino, alp, i, j) = dkdgl(ino, alp, i, j)+p_g(i, k)*dkdlo(alp, k, l)*invp_g(l, j)
+                            dkdgl(ino, alp, i, j) = dkdgl(ino, alp, i, j)+ &
+                                                    p_g(i, k)*dkdlo(alp, k, l)* &
+                                                    invp_g(l, j)
                         end do
                     end do
                     dkdgl(ino, alp, i, j) = (dkdgl(ino, alp, i, j)-dkdgl_g(alp, i, j))*ff1(ino)+ &

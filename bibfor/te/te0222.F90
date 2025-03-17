@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine te0222(option, nomte)
 !
     use Behaviour_type
     use Behaviour_module
+    use calcG_type
 !
     implicit none
 !
@@ -74,6 +75,7 @@ subroutine te0222(option, nomte)
 ! =====================================================================
 !
     type(Behaviour_Integ) :: BEHinteg
+    type(CalcG_Paramaters) :: cgTheta
 !
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     character(len=16), parameter :: nomres(4) = ['E    ', 'NU   ', 'ALPHA', 'RHO  ']
@@ -88,7 +90,7 @@ subroutine te0222(option, nomte)
     integer           :: irota, ipesa, isigi, isigm
     integer           :: iret, ireth, ibalo, ideg, ilag
     real(kind=8)      :: tcla, tthe, tfor, tini, thet, poids, f(3, 3)
-    real(kind=8)      :: der(4), energi(2), divt, mu
+    real(kind=8)      :: der(4), energi(2), divt, mu, angle, a, b
     real(kind=8)      :: epsi, valpar(4), accele(3), dsigin(6, 3)
     real(kind=8)      :: e, ecin, tpg(27), tref, absno, gonf, pres
     real(kind=8)      :: prod, prod1, prod2, prod3, prod4, puls
@@ -100,12 +102,12 @@ subroutine te0222(option, nomte)
     real(kind=8)      :: p(3, 3), invp(3, 3), du1dm(3, 4), du2dm(3, 4), du3dm(3, 4)
     real(kind=8)      :: courb(3, 3, 3), valres(4), alpha, coeff_K1K2, coeff_K3
     real(kind=8)      :: dfvdm(3, 4), k3a, ka, lambda, phig, r8bid, rg, th
-    real(kind=8)      :: ttrgv, ttrg, u1l(3), u2l(3), u3l(3), tgvdm(3)
+    real(kind=8)      :: ttrgv, ttrg, u1l(3), u2l(3), u3l(3), tgvdm(3), pfond(3), r_courb
     character(len=6)  :: epsa(6)
     character(len=8)  :: typmod(2), nompar(4), discr
     character(len=4)  :: fami
     character(len=16) :: nomte, option, compor(4), phenom
-!
+    aster_logical     :: r_courb_present
     aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero, epsaini, inco
 !
     real(kind=8), pointer :: fno(:) => null()
@@ -127,7 +129,8 @@ subroutine te0222(option, nomte)
 !
 !-- Initialisation des champs et paramètres
     call behaviourInit(BEHinteg)
-!
+    call cgTheta%initialize()
+
 !-- Initialisation des paramètres
     epsi = r8prem()
     tcla = 0.d0
@@ -148,6 +151,7 @@ subroutine te0222(option, nomte)
     epsaini = ASTER_FALSE
     axi = ASTER_FALSE
     cp = ASTER_FALSE
+    r_courb_present = ASTER_FALSE
     if (ndim == 2) then
         lcour = ASTER_FALSE
     else
@@ -922,7 +926,7 @@ subroutine te0222(option, nomte)
             end if
 !
             call coor_cyl(ndim, nno, zr(ibalo), zr(igeom), ffp, &
-                          p, invp, rg, phig, l_not_zero)
+                          p, invp, rg, phig, l_not_zero, pfond=pfond)
 !
 !---------- Recupération du tenseur de courbure
             if (lcour) then
@@ -936,10 +940,32 @@ subroutine te0222(option, nomte)
                 end do
             end if
 !
-!---------- Calcul des Champs auxiliaires
-            call chauxi(ndim, mu, ka, rg, phig, &
-                        invp, lcour, courb, du1dm, du2dm, &
-                        du3dm, u1l, u2l, u3l)
+            if (cgTheta%form_fiss .eq. 'CERCLE') then
+!-------------- Cas de fissure circulaire
+                r_courb = cgTheta%rayon
+                r_courb_present = .true.
+
+            elseif (cgTheta%form_fiss .eq. 'ELLIPSE') then
+!---------- --- Cas de fissure semi-elliptique
+                a = cgTheta%demi_grand_axe
+                b = cgTheta%demi_petit_axe
+                angle = atan2(a*pfond(2), b*pfond(1))
+                r_courb = sqrt(a**2*sin(angle)**2+b**2*cos(angle)**2)**3/(a*b)
+                r_courb_present = .true.
+            end if
+!
+            if (r_courb_present) then
+!---------------Calcul des Champs auxiliaires u0+u1
+                call chauxi(ndim, mu, ka, rg, phig, &
+                            invp, lcour, courb, du1dm, du2dm, &
+                            du3dm, u1l, u2l, u3l, r_courb)
+
+            else
+!---------------Calcul des Champs auxiliaires u0
+                call chauxi(ndim, mu, ka, rg, phig, &
+                            invp, lcour, courb, du1dm, du2dm, &
+                            du3dm, u1l, u2l, u3l)
+            end if
 !
             if (axi) then
 !---------------Champs singuliers dans la base locale
