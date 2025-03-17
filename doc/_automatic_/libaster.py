@@ -1119,7 +1119,14 @@ class DiscreteComputation:
         """
 
     def getExternalStateVariablesForces(
-        self, time_curr, varc_curr, varc_prev=None, vari_curr=None, stress=None, mode=0, mask=None
+        self,
+        time_curr,
+        varc_curr,
+        varc_prev=None,
+        vari_curr=None,
+        stress_prev=None,
+        mode=0,
+        mask=None,
     ):
         """Compute load from external state variables
 
@@ -1128,7 +1135,7 @@ class DiscreteComputation:
               varc_curr (FieldOnCellsReal): external state variables at current time
               varc_prev (FieldOnCells): external state variables at begin of current time
               vari_curr (FieldOnCellsReal): internal state variables at current time
-              stress (FieldOnCellsReal): stress at current time
+              stress_prev (FieldOnCellsReal): stress at begin of current time
               mode (int): fourier mode
               mask (FieldOnCellsLongPtr): mask to assemble
 

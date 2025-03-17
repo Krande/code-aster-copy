@@ -203,7 +203,9 @@ FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
             // Add input fields
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-            calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
+            if ( currBehav ) {
+                calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
+            }
             calcul->addFourierModeField( mode_fourier );
             calcul->addInputField( "PVARCPR", varc_curr );
             if ( varc_prev ) {
