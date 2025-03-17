@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -57,10 +57,14 @@ class Include(ExecuteCommand):
             with open(filename) as fobj:
                 exec(compile(fobj.read(), filename, "exec"), context)
         except NameError:
-            help_import = "from code_aster.Commands import *"
-            UTMESS(
-                "F", "FICHIER_3", valk=(os.fspath(filename), traceback.format_exc(), help_import)
+            dict_args = dict(
+                valk=(
+                    os.fspath(filename),
+                    traceback.format_exc(),
+                    "from code_aster.Commands import *",
+                )
             )
+            UTMESS("F", "FICHIER_3", **dict_args)
         except Exception:
             UTMESS("F", "FICHIER_2", valk=(os.fspath(filename), traceback.format_exc()))
         finally:

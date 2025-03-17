@@ -78,6 +78,8 @@ def meca_non_line_ops(self, **args):
     reset_stats()
 
     args = _F(args)
+    # for compatibility with STAT_NON_LINE syntax
+    args.pop("TITRE", None)
     adapt_increment_init(args, "EVOL_NOLI")
 
     # Add controls to prohibit unconverted features

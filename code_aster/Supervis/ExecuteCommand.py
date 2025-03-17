@@ -55,6 +55,9 @@ Base classes
 ============
 """
 
+# For SDVERI:
+# aslint: disable=C4014
+
 import gc
 import inspect
 import linecache
@@ -955,9 +958,8 @@ def command_result(counter, command_name, result):
         str: String representation.
     """
     show_name, show_type = _get_object_repr(result)
-    return MessageLog.GetText(
-        "I", "SUPERVIS2_72", vali=counter, valk=(command_name, show_name, show_type)
-    )
+    dict_args = dict(vali=counter, valk=(command_name, show_name, show_type))
+    return MessageLog.GetText("I", "SUPERVIS2_72", **dict_args)
 
 
 def command_memory():

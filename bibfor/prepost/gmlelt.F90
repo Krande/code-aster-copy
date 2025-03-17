@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,6 +67,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
     integer :: indgro, ima, ibid, ityp, ino, node
     integer :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym, jdime
     integer :: jindma, jtag, jgr, total_length, nb_nonempty_groups
+    aster_logical :: same_dim
 !
     parameter(nbmxte=19)
     integer :: nbno(nbmxte)
@@ -187,8 +188,15 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 !       LA DIMENSION DES MAILLES DOIT CORRESPONDRE
         do i = 1, nbgrou
             do k = 1, nbtag
-                if (zi(jtag+k-1) .eq. zi(jindma+i-1) .and. &
-                    (versio .eq. 1 .or. dime(ityp) .eq. zi(jdime-1+i))) then
+                if (zi(jtag+k-1) .ne. zi(jindma+i-1)) then
+                    cycle
+                end if
+                same_dim = ASTER_TRUE
+                if (versio == 2) then
+                    same_dim = ASTER_FALSE
+                    if (dime(ityp) .eq. zi(jdime-1+i)) same_dim = ASTER_TRUE
+                end if
+                if (same_dim) then
                     if (zi(jnbmag+i-1) == 0) nb_nonempty_groups = nb_nonempty_groups+1
                     zi(jnbmag+i-1) = zi(jnbmag+i-1)+1
                     total_length = total_length+1
@@ -235,8 +243,15 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
             do i = 1, nbgrou
                 call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'E', jgr)
                 do k = 1, nbtag
-                    if (zi(jtag+k-1) .eq. zi(jindma+i-1) .and. &
-                        (versio .eq. 1 .or. dime(ityp) .eq. zi(jdime-1+i))) then
+                    if (zi(jtag+k-1) .ne. zi(jindma+i-1)) then
+                        cycle
+                    end if
+                    same_dim = ASTER_TRUE
+                    if (versio == 2) then
+                        same_dim = ASTER_FALSE
+                        if (dime(ityp) .eq. zi(jdime-1+i)) same_dim = ASTER_TRUE
+                    end if
+                    if (same_dim) then
                         zi(jnbmag+i-1) = zi(jnbmag+i-1)+1
                         zi(jgr+zi(jnbmag+i-1)-1) = zi(jnuma+ima-1)
                         ! Exit because a tag may be present twice in GMSH

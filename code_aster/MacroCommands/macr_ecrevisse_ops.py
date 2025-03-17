@@ -546,10 +546,9 @@ def macr_ecrevisse_ops(self, **args):
             if MacrCritere == "EXPLICITE":
                 Convergence = True
             else:
-                if (nume_ordre != 0) and (nume_ordre + 1 <= MacrNumeOrdre):
-                    UTMESS(
-                        "A", "ECREVISSE0_33", vali=[nume_ordre + 1, MacrNumeOrdre], valr=inst_p_un
-                    )
+                if nume_ordre != 0 and nume_ordre + 1 <= MacrNumeOrdre:
+                    dict_args = dict(vali=[nume_ordre + 1, MacrNumeOrdre], valr=inst_p_un)
+                    UTMESS("A", "ECREVISSE0_33", **dict_args)
                     Convergence = True
 
             if Convergence:

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,9 +108,8 @@ def post_bordet_ops(
     elif NUME_ORDRE:
         nume_ordre = NUME_ORDRE
         if nume_ordre not in list_ordre:
-            UTMESS(
-                "F", "RUPTURE0_51", vali=int(nume_ordre), valk="utilise pour le calcul de Bordet"
-            )
+            dict_args = dict(vali=int(nume_ordre), valk="utilise pour le calcul de Bordet")
+            UTMESS("F", "RUPTURE0_51", **dict_args)
     #
     # Pour Bordet, il nous faut les champs a tous les instants jusqu'a
     # l'instant considere

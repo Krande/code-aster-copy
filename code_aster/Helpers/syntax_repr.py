@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -230,7 +230,7 @@ class SimpKwdLine(KwdLine):
         attrs  name   =   into         type
         ♦     FICHIER = text,
 
-    Replace "[I]", "[TXM]" by "int", "text" as "value". No type when into exists.
+    Replace "[I]", "[TXM]" by "int", "text" as "value". No type when 'into' exists.
     + min/max, "l_int" ?
     """
 
@@ -239,6 +239,7 @@ class SimpKwdLine(KwdLine):
         self._into = []
         self._typ = None
         self._default = None
+        self._max = 1
 
     @property
     def hidden(self):
@@ -252,6 +253,7 @@ class SimpKwdLine(KwdLine):
         self._typ = defs.get("typ")
         self._into = defs.get("into", [])
         self._default = defs.get("defaut")
+        self._max = defs.get("max", 1)
 
     def _repr_value(self, value):
         if self._typ == "TXM":
@@ -264,6 +266,8 @@ class SimpKwdLine(KwdLine):
         if not self._into:
             try:
                 value = _var(self._typ)
+                if self._max != 1:
+                    value = f"list[{value}]"
             except AttributeError:
                 raise TypeError(self._name, self._typ)
             if self._default is not None:
