@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
-                  rigma, rigma2, rigto)
+                  rigma, rigma2)
     implicit none
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
@@ -40,15 +40,14 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
     integer :: ifreq, nfreq
     character(len=8) :: noma
     character(len=24) :: nogr
-    real(kind=8) :: rigma(*), rigma2(*), rigto(*)
-!      REAL*8       FREQ, RIGMA(*), RIGTO(*)
-!     ------------------------------------------------------------------
+    real(kind=8) :: rigma(*), rigma2(*)
+!
+! ------------------------------------------------------------------
 !
     character(len=8) :: nommai
     character(len=24) :: mlgnma, magrma, manoma, tabrig
 !
-!
-!-----------------------------------------------------------------------
+! -----------------------------------------------------------------------
     integer :: i1, i2, ifr, ii, ij, im
     integer :: in, inoe, iret, isoto
     integer :: jrig, ldgm, ldnm, nb, nbmode, nbno, noemax
@@ -124,6 +123,8 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
         end do
     end do
 !
+    i1 = 0
+    i2 = 0
     do in = 0, nb-1
         im = zi(ldgm+in)
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
@@ -146,18 +147,12 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
             if (zi(ldnm) .eq. noeud(ii)) i1 = ii
             if (zi(ldnm+1) .eq. noeud(ii)) i2 = ii
         end do
-        rigma(3*in+1) = 0.5d0*zr( &
-                        jrig+(3*i2-3)*nbmode+3*i1-3)*(zr(isoto+3*i1-3)/sompar(1+3*i1-3)+zr(iso&
-                        &to+3*i2-3)/sompar(1+3*i2-3)+0.d0 &
-                        )
-        rigma(3*in+2) = 0.5d0*zr( &
-                        jrig+(3*i2-2)*nbmode+3*i1-2)*(zr(isoto+3*i1-2)/sompar(1+3*i1-2)+zr(iso&
-                        &to+3*i2-2)/sompar(1+3*i2-2)+0.d0 &
-                        )
-        rigma(3*in+3) = 0.5d0*zr( &
-                        jrig+(3*i2-1)*nbmode+3*i1-1)*(zr(isoto+3*i1-1)/sompar(1+3*i1-1)+zr(iso&
-                        &to+3*i2-1)/sompar(1+3*i2-1)+0.d0 &
-                        )
+        rigma(3*in+1) = 0.5d0*zr(jrig+(3*i2-3)*nbmode+3*i1-3)* &
+                        (zr(isoto+3*i1-3)/sompar(1+3*i1-3)+zr(isoto+3*i2-3)/sompar(1+3*i2-3))
+        rigma(3*in+2) = 0.5d0*zr(jrig+(3*i2-2)*nbmode+3*i1-2)* &
+                        (zr(isoto+3*i1-2)/sompar(1+3*i1-2)+zr(isoto+3*i2-2)/sompar(1+3*i2-2))
+        rigma(3*in+3) = 0.5d0*zr(jrig+(3*i2-1)*nbmode+3*i1-1)* &
+                        (zr(isoto+3*i1-1)/sompar(1+3*i1-1)+zr(isoto+3*i2-1)/sompar(1+3*i2-1))
     end do
 !
     call r8inir(3*nbno, 0.d0, rigma2, 1)
@@ -172,14 +167,6 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
         r2 = rigma(3*in+2)
         r3 = rigma(3*in+3)
 !
-        rigto(3*(im-1)+1) = r1+rigto(3*(im-1)+1)
-        rigto(3*(im-1)+2) = r2+rigto(3*(im-1)+2)
-        rigto(3*(im-1)+3) = r3+rigto(3*(im-1)+3)
-!
-        r1 = rigto(3*(im-1)+1)
-        r2 = rigto(3*(im-1)+2)
-        r3 = rigto(3*(im-1)+3)
-!
         rigma(3*in+1) = r1
         rigma(3*in+2) = r2
         rigma(3*in+3) = r3
@@ -190,12 +177,12 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
         rigma2(3*(i2-1)+2) = r2+rigma2(3*(i2-1)+2)
         rigma2(3*(i2-1)+3) = r3+rigma2(3*(i2-1)+3)
         call jenuno(jexnum(mlgnma, im), nommai)
-        write (ifr, 1000) nommai, -r1, -r2, -r3
+        write (ifr, 100) nommai, -r1, -r2, -r3
     end do
 !
-1000 format(2x, '_F ( MAILLE=''', a8, ''',', 1x, 'CARA= ''K_T_D_L'' , ',&
-    &      /7x, 'VALE=(', 1x, 3(1x, 1pe12.5, ','), 1x, '),',&
-    &      /'   ),')
+100 format(2x, '_F ( MAILLE=''', a8, ''',', 1x, 'CARA= ''K_T_D_L'' , ', &
+           /7x, 'VALE=(', 1x, 3(1x, 1pe12.5, ','), 1x, '),', &
+           /'   ),')
 !
     AS_DEALLOCATE(vi=parno)
     AS_DEALLOCATE(vi=noeud)
