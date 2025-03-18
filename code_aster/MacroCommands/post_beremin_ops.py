@@ -250,6 +250,7 @@ class PostBeremin:
             self._use_function = True
             self._weib_params = params.copy()
             self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
+            self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
 
         if self._rout:
             for param in ["SIGM_REFE", "M", "SIGM_SEUIL"]:
@@ -370,18 +371,21 @@ class PostBeremin:
             temp = self.get_temperature_field(idx)
             sigref = temp.apply(sigma_refe)
             assert abs(sigref).min() > 0.0
+            sigthr = temp.apply(sigma_thr)
             sigref.restrict(self._zone_ids)
+            sigthr.restrict(self._zone_ids)
             sig1 /= sigref
             sig1 *= self._weib_params["SIGM_CNV"]
+            sig1 -= sigthr
+        else:
+            if sigma_thr > 0.0:
+                # apply threshold
+                sig1 -= sigma_thr
 
-        if sigma_thr > 0.0:
-            # apply threshold
-            sig1 -= sigma_thr
+        def sig_filter(array):
+            return np.where(array < 0.0, 0.0, array)
 
-            def sig_filter(array):
-                return np.where(array < 0.0, 0.0, array)
-
-            sig1 = sig1.apply(sig_filter)
+        sig1 = sig1.apply(sig_filter)
 
         return sig1
 
@@ -696,7 +700,7 @@ class PostBeremin:
                         self._zone,
                         pow_m,
                         sigma_refe if not self._use_function else "FONCTION",
-                        sigma_thr,
+                        sigma_thr if not self._use_function else "FONCTION",
                         strwb,
                         strwb_pm,
                         proba,
@@ -731,7 +735,7 @@ class PostBeremin:
                                 mesh_2D_name,
                                 pow_m,
                                 sigma_refe if not self._use_function else "FONCTION",
-                                sigma_thr,
+                                sigma_thr if not self._use_function else "FONCTION",
                                 strwb,
                                 strwb_pm,
                                 proba,
@@ -748,7 +752,7 @@ class PostBeremin:
                                 self._dictfondfiss[mesh_2D_name][4],
                                 pow_m,
                                 sigma_refe if not self._use_function else "FONCTION",
-                                sigma_thr,
+                                sigma_thr if not self._use_function else "FONCTION",
                                 strwb,
                                 strwb_pm,
                                 proba,
@@ -838,12 +842,12 @@ class TableBeremin(Table):
 
         if not group_no:
             if use_function:
-                self.types = "IRKRKRRRR"
+                self.types = "IRKRKKRRR"
             else:
                 self.types = "IRKRRRRRR"
         else:
             if use_function:
-                self.types = "IRKRRRRRRKRRRR"
+                self.types = "IRKRRRRRRKKRRR"
             else:
                 self.types = "IRKRRRRRRRRRRR"
 
