@@ -180,10 +180,11 @@ int main(void){
         mat = re.search(r"PETSCVER: *(?P<vers>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)", ret)
         vers = mat and mat.group("vers")
         major, minor, sub, patch = [int(i) for i in vers.split(".")]
-        vers = "%d.%d.%dp%d" % (major, minor, sub, patch)
-        if major < 3 or (major == 3 and minor < 17):
+        vers = f"{major}.{minor}.{sub}p{patch}"
+        ok = major == 3 and (17 <= minor < 22)
+        if not ok:
             self.end_msg(
-                "unsupported petsc version: {0} " "(expected 3.17 or newer)".format(vers), "RED"
+                "unsupported petsc version: {0} (expected >=3.17,<=3.21)".format(vers), "RED"
             )
             raise Errors.ConfigurationError
         self.define("ASTER_PETSC_VERSION", vers)
