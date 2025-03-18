@@ -383,7 +383,11 @@ class ConvergenceManager(ContextMixin):
         if self.state.externVar:
             if self.problem.getMaterialField().hasExternalStateVariableForLoad():
                 varc = disc_comp.getExternalStateVariablesForces(
-                    self.state.time_curr, self.state.externVar
+                    self.state.time_curr,
+                    self.state.externVar,
+                    self.state.getState(-1).externVar,
+                    self.state.internVar,
+                    self.state.getState(-1).stress,
                 ).getValues()
 
         for [iNode, cmp], ieq in cmp2dof.items():
