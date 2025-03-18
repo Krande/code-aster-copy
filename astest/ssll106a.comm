@@ -586,7 +586,7 @@ TEST_RESU(
             * ((R - EP) ** 2)
             * (R - 0.5 * EP)
             / (E * (R**2 - (R - EP) ** 2))
-            * (1 - NU + (1 + NU) * R**2 / (R - 0.5 * EP) ** 2),  # TODO
+            * (1 - NU + (1 + NU) * R**2 / (R - 0.5 * EP) ** 2),
             PRECISION=0.040000000000000001,
             NOM_CAS="CHARGE NUMERO 7 ",
         ),
@@ -803,7 +803,7 @@ TEST_RESU(
             GROUP_NO="N1",
             NOM_CMP="KY",
             VALE_CALC=-0.010399278,
-            VALE_REFE=-KYF,
+            VALE_REFE=KYF,
             PRECISION=0.012999999999999999,
             GROUP_MA="M1",
             NOM_CAS="CHARGE NUMERO 3 ",
