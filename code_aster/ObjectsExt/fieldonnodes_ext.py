@@ -30,6 +30,10 @@ complex numbers (:py:class:`FieldOnNodesComplex`).
 
 import functools
 import operator
+import os
+import os.path as osp
+import subprocess
+import tempfile
 
 import numpy as np
 from libaster import (
@@ -42,7 +46,17 @@ from libaster import (
 
 from ..Objects import PythonBool
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, PETSc, config, injector, deprecated, force_list, medcoupling as medc
+from ..Utilities import (
+    MPI,
+    ExecutionParameter,
+    PETSc,
+    config,
+    deprecated,
+    force_list,
+    injector,
+    shared_tmpdir,
+)
+from ..Utilities import medcoupling as medc
 
 
 class FieldOnNodesStateBuilder(InternalStateBuilder):
@@ -172,6 +186,56 @@ class ExtendedFieldOnNodesReal:
                 indir.setdefault((ldx[0][0][node], cmp), []).append(row)
         return indir
 
+    def plot(self, command="gmsh", local=False, split=False):
+        """Plot the field.
+
+        Arguments:
+            command (str): Program to be executed to plot the field.
+            local (bool): Print in separate files if *True*. Otherwise an unique file is used.
+            split (bool): Display the field on each subdomain separately if *True*. Otherwise the global field is displayed.
+        """
+        comm = MPI.ASTER_COMM_WORLD
+        mesh = self.getMesh()
+        opt = "Mesh.VolumeEdges = 0;Mesh.VolumeFaces=0;Mesh.SurfaceEdges=0;Mesh.SurfaceFaces=0;View[0].ShowElement = 1;"
+        if local and mesh.isParallel():
+            with shared_tmpdir("plot") as tmpdir:
+                filename = osp.join(tmpdir, f"field_{comm.rank}.med")
+                self.printMedFile(filename, local=True)
+                comm.Barrier()
+                if comm.rank == 0:
+                    if split:
+                        for i in range(comm.size):
+                            ff = osp.join(tmpdir, f"field_{i}.med")
+                            subprocess.run(
+                                [
+                                    ExecutionParameter().get_option(f"prog:{command}"),
+                                    "-string",
+                                    opt,
+                                    ff,
+                                ]
+                            )
+                    else:
+                        files = [osp.join(tmpdir, f"field_{i}.med") for i in range(comm.size)]
+                        subprocess.run(
+                            [ExecutionParameter().get_option(f"prog:{command}"), "-string", opt]
+                            + files
+                        )
+        else:
+            with shared_tmpdir("plot") as tmpdir:
+                filename = osp.join(tmpdir, "field.med")
+                self.printMedFile(filename, local=False)
+                if comm.rank == 0:
+                    subprocess.run(
+                        [
+                            ExecutionParameter().get_option(f"prog:{command}"),
+                            "-string",
+                            opt,
+                            filename,
+                        ]
+                    )
+        print("waiting for all plotting processes...")
+        comm.Barrier()
+
     def toPetsc(self, local=False):
         """Convert the field to a PETSc vector object.
 
@@ -196,17 +260,23 @@ class ExtendedFieldOnNodesReal:
                 _vec.setValues(range(neq), val, PETSc.InsertMode.INSERT_VALUES)
             else:
                 _vec.setType("mpi")
-                globNume = self.getDescription()
-                ownedRows = globNume.getNoGhostDOFs()
-                neql = len(ownedRows)
-                neqg = globNume.getNumberOfDOFs(local=False)
-                _vec.setSizes((neql, neqg))
-                val = self.getValues()
-                l2g = globNume.getLocalToGlobalMapping()
-                extract = operator.itemgetter(*ownedRows)
-                ll2g = extract(l2g)
-                lval = extract(val)
-                _vec.setValues(ll2g, lval, PETSc.InsertMode.INSERT_VALUES)
+                if comm.Get_size() == 1:
+                    val = self.getValues()
+                    neq = len(val)
+                    _vec.setSizes(neq)
+                    _vec.setValues(range(neq), val, PETSc.InsertMode.INSERT_VALUES)
+                else:
+                    globNume = self.getDescription()
+                    ownedRows = globNume.getNoGhostDOFs()
+                    neql = len(ownedRows)
+                    neqg = globNume.getNumberOfDOFs(local=False)
+                    _vec.setSizes((neql, neqg))
+                    val = self.getValues()
+                    l2g = globNume.getLocalToGlobalMapping()
+                    extract = operator.itemgetter(*ownedRows)
+                    ll2g = extract(l2g)
+                    lval = extract(val)
+                    _vec.setValues(ll2g, lval, PETSc.InsertMode.INSERT_VALUES)
         else:
             _vec = PETSc.Vec().create()
             _vec.setType("mpi")

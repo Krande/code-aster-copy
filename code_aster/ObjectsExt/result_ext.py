@@ -22,14 +22,26 @@
 :py:class:`Result` --- Results container
 **************************************************
 """
+import os.path as osp
+import subprocess
 
 import aster
 from libaster import Result
 
 from ..Messages import UTMESS
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import SearchList, InterpolateList, force_list, injector, is_number, logger
+from ..Utilities import (
+    MPI,
+    ExecutionParameter,
+    InterpolateList,
+    SearchList,
+    force_list,
+    injector,
+    is_number,
+    logger,
+)
 from ..Utilities import medcoupling as medc
+from ..Utilities import shared_tmpdir
 from ..Utilities.MedUtils import MEDConverter
 
 
@@ -438,6 +450,56 @@ class ExtendedResult:
                 raise KeyError("Echec lors de la création du paramètre")
 
         self._setField(field, name, storageIndex)
+
+    def plot(self, command="gmsh", local=False, split=False):
+        """Plot the result.
+
+        Arguments:
+            command (str): Program to be executed to plot the result.
+            local (bool): Print in separate files if *True*. Otherwise an unique file is used.
+            split (bool): Display the fields on each subdomain separately if *True*. Otherwise the global fields are displayed.
+        """
+        comm = MPI.ASTER_COMM_WORLD
+        mesh = self.getMesh()
+        opt = "Mesh.VolumeEdges = 0;Mesh.VolumeFaces=0;Mesh.SurfaceEdges=0;Mesh.SurfaceFaces=0;View[0].ShowElement = 1;"
+        if (local and mesh.isParallel()) or (split and mesh.isParallel()):
+            with shared_tmpdir("plot") as tmpdir:
+                filename = osp.join(tmpdir, f"field_{comm.rank}.med")
+                self.printMedFile(filename, local=True)
+                comm.Barrier()
+                if comm.rank == 0:
+                    if split:
+                        for i in range(comm.size):
+                            ff = osp.join(tmpdir, f"field_{i}.med")
+                            subprocess.run(
+                                [
+                                    ExecutionParameter().get_option(f"prog:{command}"),
+                                    "-string",
+                                    opt,
+                                    ff,
+                                ]
+                            )
+                    else:
+                        files = [osp.join(tmpdir, f"field_{i}.med") for i in range(comm.size)]
+                        subprocess.run(
+                            [ExecutionParameter().get_option(f"prog:{command}"), "-string", opt]
+                            + files
+                        )
+        else:
+            with shared_tmpdir("plot") as tmpdir:
+                filename = osp.join(tmpdir, "field.med")
+                self.printMedFile(filename, local=False)
+                if comm.rank == 0:
+                    subprocess.run(
+                        [
+                            ExecutionParameter().get_option(f"prog:{command}"),
+                            "-string",
+                            opt,
+                            filename,
+                        ]
+                    )
+        print("waiting for all plotting processes...")
+        comm.Barrier()
 
     def createMedCouplingResult(self, medmesh=None, profile=False, prefix=""):
         """Export the result to a new MED container.

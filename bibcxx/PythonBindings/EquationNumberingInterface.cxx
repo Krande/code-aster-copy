@@ -3,7 +3,7 @@
  * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -62,18 +62,30 @@ Returns:
     int: number of DOFs.
         )",
               py::arg( "local" ) = false )
+        // ---------------------------------------------------------------------
         .def( "getPhysicalQuantity", &EquationNumbering::getPhysicalQuantity, R"(
 Returns the name of the physical quantity that is numbered.
 
 Returns:
     str: physical quantity name.
         )" )
+        // ---------------------------------------------------------------------
+        .def( "getNoGhostDOFs", &EquationNumbering::getNoGhostDOFs,
+              R"(
+Returns the indexes of the DOFs owned locally (aka not ghost).
+
+Returns:
+int: indexes of the DOFs owned locally.
+    )",
+              py::arg( "local" ) = false )
+        // ---------------------------------------------------------------------
         .def( "isParallel", &EquationNumbering::isParallel, R"(
 The numbering is distributed across MPI processes for High Performance Computing.
 
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
+        // ---------------------------------------------------------------------
         .def( "getNodeAndComponentFromDOF",
               py::overload_cast< const bool >( &EquationNumbering::getNodeAndComponentFromDOF,
                                                py::const_ ),
@@ -87,6 +99,7 @@ Returns:
                 list[tuple[int, str]] : node id and name of component for each dofs
             )",
               py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
         .def( "getNodeAndComponentFromDOF",
               py::overload_cast< const ASTERINTEGER, const bool >(
                   &EquationNumbering::getNodeAndComponentFromDOF, py::const_ ),
@@ -101,6 +114,7 @@ Returns:
                 tuple[int, str] : node id and name of component
             )",
               py::arg( "dof" ), py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
         .def( "getNodeAndComponentIdFromDOF",
               py::overload_cast< const bool >( &EquationNumbering::getNodeAndComponentIdFromDOF,
                                                py::const_ ),
@@ -114,6 +128,7 @@ Returns:
                 list[tuple[int, int]] : node id and component if for each dofs
             )",
               py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
         .def( "getNodeAndComponentIdFromDOF",
               py::overload_cast< const ASTERINTEGER, const bool >(
                   &EquationNumbering::getNodeAndComponentIdFromDOF, py::const_ ),
@@ -128,6 +143,7 @@ Returns:
                 tuple[int, int] : node id and component if for each dofs
             )",
               py::arg( "dof" ), py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
         .def( "getDOFFromNodeAndComponentId",
               py::overload_cast< const bool >( &EquationNumbering::getDOFFromNodeAndComponentId,
                                                py::const_ ),
@@ -141,6 +157,7 @@ Returns:
                 dict[int, str] : dofs id for each node id and component id
             )",
               py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
         .def( "getDOFFromNodeAndComponent",
               py::overload_cast< const bool >( &EquationNumbering::getDOFFromNodeAndComponent,
                                                py::const_ ),
@@ -154,12 +171,14 @@ Returns:
                 dict[int, str] : dofs id for each node id and component's name
             )",
               py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
         .def( "getComponents", &EquationNumbering::getComponents, R"(
             Get list of components
 
             Returns:
                 list[str]: list of components
             )" )
+        // ---------------------------------------------------------------------
         .def( "getDOFsWithDescription",
               py::overload_cast< const VectorString &, const VectorString &, const bool,
                                  const ASTERINTEGER >( &EquationNumbering::getDOFsWithDescription,
@@ -178,6 +197,7 @@ Returns:
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupNames" ) = VectorString(),
               py::arg( "local" ) = true, py::arg( "same_rank" ) = PythonBool::None )
+        // ---------------------------------------------------------------------
         .def( "getDOFsWithDescription",
               py::overload_cast< const VectorString &, const VectorLong &, const bool,
                                  const ASTERINTEGER >( &EquationNumbering::getDOFsWithDescription,

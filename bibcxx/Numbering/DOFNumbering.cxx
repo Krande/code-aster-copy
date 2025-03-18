@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -50,6 +50,10 @@ bool DOFNumbering::useSingleLagrangeDOF() const {
 
 VectorLong DOFNumbering::getPhysicalDOFs( const bool local ) const {
     return getEquationNumbering()->getPhysicalDOFs( local );
+};
+
+VectorLong DOFNumbering::getNoGhostDOFs( const bool local ) const {
+    return getEquationNumbering()->getNoGhostDOFs( local );
 };
 
 VectorLong DOFNumbering::getLagrangeDOFs( const bool local ) const {

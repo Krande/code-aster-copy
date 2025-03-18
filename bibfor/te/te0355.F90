@@ -23,6 +23,7 @@ subroutine te0355(nomopt, nomte)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/laelem.h"
@@ -47,12 +48,16 @@ subroutine te0355(nomopt, nomte)
     type(ContactParameters) :: parameters
     type(ContactGeom) :: geom
     real(kind=8) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
-    real(kind=8) :: matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
-    real(kind=8) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    real(kind=8), pointer :: matr_cont(:, :) => null()
+    real(kind=8), pointer :: matr_fric(:, :) => null()
     aster_logical :: diff_num, l_vari
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
+! - Large arrays allocated on the heap rather than on the stack
+    allocate (matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS))
+    allocate (matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS))
 
 ! - Informations about finite element
     call laelem(nomte, geom, parameters)
@@ -111,5 +116,8 @@ subroutine te0355(nomopt, nomte)
     else
         ASSERT(ASTER_FALSE)
     end if
+!
+    deallocate (matr_cont)
+    deallocate (matr_fric)
 !
 end subroutine

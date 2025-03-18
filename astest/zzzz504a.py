@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
 # print single files
 depl = resu.getField("DEPL", 1.0, "INST")
 with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, f"depl.med")
+    medfile = osp.join(tmpdir, "depl.med")
     depl.printMedFile(medfile, local=False)
 
 # if (parallel):
@@ -174,12 +174,8 @@ pMesh2.readMedFile("zzzz504a.med")
 
 # Test if med file print by #0 is not overwrite by others procs
 with shared_tmpdir("zzzz504a_") as tmpdir:
-    comm.bcast(tmpdir)
-    medfile = osp.join(tmpdir, "resu_new0.med")
-    # "sleep" is mandatory to be sure that #0 have written its file
-    if rank != 0:
-        time.sleep(3)
-    resu.printMedFile(medfile)
+    medfile = osp.join(tmpdir, f"resu_new{rank}.med")
+    resu.printMedFile(medfile, local=True)
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh2,
@@ -220,11 +216,7 @@ resu = STAT_NON_LINE(
 )
 
 with shared_tmpdir("zzzz504a_") as tmpdir:
-    comm.bcast(tmpdir)
-    medfile = osp.join(tmpdir, f"resu_new1.med")
-    # "sleep" is mandatory to be sure that #0 have written its file
-    if rank != 0:
-        time.sleep(3)
+    medfile = osp.join(tmpdir, f"resu_new{rank}.med")
     resu.printMedFile(medfile, local=True)
 
 FIN()

@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -279,6 +279,19 @@ class EquationNumbering : public BaseEquationNumbering {
      * @brief Are Lagrange Multipliers used for BC or MPC
      */
     bool useLagrangeDOF() const;
+
+    /**
+     * @brief Get Rows Associated to all Ghost Dof
+     */
+    VectorLong getGhostDOFs( const bool local = false ) const {
+        // throw std::runtime_error( "No ghost DOF in sequential" );
+        return VectorLong();
+    };
+
+    /**
+     * @brief Get Rows owned locally (aka not Ghost)
+     */
+    VectorLong getNoGhostDOFs( const bool local = false ) const;
 
     /**
      * @brief Are Single Lagrange Multipliers used for BC or MPC

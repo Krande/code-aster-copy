@@ -912,10 +912,7 @@ def macPlot(
         lPhysical = np.array(mass.getDOFNumbering().getPhysicalDOFs())
         lDOF = lPhysical
         if dof:
-            dict_dof = {}
-            for row in lPhysical:
-                dd = mass.getDOFNumbering().getComponentFromDOF(int(row))
-                dict_dof.setdefault(dd, []).append(row)
+            dict_dof = mass.getDOFNumbering().getDictComponentsToDOFs()
             lDOF = sum([dict_dof[d] for d in dof], [])
         # extract mass matrix in the form a 3 arrays
         Mp = mass.getValuesWithDescription()

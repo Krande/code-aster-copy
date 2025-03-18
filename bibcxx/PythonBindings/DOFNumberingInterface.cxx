@@ -3,7 +3,7 @@
  * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -61,6 +61,15 @@ Returns:
     int: index of the node.
         )",
               py::arg( "dof" ), py::arg( "local" ) = false )
+        // ---------------------------------------------------------------------
+        .def( "getNoGhostDOFs", &DOFNumbering::getNoGhostDOFs,
+              R"(
+Returns the indexes of the DOFs owned locally (aka not ghost).
+
+Returns:
+  int: indexes of the DOFs owned locally.
+      )",
+              py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
         .def( "getDOFFromNodeAndComponent", &DOFNumbering::getDOFFromNodeAndComponent,
               R"(
@@ -125,7 +134,7 @@ Arguments:
     local (bool, optional): not used (default: false).
 
 Returns:
-    [dict]: {1 : indexes of the first Lagrange multipliers dof, 
+    [dict]: {1 : indexes of the first Lagrange multipliers dof,
              2 : indexes of the second Lagrange multipliers dof }
         )",
               py::arg( "local" ) = false )
