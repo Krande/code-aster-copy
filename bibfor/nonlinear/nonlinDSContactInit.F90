@@ -32,7 +32,6 @@ subroutine nonlinDSContactInit(mesh, ds_contact)
 #include "asterfort/jelira.h"
 #include "asterfort/matdis.h"
 #include "asterfort/utmess.h"
-#include "asterfort/xrela_elim.h"
 #include "asterfort/lac_rela.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jeveuo.h"
