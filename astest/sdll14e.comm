@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ CARELEM = AFFE_CARA_ELEM(
         SECTION="CERCLE",
         CARA=("R", "EP"),
         VALE=(0.010, 0.002),
-        MODI_METRIQUE="OUI",
+        MODI_METRIQUE="NON",
     ),
     ORIENTATION=_F(GROUP_NO="D", CARA="GENE_TUYAU", VALE=(0.0, 0.0, 1.0)),
 )
@@ -147,6 +147,8 @@ TA_FREQ2 = RECU_TABLE(CO=MODE_PG2, NOM_PARA="FREQ")
 FO_FREQ2 = RECU_FONCTION(TABLE=TA_FREQ2, PARA_X="NUME_ORDRE", PARA_Y="FREQ")
 f2 = FO_FREQ2.Valeurs()[1][0]  # extraction de la valeur propre contenue dans MODE_PG2
 f_max_systeme2 = 1.0 / (4 * pi**2 * f2)  # conversion en valeur physique.
+print(f_max_systeme, flush=True)
+print(f_max_systeme2, flush=True)
 # Cette valeur est la reference pour la modelisation SDLL14d.
 # On doit avoir f_max_systeme = f_max_systeme2
 
