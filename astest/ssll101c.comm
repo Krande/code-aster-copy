@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -162,7 +162,7 @@ TEST_RESU(
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
-            VALE_CALC=-1.6363051587193e-04,
+            VALE_CALC=-0.00016483799715389795,
             VALE_REFE=-1.6516999999999999e-4,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-2,
@@ -173,10 +173,10 @@ TEST_RESU(
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=-1.251023604331e-05,
+            VALE_CALC=-1.3312371969411929e-05,
             VALE_REFE=-1.3869999999999999e-05,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.10000000000000001,
+            PRECISION=0.05,
             NOM_CAS="CHARGE NUMERO 1",
         ),
         _F(
@@ -184,7 +184,7 @@ TEST_RESU(
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
-            VALE_CALC=-8.0182815803946e-06,
+            VALE_CALC=-8.032390518990907e-06,
             VALE_REFE=-8.0376000000000008e-06,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-2,
@@ -195,7 +195,7 @@ TEST_RESU(
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
-            VALE_CALC=-1.629109091647e-04,
+            VALE_CALC=-0.00016411180749497425,
             VALE_REFE=-1.6445000000000001e-4,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-2,
@@ -206,10 +206,10 @@ TEST_RESU(
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=-1.2876339035579e-05,
+            VALE_CALC=-1.3679955453987833e-05,
             VALE_REFE=-1.4245e-05,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.10000000000000001,
+            PRECISION=0.05,
             NOM_CAS="CHARGE NUMERO 2",
         ),
         _F(
@@ -217,7 +217,7 @@ TEST_RESU(
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
-            VALE_CALC=-1.0026647217975e-05,
+            VALE_CALC=-1.0042450659368377e-05,
             VALE_REFE=-1.0047000000000001e-05,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-2,
@@ -229,10 +229,10 @@ TEST_RESU(
             RESULTAT=RESU1,
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
-            VALE_CALC=-6.4533975067871e-03,
+            VALE_CALC=-0.006313258580781456,
             VALE_REFE=-6.3277000000000003e-3,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.01,
         ),
         _F(
             NUME_ORDRE=1,
@@ -240,7 +240,7 @@ TEST_RESU(
             RESULTAT=RESU1,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=-0.013102944630789,
+            VALE_CALC=-0.01310689508347406,
             VALE_REFE=-0.013091999999999999,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-2,
@@ -251,7 +251,7 @@ TEST_RESU(
             RESULTAT=RESU1,
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
-            VALE_CALC=0.016879514655016,
+            VALE_CALC=0.016800968313735398,
             VALE_REFE=0.016798,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-2,
