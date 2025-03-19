@@ -251,6 +251,8 @@ class PostBeremin:
             self._weib_params = params.copy()
             self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
             self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
+            assert params["SIGM_REFE"].Parametres()['NOM_PARA'] in ['TEMP', 'TOUTPARA']
+            assert params["SIGM_SEUIL"].Parametres()['NOM_PARA'] in ['TEMP', 'TOUTPARA']
 
         if self._rout:
             for param in ["SIGM_REFE", "M", "SIGM_SEUIL"]:
