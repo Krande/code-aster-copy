@@ -3,7 +3,7 @@
  * @brief Definition of elementary vectors
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -275,7 +275,8 @@ class GenericElementaryVector : public BaseElementaryVector {
      * @brief Assembly with dofNume
      * @param dofNume object DOFNumbering
      */
-    FieldOnNodesPtr assemble( const BaseDOFNumberingPtr dofNume = nullptr ) const {
+    FieldOnNodesPtr assemble( const BaseDOFNumberingPtr dofNume = nullptr,
+                              bool minimum = false ) const {
         if ( !_isBuilt )
             raiseAsterError( "The ElementaryVector is empty. Call build before" );
 
@@ -300,8 +301,13 @@ class GenericElementaryVector : public BaseElementaryVector {
         ASTERINTEGER nbElem = 1;
         std::string base( "G" );
 
-        CALL_ASSVEC( base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
-                     nume->getName().c_str(), &typscal );
+        if ( minimum ) {
+            CALL_ASSMIV( base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
+                         nume->getName().c_str(), &typscal );
+        } else {
+            CALL_ASSVEC( base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
+                         nume->getName().c_str(), &typscal );
+        }
 
         FreeStr( tabNames );
 
