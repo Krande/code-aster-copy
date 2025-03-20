@@ -687,6 +687,21 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         return *this;
     };
 
+    JeveuxVectorClass< ValueType > &operator/=( const JeveuxVectorClass< ValueType > &other ) {
+        CALL_JEMARQ();
+        this->updateValuePointer();
+        const auto size = this->size();
+        AS_ASSERT( size == other.size() );
+
+        other.updateValuePointer();
+        for ( ASTERINTEGER i = 0; i < size; ++i )
+            this->operator[]( i ) = this->operator[]( i ) / other.operator[]( i );
+
+        CALL_JEDEMA();
+
+        return *this;
+    };
+
     /**
      * @brief MinusEqual overloading
      * @return Updated JeveuxVector
