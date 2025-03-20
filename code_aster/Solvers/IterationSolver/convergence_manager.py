@@ -31,7 +31,7 @@ class ConvergenceManager(ContextMixin):
 
     __needs__ = ("problem", "state", "keywords")
 
-    _param = None
+    _param = _residual_reference = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     class UnDefined:
@@ -174,7 +174,6 @@ class ConvergenceManager(ContextMixin):
             Returns:
                 bool: *True* if the value is converged, *False* otherwise.
             """
-
             if not self.hasRef():
                 return True
             if not self.isSet():
@@ -230,6 +229,17 @@ class ConvergenceManager(ContextMixin):
             """
             return self.isSet() and self._value >= self._refe
 
+    class ReferenceParameter(Parameter):
+        """reerences for RESI_REFE_RELA"""
+
+        match = re.compile("_REFE$").search
+
+        def isConverged(self):
+            return True
+
+        def isFinished(self):
+            return True
+
     @classmethod
     def builder(cls, context):
         """Default builder for :py:class:`ContextMixin` object.
@@ -242,9 +252,15 @@ class ConvergenceManager(ContextMixin):
             instance: New object.
         """
         instance = super().builder(context)
-        for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "ITER_GLOB_MAXI"):
+        for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "ITER_GLOB_MAXI", "RESI_REFE_RELA"):
             value = instance.get_keyword("CONVERGENCE", crit)
             if value is not None:
+                instance.setdefault(crit, value)
+        if instance.get_keyword("CONVERGENCE", "RESI_REFE_RELA"):
+            for crit in [
+                x for x in instance.get_keyword("CONVERGENCE").keys() if x.endswith("_REFE")
+            ]:
+                value = instance.get_keyword("CONVERGENCE", crit)
                 instance.setdefault(crit, value)
         if instance.get_keyword("CONTACT"):
             instance.setdefault("RESI_GEOM", instance.get_keyword("CONTACT", "RESI_GEOM"))
@@ -322,6 +338,14 @@ class ConvergenceManager(ContextMixin):
             if isinstance(para, ConvergenceManager.IterationParameter)
         ]
 
+    @property
+    def _references(self):
+        return [
+            (name, para)
+            for name, para in self._param.items()
+            if isinstance(para, ConvergenceManager.ReferenceParameter)
+        ]
+
     def getParameters(self):
         """Return a copy of the parameters with their current values.
 
@@ -359,6 +383,17 @@ class ConvergenceManager(ContextMixin):
                     residual[ieq] = diriBCs[ieq]
 
         return residual
+
+    @profile
+    def getResidualReference(self):
+        if self._residual_reference is not None:
+            return self._residual_reference
+        disc_comp = DiscreteComputation(self.problem)
+        vale_by_name = {}
+        for name, reference in self._references:
+            vale_by_name[name] = reference.reference
+        self._residual_reference = disc_comp.getResidualReference(vale_by_name)
+        return self._residual_reference
 
     @profile
     def getRelativeScaling(self, residuals):
@@ -429,6 +464,7 @@ class ConvergenceManager(ContextMixin):
         residual = self.getDirichletResidual(residuals.resi)
         resi_maxi = self.setdefault("RESI_GLOB_MAXI")
         resi_rela = self.setdefault("RESI_GLOB_RELA")
+        resi_refe = self.setdefault("RESI_REFE_RELA")
 
         resi_maxi.value = residual.norm("NORM_INFINITY")
 
@@ -439,10 +475,15 @@ class ConvergenceManager(ContextMixin):
         residual_rela = residual.copy()
         if scaling == 0.0:
             resi_rela.value = -1.0
-            residual_rela = residual_rela.setValues([-1] * residual_rela.size())
+            residual_rela.setValues([-1] * residual_rela.size())
         else:
             resi_rela.value = resi_maxi.value / scaling
             residual_rela = residual / scaling
+
+        if resi_refe.hasRef():
+            residual_refe = residual.copy()
+            residual_refe /= self.getResidualReference()
+            resi_refe.value = residual_refe.norm("NORM_INFINITY")
 
         resi_fields = {"RESI_NOEU": residual, "RESI_RELA_NOEU": residual_rela}
 
