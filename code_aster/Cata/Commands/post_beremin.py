@@ -94,8 +94,8 @@ POST_BEREMIN = MACRO(
         M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_CNV=SIMP(statut="o", typ="R"),
-        SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        SIGM_SEUIL=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
+        SIGM_SEUIL=SIMP(statut="o", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
     ),
     METHODE_2D=FACT(
         statut="f",

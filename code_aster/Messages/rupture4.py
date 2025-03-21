@@ -131,4 +131,15 @@ Dans METHODE_2D, la projection a échoué :
     - Augmenter PRECISION.
         """
     ),
+    24: _(
+        """
+POST_BEREMIN / WEIBULL_FO : il manque la composante X1 dans le champ %(k1)s.
+
+L'utilisation d'un champ scalaire pour définir les paramètres SIGM_REFE ou SIGM_SEUIL
+n'est prévue que pour une dépendance de ces paramètres à la position.
+
+Ceci passe par la définition d'un champ de type NOEU_NEUT_R ou ELGA_NEUT_R
+dont la composante X1 doit être la valeur de SIGM_REFE ou SIGM_SEUIL.
+        """
+    ),
 }

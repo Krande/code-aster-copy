@@ -38,8 +38,8 @@ import tempfile
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
-from ..CodeCommands import IMPR_RESU, AFFE_MODELE
-from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model
+from ..CodeCommands import IMPR_RESU
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model, Function, FieldOnNodesReal
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..MedUtils.MedConverter import field_converter
 from ..Utilities import medcoupling as medc
@@ -84,9 +84,10 @@ class PostBeremin:
     # data 2D and 3D
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
     _intvar_idx = _stress_idx = None
-    _use_hist = _use_indiplas = _use_function = None
+    _use_hist = _use_indiplas = _use_function = _use_cham = None
     _coef_mult = None
     _weib_params = None
+    _params_dependancy = None
     # data 2D only
     _method_2D = _prec_proj = _model_2D = None
     _groupno = None
@@ -247,12 +248,29 @@ class PostBeremin:
             self._weib_params = params.copy()
         else:
             params = args["WEIBULL_FO"]
-            self._use_function = True
             self._weib_params = params.copy()
             self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
             self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
-            assert params["SIGM_REFE"].Parametres()['NOM_PARA'] in ['TEMP', 'TOUTPARA']
-            assert params["SIGM_SEUIL"].Parametres()['NOM_PARA'] in ['TEMP', 'TOUTPARA']
+
+            self._use_function = {"SIGM_REFE": False, "SIGM_SEUIL": False}
+            self._use_cham = {"SIGM_REFE": False, "SIGM_SEUIL": False}
+            for param in ["SIGM_REFE", "SIGM_SEUIL"]:
+                if type(params[param]) is Function:
+                    self._use_function[param] = True
+                    assert params[param].Parametres()["NOM_PARA"] in [
+                        "TEMP",
+                        "X",
+                        "Y",
+                        "Z",
+                        "TOUTPARA",
+                    ]
+                elif type(params[param]) in [FieldOnNodesReal, FieldOnCellsReal]:
+                    if "X1" not in params[param].getComponents():
+                        UTMESS("F", "RUPTURE4_24", valk=param)
+                    self._use_cham[param] = True
+                else:
+                    assert False
+            assert sum(self._use_function.values()) + sum(self._use_cham.values()) in [0, 2]
 
         if self._rout:
             for param in ["SIGM_REFE", "M", "SIGM_SEUIL"]:
@@ -368,17 +386,23 @@ class PostBeremin:
             sigma_refe (float): sigm_refe parameter
         """
 
-        if self._use_function and sig1.size > 0:
-            # PRIN_3 / SIGM_REFE(TEMP) * SIGM_CNV
-            temp = self.get_temperature_field(idx)
-            sigref = temp.apply(sigma_refe)
-            assert abs(sigref).min() > 0.0
-            sigthr = temp.apply(sigma_thr)
-            sigref.restrict(self._zone_ids)
-            sigthr.restrict(self._zone_ids)
-            sig1 /= sigref
+        sigma_mater = {"SIGM_REFE": sigma_refe, "SIGM_SEUIL": sigma_thr}
+        sigmat = {}
+        temp = None
+        if self._use_function is not None and sig1.size > 0:
+            for param in ["SIGM_REFE", "SIGM_SEUIL"]:
+                if self._use_function[param]:
+                    if temp is None:
+                        temp = self.get_temperature_field(idx)
+                    sigmat[param] = temp.apply(sigma_mater[param])
+                    sigmat[param].restrict(self._zone_ids)
+                if self._use_cham[param]:
+                    sigmat[param] = self.build_consistant_field(idx, sigma_mater[param], sig1)
+            assert abs(sigmat["SIGM_REFE"]).min() > 0.0
+            sig1 /= sigmat["SIGM_REFE"]
             sig1 *= self._weib_params["SIGM_CNV"]
-            sig1 -= sigthr
+            sig1 -= sigmat["SIGM_SEUIL"]
+
         else:
             if sigma_thr > 0.0:
                 # apply threshold
@@ -427,6 +451,26 @@ class PostBeremin:
         varc_elga = varc_elga.toSimpleFieldOnCells()
 
         return varc_elga.TEMP
+
+    def build_consistant_field(self, idx, cham_in, sig1):
+        """Build a component field from a field on Nodes / Cells, make its support consistent
+        with the component field of major principal stress for further math operations.
+
+        Args:
+            idx (int): Timestep index
+            cham_in (*FieldOnNodesReal* or *FieldOnCellsReal*): Field of material property (SIGM_REFE or SIGM_SEUIL).
+        """
+
+        if type(cham_in) is not FieldOnCellsReal:
+            model = self._result.getModel(idx)
+            desc = model.getFiniteElementDescriptor()
+            cham_in = cham_in.toFieldOnCells(desc, "ELGA")
+        cham_out = cham_in.toSimpleFieldOnCells()
+        cham_out = cham_out.getComponentOnCells("X1")
+        cham_out.restrict(self._zone_ids)
+        cham_out = cham_out.onSupportOf(sig1)
+
+        return cham_out
 
     def compute_intsig1_3D(self, sig1, weight):
         """Compute the values to be added into the result table.
