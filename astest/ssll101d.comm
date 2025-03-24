@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -176,7 +176,7 @@ TEST_RESU(
             VALE_CALC=-1.2582369267958e-05,
             VALE_REFE=-1.3946e-05,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.10000000000000001,
+            PRECISION=0.05,
             NOM_CAS="CHARGE NUMERO 1",
         ),
         _F(
@@ -209,7 +209,7 @@ TEST_RESU(
             VALE_CALC=-1.2947938716996e-05,
             VALE_REFE=-1.432e-05,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.10000000000000001,
+            PRECISION=0.05,
             NOM_CAS="CHARGE NUMERO 2",
         ),
         _F(
@@ -232,7 +232,7 @@ TEST_RESU(
             VALE_CALC=-6.4494925376495e-03,
             VALE_REFE=-6.3236000000000004e-3,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.02,
+            PRECISION=0.01,
         ),
         _F(
             NUME_ORDRE=1,
