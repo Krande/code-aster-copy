@@ -60,11 +60,22 @@ COMB_SISM_MODAL = MACRO(
     ),
     # ---type excitation ou type analyse
     TYPE_ANALYSE=SIMP(
-        statut="f", typ="TXM", into=("MONO_APPUI", "MULT_APPUI"), defaut="MONO_APPUI"
+        statut="f", typ="TXM", into=("MONO_APPUI", "MULT_APPUI", "ENVELOPPE"), defaut="MONO_APPUI"
     ),
     # --- definition des appuis pour type analyse multiple appuis
     b_appui=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI')""",
+        APPUIS=FACT(
+            statut="o",
+            max="**",
+            NOM=SIMP(statut="o", typ="TXM", max=1),
+            GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
+        ),
+    ),
+
+    # ENVELOPPE = définition des appuis comme MULTI_APPUI
+    b_enveloppe_appui=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
         APPUIS=FACT(
             statut="o",
             max="**",
@@ -89,6 +100,22 @@ COMB_SISM_MODAL = MACRO(
     ),
     b_spectre_multi_appui=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI')""",
+        SPECTRE=FACT(
+            statut="o",
+            max="**",
+            LIST_AXE=SIMP(
+                statut="o", typ="TXM", validators=NoRepeat(), max=3, min=1, into=("X", "Y", "Z")
+            ),
+            SPEC_OSCI=SIMP(statut="o", typ=(nappe_sdaster, formule)),
+            ECHELLE=SIMP(statut="f", typ="R", defaut=1.0),
+            NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("ACCE", "VITE", "DEPL")),
+            CORR_FREQ=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+            NOM_APPUI=SIMP(statut="o", typ="TXM", max=1),
+        ),
+    ),
+
+    b_spectre_enveloppe=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
         SPECTRE=FACT(
             statut="o",
             max="**",
@@ -158,6 +185,33 @@ COMB_SISM_MODAL = MACRO(
         condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI')""",
         CUMUL_INTER=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="QUAD"),
     ),
+
+    b_group_appui_corr_env=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
+        GROUP_APPUI_CORRELE=FACT(
+            statut="o",
+            max="**",
+            regles=(UN_PARMI("TOUT", "LIST_APPUI"),),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            LIST_APPUI=SIMP(statut="f", typ="TXM", max="**"),
+            NOM=SIMP(statut="o", typ="TXM", max=1),
+        ),
+    ),
+    b_comb_dds_correle_env=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
+        COMB_DDS_CORRELE=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="ABS"),
+    ),
+    # Combination of the contributions of each modal response of support inside a group
+    b_cumul_intra_env=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
+        CUMUL_INTRA=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="LINE"),
+    ),
+    # Combination of the contributions of each group of supports
+    b_cumul_inter_env=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
+        CUMUL_INTER=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="QUAD"),
+    ),
+
     # --- grandeurs interets de sortie
     OPTION=SIMP(
         statut="o",
@@ -248,6 +302,83 @@ COMB_SISM_MODAL = MACRO(
             ),
         ),
     ),
+
+
+    b_type_resu_env=BLOC(
+        condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE') """,
+        TYPE_RESU=FACT(
+            statut="o",
+            max="**",
+            TYPE=SIMP(
+                statut="f",
+                typ="TXM",
+                into=(
+                    "VALE_SPEC",
+                    # "VALE_OSCI",  # interdire pour le moment
+                    "VALE_QS",  # remplacer VALE_ROCH stat, aussi
+                    "VALE_DIRE",
+                    "VALE_DYNA",  # remplacer VALE_ROCH dyn (osci)
+                    "VALE_INER",  # remplacer VALE_RCCM prim (osci + pseudo)
+                    "VALE_TOTA",
+                    "VALE_DDS",  # On met VALE_DDS mais pas de résultat sorie !!!
+                ),
+                defaut="VALE_TOTA",
+            ),
+            b_vale_spec=BLOC(
+                condition="""equal_to("TYPE", 'VALE_SPEC') """,
+                TOUT_ORDRE=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
+                NUME_ORDRE=SIMP(statut="f", typ="I", validators=NoRepeat(), max="**"),
+                LIST_ORDRE=SIMP(statut="f", typ=listis_sdaster, defaut=None),
+                NUME_MODE=SIMP(statut="f", typ="I", validators=NoRepeat(), max="**"),
+                FREQ=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
+                LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
+                b_freq=BLOC(
+                    condition="""exists("FREQ") or exists("LIST_FREQ")""",
+                    PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-3),
+                    CRITERE=SIMP(
+                        statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")
+                    ),
+                ),
+                regles=(
+                    UN_PARMI(
+                        "TOUT_ORDRE", "NUME_ORDRE", "LIST_ORDRE", "NUME_MODE", "FREQ", "LIST_FREQ"
+                    ),
+                ),
+                LIST_AXE=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z"), max=3),
+            ),
+            b_vale_osci=BLOC(
+                condition="""equal_to("TYPE", 'VALE_OSCI') """,
+                LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
+            ),
+            b_vale_qs=BLOC(
+                condition="""equal_to("TYPE", 'VALE_QS') """,
+                LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
+            ),
+            b_vale_dire=BLOC(
+                condition="""equal_to("TYPE", 'VALE_DIRE') """,
+                LIST_AXE=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z"), max=3),
+            ),
+            b_vale_tota=BLOC(
+                condition="""equal_to("TYPE", 'VALE_TOTA') """,
+                NEWMARK=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
+            ),
+            b_vale_dyna=BLOC(
+                condition="""equal_to("TYPE", 'VALE_DYNA') """,
+                LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
+            ),
+            b_vale_iner=BLOC(
+                condition="""equal_to("TYPE", 'VALE_INER') """,
+                NEWMARK=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
+                LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
+            ),
+            # On met VALE_DDS comme multi-appui mais pas de valeur sortie:
+            b_vale_dds=BLOC(
+                condition="""equal_to("TYPE", 'VALE_DDS') """,
+                LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
+            ),
+        ),
+    ),
+
     b_type_resu_mult=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI') """,
         TYPE_RESU=FACT(
