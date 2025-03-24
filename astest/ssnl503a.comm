@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -285,9 +285,6 @@ IMPR_TABLE(TABLE=VOLUM1)
 
 TEST_TABLE(
     VALE_CALC=1.57500831829,
-    VALE_REFE=1.57500831829,
-    REFERENCE="NON_DEFINI",
-    PRECISION=1.0e-3,
     NOM_PARA="DISTRIBUTION",
     TABLE=VOLUM1,
     FILTRE=(
@@ -299,9 +296,6 @@ TEST_TABLE(
 
 TEST_TABLE(
     VALE_CALC=14.4774241417,
-    VALE_REFE=14.4774241417,
-    REFERENCE="NON_DEFINI",
-    PRECISION=1.0e-3,
     NOM_PARA="DISTRIBUTION",
     TABLE=VOLUM1,
     FILTRE=(
@@ -330,9 +324,6 @@ VOLUM2 = POST_ELEM(
 
 TEST_TABLE(
     VALE_CALC=0.00714215601391,
-    VALE_REFE=0.00714215601391,
-    REFERENCE="NON_DEFINI",
-    PRECISION=1.0e-3,
     NOM_PARA="DISTRIBUTION",
     TABLE=VOLUM2,
     FILTRE=(
