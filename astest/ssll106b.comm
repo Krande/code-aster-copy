@@ -75,8 +75,6 @@ NB_EP = 3
 
 # ------CARACTERISTIQUES ELEMENTAIRES----------------------
 
-MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="TUYAU_3M"))
-
 CAREL = AFFE_CARA_ELEM(
     MODELE=MO,
     POUTRE=_F(
@@ -449,7 +447,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXY",
             VALE_CALC=-6.73928451e06,
-            VALE_REFE=-6.750000e6,  # TODO
+            VALE_REFE=-FM * (R - 0.5 * EP) / (2 * I),
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-2,
             GROUP_MA="M18",
@@ -462,7 +460,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXY",
             VALE_CALC=-8.42410564e06,
-            VALE_REFE=-8.420000e6,  # TODO
+            VALE_REFE=-FM * (R - 0.5 * EP) / (2 * I),
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-2,
             GROUP_MA="M18",
@@ -525,7 +523,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXX",
             VALE_CALC=1.33087418e07,
-            VALE_REFE=FM * R / I,  # TODO : terme manquant ?
+            VALE_REFE=FM * (R - 0.5 * EP) / I,
             REFERENCE="ANALYTIQUE",
             PRECISION=0.02,
             GROUP_MA="M18",
@@ -588,7 +586,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXX",
             VALE_CALC=1.33087418e07,
-            VALE_REFE=FM * R / I,  # TODO : terme manquant ?
+            VALE_REFE=FM * (R - 0.5 * EP) / I,
             REFERENCE="ANALYTIQUE",
             PRECISION=0.02,
             GROUP_MA="M18",
