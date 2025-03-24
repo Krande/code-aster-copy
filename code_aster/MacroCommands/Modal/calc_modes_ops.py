@@ -179,4 +179,7 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
     if matrAmor is not None:
         modes.setDampingMatrix(matrAmor)
 
+    caraElem = args.get("CARA_ELEM")
+    if caraElem is not None:
+        modes.setElementaryCharacteristics(caraElem)
     return modes
