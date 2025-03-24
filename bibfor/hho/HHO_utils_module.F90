@@ -47,8 +47,8 @@ module HHO_utils_module
     public :: hhoCopySymPartMat, hhoPrintMat, hhoNorm2Mat, hhoProdSmatVec
     public :: hhoPrintTensor4, hhoPrintTensor4Mangle
     public :: hhoGetTypeFromModel, MatScal2Vec, MatCellScal2Vec
-    public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S, CellNameS2L
-    public :: hhoIsIdentityMat, hhoIdentityMat
+    public :: CellNameL2S, CellNameS2L
+    public :: hhoIsIdentityMat
 !    private  ::
 !
 contains
@@ -430,95 +430,6 @@ contains
 !
 !===================================================================================================
 !
-    subroutine SigVec2Mat(ndim, sigvec, sigmat)
-!
-        implicit none
-!
-        integer, intent(in) :: ndim
-        real(kind=8), intent(in) :: sigvec(*)
-        real(kind=8), intent(out) :: sigmat(3, 3)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO - mechanics
-!
-!   tranform the Cauchy stress for a vector to a matrix
-!   In ndim         : dimension of the problem
-!   In sigvec       : Stress to transform (XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ)
-!   Out sigmat      : Stress matrix
-! --------------------------------------------------------------------------------------------------
-! --------------------------------------------------------------------------------------------------
-!
-        sigmat = 0.d0
-!
-        sigmat(1, 1) = sigvec(1)
-        sigmat(2, 2) = sigvec(2)
-        sigmat(3, 3) = sigvec(3)
-!
-        sigmat(1, 2) = sigvec(4)
-        sigmat(2, 1) = sigmat(1, 2)
-!
-        if (ndim == 3) then
-            sigmat(1, 3) = sigvec(5)
-            sigmat(3, 1) = sigmat(1, 3)
-            sigmat(2, 3) = sigvec(6)
-            sigmat(3, 2) = sigmat(2, 3)
-        end if
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoGetMatrElem(matr_elem, resu_elem, isym)
-!
-        implicit none
-!
-        character(len=19), intent(in) :: matr_elem
-        character(len=19), intent(out) :: resu_elem
-        integer, intent(out) :: isym
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Get name of matr_elem and if is a symmetric matrix
-!   In matr_elem    : name of MATR_ELEM
-!   Out resu_elem   : name of RESU_ELEM
-!   Out isym        : -1 -> MATR_ELEM does not exist
-!                   : 1  -> MATR_ELEM is symmetric
-!                   : 0  -> MATR_ELEM is unsymmetric
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: iret
-        character(len=8) :: nomgd
-!
-! --------------------------------------------------------------------------------------------------
-!
-        resu_elem = getResuElem(matr_elem_=matr_elem)
-        isym = -1
-!
-        if (resu_elem .ne. ' ') then
-            call exisd('RESUELEM', resu_elem, iret)
-            if (iret == 1) then
-                call dismoi('NOM_GD', resu_elem, 'RESUELEM', repk=nomgd)
-                if (nomgd == 'MDNS_R') then
-                    isym = 0
-                else if (nomgd == 'MDEP_R') then
-                    isym = 1
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            else
-                ASSERT(ASTER_FALSE)
-            end if
-        end if
-!
-    end subroutine
-!
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
     subroutine MatScal2Vec(hhoCell, hhoData, mat_scal, mat_vec)
 !
         implicit none
@@ -673,31 +584,5 @@ contains
         end do
 !
     end function
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoIdentityMat(mat, size)
-!
-        implicit none
-!
-        real(kind=8), dimension(:, :), intent(inout) :: mat
-        integer, intent(in) :: size
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   Return the matrix is Identity
-!   In mat   : matrix to evaluate
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: j
-!
-        mat(:, :) = 0.d0
-        do j = 1, size
-            mat(j, j) = 1.d0
-        end do
-!
-    end subroutine
 !
 end module

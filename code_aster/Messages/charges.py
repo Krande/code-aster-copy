@@ -20,11 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    2: _(
-        """
-Il n'y a aucun chargement défini, ce n'est pas possible dans cette commande.
-"""
-    ),
     3: _(
         """
 La charge %(k1)s n'a pu être identifiée. Cette erreur est probablement due à l'utilisation d'un
