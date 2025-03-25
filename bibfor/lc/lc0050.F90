@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     integer :: nprops, pfumat
     integer :: nshr, i, nstatv, npt, noel, layer
     integer :: kspt, kstep, kinc, j
-    integer :: jv_iterat, iadzi, iazk24
+    integer :: iadzi, iazk24
     real(kind=8) :: drott(3, 3), drot(3, 3), dstran(9), stran(9)
     real(kind=8) :: sse, spd, scd, rpl
     real(kind=8) :: time(2), dtime, pnewdt
@@ -160,8 +160,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
         if (option(1:9) .eq. 'RIGI_MECA') then
             kinc = 0
         else
-            call jevech('PITERAT', 'L', jv_iterat)
-            kinc = zi(jv_iterat)
+            kinc = 1
         end if
         call tecael(iadzi, iazk24, noms=0)
         noel = zi(iadzi)
