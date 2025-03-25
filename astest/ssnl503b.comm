@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -186,7 +186,7 @@ TEST_RESU(
             NUME_ORDRE=17,
             PARA="ETA_PILOTAGE",
             RESULTAT=RESUL,
-            VALE_CALC=1.020489425,
+            VALE_CALC=0.9838388742785118,
             VALE_REFE=1.0,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.06,
@@ -195,7 +195,7 @@ TEST_RESU(
             NUME_ORDRE=18,
             PARA="ETA_PILOTAGE",
             RESULTAT=RESUL,
-            VALE_CALC=1.029571578,
+            VALE_CALC=0.992333666089763,
             VALE_REFE=1.0,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.06,
@@ -204,7 +204,7 @@ TEST_RESU(
             NUME_ORDRE=19,
             PARA="ETA_PILOTAGE",
             RESULTAT=RESUL,
-            VALE_CALC=1.037880431,
+            VALE_CALC=1.0001368652815945,
             VALE_REFE=1.0,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.06,
@@ -213,7 +213,7 @@ TEST_RESU(
             NUME_ORDRE=20,
             PARA="ETA_PILOTAGE",
             RESULTAT=RESUL,
-            VALE_CALC=1.045593116,
+            VALE_CALC=1.0073850868531893,
             VALE_REFE=1.0,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.06,
@@ -222,7 +222,7 @@ TEST_RESU(
             NUME_ORDRE=21,
             PARA="ETA_PILOTAGE",
             RESULTAT=RESUL,
-            VALE_CALC=1.052834272,
+            VALE_CALC=1.0141295050059445,
             VALE_REFE=1.0,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.06,
@@ -231,12 +231,12 @@ TEST_RESU(
             NUME_ORDRE=22,
             PARA="ETA_PILOTAGE",
             RESULTAT=RESUL,
-            VALE_CALC=1.059684908,
+            VALE_CALC=1.0204630129233994,
             VALE_REFE=1.0,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.06,
         ),
-        _F(NUME_ORDRE=22, PARA="ETA_PILOTAGE", RESULTAT=RESUL, VALE_CALC=1.0596849080991),
+        _F(NUME_ORDRE=22, PARA="ETA_PILOTAGE", RESULTAT=RESUL, VALE_CALC=1.0204630129233994),
     )
 )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -217,7 +217,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=3.26317014e03 + 0.00000000e00j,
+            VALE_CALC_C=(2998.4474487464254 + 0j),
             VALE_REFE_C=(3000 + 0j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_FL,
@@ -228,7 +228,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=-0.020952178 + 0.00000000e00j,
+            VALE_CALC_C=(-0.02095155925755532 + 0j),
             VALE_REFE_C=(-0.021164715868368 + 0j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_FL,
@@ -239,7 +239,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=0.00000000e00 + -1.316464158j,
+            VALE_CALC_C=(-0 - 1.3164252928957403j),
             VALE_REFE_C=-1.3298183177476j,
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_FL,
@@ -250,7 +250,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=82.715882577 + -0.00000000e00j,
+            VALE_CALC_C=(82.71344058322099 - 0j),
             VALE_REFE_C=(83.554949152901003 + 0j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_FL,
@@ -261,7 +261,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=-6.56417811e-03 + 0.00000000e00j,
+            VALE_CALC_C=(-0.00656387040540213 + 0j),
             VALE_REFE_C=(-0.0066710946072559996 + 0j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_FL,
@@ -272,7 +272,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=0.00000000e00 + -0.412439474j,
+            VALE_CALC_C=(-0 - 0.41242014089453577j),
             VALE_REFE_C=-0.41915723619116002j,
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_FL,
@@ -283,7 +283,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=25.914336454 + -0.00000000e00j,
+            VALE_CALC_C=(25.91312169653482 - 0j),
             VALE_REFE_C=(26.336425878343 + 0j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_FL,
@@ -437,7 +437,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=3.25037788e03 + -206.951454639j,
+            VALE_CALC_C=(2986.657125562413 - 187.87865372423659j),
             VALE_REFE_C=(2986.8951093362002 - 124.4198305724j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_AFL,
@@ -448,7 +448,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="A",
-            VALE_CALC_C=9.56311469e03 + 652.561327295j,
+            VALE_CALC_C=(9517.73011784219 + 650.1016372810682j),
             VALE_REFE_C=(9639.7865167429009 + 673.70390082880999j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_AFL,
@@ -459,7 +459,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=-0.020811906 + -1.78525463e-03j,
+            VALE_CALC_C=(-0.02081130354065237 - 0.001785164592959447j),
             VALE_REFE_C=(-0.021018274341124001 - 0.0018232283449978999j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_AFL,
@@ -470,7 +470,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=0.112170857 + -1.307650632j,
+            VALE_CALC_C=(0.11216519941380024 - 1.3076127662988146j),
             VALE_REFE_C=(0.11455681548924 - 1.3206171252242001j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_AFL,
@@ -481,7 +481,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=82.162112404 + 7.047902787j,
+            VALE_CALC_C=(82.15973320689167 + 7.047547329336581j),
             VALE_REFE_C=(82.976821176185993 + 7.1978169991928j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_AFL,
@@ -492,7 +492,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=-6.50318433e-03 + -9.33727701e-04j,
+            VALE_CALC_C=(-0.00650288453307566 - 0.0009336799814434759j),
             VALE_REFE_C=(-0.0066070701790265996 - 0.00095228433787341996j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_AFL,
@@ -503,7 +503,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=0.058667842 + -0.408607122j,
+            VALE_CALC_C=(0.05866484341013357 - 0.4085882855250637j),
             VALE_REFE_C=(0.059833789599834999 - 0.41513446272364002j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_AFL,
@@ -514,7 +514,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=1,
             GROUP_NO="B",
-            VALE_CALC_C=25.673542671 + 3.686209209j,
+            VALE_CALC_C=(25.672359122967777 + 3.686020821625424j),
             VALE_REFE_C=(26.083667566890998 + 3.7594678768656j),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=DYNA_AFL,

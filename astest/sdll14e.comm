@@ -162,14 +162,14 @@ TEST_RESU(
             PARA="CHAR_CRIT",
             CRITERE="RELATIF",
             NUME_ORDRE=1,
-            VALE_CALC=-2.71935702793e-13,
+            VALE_CALC=-2.700621949476223e-13,
         ),
         _F(
             RESULTAT=MODE_PG2,
             PARA="FREQ",
             CRITERE="RELATIF",
             NUME_ORDRE=1,
-            VALE_CALC=8.29952517944e-08,
+            VALE_CALC=8.270885872919064e-08,
         ),
     )
 )

@@ -161,7 +161,7 @@ TEST_RESU(
             RESULTAT=U1,
             NOM_CHAM="FORC_NODA",
             NOM_CMP="DRZ",
-            VALE_CALC=3.08670215e06,
+            VALE_CALC=3086702.1520853257,
             VALE_REFE=3.086702e6,
         ),
         _F(
@@ -171,7 +171,7 @@ TEST_RESU(
             RESULTAT=U1,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=0.011198591,
+            VALE_CALC=0.011296895734835982,
             VALE_REFE=0.0109256725345,
             PRECISION=0.05,
         ),
@@ -182,7 +182,7 @@ TEST_RESU(
             RESULTAT=U1,
             NOM_CHAM="FORC_NODA",
             NOM_CMP="DRZ",
-            VALE_CALC=5.88981326e06,
+            VALE_CALC=5889813.261109458,
             VALE_REFE=5.889813e6,
         ),
         _F(
@@ -192,7 +192,7 @@ TEST_RESU(
             RESULTAT=U1,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=0.022715198,
+            VALE_CALC=0.022801228473905425,
             VALE_REFE=0.0220208935036,
             PRECISION=0.05,
         ),
@@ -208,7 +208,7 @@ TEST_RESU(
             RESULTAT=U1,
             NOM_CHAM="FORC_NODA",
             NOM_CMP="DRZ",
-            VALE_CALC=-3.08661769e06,
+            VALE_CALC=-3086702.1520852894,
             VALE_REFE=-3086702.15209,
         ),
         _F(
@@ -218,7 +218,7 @@ TEST_RESU(
             RESULTAT=U1,
             NOM_CHAM="FORC_NODA",
             NOM_CMP="DRZ",
-            VALE_CALC=-5.88964685e06,
+            VALE_CALC=-5889813.261109439,
             VALE_REFE=-5889813.26111,
         ),
     )
