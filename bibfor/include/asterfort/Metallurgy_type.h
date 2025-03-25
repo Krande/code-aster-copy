@@ -112,6 +112,6 @@
 ! - Bound to cut
 #define STEEL_MIN_CUT 1.d-3
 ! - Maximum temperature step
-#define STEEL_MAX_TEMP_STEP 5.d1
+#define STEEL_MAX_TEMP_STEP 5.d0
 ! - Maximum number of sub-steps
 #define STEEL_MAX_NB_STEP 10
