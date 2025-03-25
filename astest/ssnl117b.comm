@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ CAREL = AFFE_CARA_ELEM(
             TUYAU_NCOU=1,
             CARA=("R", "EP"),
             VALE=(REXT, EP),
-            MODI_METRIQUE="OUI",
+            MODI_METRIQUE="NON",
         ),
         _F(
             GROUP_MA="BC",
@@ -110,7 +110,7 @@ CAREL = AFFE_CARA_ELEM(
             TUYAU_NCOU=3,
             CARA=("R", "EP"),
             VALE=(REXT, EP),
-            MODI_METRIQUE="OUI",
+            MODI_METRIQUE="NON",
         ),
     ),
     ORIENTATION=_F(GROUP_NO="D", CARA="GENE_TUYAU", VALE=(0.0, 0.0, 1.0)),
