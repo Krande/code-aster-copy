@@ -1,7 +1,7 @@
 
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,6 +23,7 @@
 
 #include "PostProcessing/PostProcessing.h"
 
+#include "DataFields/FieldConverter.h"
 #include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/Calcul.h"
 #include "Modeling/Model.h"
@@ -117,3 +118,66 @@ FieldOnCellsRealPtr PostProcessing::computeAnnealing(
 
     return vari_curr;
 };
+
+/** @brief Compute max value of EFGE_ELNO or EGRU_ELNO based on the maximum of the
+ *         equivalent moment for piping studies*/
+FieldOnCellsRealPtr
+PostProcessing::computeMaxResultantForPipe( const ResultPtr &resu,
+                                            const std::string &field_name ) const {
+
+    std::string name = strip( field_name );
+
+    if ( name != "EFGE_ELNO" && name != "EGRU_ELNO" ) {
+        AS_ABORT( "Invalid field_name: " + name + ". Expected 'EFGE_ELNO' or 'EGRU_ELNO'." );
+    }
+
+    const auto &fieldNames = resu->getFieldsNames();
+    if ( std::find( fieldNames.begin(), fieldNames.end(), name ) == fieldNames.end() ) {
+        AS_ABORT( "Error: Field  " + name + " not found in resu->getFieldsNames()" );
+    }
+
+    JeveuxVectorReal ptr_i;
+
+    VectorLong indexes = resu->getIndexesForFieldName( name );
+    FieldOnCellsRealPtr field = resu->getFieldOnCellsReal( name, indexes[0] );
+    int nbcmp = field->getNumberOfComponents();
+
+    if ( nbcmp != 6 ) {
+        AS_ABORT( "Error: Expected number of components to be 6" );
+    }
+
+    std::shared_ptr< FieldOnCellsReal > field_out = std::make_shared< FieldOnCellsReal >( *field );
+    field_out->updateValuePointers();
+    auto ptr_out = field_out->getValues()->begin();
+
+    ASTERINTEGER count = 0;
+
+    for ( size_t i = 0; i < indexes.size(); i++ ) {
+        ptr_i = resu->getFieldOnCellsReal( name, indexes[i] )->getValues();
+
+        auto ptr_out_1 = ptr_i->cbegin();
+        count = 0;
+
+        while ( ptr_out_1 != ptr_i->cend() ) {
+            for ( size_t j = 0; j < 3; j++ ) {
+                auto absVal = std::abs( *( ptr_out_1 + j ) );
+                *( ptr_out + count + j ) =
+                    ( i == 0 ) ? absVal : std::max( *( ptr_out + count + j ), absVal );
+            }
+
+            if ( i == 0 ||
+                 std::hypot( *( ptr_out + count + 3 ), *( ptr_out + count + 4 ),
+                             *( ptr_out + count + 5 ) ) <
+                     std::hypot( *( ptr_out_1 + 3 ), *( ptr_out_1 + 4 ), *( ptr_out_1 + 5 ) ) ) {
+                for ( size_t j = 3; j < 6; j++ ) {
+                    *( ptr_out + count + j ) = std::abs( *( ptr_out_1 + j ) );
+                }
+            }
+
+            std::advance( ptr_out_1, 6 );
+            count += 6;
+        }
+    }
+
+    return field_out;
+}

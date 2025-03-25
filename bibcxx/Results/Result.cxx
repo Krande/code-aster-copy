@@ -772,6 +772,36 @@ VectorString Result::getFieldsNames() const {
     return vField;
 }
 
+VectorLong Result::getIndexesForFieldName( const std::string &name ) const {
+    VectorLong keys;
+
+    // Lambda to extract keys
+    auto extractKeys = [&keys]( const auto &dict, const std::string &field_name ) -> bool {
+        auto it = dict.find( field_name );
+        if ( it != dict.end() ) {
+            keys.reserve( it->second.size() ); // Optimize memory allocation
+            std::transform( it->second.begin(), it->second.end(), std::back_inserter( keys ),
+                            []( const auto &pair ) { return pair.first; } );
+            return true;
+        }
+        return false;
+    };
+
+    if ( extractKeys( _dictOfMapOfFieldOnNodesComplex, name ) ||
+         extractKeys( _dictOfMapOfFieldOnNodesReal, name ) ||
+         extractKeys( _dictOfMapOfFieldOnCellsReal, name ) ||
+         extractKeys( _dictOfMapOfFieldOnCellsComplex, name ) ||
+         extractKeys( _dictOfMapOfFieldOnCellsLong, name ) ||
+         extractKeys( _dictOfMapOfConstantFieldOnCellsChar16, name ) ||
+         extractKeys( _dictOfMapOfConstantFieldOnCellsReal, name ) ||
+         extractKeys( _dictOfMapOfGeneralizedVectorReal, name ) ||
+         extractKeys( _dictOfMapOfGeneralizedVectorComplex, name ) ) {
+        return keys;
+    }
+
+    return keys;
+}
+
 void Result::printListOfFields() const {
     auto vField = getFieldsNames();
     std::cout << "Content of DataStructure : ";

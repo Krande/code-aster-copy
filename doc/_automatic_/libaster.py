@@ -12929,7 +12929,15 @@ class Result(DataStructure):
         """
 
     def getIndexes(self):
-        """Return the list of indexs used to store fields
+        """Return the list of indexes used to store fields
+
+        Returns:
+            list[int]: List of indexs used to store fields.
+        """
+
+    def getIndexesForFieldName(self, arg0):
+        """Returns the list of indexes used to store a specific field,
+         indicated by its name.
 
         Returns:
             list[int]: List of indexs used to store fields.
@@ -16213,6 +16221,19 @@ class PostProcessing:
 
         Returns:
             FieldOnCellReals: hydration field at end of current time step
+        """
+
+    def computeMaxResultantForPipe(self, result, field_name):
+        """Computes the maximum of the EFGE_ELNO or EGRU_ELNO field in absolute value,
+        based on the maximal values of the equivalent moment at each element.
+
+        Arguments:
+         result (Result) : ResultPtr
+            The result object containing the fields
+         field_name (str) : It should be 'EFGE_ELNO' or 'EGRU_ELNO'
+
+        Returns:
+         FieldOnCellReals: The maximal value of the field
         """
 
 
