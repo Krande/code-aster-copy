@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ MO = AFFE_MODELE(
 CAREL = AFFE_CARA_ELEM(
     MODELE=MO,
     POUTRE=_F(
-        GROUP_MA="TOUT", SECTION="CERCLE", CARA=("R", "EP"), MODI_METRIQUE="OUI", VALE=(0.04, 0.008)
+        GROUP_MA="TOUT", SECTION="CERCLE", CARA=("R", "EP"), MODI_METRIQUE="NON", VALE=(0.04, 0.008)
     ),
     ORIENTATION=_F(GROUP_NO="A", CARA="GENE_TUYAU", VALE=(0.0, 0.0, -1.0)),
 )
