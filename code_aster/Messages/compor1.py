@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -197,18 +197,6 @@ La modélisation %(k2)s n'est pas autorisée avec la loi de comportement %(k1)s.
     33: _(
         """
  Le type de régularisation visqueuse <%(k1)s> est incompatible avec le comportement <%(k2)s>
-"""
-    ),
-    41: _(
-        """
- CAM_CLAY :
- Pour la maille <%(k1)s> une des exponentielles pose un problème numérique.
- La subdivision du pas de temps au niveau global est déclenchée.
- Il faut pour cela l'autoriser avec la commande DEFI_LIST_INST.
- Information sur les bornes :
-   Valeur max :   <%(r1)E>
-   borne correspondant à <%(k2)s> : <%(r2)E>
-   borne correspondant à <%(k3)s> : <%(r3)E>
 """
     ),
     42: _(

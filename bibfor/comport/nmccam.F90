@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 !
 !
 !
-    aster_logical :: cplan
+    aster_logical :: cplan, lVari
     integer :: iadzi, iazk24, iret
     real(kind=8), parameter :: epxmax = 5.d0
     character(len=8) :: nomail
@@ -97,16 +97,12 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
     real(kind=8) :: xinf, xsup, rbid
     real(kind=8) :: diff2
     real(kind=8) :: zero, un, deux, trois, six, unsde, tol, ptit
-    real(kind=8) :: valm, valp, tm, tp, tref
+    real(kind=8) :: valm, valp, tm, tp, tref, pcrpLoc(7)
     integer :: ndimsi, signf, signfi
     integer :: i, k, l, iter, matr
     integer :: icodre(9)
     character(len=18) :: nomres(10)
     character(len=8) :: nompar(10)
-! ======================================================================
-    real(kind=8) :: valrm(5)
-    character(len=24) :: valkm(5)
-! ======================================================================
     parameter(zero=0.d0)
     parameter(un=1.d0)
     parameter(deux=2.d0)
@@ -121,6 +117,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 !
 !     -- 1 INITIALISATIONS :
 !     ----------------------
+    lVari = L_VARI(option)
     cplan = typmod(1) .eq. 'C_PLAN'
     ndimsi = 2*ndim
     retcom = 0
@@ -227,16 +224,6 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
     sieqm = sqrt(1.5d0*sieqm)
 !
     if (((xk0*depsmo) .gt. epxmax)) then
-!
-        call tecael(iadzi, iazk24)
-        valkm(1) = zk24(iazk24-1+3) (1:8)
-        valrm(1) = epxmax
-        valkm(2) = 'EXP(XK0*DEPSMO)'
-        valrm(2) = (xk0*depsmo)
-        valkm(3) = 'EXP(XK*DEPSMO)'
-        valrm(3) = (xk*depsmo)
-        call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3, &
-                    valr=valrm)
         retcom = 1
         goto 999
     end if
@@ -252,11 +239,8 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
         pcrm(7) = e0
 !
 ! ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
-        nu = ( &
-             trois*((un+e0)*sigmmo+kapa*kcam)-deuxmu*kapa)/(six*((un+e0)*sigmmo+kapa*kcam &
-                                                                 )+deuxmu*kapa &
-                                                            )
-!
+        nu = (trois*((un+e0)*sigmmo+kapa*kcam)-deuxmu*kapa)/ &
+             (six*((un+e0)*sigmmo+kapa*kcam)+deuxmu*kapa)
         young = deuxmu*(un+nu)
 !
         if ((young .le. zero) .or. (nu .le. zero) .or. (nu .gt. unsde)) then
@@ -277,29 +261,29 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         if (fonc .le. 0.d0) then
 !      -- TRAITEMENT DE L'ELASTICITE
-            pcrp(1) = pcrm(1)
-            pcrp(2) = 0.d0
+            pcrpLoc(1) = pcrm(1)
+            pcrpLoc(2) = 0.d0
             do k = 1, ndimsi
                 sigpdv(k) = sigel(k)
                 sigp(k) = sigel(k)-simoel*kron(k)
             end do
 !
-            pcrp(3) = simoel
-            pcrp(4) = sieleq
-            pcrp(5) = 0.d0
-            pcrp(6) = 0.d0
+            pcrpLoc(3) = simoel
+            pcrpLoc(4) = sieleq
+            pcrpLoc(5) = 0.d0
+            pcrpLoc(6) = 0.d0
 !
-            pcrp(7) = pcrm(7)
+            pcrpLoc(7) = pcrm(7)
             if (pcrm(3) .ne. zero) then
-                if (pcrp(3)/pcrm(3) .gt. zero) then
-                    pcrp(7) = pcrm(7)-kapa*log(pcrp(3)/pcrm(3))
+                if (pcrpLoc(3)/pcrm(3) .gt. zero) then
+                    pcrpLoc(7) = pcrm(7)-kapa*log(pcrpLoc(3)/pcrm(3))
                 end if
             end if
 !
         else
 !     -- PLASTIFICATION : CALCUL DE LA DEFORMATION
 !     -- VOLUMIQUE PLASTIQUE : DEPPMO
-            pcrp(2) = 1.d0
+            pcrpLoc(2) = 1.d0
             seuil = m**2*(pcrm(1)-ptrac)**2
 !
             xinf = 0.d0
@@ -311,48 +295,24 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
             end if
 !
             if (abs(xk0*simoel+kcam+xk*pcrm(1)) .lt. ptit) then
-!
-                if ((-deux*(simoel-pcrm(1)-ptrac)/(xk0*simoel+kcam-xk*ptrac)) .lt. &
-                    zero) then
-!
+                if ((-deux*(simoel-pcrm(1)-ptrac)/(xk0*simoel+kcam-xk*ptrac)) .lt. zero) then
                     xsup = 1.d0/(xk+xk0)*log(abs(simoel-ptrac)/pcrm(1))
-!
                 else
 !       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 2
-!
                     if ((simoel-ptrac) .gt. pcrm(1)) then
-!
-                        xsup = sqrt( &
-                               (-deux*(simoel-pcrm(1)-ptrac)/(xk0*simoel+kcam-xk*ptrac)))
-!
+                        xsup = +sqrt((-deux*(simoel-pcrm(1)-ptrac)/(xk0*simoel+kcam-xk*ptrac)))
                     else
-!
-                        xsup = -sqrt( &
-                               (-deux*(simoel-pcrm(1)-ptrac)/(xk0*simoel+kcam-xk*ptrac)))
+                        xsup = -sqrt((-deux*(simoel-pcrm(1)-ptrac)/(xk0*simoel+kcam-xk*ptrac)))
                     end if
-!
                 end if
             else
 !       RESULTAT D UN DEVELOPPEMENT LIMITE D ORDRE 1
                 xsup = (simoel-pcrm(1)-ptrac)/(xk0*simoel+kcam+xk*pcrm(1))
-!
             end if
 !
 !     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
             v0 = xinf
-!
-!
             if (((-xk0*v0) .gt. epxmax) .or. ((xk*v0) .gt. epxmax)) then
-!
-                call tecael(iadzi, iazk24)
-                valkm(1) = zk24(iazk24-1+3) (1:8)
-                valrm(1) = epxmax
-                valkm(2) = 'EXP(-XK0*V0)'
-                valrm(2) = (-xk0*v0)
-                valkm(3) = 'EXP(XK*V0)'
-                valrm(3) = (xk*v0)
-                call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3, &
-                            valr=valrm)
                 retcom = 1
                 goto 999
             end if
@@ -366,10 +326,8 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 !
 !
             f1p = -(xk0*simoel+kcam)*exp(-xk0*v0)
-            f2p = -(xk0*simoel+kcam)*exp(-xk0*v0)-2.d0*xk*pcrm(1)*exp( &
-                  xk*v0)
-            f3p = -(xk0*simoel+kcam)*exp(-xk0*v0)-xk*pcrm(1)*exp(xk* &
-                                                                 v0)
+            f2p = -(xk0*simoel+kcam)*exp(-xk0*v0)-2.d0*xk*pcrm(1)*exp(xk*v0)
+            f3p = -(xk0*simoel+kcam)*exp(-xk0*v0)-xk*pcrm(1)*exp(xk*v0)
             f4p = 3.d0*deuxmu/2.d0/(m**2)*(f3-v0*f3p)/f3/f3
 !
             fp = m**2*f4**2*(f1p*f2+f1*f2p)+2.d0*m**2*f4*f4p*f1*f2
@@ -391,16 +349,6 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 !     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
 !
                 if (((-xk0*v0) .gt. epxmax) .or. ((xk*v0) .gt. epxmax)) then
-!
-                    call tecael(iadzi, iazk24)
-                    valkm(1) = zk24(iazk24-1+3) (1:8)
-                    valrm(1) = epxmax
-                    valkm(2) = 'EXP(-XK0*V0)'
-                    valrm(2) = (-xk0*v0)
-                    valkm(3) = 'EXP(XK*V0)'
-                    valrm(3) = (xk*v0)
-                    call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3, &
-                                valr=valrm)
                     retcom = 1
                     goto 999
                 end if
@@ -415,33 +363,20 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 if (f .lt. zero) signf = -1
 !
                 f1p = -(xk0*simoel+kcam)*exp(-xk0*v0)
-                f2p = -(xk0*simoel+kcam)*exp(-xk0*v0)-2.d0*xk*pcrm(1)* &
-                      exp(xk*v0)
-                f3p = -(xk0*simoel+kcam)*exp(-xk0*v0)-xk*pcrm(1)*exp( &
-                      xk*v0)
+                f2p = -(xk0*simoel+kcam)*exp(-xk0*v0)-2.d0*xk*pcrm(1)*exp(xk*v0)
+                f3p = -(xk0*simoel+kcam)*exp(-xk0*v0)-xk*pcrm(1)*exp(xk*v0)
                 f4p = 3.d0*deuxmu/2.d0/(m**2)*(f3-v0*f3p)/f3/f3
 !
                 fp = m**2*f4**2*(f1p*f2+f1*f2p)+2.d0*m**2*f4*f4p*f1*f2
 !
 !
                 if (((-xk0*xinf) .gt. epxmax) .or. ((xk*xinf) .gt. epxmax)) then
-!
-                    call tecael(iadzi, iazk24)
-                    valkm(1) = zk24(iazk24-1+3) (1:8)
-                    valrm(1) = epxmax
-                    valkm(2) = 'EXP(-XK0*XINF)'
-                    valrm(2) = (-xk0*xinf)
-                    valkm(3) = 'EXP(XK*XINF)'
-                    valrm(3) = (xk*xinf)
-                    call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3, &
-                                valr=valrm)
                     retcom = 1
                     goto 999
                 end if
 !
                 fxi1 = (simoel+kcam/xk0)*exp(-xk0*xinf)-kcam/xk0-ptrac
-                fxi2 = (simoel+kcam/xk0)*exp(-xk0*xinf)-kcam/xk0-ptrac-2.d0*pcrm(1)*exp(xk*xinf&
-                       &)
+                fxi2 = (simoel+kcam/xk0)*exp(-xk0*xinf)-kcam/xk0-ptrac-2.d0*pcrm(1)*exp(xk*xinf)
                 fxi3 = (simoel+kcam/xk0)*exp(-xk0*xinf)-kcam/xk0-ptrac-pcrm(1)*exp(xk*xinf)
                 fxi4 = (1.d0+3.d0*deuxmu*xinf/2.d0/m/m/fxi3)
 !
@@ -461,44 +396,34 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 !
 !     -- REACTUALISATION DE LA VARIABLE INTERNE
             if (((xk*deppmo) .gt. epxmax) .or. (xk0*(depsmo-deppmo) .gt. epxmax)) then
-!
-                call tecael(iadzi, iazk24)
-                valkm(1) = zk24(iazk24-1+3) (1:8)
-                valrm(1) = epxmax
-                valkm(2) = 'EXP(XK*DEPPMO)'
-                valrm(2) = (xk*deppmo)
-                valkm(3) = 'EXP(XK0*(DEPSMO-DEPPMO))'
-                valrm(3) = (xk0*(depsmo-deppmo))
-                call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3, &
-                            valr=valrm)
                 retcom = 1
                 goto 999
             end if
 !
 !
-            pcrp(1) = pcrm(1)*exp(xk*deppmo)
+            pcrpLoc(1) = pcrm(1)*exp(xk*deppmo)
 !     -- REACTUALISATION DES CONTRAINTES
             sigpmo = (sigmmo+kcam/xk0)*exp(xk0*(depsmo-deppmo))-kcam/xk0
             call r8inir(6, 0.d0, sigpdv, 1)
             do k = 1, ndimsi
-                sigpdv(k) = sigel(k)/(1.d0+(3.d0*deuxmu/2.d0*deppmo)/(m*m*(sigpmo-pcrp(1)-ptrac)&
-                            &))
+                sigpdv(k) = sigel(k)/ &
+                            (1.d0+(3.d0*deuxmu/2.d0*deppmo)/(m*m*(sigpmo-pcrpLoc(1)-ptrac)))
                 sigp(k) = sigpdv(k)-sigpmo*kron(k)
             end do
 !
 !
 ! ---- V(3) CONTRAINTE VOLUMIQUE
-            pcrp(3) = sigpmo
+            pcrpLoc(3) = sigpmo
 !
 ! ---- V(4) CONTRAINTE EQUIVALENTE
             sieqp = 0.0d0
             do k = 1, ndimsi
                 sieqp = sieqp+sigpdv(k)**2.d0
             end do
-            pcrp(4) = sqrt(1.5d0*sieqp)
+            pcrpLoc(4) = sqrt(1.5d0*sieqp)
 !
 ! ---- V(5) DEFORMATION PLASTIQUE VOLUMIQUE
-            pcrp(5) = pcrm(5)+deppmo
+            pcrpLoc(5) = pcrm(5)+deppmo
 !
 ! ---- V(6) DEFORMATION PLASTIQUE EQUIVALENTE
             depseq = 0.0d0
@@ -506,14 +431,15 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 depseq = depseq+depsdv(k)*depsdv(k)
             end do
             depseq = sqrt(2.d0/3.d0*depseq)
-            pcrp(6) = pcrm(6)+depseq
+            pcrpLoc(6) = pcrm(6)+depseq
 !
 ! ---- V(7) :: INDICE DES VIDES
-            pcrp(7) = pcrm(7)
+            pcrpLoc(7) = pcrm(7)
             if (pcrm(3) .ne. zero .and. pcrm(1) .ne. zero) then
-                if (pcrp(3)/pcrm(3) .gt. zero .and. pcrp(1)/pcrm(1) .gt. zero) then
-                    pcrp(7) = pcrm(7)-kapa*log(pcrp(3)/pcrm(3))-(lambda-kapa)*log(pcrp(1)/pcr&
-                              &m(1))
+                if (pcrpLoc(3)/pcrm(3) .gt. zero .and. pcrpLoc(1)/pcrm(1) .gt. zero) then
+                    pcrpLoc(7) = pcrm(7)- &
+                                 kapa*log(pcrpLoc(3)/pcrm(3))- &
+                                 (lambda-kapa)*log(pcrpLoc(1)/pcrm(1))
                 end if
             end if
         end if
@@ -533,7 +459,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
             end if
         end if
         if (option(1:9) .eq. 'FULL_MECA') then
-            if (pcrp(2) .eq. 1.d0) then
+            if (pcrpLoc(2) .eq. 1.d0) then
                 matr = 2
             else
                 matr = 0
@@ -568,8 +494,8 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 valm = valm+sigmdv(i)**2
             end do
 !
-            h = 4.d0*m**4*(sigmmo-ptrac)*(sigmmo-ptrac-pcrm(1))*(xk0*(sigmmo-ptrac-pcrm(1))+xk*p&
-                &crm(1))+deuxmu*9.d0*valm
+            h = 4.d0*m**4*(sigmmo-ptrac)*(sigmmo-ptrac-pcrm(1))* &
+                (xk0*(sigmmo-ptrac-pcrm(1))+xk*pcrm(1))+deuxmu*9.d0*valm
 !
 !
 !     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
@@ -589,8 +515,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
             call r8inir(ndimsi*ndimsi, 0.d0, dsidep, 1)
             do k = 1, 3
                 do l = 1, 3
-                    dsidep(k, l) = xk0*(sigmmo-ptrac)-deuxmu/3.d0-a(k)*a( &
-                                   l)/h
+                    dsidep(k, l) = xk0*(sigmmo-ptrac)-deuxmu/3.d0-a(k)*a(l)/h
                 end do
             end do
             do k = 1, 3
@@ -622,16 +547,17 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 valp = valp+sigpdv(i)**2
             end do
 !
-            h = 4.d0*m**4*(sigpmo-ptrac)*(sigpmo-ptrac-pcrp(1))*(xk0*(sigpmo-ptrac-pcrp(1))+xk*p&
-                &crp(1))+deuxmu*9.d0*valp
+            h = 4.d0*m**4*(sigpmo-ptrac)* &
+                (sigpmo-ptrac-pcrpLoc(1))* &
+                (xk0*(sigpmo-ptrac-pcrpLoc(1))+xk*pcrpLoc(1))+deuxmu*9.d0*valp
 !
 !     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
             call r8inir(3, 0.d0, a, 1)
             call r8inir(3, 0.d0, aa, 1)
 !
             do k = 1, 3
-                a(k) = -deux*xk0*m*m*(sigpmo-ptrac)*(sigpmo-ptrac-pcrp(1))*kron(k)+3.d0*deuxmu&
-                      &*sigpdv(k)
+                a(k) = -deux*xk0*m*m*(sigpmo-ptrac)*(sigpmo-ptrac-pcrpLoc(1))*kron(k)+ &
+                       3.d0*deuxmu*sigpdv(k)
             end do
 !
             do k = 4, ndimsi
@@ -642,8 +568,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
             call r8inir(ndimsi*ndimsi, 0.d0, dsidep, 1)
             do k = 1, 3
                 do l = 1, 3
-                    dsidep(k, l) = xk0*(sigpmo-ptrac)-deuxmu/3.d0-a(k)*a( &
-                                   l)/h
+                    dsidep(k, l) = xk0*(sigpmo-ptrac)-deuxmu/3.d0-a(k)*a(l)/h
                 end do
             end do
             do k = 1, 3
@@ -672,7 +597,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 sieqp = sieqp+sigpdv(k)**2
             end do
             sieqp = sqrt(1.5d0*sieqp)
-            diff2 = abs((pcrp(1)-sigpmo)/pcrp(1))
+            diff2 = abs((pcrpLoc(1)-sigpmo)/pcrpLoc(1))
             if (diff2 .lt. carcri(3)) then
 !
 !     -- 7.3.1 OPERATEUR TANGENT COHERENT AU POINT CRITIQUE
@@ -703,8 +628,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 do k = 1, 6
                     hhm(k, k) = 1.d0
                 end do
-                call mgauss('NFWP', hh, hhm, 6, 6, &
-                            6, rbid, iret)
+                call mgauss('NFWP', hh, hhm, 6, 6, 6, rbid, iret)
 !
 !     -- CALCUL DU TENSEUR GG QUI MULTIPLIE LA CONTRAINTE
                 call r8inir(6*6, 0.d0, gg, 1)
@@ -770,8 +694,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 do k = 1, 6
                     devhym(k, k) = 1.d0
                 end do
-                call mgauss('NFWP', devhyd, devhym, 6, 6, &
-                            6, rbid, iret)
+                call mgauss('NFWP', devhyd, devhym, 6, 6, 6, rbid, iret)
 !     -- TERMES DE L'OPERATEUR TANGENT
                 call r8inir(6*6, 0.d0, dsidep, 1)
                 do k = 1, 6
@@ -800,22 +723,17 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 end do
 !
 !      -- 7.4.1 TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE
-                hp = 4.d0*m**4*xk*sigpmo*pcrp(1)*(sigpmo-pcrp(1))
+                hp = 4.d0*m**4*xk*sigpmo*pcrpLoc(1)*(sigpmo-pcrpLoc(1))
 !
                 xc = 9.d0*spards/hp
-                xd = 6.d0*m*m*(sigpmo-pcrp(1))*deltap/hp
-                xv = 3.d0*spards+2.d0*m**2*(sigpmo-pcrp(1))*deltap
+                xd = 6.d0*m*m*(sigpmo-pcrpLoc(1))*deltap/hp
+                xv = 3.d0*spards+2.d0*m**2*(sigpmo-pcrpLoc(1))*deltap
                 xlam = xv/hp
-                xa = ( &
-                     4.d0*xlam*xk*m**4*sigpmo*( &
-                     sigpmo-2.d0*pcrp(1))+2.d0*m**2*deltap)*m**2*(sigpmo-pcrp(1))/(m**2*xlam+(1&
-                     &.d0/2.d0/xk/pcrp(1) &
-                     ) &
-                     )
-                xi = 2.d0*m**2*( &
-                     sigpmo-pcrp(1))-2.d0*m**4*xlam*(sigpmo-pcrp(1))/((1.d0/2.d0/xk/pcrp(1))+m**&
-                     &2*xlam &
-                     )
+                xa = (4.d0*xlam*xk*m**4*sigpmo*(sigpmo-2.d0*pcrpLoc(1))+ &
+                      2.d0*m**2*deltap)*m**2*(sigpmo-pcrpLoc(1))/ &
+                     (m**2*xlam+(1.d0/2.d0/xk/pcrpLoc(1)))
+                xi = 2.d0*m**2*(sigpmo-pcrpLoc(1))- &
+                     2.d0*m**4*xlam*(sigpmo-pcrpLoc(1))/((1.d0/2.d0/xk/pcrpLoc(1))+m**2*xlam)
                 rap = xi/(hp+xa)
 !
 !     -- CALCUL DE LA MATRICE CC-SYMETRISATION DE TPLUS.I
@@ -848,21 +766,18 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
                 end do
 !
 !      -- TERMES NECESSAIRES A LA PARTIE HYDROSTATIQUE
-                xu = 2.d0*m**2*xk*pcrp(1)
+                xu = 2.d0*m**2*xk*pcrpLoc(1)
                 xg = xlam*xu/(1.d0+xlam*xu)
-                xh = xu*(sigpmo-pcrp(1))/(1.d0+xlam*xu)
-                xe = 1.d0+xh*2.d0*m**2*deltap/hp+xh*4.d0*xk*m**4*sigpmo*(sigpmo-2.d0*pcrp(1) &
-                                                                         )*xv/hp/hp
-                xf = ( &
-                     2.d0*m**2*( &
-                     sigpmo-pcrp(1))+2.d0*m**2*deltap-xg*2.d0*m**2*deltap)/hp-4.d0*xk*m**4*xv/hp&
-                     &/hp*((2.d0*sigpmo-pcrp(1))*pcrp(1)+xg*sigpmo*(sigpmo-2.d0*pcrp(1) &
-                     ) &
-                     )
-                ct = ( &
-                     1.d0+2.d0*m**2*xk0*sigpmo*( &
-                     xlam-xg*xlam-xlam*xf*xh/xe+xf/xe*(sigpmo-pcrp(1))))/(xk0*sigpmo &
-                                                                          )
+                xh = xu*(sigpmo-pcrpLoc(1))/(1.d0+xlam*xu)
+                xe = 1.d0+xh*2.d0*m**2*deltap/hp+xh*4.d0*xk*m**4*sigpmo* &
+                     (sigpmo-2.d0*pcrpLoc(1))*xv/hp/hp
+                xf = (2.d0*m**2*(sigpmo-pcrpLoc(1))+2.d0*m**2*deltap-xg*2.d0*m**2*deltap)/hp- &
+                     4.d0*xk*m**4*xv/hp/hp*((2.d0*sigpmo-pcrpLoc(1))*pcrpLoc(1)+ &
+                                            xg*sigpmo*(sigpmo-2.d0*pcrpLoc(1)))
+                ct = (1.d0+ &
+                      2.d0*m**2*xk0*sigpmo*( &
+                      xlam-xg*xlam-xlam*xf*xh/xe+xf/xe*(sigpmo-pcrpLoc(1)) &
+                      ))/(xk0*sigpmo)
 !
 !     --  VECTEUR INTERMEDIAIRE
                 call r8inir(6, 0.d0, fv, 1)
@@ -933,5 +848,9 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
     end if
 ! ======================================================================
 999 continue
+
+    if (lVari) then
+        pcrp = pcrpLoc
+    end if
 ! =====================================================================
 end subroutine
