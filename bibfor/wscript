@@ -34,8 +34,9 @@ def configure(self):
 
     self.check_fortran()
     self.check_fortran_dummy_main()
-    self.check_fortran_compiler_flags()
+    # mangling check may fail with some FCFLAGS (-flto for example)
     self.check_fortran_mangling()
+    self.check_fortran_compiler_flags()
     if self.env.FORTRAN_MANGLING and self.env.FORTRAN_MANGLING[0] == "":
         self.define("ASTER_NO_UNDERSCORE", 1)
     else:
@@ -85,6 +86,7 @@ MAIN = "      program main\n      end program main\n"
 @Configure.conf
 def check_fortran_compiler_flags(self):
     self.check_fortran_compiler_options("-fPIC")
+    # self.check_fortran_compiler_options("-flto")
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")

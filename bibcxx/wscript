@@ -97,6 +97,7 @@ def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
     # compiler independent (icpc/icpx & g++)
     self.check_cxx_compiler_options("-fPIC")
+    # self.check_cxx_compiler_options("-flto")
     self.check_cxx_compiler_options("-std=c++17")
     # FIXME: should globally add -fvisibility-hidden
     self.check_cxx_compiler_options("-Wno-attributes")

@@ -69,6 +69,7 @@ def configure(self):
     self.add_linkflags("-Wl,--no-warn-execstack")
 
     self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
+    # self.add_linkflags("-Wl,--flto=auto", dest="LINKFLAGS")
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
@@ -192,6 +193,8 @@ def build_libaster(self, env):
 @Configure.conf
 def check_c_compiler_flags(self):
     self.check_c_compiler_options("-fPIC")
+    # needs more tests (size and build time)
+    # self.check_c_compiler_options("-flto")
     self.start_msg("C compiler flags")
     self.end_msg(self.env["CFLAGS"])
 
