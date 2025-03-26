@@ -58,12 +58,12 @@ debugpy = "*"
 py-spy = ">=0.4.0,<0.5"
 
 [tool.pixi.feature.rtd.dependencies]
-python = "3.9.*"
-sphinx = "<7"
-numpy = "==1.21.6"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+numpy = "1.24.*"
 
 [tool.pixi.feature.rtd.tasks]
-builddoc = { cmd = "python -m sphinx -T -b html -d build/mpidebug/doc/doctrees -D language=en . ", cwd = "doc" }
+builddoc = { cmd = "python -m sphinx -T -b html -d ../build/mpidebug/doc/doctrees -D language=en . ", cwd = "doc" }
 
 [tool.pixi.environments]
 dbg = ["dbg"]
