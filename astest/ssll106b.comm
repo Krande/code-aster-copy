@@ -62,10 +62,6 @@ FM1 = 3.0e2
 FM2 = 4.0e2
 # Amplitude de la pression interne
 P = 1.0e7
-# Amplitude de la gravité
-g = 10.0
-# Force linéique équivalent à la force gravitaire
-FLG = RHO * S * g
 # Chargement thermique
 DELTA_T = 200.0
 # Nombre de sous points d'intégration dans la circonférence (à multiplier *2 + 1)
@@ -455,7 +451,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=2,
             POINT=2,
-            SOUS_POINT=231,
+            SOUS_POINT=(2 * NB_CIRCO + 1) * (2 * NB_EP + 1),
             RESULTAT=U4,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXY",
@@ -518,7 +514,7 @@ TEST_RESU(
         _F(
             NUME_ORDRE=2,
             POINT=2,
-            SOUS_POINT=17,
+            SOUS_POINT=NB_CIRCO + 1,
             RESULTAT=U5,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXX",
