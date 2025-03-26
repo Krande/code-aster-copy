@@ -562,6 +562,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
         pointer operator->() { return m_ptr; }
 
+        pointer operator&() const { return m_ptr; }
+
         iterator &operator++() {
             m_ptr++;
             return *this;
@@ -574,6 +576,11 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         friend bool operator!=( const iterator &a, const iterator &b ) {
             return a.m_ptr != b.m_ptr;
         };
+
+        iterator operator+( difference_type count ) const { return iterator( m_ptr + count ); }
+
+        // Subtraction: it - count
+        iterator operator-( difference_type count ) const { return iterator( m_ptr - count ); }
 
       private:
         pointer m_ptr;
@@ -608,9 +615,20 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
         const pointer operator->() { return m_ptr; }
 
+        const pointer operator&() const { return m_ptr; }
+
         const_iterator &operator++() {
             m_ptr++;
             return *this;
+        }
+
+        const_iterator operator+( difference_type count ) const {
+            return const_iterator( m_ptr + count );
+        }
+
+        // Subtraction: it - count
+        const_iterator operator-( difference_type count ) const {
+            return const_iterator( m_ptr - count );
         }
 
         friend bool operator==( const const_iterator &a, const const_iterator &b ) {

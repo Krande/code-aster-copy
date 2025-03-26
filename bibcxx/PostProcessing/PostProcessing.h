@@ -3,7 +3,7 @@
  * @file PostProcessing.h
  * @brief Header of class PostProcessing
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,6 +27,7 @@
 
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
+#include "Results/Result.h"
 #include "Studies/PhysicalProblem.h"
 
 /**
@@ -73,6 +74,11 @@ class PostProcessing {
                       const ASTERDOUBLE &time_curr,
                       const FieldOnCellsRealPtr &externVarPrev = nullptr,
                       const FieldOnCellsRealPtr &externVarCurr = nullptr ) const;
+
+    /** @brief Compute max value of EFGE_ELNO or EGRU_ELNO based on the maximum of the
+     *         equivalent moment for piping studies*/
+    FieldOnCellsRealPtr computeMaxResultantForPipe( const ResultPtr &resu,
+                                                    const std::string &field_name ) const;
 };
 
 using PostProcessingPtr = std::shared_ptr< PostProcessing >;

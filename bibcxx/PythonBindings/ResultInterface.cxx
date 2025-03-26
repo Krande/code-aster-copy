@@ -3,7 +3,7 @@
  * @brief Interface python de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -389,11 +389,18 @@ Returns:
     list(str): List of names of the complex generalized vectors.
         )" )
         .def( "getIndexes", &Result::getIndexes, R"(
-Return the list of indexs used to store fields
+Return the list of indexes used to store fields
 
 Returns:
     list[int]: List of indexs used to store fields.
         )" )
+        .def( "getIndexesForFieldName", &Result::getIndexesForFieldName, R"(
+            Returns the list of indexes used to store a specific field,
+             indicated by its name.
+            
+            Returns:
+                list[int]: List of indexs used to store fields.
+                    )" )
         .def( "_interpolateFieldOnNodesReal", &Result::interpolateFieldOnNodesReal, R"(
 Interpolate a FieldOnNodesReal from result.
 

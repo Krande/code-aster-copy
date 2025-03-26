@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#
+import code_aster
+from code_aster.Commands import *
+import numpy as np
+from code_aster import CA
+
+test = CA.TestCase()
+
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 ##
@@ -210,9 +216,10 @@ NEWNONA = DYNA_VIBRA(
 
 # -----------------------------------------------------------------------
 # EFFORTS
+
 NEWNONA = CALC_CHAMP(
     reuse=NEWNONA,
-    NUME_ORDRE=(12, 70),
+    NUME_ORDRE=(12, 20, 45, 70, 80, 90),
     GROUP_MA=("M2", "M36", "M53", "M104"),
     RESULTAT=NEWNONA,
     CONTRAINTE=("EFGE_ELNO"),
@@ -351,6 +358,62 @@ TEST_RESU(
         ),
     )
 )
+
+# ---------------------------------------------------------
+# TEST DE LA METHODE computeMaxResultantForPipe
+
+
+PhysProb = CA.PhysicalProblem(MODELE, CHAMPMAT, CHAMPCAR)
+MAX_EFGE = CA.PostProcessing(PhysProb).computeMaxResultantForPipe(NEWNONA, "EFGE_ELNO")
+
+
+# Test using only numpy
+# Extract field size and index information
+size = NEWNONA.getField("EFGE_ELNO", 12).size()
+nb_indx = len(NEWNONA.getIndexesForFieldName("EFGE_ELNO"))
+# Initialize array for EFGE results
+efge_result_array = np.array(
+    [
+        NEWNONA.getField("EFGE_ELNO", p).getValues()
+        for p in NEWNONA.getIndexesForFieldName("EFGE_ELNO")
+    ]
+).T
+# Initialize storage for indexes and EFGE results
+nb_elem = size // 6
+max_indx_list = np.zeros(4 * nb_elem, dtype=int)
+max_efge = np.zeros(size)
+
+
+# Function to calculate the norm of a moment vector
+def norm_moment(moment):
+    return np.linalg.norm(moment)
+
+
+# Compute indexes and find max values for fx, fy, fz, and moment
+for el in range(nb_elem):
+    start = 6 * el
+    fx = np.abs(efge_result_array[start, :])
+    fy = np.abs(efge_result_array[start + 1, :])
+    fz = np.abs(efge_result_array[start + 2, :])
+    moment = np.array(
+        [norm_moment(efge_result_array[start + 3 : start + 6, p]) for p in range(nb_indx)]
+    )
+    max_indx_list[4 * el] = np.argmax(fx)
+    max_indx_list[4 * el + 1] = np.argmax(fy)
+    max_indx_list[4 * el + 2] = np.argmax(fz)
+    max_indx_list[4 * el + 3] = np.argmax(moment)
+    max_efge[start] = fx[max_indx_list[4 * el]]
+    max_efge[start + 1] = fy[max_indx_list[4 * el + 1]]
+    max_efge[start + 2] = fz[max_indx_list[4 * el + 2]]
+    max_efge[start + 3 : start + 6] = np.abs(
+        efge_result_array[start + 3 : start + 6, max_indx_list[4 * el + 3]]
+    )
+
+# TEST IF EQUAL
+
+
+test.assertSequenceEqual(max_efge.tolist(), MAX_EFGE.getValues())
+
 
 FIN()
 #
