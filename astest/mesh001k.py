@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ from code_aster.Commands import *
 from code_aster import CA
 from medcoupling import *
 
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 from code_aster.CA import MPI
 
 
@@ -65,9 +65,9 @@ nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 # from MED format (only this one a ParallelMesh)
 mesh = CA.ParallelMesh()
 
-with shared_tmpdir("mesh001k_") as tmpdir:
+with SharedTmpdir("mesh001k_") as tmpdir:
     print("Create Mesh", flush=True)
-    medfile = osp.join(tmpdir, "mesh001k.med")
+    medfile = osp.join(tmpdir.path, "mesh001k.med")
     if rank == 0:
         create_mesh(10, medfile)
     MPI.ASTER_COMM_WORLD.Barrier()
@@ -75,7 +75,7 @@ with shared_tmpdir("mesh001k_") as tmpdir:
     print("Read Mesh", flush=True)
     mesh.readMedFile(medfile)
 
-    medfile2 = osp.join(tmpdir, "mesh001k_2.med")
+    medfile2 = osp.join(tmpdir.path, "mesh001k_2.med")
 
     print("Save Mesh", flush=True)
     mesh.printMedFile(medfile2, False)

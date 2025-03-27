@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 import os.path as osp
 
 from code_aster.Commands import *
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
@@ -730,8 +730,8 @@ IMPR_FONCTION(
 
 
 # Should be after POURSUITE - but ParallelMechanicalLoad can not be yet reloaded
-with shared_tmpdir("ssnp14a_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.ssnp14a.90.med")
+with SharedTmpdir("ssnp14a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.ssnp14a.90.med")
     DEFI_FICHIER(UNITE=90, FICHIER=medfile, TYPE="BINARY")
     IMPR_RESU(
         FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=90, RESU=_F(RESULTAT=U), VERSION_MED="4.1.0"
@@ -739,8 +739,8 @@ with shared_tmpdir("ssnp14a_") as tmpdir:
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=90)
 
-with shared_tmpdir("ssnp14a_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.ssnp14a.91.med")
+with SharedTmpdir("ssnp14a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.ssnp14a.91.med")
     DEFI_FICHIER(UNITE=91, FICHIER=medfile, TYPE="BINARY")
     IMPR_RESU(
         FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=91, RESU=_F(RESULTAT=U2), VERSION_MED="4.0.0"
@@ -748,16 +748,16 @@ with shared_tmpdir("ssnp14a_") as tmpdir:
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=91)
 
-with shared_tmpdir("ssnp14a_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.ssnp14a.92.med")
+with SharedTmpdir("ssnp14a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.ssnp14a.92.med")
     DEFI_FICHIER(UNITE=92, FICHIER=medfile, TYPE="BINARY")
     IMPR_RESU(
         FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=92, RESU=_F(RESULTAT=U3), VERSION_MED="4.1.0"
     )
     DEFI_FICHIER(ACTION="LIBERER", UNITE=92)
 
-with shared_tmpdir("ssnp14a_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.ssnp14a.94.med")
+with SharedTmpdir("ssnp14a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.ssnp14a.94.med")
     DEFI_FICHIER(UNITE=94, FICHIER=medfile, TYPE="BINARY")
     IMPR_RESU(
         FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=94, RESU=_F(RESULTAT=U4), VERSION_MED="4.1.0"

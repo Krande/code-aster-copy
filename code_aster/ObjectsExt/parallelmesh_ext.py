@@ -42,7 +42,7 @@ from ..Objects import (
     ResultNaming,
 )
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, shared_tmpdir
+from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, SharedTmpdir
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
 from . import mesh_builder
@@ -97,13 +97,13 @@ class ExtendedParallelMesh:
         opt = "Mesh.VolumeEdges = 1;Mesh.VolumeFaces=1;Mesh.SurfaceEdges=1;Mesh.SurfaceFaces=1;"
         if local:
             if split:
-                with shared_tmpdir("mesh") as tmpdir:
-                    filename = osp.join(tmpdir, f"subd_{comm.rank}.med")
+                with SharedTmpdir("mesh") as tmpdir:
+                    filename = osp.join(tmpdir.path, f"subd_{comm.rank}.med")
                     self.printMedFile(filename, local=True)
                     comm.Barrier()
                     if comm.rank == 0:
                         for i in range(comm.size):
-                            ff = osp.join(tmpdir, f"subd_{i}.med")
+                            ff = osp.join(tmpdir.path, f"subd_{i}.med")
                             subprocess.run(
                                 [
                                     ExecutionParameter().get_option(f"prog:{command}"),
@@ -333,8 +333,8 @@ class ExtendedParallelMesh:
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
-        with shared_tmpdir("buildSquare") as tmpdir:
-            filename = osp.join(tmpdir, "buildSquare.med")
+        with SharedTmpdir("buildSquare") as tmpdir:
+            filename = osp.join(tmpdir.path, "buildSquare.med")
             if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildSquare(l=l, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
@@ -362,8 +362,8 @@ class ExtendedParallelMesh:
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
-        with shared_tmpdir("buildRectangle") as tmpdir:
-            filename = osp.join(tmpdir, "buildRectangle.med")
+        with SharedTmpdir("buildRectangle") as tmpdir:
+            filename = osp.join(tmpdir.path, "buildRectangle.med")
             if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildRectangle(lx=lx, ly=ly, nx=nx, ny=ny, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
@@ -388,8 +388,8 @@ class ExtendedParallelMesh:
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
-        with shared_tmpdir("buildCube") as tmpdir:
-            filename = osp.join(tmpdir, "buildCube.med")
+        with SharedTmpdir("buildCube") as tmpdir:
+            filename = osp.join(tmpdir.path, "buildCube.med")
             if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildCube(l=l, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
@@ -414,8 +414,8 @@ class ExtendedParallelMesh:
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
-        with shared_tmpdir("buildDisk") as tmpdir:
-            filename = osp.join(tmpdir, "buildDisk.med")
+        with SharedTmpdir("buildDisk") as tmpdir:
+            filename = osp.join(tmpdir.path, "buildDisk.med")
             if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildDisk(radius=radius, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
@@ -441,8 +441,8 @@ class ExtendedParallelMesh:
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
-        with shared_tmpdir("buildCylinder") as tmpdir:
-            filename = osp.join(tmpdir, "buildCylinder.med")
+        with SharedTmpdir("buildCylinder") as tmpdir:
+            filename = osp.join(tmpdir.path, "buildCylinder.med")
             if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildCylinder(height=height, radius=radius, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
@@ -468,8 +468,8 @@ class ExtendedParallelMesh:
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
-        with shared_tmpdir("buildRing") as tmpdir:
-            filename = osp.join(tmpdir, "buildRing.med")
+        with SharedTmpdir("buildRing") as tmpdir:
+            filename = osp.join(tmpdir.path, "buildRing.med")
             if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildRing(rint=rint, rext=rext, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
@@ -496,8 +496,8 @@ class ExtendedParallelMesh:
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
-        with shared_tmpdir("buildTube") as tmpdir:
-            filename = osp.join(tmpdir, "buildTube.med")
+        with SharedTmpdir("buildTube") as tmpdir:
+            filename = osp.join(tmpdir.path, "buildTube.med")
             if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildTube(
                     height=height, rint=rint, rext=rext, refine=refine_0, info=info
