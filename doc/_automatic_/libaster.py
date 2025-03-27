@@ -1571,6 +1571,18 @@ class DiscreteComputation:
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
 
+    def getResidualReference(self, arg0):
+        """Return the residual reference (for RESI_REFE_RELA)
+
+        Arguments:
+              vale_by_name : dict :
+                             keys are component names
+                             values are the given reference value corresponding to component name
+
+        Returns:
+              FieldOnNodesReal: residual reference forces vector
+        """
+
     def getRotationalStiffnessMatrix(self, groupOfCells=[]):
         """Return the elementary matrices for rotational Stiffness matrix.
         Option RIGI_ROTA.
@@ -3090,8 +3102,13 @@ class FieldOnNodesReal(DataField):
     def __isub__(self, arg0):
         pass
 
-    def __itruediv__(self, arg0):
-        pass
+    def __itruediv__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __itruediv__(self: libaster.FieldOnNodesReal, arg0: float) -> libaster.FieldOnNodesReal
+
+        2. __itruediv__(self: libaster.FieldOnNodesReal, arg0: libaster.FieldOnNodesReal) -> libaster.FieldOnNodesReal
+        """
 
     def __mul__(self, arg0):
         pass
@@ -8364,7 +8381,7 @@ class ElementaryVectorReal(BaseElementaryVector):
                         terms (list[ElementaryTermReal]): vector of elementary term
         """
 
-    def assemble(self, arg0):
+    def assemble(self, dofNume, minimum=False):
         pass
 
     def getElementaryTerms(self):
@@ -8426,7 +8443,7 @@ class ElementaryVectorComplex(BaseElementaryVector):
                         terms (list[ElementaryTermComplex]): vector of elementary term
         """
 
-    def assemble(self, arg0):
+    def assemble(self, dofNume, minimum=False):
         pass
 
     def getElementaryTerms(self):
