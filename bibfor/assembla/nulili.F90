@@ -150,12 +150,9 @@ subroutine nulili(nbLigr, listLigr, lili, base, gran_name, &
 ! ----- Only one mesh
         call jeveuo(ligrName(1:19)//'.LGRF', 'L', iad)
         ligrelMesh = zk8(iad)
+        ASSERT(iligr .eq. 1 .or. mesh .eq. ligrelMesh)
         if (iligr .eq. 1) then
             mesh = ligrelMesh
-        else
-            WRITE (6, *) "mesh:", mesh
-            WRITE (6, *) "ligrelMesh:", ligrelMesh
-            ASSERT(mesh .eq. ligrelMesh)
         end if
 
 ! ----- Create object in collection

@@ -2451,7 +2451,6 @@ contains
             call jeveuo(loadNameJv, 'L', vk24=listLoadName)
             do iLoad = 1, nbLoad
                 loadName = listLoadName(iLoad) (1:8)
-                WRITE (6, *) "loadName: ", iLoad, loadName
                 if (loadName .ne. " ") then
                     call dismoi('TYPE_CHARGE', loadName, 'CHARGE', repk=loadCommand)
                     loadPreObject = loadName(1:8)//'.CH'//loadCommand(1:2)
