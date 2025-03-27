@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,18 +99,11 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lc7010.h"
 #include "asterfort/lc7011.h"
 #include "asterfort/lc7013.h"
-#include "asterfort/lc7040.h"
-#include "asterfort/lc7041.h"
-#include "asterfort/lc7043.h"
 #include "asterfort/lc7045.h"
 #include "asterfort/lc7046.h"
 #include "asterfort/lc7047.h"
 #include "asterfort/lc7048.h"
-#include "asterfort/lc7049.h"
-#include "asterfort/lc7051.h"
-#include "asterfort/lc7056.h"
 #include "asterfort/lc7058.h"
-#include "asterfort/lc7077.h"
 #include "asterfort/lc8028.h"
 #include "asterfort/lc8029.h"
 #include "asterfort/lc8057.h"
@@ -119,6 +112,13 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lcvisc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
+#include "asterfort/lc9040.h"
+#include "asterfort/lc9041.h"
+#include "asterfort/lc9043.h"
+#include "asterfort/lc9049.h"
+#include "asterfort/lc9051.h"
+#include "asterfort/lc9056.h"
+#include "asterfort/lc9077.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
     integer :: imate, ndim, nvi_all, kpg, ksp
@@ -775,7 +775,7 @@ subroutine lc0000(BEHinteg, &
                     ndsde, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
-! - With INTERFAC/EJ_HYME/ELEMJOIN
+! - With EJ_HYME/ELEMJOIN
 ! --------------------------------------------------------------------------------------------------
 !
     case (7010)
@@ -799,24 +799,6 @@ subroutine lc0000(BEHinteg, &
                     deps, sigm, vim, option, angmas, &
                     sigp, vip, typmod, icomp, &
                     nvi, dsidep, codret)
-    case (7040)
-        call lc7040(BEHinteg, fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
-                    ndsde, dsidep, codret)
-    case (7041)
-        call lc7041(BEHinteg, fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
-                    ndsde, dsidep, codret)
-    case (7043)
-        call lc7043(BEHinteg, fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
-                    ndsde, dsidep, codret)
     case (7045)
         call lc7045(BEHinteg, &
                     fami, kpg, ksp, ndim, imate, &
@@ -848,24 +830,6 @@ subroutine lc0000(BEHinteg, &
                     deps, sigm, vim, option, angmas, &
                     sigp, vip, typmod, icomp, &
                     nvi, dsidep, codret)
-    case (7049)
-        call lc7049(BEHinteg, fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
-                    ndsde, dsidep, codret)
-    case (7051)
-        call lc7051(BEHinteg, fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
-                    ndsde, dsidep, codret)
-    case (7056)
-        call lc7056(BEHinteg, fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
-                    ndsde, dsidep, codret)
     case (7058)
 !     MFRONT
         call lc7058(BEHinteg, &
@@ -874,12 +838,6 @@ subroutine lc0000(BEHinteg, &
                     neps, epsm, deps, nsig, sigm, &
                     nvi, vim, option, angmas, &
                     sigp, vip, ndsde, dsidep, codret)
-    case (7077)
-        call lc7077(BEHinteg, fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, nvi, vim, option, angmas, &
-                    sigp, vip, typmod, icomp, &
-                    ndsde, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - For KIT_DDI
@@ -924,6 +882,54 @@ subroutine lc0000(BEHinteg, &
                     epsm, deps, nsig, sigm, vim, &
                     option, angmas, sigp, nvi, vip, &
                     typmod, ndsde, dsidep, codret)
+!
+! --------------------------------------------------------------------------------------------------
+! - With INTERFACE
+! --------------------------------------------------------------------------------------------------
+!
+    case (9040)
+        call lc9040(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+    case (9041)
+        call lc9041(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+    case (9043)
+        call lc9043(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+    case (9049)
+        call lc9049(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+    case (9051)
+        call lc9051(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+    case (9056)
+        call lc9056(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+    case (9077)
+        call lc9077(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+
     case default
         call utmess('F', 'COMPOR1_43', si=numlcEff)
     end select

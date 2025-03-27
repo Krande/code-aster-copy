@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,13 @@ subroutine te0359(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/eiangl.h"
-#include "asterfort/eiinit.h"
+#include "asterfort/eimatb.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/pipeei.h"
+#include "asterfort/ngpipe.h"
+#include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
@@ -49,67 +50,77 @@ subroutine te0359(option, nomte)
 ! In  nomte            : type of finite element
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    character(len=8) :: lielrf(10)
+    character(len=16), parameter :: typilo = 'PRED_ELAS       '
+! --------------------------------------------------------------------------------------------------
+    character(len=8) :: typmod(2), lielrf(10)
     aster_logical :: axi
-    integer :: nno1, nno2, npg, lgpg, ndim, iret, ntrou, iu(3, 18), im(3, 9)
-    integer :: it(18)
-    integer :: iw, ivf1, idf1, igeom, imate, ivf2, idf2, nnos, jgn, jtab(7)
-    integer :: ivarim, icopil, ictau, iddlm, iddld, iddl0, iddl1, icompo, icamas
-    real(kind=8) :: ang(24)
-!
+    integer :: nno1, nno2, npg, lgpg, ndim, iret, ntrou, jtab(7), neps, nddl
+    integer :: jv_w, jv_vff1, jv_geom, jv_mate, jv_vff2, jv_dff2, jv_dtau
+    integer :: jv_copilo, jv_varim, jv_ddlm, jv_ddld, jv_ddl0, jv_ddl1, jv_compor, jv_angmas
+    integer :: jv_borne
+    real(kind=8):: etamin, etamax
+    real(kind=8), allocatable:: wg(:, :), ni2ldc(:, :), b(:, :, :), ang(:, :)
+    real(kind=8), allocatable:: sigm(:, :)
 ! --------------------------------------------------------------------------------------------------
 !
-    axi = lteatt('AXIS', 'OUI')
 !
 ! - Get element parameters
-!
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
-                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
-                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, npg=npg, &
+                     jpoids=jv_w, jvf=jv_vff1)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, npg=npg, &
+                     jpoids=jv_w, jvf=jv_vff2, jdfde=jv_dff2)
+
     ndim = ndim+1
-!
-! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
-    call eiinit(nomte, iu, im, it)
-!
-! --- ORIENTATION DE L'ELEMENT D'INTERFACE : REPERE LOCAL
-!     RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
-!
-    call jevech('PCAMASS', 'L', icamas)
-    if (zr(icamas) .eq. -1.d0) then
-        call utmess('F', 'JOINT1_47')
-    end if
-!
-!     DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS : ANG
-!
-    call eiangl(ndim, nno2, zr(icamas+1), ang)
-!
-! - PARAMETRES
-!
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icompo)
-    call jevech('PDEPLMR', 'L', iddlm)
-    call jevech('PDDEPLR', 'L', iddld)
-    call jevech('PDEPL0R', 'L', iddl0)
-    call jevech('PDEPL1R', 'L', iddl1)
-    call jevech('PVARIMR', 'L', ivarim)
-    call jevech('PCDTAU', 'L', ictau)
-    call jevech('PCOPILO', 'E', icopil)
-!
+    nddl = ndim*(2*nno1+nno2)
+    neps = 2*ndim
+
+    allocate (ang(merge(1, 3, ndim .eq. 2), nno2), b(neps, npg, nddl), wg(neps, npg), &
+              ni2ldc(neps, npg))
+    allocate (sigm(neps, npg))
+
+! - Type of finite element
+    call teattr('S', 'TYPMOD', typmod(1))
+    call teattr('S', 'TYPMOD2', typmod(2))
+    axi = lteatt('AXIS', 'OUI')
+
+    ! Parametres
+    call jevech('PGEOMER', 'L', jv_geom)
+    call jevech('PCAMASS', 'L', jv_angmas)
+    call jevech('PMATERC', 'L', jv_mate)
+    call jevech('PCOMPOR', 'L', jv_compor)
+    call jevech('PDEPLMR', 'L', jv_ddlm)
+    call jevech('PDDEPLR', 'L', jv_ddld)
+    call jevech('PDEPL0R', 'L', jv_ddl0)
+    call jevech('PDEPL1R', 'L', jv_ddl1)
+    call jevech('PVARIMR', 'L', jv_varim)
+    call jevech('PCDTAU', 'L', jv_dtau)
+    call jevech('PCOPILO', 'E', jv_copilo)
+    call jevech('PBORNPI', 'L', jv_borne)
+
 !    NOMBRE DE VARIABLES INTERNES
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
-!
-!
-! - PILOTAGE PRED_ELAS
-!
-    call pipeei(ndim, axi, nno1, nno2, npg, &
-                zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom), &
-                ang, zi(imate), zk16(icompo), lgpg, zr(iddlm), &
-                zr(iddld), zr(iddl0), zr(iddl1), zr(ictau), zr(ivarim), &
-                iu, im, zr(icopil))
-!
+
+    ! Repere local
+    if (nint(zr(jv_angmas)) .eq. -1) call utmess('F', 'JOINT1_47')
+    call eiangl(ndim, nno2, zr(jv_angmas+1), ang)
+
+    ! Calcul la matrice de la cinematique
+    call eimatb(nomte, ndim, axi, nno1, nno2, npg, &
+                zr(jv_w), zr(jv_vff1), zr(jv_vff2), zr(jv_dff2), zr(jv_geom), &
+                ang, b, wg, ni2ldc)
+
+    ! Bornes
+    etamin = zr(jv_borne+1)
+    etamax = zr(jv_borne)
+
+    ! Pilotage
+    sigm = 0
+    call ngpipe(typilo, npg, neps, nddl, b, &
+                ni2ldc, typmod, zi(jv_mate), zk16(jv_compor), lgpg, &
+                zr(jv_ddlm), sigm, zr(jv_varim), zr(jv_ddld), zr(jv_ddl0), &
+                zr(jv_ddl1), zr(jv_dtau), etamin, etamax, zr(jv_copilo))
+
+    deallocate (ang, b, wg, ni2ldc, sigm)
 end subroutine

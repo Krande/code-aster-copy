@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eiinit(nomte, iu, il, it)
+subroutine eiinit(nomte, iu, il)
 !
 !
     implicit none
 #include "asterfort/assert.h"
     character(len=16) :: nomte
-    integer :: iu(3, 18), il(3, 9), it(18)
+    integer :: iu(:, :), il(:, :)
 ! ----------------------------------------------------------------------
 !            DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
 ! ----------------------------------------------------------------------
 ! IN  NOMTE  NOM DE L'ELEMENT FINI
 ! OUT IU     DECALAGE D'INDICE POUR ACCEDER AUX DDL DE DEPLACEMENT
 ! OUT IL     DECALAGE D'INDICE POUR ACCEDER AUX DDL DE LAGRANGE
-! OUT IT     DECALAGE D'INDICE POUR ACCEDER A LA TEMPERATURE
 ! ----------------------------------------------------------------------
     integer :: n
     integer :: uh20(16), lh20(4)
@@ -57,10 +56,6 @@ subroutine eiinit(nomte, iu, il, it)
             il(3, n) = 3+(lh20(n)-1)*3
         end do
 !
-        do n = 1, 16
-            it(n) = uh20(n)
-        end do
-!
 !
     else if ((nomte .eq. 'MEEI_PENTA15') .or. (nomte .eq. 'MEEI_PENTS15')) &
         then
@@ -76,9 +71,6 @@ subroutine eiinit(nomte, iu, il, it)
             il(3, n) = 3+(lp15(n)-1)*3
         end do
 !
-        do n = 1, 12
-            it(n) = up15(n)
-        end do
 !
     else if ((nomte .eq. 'EIPLQU8') .or. (nomte .eq. 'EIPLQS8') .or. ( &
              nomte .eq. 'EIAXQU8') .or. (nomte .eq. 'EIAXQS8')) then
@@ -91,10 +83,6 @@ subroutine eiinit(nomte, iu, il, it)
         do n = 1, 2
             il(1, n) = 1+(lq8(n)-1)*2
             il(2, n) = 2+(lq8(n)-1)*2
-        end do
-!
-        do n = 1, 6
-            it(n) = uq8(n)
         end do
 !
     else

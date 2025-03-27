@@ -46,7 +46,7 @@ subroutine pipeab(mat, dtau, vim, sup, sud, mup, mud, nsol, sol, sgn)
     integer :: cod(6), cine, nrac
     character(len=16) :: nom(6)
     real(kind=8) :: sc, dc, alpha, beta, s0, d0, r, ka, sr, val(6)
-    real(kind=8) :: rac(2), tmp, p0, p1, p2
+    real(kind=8) :: rac(2), p0, p1, p2
     real(kind=8), dimension(size(sup)) :: sig_f, sig_p, s_f, s_p
     integer, parameter:: unilater = 0, glis_1d = 1, glis_2d = 2
 ! --------------------------------------------------------------------------------------------------

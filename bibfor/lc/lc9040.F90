@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1306,W1504,W0104,C1505
-!
+! aslint: disable=W1306,C1505
 
-subroutine lc7049(BEHinteg, fami, kpg, ksp, ndim, imate, &
+subroutine lc9040(BEHinteg, fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp, &
@@ -30,7 +29,10 @@ subroutine lc7049(BEHinteg, fami, kpg, ksp, ndim, imate, &
 !
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/lceitr.h"
+#include "asterfort/czm_post.h"
+#include "asterfort/lceiou.h"
+!
+! aslint: disable=W1504,W0104
 !
     type(Behaviour_Integ)        :: BEHinteg
     character(len=*), intent(in) :: fami
@@ -64,15 +66,13 @@ subroutine lc7049(BEHinteg, fami, kpg, ksp, ndim, imate, &
 !
 ! Behaviour
 !
-! CZM_TRA_MIX
+! CZM_OUV_MIX
 !
-! --------------------------------------------------------------------------------------------------
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: lMatr, lSigm, lVari
     real(kind=8)  :: mu(3), su(3), delta(6), dsde(6, 6), vi(nvi), r
 ! --------------------------------------------------------------------------------------------------
-
-    ASSERT(nsig .ge. ndim)
+    ASSERT(nsig .ge. 2*ndim)
     ASSERT(neps .ge. 2*ndim)
 
     lVari = L_VARI(option)
@@ -87,18 +87,16 @@ subroutine lc7049(BEHinteg, fami, kpg, ksp, ndim, imate, &
 
     mu = 0
     su = 0
-    mu(1:ndim) = epsm(1:ndim)+deps(1:ndim)
-    su(1:ndim) = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
+    su(1:ndim) = epsm(1:ndim)+deps(1:ndim)
+    mu(1:ndim) = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
 
-    call lceitr(fami, kpg, ksp, imate, option, &
+    call lceiou(fami, kpg, ksp, imate, option, &
                 mu, su, delta, dsde, vim, &
                 vi, r)
     if (codret .ne. 0) goto 999
-    BEHinteg%behavESVA%behavESVAOther%r = r
-
-    if (lSigm) sigp(1:ndim) = delta(1:ndim)
+    
+    call czm_post(ndim, lSigm, lMatr, r, mu, su, delta, dsde, sigp, dsidep)
     if (lVari) vip(1:nvi) = vi(1:nvi)
-    if (lMatr) dsidep(1:ndim, 1:ndim) = dsde(1:ndim, 1:ndim)
 
 999 continue
 end subroutine

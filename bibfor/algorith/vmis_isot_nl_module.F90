@@ -602,7 +602,7 @@ contains
 ! ---------------------------------------------------------------------
 
         real(kind=8)    :: kr(self%ndimsi), rac2(self%ndimsi)
-        real(kind=8)    :: kam, ka, epm(self%ndimsi), sel(self%ndimsi)
+        real(kind=8)    :: kam, ka, epm(self%ndimsi)
         real(kind=8):: s0(self%ndimsi), s1(self%ndimsi), rk, gk, p0, p1, p2
 ! ---------------------------------------------------------------------
 

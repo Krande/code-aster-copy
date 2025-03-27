@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,C1505
 
-subroutine lc7040(BEHinteg, fami, kpg, ksp, ndim, imate, &
+subroutine lc9041(BEHinteg, fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp, &
@@ -29,7 +29,8 @@ subroutine lc7040(BEHinteg, fami, kpg, ksp, ndim, imate, &
 !
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/lceiou.h"
+#include "asterfort/czm_post.h"
+#include "asterfort/lceitc.h"
 !
 ! aslint: disable=W1504,W0104
 !
@@ -65,12 +66,14 @@ subroutine lc7040(BEHinteg, fami, kpg, ksp, ndim, imate, &
 !
 ! Behaviour
 !
-! CZM_OUV_MIX
+! CZM_TAC_MIX
 !
+! --------------------------------------------------------------------------------------------------
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: lMatr, lSigm, lVari
     real(kind=8)  :: mu(3), su(3), delta(6), dsde(6, 6), vi(nvi), r
 ! --------------------------------------------------------------------------------------------------
+
     ASSERT(nsig .ge. ndim)
     ASSERT(neps .ge. 2*ndim)
 
@@ -86,18 +89,16 @@ subroutine lc7040(BEHinteg, fami, kpg, ksp, ndim, imate, &
 
     mu = 0
     su = 0
-    mu(1:ndim) = epsm(1:ndim)+deps(1:ndim)
-    su(1:ndim) = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
+    su(1:ndim) = epsm(1:ndim)+deps(1:ndim)
+    mu(1:ndim) = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
 
-    call lceiou(fami, kpg, ksp, imate, option, &
+    call lceitc(fami, kpg, ksp, imate, option, &
                 mu, su, delta, dsde, vim, &
                 vi, r)
     if (codret .ne. 0) goto 999
-    BEHinteg%behavESVA%behavESVAOther%r = r
-
-    if (lSigm) sigp(1:ndim) = delta(1:ndim)
+    
+    call czm_post(ndim, lSigm, lMatr, r, mu, su, delta, dsde, sigp, dsidep)
     if (lVari) vip(1:nvi) = vi(1:nvi)
-    if (lMatr) dsidep(1:ndim, 1:ndim) = dsde(1:ndim, 1:ndim)
 
 999 continue
 end subroutine

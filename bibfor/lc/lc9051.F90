@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1306,C1505
+! aslint: disable=W1504,W0104,W1306,C1505
 
-subroutine lc7041(BEHinteg, fami, kpg, ksp, ndim, imate, &
+subroutine lc9051(BEHinteg, fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp, &
@@ -29,9 +29,10 @@ subroutine lc7041(BEHinteg, fami, kpg, ksp, ndim, imate, &
 !
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/lceitc.h"
+#include "asterfort/czm_post.h"
+#include "asterfort/lceiab.h"
 !
-! aslint: disable=W1504,W0104
+
 !
     type(Behaviour_Integ)        :: BEHinteg
     character(len=*), intent(in) :: fami
@@ -60,14 +61,12 @@ subroutine lc7041(BEHinteg, fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                            merge(neps, 6, nsig*neps .eq. ndsde))
     integer, intent(out):: codret
-!
 ! --------------------------------------------------------------------------------------------------
 !
 ! Behaviour
 !
-! CZM_TAC_MIX
+! CZM_LAB_MIX
 !
-! --------------------------------------------------------------------------------------------------
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: lMatr, lSigm, lVari
     real(kind=8)  :: mu(3), su(3), delta(6), dsde(6, 6), vi(nvi), r
@@ -88,18 +87,16 @@ subroutine lc7041(BEHinteg, fami, kpg, ksp, ndim, imate, &
 
     mu = 0
     su = 0
-    mu(1:ndim) = epsm(1:ndim)+deps(1:ndim)
-    su(1:ndim) = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
+    su(1:ndim) = epsm(1:ndim)+deps(1:ndim)
+    mu(1:ndim) = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
 
-    call lceitc(fami, kpg, ksp, imate, option, &
+    call lceiab(fami, kpg, ksp, imate, option, &
                 mu, su, delta, dsde, vim, &
-                vi, r)
+                vi, r, codret)
     if (codret .ne. 0) goto 999
-    BEHinteg%behavESVA%behavESVAOther%r = r
-
-    if (lSigm) sigp(1:ndim) = delta(1:ndim)
+    
+    call czm_post(ndim, lSigm, lMatr, r, mu, su, delta, dsde, sigp, dsidep)
     if (lVari) vip(1:nvi) = vi(1:nvi)
-    if (lMatr) dsidep(1:ndim, 1:ndim) = dsde(1:ndim, 1:ndim)
 
 999 continue
 end subroutine

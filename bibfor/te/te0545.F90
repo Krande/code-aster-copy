@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine te0545(option, nomte)
     integer :: nnoQ, nnoL, npg, ndim, nddl, neps, lgpg
     integer :: jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL
     integer :: imate, icontm, ivarim, iinstm, iinstp, ideplm, ideplp, icompo
-    integer :: ivectu, icontp, ivarip, imatuu, icarcr, ivarix, igeom, icoret
+    integer :: ivectu, icontp, ivarip, imatns, imatuu, icarcr, ivarix, igeom, icoret
     integer :: iret, nnos, jv_ganoQ, jv_ganoL, itab(7)
     integer :: codret
     real(kind=8) :: angmas(3)
@@ -77,7 +77,7 @@ subroutine te0545(option, nomte)
     icontp = 1
     ivarip = 1
     icoret = 1
-    imatuu = 1
+    imatns = 1
 !
 ! - Type of modelling
 !
@@ -125,7 +125,8 @@ subroutine te0545(option, nomte)
 !
     if (lMatr) then
         matsym = .false.
-        call jevech('PMATUNS', 'E', imatuu)
+        call jevech('PMATUNS', 'E', imatns)
+        call jevech('PMATUUR', 'E', imatuu)
     end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
@@ -152,7 +153,7 @@ subroutine te0545(option, nomte)
                         zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom), zk16(icompo), &
                         zi(imate), lgpg, zr(icarcr), angmas, zr(iinstm), &
                         zr(iinstp), matsym, zr(ideplm), zr(ideplp), zr(icontm), &
-                        zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
+                        zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatns), &
                         lMatr, lVect, lSigm, lVari, codret)
         else
             call ngvlog('RIGI', option, typmod, ndim, nnoQ, &
@@ -160,7 +161,7 @@ subroutine te0545(option, nomte)
                         zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom), zk16(icompo), &
                         zi(imate), lgpg, zr(icarcr), angmas, zr(iinstm), &
                         zr(iinstp), matsym, zr(ideplm), zr(ideplp), zr(icontm), &
-                        zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
+                        zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatns), &
                         lMatr, lVect, lSigm, lVari, codret)
         end if
     else if (defo_comp(1:5) .eq. 'PETIT') then
@@ -168,12 +169,14 @@ subroutine te0545(option, nomte)
                     zr(igeom), zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
                     jv_poids, nddl, neps, b, w, &
                     ni2ldc)
+        matsym = .not. (nint(zr(icarcr-1+CARCRI_MATRSYME)) .gt. 0)
         call ngfint(option, typmod, ndim, nddl, neps, &
                     npg, w, b, zk16(icompo), 'RIGI', &
                     zi(imate), angmas, lgpg, zr(icarcr), zr(iinstm), &
                     zr(iinstp), zr(ideplm), zr(ideplp), ni2ldc, zr(icontm), &
-                    zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
-                    lMatr, lVect, lSigm, codret)
+                    zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), matsym, &
+                    zr(imatuu), zr(imatns), lMatr, lVect, lSigm, &
+                    codret)
         deallocate (b)
         deallocate (w)
         deallocate (ni2ldc)

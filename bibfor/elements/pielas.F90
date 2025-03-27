@@ -16,6 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+! aslint: disable=W0413
+! comparaison aver r8gaem et -r8gaem uniquement
+
 subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
                   typmod, mate, lgpg, vim, epsm, &
                   epsp, epsd, sigma, etamin, etamax, &

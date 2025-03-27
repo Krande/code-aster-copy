@@ -416,9 +416,11 @@ contains
         if (typmod(2) .eq. 'GRADVARI') then
             lawOffset = lawOffset+6000
         end if
-        if (typmod(2) .eq. 'EJ_HYME' .or. &
-            typmod(2) .eq. 'ELEMJOIN' .or. typmod(2) .eq. 'INTERFAC') then
+        if (typmod(2) .eq. 'EJ_HYME' .or. typmod(2) .eq. 'ELEMJOIN') then
             lawOffset = lawOffset+7000
+        end if
+        if (typmod(2) .eq. 'INTERFAC') then
+            lawOffset = lawOffset+9000
         end if
         BEHinteg%behavPara%lawIndexOffset = lawOffset
 !

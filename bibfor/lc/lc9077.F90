@@ -16,22 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,W1306,C1505
-
-subroutine lc7051(BEHinteg, fami, kpg, ksp, ndim, imate, &
+!
+subroutine lc9077(BEHinteg, fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp, &
                   ndsde, dsidep, codret)
 !
     use Behaviour_type
+    use czm_elas_module, only: CONSTITUTIVE_LAW, Init, Integrate
 !
     implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/lceiab.h"
-!
-
+#include "asterfort/czm_post.h"
 !
     type(Behaviour_Integ)        :: BEHinteg
     character(len=*), intent(in) :: fami
@@ -60,17 +59,19 @@ subroutine lc7051(BEHinteg, fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                            merge(neps, 6, nsig*neps .eq. ndsde))
     integer, intent(out):: codret
+!
 ! --------------------------------------------------------------------------------------------------
 !
 ! Behaviour
 !
-! CZM_LAB_MIX
+! CZM_ELAS
 !
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: lMatr, lSigm, lVari
-    real(kind=8)  :: mu(3), su(3), delta(6), dsde(6, 6), vi(nvi), r
+    real(kind=8)  :: t(ndim), su(ndim), delta(ndim), dphi_delta(ndim, ndim), vi(nvi)
+    type(CONSTITUTIVE_LAW) :: cl
 ! --------------------------------------------------------------------------------------------------
-
+!
     ASSERT(nsig .ge. ndim)
     ASSERT(neps .ge. 2*ndim)
 
@@ -78,26 +79,16 @@ subroutine lc7051(BEHinteg, fami, kpg, ksp, ndim, imate, &
     lSigm = L_SIGM(option)
     lMatr = L_MATR(option)
 
-    codret = 0
+    su= epsm(1:ndim)+deps(1:ndim)
+    t = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
 
-    delta = 0
-    vi = 0
-    dsde = 0
-
-    mu = 0
-    su = 0
-    mu(1:ndim) = epsm(1:ndim)+deps(1:ndim)
-    su(1:ndim) = epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim)
-
-    call lceiab(fami, kpg, ksp, imate, option, &
-                mu, su, delta, dsde, vim, &
-                vi, r, codret)
+    cl = Init(ndim, fami, kpg, ksp, imate, t, su)
+    call Integrate(cl, delta, dphi_delta, vi)
+    codret = cl%exception
     if (codret .ne. 0) goto 999
-    BEHinteg%behavESVA%behavESVAOther%r = r
-
-    if (lSigm) sigp(1:ndim) = delta(1:ndim)
+    
+    call czm_post(ndim, lSigm, lMatr, cl%r, t, su, delta, dphi_delta, sigp, dsidep)
     if (lVari) vip(1:nvi) = vi(1:nvi)
-    if (lMatr) dsidep(1:ndim, 1:ndim) = dsde(1:ndim, 1:ndim)
 
 999 continue
 end subroutine

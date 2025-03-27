@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eicine(ndim, axi, nno1, nno2, vff1, &
+subroutine ejcine_hm(ndim, axi, nno1, nno2, vff1, &
                   vff2, wref, dffr2, geom, ang, &
                   wg, b)
 !
