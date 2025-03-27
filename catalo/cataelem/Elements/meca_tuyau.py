@@ -783,7 +783,7 @@ class MET3SEG4(MET3SEG3):
 
     meshType = MT.SEG4
     elrefe = (
-        ElrefeLoc(MT.SE4, gauss=("RIGI=FPG3", "MASS=FPG4", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
+        ElrefeLoc(MT.SE4, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
     )
 
     def postInit(self):
