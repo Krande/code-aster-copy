@@ -575,7 +575,7 @@ TEST_RESU(
         NOM_CHAM="UT01_ELGA",
         NOM_CMP="VAL",
         VALE_CALC=109511468.46020804,
-        VALE_REFE=1.0700867361796001e8,
+        VALE_REFE=1.095114685e08,
         PRECISION=2.0e-06,
         GROUP_MA="M3",
     )
@@ -590,7 +590,7 @@ TEST_RESU(
         NOM_CHAM="UT02_ELGA",
         NOM_CMP="VAL",
         VALE_CALC=6255669.355796452,
-        VALE_REFE=8.3875661619263999e6,
+        VALE_REFE=6.255669356e06,
         PRECISION=2.0e-06,
         GROUP_MA="M3",
     )
@@ -605,7 +605,7 @@ TEST_RESU(
         NOM_CHAM="UT03_ELGA",
         NOM_CMP="VAL",
         VALE_CALC=79433646.21309397,
-        VALE_REFE=8.3938035236909002e7,
+        VALE_REFE=7.943364621e07,
         PRECISION=2.0e-06,
         GROUP_MA="M3",
     )
@@ -614,11 +614,14 @@ TEST_RESU(
 TEST_RESU(
     RESU=_F(
         NUME_ORDRE=1,
+        REFERENCE="AUTRE_ASTER",
         POINT=2,
         RESULTAT=U1C,
         NOM_CHAM="UT04_ELGA",
         NOM_CMP="VAL",
         VALE_CALC=86118.11251218244,
+        VALE_REFE=8.611811251e04,
+        PRECISION=2.0e-06,
         GROUP_MA="M3",
     )
 )
@@ -695,7 +698,7 @@ TEST_RESU(
             NOM_CHAM="UT01_ELGA",
             NOM_CMP="VAL",
             VALE_CALC=88525343.0333567,
-            VALE_REFE=8.8409900e7,
+            VALE_REFE=8.852534303e07,
             PRECISION=2.0e-06,
             GROUP_MA="M1",
         ),
@@ -707,7 +710,7 @@ TEST_RESU(
             NOM_CHAM="UT02_ELGA",
             NOM_CMP="VAL",
             VALE_CALC=6746441.459190574,
-            VALE_REFE=5.883180e6,
+            VALE_REFE=6.746441459e06,
             PRECISION=2.0e-06,
             GROUP_MA="M1",
         ),
@@ -816,7 +819,7 @@ TEST_RESU(
             NOM_CHAM="UT01_ELGA",
             NOM_CMP="VAL",
             VALE_CALC=124818925.05508545,
-            VALE_REFE=1.27695000e8,
+            VALE_REFE=1.248189251e08,
             PRECISION=2.0e-06,
             GROUP_MA="M1",
         ),
@@ -828,7 +831,7 @@ TEST_RESU(
             NOM_CHAM="UT02_ELGA",
             NOM_CMP="VAL",
             VALE_CALC=28827395.6468852,
-            VALE_REFE=2.2075500e7,
+            VALE_REFE=2.882739565e07,
             PRECISION=1.0e-05,
             GROUP_MA="M5",
         ),
