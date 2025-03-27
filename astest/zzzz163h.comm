@@ -20,6 +20,10 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 # ......................................................................
 
+vref = 1.25e-4
+m = 8.0
+sigm_refe = 2630.0
+
 M = LIRE_MAILLAGE(FORMAT="MED")
 
 M = MODI_MAILLAGE(reuse=M, MAILLAGE=M, ORIE_PEAU=_F(GROUP_MA_PEAU="haut"))
@@ -81,33 +85,19 @@ COMP = DEFI_FONCTION(
     ),
 )
 
-ACIER = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0), TRACTION=_F(SIGM=COMP))
+C_SIGM_REFE = DEFI_CONSTANTE(VALE=sigm_refe)
 
-CHAM_TEMP = CREA_CHAMP(
-    OPERATION="AFFE",
-    TYPE_CHAM="ELNO_TEMP_R",
-    MODELE=MO,
-    AFFE=(
-        _F(GROUP_MA="s_droite", NOM_CMP="TEMP", VALE=10.0),
-        _F(GROUP_MA="s_gauche", NOM_CMP="TEMP", VALE=11.0),
-    ),
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0),
+    TRACTION=_F(SIGM=COMP),
+    WEIBULL=_F(M=m, VOLU_REFE=vref, SIGM_REFE=sigm_refe, SIGM_SEUIL=0.0),
 )
 
 L_INST = DEFI_LIST_REEL(
     DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=0.2, NOMBRE=1), _F(JUSQU_A=0.5, NOMBRE=10))
 )
 
-RESU_TEMP = CREA_RESU(
-    OPERATION="AFFE",
-    TYPE_RESU="EVOL_THER",
-    AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=CHAM_TEMP, LIST_INST=L_INST),),
-)
-
-CM = AFFE_MATERIAU(
-    MAILLAGE=M,
-    AFFE=_F(TOUT="OUI", MATER=ACIER),
-    AFFE_VARC=_F(EVOL=RESU_TEMP, NOM_VARC="TEMP", VALE_REF=0.0, TOUT="OUI"),
-)
+CM = AFFE_MATERIAU(MAILLAGE=M, AFFE=(_F(GROUP_MA="s_tout", MATER=ACIER),))
 
 ZERO = AFFE_CHAR_CINE(
     MODELE=MO,
@@ -129,14 +119,6 @@ U = STAT_NON_LINE(
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-06, ITER_GLOB_MAXI=25),
 )
 
-C_SIGM_REFE = DEFI_CONSTANTE(VALE=2630.0e0)
-
-C_SIGM_SEUIL = DEFI_CONSTANTE(VALE=0.0)
-
-F_SIGM_SEUIL = DEFI_FONCTION(
-    PROL_GAUCHE="CONSTANT", NOM_PARA="X", VALE=(-0.5, 0.0, 0.5, 0), PROL_DROITE="CONSTANT"
-)
-
 
 def H(X):
     if X < 0.0:
@@ -145,65 +127,41 @@ def H(X):
         return 1.0
 
 
-def f0(X, Y):
-    return 0.0
+def func(X, Y):
+    return H(X) * 10000.0
 
 
-def f1(X, Y):
-    return H(X) * H(Y) * 10000.0
-
-
-func0 = FORMULE(VALE="f0(X,Y)", f0=f0, NOM_PARA=("X", "Y"))
-
-func1 = FORMULE(VALE="f1(X,Y)", f1=f1, NOM_PARA=("X", "Y"))
+form = FORMULE(VALE="func(X,Y)", func=func, NOM_PARA=("X", "Y"))
 
 CHGEOM = CREA_CHAMP(TYPE_CHAM="NOEU_GEOM_R", OPERATION="EXTR", MAILLAGE=M, NOM_CHAM="GEOMETRIE")
 
-CHSSNO_ = CREA_CHAMP(
-    TYPE_CHAM="NOEU_NEUT_F",
-    OPERATION="AFFE",
-    MODELE=MO,
-    AFFE=(_F(GROUP_MA="s_tout", NOM_CMP=("X1"), VALE_F=func0),),
-)
-
-CHSSNO = CREA_CHAMP(
-    TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CHSSNO_, CHAM_PARA=CHGEOM, INFO=1
-)
+CHGEOM2 = CREA_CHAMP(MODELE=MO, OPERATION="DISC", TYPE_CHAM="ELGA_GEOM_R", CHAM_GD=CHGEOM)
 
 CHSSPG_ = CREA_CHAMP(
     TYPE_CHAM="ELGA_NEUT_F",
     PROL_ZERO="OUI",
     OPERATION="AFFE",
     MODELE=MO,
-    AFFE=(_F(GROUP_MA="s_tout", NOM_CMP=("X1"), VALE_F=func1),),
+    AFFE=(_F(GROUP_MA="s_tout", NOM_CMP=("X1"), VALE_F=form),),
 )
-
-CHGEOM2 = CREA_CHAMP(MODELE=MO, OPERATION="DISC", TYPE_CHAM="ELGA_GEOM_R", CHAM_GD=CHGEOM)
 
 CHSSPG = CREA_CHAMP(
     TYPE_CHAM="ELGA_NEUT_R", OPERATION="EVAL", CHAM_F=CHSSPG_, CHAM_PARA=CHGEOM2, INFO=1
 )
 
-IMPR_RESU(UNITE=80, FORMAT="MED", RESU=_F(CHAM_GD=CHSSNO))
-IMPR_RESU(UNITE=81, FORMAT="MED", RESU=_F(CHAM_GD=CHSSPG))
+# IMPR_RESU(UNITE=81, FORMAT="MED", RESU=_F(CHAM_GD=CHSSPG))
 
-BERE0 = POST_BEREMIN(
-    RESULTAT=U,
-    COEF_MULT=1,
-    DEFORMATION="PETIT",
-    FILTRE_SIGM="SIGM_ELGA",
-    NUME_VARI=2,
-    WEIBULL_FO=_F(
-        GROUP_MA="s_tout",
-        M=8.0,
-        VOLU_REFE=1.25e-4,
-        SIGM_REFE=C_SIGM_REFE,
-        SIGM_CNV=2630.0,
-        SIGM_SEUIL=C_SIGM_SEUIL,
+WEIB = POST_ELEM(
+    WEIBULL=(
+        _F(CORR_PLAST="NON", GROUP_MA="s_tout", COEF_MULT=1.0, OPTION="SIGM_ELGA"),
+        _F(CORR_PLAST="NON", GROUP_MA="s_gauche", COEF_MULT=1.0, OPTION="SIGM_ELGA"),
+        _F(CORR_PLAST="NON", GROUP_MA="s_droite", COEF_MULT=1.0, OPTION="SIGM_ELGA"),
     ),
+    RESULTAT=U,
+    TOUT_ORDRE="OUI",
 )
 
-IMPR_TABLE(TABLE=BERE0, UNITE=6)
+IMPR_TABLE(TABLE=WEIB, UNITE=6)
 
 BERE1 = POST_BEREMIN(
     RESULTAT=U,
@@ -213,11 +171,11 @@ BERE1 = POST_BEREMIN(
     NUME_VARI=2,
     WEIBULL_FO=_F(
         GROUP_MA="s_tout",
-        M=8.0,
-        VOLU_REFE=1.25e-4,
+        M=m,
+        VOLU_REFE=vref,
         SIGM_REFE=C_SIGM_REFE,
-        SIGM_CNV=2630.0,
-        SIGM_SEUIL=F_SIGM_SEUIL,
+        SIGM_CNV=sigm_refe,
+        SIGM_SEUIL=CHSSPG,
     ),
 )
 
@@ -229,51 +187,55 @@ BERE2 = POST_BEREMIN(
     DEFORMATION="PETIT",
     FILTRE_SIGM="SIGM_ELGA",
     NUME_VARI=2,
-    WEIBULL_FO=_F(
-        GROUP_MA="s_tout",
-        M=8.0,
-        VOLU_REFE=1.25e-4,
-        SIGM_REFE=C_SIGM_REFE,
-        SIGM_CNV=2630.0,
-        SIGM_SEUIL=CHSSNO,
+    WEIBULL=(
+        _F(GROUP_MA="s_tout", M=m, VOLU_REFE=vref, SIGM_REFE=2630.0),
+        _F(GROUP_MA="s_gauche", M=m, VOLU_REFE=vref, SIGM_REFE=2630.0),
+        _F(GROUP_MA="s_droite", M=m, VOLU_REFE=vref, SIGM_REFE=2630.0),
     ),
 )
 
 IMPR_TABLE(TABLE=BERE2, UNITE=6)
 
-BERE3 = POST_BEREMIN(
-    RESULTAT=U,
-    COEF_MULT=1,
-    DEFORMATION="PETIT",
-    FILTRE_SIGM="SIGM_ELGA",
-    NUME_VARI=2,
-    WEIBULL_FO=_F(
-        GROUP_MA="s_tout",
-        M=8.0,
-        VOLU_REFE=1.25e-4,
-        SIGM_REFE=C_SIGM_REFE,
-        SIGM_CNV=2630.0,
-        SIGM_SEUIL=CHSSPG,
-    ),
-)
-
-IMPR_TABLE(TABLE=BERE3, UNITE=6)
+val_tout = 4459.172269
+val_moitie = val_tout * (1 / 2) ** (1 / m)
 
 TEST_TABLE(
     CRITERE="RELATIF",
-    VALE_REFE=4459.172269,
-    VALE_CALC=4459.172269,
+    VALE_REFE=val_tout,
+    VALE_CALC=val_tout,
     PRECISION=0.01,
     REFERENCE="AUTRE_ASTER",
     NOM_PARA="SIGMA_WEIBULL",
-    TABLE=BERE0,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_tout")),
+    TABLE=WEIB,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="LIEU", VALE_K="s_tout")),
 )
 
 TEST_TABLE(
     CRITERE="RELATIF",
-    VALE_REFE=4459.172269,
-    VALE_CALC=4459.172269,
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
+    PRECISION=0.01,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=WEIB,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="LIEU", VALE_K="s_gauche")),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
+    PRECISION=0.01,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=WEIB,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="LIEU", VALE_K="s_droite")),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
     PRECISION=0.01,
     REFERENCE="AUTRE_ASTER",
     NOM_PARA="SIGMA_WEIBULL",
@@ -283,34 +245,24 @@ TEST_TABLE(
 
 TEST_TABLE(
     CRITERE="RELATIF",
-    VALE_REFE=4459.172269,
-    VALE_CALC=4459.172269,
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
     PRECISION=0.01,
     REFERENCE="AUTRE_ASTER",
     NOM_PARA="SIGMA_WEIBULL",
     TABLE=BERE2,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_tout")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_gauche")),
 )
-
-new_val = 4459.172269 * (3 / 4) ** (1 / 8.0)
 
 TEST_TABLE(
     CRITERE="RELATIF",
-    VALE_REFE=new_val,
-    VALE_CALC=new_val,
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
     PRECISION=0.01,
     REFERENCE="AUTRE_ASTER",
     NOM_PARA="SIGMA_WEIBULL",
-    TABLE=BERE3,
-    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_tout")),
+    TABLE=BERE2,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_droite")),
 )
-
-desc = MO.getFiniteElementDescriptor()
-CHSSNO2 = CHSSNO.toFieldOnCells(desc, "ELGA")
-
-
-# cham_out = cham_in.toSimpleFieldOnCells()
-# cham_out = cham_out.getComponentOnCells("X1") ## X1 en dur -> à voir
-
 
 FIN()

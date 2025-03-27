@@ -39,14 +39,9 @@ POST_BEREMIN = MACRO(
     sd_prod=post_beremin_prod,
     docu="U4.81.08",
     reentrant="n",
+    regles=UN_PARMI("WEIBULL", "WEIBULL_FO"),
     fr=tr("Post-traitement de Beremin"),
     RESULTAT=SIMP(statut="o", typ=evol_noli, fr=tr("Résultat mecanique")),
-    GROUP_MA=SIMP(
-        statut="o",
-        typ=grma,
-        max=1,
-        fr=tr("Groupe de mailles sur lequel effectuer le post-traitement"),
-    ),
     DEFORMATION=SIMP(
         statut="o",
         typ="TXM",
@@ -84,6 +79,13 @@ POST_BEREMIN = MACRO(
     ),
     WEIBULL=FACT(
         statut="f",
+        max="**",
+        GROUP_MA=SIMP(
+            statut="o",
+            typ=grma,
+            max=1,
+            fr=tr("Groupe de mailles sur lequel effectuer le post-traitement"),
+        ),
         M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_REFE=SIMP(statut="o", typ="R", max="**"),
@@ -91,6 +93,13 @@ POST_BEREMIN = MACRO(
     ),
     WEIBULL_FO=FACT(
         statut="f",
+        max="**",
+        GROUP_MA=SIMP(
+            statut="o",
+            typ=grma,
+            max=1,
+            fr=tr("Groupe de mailles sur lequel effectuer le post-traitement"),
+        ),
         M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_CNV=SIMP(statut="o", typ="R"),

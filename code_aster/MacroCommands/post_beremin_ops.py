@@ -84,7 +84,7 @@ class PostBeremin:
     # data 2D and 3D
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
     _intvar_idx = _stress_idx = None
-    _use_hist = _use_indiplas = _use_function = _use_cham = None
+    _use_hist = _use_indiplas = _use_FO = _use_function = _use_cham = None
     _coef_mult = None
     _weib_params = None
     _params_dependancy = None
@@ -233,22 +233,16 @@ class PostBeremin:
         """
         self._coef_mult = value
 
-    def set_weibull_parameters(self, args):
+    def set_weibull_parameters(self, params):
         """Define Weibull parameters.
 
         Args:
-            args (dict): Keywords for POST_BEREMIN.
+            params (dict): Weibull or Weibull_FO parameters keywords for POST_BEREMIN.
         """
-        assert not (
-            ("WEIBULL_FO" in args) and ("WEIBULL" in args)
-        ), "Cannot use both WEIBULL and WEIBULL_FO"
 
-        if "WEIBULL" in args:
-            params = args["WEIBULL"]
-            self._weib_params = params.copy()
-        else:
-            params = args["WEIBULL_FO"]
-            self._weib_params = params.copy()
+        self._weib_params = params.copy()
+
+        if self._use_FO:
             self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
             self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
 
@@ -809,26 +803,47 @@ class PostBeremin:
         return table
 
 
-def post_beremin_ops(self, RESULTAT, GROUP_MA, DEFORMATION, FILTRE_SIGM, **args):
+def post_beremin_ops(self, RESULTAT, DEFORMATION, FILTRE_SIGM, **args):
     """Main of POST_BEREMIN command."""
-    post = PostBeremin(result=RESULTAT, strain_type=DEFORMATION, stress_option=FILTRE_SIGM)
-    post.set_zone(GROUP_MA)
-    post.set_indexes(intvar_idx=args["NUME_VARI"])
-    if DEFORMATION == "GDEF_LOG":
-        post.set_indexes(stress_idx=args["LIST_NUME_SIEF"])
-    post.use_history(args["HIST_MAXI"] == "OUI")
-    post.set_coef_mult(args["COEF_MULT"])
-    post.set_projection_parameters(args)
 
-    if args.get("SIGM_MAXI"):
-        post._rout = NonLinearResult()
-        self.register_result(post._rout, args["SIGM_MAXI"])
+    l_use_FO = False
+    if "WEIBULL" in args:
+        fkw_weib = args.get("WEIBULL")
+    if "WEIBULL_FO" in args:
+        fkw_weib = args.get("WEIBULL_FO")
+        l_use_FO = True
 
-    post.set_weibull_parameters(args)
-    post.setup_calc_result()
+    assert not (
+        ("METHODE_2D" in args) and (len(fkw_weib) > 1)
+    ), "Only one occurrence of WEIBULL / WEIBULL_FO is allowed when METHODE_2D is used."
 
-    table = post.main()
-    sdtable = table.create_table()
+    sdtable0 = TableBeremin(False, False)
+    sdtable_ = []
+    fkw_comb = []
+
+    for iocc, occ in enumerate(fkw_weib):
+        post = PostBeremin(result=RESULTAT, strain_type=DEFORMATION, stress_option=FILTRE_SIGM)
+        post.set_zone(occ["GROUP_MA"])
+        post._use_FO = l_use_FO
+        post.set_indexes(intvar_idx=args["NUME_VARI"])
+        if DEFORMATION == "GDEF_LOG":
+            post.set_indexes(stress_idx=args["LIST_NUME_SIEF"])
+        post.use_history(args["HIST_MAXI"] == "OUI")
+        post.set_coef_mult(args["COEF_MULT"])
+        post.set_projection_parameters(args)
+
+        if args.get("SIGM_MAXI"):
+            post._rout = NonLinearResult()
+            self.register_result(post._rout, args["SIGM_MAXI"])
+
+        post.set_weibull_parameters(occ)
+        post.setup_calc_result()
+
+        table = post.main()
+        sdtable_.append(table.create_table())
+        fkw_comb.append(_F(OPERATION="COMB", TABLE=sdtable_[iocc]))
+
+    sdtable = CALC_TABLE(TABLE=sdtable0, ACTION=fkw_comb)
 
     if post._groupno:
         tri = ("NUME_ORDRE", "M", "SIGM_REFE", "SIGM_SEUIL", "ABSC_CURV_NORM")
