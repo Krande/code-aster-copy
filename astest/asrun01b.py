@@ -129,6 +129,12 @@ class TestConfig(unittest.TestCase):
         self.assertIsInstance(cfg.get("exectool"), dict)
         self.assertEqual(cfg.get("exectool")["mywrapper"], "echo -n")
 
+    def test_varstr(self):
+        # check for ParameterVarStr: this value is set by environment in asrun01b.comm
+        self.assertEqual(CFG.get("FC"), "my_prefered_compiler")
+        flags = CFG.get("FCFLAGS")
+        self.assertSequenceEqual(flags, ["-fPIC -fprefered_option"])
+
 
 class TestSettings(unittest.TestCase):
     """Check Parameter-derivated objects"""
