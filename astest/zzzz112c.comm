@@ -176,6 +176,9 @@ TEST_RESU(
         NOM_CMP="N",
         VALE_CALC=1.3943661644825718e-13,
         GROUP_MA="M102",
+        VALE_REFE=0.0,
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
     )
 )
 
@@ -190,6 +193,9 @@ TEST_RESU(
         NOM_CMP="N",
         VALE_CALC=1.3943661644825718e-13,
         GROUP_MA="M102",
+        VALE_REFE=0.0,
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
     )
 )
 
