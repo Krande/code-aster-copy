@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -131,9 +131,6 @@ contains
             this%l_largestrain = ASTER_FALSE
             if (this%option == "FORC_NODA") then
                 call jevech('PSIEFR', 'L', vr=this%sig_prev)
-                call jevech('PCOMPOR', 'L', vk16=this%compor)
-                this%l_largestrain = isLargeStrain(this%compor(DEFO))
-            elseif (this%option == "REFE_FORC_NODA") then
                 call jevech('PCOMPOR', 'L', vk16=this%compor)
                 this%l_largestrain = isLargeStrain(this%compor(DEFO))
             end if
