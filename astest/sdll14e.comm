@@ -147,8 +147,6 @@ TA_FREQ2 = RECU_TABLE(CO=MODE_PG2, NOM_PARA="FREQ")
 FO_FREQ2 = RECU_FONCTION(TABLE=TA_FREQ2, PARA_X="NUME_ORDRE", PARA_Y="FREQ")
 f2 = FO_FREQ2.Valeurs()[1][0]  # extraction de la valeur propre contenue dans MODE_PG2
 f_max_systeme2 = 1.0 / (4 * pi**2 * f2)  # conversion en valeur physique.
-print(f_max_systeme, flush=True)
-print(f_max_systeme2, flush=True)
 # Cette valeur est la reference pour la modelisation SDLL14d.
 # On doit avoir f_max_systeme = f_max_systeme2
 
