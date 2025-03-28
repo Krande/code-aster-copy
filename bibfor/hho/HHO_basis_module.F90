@@ -812,23 +812,7 @@ contains
 !
 ! ----- Loop on the monomial
 !
-        if (this%ndim == 1) then
-            if (this%type == BASIS_ORTHO) then
-                do imono = ifrom, ito
-                    do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
-                        power(1) = this%hhoMono%monomials(1, icoeff)
-                        basisScalEval(imono) = basisScalEval(imono)+ &
-                                               this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
-                                               this%hhoMono%monoEval(1, power(1))
-                    end do
-                end do
-            else
-                do imono = ifrom, ito
-                    power(1) = this%hhoMono%monomials(1, imono)
-                    basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))
-                end do
-            end if
-        else if (this%ndim == 2) then
+        if (this%ndim == 2) then
             if (this%type == BASIS_ORTHO) then
                 do imono = ifrom, ito
                     do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
@@ -924,51 +908,7 @@ contains
 !
 ! ----- Loop on the monomial
         ind = 0
-        if (this%ndim == 1) then
-            if (this%type == BASIS_ORTHO) then
-                do imono = 1, ifrom-1
-                    power(1) = this%hhoMono%monomials(1, imono)
-!
-                    func(1) = this%hhoMono%monoEval(1, power(1))
-!
-                    if (power(1) == 0) then
-                        dfunc(1) = 0.d0
-                    else
-                        dfunc(1) = power(1)*this%hhoMono%monoEval(1, power(1)-1)* &
-                                   this%scaling_factor(1)
-                    end if
-!
-                    Grad_mono(1, imono) = dfunc(1)
-                end do
-            end if
-!
-            do imono = ifrom, ito
-                ind = ind+1
-                power(1) = this%hhoMono%monomials(1, imono)
-!
-                func(1) = this%hhoMono%monoEval(1, power(1))
-!
-                if (power(1) == 0) then
-                    dfunc(1) = 0.d0
-                else
-                    dfunc(1) = power(1)*this%hhoMono%monoEval(1, power(1)-1)* &
-                               this%scaling_factor(1)
-                end if
-!
-                BSGradEval(1, ind) = dfunc(1)
-!
-                if (this%type == BASIS_ORTHO) then
-                    Grad_mono(1, ind) = BSGradEval(1, ind)
-                    BSGradEval(1, ind) = 0.d0
-                    do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
-                        BSGradEval(1, ind) = BSGradEval(1, ind)+ &
-                                             this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
-                                             Grad_mono(1, icoeff)
-                    end do
-                end if
-            end do
-!
-        else if (this%ndim == 2) then
+        if (this%ndim == 2) then
             if (this%type == BASIS_ORTHO) then
                 do imono = 1, ifrom-1
                     power(1:2) = this%hhoMono%monomials(1:2, imono)
@@ -1239,9 +1179,7 @@ contains
         call this%BSRange(min_order, max_order, ifrom, ito)
 !
 ! ----- Loop on the monomial
-        if (this%ndim == 0) then
-            basisScalEval(1) = 1.d0
-        else if (this%ndim == 1) then
+        if (this%ndim == 1) then
             if (this%type == BASIS_ORTHO) then
                 do imono = ifrom, ito
                     do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)

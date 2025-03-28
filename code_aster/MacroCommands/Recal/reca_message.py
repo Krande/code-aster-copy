@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ from .recal import Affiche_Param
 
 
 class Message:
-
     """
     classe gérant l'affichage des messages concernant le déroulement de l'optmisation
     """
@@ -134,9 +133,8 @@ class Message:
                 txt = "\n   " + str(k) + ") "
                 for j in numero:
                     txt += "%+3.1E " % colonne[j] + "* " + para[j] + " "
-                UTMESS(
-                    "I", "RECAL0_65", valk=(txt, str(valeurs_propres[i])), files=self.get_filename()
-                )
+                dict_args = dict(valk=(txt, str(valeurs_propres[i])), files=self.get_filename())
+                UTMESS("I", "RECAL0_65", **dict_args)
 
         # Parametres insensibles
         if len(insensible) != 0:
@@ -149,9 +147,8 @@ class Message:
                 txt = "\n   " + str(k) + ") "
                 for j in numero:
                     txt += "%+3.1E " % colonne[j] + "* " + para[j] + " "
-                UTMESS(
-                    "I", "RECAL0_65", valk=(txt, str(valeurs_propres[i])), files=self.get_filename()
-                )
+                dict_args = dict(valk=(txt, str(valeurs_propres[i])), files=self.get_filename())
+                UTMESS("I", "RECAL0_65", **dict_args)
 
         if len(sensible) != 0 or len(insensible) != 0:
             UTMESS("I", "RECAL0_62", files=self.get_filename())

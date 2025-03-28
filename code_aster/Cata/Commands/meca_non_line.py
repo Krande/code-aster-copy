@@ -112,4 +112,6 @@ MECA_NON_LINE = MACRO(
     ),
     # -------------------------------------------------------------------
     INFO=SIMP(statut="f", typ="I", into=(1, 2, 3, 4)),
+    # for compatibility only, not used
+    TITRE=SIMP(statut="c", typ="TXM"),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ def options(self):
     # replace path in description
     new_descr = descr.replace("/usr/local", default_prefix)
     new_descr += (
-            ". Using 'waf_variant', '%s' will be automatically replaced by 'variant'." % install_suffix
+        ". Using 'waf_variant', '%s' will be automatically replaced by 'variant'." % install_suffix
     )
     group.set_description(new_descr)
     # change default value for '--prefix'
@@ -118,14 +118,14 @@ def options(self):
         action="store_true",
         default=False,
         help="use fast algorithm based on modification time to "
-             "check for dependencies of fortran sources",
+        "check for dependencies of fortran sources",
     )
     group.add_option(
         "--safe",
         dest="custom_fc_sig",
         action="store_false",
         help="use safe algorithm based on content to check for "
-             "implicit dependencies of fortran sources",
+        "implicit dependencies of fortran sources",
     )
     group.add_option(
         "--coverage",
@@ -166,6 +166,7 @@ def options(self):
     self.load("runtest", tooldir="waftools")
     if platform.system() == "Windows":
         self.recurse("msvc")
+    self.recurse("libs")
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")
@@ -191,14 +192,14 @@ def options(self):
         action="store_true",
         default=None,
         help="activate all 'enable-*' options, means that all prerequisites are required"
-             "(same as ENABLE_ALL=1 environment variable)",
+        "(same as ENABLE_ALL=1 environment variable)",
     )
     group.add_option(
         "--no-enable-all",
         dest="enable_all",
         action="store_false",
         help="try to build with some missing prerequisites (same as "
-             "ENABLE_ALL=0 environment variable)",
+        "ENABLE_ALL=0 environment variable)",
     )
 
 
@@ -302,6 +303,7 @@ def configure(self):
     if self.get_define("ASTER_HAVE_MPI"):
         self.env.ASRUN_MPI_VERSION = 1
 
+    self.recurse("libs")
     # bib* configure functions may add options required by prerequisites
     self.recurse("bibfor")
     self.recurse("bibcxx")
@@ -358,7 +360,7 @@ def build(self):
         )
 
     self.load("ext_aster", tooldir="waftools")
-
+    self.recurse("libs")
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")

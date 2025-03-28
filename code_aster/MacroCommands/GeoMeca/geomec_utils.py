@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -432,33 +432,24 @@ def verif_essais(
             for i, t in enumerate(DicoEssai["CRIT_LIQUEFACTION"]):
                 if t == "RU_MAX":
                     if DicoEssai["VALE_CRIT"][i] <= 0.0 or DicoEssai["VALE_CRIT"][i] > 1.0:
-                        UTMESS(
-                            "F",
-                            "COMPOR2_33",
-                            valk=(typ_essai, t),
-                            valr=(DicoEssai["VALE_CRIT"][i]),
-                            vali=(iocc + 1),
+                        dict_args = dict(
+                            valk=(typ_essai, t), valr=(DicoEssai["VALE_CRIT"][i]), vali=(iocc + 1)
                         )
+                        UTMESS("F", "COMPOR2_33", **dict_args)
 
                 elif t == "EPSI_ABS0_MAX":
                     if DicoEssai["VALE_CRIT"][i] < -0.5 or DicoEssai["VALE_CRIT"][i] > 0.5:
-                        UTMESS(
-                            "F",
-                            "COMPOR2_33",
-                            valk=(typ_essai, t),
-                            valr=(DicoEssai["VALE_CRIT"][i]),
-                            vali=(iocc + 1),
+                        dict_args = dict(
+                            valk=(typ_essai, t), valr=(DicoEssai["VALE_CRIT"][i]), vali=(iocc + 1)
                         )
+                        UTMESS("F", "COMPOR2_33", **dict_args)
 
                 elif t == "EPSI_RELA_MAX":
                     if DicoEssai["VALE_CRIT"][i] <= 0.0 or DicoEssai["VALE_CRIT"][i] > 0.5:
-                        UTMESS(
-                            "F",
-                            "COMPOR2_33",
-                            valk=(typ_essai, t),
-                            valr=(DicoEssai["VALE_CRIT"][i]),
-                            vali=(iocc + 1),
+                        dict_args = dict(
+                            valk=(typ_essai, t), valr=(DicoEssai["VALE_CRIT"][i]), vali=(iocc + 1)
                         )
+                        UTMESS("F", "COMPOR2_33", **dict_args)
 
             # on s'assure que la liste des SIGM_IMPOSE est croissante
             # ------------------------------------------------------------------------
@@ -707,13 +698,10 @@ def verif_essais(
             # ------------------------------------------------------------------------
             for sigimpo in DicoEssai["SIGM_IMPOSE"]:
                 if sigimpo <= 0.0:
-                    UTMESS(
-                        "F",
-                        "COMPOR2_32",
-                        valk=(typ_essai, "SIGM_IMPOSE"),
-                        valr=(sigimpo),
-                        vali=(iocc + 1),
+                    dict_args = dict(
+                        valk=(typ_essai, "SIGM_IMPOSE"), valr=(sigimpo), vali=(iocc + 1)
                     )
+                    UTMESS("F", "COMPOR2_32", **dict_args)
 
             # on s'assure que tous les PRES_CONF sont bien < 0. et que
             # PRES_CONF+SIGM_IMPOSE <= SIGM_DECH

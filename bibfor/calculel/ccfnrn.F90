@@ -94,11 +94,12 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
     character(len=16) :: typmo, optio2, motfac, typrep, typmat
     character(len=19) :: listLoad
     character(len=19) :: ligrel, vebid, k19bid, partsd, massgen
-    character(len=24) :: numref, loadFuncJv, loadNameJv, loadInfoJv, vechmp, vachmp, cnchmp
+    character(len=24) :: numeDofRefe, loadFuncJv, loadNameJv, loadInfoJv, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
     character(len=24) :: caraElem, cnchmpc
-    character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), nume, chdepk, numk
-    character(len=24) :: mateco, materField, vafonr, vafoni, k24b, numnew, basemo
+    character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), chdepk
+    character(len=24) :: mateco, materField, vafonr, vafoni, k24b, basemo, numeDof
+    character(len=24) :: numeEqua, numeEquaNew
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno, chamnk
     character(len=24) :: strx, vldist, vcnoch, vcham, lisori
     character(len=24) :: bidon, chacce, kstr
@@ -214,8 +215,9 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
             end if
         end if
     end if
+    numeDofRefe = " "
     if (resultType .eq. 'MODE_MECA' .or. resultType .eq. 'DYNA_TRANS') then
-        call dismoi('NUME_DDL', resuin, 'RESU_DYNA', repk=numref, arret='C')
+        call dismoi('NUME_DDL', resuin, 'RESU_DYNA', repk=numeDofRefe, arret='C')
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
             ! TRAITEMENT DE ELIM_LAGR (traité comme un cas particulier de projection modale)
@@ -231,7 +233,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                         masse = refa(20) (1:19)
                         call mtdscr(masse)
                         call jeveuo(masse(1:19)//'.&INT', 'L', lmat)
-                        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numref)
+                        call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numeDofRefe)
                     end if
                 end if
             end if
@@ -307,7 +309,9 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
     time = 0.d0
 ! SI PARALLELISME EN TEMPS: GESTION DE L'INDICE DE DECALAGE
     ipas = 1
-    nume = ' '
+    numeDof = ' '
+    numeEqua = ' '
+    numeEquaNew = ' '
     lonch = -999
     do i = 1, nbordr
         if (lcpu) call cpu_time(rctdebi)
@@ -362,7 +366,6 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 !
             if (iret .ne. 0) then
                 call rsexch(' ', resultOut, 'SIEF_ELGA', iordr, sigma, iret2)
-!
                 if (iret2 .ne. 0) then
                     optio2 = 'SIEF_ELGA'
                     if (ldist) then
@@ -372,14 +375,12 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                         call calcop(optio2, ' ', resuin, resultOut, lisord, &
                                     nbordr, resultType, cret, 'V')
                     end if
-                    call rsexch(' ', resultOut, 'SIEF_ELGA', iordr, sigma, &
-                                iret)
+                    call rsexch(' ', resultOut, 'SIEF_ELGA', iordr, sigma, iret)
                 end if
             end if
 !
             if (lstr) then
-                call rsexch(' ', resuin, 'STRX_ELGA', iordr, strx, &
-                            iret)
+                call rsexch(' ', resuin, 'STRX_ELGA', iordr, strx, iret)
                 if (iret .ne. 0 .and. lstr2) then
                     optio2 = 'STRX_ELGA'
                     if (ldist) then
@@ -389,13 +390,11 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                         call calcop(optio2, ' ', resuin, resultOut, lisord, &
                                     nbordr, resultType, cret, 'V')
                     end if
-                    call rsexch(' ', resultOut, 'STRX_ELGA', iordr, strx, &
-                                iret)
+                    call rsexch(' ', resultOut, 'STRX_ELGA', iordr, strx, iret)
                 end if
             end if
 !
-            call rsexch(' ', resuin, 'DEPL', iordr, chdepl, &
-                        iret)
+            call rsexch(' ', resuin, 'DEPL', iordr, chdepl, iret)
             if (iret .ne. 0) then
                 call codent(iordr, 'G', kiord)
                 valk(1) = kiord
@@ -406,31 +405,26 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 !
 !       -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
             if (resultType .eq. 'MODE_MECA' .or. resultType .eq. 'DYNA_TRANS') then
-! NUME_DDL QUI NE CHANGE PAS AVEC LE PAS DE TEMPS: NUME
-                nume = numref(1:14)//'.NUME'
+                numeEqua = numeDofRefe(1:14)//'.NUME'
             else
 ! NUME_DDL QUI PEUT CHANGER AVEC LE PAS DE TEMPS: DONC ON TESTE CET EVENTUEL CHANGEMENT
 ! SI PARALLELISME EN TEMPS ACTIVE ET PAS DE TEMPS PARALLELISES: NUME
-                k24b = ' '
-                call numecn(model, chdepl, k24b)
-                numnew = ' '
-                numnew = trim(adjustl(k24b))
+                call numecn(model, chdepl, numeEqua)
+                numeEquaNew = numeEqua
                 if ((ldist) .and. (ideb .ne. ifin)) then
 ! SI PARALLELISME EN TEMPS ET NPAS NON ATTEINT: NBPROC CHAM_NOS SIMULTANES
                     do k = ideb, ifin
                         iordk = zi(jordr+k-1)
                         chdepk = ' '
-                        call rsexch(' ', resuin, 'DEPL', iordk, chdepk, &
-                                    iret)
-                        k24b = ' '
-                        call numecn(model, chdepk, k24b)
-                        numk = ' '
-                        numk = trim(adjustl(k24b))
+                        call rsexch(' ', resuin, 'DEPL', iordk, chdepk, iret)
+                        call numecn(model, chdepk, numeEqua)
                         if (dbg_ob) then
                             write (ifm, *) '< ', rang, &
-                                'ccfnrn> numeddl_avant/numddl_apres=', numnew, numk
+                                'ccfnrn> numeddl_avant/numddl_apres=', numeEquaNew, numeEqua
                         end if
-                        if (numnew .ne. numk) call utmess('F', 'PREPOST_16')
+                        if (numeEquaNew .ne. numeEqua) then
+                            call utmess('F', 'PREPOST_16')
+                        end if
                     end do
                 else
 ! SI PARALLELISME EN TEMPS et NPAS ATTEINT (RELIQUAT DE PAS DE TEMPS)
@@ -438,25 +432,25 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                     if (ldist) then
                         if (dbg_ob) then
                             write (ifm, *) '< ', rang, &
-                                'ccfnrn> numeddl_avant/numddl_apres=', nume, numnew
+                                'ccfnrn> numeddl_avant/numddl_apres=', numeEqua, numeEquaNew
                         end if
-                        if (nume .ne. numnew) call utmess('F', 'PREPOST_16')
+                        if (numeEqua .ne. numeEquaNew) then
+                            call utmess('F', 'PREPOST_16')
+                        end if
                     end if
                 end if
-                nume = ' '
-                nume = numnew
+                numeEqua = numeEquaNew
             end if
+            numeDof = numeEqua(1:14)
 !
-            call rsexch(' ', resuin, 'VITE', iordr, chvive, &
-                        iret)
+            call rsexch(' ', resuin, 'VITE', iordr, chvive, iret)
             if (iret .eq. 0) then
                 chvive = '&&'//nompro//'.CHVIT_NUL'
                 call copisd('CHAMP_GD', 'V', chdepl, chvive)
                 call jelira(chvive(1:19)//'.VALE', 'LONMAX', nbddl)
                 call jerazo(chvive(1:19)//'.VALE', nbddl, 1)
             end if
-            call rsexch(' ', resuin, 'ACCE', iordr, chacve, &
-                        iret)
+            call rsexch(' ', resuin, 'ACCE', iordr, chacve, iret)
             if (iret .eq. 0) then
                 chacve = '&&'//nompro//'.CHACC_NUL'
                 call copisd('CHAMP_GD', 'V', chdepl, chacve)
@@ -465,8 +459,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
             end if
 !
             if (exitim) then
-                call rsadpa(resuin, 'L', 1, 'INST', iordr, &
-                            0, sjv=jvPara, styp=ctyp)
+                call rsadpa(resuin, 'L', 1, 'INST', iordr, 0, sjv=jvPara)
                 time = zr(jvPara)
             end if
 !
@@ -485,14 +478,15 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                              compor, nh, ligrel, chvarc, sigma, &
                              strx, chdepl, vfono)
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
+
             if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
-                call asasve(vfono(1), nume, 'R', vafono)
+                call asasve(vfono(1), numeDof, 'R', vafono)
             else
 ! creation champ aux noeuds
-                call vtcreb(vfono(1), 'V', 'R', nume_ddlz=nume)
-                call asasve(vfono(1), nume, 'R', vafonr)
-                call vtcreb(vfono(2), 'V', 'R', nume_ddlz=nume)
-                call asasve(vfono(2), nume, 'R', vafoni)
+                call vtcreb(vfono(1), 'V', 'R', nume_ddlz=numeDof)
+                call asasve(vfono(1), numeDof, 'R', vafonr)
+                call vtcreb(vfono(2), 'V', 'R', nume_ddlz=numeDof)
+                call asasve(vfono(2), numeDof, 'R', vafoni)
             end if
             if (lcpu) then
                 call cpu_time(rctfin)
@@ -505,8 +499,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                 p = 1
                 do k = ideb, ifin
                     iordk = zi(jordr+k-1)
-                    call rsexch(' ', resultOut, option, iordk, chamnk, &
-                                iret)
+                    call rsexch(' ', resultOut, option, iordk, chamnk, iret)
 ! CAR LA VARIABLE CHAMNO DOIT ETRE CONNUE POUR L'IORDR COURANT
                     if (iordk .eq. iordr) chamno = chamnk
 ! ON DOIT PRENDRE LES MEMES DECISIONS QU'EN SEQUENTIEL: NETTOYAGE, MSG...
@@ -542,19 +535,19 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
             if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                 ktyp = 'R'
                 if ((ldist) .and. (ideb .ne. ifin)) then
-                    call vtcreb(chamno, 'G', 'R', nume_ddlz=nume, nb_equa_outz=neq, &
+                    call vtcreb(chamno, 'G', 'R', nume_ddlz=numeDof, nb_equa_outz=neq, &
                                 nbz=nbproc, vchamz=vcham)
                 else
-                    call vtcreb(chamno, 'G', 'R', nume_ddlz=nume, nb_equa_outz=neq)
+                    call vtcreb(chamno, 'G', 'R', nume_ddlz=numeDof, nb_equa_outz=neq)
                 end if
                 call jeveuo(chamno(1:19)//'.VALE', 'E', vr=noch)
             else
                 ktyp = 'C'
                 if ((ldist) .and. (ideb .ne. ifin)) then
-                    call vtcreb(chamno, 'G', 'C', nume_ddlz=nume, nb_equa_outz=neq, &
+                    call vtcreb(chamno, 'G', 'C', nume_ddlz=numeDof, nb_equa_outz=neq, &
                                 nbz=nbproc, vchamz=vcham)
                 else
-                    call vtcreb(chamno, 'G', 'C', nume_ddlz=nume, nb_equa_outz=neq)
+                    call vtcreb(chamno, 'G', 'C', nume_ddlz=numeDof, nb_equa_outz=neq)
                 end if
                 call jeveuo(chamno(1:19)//'.VALE', 'E', vc=nochc)
             end if
@@ -631,13 +624,13 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                                 partps, &
                                 vechmp, varcCurrZ_=chvarc, &
                                 ligrelCalcZ_=ligrel, nharm_=nh)
-                    call asasve(vechmp, nume, 'R', vachmp)
+                    call asasve(vechmp, numeDof, 'R', vachmp)
                     call ascova('D', vachmp, loadFuncJv, 'INST', time, &
                                 'R', cnchmp)
 !
 ! --- CHARGES SUIVEUSE (TYPE_CHARGE: 'SUIV')
                     call detrsd('CHAMP_GD', bidon)
-                    call vtcreb(bidon, 'G', 'R', nume_ddlz=nume, nb_equa_outz=neq)
+                    call vtcreb(bidon, 'G', 'R', nume_ddlz=numeDof, nb_equa_outz=neq)
                     call vecgme('S', &
                                 model, caraElem, materField, mateco, compor, &
                                 loadNameJv, loadInfoJv, &
@@ -647,12 +640,11 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                                 vecgmp, &
                                 ligrelCalcZ_=ligrel)
 
-                    call asasve(vecgmp, nume, 'R', vacgmp)
+                    call asasve(vecgmp, numeDof, 'R', vacgmp)
                     call ascova('D', vacgmp, loadFuncJv, 'INST', time, &
                                 'R', cncgmp)
                 else
-                    call rsadpa(resuin, 'L', 1, 'FREQ', iordr, &
-                                0, sjv=jvPara, styp=ctyp)
+                    call rsadpa(resuin, 'L', 1, 'FREQ', iordr, 0, sjv=jvPara)
                     freq = zr(jvPara)
                     if (ligrel(1:8) .ne. model) then
 !pour les DYNA_HARMO
@@ -671,10 +663,10 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                     vebid = '&&VEBIDON'
                     vechmp = '&&VECHMP'
                     call dylach(model, materField, mateco, caraElem, listLoad, &
-                                nume, vebid, vechmp, vebid, vebid)
+                                numeDof, vebid, vechmp, vebid, vebid)
                     para = 'FREQ'
                     cnchmpc = '&&'//nompro//'.CHARGE'
-                    call vtcreb(cnchmpc, 'V', 'C', nume_ddlz=nume, nb_equa_outz=neq)
+                    call vtcreb(cnchmpc, 'V', 'C', nume_ddlz=numeDof, nb_equa_outz=neq)
                     call ascomb(listLoad, vechmp, 'C', para, freq, &
                                 cnchmpc)
                 end if
@@ -690,7 +682,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                                 chdepl, bidon, &
                                 bidon, &
                                 vefpip, ligrel)
-                    call asasve(vefpip, nume, 'R', vafpip)
+                    call asasve(vefpip, numeDof, 'R', vafpip)
                     call ascova('D', vafpip, loadFuncJv, 'INST', time, &
                                 'R', cnfpip)
 !
@@ -766,33 +758,27 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                 b_n = to_blas_int(lonch)
                 b_incx = to_blas_int(1)
                 b_incy = to_blas_int(1)
-                call daxpy(b_n, -1.d0*omega2, zr(ltrav), b_incx, noch, &
-                           b_incy)
+                call daxpy(b_n, -1.d0*omega2, zr(ltrav), b_incx, noch, b_incy)
                 call jedetr('&&'//nompro//'.TRAV')
 !
 !       --- TRAITEMENT DES MODE_STAT ---
             elseif (resultType .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_STA' &
                     .and. .not. l_complex) then
-                call rsadpa(resuin, 'L', 1, 'TYPE_DEFO', iordr, &
-                            0, sjv=jvPara, styp=ctyp)
+                call rsadpa(resuin, 'L', 1, 'TYPE_DEFO', iordr, 0, sjv=jvPara)
                 if (zk16(jvPara) (1:9) .eq. 'FORC_IMPO') then
-                    call rsadpa(resuin, 'L', 1, 'NUME_DDL', iordr, &
-                                0, sjv=jvPara, styp=ctyp)
+                    call rsadpa(resuin, 'L', 1, 'NUME_DDL', iordr, 0, sjv=jvPara)
                     inume = zi(jvPara)
                     noch(inume) = noch(inume)-1.d0
                 else if (zk16(jvPara) (1:9) .eq. 'ACCE_IMPO') then
                     call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
-                    call rsadpa(resuin, 'L', 1, 'COEF_X', iordr, &
-                                0, sjv=jvPara, styp=ctyp)
+                    call rsadpa(resuin, 'L', 1, 'COEF_X', iordr, 0, sjv=jvPara)
                     coef(1) = zr(jvPara)
-                    call rsadpa(resuin, 'L', 1, 'COEF_Y', iordr, &
-                                0, sjv=jvPara, styp=ctyp)
+                    call rsadpa(resuin, 'L', 1, 'COEF_Y', iordr, 0, sjv=jvPara)
                     coef(2) = zr(jvPara)
-                    call rsadpa(resuin, 'L', 1, 'COEF_Z', iordr, &
-                                0, sjv=jvPara, styp=ctyp)
+                    call rsadpa(resuin, 'L', 1, 'COEF_Z', iordr, 0, sjv=jvPara)
                     coef(3) = zr(jvPara)
                     call wkvect('&&'//nompro//'.POSI_DDL', 'V V I', 3*lonc2, jddl)
-                    call pteddl('NUME_DDL', nume, 3, nomcmp, lonc2, &
+                    call pteddl('NUME_DDL', numeDof, 3, nomcmp, lonc2, &
                                 tabl_equa=zi(jddl))
                     call wkvect('&&'//nompro//'.POSI_DDR', 'V V R', lonc2, jddr)
                     iaux1 = lonc2-1
@@ -811,8 +797,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                     b_n = to_blas_int(lonch)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call daxpy(b_n, -1.d0, zr(ltrav), b_incx, noch, &
-                               b_incy)
+                    call daxpy(b_n, -1.d0, zr(ltrav), b_incx, noch, b_incy)
                     call jedetr('&&'//nompro//'.POSI_DDR')
                     call jedetr('&&'//nompro//'.POSI_DDL')
                     call jedetr('&&'//nompro//'.TRAV')
@@ -826,13 +811,11 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                     call jeveuo(chacce(1:19)//'.VALE', 'L', lacce)
                     call wkvect('&&'//nompro//'.TRAV', 'V V R', lonch, ltrav)
                     if (lmat .eq. 0) call utmess('F', 'PREPOST3_81', sk=option)
-                    call mrmult('ZERO', lmat, zr(lacce), zr(ltrav), 1, &
-                                .true._1)
+                    call mrmult('ZERO', lmat, zr(lacce), zr(ltrav), 1, .true._1)
                     b_n = to_blas_int(lonch)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call daxpy(b_n, 1.d0, zr(ltrav), b_incx, noch, &
-                               b_incy)
+                    call daxpy(b_n, 1.d0, zr(ltrav), b_incx, noch, b_incy)
                     call jedetr('&&'//nompro//'.TRAV')
                 else
                     call utmess('A', 'CALCULEL3_1')
@@ -842,19 +825,16 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
             else if (resultType .eq. 'DYNA_HARMO' .or. &
                      (resultType .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_STA' &
                       .and. l_complex)) then
-                call rsexch(' ', resuin, 'ACCE', iordr, chacce, &
-                            iret)
+                call rsexch(' ', resuin, 'ACCE', iordr, chacce, iret)
                 if (iret .eq. 0) then
                     call jeveuo(chacce(1:19)//'.VALE', 'L', lacce)
                     call wkvect('&&'//nompro//'.TRAV', 'V V C', lonch, ltrav)
                     if (lmat .eq. 0) call utmess('F', 'PREPOST3_81', sk=option)
-                    call mcmult('ZERO', lmat, zc(lacce), zc(ltrav), 1, &
-                                .true._1)
+                    call mcmult('ZERO', lmat, zc(lacce), zc(ltrav), 1, .true._1)
                     b_n = to_blas_int(lonch)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call zaxpy(b_n, cun, zc(ltrav), b_incx, nochc, &
-                               b_incy)
+                    call zaxpy(b_n, cun, zc(ltrav), b_incx, nochc, b_incy)
                     call jedetr('&&'//nompro//'.TRAV')
                 else
                     call utmess('A', 'CALCULEL3_1')
@@ -862,8 +842,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 !
 !       --- TRAITEMENT DE EVOL_NOLI ---
             else if (resultType .eq. 'EVOL_NOLI') then
-                call rsexch(' ', resuin, 'ACCE', iordr, chacce, &
-                            iret)
+                call rsexch(' ', resuin, 'ACCE', iordr, chacce, iret)
                 if (iret .eq. 0) then
                     optio2 = 'M_GAMMA'
 !
@@ -873,14 +852,13 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                                 ligrel)
 !
 !           --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
-                    call asasve(vreno, nume, 'R', vareno)
+                    call asasve(vreno, numeDof, 'R', vareno)
                     call jeveuo(vareno, 'L', jref)
                     call jeveuo(zk24(jref) (1:19)//'.VALE', 'L', vr=reno)
                     b_n = to_blas_int(lonch)
                     b_incx = to_blas_int(1)
                     b_incy = to_blas_int(1)
-                    call daxpy(b_n, 1.d0, reno, b_incx, noch, &
-                               b_incy)
+                    call daxpy(b_n, 1.d0, reno, b_incx, noch, b_incy)
                 end if
             end if
             if (lcpu) then

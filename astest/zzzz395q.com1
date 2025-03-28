@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIXX",
-            VALE_CALC=-1622.4372222379639,
+            VALE_CALC=-1622.4372222379668,
         ),
         _F(
             RESULTAT=stnl,
@@ -39,7 +39,7 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIYY",
-            VALE_CALC=-1622.437222237964,
+            VALE_CALC=-1622.4372222379668,
         ),
         _F(
             RESULTAT=stnl,
@@ -48,7 +48,7 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIZZ",
-            VALE_CALC=-1496.1994289260151,
+            VALE_CALC=-1496.1994289260178,
         ),
         _F(
             RESULTAT=stnl,
@@ -57,7 +57,7 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIXX",
-            VALE_CALC=-7741.844559657914,
+            VALE_CALC=-7741.844559657916,
         ),
         _F(
             RESULTAT=stnl,
@@ -66,7 +66,7 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIYY",
-            VALE_CALC=-7740.8158728696935,
+            VALE_CALC=-7740.815872869695,
         ),
         _F(
             RESULTAT=stnl,
@@ -75,7 +75,7 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIZZ",
-            VALE_CALC=-7650.2833581416235,
+            VALE_CALC=-7650.283358141625,
         ),
     )
 )
@@ -89,8 +89,8 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIXX",
-            VALE_REFE=-1622.4372222379639,
-            VALE_CALC=-1621.1477189280604,
+            VALE_REFE=-1622.4372222379668,
+            VALE_CALC=-1621.1526169141937,
             PRECISION=8.0e-3,
         ),
         _F(
@@ -99,8 +99,8 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIYY",
-            VALE_REFE=-1622.437222237964,
-            VALE_CALC=-1621.1477189280706,
+            VALE_REFE=-1622.4372222379668,
+            VALE_CALC=-1621.1526169142016,
             PRECISION=8.0e-3,
         ),
         _F(
@@ -109,8 +109,8 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIZZ",
-            VALE_REFE=-1496.1994289260151,
-            VALE_CALC=-1494.374875118003,
+            VALE_REFE=-1496.1994289260178,
+            VALE_CALC=-1494.3792470933172,
             PRECISION=1.3e-3,
         ),
         _F(
@@ -119,8 +119,8 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIXX",
-            VALE_REFE=-7741.844559657914,
-            VALE_CALC=-7743.9358826326215,
+            VALE_REFE=-7741.844559657916,
+            VALE_CALC=-7743.958754058688,
             PRECISION=2.8e-4,
         ),
         _F(
@@ -129,9 +129,9 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIYY",
-            VALE_REFE=-7740.8158728696935,
-            VALE_CALC=-7743.349902515249,
-            PRECISION=3.3e-4,
+            VALE_REFE=-7740.815872869695,
+            VALE_CALC=-7743.372767956389,
+            PRECISION=3.5e-4,
         ),
         _F(
             CHAM_GD=recombSiefPOD,
@@ -139,8 +139,8 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIZZ",
-            VALE_REFE=-7650.2833581416235,
-            VALE_CALC=-7653.127494364017,
+            VALE_REFE=-7650.283358141625,
+            VALE_CALC=-7653.149969545524,
             PRECISION=3.8e-4,
         ),
     )
@@ -155,8 +155,8 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIXX",
-            VALE_REFE=-1622.4372222379639,
-            VALE_CALC=-1619.9276196143408,
+            VALE_REFE=-1622.4372222379668,
+            VALE_CALC=-1619.924768553831,
             PRECISION=1.6e-3,
         ),
         _F(
@@ -165,8 +165,8 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIYY",
-            VALE_REFE=-1622.437222237964,
-            VALE_CALC=-1619.927619614342,
+            VALE_REFE=-1622.4372222379668,
+            VALE_CALC=-1619.9247685538317,
             PRECISION=1.6e-3,
         ),
         _F(
@@ -175,8 +175,8 @@ TEST_RESU(
             GROUP_MA="CellInRID",
             POINT=1,
             NOM_CMP="SIZZ",
-            VALE_REFE=-1496.1994289260151,
-            VALE_CALC=-1493.7622837850479,
+            VALE_REFE=-1496.1994289260178,
+            VALE_CALC=-1493.759644140016,
             PRECISION=1.7e-3,
         ),
         _F(
@@ -185,8 +185,8 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIXX",
-            VALE_REFE=-7741.844559657914,
-            VALE_CALC=-7745.153738833933,
+            VALE_REFE=-7741.844559657916,
+            VALE_CALC=-7745.139598848059,
             PRECISION=5.0e-4,
         ),
         _F(
@@ -195,8 +195,8 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIYY",
-            VALE_REFE=-7740.8158728696935,
-            VALE_CALC=-7744.629444259514,
+            VALE_REFE=-7740.815872869695,
+            VALE_CALC=-7744.61534863459,
             PRECISION=5.0e-4,
         ),
         _F(
@@ -205,8 +205,8 @@ TEST_RESU(
             GROUP_MA="CellOutRID",
             POINT=1,
             NOM_CMP="SIZZ",
-            VALE_REFE=-7650.2833581416235,
-            VALE_CALC=-7655.626207077991,
+            VALE_REFE=-7650.283358141625,
+            VALE_CALC=-7655.612373451581,
             PRECISION=7.0e-4,
         ),
     )

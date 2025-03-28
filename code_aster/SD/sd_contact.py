@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,10 +48,8 @@ class sd_contact(AsBase):
     # --------------------------------------------------------------------------------------------------#
 
     #   Objets présents quelle que soit la formulation
-    MODELE = AsVK8(SDNom(nomj=".CHME.MODEL.NOMO"), lonmax=1)
     PARACI = AsVI(SDNom(nomj=".PARACI"), lonmax=zpari)
     PARACR = AsVR(SDNom(nomj=".PARACR"), lonmax=zparr)
-    TYPE = AsVK8(SDNom(nomj=".TYPE"), lonmax=1)
 
     # --------------------------------------------------------------------------------------------------#
 
@@ -192,36 +190,37 @@ class sd_contact(AsBase):
                 assert self.JEUPOU.lonmax == nmaco
             return
 
-            assert self.PZONE.lonmax == nzoco + 1
-            assert self.PSURMA.lonmax == nsuco + 1
-            assert self.PSURNO.lonmax == nsuco + 1
-            # On utilise lonuti car on a pu éliminer des noeuds/mailles
-            assert self.CONTMA.lonuti == nmaco
-            assert self.CONTNO.lonuti == nnoco
+            # assert self.PZONE.lonmax == nzoco + 1
+            # assert self.PSURMA.lonmax == nsuco + 1
+            # assert self.PSURNO.lonmax == nsuco + 1
+            # # On utilise lonuti car on a pu éliminer des noeuds/mailles
+            # assert self.CONTMA.lonuti == nmaco
+            # assert self.CONTNO.lonuti == nnoco
 
-            assert self.MANOCO.lonmax == 20 * max(nnoco, nmaco)
-            assert self.PMANO.lonmax == nnoco + 1
+            # assert self.MANOCO.lonmax == 20 * max(nnoco, nmaco)
+            # assert self.PMANO.lonmax == nnoco + 1
 
-            assert self.NOMACO.lonmax == 20 * max(nnoco, nmaco)
-            assert self.PNOMA.lonmax == nmaco + 1
+            # assert self.NOMACO.lonmax == 20 * max(nnoco, nmaco)
+            # assert self.PNOMA.lonmax == nmaco + 1
 
-            assert self.PSANS.lonmax == nzoco + 1
-            assert self.SANSN.lonmax >= 1
+            # assert self.PSANS.lonmax == nzoco + 1
+            # assert self.SANSN.lonmax >= 1
 
-            assert self.TYPENO.lonmax == self.ztypn * nnoco
-            assert self.TYPEMA.lonmax == self.ztypm * nmaco
-            assert self.MAESCL.lonmax == self.zmaes * ntmae
+            # assert self.TYPENO.lonmax == self.ztypn * nnoco
+            # assert self.TYPEMA.lonmax == self.ztypm * nmaco
+            # assert self.MAESCL.lonmax == self.zmaes * ntmae
         return
 
     # --------------------------------------------------------------------------------------------------#
 
     #   Formulation DISCRETE
-
     #   Caractéristisques diverses
     CARADF = Facultatif(AsVR(SDNom(nomj=".CONTACT.CARADF")))
 
     #   Relations linéaires pour QUAD8
+    MODELE = Facultatif(AsVK8(SDNom(nomj=".CHME.MODEL.NOMO"), lonmax=1))
     RELLIN = Facultatif(sd_char_chme(SDNom(nomj=".CHME")))
+    TYPE = Facultatif(AsVK8(SDNom(nomj=".TYPE"), lonmax=1))
 
     def check_form_disc(self, checker):
         if self.formulation_disc():
@@ -256,9 +255,9 @@ class sd_contact(AsBase):
                 assert self.EXCLFR.lonmax == self.zexcl * nzoco
             return
 
-            if self.contact_resolu():
-                # ne pas oublier les () car sd_ligrel.exists est une méthode
-                assert self.LIGRE.exists()
+            # if self.contact_resolu():
+            #     # ne pas oublier les () car sd_ligrel.exists est une méthode
+            #     assert self.LIGRE.exists()
         return
 
     # --------------------------------------------------------------------------------------------------#

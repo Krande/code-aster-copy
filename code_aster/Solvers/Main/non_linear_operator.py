@@ -105,7 +105,8 @@ class NonLinearOperator(ContextMixin):
                     fed_defi = definition.getParallelFiniteElementDescriptor()
                 else:
                     fed_defi = definition.getFiniteElementDescriptor()
-                problem.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
+                problem.setVirtualSlavCell(fed_defi)
+                problem.setVirtualCell(None)
 
         else:
             raise TypeError(f"unsupported physics: {phys}")

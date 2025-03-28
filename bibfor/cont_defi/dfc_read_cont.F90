@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dfc_read_cont(sdcont, keywf, mesh, model, model_ndim, &
-                         ligret, nb_cont_zone)
+!
+subroutine dfc_read_cont(sdcont, zoneKeyword, mesh, model, model_ndim, &
+                         slavElemLigr, nb_cont_zone)
 !
     implicit none
 !
@@ -36,14 +36,10 @@ subroutine dfc_read_cont(sdcont, keywf, mesh, model, model_ndim, &
 #include "asterfort/typeco.h"
 #include "asterfort/mmprel.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
-    character(len=16), intent(in) :: keywf
+    character(len=8), intent(in) :: sdcont, mesh, model
+    character(len=16), intent(in) :: zoneKeyword
     integer, intent(in) :: model_ndim
-    character(len=19), intent(in) :: ligret
+    character(len=19), intent(in) :: slavElemLigr
     integer, intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,10 +51,10 @@ subroutine dfc_read_cont(sdcont, keywf, mesh, model, model_ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  keywf            : factor keyword to read
+! In  zoneKeyword      : factor keyword zone of contact
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  ligret           : name of special LIGREL for slave elements (CONTINUE formulation)
+! In  slavElemLigr     : LIGREL for virtual elements (slave side)
 ! In  model_ndim       : dimension of model
 ! In  nb_cont_zone     : number of zones of contact
 !
@@ -73,7 +69,7 @@ subroutine dfc_read_cont(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! - Read zone: nodes and elements
 !
-    call dfc_read_zone(sdcont, keywf, mesh, model, nb_cont_zone, &
+    call dfc_read_zone(sdcont, zoneKeyword, mesh, model, nb_cont_zone, &
                        nb_cont_surf, nb_cont_elem, nb_cont_node)
 !
 ! - Cleaning nodes and elements
@@ -95,11 +91,11 @@ subroutine dfc_read_cont(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! - Keyword SANS_GROUP_NO
 !
-    call sansco(sdcont, keywf, mesh)
+    call sansco(sdcont, zoneKeyword, mesh)
 !
 ! - Special keywords for CONTINUE method
 !
-    call sanscc(sdcont, keywf, mesh)
+    call sanscc(sdcont, zoneKeyword, mesh)
 !
 ! - Elements and nodes parameters
 !
@@ -111,18 +107,17 @@ subroutine dfc_read_cont(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! - Gap for beams
 !
-    call capoco(sdcont, keywf)
+    call capoco(sdcont, zoneKeyword)
 !
 ! - Gap for shells
 !
-    call cacoco(sdcont, keywf, mesh)
+    call cacoco(sdcont, zoneKeyword, mesh)
 !
 ! - Check if axi-symmetric
 !
     call caraxi(sdcont, model, mesh, model_ndim)
-!
-! - Create slave elements in model
-!
-    call mmprel(sdcont, mesh, model, ligret)
+
+! - Create virtual slave elements in model
+    call mmprel(sdcont, mesh, model, slavElemLigr)
 !
 end subroutine

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -578,6 +578,13 @@ class Result : public DataStructure, public ListOfTables {
      * @return nbIndexes
      */
     VectorLong getIndexes() const;
+
+    /**
+     * @brief Get the steps stored in the Result for a
+     *        specific Field
+     * @return List of Indexes
+     */
+    VectorLong getIndexesForFieldName( const std::string &name ) const;
 
     /**
      * @brief Get all the fields stored in the Result

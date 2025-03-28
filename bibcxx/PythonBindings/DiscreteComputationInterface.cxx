@@ -201,14 +201,18 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                   time_curr (float): Current time
                   varc_curr (FieldOnCellsReal): external state variables at current time
+                  varc_prev (FieldOnCells): external state variables at begin of current time
+                  vari_curr (FieldOnCellsReal): internal state variables at current time
+                  stress_prev (FieldOnCellsReal): stress at begin of current time
                   mode (int): fourier mode
                   mask (FieldOnCellsLongPtr): mask to assemble
 
             Returns:
                   FieldOnNodes: load from external state variables
             )",
-              py::arg( "time_curr" ), py::arg( "varc_curr" ), py::arg( "mode" ) = 0,
-              py::arg( "mask" ) = nullptr )
+              py::arg( "time_curr" ), py::arg( "varc_curr" ), py::arg( "varc_prev" ) = nullptr,
+              py::arg( "vari_curr" ) = nullptr, py::arg( "stress_prev" ) = nullptr,
+              py::arg( "mode" ) = 0, py::arg( "mask" ) = nullptr )
 
         .def( "getTransientThermalForces", &DiscreteComputation::getTransientThermalForces, R"(
             Compute Transient Thermal Load

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,38 +15,37 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ldlt_renum(nu1z, nu2z, perm, basp)
+!
+subroutine ldlt_renum(numeDof1Z, numeDof2Z_, perm_, permJvBase_)
 !
     implicit none
 !
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/infniv.h"
-#include "asterfort/infbav.h"
-#include "asterfort/infmue.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/copisd.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nueffe.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/promor.h"
-#include "asterfort/detrsd.h"
 #include "asterc/getres.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nueffe.h"
+#include "asterfort/promor.h"
+#include "asterfort/wkvect.h"
+#include "jeveux.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
-    character(len=*), intent(in) :: nu1z
-    character(len=*), intent(in), optional :: nu2z
-    character(len=24), intent(in), optional :: perm
-    character(len=1), intent(in), optional :: basp
+    character(len=*), intent(in) :: numeDof1Z
+    character(len=*), intent(in), optional :: numeDof2Z_
+    character(len=24), intent(in), optional :: perm_
+    character(len=1), intent(in), optional :: permJvBase_
 
 ! --------------------------------------------------------------------------------------------------
 ! Fonctions :
@@ -54,41 +53,42 @@ subroutine ldlt_renum(nu1z, nu2z, perm, basp)
 !  Cette routine sert a renumeroter une matrice pour que la factorisation LDLT
 !  soit plus efficace. La méthode de renumerotation que l'on essaye d'utiliser est 'RCMK'
 !
-!  1) Si nu2z est absent :
-!     Ajouter les objets .M2LC et .LC2M dans la sd_nume_ddl nu1z
+!  1) Si numeDof2Z_ est absent :
+!     Ajouter les objets .M2LC et .LC2M dans la sd_nume_ddl numeDof1Z
 !
 !     Ces 2 objets etablissent la correspondance entre les numerotations du stockage Morse (.VALM)
 !     et du stockage Ligne de Ciel (.UALF). Ces deux vecteurs sont reciproques l'un de l'autre :
 !       * ieqlc=.M2LC(ieqm)
 !       * ieqm =.LC2M(ieqlc)
-!     Ces 2 objets sont crees sur la meme base (G/V) que la base de nu1
+!     Ces 2 objets sont crees sur la meme base (G/V) que la base de numeDof1
 
-!  2) Si nu2z est present :
-!     * Calculer un nouveau nume_ddl nu2z correspondant au nume_ddl nu1z mais avec
+!  2) Si numeDof2Z_ est present :
+!     * Calculer un nouveau nume_ddl numeDof2Z_ correspondant au nume_ddl numeDof1Z mais avec
 !       la numerotation 'RCMK'.
-!     * Retourner egalement l'objet perm qui etablit la permutation entre nu1z et nu2z.
-!     nu2z est cree sur la base volatile ('V')
-!     perm est cree sur la base 'basp'
+!     * Retourner egalement l'objet perm_ qui etablit la permutation entre numeDof1Z et numeDof2Z_.
+!     numeDof2Z_ est cree sur la base volatile ('V')
+!     perm_ est cree sur la base 'permJvBase_'
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! (o) In/Jxvar  nu1z  : sd_nume_ddl
-! (f) In/Jxout  nu2z  : sd_nume_ddl
-! (f) In/Jxout  perm  : K24 : OJB V I
-! (f) In        basp  : K1 : base pour la creation de perm
+! (o) In/Jxvar  numeDof1Z  : sd_nume_ddl
+! (f) In/Jxout  numeDof2Z_  : sd_nume_ddl
+! (f) In/Jxout  perm_  : K24 : OJB V I
+! (f) In        permJvBase_  : K1 : base pour la creation de perm_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=14) :: nu1, nu2, nutrav
+    character(len=24), parameter :: renumRCMK = "RCMK"
+    character(len=14) :: numeDof1, numeDof2, numeDofTrav
     character(len=8) :: nogd
-    character(len=1) :: bas1
-    integer :: nb_ligr, k, neq2, ncmp1, ncmp2, nbno1, nbno2, iad1, iad2, icmp, ieq1, ieq2, nbec
+    character(len=1) :: jvBase
+    integer :: nbLigr, k, neq2, ncmp1, ncmp2, nbno1, nbno2, iad1, iad2, icmp, ieq1, ieq2, nbec
     integer :: nec1, nec2, n1, n2, ino, neq, iexi, ifm, niv
-    character(len=24), pointer :: list_ligr(:) => null()
+    character(len=24), pointer :: listLigr(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    character(len=19) :: nomligr
-    character(len=8) :: modelo, nomres, modele
-    character(len=16) :: nomcom, typres
+    character(len=19) :: ligrName
+    character(len=8) :: modeLoc, result, model
+    character(len=16) :: command, resultType
     logical :: non_renum, limpr
     integer, pointer :: prno1(:) => null()
     integer, pointer :: prno2(:) => null()
@@ -96,40 +96,44 @@ subroutine ldlt_renum(nu1z, nu2z, perm, basp)
     integer, pointer :: nueq2(:) => null()
     integer, pointer :: m2lc(:) => null()
     integer, pointer :: lc2m(:) => null()
-    character(len=16), save :: nomcom_sav = ' ', nomres_sav = ' '
-    integer, save :: neq_sav = 0
-
+    character(len=16), save :: commandSave = ' ', resultSave = ' '
+    integer, save :: neqSav = 0
+!
 ! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-    nu1 = nu1z
-    call dismoi('NB_EQUA', nu1, 'NUME_DDL', repi=neq)
-    call getres(nomres, typres, nomcom)
 
-!   -- On ne veut pas ecrire les informations de numerotation (RCMK, ...)
-!      a chaque resolution (si INFO=1).
+    numeDof1 = numeDof1Z
+    call dismoi('NB_EQUA', numeDof1, 'NUME_DDL', repi=neq)
+
+! - Manage output in mess file
+    call getres(result, resultType, command)
     limpr = ASTER_TRUE
     call infniv(ifm, niv)
-    if (nomcom .eq. nomcom_sav .and. nomres .eq. nomres_sav) then
-        if (neq .eq. neq_sav .and. niv .eq. 1) limpr = .false.
+    if (command .eq. commandSave .and. result .eq. resultSave) then
+        if (neq .eq. neqSav .and. niv .eq. 1) then
+            limpr = .false.
+        end if
     end if
-    neq_sav = neq
-    nomres_sav = nomres
-    nomcom_sav = nomcom
+    neqSav = neq
+    resultSave = result
+    commandSave = command
+    if (.not. limpr) then
+        call infmue()
+    end if
 
-    if (.not. limpr) call infmue()
-
-    if (.not. present(nu2z)) then
-        call jelira(nu1//'.SMOS.SMDE', 'CLAS', cval=bas1)
-        call jedetr(nu1//'.SLCS.M2LC')
-        call jedetr(nu1//'.SLCS.LC2M')
-        call wkvect(nu1//'.SLCS.M2LC', bas1//' V I', neq, vi=m2lc)
-        call wkvect(nu1//'.SLCS.LC2M', bas1//' V I', neq, vi=lc2m)
+    if (.not. present(numeDof2Z_)) then
+        call jelira(numeDof1//'.SMOS.SMDE', 'CLAS', cval=jvBase)
+        call jedetr(numeDof1//'.SLCS.M2LC')
+        call jedetr(numeDof1//'.SLCS.LC2M')
+        call wkvect(numeDof1//'.SLCS.M2LC', jvBase//' V I', neq, vi=m2lc)
+        call wkvect(numeDof1//'.SLCS.LC2M', jvBase//' V I', neq, vi=lc2m)
     else
-        nu2 = nu2z
-        ASSERT(present(perm))
-        ASSERT(present(basp))
-        call jedetr(perm)
-        call wkvect(perm, basp//' V I', neq, vi=m2lc)
+        numeDof2 = numeDof2Z_
+        ASSERT(present(perm_))
+        ASSERT(present(permJvBase_))
+        call jedetr(perm_)
+        call wkvect(perm_, permJvBase_//' V I', neq, vi=m2lc)
     end if
 
 !   -- On ne renumerote pas (avec RCMK) si :
@@ -138,14 +142,14 @@ subroutine ldlt_renum(nu1z, nu2z, perm, basp)
 !       * C'est un le NUME_DDL d'une matrice "reduite" avec ELIM_LAGR,
 !         (car on a supprime certains ddls)
 !   -------------------------------------------------------------------
-    non_renum = (nomcom .eq. 'MACR_ELEM_STAT')
-    call jenuno(jexnum(nu1//'.NUME.LILI', 1), nomligr)
-    non_renum = non_renum .or. (nomligr .eq. '&SOUSSTR')
-    call jeveuo(nu1//'.NUME.REFN', 'L', vk24=refn)
+    non_renum = (command .eq. 'MACR_ELEM_STAT')
+    call jenuno(jexnum(numeDof1//'.NUME.LILI', 1), ligrName)
+    non_renum = non_renum .or. (ligrName .eq. '&SOUSSTR')
+    call jeveuo(numeDof1//'.NUME.REFN', 'L', vk24=refn)
     non_renum = non_renum .or. (refn(4) .eq. 'ELIM_LAGR')
     if (non_renum) then
-        if (present(nu2z)) then
-            call copisd('NUME_DDL', 'V', nu1, nu2)
+        if (present(numeDof2Z_)) then
+            call copisd('NUME_DDL', 'V', numeDof1, numeDof2)
             do k = 1, neq
                 m2lc(k) = k
             end do
@@ -160,62 +164,63 @@ subroutine ldlt_renum(nu1z, nu2z, perm, basp)
 
 !   -- Si on est dans la commande CALC_ERREUR, il faut utiliser l'argument modelocz de nueffe :
 !   -------------------------------------------------------------------------------------------
-    if (nomcom .eq. 'CALC_ERREUR') then
-        modelo = 'DDL_NOZ1'
+    if (command .eq. 'CALC_ERREUR') then
+        modeLoc = 'DDL_NOZ1'
     else
-        modelo = ' '
+        modeLoc = ' '
     end if
 
 !   -- Renumerotation RCMK :
 !   ---------------------------------------------------------------
-    if (present(nu2z)) then
-        nutrav = nu2
+    if (present(numeDof2Z_)) then
+        numeDofTrav = numeDof2
     else
-        nutrav = '&&ldlt_RENUM.N'
+        numeDofTrav = '&&ldlt_RENUM.N'
     end if
-    call copisd('NUME_EQUA', 'V', nu1//'.NUME', nutrav//'.NUME')
+    call copisd('NUME_EQUA', 'V', numeDof1//'.NUME', numeDofTrav//'.NUME')
 
 !   -- il faut ignorer .LILI(1) -> '&MAILLA' :
-    call jelira(nu1//'.NUME.LILI', 'NOMUTI', nb_ligr)
-    ASSERT(nb_ligr .ge. 2)
-    nb_ligr = nb_ligr-1
-    AS_ALLOCATE(vk24=list_ligr, size=nb_ligr)
-    list_ligr(:) = ' '
-    do k = 1, nb_ligr
-        call jenuno(jexnum(nu1//'.NUME.LILI', 1+k), nomligr)
-        list_ligr(k) = nomligr
+    call jelira(numeDof1//'.NUME.LILI', 'NOMUTI', nbLigr)
+    ASSERT(nbLigr .ge. 2)
+    nbLigr = nbLigr-1
+    AS_ALLOCATE(vk24=listLigr, size=nbLigr)
+    do k = 1, nbLigr
+        call jenuno(jexnum(numeDof1//'.NUME.LILI', 1+k), ligrName)
+        listLigr(k) = ligrName
     end do
-    call jedetr(nutrav//'     .ADNE')
-    call jedetr(nutrav//'     .ADLI')
-    modele = refn(4)
-    call nueffe(nb_ligr, list_ligr, 'VV', nutrav, 'RCMK', modele, modelocz=modelo)
-    AS_DEALLOCATE(vk24=list_ligr)
+    call jedetr(numeDofTrav//'     .ADNE')
+    call jedetr(numeDofTrav//'     .ADLI')
 
-!   -- Pour etablir la correspondance entre les deux numerotations,
-!      il faut comparer les objets .PRNO et .NUEQ :
-!   ---------------------------------------------------------------
-    call dismoi('NB_EQUA', nutrav, 'NUME_DDL', repi=neq2)
+! - Affreuse glute (tant qu'on stockera le modèle dans NUME_EQUA/REFN)
+    model = refn(4) (1:8)
+    call nueffe(nbLigr, listLigr, 'VV', numeDofTrav, renumRCMK, model, &
+                modeLocZ_=modeLoc)
+    AS_DEALLOCATE(vk24=listLigr)
+
+! -- Pour etablir la correspondance entre les deux numerotations,
+!      il faut comparer les objets .PRNO et .NUEQ
+    call dismoi('NB_EQUA', numeDofTrav, 'NUME_DDL', repi=neq2)
     ASSERT(neq .eq. neq2)
 
-    call dismoi('NOM_GD', nu1, 'NUME_DDL', repk=nogd)
+    call dismoi('NOM_GD', numeDof1, 'NUME_DDL', repk=nogd)
     call dismoi('NB_EC', nogd, 'GRANDEUR', repi=nec1)
-    call dismoi('NOM_GD', nutrav, 'NUME_DDL', repk=nogd)
+    call dismoi('NOM_GD', numeDofTrav, 'NUME_DDL', repk=nogd)
     call dismoi('NB_EC', nogd, 'GRANDEUR', repi=nec2)
     ASSERT(nec1 .eq. nec2)
     nbec = nec1
 
-    call jelira(nu1//'.NUME.PRNO', 'NMAXOC', n1)
-    call jelira(nutrav//'.NUME.PRNO', 'NMAXOC', n2)
+    call jelira(numeDof1//'.NUME.PRNO', 'NMAXOC', n1)
+    call jelira(numeDofTrav//'.NUME.PRNO', 'NMAXOC', n2)
     ASSERT(n1 .eq. n2)
 
-    call jeveuo(nu1//'.NUME.NUEQ', 'L', vi=nueq1)
-    call jeveuo(nutrav//'.NUME.NUEQ', 'L', vi=nueq2)
+    call jeveuo(numeDof1//'.NUME.NUEQ', 'L', vi=nueq1)
+    call jeveuo(numeDofTrav//'.NUME.NUEQ', 'L', vi=nueq2)
 
     do k = 1, n1
-        call jelira(jexnum(nu1//'.NUME.PRNO', k), 'LONMAX', iexi)
+        call jelira(jexnum(numeDof1//'.NUME.PRNO', k), 'LONMAX', iexi)
         if (iexi .eq. 0) cycle
-        call jeveuo(jexnum(nu1//'.NUME.PRNO', k), 'L', vi=prno1)
-        call jeveuo(jexnum(nutrav//'.NUME.PRNO', k), 'L', vi=prno2)
+        call jeveuo(jexnum(numeDof1//'.NUME.PRNO', k), 'L', vi=prno1)
+        call jeveuo(jexnum(numeDofTrav//'.NUME.PRNO', k), 'L', vi=prno2)
         nbno1 = size(prno1)/(nbec+2)
         nbno2 = size(prno2)/(nbec+2)
         ASSERT(nbno1 .eq. nbno2)
@@ -239,17 +244,19 @@ subroutine ldlt_renum(nu1z, nu2z, perm, basp)
         ASSERT(m2lc(k) .ge. 1 .and. m2lc(k) .le. neq)
     end do
 
-    if (.not. present(nu2z)) then
+    if (.not. present(numeDof2Z_)) then
         do k = 1, neq
             lc2m(m2lc(k)) = k
         end do
-        call detrsd('NUME_EQUA', nutrav//'.NUME')
+        call detrsd('NUME_EQUA', numeDofTrav//'.NUME')
     else
-        call promor(nutrav, 'V')
+        call promor(numeDofTrav, 'V')
     end if
 
 999 continue
 
-    if (.not. limpr) call infbav()
+    if (.not. limpr) then
+        call infbav()
+    end if
     call jedema()
 end subroutine

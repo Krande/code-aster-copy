@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
-                      ligrma, nbno, tabnoe, rignoe, rigto,&
-                      ndim)
+    subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
+                      ligrma, nbno, tabnoe, rignoe, ndim)
         integer :: nbgr
         character(len=8) :: noma
         integer :: ioc
@@ -33,7 +32,6 @@ interface
         integer :: nbno
         character(len=8) :: tabnoe(*)
         real(kind=8) :: rignoe(*)
-        real(kind=8) :: rigto(*)
         integer :: ndim
     end subroutine masrep
 end interface

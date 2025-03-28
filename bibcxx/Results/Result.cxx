@@ -3,7 +3,7 @@
  * @brief Implementation de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -772,6 +772,36 @@ VectorString Result::getFieldsNames() const {
     return vField;
 }
 
+VectorLong Result::getIndexesForFieldName( const std::string &name ) const {
+    VectorLong keys;
+
+    // Lambda to extract keys
+    auto extractKeys = [&keys]( const auto &dict, const std::string &field_name ) -> bool {
+        auto it = dict.find( field_name );
+        if ( it != dict.end() ) {
+            keys.reserve( it->second.size() ); // Optimize memory allocation
+            std::transform( it->second.begin(), it->second.end(), std::back_inserter( keys ),
+                            []( const auto &pair ) { return pair.first; } );
+            return true;
+        }
+        return false;
+    };
+
+    if ( extractKeys( _dictOfMapOfFieldOnNodesComplex, name ) ||
+         extractKeys( _dictOfMapOfFieldOnNodesReal, name ) ||
+         extractKeys( _dictOfMapOfFieldOnCellsReal, name ) ||
+         extractKeys( _dictOfMapOfFieldOnCellsComplex, name ) ||
+         extractKeys( _dictOfMapOfFieldOnCellsLong, name ) ||
+         extractKeys( _dictOfMapOfConstantFieldOnCellsChar16, name ) ||
+         extractKeys( _dictOfMapOfConstantFieldOnCellsReal, name ) ||
+         extractKeys( _dictOfMapOfGeneralizedVectorReal, name ) ||
+         extractKeys( _dictOfMapOfGeneralizedVectorComplex, name ) ) {
+        return keys;
+    }
+
+    return keys;
+}
+
 void Result::printListOfFields() const {
     auto vField = getFieldsNames();
     std::cout << "Content of DataStructure : ";
@@ -888,16 +918,18 @@ void Result::printMedFile( const std::filesystem::path &fileName, std::string me
     // In case that the print file (single and absolute path) is unique between processors,
     // it must only be created on proc 0.
     if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
-        a.openFile( fileName, Binary, New );
+        if ( rank == 0 )
+            a.openFile( fileName, Binary, New );
+        if ( getMesh()->isParallel() ) {
+#ifdef ASTER_HAVE_MPI
+            AsterMPI::barrier();
+#endif /* ASTER_HAVE_MPI */
+            if ( rank != 0 )
+                a.openFile( fileName, Binary, Old );
+        }
         retour = a.getLogicalUnit();
     }
 
-#ifdef ASTER_HAVE_MPI
-    if ( getMesh()->isParallel() && !local ) {
-        AsterMPI::barrier();
-    }
-
-#endif /* ASTER_HAVE_MPI */
     CommandSyntax cmdSt( "IMPR_RESU" );
 
     SyntaxMapContainer dict;

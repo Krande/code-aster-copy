@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@
 
 """Commande CALC_FONCTION"""
 
-import copy
 import math
 import os
 import traceback
@@ -87,28 +86,27 @@ def calc_fonction_prod(
     if COMB is not None:
         comb = COMB[0]["FONCTION"]
         if type(comb) not in (list, tuple):
-            type(COMB[0]["FONCTION"])
             type_vale = type(COMB[0]["FONCTION"])
         else:
             type_vale = type(COMB[0]["FONCTION"][0])
         for mcfact in COMB:
-            if type(mcfact["FONCTION"]) != type_vale:
+            if type(mcfact["FONCTION"]) is not type_vale:
                 raise TypeError("CALC_FONCTION/COMB : pas de types hétérogènes nappe/fonction")
         return type_vale
     if COMB_C is not None:
         vale = COMB_C[0]["FONCTION"]
         if type(vale) is list:
             vale = vale[0]
-        if type(vale) == Function2D:
+        if type(vale) is Function2D:
             for mcfact in COMB_C[1:]:
-                if type(mcfact["FONCTION"]) != Function2D:
+                if type(mcfact["FONCTION"]) is not Function2D:
                     raise TypeError(
                         "CALC_FONCTION/COMB_C : pas de types hétérogènes nappe/fonction"
                     )
             return Function2D
         else:
             for mcfact in COMB_C:
-                if type(mcfact["FONCTION"]) == Function2D:
+                if type(mcfact["FONCTION"]) is Function2D:
                     raise TypeError(
                         "CALC_FONCTION/COMB_C : pas de types hétérogènes nappe/fonction"
                     )
@@ -165,9 +163,9 @@ def calc_fonction_prod(
         return type_vale
     if FFT is not None:
         vale = FFT[0]["FONCTION"]
-        if type(vale) == Function:
+        if type(vale) is Function:
             return FunctionComplex
-        if type(vale) == FunctionComplex:
+        if type(vale) is FunctionComplex:
             return Function
     if INTERPOL_FFT is not None:
         return Function
@@ -264,7 +262,6 @@ class CalcFonctionOper:
 
     def build_result(self):
         """Create the result function"""
-        macr = self.macro
         # common keywords to DEFI_FONCTION & DEFI_NAPPE
         para = self.resu.para
         for p in ("NOM_PARA", "NOM_RESU", "PROL_DROITE", "PROL_GAUCHE", "INTERPOL"):

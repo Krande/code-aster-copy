@@ -81,8 +81,9 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
     listOfLoads->build( model );
 
     const std::string base( "GG" );
-    const std::string null( " " );
-    CALLO_NUMERO_WRAP( getName(), base, null, null, model->getName(), listOfLoads->getName() );
+    const std::string contactDs( " " );
+
+    CALLO_NUMERO_WRAP( getName(), base, model->getName(), listOfLoads->getName(), contactDs );
 
     const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
     this->addFiniteElementDescriptor( FEDescs );
@@ -93,14 +94,33 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
     return true;
 };
 
-bool BaseDOFNumbering::computeRenumbering( const ModelPtr model,
-                                           const ListOfLoadsPtr listOfLoads ) {
+bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
+                                         const FiniteElementDescriptorPtr defiCont ) {
     listOfLoads->build( model );
 
     const std::string base( "GG" );
-    const std::string null( " " );
 
-    CALLO_NUMER3( model->getName(), listOfLoads->getName(), getName(), null, base );
+    CALLO_NUMERO_WRAP( getName(), base, model->getName(), listOfLoads->getName(),
+                       defiCont->getName() );
+
+    const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
+    this->addFiniteElementDescriptor( FEDescs );
+    this->setModel( model );
+
+    this->build();
+
+    return true;
+};
+
+bool BaseDOFNumbering::computeRenumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
+                                           const FiniteElementDescriptorPtr defiCont,
+                                           const FiniteElementDescriptorPtr virtContElem ) {
+    listOfLoads->build( model );
+
+    const std::string base( "GG" );
+
+    CALLO_NUMER3_WRAP( this->getName(), base, model->getName(), listOfLoads->getName(),
+                       defiCont->getName(), virtContElem->getName() );
     this->setModel( model );
 
     this->build();

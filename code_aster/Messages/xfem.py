@@ -46,15 +46,6 @@ cata_msg = {
      Vérifiez qu'il a bien été créé par l'opérateur MODI_MODELE_XFEM.
 """
     ),
-    4: _(
-        """
-  -> Il est interdit de mélanger dans un modèle les fissures X-FEM
-     avec et sans contact.
-  -> Risque & Conseil:
-     Veuillez rajouter les mots clés CONTACT manquants
-     dans DEFI_FISS_XFEM.
-"""
-    ),
     5: _(
         """
   -> Attention, vous avez défini un enrichissement géométrique sur %(i1)d
@@ -409,12 +400,6 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
      Le fond ne peut pas être orienté sous cette condition. Il n'est donc pas possible
      de calculer les abscisses curvilignes du fond et de détecter les fonds multiples.
      Par conséquent le post-traitement avec la commande CALC_G_XFEM n'est pas possible.
-"""
-    ),
-    53: _(
-        """
-Il y a trop de termes dans la relation d'égalité.
-Utilisez ELIM_ARETE='DUAL'.
 """
     ),
     54: _(

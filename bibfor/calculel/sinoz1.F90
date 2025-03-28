@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,25 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine sinoz1(modele, sigma, signo)
+!
+subroutine sinoz1(model, sigmElga, sigmNoeu)
+!
     implicit none
 !
-!     ARGUMENTS:
-!     ----------
-! ......................................................................
-!     BUT:
-!           CALCUL DES CONTRAINTES AUX NOEUDS PAR LA METHODE ZZ1
-!     ENTREES:
-!        MODELE : NOM DU MODELE
-!        SIGMA  : NOM DU CHAMP DE CONTRAINTES AUX POINTS DE GAUSS
-!        SIGNO  : NOM DU CHAMP DE CONTRAINTES AUX NOEUDS
-!
-!----------------------------------------------------------------------
-!
-! ----------------------- DECLARATIONS --------------------------------
-!
-#include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asasve.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/assert.h"
@@ -48,25 +36,42 @@ subroutine sinoz1(modele, sigma, signo)
 #include "asterfort/me2zme.h"
 #include "asterfort/memzme.h"
 #include "asterfort/numero.h"
+#include "asterfort/numoch.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
+!
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: sigmElga, sigmNoeu
+!
+! --------------------------------------------------------------------------------------------------
+!
+!     BUT:
+!           CALCUL DES CONTRAINTES AUX NOEUDS PAR LA METHODE ZZ1
+!     ENTREES:
+!        MODELE : NOM DU MODELE
+!        SIGMA  : NOM DU CHAMP DE CONTRAINTES AUX POINTS DE GAUSS
+!        SIGNO  : NOM DU CHAMP DE CONTRAINTES AUX NOEUDS
+!
+! --------------------------------------------------------------------------------------------------
 !
     character(len=1) :: typres, k1bid
-    character(len=8) :: modele
-    character(len=14) :: nupgm
-    character(len=8) :: licmp(6), ma
-    character(len=19) :: infcha
-    character(len=19) :: solveu, vecele, matpre, k19bid, criter, masselK19
-    character(len=24) :: signo, sigma, massel
-    character(len=24) :: nume, vecass, vect(6)
+    character(len=14) :: numeDof
+    character(len=8) :: licmp(6), mesh
+    character(len=19), parameter :: listLoad = '&&SINOZ1.INFCHA'
+    character(len=19), parameter :: vectElem = '&&VECELE'
+    character(len=19) :: solveu, matpre, k19bid, criter, matrElem19
+    character(len=24), parameter :: matrElem = '&&MASSEL'
+    character(len=24) :: vecass, vect(6)
+    integer, parameter :: nbMatrElem = 1
+    character(len=24), pointer :: listMatrElem(:) => null()
+    integer :: nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
     real(kind=8) :: rcmp(6)
     integer :: ibid, jvect, nbcmp, repdim
     complex(kind=8) :: cbid
     integer :: iret
-!
-!
-!-----------------------------------------------------------------------
     integer :: i, ieq, ier, indeq, jprno
     integer :: jvecas, nbno
     real(kind=8), pointer :: sig(:) => null()
@@ -79,11 +84,12 @@ subroutine sinoz1(modele, sigma, signo)
     integer, pointer :: slvi(:) => null()
     integer, pointer :: nueq(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-    call dismoi('DIM_GEOM', modele, 'MODELE', repi=repdim)
-!
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=repdim)
     if ((repdim .ne. 2) .or. (repdim .ne. 3)) then
         if (repdim .eq. 1) then
             call utmess('F', 'CALCULEL_75')
@@ -100,47 +106,44 @@ subroutine sinoz1(modele, sigma, signo)
     else
         ASSERT(.false.)
     end if
-!
-    massel = '&&MASSEL'
-!
+
 !     CALCUL DE LA MATRICE DE MASSE ZZ1 (A 1 CMP)
-    call memzme(modele, massel(1:19))
+    call memzme(model, matrElem(1:19))
 !
     typres = 'R'
-!
-!
-!     --  APPEL A NUMER2 POUR CONSTRUIRE UN NUME_DDL
-!         SUR LA GRANDEUR SIZZ_R (1 CMP)
-    nupgm = '&&NUME'
-    infcha = '&&SINOZ1.INFCHA'
 !
 !     -- CREATION DU SOLVEUR :
     solveu = '&&OP0042.SOLVEUR'
 
-    call numero(nupgm, 'VV', &
-                modelocz='DDL_NOZ1', modelz=modele, &
-                nb_matr_elem=1, list_matr_elem=massel)
+! - Create list of LIGREL from matr_elem
+    AS_ALLOCATE(vk24=listMatrElem, size=nbMatrElem)
+    listMatrElem(1) = matrElem
+    call numoch(listMatrElem, nbMatrElem, listLigr, nbLigr)
+    AS_DEALLOCATE(vk24=listMatrElem)
 
-    masselK19 = massel(1:19)
-!
-    call asmatr(1, masselK19, ' ', nupgm, &
-                infcha, 'ZERO', 'V', 1, '&&MASSAS')
-!
-!     CALCUL DES SECONDS MEMBRES
-    vecele = '&&VECELE'
-    call me2zme(modele, sigma(1:19), vecele)
-!
-!
-!     ASSEMBLAGE DES SECONDS MEMBRES
-    nume = '&&NUME'
+! - Numbering
+    numeDof = '&&NUME'
+    call numero(numeDof, 'VV', &
+                nbLigr, listLigr, &
+                modeLocZ_="DDL_NOZ1")
+    AS_DEALLOCATE(vk24=listLigr)
+
+! - Assemblying
+    matrElem19 = matrElem(1:19)
+    call asmatr(1, matrElem19, ' ', numeDof, &
+                listLoad, 'ZERO', 'V', 1, '&&MASSAS')
+
+! - CALCUL DES SECONDS MEMBRES
+    call me2zme(model, sigmElga(1:19), vectElem)
+
+!  ASSEMBLAGE DES SECONDS MEMBRES
     vecass = '??????'
-    call asasve(vecele, nume, typres, vecass)
+    call asasve(vectElem, numeDof, typres, vecass)
     call jeveuo(vecass, 'L', jvecas)
     do i = 1, nbcmp
         vect(i) = zk24(jvecas-1+i)
     end do
-!
-!
+
 !     RESOLUTIONS SANS DIRICHLET
 !     -- ON FORCE STOP_SINGULIER='NON' MAIS POURQUOI ??
     call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
@@ -161,19 +164,17 @@ subroutine sinoz1(modele, sigma, signo)
 !
 !   CREATION DU CHAM_NO_SIEF_R A PARTIR DES 4 CHAM_NO_SIZZ_R (A 1 CMP)
 !
-    do i = 1, nbcmp
-        rcmp(i) = 0.d0
-    end do
+    rcmp = 0.d0
     licmp(1) = 'SIXX'
     licmp(2) = 'SIYY'
     licmp(3) = 'SIZZ'
     licmp(4) = 'SIXY'
     licmp(5) = 'SIXZ'
     licmp(6) = 'SIYZ'
-    call dismoi('NOM_MAILLA', sigma(1:19), 'CHAM_ELEM', repk=ma)
-    call crcnct('G', signo, ma, 'SIEF_R', nbcmp, &
+    call dismoi('NOM_MAILLA', sigmElga(1:19), 'CHAM_ELEM', repk=mesh)
+    call crcnct('G', sigmNoeu, mesh, 'SIEF_R', nbcmp, &
                 licmp, rcmp)
-    call jeveuo(signo(1:19)//'.VALE', 'E', vr=sig)
+    call jeveuo(sigmNoeu(1:19)//'.VALE', 'E', vr=sig)
     call jeveuo(vect(1) (1:19)//'.VALE', 'E', vr=sixx)
     call jeveuo(vect(2) (1:19)//'.VALE', 'E', vr=siyy)
     call jeveuo(vect(3) (1:19)//'.VALE', 'E', vr=sizz)
@@ -182,10 +183,10 @@ subroutine sinoz1(modele, sigma, signo)
         call jeveuo(vect(5) (1:19)//'.VALE', 'E', vr=sixz)
         call jeveuo(vect(6) (1:19)//'.VALE', 'E', vr=siyz)
     end if
-    call jeveuo(jexnum(nume(1:14)//'.NUME.PRNO', 1), 'L', jprno)
-    call jeveuo(nume(1:14)//'.NUME.NUEQ', 'L', vi=nueq)
+    call jeveuo(jexnum(numeDof(1:14)//'.NUME.PRNO', 1), 'L', jprno)
+    call jeveuo(numeDof(1:14)//'.NUME.NUEQ', 'L', vi=nueq)
 !
-    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbno)
     do i = 1, nbno
         indeq = zi(jprno-1+3*(i-1)+1)
         ieq = nueq(indeq)
@@ -200,8 +201,8 @@ subroutine sinoz1(modele, sigma, signo)
     end do
 !
     call detrsd('MATR_ASSE', '&&MASSAS')
-    call jedetr(nupgm//'.&LMODCHAR')
-    call detrsd('NUME_DDL', nupgm)
+    call jedetr(numeDof//'.&LMODCHAR')
+    call detrsd('NUME_DDL', numeDof)
 !
     do i = 1, nbcmp
         call detrsd('CHAMP_GD', zk24(jvecas-1+i))

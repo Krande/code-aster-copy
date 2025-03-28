@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 import numpy as NP
 
-from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
@@ -451,25 +451,15 @@ def test_compor_ops(self, **args):
                 SXM = SXM * (YOUNG(Ti) / YOUNG(Tm))
                 # cas particuliers
                 if COMPORTEMENT[0]["RELATION"] == "VMIS_CINE_LINE":
-                    if args.get("D_SIGM_EPSI") is not None:
-                        D_SIGM_EPSI = args.get("D_SIGM_EPSI")
-                    else:
-                        raise "erreur"
-
+                    D_SIGM_EPSI = args["D_SIGM_EPSI"]
                     Vim[0:5] = Vim[0:5] * D_SIGM_EPSI(Ti) / D_SIGM_EPSI(Tm)
 
                 if COMPORTEMENT[0]["RELATION"] == "VMIS_ECMI_LINE":
-                    if args.get("C_PRAG") is not None:
-                        C_PRAG = args.get("C_PRAG")
-                    else:
-                        raise "erreur"
+                    C_PRAG = args["C_PRAG"]
                     Vim[2:7] = Vim[2:7] * C_PRAG(Ti) / C_PRAG(Tm)
 
                 if COMPORTEMENT[0]["RELATION"] == "VMIS_ECMI_TRAC":
-                    if args.get("C_PRAG") is not None:
-                        C_PRAG = args.get("C_PRAG")
-                    else:
-                        raise "erreur"
+                    C_PRAG = args["C_PRAG"]
                     Vim[2:7] = Vim[2:7] * C_PRAG(Ti) / C_PRAG(Tm)
 
             __list0 = DEFI_LIST_REEL(DEBUT=timem, INTERVALLE=(_F(JUSQU_A=time, NOMBRE=1),))

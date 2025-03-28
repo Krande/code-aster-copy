@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024 EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025 EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -17,11 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
-import numpy as np
-from ..Messages import UTMESS
-from math import sqrt
 from itertools import count, product
+from math import sqrt
+
+import numpy as np
+from libaster import setFortranLoggingLevel
+
+from ..Messages import UTMESS
 from ..Objects import MultipleElasticResult
 from ..Supervis.ExecuteCommand import _get_object_repr
 
@@ -219,7 +221,7 @@ def get_group_appuis(spectres, group_appui_correle=None):
     group_appui_all = []
     nom_group_appui_all = []
     # add group_appui by users
-    if group_appui_correle != None:
+    if group_appui_correle:
         # get information of input for GROUP_APPUI_CORRELE
         for i_group_appui in range(len(group_appui_correle)):
             # add APPUIS to group_appui
@@ -408,9 +410,7 @@ def dsc_array(amors, freqs, s):
     omega = 2 * np.pi * freqs
     # correlation coefficients for DSC rule
     for i, (amor_i, w_i) in enumerate(zip(amors, omega)):
-        amor_i_p = amor_i + 2 / (s * w_i)
         for j, (amor_j, w_j) in enumerate(zip(amors, omega)):
-            amor_j_p = amor_j + 2 / (s * w_j)
             H[i, j] = 1 / (
                 1
                 + (w_i * sqrt(1 - amor_i**2) - w_j * sqrt(1 - amor_j**2)) ** 2
@@ -559,9 +559,10 @@ def comb_directions(type_comb_dir, l_R_x):
             # R = [± 0, 4 * EX  ± 0, 4 * EY  ± EZ]
             newmark = np.zeros(len(l_R_x[0]))
             R_newmark_all = []
-            circular_shifts = lambda p: [
-                np.roll(p, -i) for i in range(len(p))
-            ]  # idem as in more_itertools
+
+            def circular_shifts(p):
+                return [np.roll(p, -i) for i in range(len(p))]  # idem as in more_itertools
+
             for ijk in circular_shifts(range(nb_direction)):
                 r_xyz = [l_R_x[idx] for idx in ijk]
                 for exponents in product([0, 1], repeat=nb_direction):
@@ -617,24 +618,21 @@ def corr_pseudo_mode_mono(
     if corr_freq == "OUI":
         S_r_freq_coup = S_r_freq_coup * np.sqrt(1 - amors[-1] ** 2)
     # nature of spectrum to ACCE spectrum
-    if spectre_nature is "DEPL":
+    if spectre_nature == "DEPL":
         S_r_freq_coup = ((2 * np.pi * freq_coup) ** 2) * S_r_freq_coup
-    elif spectre_nature is "VITE":
+    elif spectre_nature == "VITE":
         S_r_freq_coup = 2 * np.pi * freq_coup * S_r_freq_coup
-    elif spectre_nature is "ACCE":
-        S_r_freq_coup = S_r_freq_coup
+    elif spectre_nature == "ACCE":
+        pass
     # search for index (NUME_CMP) in MODE_STATIQUE corresponding to direction
     ps_noeud_cmp = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
     ps_nume_mode = pseudo_mode.getAccessParameters()["NUME_MODE"]
     if "OX" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    X")]
-        components = "DX"
     elif "OY" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    Y")]
-        components = "DY"
     elif "OZ" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    Z")]
-        components = "DZ"
     else:
         raise Exception(
             "Direction '{spectre_dir}' ne correspond pas à aucun axe global".format(
@@ -710,12 +708,12 @@ def corr_pseudo_mode_mult(
     if corr_freq == "OUI":
         S_r_freq_coup = S_r_freq_coup * np.sqrt(1 - amors[-1] ** 2)
     # correction of spectrum by nature of spectrum
-    if spectre_nature is "DEPL":
+    if spectre_nature == "DEPL":
         S_r_freq_coup = ((2 * np.pi * freq_coup) ** 2) * S_r_freq_coup
-    elif spectre_nature is "VITE":
+    elif spectre_nature == "VITE":
         S_r_freq_coup = 2 * np.pi * freq_coup * S_r_freq_coup
-    elif spectre_nature is "ACCE":
-        S_r_freq_coup = S_r_freq_coup
+    elif spectre_nature == "ACCE":
+        pass
     # searche for index (NUME_CMP) in MODE_STATIQUE / PSEUDO_MODE
     # list of node_num and node_name in group_no
     nodes_num_per_grno, nodes_name_per_grno = get_nodes(MAILLAGE, GROUP_NO=l_group_no)
@@ -937,11 +935,9 @@ def impr_vale_spec_mono(
     # Sort frequencies and num_ordre by increasing order
     _, _, argsort_freq = zip(*sorted(zip(l_freq, l_nume_ordre, count())))
     argsort_freq = list(argsort_freq)
-    freqs = np.array(l_freq)[argsort_freq]
     # list of sorted numeros of order (nume_ordre)
     nume_ordres = np.array(l_nume_ordre)[argsort_freq]
     # list of sorted numeros of mode (nume_mode)
-    nume_modes = np.array(l_nume_mode)[argsort_freq]
     # get LIST_AXE to be printed out
     list_axe = type_resu[index].get("LIST_AXE")
     # check if axe to be printed out is in the list of axes to be calculated
@@ -1160,19 +1156,15 @@ def impr_vale_spec_mult(
     # Sort frequencies in increasing order
     _, _, argsort_freq = zip(*sorted(zip(l_freq, l_nume_ordre, count())))
     argsort_freq = list(argsort_freq)
-    freqs = np.array(l_freq)[argsort_freq]
     # Sort number of orders of modes in increasing order
     nume_ordres = np.array(l_nume_ordre)[argsort_freq]
     # Sort numeber of modes in increasing order
-    nume_modes = np.array(l_nume_mode)[argsort_freq]
     # get LIST_AXE
     list_axe = type_resu[index].get("LIST_AXE")
     # get input APPUI (not used)
     list_appui = type_resu[index].get("LIST_APPUI")
     tout_appui = type_resu[index].get("TOUT_APPUI")
     # get input GROUP_APPUI (not used)
-    list_group_appui = type_resu[index].get("LIST_GROUP_APPUI")
-    tout_group_appui = type_resu[index].get("TOUT_GROUP_APPUI")
     # print out result for each nom_appui, mode and direction
     if (
         APPUI is not None
@@ -1310,7 +1302,7 @@ def impr_vale_dyna(output_result, type_resu, option, mode_meca, R_d, Rd_newmark_
     type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
     index = type_all.index("VALE_DYNA")
     # impression
-    if dir == None:
+    if dir is None:
         # print out combined dynamic part
         # NOM_CAS
         case_name = "PART_DYNA"
@@ -1518,8 +1510,6 @@ def comb_sism_modal_ops(self, **args):
     """
     # get input MODE_MECA
     mode_meca = args.get("MODE_MECA")
-    model = mode_meca.getModel()
-    mesh_model = model.getMesh()
     # Get input TOUT_ORDRE
     tout_ordre = args.get("TOUT_ORDRE")
     # Get input NUME_ORDRE
@@ -1566,8 +1556,6 @@ def comb_sism_modal_ops(self, **args):
     depl_mult_appui = args.get("DEPL_MULT_APPUI")
     # Get input type_resu
     type_resu = args.get("TYPE_RESU")
-    # Get input TITRE
-    titre = args.get("TITRE")
     # Get input INFO
     verbosity = args["INFO"]
     setFortranLoggingLevel(verbosity)
@@ -1721,12 +1709,12 @@ def comb_sism_modal_ops(self, **args):
                 else:
                     freq_coup = freqs[-1]
                 #  Correction of spectrum by nature of spectrum
-                if spectre_nature is "DEPL":
+                if spectre_nature == "DEPL":
                     S_r_freq = ((2 * np.pi * freqs) ** 2) * S_r_freq
-                elif spectre_nature is "VITE":
+                elif spectre_nature == "VITE":
                     S_r_freq = 2 * np.pi * freqs * S_r_freq
-                elif spectre_nature is "ACCE":
-                    S_r_freq = S_r_freq
+                elif spectre_nature == "ACCE":
+                    pass
                 # Participation factor by direction
                 if "OX" in spectre_dir:
                     fact_partici = l_fact_partici[0]
@@ -1847,7 +1835,7 @@ def comb_sism_modal_ops(self, **args):
                 # VALE_INER
                 if any([type_resu[i].get("TYPE") == "VALE_INER" for i in range(len(type_resu))]):
                     impr_vale_iner_dire(
-                        output_result, type_resu, option, mode_meca, direction, R_prim
+                        output_result, type_resu, option, mode_meca, spectre_dir, R_prim
                     )
                 # save for INFO
                 l_SA[spectre_dir] = S_r_freq
@@ -1887,35 +1875,29 @@ def comb_sism_modal_ops(self, **args):
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
                 # info of mode_meca
-                UTMESS(
-                    "I",
-                    "SEISME_15",
-                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])),
-                    vali=len(freqs),
+                dict_args = dict(
+                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])), vali=len(freqs)
                 )
+                UTMESS("I", "SEISME_15", **dict_args)
                 # info for modal basis to be considered/combined
                 for direction in ["OX", "OY", "OZ"]:
                     if "OX" in direction:
                         fact_partici = l_fact_partici[0]
                         masse_effe = l_masse_effe[0]
-                        masse_effe_un = l_masse_effe_un[0]
                     elif "OY" in direction:
                         fact_partici = l_fact_partici[1]
                         masse_effe = l_masse_effe[1]
-                        masse_effe_un = l_masse_effe_un[1]
                     elif "OZ" in direction:
                         fact_partici = l_fact_partici[2]
                         masse_effe = l_masse_effe[2]
-                        masse_effe_un = l_masse_effe_un[2]
                     UTMESS("I", "SEISME_48")
                     for i_freq in range(len(freqs)):
-                        UTMESS(
-                            "I",
-                            "SEISME_49",
+                        dict_args = dict(
                             vali=nume_modes[i_freq],
                             valr=(freqs[i_freq], fact_partici[i_freq], masse_effe[i_freq]),
                             valk=direction,
                         )
+                        UTMESS("I", "SEISME_49", **dict_args)
                 # about spectra
                 for i_dir in range(len(spectres[0])):
                     # Spectrum information
@@ -1931,13 +1913,12 @@ def comb_sism_modal_ops(self, **args):
                     # info of read value on spectra
                     UTMESS("I", "SEISME_53")
                     for i_freq in range(len(freqs)):
-                        UTMESS(
-                            "I",
-                            "SEISME_54",
+                        dict_args = dict(
                             vali=nume_modes[i_freq],
                             valr=(freqs[i_freq], amors[i_freq], l_SA[spectre_dir][i_freq]),
                             valk=spectre_dir,
                         )
+                        UTMESS("I", "SEISME_54", **dict_args)
                 # about correction by pseudo-mode
                 if mode_corr == "OUI":
                     for i_dir in range(len(spectres[0])):
@@ -1950,12 +1931,11 @@ def comb_sism_modal_ops(self, **args):
                         ] = [spectres[i][i_dir] for i in range(5)]
                         # cutting frequency et ZPA
                         UTMESS("I", "SEISME_56")
-                        UTMESS(
-                            "I",
-                            "SEISME_57",
+                        dict_args = dict(
                             valr=(l_pseudo[spectre_dir][0], l_pseudo[spectre_dir][1]),
                             valk=(spectre_dir, "mono_appui"),
                         )
+                        UTMESS("I", "SEISME_57", **dict_args)
                 # about combinaison of response due to DDS
                 if comb_dds_correle:
                     UTMESS("I", "SEISME_19", valk=comb_dds_correle)
@@ -1986,15 +1966,12 @@ def comb_sism_modal_ops(self, **args):
                 direction = dir_all[i_dir]
                 # ("iteration on direction:", direction)
                 # save for print out as INFO
-                l_SA[
-                    direction
-                ] = {}  # dict of info about read spectra at eigen-frequencies by direction
-                l_pseudo[
-                    direction
-                ] = {}  # dict of info about correction by pseudo mode by direction
-                l_parti[
-                    direction
-                ] = {}  # dict of info about participation factor in case of mult_appui
+                # dict of info about read spectra at eigen-frequencies by direction
+                l_SA[direction] = {}
+                # dict of info about correction by pseudo mode by direction
+                l_pseudo[direction] = {}
+                # dict of info about participation factor in case of mult_appui
+                l_parti[direction] = {}
                 # Iteration on appuis
                 nb_appui = len(nom_appuis_all)
                 R_appuis = []  # list reponse tous appuis
@@ -2040,11 +2017,11 @@ def comb_sism_modal_ops(self, **args):
                         else:
                             freq_coup = freqs[-1]
                         # Correction of spectrum by nature
-                        if spectre_nature is "DEPL":
+                        if spectre_nature == "DEPL":
                             S_r_freq *= (2 * np.pi * freqs) ** 2
-                        elif spectre_nature is "VITE":
+                        elif spectre_nature == "VITE":
                             S_r_freq *= 2 * np.pi * freqs
-                        elif spectre_nature is "ACCE":
+                        elif spectre_nature == "ACCE":
                             S_r_freq *= 1
                         # iteration on node in appui
                         l_nodes_num = l_nodes_num_all[nom_appuis_all.index(nom_appui)]
@@ -2163,7 +2140,6 @@ def comb_sism_modal_ops(self, **args):
                         R_e_noeuds = []  # stock of DDS response at all nodes in considered APPUI
                         for i_node in range(len(l_nodes_num)):
                             # ("Iteration sur les nodes dans un appui")
-                            node_num = l_nodes_num[i_node]
                             node_name = l_nodes_name[i_node]
                             noeud_cmp = node_name.ljust(8) + direction.replace("O", "D")
                             stat_nume_modes = mode_stat.getAccessParameters()["NUME_MODE"]
@@ -2203,7 +2179,6 @@ def comb_sism_modal_ops(self, **args):
                                             option=option
                                         )
                                     )
-                                    R_e_noeud = np.zeros(np.shape(phi_stat))
                             else:  # noued_cmp is not found --> raise fatal erreur
                                 raise Exception(
                                     "NOUED_CMP: {0} n'existe pas dans la base mode_statique".format(
@@ -2228,7 +2203,6 @@ def comb_sism_modal_ops(self, **args):
                 l_R_prim_j = []  # list des reponse RCCM part primaire de tous les group_appui
                 l_R_seco_j = []  # list des reponse RCCM part primaire de tous les group_appui
                 for j_group_appui in range(len(group_appui_all)):
-                    nom_group_appui = nom_group_appui_all[j_group_appui]
                     # ("iteration on nom_group_appui:", nom_group_appui)
                     appui_in_groupe = group_appui_all[j_group_appui]
                     # ("nom_group_appui contient appui_in_groupe:", appui_in_groupe)
@@ -2388,35 +2362,29 @@ def comb_sism_modal_ops(self, **args):
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
                 # info of mode_meca
-                UTMESS(
-                    "I",
-                    "SEISME_15",
-                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])),
-                    vali=len(freqs),
+                dict_args = dict(
+                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])), vali=len(freqs)
                 )
+                UTMESS("I", "SEISME_15", **dict_args)
                 # info for modal basis to be considered/combined
                 for direction in ["OX", "OY", "OZ"]:
                     if "OX" in direction:
                         fact_partici = l_fact_partici[0]
                         masse_effe = l_masse_effe[0]
-                        masse_effe_un = l_masse_effe_un[0]
                     elif "OY" in direction:
                         fact_partici = l_fact_partici[1]
                         masse_effe = l_masse_effe[1]
-                        masse_effe_un = l_masse_effe_un[1]
                     elif "OZ" in direction:
                         fact_partici = l_fact_partici[2]
                         masse_effe = l_masse_effe[2]
-                        masse_effe_un = l_masse_effe_un[2]
                     UTMESS("I", "SEISME_48")
                     for i_freq in range(len(freqs)):
-                        UTMESS(
-                            "I",
-                            "SEISME_49",
+                        dict_args = dict(
                             vali=nume_modes[i_freq],
                             valr=(freqs[i_freq], fact_partici[i_freq], masse_effe[i_freq]),
                             valk=direction,
                         )
+                        UTMESS("I", "SEISME_49", **dict_args)
                 # about spectra
                 for i_dir in range(max(len(dir_all), len(D_e_dirs_all))):
                     direction = dir_all[i_dir]
@@ -2453,15 +2421,14 @@ def comb_sism_modal_ops(self, **args):
                             if mode_corr == "OUI":
                                 # cutting frequency et ZPA
                                 UTMESS("I", "SEISME_56")
-                                UTMESS(
-                                    "I",
-                                    "SEISME_57",
+                                dict_args = dict(
                                     valr=(
                                         l_pseudo[spectre_dir][nom_appui][0],
                                         l_pseudo[spectre_dir][nom_appui][1],
                                     ),
                                     valk=(spectre_dir, nom_appui),
                                 )
+                                UTMESS("I", "SEISME_57", **dict_args)
                 # about combinaison of response due to DDS
                 if comb_dds_correle:
                     UTMESS("I", "SEISME_19", valk=comb_dds_correle)

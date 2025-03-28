@@ -19,12 +19,14 @@
 
 from code_aster.Cata.Language.DataStructure import fonction_sdaster
 from code_aster.Cata.Language.Syntax import _F, FACT, MACRO, SIMP
-from code_aster.Commands import DEFI_CONSTANTE
+from code_aster.Commands import DEFI_CONSTANTE, DEFI_LIST_REEL
 from code_aster.Supervis import UserMacro
 from code_aster import CA
 
 CA.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION", ALARME="EXCEPTION"))
 test = CA.TestCase()
+
+# Check for consistency between the 'max' attribute and the returned value (#34412)
 
 
 def check_ops(self, A1=None, A2=None, O1=None, O2=None, F1=None, F2=None, INFO=2):
@@ -80,7 +82,7 @@ cst = DEFI_CONSTANTE(VALE=1.0)
 
 CHECK(A1=1.0)
 CHECK(A1=(1.0,))
-with test.assertRaisesRegex(CA.AsterError, "At most 1 value"):
+with test.assertRaisesRegex(CA.AsterError, "(At most 1 value|SUPERVIS_99)"):
     CHECK(A1=(1.0, 2.0))
 
 CHECK(A2=1.0)
@@ -89,7 +91,7 @@ CHECK(A2=(1.0, 2.0))
 
 CHECK(O1=cst)
 CHECK(O1=(cst,))
-with test.assertRaisesRegex(CA.AsterError, "At most 1 value"):
+with test.assertRaisesRegex(CA.AsterError, "(At most 1 value|SUPERVIS_99)"):
     CHECK(O1=(cst, cst))
 
 CHECK(O2=cst)
@@ -100,7 +102,7 @@ CHECK(F1=_F(S1=1.0))
 CHECK(F1={"S1": 1.0})
 CHECK(F1=(_F(S1=1.0),))
 CHECK(F1=[{"S1": 1.0}])
-with test.assertRaisesRegex(CA.AsterError, "at most 1 occurrence"):
+with test.assertRaisesRegex(CA.AsterError, "(at most 1 occurrence|SUPERVIS_99)"):
     CHECK(F1=(_F(S1=1.0), _F(S1=2.0)))
 
 CHECK(F2=_F(S2=1.0))
@@ -108,6 +110,19 @@ CHECK(F2={"S2": 1.0})
 CHECK(F2=(_F(S2=1.0),))
 CHECK(F2=[{"S2": 1.0}])
 CHECK(F2=(_F(S2=1.0), _F(S2=2.0)))
+
+# Check for float to int conversion (#34499)
+nbpas = 4
+nbarch = nbpas / 2
+
+# accept float if int(value) == value
+list0 = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=nbarch))
+values = list0.getValues()
+
+test.assertEqual(len(values), round(nbarch) + 1, msg="check length")
+
+with test.assertRaisesRegex(CA.AsterError, "(NOMBRE.*Unexpected type|SUPERVIS_99)"):
+    DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2.000001))
 
 test.printSummary()
 

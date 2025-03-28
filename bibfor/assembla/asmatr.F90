@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asmatr(nbmat, tlimat, licoef, nu, &
-                  infcha, cumul, base, itysca, mataz)
-! person_in_charge: jacques.pellet at edf.fr
+                  listLoadZ, cumul, base, itysca, mataz)
+!
     implicit none
+!
 #include "jeveux.h"
 #include "asterfort/ascima.h"
 #include "asterfort/assert.h"
@@ -34,20 +35,22 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 #include "asterfort/masyns.h"
 #include "asterfort/typmat.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmat, itysca
     character(len=*) :: base, mataz, licoef, nu
     character(len=19) :: tlimat(nbmat)
-
-    character(len=*) :: infcha
+    character(len=*) :: listLoadZ
     character(len=4) :: cumul
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! in  i   nbmat  : nombre de matr_elem de la liste tlimat
 ! in  k19 tlimat : liste des matr_elem
 ! in  k24 licoef : nom du vecteur contenant les coef. mult.
 !                  des matr_elem
 !                  si licoef=' ' on prend 1.d0 comme coef.
 ! in  k14 nu     : nom du nume_ddl
-! in  k19 infcha : pour les charges cinematiques :
+! in  k19 listLoad : pour les charges cinematiques :
 !                  / sd_infcha (k19)
 !                  / nom d'un objet jeveux (k24) contenant
 !                    les noms des charges cinematiques (k24)
@@ -61,21 +64,24 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 !                          1 --> reelles
 !                          2 --> complexes
 ! in/out k19 mataz : l'objet mataz de type matr_asse est cree et rempli
-!-----------------------------------------------------------------------
-
+!
+! --------------------------------------------------------------------------------------------------
+!
     character(len=1) :: matsym
     character(len=24) :: licoe2
     integer :: k
     character(len=19) :: tlima2(150), matas, infc19
     integer :: ilicoe, i, iret, ibid, idbgav
     integer :: jrefa
-!-------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
     call jedbg2(idbgav, 0)
 
     matas = mataz
     licoe2 = licoef
-    infc19 = infcha
+    infc19 = listLoadZ
 
     ASSERT(cumul .eq. 'ZERO' .or. cumul .eq. 'CUMU')
     if (cumul .eq. 'ZERO') call detrsd('MATR_ASSE', matas)

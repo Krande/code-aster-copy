@@ -42,12 +42,12 @@ def _contact_check(model, CONTACT):
         if len(CONTACT) > 1 and model.getMesh().isParallel():
             raise TypeError("Only one CONTACT factor keyword is allowed with a ParallelMesh")
         assert CONTACT[0]["ALGO_RESO_GEOM"] == "NEWTON"
-        defi = CONTACT[0]["DEFINITION"]
-        for zone in defi.getContactZones():
+        contDefi = CONTACT[0]["DEFINITION"]
+        for zone in contDefi.getContactZones():
             assert not zone.hasSmoothing
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
-        if defi.hasFriction:
+        if contDefi.hasFriction:
             assert CONTACT[0]["ALGO_RESO_FROT"] == "NEWTON"
 
 
@@ -78,6 +78,8 @@ def meca_non_line_ops(self, **args):
     reset_stats()
 
     args = _F(args)
+    # for compatibility with STAT_NON_LINE syntax
+    args.pop("TITRE", None)
     adapt_increment_init(args, "EVOL_NOLI")
 
     # Add controls to prohibit unconverted features
@@ -105,6 +107,7 @@ def meca_non_line_ops(self, **args):
             kwds["SOLVEUR"]["REAC_PRECOND"] = 0
 
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
+
     # Add loads
     if args["EXCIT"]:
         for load in args["EXCIT"]:

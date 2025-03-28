@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
-                      lpaout, num, made)
-        character(len=*) :: moint
-        character(len=3) :: incr
-        character(len=24) :: ligrmo
-        character(len=24) :: lchin(2)
-        character(len=8) :: lpain(2)
-        character(len=8) :: lpaout(1)
-        character(len=14) :: num
-        character(len=24) :: made
+    subroutine ca2mam(modelInterfaceZ, incr, lchin, lpain, &
+                      numeDof, matrAsse)
+        character(len=*), intent(in) :: modelInterfaceZ
+        character(len=3), intent(in) :: incr
+        character(len=8), intent(in) :: lpain(2)
+        character(len=24), intent(in) :: lchin(2)
+        character(len=14), intent(out) :: numeDof
+        character(len=24), intent(out) :: matrAsse
     end subroutine ca2mam
 end interface

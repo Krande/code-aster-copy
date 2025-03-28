@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -88,6 +88,11 @@ class DOFNumbering : public BaseDOFNumbering {
      * @brief Are Single Lagrange Multipliers used for BC or MPC
      */
     bool useSingleLagrangeDOF() const;
+
+    /**
+     * @brief Get Rows owned locally (aka not Ghost)
+     */
+    VectorLong getNoGhostDOFs( const bool local = false ) const;
 
     /**
      * @brief Get The Component Associated To A Given Row

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmprel(sdcont, mesh, model, ligret)
+subroutine mmprel(sdcont, mesh, model, slavElemLigr)
 !
     implicit none
 !
@@ -32,12 +32,8 @@ subroutine mmprel(sdcont, mesh, model, ligret)
 #include "asterfort/mminfl.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
-!
-    character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: model
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligret
+    character(len=8), intent(in) :: sdcont, model, mesh
+    character(len=19), intent(in) :: slavElemLigr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +46,7 @@ subroutine mmprel(sdcont, mesh, model, ligret)
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
 ! In  model            : name of model
 ! In  mesh             : name of mesh
-! In  ligret           : special LIGREL for slaves elements (CONTINUE formulation)
+! In  slavElemLigr     : LIGREL for virtual elements (slave side)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,7 +110,7 @@ subroutine mmprel(sdcont, mesh, model, ligret)
                     modeli = 'CONT_SL_3D'
                 end if
             else
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             end if
 !
 ! --------- Type of model
@@ -128,7 +124,7 @@ subroutine mmprel(sdcont, mesh, model, ligret)
                     elem_slav_nume = v_sdcont_mailco(elem_slav_idx)
                     v_list_elem(i_elem_slav) = elem_slav_nume
                 end do
-                call ajellt(ligret, mesh, nb_elem_slav, list_elem, ' ', &
+                call ajellt(slavElemLigr, mesh, nb_elem_slav, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
             end if
         end do

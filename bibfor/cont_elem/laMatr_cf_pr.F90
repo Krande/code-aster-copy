@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C0110
 !
 subroutine laMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
 !
@@ -67,12 +66,12 @@ subroutine laMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
     real(kind=8) :: gap, gamma_c, projRmVal, dNs(MAX_LAGA_DOFS, 3)
     real(kind=8) :: gamma_f, lagr_dNs(MAX_LAGA_DOFS), lagr_g(3)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), dv(MAX_LAGA_DOFS, 3)
-    real(kind=8) :: dfunc_dzeta(3, MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     real(kind=8) :: norm_slav(3), lagr_v(3), thres, mu_g(MAX_LAGA_DOFS, 3)
     real(kind=8) :: dThres_du(MAX_LAGA_DOFS), dThres_dl(MAX_LAGA_DOFS), jump_v(MAX_LAGA_DOFS, 3)
     real(kind=8) :: DFt_du(MAX_LAGA_DOFS, 3), DFt_dl(MAX_LAGA_DOFS, 3)
     real(kind=8) :: speed(3), H, dfunc_ma(3, MAX_LAGA_DOFS, 2), dZetaM(MAX_LAGA_DOFS, 2)
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
+    real(kind=8), pointer :: dfunc_dzeta(:, :, :) => null()
     blas_int :: b_dime, b_nb_dofs
     blas_int :: b_1, b_3, b_MAX_LAGA_DOFS
 !
@@ -83,6 +82,9 @@ subroutine laMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
     b_3 = 3
     l_print = ASTER_FALSE
     ! l_print = ASTER_TRUE
+!
+! - Large arrays allocated on the heap rather than on the stack
+    allocate (dfunc_dzeta(3, MAX_LAGA_DOFS, MAX_LAGA_DOFS))
 !
     matr_cont = 0.d0
     matr_fric = 0.d0
@@ -344,6 +346,9 @@ subroutine laMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
 999 continue
 10  FORMAT(a, *(F6.3))
 ! 10  FORMAT(a, *(F8.4))
+!
+! - deallocate large array
+    deallocate (dfunc_dzeta)
 !
 ! ------ Transpose (see warning at head of the routine)
 !

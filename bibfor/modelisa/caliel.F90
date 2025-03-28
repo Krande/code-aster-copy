@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine caliel(fonrez, chargz)
+!
+subroutine caliel(valeTypeZ, loadZ, modelZ)
+!
     implicit none
-#include "jeveux.h"
+!
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/assert.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/caarle.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
@@ -32,9 +36,12 @@ subroutine caliel(fonrez, chargz)
 #include "asterfort/rapo2d.h"
 #include "asterfort/rapo3d.h"
 #include "asterfort/rapoco.h"
-#include "asterfort/wkvect.h"
-    character(len=*) :: chargz, fonrez
-! -------------------------------------------------------
+#include "jeveux.h"
+!
+    character(len=*), intent(in) :: loadZ, valeTypeZ, modelZ
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     MODELISATION DU RACCORD ENTRE DES ELEMENTS
 !     AYANT DES MODELISATIONS DIFFERENTES PAR DES RELATIONS
 !     LINEAIRES ENTRE DDLS.
@@ -53,84 +60,65 @@ subroutine caliel(fonrez, chargz)
 !  FONREZ        - IN    - K4   - : 'REEL' OU 'FONC'
 !  CHARGZ        - IN    - K8   - : NOM DE LA SD CHARGE
 !                - JXVAR -      -
-! -------------------------------------------------------
 !
-! -------------------------------------------------------------------
-!     ASTER INFORMATIONS:
-!       19/03/04 (OB): PAR ADHERENCE A NUEFFE
-!--------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24), parameter :: renumSans = "SANS"
+    character(len=16), parameter :: factorKeyword = "LIAISON_ELEM"
+    character(len=8) :: model, load
+    character(len=14), parameter :: numeDof = '&&CALIEL.NUMED'
+    character(len=16) :: option
+    character(len=19) :: modelLigrel
+    character(len=19), parameter :: lisrel = '&&CALIEL.RLLISTE'
+    integer :: iocc, nbOcc, iop, nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
 !
-! --------- VARIABLES LOCALES ---------------------------
-!
-    character(len=8) :: mod, charge
-    character(len=14) :: numddl
-    character(len=16) :: motfac, option
-    character(len=19) :: ligrmo, lisrel
-    integer :: iocc, nliai, iop, nb_ligr
-    character(len=24), pointer :: list_ligr(:) => null()
-!
-! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    charge = chargz
-    motfac = 'LIAISON_ELEM'
+    load = loadZ
+    model = modelZ
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 !
-    call getfac(motfac, nliai)
-    if (nliai .eq. 0) goto 999
-!
-! --- NOM DE LA LISTE DE RELATIONS
-!
-    lisrel = '&&CALIEL.RLLISTE'
-!
-! --- MODELE ASSOCIE AU LIGREL DE CHARGE
-!     ----------------------------------
-    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
-!
-! ---  LIGREL DU MODELE
-!
-    ligrmo = mod(1:8)//'.MODELE'
-!
-! --- CREATION SUR LA VOLATILE DU NUMEDDL ASSOCIE AU LIGREL
-! --- DU MODELE
-!     -----------------------------------------------------
-    nb_ligr = 1
-    call wkvect('&&CALIEL.LIGRMO', 'V V K24', 1, vk24=list_ligr)
-    list_ligr(1) = ligrmo
+    call getfac(factorKeyword, nbOcc)
+    if (nbOcc .ne. 0) then
+! ----- Create numbering on model
+        nbLigr = 1
+        AS_ALLOCATE(vk24=listLigr, size=nbLigr)
+        listLigr(1) = modelLigrel
+        call nueffe(nbLigr, listLigr, 'VV', numeDof, renumSans, model)
+        AS_DEALLOCATE(vk24=listLigr)
 
-    numddl = '&&CALIEL.NUMED'
-    call nueffe(nb_ligr, list_ligr, 'VV', numddl, 'SANS', mod)
+! ----- Create relation
+        do iocc = 1, nbOcc
+            call getvtx(factorKeyword, 'OPTION', iocc=iocc, scal=option, nbret=iop)
+            if (option .eq. '3D_POU') then
+                call rapo3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+            else if (option .eq. '3D_POU_ARLEQUIN') then
+                call caarle(numeDof, iocc, lisrel, loadZ)
+            else if (option .eq. '2D_POU') then
+                call rapo2d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+            else if (option .eq. '3D_TUYAU') then
+                call rapo3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+            else if (option .eq. 'PLAQ_POUT_ORTH') then
+                call rapo3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+            else if (option .eq. 'COQ_POU') then
+                call rapoco(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+            else if (option .eq. 'COQ_TUYAU') then
+                call rapoco(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        end do
+
+! ----- Affect relations to load
+        call aflrch(lisrel, load, 'NLIN')
+
+! ----- Clean
+        call jedetc('V', lisrel, 1)
+        call jedetr('&&CALIEL.LIGRMO')
+        call jedetr('&&CALIEL.NUMED')
 !
-    do iocc = 1, nliai
-        call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
-        if (option .eq. '3D_POU') then
-            call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option .eq. '3D_POU_ARLEQUIN') then
-            call caarle(numddl, iocc, lisrel, chargz)
-        else if (option .eq. '2D_POU') then
-            call rapo2d(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option .eq. '3D_TUYAU') then
-            call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option .eq. 'PLAQ_POUT_ORTH') then
-            call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option .eq. 'COQ_POU') then
-            call rapoco(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option .eq. 'COQ_TUYAU') then
-            call rapoco(numddl, iocc, fonrez, lisrel, chargz)
-        end if
-    end do
-!
-!     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
-!     ---------------------------------------------
-    call aflrch(lisrel, charge, 'NLIN')
-!
-!
-! --- MENAGE
-!
-    call jedetc('V', '&&CALIEL.RLLISTE', 1)
-    call jedetr('&&CALIEL.LIGRMO')
-    call jedetr('&&CALIEL.NUMED')
-!
-999 continue
+    end if
     call jedema()
 end subroutine

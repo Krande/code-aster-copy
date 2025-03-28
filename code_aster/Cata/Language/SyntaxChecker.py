@@ -116,7 +116,7 @@ def isValidType(obj, expected):
     # if a Variable is not yet evaluated, gettype returns None
     if typobj is type(None):
         return True
-    # int(float) == float => considered as int
+    # int(float) == float => considered as int, converted by CommandSyntax.getvis
     if typobj is float and int(obj) == obj:
         typobj = int
     if typobj in expected or obj in expected:

@@ -2,7 +2,7 @@
  * @file PhysicalProblem.cxx
  * @brief Implementation of class PhysicalProblem
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,6 +35,8 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _mesh( curModel->getMesh() ),
       _materialField( curMat ),
       _elemChara( cara ),
+      _virtualSlavCell( nullptr ),
+      _virtualCell( nullptr ),
       _listOfLoads( std::make_shared< ListOfLoads >( _model ) ),
       _dofNume( nullptr ),
       _behavProp( nullptr ),
@@ -192,7 +194,11 @@ bool PhysicalProblem::computeDOFNumbering() {
 #endif /* ASTER_HAVE_MPI */
         _dofNume = std::make_shared< DOFNumbering >();
 
-    return _dofNume->computeNumbering( getModel(), getListOfLoads() );
+    if ( _virtualSlavCell ) {
+        return _dofNume->computeNumbering( getModel(), getListOfLoads(), getVirtualSlavCell() );
+    } else {
+        return _dofNume->computeNumbering( getModel(), getListOfLoads() );
+    }
 };
 
 bool PhysicalProblem::computeListOfLoads( std::string command_name ) {

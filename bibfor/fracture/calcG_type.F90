@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ module calcG_type
 #include "asterfort/xcourb.h"
 
 !
-    public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
+    public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat, CalcG_Paramaters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -264,6 +264,16 @@ module calcG_type
 !
 !=================================================================================================
 !
+    type CalcG_Paramaters
+! ----- circular or elliptical crack
+        character(len=24)       :: form_fiss = ''
+! ----- parameters of curve crack
+        real(kind=8)            :: rayon = 0.
+        real(kind=8)            :: demi_grand_axe = 0.
+        real(kind=8)            :: demi_petit_axe = 0.
+    contains
+        procedure, pass    :: initialize => initialize_Parameters
+    end type CalcG_Paramaters
 !=================================================================================================
 !
     type CalcG_Table
@@ -910,6 +920,30 @@ contains
     end subroutine
 !
 !===================================================================================================
+!
+!
+    subroutine initialize_Parameters(this)
+!
+        implicit none
+!
+        class(CalcG_Paramaters), intent(inout)  :: this
+!        type(CalcG_Stat), intent(inout)   :: cgStat
+!
+! --------------------------------------------------------------------------------------------------
+!   initialization of a CalcG_parameters type
+!   In this     : parameters type
+! --------------------------------------------------------------------------------------------------
+        integer :: ier
+!
+! --- Obtain crack parameters to take into account the second order due to crack curvature
+        call getvtx('', 'FORM_FISS', iocc=1, scal=this%form_fiss, nbret=ier)
+        if (this%form_fiss .eq. 'CERCLE') then
+            call getvr8('', 'RAYON', iocc=1, scal=this%rayon, nbret=ier)
+        else
+            call getvr8('', 'DEMI_GRAND_AXE', iocc=1, scal=this%demi_grand_axe, nbret=ier)
+            call getvr8('', 'DEMI_PETIT_AXE', iocc=1, scal=this%demi_petit_axe, nbret=ier)
+        end if
+    end subroutine
 !
 !===================================================================================================
 !

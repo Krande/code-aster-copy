@@ -62,14 +62,7 @@ compile:
   artifacts:
     paths:
       - .lock*
-      - build/mpi*/config.log
-      - build/mpi*/c4che/*
-      - build/mpi*/*/*.h
-      - build/mpi*/*/*.py
-      - build/mpi*/*/code_aster/*.py
-      - build/mpi*/*/*/*.so
-      - build/mpi*/*/catalo/elem.1
-      - build/mpi*/*/*.mod
+      - build/mpi*
       - install/*
     expire_in: 6 hours
   rules:

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nume_ddl_matr(nume, list_matr, nb_matr)
+!
+subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem)
 !
     implicit none
 !
-#include "asterfort/promor.h"
-#include "asterfort/numddl.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/numddl.h"
+#include "asterfort/promor.h"
 !
-!
-    character(len=*), intent(in) :: nume
-    character(len=*), intent(in) :: list_matr
-    integer, intent(in) :: nb_matr
+    character(len=*), intent(in) :: numeDofZ, jvListOfMatrZ
+    integer, intent(in) :: nbMatrElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,31 +36,27 @@ subroutine nume_ddl_matr(nume, list_matr, nb_matr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nume_ddl       : name of nume_ddl object
-! In  list_matr      : list of elementary matrixes
-! In  nb_matr        : number of elementary matrixes
-!                       SANS/RCMKs
+! In  numeDof       : name of numeDof object
+! In  jvListOfMatr  : name of JEVEUX name for list of elementary matrixes
+! In  nbMatrElem    : number of elementary matrixes
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=14) :: nume_ddl
-    character(len=24), pointer :: v_matr(:) => null()
+    character(len=24), parameter :: renumSans = "SANS"
+    character(len=14) :: numeDof
+    character(len=24), pointer :: listMatrElem(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nume_ddl = nume
-!
-! ----- LISTE DES CHARGES
-!
-    call jeveuo(list_matr, 'L', vk24=v_matr)
-!
-! ----- CALCUL DE LA NUMEROTATION PROPREMENT DITE :
-!
-    call numddl(nume_ddl, 'GG', nb_matr, v_matr)
-!
-! ----- CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
-!
-    call promor(nume_ddl, 'G')
-!
+    numeDof = numeDofZ
+
+! - Get list of matrix
+    call jeveuo(jvListOfMatrZ, 'L', vk24=listMatrElem)
+
+! - CALCUL DE LA NUMEROTATION PROPREMENT DITE :
+    call numddl(numeDof, renumSans, 'GG', nbMatrElem, listMatrElem)
+
+! - CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
+    call promor(numeDof, 'G')
 !
 end subroutine

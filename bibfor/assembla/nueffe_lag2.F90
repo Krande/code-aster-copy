@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
-                       modele, modelocz, sd_iden_relaz)
+! aslint: disable=W1501
+!
+subroutine nueffe_lag2(nbLigr, listLigr, base, numeDofZ, renumZ, &
+                       modelZ, modeLocZ, idenRelaZ)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/creprn.h"
@@ -42,48 +42,45 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 #include "asterfort/nddl.h"
 #include "asterfort/nudeeq.h"
 #include "asterfort/nulili.h"
-#include "asterfort/nunueq.h"
 #include "asterfort/nuno1.h"
+#include "asterfort/nunueq.h"
 #include "asterfort/renuno.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
 !
-! aslint: disable=W1501
-! person_in_charge: jacques.pellet at edf.fr
-!
-    integer, intent(in) :: nb_ligr
-    character(len=24), pointer :: list_ligr(:)
+    integer, intent(in) :: nbLigr
+    character(len=24), pointer :: listLigr(:)
     character(len=2), intent(in) :: base
-    character(len=*), intent(in) :: nume_ddlz
-    character(len=*), intent(in) :: renumz
-    character(len=*), intent(in) :: modele
-    character(len=*), optional, intent(in) :: modelocz
-    character(len=*), optional, intent(in) :: sd_iden_relaz
+    character(len=*), intent(in) :: numeDofZ, renumZ, modelZ
+    character(len=*), intent(in) :: modeLocZ, idenRelaZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Factor
 !
-! Numbering - Create NUME_EQUA objects
+! Numbering - Create NUME_EQUA objects (with double Lagrange)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nb_ligr        : number of LIGREL in list
-! In  list_ligr      : pointer to list of LIGREL
-! In  nume_ddl       : name of numbering object (NUME_DDL)
+! In  nbLigr         : number of LIGREL in list
+! Ptr listLigr       : pointer to list of LIGREL
+! In  numeDof        : name of numbering object (NUME_DDL)
 ! In  base           : JEVEUX base to create objects
 !                      base(1:1) => NUME_DDL objects
 !                      base(2:2) => NUME_EQUA objects
-! In  renum          : method for renumbering equations
-!                       SANS/RCMK
-! In  modelocz       : local mode for GRANDEUR numbering
-! In  sd_iden_rela   : name of object for identity relations between dof
+! In  renum          : method for renumbering equations (SANS/RCMK)
+! In  modeLoc        : local mode for GRANDEUR numbering
+! In  idenRela       : name of object for identity relations between dof
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 ! Attention : ne fait pas jemarq/jedema car nulili
 !             recopie des adresses jeveux dans .ADNE et .ADLI
 !             Ces objets seront utilises pendant la creation de la sd "stockage" (promor.F90)
+!
 ! --------------------------------------------------------------------------------------------------
+!
 ! Cette routine cree les objets suivants :
 !  nume(1:14)//     .ADLI
 !                   .ADNE
@@ -96,18 +93,18 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !              .NUME.REFN
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: moloc
+    character(len=24) :: modeLoc, idenRela
     character(len=8) :: gran_name, kbid
     character(len=3) :: kret
     integer :: nbnode_tot, igds, nec, nlili
     character(len=8) :: nomcmp
     character(len=8) :: mesh
-    character(len=14) :: nume_ddl
+    character(len=14) :: numeDof
     character(len=16) :: nomte
     character(len=24) :: nnli, psuiv, lsuiv, vsuiv, num21, nuno, nomli
-    character(len=24) :: derli, num2, dsclag, exi1, newn, oldn
+    character(len=24) :: num2, dsclag, exi1, newn, oldn, derli
     character(len=19) :: nume_equa
-    character(len=24) :: nequ, refn, sd_iden_rela
+    character(len=24) :: nequ, refn
     character(len=24) :: lili, prno, nueq, deeq, delg, crco, refp
     integer :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg, nb_equa
     integer :: nb_iden_rela, nb_iden_dof, nb_iden_term
@@ -120,24 +117,23 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     integer :: ivsuiv, j, j1, jnulag, jprno, k, l, l1, l2, long, n0
     integer :: n0re, n1, n1m1re, n1re, n2, n21, n3, nbcmp, nbn, nb_node_subs
     integer :: nb_node, nbnonu, nbnore, nddl1, nddlb
-    integer :: nel, niv, nlag, nma, nn, nbnm, iprns
-    integer :: ns, numa, nunoel, n22, n32, nunoe2, iexila
+    integer :: nel, niv, nlag, nma, nn, nbnm
+    integer :: ns, numa, nunoel, n22, n32, nunoe2
     integer ::  vali(5), cont_lili_ref, ili2
-    aster_logical :: lparallel_mesh, lligrel_cp, lnocmp
+    aster_logical :: lparallel_mesh, lligrel_cp
     integer, pointer :: v_nnli(:) => null()
     integer, pointer :: adli(:) => null()
     integer, pointer :: bid(:) => null()
     integer, pointer :: adne(:) => null()
     integer, pointer :: qrns(:) => null()
     integer, pointer :: p_nequ(:) => null()
-    integer, pointer :: v_sdiden_info(:) => null()
+    integer, pointer :: idenRelaInfo(:) => null()
     integer, pointer :: lagr_mult(:) => null()
     integer, pointer :: v_logl(:) => null()
     integer, pointer :: v_gllo(:) => null()
     integer, pointer :: v_crco(:) => null()
     integer, pointer :: v_refp(:) => null()
     character(len=24), pointer :: tco(:) => null()
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -234,41 +230,30 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
 !    call jemarq() FORBIDDEN !
-!
     call infniv(ifm, niv)
-    nume_ddl = nume_ddlz
 !
-! - Local mode
-!
-    moloc = ' '
-    if (present(modelocz)) then
-        moloc = modelocz
-    end if
-!
+    numeDof = numeDofZ
+    modeLoc = modeLocZ
+    idenRela = idenRelaZ
+
 ! - Identity relations between dof
-!
     nb_iden_rela = 0
     nb_iden_dof = 0
     nb_iden_term = 0
-    sd_iden_rela = ' '
-    if (present(sd_iden_relaz)) then
-        sd_iden_rela = sd_iden_relaz
-        if (sd_iden_rela .ne. ' ') then
-            call jeveuo(sd_iden_rela(1:19)//'.INFO', 'L', vi=v_sdiden_info)
-            nb_iden_rela = v_sdiden_info(1)
-            nb_iden_term = v_sdiden_info(2)
-            nb_iden_dof = v_sdiden_info(3)
-        end if
+    if (idenRela .ne. ' ') then
+        call jeveuo(idenRela(1:19)//'.INFO', 'L', vi=idenRelaInfo)
+        nb_iden_rela = idenRelaInfo(1)
+        nb_iden_term = idenRelaInfo(2)
+        nb_iden_dof = idenRelaInfo(3)
     end if
 
-! --- SI LE CONCEPT : NU EXISTE DEJA, ON LE DETRUIT COMPLETEMENT :
-!     ----------------------------------------------------------
-    call detrsd('NUME_DDL', nume_ddl)
+! - SI LE CONCEPT : NU EXISTE DEJA, ON LE DETRUIT COMPLETEMENT :
+    call detrsd('NUME_DDL', numeDof)
 
-! --- NOMS DES PRINCIPAUX OBJETS JEVEUX :
-!     ---------------------------------
-    nume_equa = nume_ddl//'.NUME'
+! - NOMS DES PRINCIPAUX OBJETS JEVEUX
+    nume_equa = numeDof//'.NUME'
     lili = nume_equa(1:19)//'.LILI'
     prno = nume_equa(1:19)//'.PRNO'
     nueq = nume_equa(1:19)//'.NUEQ'
@@ -278,28 +263,28 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     refn = nume_equa(1:19)//'.REFN'
     crco = nume_equa(1:19)//'.CRCO'
     refp = nume_equa(1:19)//'.REFP'
-    nnli = nume_ddl//'.NNLI'
-    nuno = nume_ddl//'.NUNO'
-    exi1 = nume_ddl//'.EXI1'
-    newn = nume_ddl//'.NEWN'
-    oldn = nume_ddl//'.OLDN'
-    derli = nume_ddl//'.DERLI'
-    psuiv = nume_ddl//'.PSUIVE'
-    lsuiv = nume_ddl//'.LSUIVE'
-    vsuiv = nume_ddl//'.VSUIVE'
-    num21 = nume_ddl//'.NUM21'
-    num2 = nume_ddl//'.NUM2'
-    dsclag = nume_ddl//'.DESCLAG'
-!
+
+! --- Objets temporaires
+    nnli = numeDof//'.NNLI'
+    nuno = numeDof//'.NUNO'
+    exi1 = numeDof//'.EXI1'
+    newn = numeDof//'.NEWN'
+    oldn = numeDof//'.OLDN'
+    derli = numeDof//'.DERLI'
+    psuiv = numeDof//'.PSUIVE'
+    lsuiv = numeDof//'.LSUIVE'
+    vsuiv = numeDof//'.VSUIVE'
+    num21 = numeDof//'.NUM21'
+    num2 = numeDof//'.NUM2'
+    dsclag = numeDof//'.DESCLAG'
+
 ! - Create LILI objects
-!
-    call nulili(nb_ligr, list_ligr, lili, base(2:2), gran_name, &
-                igds, mesh, nec, nlili, modelocz=moloc)
-    call jeveuo(nume_ddl//'     .ADLI', 'E', vi=adli)
-    call jeveuo(nume_ddl//'     .ADNE', 'E', vi=adne)
-!
+    call nulili(nbLigr, listLigr, lili, base(2:2), gran_name, &
+                igds, mesh, nec, nlili, modeLocZ_=modeLoc)
+    call jeveuo(numeDof//'     .ADLI', 'E', vi=adli)
+    call jeveuo(numeDof//'     .ADNE', 'E', vi=adne)
+
 ! - Access to mesh objects
-!
     call jeexin(mesh(1:8)//'.CONNEX', iret)
     if (iret .gt. 0) then
         call jeveuo(mesh(1:8)//'.CONNEX', 'L', iconx1)
@@ -312,7 +297,6 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     nb_node = nb_node_mesh+nb_node_subs
 
 ! --- LILI(1)='&MAILLA'
-!     -----------------
     ilim = 1
 
 ! --- ALLOCATION DE L'OBJET NU.NNLI NOMBRE DE NOEUDS DECLARES DANS
@@ -320,15 +304,12 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !     ---------------------
     call wkvect(nnli, 'V V I', nlili, vi=v_nnli)
     v_nnli(1) = nb_node
-    call jecrec(nuno, 'V V I ', 'NU', 'CONTIG', 'VARIABLE', &
-                nlili)
+    call jecrec(nuno, 'V V I ', 'NU', 'CONTIG', 'VARIABLE', nlili)
 
 ! --- ALLOCATION DE PRNO :
 !     -------------------------------------------------
-    call jecrec(prno, base(2:2)//' V I', 'NU', 'CONTIG', 'VARIABLE', &
-                nlili)
-    call jecrec(crco, base(2:2)//' V I', 'NU', 'DISPERSE', 'VARIABLE', &
-                nlili)
+    call jecrec(prno, base(2:2)//' V I', 'NU', 'CONTIG', 'VARIABLE', nlili)
+    call jecrec(crco, base(2:2)//' V I', 'NU', 'DISPERSE', 'VARIABLE', nlili)
     call wkvect(refp, base(2:2)//' V I', nlili, vi=v_refp)
     v_refp(1) = 1
 
@@ -395,7 +376,6 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !        --------------------------------
         v_nnli(ili) = nbnm
         call jeecra(jexnum(nuno, ili), 'LONMAX', nbnm)
-
         call jeecra(jexnum(prno, ili), 'LONMAX', nbnm*(nec+2))
         nbnode_tot = nbnode_tot+nbnm
     end do
@@ -414,7 +394,7 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 ! --- RENUMEROTATION , CREATION DES OBJETS NU.EXI1, NU.NEWN ET NU.OLDN :
 !     ----------------------------------------------------------------
 
-    call renuno(nume_ddl, renumz)
+    call renuno(numeDof, renumZ)
     call jeveuo(exi1, 'L', iexi1)
     call jeveuo(newn, 'L', inewn)
     call jeveuo(oldn, 'L', ioldn)
@@ -960,7 +940,7 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !     -------------------------------------------------------
     do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
-        call creprn(nomli, moloc, 'V', nomli(1:19)//'.QRNM', nomli(1:19)//'.QRNS')
+        call creprn(nomli, modeLoc, 'V', nomli(1:19)//'.QRNM', nomli(1:19)//'.QRNS')
     end do
 
 ! --- 1ERE ETAPE : NOEUDS DU MAILLAGE (PHYSIQUES ET LAGRANGES)
@@ -1120,7 +1100,7 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !
     p_nequ(2) = nb_dof
 !
-    if (niv .ge. 1 .and. .not. lparallel_mesh .and. moloc .eq. ' ') then
+    if (niv .ge. 1 .and. .not. lparallel_mesh .and. modeLoc .eq. ' ') then
 
 ! ---   CALCUL DE NMA : NOMBRE DE NOEUDS DU MAILLAGE PORTEURS DE DDLS :
 !       ----------------------------------------------------------------
@@ -1140,7 +1120,7 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     call wkvect(refn, base(2:2)//' V K24', 5, idref)
     zk24(idref) = mesh
     zk24(idref+1) = gran_name
-    zk24(idref+2) = modele
+    zk24(idref+2) = modelZ
 !
 ! - Create NUEQ object
 !
@@ -1149,7 +1129,7 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !
 ! - Set NUEQ object
 !
-    call nunueq(mesh, nume_equa, nb_dof, igds, sd_iden_rela)
+    call nunueq(mesh, nume_equa, nb_dof, igds, idenRela)
 !
 ! - Create DEEQ object
 !
@@ -1163,7 +1143,7 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !
 ! - Set DEEQ and DELG objects with non-physical nodes
 !
-    call nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
+    call nudeeq(mesh, nb_node_mesh, nb_node_subs, numeDof, nb_equa, &
                 igds, iddlag)
 
 ! --- DESTRUCTION DES .QRNM ET DES .QRNS DE CHAQUE LIGREL :
@@ -1189,6 +1169,5 @@ subroutine nueffe_lag2(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     call jedetr(oldn)
 
 !   call jedema() FORBIDDEN !
-
 !
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,11 @@ class AssertRaisesContext(case._AssertRaisesContext):
         except AssertionError as exc:
             ret = False
             comment = str(exc)
-        self.writeResult(ret, self.expected.__name__, comment)
+        try:
+            exc_name = self.expected.__name__
+        except AttributeError:
+            exc_name = str(self.expected)
+        self.writeResult(ret, exc_name, comment)
         # never fail
         return True
 

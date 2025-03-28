@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine dbrInitAlgoTrunc(paraTrunc)
 !
@@ -24,6 +23,8 @@ subroutine dbrInitAlgoTrunc(paraTrunc)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
@@ -31,6 +32,7 @@ subroutine dbrInitAlgoTrunc(paraTrunc)
 #include "asterfort/modelNodeEF.h"
 #include "asterfort/numero.h"
 #include "asterfort/romFieldNodesAreDefined.h"
+#include "asterfort/addModelLigrel.h"
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
@@ -47,6 +49,8 @@ subroutine dbrInitAlgoTrunc(paraTrunc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
     integer :: ifm, niv
     integer :: nbEquaRom, nbNodeRom
     character(len=8) :: modelRom, modelDom
@@ -67,39 +71,50 @@ subroutine dbrInitAlgoTrunc(paraTrunc)
     mode = paraTrunc%baseInit%mode
     modelRom = paraTrunc%modelRom
     modelDom = paraTrunc%baseInit%mode%model
-!
-! - Create numbering for ROM
-!
+
+! - Create name of object for numbering for ROM
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_33')
     end if
     numeRom = '12345678.NUMED'
     call gnomsd(' ', noojb, 10, 14)
     numeRom = noojb(1:14)
-    call numero(numeRom, 'VV', modelz=modelRom)
-!
-! - Create numbering for DOM
-!
+
+! - Add LIGREL from model
+    nbLigr = 0
+    call addModelLigrel(modelRom, nbLigr, listLigr)
+
+! - Create numbering for ROM
+    call numero(numeRom, 'VV', &
+                nbLigr, listLigr)
+    AS_DEALLOCATE(vk24=listLigr)
+
+! - Create name of object for numbering for DOM
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_34')
     end if
     numeDom = '12345678.NUMED'
     call gnomsd(' ', noojb, 10, 14)
     numeDom = noojb(1:14)
-    call numero(numeDom, 'VV', modelz=modelDom)
-!
+
+! - Add LIGREL from model
+    nbLigr = 0
+    call addModelLigrel(modelDom, nbLigr, listLigr)
+
+! - Create numbering for DOM
+    call numero(numeDom, 'VV', &
+                nbLigr, listLigr)
+    AS_DEALLOCATE(vk24=listLigr)
+
 ! - Extract list of nodes on reduced model
-!
     call modelNodeEF(modelRom, nbNodeRom, numeNodeRom)
-!
+
 ! - Prepare the list of equations from list of nodes
-!
     call romFieldNodesAreDefined(mode, paraTrunc%equaRom, numeDom, &
                                  nbNode_=nbNodeRom, &
                                  listNode_=numeNodeRom)
-!
+
 ! - Save parameters
-!
     call dismoi('NB_EQUA', numeRom, 'NUME_DDL', repi=nbEquaRom)
     paraTrunc%nbEquaRom = nbEquaRom
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
+subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
 !
 !
     use cara_elem_parameter_module
@@ -49,7 +49,7 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     type(cara_elem_info) :: infdonn
     type(cara_elem_carte) :: infcarte(*)
 
-    integer :: lmax, nbocc, ivr(*), noemaf, ifm
+    integer :: lmax, nbocc, ivr(*), ifm
 
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
@@ -62,8 +62,8 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 ! ----------------------------------------------------------------------
     integer :: nrd
     parameter(nrd=2)
-    integer :: jdc(3), jdv(3), dimcar, irgma, irgm2, irgm3, irpto
-    integer :: irlto, itbmp, ndim, jdcinf, jdvinf, i, ioc
+    integer :: jdc(3), jdv(3), dimcar, irgma, irgm2, irgm3
+    integer :: itbmp, ndim, jdcinf, jdvinf, i, ioc
     integer :: irep, isym, impris, nu, nfr, ngp, ngl, ifreq, nma, ldgm, nbpo
     integer :: in, nfreq, iv, jd, ncmp, l, nbli, ncmp2, icf
     real(kind=8) :: eta, vale(3), freq, coef, zero(5)
@@ -95,8 +95,6 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     call wkvect('&&TMPRIGMA', 'V V R', 3*lmax, irgma)
     call wkvect('&&TMPRIGM2', 'V V R', 3*lmax, irgm2)
     call wkvect('&&TMPRIGM3', 'V V R', 3*lmax, irgm3)
-    call wkvect('&&TMPRIPTO', 'V V R', 3*noemaf, irpto)
-    call wkvect('&&TMPRILTO', 'V V R', 3*noemaf, irlto)
     call wkvect('&&TMPTABMP', 'V V K8', lmax, itbmp)
 !
 !   Les cartes sont déjà construites : ace_crea_carte
@@ -118,11 +116,12 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     jdv(3) = infcarte(ACE_CAR_DISCA)%adr_val
 !
     ifm = ivr(4)
-!
-! --- BOUCLE SUR LES OCCURENCES DE DISCRET
+!   On ne peut faire qu'une occurrence de RIGI_MISS_3D : catalogue
+!   On garde la boucle, au cas où l'on souhaiterait faire des évolutions
+    ASSERT(nbocc .eq. 1)
     do ioc = 1, nbocc
         eta = 0.0d0
-!        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
+!       PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
         irep = 1
         isym = 1
         rep = repdis(1)
@@ -148,7 +147,7 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
         if (ngl .ne. 0) then
             call rigmi2(noma, nogl, ifreq, nfreq, impris, &
-                        zr(irgm2), zr(irgm3), zr(irlto))
+                        zr(irgm2), zr(irgm3))
         end if
 !
         call r8inir(5, 0.0d0, zero, 1)
@@ -159,7 +158,7 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
             call jeveuo(jexnom(noma//'.GROUPEMA', nogp), 'L', ldgm)
             nbpo = nma
             call rigmi1(noma, nogp, ifreq, nfreq, impris, &
-                        zr(irgma), zr(irgm3), zr(irpto))
+                        zr(irgma), zr(irgm3))
             do in = 0, nma-1
                 call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
                 zk8(itbmp+in) = nommai
@@ -221,7 +220,7 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
                             limano=[zk8(jd)])
                 call nocart(cart(l), 3, ncmp2, mode='NOM', nma=1, &
                             limano=[zk8(jd)])
-!              AFFECTATION MATRICE MASSE NULLE
+!               AFFECTATION MATRICE MASSE NULLE
                 iv = 1
                 ledisc = 'M_T_D_L'
                 call affdis(ndim, irep, eta, ledisc, zero, &
@@ -231,7 +230,7 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
                             limano=[zk8(jd)])
                 call nocart(cart(l), 3, ncmp2, mode='NOM', nma=1, &
                             limano=[zk8(jd)])
-!              AFFECTATION MATRICE AMORTISSEMENT NULLE
+!               AFFECTATION MATRICE AMORTISSEMENT NULLE
                 iv = 1
                 ledisc = 'A_T_D_L'
                 call affdis(ndim, irep, eta, ledisc, zero, &
@@ -248,8 +247,6 @@ subroutine acearm(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     call jedetr('&&TMPRIGMA')
     call jedetr('&&TMPRIGM2')
     call jedetr('&&TMPRIGM3')
-    call jedetr('&&TMPRIPTO')
-    call jedetr('&&TMPRILTO')
     call jedetr('&&TMPTABMP')
     call jedetr('&&ACEARM.RIGM')
 !

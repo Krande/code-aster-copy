@@ -36,9 +36,6 @@ module listLoad_type
         character(len=8) :: model = " "
 ! ----- Command STAT_NON_LINE
         aster_logical :: staticOperator = ASTER_FALSE
-! ----- Flag to add contact ligrel
-        character(len=24) :: contactLigrelDefi = " "
-        character(len=24) :: contactLigrelSolv = " "
 ! ----- Type (real or complex) for function multiplier
         aster_logical :: funcIsCplx = ASTER_FALSE
 ! ----- Continuation method (PILOTAGE)

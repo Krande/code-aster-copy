@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-!
 interface
-    subroutine nume_ddl_matr(nume, list_matr, nb_matr)
-        character(len=*), intent(in) :: nume
-        character(len=*), intent(in) :: list_matr
-        integer, intent(in) :: nb_matr
+    subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatr)
+        character(len=*), intent(in) :: numeDofZ, jvListOfMatrZ
+        integer, intent(in) :: nbMatr
     end subroutine nume_ddl_matr
 end interface

@@ -1024,9 +1024,6 @@ contains
             if (comp(1:9) .eq. 'THER_HYDR') then
                 ASSERT(ASTER_FALSE)
             end if
-        else if (comp(1:5) .eq. 'SECH_') then
-            beta = temp
-            dbeta = 1.d0
         else
             ASSERT(ASTER_FALSE)
         end if

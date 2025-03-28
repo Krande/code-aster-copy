@@ -322,20 +322,8 @@ class PhysicalQuantityManager:
     def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
-    def getAllPhysicalQuantityNames():
-        pass
-
-    def getComponentNames(self):
-        pass
-
-    def getNumberOfEncodedInteger(self):
-        pass
-
-    def getPhysicalQuantityName(self):
-        pass
-
-    def hasQuantityOfName(self):
-        pass
+    # ----------------------------------------------------------------------
+    # Static methods defined here:
 
 
 # class Node in libaster
@@ -1130,12 +1118,24 @@ class DiscreteComputation:
               ElementaryMatrix: elementary elastic Stiffness matrix
         """
 
-    def getExternalStateVariablesForces(self, time_curr, varc_curr, mode=0, mask=None):
+    def getExternalStateVariablesForces(
+        self,
+        time_curr,
+        varc_curr,
+        varc_prev=None,
+        vari_curr=None,
+        stress_prev=None,
+        mode=0,
+        mask=None,
+    ):
         """Compute load from external state variables
 
         Arguments:
               time_curr (float): Current time
               varc_curr (FieldOnCellsReal): external state variables at current time
+              varc_prev (FieldOnCells): external state variables at begin of current time
+              vari_curr (FieldOnCellsReal): internal state variables at current time
+              stress_prev (FieldOnCellsReal): stress at begin of current time
               mode (int): fourier mode
               mask (FieldOnCellsLongPtr): mask to assemble
 
@@ -1900,6 +1900,13 @@ class EquationNumbering(DataStructure):
     def getModel(self):
         pass
 
+    def getNoGhostDOFs(self, local=False):
+        """Returns the indexes of the DOFs owned locally (aka not ghost).
+
+        Returns:
+        int: indexes of the DOFs owned locally.
+        """
+
     def getNodeAndComponentFromDOF(self, *args, **kwargs):
         """Overloaded function.
 
@@ -2069,7 +2076,7 @@ class BaseDOFNumbering(DataStructure):
         2. computeNumbering(self: libaster.BaseDOFNumbering, arg0: list[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]]) -> bool
         """
 
-    def computeRenumbering(self, arg0, arg1):
+    def computeRenumbering(self, arg0, arg1, arg2, arg3):
         pass
 
     def getEquationNumbering(self):
@@ -2219,6 +2226,13 @@ class DOFNumbering(BaseDOFNumbering):
 
         Returns:
             [int]: indexes of the Lagrange multipliers dof.
+        """
+
+    def getNoGhostDOFs(self, local=False):
+        """Returns the indexes of the DOFs owned locally (aka not ghost).
+
+        Returns:
+          int: indexes of the DOFs owned locally.
         """
 
     def getNodeAndComponentFromDOF(self, *args, **kwargs):
@@ -4739,16 +4753,6 @@ class ListOfLoads(DataStructure):
         4. __init__(self: libaster.ListOfLoads, arg0: str, arg1: Model) -> None
         """
 
-    def addContactLoadDescriptor(self, FED_Slave, FED_Pair):
-        """Add contact load descriptor.
-
-        Arguments:
-            FED_Slave (FiniteElementDescriptor): Finite Element Descriptor defining
-                slave cells (in DEFI_CONTACT)
-            FED_Pair (FiniteElementDescriptor): Finite Element Descriptor defining
-                list of contact pair
-        """
-
     def addDirichletBC(self, *args, **kwargs):
         """Overloaded function.
 
@@ -4849,16 +4853,6 @@ class ListOfLoads(DataStructure):
         42. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
 
         43. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
-        """
-
-    def getContactLoadDescriptor(self):
-        """Get contact load descriptors.
-
-        Returns:
-            (FiniteElementDescriptor): Finite Element Descriptor defining
-                slave cells (in DEFI_CONTACT)
-            (FiniteElementDescriptor): Finite Element Descriptor defining
-                list of contact pair
         """
 
     def getDirichletBCs(self):
@@ -11157,6 +11151,9 @@ class MeshesMapping(DataStructure):
         2. __init__(self: libaster.MeshesMapping, arg0: str) -> None
         """
 
+    def getFirstMesh(self):
+        pass
+
     def getSecondMesh(self):
         pass
 
@@ -12932,7 +12929,15 @@ class Result(DataStructure):
         """
 
     def getIndexes(self):
-        """Return the list of indexs used to store fields
+        """Return the list of indexes used to store fields
+
+        Returns:
+            list[int]: List of indexs used to store fields.
+        """
+
+    def getIndexesForFieldName(self, arg0):
+        """Returns the list of indexes used to store a specific field,
+         indicated by its name.
 
         Returns:
             list[int]: List of indexs used to store fields.
@@ -13738,6 +13743,20 @@ class PhysicalProblem:
 
         Arguments:
             loads (ListOfLoads): a pointer to the list of loads
+        """
+
+    def setVirtualCell(self, virtualCell):
+        """Set virtual cells from contact pairing
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
+        """
+
+    def setVirtualSlavCell(self, contact):
+        """Set virtual cells from contact definition
+
+        Arguments:
+            virtualCell (FiniteElementDescriptor)): a pointer to the FED
         """
 
     def zeroDirichletBCDOFs(self, arg0):
@@ -16202,6 +16221,19 @@ class PostProcessing:
 
         Returns:
             FieldOnCellReals: hydration field at end of current time step
+        """
+
+    def computeMaxResultantForPipe(self, result, field_name):
+        """Computes the maximum of the EFGE_ELNO or EGRU_ELNO field in absolute value,
+        based on the maximal values of the equivalent moment at each element.
+
+        Arguments:
+         result (Result) : ResultPtr
+            The result object containing the fields
+         field_name (str) : It should be 'EFGE_ELNO' or 'EGRU_ELNO'
+
+        Returns:
+         FieldOnCellReals: The maximal value of the field
         """
 
 

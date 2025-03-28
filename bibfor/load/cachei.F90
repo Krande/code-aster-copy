@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,12 +57,12 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
 !
     integer :: i, nchei, ncmp, jvale, jvalv, iocc, nxx, nyy, nzz
     integer :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
-    integer :: nbtou, nbma, jma, nepsi
+    integer :: nbtou, nbma, jma, nepsi, nvectn, nkn1, nkn2
     real(kind=8) :: epxx, epyy, epzz, epxy, epxz, epyz, epx, xky, xkz, xexx
-    real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy
+    real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy, vect_n(3), xkn1, xkn2
     character(len=8) :: k8b, kepxx, kepyy, kepzz, kepxy, kepxz, kepyz
     character(len=8) :: kepx, kxky, kxkz, kxexx, kxeyy, kxexy, kxkxx, kxkyy, kxkxy
-    character(len=8) :: typmcl(2)
+    character(len=8) :: typmcl(2), kxkn1, kxkn2, kxvn1, kxvn2, kxvn3
     character(len=16) :: keywordFact, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai, chepsi
@@ -89,7 +89,7 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
     call jeveuo(carte//'.VALV', 'E', jvalv)
     call jeveuo(carte//'.VALE', 'E', jvale)
 !
-    ncmp = 15
+    ncmp = 18
 !
     vncmp(1) = 'EPXX'
     vncmp(2) = 'EPYY'
@@ -106,6 +106,10 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
     vncmp(13) = 'KXX'
     vncmp(14) = 'KYY'
     vncmp(15) = 'KXY'
+!
+    vncmp(16) = 'VECT_2_X'
+    vncmp(17) = 'VECT_2_Y'
+    vncmp(18) = 'VECT_2_Z'
     if (valeType .eq. 'REEL') then
         do i = 1, ncmp
             zr(jvalv-1+i) = 0.d0
@@ -144,6 +148,9 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             call getvr8(keywordFact, 'KXX', iocc=iocc, scal=xkxx, nbret=nkxx)
             call getvr8(keywordFact, 'KYY', iocc=iocc, scal=xkyy, nbret=nkyy)
             call getvr8(keywordFact, 'KXY', iocc=iocc, scal=xkxy, nbret=nkxy)
+            call getvr8(keywordFact, 'KN1', iocc=iocc, scal=xkn1, nbret=nkn1)
+            call getvr8(keywordFact, 'KN2', iocc=iocc, scal=xkn2, nbret=nkn2)
+            call getvr8(keywordFact, 'VECT_N', iocc=iocc, nbval=3, vect=vect_n, nbret=nvectn)
 !
             do i = 1, ncmp
                 zr(jvalv-1+i) = 0.d0
@@ -159,12 +166,19 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             if (nex .ne. 0) zr(jvalv-1+7) = epx
             if (nky .ne. 0) zr(jvalv-1+8) = xky
             if (nkz .ne. 0) zr(jvalv-1+9) = xkz
+            if (nkn1 .ne. 0) zr(jvalv-1+8) = xkn1
+            if (nkn2 .ne. 0) zr(jvalv-1+9) = xkn2
             if (nexx .ne. 0) zr(jvalv-1+10) = xexx
             if (neyy .ne. 0) zr(jvalv-1+11) = xeyy
             if (nexy .ne. 0) zr(jvalv-1+12) = xexy
             if (nkxx .ne. 0) zr(jvalv-1+13) = xkxx
             if (nkyy .ne. 0) zr(jvalv-1+14) = xkyy
             if (nkxy .ne. 0) zr(jvalv-1+15) = xkxy
+            if (nvectn .ne. 0) then
+                zr(jvalv-1+16) = vect_n(1)
+                zr(jvalv-1+17) = vect_n(2)
+                zr(jvalv-1+18) = vect_n(3)
+            end if
         else
             call getvid(keywordFact, 'EPXX', iocc=iocc, scal=kepxx, nbret=nxx)
             call getvid(keywordFact, 'EPYY', iocc=iocc, scal=kepyy, nbret=nyy)
@@ -181,6 +195,11 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             call getvid(keywordFact, 'KXX', iocc=iocc, scal=kxkxx, nbret=nkxx)
             call getvid(keywordFact, 'KYY', iocc=iocc, scal=kxkyy, nbret=nkyy)
             call getvid(keywordFact, 'KXY', iocc=iocc, scal=kxkxy, nbret=nkxy)
+            call getvid(keywordFact, 'KN1', iocc=iocc, scal=kxkn1, nbret=nkn1)
+            call getvid(keywordFact, 'KN2', iocc=iocc, scal=kxkn2, nbret=nkn2)
+            call getvid(keywordFact, 'VECT_N1', iocc=iocc, scal=kxvn1, nbret=nvectn)
+            call getvid(keywordFact, 'VECT_N2', iocc=iocc, scal=kxvn2, nbret=nvectn)
+            call getvid(keywordFact, 'VECT_N3', iocc=iocc, scal=kxvn3, nbret=nvectn)
             do i = 1, ncmp
                 zk8(jvalv-1+i) = '&FOZERO'
             end do
@@ -194,12 +213,21 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
             if (nex .ne. 0) zk8(jvalv-1+7) = kepx
             if (nky .ne. 0) zk8(jvalv-1+8) = kxky
             if (nkz .ne. 0) zk8(jvalv-1+9) = kxkz
+            if (nkn1 .ne. 0) zk8(jvalv-1+8) = kxkn1
+            if (nkn2 .ne. 0) zk8(jvalv-1+9) = kxkn2
+
             if (nexx .ne. 0) zk8(jvalv-1+10) = kxexx
             if (neyy .ne. 0) zk8(jvalv-1+11) = kxeyy
             if (nexy .ne. 0) zk8(jvalv-1+12) = kxexy
             if (nkxx .ne. 0) zk8(jvalv-1+13) = kxkxx
             if (nkyy .ne. 0) zk8(jvalv-1+14) = kxkyy
             if (nkxy .ne. 0) zk8(jvalv-1+15) = kxkxy
+
+            if (nvectn .ne. 0) then
+                zk8(jvalv-1+16) = kxvn1
+                zk8(jvalv-1+17) = kxvn2
+                zk8(jvalv-1+18) = kxvn3
+            end if
         end if
 !
         call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)

@@ -15,11 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine numer3(modelz, list_loadz, nume_ddlz, sd_iden_relaz, base)
+!
+subroutine numer3(modelZ, base, listLoadZ, numeDofZ, ds_contact)
+!
+    use NonLin_Datastructure_type
+    use listLoad_module
+    use contactAlgo_module
 !
     implicit none
 !
+#include "asterfort/addModelLigrel.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -28,12 +35,11 @@ subroutine numer3(modelz, list_loadz, nume_ddlz, sd_iden_relaz, base)
 #include "asterfort/infmue.h"
 #include "asterfort/numero.h"
 !
-!
-    character(len=*), intent(in) :: modelz
-    character(len=*), intent(inout) :: nume_ddlz
-    character(len=*), intent(in) :: list_loadz
-    character(len=*), intent(in) :: sd_iden_relaz
+    character(len=*), intent(in) :: modelZ
     character(len=2), intent(in) :: base
+    character(len=*), intent(inout) :: numeDofZ
+    character(len=*), intent(in) :: listLoadZ
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,35 +49,54 @@ subroutine numer3(modelz, list_loadz, nume_ddlz, sd_iden_relaz, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  nume_ddl       : name of numbering object (NUME_DDL)
-! In  model          : name of model datastructure
-! In  list_load      : list of loads
-! In  sd_iden_rela   : name of object for identity relations between dof
-! In  base           : base to create object
+! IO  numeDof          : name of numbering object (NUME_DDL)
+! In  base             : JEVEUX base to create objects
+!                        base(1:1) => NUME_EQUA objects
+!                        base(2:2) => NUME_DDL objects
+! In  model            : name of model datastructure
+! In  listload         : list of loads
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=14) :: nume_ddl_old, nume_ddl_save
+    character(len=14), parameter :: numeDofSave = '&&NUMER3.NUAV'
+    integer :: nbLigr
+    character(len=24), pointer :: listLigr(:) => null()
+    character(len=14) :: numeDofOld
+    character(len=24) :: idenRela
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infmue()
-    nume_ddl_old = nume_ddlz
-    nume_ddl_save = '&&NUMER3.NUAV'
-    call copisd('NUME_DDL', 'V', nume_ddlz, nume_ddl_save)
-    call detrsd('NUME_DDL', nume_ddlz)
-!
+
+! - Management of numeDof
+    numeDofOld = numeDofZ
+    idenRela = ds_contact%iden_rela
+    call copisd('NUME_DDL', 'V', numeDofZ, numeDofSave)
+    call detrsd('NUME_DDL', numeDofZ)
+
+! - Add LIGREL from model
+    nbLigr = 0
+    call addModelLigrel(modelZ, nbLigr, listLigr)
+
+! - Get list of LIGREL from loads
+    call getListLoadLigrel(listLoadZ, nbLigr, listLigr)
+
+! - Get list of LIGREL from contact
+    if (ds_contact%l_contact) then
+        call addContactLigrel(ds_contact%sdcont, ds_contact%ligrel_elem_cont, nbLigr, listLigr)
+    end if
+
 ! - Numbering
-!
-    call numero(nume_ddlz, base, &
-                modelz=modelz, list_loadz=list_loadz, &
-                sd_iden_relaz=sd_iden_relaz)
-!
+    call numero(numeDofZ, base, &
+                nbLigr, listLigr, &
+                idenRelaZ_=idenRela)
+    AS_DEALLOCATE(vk24=listLigr)
+
 ! - Same equations ! The re-numbering works only with MUMPS/MULT_FRONT/PETSc, not with LDLT
+    ASSERT(idenob(numeDofOld//'.NUME.DEEQ', numeDofSave//'.NUME.DEEQ'))
 !
-    ASSERT(idenob(nume_ddl_old//'.NUME.DEEQ', nume_ddl_save//'.NUME.DEEQ'))
-!
-    call detrsd('NUME_DDL', nume_ddl_save)
+    call detrsd('NUME_DDL', numeDofSave)
     call infbav()
 !
 end subroutine

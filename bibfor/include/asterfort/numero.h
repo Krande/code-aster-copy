@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
-!
-          interface
-            subroutine numero(nume_ddlz,base,old_nume_ddlz,modelocz, &
-      modelz,list_loadz,nb_matr_elem,list_matr_elem, &
-      nb_ligrel , list_ligrel, sd_iden_relaz)
-              character(len=*), intent(inout) :: nume_ddlz
-              character(len=2), intent(in) :: base
-              character(len=*) ,optional, intent(in) :: old_nume_ddlz
-              character(len=*) ,optional, intent(in) :: modelocz
-              character(len=*) ,optional, intent(in) :: modelz
-              character(len=*) ,optional, intent(in) :: list_loadz
-              integer ,optional, intent(in) :: nb_matr_elem, nb_ligrel
-              character(len=24) ,optional, intent(in) :: list_matr_elem(*), list_ligrel(*)
-              character(len=*) ,optional, intent(in) :: sd_iden_relaz
-            end subroutine numero
-          end interface
+interface
+    subroutine numero(numeDofZ, base, &
+                      nbLigr, listLigr, &
+                      numeDofOldZ_, modeLocZ_, &
+                      idenRelaZ_, modelZ_)
+        character(len=*), intent(inout) :: numeDofZ
+        character(len=2), intent(in) :: base
+        integer, intent(in) :: nbLigr
+        character(len=24), pointer :: listLigr(:)
+        character(len=*), optional, intent(in) :: numeDofOldZ_, modeLocZ_, idenRelaZ_, modelZ_
+    end subroutine numero
+end interface

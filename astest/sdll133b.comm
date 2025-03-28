@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,10 @@
 
 #       METHODE PAR SYMETRIE CYCLIQUE DYNAMIQUE
 from math import cos, pi, sin
+
 import numpy as np
+from numpy.linalg import svd
+
 
 from code_aster.Commands import *
 from code_aster import CA
@@ -298,18 +301,31 @@ TEST_RESU(
 
 modes_reconstruit = REST_GENE_PHYS(RESU_GENE=MODES_elim)
 
-# Comparaison des 2 modes (on supprime le déplacement moyen car les modes
-# peuvent être identiques à Pi prêt)
-v6 = MODES.getField("DEPL", 6)
-v6_r = modes_reconstruit.getField("DEPL", 6)
-values = np.array(v6.getValues())
-values_r = np.array(v6_r.getValues())
-mean6 = values - np.mean(np.abs(values))
-mean6_r = values_r - np.mean(np.abs(values_r))
-diff = np.max(np.abs(mean6 - mean6))
-test.assertTrue(diff < 1.0e-12)
+# Vérification que les modes reconstruits sont les mêmes que les modes originaux
+# Pour cela, on calcule les valeurs singulières des 2 bases ainsi que des deux bases concaténées
+# et on vérifie que le nombre de valeurs singulières significatives est le même
+
+vecs = np.vstack([MODES.getField("DEPL", r).getValues() for r in MODES.getIndexes()])
+vecs_r = np.vstack(
+    [modes_reconstruit.getField("DEPL", r).getValues() for r in modes_reconstruit.getIndexes()]
+)
+
+tol = 1.0e-6
+with CA.disable_fpe():
+    _, s, _ = svd(vecs)
+    ns = len(np.where(s / np.max(s) > tol)[-1])
+    _, s_r, _ = svd(vecs_r)
+    ns_r = len(np.where(s_r / np.max(s_r) > tol)[-1])
+    _, s_both, _ = svd(np.vstack([vecs, vecs_r]))
+    ns_both = len(np.where(s_both / np.max(s_both) > tol)[-1])
+
+test.assertEqual(ns, 6)
+test.assertEqual(ns, ns_r)
+test.assertEqual(ns, ns_both)
+
 test.assertEqual(rigi_elim.getType(), "MATR_ASSE_ELIM_R")
 test.assertEqual(mass_elim.getType(), "MATR_ASSE_ELIM_R")
+
 
 SKEL = DEFI_SQUELETTE(CYCLIQUE=_F(NB_SECTEUR=16, MAILLAGE=MAYAS), SECTEUR=_F(TOUT="OUI"))
 

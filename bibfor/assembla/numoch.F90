@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine numoch(list_matr_elem, nb_matr_elem, list_ligr, nb_ligr)
+!
+subroutine numoch(listMatrElem, nbMatrElem, listLigr, nbLigr)
 !
     implicit none
 !
@@ -26,96 +26,103 @@ subroutine numoch(list_matr_elem, nb_matr_elem, list_ligr, nb_ligr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/as_allocate.h"
 !
-!
-    character(len=24), intent(in) :: list_matr_elem(*)
-    integer, intent(in) :: nb_matr_elem
-    character(len=24), pointer :: list_ligr(:)
-    integer, intent(out) :: nb_ligr
+    integer, intent(in) :: nbMatrElem
+    character(len=24), pointer :: listMatrElem(:)
+    character(len=24), pointer :: listLigr(:)
+    integer, intent(out) :: nbLigr
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Factor
 !
-! Create list of LIGREL for numbering - For matr_elem
+! Extract list of LIGREL from elementary matrixes
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_matr_elem : list of elementary matrixes
-! In  nb_matr_elem   : number of elementary matrixes
-! In  list_ligr      : pointer to list of LIGREL
-! In  nb_ligr        : number of LIGREL in list
+! Ptr listMatrElem   : pointer to list of elementary matrixes
+! In  nbMatrElem     : number of elementary matrixes
+! Ptr listLigr       : pointer to list of LIGREL
+! In  nbLigr         : number of LIGREL in list
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: matr_elem, ligr_name, resu_elem
-    integer :: nb_list_ligr, i_list_ligr
-    integer :: i_matr_elem, i_resu_elem, iret, nb_subs, nb_resu_elem
+    character(len=8) :: model
+    character(len=19) :: matrElem, resuElem
+    character(len=19) :: modelLigrel, ligrelName
+    integer :: nbResuLigr, iLigr
+    integer :: iMatrElem, iResuElem, iret, nb_subs, nbResuElem
     aster_logical :: l_found
-    character(len=24), pointer :: resu_elem_noli(:) => null()
-    character(len=24), pointer :: list_resu_elem(:) => null()
+    character(len=24), pointer :: resuElemNoli(:) => null()
+    character(len=24), pointer :: listResuElem(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_ligr = 0
-    nb_list_ligr = 2
-    do i_matr_elem = 1, nb_matr_elem
-        matr_elem = list_matr_elem(i_matr_elem) (1:19)
-        call jeexin(matr_elem//'.RELR', iret)
+    nbLigr = 0
+
+! - Count number of LIGREL from resuElem
+    nbResuLigr = 2
+    do iMatrElem = 1, nbMatrElem
+        matrElem = listMatrElem(iMatrElem) (1:19)
+        call jeexin(matrElem//'.RELR', iret)
         if (iret .ne. 0) then
-            call jelira(matr_elem//'.RELR', 'LONUTI', nb_resu_elem)
-            nb_list_ligr = nb_list_ligr+nb_resu_elem
+            call jelira(matrElem//'.RELR', 'LONUTI', nbResuElem)
+            nbResuLigr = nbResuLigr+nbResuElem
         end if
     end do
-!
-! - Create object
-!
-    AS_ALLOCATE(vk24=list_ligr, size=nb_list_ligr)
-!
+
+! - Create object (oversized !)
+    AS_ALLOCATE(vk24=listLigr, size=nbResuLigr)
+
 ! - Set ligrel in object
-!
-    nb_ligr = 0
-    do i_matr_elem = 1, nb_matr_elem
-        matr_elem = list_matr_elem(i_matr_elem) (1:19)
-!
+    do iMatrElem = 1, nbMatrElem
+        matrElem = listMatrElem(iMatrElem) (1:19)
+
 ! ----- Substructuration matrix
-!
-        call dismoi('NB_SS_ACTI', matr_elem, 'MATR_ELEM', repi=nb_subs)
+        call dismoi('NB_SS_ACTI', matrElem, 'MATR_ELEM', repi=nb_subs)
         if (nb_subs .gt. 0) then
-            call dismoi('NOM_MODELE', matr_elem, 'MATR_ELEM', repk=ligr_name)
-            ligr_name = ligr_name(1:8)//'.MODELE'
-            l_found = .false.
-            do i_list_ligr = 1, nb_ligr
-                if (ligr_name .eq. list_ligr(i_list_ligr)) then
-                    l_found = .true.
+! --------- Get LIGREL (from model)
+            call dismoi("NOM_MODELE", matrElem, 'MATR_ELEM', repk=model)
+            call dismoi("NOM_LIGREL", model, 'MODELE', repk=modelLigrel)
+
+! --------- Already in list ?
+            l_found = ASTER_FALSE
+            do iLigr = 1, nbLigr
+                if (modelLigrel .eq. listLigr(iLigr)) then
+                    l_found = ASTER_TRUE
                 end if
             end do
+
+! --------- No => add it
             if (.not. l_found) then
-                nb_ligr = nb_ligr+1
-                list_ligr(nb_ligr) = ligr_name
+                nbLigr = nbLigr+1
+                listLigr(nbLigr) = modelLigrel
             end if
         end if
-!
+
 ! ----- Standard matrix
-!
-        call jeexin(matr_elem//'.RELR', iret)
+        call jeexin(matrElem//'.RELR', iret)
         if (iret .ne. 0) then
-            call jeveuo(matr_elem//'.RELR', 'L', vk24=list_resu_elem)
-            call jelira(matr_elem//'.RELR', 'LONUTI', nb_resu_elem)
-            do i_resu_elem = 1, nb_resu_elem
-                resu_elem = list_resu_elem(i_resu_elem) (1:19)
-                call jeexin(resu_elem//'.NOLI', iret)
+            call jeveuo(matrElem//'.RELR', 'L', vk24=listResuElem)
+            call jelira(matrElem//'.RELR', 'LONUTI', nbResuElem)
+            do iResuElem = 1, nbResuElem
+! ------------- Get LIGREL (from RESU_ELEM)
+                resuElem = listResuElem(iResuElem) (1:19)
+                call jeexin(resuElem//'.NOLI', iret)
                 if (iret .ne. 0) then
-                    call jeveuo(resu_elem//'.NOLI', 'L', vk24=resu_elem_noli)
-                    ligr_name = resu_elem_noli(1) (1:19)
-                    l_found = .false.
-                    do i_list_ligr = 1, nb_ligr
-                        if (ligr_name .eq. list_ligr(i_list_ligr)) then
-                            l_found = .true.
+                    call jeveuo(resuElem//'.NOLI', 'L', vk24=resuElemNoli)
+                    ligrelName = resuElemNoli(1) (1:19)
+! ----------------- Already in list ?
+                    l_found = ASTER_FALSE
+                    do iLigr = 1, nbLigr
+                        if (ligrelName .eq. listLigr(iLigr)) then
+                            l_found = ASTER_TRUE
                         end if
                     end do
+
+! ----------------- No => add it
                     if (.not. l_found) then
-                        nb_ligr = nb_ligr+1
-                        list_ligr(nb_ligr) = ligr_name
+                        nbLigr = nbLigr+1
+                        listLigr(nbLigr) = ligrelName
                     end if
                 end if
             end do

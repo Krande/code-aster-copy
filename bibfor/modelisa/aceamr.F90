@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
+subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     implicit none
     type(cara_elem_info) :: infdonn
     type(cara_elem_carte) :: infcarte(*)
-    integer :: lmax, noemaf, nbocc, ivr(*)
+    integer :: lmax, nbocc, ivr(*)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -69,9 +69,9 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     integer :: jdc(3), jdv(3), ifm
     integer :: jdcinf, jdvinf
     integer :: i, ii, in, inbn, ino, inoe, ioc, irep
-    integer :: irgno, irgto, isym, itbmp, itbno, iv
+    integer :: irgno, isym, itbmp, itbno, iv
     integer :: jd, jdls, jj, jn
-    integer :: l, ldgm, ldnm, lokm, lorep, nbnma
+    integer :: ikma, ldgm, ldnm, lokm, lorep, nbnma
     integer :: nbno, nbnoeu, nc, ncarac, ncmp
     integer :: ndim, ng, ngp, nma, dimcar
     integer :: vali(2), nbval2
@@ -103,7 +103,6 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     call wkvect('&&TMPDISCRET', 'V V K24', lmax, jdls)
     call wkvect('&&TMPTABNO', 'V V K8', lmax, itbno)
     call wkvect('&&TMPRIGNO', 'V V R', 6*lmax, irgno)
-    call wkvect('&&TMPRIGTO', 'V V R', 6*noemaf, irgto)
     call wkvect('&&TMPTABMP', 'V V K8', lmax, itbmp)
 !
 !   Les cartes sont déjà construites : ace_crea_carte
@@ -125,8 +124,9 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     jdv(3) = infcarte(ACE_CAR_DISCA)%adr_val
 !
     ifm = ivr(4)
-!
-!   Boucle sur les occurrences de MASS_AJOU
+!   On ne peut faire qu'une occurrence de MASS_AJOU : catalogue
+!   On garde la boucle, au cas où l'on souhaiterait faire des évolutions
+    ASSERT(nbocc .eq. 1)
     do ioc = 1, nbocc
         eta = 0.0d0
 !       Par défaut on est dans le repère global, matrices symétriques
@@ -147,28 +147,28 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
         if (ivr(3) .eq. 2) then
             write (ifm, 100) rep, ioc
         end if
-!
-! ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
+!       "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
         if (ng .le. 0) goto 30
+!       Ceinture et bretelle : Dans le catalogue max=1
+        ASSERT(ng .eq. 1)
         car(1) = 'M_T_N'
 !
-!         II = 0
+!       II = 0
         do nc = 1, ncarac
             transl = .true.
 !
             if (transl) then
                 lamass = 'K_T_D_N'
                 call masrep(noma, ioc, vale, lvale, ng, &
-                            zk24(jdls), nbno, zk8(itbno), zr(irgno), zr(irgto), ndim)
+                            zk24(jdls), nbno, zk8(itbno), zr(irgno), ndim)
             else
                 ASSERT(.false.)
             end if
+            ASSERT(nbno .le. lmax)
 !
             do ino = 1, nbno
                 zk8(itbmp+ino-1) = ' '
             end do
-!
-!
 !
             if (ngp .ne. 0) then
                 nbnoeu = 1
@@ -182,14 +182,12 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
                     vali(2) = nma
                     call utmess('F', 'MODELISA2_10', sk=nogp, ni=2, vali=vali)
                 end if
-!
-!
                 do in = 0, nma-1
-!                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
+!                   RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
                     call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma)
                     call jeveuo(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'L', ldnm)
                     call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
-!                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
+!                   BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
                     if (nbnma .ne. nbnoeu) then
                         call utmess('F', 'MODELISA_20', sk=nommai)
                     end if
@@ -199,24 +197,20 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
                         do ino = 1, nbno
                             if (zk8(itbno+ino-1) .eq. nomnoe) then
                                 zk8(itbmp+ino-1) = nommai
-!
                                 goto 22
                             end if
                         end do
                     end do
-!                 SI ON PASSE ICI AUCUN DES NOEUDS DU DISCRET APPARTIENT
-!                 A LA SURFACE, ET CE N'EST PAS NORMAL
+!                   SI ON PASSE ICI AUCUN DES NOEUDS DU DISCRET APPARTIENT
+!                   A LA SURFACE, ET CE N'EST PAS NORMAL
                     write (ifm, *) 'GROUP_MA :', (' '//zk24(jdls+ii-1), ii=1, ng)
                     call utmess('F', 'MODELISA_21', sk=nomnoe)
 22                  continue
                 end do
-!              PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
+!               PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
                 lorep = 5
                 if (irep .eq. 1) lorep = 6
-!
-!
-!            VERIF QU'UN DISCRET EST FIXE A CHACUN DES NOEUDS DU RADIER
-!            (UNE SEULE FOIS PAR OCCURRENCE DE MASS_AJOU)
+!               VERIF QU'UN DISCRET EST FIXE A CHACUN DES NOEUDS DU RADIER
                 if (nc .eq. 1) then
                     do ino = 1, nbno
                         if (zk8(itbmp+ino-1) .eq. ' ') then
@@ -248,9 +242,9 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 !
                     call affdis(ndim, irep, eta, car(nc), zr(irgno+6*i-6), &
                                 jdc, jdv, ivr, iv, kma, &
-                                ncmp, l, jdcinf, jdvinf, isym)
+                                ncmp, ikma, jdcinf, jdvinf, isym)
                     call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, limano=[zk8(jd)])
-                    call nocart(cart(l), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
+                    call nocart(cart(ikma), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
                 end do
             end if
         end do
@@ -261,17 +255,15 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     call jedetr('&&TMPDISCRET')
     call jedetr('&&TMPTABNO')
     call jedetr('&&TMPRIGNO')
-    call jedetr('&&TMPRIGTO')
     call jedetr('&&TMPTABMP')
 !
     call jedema()
 !
-100 format(/,&
-     &    ' <DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',&
-     &    '(REPERE ', a6, '), OCCURRENCE ', i4)
+100 format(/, ' <DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ', &
+            '(REPERE ', a6, '), OCCURRENCE ', i4)
 !
-111 format(' _F(', a, '=''', a8, ''', CARA=''', a, ''',', /,&
-     &       '   VALE=(', 3(1x, 1pe12.5, ','), /,&
-     &       '         ', 3(1x, 1pe12.5, ','), '),', /,&
-     &       '   REPERE=''', a, '''),')
+111 format(' _F(', a, '=''', a8, ''', CARA=''', a, ''',', /, &
+           '   VALE=(', 3(1x, 1pe12.5, ','), /, &
+           '         ', 3(1x, 1pe12.5, ','), '),', /, &
+           '   REPERE=''', a, '''),')
 end subroutine

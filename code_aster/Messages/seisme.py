@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,14 @@ cata_msg = {
         """
  correction statique non prise en compte pour l'option: %(k1)s
 """
+    ),
+    15: _(
+        """
+ analyse spectrale :
+   la base modale utilisée est               : %(k1)s
+   le nombre de vecteurs de base est         : %(i1)d
+   la règle de combinaison modale est        : %(k2)s
+   les options de calcul demandées sont      : %(k3)s """
     ),
     17: _(
         """
@@ -127,16 +135,28 @@ Conseil:
  MODE     FREQUENCE  DIR   PARTICIPATION(*)      EFFECTIVE
 """
     ),
+    49: _(
+        """ %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e    %(r3).5e
+"""
+    ),
     53: _(
         """
  --- VALEURS DU SPECTRE ACCE (CORRECTION PAR CORR_FREQ et NATURE INCLUSES) ---
  MODE      FREQUENCE    AMORTISSEMENT    DIR         SPECTRE
 """
     ),
+    54: _(
+        """ %(i1)4d   %(r1)12.5e     %(r2)12.5e      %(k1)s    %(r3)12.5e
+"""
+    ),
     56: _(
         """
  --- VALEURS LUES SUR LE SPECTRE ACCE POUR LA CORRECTION STATIQUE ---
  DIRECTION      FREQUENCE        SPECTRE        APPUI
+"""
+    ),
+    57: _(
+        """         %(k1)s    %(r1)12.5e    %(r2)12.5e    %(k2)s
 """
     ),
     77: _(

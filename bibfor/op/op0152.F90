@@ -226,7 +226,7 @@ subroutine op0152()
 !---------------SUR LE MODELE INTERFACE(THERMIQUE)-------------
 ! CALCUL DES MATRICES MODALES BI POUR L OPTION AMOR_AJOU
 !--------------------------------------------------------------
-    call mat152(option, model, moint, nocham, ivalk, &
+    call mat152(option, model, moint, ivalk, &
                 nbmo, max, may, maz, num)
     call jeexin('&&MAT152.MADE', iret)
     if (iret .gt. 0) call jeveuo('&&MAT152.MADE', 'E', imade)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -168,19 +168,17 @@ class Randomfield:
                 nbprod = int(np.prod(cdict["NBTERMS"]))
                 print("NB_TERM kwargs", kwargs.get("NB_TERM"), nbprod)
                 if int(kwargs.get("NB_TERM")) > nbprod:
-                    UTMESS(
-                        "F",
-                        "GENERIC_1",
-                        valk="NB_TERM must be smaller than the total number of terms computed",
+                    dict_args = dict(
+                        valk="NB_TERM must be smaller than the total number of terms computed"
                     )
+                    UTMESS("F", "GENERIC_1", **dict_args)
                 self.nbtot = kwargs.get("NB_TERM")
         elif len(liste_coord) == 1:
             if "PRECISION" or "NB_TERM" in kwargs:
-                UTMESS(
-                    "A",
-                    "GENERIC_1",
-                    valk="This is a 1D case. Keywords NB_TERM / PRECISION are used only for 2D or 3D fields",
+                dict_args = dict(
+                    valk="This is a 1D case. Keywords NB_TERM / PRECISION are used only for 2D or 3D fields"
                 )
+                UTMESS("A", "GENERIC_1", **dict_args)
 
         cdict["COORD"] = liste_coord
         self.coord = liste_coord
@@ -191,7 +189,6 @@ class Randomfield:
 
 
 class Generator:
-
     """Base class Generator"""
 
     @staticmethod
@@ -267,7 +264,6 @@ class Generator:
 
 
 class Generator1(Generator):
-
     """1D class"""
 
     def compute_KL(self):
@@ -325,7 +321,6 @@ class Generator1(Generator):
 
 
 class Generator2(Generator):
-
     """2D class"""
 
     def compute_KL(self):
@@ -424,7 +419,6 @@ class Generator2(Generator):
 
 
 class Generator3(Generator):
-
     """3D class"""
 
     def compute_KL(self):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,19 +58,23 @@ stnl = CALC_CHAMP(reuse=stnl, RESULTAT=stnl, CONTRAINTE="SIEF_NOEU")
 
 # Create base (DEPL)
 base_p = DEFI_BASE_REDUITE(RESULTAT=stnl, INFO=2, NOM_CHAM="DEPL", TOLE_SVD=1.0e-3)
+coor_p = RECU_TABLE(CO=base_p, NOM_TABLE="COOR_REDUIT")
 
 # Create base (DEPL)
 base_p1 = DEFI_BASE_REDUITE(
     OPERATION="POD_INCR", TOLE=1.0e-3, RESULTAT=stnl, INFO=2, NOM_CHAM="DEPL", TOLE_SVD=1.0e-3
 )
+coor_p1 = RECU_TABLE(CO=base_p1, NOM_TABLE="COOR_REDUIT")
 
 # Create base (SIEF_NOEU)
 base_d = DEFI_BASE_REDUITE(RESULTAT=stnl, INFO=2, NOM_CHAM="SIEF_NOEU", TOLE_SVD=1.0e-3)
+coor_d = RECU_TABLE(CO=base_d, NOM_TABLE="COOR_REDUIT")
 
 # Create base (SIEF_NOEU)
 base_d1 = DEFI_BASE_REDUITE(
     OPERATION="POD_INCR", TOLE=1.0e-3, RESULTAT=stnl, INFO=2, NOM_CHAM="SIEF_NOEU", TOLE_SVD=1.0e-3
 )
+coor_d1 = RECU_TABLE(CO=base_d1, NOM_TABLE="COOR_REDUIT")
 
 # Print base (DEPL)
 IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=base_p))

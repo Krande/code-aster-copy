@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,91 +15,99 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ca2mam(moint, incr, ligrmo, lchin, lpain, &
-                  lpaout, num, made)
+!
+subroutine ca2mam(modelInterfaceZ, incr, lchin, lpain, &
+                  numeDof, matrAsse)
+!
     implicit none
 !
-! ROUTINE CALCULANT LES MATRICES DES DERIVEES
-! DE FONCTIONS DE FORME SUR LE MODELE INTERFACE
-!
-! IN : MOINT : MODELE INTERFACE
-! IN : MATE : MATERIAU CODE
-! IN : LIGRMO : LIGREL DU MODELE
-! IN: LCHIN,LPAIN,LPAOUT : PARAMETRES DU CALCUL ELEMENTAIRE
-! IN : NUM : NUMEROTATION DES DDLS THERMIQUES D INTERFACE
-!
-! OUT : MADE : MATRICE DES DERIVEES
-!
-!---------------------------------------------------------------------
-!
-#include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assmam.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/memare.h"
 #include "asterfort/numddl.h"
 #include "asterfort/promor.h"
-#include "asterfort/wkvect.h"
-    character(len=*) :: moint
-    character(len=3) :: incr
-    character(len=8) :: lpain(2), lpaout(1)
-    character(len=14) :: num
-    character(len=16) :: option
-    character(len=19) :: matel, nu19
-    character(len=24) :: lchout(1), lchin(2), ligrmo
-    character(len=24) :: made, madeel
+#include "asterfort/reajre.h"
+#include "jeveux.h"
 !
-! ----- CREATION DE LA MATR_ELEM DES DERIVEES DES DN(I)*DN(J)
-!--------------SUR LE MODELE THERMIQUE------------------------------
-!--------------------D'INTERFACE -----------------------------------
+    character(len=*), intent(in) :: modelInterfaceZ
+    character(len=3), intent(in) :: incr
+    character(len=24), intent(in) :: lchin(2)
+    character(len=8), intent(in) :: lpain(2)
+    character(len=14), intent(out) :: numeDof
+    character(len=24), intent(out) :: matrAsse
 !
-!-----------------------------------------------------------------------
-    integer :: jlva
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! CREATION DE LA MATRICE DES DERIVEES DES DN(I)*DN(J) SUR LE MODELE (THERMIQUE) D'INTERFACE
+!
+! IN : MOINT : MODELE INTERFACE
+! IN : NUM : NUMEROTATION DES DDLS THERMIQUES D INTERFACE
+! OUT : matrAsse : MATRICE DES DERIVEES
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=24), parameter :: renumSans = "SANS"
+    character(len=16), parameter :: option = "AMOR_AJOU"
+    character(len=8), parameter :: lpaout(1) = (/'PMATTTR'/)
+    character(len=24) :: matrElem, resuElem, modelLigrel
+    character(len=24) :: lchout(1)
+    integer, parameter :: nbMatrElem = 1
+    character(len=24), pointer :: listMatrElem(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-    option = 'AMOR_AJOU'
-    lpaout(1) = 'PMATTTR'
-    matel = '&&B'//incr(1:3)
-    madeel = matel//'.RELR'
-    call memare('V', matel, moint(1:8), 'AMOR_AJOU ')
-    call wkvect(madeel, 'V V K24', 1, jlva)
-!
-    lchout(1) = matel(1:8)//'.ME000'
-    call codent(1, 'D0', lchout(1) (12:14))
-    call calcul('S', option, ligrmo, 2, lchin, &
+
+! - Initializations
+    numeDof = " "
+    matrAsse = " "
+
+! - Allocate objects for resu_elem
+    matrElem = '&&B'//incr(1:3)
+    call memare('V', matrElem, modelInterfaceZ, option)
+    call reajre(matrElem, ' ', "V")
+
+! - Set output field
+    resuElem = matrElem(1:8)//'.ME000'
+    call codent(1, 'D0', resuElem(12:14))
+    lchout(1) = resuElem
+
+! - Compute elementary matrices
+    call dismoi("NOM_LIGREL", modelInterfaceZ, "MODELE", repk=modelLigrel)
+    call calcul('S', option, modelLigrel, 2, lchin, &
                 lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
-    zk24(jlva) = lchout(1)
-    call jeecra(madeel, 'LONUTI', 1)
-!
-!
-!-------------------- NUMEROTATION ----------------------------------
-!
-    num = 'NUM'//incr
-    call numddl(num, 'VV', 1, matel)
-    call promor(num, 'V')
-!
-!---------------ASSEMBLAGE DES MATRICES  DES DN(I)DN(J)--------------
-!
-    made = 'MA'//incr
-!
-    call assmam('V', made, 1, matel, [1.d0], &
-                num, 'ZERO', 1)
-!
-!
-    nu19 = num
-!
-! --- MENAGE
-!
-    call jedetr(nu19//'.ADLI')
-    call jedetr(nu19//'.ADNE')
-    call detrsd('MATR_ELEM', matel)
+    call reajre(matrElem, resuElem, "V")
+
+! - Create list of elementary matrices
+    AS_ALLOCATE(vk24=listMatrElem, size=nbMatrElem)
+    listMatrElem(1) = matrElem
+
+! - Create numbering from list of elementary matrices
+    numeDof = 'NUM'//incr
+    call numddl(numeDof, renumSans, 'VV', nbMatrElem, listMatrElem)
+    AS_DEALLOCATE(vk24=listMatrElem)
+
+! - Create storage for matrices
+    call promor(numeDof, 'V')
+
+! - Assemblying matrices
+    matrAsse = 'MA'//incr
+    call assmam('V', matrAsse, 1, matrElem, [1.d0], &
+                numeDof, 'ZERO', 1)
+
+! - Clean
+    call jedetr(numeDof//'     .ADLI')
+    call jedetr(numeDof//'     .ADNE')
+    call detrsd('MATR_ELEM', matrElem)
     call detrsd('CHAMP_GD', lchout(1))
 !
     call jedema()
