@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: code-aster
-  source_version: 17.2.8
+  source_version: 17.2.14
   win_build: 1
   version: ${{ source_version + "." + win_build }}
   build_base: 0
