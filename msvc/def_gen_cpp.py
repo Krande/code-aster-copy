@@ -210,7 +210,7 @@ def build_def(scanner: Scanner, output, clear_cache=False) -> None:
             json.dump(cache_json, f)
 
 def main():
-    bib_dir = (ROOT_DIR / "build/int64/release/bibcxx").resolve().absolute()
+    bib_dir = (ROOT_DIR / "build/int64/debug/bibcxx").resolve().absolute()
     scanner = Scanner("bibcxx", bib_dir)
 
     build_def(scanner, Path("bibcxx.def"), clear_cache=True)

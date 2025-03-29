@@ -719,7 +719,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblapack-3.9.0-29_hacfb0e4_mkl.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblzma-5.6.4-h2466b09_0.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/libmed-4.1.1.6-py312_nompi_release_INT64_h5461c00_364.conda
-      - conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.4-aster_nompi_release_INT64_h9191d79_364.conda
+      - conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.7-aster_nompi_release_INT64_h5431fd1_364.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libsqlite-3.48.0-h67fdade_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libssh2-1.11.1-he619c9f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libuv-1.50.0-h2466b09_0.conda
@@ -732,7 +732,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-2024.2.2-h66d3029_15.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-devel-2024.2.2-h57928b3_15.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-include-2024.2.2-h66d3029_15.conda
-      - conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_release_INT64_hc0f3eef_264.conda
+      - conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_release_INT64_h05a0619_264.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/ninja-1.12.1-hc790b64_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numpy-1.26.4-py312h8753938_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/openssl-3.4.1-ha4e3fda_0.conda
@@ -747,7 +747,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/python-dotenv-1.0.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.12-5_cp312.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyyaml-6.0.2-py312h31fea79_2.conda
-      - conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.4-aster_nompi_release_INT64_h06e984e_364.conda
+      - conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.7-aster_nompi_release_INT64_h109dca2_364.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-75.8.0-pyhff2d567_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tbb-2021.13.0-h62715c5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tk-8.6.13-h5226925_1.conda
@@ -755,8 +755,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025a-h78e105d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/ucrt-10.0.22621.0-h57928b3_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc-14.3-h5fd82a7_24.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34433-h6356254_24.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34433-hfef2bbc_24.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
@@ -864,7 +864,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblapack-3.9.0-29_hacfb0e4_mkl.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblzma-5.6.4-h2466b09_0.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/libmed-4.1.1.6-py312_nompi_debug_INT64_hf72c98b_164.conda
-      - conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.4-aster_nompi_debug_INT64_h35aaec8_164.conda
+      - conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.7-aster_nompi_debug_INT64_h5fa3e0c_164.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libsqlite-3.48.0-h67fdade_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libssh2-1.11.1-he619c9f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libuv-1.50.0-h2466b09_0.conda
@@ -877,7 +877,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-2024.2.2-h66d3029_15.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-devel-2024.2.2-h57928b3_15.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-include-2024.2.2-h66d3029_15.conda
-      - conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_debug_INT64_h352477a_64.conda
+      - conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_debug_INT64_h11e01e1_64.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/ninja-1.12.1-hc790b64_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numpy-1.26.4-py312h8753938_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/openssl-3.4.1-ha4e3fda_0.conda
@@ -892,7 +892,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/python-dotenv-1.0.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.12-5_cp312.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyyaml-6.0.2-py312h31fea79_2.conda
-      - conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.4-aster_nompi_debug_INT64_h80e9c46_164.conda
+      - conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.7-aster_nompi_debug_INT64_h562cbd5_164.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-75.8.0-pyhff2d567_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tbb-2021.13.0-h62715c5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tk-8.6.13-h5226925_1.conda
@@ -900,8 +900,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025a-h78e105d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/ucrt-10.0.22621.0-h57928b3_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc-14.3-h5fd82a7_24.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34433-h6356254_24.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34433-hfef2bbc_24.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
@@ -1832,34 +1832,6 @@ packages:
   license: CECILL-C
   size: 811579
   timestamp: 1739717645807
-- conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.4-aster_nompi_debug_INT64_h35aaec8_164.conda
-  sha256: 93312a55035d99a42888051908104d1c972b7cca1a5bc9e437b004e360de5c56
-  depends:
-  - zlib
-  - pthreads-win32
-  - zlib
-  - pthreads-win32
-  - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
-  - ucrt >=10.0.20348.0
-  - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
-  - ucrt >=10.0.20348.0
-  - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
-  - ucrt >=10.0.20348.0
-  - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
-  - ucrt >=10.0.20348.0
-  - liblzma >=5.6.4,<6.0a0
-  - libzlib >=1.3.1,<2.0a0
-  - bzip2 >=1.0.8,<2.0a0
-  - liblzma >=5.6.4,<6.0a0
-  - libzlib >=1.3.1,<2.0a0
-  - bzip2 >=1.0.8,<2.0a0
-  license: CECILL-C
-  size: 812103
-  timestamp: 1739717704070
 - conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.4-aster_nompi_release_INT32_h1257535_332.conda
   sha256: 9e6cd02fa28d6479f3a7610c65eae29059e49645792a7b42c1631c536aca1d07
   depends:
@@ -1887,34 +1859,55 @@ packages:
   license: CECILL-C
   size: 432756
   timestamp: 1739717699664
-- conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.4-aster_nompi_release_INT64_h9191d79_364.conda
-  sha256: ff70db359cb8be2c060cb0024532bc2f3f4d4fc505417b47ac707ff554038c69
+- conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.7-aster_nompi_debug_INT64_h5fa3e0c_164.conda
+  sha256: db56dff9e919e554f67452e4e910494f464847862dd800e2a1a2ad5819d9a0f1
   depends:
   - zlib
-  - pthreads-win32
-  - zlib
-  - pthreads-win32
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.42.34438
   - ucrt >=10.0.20348.0
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.42.34438
   - ucrt >=10.0.20348.0
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.42.34438
   - ucrt >=10.0.20348.0
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.42.34438
   - ucrt >=10.0.20348.0
-  - bzip2 >=1.0.8,<2.0a0
-  - libzlib >=1.3.1,<2.0a0
-  - liblzma >=5.6.4,<6.0a0
-  - libzlib >=1.3.1,<2.0a0
   - liblzma >=5.6.4,<6.0a0
   - bzip2 >=1.0.8,<2.0a0
+  - libzlib >=1.3.1,<2.0a0
+  - bzip2 >=1.0.8,<2.0a0
+  - liblzma >=5.6.4,<6.0a0
   license: CECILL-C
-  size: 424337
-  timestamp: 1739717732899
+  size: 883817
+  timestamp: 1743162181023
+- conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.7-aster_nompi_release_INT64_h5431fd1_364.conda
+  sha256: dc41fb89a9d55e0482669d75ad57ff7cf1d9785ba7f92e59a84c8bfc051c9905
+  depends:
+  - zlib
+  - vc >=14.3,<15
+  - vc14_runtime >=14.42.34438
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.42.34438
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.42.34438
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.42.34438
+  - ucrt >=10.0.20348.0
+  - liblzma >=5.6.4,<6.0a0
+  - bzip2 >=1.0.8,<2.0a0
+  - libzlib >=1.3.1,<2.0a0
+  - bzip2 >=1.0.8,<2.0a0
+  - liblzma >=5.6.4,<6.0a0
+  - libzlib >=1.3.1,<2.0a0
+  license: CECILL-C
+  size: 420963
+  timestamp: 1743162181022
 - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.48.0-hee588c1_1.conda
   sha256: 22853d289ef6ec8a5b20f1aa261895b06525439990d3b139f8bfd0b5c5e32a3a
   md5: 3fa05c528d8a1e2a67bbf1e36f22d3bc
@@ -2342,24 +2335,24 @@ packages:
   license: CECILL-C
   size: 11396314
   timestamp: 1739718193686
-- conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_debug_INT64_h352477a_64.conda
-  sha256: f5f1cc525a6bf2f809a783f57e27efbf0d92d849595b1f842200cbf149b5d756
+- conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_debug_INT64_h11e01e1_64.conda
+  sha256: 257857d8564dc99fe9f3d00e60e43832c6da9b8603408bc37f5886c3d71e588e
   depends:
   - numpy >=1.26.4,<2.0a0
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.42.34438
   - ucrt >=10.0.20348.0
+  - numpy >=1.26.4,<2.0a0
+  - scotch >=7.0.7,<7.0.8.0a0
+  - liblapack >=3.9.0,<3.10.0a0
+  - mkl >=2024.2.2,<2025.0a0
   - metis >=5.1.0.4,<5.2.0a0
   - libblas >=3.9.0,<4.0a0
-  - mkl >=2024.2.2,<2025.0a0
   - python_abi 3.12.* *_cp312
-  - numpy >=1.26.4,<2.0a0
-  - scotch >=7.0.4,<7.0.5.0a0
   - libzlib >=1.3.1,<2.0a0
-  - liblapack >=3.9.0,<3.10.0a0
   license: CECILL-C
-  size: 11293428
-  timestamp: 1739718157788
+  size: 11040669
+  timestamp: 1743164823648
 - conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_release_INT32_hffa74d1_232.conda
   sha256: 0ab53831604dd488412a4acbb6a9845a3930ae79650b3b594405d4d3a8ccc37f
   depends:
@@ -2378,24 +2371,24 @@ packages:
   license: CECILL-C
   size: 5965451
   timestamp: 1739718207804
-- conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_release_INT64_hc0f3eef_264.conda
-  sha256: a25bfa1308835dd60716f30d093f38f0b0f6404d095b243971f09a5d35a9c235
+- conda: https://repo.prefix.dev/code-aster/win-64/mumps-5.7.2-aster_py312_nompi_release_INT64_h05a0619_264.conda
+  sha256: 1ae84da1660f16dda65851291fbaebe49b51d1de69fc4fa06492c700b4013ae7
   depends:
   - numpy >=1.26.4,<2.0a0
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.42.34438
   - ucrt >=10.0.20348.0
-  - numpy >=1.26.4,<2.0a0
-  - mkl >=2024.2.2,<2025.0a0
   - metis >=5.1.0.4,<5.2.0a0
-  - libzlib >=1.3.1,<2.0a0
-  - scotch >=7.0.4,<7.0.5.0a0
+  - scotch >=7.0.7,<7.0.8.0a0
   - python_abi 3.12.* *_cp312
-  - libblas >=3.9.0,<4.0a0
+  - mkl >=2024.2.2,<2025.0a0
+  - libzlib >=1.3.1,<2.0a0
   - liblapack >=3.9.0,<3.10.0a0
+  - libblas >=3.9.0,<4.0a0
+  - numpy >=1.26.4,<2.0a0
   license: CECILL-C
-  size: 5837967
-  timestamp: 1739718209689
+  size: 5819731
+  timestamp: 1743164823648
 - conda: https://conda.anaconda.org/conda-forge/linux-64/ncurses-6.5-h2d0b736_3.conda
   sha256: 3fde293232fa3fca98635e1167de6b7c7fda83caf24b9d6c91ec9eefb4f4d586
   md5: 47e340acb35de30501a76c7c799c41d7
@@ -2769,24 +2762,6 @@ packages:
   license: CECILL-C
   size: 639519
   timestamp: 1739717645808
-- conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.4-aster_nompi_debug_INT64_h80e9c46_164.conda
-  sha256: 1d3f57839cacb12a1143d5d2a915947ff30b1909924195351f371b2965a4589c
-  depends:
-  - libscotch ==7.0.4 aster_nompi_debug_INT64_h35aaec8_164
-  - zlib
-  - pthreads-win32
-  - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
-  - ucrt >=10.0.20348.0
-  - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
-  - ucrt >=10.0.20348.0
-  - liblzma >=5.6.4,<6.0a0
-  - libzlib >=1.3.1,<2.0a0
-  - bzip2 >=1.0.8,<2.0a0
-  license: CECILL-C
-  size: 639466
-  timestamp: 1739717704070
 - conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.4-aster_nompi_release_INT32_h5563edb_332.conda
   sha256: 458676fb2af0855d3867948279bc4f4981537c3f98683b13753e5d00ee768720
   depends:
@@ -2805,24 +2780,40 @@ packages:
   license: CECILL-C
   size: 639546
   timestamp: 1739717699664
-- conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.4-aster_nompi_release_INT64_h06e984e_364.conda
-  sha256: 512a5485aa23b2e1bef77eb0fa95881138193fa115aa94511236b7b20c7bdae6
+- conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.7-aster_nompi_debug_INT64_h562cbd5_164.conda
+  sha256: 67349802d71d7d9b706759de05c366979c389e51ca0013c813ce3507811d54f5
   depends:
-  - libscotch ==7.0.4 aster_nompi_release_INT64_h9191d79_364
+  - libscotch ==7.0.7 aster_nompi_debug_INT64_h5fa3e0c_164
   - zlib
-  - pthreads-win32
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.42.34438
   - ucrt >=10.0.20348.0
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.42.34438
   - ucrt >=10.0.20348.0
-  - libzlib >=1.3.1,<2.0a0
   - liblzma >=5.6.4,<6.0a0
   - bzip2 >=1.0.8,<2.0a0
+  - libzlib >=1.3.1,<2.0a0
   license: CECILL-C
-  size: 639471
-  timestamp: 1739717732899
+  size: 643704
+  timestamp: 1743162181023
+- conda: https://repo.prefix.dev/code-aster/win-64/scotch-7.0.7-aster_nompi_release_INT64_h109dca2_364.conda
+  sha256: f431461017c98d42d46124c1fd8bc61711b03a414b935c9797aa2d1b778ecdb4
+  depends:
+  - libscotch ==7.0.7 aster_nompi_release_INT64_h5431fd1_364
+  - zlib
+  - vc >=14.3,<15
+  - vc14_runtime >=14.42.34438
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.42.34438
+  - ucrt >=10.0.20348.0
+  - bzip2 >=1.0.8,<2.0a0
+  - libzlib >=1.3.1,<2.0a0
+  - liblzma >=5.6.4,<6.0a0
+  license: CECILL-C
+  size: 643767
+  timestamp: 1743162181022
 - conda: https://conda.anaconda.org/conda-forge/noarch/setuptools-75.8.0-pyhff2d567_0.conda
   sha256: e0778e4f276e9a81b51c56f51ec22a27b4d8fc955abc0be77ad09ca9bea06bb9
   md5: 8f28e299c11afdd79e0ec1e279dcdc52
@@ -2932,6 +2923,17 @@ packages:
   license_family: Proprietary
   size: 753531
   timestamp: 1737627061911
+- conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
+  sha256: 30dcb71bb166e351aadbdc18f1718757c32cdaa0e1e5d9368469ee44f6bf4709
+  md5: 91651a36d31aa20c7ba36299fb7068f4
+  depends:
+  - ucrt >=10.0.20348.0
+  constrains:
+  - vs2015_runtime 14.42.34438.* *_26
+  license: LicenseRef-MicrosoftVisualCpp2015-2022Runtime
+  license_family: Proprietary
+  size: 750733
+  timestamp: 1743195092905
 - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34433-hfef2bbc_24.conda
   sha256: 09102e0bd283af65772c052d85028410b0c31989b3cd96c260485d28e270836e
   md5: 117fcc5b86c48f3b322b0722258c7259
@@ -2941,6 +2943,15 @@ packages:
   license_family: BSD
   size: 17669
   timestamp: 1737627066773
+- conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
+  sha256: 432f2937206f1ad4a77e39f84fabc1ce7d2472b669836fb72bd2bfd19a2defc9
+  md5: 3357e4383dbce31eed332008ede242ab
+  depends:
+  - vc14_runtime >=14.42.34438
+  license: BSD-3-Clause
+  license_family: BSD
+  size: 17873
+  timestamp: 1743195097269
 - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
   sha256: 8caeda9c0898cb8ee2cf4f45640dbbbdf772ddc01345cfb0f7b352c58b4d8025
   md5: ba83df93b48acfc528f5464c9a882baa

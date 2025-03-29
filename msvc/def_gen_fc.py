@@ -5,6 +5,7 @@ import re
 
 ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent.absolute()
 BIBFOR_DIR = ROOT_DIR  / "bibfor"
+GC_DIR = ROOT_DIR / "libs/gc"
 MSVC_DIR = ROOT_DIR / "msvc"
 BIBFOR_DEF = MSVC_DIR / "bibfor.def"
 
@@ -64,7 +65,7 @@ def scan_header_files(
 
 
 def scan_fortran_files(
-    directory: pathlib.Path,
+    directories: list[pathlib.Path],
     cache_file: pathlib.Path = pathlib.Path("temp/fc_cache.json"),
     clear_cache=False,
 ) -> dict:
@@ -80,27 +81,28 @@ def scan_fortran_files(
     modules = {"na": []}
 
     # Scan each Fortran file in the directory
-    for fp in directory.rglob("*"):
-        if not fp.name.lower().endswith((".f90", ".f", ".for")):  # Common Fortran extensions
-            continue
-        if "deprecated" in list(fp.parents):
-            continue
-        with open(fp, "r", encoding="utf-8") as file:
-            current_module = "na"
-            for line in file:
-                if line.startswith("!"):
-                    continue
-                # Check if line defines a module
-                module_match = module_pattern.match(line)
-                if module_match:
-                    current_module = module_match.group(1)
-                    modules[current_module] = []
+    for directory in directories:
+        for fp in directory.rglob("*"):
+            if not fp.name.lower().endswith((".f90", ".f", ".for")):  # Common Fortran extensions
+                continue
+            if "deprecated" in list(fp.parents):
+                continue
+            with open(fp, "r", encoding="utf-8") as file:
+                current_module = "na"
+                for line in file:
+                    if line.startswith("!"):
+                        continue
+                    # Check if line defines a module
+                    module_match = module_pattern.match(line)
+                    if module_match:
+                        current_module = module_match.group(1)
+                        modules[current_module] = []
 
-                # Check if line defines a function/subroutine
-                func_match = func_pattern.match(line)
-                if func_match:
-                    function_name = func_match.group(2)
-                    modules[current_module].append(function_name)
+                    # Check if line defines a function/subroutine
+                    func_match = func_pattern.match(line)
+                    if func_match:
+                        function_name = func_match.group(2)
+                        modules[current_module].append(function_name)
     # save to cache
     cache_file.parent.mkdir(exist_ok=True, parents=True)
     with open(cache_file, "w") as cache:
@@ -125,12 +127,13 @@ def create_def_file(modules: dict, headers:dict, output_file: pathlib.Path, suff
         def_file.write("EXPORTS\n")
         for function in functions_sorted:
             if make_lower:
-                def_file.write(f"    {function.lower()}{suffix}\n")
+                lib_name=function.lower()
             elif make_upper:
-                def_file.write(f"    {function.upper()}{suffix}\n")
+                lib_name =function.upper()
             else:
-                def_file.write(f"    {function}{suffix}\n")
-
+                lib_name =function
+            #def_file.write(f"    {lib_name}={lib_name+suffix}\n")
+            def_file.write(f"    {lib_name+suffix}\n")
 
 def compare_with_existing_def(existing_def_file: pathlib.Path, modules: dict, headers: dict, use_w_headers_only=False):
     functions_only = set([f"{i.lower()}_" for x in modules.values() for i in x])
@@ -188,7 +191,7 @@ def compare_with_existing_def(existing_def_file: pathlib.Path, modules: dict, he
 def main():
     output_file = BIBFOR_DEF.parent / "bibfor.def"
     headers = scan_header_files(BIBFOR_DIR, clear_cache=True)
-    modules = scan_fortran_files(BIBFOR_DIR, clear_cache=False)
+    modules = scan_fortran_files([BIBFOR_DIR, GC_DIR], clear_cache=True)
 
     compare_with_existing_def(BIBFOR_DEF, modules, headers)
     # manually add rcvale_wrap to headers as it has no header

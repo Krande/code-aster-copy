@@ -69,6 +69,7 @@ EXPORTS
     addgrpma_
     addgrpno_
     addmatrasse_
+    addmodelligrel_
     addphantomnodesfromcells_
     adjust_memlimit_
     adlivo_
@@ -137,6 +138,7 @@ EXPORTS
     angvec_
     angvx_
     angvxy_
+    angvxz_
     ante2d_
     ante3d_
     antece_
@@ -202,7 +204,6 @@ EXPORTS
     appmas_
     appmasl_
     apprin_
-    apprin_n_
     approj_
     aprema_
     aprend_
@@ -1551,6 +1552,7 @@ EXPORTS
     ddr_read_
     debca1_
     debcal_
+    debug_print_
     decod1_
     decod2_
     decompose_conic_
@@ -3454,7 +3456,6 @@ EXPORTS
     lisccm_
     lisccp_
     lischk_
-    liscli_
     liscn1_
     liscn2_
     liscnv_
@@ -3540,8 +3541,6 @@ EXPORTS
     lkvarp_
     lkvarv_
     load_list_info_
-    load_neut_data_
-    load_neut_iden_
     load_unde_diri_
     lobs_
     locglo_
@@ -3979,7 +3978,6 @@ EXPORTS
     mminfr_
     mminit_
     mminit_lac_
-    mmjeux_
     mmlagc_
     mmlagm_
     mmlige_
@@ -4392,7 +4390,6 @@ EXPORTS
     nmdlog_
     nmdocc_
     nmdoch_
-    nmdoch_nbload_
     nmdoch_wrap_
     nmdocm_
     nmdocn_
@@ -4826,11 +4823,9 @@ EXPORTS
     nulili_
     num2k8_
     num_rank_mat33_
-    numcch_
     numchc_
     numcima_
     numddl_
-    nume_ddl_chamelem_
     nume_ddl_matr_
     nume_equa_crsd_
     nume_equa_gene_crsd_
@@ -4842,6 +4837,7 @@ EXPORTS
     numeok_
     numer2_
     numer3_
+    numer3_wrap_
     numero_
     numero_wrap_
     numgcy_
@@ -5593,7 +5589,6 @@ EXPORTS
     recbec_
     recbgl_
     recddl_
-    rechmc_
     reci2d_
     reci3d_
     reciex_
@@ -6205,6 +6200,7 @@ EXPORTS
     stktit_
     stock_
     stokma_
+    stresschck_
     strmag_
     ststat_
     subac1_
@@ -6243,6 +6239,7 @@ EXPORTS
     tbajvi_
     tbajvk_
     tbajvr_
+    tbcarapou_
     tbcopi_
     tbcrsd_
     tbcrsv_
@@ -7279,7 +7276,6 @@ EXPORTS
     verigd_wrap_
     verili_
     verima_
-    verinr_
     verins_
     veripl_
     vermot_
@@ -7626,7 +7622,6 @@ EXPORTS
     xmasth_
     xmathm_
     xmcont_
-    xmcoor_
     xmdeco_
     xmfrot_
     xmifis_
@@ -7667,7 +7662,6 @@ EXPORTS
     xmoini_
     xmolig_
     xmprep_
-    xmrlst_
     xmulco_
     xmulhm_
     xmvco1_
@@ -7734,7 +7728,6 @@ EXPORTS
     xptfon_
     xrecff_
     xrechp_
-    xrela_elim_
     xrell1_
     xrell2_
     xrell3_
@@ -7801,7 +7794,6 @@ EXPORTS
     xvoise_
     xvrcin_
     xxbsig_
-    xxconi_
     xxishm_
     xxlag2_
     xxlag3_

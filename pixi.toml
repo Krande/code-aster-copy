@@ -65,7 +65,7 @@ mgis = { version = "*", build = "*release*" }
 libmed = { version = "*", build = "*release*INT64*" }
 medcoupling = { version = "*", build = "*release*INT64*" }
 libscotch = { version = "*", build = "*release*INT64*" }
-scotch = { version = "*", build = "*release*INT64*" }
+scotch = { version = "==7.0.7", build = "*release*INT64*" }
 metis = { version = "*", build = "*release*INT64*" }
 mumps = { version = "*", build = "*release*INT64*" }
 
@@ -87,7 +87,7 @@ mgis = { version = "*", build = "*debug*" }
 libmed = { version = "*", build = "*debug*INT64*" }
 medcoupling = { version = "*", build = "*debug*INT64*" }
 libscotch = { version = "*", build = "*debug*INT64*" }
-scotch = { version = "*", build = "*debug*INT64*" }
+scotch = { version = "==7.0.7", build = "*debug*INT64*" }
 metis = { version = "*", build = "*debug*INT64*" }
 mumps = { version = "*", build = "*debug*INT64*" }
 
@@ -151,6 +151,9 @@ test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "
 debug = { cmd = ["python", "msvc/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
 dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the aster executable" }
+
+def-bibfor = { cmd = ["python", "msvc/def_gen_fc.py"], description = "Generate the bibfor files" }
+def-bibcpp = { cmd = ["python", "msvc/def_gen_cpp.py"], description = "Generate the bibcpp files" }
 
 [feature.int64.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
