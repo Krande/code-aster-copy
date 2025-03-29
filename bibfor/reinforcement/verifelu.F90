@@ -64,6 +64,7 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !______________________________________________________________________
 !
 !
+    use, intrinsic :: iso_c_binding
     implicit none
 !
 #include "extern/dintelu.h"
@@ -71,7 +72,7 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !
-    integer :: typco
+    integer(c_long) :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: ht
     real(kind=8) :: bw
@@ -81,10 +82,10 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     real(kind=8) :: fbeton
     real(kind=8) :: gammas
     real(kind=8) :: gammac
-    integer :: clacier
+    integer(c_long) :: clacier
     real(kind=8) :: eys
     integer :: typdiag
-    integer :: uc
+    integer(c_long) :: uc
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
     real(kind=8) :: effm
@@ -96,7 +97,8 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !-----------------------------------------------------------------------
 
     real(kind=8) :: Calc
-    integer :: s, ntot, ndemi
+    integer :: s
+    integer(c_long) :: ntot, ndemi
     logical :: COND_OK
     real(kind=8) :: nrd0, nrd1, mrd0, mrd1
     character(24) :: pnrd, pmrd

@@ -86,6 +86,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 !______________________________________________________________________
 !
 !
+    use, intrinsic :: iso_c_binding
     implicit none
 !
 #include "asterfort/utmess.h"
@@ -116,7 +117,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
+    integer(c_long) :: uc
     integer :: um
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
@@ -150,7 +151,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
     real(kind=8) :: unite_m, seuil_moment
-    integer :: ntoty, ndemiy, ntotz, ndemiz
+    integer(c_long) :: ntoty, ndemiy, ntotz, ndemiz
 
     pnrdy = 'POINT_NRD_Y'
     pmrdy = 'POINT_MRD_Y'

@@ -98,6 +98,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 !______________________________________________________________________
 !
 !
+    use, intrinsic :: iso_c_binding
     implicit none
 !
 #include "asterfort/utmess.h"
@@ -109,7 +110,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 #include "extern/dintelu.h"
 #include "asterc/r8prem.h"
 !
-    integer :: typco
+    integer(c_long) :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: effmy
     real(kind=8) :: effmz
@@ -124,14 +125,14 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     real(kind=8) :: fbeton
     real(kind=8) :: gammas
     real(kind=8) :: gammac
-    integer :: clacier
+    integer(c_long) :: clacier
     real(kind=8) :: eys
-    integer :: typdiag
+    integer(c_long) :: typdiag
     integer :: ferrcomp
     integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
+    integer(c_long) :: uc
     integer :: um
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
@@ -165,7 +166,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
     real(kind=8) :: unite_m, seuil_moment
-    integer :: ntoty, ndemiy, ntotz, ndemiz
+    integer(c_long) :: ntoty, ndemiy, ntotz, ndemiz
 
     pnrdy = 'POINT_NRD_Y'
     pmrdy = 'POINT_MRD_Y'

@@ -51,6 +51,7 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
 !______________________________________________________________________
 !
 !
+    use, intrinsic :: iso_c_binding
     implicit none
 !
 #include "extern/dintels.h"
@@ -66,7 +67,8 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     real(kind=8) :: scmaxi
     real(kind=8) :: scmaxs
     real(kind=8) :: ssmax
-    integer :: uc
+    integer(c_long) :: uc
+    integer(c_long) :: ntot, ndemi
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
     real(kind=8) :: effm
@@ -78,7 +80,7 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
 !-----------------------------------------------------------------------
 
     real(kind=8) :: Calc
-    integer :: s, ntot, ndemi
+    integer :: s
     logical :: COND_OK
     real(kind=8) :: nrd0, nrd1, mrd0, mrd1
     character(24) :: pnrd, pmrd

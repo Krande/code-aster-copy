@@ -96,6 +96,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
 !_______________________________________________________________________
 !
 !
+    use, intrinsic :: iso_c_binding
     implicit none
 !
 #include "asterfort/utmess.h"
@@ -125,7 +126,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
     integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
+    integer(c_long) :: uc
     integer :: um
     real(kind=8) :: kt
     real(kind=8) :: eys
@@ -175,7 +176,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
     real(kind=8) :: unite_m, Calc, seuil_moment
     real(kind=8) :: ssmaxy, ssmaxz
-    integer :: ntoty, ndemiy, ntotz, ndemiz
+    integer(c_long) :: ntoty, ndemiy, ntotz, ndemiz
 
     pnrdy = 'POINT_NRD_Y'
     pmrdy = 'POINT_MRD_Y'
