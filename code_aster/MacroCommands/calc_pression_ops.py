@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,16 +47,17 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
                 UTMESS("F", "CALCPRESSION0_3")
     dim = MAILLAGE.getDimension()
 
-    MasquerAlarme("CALCCHAMP_1")
-    # Champ de contraintes de Cauchy aux noeuds
-    RESULTAT = CALC_CHAMP(
-        reuse=RESULTAT,
-        RESULTAT=RESULTAT,
-        PRECISION=PRECISION,
-        CRITERE=CRITERE,
-        CONTRAINTE="SIEF_NOEU",
-    )
-    RetablirAlarme("CALCCHAMP_1")
+    if "SIEF_NOEU" not in RESULTAT.getFieldsOnNodesRealNames():
+        MasquerAlarme("CALCCHAMP_1")
+        # Champ de contraintes de Cauchy aux noeuds
+        RESULTAT = CALC_CHAMP(
+            reuse=RESULTAT,
+            RESULTAT=RESULTAT,
+            PRECISION=PRECISION,
+            CRITERE=CRITERE,
+            CONTRAINTE="SIEF_NOEU",
+        )
+        RetablirAlarme("CALCCHAMP_1")
 
     # Pression à l'interface
     if dim == 3:
@@ -71,8 +72,50 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
             VALE="(SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y)", NOM_PARA=("SIXX", "SIYY", "SIXY", "X", "Y")
         )
 
+    # Expression de la contrainte tangentielle
+    if dim == 3:
+        # Formule en dimension 3 :
+        __PressionX = FORMULE(
+            VALE="((SIXX-(SIXX*X*X+SIYY*Y*Y+SIZZ*Z*Z+2*SIXY*X*Y+2*SIXZ*X*Z+2*SIYZ*Y*Z))*X+SIXY*Y+SIXZ*Z)",
+            NOM_PARA=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "X", "Y", "Z"),
+        )
+        __PressionY = FORMULE(
+            VALE="((SIYY-(SIXX*X*X+SIYY*Y*Y+SIZZ*Z*Z+2*SIXY*X*Y+2*SIXZ*X*Z+2*SIYZ*Y*Z))*Y+SIXY*X+SIYZ*Z)",
+            NOM_PARA=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "X", "Y", "Z"),
+        )
+        __PressionZ = FORMULE(
+            VALE="((SIZZ-(SIXX*X*X+SIYY*Y*Y+SIZZ*Z*Z+2*SIXY*X*Y+2*SIXZ*X*Z+2*SIYZ*Y*Z))*Z+SIXZ*X+SIYZ*Y)",
+            NOM_PARA=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "X", "Y", "Z"),
+        )
+        __PressionT = FORMULE(
+            VALE="("
+            "((SIXX-(SIXX*X*X+SIYY*Y*Y+SIZZ*Z*Z+2*SIXY*X*Y+2*SIXZ*X*Z+2*SIYZ*Y*Z))*X+SIXY*Y+SIXZ*Z)**2+"
+            "((SIYY-(SIXX*X*X+SIYY*Y*Y+SIZZ*Z*Z+2*SIXY*X*Y+2*SIXZ*X*Z+2*SIYZ*Y*Z))*Y+SIXY*X+SIYZ*Z)**2+"
+            "((SIZZ-(SIXX*X*X+SIYY*Y*Y+SIZZ*Z*Z+2*SIXY*X*Y+2*SIXZ*X*Z+2*SIYZ*Y*Z))*Z+SIXZ*X+SIYZ*Y)**2"
+            ")**0.5",
+            NOM_PARA=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "X", "Y", "Z"),
+        )
+    else:
+        # Formule en dimension 2 :
+        __PressionX = FORMULE(
+            VALE="((SIXX-(SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y))*X+SIXY*Y)",
+            NOM_PARA=("SIXX", "SIYY", "SIXY", "X", "Y"),
+        )
+        __PressionY = FORMULE(
+            VALE="((SIYY-(SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y))*Y+SIXY*X)",
+            NOM_PARA=("SIXX", "SIYY", "SIXY", "X", "Y"),
+        )
+        __PressionT = FORMULE(
+            VALE="("
+            "((SIXX-(SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y))*X+SIXY*Y)**2+"
+            "((SIYY-(SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y))*Y+SIXY*X)**2"
+            ")**0.5",
+            NOM_PARA=("SIXX", "SIYY", "SIXY", "X", "Y"),
+        )
+
     # Corps de la commande
     __chp = [None] * len(insts)
+    __chpFriction = [None] * len(insts)
     for i, inst in enumerate(insts):
         __sigm = CREA_CHAMP(
             TYPE_CHAM="NOEU_SIEF_R",
@@ -112,32 +155,95 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
                 reuse=MAILLAGE, MAILLAGE=MAILLAGE, DEFORME=_F(OPTION="TRAN", DEPL=__mdepl)
             )
 
-        __Pres = CREA_CHAMP(
+        #######################################
+        __presTol = CREA_CHAMP(
             TYPE_CHAM="NOEU_NEUT_F",
             OPERATION="AFFE",
             MAILLAGE=MAILLAGE,
-            AFFE=_F(GROUP_MA=GROUP_MA, NOM_CMP="X1", VALE_F=__Pression),
+            AFFE=_F(GROUP_MA=GROUP_MA, NOM_CMP=("X1", "X2"), VALE_F=(__Pression, __PressionT)),
         )
-        __pF = CREA_CHAMP(
-            TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=__Pres, CHAM_PARA=(__NormaleF, __sigm)
+        __pFTol = CREA_CHAMP(
+            TYPE_CHAM="NOEU_NEUT_R",
+            OPERATION="EVAL",
+            CHAM_F=__presTol,
+            CHAM_PARA=(__NormaleF, __sigm),
         )
-        #
         __chp[i] = CREA_CHAMP(
             TYPE_CHAM="NOEU_PRES_R",
             OPERATION="ASSE",
             MODELE=model,
-            ASSE=_F(GROUP_MA=GROUP_MA, CHAM_GD=__pF, NOM_CMP="X1", NOM_CMP_RESU="PRES"),
+            ASSE=(
+                _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFTol, NOM_CMP="X1", NOM_CMP_RESU="PRES"),
+                _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFTol, NOM_CMP="X2", NOM_CMP_RESU="CISA"),
+            ),
         )
+        ####################################
+        if dim == 3:
+            __presCom = CREA_CHAMP(
+                TYPE_CHAM="NOEU_NEUT_F",
+                OPERATION="AFFE",
+                MAILLAGE=MAILLAGE,
+                AFFE=_F(
+                    GROUP_MA=GROUP_MA,
+                    NOM_CMP=("X1", "X2", "X3"),
+                    VALE_F=(__PressionX, __PressionY, __PressionZ),
+                ),
+            )
+            __pFCom = CREA_CHAMP(
+                TYPE_CHAM="NOEU_NEUT_R",
+                OPERATION="EVAL",
+                CHAM_F=__presCom,
+                CHAM_PARA=(__NormaleF, __sigm),
+            )
+            __chpFriction[i] = CREA_CHAMP(
+                TYPE_CHAM="NOEU_DEPL_R",
+                OPERATION="ASSE",
+                MODELE=model,
+                ASSE=(
+                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X1", NOM_CMP_RESU="DX"),
+                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X2", NOM_CMP_RESU="DY"),
+                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X3", NOM_CMP_RESU="DZ"),
+                ),
+            )
+        else:
+            __presCom = CREA_CHAMP(
+                TYPE_CHAM="NOEU_NEUT_F",
+                OPERATION="AFFE",
+                MAILLAGE=MAILLAGE,
+                AFFE=_F(GROUP_MA=GROUP_MA, NOM_CMP=("X1", "X2"), VALE_F=(__PressionX, __PressionY)),
+            )
+            __pFCom = CREA_CHAMP(
+                TYPE_CHAM="NOEU_NEUT_R",
+                OPERATION="EVAL",
+                CHAM_F=__presCom,
+                CHAM_PARA=(__NormaleF, __sigm),
+            )
+            __chpFriction[i] = CREA_CHAMP(
+                TYPE_CHAM="NOEU_DEPL_R",
+                OPERATION="ASSE",
+                MODELE=model,
+                ASSE=(
+                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X1", NOM_CMP_RESU="DX"),
+                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X2", NOM_CMP_RESU="DY"),
+                ),
+            )
 
     MasquerAlarme("ALGORITH11_87")
     MasquerAlarme("COMPOR2_23")
 
-    RESULTAT = CREA_RESU(
-        reuse=RESULTAT,
-        RESULTAT=RESULTAT,
-        TYPE_RESU=typ_resu,
-        OPERATION="AFFE",
-        AFFE=[
+    affe = []
+    for i, inst in enumerate(insts):
+        affe.append(
+            _F(
+                NOM_CHAM="FORC_NODA",
+                INST=inst,
+                CHAM_GD=__chpFriction[i],
+                MODELE=model,
+                PRECISION=PRECISION,
+                CRITERE=CRITERE,
+            )
+        )
+        affe.append(
             _F(
                 NOM_CHAM="PRES_NOEU",
                 INST=inst,
@@ -146,8 +252,10 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
                 PRECISION=PRECISION,
                 CRITERE=CRITERE,
             )
-            for i, inst in enumerate(insts)
-        ],
+        )
+
+    RESULTAT = CREA_RESU(
+        reuse=RESULTAT, RESULTAT=RESULTAT, TYPE_RESU=typ_resu, OPERATION="AFFE", AFFE=affe
     )
 
     RetablirAlarme("COMPOR2_23")
