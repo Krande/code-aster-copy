@@ -2436,4 +2436,12 @@ def comb_sism_modal_ops(self, **args):
                     UTMESS("I", "SEISME_18", valk=comb_direction)
         # end mult_appui
     # end
+    model = mode_meca.getModel()
+    if model:
+        output_result.setModel(model)
+    else:
+        output_result.setMesh(MAILLAGE)
+    cara_elem = mode_meca.getElementaryCharacteristics()
+    if cara_elem:
+        output_result.setElementaryCharacteristics(cara_elem)
     return output_result
