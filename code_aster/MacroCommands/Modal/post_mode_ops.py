@@ -26,7 +26,7 @@ import aster
 from ...Cata.Syntax import _F
 from ...Supervis import CO
 from ...Messages import UTMESS
-from ...CodeCommands import CREA_TABLE, POST_ELEM, CREA_CHAMP, PROD_MATR_CHAM, PROJ_BASE
+from ...CodeCommands import CREA_TABLE, POST_ELEM, CREA_CHAMP, PROD_MATR_CHAM
 
 
 def getGravityCenter(model, cara, mater, group_ma):
@@ -208,6 +208,7 @@ def getModalMassIner(MODES, rigidBodyFields, excludedDOF, MASSE):
     model = nume_ddl.getModel()
 
     nbRigidModes = 6
+    npMatrix = MASSE.toNumpy()
     # -- Product M * Ud
     M_Ud = [None] * nbRigidModes
     for n in range(nbRigidModes):
@@ -224,17 +225,20 @@ def getModalMassIner(MODES, rigidBodyFields, excludedDOF, MASSE):
 
     # -- normalization of modes with respect to the mass matrix to get modal generalized masses
 
-    PROJ_BASE(
-        BASE=MODES,
-        STOCKAGE="DIAG",  # -- only diagonal values are needed
-        MATR_ASSE_GENE=(_F(MATRICE=CO("MRed"), MATR_ASSE=MASSE),),
-    )
-    geneMasses = np.sqrt(np.diag(MRed.toNumpy()))
+    nbModes = MODES.getNumberOfIndexes()
+    geneMassesSqrt = np.zeros(nbModes)
+    for m in range(nbModes):
+        phi = np.asarray(MODES.getField("DEPL", m + 1).getValues())
+        phi[excludedDOF] = 0.0
+        MphiVale = np.dot(npMatrix, phi)
+        # MphiVale[excludedDOF] = 0.0
+
+        geneMassesSqrt[m] = np.dot(phi, MphiVale)
+        if geneMassesSqrt[m] > 0:
+            geneMassesSqrt[m] = np.sqrt(geneMassesSqrt[m])
 
     # -- products Phi^T * (M * Ud)
     # -- division by generalized mass
-
-    nbModes = MODES.getNumberOfIndexes()
 
     valeEffeUnit = np.zeros((nbModes, 6))
     valeEffe = np.zeros((nbModes, 6))
@@ -245,10 +249,16 @@ def getModalMassIner(MODES, rigidBodyFields, excludedDOF, MASSE):
         Vale = np.zeros(nbModes)
         for m in range(nbModes):
             phi = MODES.getField("DEPL", m + 1).getValues()
-            Vale[m] = np.dot(MUd, phi) / geneMasses[m]
+            if geneMassesSqrt[m] > 0:
+                Vale[m] = np.dot(MUd, phi) / geneMassesSqrt[m]
+            else:
+                Vale[m] = np.dot(MUd, phi)
 
         valeEffe[:, n] = [Val**2 for Val in Vale]
-        valeEffeUnit[:, n] = valeEffe[:, n] / directionalglobalMasses[n]
+        if directionalglobalMasses[n] > 0:
+            valeEffeUnit[:, n] = valeEffe[:, n] / directionalglobalMasses[n]
+        else:
+            valeEffeUnit[:, n] = valeEffe[:, n]
 
     table = CREA_TABLE(
         LISTE=(
@@ -279,7 +289,6 @@ def post_mode_ops(self, MODE, GROUP_MA, MATR_MASS, CARA_ELEM=None):
     Macro-command POST_MODE
     """
 
-    # args = _F(args)
     nume_ddl = MODE.getDOFNumbering()
     model = nume_ddl.getModel()
     massMatrix = MODE.getMassMatrix()
