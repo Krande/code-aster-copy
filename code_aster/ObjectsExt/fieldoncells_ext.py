@@ -35,7 +35,7 @@ import subprocess
 from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector, deprecated, force_list
-from ..Utilities import MPI, ExecutionParameter, shared_tmpdir
+from ..Utilities import MPI, ExecutionParameter, SharedTmpdir
 
 
 class FieldOnCellsStateBuilder(InternalStateBuilder):
@@ -99,14 +99,14 @@ class ExtendedFieldOnCellsReal:
         mesh = self.getMesh()
         opt = "Mesh.VolumeEdges = 0;Mesh.VolumeFaces=0;Mesh.SurfaceEdges=0;Mesh.SurfaceFaces=0;View[0].ShowElement = 1;"
         if (local and mesh.isParallel()) or (split and mesh.isParallel()):
-            with shared_tmpdir("plot") as tmpdir:
-                filename = osp.join(tmpdir, f"field_{comm.rank}.med")
+            with SharedTmpdir("plot") as tmpdir:
+                filename = osp.join(tmpdir.path, f"field_{comm.rank}.med")
                 self.printMedFile(filename, local=True)
                 comm.Barrier()
                 if comm.rank == 0:
                     if split:
                         for i in range(comm.size):
-                            ff = osp.join(tmpdir, f"field_{i}.med")
+                            ff = osp.join(tmpdir.path, f"field_{i}.med")
                             subprocess.run(
                                 [
                                     ExecutionParameter().get_option(f"prog:{command}"),
@@ -116,14 +116,14 @@ class ExtendedFieldOnCellsReal:
                                 ]
                             )
                     else:
-                        files = [osp.join(tmpdir, f"field_{i}.med") for i in range(comm.size)]
+                        files = [osp.join(tmpdir.path, f"field_{i}.med") for i in range(comm.size)]
                         subprocess.run(
                             [ExecutionParameter().get_option(f"prog:{command}"), "-string", opt]
                             + files
                         )
         else:
-            with shared_tmpdir("plot") as tmpdir:
-                filename = osp.join(tmpdir, "field.med")
+            with SharedTmpdir("plot") as tmpdir:
+                filename = osp.join(tmpdir.path, "field.med")
                 self.printMedFile(filename, local=False)
                 if comm.rank == 0:
                     subprocess.run(

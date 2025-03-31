@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ import os.path as osp
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
-from code_aster.Utilities import petscInitialize, shared_tmpdir
+from code_aster.Utilities import SharedTmpdir, petscInitialize
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
@@ -132,8 +132,8 @@ VT = STAT_NON_LINE(
 
 s = VT.getField("SIEF_ELGA", VT.getAccessParameters()["NUME_ORDRE"][-1])
 
-with shared_tmpdir("foo") as tmpdir:
-    VT.printMedFile(osp.join(tmpdir, f"hsnv121f_{rank}.resu.med"))
+with SharedTmpdir("foo") as tmpdir:
+    VT.printMedFile(osp.join(tmpdir.path, f"hsnv121f_{rank}.resu.med"))
 
 test = CA.TestCase()
 

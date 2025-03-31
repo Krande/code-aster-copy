@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ from code_aster.Applications.dynamic_substructuring import (
     Interface,
     macPlot,
 )
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 import os.path as osp
 
 test = CA.TestCase()
@@ -176,8 +176,8 @@ MODES_1 = CALC_MODES(
 )
 
 
-with shared_tmpdir("sdlv102b") as tmpdir:
-    printToMedFile(MODES_1, osp.join(tmpdir, "modes1.resu.med"))
+with SharedTmpdir("sdlv102b") as tmpdir:
+    printToMedFile(MODES_1, osp.join(tmpdir.path, "modes1.resu.med"))
 
 nModes2 = nModes1
 
@@ -191,8 +191,8 @@ MODES_2 = CALC_MODES(
     VERI_MODE=_F(STOP_ERREUR="NON"),
 )
 
-with shared_tmpdir("sdlv102b") as tmpdir:
-    printToMedFile(MODES_2, osp.join(tmpdir, "modes2.resu.med"))
+with SharedTmpdir("sdlv102b") as tmpdir:
+    printToMedFile(MODES_2, osp.join(tmpdir.path, "modes2.resu.med"))
 
 # --  DEFINITION DES INTERFACES
 
@@ -207,9 +207,9 @@ interface.computeInterfaceDofs("IFS")
 ResuS_Tuyau1 = subS1.computeInterfaceModes()
 ResuS_Tuyau2 = subS2.computeInterfaceModes()
 
-with shared_tmpdir("sdlv102b") as tmpdir:
-    ResuS_Tuyau1.printMedFile(osp.join(tmpdir, "interface1.resu.med"))
-    ResuS_Tuyau2.printMedFile(osp.join(tmpdir, "interface2.resu.med"))
+with SharedTmpdir("sdlv102b") as tmpdir:
+    ResuS_Tuyau1.printMedFile(osp.join(tmpdir.path, "interface1.resu.med"))
+    ResuS_Tuyau2.printMedFile(osp.join(tmpdir.path, "interface2.resu.med"))
 
 
 myStructure = Structure([subS1, subS2], [interface])
@@ -217,9 +217,9 @@ myStructure = Structure([subS1, subS2], [interface])
 nmodes = 6
 omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes)
 
-with shared_tmpdir("sdlv102b") as tmpdir:
+with SharedTmpdir("sdlv102b") as tmpdir:
     for isub, resu in enumerate(resuSub):
-        resu.printMedFile(osp.join(tmpdir, f"resu{isub}.resu.med"))
+        resu.printMedFile(osp.join(tmpdir.path, f"resu{isub}.resu.med"))
 
 print("**** Eigen Pulses ****")
 print(omega)

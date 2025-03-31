@@ -24,7 +24,7 @@ import numpy as np
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
@@ -164,8 +164,8 @@ test.assertEqual(globalNodesNum[-1], nodesGlobLast[rank])
 
 nbrgField = mesh.getNumberingField()
 test.assertEqual(nbrgField.getValues(), globalNodesNum)
-with shared_tmpdir("foo") as tmpdir:
-    nbrgField.printMedFile(osp.join(tmpdir, f"nbrg_{rank}.resu.med"))
+with SharedTmpdir("foo") as tmpdir:
+    nbrgField.printMedFile(osp.join(tmpdir.path, f"nbrg_{rank}.resu.med"))
 
 # Owner of Nodes
 nodesOwner = mesh.getNodesOwner()
@@ -173,8 +173,8 @@ test.assertEqual(nodesOwner[1], rank)
 
 ownerField = mesh.getOwnerField()
 test.assertEqual(ownerField.getValues(), nodesOwner)
-with shared_tmpdir("foo") as tmpdir:
-    ownerField.printMedFile(osp.join(tmpdir, f"owner_{rank}.resu.med"))
+with SharedTmpdir("foo") as tmpdir:
+    ownerField.printMedFile(osp.join(tmpdir.path, f"owner_{rank}.resu.med"))
 
 # Node 92 (index is 91) is shared by all meshes (owner is 1)
 node92 = [85, 84, 106]

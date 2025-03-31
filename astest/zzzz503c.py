@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import os.path as osp
 from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 
 from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import readMedFileToResults
 
@@ -97,8 +97,8 @@ val = [0.134228076192, 0.134176297047, 0.154099687654, 0.154189676715]
 test.assertAlmostEqual(sfon[4, 1], val[rank])
 
 
-with shared_tmpdir("zzzz503c_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.zzzz503c.no.med")
+with SharedTmpdir("zzzz503c_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.zzzz503c.no.med")
     DEFI_FICHIER(UNITE=81, FICHIER=medfile, TYPE="BINARY")
 
     IMPR_RESU(
@@ -111,8 +111,8 @@ with shared_tmpdir("zzzz503c_") as tmpdir:
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=81)
 
-with shared_tmpdir("zzzz503c_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu" + str(rank) + ".zzzz503c.no.med")
+with SharedTmpdir("zzzz503c_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu" + str(rank) + ".zzzz503c.no.med")
     DEFI_FICHIER(UNITE=81, FICHIER=medfile, TYPE="BINARY")
 
     IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=resu), VERSION_MED="4.0.0", UNITE=81)
@@ -129,8 +129,8 @@ with shared_tmpdir("zzzz503c_") as tmpdir:
     depl2 = resu.getField("DEPL", 1).getValues()
     test.assertEqual(depl1, depl2)
 
-with shared_tmpdir("zzzz503c_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.zzzz503c.ma.med")
+with SharedTmpdir("zzzz503c_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.zzzz503c.ma.med")
     DEFI_FICHIER(UNITE=82, FICHIER=medfile, TYPE="BINARY")
 
     IMPR_RESU(
@@ -144,8 +144,8 @@ with shared_tmpdir("zzzz503c_") as tmpdir:
     DEFI_FICHIER(ACTION="LIBERER", UNITE=82)
 
 # load result in sequential
-with shared_tmpdir("zzzz503c_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.zzzz503c.med")
+with SharedTmpdir("zzzz503c_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.zzzz503c.med")
     DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY")
 
     IMPR_RESU(
