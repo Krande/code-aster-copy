@@ -2034,13 +2034,16 @@ def comb_sism_modal_ops(self, **args):
                         # modal spectral response
                         # preparing a list of reac_noda for all modes and all group_no
                         reac_noda = []
+                        dofs = (
+                            mode_meca.getDOFNumbering()
+                            .getEquationNumbering()
+                            .getDOFs(list_cmp=[direction.replace("O", "D")], list_grpno=l_group_no)
+                        )
                         for imode in nume_ordres:
                             # all values of reac_node for mode
                             reac_noda_all = mode_meca.getField("REAC_NODA", imode)
                             # values for all nodes in the same group_no without knowing the order
-                            reac_noda_by_mode = reac_noda_all.getValues(
-                                [direction.replace("O", "D")], l_group_no
-                            )
+                            reac_noda_by_mode = reac_noda_all.getValues(dofs)
                             reac_noda.append(reac_noda_by_mode)
                         # Reac_node for all modes at 1 support
                         reac_noda = np.sum(reac_noda, axis=1)

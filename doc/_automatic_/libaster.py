@@ -1887,6 +1887,18 @@ class EquationNumbering(DataStructure):
             dict[int, str] : dofs id for each node id and component id
         """
 
+    def getDOFs(self, sameRank=False, list_cmp=[], list_grpno=[]):
+        """Return list of DOFs
+
+        Arguments:
+            sameRank = False: Use only owned nodes / False: Use all nodes
+            list_cmp = []: Use all cmp / keep only cmp given
+            list_grpno = []: Use all nodes / keep only nodes given
+
+        Returns:
+            list[int]: list of dofs.
+        """
+
     def getDOFsWithDescription(self, *args, **kwargs):
         """Overloaded function.
 
