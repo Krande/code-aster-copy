@@ -81,6 +81,8 @@ module HHO_GV_module
     private :: initialize_gv, hhoCalcStabCoeffGV
     private :: hhoComputeLhsLargeLM, hhoComputeLhsLargeML
     private :: hhoComputeLhsLargeVM, hhoComputeLhsLargeMV
+    private :: hhoComputeLhsSmallLM, hhoComputeLhsSmallML
+    private :: hhoComputeLhsSmallVM, hhoComputeLhsSmallMV
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -197,7 +199,7 @@ contains
         else
             mk_gbs_tot = mk_gbs_sym
         end if
-        mk_gbs_cmp = gv_gbs
+        mk_gbs_cmp = gv_gbs/hhoCell%ndim
 !
 ! ------ initialization
 !
@@ -211,14 +213,14 @@ contains
             call lhs_vl%initialize(gv_total_dofs, gv_cbs, 0.d0)
             call lhs_lm%initialize(gv_cbs, mk_total_dofs, 0.d0)
             call lhs_lv%initialize(gv_cbs, gv_total_dofs, 0.d0)
-            call mk_AT%initialize(mk_gbs, mk_gbs, 0.d0)
-            call mk_TMP%initialize(mk_gbs, mk_total_dofs, 0.d0)
+            call mk_AT%initialize(mk_gbs_tot, mk_gbs_tot, 0.d0)
+            call mk_TMP%initialize(mk_gbs_tot, mk_total_dofs, 0.d0)
             call gv_AT%initialize(gv_gbs, gv_gbs, 0.d0)
             call gv_TMP%initialize(gv_gbs, gv_total_dofs, 0.d0)
-            call mv_AT%initialize(mk_gbs, gv_total_dofs, 0.d0)
-            call ml_AT%initialize(mk_gbs, gv_cbs, 0.d0)
-            call vm_AT%initialize(gv_total_dofs, mk_gbs, 0.d0)
-            call lm_AT%initialize(gv_cbs, mk_gbs, 0.d0)
+            call mv_AT%initialize(mk_gbs_tot, gv_total_dofs, 0.d0)
+            call ml_AT%initialize(mk_gbs_tot, gv_cbs, 0.d0)
+            call vm_AT%initialize(gv_total_dofs, mk_gbs_tot, 0.d0)
+            call lm_AT%initialize(gv_cbs, mk_gbs_tot, 0.d0)
         end if
 !
         mk_bT = 0.d0
@@ -387,19 +389,18 @@ contains
 ! ---------- += weight * (dSig_deps : gs_phi, gs_phi)
                     call hhoComputeLhsSmall(hhoCell, dSig_deps, weight, BSCEvalG, mk_gbs_sym, &
                                             mk_gbs_cmp, mk_AT)
-! ---------- TODO: Add missing terms
 ! ---------- += weight * (gs_phi, dSig_dv : c_phi) -> lhs_mv
-!                     call hhoComputeLhsSmallMG(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
-!                                             BSCEvalG, mk_gbs, mv_AT)
-! ! ---------- += weight * (gs_phi, dSig_dl : c_phi) -> lhs_ml
-!                     call hhoComputeLhsSmallMG(hhoCell, dSig_dl, weight, BSCEval, gv_cbs, &
-!                                             BSCEvalG, mk_gbs, ml_AT)
-! ! ---------- += weight * (dsv_dEps : gs_phi, c_phi) -> lhs_vm
-!                     call hhoComputeLhsSmallGM(hhoCell, dsv_dEps, weight, BSCEval, gv_cbs, &
-!                                             BSCEvalG, mk_gbs, vm_AT)
-! ! ---------- += weight * (dsl_dEps : g_phi, c_phi) -> lhs_lm
-!                     call hhoComputeLhsSmallGM(hhoCell, dsl_dEps, weight, BSCEval, gv_cbs, &
-!                                             BSCEvalG, mk_gbs, lm_AT)
+                    call hhoComputeLhsSmallMV(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
+                                              BSCEvalG, mk_gbs_cmp, mv_AT)
+! ---------- += weight * (gs_phi, dSig_dl : c_phi) -> lhs_ml
+                    call hhoComputeLhsSmallML(hhoCell, dSig_dl, weight, BSCEval, gv_cbs, &
+                                              BSCEvalG, mk_gbs_cmp, ml_AT)
+! ---------- += weight * (dsv_dEps : gs_phi, c_phi) -> lhs_vm
+                    call hhoComputeLhsSmallVM(hhoCell, dsv_dEps, weight, BSCEval, gv_cbs, &
+                                              BSCEvalG, mk_gbs_sym, mk_gbs_cmp, vm_AT)
+! ---------- += weight * (dsl_dEps : gs_phi, c_phi) -> lhs_lm
+                    call hhoComputeLhsSmallLM(hhoCell, dsl_dEps, weight, BSCEval, gv_cbs, &
+                                              BSCEvalG, mk_gbs_sym, mk_gbs_cmp, lm_AT)
                 end if
 ! ---------- += weight * (dgv_dv : g_phi, g_phi)
                 call hhoComputeLhsRigiTher(hhoCell, dsgv_dgv, weight, BSCEvalG, gv_gbs, gv_AT)
@@ -473,7 +474,7 @@ contains
 ! ----- += coeff * stab_vv
             call lhs_vv%add(hhoGVState%stab, gv_stab)
 !
-! ----- the symmetry is checked inside gdef_log
+! ----- the symmetry is checked inside behaviour
             lhs_lv%m = transpose(lhs_vl%m)
 !
 ! ----- assembly
@@ -529,7 +530,6 @@ contains
         case ('GDEF_LOG')
             ASSERT(hhoComporState%l_largestrain)
         case ('PETIT')
-            ASSERT(ASTER_FALSE)
             ASSERT(.not. hhoComporState%l_largestrain)
         case default
             ASSERT(ASTER_FALSE)
@@ -663,9 +663,10 @@ contains
         if (cod .eq. 1) goto 999
 !
 ! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
+        tlogCurr = 0.d0
+        tlogCurr(1:neu) = silcp(1:neu)
         if (lVari) then
-            viCurr(lgpg-1:lgpg) = 0.d0
-            viCurr(lgpg-5:lgpg-6+neu) = silcp(1:neu)
+            viCurr(lgpg-5:lgpg-6+neu) = tlogCurr(1:neu)
             hhoCS%vari_curr((ipg-1)*lgpg+1:ipg*lgpg) = viCurr
         end if
 !
@@ -673,8 +674,6 @@ contains
 !
         dtde = 0.d0
         dtde(1:neu, 1:neu) = dsde(1:neu, 1:neu)
-        tlogCurr = 0.d0
-        tlogCurr(1:neu) = silcp(1:neu)
 !
         call poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
                     tlogCurr, F_prev, lgpg, viCurr, ndim, &
@@ -753,7 +752,7 @@ contains
 !
 ! ----- Verify symmetry
             norm = max(1.d0, dsv_dl)
-            ASSERT(abs(dsv_dl-dsl_dv) < 1d-8*norm)
+            ASSERT(abs(dsv_dl-dsl_dv) < 1d-10*norm)
         end if
 ! print *, hhoCS%option
 ! print *, ipg, lgpg, ntot
@@ -766,7 +765,6 @@ contains
 ! print*, dPK1_dl
 ! print*, dsv_dF
 ! print*, dsl_dF
-!if (abs(dsl_dl) < 1d-8) dsl_dl = 1.d0
 !
 999     continue
 !
@@ -837,7 +835,7 @@ contains
         real(Kind=8) :: eplcm(3*ndim+2), eplci(3*ndim+2)
         real(Kind=8) :: silcm(3*ndim+2), silcp(3*ndim+2), dsde(3*ndim+2, 3*ndim+2)
         real(kind=8) :: sigPrev(11), viPrev(hhoCS%lgpg), viCurr(hhoCS%lgpg)
-        real(kind=8) :: dsl_dv
+        real(kind=8) :: dsl_dv, norm
         integer :: lgpg, imate, neu, neg, ntot
         aster_logical :: lCorr, lMatr, lSigm, lVari
 !
@@ -893,7 +891,6 @@ contains
         Cauchy_curr = 0.d0
         Cauchy_curr(1:neu) = silcp(1:neu)
 !
-!
 ! --------- For new prediction and nmisot.F90
         if (L_PRED(hhoCS%option)) then
             Cauchy_curr = 0.d0
@@ -948,6 +945,9 @@ contains
 ! print *, sig_vari, sig_lagv, sig_gv
 ! print *, dsv_dv, dsv_dl, dsl_dl, dsgv_dgv
 !if (abs(dsl_dl) < 1d-8) dsl_dl = 1.d0
+! ----- Verify symmetry
+            norm = max(1.d0, dsv_dl)
+            ASSERT(abs(dsv_dl-dsl_dv) < 1d-10*norm)
         end if
 !
 999     continue
@@ -1263,7 +1263,7 @@ contains
 !
         integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
 !
-        if (ASTER_FALSE) then
+        if (ASTER_TRUE) then
 !
             call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, &
                                       hhoMecaState%stab)
@@ -1287,13 +1287,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsLargeMV(hhoCell, module_tang, weight, BSCEval, gv_cbs, &
+    subroutine hhoComputeLhsLargeMV(hhoCell, dPK1_dv, weight, BSCEval, gv_cbs, &
                                     BSCEvalG, mk_gbs, AT)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        real(kind=8), intent(in) :: module_tang(3, 3)
+        real(kind=8), intent(in) :: dPK1_dv(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
@@ -1303,9 +1303,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
 !
-!   Compute the scalar product AT += (module_tang:cphi, gphi)_T at a quadrature point
+!   Compute the scalar product AT += (dPK1_dv:cphi, gphi)_T at a quadrature point
 !   In hhoCell      : the current HHO Cell
-!   In module_tang  : elasto-plastic tangent moduli
+!   In dPK1_dv      : elasto-plastic tangent moduli
 !   In weight       : quadrature weight
 !   In BSCEval      : Basis of one composant gphi
 !   In gbs_cmp      : size of BSCEval
@@ -1317,9 +1317,9 @@ contains
         integer :: i, j, k, row, gbs_cmp, offset
 ! --------------------------------------------------------------------------------------------------
 !
-! --------- Eval (module_tang : scphi)_T
+! --------- Eval (dPK1_dv : scphi)_T
         do i = 1, gv_cbs
-            qp_Acphi(:, :, i) = weight*module_tang*BSCEval(i)
+            qp_Acphi(:, :, i) = weight*dPK1_dv*BSCEval(i)
         end do
         offset = AT%ncols-gv_cbs+1
 !
@@ -1341,13 +1341,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsLargeVM(hhoCell, module_tang, weight, BSCEval, gv_cbs, &
+    subroutine hhoComputeLhsLargeVM(hhoCell, dsv_dF, weight, BSCEval, gv_cbs, &
                                     BSCEvalG, mk_gbs, AT)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        real(kind=8), intent(in) :: module_tang(3, 3)
+        real(kind=8), intent(in) :: dsv_dF(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
@@ -1357,9 +1357,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
 !
-!   Compute the scalar product AT += (cphi, module_tang:gphi)_T at a quadrature point
+!   Compute the scalar product AT += (cphi, dsv_dF:gphi)_T at a quadrature point
 !   In hhoCell      : the current HHO Cell
-!   In module_tang  : elasto-plastic tangent moduli
+!   In dsv_dF       : elasto-plastic tangent moduli
 !   In weight       : quadrature weight
 !   In BSCEval      : Basis of one composant gphi
 !   In gbs_cmp      : size of BSCEval
@@ -1371,12 +1371,12 @@ contains
         integer :: i, j, k, col, gbs_cmp, offset
 ! --------------------------------------------------------------------------------------------------
 !
-! --------- Eval (module_tang : sgphi)_T
+! --------- Eval (dsv_dF : sgphi)_T
         gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
         offset = AT%nrows-gv_cbs+1
 !
         do i = 1, gbs_cmp
-            qp_Agphi(:, :, i) = weight*module_tang*BSCEvalG(i)
+            qp_Agphi(:, :, i) = weight*dsv_dF*BSCEvalG(i)
         end do
 !
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
@@ -1395,13 +1395,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsLargeML(hhoCell, module_tang, weight, BSCEval, gv_cbs, &
+    subroutine hhoComputeLhsLargeML(hhoCell, dPK1_dl, weight, BSCEval, gv_cbs, &
                                     BSCEvalG, mk_gbs, AT)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        real(kind=8), intent(in) :: module_tang(3, 3)
+        real(kind=8), intent(in) :: dPK1_dl(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
@@ -1411,9 +1411,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
 !
-!   Compute the scalar product AT += (module_tang:cphi, gphi)_T at a quadrature point
+!   Compute the scalar product AT += (dPK1_dl:cphi, gphi)_T at a quadrature point
 !   In hhoCell      : the current HHO Cell
-!   In module_tang  : elasto-plastic tangent moduli
+!   In dPK1_dl      : elasto-plastic tangent moduli
 !   In weight       : quadrature weight
 !   In BSCEval      : Basis of one composant gphi
 !   In gbs_cmp      : size of BSCEval
@@ -1425,9 +1425,9 @@ contains
         integer :: i, j, k, row, gbs_cmp
 ! --------------------------------------------------------------------------------------------------
 !
-! --------- Eval (module_tang : scphi)_T
+! --------- Eval (dPK1_dl : scphi)_T
         do i = 1, gv_cbs
-            qp_Acphi(:, :, i) = weight*module_tang*BSCEval(i)
+            qp_Acphi(:, :, i) = weight*dPK1_dl*BSCEval(i)
         end do
 !
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
@@ -1448,13 +1448,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsLargeLM(hhoCell, module_tang, weight, BSCEval, gv_cbs, &
+    subroutine hhoComputeLhsLargeLM(hhoCell, dsl_dF, weight, BSCEval, gv_cbs, &
                                     BSCEvalG, mk_gbs, AT)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        real(kind=8), intent(in) :: module_tang(3, 3)
+        real(kind=8), intent(in) :: dsl_dF(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
@@ -1464,9 +1464,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
 !
-!   Compute the scalar product AT += (cphi, module_tang:gphi)_T at a quadrature point
+!   Compute the scalar product AT += (cphi, dsl_dF:gphi)_T at a quadrature point
 !   In hhoCell      : the current HHO Cell
-!   In module_tang  : elasto-plastic tangent moduli
+!   In dsl_dF       : elasto-plastic tangent moduli
 !   In weight       : quadrature weight
 !   In BSCEval      : Basis of one composant gphi
 !   In gbs_cmp      : size of BSCEval
@@ -1478,11 +1478,11 @@ contains
         integer :: i, j, k, col, gbs_cmp
 ! --------------------------------------------------------------------------------------------------
 !
-! --------- Eval (module_tang : sgphi)_T
+! --------- Eval (dsl_dF : sgphi)_T
         gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
 !
         do i = 1, gbs_cmp
-            qp_Agphi(:, :, i) = weight*module_tang*BSCEvalG(i)
+            qp_Agphi(:, :, i) = weight*dsl_dF*BSCEvalG(i)
         end do
 !
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
@@ -1494,6 +1494,264 @@ contains
                     col = col+1
                 end do
             end do
+        end do
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsSmallMV(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
+                                    BSCEvalG, mk_gbs_cmp, AT)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: dSig_dv(6)
+        real(kind=8), intent(in) :: weight
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
+        integer, intent(in) :: gv_cbs, mk_gbs_cmp
+        type(HHO_matrix), intent(inout) :: AT
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (dSig_dv:cphi, gsphi)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In dSig_dv      : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs_cmp      : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out AT          : contribution of At
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Acphi(6)
+        integer :: i, k, col, deca
+! --------------------------------------------------------------------------------------------------
+!
+! -------- Compute scalar_product of (qp_Acphi, sgphi)_T
+! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
+        col = AT%ncols-gv_cbs+1
+        do k = 1, gv_cbs
+! --------- Eval (dSig_dv : scphi)_T
+            qp_Acphi = weight*dSig_dv*BSCEval(k)
+            deca = 1
+            do i = 1, hhoCell%ndim
+                call daxpy_1(mk_gbs_cmp, qp_Acphi(i), BSCEvalG, AT%m(deca:, col))
+                deca = deca+mk_gbs_cmp
+            end do
+!
+! ---- non-diagonal terms
+            select case (hhoCell%ndim)
+            case (3)
+                do i = 1, 3
+                    call daxpy_1(mk_gbs_cmp, qp_Acphi(3+i), BSCEvalG, AT%m(deca:, col))
+                    deca = deca+mk_gbs_cmp
+                end do
+            case (2)
+                call daxpy_1(mk_gbs_cmp, qp_Acphi(4), BSCEvalG, AT%m(deca:, col))
+                deca = deca+mk_gbs_cmp
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+!
+            col = col+1
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsSmallVM(hhoCell, dsv_dEps, weight, BSCEval, gv_cbs, &
+                                    BSCEvalG, mk_gbs_sym, mk_gbs_cmp, AT)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: dsv_dEps(6)
+        real(kind=8), intent(in) :: weight
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
+        integer, intent(in) :: gv_cbs, mk_gbs_sym, mk_gbs_cmp
+        type(HHO_matrix), intent(inout) :: AT
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (cphi, dsv_dEps:sgphi)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In dsv_dEps     : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In mk_gbs_cmp   : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out AT          : contribution of At
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT), qp_dsv_dEps(6)
+        integer :: i, offset, deca
+! --------------------------------------------------------------------------------------------------
+!
+! -------- Compute (dsv_dEps : gs_phi)
+! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
+        qp_dsv_dEps = weight*dsv_dEps
+        deca = 1
+        do i = 1, hhoCell%ndim
+            call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(i), BSCEvalG, qp_Agphi(deca))
+            deca = deca+mk_gbs_cmp
+        end do
+!
+! ---- non-diagonal terms
+        select case (hhoCell%ndim)
+        case (3)
+            do i = 1, 3
+                call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(3+i), BSCEvalG, qp_Agphi(deca))
+                deca = deca+mk_gbs_cmp
+            end do
+        case (2)
+            call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(4), BSCEvalG, qp_Agphi(deca))
+            deca = deca+mk_gbs_cmp
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+        ASSERT(deca-1 == mk_gbs_sym)
+!
+        offset = AT%nrows-gv_cbs+1
+!
+! -------- Compute scalar_product of (qp_Aphi, sgphi)_T
+! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
+        do i = 1, mk_gbs_sym
+            call daxpy_1(gv_cbs, qp_Agphi(i), BSCEval, AT%m(offset:, i))
+        end do
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsSmallML(hhoCell, dSig_dl, weight, BSCEval, gv_cbs, &
+                                    BSCEvalG, mk_gbs_cmp, AT)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: dSig_dl(6)
+        real(kind=8), intent(in) :: weight
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
+        integer, intent(in) :: gv_cbs, mk_gbs_cmp
+        type(HHO_matrix), intent(inout) :: AT
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (dSig_dl:cphi, gsphi)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In dSig_dl      : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs_cmp      : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out AT          : contribution of At
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Acphi(6)
+        integer :: i, k, deca
+! --------------------------------------------------------------------------------------------------
+!
+! -------- Compute scalar_product of (qp_Acphi, sgphi)_T
+! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
+        do k = 1, gv_cbs
+! --------- Eval (dSig_dl : scphi)_T
+            qp_Acphi = weight*dSig_dl*BSCEval(k)
+            deca = 1
+            do i = 1, hhoCell%ndim
+                call daxpy_1(mk_gbs_cmp, qp_Acphi(i), BSCEvalG, AT%m(deca:, k))
+                deca = deca+mk_gbs_cmp
+            end do
+!
+            ! ---- non-diagonal terms
+            select case (hhoCell%ndim)
+            case (3)
+                do i = 1, 3
+                    call daxpy_1(mk_gbs_cmp, qp_Acphi(3+i), BSCEvalG, AT%m(deca:, k))
+                    deca = deca+mk_gbs_cmp
+                end do
+            case (2)
+                call daxpy_1(mk_gbs_cmp, qp_Acphi(4), BSCEvalG, AT%m(deca:, k))
+                deca = deca+mk_gbs_cmp
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        end do
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsSmallLM(hhoCell, dsl_dEps, weight, BSCEval, gv_cbs, &
+                                    BSCEvalG, mk_gbs_sym, mk_gbs_cmp, AT)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: dsl_dEps(6)
+        real(kind=8), intent(in) :: weight
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
+        integer, intent(in) :: gv_cbs, mk_gbs_sym, mk_gbs_cmp
+        type(HHO_matrix), intent(inout) :: AT
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (cphi, dsl_dEps:gsphi)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In dsl_dEps     : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs_cmp      : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out AT          : contribution of At
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT), qp_dsl_dEps(6)
+        integer :: i, deca
+! --------------------------------------------------------------------------------------------------
+!
+! -------- Compute (dsl_dEps : gsphi)
+! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
+        qp_dsl_dEps = weight*dsl_dEps
+        deca = 1
+        do i = 1, hhoCell%ndim
+            call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(i), BSCEvalG, qp_Agphi(deca))
+            deca = deca+mk_gbs_cmp
+        end do
+!
+! ---- non-diagonal terms
+        select case (hhoCell%ndim)
+        case (3)
+            do i = 1, 3
+                call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(3+i), BSCEvalG, qp_Agphi(deca))
+                deca = deca+mk_gbs_cmp
+            end do
+        case (2)
+            call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(4), BSCEvalG, qp_Agphi(deca))
+            deca = deca+mk_gbs_cmp
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+        ASSERT(deca-1 == mk_gbs_sym)
+!
+! -------- Compute scalar_product of (qp_Acphi, sgphi)_T
+! -------- (RAPPEL: the composents of the gradient are saved by G11, G22, G33, G12, G13, G23)
+        do i = 1, mk_gbs_sym
+            call daxpy_1(gv_cbs, qp_Agphi(i), BSCEval, AT%m(:, i))
         end do
     end subroutine
 !
