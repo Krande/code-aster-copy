@@ -62,7 +62,6 @@ subroutine te0516(option, nomte)
 #include "asterfort/porea3.h"
 #include "asterfort/pouex7.h"
 #include "asterfort/poutre_modloc.h"
-#include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
@@ -161,12 +160,8 @@ subroutine te0516(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PDDEPLA', 'L', idepla)
 !
-    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
-                itab=jtab)
-    icontm = jtab(1)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
-                itab=jtab)
-    ivarim = jtab(1)
+    call jevech('PCONTMR', 'L', icontm)
+    call jevech('PVARIMR', 'L', ivarim)
 !
 !   Pour matric=(RIGI_MECA_TANG) : valeurs "+" égalent valeurs "-"
     icontp = icontm
@@ -218,19 +213,8 @@ subroutine te0516(option, nomte)
         call jevech('PCODRET', 'E', jcret)
     end if
     if (lVari) then
-        call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, &
-                    itab=jtab)
-        ivarmp = jtab(1)
-!       istrmp present seulement apres la 1ere iteration (volontairement)
-        call tecach('ONO', 'PSTRXMP', 'L', iret, nval=7, &
-                    itab=jtab)
-        if (iret .eq. 0) then
-            istrmp = jtab(1)
-        elseif (iret .eq. 2) then
-            istrmp = 0
-        else
-            ASSERT(.false.)
-        end if
+        call jevech('PVARIMP', 'L', ivarmp)
+        call jevech('PSTRXMP', 'L', istrmp)
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PSTRXPR', 'E', istrxp)
     end if
@@ -371,9 +355,7 @@ subroutine te0516(option, nomte)
                 end do
             else
                 do ii = 1, nc
-                    if (istrmp .ne. 0) then
-                        deps(ii) = zr(istrmp+kk+ii)
-                    end if
+                    deps(ii) = zr(istrmp+kk+ii)
                     do jj = 1, 2*nc
                         eps(ii) = eps(ii)+d1b(ii, jj)*u(jj)
                         deps(ii) = deps(ii)+d1b(ii, jj)*ddu(jj)

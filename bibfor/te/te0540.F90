@@ -64,7 +64,6 @@ subroutine te0540(option, nomte)
 #include "asterfort/porea1.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
@@ -164,10 +163,8 @@ subroutine te0540(option, nomte)
 !   (avec rigi_meca_tang ca n a pas de sens). Ce champ est initialise a 0 par la routine nmmatr.
     call jevech('PDEPLPR', 'L', ideplp)
 !
-    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
-    icontm = jtab(1)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    ivarim = jtab(1)
+    call jevech('PCONTMR', 'L', icontm)
+    call jevech('PVARIMR', 'L', ivarim)
 
 !   Pour matric=(RIGI_MECA_TANG) : valeurs "+" égalent valeurs "-"
     icontp = icontm
@@ -220,8 +217,7 @@ subroutine te0540(option, nomte)
         call jevech('PCODRET', 'E', jcret)
     end if
     if (lVari) then
-        call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
-        ivarmp = jtab(1)
+        call jevech('PVARIMP', 'L', ivarmp)
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PSTRXPR', 'E', istrxp)
     end if

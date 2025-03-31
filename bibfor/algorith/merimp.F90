@@ -32,7 +32,6 @@ subroutine merimp(l_xfem, l_dyna, &
 #include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
@@ -41,6 +40,7 @@ subroutine merimp(l_xfem, l_dyna, &
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcex.h"
+#include "asterfort/vtzero.h"
 #include "asterfort/xajcin.h"
 !
     aster_logical, intent(in) :: l_xfem, l_dyna
@@ -164,11 +164,12 @@ subroutine merimp(l_xfem, l_dyna, &
 !
 ! - Get structural variables from previous iteration
 !
-    call exisd('CHAMP_GD', stru_curr(1:19), iret)
-    if (iret .ne. 0 .and. iter_newt .ge. 2) then
+    call exisd('CHAMP_GD', stru_prev(1:19), iret)
+    if (iret .ne. 0 .and. iter_newt .lt. 2) then
+        call copisd('CHAMP_GD', 'V', stru_prev(1:19), stru_iter(1:19))
+        call vtzero(stru_iter(1:19), 'CHAM_ELEM')
+    elseif (iter_newt .ge. 2) then
         call copisd('CHAMP_GD', 'V', stru_curr(1:19), stru_iter(1:19))
-    else
-        call detrsd('CHAMP', stru_iter(1:19))
     end if
 !
 ! - Extend elementary field for internal variables
