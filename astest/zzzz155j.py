@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ from code_aster.CA import MPI
 import os.path as osp
 
 from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMedFileToResults
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
@@ -110,8 +110,8 @@ result.setTime(0.0, 1)
 result.userName = "MONRESU1"
 
 medfile = ""
-with shared_tmpdir("zzzz155j_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.zzzz155j.med")
+with SharedTmpdir("zzzz155j_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.zzzz155j.med")
     DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY")
     # Single med file
     IMPR_RESU(

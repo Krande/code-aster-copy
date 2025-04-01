@@ -540,8 +540,7 @@ contains
             call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
             call readVector('PDEPLAR', mk_total_dofs, this%depl_curr)
         else if (hhoComporState%option == "REFE_FORC_NODA") then
-            call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-            call readVector('PDEPLMR', mk_total_dofs, this%depl_curr)
+            !! Nothing to load
         else
             ASSERT(ASTER_FALSE)
         end if

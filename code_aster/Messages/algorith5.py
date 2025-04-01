@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -167,16 +167,6 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
  argument du mot-clé "REPERE" inconnu
 """
     ),
-    40: _(
-        """
- les rigidités de chocs doivent être strictement positives
-"""
-    ),
-    41: _(
-        """
- les listes AMOR_POST_FL, DEPL_POST_FL et RIGI_POST_FL doivent avoir la même longueur
-"""
-    ),
     42: _(
         """
  les bases utilisées pour la projection sont différentes.
@@ -263,24 +253,6 @@ La nature, les noeuds du des non-linéarités localisées sont différents.
 
 Conseil :
    Vérifier vos données concernant les dispositifs de choc.
-"""
-    ),
-    84: _(
-        """
- les données dans la liste DEPL_POST_FL doivent être classées par ordre croissant
-"""
-    ),
-    85: _(
-        """
- les données dans listes DEPL_POST_FL et RIGI_POST_FL conduisent à des déformations
- totales qui ne sont pas classées par ordre croissant.
- le résultat de DEPL_POST_FL+FNOR_POST_FL/RIGI_POST_FL doit être croissant
-"""
-    ),
-    86: _(
-        """
- la déformation courante est supérieure à la dernière valeur spécifiée dans RIGI_POST_FL
- La raideur utilisée est à présent constante
 """
     ),
     87: _(

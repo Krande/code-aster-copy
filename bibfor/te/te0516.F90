@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,6 @@ subroutine te0516(option, nomte)
 #include "asterfort/porea3.h"
 #include "asterfort/pouex7.h"
 #include "asterfort/poutre_modloc.h"
-#include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
@@ -81,7 +80,7 @@ subroutine te0516(option, nomte)
     real(kind=8) :: klv(dimklv), work(nc, 2*nc), co(npg)
     real(kind=8) :: rigge0(2*nc, 2*nc), ddu(2*nc), effgep(nc), d1bsig(4, 2*nc)
 !
-    integer :: ne, cara, idepla, iiter, iterat, ifgp
+    integer :: ne, cara, idepla, iiter, ifgp
     integer :: ii, jcret, npge
     integer :: igeom, imate, icontm, iorien, icompo, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
@@ -160,16 +159,9 @@ subroutine te0516(option, nomte)
 !   (avec rigi_meca_tang ca n a pas de sens). Ce champ est initialise a 0 par la routine nmmatr.
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PDDEPLA', 'L', idepla)
-!   on recupere le no de l'iteration de newton pour initialiser deps
-    call jevech('PITERAT', 'L', iiter)
-    iterat = zi(iiter)
 !
-    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
-                itab=jtab)
-    icontm = jtab(1)
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
-                itab=jtab)
-    ivarim = jtab(1)
+    call jevech('PCONTMR', 'L', icontm)
+    call jevech('PVARIMR', 'L', ivarim)
 !
 !   Pour matric=(RIGI_MECA_TANG) : valeurs "+" égalent valeurs "-"
     icontp = icontm
@@ -221,9 +213,7 @@ subroutine te0516(option, nomte)
         call jevech('PCODRET', 'E', jcret)
     end if
     if (lVari) then
-        call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, &
-                    itab=jtab)
-        ivarmp = jtab(1)
+        call jevech('PVARIMP', 'L', ivarmp)
         call jevech('PSTRXMP', 'L', istrmp)
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PSTRXPR', 'E', istrxp)
@@ -339,9 +329,9 @@ subroutine te0516(option, nomte)
         deps(1:nc) = 0.0d0
 !       calcul de l'increment de deformation sur un pas en grands deplacements il est cumulatif.
 !           - dans strxmp, on trouve l'increment de deformation jusqu'a l'iteration de newton
-!             precedente (si iterat=1, c'est 0)
+!             precedente (0 pour la première itération : strxmp n'est pas présent dans ce cas)
 !           - dans ddu, on trouve l'increment de deplacement depuis l'iteration de newton
-!             precedente (si iterat=1, c'est 0)
+!             precedente (0 pour la première itération)
 !           - apres calcul de deps, on le stocke dans strxpr
 !       les deformations sont stockes a partir de la 8eme position
         kk = ncomp*(kp-1)+ncomp2
@@ -363,17 +353,9 @@ subroutine te0516(option, nomte)
                     end do
                     deps(ii) = 0.d0
                 end do
-            else if (iterat .ge. 2) then
-                do ii = 1, nc
-                    deps(ii) = zr(istrmp+kk+ii)
-                    do jj = 1, 2*nc
-                        eps(ii) = eps(ii)+d1b(ii, jj)*u(jj)
-                        deps(ii) = deps(ii)+d1b(ii, jj)*ddu(jj)
-                    end do
-                    zr(istrxp+kk+ii) = deps(ii)
-                end do
             else
                 do ii = 1, nc
+                    deps(ii) = zr(istrmp+kk+ii)
                     do jj = 1, 2*nc
                         eps(ii) = eps(ii)+d1b(ii, jj)*u(jj)
                         deps(ii) = deps(ii)+d1b(ii, jj)*ddu(jj)

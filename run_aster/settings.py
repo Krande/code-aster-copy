@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ derivated objects to store values of type *str*, *int*, *float*, *bool* and
 list of *str*.
 """
 
+import os
 
 from .logger import logger
 
@@ -95,10 +96,12 @@ class AbstractParameter:
         """Return the subclass for the expected type or *None* if not found."""
         return {
             "str": ParameterStr,
+            "varstr": ParameterVarStr,
             "bool": ParameterBool,
             "int": ParameterInt,
             "float": ParameterFloat,
             "list[str]": ParameterListStr,
+            "varlist[str]": ParameterVarListStr,
             "dict[str]": ParameterDictStr,
         }.get(typ)
 
@@ -111,6 +114,23 @@ class ParameterStr(AbstractParameter):
         if isinstance(value, (list, tuple)):
             value = " ".join([str(i) for i in value])
         return value and str(value)
+
+
+class VarMixin:
+    """Mixin class for a parameter that may be overridden by environment."""
+
+    def set(self, value):
+        """Convert and set the value.
+
+        Arguments:
+            value (misc): New value.
+        """
+        self._value = self.convert(os.environ.get(self._name, value))
+
+
+class ParameterVarStr(VarMixin, ParameterStr):
+    """A parameter defined in a Export object of type string that may be
+    overridden by an environment variable."""
 
 
 class ParameterBool(AbstractParameter):
@@ -160,6 +180,11 @@ class ParameterListStr(AbstractParameter):
             value = [value]
         value = [str(i) for i in value]
         return value
+
+
+class ParameterVarListStr(VarMixin, ParameterListStr):
+    """A parameter defined in a Export object of type list of strings that may
+    be overridden by an environment variable."""
 
 
 class ParameterDictStr(AbstractParameter):

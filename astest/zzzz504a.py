@@ -25,7 +25,7 @@ import time
 from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 
 test = CA.TestCase()
 
@@ -53,8 +53,8 @@ else:
     # os.system('echo "-ksp_view_solution ascii:/tmp/sol_seq.txt  " >> ~/.petscrc')
 
 # print a unique file
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, "zzzz504a.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "zzzz504a.med")
     DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY")
 
     IMPR_RESU(
@@ -63,17 +63,17 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=80)
 
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, "zzzz504a_new_1.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "zzzz504a_new_1.med")
     pMesh2.printMedFile(medfile, False)
 
 # print separated file
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, f"zzzz504a_new_{rank}.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, f"zzzz504a_new_{rank}.med")
     pMesh2.printMedFile(medfile, True)
 
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, f"zzzz504a_{rank}_0.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, f"zzzz504a_{rank}_0.med")
     pMesh2.printMedFile(medfile)
 
 model = AFFE_MODELE(
@@ -115,19 +115,19 @@ resu = STAT_NON_LINE(
 )
 
 # print single file
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu_new.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu_new.med")
     resu.printMedFile(medfile, local=False)
 
 # print multiple files
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, f"resu_new_{rank}.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, f"resu_new_{rank}.med")
     resu.printMedFile(medfile, local=True)
 
 # print single files
 depl = resu.getField("DEPL", 1.0, "INST")
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, "depl.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "depl.med")
     depl.printMedFile(medfile, local=False)
 
 # if (parallel):
@@ -173,8 +173,8 @@ pMesh2 = CA.Mesh()
 pMesh2.readMedFile("zzzz504a.med")
 
 # Test if med file print by #0 is not overwrite by others procs
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, f"resu_new{rank}.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, f"resu_new{rank}.med")
     resu.printMedFile(medfile, local=True)
 
 model = AFFE_MODELE(
@@ -215,8 +215,8 @@ resu = STAT_NON_LINE(
     SOLVEUR=_F(METHODE="PETSC", RESI_RELA=1.0e-10, PRE_COND="LDLT_SP"),
 )
 
-with shared_tmpdir("zzzz504a_") as tmpdir:
-    medfile = osp.join(tmpdir, f"resu_new{rank}.med")
+with SharedTmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir.path, f"resu_new{rank}.med")
     resu.printMedFile(medfile, local=True)
 
 FIN()

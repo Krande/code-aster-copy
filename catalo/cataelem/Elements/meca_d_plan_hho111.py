@@ -484,8 +484,6 @@ class MECA_DPQ9_HHO111(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PREFCO, LC.CRESSIG),
-                (SP.PDEPLMR, DDL_MECA),
-                (OP.REFE_FORC_NODA.PCOMPOR, LC.CCOMPOR),
                 (OP.REFE_FORC_NODA.PCHHOGT, CHHOGT),
                 (OP.REFE_FORC_NODA.PCHHOST, CHHOST),
                 (OP.REFE_FORC_NODA.PCHHOBS, CHHOBS),

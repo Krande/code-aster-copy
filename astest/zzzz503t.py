@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 import os.path as osp
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
@@ -75,8 +75,8 @@ resu = STAT_NON_LINE(
 
 resu = CALC_CHAMP(reuse=resu, RESULTAT=resu, CONTRAINTE=("SIEF_NOEU",))
 
-with shared_tmpdir("zzzz503t_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu_new.med")
+with SharedTmpdir("zzzz503t_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu_new.med")
     DEFI_FICHIER(UNITE=87, FICHIER=medfile, TYPE="BINARY")
     IMPR_RESU(
         FICHIER_UNIQUE="OUI", PROC0="NON", FORMAT="MED", UNITE=87, RESU=_F(RESULTAT=resu, INST=1.0)

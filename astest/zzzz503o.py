@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ import os.path as osp
 from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
@@ -196,8 +196,8 @@ snl = dict(
 
 EVOL = STAT_NON_LINE(INCREMENT=_F(LIST_INST=DISCRET, INST_FIN=200), **snl)
 
-with shared_tmpdir("zzzz503d_") as tmpdir:
-    medfile = osp.join(tmpdir, "resu.zzzz503d.no.med")
+with SharedTmpdir("zzzz503d_") as tmpdir:
+    medfile = osp.join(tmpdir.path, "resu.zzzz503d.no.med")
     DEFI_FICHIER(UNITE=99, FICHIER=medfile, TYPE="BINARY")
     IMPR_RESU(
         FORMAT="MED",

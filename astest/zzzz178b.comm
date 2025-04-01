@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 from code_aster.CA import MPI
 
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 from code_aster.Commands import *
 from code_aster import CA
 import os.path as osp
@@ -126,8 +126,8 @@ RESU = MECA_STATIQUE(
 # Extract the field from the result
 displ = RESU.getField("DEPL", 1)
 
-with shared_tmpdir("foo") as tmpdir:
-    DEFI_FICHIER(UNITE=87, FICHIER=osp.join(tmpdir, "resu_{}.med".format(rank)), TYPE="BINARY")
+with SharedTmpdir("foo") as tmpdir:
+    DEFI_FICHIER(UNITE=87, FICHIER=osp.join(tmpdir.path, "resu_{}.med".format(rank)), TYPE="BINARY")
     IMPR_RESU(FORMAT="MED", UNITE=87, RESU=_F(RESULTAT=RESU))
     DEFI_FICHIER(ACTION="LIBERER", UNITE=87)
 

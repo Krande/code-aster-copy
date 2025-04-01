@@ -30,7 +30,7 @@ import numpy as np
 
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
@@ -94,10 +94,10 @@ proj = PROJ_CHAMP(
 # -------------------------------------------------------------------------------
 # Verification
 
-with shared_tmpdir("mytest_") as tmpdir:
+with SharedTmpdir("mytest_") as tmpdir:
 
     # Print the parallel field into a single file
-    medfile = osp.join(tmpdir, "proj.med")
+    medfile = osp.join(tmpdir.path, "proj.med")
     proj.printMedFile(medfile, local=False)
 
     # Read it again as a sequential field

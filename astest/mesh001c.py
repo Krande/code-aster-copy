@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ import os.path as osp
 
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import SharedTmpdir
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
@@ -66,13 +66,13 @@ test.assertSequenceEqual(sorted(pmesh.getGroupsOfNodes()), sorted(global_grp))
 test.assertTrue(pmesh.hasGroupOfNodes("TOUT"))
 
 pmesh.printMedFile("mesh_%d.med" % rank)
-with shared_tmpdir("mesh001c_") as tmpdir:
-    pmesh.printMedFile(osp.join(tmpdir, "mesh001c.med"), local=False)
+with SharedTmpdir("mesh001c_") as tmpdir:
+    pmesh.printMedFile(osp.join(tmpdir.path, "mesh001c.med"), local=False)
 
 pmesh2 = CA.ParallelMesh()
 pmesh2.readMedFile("mesh_%d.med" % rank, partitioned=True)
-with shared_tmpdir("mesh001c_") as tmpdir:
-    pmesh2.printMedFile(osp.join(tmpdir, "mesh001c.med"), local=False)
+with SharedTmpdir("mesh001c_") as tmpdir:
+    pmesh2.printMedFile(osp.join(tmpdir.path, "mesh001c.med"), local=False)
 
 # test global numbering of nodes
 nodes_gnum = pmesh.getNodes(localNumbering=False)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,10 @@
 
 # person_in_charge: hassan.berro at edf.fr
 
-from math import *
+from math import pi
+import numpy as np
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 #################################################
 ##############Model Illustration#################
@@ -57,8 +60,157 @@ Fn_buck = 0.25  # [N]
 # Automatically calculated
 om = 2.0 * pi * freq
 #################################################
+# Conversion of FLAMBAGE parameters to functions (buckling threshold, stiffness and damping)
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+def convertBucklingParameters(
+    KN,
+    F_max,
+    F_max2,
+    AMOR_NOR,
+    AMOR_FL,
+    LARG_PLAT,
+    ENFO_FL,
+    DEPL_POST_FL,
+    RIGI_POST_FL,
+    AMOR_POST_FL,
+):
+    # Calcul de la liste de deformation totale
+    DEPL_TOT_POST_FL = [j + F_max2 / RIGI_POST_FL[i] for i, j in enumerate(DEPL_POST_FL)]
+
+    # Listes pour un calcul en base physique
+    utot = []
+    crit = []
+    kchoc = []
+    cchoc = []
+
+    # Point 0
+    utot.append(0.0)
+    crit.append(F_max)
+    kchoc.append(KN)
+    cchoc.append(AMOR_NOR)
+
+    # debut du plateau
+    utot.append(F_max / KN)
+    crit.append(F_max)
+    kchoc.append(KN)
+    cchoc.append(AMOR_NOR)
+
+    # bout du plateau
+    utot.append(F_max / KN + LARG_PLAT)
+    crit.append(F_max)
+    kchoc.append(KN)
+    cchoc.append(AMOR_NOR)
+
+    # Pendant le flambage
+    nb = 500
+    eps = 1e-12
+    u = np.linspace(
+        F_max / KN + LARG_PLAT + eps, F_max / KN + LARG_PLAT + ENFO_FL, nb, endpoint=True
+    )
+    for i in range(len(u)):
+        f = F_max - ((F_max2 - F_max) / ENFO_FL) * (-u[i] + F_max / KN + LARG_PLAT)
+        c = AMOR_NOR - ((AMOR_FL - AMOR_NOR) / ENFO_FL) * (-u[i] + F_max / KN + LARG_PLAT)
+        utot.append(u[i])
+        crit.append(f)
+        kchoc.append(f / (u[i] - LARG_PLAT))
+        cchoc.append(c)
+
+    # Entre fl et 1er point
+    u = np.linspace(F_max / KN + LARG_PLAT + ENFO_FL + eps, DEPL_TOT_POST_FL[0], nb, endpoint=False)
+    for i in range(len(u)):
+        alpha = (u[i] - (F_max / KN + LARG_PLAT + ENFO_FL)) / (
+            DEPL_TOT_POST_FL[0] - (F_max / KN + LARG_PLAT + ENFO_FL)
+        )
+        defpla = (LARG_PLAT) + alpha * (DEPL_POST_FL[0] - (LARG_PLAT))
+        rigifl = F_max2 / (u[i] - defpla)
+        cfl = AMOR_FL + alpha * (AMOR_POST_FL[0] - AMOR_FL)
+        utot.append(u[i])
+        crit.append(F_max2)
+        kchoc.append(rigifl)
+        cchoc.append(cfl)
+
+    # Apres flambage
+    for i in range(len(DEPL_POST_FL) - 1):
+        u = np.linspace(
+            DEPL_TOT_POST_FL[i] + eps, DEPL_TOT_POST_FL[i + 1] + eps, nb, endpoint=False
+        )
+        for j in range(len(u)):
+            alpha = (u[j] - DEPL_TOT_POST_FL[i]) / (DEPL_TOT_POST_FL[i + 1] - DEPL_TOT_POST_FL[i])
+            defpla = DEPL_POST_FL[i] + alpha * (DEPL_POST_FL[i + 1] - DEPL_POST_FL[i])
+            rigifl = F_max2 / (u[j] - defpla)
+            cfl = AMOR_POST_FL[i] + alpha * (AMOR_POST_FL[i + 1] - AMOR_POST_FL[i])
+            utot.append(u[j])
+            crit.append(F_max2)
+            kchoc.append(rigifl)
+            cchoc.append(cfl)
+
+    SEUIL = DEFI_FONCTION(
+        NOM_PARA="DX",
+        ABSCISSE=(utot),
+        ORDONNEE=(crit),
+        PROL_DROITE="CONSTANT",
+        PROL_GAUCHE="CONSTANT",
+    )
+
+    RIGI = DEFI_FONCTION(
+        NOM_PARA="DX",
+        ABSCISSE=(utot),
+        ORDONNEE=(kchoc),
+        PROL_DROITE="CONSTANT",
+        PROL_GAUCHE="CONSTANT",
+    )
+
+    AMOR = DEFI_FONCTION(
+        NOM_PARA="DX",
+        ABSCISSE=(utot),
+        ORDONNEE=(cchoc),
+        PROL_DROITE="CONSTANT",
+        PROL_GAUCHE="CONSTANT",
+    )
+
+    return SEUIL, RIGI, AMOR
+
+
+#
+KN = 1.0
+AMOR_NOR = 0.0
+AMOR_FL = 0.0
+LARG_PLAT = 1e-7
+ENFO_FL = 1e-8
+DEPL_POST_FL = [1.0]
+RIGI_POST_FL = [Kn_buck]
+AMOR_POST_FL = [0.0]
+
+SEUIL_L, RIGI_L, AMOR_L = convertBucklingParameters(
+    Kn_left,
+    Fn_crit,
+    Fn_buck,
+    AMOR_NOR,
+    AMOR_FL,
+    LARG_PLAT,
+    ENFO_FL,
+    DEPL_POST_FL,
+    RIGI_POST_FL,
+    AMOR_POST_FL,
+)
+
+SEUIL_R, RIGI_R, AMOR_R = convertBucklingParameters(
+    Kn_right,
+    Fn_crit,
+    Fn_buck,
+    AMOR_NOR,
+    AMOR_FL,
+    LARG_PLAT,
+    ENFO_FL,
+    DEPL_POST_FL,
+    RIGI_POST_FL,
+    AMOR_POST_FL,
+)
+
+
+#################################################
+
 
 MESH = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -147,9 +299,9 @@ INTEGR = DYNA_VIBRA(
             OBSTACLE=FLOOR,
             NORM_OBST=(0.0, -1.0, 0.0),
             JEU=0.0,
-            RIGI_NOR=Kn_left,
-            FNOR_CRIT=Fn_crit,
-            FNOR_POST_FL=Fn_buck,
+            FX=SEUIL_L,
+            RIGI_NOR=RIGI_L,
+            AMOR_NOR=AMOR_L,
         ),
         _F(
             RELATION="FLAMBAGE",
@@ -158,9 +310,9 @@ INTEGR = DYNA_VIBRA(
             OBSTACLE=FLOOR,
             NORM_OBST=(0.0, 1.0, 0.0),
             JEU=0.0,
-            RIGI_NOR=Kn_right,
-            FNOR_CRIT=Fn_crit,
-            FNOR_POST_FL=Fn_buck,
+            FX=SEUIL_L,
+            RIGI_NOR=RIGI_L,
+            AMOR_NOR=AMOR_L,
         ),
     ),
     ARCHIVAGE=_F(PAS_ARCH=10),
@@ -173,7 +325,7 @@ INTEGR.INFO_NONL()
 TEST_F = RECU_FONCTION(RESU_GENE=INTEGR, GROUP_NO_CHOC="RIGHT", PARA_X="INST", PARA_Y="VINT9")
 
 TEST_FONCTION(
-    VALEUR=(_F(VALE_CALC=3.768582449313, CRITERE="RELATIF", VALE_PARA=t1, FONCTION=TEST_F))
+    VALEUR=(_F(VALE_CALC=3.768151840445, CRITERE="RELATIF", VALE_PARA=t1, FONCTION=TEST_F))
 )
 
 
