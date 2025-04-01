@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine merimp(l_xfem, l_dyna, &
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcex.h"
+#include "asterfort/vtzero.h"
 #include "asterfort/xajcin.h"
 !
     aster_logical, intent(in) :: l_xfem, l_dyna
@@ -163,11 +164,12 @@ subroutine merimp(l_xfem, l_dyna, &
 !
 ! - Get structural variables from previous iteration
 !
-    call exisd('CHAMP_GD', stru_curr(1:19), iret)
-    if (iret .ne. 0) then
-        call copisd('CHAMP_GD', 'V', stru_curr(1:19), stru_iter(1:19))
-    else
+    call exisd('CHAMP_GD', stru_prev(1:19), iret)
+    if (iret .ne. 0 .and. iter_newt .lt. 2) then
         call copisd('CHAMP_GD', 'V', stru_prev(1:19), stru_iter(1:19))
+        call vtzero(stru_iter(1:19), 'CHAM_ELEM')
+    elseif (iter_newt .ge. 2) then
+        call copisd('CHAMP_GD', 'V', stru_curr(1:19), stru_iter(1:19))
     end if
 !
 ! - Extend elementary field for internal variables
