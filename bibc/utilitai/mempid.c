@@ -48,10 +48,9 @@ ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     char *S;
     int fd, num_read;
     ASTERINTEGER iret;
-    pid_t numpro;
 
 #if defined ASTER_PLATFORM_POSIX && defined ASTER_ENABLE_PROC_STATUS
-
+    pid_t numpro;
     pid_t getpid( void );
     numpro = getpid();
 
