@@ -236,6 +236,7 @@ class SharedTmpdir(contextlib.AbstractContextManager):
         MPI.ASTER_COMM_WORLD.Barrier()
 
     def _rmdtemp(self):
+        MPI.ASTER_COMM_WORLD.Barrier()
         if MPI.ASTER_COMM_WORLD.rank == 0:
             logger.debug("removing %s...", self._path)
             os.system(f"rm -rf {self._path}")
