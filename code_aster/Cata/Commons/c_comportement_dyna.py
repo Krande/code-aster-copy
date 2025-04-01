@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,6 @@
 
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
-
-
-from ..Commons.c_comportement import compat_syntax
 
 
 def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
@@ -126,16 +123,21 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             DIST_1=SIMP(statut="f", typ="R"),
             DIST_2=SIMP(statut="f", typ="R"),
             REPERE=SIMP(statut="f", typ="TXM", defaut="GLOBAL"),
-            RIGI_NOR=SIMP(statut="o", typ="R"),
-            AMOR_NOR=SIMP(statut="f", typ="R", defaut=0.0e0),
-            FNOR_CRIT=SIMP(statut="o", typ="R"),
-            FNOR_POST_FL=SIMP(statut="o", typ="R"),
-            ENFO_FL=SIMP(statut="f", typ="R", defaut=1.0e-20),
-            AMOR_FL=SIMP(statut="f", typ="R"),
-            LARG_PLAT=SIMP(statut="f", typ="R", defaut=0.0e0),
-            DEPL_POST_FL=SIMP(statut="f", typ="R", max="**"),
-            RIGI_POST_FL=SIMP(statut="f", typ="R", max="**"),
-            AMOR_POST_FL=SIMP(statut="f", typ="R", max="**"),
+            FX=SIMP(
+                statut="o",
+                typ=fonction_sdaster,
+                fr=tr("Comportement axial en fonction du déplacement relatif."),
+            ),
+            RIGI_NOR=SIMP(
+                statut="o",
+                typ=fonction_sdaster,
+                fr=tr("Rigidité en fonction du déplacement relatif."),
+            ),
+            AMOR_NOR=SIMP(
+                statut="o",
+                typ=fonction_sdaster,
+                fr=tr("Amortissement en fonction du déplacement relatif."),
+            ),
             CRIT_AMOR=SIMP(statut="f", typ="TXM", into=("INCLUS", "EXCLUS"), defaut="INCLUS"),
         ),  # end b_buckling
         #       C.2.4 Anti-sismic disposition non linearity

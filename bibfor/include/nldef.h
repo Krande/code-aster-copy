@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@
 #define _ANTISISMIC_K2 6
 #define _ANTISISMIC_PUIS_ALPHA 7
 #define _ANTISISMIC_SEUIL_FX 8
-#define _BUCKLING_LIMIT_FORCE 9
-#define _BUCKLING_POST_PALIER_FORCE 10
-#define _BUCKLING_DEF 11
+#define _BUCKLING_F_CRIT 9
+#define _BUCKLING_F_RIGI 10
+#define _BUCKLING_F_AMOR 11
 #define _CMP_NAME 12
 #define _COOR_NO1 13
 #define _COOR_NO2 14

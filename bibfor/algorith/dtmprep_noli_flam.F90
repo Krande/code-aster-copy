@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,13 +75,12 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     integer           :: ino1, ino2, ind1, ind2, nbmode
     integer           :: info, vali, j, neq, mxlevel
     integer           :: nbchoc, nexcit, nl_type, tomove, k
-    integer           :: cntr, n2, n3, amorin
+    integer           :: cntr, amorin
 !
     real(kind=8)      :: r8bid, gap, xjeu, sina, cosa
     real(kind=8)      :: sinb, cosb, sing, cosg, valr(10)
-    real(kind=8)      :: kn, dist_no1, dist_no2, ddpilo(3), dpiglo(6)
-    real(kind=8)      :: dpiloc(6), one, fn_crit, fn_postbuck, damp_normal
-    real(kind=8)      :: delta_u, def1, deft0, deft1, rigi1, amor_fl
+    real(kind=8)      :: dist_no1, dist_no2, ddpilo(3), dpiglo(6)
+    real(kind=8)      :: dpiloc(6), one
 !
     complex(kind=8)   :: cbid
 !
@@ -89,6 +88,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     character(len=8)  :: nume, nume1, nume2, no1_name, no2_name
     character(len=8)  :: monmot, k8typ, kbid, repere, node
     character(len=8)  :: intk
+    character(len=8)  :: fx, rigi_nor, amor_nor
     character(len=16) :: typnum, typem, refo, limocl(2), tymocl(2)
     character(len=16) :: valk(2), obst_typ, motfac
     character(len=19) :: nomres
@@ -109,10 +109,6 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     real(kind=8), pointer  :: origob(:) => null()
     real(kind=8), pointer  :: bmodal_v(:) => null()
     real(kind=8), pointer  :: ps1del_v(:) => null()
-    real(kind=8), pointer  :: def(:) => null()
-    real(kind=8), pointer  :: rigi(:) => null()
-    real(kind=8), pointer  :: deft(:) => null()
-    real(kind=8), pointer  :: amor(:) => null()
 
     character(len=8), pointer  :: noeud(:) => null()
 !
@@ -304,10 +300,6 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     call getvr8(motfac, 'DIST_2', iocc=icomp, scal=dist_no2, nbret=n1)
     if (n1 .gt. 0) call nlsav(sd_nl, _DIST_NO2, 1, iocc=i, rscal=dist_no2)
 
-    call nlsav(sd_nl, _STIF_NORMAL, 1, iocc=i, rscal=0.d0)
-    call getvr8(motfac, 'RIGI_NOR', iocc=icomp, scal=kn, nbret=n1)
-    if (n1 .gt. 0) call nlsav(sd_nl, _STIF_NORMAL, 1, iocc=i, rscal=kn)
-
     call getvtx(motfac, 'CRIT_AMOR', iocc=icomp, scal=typamor, nbret=n1)
     if (typamor(1:3) .eq. 'INC') then
         amorin = 1
@@ -317,100 +309,13 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
         call nlsav(sd_nl, _BUCKLING_AMOR_IN, 1, iocc=i, iscal=amorin)
     end if
 
-    if (kn .le. 0.d0) then
-        call utmess('F', 'ALGORITH5_40')
-    end if
+    call getvid(motfac, 'FX', iocc=icomp, scal=fx)
+    call getvid(motfac, 'RIGI_NOR', iocc=icomp, scal=rigi_nor)
+    call getvid(motfac, 'AMOR_NOR', iocc=icomp, scal=amor_nor)
 
-    call nlsav(sd_nl, _BUCKLING_LIMIT_FORCE, 1, iocc=i, rscal=0.d0)
-    call getvr8(motfac, 'FNOR_CRIT', iocc=icomp, scal=fn_crit, nbret=n1)
-    if (n1 .gt. 0) call nlsav(sd_nl, _BUCKLING_LIMIT_FORCE, 1, iocc=i, rscal=fn_crit)
-
-    call nlsav(sd_nl, _DAMP_NORMAL, 1, iocc=i, rscal=0.d0)
-    call getvr8(motfac, 'AMOR_NOR', iocc=icomp, scal=damp_normal, nbret=n1)
-    if (n1 .gt. 0) call nlsav(sd_nl, _DAMP_NORMAL, 1, iocc=i, rscal=damp_normal)
-
-    call nlsav(sd_nl, _BUCKLING_POST_PALIER_FORCE, 1, iocc=i, rscal=0.d0)
-    call getvr8(motfac, 'FNOR_POST_FL', iocc=icomp, scal=fn_postbuck, nbret=n1)
-    if (n1 .gt. 0) call nlsav(sd_nl, _BUCKLING_POST_PALIER_FORCE, 1, iocc=i, rscal=fn_postbuck)
-
-    call nlsav(sd_nl, _BUCKLING_DEF, 1, iocc=i, rscal=0.d0)
-    call getvr8(motfac, 'ENFO_FL', iocc=icomp, scal=delta_u, nbret=n1)
-    if (n1 .gt. 0) call nlsav(sd_nl, _BUCKLING_DEF, 1, iocc=i, rscal=delta_u)
-
-    call getvr8(motfac, 'LARG_PLAT', iocc=icomp, scal=def1, nbret=n1)
-
-    deft0 = fn_crit/kn+def1
-    call nlsav(sd_nl, _BUCKLING_DEF_TOT_0, 1, iocc=i, rscal=deft0)
-
-    deft1 = deft0+delta_u
-    rigi1 = fn_postbuck/(deft1-def1)
-
-    call getvr8(motfac, 'DEPL_POST_FL', iocc=icomp, nbval=0, nbret=n1)
-    call nlinivec(sd_nl, _BUCKLING_DEF_PLA, (-n1+1), iocc=i, vr=def)
-    def(1) = def1
-
-    if (n1 .lt. 0) then
-        call getvr8(motfac, 'DEPL_POST_FL', iocc=icomp, nbval=-n1, vect=def(2:(-n1+1)))
-        do j = 1, size(def)-1
-            if (def(j) .gt. def(j+1)) then
-                call utmess('F', 'ALGORITH5_84')
-            end if
-        end do
-    end if
-
-    call getvr8(motfac, 'RIGI_POST_FL', iocc=icomp, nbval=0, nbret=n2)
-    call nlinivec(sd_nl, _BUCKLING_RIGI_NOR, (-n1+1), iocc=i, vr=rigi)
-    rigi(1) = rigi1
-    if (n2 .lt. 0) then
-        call getvr8(motfac, 'RIGI_POST_FL', iocc=icomp, nbval=-n2, vect=rigi(2:(-n2+1)))
-
-        do j = 1, size(rigi)
-            if (def(j) .lt. 0.d0) then
-                call utmess('F', 'ALGORITH5_40')
-            end if
-        end do
-    end if
-
-    if (n2 .ne. n1) then
-        call utmess('F', 'ALGORITH5_41')
-    end if
-
-    call nlinivec(sd_nl, _BUCKLING_DEF_TOT, (-n1+1), iocc=i, vr=deft)
-    do j = 1, size(def)
-        deft(j) = def(j)+fn_postbuck/rigi(j)
-    end do
-
-    do j = 1, size(deft)-1
-        if (deft(j) .gt. deft(j+1)) then
-            call utmess('F', 'ALGORITH5_85')
-        end if
-    end do
-
-    call getvr8(motfac, 'AMOR_POST_FL', iocc=icomp, nbval=0, nbret=n2)
-    if ((n2 .ne. n1) .and. (n2 .lt. 0)) then
-        call utmess('F', 'ALGORITH5_41')
-    end if
-
-    if (n2 .lt. 0) then
-        call nlinivec(sd_nl, _BUCKLING_AMOR, (-n2+1), iocc=i, vr=amor)
-    else
-        call nlinivec(sd_nl, _BUCKLING_AMOR, (-n1+1), iocc=i, vr=amor)
-    end if
-
-    call getvr8(motfac, 'AMOR_FL', iocc=icomp, scal=amor_fl, nbret=n3)
-    if (n3 .gt. 0) then
-        amor(1) = amor_fl
-    else
-        amor(1) = damp_normal
-    end if
-
-    if (n2 .lt. 0) then
-        call getvr8(motfac, 'AMOR_POST_FL', iocc=icomp, nbval=-n2, vect=amor(2:(-n2+1)))
-    else
-        do j = 2, (-n1+1)
-            amor(j) = amor(1)
-        end do
-    end if
+    call nlsav(sd_nl, _BUCKLING_F_CRIT, 1, iocc=i, kscal=fx)
+    call nlsav(sd_nl, _BUCKLING_F_RIGI, 1, iocc=i, kscal=rigi_nor)
+    call nlsav(sd_nl, _BUCKLING_F_AMOR, 1, iocc=i, kscal=amor_nor)
 
     call getvid(motfac, 'OBSTACLE', iocc=icomp, scal=obst_typ, nbret=n1)
 
