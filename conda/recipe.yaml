@@ -2,8 +2,8 @@ schema_version: 1
 
 context:
   name: code-aster
-  source_version: 17.2.14
-  win_build: 1
+  source_version: "17.2.14"
+  win_build: "1"
   version: ${{ source_version + "." + win_build }}
   build_base: 0
   mpi_num: ${{ 100 if mpi == 'nompi' else 0 }}

@@ -49,7 +49,6 @@ vswhere = "*"
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
 mkl-devel = "*"
-cmake = "*"
 ninja = "*"
 psutil = "*"
 clang = "18.*"
