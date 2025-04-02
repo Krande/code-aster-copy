@@ -295,9 +295,11 @@ def get_mathlib_from_numpy(self):
     liblapack = []
 
     # numpy already checked
-    pymodule_path = self.get_python_variables(
-        ["lapack_lite.__file__"], ["from numpy.linalg import lapack_lite"]
-    )[0]
+    cmd = self.env.PYTHON + [
+        "-c",
+        "\nfrom numpy.linalg import lapack_lite\nprint(lapack_lite.__file__)",
+    ]
+    pymodule_path = self.cmd_and_log(cmd).strip()
 
     self.find_program("ldd")
     ldd_env = {"LD_LIBRARY_PATH": ":".join(self.env.LIBPATH)}

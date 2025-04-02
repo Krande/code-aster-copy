@@ -29,7 +29,7 @@ from waflib.Tools import c, ccroot, cxx, fc
 MINGW_CROSS_COMPILATION = False
 
 # wrappings and overloadings must be checked/adapted to each waf version
-assert WAFVERSION == "2.0.26"
+assert WAFVERSION == "2.1.5"
 
 
 ###############################################################################
