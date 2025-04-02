@@ -24,7 +24,7 @@
 #:  <testname>      An unknown target is treated as a testname, same 'make test n=testname'
 #:
 #:Environment variables:
-#:  BUILD           Build variant 'mpi', 'debug' (default: %BUILD%)
+#:  ASTER_BUILD     Build variant 'mpi', 'debug' (default: %ASTER_BUILD%)
 #:  DEFAULT         Default selected target (default: %DEFAULT%)
 #:  OPTS            Options passed to waf commands, example OPTS='-p'
 #:
@@ -37,14 +37,14 @@
 #:Build both optimized and debug versions:
 #:      make all
 #:
-#:To build a sequential version, you must explicitly set BUILD=std (but you
+#:To build a sequential version, you must explicitly set ASTER_BUILD=std (but you
 #:can not build std+debug using this makefile).
 #:
 #:You may add options to the 'waf' commands by using the OPTS environment variable
 #:on the command line (example: with a progress bar):
 #:      make safe OPTS='-p'
 #:The number of jobs is directly passed to make (example: sequential build, limit to 4 tasks):
-#:      export BUILD=std
+#:      export ASTER_BUILD=std
 #:      make -j 16
 #:
 #:Execute a testcase:
@@ -52,7 +52,16 @@
 #:or:
 #:      make ssll112a
 
-BUILD ?= mpi
+# for compatibility: use value of BUILD if ASTER_BUILD is not defined
+ifeq ($(origin ASTER_BUILD), undefined)
+	BUILD ?= mpi
+	ifneq (,$(filter $(BUILD),mpi debug std))
+		ASTER_BUILD := $(BUILD)
+	else
+		ASTER_BUILD := mpi
+	endif
+endif
+
 OPTS ?=
 # extract '-j' option to be passed to waf
 JOBS ?= $(shell \
@@ -67,7 +76,7 @@ DEFAULT ?= safe
 SHELL = /bin/bash
 
 .PHONY: help default bootstrap bootstrap_debug all
-# targets for BUILD configuration
+# targets for ASTER_BUILD configuration
 .PHONY: configure install safe fast doc distclean install-tests test
 # same targets for 'debug' configuration
 .PHONY: configure_debug install_debug safe_debug fast_debug doc_debug distclean_debug
@@ -77,33 +86,33 @@ SHELL = /bin/bash
 default: $(DEFAULT)
 
 all:
-	$(MAKE) BUILD=mpi bootstrap
-	$(MAKE) BUILD=debug bootstrap
+	$(MAKE) ASTER_BUILD=mpi bootstrap
+	$(MAKE) ASTER_BUILD=debug bootstrap
 
 bootstrap: configure safe doc
 
 configure:
-	./waf_$(BUILD) configure $(OPTS)
+	./waf_$(ASTER_BUILD) configure $(OPTS)
 
 install: safe
 
 safe:
-	./waf_$(BUILD) install $(OPTS) --safe $(JOBS)
+	./waf_$(ASTER_BUILD) install $(OPTS) --safe $(JOBS)
 
 fast:
-	./waf_$(BUILD) install $(OPTS) --fast $(JOBS)
+	./waf_$(ASTER_BUILD) install $(OPTS) --fast $(JOBS)
 
 doc:
 	@( \
-		if [ $(BUILD) = "std" ]; then \
+		if [ $(ASTER_BUILD) = "std" ]; then \
 			echo "doc skipped, only available in parallel" ; \
 			exit 0 ; \
 		fi ; \
-		./waf_$(BUILD) doc $(OPTS) ; \
+		./waf_$(ASTER_BUILD) doc $(OPTS) ; \
 	)
 
 distclean: ##- perform a distclean of the build directory.
-	./waf_$(BUILD) distclean
+	./waf_$(ASTER_BUILD) distclean
 
 install-tests:
 	$(MAKE) fast OPTS="$(OPTS) --install-tests"
@@ -115,41 +124,41 @@ test:
 			echo "usage: make test n=testname" ; \
 			exit 1 ; \
 		fi ; \
-		./waf_$(BUILD) test $(OPTS) -n $(n) ; \
+		./waf_$(ASTER_BUILD) test $(OPTS) -n $(n) ; \
 	)
 
 bootstrap_debug: configure_debug safe_debug doc_debug
 
 configure_debug:
-	$(MAKE) BUILD=debug configure
+	$(MAKE) ASTER_BUILD=debug configure
 
 install_debug:
-	$(MAKE) BUILD=debug install
+	$(MAKE) ASTER_BUILD=debug install
 
 safe_debug:
-	$(MAKE) BUILD=debug safe
+	$(MAKE) ASTER_BUILD=debug safe
 
 fast_debug:
-	$(MAKE) BUILD=debug fast
+	$(MAKE) ASTER_BUILD=debug fast
 
 doc_debug:
-	$(MAKE) BUILD=debug doc
+	$(MAKE) ASTER_BUILD=debug doc
 
 distclean_debug:
-	$(MAKE) BUILD=debug distclean
+	$(MAKE) ASTER_BUILD=debug distclean
 
 clean_cache:
 	@rm -rf $$(find * -type d -name __pycache__ ! -path 'build/*')
 
 install-tests_debug:
-	$(MAKE) BUILD=debug install-tests
+	$(MAKE) ASTER_BUILD=debug install-tests
 
 test_debug:
-	$(MAKE) BUILD=debug test n=$(n)
+	$(MAKE) ASTER_BUILD=debug test n=$(n)
 
-help : makefile
+help: makefile
 	@sed -n 's/^#://p' $< | \
-		sed -e 's/%BUILD%/$(BUILD)/g' -e 's/%DEFAULT%/$(DEFAULT)/g'
+		sed -e 's/%ASTER_BUILD%/$(ASTER_BUILD)/g' -e 's/%DEFAULT%/$(DEFAULT)/g'
 
 %:
 	@( \

@@ -3,7 +3,7 @@
 
 if [ ! -z "${ROOT_SALOME_INSTALL}" ]; then
     export DEVTOOLS_COMPUTER_ID=salome_meca
-    export BUILD=std
+    export ASTER_BUILD=std
     export ENABLE_MPI=0
 
     libpaths=$( sed -e 's/:/ /g' <<< "${LD_LIBRARY_PATH}" )
