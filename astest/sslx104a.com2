@@ -17,338 +17,127 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from code_aster.Commands import *
+
+POURSUITE(CODE="OUI", ERREUR=_F(ERREUR_F="EXCEPTION"))
+
 #
-# MODELISATION :
-#   Comparaison de la dilatation POU_D_E + K_TR_D_L
+# Dans le cas d'un matériau affecté aux DISCRET et où ALPHA=0 la dilatation est égale à 0
+# MECA_STATIQUE est donc ok
 #
-# ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
-
-
-al = 32.0 * pi / 180.0
-be = 38.0 * pi / 180.0
-Long = 2.25
-LongX = Long * cos(be) * cos(al)
-LongY = Long * cos(be) * sin(al)
-LongZ = Long * sin(be)
-
-LeMailTxt = """
-COOR_3D
-% NOEUD     X       Y    Z
- NA1        0.0     0.0  0.0
- NA2        {Long}  0.0  0.0
- DA1        0.0     0.0  0.0
- DA2        {Long}  0.0  0.0
-
- NB1        0.0     0.0     0.0
- NB2        {LongX} {LongY} {LongZ}
- DB1        0.0     0.0     0.0
- DB2        {LongX} {LongY} {LongZ}
-FINSF
- %
- SEG2
- SA1A2      NA1       NA2
- SB1B2      NB1       NB2
- DA1A2      DA1       DA2
- DB1B2      DB1       DB2
- FINSF
- %
- GROUP_NO
- NA1 NA1
- FINSF
- %
- GROUP_NO
- NB1 NB1
- FINSF
- %
- GROUP_NO
- DA1 DA1
- FINSF
- %
- GROUP_NO
- DB1 DB1
- FINSF
- %
- GROUP_NO
- NA2 NA2
- FINSF
- %
- GROUP_NO
- NB2 NB2
- FINSF
- %
- GROUP_NO
- DA2 DA2
- FINSF
- %
- GROUP_NO
- DB2 DB2
- FINSF
- %
- GROUP_MA
- POUTA SA1A2
- FINSF
- %
- GROUP_MA
- POUTB SB1B2
- FINSF
- %
- GROUP_MA
- DISCA DA1A2
- FINSF
- %
- GROUP_MA
- DISCB DB1B2
- FINSF
- %
- FIN
-"""
-
-with open("noeud.mail", "w") as ftest:
-    ftest.write(LeMailTxt.format(Long=Long, LongX=LongX, LongY=LongY, LongZ=LongZ))
-
-MA = CA.Mesh()
-MA.readAsterFile("noeud.mail")
-
-MO = AFFE_MODELE(
+# Matériau avec ALPHA=0
+MATER0 = DEFI_MATERIAU(ELAS=_F(E=0.0, NU=0.0, ALPHA=0.0))
+#
+CHMAT0 = AFFE_MATERIAU(
     MAILLAGE=MA,
-    AFFE=(
-        _F(GROUP_MA=("POUTA"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
-        _F(GROUP_MA=("POUTB"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
-        _F(GROUP_MA=("DISCA"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
-        _F(GROUP_MA=("DISCB"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
-    ),
-)
-
-
-Young = 2.0e11
-Hy = 0.2
-Hz = 0.1
-
-kx = Young * Hy * Hz / Long
-ky = kz = kx
-krx = kry = krz = 10000.0
-
-# Déplacement visé à l'instant 3
-depl = 0.12 / 3.0
-FimpoAx = kx * depl
-
-FimpoBx = kx * depl * cos(be) * cos(al)
-FimpoBy = kx * depl * cos(be) * sin(al)
-FimpoBz = kx * depl * sin(be)
-
-# --------------------------------------------------------------------------------------------------
-# Caractéristiques des éléments
-CAREL = AFFE_CARA_ELEM(
-    MODELE=MO,
-    POUTRE=(
-        _F(GROUP_MA="POUTA", SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(Hy, Hz)),
-        _F(GROUP_MA="POUTB", SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(Hy, Hz)),
-    ),
-    DISCRET=(
-        _F(GROUP_MA="DISCA", CARA=("K_TR_D_L",), VALE=(kx, ky, kz, krx, kry, krz)),
-        _F(GROUP_MA="DISCB", CARA=("K_TR_D_L",), VALE=(kx, ky, kz, krx, kry, krz), REPERE="LOCAL"),
-    ),
-)
-
-# --------------------------------------------------------------------------------------------------
-# Chargement
-CHARG1 = AFFE_CHAR_MECA(
-    MODELE=MO,
-    DDL_IMPO=(
-        _F(GROUP_NO="NA1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-        _F(GROUP_NO="NB1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-        _F(GROUP_NO="DA1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-        _F(GROUP_NO="DB1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-    ),
-    FORCE_NODALE=(
-        _F(GROUP_NO="NA2", FX=FimpoAx),
-        _F(GROUP_NO="DA2", FX=FimpoAx),
-        _F(GROUP_NO="NB2", FX=FimpoBx, FY=FimpoBy, FZ=FimpoBz),
-        _F(GROUP_NO="DB2", FX=FimpoBx, FY=FimpoBy, FZ=FimpoBz),
-    ),
-)
-
-LINST = DEFI_LIST_REEL(VALE=(0.0, 1.0, 2.0, 3.0))
-FONCM = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 3.0, 3.0))
-
-# --------------------------------------------------------------------------------------------------
-# Température
-Alpha = 1.0e-03
-
-Tref = 20.0
-# INST :  0     1     2     3
-Temper = [Tref, 50.0, 75.0, 100.0]
-
-CHT0 = CREA_CHAMP(
-    OPERATION="AFFE",
-    TYPE_CHAM="NOEU_TEMP_R",
-    MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=Temper[0]),
-)
-CHT1 = CREA_CHAMP(
-    OPERATION="AFFE",
-    TYPE_CHAM="NOEU_TEMP_R",
-    MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=Temper[1]),
-)
-CHT2 = CREA_CHAMP(
-    OPERATION="AFFE",
-    TYPE_CHAM="NOEU_TEMP_R",
-    MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=Temper[2]),
-)
-CHT3 = CREA_CHAMP(
-    OPERATION="AFFE",
-    TYPE_CHAM="NOEU_TEMP_R",
-    MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=Temper[3]),
-)
-
-TEMP = CREA_RESU(
-    OPERATION="AFFE",
-    TYPE_RESU="EVOL_THER",
-    AFFE=(
-        _F(NOM_CHAM="TEMP", INST=0.0, CHAM_GD=CHT0),
-        _F(NOM_CHAM="TEMP", INST=1.0, CHAM_GD=CHT1),
-        _F(NOM_CHAM="TEMP", INST=2.0, CHAM_GD=CHT2),
-        _F(NOM_CHAM="TEMP", INST=3.0, CHAM_GD=CHT3),
-    ),
-)
-
-# --------------------------------------------------------------------------------------------------
-# Matériau
-MATER = DEFI_MATERIAU(ELAS=_F(E=Young, NU=0.3, ALPHA=Alpha))
-CHMAT = AFFE_MATERIAU(
-    MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", MATER=MATER),
+    AFFE=(_F(TOUT="OUI", MATER=MATER), _F(GROUP_MA=("DISCA", "DISCB"), MATER=MATER0)),
     AFFE_VARC=_F(TOUT="OUI", EVOL=TEMP, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=Tref),
 )
 
-# --------------------------------------------------------------------------------------------------
-Rstnl = STAT_NON_LINE(
+Rstat = MECA_STATIQUE(
     MODELE=MO,
-    CHAM_MATER=CHMAT,
+    CHAM_MATER=CHMAT0,
     CARA_ELEM=CAREL,
     EXCIT=(_F(CHARGE=CHARG1, FONC_MULT=FONCM),),
-    COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"),),
-    INCREMENT=_F(LIST_INST=LINST),
+    INST=InstPost,
 )
 
-Rstnl = CALC_CHAMP(
-    reuse=Rstnl,
+Rstat = CALC_CHAMP(
+    reuse=Rstat,
     MODELE=MO,
-    RESULTAT=Rstnl,
+    RESULTAT=Rstat,
     TOUT_ORDRE="OUI",
-    CHAM_MATER=CHMAT,
+    CHAM_MATER=CHMAT0,
     CARA_ELEM=CAREL,
     CONTRAINTE=("EFGE_ELNO",),
     FORCE=("REAC_NODA",),
 )
 
-# --------------------------------------------------------------------------------------------------
-InstPost = 3.0
-# Déplacement dû à l'effort, à InstPost
-SoluDepl = depl * InstPost
-SoluDeplX = SoluDepl * cos(be) * cos(al)
-SoluDeplY = SoluDepl * cos(be) * sin(al)
-SoluDeplZ = SoluDepl * sin(be)
-# Déplacement dû à la température, à InstPost
-SoluTemp = Alpha * (Temper[int(InstPost)] - Tref) * Long
-SoluTempX = SoluTemp * cos(be) * cos(al)
-SoluTempY = SoluTemp * cos(be) * sin(al)
-SoluTempZ = SoluTemp * sin(be)
-
-# DÉPLACEMENT : Poutre & Discret, à InstPost
-DeplSolu = SoluDepl + SoluTemp
-DeplSoluX = SoluDeplX + SoluTempX
-DeplSoluY = SoluDeplY + SoluTempY
-DeplSoluZ = SoluDeplZ + SoluTempZ
 
 TEST_RESU(
     RESU=(
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="DEPL",
             INST=InstPost,
             GROUP_NO="NA2",
             REFERENCE="ANALYTIQUE",
             NOM_CMP="DX",
-            VALE_CALC=DeplSolu,
-            VALE_REFE=DeplSolu,
+            VALE_CALC=SoluDepl + SoluTemp,
+            VALE_REFE=SoluDepl + SoluTemp,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="DEPL",
             INST=InstPost,
             GROUP_NO="DA2",
             REFERENCE="ANALYTIQUE",
             NOM_CMP="DX",
-            VALE_CALC=DeplSolu,
-            VALE_REFE=DeplSolu,
+            VALE_CALC=SoluDepl,
+            VALE_REFE=SoluDepl,
         ),
         #
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="DEPL",
             INST=InstPost,
             GROUP_NO="NB2",
             REFERENCE="ANALYTIQUE",
             NOM_CMP="DX",
-            VALE_CALC=DeplSoluX,
-            VALE_REFE=DeplSoluX,
+            VALE_CALC=SoluDeplX + SoluTempX,
+            VALE_REFE=SoluDeplX + SoluTempX,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="DEPL",
             INST=InstPost,
             GROUP_NO="NB2",
             REFERENCE="ANALYTIQUE",
             NOM_CMP="DY",
-            VALE_CALC=DeplSoluY,
-            VALE_REFE=DeplSoluY,
+            VALE_CALC=SoluDeplY + SoluTempY,
+            VALE_REFE=SoluDeplY + SoluTempY,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="DEPL",
             INST=InstPost,
             GROUP_NO="NB2",
             REFERENCE="ANALYTIQUE",
             NOM_CMP="DZ",
-            VALE_CALC=DeplSoluZ,
-            VALE_REFE=DeplSoluZ,
+            VALE_CALC=SoluDeplZ + SoluTempZ,
+            VALE_REFE=SoluDeplZ + SoluTempZ,
         ),
         #
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="DEPL",
             INST=InstPost,
             GROUP_NO="DB2",
             REFERENCE="ANALYTIQUE",
             NOM_CMP="DX",
-            VALE_CALC=DeplSoluX,
-            VALE_REFE=DeplSoluX,
+            VALE_CALC=SoluDeplX,
+            VALE_REFE=SoluDeplX,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="DEPL",
             INST=InstPost,
             GROUP_NO="DB2",
             REFERENCE="ANALYTIQUE",
             NOM_CMP="DY",
-            VALE_CALC=DeplSoluY,
-            VALE_REFE=DeplSoluY,
+            VALE_CALC=SoluDeplY,
+            VALE_REFE=SoluDeplY,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="DEPL",
             INST=InstPost,
             GROUP_NO="DB2",
             REFERENCE="ANALYTIQUE",
             NOM_CMP="DZ",
-            VALE_CALC=DeplSoluZ,
-            VALE_REFE=DeplSoluZ,
+            VALE_CALC=SoluDeplZ,
+            VALE_REFE=SoluDeplZ,
         ),
     )
 )
@@ -357,7 +146,7 @@ TEST_RESU(
 TEST_RESU(
     RESU=(
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="EFGE_ELNO",
             INST=InstPost,
             GROUP_MA="POUTA",
@@ -368,7 +157,7 @@ TEST_RESU(
             VALE_REFE=FimpoAx * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="EFGE_ELNO",
             INST=InstPost,
             GROUP_MA="POUTA",
@@ -380,7 +169,7 @@ TEST_RESU(
         ),
         #
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="EFGE_ELNO",
             INST=InstPost,
             GROUP_MA="POUTB",
@@ -391,7 +180,7 @@ TEST_RESU(
             VALE_REFE=FimpoAx * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="EFGE_ELNO",
             INST=InstPost,
             GROUP_MA="POUTB",
@@ -403,7 +192,7 @@ TEST_RESU(
         ),
         #
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="EFGE_ELNO",
             INST=InstPost,
             GROUP_MA="DISCA",
@@ -414,7 +203,7 @@ TEST_RESU(
             VALE_REFE=FimpoAx * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="EFGE_ELNO",
             INST=InstPost,
             GROUP_MA="DISCA",
@@ -426,7 +215,7 @@ TEST_RESU(
         ),
         #
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="EFGE_ELNO",
             INST=InstPost,
             GROUP_MA="DISCB",
@@ -437,7 +226,7 @@ TEST_RESU(
             VALE_REFE=FimpoAx * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="EFGE_ELNO",
             INST=InstPost,
             GROUP_MA="DISCB",
@@ -454,7 +243,7 @@ TEST_RESU(
 TEST_RESU(
     RESU=(
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="REAC_NODA",
             INST=InstPost,
             GROUP_NO="NA1",
@@ -464,7 +253,7 @@ TEST_RESU(
             VALE_REFE=-FimpoAx * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="REAC_NODA",
             INST=InstPost,
             GROUP_NO="DA1",
@@ -475,7 +264,7 @@ TEST_RESU(
         ),
         #
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="REAC_NODA",
             INST=InstPost,
             GROUP_NO="NB1",
@@ -485,7 +274,7 @@ TEST_RESU(
             VALE_REFE=-FimpoBx * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="REAC_NODA",
             INST=InstPost,
             GROUP_NO="NB1",
@@ -495,7 +284,7 @@ TEST_RESU(
             VALE_REFE=-FimpoBy * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="REAC_NODA",
             INST=InstPost,
             GROUP_NO="NB1",
@@ -506,7 +295,7 @@ TEST_RESU(
         ),
         #
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="REAC_NODA",
             INST=InstPost,
             GROUP_NO="DB1",
@@ -516,7 +305,7 @@ TEST_RESU(
             VALE_REFE=-FimpoBx * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="REAC_NODA",
             INST=InstPost,
             GROUP_NO="DB1",
@@ -526,7 +315,7 @@ TEST_RESU(
             VALE_REFE=-FimpoBy * InstPost,
         ),
         _F(
-            RESULTAT=Rstnl,
+            RESULTAT=Rstat,
             NOM_CHAM="REAC_NODA",
             INST=InstPost,
             GROUP_NO="DB1",
