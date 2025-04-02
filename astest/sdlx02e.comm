@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ TEST_RESU(
             NUME_ORDRE=1,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=10.556540222,
+            VALE_CALC=10.504147347798774,
             VALE_REFE=10.390000000000001,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
@@ -104,7 +104,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=20.422736804,
+            VALE_CALC=20.26838945208283,
             VALE_REFE=20.02,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
@@ -114,7 +114,7 @@ TEST_RESU(
             NUME_ORDRE=3,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=25.996868319,
+            VALE_CALC=25.85405364025725,
             VALE_REFE=25.449999999999999,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
@@ -124,7 +124,7 @@ TEST_RESU(
             NUME_ORDRE=4,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=49.205568376,
+            VALE_CALC=48.921519832526286,
             VALE_REFE=48.32,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
@@ -134,7 +134,7 @@ TEST_RESU(
             NUME_ORDRE=5,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=53.391550524,
+            VALE_CALC=53.00953147534933,
             VALE_REFE=52.600000000000001,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
@@ -144,7 +144,7 @@ TEST_RESU(
             NUME_ORDRE=6,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=86.012124945,
+            VALE_CALC=85.37590840375299,
             VALE_REFE=84.810000000000002,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
@@ -154,7 +154,7 @@ TEST_RESU(
             NUME_ORDRE=7,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=88.627376519,
+            VALE_CALC=87.97594817462955,
             VALE_REFE=87.159999999999997,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
@@ -164,7 +164,7 @@ TEST_RESU(
             NUME_ORDRE=8,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=131.834028212,
+            VALE_CALC=130.55665308747123,
             VALE_REFE=129.31,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
@@ -174,7 +174,7 @@ TEST_RESU(
             NUME_ORDRE=9,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=134.400961416,
+            VALE_CALC=133.1442281878195,
             VALE_REFE=131.69,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",

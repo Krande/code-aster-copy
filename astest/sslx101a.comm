@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,40 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-COS30 = 0.8660254037844
+from math import cos, pi
+
+COS30 = cos(pi / 6.0)
+SIN30 = sin(pi / 6.0)
 
 MA = LIRE_MAILLAGE(FORMAT="MED")
+
 # -----------   SECTION TUBE FIN CIRCULAIRE  --------------------
 #  SUR UNE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN COQUES
 #  SUR L'AUTRE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN POUTRES
 # ---------------------------------------------------------------
+
+# ---------------- PARAMETRES GENERAUX
+# Module d'Young
+E = 2.0e11
+# Coefficient de Poisson
+NU = 0.3
+# Coefficient de cisaillement
+G = E / (2 * (1.0 + NU))
+# Rayon extérieur de la tuyauterie
+R = 2.0
+# Epaisseur de la section de tuyau
+EP = 0.1
+# Amplitude de l'effort appliqué
+F = 1.0
+# Longueur de la poutre modélisée
+L = 80.0
+# Aire de la section droite du tuyau
+S = pi * (R**2 - (R - EP) ** 2)
+# Moment quadratique de la section
+I = 0.25 * pi * (R**4 - (R - EP) ** 4)
+# Moment polaire
+J = 2 * I
+# ----------------
 
 MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(GROUP_MA="CERCL1"))
 
@@ -42,14 +69,14 @@ MO1 = AFFE_MODELE(
     ),
 )
 
-MATR = DEFI_MATERIAU(ELAS=_F(E=200000000000.0, NU=0.3))
+MATR = DEFI_MATERIAU(ELAS=_F(E=E, NU=NU))
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATR))
 
 CAREL1 = AFFE_CARA_ELEM(
     MODELE=MO1,
-    POUTRE=_F(GROUP_MA="POU", SECTION="CERCLE", CARA=("R", "EP"), VALE=(2.0, 0.1)),
-    COQUE=_F(GROUP_MA=("CYL", "CERCL1", "CERCL2"), EPAIS=0.1),
+    POUTRE=_F(GROUP_MA="POU", SECTION="CERCLE", CARA=("R", "EP"), VALE=(R, EP)),
+    COQUE=_F(GROUP_MA=("CYL", "CERCL1", "CERCL2"), EPAIS=EP),
     DISCRET=(
         _F(
             GROUP_MA="P_ORIG",
@@ -69,25 +96,25 @@ CH1 = AFFE_CHAR_MECA(
             GROUP_MA_1="CERCL2",
             GROUP_NO_2="NOPOU1",
             CARA_ELEM=CAREL1,
-            AXE_POUTRE=(COS30, 0.5, 0.0),
+            AXE_POUTRE=(COS30, SIN30, 0.0),
         ),
         _F(
             OPTION="COQ_POU",
             GROUP_MA_1="CERCL1",
             GROUP_NO_2="P_ORIG",
             CARA_ELEM=CAREL1,
-            AXE_POUTRE=(COS30, 0.5, 0.0),
+            AXE_POUTRE=(COS30, SIN30, 0.0),
         ),
     ),
 )
 
-CHTX = AFFE_CHAR_MECA(MODELE=MO1, FORCE_NODALE=_F(GROUP_NO="NOPOU2", FX=COS30, FY=0.5))
+CHTX = AFFE_CHAR_MECA(MODELE=MO1, FORCE_NODALE=_F(GROUP_NO="NOPOU2", FX=F * COS30, FY=F * SIN30))
 
-CHRX = AFFE_CHAR_MECA(MODELE=MO1, FORCE_NODALE=_F(GROUP_NO="NOPOU2", MX=COS30, MY=0.5))
+CHRX = AFFE_CHAR_MECA(MODELE=MO1, FORCE_NODALE=_F(GROUP_NO="NOPOU2", MX=F * COS30, MY=F * SIN30))
 
-CHRY = AFFE_CHAR_MECA(MODELE=MO1, FORCE_NODALE=_F(GROUP_NO="NOPOU2", MX=-0.5, MY=COS30))
+CHRY = AFFE_CHAR_MECA(MODELE=MO1, FORCE_NODALE=_F(GROUP_NO="NOPOU2", MX=-F * SIN30, MY=F * COS30))
 
-CHRZ = AFFE_CHAR_MECA(MODELE=MO1, FORCE_NODALE=_F(GROUP_NO="NOPOU2", MZ=1.0))
+CHRZ = AFFE_CHAR_MECA(MODELE=MO1, FORCE_NODALE=_F(GROUP_NO="NOPOU2", MZ=F))
 
 MEST1 = MACRO_ELAS_MULT(
     MODELE=MO1,
@@ -111,7 +138,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             VALE_CALC=2.79419558e-10,
-            VALE_REFE=2.8273000000000002e-10,
+            VALE_REFE=F * L / (E * S) * COS30,
             PRECISION=0.029999999999999999,
             NOM_CAS="TX",
         ),
@@ -122,7 +149,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             VALE_CALC=1.61324595e-10,
-            VALE_REFE=1.6324e-10,
+            VALE_REFE=F * L / (E * S) * SIN30,
             PRECISION=0.029999999999999999,
             NOM_CAS="TX",
         ),
@@ -133,7 +160,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             VALE_CALC=1.87126600e-10,
-            VALE_REFE=1.93195e-10,
+            VALE_REFE=F * L / (G * J) * COS30,
             PRECISION=0.040000000000000001,
             NOM_CAS="RX",
         ),
@@ -144,7 +171,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             VALE_CALC=1.08037592e-10,
-            VALE_REFE=1.1154100000000001e-10,
+            VALE_REFE=F * L / (G * J) * SIN30,
             PRECISION=0.040000000000000001,
             NOM_CAS="RX",
         ),
@@ -155,7 +182,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             VALE_CALC=-6.48812348e-09,
-            VALE_REFE=-6.8640000000000003e-09,
+            VALE_REFE=-F * L**2 / (2 * E * I),
             PRECISION=0.059999999999999998,
             NOM_CAS="RY",
         ),
@@ -166,7 +193,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             VALE_CALC=-8.26679568e-11,
-            VALE_REFE=-8.5800000000000004e-11,
+            VALE_REFE=-F * L / (E * I) * SIN30,
             PRECISION=0.040000000000000001,
             NOM_CAS="RY",
         ),
@@ -177,7 +204,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             VALE_CALC=1.43185101e-10,
-            VALE_REFE=1.48611e-10,
+            VALE_REFE=F * L / (E * I) * COS30,
             PRECISION=0.040000000000000001,
             NOM_CAS="RY",
         ),
@@ -188,7 +215,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             VALE_CALC=-3.24406172e-09,
-            VALE_REFE=-3.4320000000000001e-09,
+            VALE_REFE=-F * L**2 / (2 * E * I) * SIN30,
             PRECISION=0.059999999999999998,
             NOM_CAS="RZ",
         ),
@@ -199,7 +226,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             VALE_CALC=5.61887977e-09,
-            VALE_REFE=5.9440000000000002e-09,
+            VALE_REFE=F * L**2 / (2 * E * I) * COS30,
             PRECISION=0.059999999999999998,
             NOM_CAS="RZ",
         ),
@@ -210,7 +237,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             VALE_CALC=1.65335913e-10,
-            VALE_REFE=1.7160000000000001e-10,
+            VALE_REFE=F * L / (E * I),
             PRECISION=0.040000000000000001,
             NOM_CAS="RZ",
         ),

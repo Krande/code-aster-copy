@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,7 @@ TEST_RESU(
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="N1",
             NOM_CMP="EPYY",
-            VALE_CALC=-2.25e-4,
+            VALE_CALC=-0.00022499999999999555,
             GROUP_MA="M1",
         ),
         _F(
@@ -129,7 +129,7 @@ TEST_RESU(
             RESULTAT=REST3,
             NOM_CHAM="EPEQ_ELGA",
             NOM_CMP="INVA_2",
-            VALE_CALC=5.8949100000000004e-4,
+            VALE_CALC=0.0005894913061279269,
             GROUP_MA="M1",
         ),
         _F(
@@ -139,7 +139,7 @@ TEST_RESU(
             RESULTAT=REST3,
             NOM_CHAM="SIEQ_ELGA",
             NOM_CMP="VMIS",
-            VALE_CALC=1.5e8,
+            VALE_CALC=150000000.00010037,
             GROUP_MA="M1",
         ),
         _F(
@@ -149,7 +149,7 @@ TEST_RESU(
             RESULTAT=REST1,
             NOM_CHAM="SIGM_ELNO",
             NOM_CMP="SIXX",
-            VALE_CALC=1.51500004e08,
+            VALE_CALC=151500001.7656471,
             VALE_REFE=1.5e8,
             PRECISION=0.012,
             GROUP_MA="M2",
@@ -161,7 +161,7 @@ TEST_RESU(
             RESULTAT=REST2,
             NOM_CHAM="VARI_ELNO",
             NOM_CMP="V1",
-            VALE_CALC=0.0007424999964901293,
+            VALE_CALC=0.00074249999649164,
             VALE_REFE=7.425e-4,
             PRECISION=1.0e-3,
             GROUP_MA="M2",
@@ -173,7 +173,7 @@ TEST_RESU(
             NOM_CHAM="VARI_ELNO",
             GROUP_NO="N5",
             NOM_CMP="V1",
-            VALE_CALC=0.00074249999649012,
+            VALE_CALC=0.0007424999964913456,
             VALE_REFE=7.425e-4,
             PRECISION=1.0e-3,
             GROUP_MA="M2",
@@ -197,7 +197,7 @@ TEST_RESU(
             RESULTAT=REST,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=9.47143082e04,
+            VALE_CALC=94714.30722055893,
             VALE_REFE=9.47152e4,
             PRECISION=1.0e-3,
         ),
@@ -208,7 +208,7 @@ TEST_RESU(
             RESULTAT=REST,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=9.56520736e04,
+            VALE_CALC=95652.07260146835,
             VALE_REFE=9.5653e4,
             PRECISION=1.0e-3,
         ),
@@ -218,7 +218,7 @@ TEST_RESU(
             RESULTAT=REST,
             NOM_CHAM="DEGE_ELNO",
             NOM_CMP="EPXX",
-            VALE_CALC=2.25000170e-03,
+            VALE_CALC=0.002249999999999601,
             GROUP_MA="M2",
         ),
     )
@@ -279,7 +279,7 @@ TEST_RESU(
             RESULTAT=RESM,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DRZ",
-            VALE_CALC=4.64205985e03,
+            VALE_CALC=4642.05985018325,
             VALE_REFE=4642.17,
         ),
         _F(
@@ -289,7 +289,7 @@ TEST_RESU(
             RESULTAT=RESM,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DRZ",
-            VALE_CALC=5.93648157e03,
+            VALE_CALC=5936.521182863455,
             VALE_REFE=5910.6,
             PRECISION=5.0e-3,
         ),
@@ -324,7 +324,7 @@ TEST_RESU(
         RESULTAT=RESM,
         NOM_CHAM="DEGE_ELNO",
         NOM_CMP="KZ",
-        VALE_CALC=-7.5e-3,
+        VALE_CALC=-0.007500000000003459,
         VALE_REFE=-7.5e-3,
         PRECISION=1.0e-3,
         GROUP_MA="M2",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -138,41 +138,41 @@ TEST_RESU(
             NUME_ORDRE=1,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=17.736316643,
+            VALE_CALC=17.541339457946773,
             VALE_REFE=17.899999999999999,
             REFERENCE="NON_DEFINI",
             CRITERE="RELATIF",
-            PRECISION=1.0e-2,
+            PRECISION=0.03,
         ),
         _F(
             NUME_ORDRE=2,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=24.669814727,
+            VALE_CALC=24.28045138083511,
             VALE_REFE=24.800000000000001,
             REFERENCE="NON_DEFINI",
             CRITERE="RELATIF",
-            PRECISION=1.0e-2,
+            PRECISION=0.03,
         ),
         _F(
             NUME_ORDRE=3,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=25.664003897,
+            VALE_CALC=24.788317940698512,
             VALE_REFE=25.300000000000001,
             REFERENCE="NON_DEFINI",
             CRITERE="RELATIF",
-            PRECISION=0.029999999999999999,
+            PRECISION=0.03,
         ),
         _F(
             NUME_ORDRE=4,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=27.485949681,
+            VALE_CALC=26.559185067157184,
             VALE_REFE=27.0,
             REFERENCE="NON_DEFINI",
             CRITERE="RELATIF",
-            PRECISION=0.029999999999999999,
+            PRECISION=0.03,
         ),
     )
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ TUYAU = AFFE_CARA_ELEM(
         VARI_SECT="CONSTANT",
         CARA=("EP", "R"),
         VALE=(0.045, 0.85),
-        MODI_METRIQUE="OUI",
+        MODI_METRIQUE="NON",
         TUYAU_NSEC=16,
         TUYAU_NCOU=1,
     ),
@@ -355,7 +355,7 @@ TEST_RESU(
             NOM_CMP="DX",
             GROUP_NO="N1",
             CRITERE="RELATIF",
-            VALE_CALC=0.000221865632786,
+            VALE_CALC=0.00022783448211269672,
         ),
         _F(
             RESULTAT=CFP_TMOY,
@@ -364,7 +364,7 @@ TEST_RESU(
             NOM_CMP="WO",
             GROUP_NO="N1",
             CRITERE="RELATIF",
-            VALE_CALC=-0.000115524385573,
+            VALE_CALC=-0.00011647550825162361,
         ),
         _F(
             RESULTAT=CFP_TMOY,
@@ -375,7 +375,7 @@ TEST_RESU(
             POINT=1,
             SOUS_POINT=1,
             CRITERE="RELATIF",
-            VALE_CALC=32614582.7879,
+            VALE_CALC=23530604.68970542,
         ),
         _F(
             RESULTAT=CFP_TMOY,
@@ -386,7 +386,7 @@ TEST_RESU(
             POINT=1,
             SOUS_POINT=1,
             CRITERE="RELATIF",
-            VALE_CALC=29972121.8432,
+            VALE_CALC=22535769.583350282,
         ),
         _F(
             RESULTAT=CFP_TMOY,
@@ -395,7 +395,7 @@ TEST_RESU(
             NOM_CMP="DZ",
             GROUP_NO="N4",
             CRITERE="RELATIF",
-            VALE_CALC=-2200417.99324,
+            VALE_CALC=-2162158.283395195,
         ),
     )
 )

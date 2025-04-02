@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ TEST_RESU(
         RESULTAT=RESU1,
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
-        VALE_CALC=0.019411424,
+        VALE_CALC=0.01941290359649589,
         VALE_REFE=0.02,
         PRECISION=0.03,
     )
@@ -163,7 +163,7 @@ TEST_RESU(
         RESULTAT=RESU2,
         NOM_CHAM="DEPL",
         NOM_CMP="DZ",
-        VALE_CALC=-0.015702847,
+        VALE_CALC=-0.015703615749124388,
         VALE_REFE=-0.015657000000000001,
         PRECISION=5.0e-3,
     )
