@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
 !
@@ -63,7 +62,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     integer, parameter :: nb_type_neum = 11
     aster_logical :: list_load_keyw(nb_type_neum)
     aster_logical :: l_func_mult, l_load_user, l_zero_allowed
-    aster_logical :: l_func_c, l_ther_lineaire, l_theta_not_one
+    aster_logical :: l_func_c, l_ther_lineaire, l_theta_not_one, paraIsTemp
     real(kind=8) :: theta, prec
     parameter(prec=1d-6)
     integer :: nb_info_type, nbval
@@ -73,7 +72,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     character(len=24) :: ligrch
     character(len=10) :: load_obje(2)
     character(len=19) :: cart_name
-    character(len=8) :: load_name, const_func, load_func, k8bid
+    character(len=8) :: load_name, const_func, load_func, k8bid, answer
     character(len=16) :: load_keyword, nomcmd, typesd
     character(len=24) :: load_type, load_para, load_keyw
     character(len=16) :: load_opti_f
@@ -173,6 +172,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
 !
 ! --------- Dirichlet loads (AFFE_CHAR_THER)
 !
+
             info_type = 'RIEN'
             cart_name = ligrch(1:13)//'.CIMPO'
             call jeexin(cart_name//'.DESC', iret)
@@ -214,13 +214,16 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
                                         load_obje_=load_obje, &
                                         load_keyw_=load_keyw)
                     cart_name = load_name(1:8)//'.CHTH'//load_obje(1)
+                    paraIsTemp = ASTER_FALSE
+                    if (load_type(5:6) .eq. '_F') then
+                        call dismoi('PARA_TEMP', cart_name, 'CARTE', repk=answer)
+                        paraIsTemp = answer .eq. 'OUI'
+                    end if
                     if ((load_opti_f .eq. 'No_load') .and. l_func_mult) then
                         call utmess('F', 'CHARGES_20', sk=load_name)
                     end if
-                    if (load_keyw .eq. 'ECHANGE') then
-                        if (l_func_mult) then
-                            call utmess('F', 'CHARGES_32', sk=load_name)
-                        end if
+                    if (paraIsTemp .and. l_func_mult) then
+                        call utmess('F', 'CHARGES_32')
                     end if
                     if (.not. l_ther_lineaire .and. l_func_mult .and. l_theta_not_one) then
                         call utmess('F', 'CHARGES_41', nk=2, valk=[load_name, load_keyw])

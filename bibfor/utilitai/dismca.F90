@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -196,6 +196,37 @@ subroutine dismca(question_, object_, answeri, answerk_, ierd)
                             if (para_name(i_para) .eq. 'ACCE_X' .or. &
                                 para_name(i_para) .eq. 'ACCE_Y' .or. &
                                 para_name(i_para) .eq. 'ACCE_Z') then
+                                answerk = 'OUI'
+                                goto 999
+                            end if
+                        end do
+                    end if
+                end if
+            end do
+        end if
+    else if (question .eq. 'PARA_TEMP') then
+        answerk = ' '
+        field = object
+        call jeveuo(field//'.VALE', 'L', jvale)
+        call jelira(field//'.VALE', 'TYPE', cval=type)
+        if (type(1:1) .eq. 'K') then
+            call jelira(field//'.VALE', 'LONMAX', nb_zone)
+            call jelira(field//'.VALE', 'LTYP', ltyp)
+            do i_zone = 1, nb_zone
+                if (ltyp .eq. 8) then
+                    func_name = zk8(jvale+i_zone-1)
+                else if (ltyp .eq. 24) then
+                    func_name = zk24(jvale+i_zone-1) (1:19)
+                else
+                    ASSERT(.false.)
+                end if
+                if (func_name(1:8) .ne. ' ') then
+                    call jeexin(func_name//'.PROL', iret)
+                    if (iret .gt. 0) then
+                        call jeveuo(func_name//'.PROL', 'L', vk24=v_prol)
+                        call fonbpa(func_name, v_prol, func_type, max_para_name, nb_para, para_name)
+                        do i_para = 1, nb_para
+                            if (para_name(i_para) .eq. 'TEMP') then
                                 answerk = 'OUI'
                                 goto 999
                             end if
