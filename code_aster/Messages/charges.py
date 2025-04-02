@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -142,8 +142,7 @@ La charge %(k1)s est un chargement de type force ou flux et ne peut donc pas uti
     ),
     32: _(
         """
-La charge %(k1)s contient une condition de type ECHANGE et elle n'est pas compatible avec FONC_MULT.
-Pour appliquer une fonction (y compris en fonction du temps), il faut utiliser AFFE_CHAR_THER_F.
+Un des chargements dépend de la température. Ce n'est pas compatible avec FONC_MULT.
 """
     ),
     33: _(
