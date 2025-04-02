@@ -92,17 +92,17 @@ def options(self):
 
     # see waflib/Tools/gnu_dirs.py for the group name
     group = self.get_option_group("Installation prefix")
-    descr = group.get_description() or ""
+    descr = group.description or ""
     # replace path in description
     new_descr = descr.replace("/usr/local", default_prefix)
     new_descr += (
         ". Using 'waf_variant', '%s' will be automatically replaced by 'variant'." % install_suffix
     )
-    group.set_description(new_descr)
+    group.description = new_descr
     # change default value for '--prefix'
-    option = group.get_option("--prefix")
+    option = self.parser.get_option("--prefix")
     if option:
-        group.remove_option("--prefix")
+        self.parser.remove_option("--prefix")
     group.add_option(
         "--prefix",
         dest="prefix",
