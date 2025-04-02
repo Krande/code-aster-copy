@@ -112,7 +112,7 @@ def check_cxx_compiler_options(self, options):
     if type(options) not in (list, tuple):
         options = [options]
     self.start_msg("Checking for C++ option")
-    if self.check_cxx(cflags=options, mandatory=False):
+    if self.check_cxx(cxxflags=options, mandatory=False):
         self.env.append_unique("CXXFLAGS", options)
         self.end_msg("yes (%s)" % " ".join(options))
     else:

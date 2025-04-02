@@ -68,9 +68,11 @@ def check_numpy(self):
 def check_numpy_headers(self):
     if not self.env["PYTHON"]:
         self.fatal("load python tool first")
-    self.start_msg("Checking for numpy include")
+    self.start_msg("Checking for numpy includes")
     # retrieve includes dir from numpy module
     numpy_includes = self.get_python_variables(["numpy.get_include()"], ["import numpy"])
+    self.end_msg(numpy_includes)
+    self.start_msg("Checking for numpy arrayobject.h")
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         incs = [PureWindowsPath(i) for i in numpy_includes]
         numpy_includes = []

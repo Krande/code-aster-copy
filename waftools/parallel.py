@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,13 @@ def options(self):
         dest="parallel",
         action="store_true",
         default=os.environ.get("ENABLE_MPI") != "0",
-        help="Build a parallel version with mpi (same as " "ENABLE_MPI environment variable)",
+        help="Build a parallel version with mpi (same as ENABLE_MPI environment variable)",
     )
     group.add_option(
         "--enable-openmp",
         dest="openmp",
         action="store_true",
+        default=None,
         help="Build a parallel version supporting OpenMP",
     )
     group.add_option("--disable-openmp", dest="openmp", action="store_false", help="Disable OpenMP")
@@ -50,6 +51,7 @@ def options(self):
         "--enable-proc-status",
         dest="procstatus",
         action="store_true",
+        default=None,
         help="force control of used memory with VmSize",
     )
     group.add_option(
@@ -172,7 +174,7 @@ def load_compilers_mpi(self):
 def check_openmp(self):
     opts = self.options
     if opts.openmp is False:
-        self.msg("Checking for OpenMP flag", "no", color="YELLOW")
+        self.msg("Checking for OpenMP flag", "disabled", color="YELLOW")
         return
     # OpenMP interoperability is not secure
     # we consider both compiler should be from same vendor
