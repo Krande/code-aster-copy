@@ -30,13 +30,15 @@ def options(self):
 
     group = self.get_option_group("code_aster options")
     group.add_option(
-        "--disable-mpi", dest="parallel", action="store_false", help="Build a sequential version"
+        "--disable-mpi",
+        dest="parallel",
+        default=os.environ.get("ENABLE_MPI") != "0",
+        action="store_false", help="Build a sequential version"
     )
     group.add_option(
         "--enable-mpi",
         dest="parallel",
         action="store_true",
-        default=os.environ.get("ENABLE_MPI") != "0",
         help="Build a parallel version with mpi (same as ENABLE_MPI environment variable)",
     )
     group.add_option(
@@ -44,7 +46,7 @@ def options(self):
         dest="openmp",
         action="store_true",
         default=None,
-        help="Build a parallel version supporting OpenMP",
+        help="Build a version supporting OpenMP",
     )
     group.add_option("--disable-openmp", dest="openmp", action="store_false", help="Disable OpenMP")
     group.add_option(
