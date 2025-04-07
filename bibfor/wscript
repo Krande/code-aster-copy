@@ -514,7 +514,8 @@ def check_optimization_fcflags(self):
     else:
         self.end_msg(res)
     if "-fno-frontend-optimize" not in optflag:
-        self.check_fortran_compiler_options("-finline-matmul-limit=6")
+        if "ifort" not in self.env.FC_NAME.lower():
+            self.check_fortran_compiler_options("-finline-matmul-limit=6")
     self.start_msg("Setting Fortran optimization flags")
     self.env.append_unique("FCFLAGS", optflag)
     self.end_msg(optflag)
