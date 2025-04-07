@@ -548,8 +548,8 @@ VectorOfVectorsLong ParallelMesh::getNodesRanks() const {
     for ( auto i = 0; i < opp_domains.size(); i++ ) {
         auto dom = opp_domains[i];
         auto nodes_send = _joints->getSendedElements( i );
-        for ( auto i = 0; i < nodes_send.size(); i += 2 ) {
-            ranks[nodes_send[i] - 1].push_back( dom );
+        for ( auto j = 0; j < nodes_send.size(); j += 2 ) {
+            ranks[nodes_send[j] - 1].push_back( dom );
         }
         auto nodes_recv = _joints->getReceivedElements( i );
     }
