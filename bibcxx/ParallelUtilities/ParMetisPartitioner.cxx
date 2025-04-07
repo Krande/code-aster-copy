@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,7 +48,7 @@ int ParMetisPartitioner::buildGraph( const MeshConnectionGraphPtr &graph ) {
 };
 
 VectorLong ParMetisPartitioner::partitionGraph() {
-    idx_t wgtflag = 0, numflag = 0, ncon = 1, npart = getMPISize(), edgecut = 0;
+    Parmetis::idx_t wgtflag = 0, numflag = 0, ncon = 1, npart = getMPISize(), edgecut = 0;
     VectorIdxT options( 4, 0 );
     VectorIdxT partition( _nbVertex + 1, -1 );
     VectorLong distributed;
