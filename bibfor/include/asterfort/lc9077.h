@@ -20,7 +20,7 @@
 !
 !
 interface
-    subroutine lc7077(BEHinteg, fami, kpg, ksp, ndim, imate,&
+    subroutine lc9077(BEHinteg, fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, neps, epsm,&
                   deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp,&

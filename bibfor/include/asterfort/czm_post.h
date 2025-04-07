@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,28 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-!
-!
-#include "asterf_types.h"
-!
 interface
-    subroutine eifono(ndim, axi, nno1, nno2, npg,&
-                      wref, vff1, vff2, dffr2, geom,&
-                      ang, iu, im, sigp, vect)
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
-        aster_logical :: axi
-        real(kind=8) :: wref(npg)
-        real(kind=8) :: vff1(nno1, npg)
-        real(kind=8) :: vff2(nno2, npg)
-        real(kind=8) :: dffr2(ndim-1, nno2, npg)
-        real(kind=8) :: geom(ndim, nno2)
-        real(kind=8) :: ang(*)
-        integer :: iu(3, 18)
-        integer :: im(3, 9)
-        real(kind=8) :: sigp(2*ndim, npg)
-        real(kind=8) :: vect(2*nno1*ndim+nno2*ndim)
-    end subroutine eifono
+    subroutine czm_post(ndim, lSigm, lMatr, r, mu, su, delta, dsde, sigp, dsidep)
+        aster_logical, intent(in) :: lMatr, lSigm
+        integer, intent(in):: ndim
+        real(kind=8),intent(in):: r, mu(1:ndim), su(1:ndim), delta(1:ndim), dsde(:,:)
+        real(kind=8),intent(out):: sigp(:), dsidep(:,:)
+    end subroutine
 end interface

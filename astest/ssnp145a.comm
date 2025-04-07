@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,9 @@ def P(c):
 MA = LIRE_MAILLAGE(FORMAT="MED")
 
 
-ACIER = DEFI_MATERIAU(ELAS=_F(E=Young, NU=Poisson), ECRO_LINE=_F(D_SIGM_EPSI=0, SY=S0))
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=Young, NU=Poisson), ECRO_LINE=_F(D_SIGM_EPSI=0, SY=S0), ECRO_NL=_F(R0=S0)
+)
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA="MATIERE", MATER=ACIER))
 
@@ -55,6 +57,9 @@ SYMETRIE = AFFE_CHAR_MECA(
 )
 
 PRESSION = AFFE_CHAR_MECA(MODELE=MO, PRES_REP=_F(GROUP_MA="PEAU_INT", PRES=1.0))
+
+
+# AVEC VMIS_ISOT_LINE
 
 temps = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=20, NOMBRE=20),))
 
@@ -104,5 +109,64 @@ TEST_FONCTION(
         FONCTION=ETA_PILO,
     )
 )
+
+
+# AVEC VMIS_ISOT_NL
+
+temps = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0e-6, NOMBRE=1), _F(JUSQU_A=20, NOMBRE=20))
+)
+
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=temps), ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_NIVEAU=4)
+)
+
+
+evol_vinl = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=SYMETRIE), _F(CHARGE=PRESSION, TYPE_CHARGE="FIXE_PILO")),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL"),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    PILOTAGE=_F(
+        TYPE="PRED_ELAS", GROUP_MA="MATIERE", COEF_MULT=38.5, ETA_PILO_R_MIN=0, SELECTION="MIXTE"
+    ),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(SIGM_REFE=S0, RESI_REFE_RELA=1.0e-4, ITER_GLOB_MAXI=10),
+)
+
+
+eta_pilo_vinl = RECU_FONCTION(RESULTAT=evol_vinl, NOM_PARA_RESU="ETA_PILOTAGE", TOUT_ORDRE="OUI")
+
+
+TEST_FONCTION(
+    VALEUR=_F(
+        VALE_CALC=416.4644452208,
+        VALE_REFE=P(b),
+        VALE_PARA=20,
+        REFERENCE="ANALYTIQUE",
+        PRECISION=1.5e-3,
+        NOM_PARA="INST",
+        FONCTION=eta_pilo_vinl,
+    )
+)
+
+
+plas = POST_ELEM(
+    MINMAX=_F(GROUP_MA="MATIERE", RESULTAT=evol_vinl, NOM_CHAM="VARI_ELGA", NOM_CMP="V1")
+)
+
+
+TEST_TABLE(
+    TABLE=plas,
+    NOM_PARA="MAX_V1",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=0.0012987012337662429,
+    VALE_REFE=0.05 / 38.5,
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=2),
+)
+
+
+# IMPR_TABLE(UNITE=6, TABLE=plas)
 
 FIN()

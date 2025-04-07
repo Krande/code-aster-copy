@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,16 +26,16 @@ subroutine te0360(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/eiangl.h"
-#include "asterfort/eifint.h"
-#include "asterfort/eiinit.h"
+#include "asterfort/eimatb.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/ngfint.h"
+#include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
-#include "blas/dcopy.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -49,98 +49,91 @@ subroutine te0360(option, nomte)
 ! Options: FULL_MECA_*, RIGI_MECA_*, RAPH_MECA
 !
 ! --------------------------------------------------------------------------------------------------
-!
 ! In  option           : name of option to compute
 ! In  nomte            : type of finite element
-!
 ! --------------------------------------------------------------------------------------------------
-!
     character(len=16) :: defo_comp
     character(len=8) :: typmod(2), lielrf(10)
-    aster_logical :: axi
-    integer :: nno1, nno2, npg, imatuu, lgpg
-    integer :: iw, ivf1, igeom, imate
-    integer :: ivf2, idf2
-    integer :: ivarim, ivarip, iinstm, iinstp
-    integer :: iddlm, iddld, icompo, icarcr, icamas
-    integer :: ivectu, icontp, ivarix
-    integer :: jtab(7)
-    integer :: ndim, iret, ntrou
-    integer :: iu(3, 18), im(3, 9), it(18)
-    real(kind=8) :: ang(24)
-    aster_logical :: lVect, lMatr, lVari, lSigm
-    integer :: codret
-    integer :: jv_codret
-    blas_int :: b_incx, b_incy, b_n
-!
+    aster_logical :: axi, matsym, lVect, lMatr, lVari, lSigm
+    integer :: iret, ntrou, codret, jtab(7)
+    integer :: ndim, nno1, nno2, npg, lgpg, nddl, neps
+    integer :: jv_w, jv_vff1, jv_geom, jv_mate, jv_vff2, jv_dff2
+    integer :: jv_varim, jv_varip, jv_instm, jv_instp, jv_codret
+    integer :: jv_ddlm, jv_ddld, jv_compor, jv_carcri, jv_angmas
+    integer :: jv_vectu, jv_contp, jv_varix, jv_matuu, jv_matns
+    real(kind=8):: ang_zero(3)
+    real(kind=8), allocatable:: wg(:, :), ni2ldc(:, :), b(:, :, :), ang(:, :)
+    real(kind=8), allocatable:: sigm(:, :), transp_ktan(:, :)
 ! --------------------------------------------------------------------------------------------------
 !
-    ivectu = 1
-    icontp = 1
-    ivarip = 1
-    imatuu = 1
-    axi = lteatt('AXIS', 'OUI')
+    jv_vectu = 1
+    jv_contp = 1
+    jv_varip = 1
+    jv_codret = 1
+    jv_matuu = 1
+    jv_matns = 1
     codret = 0
 !
 ! - Get element parameters
 !
     call elref2(nomte, 2, lielrf, ntrou)
     call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, npg=npg, &
-                     jpoids=iw, jvf=ivf1)
+                     jpoids=jv_w, jvf=jv_vff1)
     call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, npg=npg, &
-                     jpoids=iw, jvf=ivf2, jdfde=idf2)
+                     jpoids=jv_w, jvf=jv_vff2, jdfde=jv_dff2)
+
     ndim = ndim+1
-!
-! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
-    call eiinit(nomte, iu, im, it)
-!
+    nddl = ndim*(2*nno1+nno2)
+    neps = 2*ndim
+
+    allocate (ang(merge(1, 3, ndim .eq. 2), nno2), b(neps, npg, nddl), wg(neps, npg), &
+              ni2ldc(neps, npg))
+    allocate (sigm(neps, npg), transp_ktan(nddl, nddl))
+
 ! - Type of finite element
 !
-    if (ndim .eq. 3) then
-        typmod(1) = '3D'
-    else if (axi) then
-        typmod(1) = 'AXIS'
-    else
-        typmod(1) = 'PLAN'
-    end if
-    typmod(2) = 'INTERFAC'
+    call teattr('S', 'TYPMOD', typmod(1))
+    call teattr('S', 'TYPMOD2', typmod(2))
+    axi = lteatt('AXIS', 'OUI')
 !
 ! - Get input fields
 !
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PVARIMR', 'L', ivarim)
-    call jevech('PDEPLMR', 'L', iddlm)
-    call jevech('PDEPLPR', 'L', iddld)
-    call jevech('PCOMPOR', 'L', icompo)
-    call jevech('PCARCRI', 'L', icarcr)
+    call jevech('PGEOMER', 'L', jv_geom)
+    call jevech('PMATERC', 'L', jv_mate)
+    call jevech('PVARIMR', 'L', jv_varim)
+    call jevech('PDEPLMR', 'L', jv_ddlm)
+    call jevech('PDEPLPR', 'L', jv_ddld)
+    call jevech('PCOMPOR', 'L', jv_compor)
+    call jevech('PCARCRI', 'L', jv_carcri)
 !
 ! - Properties of behaviour
 !
-    defo_comp = zk16(icompo-1+DEFO)
+    defo_comp = zk16(jv_compor-1+DEFO)
+    if (defo_comp(1:5) .ne. 'PETIT') call utmess('F', 'JOINT1_2', sk=defo_comp)
+
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, zk16(jv_compor), lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! --- ORIENTATION DE L'ELEMENT D'INTERFACE : REPERE LOCAL
 !     RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
 !
+    ! A terme, on calculera vraiment des angles aux noeuds et automatiquement
+    ! Pour l'instant, on ne fait que propager la valeur constante par élément
+
     call tecach('ONO', 'PCAMASS', 'L', iret, nval=1, &
                 itab=jtab)
     if (iret .eq. 0) then
-        icamas = jtab(1)
+        jv_angmas = jtab(1)
     else
         call utmess('F', 'JOINT1_3')
     end if
-    if (zr(icamas) .eq. -1.d0) then
-        call utmess('F', 'JOINT1_47')
-    end if
-!
-!     DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS : ANG
-!
-    call eiangl(ndim, nno2, zr(icamas+1), ang)
+    if (nint(zr(jv_angmas)) .eq. -1) call utmess('F', 'JOINT1_47')
+
+    ! Construction des angles nautiques en radian aux noeuds sommets : ang
+    call eiangl(ndim, nno2, zr(jv_angmas+1), ang)
 !
 ! - Total number of internal state variables on element
 !
@@ -150,46 +143,44 @@ subroutine te0360(option, nomte)
 !
 ! - VARIABLES DE COMMANDE
 !
-    call jevech('PINSTMR', 'L', iinstm)
-    call jevech('PINSTPR', 'L', iinstp)
+    call jevech('PINSTMR', 'L', jv_instm)
+    call jevech('PINSTPR', 'L', jv_instp)
 !
 ! - Get output fields
 !
-    if (lMatr) then
-        call jevech('PMATUUR', 'E', imatuu)
-    end if
-    if (lVect) then
-        call jevech('PVECTUR', 'E', ivectu)
-    end if
-    if (lSigm) then
-        call jevech('PCONTPR', 'E', icontp)
-    end if
+    if (lVect) call jevech('PVECTUR', 'E', jv_vectu)
+    if (lSigm) call jevech('PCONTPR', 'E', jv_contp)
     if (lVari) then
-        call jevech('PVARIPR', 'E', ivarip)
-        call jevech('PVARIMP', 'L', ivarix)
-        b_n = to_blas_int(npg*lgpg)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
+        call jevech('PVARIPR', 'E', jv_varip)
+        call jevech('PVARIMP', 'L', jv_varix)
+        zr(jv_varip:jv_varip+npg*lgpg-1) = zr(jv_varix:jv_varix+npg*lgpg-1)
     end if
-!
-! - FORCES INTERIEURES ET MATRICE TANGENTE
-!
-    if (defo_comp(1:5) .eq. 'PETIT') then
-        call eifint(ndim, axi, nno1, nno2, npg, &
-                    zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom), &
-                    ang, typmod, option, zi(imate), zk16(icompo), &
-                    lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), &
-                    zr(iddld), iu, im, zr(ivarim), zr(icontp), &
-                    zr(ivarip), zr(imatuu), zr(ivectu), lMatr, lVect, &
-                    lSigm, codret)
-    else
-        call utmess('F', 'JOINT1_2', sk=defo_comp)
+    if (lMatr) then
+        call jevech('PMATUUR', 'E', jv_matuu)
+        call jevech('PMATUNS', 'E', jv_matns)
+        matsym = .not. (nint(zr(jv_carcri-1+CARCRI_MATRSYME)) .gt. 0)
     end if
-!
+
+    ! Calcul la matrice de la cinematique
+    call eimatb(nomte, ndim, axi, nno1, nno2, npg, &
+                zr(jv_w), zr(jv_vff1), zr(jv_vff2), zr(jv_dff2), zr(jv_geom), &
+                ang, b, wg, ni2ldc)
+
+    ! Calcul des forces interieures et de la matrice tangente transposee
+    sigm = 0
+    ang_zero = 0
+    call ngfint(option, typmod, ndim, nddl, neps, &
+                npg, wg, b, zk16(jv_compor), 'RIGI', &
+                zi(jv_mate), ang_zero, lgpg, zr(jv_carcri), zr(jv_instm), &
+                zr(jv_instp), zr(jv_ddlm), zr(jv_ddld), ni2ldc, sigm, &
+                zr(jv_varim), zr(jv_contp), zr(jv_varip), zr(jv_vectu), &
+                matsym, zr(jv_matuu), zr(jv_matns), lMatr, lVect, lSigm, codret)
+
+    ! Stockage du code retour
     if (lSigm) then
         call jevech('PCODRET', 'E', jv_codret)
         zi(jv_codret) = codret
     end if
-!
+
+    deallocate (ang, b, wg, ni2ldc, sigm, transp_ktan)
 end subroutine

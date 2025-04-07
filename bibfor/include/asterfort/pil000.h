@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,15 @@
 !
 
 interface
-    subroutine pil000(typilo, compor, neps, tau, mat,&
-                      vim, sigm, epsm, epsp, epsd,&
-                      typmod, etamin, etamax, copilo)
-        character(len=8),intent(in) :: typmod(*)
-        character(len=16),intent(in) :: compor(*), typilo
-        integer,intent(in) :: neps, mat
-        real(kind=8),intent(in) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax
-        real(kind=8),intent(in) :: vim(*), sigm(neps)
-        real(kind=8),intent(out) :: copilo(2, 2)
+    subroutine pil000(typilo, compor, neps, dtau, mat, &
+                  vim, sigm, epsm, epsd_cste, epsd_pilo, &
+                  typmod, etamin, etamax, copilo)
+        character(len=8), intent(in) :: typmod(*)
+        character(len=16), intent(in) :: compor(*), typilo
+        integer, intent(in) :: neps, mat
+        real(kind=8), intent(in) :: dtau, epsm(neps), epsd_pilo(neps), epsd_cste(neps)
+        real(kind=8), intent(in) :: etamin, etamax
+        real(kind=8), intent(in) :: vim(:), sigm(neps)
+        real(kind=8), intent(out) :: copilo(5)
     end subroutine pil000
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ module vmis_isot_nl_module
 
     implicit none
     private
-    public:: CONSTITUTIVE_LAW, Init, InitGradVari, InitViscoPlasticity, Integrate
+    public:: CONSTITUTIVE_LAW, Init, InitGradVari, InitViscoPlasticity, Integrate, PathFollowing
 
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
@@ -41,6 +41,7 @@ module vmis_isot_nl_module
 #include "asterfort/utmess.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
+#include "asterfort/zerop2.h"
 
 ! --------------------------------------------------------------------------------------------------
 
@@ -59,7 +60,7 @@ module vmis_isot_nl_module
     ! VMIS_ISOT_NL class
     type CONSTITUTIVE_LAW
         integer       :: exception = 0
-        aster_logical :: elas, rigi, vari, pred
+        aster_logical :: elas, rigi, vari, pred, pilo
         aster_logical :: grvi = ASTER_FALSE
         aster_logical :: visc = ASTER_FALSE
         aster_logical :: luders = ASTER_FALSE
@@ -126,6 +127,7 @@ contains
         self%vari = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'FULL_MECA' &
                     .or. option .eq. 'RAPH_MECA'
         self%pred = option .eq. 'RIGI_MECA_ELAS' .or. option .eq. 'RIGI_MECA_TANG'
+        self%pilo = option .eq. 'PILO_PRED_ELAS'
 
         ! Elasticity material parameters
         call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0], nbel, nomel, valel, &
@@ -576,6 +578,71 @@ contains
 999     continue
 
     end subroutine ComputePlasticity
+
+! =====================================================================
+!  PATH FOLLOWING
+! =====================================================================
+
+    subroutine PathFollowing(self, dka, vim, eps0, eps1, nsol, sol, sgn)
+
+        implicit none
+        type(CONSTITUTIVE_LAW), intent(inout):: self
+        real(kind=8), intent(in) :: dka, vim(:), eps0(:), eps1(:)
+        integer, intent(out)     :: nsol, sgn(2)
+        real(kind=8), intent(out):: sol(2)
+! ---------------------------------------------------------------------
+! dka           target increment of hardening variable
+! vim           internal variables at t-
+! eps0          constant strain
+! eps1          path-following strain
+! nsol          number of solutions eta (-1, 0, 1 or 2)
+!                   if -1 -> point does not contribute to path-following
+! sol           solutions eta
+! sgn           for each solution, -1 if decreasing function, +1 otherwise
+! ---------------------------------------------------------------------
+
+        real(kind=8)    :: kr(self%ndimsi), rac2(self%ndimsi)
+        real(kind=8)    :: kam, ka, epm(self%ndimsi)
+        real(kind=8):: s0(self%ndimsi), s1(self%ndimsi), rk, gk, p0, p1, p2
+! ---------------------------------------------------------------------
+
+        ! Initialisation
+        kr = kron(self%ndimsi)
+        rac2 = voigt(self%ndimsi)
+
+        ! unpack internal variables
+        kam = vim(1)
+        epm = vim(3:2+self%ndimsi)*rac2
+
+        ! elastic stresses
+        s0 = self%mat%deuxmu*(eps0-epm)
+        s0 = s0-sum(s0(1:3))/3.d0*kr
+        s1 = self%mat%deuxmu*eps1
+        s1 = s1-sum(s1(1:3))/3.d0*kr
+
+        ! target threshold
+        ka = kam+dka
+        rk = f_ecro_loca(self, max(self%mat%eps_luders, ka))
+        gk = 2.d0/3.d0*(self%mat%troismu*dka+rk)**2
+
+        ! Strain function : p2*eta**2 + p1*eta + p0
+        p2 = dot_product(s1, s1)
+        p1 = 2*dot_product(s0, s1)
+        p0 = dot_product(s0, s0)-gk
+
+        ! Solution of the local path following equation (if any)
+        if (abs(p2) .lt. abs(p0)/r8gaem()) then
+            nsol = merge(-1, 0, p0 .le. 0)
+        else
+            call zerop2(p1/p2, p0/p2, sol, nsol)
+            if (nsol .eq. 1) nsol = 0
+            if (nsol .eq. 2) then
+                sgn(1) = 1
+                sgn(2) = -1
+            end if
+        end if
+
+    end subroutine PathFollowing
 
 ! ----------------------------------------------------------------------------------------
 !  Liste des fonctions intermediaires et leurs derivees

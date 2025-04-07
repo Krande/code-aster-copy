@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,28 +18,11 @@
 
 !
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine eifore(ndim, axi, nno1, nno2, npg,&
-                      wref, vff1, vff2, dffr2, geom,&
-                      ang, iu, im, sigref, depref,&
-                      vect)
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
-        aster_logical :: axi
-        real(kind=8) :: wref(npg)
-        real(kind=8) :: vff1(nno1, npg)
-        real(kind=8) :: vff2(nno2, npg)
-        real(kind=8) :: dffr2(ndim-1, nno2, npg)
-        real(kind=8) :: geom(ndim, nno2)
-        real(kind=8) :: ang(*)
-        integer :: iu(3, 18)
-        integer :: im(3, 9)
-        real(kind=8) :: sigref
-        real(kind=8) :: depref
-        real(kind=8) :: vect(2*nno1*ndim+nno2*ndim)
-    end subroutine eifore
+    subroutine pipeab(mat, dtau, vim, sup, sud, mup, mud, nsol, sol, sgn)
+        integer                  :: mat
+        real(kind=8), intent(in) :: dtau, vim(:), sup(:), sud(:), mup(:), mud(:)
+        integer, intent(out)     :: nsol, sgn(2)
+        real(kind=8), intent(out):: sol(2)
+    end subroutine pipeab
 end interface

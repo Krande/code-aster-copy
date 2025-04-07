@@ -20,7 +20,7 @@
 !
 !
 interface
-    subroutine lc7056(BEHinteg, fami, kpg, ksp, ndim, imate,&
+    subroutine lc9041(BEHinteg, fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, neps, epsm,&
                   deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,9 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
 !
     integer :: npg, neps, nddl, mat, lgpg
     real(kind=8) :: ddlm(nddl), ddld(nddl), ddl0(nddl), ddl1(nddl)
-    real(kind=8) :: sigm(0:neps*npg-1), vim(lgpg, npg), tau
+    real(kind=8) :: sigm(neps, npg), vim(lgpg, npg), tau
     real(kind=8) :: copilo(5, npg), etamin, etamax
-    real(kind=8) :: b(neps, npg, nddl), ni2ldc(0:neps*npg-1)
+    real(kind=8) :: b(neps, npg, nddl), ni2ldc(neps, npg)
 !.......................................................................
 !
 !     BUT:  CALCUL  DES COEFFICIENTS DE PILOTAGE POUR PRED_ELAS
@@ -60,23 +60,18 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
 ! IN  DDL1   : CORRECTION DE DDL U,ALPHA,MU POUR FORCES PILOTEES
 ! OUT COPILO : COEFFICIENTS A0 ET A1 POUR CHAQUE POINT DE GAUSS
 ! ----------------------------------------------------------------------
-    integer :: npgmax, epsmax
-    parameter(npgmax=27, epsmax=20)
-! ----------------------------------------------------------------------
-    integer :: g, nepg, ieg
-    real(kind=8) :: sigmam(0:epsmax*npgmax-1)
-    real(kind=8) :: epsm(0:epsmax*npgmax-1), epsd(0:epsmax*npgmax-1)
-    real(kind=8) :: epsp(0:epsmax*npgmax-1)
+    integer :: g, nepg
+    real(kind=8) :: sigmam(neps, npg)
+    real(kind=8) :: epsm(neps, npg), epsd_pilo(neps, npg)
+    real(kind=8) :: epsd_cste(neps, npg)
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
-! ----------------------------------------------------------------------
-#define os(g) (g-1)*neps
 ! ----------------------------------------------------------------------
 !
 !
 ! -- INITIALISATION
 !
     ASSERT(compor(3) .eq. 'PETIT')
-    call r8inir(npg*5, r8vide(), copilo, 1)
+    copilo = r8vide()
     nepg = neps*npg
 !
 !
@@ -96,7 +91,7 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dgemv('N', b_m, b_n, 1.d0, b, &
-               b_lda, ddld, b_incx, 0.d0, epsp, &
+               b_lda, ddld, b_incx, 0.d0, epsd_cste, &
                b_incy)
     b_lda = to_blas_int(nepg)
     b_m = to_blas_int(nepg)
@@ -104,7 +99,7 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dgemv('N', b_m, b_n, 1.d0, b, &
-               b_lda, ddl0, b_incx, 1.d0, epsp, &
+               b_lda, ddl0, b_incx, 1.d0, epsd_cste, &
                b_incy)
     b_lda = to_blas_int(nepg)
     b_m = to_blas_int(nepg)
@@ -112,22 +107,19 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
     b_incx = to_blas_int(1)
     b_incy = to_blas_int(1)
     call dgemv('N', b_m, b_n, 1.d0, b, &
-               b_lda, ddl1, b_incx, 0.d0, epsd, &
+               b_lda, ddl1, b_incx, 0.d0, epsd_pilo, &
                b_incy)
 !
 !
 ! -- PRETRAITEMENT SI NECESSAIRE
-    if (typilo .eq. 'PRED_ELAS') then
-        do ieg = 0, nepg-1
-            sigmam(ieg) = sigm(ieg)*ni2ldc(ieg)
-        end do
-    end if
+    if (typilo .eq. 'PRED_ELAS') sigmam = sigm*ni2ldc
+
 !
 ! -- TRAITEMENT DE CHAQUE POINT DE GAUSS
 !
     do g = 1, npg
         call pil000(typilo, compor, neps, tau, mat, &
-                    vim(1, g), sigmam(os(g)), epsm(os(g)), epsp(os(g)), epsd(os(g)), &
+                    vim(:, g), sigmam(1, g), epsm(1, g), epsd_cste(1, g), epsd_pilo(1, g), &
                     typmod, etamin, etamax, copilo(1, g))
     end do
 !
