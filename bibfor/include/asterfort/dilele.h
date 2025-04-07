@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ interface
         use dil_type
         aster_logical :: lSigm, lMatr, lVect
         character(len=8), intent(in) :: typmod(2)
-        character(len=16), intent(in):: option, compor(COMPOR_SIZE)
+        character(len=16), intent(in):: option, compor(*)
         type(dil_modelisation) :: ds_dil
         integer, intent(in)          :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
         integer, intent(in)          :: mate, iw, idff, idffb

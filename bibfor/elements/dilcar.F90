@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
     lMatr = ASTER_FALSE
     lSigm = ASTER_FALSE
     lVari = ASTER_FALSE
-    icompo = ismaem()
     icontm = ismaem()
     ivarim = ismaem()
     ideplm = ismaem()
@@ -71,7 +70,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
 ! - Input fields
 !
     if (option(1:9) .eq. 'RIGI_MECA') then
-        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
@@ -82,7 +80,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
         call jevech('PINSTMR', 'L', iinstm)
         call jevech('PINSTPR', 'L', iinstp)
     else if (option .eq. 'RAPH_MECA') then
-        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
@@ -93,7 +90,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
         call jevech('PINSTMR', 'L', iinstm)
         call jevech('PINSTPR', 'L', iinstp)
     else if (option(1:9) .eq. 'FULL_MECA') then
-        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
@@ -104,7 +100,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
         call jevech('PINSTMR', 'L', iinstm)
         call jevech('PINSTPR', 'L', iinstp)
     else if (option .eq. 'FORC_NODA') then
-        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PSIEFR', 'L', icontm)
         call jevech('PGEOMER', 'L', igeom)
     else
