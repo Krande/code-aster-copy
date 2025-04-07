@@ -10,7 +10,7 @@ export PYPATH_MPI4PY="$(find ${PREREQ_PATH}/mpi4py-*/lib/python* -name site-pack
 export PYTHONPATH="${PYPATH_MPI4PY}:${PYTHONPATH}"
 
 jobs=$(( ${NPROC_MAX} / 4 ))
-export BUILD=debug
+export ASTER_BUILD=debug
 
 # mpi build
 ./configure --prefix=./mini --without-repo --no-enable-all

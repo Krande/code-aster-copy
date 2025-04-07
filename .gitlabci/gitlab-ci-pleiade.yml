@@ -5,7 +5,7 @@ variables:
   PREREQ_VERSION: 20240327
   OSNAME: debian-11
   IMAGE_URL: ${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
-  BUILD: mpi
+  ASTER_BUILD: mpi
   BUILDTYPE: ci
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
@@ -25,7 +25,7 @@ workflow:
         REFREV: main
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
       variables:
-        BUILD: debug
+        ASTER_BUILD: debug
     - if: $BUILDTYPE == "code-checking"
     - if: $BUILDTYPE == "docker"
   auto_cancel:

@@ -2,7 +2,7 @@
 
 jobs=${NPROC_MAX}
 args=( "--clean" "--jobs=${jobs}" "$@" )
-if [ "${BUILD}" = "debug" ]; then
+if [ "${ASTER_BUILD}" = "debug" ]; then
     args+=( "--timefactor=16.0" )
 else
     args+=( "--timefactor=4.0" )
