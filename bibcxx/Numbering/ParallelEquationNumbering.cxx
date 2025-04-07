@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -230,7 +230,7 @@ bool ParallelEquationNumbering::useSingleLagrangeDOF() const {
     return global_answer;
 };
 
-const ASTERINTEGER ParallelEquationNumbering::localToGlobalDOF( const ASTERINTEGER loc ) {
+ASTERINTEGER ParallelEquationNumbering::localToGlobalDOF( const ASTERINTEGER loc ) const {
     if ( loc < 0 or loc >= getNumberOfDOFs( true ) )
         throw std::out_of_range( "Invalid dof index" );
     auto loc2glo = getLocalToGlobalMapping();
@@ -238,7 +238,7 @@ const ASTERINTEGER ParallelEquationNumbering::localToGlobalDOF( const ASTERINTEG
     return ( *loc2glo )[loc];
 }
 
-const ASTERINTEGER ParallelEquationNumbering::globalToLocalDOF( const ASTERINTEGER glob ) const {
+ASTERINTEGER ParallelEquationNumbering::globalToLocalDOF( const ASTERINTEGER glob ) const {
     if ( _global2localMap.empty() )
         const_cast< ParallelEquationNumbering * >( this )->_buildGlobal2LocalMap();
 

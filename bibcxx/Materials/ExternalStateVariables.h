@@ -5,7 +5,7 @@
  * @file ExternalStateVariable.h
  * @brief Header of ExternalStateVariables
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -108,7 +108,7 @@ enum class externVarEnumInt : int {
 
 class ExternalVariableTraits {
   public:
-    static const std::string getExternVarTypeStr( const externVarEnumInt e ) {
+    static std::string getExternVarTypeStr( const externVarEnumInt e ) {
         if ( e == externVarEnumInt::Unknown ) {
             return std::string( "XXXX" );
         } else if ( e == externVarEnumInt::Temperature ) {
@@ -144,7 +144,7 @@ class ExternalVariableTraits {
         }
     }
 
-    static const bool externVarHasRefeValue( const externVarEnumInt e ) {
+    static bool externVarHasRefeValue( const externVarEnumInt e ) {
         if ( e == externVarEnumInt::Temperature || e == externVarEnumInt::ConcreteDrying ) {
             return true;
         } else {
@@ -152,7 +152,7 @@ class ExternalVariableTraits {
         }
     }
 
-    static const externVarEnumInt getExternVarTypeInt( const std::string e ) {
+    static externVarEnumInt getExternVarTypeInt( const std::string e ) {
         if ( e == "TEMP" ) {
             return externVarEnumInt::Temperature;
         } else if ( e == "GEOM" ) {
@@ -185,7 +185,7 @@ class ExternalVariableTraits {
             return externVarEnumInt::Unknown;
         }
     }
-    static const bool externVarHasStrain( const externVarEnumInt e ) {
+    static bool externVarHasStrain( const externVarEnumInt e ) {
         if ( e == externVarEnumInt::Temperature ) {
             return true;
         } else if ( e == externVarEnumInt::Geometry ) {
@@ -218,7 +218,7 @@ class ExternalVariableTraits {
             return false;
         }
     }
-    static const std::string getExternVarOption( const externVarEnumInt e ) {
+    static std::string getExternVarOption( const externVarEnumInt e ) {
         if ( e == externVarEnumInt::Temperature ) {
             return std::string( "CHAR_MECA_TEMP_R" );
         } else if ( e == externVarEnumInt::IrreversibleStrain ) {
@@ -335,7 +335,7 @@ class ExternalStateVariable {
     void setReferenceValue( const ASTERDOUBLE &value );
 
     /** @brief Get type of external state variable */
-    const externVarEnumInt getType() const { return _type; }
+    externVarEnumInt getType() const { return _type; }
 
     /** @brief Get mesh */
     BaseMeshPtr getMesh() { return _mesh; };
