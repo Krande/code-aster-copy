@@ -29,7 +29,7 @@ def options(self):
 def configure(self):
     self.load("compiler_cxx")
     self.check_cxx_compiler_flags()
-    if "icc" not in self.env.CC_NAME:
+    if ("icc" or "icx") not in self.env.CC_NAME:
         self.check_bibcxx_depends()
     self.check_cxx_types()
 
@@ -96,7 +96,7 @@ def check_bibcxx_depends(self):
 @Configure.conf
 def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
-    # compiler independent (ifort & g++)
+    # compiler independent (icpc/icpx & g++)
     self.check_cxx_compiler_options("-fPIC")
     self.check_cxx_compiler_options("-std=c++17")
     # FIXME: should globally add -fvisibility-hidden

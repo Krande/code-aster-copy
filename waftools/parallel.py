@@ -145,8 +145,8 @@ def load_compilers_mpi(self):
     )
     # raise ValueError(str(self.env.CC) + "  ///  " + str(self.env.CXX))
 
-    ifort = "ifort" in self.env.FC_NAME.lower()
-    icc = "icc" in self.env.CC_NAME.lower()
+    ifort = ("ifort" or "ifx") in self.env.FC_NAME.lower()
+    icc = ("icc" or "icx") in self.env.CC_NAME.lower()
 
     # We won't alter environment if Intel compiler is detected...
     if not icc:
@@ -181,8 +181,8 @@ def check_openmp(self):
     # OpenMP interoperability is not secure
     # we consider both compiler should be from same vendor
     # Define CFLAGS_x and CCFLAGS_x to avoid ambiguous behaviour
-    ifort = "ifort" in self.env.FC_NAME.lower()
-    icc = "icc" in self.env.CC_NAME.lower()
+    ifort = ("ifort" or "ifx") in self.env.FC_NAME.lower()
+    icc = ("icc" or "icx") in self.env.CC_NAME.lower()
     if ifort and icc:
         self.env["FCFLAGS_OPENMP"] = ["-qopenmp"]
         self.env["FCLINKFLAGS_OPENMP"] = ["-qopenmp"]

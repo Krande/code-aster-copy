@@ -81,7 +81,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options("-fno-aggressive-loop-optimizations")
         # long lines after preprocessing
         self.check_fortran_compiler_options("-ffree-line-length-none")
-    if "ifort" in self.env.FC_NAME.lower():
+    if ("ifort" or "ifx") in self.env.FC_NAME.lower():
         self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options(["-i8", "-r8"])
@@ -514,7 +514,7 @@ def check_optimization_fcflags(self):
     else:
         self.end_msg(res)
     if "-fno-frontend-optimize" not in optflag:
-        if "ifort" not in self.env.FC_NAME.lower():
+        if ("ifort" or "ifx") not in self.env.FC_NAME.lower():
             self.check_fortran_compiler_options("-finline-matmul-limit=6")
     self.start_msg("Setting Fortran optimization flags")
     self.env.append_unique("FCFLAGS", optflag)

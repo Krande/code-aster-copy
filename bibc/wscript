@@ -74,7 +74,7 @@ def configure(self):
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
 
-    if "ifort" in self.env.FC_NAME.lower():
+    if ("ifort" or "icx") in self.env.FC_NAME.lower():
         self.add_linkflags("-nofor-main", dest="LINKFLAGS_fcprogram")
         if opts.embed_all or opts.embed_aster:
             self.add_linkflags("-static-intel", dest="LINKFLAGS_fcprogram")
