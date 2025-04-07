@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -107,7 +107,9 @@ MaterChoc = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm,
 MaterParoi = DEFI_MATERIAU(
     ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=KnormParoi, AMOR_NOR=AmorNor)
 )
-MaterCoin = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm, CONTACT="COIN_2D"))
+MaterCoin = DEFI_MATERIAU(
+    ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm, CONTACT="COIN_2D", PRECISION=2.1e-05)
+)
 #
 CHMAT = AFFE_MATERIAU(
     MAILLAGE=MAIL, AFFE=(_F(TOUT="OUI", MATER=MaterELAS), _F(GROUP_MA=("GM1",), MATER=MaterCoin))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,6 +97,7 @@ module te0047_type
     public :: getDiscretInformations, te0047_dscr_write
 !
     private
+#include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/infted.h"
@@ -163,8 +164,19 @@ contains
         D%Dilatation = 0.0
         if ( D%nno .eq. 1 ) goto 100
         if ( D%rela_comp.eq.'ELAS' ) then
+            ! Matériau
+            !   On va chercher le matériau, s'il n'existe pas ==> pas de dilatation
+            call tecach('ONN', 'PMATERC', 'L', codret, iad=imate)
+            if ( codret .ne.0 ) goto 100
+            !   On va chercher ALPHA, s'il n'existe pas ==> pas de dilatation
+            call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'ELAS', &
+                        0, ' ', [0.0d0], 1, 'ALPHA', val_res, cod_res, 0)
+            if ( cod_res(1).ne.0 ) goto 100
+            !   Si ALPHA=0 ==> pas de dilatation.
+            if ( abs(val_res(1)) .le. r8miem() ) goto 100
+            !
             ! Température
-            !   Si la température courante ou de référence n'existe pas : pas de dilatation
+            !   Si la température courante ou de référence n'existe pas ==> pas de dilatation
             call rcvarc(' ', 'TEMP', '+',   'RIGI', 1, 1, temp_plus,  codret)
             if ( codret.ne.0 ) goto 100
             call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, 1, temp_refe,  codret)
@@ -176,13 +188,8 @@ contains
                 if ( isNonLin ) goto 100
                 call utmess( "F", "DISCRETS_67" )
             endif
-            ! Matériau
-            !   Il peut ne pas exister sur les discrets
-            call tecach('ONN', 'PMATERC', 'L', codret, iad=imate)
-            if ( codret .ne.0 ) goto 100
-            call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'ELAS', &
-                        0, ' ', [0.0d0], 1, 'ALPHA', val_res, cod_res, 0)
-            if ( cod_res(1).ne.0 ) goto 100
+            !
+            ! La longueur du discret
             call jevech('PGEOMER', 'L', igeom)
             igeom = igeom-1
             if ( D%ndim.eq.3 ) then

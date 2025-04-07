@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1450,6 +1450,11 @@ DEFI_MATERIAU = MACRO(
         JEU=SIMP(statut="f", typ="R", val_min=0.0),
         INST_COMP_INIT=SIMP(statut="f", typ="R", max=2, min=2),
         CONTACT=SIMP(statut="f", typ="TXM", into=("1D", "COIN_2D"), defaut="1D", enum=(0, 1)),
+        b_coin_2d=BLOC(
+            condition="""equal_to("CONTACT", 'COIN_2D')""",
+            fr=tr("Précision sur la 'planéité' du discret, dans l'unité du maillage."),
+            PRECISION=SIMP(statut="f", typ="R"),
+        ),
     ),
     JONC_ENDO_PLAS=FACT(
         statut="f",
