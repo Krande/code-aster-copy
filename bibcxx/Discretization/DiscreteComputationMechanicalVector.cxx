@@ -38,6 +38,8 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
+#include <limits>
+
 FieldOnNodesRealPtr DiscreteComputation::getDifferentialDualDisplacement() const {
     // reimplement nmdidi.F90 & vecdid.F90
     auto chalph = std::make_shared< ConstantFieldOnCellsReal >( _phys_problem->getMesh() );
@@ -992,4 +994,71 @@ DiscreteComputation::dualMechanicalVector( FieldOnNodesRealPtr lagr_curr ) const
 
     // Assemble
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
+};
+
+FieldOnNodesRealPtr DiscreteComputation::getResidualReference(
+    const std::map< std::string, ASTERDOUBLE > &vale_by_name ) const {
+    // reimplement nmrefe.F90
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    VectorString list_cmp = { "SIGM",   "EPSI",   "FTHERM", "FHYDR1", "FHYDR2", "VARI",
+                              "EFFORT", "MOMENT", "DEPL",   "LAG_GV", "PI" };
+    VectorString list_name = { "SIGM_REFE",      "EPSI_REFE", "FLUX_THER_REFE", "FLUX_HYD1_REFE",
+                               "FLUX_HYD2_REFE", "VARI_REFE", "EFFORT_REFE",    "MOMENT_REFE",
+                               "DEPL_REFE",      "LAGR_REFE", "PI_REFE" };
+    VectorReal list_vale;
+    list_vale.reserve( list_name.size() );
+    for ( int i = 0; i < list_name.size(); ++i ) {
+        auto it = vale_by_name.find( list_name[i] );
+        if ( it != vale_by_name.end() )
+            list_vale.push_back( it->second );
+        else
+            list_vale.push_back( std::numeric_limits< double >::quiet_NaN() );
+    }
+
+    auto chrefe = std::make_shared< ConstantFieldOnCellsReal >( _phys_problem->getMesh() );
+    const std::string physicalName( "PREC_R" );
+    chrefe->allocate( physicalName );
+    ConstantFieldOnZone a( _phys_problem->getMesh() );
+    AS_ASSERT( list_cmp.size() == list_vale.size() );
+    ConstantFieldValues< ASTERDOUBLE > b( list_cmp, list_vale );
+    chrefe->setValueOnZone( a, b );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currListOfLoads = _phys_problem->getListOfLoads();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currBehaviour = _phys_problem->getBehaviourProperty();
+
+    // Setup
+    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel, currMater, currElemChara,
+                                                              currListOfLoads );
+    elemVect->prepareCompute( "CHAR_MECA" );
+
+    // Prepare computing
+    auto calcul = std::make_unique< Calcul >( "REFE_FORC_NODA" );
+    calcul->setModel( currModel );
+    calcul->addBehaviourField( currBehaviour );
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    calcul->addInputField( "PREFCO", chrefe );
+    calcul->addXFEMField( currModel );
+    calcul->addHHOField( currModel );
+    calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+    calcul->compute();
+
+    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
+    elemVect->build();
+    FieldOnNodesRealPtr vectAsse = elemVect->assemble( _phys_problem->getDOFNumbering(), true );
+
+    // for (ASTERINTEGER i=0; i<values->size(); i++)
+    //     std::cout << ( *values )[i] << std::endl;
+
+    return vectAsse;
 };

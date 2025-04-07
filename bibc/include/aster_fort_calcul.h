@@ -71,6 +71,11 @@ void DEFSSPSPSPSP( ASSVECWITHMASK, assvecwithmask, const char *, STRING_SIZE, co
                    const char *, STRING_SIZE, ASTERINTEGER *, const char *, STRING_SIZE,
                    const ASTERLOGICAL * );
 
+#define CALL_ASSMIV( a, b, c, d, e, f, g ) CALLSSPSPSP( ASSMIV, assmiv, a, b, c, d, e, f, g )
+void DEFSSPSPSP( ASSMIV, assmiv, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 ASTERINTEGER *, const char *, STRING_SIZE, ASTERDOUBLE *, const char *,
+                 STRING_SIZE, ASTERINTEGER * );
+
 #define CALLO_AP_ASSEMBLY_VECTOR( a ) CALLO( AP_ASSEMBLY_VECTOR, ap_assembly_vector, a )
 void DEFS( AP_ASSEMBLY_VECTOR, ap_assembly_vector, const char *, STRING_SIZE );
 

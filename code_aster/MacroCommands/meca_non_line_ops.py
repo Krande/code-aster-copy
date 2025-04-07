@@ -61,7 +61,7 @@ def _keywords_check(keywords):
 
     if "CONVERGENCE" in keywords:
         for key in keywords["CONVERGENCE"]:
-            if key in ("RESI_REFE_RELA", "RESI_COMP_RELA"):
+            if key in ("RESI_COMP_RELA"):
                 raise RuntimeError("unsupported value in CONVERGENCE: %s" % key)
 
     if keywords["METHODE"] not in ["NEWTON", "SNES", "RASPEN"]:

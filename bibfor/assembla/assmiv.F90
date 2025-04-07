@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
-                  nu, vecpro, motcle, type)
+                  nu, type)
     implicit none
 !
 !
@@ -56,11 +56,13 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=*) :: vec, tlivec(*), vecpro, base
+    character(len=1) :: base
+    character(len=*) :: vec
+    integer :: nbvec
+    character(len=*) :: tlivec(nbvec)
+    real(kind=8) :: licoef(nbvec)
     character(len=*) :: nu
-    character(len=4) :: motcle
-    integer :: nbvec, type
-    real(kind=8) :: licoef(*), rcoef, r
+    integer :: type
 ! ----------------------------------------------------------------------
 !    assemblage "particulier" pour convergence en contraintes generalisees
 !    realise le min des vect_elem
@@ -74,15 +76,13 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 ! IN  K* TLIVEC : LISTE DES VECT_ELEM A ASSEMBLER
 ! IN  R  LICOEF : LISTE DES COEF. MULTIPLICATEURS DES VECT_ELEM
 ! IN  K* NU     : NOM D'UN NUMERO_DDL
-! IN  K* VECPRO: NOM D'UN CHAM_NO MODELE(NU OU VECPRO EST OBLIGATOIRE)
-! IN  K4 MOTCLE : 'ZERO' OU 'CUMU'
 ! IN  I  TYPE   : TYPE DU VECTEUR ASSEMBLE : 1 --> REEL
 !
 ! ----------------------------------------------------------------------
+    real(kind=8) :: rcoef, r
     character(len=24) :: valk(5)
     integer :: gd, nec, nlili
     integer :: rang, nbproc, iret, ifm, niv
-    character(len=1) :: bas
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco
     character(len=14) :: nume_ddl
     character(len=19) :: partit, vecas, vprof, vecel, resu
@@ -117,20 +117,10 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
     call infniv(ifm, niv)
 
 !
-! --- VERIF DE MOTCLE:
-    if (motcle(1:4) .eq. 'ZERO') then
-!
-    else if (motcle(1:4) .eq. 'CUMU') then
-!
-    else
-        call utmess('F', 'ASSEMBLA_8', sk=motcle)
-    end if
-!
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
     call jeveuo(jexnum('&CATA.TE.MODELOC', 1), 'L', admodl)
 !
     vecas = vec
-    bas = base
 !
 ! ------------------------------------------------------------------
     ldist = .false.
@@ -157,7 +147,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 !
 ! --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
     call detrsd('CHAMP_GD', vecas)
-    call wkvect(vecas//'.LIVE', bas//' V K24 ', nbvec, ilivec)
+    call wkvect(vecas//'.LIVE', base//' V K24 ', nbvec, ilivec)
     do i = 1, nbvec
         zk24(ilivec-1+i) = tlivec(i)
     end do
@@ -169,8 +159,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
     kvale = vecas//'.VALE'
 !
 ! --- CREATION DE REFE ET DESC
-    call jecreo(kveref, bas//' V K24')
+    call jecreo(kveref, base//' V K24')
     call jeecra(kveref, 'LONMAX', 4)
+    call jeecra(kveref, 'LONUTI', 4)
     call jeveuo(kveref, 'E', idverf)
     call jeecra(kveref, 'DOCU', cval='CHNO')
 !
@@ -196,7 +187,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 !     NUME_EQUA APPARTENANT A UNE NUMEROTATION SINON CA VA PLANTER
 !     DANS LE JEVEUO SUR KNEQUA
     if (nume_ddl(1:1) .eq. ' ') then
-        vprof = vecpro
+        vprof = ' '
         call jeveuo(vprof//'.REFE', 'L', vk24=refe)
         nume_ddl = refe(2) (1:14)
     end if
@@ -250,7 +241,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 !
 ! --- ALLOCATION VALE
     ASSERT(type .eq. 1)
-    call wkvect(kvale, bas//' V R8', nb_equa, jvale)
+    call wkvect(kvale, base//' V R8', nb_equa, jvale)
 !
     do i = 1, nb_equa
         zr(jvale+i-1) = r8maem()

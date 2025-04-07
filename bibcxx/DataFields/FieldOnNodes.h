@@ -265,7 +265,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Check if fields are OK for +, +=, ...
      * @return true if compatible
      */
-    bool isSimilarTo( const FieldOnNodes< ValueType > &tmp2 ) {
+    bool isSimilarTo( const FieldOnNodes< ValueType > &tmp2 ) const {
         CALL_JEMARQ();
         bool similar = ( this->_reference->size() == tmp2._reference->size() );
         similar = ( similar && ( this->_values->size() == tmp2._values->size() ) );
@@ -331,6 +331,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes< ValueType > &operator/=( const ASTERDOUBLE &scal ) {
         ( *_values ) /= scal;
+
+        return *this;
+    };
+
+    FieldOnNodes< ValueType > operator/=( const FieldOnNodes< ValueType > &rhs ) {
+        if ( !this->isSimilarTo( rhs ) )
+            raiseAsterError( "Fields have incompatible shapes" );
+        ( *_values ) /= ( *rhs._values );
 
         return *this;
     };

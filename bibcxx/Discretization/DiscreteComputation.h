@@ -531,6 +531,12 @@ class DiscreteComputation {
                       const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,
                       const FieldOnNodesRealPtr coef_cont,
                       const FieldOnNodesRealPtr coef_frot ) const;
+
+    /**
+     * @brief Compute residual reference (for RESI_REFE_RELA)
+     */
+    FieldOnNodesRealPtr
+    getResidualReference( const std::map< std::string, ASTERDOUBLE > &vale_by_name ) const;
 };
 
 using DiscreteComputationPtr = std::shared_ptr< DiscreteComputation >;

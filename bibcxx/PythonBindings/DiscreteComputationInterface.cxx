@@ -919,5 +919,17 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "disp" ), py::arg( "stress" ), py::arg( "time_prev" ) = 0.0,
               py::arg( "time_curr" ) = 0.0, py::arg( "theta" ) = 1.0, py::arg( "modeFourier" ) = 0,
-              py::arg( "varc_curr" ) = nullptr, py::arg( "behaviourMap" ) = nullptr );
+              py::arg( "varc_curr" ) = nullptr, py::arg( "behaviourMap" ) = nullptr )
+        .def( "getResidualReference", &DiscreteComputation::getResidualReference,
+              R"(
+      Return the residual reference (for RESI_REFE_RELA)
+
+      Arguments:
+            vale_by_name : dict :
+                           keys are component names
+                           values are the given reference value corresponding to component name
+
+      Returns:
+            FieldOnNodesReal: residual reference forces vector
+        )" );
 };

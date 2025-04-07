@@ -111,6 +111,7 @@ Returns:
         .def( py::self *= float() )
         .def( py::self / float() )
         .def( py::self /= float() )
+        .def( py::self /= py::self )
         .def( -py::self )
         .def( "printMedFile", &FieldOnNodesReal::printMedFile, py::arg( "fileName" ),
               py::arg( "local" ) = true )

@@ -3,7 +3,7 @@
  * @brief Interface python de ElementaryVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -60,7 +60,8 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
                                          ElementaryCharacteristicsPtr, ListOfLoadsPtr > ) )
         .def( "getVeass", &ElementaryVectorReal::getVeass )
         .def( "setVeass", &ElementaryVectorReal::setVeass )
-        .def( "assemble", &ElementaryVectorReal::assemble )
+        .def( "assemble", &ElementaryVectorReal::assemble, py::arg( "dofNume" ),
+              py::arg( "minimum" ) = false )
         .def( "addElementaryTerm",
               py::overload_cast< const ElementaryTermRealPtr & >(
                   &ElementaryVectorReal::addElementaryTerm ),
@@ -113,7 +114,8 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
             )",
               py::arg( "terms" ) )
         .def( "getElementaryTerms", &ElementaryVectorComplex::getElementaryTerms )
-        .def( "assemble", &ElementaryVectorComplex::assemble );
+        .def( "assemble", &ElementaryVectorComplex::assemble, py::arg( "dofNume" ),
+              py::arg( "minimum" ) = false );
 
     py::class_< ElementaryVectorDisplacementReal, ElementaryVectorDisplacementRealPtr,
                 ElementaryVectorReal >( mod, "ElementaryVectorDisplacementReal" )
