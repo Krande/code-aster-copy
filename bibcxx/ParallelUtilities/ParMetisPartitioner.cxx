@@ -55,10 +55,10 @@ VectorLong ParMetisPartitioner::partitionGraph() {
     auto comm = aster_get_current_comm()->id;
     const auto nbProcs = getMPISize();
     VectorRealT tpwgts( npart, 1. / npart ), ubvec( 1, 1.05 );
-    int toReturn = ParMETIS_V3_PartKway(
+    int toReturn = Parmetis::ParMETIS_V3_PartKway(
         _vtxdist.data(), _xadj.data(), _adjncy.data(), nullptr, nullptr, &wgtflag, &numflag, &ncon,
         &npart, tpwgts.data(), ubvec.data(), options.data(), &edgecut, partition.data(), &comm );
-    if ( toReturn != METIS_OK ) {
+    if ( toReturn != Parmetis::METIS_OK ) {
         throw std::runtime_error( "Error in ParMetis partitioning" );
     }
     buildPartition( partition, distributed );
