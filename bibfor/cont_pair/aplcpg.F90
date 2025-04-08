@@ -281,8 +281,7 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
                     cellSlavNume, elem_slav_nbnode, elem_slav_dime, &
                     elem_slav_coor)
         if (debug) then
-            call jenuno(jexnum(mesh//'.NOMMAI', cellSlavNume), elem_slav_name)
-            cellSlavNume = int_to_char8(elem_slav_nume)
+            elem_slav_name = int_to_char8(cellSlavNume)
             write (*, *) "Current slave element: ", cellSlavNume, elem_slav_name, &
                 '(type : ', elem_slav_code, ')'
         end if
