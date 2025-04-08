@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -247,13 +247,13 @@ contains
         call jevech('PINSTPR', 'L', jvTimeP)
 
 ! ----- Access to fields of behaviours parameters
-        call jevech('PCOMPOR', 'L', behaPara%jvCompor)
-        call jevech('PCARCRI', 'L', behaPara%jvCarcri)
+        call jevech('PCOMPOR', 'L', vk16=behaPara%compor)
+        call jevech('PCARCRI', 'L', vr=behaPara%carcri)
 
 ! ----- Main parameters
-        behaPara%relaComp = zk16(behaPara%jvCompor-1+RELA_NAME)
-        behaPara%typeComp = zk16(behaPara%jvCompor-1+INCRELAS)
-        behaPara%defoComp = zk16(behaPara%jvCompor-1+DEFO)
+        behaPara%relaComp = behaPara%compor(RELA_NAME)
+        behaPara%typeComp = behaPara%compor(INCRELAS)
+        behaPara%defoComp = behaPara%compor(DEFO)
         if (behaPara%defoComp .eq. 'PETIT') then
             behaPara%lLarge = ASTER_FALSE
         elseif (behaPara%defoComp .eq. 'GDEF_LOG') then
@@ -262,13 +262,13 @@ contains
             ASSERT(ASTER_FALSE)
         end if
         lMatrSyme = ASTER_TRUE
-        if (nint(zr(behaPara%jvCarcri-1+CARCRI_MATRSYME)) .gt. 0) then
+        if (nint(behaPara%carcri(CARCRI_MATRSYME)) .gt. 0) then
             lMatrSyme = ASTER_FALSE
         end if
         behaPara%lMatrSyme = lMatrSyme
 
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(behaPara%jvCompor), &
+        call behaviourOption(option, behaPara%compor, &
                              behaPara%lMatr, behaPara%lVect, &
                              behaPara%lVari, behaPara%lSigm)
 
@@ -277,7 +277,7 @@ contains
 
 ! ----- Set main parameters for behaviour (on cell)
         call behaviourSetParaCell(SSH_NDIM, typmod, option, &
-                                  zk16(behaPara%jvCompor), zr(behaPara%jvCarcri), &
+                                  behaPara%compor, behaPara%carcri, &
                                   zr(jvTimeM), zr(jvTimeP), &
                                   elemProp%elemInte%inteFami, matePara%jvMater, &
                                   behaPara%BEHinteg)
