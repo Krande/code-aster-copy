@@ -59,13 +59,13 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     real(c_double), intent(in) :: scmaxi
     real(c_double), intent(in) :: scmaxs
     real(c_double), intent(in) :: ssmax
-    integer(c_long), intent(in) :: uc
-    integer(c_long), intent(inout) :: ntot
+    integer(c_int64_t), intent(in) :: uc
+    integer(c_int64_t), intent(inout) :: ntot
     real(c_double), intent(in), optional :: dnsinf
     real(c_double), intent(in), optional :: dnssup
     real(c_double), intent(out), optional :: nrd(1:ntot)
     real(c_double), intent(out), optional :: mrd(1:ntot)
-    integer(c_long), intent(out), optional :: ndemi
+    integer(c_int64_t), intent(out), optional :: ndemi
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -77,8 +77,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     real(kind=8) :: alpha_12, alpha_12neg, alpha
     real(kind=8) :: ScSUP, ScINF, Delta
     real(kind=8) :: SsSUP, SsINF, Ncc, Mcc
-    integer :: N_ET, N_PC, N_EC, N_PCAC, N_PCACN, k
-    integer :: N_ECN
+    integer(kind=8) :: N_ET, N_PC, N_EC, N_PCAC, N_PCACN, k
+    integer(kind=8) :: N_ECN
 
     real(kind=8), allocatable :: N_P1(:), M_P1(:)
     real(kind=8), allocatable :: N_P2(:), M_P2(:)
