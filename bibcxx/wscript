@@ -29,7 +29,7 @@ def options(self):
 def configure(self):
     self.load("compiler_cxx")
     self.check_cxx_compiler_flags()
-    if ("icc" or "icx") not in self.env.CC_NAME:
+    if ("icc" and "icx") not in self.env.CC_NAME:
         self.check_bibcxx_depends()
     self.check_cxx_types()
 
