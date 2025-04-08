@@ -1,6 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +25,7 @@ subroutine te0208(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/pipef3.h"
 #include "asterfort/tecach.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=16) :: nomte, option
 !
@@ -37,10 +37,11 @@ subroutine te0208(option, nomte)
 !
 !
     integer :: igeom, imater, ideplm, ivarim, npg, jtab(7), iret, lgpg
-    integer :: iddepl, idepl0, idepl1, ictau, icompo, icopil
+    integer :: iddepl, idepl0, idepl1, ictau, icopil
     integer :: ndim, nno, nnos, nddl
     integer :: ipoids, ivf, idfde, jgano
     character(len=8) :: typmod(2)
+    character(len=16), pointer :: compor(:) => null()
 !
 !    PARAMETRES DE L'ELEMENT FINI
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
@@ -57,7 +58,7 @@ subroutine te0208(option, nomte)
     call jevech('PDEPL0R', 'L', idepl0)
     call jevech('PDEPL1R', 'L', idepl1)
     call jevech('PCDTAU', 'L', ictau)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
     typmod(1) = '3D'
     typmod(2) = 'ELEMJOIN'
@@ -73,7 +74,7 @@ subroutine te0208(option, nomte)
     call pipef3(ndim, nno, nddl, npg, lgpg, &
                 zr(ipoids), zr(ivf), zr(idfde), zi(imater), zr(igeom), &
                 zr(ivarim), zr(iddepl), zr(ideplm), zr(idepl0), zr(idepl1), &
-                zr(ictau), typmod, zk16(icompo), zr(icopil))
+                zr(ictau), typmod, compor(RELA_NAME), zr(icopil))
 !
 !
 end subroutine

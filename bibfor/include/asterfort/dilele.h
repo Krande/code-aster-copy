@@ -29,7 +29,7 @@ interface
         use dil_type
         aster_logical :: lSigm, lMatr, lVect
         character(len=8), intent(in) :: typmod(2)
-        character(len=16), intent(in):: option, compor(*)
+        character(len=16), intent(in):: option, compor(COMPOR_SIZE)
         type(dil_modelisation) :: ds_dil
         integer, intent(in)          :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
         integer, intent(in)          :: mate, iw, idff, idffb

@@ -1,6 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1006
 !
 subroutine te0206(option, nomte)
 !
@@ -56,13 +54,14 @@ subroutine te0206(option, nomte)
     character(len=4), parameter :: fami = "RIGI"
     integer :: nno, npg, nddl
     integer :: ipoids, ivf, idfde
-    integer :: igeom, imater, icarcr, icomp, idepm, iddep, icoret
+    integer :: igeom, imater, icarcr, idepm, iddep, icoret
     integer :: icontm, icontp, ivect, imatr
     integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
     integer :: lgpg, codret
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,Z,W => 1ER INDICE
     real(kind=8) :: coopg(4, 4)
     character(len=8), parameter :: typmod(2) = (/'3D      ', 'ELEMJOIN'/)
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp
     aster_logical :: matsym
     aster_logical :: lVect, lMatr, lVari, lSigm
@@ -93,7 +92,7 @@ subroutine te0206(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imater)
     call jevech('PCARCRI', 'L', icarcr)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PDEPLMR', 'L', idepm)
     call jevech('PDEPLPR', 'L', iddep)
     call jevech('PVARIMR', 'L', ivarim)
@@ -112,19 +111,19 @@ subroutine te0206(option, nomte)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndim, typmod, option, &
-                              zk16(icomp), zr(icarcr), &
+                              compor, zr(icarcr), &
                               zr(iinstm), zr(iinstp), &
                               fami, zi(imater), &
                               BEHinteg)
 
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icomp), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 
 ! - Properties of behaviour
-    rela_comp = zk16(icomp-1+RELA_NAME)
+    rela_comp = compor(RELA_NAME)
 
 ! - Get output fields
     if (lMatr) then
@@ -151,7 +150,7 @@ subroutine te0206(option, nomte)
                 nno, nddl, npg, lgpg, zr(ipoids), &
                 zr(ivf), zr(idfde), zi(imater), option, zr(igeom), &
                 zr(idepm), zr(iddep), zr(icontm), zr(icontp), zr(ivect), &
-                zr(imatr), zr(ivarim), zr(ivarip), zr(icarcr), zk16(icomp), &
+                zr(imatr), zr(ivarim), zr(ivarip), zr(icarcr), compor, &
                 matsym, coopg, zr(iinstm), zr(iinstp), lMatr, lVect, lSigm, &
                 codret)
 

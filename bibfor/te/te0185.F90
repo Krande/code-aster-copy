@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -150,7 +150,7 @@ subroutine te0185(option, nomte)
             call ef0039(nomte)
         else if (cmod .eq. 'DTG' .or. cmod .eq. 'Q4S') then
 !         -- DKTG, Q4GG
-            call ef0409(nomte)
+            call ef0409()
         else if (cmod .eq. 'DKT') then
 !         -- DKT
             call ef0031(nomte)

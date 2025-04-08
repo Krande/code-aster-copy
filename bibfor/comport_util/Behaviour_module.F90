@@ -201,7 +201,8 @@ contains
 ! ----- Parameters
         integer, intent(in) :: ldcDime
         character(len=8), intent(in) :: typmod(2)
-        character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+        character(len=16), intent(in) :: option
+        character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: timePrev, timeCurr
         character(len=4), intent(in) :: fami
@@ -294,7 +295,7 @@ contains
     subroutine setFromCompor(compor, BEHinteg)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=16), intent(in) :: compor(COMPOR_SIZE)
+        character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Locals
         character(len=16) :: defo_ldc, defo_comp, regu_visc, postIncr, mgisAddr
@@ -2176,7 +2177,8 @@ contains
                                codret_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+        character(len=16), intent(in) :: option
+        character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         aster_logical, intent(out) :: lMatr, lVect, lVari, lSigm
         integer, optional, intent(out) :: codret_
 ! ----- Local

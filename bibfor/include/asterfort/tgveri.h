@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
     subroutine tgveri(option, carcri, compor, nno, geom, &
                       ndim, nddl, deplp, sdepl, vectu, &
                       svect, ncont, contp, scont, nvari, &
-                      varip, svari, matuu, smatr, matsym, &
-                      epsilo, varia, iret)
+                      varip, svari, matuu,  matsym, &
+                      epsilo, iret)
         character(len=16) :: option
         real(kind=8) :: carcri(CARCRI_SIZE)
         character(len=16) :: compor(COMPOR_SIZE)
@@ -43,10 +43,8 @@ interface
         real(kind=8) :: varip(*)
         real(kind=8) :: svari(*)
         real(kind=8) :: matuu(*)
-        real(kind=8) :: smatr(*)
         aster_logical :: matsym
         real(kind=8) :: epsilo
-        real(kind=8) :: varia(*)
         integer :: iret
     end subroutine tgveri
 end interface

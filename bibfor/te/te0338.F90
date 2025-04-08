@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,10 +58,11 @@ subroutine te0338(option, nomte)
     real(kind=8) :: equi(6), pp, ppt, vkpact
     real(kind=8) :: sigold, signew, tg, tmoy
 !
-    integer :: i, kp, ndim, icompo, nbvari, ipopp, ipoppt
+    integer :: i, kp, ndim, nbvari, ipopp, ipoppt
     integer :: jgano, ipoids, ivf, idfde, npg, nno, nnos
     integer :: imate, igeom, icong, ivarig, issopt, iweib, idefg, nbvp
     integer :: isigie, isigis, jtab(7), iret
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp
 !
 !======================== CORPS DU PROGRAMME ===========================
@@ -84,8 +85,8 @@ subroutine te0338(option, nomte)
     call tecach('OOO', 'PVARIPG', 'L', iret, nval=7, &
                 itab=jtab)
     nbvari = max(jtab(6), 1)*jtab(7)
-    call jevech('PCOMPOR', 'L', icompo)
-    rela_comp = zk16(icompo-1+RELA_NAME)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    rela_comp = compor(RELA_NAME)
 !
     call psvari(rela_comp, nbvari, ipopp, ipoppt)
 !

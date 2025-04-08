@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine te0332(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=*) :: option, nomte
 !     FONCTION REALISEE :
@@ -44,12 +45,13 @@ subroutine te0332(option, nomte)
 !     ------------------------------------------------------------------
 !
 !
-    character(len=16) :: optcal(12)
+    character(len=16), pointer :: compor(:) => null()
+    character(len=16) :: optcal(12), rela_name
     real(kind=8) :: sig(6), triax, volu, rsr0, numema, depseq
     real(kind=8) :: poids, r, volume, dvol, sigm, sigeq
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: cong(4), varigp, varigm, sdrsrp, sdrsrm, crois
-    integer :: nno, kp, npg, k, iritra, icompo, jtab(7)
+    integer :: nno, kp, npg, k, iritra, jtab(7)
     integer :: issopt, ima, nbvari, ipopp, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, ii, iret, iadzi, ivarmg, iazk24
     integer :: igeom, icong, ivarpg, isdrmr, isdrpr, kq
@@ -86,16 +88,16 @@ subroutine te0332(option, nomte)
     call tecach('OOO', 'PVARIPR', 'L', iret, nval=7, &
                 itab=jtab)
     nbvari = max(jtab(6), 1)*jtab(7)
-    call jevech('PCOMPOR', 'L', icompo)
-!     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    rela_name = compor(RELA_NAME)
 !
-    if ((zk16(icompo) .eq. 'VMIS_ISOT_TRAC') .or. (zk16(icompo) .eq. 'VMIS_ISOT_LINE') .or. &
-        (zk16(icompo) .eq. 'LEMAITRE') .or. (zk16(icompo) .eq. 'VMIS_ECMI_TRAC') .or. &
-        (zk16(icompo) .eq. 'VMIS_ECMI_LINE') .or. (zk16(icompo) .eq. 'VISC_CIN1_CHAB') .or. &
-        (zk16(icompo) .eq. 'VISC_CIN2_CHAB')) then
+    if ((rela_name .eq. 'VMIS_ISOT_TRAC') .or. (rela_name .eq. 'VMIS_ISOT_LINE') .or. &
+        (rela_name .eq. 'LEMAITRE') .or. (rela_name .eq. 'VMIS_ECMI_TRAC') .or. &
+        (rela_name .eq. 'VMIS_ECMI_LINE') .or. (rela_name .eq. 'VISC_CIN1_CHAB') .or. &
+        (rela_name .eq. 'VISC_CIN2_CHAB')) then
         ipopp = 1
     else
-        call utmess('F', 'ELEMENTS3_74', sk=zk16(icompo))
+        call utmess('F', 'ELEMENTS3_74', sk=rela_name)
     end if
 !
     call jevech('PRICTRA', 'E', iritra)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine diisotrope(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, ivarim, jdc, irep, jtp, jtm, ifono, icontp, ivarip, iadzi, iazk24, icompo
+    integer :: imat, ivarim, jdc, irep, jtp, jtm, ifono, icontp, ivarip, iadzi, iazk24
     integer :: icarcr, idf, ipi, imate, imater, jmat, nbmat, nbvale, jvale, jprol, tecro
     integer :: icontm, ii, neq, kk
     real(kind=8) :: r8bid, fl(12), klv(78), klc(144), raide(6)
@@ -93,8 +93,6 @@ subroutine diisotrope(for_discret, iret)
 !
     iret = 0
     neq = for_discret%nno*for_discret%nc
-! Comportement
-    call jevech('PCOMPOR', 'L', icompo)
 ! Récupération du matériau
     call jevech('PMATERC', 'L', imater)
 ! Variables internes a t- : Force  Up  Puiss  tangente

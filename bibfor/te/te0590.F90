@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine te0590(option, nomte)
     integer :: jtab(7), lgpg
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     integer :: igeom, imate, icontm, ivarim
-    integer :: iinstm, iinstp, iddlm, iddld, icompo, icarcr, ivarix
+    integer :: iinstm, iinstp, iddlm, iddld, icarcr, ivarix
     integer :: ivectu, icontp, ivarip, imatuu
     integer :: idbg, nddl, ia, ja
     real(kind=8) :: angl_naut(3)
@@ -75,10 +75,10 @@ subroutine te0590(option, nomte)
     character(len=16) :: defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
 !     POUR TGVERI
-    real(kind=8) :: sdepl(135), svect(135), scont(6*27), smatr(18225)
+    real(kind=8) :: sdepl(135), svect(135), scont(6*27)
     real(kind=8) :: epsilo, epsilp, epsilg
-    real(kind=8) :: varia(2*135*135)
     real(kind=8) :: tab_out(27*3*27*3)
+    character(len=16), pointer :: compor(:) => null()
     integer :: na, os, nb, ib, kk
     blas_int :: b_incx, b_incy, b_n
 !
@@ -138,7 +138,7 @@ subroutine te0590(option, nomte)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PDEPLMR', 'L', iddlm)
     call jevech('PDEPLPR', 'L', iddld)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=jtab)
@@ -150,15 +150,15 @@ subroutine te0590(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, compor, lMatr, lVect, lVari, &
                          lSigm, codret)
     lMatrPred = option .eq. 'RIGI_MECA_TANG'
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    type_comp = zk16(icompo-1+INCRELAS)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    type_comp = compor(INCRELAS)
 !
 ! - Get output fields
 !
@@ -187,7 +187,7 @@ subroutine te0590(option, nomte)
         call nifipd(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     vu, vg, vp, zr(igeom), typmod, &
-                    option, zi(imate), zk16(icompo), lgpg, zr(icarcr), &
+                    option, zi(imate), compor, lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut, &
                     zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), lMatr, &
                     lVect, zr(ivectu), zr(imatuu), codret)
@@ -197,7 +197,7 @@ subroutine te0590(option, nomte)
         call nifilg(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     vu, vg, vp, zr(igeom), typmod, &
-                    option, zi(imate), zk16(icompo), lgpg, zr(icarcr), &
+                    option, zi(imate), compor, lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut, &
                     zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), lMatr, &
                     lVect, lSigm, lVari, zr(ivectu), zr(imatuu), &
@@ -209,7 +209,7 @@ subroutine te0590(option, nomte)
         call nifism(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     idf2, vu, vg, vp, zr(igeom), &
-                    typmod, option, zi(imate), zk16(icompo), lgpg, &
+                    typmod, option, zi(imate), compor, lgpg, &
                     zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), &
                     angl_naut, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
                     lMatr, lVect, lMatrPred, zr(ivectu), zr(imatuu), &
@@ -220,12 +220,12 @@ subroutine te0590(option, nomte)
 !
     if (codret .ne. 0) goto 200
 !       Calcul eventuel de la matrice TGTE par PERTURBATION
-    call tgverm(option, zr(icarcr), zk16(icompo), nno1, nno2, &
+    call tgverm(option, zr(icarcr), compor, nno1, nno2, &
                 nno3, zr(igeom), ndim, nddl, zr(iddld), &
                 sdepl, vu, vg, vp, zr(ivectu), &
                 svect, ndim*2*npg, zr(icontp), scont, npg*lgpg, &
-                zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym, &
-                epsilo, epsilp, epsilg, varia, iret)
+                zr(ivarip), zr(ivarix), zr(imatuu), matsym, &
+                epsilo, epsilp, epsilg, iret)
     if (iret .ne. 0) goto 100
 !
 200 continue

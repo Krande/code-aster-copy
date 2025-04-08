@@ -85,7 +85,7 @@ subroutine te0222(option, nomte)
     integer           :: ipoids, ivf, idfde, jgano
     integer           :: ndim, nno, nnos, npg, compt
     integer           :: ivites, iaccel, ithet, igthet, icour, ipuls
-    integer           :: icomp, igeom, idepl, imate, matcod, ideplinco
+    integer           :: igeom, idepl, imate, matcod, ideplinco
     integer           :: iforf, itemps, iepsf, iforc, iepsr
     integer           :: irota, ipesa, isigi, isigm
     integer           :: iret, ireth, ibalo, ideg, ilag
@@ -106,7 +106,8 @@ subroutine te0222(option, nomte)
     character(len=6)  :: epsa(6)
     character(len=8)  :: typmod(2), nompar(4), discr
     character(len=4)  :: fami
-    character(len=16) :: nomte, option, compor(4), phenom
+    character(len=16) :: nomte, option, phenom
+    character(len=16), pointer :: compor(:) => null()
     aster_logical     :: r_courb_present
     aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero, epsaini, inco
 !
@@ -252,7 +253,7 @@ subroutine te0222(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     if (option == 'CALC_K_G' .or. option == 'CALC_K_G_F') then
         call jevech('PBASLOR', 'L', ibalo)
         if (ndim == 3) then
@@ -297,10 +298,6 @@ subroutine te0222(option, nomte)
         end if
     end if
 !
-!-- Loi de comportement
-    do i = 1, 4
-        compor(i) = zk16(icomp+i-1)
-    end do
     grand = compor(3) == 'GREEN_LAGRANGE'
     incr = compor(4) (1:9) == 'COMP_INCR'
     notelas = compor(1) .ne. 'ELAS'

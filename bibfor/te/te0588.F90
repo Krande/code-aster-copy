@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,18 +70,18 @@ subroutine te0588(option, nomte)
     integer :: dimmat, npi, npg, li, ibid, yaenrm
     integer :: codret, icodre(1)
     integer :: ipoids, ivf, idfde, igeom
-    integer :: iinstp, ideplm, ideplp, jvCompor, icarcr, ipesa
+    integer :: iinstp, ideplm, ideplp, icarcr, ipesa
     integer :: icontm, ivarip, ivarim, ivectu, icontp
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: dimdef, dimcon, nbvari, nddls, nddlm
     integer :: nmec, np1, np2, nnos
     integer :: nnom
     real(kind=8) :: defgep(13), defgem(13)
-    real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(25, 52*20)
+    real(kind=8) :: dfdi(20, 3), dfdi2(20, 3)
     real(kind=8) :: drds(25, 11+5), drdsr(25, 11+5), dsde(11+5, 25)
     real(kind=8) :: r(25), sigbar(25), c(25), ck(25), cs(25)
     real(kind=8) :: angnau(3)
-    real(kind=8) :: work1(11+5, 52*20), work2(25, 52*20)
+    real(kind=8), dimension(:, :), pointer :: work1 => null(), work2 => null(), b => null()
     character(len=3) :: modint
     character(len=8) :: typmod(2)
     character(len=16) :: phenom, elref
@@ -150,6 +150,7 @@ subroutine te0588(option, nomte)
     character(len=8) :: enr
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16) :: compor_copy(COMPOR_SIZE)
+    character(len=16), pointer :: compor(:) => null()
     integer :: iCompor
     integer :: itabin(2), iSigm, iret
 !
@@ -160,6 +161,10 @@ subroutine te0588(option, nomte)
     ivectu = ismaem()
     icontp = ismaem()
     ivarip = ismaem()
+    allocate (work1(11+5, 52*20))
+    allocate (work2(25, 52*20))
+    allocate (b(25, 52*20))
+
 !
 ! - Get model of finite element
 !
@@ -213,14 +218,14 @@ subroutine te0588(option, nomte)
         call jevech('PINSTPR', 'L', iinstp)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-        call jevech('PCOMPOR', 'L', jvCompor)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PCONTMR', 'L', icontm)
 
 ! ---- Make copy of COMPOR map
         do iCompor = 1, COMPOR_SIZE
-            compor_copy(iCompor) = zk16(jvCompor-1+iCompor)
+            compor_copy(iCompor) = compor(iCompor)
         end do
 
 ! ----- Force DEFO_LDC="MECANIQUE" for THM
@@ -376,4 +381,8 @@ subroutine te0588(option, nomte)
                     zi(jstno), .false._1, option, nomte, rbid, &
                     zr(ivectu), nddlm, nfiss, jfisno, .false._1, contac)
     end if
+!
+    deallocate (work1)
+    deallocate (work2)
+    deallocate (b)
 end subroutine

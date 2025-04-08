@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine te0556(option, nomte)
     integer :: ndim, nbspg, contac, ibid1, ibid2, iadzi, iazk24, pos(16)
     integer :: igeom, idepm, idepd, jheafa, ncomph, jfisco
     integer :: jptint, jaint, jcface, jlonch, jbasec, jdonco
-    integer :: iinstm, iinstp, icompo, icarcr, jmate, jcohes
+    integer :: iinstm, iinstp, icarcr, jmate, jcohes
     integer :: jtab(7), iret, ncompv, nnol, pla(27)
     integer :: npgf, ipoidf, ivff, idfdef, imatt, jcoheo
     integer :: ninter, nface, nptf, nnof, cface(30, 6)
@@ -68,7 +68,9 @@ subroutine te0556(option, nomte)
     integer :: ncompa, ncompb, ncompc, ncompd, ncompp, jfisno, jheano
     integer :: jfiss, nfisc2, kfiss, ifisc, nfisc, jlsn
     aster_logical :: lelim
-    real(kind=8) :: rela, cohes(5), coheo(5), matri(560, 560), vect(1)
+    real(kind=8) :: rela, cohes(5), coheo(5), vect(1)
+    real(kind=8), dimension(:, :), pointer :: matri => null()
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: elrefp, elrefc, elc, fpg, typma
     character(len=16) :: enr
 !
@@ -79,7 +81,7 @@ subroutine te0556(option, nomte)
 !
 !......................................................................
 !
-
+    allocate (matri(560, 560))
 !
 ! - Get model of finite element
 !
@@ -153,7 +155,7 @@ subroutine te0556(option, nomte)
     call jevech('PBASECO', 'L', jbasec)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PMATUNS', 'E', imatt)
     call jevech('PSTANO', 'L', jstno)
@@ -327,7 +329,7 @@ subroutine te0556(option, nomte)
                                  jcohes, jcoheo, &
                                  nlact, cface, zr(iinstp), &
                                  zr(iinstm), zr(icarcr), fpg, ncompv, &
-                                 zk16(icompo), jmate, ndim, idepm, idepd, &
+                                 compor, jmate, ndim, idepm, idepd, &
                                  pla, algocr, rela, ifa, ipgf, matri, &
                                  cohes, coheo, jheavn, ncompn, ifiss, &
                                  nfiss, nfh, jheafa, ncomph, pos)
@@ -371,5 +373,7 @@ subroutine te0556(option, nomte)
                     zr(imatt), vect, nddlm, nfiss, jfisno, .true._1, contac)
 
     end if
+!
+    deallocate (matri)
 !
 end subroutine

@@ -80,11 +80,11 @@ subroutine te0516(option, nomte)
     real(kind=8) :: klv(dimklv), work(nc, 2*nc), co(npg)
     real(kind=8) :: rigge0(2*nc, 2*nc), ddu(2*nc), effgep(nc), d1bsig(4, 2*nc)
 !
-    integer :: ne, cara, idepla, iiter, ifgp
+    integer :: ne, cara, idepla, ifgp
     integer :: ii, jcret, npge
-    integer :: igeom, imate, icontm, iorien, icompo, ivarim, iinstp, ipoids
+    integer :: igeom, imate, icontm, iorien, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
-    integer :: jacf, jtab(7), ivarmp, codret
+    integer :: jacf, ivarmp, codret
     integer :: ncomp, nbvalc, isdcom
     integer :: kp, jj, kk, istrxm, istrxp, istrmp, ncomp2
     real(kind=8) :: ey, ez, gamma, xl, xls2, Nx, My, Mz
@@ -96,6 +96,7 @@ subroutine te0516(option, nomte)
     real(kind=8) :: xiyr2, xizr2, hotage(4, 4), epsm
     real(kind=8) :: ksi1, d1b3(2, 3), sigfib, mflex(4)
     real(kind=8) :: carsec(6)
+    character(len=16), pointer :: compor(:) => null()
 !
     aster_logical :: reactu, isgrot
     aster_logical :: lVect, lMatr, lVari, lSigm
@@ -147,7 +148,7 @@ subroutine te0516(option, nomte)
 !
 !  Paramètres en entrée
 !
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PMATERC', 'L', imate)
@@ -170,15 +171,15 @@ subroutine te0516(option, nomte)
     ivarmp = ivarim
 !
 ! - Properties of behaviour
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    mult_comp = zk16(icompo-1+MULTCOMP)
-    rigi_geom = zk16(icompo-1+RIGI_GEOM)
-    type_comp = zk16(icompo-1+INCRELAS)
-    read (zk16(icompo-1+NVAR), '(I16)') nbvalc
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    mult_comp = compor(MULTCOMP)
+    rigi_geom = compor(RIGI_GEOM)
+    type_comp = compor(INCRELAS)
+    read (compor(NVAR), '(I16)') nbvalc
 !
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, compor, lMatr, lVect, lVari, &
                          lSigm, codret)
     if (option .eq. 'RIGI_MECA_TANG') then
         lVect = ASTER_FALSE
@@ -299,7 +300,7 @@ subroutine te0516(option, nomte)
                 iret)
 !   caracteristiques elastiques (pas de temperature pour l'instant)
 !   on prend le E et NU du materiau torsion (voir op0059)
-    call pmfmats(imate, mator)
+    call pmfmats(mator)
     ASSERT(mator .ne. ' ')
     call matela(zi(imate), mator, 1, temp, e, &
                 nu)

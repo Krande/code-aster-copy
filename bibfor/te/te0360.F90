@@ -59,8 +59,9 @@ subroutine te0360(option, nomte)
     integer :: ndim, nno1, nno2, npg, lgpg, nddl, neps
     integer :: jv_w, jv_vff1, jv_geom, jv_mate, jv_vff2, jv_dff2
     integer :: jv_varim, jv_varip, jv_instm, jv_instp, jv_codret
-    integer :: jv_ddlm, jv_ddld, jv_compor, jv_carcri, jv_angmas
+    integer :: jv_ddlm, jv_ddld, jv_carcri, jv_angmas
     integer :: jv_vectu, jv_contp, jv_varix, jv_matuu, jv_matns
+    character(len=16), pointer :: compor(:) => null()
     real(kind=8):: ang_zero(3)
     real(kind=8), allocatable:: wg(:, :), ni2ldc(:, :), b(:, :, :), ang(:, :)
     real(kind=8), allocatable:: sigm(:, :), transp_ktan(:, :)
@@ -103,18 +104,18 @@ subroutine te0360(option, nomte)
     call jevech('PVARIMR', 'L', jv_varim)
     call jevech('PDEPLMR', 'L', jv_ddlm)
     call jevech('PDEPLPR', 'L', jv_ddld)
-    call jevech('PCOMPOR', 'L', jv_compor)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', jv_carcri)
 !
 ! - Properties of behaviour
 !
-    defo_comp = zk16(jv_compor-1+DEFO)
+    defo_comp = compor(DEFO)
     if (defo_comp(1:5) .ne. 'PETIT') call utmess('F', 'JOINT1_2', sk=defo_comp)
 
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(jv_compor), lMatr, lVect, lVari, &
+    call behaviourOption(option, compor, lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! --- ORIENTATION DE L'ELEMENT D'INTERFACE : REPERE LOCAL
@@ -170,7 +171,7 @@ subroutine te0360(option, nomte)
     sigm = 0
     ang_zero = 0
     call ngfint(option, typmod, ndim, nddl, neps, &
-                npg, wg, b, zk16(jv_compor), 'RIGI', &
+                npg, wg, b, compor, 'RIGI', &
                 zi(jv_mate), ang_zero, lgpg, zr(jv_carcri), zr(jv_instm), &
                 zr(jv_instp), zr(jv_ddlm), zr(jv_ddld), ni2ldc, sigm, &
                 zr(jv_varim), zr(jv_contp), zr(jv_varip), zr(jv_vectu), &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine te0596(option, nomte)
 #include "asterfort/nufnpd.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
@@ -49,8 +50,9 @@ subroutine te0596(option, nomte)
     integer :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
     integer :: iw, ivf1, ivf2, idf1, idf2
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, jvSief, jvDisp, icompo, imate, ivectu
+    integer :: igeom, jvSief, jvDisp, imate, ivectu
     integer :: ibid
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: lielrf(10), typmod(2), alias8
     character(len=24) :: valk
 ! ----------------------------------------------------------------------
@@ -78,11 +80,11 @@ subroutine te0596(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PSIEFR', 'L', jvSief)
     call jevech('PDEPLAR', 'L', jvDisp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PVECTUR', 'E', ivectu)
 !
 ! - CALCUL DES FORCES INTERIEURES
-    if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
+    if (compor(DEFO) .eq. 'PETIT ') then
         if (lteatt('INCO', 'C2 ')) then
 !
 ! - MINI ELEMENT ?
@@ -99,7 +101,7 @@ subroutine te0596(option, nomte)
 !
             call nufnpd(ndim, nno1, nno2, npg, iw, &
                         zr(ivf1), zr(ivf2), idf1, vu, vp, &
-                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(jvSief), &
+                        typmod, zi(imate), compor, zr(igeom), zr(jvSief), &
                         zr(jvDisp), mini, zr(ivectu))
         else if (lteatt('INCO', 'C2O')) then
 ! --------- Get index of dof
@@ -110,20 +112,20 @@ subroutine te0596(option, nomte)
             call nofnpd(ndim, nno1, nno2, nno2, npg, &
                         iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1, &
                         vu, vp, vpi, typmod, zi(imate), &
-                        zk16(icompo), zr(igeom), nomte, zr(jvSief), zr(jvDisp), &
+                        compor, zr(igeom), nomte, zr(jvSief), zr(jvDisp), &
                         zr(ivectu))
         else
-            valk = zk16(icompo+2)
+            valk = compor(DEFO)
             call utmess('F', 'MODELISA10_17', sk=valk)
         end if
-    else if (zk16(icompo+2) (1:8) .eq. 'GDEF_LOG') then
+    else if (compor(DEFO) .eq. 'GDEF_LOG') then
         if (lteatt('INCO', 'C2 ')) then
 !
 ! - MINI ELEMENT ?
             call teattr('S', 'ALIAS8', alias8, ibid)
             if (alias8(6:8) .eq. 'TR3' .or. alias8(6:8) .eq. 'TE4') then
 ! - PAS ENCORE INTRODUIT
-                valk = zk16(icompo+2)
+                valk = compor(DEFO)
                 call utmess('F', 'MODELISA10_18', sk=valk)
             end if
 ! --------- Get index of dof
@@ -133,14 +135,14 @@ subroutine te0596(option, nomte)
 !
             call nufnlg(ndim, nno1, nno2, npg, iw, &
                         zr(ivf1), zr(ivf2), idf1, vu, vp, &
-                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(jvSief), &
+                        typmod, zi(imate), compor, zr(igeom), zr(jvSief), &
                         zr(jvDisp), zr(ivectu))
         else
-            valk = zk16(icompo+2)
+            valk = compor(DEFO)
             call utmess('F', 'MODELISA10_17', sk=valk)
         end if
     else
-        call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
+        call utmess('F', 'ELEMENTS3_16', sk=compor(DEFO))
     end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,12 +52,13 @@ subroutine te0515(option, nomte)
     integer :: nno, imatuu, ndim, imate, iinstm, jcret
     integer :: retloi
     integer :: igeom
-    integer :: iinstp, ideplm, ideplp, icompo, icarcr
+    integer :: iinstp, ideplm, ideplp, icarcr
     integer :: icontm, ivarip, ivarim, ivectu, icontp
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: dimdef, dimcon, nbvari
     integer :: nnos, nface
     real(kind=8) :: defgep(21), defgem(21)
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: type_elem(2)
     integer :: li
     aster_logical :: l_axi, l_vf
@@ -87,18 +88,18 @@ subroutine te0515(option, nomte)
         call jevech('PINSTPR', 'L', iinstp)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PCONTMR', 'L', icontm)
 ! ----- Select objects to construct from option name
         lMatrPred = option(1:9) .eq. 'RIGI_MECA'
-        call behaviourOption(option, zk16(icompo), &
+        call behaviourOption(option, compor, &
                              lMatr, lVect, &
                              lVari, lSigm, &
                              retloi)
 ! ----- Properties of behaviour
-        read (zk16(icompo-1+NVAR), '(I16)') nbvari
+        read (compor(NVAR), '(I16)') nbvari
 ! ----- Get output fields
         ivectu = ismaem()
         icontp = ismaem()
@@ -127,7 +128,7 @@ subroutine te0515(option, nomte)
                         nno, nnos, nface, &
                         dimdef, dimcon, dimuel, &
                         mecani, press1, press2, tempe, &
-                        zk16(icompo), zr(icarcr), &
+                        compor, zr(icarcr), &
                         zr(igeom), &
                         zr(ideplm), zr(ideplm), &
                         defgem, defgep, &
@@ -148,7 +149,7 @@ subroutine te0515(option, nomte)
                         nno, nnos, nface, &
                         dimdef, dimcon, dimuel, &
                         mecani, press1, press2, tempe, &
-                        zk16(icompo), zr(icarcr), &
+                        compor, zr(icarcr), &
                         zr(igeom), &
                         zr(ideplm), zr(ideplp), &
                         defgem, defgep, &

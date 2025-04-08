@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,16 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
                   nno3, geom, ndim, nddl, deplp, &
                   sdepl, vu, vg, vp, vectu, &
                   svect, ncont, contp, scont, nvari, &
-                  varip, svari, matuu, smatr, matsym, &
-                  epsilo, epsilp, epsilg, varia, iret)
+                  varip, svari, matuu, matsym, &
+                  epsilo, epsilp, epsilg, iret)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -41,7 +43,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     character(len=16) :: option, compor(*)
     integer :: iret, nno1, nno2, nno3, ndim
     integer :: vu(3, 27), vg(27), vp(27)
-    real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*), smatr(*), varia(*)
+    real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
     real(kind=8) :: varip(*), svari(*)
 !
@@ -71,6 +73,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     integer :: i, j, k, l, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo, maxpre, maxgon
     real(kind=8) :: matper(nddl*nddl), epsilp, epsilg
+    real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     blas_int :: b_incx, b_incy, b_n
     save init, pos
     data matra/'PYTHON.TANGENT.MATA'/
@@ -94,6 +97,9 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     if (option(1:9) .eq. 'RIGI_MECA') then
         goto 999
     end if
+!
+    AS_ALLOCATE(vr=varia, size=nddl*nddl)
+    AS_ALLOCATE(vr=smatr, size=nddl*nddl)
 !
 ! --  INITIALISATION (PREMIER APPEL)
 !
@@ -198,7 +204,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         b_n = to_blas_int(nddl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl), b_incy)
+        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl:), b_incy)
     end if
 !
     pos = pos+1
@@ -343,6 +349,9 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, matper, b_incx, zr(ematrc), b_incy)
     end if
+!
+    AS_DEALLOCATE(vr=smatr)
+    AS_DEALLOCATE(vr=varia)
 !
 999 continue
 !

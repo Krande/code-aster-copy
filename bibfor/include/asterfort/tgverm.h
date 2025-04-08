@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ interface
                       nno3, geom, ndim, nddl, deplp,&
                       sdepl, vu, vg, vp, vectu,&
                       svect, ncont, contp, scont, nvari,&
-                      varip, svari, matuu, smatr, matsym,&
-                      epsilo, epsilp, epsilg, varia, iret)
+                      varip, svari, matuu, matsym,&
+                      epsilo, epsilp, epsilg, iret)
         integer :: nddl
         character(len=16) :: option
         real(kind=8) :: carcri(*)
@@ -50,12 +50,10 @@ interface
         real(kind=8) :: varip(*)
         real(kind=8) :: svari(*)
         real(kind=8) :: matuu(*)
-        real(kind=8) :: smatr(*)
         aster_logical :: matsym
         real(kind=8) :: epsilo
         real(kind=8) :: epsilp
         real(kind=8) :: epsilg
-        real(kind=8) :: varia(*)
         integer :: iret
     end subroutine tgverm
 end interface

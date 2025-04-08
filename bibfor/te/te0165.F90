@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,13 +51,14 @@ subroutine te0165(option, nomte)
 !
     integer :: icodre(2)
     real(kind=8) :: valres(2)
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: nomres(2)
     real(kind=8) :: aire, w(9), nx, l1(3), l2(3), l10(3), l20(3)
     real(kind=8) :: e
     real(kind=8) :: norml1, norml2, norl10, norl20, l0, allong
     real(kind=8) :: preten, epsthe
     integer :: imatuu, ivectu, icontp
-    integer :: icompo, lsect, igeom, imate, idepla, ideplp
+    integer :: lsect, igeom, imate, idepla, ideplp
     integer :: i, icoret, kc
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
@@ -78,12 +79,12 @@ subroutine te0165(option, nomte)
     call jevech('PCACABL', 'L', lsect)
     call jevech('PDEPLMR', 'L', idepla)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
     if (rela_comp(1:4) .ne. 'ELAS') then
         call utmess('F', 'CALCULEL4_92', sk=rela_comp)
     end if
@@ -111,7 +112,7 @@ subroutine te0165(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, compor, lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! - Get output fields

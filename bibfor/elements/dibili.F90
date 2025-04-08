@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine dibili(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, ivarim, jdc, irep, iadzi, iazk24, neq, ivarip, ii, ifono, icontp, icompo
+    integer :: imat, ivarim, jdc, irep, iadzi, iazk24, neq, ivarip, ii, ifono, icontp
     integer :: icontm, iretvc
     real(kind=8) :: r8bid, klv(78), raide(6), ulp(12), temper, temp1, temp2, klc(144), fl(12)
     character(len=8) :: k8bid
@@ -92,7 +92,6 @@ subroutine dibili(for_discret, iret)
     call jevech('PCONTMR', 'L', icontm)
 !   récupération des caractéristiques
     call jevech('PCADISK', 'L', jdc)
-    call jevech('PCOMPOR', 'L', icompo)
 !
     call infdis('REPK', irep, r8bid, k8bid)
 !   seulement en repere local : irep = 2

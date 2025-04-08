@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,13 +42,14 @@ subroutine te0511(option, nomte)
 ! =====================================================================
 ! =====================================================================
     aster_logical :: logthm
-    integer :: imate, icompo, ivarip, icontp, ilocal, ic, iv
+    integer :: imate, ivarip, icontp, ilocal, ic, iv
     integer :: nbvari, kpg, nbsig, imat, ibid
     integer :: icode, iret, tabthm(3), dimmax, npgu
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     real(kind=8) :: module, sig(6)
     real(kind=8) :: vin(100)
     character(len=8) :: mod, alias8
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: relcom
     integer, parameter :: rindic = 1
 ! =====================================================================
@@ -101,7 +102,7 @@ subroutine te0511(option, nomte)
 ! --- PARAMETRES EN ENTREE --------------------------------------------
 ! =====================================================================
         call jevech('PMATERC', 'L', imate)
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         call jevech('PVARIPR', 'L', ivarip)
         if (logthm) then
 ! =====================================================================
@@ -124,15 +125,15 @@ subroutine te0511(option, nomte)
 ! --- DANS LE CADRE DE LA THM ON RECUPERE DIRECTEMENT LA RELATION -----
 ! --- DE COMPORTEMENT DE TYPE MECANIQUE -------------------------------
 ! =====================================================================
-            relcom = zk16(icompo-1+MECA_NAME)
+            relcom = compor(MECA_NAME)
         else
             call jevech('PCONTPR', 'L', icontp)
-            relcom = zk16(icompo-1+RELA_NAME)
+            relcom = compor(RELA_NAME)
         end if
 ! =====================================================================
 ! --- NOMBRE DE VARIABLES INTERNES ASSOCIE A LA LOI DE COMPORTEMENT ---
 ! =====================================================================
-        read (zk16(icompo-1+NVAR), '(I16)') nbvari
+        read (compor(NVAR), '(I16)') nbvari
 ! =====================================================================
 ! --- PARAMETRES EN SORTIE --------------------------------------------
 ! =====================================================================

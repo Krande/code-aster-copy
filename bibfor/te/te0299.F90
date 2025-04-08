@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine te0299(option, nomte)
 #include "asterfort/provec.h"
 !
     integer :: icodre(3), matcod, ncmp, i1, ij
-    integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos, jgano, icomp
+    integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos, jgano
     integer :: igeom, ithet, irota, ipesa, ificg, idepl, iret, ipuls, isigi
     integer :: imate, iforc, iforf, ifond, itemps, k, i, j, kk, l, ndim, jtab(7)
     integer :: ino
@@ -74,8 +74,9 @@ subroutine te0299(option, nomte)
 !
     character(len=4) :: fami
     character(len=8) :: nompar(4), elrefp
-    character(len=16) :: nomres(3), compor(4)
+    character(len=16) :: nomres(3)
     character(len=32) :: phenom
+    character(len=16), pointer :: compor(:) => null()
 !
     aster_logical :: lcour, fonc, lpesa, lrota, l_not_zero
     aster_logical :: axi
@@ -94,7 +95,7 @@ subroutine te0299(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PFISSR', 'L', ifond)
     matcod = zi(imate)
 !
@@ -171,10 +172,6 @@ subroutine te0299(option, nomte)
     end if
 !
 ! --- VERFICATION DU COMPORTEMENT : ELASTICITE INCREMENTALE AUTORISEE
-!
-    do i = 1, 4
-        compor(i) = zk16(icomp+i-1)
-    end do
 !
     if ((compor(1) .ne. 'ELAS') .or. (compor(4) .eq. 'COMP_INCR')) then
         if (compor(1) .ne. 'ELAS') then

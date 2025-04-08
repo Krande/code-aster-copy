@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,10 +61,11 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jacf, labsc
-    integer :: icompo, isdcom, i, ipos, icp, ig, nbfig
+    integer :: isdcom, i, ipos, icp, ig, nbfig
     real(kind=8) :: carsec(6)
     real(kind=8) :: rho, rhos, rhofi, rhofe, cm, phie, phii
     real(kind=8) :: val(1), e, nu, absmoy
+    character(len=16), pointer :: compor(:) => null()
     character(len=32) :: materi
 !
     integer :: codres(4)
@@ -88,8 +89,8 @@ subroutine pmfitx(icdmat, isw, casect, gto)
     call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
 !
 !   Récupération des différents matériaux dans SDCOMP dans COMPOR
-    call jevech('PCOMPOR', 'L', icompo)
-    call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    call jeveuo(compor(MULTCOMP), 'L', isdcom)
 !
 ! --------------------------------------------------------------------------------------------------
 !   boucle sur les groupes de fibre
@@ -141,7 +142,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 ! --------------------------------------------------------------------------------------------------
 !   si ito=1 on récupère le matériau de torsion
     if (isw .eq. 1) then
-        call pmfmats(icdmat, materi)
+        call pmfmats(materi)
         call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS', &
                     0, ' ', [0.0d+0], 2, nomres2, valres, codres, 0)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine te0244(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/ntcomp.h"
 #include "asterfort/writeVector.h"
+#include "asterfort/Behaviour_type.h"
 #include "FE_module.h"
 !
     character(len=16) :: option, nomte
@@ -60,7 +61,7 @@ subroutine te0244(option, nomte)
     integer :: nbres
     parameter(nbres=1)
     integer :: icodre(nbres)
-    character(len=16) :: phenom
+    character(len=16) :: phenom, rela_name
     real(kind=8) :: valQPM(MAX_QP), BGSEval(3, MAX_BS)
     real(kind=8) :: valQPMP(MAX_QP)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
@@ -68,6 +69,7 @@ subroutine te0244(option, nomte)
     real(kind=8) ::  deltat, theta, chal(1), diff, Kglo(3, 3)
     real(kind=8) :: beta, dbeta, tpg, dtpg(3), tpsec, flux(3)
     integer :: kp, imate, icomp, ifon(6), itemps
+    character(len=16), pointer :: compor(:) => null()
     aster_logical :: lhyd, aniso
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: sechf(:) => null()
@@ -81,15 +83,16 @@ subroutine te0244(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PINSTR', 'L', itemps)
     call jevech('PTEMPER', 'L', vr=tempi)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', icomp, vk16=compor)
+    rela_name = compor(RELA_NAME)
 !
     deltat = zr(itemps+1)
     theta = zr(itemps+2)
 !
-    if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
-        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. &
-            zk16(icomp) (1:10) .eq. 'SECH_NAPPE' .or. &
-            zk16(icomp) (1:8) .eq. 'SECH_RFT') then
+    if ((rela_name(1:5) .eq. 'SECH_')) then
+        if (rela_name(1:12) .eq. 'SECH_GRANGER' .or. &
+            rela_name(1:10) .eq. 'SECH_NAPPE' .or. &
+            rela_name(1:8) .eq. 'SECH_RFT') then
             call jevech('PTMPCHI', 'L', vr=sechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
@@ -97,13 +100,13 @@ subroutine te0244(option, nomte)
             call jevech('PTEMPER', 'L', vr=sechf)
         end if
 !
-    else if (zk16(icomp) (1:5) .eq. 'THER_') then
+    else if (rela_name(1:5) .eq. 'THER_') then
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
         aniso = ASTER_FALSE
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
             aniso = ASTER_TRUE
         end if
-        call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
+        call ntfcma(rela_name, zi(imate), aniso, ifon)
     end if
 !
     resi_f = 0.d0
@@ -112,12 +115,12 @@ subroutine te0244(option, nomte)
         BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
-        if (zk16(icomp) (1:5) .eq. 'THER_') then
-            call ntcomp(icomp, FECell%ndim, tpg, dtpg, &
+        if (rela_name(1:5) .eq. 'THER_') then
+            call ntcomp(rela_name, FECell%ndim, tpg, dtpg, &
                         FEQuadRigi%points(1:3, kp), aniso, ifon, flux, Kglo)
-        else if (zk16(icomp) (1:5) .eq. 'SECH_') then
+        else if (rela_name(1:5) .eq. 'SECH_') then
             tpsec = FEEvalFuncRScal(FEBasis, sechf, FEQuadRigi%points_param(1:3, kp))
-            call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
+            call rcdiff(zi(imate), rela_name, tpsec, tpg, diff)
             flux = diff*dtpg
         else
             ASSERT(ASTER_FALSE)
@@ -125,7 +128,7 @@ subroutine te0244(option, nomte)
         call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do
 !
-    if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
+    if (rela_name(1:9) .eq. 'THER_HYDR') then
         lhyd = ASTER_TRUE
         call jevech('PHYDRPM', 'L', vr=hydrpg)
 !
@@ -138,7 +141,7 @@ subroutine te0244(option, nomte)
 !
     do kp = 1, FEQuadMass%nbQuadPoints
         tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadMass%points_param(1:3, kp))
-        if (zk16(icomp) (1:5) .eq. 'THER_') then
+        if (rela_name(1:5) .eq. 'THER_') then
             call rcfode(ifon(1), tpg, beta, dbeta)
             if (lhyd) then
                 valQPMP(kp) = (dbeta*tpg-chal(1)*hydrpg(kp))
@@ -147,7 +150,7 @@ subroutine te0244(option, nomte)
                 valQPMP(kp) = dbeta*tpg
                 valQPM(kp) = beta
             end if
-        else if (zk16(icomp) (1:5) .eq. 'SECH_') then
+        else if (rela_name(1:5) .eq. 'SECH_') then
             valQPM(kp) = tpg
             valQPMP(kp) = tpg
         else

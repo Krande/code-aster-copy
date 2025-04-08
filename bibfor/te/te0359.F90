@@ -32,6 +32,7 @@ subroutine te0359(option, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=16) :: option, nomte
 !
@@ -56,11 +57,12 @@ subroutine te0359(option, nomte)
     aster_logical :: axi
     integer :: nno1, nno2, npg, lgpg, ndim, iret, ntrou, jtab(7), neps, nddl
     integer :: jv_w, jv_vff1, jv_geom, jv_mate, jv_vff2, jv_dff2, jv_dtau
-    integer :: jv_copilo, jv_varim, jv_ddlm, jv_ddld, jv_ddl0, jv_ddl1, jv_compor, jv_angmas
+    integer :: jv_copilo, jv_varim, jv_ddlm, jv_ddld, jv_ddl0, jv_ddl1, jv_angmas
     integer :: jv_borne
     real(kind=8):: etamin, etamax
     real(kind=8), allocatable:: wg(:, :), ni2ldc(:, :), b(:, :, :), ang(:, :)
     real(kind=8), allocatable:: sigm(:, :)
+    character(len=16), pointer :: compor(:) => null()
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -88,7 +90,7 @@ subroutine te0359(option, nomte)
     call jevech('PGEOMER', 'L', jv_geom)
     call jevech('PCAMASS', 'L', jv_angmas)
     call jevech('PMATERC', 'L', jv_mate)
-    call jevech('PCOMPOR', 'L', jv_compor)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PDEPLMR', 'L', jv_ddlm)
     call jevech('PDDEPLR', 'L', jv_ddld)
     call jevech('PDEPL0R', 'L', jv_ddl0)
@@ -118,7 +120,7 @@ subroutine te0359(option, nomte)
     ! Pilotage
     sigm = 0
     call ngpipe(typilo, npg, neps, nddl, b, &
-                ni2ldc, typmod, zi(jv_mate), zk16(jv_compor), lgpg, &
+                ni2ldc, typmod, zi(jv_mate), compor, lgpg, &
                 zr(jv_ddlm), sigm, zr(jv_varim), zr(jv_ddld), zr(jv_ddl0), &
                 zr(jv_ddl1), zr(jv_dtau), etamin, etamax, zr(jv_copilo))
 

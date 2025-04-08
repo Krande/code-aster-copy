@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,13 +66,14 @@ subroutine te0595(option, nomte)
     integer :: jtab(7), lgpg
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     integer :: igeom, imate, icontm, ivarim
-    integer :: iinstm, iinstp, iddlm, iddld, icompo, icarcr
+    integer :: iinstm, iinstp, iddlm, iddld, icarcr
     integer :: ivectu, icontp, ivarip, imatuu
     integer :: nddl, ibid
     real(kind=8) :: angmas(3)
     character(len=8) :: lielrf(10), typmod(2), alias8
     character(len=16) :: defo_comp
     aster_logical :: lMatr, lVect, lVari, lSigm
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,7 +124,7 @@ subroutine te0595(option, nomte)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PDEPLMR', 'L', iddlm)
     call jevech('PDEPLPR', 'L', iddld)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
@@ -136,14 +137,14 @@ subroutine te0595(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
 !
-    defo_comp = zk16(icompo-1+DEFO)
+    defo_comp = compor(DEFO)
 !
 ! - Get output fields
 !
@@ -178,7 +179,7 @@ subroutine te0595(option, nomte)
             nddl = nnod*ndim+nnop
             call nufipd(ndim, nnod, nnop, npg, iw, &
                         zr(ivfd), zr(ivfp), idfd, vu, vp, &
-                        zr(igeom), typmod, option, zi(imate), zk16(icompo), &
+                        zr(igeom), typmod, option, zi(imate), compor, &
                         lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), &
                         zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp), &
                         zr(ivarip), mini, zr(ivectu), &
@@ -193,7 +194,7 @@ subroutine te0595(option, nomte)
             call nofipd(ndim, nnod, nnop, nnop, npg, &
                         iw, zr(ivfd), zr(ivfp), zr(ivfp), idfd, &
                         vu, vp, vpi, zr(igeom), typmod, &
-                        option, nomte, zi(imate), zk16(icompo), lgpg, &
+                        option, nomte, zi(imate), compor, lgpg, &
                         zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), &
                         angmas, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
                         zr(ivectu), zr(imatuu), codret, &
@@ -211,7 +212,7 @@ subroutine te0595(option, nomte)
             nddl = nnod*ndim+nnop
             call nufilg(ndim, nnod, nnop, npg, iw, &
                         zr(ivfd), zr(ivfp), idfd, vu, vp, &
-                        zr(igeom), typmod, option, zi(imate), zk16(icompo), &
+                        zr(igeom), typmod, option, zi(imate), compor, &
                         lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), &
                         zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp), &
                         zr(ivarip), zr(ivectu), zr(imatuu), &

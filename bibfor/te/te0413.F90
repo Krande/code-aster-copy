@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,9 @@ subroutine te0413(option, nomte)
 !
     integer :: ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: jgeom, ipg, idener, imate
-    integer :: icompo, icacoq, jvari, nbvar
+    integer :: icacoq, jvari, nbvar
 !
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: valk(2)
     aster_logical :: dkq, lkit
 !
@@ -79,17 +80,17 @@ subroutine te0413(option, nomte)
                      jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
     else if (nno .eq. 4) then
         call dxqpgl(zr(jgeom), pgl)
     end if
 !
-    lkit = zk16(icompo-1+RELA_NAME) (1:7) .eq. 'KIT_DDI'
+    lkit = compor(RELA_NAME) (1:7) .eq. 'KIT_DDI'
 !
-    if ((zk16(icompo-1+RELA_NAME) (1:7) .eq. 'GLRC_DM') .or. &
-        (lkit .and. (zk16(icompo-1+CREEP_NAME) (1:7) .eq. 'GLRC_DM'))) then
+    if ((compor(RELA_NAME) (1:7) .eq. 'GLRC_DM') .or. &
+        (lkit .and. (compor(CREEP_NAME) (1:7) .eq. 'GLRC_DM'))) then
 !
         call jevech('PCACOQU', 'L', icacoq)
 !
@@ -101,7 +102,7 @@ subroutine te0413(option, nomte)
             call gtria3(xyzl, cara)
         end if
 !
-        read (zk16(icompo-1+NVAR), '(I16)') nbvar
+        read (compor(NVAR), '(I16)') nbvar
         ep = zr(icacoq)
 !
         if (option .eq. 'DISS_ELGA') then
@@ -128,7 +129,7 @@ subroutine te0413(option, nomte)
 !
             call jevech('PMATERC', 'L', imate)
 !
-            call glrc_recup_mate(zi(imate), zk16(icompo), .false._1, ep, seuil=seuil)
+            call glrc_recup_mate(zi(imate), compor(RELA_NAME), .false._1, ep, seuil=seuil)
 !
 !  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 !        ==========================================================
@@ -161,7 +162,7 @@ subroutine te0413(option, nomte)
         else if (option .eq. 'DISS_ELEM') then
             zr(idener-1+1) = dse
         end if
-    elseif (zk16(icompo-1+RELA_NAME) (1:4) .eq. 'DHRC') then
+    elseif (compor(RELA_NAME) (1:4) .eq. 'DHRC') then
         call jevech('PCACOQU', 'L', icacoq)
         call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
         if (dkq) then
@@ -170,7 +171,7 @@ subroutine te0413(option, nomte)
             call gtria3(xyzl, cara)
         end if
 !
-        read (zk16(icompo-1+NVAR), '(I16)') nbvar
+        read (compor(NVAR), '(I16)') nbvar
 !
         if (option .eq. 'DISS_ELGA') then
             call jevech('PVARIGR', 'L', jvari)
@@ -228,7 +229,7 @@ subroutine te0413(option, nomte)
     else
 !      RELATION NON PROGRAMMEE
         valk(1) = option
-        valk(2) = zk16(icompo-1+RELA_NAME) (1:7)
+        valk(2) = compor(RELA_NAME) (1:7)
         call utmess('A', 'ELEMENTS4_63', nk=2, valk=valk)
     end if
 !

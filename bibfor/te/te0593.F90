@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine te0593(option, nomte)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
@@ -47,9 +48,10 @@ subroutine te0593(option, nomte)
     integer :: ndim, nno1, nno2, nno3, nnos, npg, jgn, ntrou
     integer :: iw, ivf1, ivf2, ivf3, idf1, idf2, idf3
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, ivectu, icompo
+    integer :: igeom, ivectu
     real(kind=8) :: sigref, epsref
     character(len=8) :: lielrf(10), typmod(2)
+    character(len=16), pointer :: compor(:) => null()
 ! ----------------------------------------------------------------------
 !
 !
@@ -80,31 +82,31 @@ subroutine te0593(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call terefe('SIGM_REFE', 'MECA_INCO', sigref)
     call terefe('EPSI_REFE', 'MECA_INCO', epsref)
 !
 ! - CALCUL DE REFE_FORC_NODA
-    if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
+    if (compor(DEFO) (1:6) .eq. 'PETIT ') then
 !
         call nirfpd(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     vu, vg, vp, typmod, zr(igeom), &
                     sigref, epsref, zr(ivectu))
-    else if (zk16(icompo+2) (1:8) .eq. 'GDEF_LOG') then
+    else if (compor(DEFO) (1:8) .eq. 'GDEF_LOG') then
 !
         call nirfgd(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     vu, vg, vp, typmod, zr(igeom), &
                     sigref, epsref, zr(ivectu))
-    else if (zk16(icompo+2) (1:10) .eq. 'SIMO_MIEHE') then
+    else if (compor(DEFO) (1:10) .eq. 'SIMO_MIEHE') then
 !
         call nirfgd(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     vu, vg, vp, typmod, zr(igeom), &
                     sigref, epsref, zr(ivectu))
     else
-        call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
+        call utmess('F', 'ELEMENTS3_16', sk=compor(DEFO))
     end if
 !
 end subroutine

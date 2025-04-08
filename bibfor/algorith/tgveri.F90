@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,16 @@
 subroutine tgveri(option, carcri, compor, nno, geom, &
                   ndim, nddl, deplp, sdepl, vectu, &
                   svect, ncont, contp, scont, nvari, &
-                  varip, svari, matuu, smatr, matsym, &
-                  epsilo, varia, iret)
+                  varip, svari, matuu, matsym, &
+                  epsilo, iret)
 !
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -40,7 +42,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
     aster_logical :: matsym
     character(len=16) :: option, compor(COMPOR_SIZE)
     integer :: iret, nno, ndim
-    real(kind=8) :: carcri(CARCRI_SIZE), sdepl(*), scont(*), svect(*), smatr(*), varia(*)
+    real(kind=8) :: carcri(CARCRI_SIZE), sdepl(*), scont(*), svect(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
     real(kind=8) :: varip(*), svari(*)
 !
@@ -74,6 +76,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo
     real(kind=8) :: matper(3*27*3*27)
     blas_int :: b_incx, b_incy, b_n
+    real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     save init, pos
     data matra/'PYTHON.TANGENT.MATA'/
     data matrc/'PYTHON.TANGENT.MATC'/
@@ -97,6 +100,9 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
     if (option(1:9) .eq. 'RIGI_MECA') then
         goto 999
     end if
+!
+    AS_ALLOCATE(vr=varia, size=nddl*nddl)
+    AS_ALLOCATE(vr=smatr, size=nddl*nddl)
 !
 ! --  INITIALISATION (PREMIER APPEL)
 !
@@ -186,7 +192,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
         b_n = to_blas_int(nddl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl), b_incy)
+        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl:), b_incy)
     end if
 !
     pos = pos+1
@@ -289,6 +295,9 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, matper, b_incx, zr(ematrc), b_incy)
     end if
+!
+    AS_DEALLOCATE(vr=smatr)
+    AS_DEALLOCATE(vr=varia)
 !
 999 continue
 !

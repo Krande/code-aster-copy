@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,6 @@ subroutine te0353(option, nomte)
     integer ::  i, k, lgpg, iret, ispg
     real(kind=8) :: sigmo
     character(len=4) :: fami
-    integer :: j_compor
     character(len=16) :: metaPhasName, rela_comp, valk(2)
     integer :: j_mate, j_mater
     integer :: meta_type, nb_phasis
@@ -73,6 +72,7 @@ subroutine te0353(option, nomte)
     aster_logical :: l_axi, l_temp
     character(len=16) :: elas_keyword
     character(len=16) :: metaRela, metaGlob
+    character(len=16), pointer :: compor(:) => null()
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -98,10 +98,10 @@ subroutine te0353(option, nomte)
 !
 ! - Comportement
 !
-    call jevech('PCOMPOR', 'L', j_compor)
-    rela_comp = zk16(j_compor-1+RELA_NAME)
-    metaRela = zk16(j_compor-1+META_RELA)
-    metaGlob = zk16(j_compor-1+META_GLOB)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    rela_comp = compor(RELA_NAME)
+    metaRela = compor(META_RELA)
+    metaGlob = compor(META_GLOB)
 !
 ! - Cannot evaluate command variables effect for Mfront behaviors
 !
@@ -112,7 +112,7 @@ subroutine te0353(option, nomte)
 !
 ! - Get type of phasis
 !
-    metaPhasName = zk16(j_compor-1+META_PHAS)
+    metaPhasName = compor(META_PHAS)
     call metaGetType(meta_type, nb_phasis)
     ASSERT(nb_phasis .le. 5)
     if ((meta_type .eq. META_NONE) .or. (rela_comp .eq. 'META_LEMA_ANI')) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sign(4), sigma(4), dsidep(6, 6), angmas(3)
     real(kind=8) :: matc(5, 5), valpar
-    integer :: i, ib, icarcr, icompo, icontm, icontp, icou
+    integer :: i, ib, icarcr, icontm, icontp, icou
     integer :: ideplm, ideplp, iinstm, iinstp, imate, inte, intsn
     integer :: intsr, iret, ivarim, ivarip, ivarix, ivectu, j
     integer :: jcara, jcrf, k1, k2, kpgs, kwgt, lgpg
@@ -100,6 +100,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
     type(Behaviour_Integ) :: BEHinteg
     character(len=4), parameter :: fami = "MASS"
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,7 +128,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PNBSP_I', 'L', jnbspi)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PCONTMR', 'L', icontm)
@@ -150,19 +151,19 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndimLdc, typmod, option, &
-                              zk16(icompo), zr(icarcr), &
+                              compor, zr(icarcr), &
                               zr(iinstm), zr(iinstp), &
                               fami, zi(imate), &
                               BEHinteg)
 
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 
 ! - Properties of behaviour
-    read (zk16(icompo-1+NVAR), '(I16)') nbvari
+    read (compor(NVAR), '(I16)') nbvari
 !
     epais = zr(jcara)
     kappa = zr(jcara+3)
@@ -309,7 +310,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                     sigma = 0.d0
                     call nmcomp(BEHinteg, &
                                 fami, intsn, ksp, ndimLdc, typmod, &
-                                zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
+                                zi(imate), compor, zr(icarcr), zr(iinstm), zr(iinstp), &
                                 4, eps2d, deps2d, 4, sign, &
                                 zr(ivarim+k2), option, angmas, &
                                 sigma, zr(ivarip+k2), 36, dsidep, cod)

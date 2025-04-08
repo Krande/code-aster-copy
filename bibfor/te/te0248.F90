@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,10 +61,9 @@ subroutine te0248(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: neq, nbt, nvamax, imate, igeom, iorie, isect, iinstm, ivarmp
-    integer :: iinstp, ideplm, ideplp, icontm, ivarim, icompo
-    integer :: icarcr, imatuu, ivectu, icontp, nno, nc, ivarip, jcret, nbvari
-    integer :: jtab(7), iret
+    integer :: neq, nbt, nvamax, imate, igeom, iorie, isect, iinstm
+    integer :: iinstp, ideplm, ideplp, icontm, ivarim
+    integer :: icarcr, imatuu, ivectu, icontp, nno, nc, ivarip, jcret
     parameter(neq=6, nbt=21, nvamax=8)
     character(len=4) :: fami
 !
@@ -80,10 +79,10 @@ subroutine te0248(option, nomte)
     real(kind=8) :: klv(nbt), vip(nvamax), vim(nvamax)
     real(kind=8) :: effnom, effnop, fono(neq)
     real(kind=8) :: w(6), ang1(3), xd(3), matuu(21), vectu(6)
-    real(kind=8) :: deplm(6), deplp(6), sigx, epsx, depx, sigxp
-    real(kind=8) :: etan
+    real(kind=8) :: deplm(6), deplp(6)
     real(kind=8) :: angmas(3)
     integer :: i
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: defo_comp, rela_comp, rela_cpla
     aster_logical :: lVect, lMatr, lVari, lSigm
     blas_int :: b_incx, b_incy, b_n
@@ -110,19 +109,19 @@ subroutine te0248(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVARIMR', 'L', ivarim)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, compor, lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    rela_cpla = zk16(icompo-1+PLANESTRESS)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    rela_cpla = compor(PLANESTRESS)
 !
 ! - Some checks
 !

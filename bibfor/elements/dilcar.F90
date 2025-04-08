@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
+subroutine dilcar(option, icontm, ivarim, ideplm, ideplp, &
                   igeom, imate, imatuu, ivectu, icontp, &
                   ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
 !
@@ -30,9 +30,10 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-    integer :: icompo, icontm, ivarim, ideplm, ideplp, igeom, imate, jcret
+    integer :: icontm, ivarim, ideplm, ideplp, igeom, imate, jcret
     integer :: imatuu, ivectu, icontp, ichg, ichn, ivarip, icarcr, iinstm, iinstp
     character(len=16) :: option
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,8 +109,8 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
 !
 ! - Select objects to construct from option name
 !
-    call jevech('PCOMPOR', 'L', icompo)
-    call behaviourOption(option, zk16(icompo), &
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm)
 

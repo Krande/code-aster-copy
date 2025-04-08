@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine te0385(nomopt, nomte)
 !
     implicit none
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/runge6.h"
@@ -47,21 +48,21 @@ subroutine te0385(nomopt, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: itemps, icomp, imate
+    integer :: itemps, imate
     integer ::  ifon(6), kp
     real(kind=8) :: deltat, err, tpgm, tpgp
     real(kind=8), pointer :: hydrgm(:) => null(), hydrgp(:) => null()
     real(kind=8), pointer :: tempm(:) => null()
     real(kind=8), pointer :: tempp(:) => null()
-
+    character(len=16), pointer :: compor(:) => null()
 !
     if (nomopt .ne. "HYDR_ELGA") then
         ASSERT(ASTER_FALSE)
     end if
 !
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 
-    if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
+    if (compor(RELA_NAME) (1:9) .eq. 'THER_HYDR') then
         call FECell%init()
         call FEBasis%initCell(FECell)
         call FEQuadCell%initCell(FECell, "MASS")
@@ -75,7 +76,7 @@ subroutine te0385(nomopt, nomte)
 !
         deltat = zr(itemps+1)
 !
-        call ntfcma(zk16(icomp), zi(imate), ASTER_FALSE, ifon)
+        call ntfcma(compor(RELA_NAME), zi(imate), ASTER_FALSE, ifon)
 !
         do kp = 1, FEQuadCell%nbQuadPoints
             hydrgp(kp) = 0.d0

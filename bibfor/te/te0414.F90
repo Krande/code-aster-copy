@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,9 @@ subroutine te0414(option, nomte)
 !
     integer :: nb1, jcret, codret
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
-    integer :: i, i1, i2, ibid, icompo, ideplm, ideplp
+    integer :: i, i1, i2, ibid, ideplm, ideplp
     integer :: jgeom, jmatr, lzr, nb2, nddlet, lzi
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
 !
@@ -70,19 +71,19 @@ subroutine te0414(option, nomte)
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
 !
 ! - Get output fields
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,6 +62,7 @@ subroutine te0390(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: nu, instam, instap
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: elrefe
     real(kind=8) :: en(3, 2), enprim(3, 2), valres(4), granc(6), grani(4)
     real(kind=8) :: rigi(18, 18), fint(6, 3), y0(3), x00(3, 3), x0k(3, 3)
@@ -76,7 +77,7 @@ subroutine te0390(option, nomte)
     integer, parameter :: nbres = 3
     integer :: icodre(nbres)
     character(len=16), parameter :: nomres(nbres) = (/'E  ', 'NU ', 'RHO'/)
-    integer :: i, iacckm, iaccp, ico, icompo, iddepl, idepde
+    integer :: i, iacckm, iaccp, ico, iddepl, idepde
     integer :: idepkm, idepm, idfdk, ifint, igeom, imat, imate
     integer :: imatuu, instmr, instpr, ipoids, iret, iromk, iromkm
     integer :: istady, ivarim, ivarip, ivf, ivitkm, ivitp, j
@@ -128,7 +129,7 @@ subroutine te0390(option, nomte)
 ! - Get input fields
 !
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PVARIMP', 'L', ivarim)
     call jevech('PINSTMR', 'L', instmr)
@@ -146,8 +147,8 @@ subroutine te0390(option, nomte)
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
 !
 ! - Some checks
 !
@@ -203,7 +204,7 @@ subroutine te0390(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
