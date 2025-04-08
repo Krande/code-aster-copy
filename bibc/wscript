@@ -168,7 +168,7 @@ def build_libaster(self, env):
     # {bibfor, bibc, bibcxx}/*.o
     if self.env.ASTER_PLATFORM_MINGW:
         # fix circular dependencies betw bibc.a and bibfor.a
-        env=env.derive()
+        env = env.derive()
         env.detach()
         env.append_value("STLIB_MARKER", "-Wl,--start-group")
         env.append_value("SHLIB_MARKER", "-Wl,--end-group")
@@ -192,6 +192,9 @@ def build_libaster(self, env):
     for submodule in mods:
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
         self.symlink_as(src, libaster)
+    if env.ASTER_PLATFORM_MINGW:
+        src = osp.join(env.ASTERLIBDIR, "libAsterGC" + extlib)
+        self.symlink_as(src, "AsterGC.dll")
 
 
 @Configure.conf
