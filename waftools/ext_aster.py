@@ -87,11 +87,15 @@ run_process_native = Utils.run_process
 def run_process_with_wine(cmd, kwargs, cargs={}):
     """Wraps :py:func:`waflib.Utils.run_process` using `wine` when necessary."""
     if MINGW_CROSS_COMPILATION:
-        if kwargs["shell"]:
-            if cmd.split()[0].endswith(".exe"):
+        shell = kwargs["shell"]
+        prog = cmd[0] if not shell else cmd.split()[0]
+        ext = osp.splitext(prog)[-1]
+        if ext == ".exe":
+            Logs.debug(f"DEBUG: cmd={cmd}")
+            if shell:
                 cmd = "wine " + cmd
-        elif cmd[0].endswith(".exe"):
-            cmd = ["wine"] + cmd
+            else:
+                cmd = ["wine"] + cmd
     return run_process_native(cmd, kwargs, cargs)
 
 
