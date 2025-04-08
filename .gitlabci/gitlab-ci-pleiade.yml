@@ -6,6 +6,7 @@ variables:
   OSNAME: debian-11
   IMAGE_URL: ${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
   ASTER_BUILD: mpi
+  # BUILDTYPE: ci, nightly, nightly-coverage, code-checking, docker
   BUILDTYPE: ci
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
@@ -21,6 +22,9 @@ workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_REF_NAME == "main" && $CI_PIPELINE_SOURCE == "schedule"
+      variables:
+        REFREV: main
+    - if: $CI_PIPELINE_SOURCE == "web"
       variables:
         REFREV: main
     - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
@@ -60,9 +64,10 @@ compile:
   script:
     - .gitlabci/compile.sh
   artifacts:
+    when: always
     paths:
       - .lock*
-      - build/mpi*
+      - build/*
       - install/*
     expire_in: 6 hours
   rules:
@@ -169,7 +174,9 @@ verification_test:
     reports:
       junit: results/run_testcases.xml
   rules:
-    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"  && $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $OSNAME == "win"
+      when: never
+    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker" && $CI_COMMIT_REF_NAME !~ $reg_debugging
 
 known_failures_test:
   interruptible: true
@@ -245,9 +252,6 @@ sonarqube:
 
 docker:
   stage: build
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-    - if: $BUILDTYPE == "docker"
   image:
     name: nexus.retd.edf.fr/kaniko-project/executor:debug
     entrypoint: [""]
@@ -258,3 +262,6 @@ docker:
     paths:
       - artf/codeaster-main-*.dockerfile
     expire_in: 1 day
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $BUILDTYPE == "docker"
