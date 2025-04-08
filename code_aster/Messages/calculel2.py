@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -484,12 +484,6 @@ Conseil :
         """
  votre chargement contient plus d'une charge répartie
  le calcul n'est pas possible pour les modèles de poutre.
-"""
-    ),
-    94: _(
-        """
- pour un modèle comportant des éléments de plaque ou de coque
- il faut fournir le "CARA_ELEM"
 """
     ),
 }

@@ -1051,16 +1051,20 @@ contains
         integer, intent(out) :: nbLoad
 ! ----- Locals
         integer :: iret
+        character(len=19) :: listLoad
         character(len=24) :: loadInfoJv
         integer, pointer :: listLoadInfo(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         nbLoad = 0
-        loadInfoJv = listLoadZ(1:19)//'.INFC'
-        call jeexin(loadInfoJv, iret)
-        if (iret .ne. 0) then
-            call jeveuo(loadInfoJv, 'L', vi=listLoadInfo)
-            nbLoad = listLoadInfo(1)
+        listLoad = listLoadZ
+        if (listLoad .ne. " ") then
+            loadInfoJv = listLoadZ(1:19)//'.INFC'
+            call jeexin(loadInfoJv, iret)
+            if (iret .ne. 0) then
+                call jeveuo(loadInfoJv, 'L', vi=listLoadInfo)
+                nbLoad = listLoadInfo(1)
+            end if
         end if
 !
 !   ------------------------------------------------------------------------------------------------

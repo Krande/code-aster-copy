@@ -17,10 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dylach(modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ, &
-                      numedd, vediri, veneum, vevoch, vassec)
-        character(len=*) :: modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ
-        character(len=*) :: numedd
-        character(len=19) :: vediri, veneum, vevoch, vassec
-    end subroutine dylach
+    subroutine ccfnrnLegacy(option, postComp)
+        use postComp_type
+        character(len=16), intent(in) :: option
+        type(POST_COMP), intent(inout) :: postComp
+    end subroutine ccfnrnLegacy
 end interface

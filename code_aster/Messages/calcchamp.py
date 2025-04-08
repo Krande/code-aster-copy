@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: nicolas.sellenet at edf.fr
-
 from ..Utilities import _
 
 cata_msg = {
@@ -90,6 +88,11 @@ Contactez le support technique.
     24: _(
         """Le chargement doit être le même sur tous les pas de temps pour ce post-traitement.
       Conseil : il faut séparer le post-traitement en le découpant pour garder le même chargement"""
+    ),
+    52: _(
+        """
+ La commande CALC_CHAMP a besoin de calculer le champ de type %(k1)s mais elle ne peut pas. Or ce champ est nécessaire au calcul du champ %(k2)s.
+"""
     ),
     54: _(
         """Il n'y a aucun chargement défini pour ce post-traitement. Si le résultat est issu d'un calcul dynamique, pensez à renseigner les chargements dans la commande de post-traitement."""
