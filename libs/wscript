@@ -38,7 +38,11 @@ def build(self):
 
     sources = get_srcs("**/*.F90") + get_srcs("**/*.cxx")
     self(
-        features="cxx fc cxxshlib fcshlib",
+        features=(
+            "cxx fc cxxstlib fcstlib"
+            if self.env.ASTER_PLATFORM_MINGW
+            else "cxx fc cxxshlib fcshlib"
+        ),
         name="astergc",
         target="AsterGC",
         source=sources,
