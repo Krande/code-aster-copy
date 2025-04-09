@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -222,7 +222,7 @@ TEST_RESU(
             VALE_CALC=0.6,
             VALE_REFE=0.6,
             REFERENCE="ANALYTIQUE",
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             RESULTAT=MODE_STA,
@@ -232,7 +232,7 @@ TEST_RESU(
             VALE_CALC=0.4,
             VALE_REFE=0.4,
             REFERENCE="ANALYTIQUE",
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             RESULTAT=MODE_STA,
@@ -242,7 +242,7 @@ TEST_RESU(
             VALE_CALC=0.4,
             VALE_REFE=0.4,
             REFERENCE="ANALYTIQUE",
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
         _F(
             RESULTAT=MODE_STA,
@@ -252,7 +252,7 @@ TEST_RESU(
             VALE_CALC=0.6,
             VALE_REFE=0.6,
             REFERENCE="ANALYTIQUE",
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
     )
 )
@@ -293,7 +293,7 @@ TEST_RESU(
             VALE_REFE=0.01317,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             RESULTAT=MODE_CO2,
@@ -304,7 +304,7 @@ TEST_RESU(
             VALE_REFE=0.01216,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             RESULTAT=MODE_CO2,
@@ -315,7 +315,7 @@ TEST_RESU(
             VALE_REFE=0.01216,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
         _F(
             RESULTAT=MODE_CO2,
@@ -326,7 +326,7 @@ TEST_RESU(
             VALE_REFE=0.01317,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
     )
 )

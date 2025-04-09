@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -215,9 +215,7 @@ LI = DEFI_LIST_INST(
 
 
 MAILINI = LIRE_MAILLAGE(FORMAT="MED")
-MAIL = CREA_MAILLAGE(
-    MAILLAGE=MAILINI, MODI_MAILLE=(_F(TOUT="OUI", OPTION="QUAD8_9", PREF_NOEUD="NQ"),)
-)
+MAIL = CREA_MAILLAGE(MAILLAGE=MAILINI, MODI_MAILLE=(_F(TOUT="OUI", OPTION="QUAD8_9"),))
 
 MAIL = DEFI_GROUP(
     reuse=MAIL,
@@ -229,11 +227,11 @@ MAIL = DEFI_GROUP(
         _F(GROUP_MA="DROIT"),
         _F(GROUP_MA="TOUT"),
         _F(NOM="N678", NOEUD="N678"),
-        _F(NOM="NQ182", NOEUD="NQ182"),
+        _F(NOM="NQ182", NOEUD="N1185"),
         _F(NOM="N783", NOEUD="N783"),
-        _F(NOM="NQ21", NOEUD="NQ21"),
+        _F(NOM="NQ21", NOEUD="N1024"),
         _F(NOM="N727", NOEUD="N727"),
-        _F(NOM="NQ25", NOEUD="NQ25"),
+        _F(NOM="NQ25", NOEUD="N1028"),
         _F(
             NOM="MIL",
             NOEUD=(

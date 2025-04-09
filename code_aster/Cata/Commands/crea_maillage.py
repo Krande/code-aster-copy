@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,8 +84,6 @@ CREA_MAILLAGE = OPER(
         NOM=SIMP(statut="o", typ="TXM"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="E"),
-        PREF_NUME=SIMP(statut="f", typ="I"),
     ),
     RESTREINT=FACT(
         statut="f",
@@ -102,9 +100,6 @@ CREA_MAILLAGE = OPER(
         NOM=SIMP(statut="o", typ="TXM"),
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         EPAIS=SIMP(statut="o", typ="R"),
-        PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="V"),
-        PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
-        PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
         PLAN=SIMP(statut="o", typ="TXM", into=("SUP", "MOY", "INF")),
         b_MOY=BLOC(
             condition="""equal_to("PLAN", 'MOY')""",
@@ -126,16 +121,6 @@ CREA_MAILLAGE = OPER(
             validators=NoRepeat(),
             fr=tr("Choix de la transformation"),
         ),
-        b_NOS=BLOC(
-            condition="""equal_to("OPTION", 'TRIA6_7')  or  equal_to("OPTION", 'QUAD8_9')  or  equal_to("OPTION", 'SEG3_4')""",
-            PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
-            PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
-        ),
-        b_QTR=BLOC(
-            condition="""equal_to("OPTION", 'QUAD_TRIA3')""",
-            PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="MS"),
-            PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
-        ),
     ),
     RAFFINEMENT=FACT(
         statut="f",
@@ -150,8 +135,6 @@ CREA_MAILLAGE = OPER(
         NOM=SIMP(statut="o", typ="TXM"),
         GROUP_NO_1=SIMP(statut="o", typ=grno),
         GROUP_NO_2=SIMP(statut="o", typ=grno),
-        PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="MS"),
-        PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
     ),
     LINE_QUAD=FACT(
         statut="f",
@@ -159,8 +142,6 @@ CREA_MAILLAGE = OPER(
         regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
-        PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
     ),
     HEXA20_27=FACT(
         statut="f",
@@ -168,8 +149,6 @@ CREA_MAILLAGE = OPER(
         regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
-        PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
     ),
     PENTA15_18=FACT(
         statut="f",
@@ -177,22 +156,17 @@ CREA_MAILLAGE = OPER(
         regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
-        PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
     ),
     MODI_HHO=FACT(
         statut="f",
         fr=tr("Création maillage pour HHO"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NH"),
     ),
     COQUE_SOLIDE=FACT(
         statut="f",
         max="**",
         fr=tr("Création maillage pour COQUE_SOLIDE"),
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
-        PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
-        PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
         GROUP_MA_SURF=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
     QUAD_LINE=FACT(

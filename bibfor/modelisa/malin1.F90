@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*) :: motfaz, chargz, lisnoz
 !
@@ -62,7 +64,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
     character(len=8) :: noma, nomnoe, nomail
     character(len=16) :: momail, mogrma
     character(len=16) :: motfac
-    character(len=24) :: noeuma, mailma, grmama, lisnoe
+    character(len=24) :: grmama, lisnoe
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -96,8 +98,6 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
 !
     call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=noma)
 !
-    noeuma = noma//'.NOMNOE'
-    mailma = noma//'.NOMMAI'
     grmama = noma//'.GROUPEMA'
 !
     idimax = 0
@@ -119,8 +119,8 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
             call jelira(jexnom(grmama, trav1(igr)), 'LONUTI', nbmail)
             do m = 1, nbmail
                 numail = zi(jgro-1+m)
-                call jenuno(jexnum(mailma, numail), nomail)
-                call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
+                nomail = int_to_char8(numail, noma, 'MAILLE')
+                ibid = char8_to_int(nomail, noma, 'MAILLE')
                 call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
                 idim1 = idim1+n1
             end do
@@ -138,7 +138,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
         call getvem(noma, 'MAILLE', motfac, momail, iocc, &
                     nbma, trav2, nmai)
         do ima = 1, nmai
-            call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
+            ibid = char8_to_int(trav2(ima), noma, 'MAILLE')
             call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
             idim2 = idim2+n2
         end do
@@ -164,12 +164,12 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
             call jelira(jexnom(grmama, trav1(igr)), 'LONUTI', nbmail)
             do m = 1, nbmail
                 numail = zi(jgro-1+m)
-                call jenuno(jexnum(mailma, numail), nomail)
-                call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
+                nomail = int_to_char8(numail, noma, 'MAILLE')
+                ibid = char8_to_int(nomail, noma, 'MAILLE')
                 call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)
                 call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
                 do ino = 1, n1
-                    call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
+                    nomnoe = int_to_char8(zi(jdes+ino-1), noma, 'NOEUD')
                     indnoe = indnoe+1
                     zk8(jlist+indnoe-1) = nomnoe
                 end do
@@ -183,12 +183,12 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
         call getvtx(motfac, momail, iocc=iocc, nbval=nbma, vect=trav2, &
                     nbret=nmai)
         do ima = 1, nmai
-            call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
+            ibid = char8_to_int(trav2(ima), noma, 'MAILLE')
             call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)
-            call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
+            ibid = char8_to_int(trav2(ima), noma, 'MAILLE')
             call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
             do ino = 1, n2
-                call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
+                nomnoe = int_to_char8(zi(jdes+ino-1), noma, 'NOEUD')
                 indnoe = indnoe+1
                 zk8(jlist+indnoe-1) = nomnoe
             end do

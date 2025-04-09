@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -232,7 +232,7 @@ TEST_TABLE(
     VALE_REFE=5.350000e6,
     NOM_PARA="K1",
     TABLE=K1_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N5676"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="5676"),
 )
 
 TEST_TABLE(
@@ -242,7 +242,7 @@ TEST_TABLE(
     VALE_REFE=-1.1220000e7,
     NOM_PARA="K3",
     TABLE=K1_1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N5676"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="5676"),
 )
 
 TEST_TABLE(
@@ -252,7 +252,7 @@ TEST_TABLE(
     VALE_REFE=1.1710000e7,
     NOM_PARA="K1",
     TABLE=K1_2,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N5618"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="5618"),
 )
 
 TEST_TABLE(
@@ -262,7 +262,7 @@ TEST_TABLE(
     VALE_REFE=1.0168397032500001e7,
     NOM_PARA="K1",
     TABLE=K1_3,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N5618"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="5618"),
 )
 
 FIN()

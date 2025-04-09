@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 
 MAIL0 = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MAIL = CREA_MAILLAGE(MAILLAGE=MAIL0, MODI_HHO=_F(TOUT="OUI", PREF_NOEUD="NV"), INFO=1)
+MAIL = CREA_MAILLAGE(MAILLAGE=MAIL0, MODI_HHO=_F(TOUT="OUI"), INFO=1)
 
 MAT = DEFI_MATERIAU(
     ELAS=_F(E=200.0e3, NU=0.3), PRAGER=_F(C=20.0e3), ECRO_LINE=_F(D_SIGM_EPSI=40.0e3, SY=400.0)

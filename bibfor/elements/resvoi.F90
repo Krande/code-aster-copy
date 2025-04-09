@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine resvoi(moz, maz, chvoiz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: moz, maz, chvoiz
 ! ......................................................................
@@ -271,7 +272,9 @@ subroutine resvoi(moz, maz, chvoiz)
 !                         SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
                                                     igrelv = repe(2*(numav1-1)+1)
                                                     ielv = repe(2*(numav1-1)+2)
-                                                   if ((igrelv .eq. 0) .and. (ielv .eq. 0)) goto 803
+                                                    if ((igrelv .eq. 0) .and. (ielv .eq. 0)) then
+                                                        goto 803
+                                                    end if
 !
                                                     nbvois = nbvois+1
 !
@@ -317,11 +320,12 @@ subroutine resvoi(moz, maz, chvoiz)
 !
 803                             continue
                                 if (nbvois .gt. 1) then
-                                    call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
+                                    nomma = int_to_char8(ima)
                                     valk(1) = nomma
                                     vali(1) = ifa
                                     vali(2) = nbvois
-                                    call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, vali=vali)
+                                    call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, &
+                                                vali=vali)
                                     ASSERT(.false.)
                                 end if
 802                             continue
@@ -383,8 +387,10 @@ subroutine resvoi(moz, maz, chvoiz)
                                                 ino2 = ino+1
                                             end if
 !
-                                       call jelira(jexnum(coninv, zi(jad-1+ino2)), 'LONMAX', nbmav2)
-                                            call jeveuo(jexnum(coninv, zi(jad-1+ino2)), 'L', iamav2)
+                                            call jelira(jexnum(coninv, zi(jad-1+ino2)), 'LONMAX', &
+                                                        nbmav2)
+                                            call jeveuo(jexnum(coninv, zi(jad-1+ino2)), 'L', &
+                                                        iamav2)
 !
                                             do jma = 1, nbmav2
                                                 numav2 = zi(iamav2-1+jma)
@@ -395,7 +401,9 @@ subroutine resvoi(moz, maz, chvoiz)
 !                 SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
                                                     igrelv = repe(2*(numav1-1)+1)
                                                     ielv = repe(2*(numav1-1)+2)
-                                                   if ((igrelv .eq. 0) .and. (ielv .eq. 0)) goto 603
+                                                    if ((igrelv .eq. 0) .and. (ielv .eq. 0)) then
+                                                        goto 603
+                                                    end if
 !
                                                     nbvois = nbvois+1
 !
@@ -413,11 +421,12 @@ subroutine resvoi(moz, maz, chvoiz)
 603                                     continue
                                     end do
                                     if (nbvois .gt. 1) then
-                                        call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
+                                        nomma = int_to_char8(ima)
                                         valk(1) = nomma
                                         vali(1) = ino
                                         vali(2) = nbvois
-                                      call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, vali=vali)
+                                        call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, &
+                                                    vali=vali)
                                         ASSERT(.false.)
                                     end if
                                 end do

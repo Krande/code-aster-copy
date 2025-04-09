@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ MAILLAG0 = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAILLAG0, CREA_POI1=(_F(NOM_GROUP_MA="MASSE", GROUP_NO="MASSE"),))
 
-DEFI_GROUP(reuse=MAILLAGE, MAILLAGE=MAILLAGE, CREA_GROUP_NO=_F(NOM="P1P4", NOEUD=("P1", "P4")))
+DEFI_GROUP(reuse=MAILLAGE, MAILLAGE=MAILLAGE, CREA_GROUP_NO=_F(NOM="P1P4", NOEUD=("N1", "N4")))
 
 MODELE = AFFE_MODELE(
     MAILLAGE=MAILLAGE,
@@ -217,7 +217,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.600000000,
             VALE_REFE=0.59999999999999998,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -227,7 +227,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.400000000,
             VALE_REFE=0.40000000000000002,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -237,7 +237,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.400000000,
             VALE_REFE=0.40000000000000002,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -247,7 +247,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.600000000,
             VALE_REFE=0.59999999999999998,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
     )
 )
@@ -292,7 +292,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.013171600,
             VALE_REFE=0.013169999999999999,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -302,7 +302,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.012158400,
             VALE_REFE=0.012160000000000001,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -312,7 +312,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.012158400,
             VALE_REFE=0.012160000000000001,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -322,7 +322,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.013171600,
             VALE_REFE=0.013169999999999999,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
     )
 )
@@ -363,7 +363,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.013171600,
             VALE_REFE=0.013169999999999999,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -373,7 +373,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.012158400,
             VALE_REFE=0.012160000000000001,
-            NOEUD_CMP=("P1", "DX"),
+            NOEUD_CMP=("1", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -383,7 +383,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.012158400,
             VALE_REFE=0.012160000000000001,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -393,7 +393,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.013171600,
             VALE_REFE=0.013169999999999999,
-            NOEUD_CMP=("P4", "DX"),
+            NOEUD_CMP=("4", "DX"),
         ),
     )
 )

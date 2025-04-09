@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -104,18 +104,18 @@ MA1 = DEFI_GROUP(
     reuse=MA1,
     MAILLAGE=MA1,
     CREA_GROUP_NO=(
-        _F(NOM="NS2", NOEUD="NS2"),
-        _F(NOM="NS12", NOEUD="NS12"),
-        _F(NOM="NS7", NOEUD="NS7"),
-        _F(NOM="NS3", NOEUD="NS3"),
-        _F(NOM="NS11", NOEUD="NS11"),
-        _F(NOM="NS4", NOEUD="NS4"),
-        _F(NOM="NS8", NOEUD="NS8"),
-        _F(NOM="NS9", NOEUD="NS9"),
-        _F(NOM="NS1", NOEUD="NS1"),
-        _F(NOM="NS5", NOEUD="NS5"),
-        _F(NOM="NS6", NOEUD="NS6"),
-        _F(NOM="NS10", NOEUD="NS10"),
+        _F(NOM="NS2", NOEUD="N10"),
+        _F(NOM="NS12", NOEUD="N20"),
+        _F(NOM="NS7", NOEUD="N15"),
+        _F(NOM="NS3", NOEUD="N11"),
+        _F(NOM="NS11", NOEUD="N19"),
+        _F(NOM="NS4", NOEUD="N12"),
+        _F(NOM="NS8", NOEUD="N16"),
+        _F(NOM="NS9", NOEUD="N17"),
+        _F(NOM="NS1", NOEUD="N9"),
+        _F(NOM="NS5", NOEUD="N13"),
+        _F(NOM="NS6", NOEUD="N14"),
+        _F(NOM="NS10", NOEUD="N18"),
     ),
 )
 

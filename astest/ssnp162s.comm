@@ -34,7 +34,7 @@ MA = LIRE_MAILLAGE(FORMAT="ASTER")
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_NO=(_F(NOEUD=("NO2", "NO4"), NOM="DROITE"), _F(NOEUD=("NO1", "NO3"), NOM="GAUCHE")),
+    CREA_GROUP_NO=(_F(NOEUD=("N2", "N4"), NOM="DROITE"), _F(NOEUD=("N1", "N3"), NOM="GAUCHE")),
 )
 
 ### >>>>>>>>>>>>>>>>>

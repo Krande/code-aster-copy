@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
@@ -44,6 +45,8 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: iocc, nbmc, nbma
     character(len=*) :: typlig
@@ -95,12 +98,12 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
     integer :: jmail, jtypm, iatyma
     integer :: ier, im, n1, n2, n3, nid, nig, nbnot
     integer :: nunori, trouv, ibid, in, nd
-    integer :: existe, iret, ima
+    integer :: iret, ima, nbmato
     integer :: jcour2
     character(len=8) :: k8b, nomma, typmp
     character(len=16) :: k16bid, nomcmd, orig
-    character(len=24) :: conec, typp, nommai, nomnoe, mesmai, valk(2), nogrp
-    aster_logical :: bug, erreur
+    character(len=24) :: conec, typp, mesmai, valk(2), nogrp
+    aster_logical :: bug, erreur, lexist
     integer, pointer :: noeud_apparies(:) => null()
     integer, pointer :: noeuds_extrem(:) => null()
     integer, pointer :: compteur(:) => null()
@@ -116,8 +119,6 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
     mesmai = '&&CGNOOR.MES_MAILLES'
     conec = nomail//'.CONNEX         '
     typp = nomail//'.TYPMAIL        '
-    nommai = nomail//'.NOMMAI         '
-    nomnoe = nomail//'.NOMNOE         '
     call dismoi('NB_NO_MAILLA', nomail, 'MAILLAGE', repi=nbnot)
     call jeveuo(typp, 'L', iatyma)
 !
@@ -136,7 +137,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
     call jeveuo(mesmai, 'L', jmail)
     call wkvect(mafour, 'V V I', nbma, jcour2)
     do im = 1, nbma
-        call jenonu(jexnom(nommai, zk8(jmail-1+im)), ima)
+        ima = char8_to_int(zk8(jmail-1+im))
         zi(jcour2-1+im) = ima
     end do
 !
@@ -147,14 +148,15 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 !     ------------------------------------------------------------------
     typmp = ' '
     ier = 0
+    call jelira(typp, 'LONMAX', nbmato)
     do im = 1, nbma
         nomma = zk8(jmail-1+im)
-        call jeexin(jexnom(nommai, nomma), existe)
-        if (existe .eq. 0) then
+        lexist = char8_to_int(nomma) .gt. nbmato
+        if (lexist) then
             ier = ier+1
             call utmess('E', 'ELEMENTS5_19', sk=nomma, si=iocc)
         else
-            call jenonu(jexnom(nommai, nomma), ibid)
+            ibid = char8_to_int(nomma)
             jtypm = iatyma-1+ibid
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
             if (typm(1:3) .ne. 'SEG') then
@@ -283,7 +285,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 !   --- verification du noeud extremite :
 !   ------------------------------------------------------------------
     if (ndextr .ne. ' ') then
-        call jenonu(jexnom(nomnoe, ndextr), nunori)
+        nunori = char8_to_int(ndextr)
 !
 !       ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
         trouv = 0
@@ -314,7 +316,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 !   --- Verification du noeud origine :
 !   ------------------------------------------------------------------
     if (ndorig .ne. ' ') then
-        call jenonu(jexnom(nomnoe, ndorig), nunori)
+        nunori = char8_to_int(ndorig)
 !
 !       ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
         trouv = 0
@@ -391,7 +393,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 
 100     continue
 !
-        call jenuno(jexnum(nomnoe, nunori), ndorig)
+        ndorig = int_to_char8(nunori)
         call utmess('I', 'ELEMENTS_72', sk=ndorig)
 !
         AS_DEALLOCATE(vi=noeud_apparies)

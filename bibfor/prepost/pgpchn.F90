@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine pgpchn(sd_pgp, iobs)
 #include "asterfort/rsexch.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/int_to_char8.h"
 
 !   ====================================================================
 !   = 0 =   Variable declarations and initialization
@@ -131,7 +132,7 @@ subroutine pgpchn(sd_pgp, iobs)
                     end if
                 end if
                 if (imod .eq. 1) then
-                    call jenuno(jexnum(maillage//'.NOMNOE', inod), nomnod)
+                    nomnod = int_to_char8(inod)
                     rsup1(dec2+ino) = nomnod
                     rcomp(dec2+ino) = lcmp(icmp)
                     indic(dec2+ino) = 1

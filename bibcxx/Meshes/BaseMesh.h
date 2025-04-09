@@ -4,7 +4,7 @@
  * @file BaseMesh.h
  * @brief Fichier entete de la classe BaseMesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -49,7 +49,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     static unsigned long int _node_idx;
 
   public:
-    typedef MeshExplorer< CellsIteratorFromConnectivity, const JeveuxCollectionLong &,
+    typedef MeshExplorer< CellsIteratorFromConnectivity, const JeveuxContiguousCollectionLong &,
                           const JeveuxVectorLong & >
         ConnectivityMeshExplorer;
 
@@ -57,8 +57,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
     typedef JeveuxCollection< ASTERINTEGER, NamesMapChar24 > JeveuxCollectionLongNamePtr;
     /** @brief Objet Jeveux '.DIME' */
     JeveuxVectorLong _dimensionInformations;
-    /** @brief Pointeur de nom Jeveux '.NOMNOE' */
-    NamesMapChar8 _nameOfNodes;
     /** @brief Champ aux noeuds '.COORDO' */
     MeshCoordinatesFieldPtr _coordinates;
     /** @brief Pointeur de nom Jeveux '.PTRNOMNOE' */
@@ -66,9 +64,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /** @brief Collection Jeveux '.GROUPENO' */
     JeveuxCollectionLongNamePtr _groupsOfNodes;
     /** @brief Collection Jeveux '.CONNEX' */
-    JeveuxCollectionLong _connectivity;
-    /** @brief Pointeur de nom Jeveux '.NOMMAIL' */
-    NamesMapChar8 _nameOfCells;
+    JeveuxContiguousCollectionLong _connectivity;
     /** @brief Objet Jeveux '.TYPMAIL' */
     JeveuxVectorLong _cellsType;
     /** @brief Pointeur de nom Jeveux '.PTRNOMMAI' */
@@ -134,7 +130,12 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Return the connectivity
      */
-    const JeveuxCollectionLong getConnectivity() const { return _connectivity; }
+    const JeveuxContiguousCollectionLong getConnectivity() const { return _connectivity; }
+
+    /**
+     * @brief Return cell type vector
+     */
+    const JeveuxVectorLong getCellTypeVector() const { return _cellsType; }
 
     /**
      * @brief Return the connectivity, node zero based
@@ -193,17 +194,9 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     ASTERINTEGER getNumberOfCells() const;
 
-    /**
-     * @brief Get all the names of nodes
-     * @return NamesMapChar8 _nameOfNodes
-     */
-    const NamesMapChar8 &getNameOfNodesMap() const { return _nameOfNodes; };
+    virtual std::string getNodeName( const ASTERINTEGER &index ) const;
 
-    const NamesMapChar8 &getCellNameMap() const { return _nameOfCells; };
-
-    std::string getNodeName( const ASTERINTEGER &index ) const;
-
-    std::string getCellName( const ASTERINTEGER &index ) const;
+    virtual std::string getCellName( const ASTERINTEGER &index ) const;
 
     ASTERINTEGER getCellType( const ASTERINTEGER &index ) const;
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
+subroutine sdmail(nomu, cooval, coodsc, &
                   grpnoe, gpptnn, grpmai, gpptnm, &
                   connex, titre, typmai, adapma)
     implicit none
@@ -31,8 +31,6 @@ subroutine sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
 !
 !     CONSTRUCTION DES NOMS JEVEUX POUR L OBJET-MAILLAGE
 !
-    nommai = nomu//'.NOMMAI         '
-    nomnoe = nomu//'.NOMNOE         '
     cooval = nomu//'.COORDO    .VALE'
     coodsc = nomu//'.COORDO    .DESC'
     grpnoe = nomu//'.GROUPENO       '

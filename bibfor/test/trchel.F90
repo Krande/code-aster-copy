@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine trchel(ific, nocc)
 #include "asterfort/utnono.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
     integer, intent(in) :: ific
     integer, intent(in) :: nocc
 !     COMMANDE:  TEST_RESU
@@ -289,7 +290,7 @@ subroutine trchel(ific, nocc)
                     call jelira(jexnom(nomma//'.GROUPEMA', nogrma), 'LONUTI', nbmag)
                     if (nbmag .gt. 1) call utmess('F', 'TEST0_20', sk=nogrma, si=nbmag)
                     call jeveuo(jexnom(nomma//'.GROUPEMA', nogrma), 'L', imigma)
-                    call jenuno(jexnum(nomma//'.NOMMAI', zi(imigma)), nomail)
+                    nomail = int_to_char8(zi(imigma))
                 else
                     ASSERT(l_parallel_mesh)
                     call getvtx('RESU', 'GROUP_MA', iocc=iocc, nbval=1, scal=nogrma, &

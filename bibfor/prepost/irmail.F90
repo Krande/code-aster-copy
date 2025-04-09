@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,6 +54,7 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 !---------------- ARGUMENTS --------------------------------------------
     integer             :: versio, infmai
@@ -130,7 +131,7 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
     end if
 !
 !     --- RECUPERATION DU NOMBRE DE MAILLES
-    call jelira(noma//'.NOMMAI', 'NOMUTI', nbmai)
+    call jelira(noma//'.TYPMAIL', 'LONMAX', nbmai)
 !
 !     --- NBNOE = NOMBRE DE NOEUDS DU MAILLAGE (RECUPERATION VALEUR)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
@@ -165,11 +166,11 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
     call wkvect('&&IRMAIL.NOMNOE', 'V V K8', nbnoe, jnonoe)
 !       - RECUPERATION DES NOMS DES MAILLES
     do ima = 1, nbmai
-        call jenuno(jexnum(noma//'.NOMMAI', ima), zk8(jnomai-1+ima))
+        zk8(jnomai-1+ima) = int_to_char8(ima)
     end do
 !       - RECUPERATION DES NOMS DES NOEUDS
     do ino = 1, nbnoe
-        call jenuno(jexnum(noma//'.NOMNOE', ino), zk8(jnonoe-1+ino))
+        zk8(jnonoe-1+ino) = int_to_char8(ino)
     end do
 !       - TEST EXISTENCE DE GROUPES DE NOEUDS
     if (lfu) then

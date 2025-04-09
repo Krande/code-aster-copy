@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,8 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/locglo.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
@@ -228,13 +230,13 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
             call jeveuo(jexnum(mesh1//'.CONNEX', elems(im)), 'L', jmama)
             call jelira(jexnum(mesh1//'.CONNEX', elems(im)), 'LONMAX', nbnma)
             if (nbnma .ne. 2) then
-                call jenuno(jexnum(mesh1//'.NOMMAI', elems(im)), nomma)
+                nomma = int_to_char8(elems(im))
                 valk(1) = nomma
                 valk(2) = 'SEG2'
                 call utmess('F', 'ALGORITH13_39', nk=2, valk=valk)
             end if
-            call jenuno(jexnum(mesh1//'.NOMNOE', zi(jmama)), no1_name)
-            call jenuno(jexnum(mesh1//'.NOMNOE', zi(jmama+1)), no2_name)
+            no1_name = int_to_char8(zi(jmama))
+            no2_name = int_to_char8(zi(jmama+1))
             call nlsav(sd_nl, _NO1_NAME, 1, iocc=ind, kscal=no1_name)
             call nlsav(sd_nl, _NO2_NAME, 1, iocc=ind, kscal=no2_name)
 
@@ -327,7 +329,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
             call jeveuo(mesh1//'.COORDO    .VALE', 'L', vr=vale)
             call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=no1_name)
-            call jenonu(jexnom(mesh1//'.NOMNOE', no1_name), ino1)
+            ino1 = char8_to_int(no1_name)
             ind1 = 1+3*(ino1-1)
             ind2 = ind1+2
             call nlsav(sd_nl, _COOR_NO1, 3, iocc=i, rvect=vale(ind1:ind2))
@@ -336,7 +338,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
                     call jeveuo(mesh2//'.COORDO    .VALE', 'L', vr=vale)
                 end if
                 call nlget(sd_nl, _NO2_NAME, iocc=i, kscal=no2_name)
-                call jenonu(jexnom(mesh2//'.NOMNOE', no2_name), ino2)
+                ino2 = char8_to_int(no2_name)
                 ind1 = 1+3*(ino2-1)
                 ind2 = ind1+2
                 call nlsav(sd_nl, _COOR_NO2, 3, iocc=i, rvect=vale(ind1:ind2))
@@ -344,7 +346,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         else if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
             call jeveuo(mesh1//'.COORDO    .VALE', 'L', jcoor)
             call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=no1_name)
-            call jenonu(jexnom(mesh1//'.NOMNOE', no1_name), ino1)
+            ino1 = char8_to_int(no1_name)
             call orient(mdgene, sst1, jcoor, ino1, coor, 1)
             call nlsav(sd_nl, _COOR_NO1, 3, iocc=i, rvect=coor)
             if (lnoeu2) then
@@ -352,7 +354,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
                     call jeveuo(mesh2//'.COORDO    .VALE', 'L', jcoor)
                 end if
                 call nlget(sd_nl, _NO2_NAME, iocc=i, kscal=no2_name)
-                call jenonu(jexnom(mesh2//'.NOMNOE', no2_name), ino2)
+                ino2 = char8_to_int(no2_name)
                 call orient(mdgene, sst2, jcoor, ino2, coor, 1)
                 call nlsav(sd_nl, _COOR_NO2, 3, iocc=i, rvect=coor)
             end if

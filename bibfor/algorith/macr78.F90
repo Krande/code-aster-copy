@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,8 @@ subroutine macr78(nomres, trange, typres)
 #include "asterfort/vtcreb.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: nomres
     character(len=16) :: typres
@@ -170,7 +172,7 @@ subroutine macr78(nomres, trange, typres)
     end if
 !
     do i = 1, nbtdyn
-        call jenuno(jexnum(mailla//'.NOMNOE', lino(i)), nomnol)
+        nomnol = int_to_char8(lino(i))
         do j = 1, nec
             noecmp(1+2*nec*(i-1)+2*j-2) = nomnol
             noecmp(1+2*nec*(i-1)+2*j-1) = nomcmp(j)
@@ -247,7 +249,7 @@ subroutine macr78(nomres, trange, typres)
             call jeveuo(nomcha, 'L', ivale)
             do im = 1, nbmode
                 nomnol = noecmp(1+2*im-2)
-                call jenonu(jexnom(maya//'.NOMNOE', nomnol), inoe)
+                inoe = char8_to_int(nomnol)
                 if (noecmp(1+2*im-1) .eq. 'DX') icmp = 1
                 if (noecmp(1+2*im-1) .eq. 'DY') icmp = 2
                 if (noecmp(1+2*im-1) .eq. 'DZ') icmp = 3

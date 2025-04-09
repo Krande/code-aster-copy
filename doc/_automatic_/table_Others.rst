@@ -54,6 +54,7 @@
    * - :py:class:`~code_aster.Objects.MeshConnectionGraph`
    * - :py:class:`~code_aster.Objects.MeshEntity`
    * - :py:class:`~code_aster.Objects.AllMeshEntities`
+   * - :py:class:`~code_aster.Objects.MeshReader`
    * - :py:class:`~code_aster.Objects.ModelSplitingMethod`
    * - :py:class:`~code_aster.Objects.Modelings`
    * - :py:class:`~code_aster.Objects.Node`

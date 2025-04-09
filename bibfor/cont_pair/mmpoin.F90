@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine mmpoin(mesh, ds_contact)
 #include "asterfort/jerazo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -125,7 +126,7 @@ subroutine mmpoin(mesh, ds_contact)
 !
             elem_slav_indx = jdecme+i_elem_slav
             call cfnumm(ds_contact%sdcont_defi, elem_slav_indx, elem_slav_nume)
-            call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
+            elem_slav_name = int_to_char8(elem_slav_nume)
 !
 ! --------- Get coordinates of slave element
 !

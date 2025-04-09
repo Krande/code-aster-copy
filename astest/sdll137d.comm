@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -166,6 +166,7 @@ MODMESU = LIRE_RESU(
     ),
     TOUT_ORDRE="OUI",
 )
+MAILEXP.addNodeLabels(["N3", "N5", "N7", "N9"])
 
 # TRI EVENTUEL
 
@@ -179,7 +180,7 @@ MODEIDE = EXTR_MODE(FILTRE_MODE=_F(MODE=MODMESU, NUME_MODE=_nume_mode))
 # ********************************
 
 MAILSUP = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
-
+MAILSUP.addNodeLabels(["NO1", "NO2", "NO3", "NO4", "NO5", "NO6", "NO7", "NO8", "NO9", "NO10"])
 MODLSUP = AFFE_MODELE(
     MAILLAGE=MAILSUP,
     AFFE=(_F(GROUP_MA=("POUTRE", "VISUAL"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),),
@@ -241,7 +242,7 @@ MODESUP = CALC_MODES(
 
 # Maillage modification
 MAILX = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=24)
-
+MAILX.addNodeLabels(["NO7", "NO8", "NO9"])
 # ********************************
 # CREATION MODELE NUMERIQUE COMPLET : SUPPORT + MODIF
 # ********************************
@@ -784,7 +785,7 @@ DYHDIR = DYNA_VIBRA(
     EXCIT=(_F(COEF_MULT_C=("RI", 1.0, 0.0), CHARGE=CHDIR),),
 )
 
-DY_PA = RECU_FONCTION(RESULTAT=DYHDIR, NOM_CHAM="DEPL", NOM_CMP="DY", NOEUD="NO3", INTERPOL="LIN")
+DY_PA = RECU_FONCTION(RESULTAT=DYHDIR, NOM_CHAM="DEPL", NOM_CMP="DY", NOEUD="1", INTERPOL="LIN")
 
 IMPR_FONCTION(FORMAT="AGRAF", UNITE=25, COURBE=(_F(FONCTION=DY_PA),))
 

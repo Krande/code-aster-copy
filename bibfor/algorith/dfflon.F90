@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/char8_to_int.h"
     real(kind=8) :: geom(*), d
     integer :: inoff, nbnoff
     character(len=8) :: nonoff(*), typfon
@@ -71,16 +72,16 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff, &
 !     CAS PARTICULIER DU PREMIER NOEUD DU FOND DE FISSURE
     if (inoff .eq. 1) then
 !
-        call jenonu(jexnom(nomnoe, nonoff(inoff)), nunoi)
-        call jenonu(jexnom(nomnoe, nonoff(inoff+1)), nunoj)
+        nunoi = char8_to_int(nonoff(inoff))
+        nunoj = char8_to_int(nonoff(inoff+1))
 !
         dij = dis2no(geom, nunoi, nunoj)
         d = dij
 !
         if (typfon .eq. 'FERME') then
 !         ATTENTION, LE DERNIER NOEUD (EN POSITION NBNOFF) = LE 1ER
-            call jenonu(jexnom(nomnoe, nonoff(nbnoff)), nunoi)
-            call jenonu(jexnom(nomnoe, nonoff(nbnoff-1)), nunoh)
+            nunoi = char8_to_int(nonoff(nbnoff))
+            nunoh = char8_to_int(nonoff(nbnoff-1))
             dih = dis2no(geom, nunoi, nunoh)
             d = min(dij, dih)
         end if
@@ -88,16 +89,16 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff, &
 !     CAS PARTICULIER DU DENIER NOEUD DU FOND DE FISSURE
     else if (inoff .eq. nbnoff) then
 !
-        call jenonu(jexnom(nomnoe, nonoff(inoff)), nunoi)
-        call jenonu(jexnom(nomnoe, nonoff(inoff-1)), nunoh)
+        nunoi = char8_to_int(nonoff(inoff))
+        nunoh = char8_to_int(nonoff(inoff-1))
 !
         dih = dis2no(geom, nunoi, nunoh)
         d = dih
 !
         if (typfon .eq. 'FERME') then
 !         ATTENTION, LE PREMIER NOEUD = LE DERNIER
-            call jenonu(jexnom(nomnoe, nonoff(1)), nunoi)
-            call jenonu(jexnom(nomnoe, nonoff(2)), nunoj)
+            nunoi = char8_to_int(nonoff(1))
+            nunoj = char8_to_int(nonoff(2))
             dij = dis2no(geom, nunoi, nunoj)
             d = min(dij, dih)
         end if
@@ -105,9 +106,9 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff, &
 !     CAS GENERAL
     else
 !
-        call jenonu(jexnom(nomnoe, nonoff(inoff-1)), nunoh)
-        call jenonu(jexnom(nomnoe, nonoff(inoff)), nunoi)
-        call jenonu(jexnom(nomnoe, nonoff(inoff+1)), nunoj)
+        nunoh = char8_to_int(nonoff(inoff-1))
+        nunoi = char8_to_int(nonoff(inoff))
+        nunoj = char8_to_int(nonoff(inoff+1))
 !
         dih = dis2no(geom, nunoi, nunoh)
         dij = dis2no(geom, nunoi, nunoj)

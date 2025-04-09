@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -121,7 +121,7 @@ INTEGR3.INFO_NONL()
 FX_RELA3 = RECU_FONCTION(
     RESU_GENE=INTEGR3,
     GROUP_NO_CHOC="CENTER",
-    INTITULE="N03     DX      " + FX_REL.getName(),
+    INTITULE="3       DX      " + FX_REL.getName(),
     PARA_X="INST",
     PARA_Y="VINT2",
 )
@@ -161,7 +161,7 @@ DYN_LINA = DYNA_LINE(
 FX_RELAA = RECU_FONCTION(
     RESU_GENE=INTEGR3A,
     GROUP_NO_CHOC="CENTER",
-    INTITULE="N03     DX      " + FX_REL.getName(),
+    INTITULE="3       DX      " + FX_REL.getName(),
     PARA_X="INST",
     PARA_Y="VINT2",
 )

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,12 +59,13 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno, &
 #include "asterfort/lexseg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: noma, nomnoa
     integer :: nbn, nuno(*), nbnfen, noefen(*)
     real(kind=8) :: long, diax(*), disfen(*)
 !
-    character(len=24) :: connex, typmai, nnoema, nommai
+    character(len=24) :: connex, typmai
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -79,8 +80,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno, &
 !
 ! --- 1.EXTRACTION DU NUMERO DU NOEUD D'APPLICATION DE L'EXCITATION
 !
-    nnoema = noma//'.NOMNOE'
-    call jenonu(jexnom(nnoema, nomnoa), nunoap)
+    nunoap = char8_to_int(nomnoa)
     if (nunoap .eq. 0) then
         call utmess('F', 'MODELISA4_53')
     end if
@@ -133,8 +133,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno, &
 !
     connex = noma//'.CONNEX'
     typmai = noma//'.TYPMAIL'
-    nommai = noma//'.NOMMAI'
-    call jelira(nommai, 'NOMUTI', nbrma)
+    call jelira(typmai, 'LONMAX', nbrma)
 !
 ! --- 5.DETERMINATION DE L'ENSEMBLE DES NOEUDS APPARTENANT A LA
 ! ---   DEMI-FENETRE EXCITEE EN AMONT DU NOEUD CENTRAL D'APPLICATION

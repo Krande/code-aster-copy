@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
 #include "asterfort/rotati.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
 !
@@ -214,7 +215,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
         do k1 = 7, nbcmp
             if (deco(k1) .eq. 1) then
                 noer = zi(lnoeu1+i1-1)
-                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                nomnoe = int_to_char8(noer)
                 valk(1) = zk8(jnocmp-1+k1)
                 valk(2) = nomnoe
                 call utmess('A', 'ALGORITH12_35', nk=2, valk=valk)

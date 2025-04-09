@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -243,7 +243,7 @@ TEST_TABLE(
     NOM_PARA="G",
     TABLE=gtheta,
     FILTRE=(
-        _F(NOM_PARA="NOEUD", VALE_K="N6375"),
+        _F(NOM_PARA="NOEUD", VALE_K="6375"),
         _F(PRECISION=9.9999999999999995e-07, NOM_PARA="INST", VALE=3.0),
     ),
 )

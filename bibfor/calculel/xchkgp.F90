@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine xchkgp(model)
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: model
 ! ------------------------------------------------------------------
@@ -210,7 +211,7 @@ subroutine xchkgp(model)
 !                   dépasse le nombre de points de Gauss de la famille XFEM
                     if (npg .gt. npgfam) then
 !                      récupération du nom de la maille
-                        call jenuno(jexnum(ma//'.NOMMAI', ima), nomail)
+                        nomail = int_to_char8(ima)
 !
                         vali(1) = npgfam
                         vali(2) = npg

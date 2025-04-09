@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj, &
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: nomma, nomobj
     character(len=24) :: nomgrp
@@ -58,7 +59,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj, &
     integer :: iret1, nbno, iad
     character(len=1) :: typm
     character(len=8) :: knbno
-    character(len=16) :: typgrp, nom
+    character(len=16) :: typgrp
 !
     call jemarq()
     iret = 10
@@ -67,10 +68,8 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj, &
 !
     if (type(1:5) .eq. 'NOEUD') then
         typgrp = '.GROUPENO       '
-        nom = '.NOMNOE         '
     else if (type(1:6) .eq. 'MAILLE') then
         typgrp = '.GROUPEMA       '
-        nom = '.NOMMAI         '
     else
         goto 999
     end if
@@ -111,7 +110,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj, &
     end if
 !
     call jeveuo(jexnom(nomma//typgrp, nomgrp), 'L', iad)
-    call jenuno(jexnum(nomma//nom, zi(iad)), nomobj)
+    nomobj = int_to_char8(zi(iad))
 !
 999 continue
     call jedema()

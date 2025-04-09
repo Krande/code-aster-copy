@@ -460,18 +460,9 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         ( *values )[3 * renumNodesLocNew[i] + 2] = coordinatesGathered[3 * i + 2];
     }
 
-    /* Add nodes */
-    _nameOfNodes->allocate( totalNumberOfNodes );
-    for ( auto i = 0; i < totalNumberOfNodes; ++i ) {
-        std::stringstream sstream;
-        const ASTERINTEGER newNum = renumNodesLocNew[i];
-        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << newNum + 1;
-        _nameOfNodes->add( newNum, std::string( "N" + sstream.str() ) );
-    }
-
     /* Add group of nodes */
     if ( groupsOfNodesToFind.size() > 0 ) {
-        _groupsOfNodes->allocateSparseNamed( groupsOfNodesToFind.size() );
+        _groupsOfNodes->allocate( groupsOfNodesToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfNodesToFind ) {
             const auto &toCopy = groupsOfNodesGathered[nameOfTheGroup];
@@ -495,15 +486,11 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     AS_ASSERT( totalNumberOfCells > 0 );
     _cellsLocalNumbering->allocate( totalNumberOfCells );
     _cellsOwner->allocate( totalNumberOfCells );
-    _nameOfCells->allocate( totalNumberOfCells );
     _cellsType->allocate( totalNumberOfCells );
-    _connectivity->allocateContiguousNumbered( totalNumberOfCells, connectivitiesGathered.size() );
+    _connectivity->allocate( totalNumberOfCells, connectivitiesGathered.size() );
 
     ASTERINTEGER offset = 0;
     for ( auto i = 0; i < totalNumberOfCells; ++i ) {
-        std::stringstream sstream;
-        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i + 1;
-        _nameOfCells->add( i, std::string( "M" + sstream.str() ) );
         ( *_cellsType )[i] = connectivitiesGathered[offset++];
         ( *_cellsLocalNumbering )[i] = connectivitiesGathered[offset++] + 1;
         const auto globCellId = connectivitiesGathered[offset++];
@@ -528,7 +515,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     /* Add group of cells */
     if ( groupsOfCellsToFind.size() > 0 ) {
-        _groupsOfCells->allocateSparseNamed( groupsOfCellsToFind.size() );
+        _groupsOfCells->allocate( groupsOfCellsToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfCellsToFind ) {
             const auto &toCopy = groupsOfCellsGathered[nameOfTheGroup];

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ MAILLAGE = DEFI_GROUP(
         _F(NOM="MROCHE", CRIT_NOEUD="MILIEU", GROUP_MA="ROCHE"),
         _F(NOM="SBC", CRIT_NOEUD="SOMMET", GROUP_MA="BC"),
     ),
-    CREA_GROUP_MA=(_F(NOM="M1", MAILLE="M1"),),
+    CREA_GROUP_MA=(_F(NOM="M1", MAILLE="M5"),),
 )
 
 

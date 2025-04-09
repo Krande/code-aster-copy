@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ sec = 1.0
 MA = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
 
 MA = DEFI_GROUP(
-    reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=(_F(NOM="N17", NOEUD="N17"), _F(NOM="N6", NOEUD="N6"))
+    reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=(_F(NOM="N17", NOEUD="N8"), _F(NOM="N6", NOEUD="N5"))
 )
 
 BETON = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu))

@@ -763,6 +763,20 @@ class Mesh(BaseMesh):
         2. __init__(self: libaster.Mesh, arg0: str) -> None
         """
 
+    def addCellLabels(self, cell_labels):
+        """Add cell labels.
+
+        Arguments:
+            cell_labels (list) : Cell labels.
+        """
+
+    def addNodeLabels(self, node_labels):
+        """Add node labels.
+
+        Arguments:
+            node_labels (list) : Node labels.
+        """
+
     def convertToBiQuadratic(self, info=1):
         """Convert the mesh to a bi-quadratic one.
         For cells that have no bi-quadratic version, the quadratic version is used.
@@ -17406,6 +17420,56 @@ class MedVector:
 
     def size(self):
         """Get vector size, ie: number of elements (cells or nodes)"""
+
+
+# class MeshReader in libaster
+
+
+class MeshReader:
+    pass
+
+    # Method resolution order:
+    #     MeshReader
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def __pickling_disabled__(self):
+        pass
+
+    def readIncompleteMeshFromMedFile(self, mesh, path, mesh_name="", verbosity=0):
+        """Open med file
+
+        Arguments:
+            IncompleteMesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+            verbosity (int): verbosity (optional)
+        """
+
+    def readMeshFromMedFile(self, mesh, path, mesh_name="", verbosity=0):
+        """Open med file
+
+        Arguments:
+            Mesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+            verbosity (int): verbosity (optional)
+        """
+
+    def readParallelMeshFromMedFile(self, mesh, path, mesh_name="", verbosity=0):
+        """Open med file
+
+        Arguments:
+            ParallelMesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+            verbosity (int): verbosity (optional)
+        """
 
 
 # class FieldCharacteristics in libaster

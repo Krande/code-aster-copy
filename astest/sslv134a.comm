@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=GLOC0,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N373"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="373"),
 )
 
 TEST_TABLE(
@@ -91,7 +91,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=GLOC0,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2670"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="2670"),
 )
 
 TEST_TABLE(
@@ -101,7 +101,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=GLOC0,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N345"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="345"),
 )
 
 TEST_TABLE(
@@ -111,7 +111,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=GLOC0,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N277"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="277"),
 )
 
 TEST_TABLE(
@@ -224,7 +224,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=GLOC0_C,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N373"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="373"),
 )
 
 TEST_TABLE(
@@ -234,7 +234,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=GLOC0_C,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2670"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="2670"),
 )
 
 TEST_TABLE(
@@ -244,7 +244,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=GLOC0_C,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N345"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="345"),
 )
 
 TEST_TABLE(
@@ -254,7 +254,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=GLOC0_C,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N277"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="277"),
 )
 
 TEST_TABLE(
@@ -350,7 +350,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=TABL_K,
-    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N373"), _F(NOM_PARA="INST", VALE=0.0)),
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="373"), _F(NOM_PARA="INST", VALE=0.0)),
 )
 
 TEST_TABLE(
@@ -360,7 +360,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=TABL_K,
-    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N2670"), _F(NOM_PARA="INST", VALE=0.0)),
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="2670"), _F(NOM_PARA="INST", VALE=0.0)),
 )
 
 TEST_TABLE(
@@ -370,7 +370,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=TABL_K,
-    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N345"), _F(NOM_PARA="INST", VALE=0.0)),
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="345"), _F(NOM_PARA="INST", VALE=0.0)),
 )
 
 TEST_TABLE(
@@ -380,7 +380,7 @@ TEST_TABLE(
     VALE_REFE=11.58648,
     NOM_PARA="G",
     TABLE=TABL_K,
-    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N277"), _F(NOM_PARA="INST", VALE=0.0)),
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="277"), _F(NOM_PARA="INST", VALE=0.0)),
 )
 
 FIN()

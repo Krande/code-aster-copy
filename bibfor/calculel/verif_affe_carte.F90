@@ -42,6 +42,7 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
 #include "asterfort/etenca.h"
 #include "asterfort/jeexin.h"
 #include "asterc/r8prem.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=19), intent(in) :: ligrmo
     character(len=19), intent(in) :: carte
@@ -323,7 +324,7 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
             do k = 1, min(5, nbmapb)
                 valk = ' '
                 ima = list_ma_pb(k)
-                call jenuno(jexnum(mailla//'.NOMMAI', ima), nommai)
+                nommai = int_to_char8(ima)
                 valk(1) = nommai
 
                 call list_grma(mailla, ima, 4, lgrma, nbgrma)

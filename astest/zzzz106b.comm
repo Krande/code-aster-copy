@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ MA2 = DEFI_GROUP(
     MAILLAGE=MA2,
     CREA_GROUP_NO=_F(
         NOM="GXXXXXX_GPNS",
-        NOEUD=("N10", "N11", "N25", "N2", "N3", "N9", "N1", "NS44", "NS45", "NS46", "NS32", "NS47"),
+        NOEUD=("N10", "N11", "N25", "N2", "N3", "N9", "N1", "N69", "N70", "N71", "N57", "N72"),
     ),
 )
 
@@ -121,10 +121,10 @@ DEFI_FICHIER(ACTION="LIBERER", UNITE=38)
 TEST_FICHIER(
     FICHIER="fort.38",
     NB_VALE_I=755,
-    VALE_CALC_I=10779,
+    VALE_CALC_I=17281,
     NB_VALE=213,
     VALE_CALC=1.0600500000e03,
-    VALE_CALC_K="a12acfb12f91cab65e65a7bd00281486",
+    VALE_CALC_K="f2a4de61a35df19b294298cb62ca68ed",
     EXPR_IGNORE=("ASTER"),
 )
 

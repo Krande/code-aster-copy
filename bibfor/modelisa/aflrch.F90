@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 #include "asterfort/jexatr.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/agdual.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: lisrez
     character(len=*), intent(in) :: chargz
@@ -350,7 +351,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
         end if
         do ino = 1, nbterm
             nomnoe = zk8(idnoeu+ino-1)
-            call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
+            in = char8_to_int(nomnoe, noma, "NOEUD")
 !
             cmp = zk8(iddl+ino-1)
 !

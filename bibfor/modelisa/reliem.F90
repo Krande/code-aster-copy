@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,8 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 #include "jeveux.h"
 !
     integer :: iocc, nbmocl, nbtrou
@@ -235,7 +237,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
                 end if
-                call jenonu(jexnom(ma//'.NOMMAI', karg), ima)
+                ima = char8_to_int(karg, ma, "MAILLE")
                 zi4(itrma-1+ima) = 1
 !
             else if (typmcl .eq. 'GROUP_MA') then
@@ -259,7 +261,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
                 end if
-                call jenonu(jexnom(ma//'.NOMNOE', karg), ino)
+                ino = char8_to_int(karg, ma, "NOEUD")
                 indic_noeud(ino) = 1
 !
             else if (typmcl .eq. 'GROUP_NO') then
@@ -356,7 +358,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
             do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
                     lma = lma+1
-                    call jenuno(jexnum(ma//'.NOMMAI', ima), zk8(itbma-1+lma))
+                    zk8(itbma-1+lma) = int_to_char8(ima, ma, "MAILLE")
                 end if
             end do
         end if
@@ -371,7 +373,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (zi4(itrma-1+ima) .ne. 0) then
                     if (maille(ima) .eq. 0) then
                         ier = ier+1
-                        call jenuno(jexnum(ma//'.NOMMAI', ima), noent)
+                        noent = int_to_char8(ima, ma, "MAILLE")
                         write (ifm, *) ' MAILLE : ', noent
                     end if
                 end if
@@ -431,7 +433,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
             do ino = 1, nbno
                 if (indic_noeud(ino) .ne. 0) then
                     lno = lno+1
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), zk8(itbno-1+lno))
+                    zk8(itbno-1+lno) = int_to_char8(ino, ma, "NOEUD")
                 end if
             end do
         end if
@@ -453,7 +455,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 !             LE NOEUD NE PORTE AUCUNE COMPOSANTE DE LA GRANDEUR
 !             ASSOCIEE AU PHENOMENE
                     ier = ier+1
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), noent)
+                    noent = int_to_char8(ino, ma, "NOEUD")
                     write (ifm, *) ' NOEUD : ', noent
                 end if
 191             continue

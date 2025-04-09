@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xdvois.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: ino, jnoxfv, ndim
     real(kind=8) :: lsn(4), lst(4), valimr, direct(3)
@@ -192,8 +193,8 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
                 do i = 1, ndim
                     ptm(i) = (1.d0-(1.d0-eps)*(5.d-1+alpha(1)/2.d0))*coor(ndim+i)+(1.d0-eps)* &
                              (alpha(1)/2.d0+5.d-1)*coor(i+2*ndim)
-                    ptp(i) = (1.d0-eps)*(5.d-1-alpha(1)/2.d0)*coor(ndim+i)+(1.d0-(1.d0-eps)* &
-                                                              (-alpha(1)/2.d0+5.d-1))*coor(i+2*ndim)
+                    ptp(i) = (1.d0-eps)*(5.d-1-alpha(1)/2.d0)*coor(ndim+i)+ &
+                             (1.d0-(1.d0-eps)*(-alpha(1)/2.d0+5.d-1))*coor(i+2*ndim)
                 end do
             end if
 ! --- ON EVALUE LA FONCTION EN PTM ET PTP AINSI QU'AUX NOEUDS
@@ -404,7 +405,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
                 do j = 1, ndim
                     geom(ndim*(i-1)+j) = zr(iadrco-1+3*(connex(zi(jconx2+numac-1)+i-1)-1)+j)
                 end do
-                call jenuno(jexnum(mesh//'.NOMNOE', connex(zi(jconx2+numac-1)+i-1)), name_node)
+                name_node = int_to_char8(connex(zi(jconx2+numac-1)+i-1))
                 name_ma(i) = name_node
 !     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
 !            ASSERT(ncompn.eq.5)
@@ -443,7 +444,8 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
                     ddl(2*i-1) = 'D'//motcle(2:2)
                     ddl(2*i) = 'H1'//motcle(2:2)
                     coef(2*i-1) = ff(i)
-                  coef(2*i) = xcalc_heav(heavm(1+ncompn*(i-1)), hea_pt, heavm(5+ncompn*(i-1)))*ff(i)
+                    coef(2*i) = xcalc_heav(heavm(1+ncompn*(i-1)), hea_pt, &
+                                           heavm(5+ncompn*(i-1)))*ff(i)
                     noeud(2*i-1) = name_ma(i)
                     noeud(2*i) = name_ma(i)
                 end do
@@ -458,8 +460,9 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
                         coef(2*nbnoma*(j-1)+2*i-1) = direct(j)*ff(i)
                         noeud(2*nbnoma*(j-1)+2*i-1) = name_ma(i)
                         ddl(2*nbnoma*(j-1)+2*i) = 'H1'//axes(j)
-                      coef(2*nbnoma*(j-1)+2*i) = direct(j)*ff(i)*xcalc_heav(heavm(1+ncompn*(i-1)), &
-                                                                      hea_pt, heavm(5+ncompn*(i-1)))
+                        coef(2*nbnoma*(j-1)+2*i) = direct(j)*ff(i)* &
+                                                   xcalc_heav(heavm(1+ncompn*(i-1)), &
+                                                              hea_pt, heavm(5+ncompn*(i-1)))
                         noeud(2*nbnoma*(j-1)+2*i) = name_ma(i)
                     end do
                 end do
@@ -472,7 +475,8 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
                     ddl(2*i-1) = 'PRE1'
                     ddl(2*i) = 'H1PRE1'
                     coef(2*i-1) = ff(i)
-                  coef(2*i) = xcalc_heav(heavm(1+ncompn*(i-1)), hea_pt, heavm(5+ncompn*(i-1)))*ff(i)
+                    coef(2*i) = xcalc_heav(heavm(1+ncompn*(i-1)), hea_pt, &
+                                           heavm(5+ncompn*(i-1)))*ff(i)
                     noeud(2*i-1) = name_ma(i)
                     noeud(2*i) = name_ma(i)
                 end do

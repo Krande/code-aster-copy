@@ -99,7 +99,7 @@ void Result::_setFieldBase(
     }
 
     // Note field in datastructure
-    JeveuxCollectionObjectChar24 storageStructure = _namesOfFields->getObjects()[indexSymbName - 1];
+    JeveuxCollectionObjectChar24 storageStructure = ( *_namesOfFields )[indexSymbName];
     storageStructure->updateValuePointer();
     storageStructure[internalIndex] = ljust( internalName, 24, ' ' );
 

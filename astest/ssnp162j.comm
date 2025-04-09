@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,16 +86,16 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_MA=(
-        _F(NOM="GAUCHE2", MAILLE="GAUCHE2"),
-        _F(NOM="DROITE", MAILLE="DROITE"),
-        _F(NOM="CUBEDEG", MAILLE="CUBEDEG"),
-        _F(NOM="CUBE", MAILLE="CUBE"),
+        _F(NOM="GAUCHE2", MAILLE="M4"),
+        _F(NOM="DROITE", MAILLE="M5"),
+        _F(NOM="CUBEDEG", MAILLE="M2"),
+        _F(NOM="CUBE", MAILLE="M1"),
     ),
     CREA_GROUP_NO=(
-        _F(NOM="NS7", NOEUD="NS7"),
-        _F(NOM="NS5", NOEUD="NS5"),
-        _F(NOM="NO2", NOEUD="NO2"),
-        _F(NOM="NS6", NOEUD="NS6"),
+        _F(NOM="NS7", NOEUD="N13"),
+        _F(NOM="NS5", NOEUD="N11"),
+        _F(NOM="NO2", NOEUD="N2"),
+        _F(NOM="NS6", NOEUD="N12"),
     ),
 )
 
@@ -104,8 +104,8 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_NO=(
-        _F(NOEUD=("NO4", "NO2", "NS2"), NOM="GXXXXXX_DROITE"),
-        _F(NOEUD=("NO1", "NO3", "NS4"), NOM="GXXXXXX_GAUCHE"),
+        _F(NOEUD=("N4", "N2", "N8"), NOM="GXXXXXX_DROITE"),
+        _F(NOEUD=("N1", "N3", "N10"), NOM="GXXXXXX_GAUCHE"),
     ),
 )
 

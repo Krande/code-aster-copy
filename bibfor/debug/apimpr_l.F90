@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine apimpr_l(ifm, mesh, ds_contact)
 #include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/get_patch_info.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -115,7 +116,7 @@ subroutine apimpr_l(ifm, mesh, ds_contact)
         call get_patch_info(sdappa, patch_indx, nb_elem_patch, list_elem)
         do i_elem_patch = 1, nb_elem_patch
             elem_nume = list_elem(i_elem_patch)
-            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), elem_name(i_elem_patch))
+            elem_name(i_elem_patch) = int_to_char8(elem_nume)
         end do
         write (ifm, 302) i_patch, (elem_name(i_elem), i_elem=1, nb_elem_patch)
         coefint = v_sdappa_coef(patch_indx)
@@ -168,13 +169,13 @@ subroutine apimpr_l(ifm, mesh, ds_contact)
 ! --------- Get current slave element
 !
             elem_slav_nume = v_sdappa_slav(i_elem_slav)
-            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_slav_nume), elem_slav_name)
+            elem_slav_name = int_to_char8(elem_slav_nume)
             call jeveuo(jexnum(mesh//'.CONNEX', elem_slav_nume), 'L', vi=v_mesh_connex)
             call jelira(jexnum(mesh//'.CONNEX', elem_slav_nume), 'LONMAX', elem_nbnode)
             node_name(:) = ' '
             do i_node = 1, elem_nbnode
                 node_nume(i_node) = v_mesh_connex(i_node)
-                call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(i_node)), node_name(i_node))
+                node_name(i_node) = int_to_char8(node_nume(i_node))
             end do
             write (ifm, 109) elem_slav_name, (node_name(i_node), i_node=1, elem_nbnode)
 !
@@ -208,8 +209,8 @@ subroutine apimpr_l(ifm, mesh, ds_contact)
     do i_cont_pair = 1, nb_cont_pair
         elem_slav_nume = v_sdappa_apli(3*(i_cont_pair-1)+1)
         elem_mast_nume = v_sdappa_apli(3*(i_cont_pair-1)+2)
-        call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_slav_nume), elem_slav_name)
-        call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_mast_nume), elem_mast_name)
+        elem_slav_name = int_to_char8(elem_slav_nume)
+        elem_mast_name = int_to_char8(elem_mast_nume)
         write (ifm, 201) i_cont_pair, elem_slav_name, elem_mast_name
     end do
     write (ifm, 202) weight_total

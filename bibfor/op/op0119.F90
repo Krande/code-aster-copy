@@ -63,6 +63,7 @@ subroutine op0119()
 #include "asterfort/tbcarapou.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,7 +87,7 @@ subroutine op0119()
 !
     character(len=8)  :: sdgf, nomas, ksudi, nommai, nogfma
     character(len=16) :: concep, cmd, limcls(3), ltymcl(3)
-    character(len=24) :: mlgtms, mlgcnx, mlgcoo, mlgtma, mlgtno, nomgf
+    character(len=24) :: mlgtms, mlgcnx, mlgcoo, nomgf
     character(len=24) :: vnbfig, vtyfig, vcafig, vpofig, vnmfig, vmafig, vsdfig
 !
     character(len=24) :: valk(3)
@@ -273,8 +274,6 @@ subroutine op0119()
         mlgtms = nomas//'.TYPMAIL'
         mlgcnx = nomas//'.CONNEX'
         mlgcoo = nomas//'.COORDO    .VALE'
-        mlgtma = nomas//'.NOMMAI'
-        mlgtno = nomas//'.NOMNOE'
 !       Récupération des adresses utiles
         call jeveuo(mlgtms, 'L', jdtm)
         call jeveuo(mlgcoo, 'L', jdco)
@@ -349,7 +348,7 @@ subroutine op0119()
             zr(ipos+1) = centre(2)
             zr(ipos+2) = surf
             if (niv .eq. 2) then
-                call jenuno(jexnum(mlgtma, nummai), nommai)
+                nommai = int_to_char8(nummai)
                 if (nno .eq. 3) then
                     write (ifm, 801) iinbmailles, nommai, 'TRIA3', centre, surf
                 else

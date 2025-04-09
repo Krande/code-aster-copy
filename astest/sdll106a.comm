@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ CLIM = AFFE_CHAR_MECA(
     MODELE=POUTRE,
     DDL_IMPO=(
         _F(GROUP_NO="NOEUDDL", DZ=0.0),
-        _F(NOEUD=("P1", "P9"), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+        _F(NOEUD=("N1", "N9"), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
     ),
 )
 
@@ -72,7 +72,7 @@ MATASM = ASSE_MATRICE(MATR_ELEM=MATELE_M, NUME_DDL=NUM)
 
 EFF1 = AFFE_CHAR_MECA(
     MODELE=POUTRE,
-    FORCE_NODALE=(_F(NOEUD=("P4",), FY=0.5), _F(NOEUD=("P5",), FY=1.0), _F(NOEUD=("P6",), FY=0.5)),
+    FORCE_NODALE=(_F(NOEUD=("N4",), FY=0.5), _F(NOEUD=("N5",), FY=1.0), _F(NOEUD=("N6",), FY=0.5)),
 )
 
 VECT1 = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=EFF1)
@@ -116,7 +116,7 @@ INTERRE1 = REST_SPEC_PHYS(
     NUME_ORDRE=(1, 2),
     INTE_SPEC_GENE=DYNALEA1,
     NOM_CHAM="DEPL",
-    NOEUD=("P2", "P3", "P4"),
+    NOEUD=("2", "3", "4"),
     NOM_CMP=("DY", "DY", "DY"),
     OPTION="TOUT_TOUT",
 )
@@ -147,7 +147,7 @@ DYNALEA2 = DYNA_ALEA_MODAL(
         INTE_SPEC=INTEREX2,
         NUME_ORDRE_I=(1, 2, 3),
         GRANDEUR="EFFO",
-        NOEUD=("P4", "P5", "P6"),
+        NOEUD=("N4", "N5", "N6"),
         NOM_CMP=("DY", "DY", "DY"),
     ),
     REPONSE=_F(FREQ_MIN=4.0, FREQ_MAX=14.0, PAS=2.0),
@@ -163,9 +163,9 @@ INTERRE2 = REST_SPEC_PHYS(
     OPTION="TOUT_TOUT",
 )
 
-REP1 = RECU_FONCTION(INTE_SPEC=INTERRE1, NOEUD_I="P3", NOM_CMP_I="DY")
+REP1 = RECU_FONCTION(INTE_SPEC=INTERRE1, NOEUD_I="3", NOM_CMP_I="DY")
 
-REP2 = RECU_FONCTION(INTE_SPEC=INTERRE2, NOEUD_I="P3", NOM_CMP_I="DY")
+REP2 = RECU_FONCTION(INTE_SPEC=INTERRE2, NOEUD_I="3", NOM_CMP_I="DY")
 
 TEST_FONCTION(
     VALEUR=(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine equa_print(mesh, i_equa, type_equa, name_node, name_cmp, &
 !
     implicit none
 !
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
@@ -93,7 +94,7 @@ subroutine equa_print(mesh, i_equa, type_equa, name_node, name_cmp, &
         call utmess('I', 'FACTOR2_3', sk=ligrel)
         do i_node = 1, nb_node_lagr
             nume_node = abs(list_node_lagr(i_node))
-            call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node_lagr)
+            name_node_lagr = int_to_char8(nume_node)
             call utmess('I', 'FACTOR2_4', sk=name_node_lagr)
         end do
     end if

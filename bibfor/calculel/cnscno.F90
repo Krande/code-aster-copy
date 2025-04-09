@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cnsz, cnoz, basez, nume_equaz, prol0
     character(len=1) :: kstop
@@ -386,7 +387,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
             !
             if (icmp1 .eq. 0) then
                 if ((prol0 .eq. 'NON') .or. (prolv .eq. 'NON')) then
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), nomno)
+                    nomno = int_to_char8(ino)
                     valk(1) = nomcmp
                     valk(2) = nomno
                     valk(3) = cno
@@ -471,7 +472,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !
             else
                 if ((prol0 .eq. 'NON') .or. (prolv .eq. 'NON')) then
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), nomno)
+                    nomno = int_to_char8(ino)
                     valk(1) = nomcmp
                     valk(2) = nomno
                     valk(3) = cno

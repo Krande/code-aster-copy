@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,8 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 #include "asterfort/jexnum.h"
 #include "asterfort/oreino.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8)  :: noma, resu, typfon
     character(len=19) :: basnof
@@ -140,7 +142,7 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !
     call wkvect('&&'//nompro//'_MAILLE_LEV_SUP', 'V V I', nbma, jlima)
     do im = 1, nbma
-        call jenonu(jexnom(noma//'.NOMMAI', zk8(jsup-1+im)), zi(jlima-1+im))
+        zi(jlima-1+im) = char8_to_int(zk8(jsup-1+im))
     end do
     call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma, &
                 zi(jnols), nbnols, 'TOUS')
@@ -166,7 +168,7 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
         call wkvect('&&'//nompro//'_NOEU_NORM_INF', 'V V I', nbnoe, jnoli)
         call wkvect('&&'//nompro//'_MAILLE_LEV_INF', 'V V I', nbma, jlima)
         do im = 1, nbma
-            call jenonu(jexnom(noma//'.NOMMAI', zk8(jinf-1+im)), zi(jlima-1+im))
+            zi(jlima-1+im) = char8_to_int(zk8(jinf-1+im))
         end do
         call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma, &
                     zi(jnoli), nbnoli, 'TOUS')
@@ -199,7 +201,7 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !        DETERMINATION DU PLAN ORTHOGONAL AU FOND DE FISSURE
 !        ET PASSANT PAR LE NOEUD COURANT
 !
-        call jenonu(jexnom(nomnoe, zk8(jnofo-1+inoff)), nuno)
+        nuno = char8_to_int(zk8(jnofo-1+inoff))
 !
         x0(1) = vale(3*(nuno-1)+1)
         x0(2) = vale(3*(nuno-1)+2)
@@ -291,10 +293,10 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
                         vale, critn, preco, iera, iret)
 
             do in = 1, min(nbi, ninfsup_norm)
-                call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli-1+ninfsup_norm*(inoff-1)+in))
+                zk8(inoli-1+ninfsup_norm*(inoff-1)+in) = int_to_char8(zi(jti-1+in))
             end do
             do in = 1, min(nbi, ninfsup_norm2)
-                call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli2-1+ninfsup_norm2*(inoff-1)+in))
+                zk8(inoli2-1+ninfsup_norm2*(inoff-1)+in) = int_to_char8(zi(jti-1+in))
             end do
 !
             call jedetr('&&PKFOND_INTERS_INF')
@@ -315,7 +317,7 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !
 ! ---- ORDRE DES NOEUDS
         if (irlev .eq. 0) then
-            call jenonu(jexnom(nomnoe, zk8(jnofos-1+inoff)), nuno)
+            nuno = char8_to_int(zk8(jnofos-1+inoff))
         end if
         numfin = nuno
         dmax = 0.d0
@@ -371,10 +373,10 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
                     vale, critn, preco, iera, iret)
 !
         do in = 1, min(nbs, ninfsup_norm)
-            call jenuno(jexnum(nomnoe, zi(jts-1+in)), zk8(inols-1+ninfsup_norm*(inoff-1)+in))
+            zk8(inols-1+ninfsup_norm*(inoff-1)+in) = int_to_char8(zi(jts-1+in))
         end do
         do in = 1, min(nbs, ninfsup_norm2)
-            call jenuno(jexnum(nomnoe, zi(jts-1+in)), zk8(inols2-1+ninfsup_norm2*(inoff-1)+in))
+            zk8(inols2-1+ninfsup_norm2*(inoff-1)+in) = int_to_char8(zi(jts-1+in))
         end do
 !
         call jedetr('&&PKFOND_INTERS_SUP')

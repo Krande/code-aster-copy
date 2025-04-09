@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ DEFI_FICHIER(ACTION="LIBERER", UNITE=fileUnit)
 TEST_FICHIER(
     FICHIER=fileName,
     NB_VALE_I=23290,
-    VALE_CALC_I=22956103,
+    VALE_CALC_I=26066863,
     NB_VALE=7488,
     VALE_CALC=1.2634800000e04,
-    VALE_CALC_K="e076f39fe7c52e1c6fd3b9fc9719c357",
+    VALE_CALC_K="0b9731c6627d5f433e83a06c4723629f",
     EXPR_IGNORE=("ASTER",),
 )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -248,7 +248,7 @@ REPINTSP = REST_SPEC_PHYS(
     OPTION="TOUT_TOUT",
 )
 
-REPONSE = RECU_FONCTION(INTE_SPEC=REPINTSP, NOEUD_I="N2", NOM_CMP_I="DX")
+REPONSE = RECU_FONCTION(INTE_SPEC=REPINTSP, NOEUD_I="2", NOM_CMP_I="DX")
 
 
 I3 = (1.1777e-3,)

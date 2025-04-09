@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ MALINE = MODI_MAILLAGE(
     reuse=MALINE, MAILLAGE=MALINE, ORIE_PEAU=_F(GROUP_MA_PEAU=("haut", "lev", "LEV_INF", "BAS"))
 )
 
-MA = CREA_MAILLAGE(MAILLAGE=MALINE, LINE_QUAD=_F(TOUT="OUI", PREF_NOEUD="Z"))
+MA = CREA_MAILLAGE(MAILLAGE=MALINE, LINE_QUAD=_F(TOUT="OUI"))
 
 # Barsoum
 MA = MODI_MAILLAGE(

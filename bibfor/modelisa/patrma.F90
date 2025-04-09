@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
 #include "asterfort/parotr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: llist1, llist2, llistt
     character(len=8) :: nomma
@@ -132,7 +133,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
     ityp1 = -1
     do i1 = 1, nbma
         numa1 = zi(idl1+2*i1-1)
-        call jenuno(jexnum(nomma//'.NOMMAI', numa1), nomma1)
+        nomma1 = int_to_char8(numa1)
         ityp = zi(idl1+2*i1)
         if (ityp .ne. ityp1) then
             if (ityp1 .ne. -1) then
@@ -176,7 +177,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
             else
                 fintyp = .true.
                 ima2 = zi(idl2+2*j-1)
-                call jenuno(jexnum(nomma//'.NOMMAI', ima2), nomma2)
+                nomma2 = int_to_char8(ima2)
                 call pacoor(nomma, ima2, nbnott(1), zr(idcoo2))
                 call padtma(zr(idcoo1), zr(idcoo2), nbnott, zi(idwcpl), d, &
                             err)
@@ -221,10 +222,10 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
         if (zi(idbij-1+j2) .eq. 0) then
             zi(idbij-1+j2) = numa1
         else
-            call jenuno(jexnum(nomma//'.NOMMAI', numa1), nomma1)
-            call jenuno(jexnum(nomma//'.NOMMAI', numa2), nomma2)
+            nomma1 = int_to_char8(numa1)
+            nomma2 = int_to_char8(numa2)
             numa3 = zi(idbij+j2-1)
-            call jenuno(jexnum(nomma//'.NOMMAI', numa3), nomma3)
+            nomma3 = int_to_char8(numa3)
             valk(1) = nomma1
             valk(2) = nomma3
             valk(3) = nomma2

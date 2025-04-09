@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,7 +111,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             MAILLAGE=MAIL,
             CARA="NB_NO_GROUP_NO",
-            NOM_GROUP_NO="RCBPN7071",
+            NOM_GROUP_NO="RCBP7071",
             VALE_REFE_I=15,
             VALE_CALC_I=15,
         ),
@@ -119,7 +119,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             MAILLAGE=MAIL,
             CARA="NB_NO_GROUP_NO",
-            NOM_GROUP_NO="RCBPN7172",
+            NOM_GROUP_NO="RCBP7172",
             VALE_REFE_I=15,
             VALE_CALC_I=15,
         ),

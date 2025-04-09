@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,8 @@ subroutine gcou2d(resu, noma, nomno, noeud, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/crcnct.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     real(kind=8) :: rinf, rsup, coor(*)
     character(len=8) :: noma, noeud, config
@@ -108,7 +110,8 @@ subroutine gcou2d(resu, noma, nomno, noeud, &
     estfem = .true.
     if (n1 .ne. 0 .or. l_new_fissure) then
         estfem = .true.
-        call jenonu(jexnom(nomno, noeud), num)
+        num = char8_to_int(noeud)
+
     else if (n2 .ne. 0) then
         estfem = .false.
         num = 0
@@ -213,7 +216,7 @@ subroutine gcou2d(resu, noma, nomno, noeud, &
 !           CES POINTS SONT NORMALEMENT HORS COURONNE THETA
                 if (norme .le. r8prem()*1.d04) then
                     if ((abs(alpha-1) .gt. eps) .and. ((alpha-1) .le. 0)) then
-                        call jenuno(jexnum(noma//'.NOMNOE', i), k8b)
+                        k8b = int_to_char8(i)
                         call utmess('F', 'XFEM_12', sk=k8b)
                     end if
                     norme = 1.d0

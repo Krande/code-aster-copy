@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,7 @@ MA2 = CREA_MAILLAGE(MAILLAGE=MA1, LINE_QUAD=_F(TOUT="OUI"))
 
 MAILLAGE = CREA_MAILLAGE(
     MAILLAGE=MA2,
-    MODI_MAILLE=(
-        _F(OPTION="TRIA6_7", MAILLE="CQ3D3", PREF_NOEUD="NT"),
-        _F(OPTION="QUAD8_9", GROUP_MA="CQ3D4", PREF_NOEUD="NQ"),
-    ),
+    MODI_MAILLE=(_F(OPTION="TRIA6_7", MAILLE="M4"), _F(OPTION="QUAD8_9", GROUP_MA="CQ3D4")),
 )
 
 

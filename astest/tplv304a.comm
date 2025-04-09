@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,14 +39,14 @@ MAIL = DEFI_GROUP(
         _F(NOM="N12", NOEUD="N11"),
         _F(NOM="N14", NOEUD="N13"),
         _F(NOM="N17", NOEUD="N16"),
-        _F(NOM="NS48", NOEUD="NS48"),
+        _F(NOM="NS48", NOEUD="N152"),
         _F(NOM="N11", NOEUD="N10"),
         _F(NOM="N16", NOEUD="N15"),
         _F(NOM="N13", NOEUD="N12"),
         _F(NOM="N6", NOEUD="N6"),
         _F(NOM="N8", NOEUD="N8"),
         _F(NOM="N10", NOEUD="N9"),
-        _F(NOM="NS33", NOEUD="NS33"),
+        _F(NOM="NS33", NOEUD="N137"),
         _F(NOM="N1", NOEUD="N1"),
     ),
 )

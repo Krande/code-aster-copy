@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ M1 = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
 M = CREA_MAILLAGE(MAILLAGE=M1, LINE_QUAD=_F(TOUT="OUI"))
 
 M = DEFI_GROUP(
-    reuse=M, MAILLAGE=M, CREA_GROUP_MA=(_F(NOM="M1", MAILLE="M1"), _F(NOM="M537", MAILLE="M537"))
+    reuse=M, MAILLAGE=M, CREA_GROUP_MA=(_F(NOM="M1", MAILLE="M1659"), _F(NOM="M537", MAILLE="M535"))
 )
 
 M = DEFI_GROUP(

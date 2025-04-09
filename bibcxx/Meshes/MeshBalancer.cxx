@@ -3,7 +3,7 @@
  * @brief Implementation de MeshBalancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -196,7 +196,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     _cellsBalancer->balanceObjectOverProcesses( cellsType, cellsTypeTmp );
 
     const auto connex = _mesh->getConnectivity();
-    JeveuxCollectionLong connexTmp( "TMP2" );
+    JeveuxContiguousCollectionLong connexTmp( "TMP2" );
     if ( _mesh == nullptr ) {
         _cellsBalancer->balanceObjectOverProcesses2( connex, connexTmp, dMask );
     } else {
@@ -209,7 +209,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     }
 
     JeveuxVectorLong cellsTypeOut = outMesh->getCellsType();
-    JeveuxCollectionLong connexOut = outMesh->getConnectivity();
+    JeveuxContiguousCollectionLong connexOut = outMesh->getConnectivity();
     sortCells( cellsTypeTmp, connexTmp, cellsTypeOut, connexOut );
     _cellsBalancer->setRenumbering( _cellRenumbering );
 
@@ -284,8 +284,9 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     return outMesh;
 };
 
-void MeshBalancer::sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &connexIn,
-                              JeveuxVectorLong &typeOut, JeveuxCollectionLong &connexOut ) {
+void MeshBalancer::sortCells( JeveuxVectorLong &typeIn, JeveuxContiguousCollectionLong &connexIn,
+                              JeveuxVectorLong &typeOut,
+                              JeveuxContiguousCollectionLong &connexOut ) {
     // TODO: Recuperer 31 a partir du nombre de types de mailles
     VectorLong nbCellByType( 31, 0 );
     const auto size = typeIn->size();
@@ -306,7 +307,7 @@ void MeshBalancer::sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &co
     }
     _cellRenumbering = VectorLong( size, 0 );
     typeOut->allocate( size );
-    connexOut->allocateContiguousNumbered( size, connexIn->totalSize() );
+    connexOut->allocate( size, connexIn->totalSize() );
     count = 0;
     for ( const auto &type : typeIn ) {
         long newId = numCell[count] + nbCellByType[type];
@@ -836,7 +837,6 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
             mapNodesGrpNum[cmptNodes] = name;
             const auto &pair = integerShiftFromComponent< long int >( cmptNodes );
             for ( const auto &id : _mesh->getNodes( name ) ) {
-                std::cout << "name " << name << " " << id << std::endl;
                 if ( ( *meshNodeOwner )[id] == rank ) {
                     ( *localNodeGroups0 )[id][pair.first] += 1UL << pair.second;
                 }

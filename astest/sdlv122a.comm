@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,6 +54,8 @@ MAIL = CREA_MAILLAGE(
     ),
 )
 
+nodeLabels = ["N" + str(i + 1) for i in range(MAIL.getNumberOfNodes())]
+MAIL.addNodeLabels(nodeLabels)
 #
 MODELE = AFFE_MODELE(
     MAILLAGE=MAIL,
@@ -144,16 +146,16 @@ MODES = CALC_CHAMP(reuse=MODES, RESULTAT=MODES, CONTRAINTE="SIGM_NOEU")
 #
 MAILMES0 = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=33)
 MAILMESU = CREA_MAILLAGE(
-    MAILLAGE=MAILMES0, CREA_POI1=_F(NOM_GROUP_MA="N3N4N5", NOEUD=("N3", "N4", "N5"))
+    MAILLAGE=MAILMES0, CREA_POI1=_F(NOM_GROUP_MA="N3N4N5", NOEUD=("N1", "N2", "N3"))
 )
 
 MAILMESU = DEFI_GROUP(
     reuse=MAILMESU,
     MAILLAGE=MAILMESU,
     CREA_GROUP_MA=(
-        _F(NOM="M3", MAILLE=("M3")),
-        _F(NOM="M4", MAILLE=("M4")),
-        _F(NOM="M5", MAILLE=("M5")),
+        _F(NOM="M3", MAILLE=("M1")),
+        _F(NOM="M4", MAILLE=("M2")),
+        _F(NOM="M5", MAILLE=("M3")),
     ),
 )
 #
@@ -179,11 +181,11 @@ MESURE = LIRE_RESU(
 # PROJECTION DES MESURES SUR LA BASE MODALE DU MODELE
 # ===================================================
 #
+MAILMESU.addNodeLabels(["N3", "N4", "N5"])
 REPGENE = PROJ_MESU_MODAL(
     MODELE_CALCUL=_F(MODELE=MODELE, BASE=MODES),
     MODELE_MESURE=_F(MODELE=MODLMESU, MESURE=MESURE, NOM_CHAM=("DEPL", "VITE", "SIEF_NOEU")),
 )
-
 #
 # RESTITUTION DES RESULTATS
 # =========================
@@ -202,9 +204,9 @@ REPONSE = REST_GENE_PHYS(RESU_GENE=REPGENE, TOUT_CHAM="OUI")
 T_SIGM = POST_GENE_PHYS(
     RESU_GENE=REPGENE,
     OBSERVATION=(
-        _F(NOM_CHAM="SIGM_ELNO", NOM_CMP="SIXX", MAILLE="M481", NUME_ORDRE=(90, 170, 250)),
+        _F(NOM_CHAM="SIGM_ELNO", NOM_CMP="SIXX", MAILLE="M769", NUME_ORDRE=(90, 170, 250)),
         _F(NOM_CHAM="VITE", NOM_CMP="DX", GROUP_NO="NRES5", NUME_ORDRE=(90, 170, 250)),
-        _F(NOM_CHAM="SIGM_ELGA", NOM_CMP="SIXX", MAILLE="M481", NUME_ORDRE=(90, 170, 250)),
+        _F(NOM_CHAM="SIGM_ELGA", NOM_CMP="SIXX", MAILLE="M769", NUME_ORDRE=(90, 170, 250)),
     ),
 )
 # IMPR_TABLE(TABLE=T_SIGM)
@@ -242,7 +244,7 @@ TEST_TABLE(
     TABLE=T_SIGM,
     NOM_PARA="VALE_R",
     FILTRE=(
-        _F(NOM_PARA="NOEUD", VALE_K="N16"),
+        _F(NOM_PARA="NOEUD", VALE_K="16"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="SIGM_ELNO"),
         _F(NOM_PARA="INST", VALE=9.00000e-04),
     ),
@@ -253,7 +255,7 @@ TEST_TABLE(
     TABLE=T_SIGM,
     NOM_PARA="VALE_R",
     FILTRE=(
-        _F(NOM_PARA="NOEUD", VALE_K="N16"),
+        _F(NOM_PARA="NOEUD", VALE_K="16"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="SIGM_ELNO"),
         _F(NOM_PARA="INST", VALE=1.70000e-03),
     ),
@@ -264,7 +266,7 @@ TEST_TABLE(
     TABLE=T_SIGM,
     NOM_PARA="VALE_R",
     FILTRE=(
-        _F(NOM_PARA="NOEUD", VALE_K="N16"),
+        _F(NOM_PARA="NOEUD", VALE_K="16"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="SIGM_ELNO"),
         _F(NOM_PARA="INST", VALE=2.50000e-03),
     ),
@@ -275,7 +277,7 @@ TEST_TABLE(
     TABLE=T_SIGM,
     NOM_PARA="VALE_R",
     FILTRE=(
-        _F(NOM_PARA="NOEUD", VALE_K="N1"),
+        _F(NOM_PARA="NOEUD", VALE_K="1"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="VITE"),
         _F(NOM_PARA="INST", VALE=9.00000e-04),
     ),
@@ -286,7 +288,7 @@ TEST_TABLE(
     TABLE=T_SIGM,
     NOM_PARA="VALE_R",
     FILTRE=(
-        _F(NOM_PARA="NOEUD", VALE_K="N1"),
+        _F(NOM_PARA="NOEUD", VALE_K="1"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="VITE"),
         _F(NOM_PARA="INST", VALE=1.70000e-03),
     ),
@@ -297,7 +299,7 @@ TEST_TABLE(
     TABLE=T_SIGM,
     NOM_PARA="VALE_R",
     FILTRE=(
-        _F(NOM_PARA="NOEUD", VALE_K="N1"),
+        _F(NOM_PARA="NOEUD", VALE_K="1"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="VITE"),
         _F(NOM_PARA="INST", VALE=2.50000e-03),
     ),

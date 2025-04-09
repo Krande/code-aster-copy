@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ module SolidShell_Mesh_module
 #include "asterfort/jexnum.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/int_to_char8.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -332,7 +333,7 @@ contains
             ASSERT(cellSkinNume .gt. 0)
             cellSkinType = meshTypmail(cellSkinNume)
             if (cellSkinType .ne. MT_QUAD4) then
-                call jenuno(jexnum(mesh//'.NOMMAI', cellSkinNume), cellSkinName)
+                cellSkinName = int_to_char8(cellSkinNume)
                 call utmess('F', 'SOLIDSHELL1_7', sk=cellSkinName)
             end if
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine nodoub(nbl, nbb, nol, nob, typl, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     aster_logical :: double
     integer :: i, jf, lcou, lp, nbb, nbl
@@ -64,7 +65,7 @@ subroutine nodoub(nbl, nbb, nol, nob, typl, &
             lp = nob(jf)
             if (lp .eq. lcou) then
                 double = .true.
-                call jenuno(jexnum(mailla//'.NOMNOE', lp), nomnoe)
+                nomnoe = int_to_char8(lp)
                 valk(1) = nomnoe
                 valk(2) = typl
                 valk(3) = typb

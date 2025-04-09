@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,8 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nh, nbocc
     character(len=*) :: resu, modele, cara
@@ -64,7 +66,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     integer :: ifm, nd, nr, niv, i, ni, np, nq, n1, n2, iret, jord, jins
     integer :: iord, iainst, lvale, nbin, iocc, nt, nm, nc
     integer :: ng, kk, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, nume, ier
-    integer :: numord, numomu, nbordr
+    integer :: numord, numomu, nbordr, nbMaiT
     parameter(mxvale=5, nbparr=6, nbpard=4)
     real(kind=8) :: prec, inst, rsr0, volu, numema, triax, lnrsr0
     real(kind=8) :: vr(5), rtval(2), valer(3)
@@ -74,7 +76,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     character(len=16) :: nopard(nbpard), tabtyp(3)
     character(len=19) :: chelem, knum, kins, varnul
     character(len=24) :: chgeom, chcara(18), chharm, ligrel, lchin(7)
-    character(len=24) :: mlggma, mlgnma, compor, nomma2
+    character(len=24) :: mlggma, compor, nomma2
     character(len=24) :: lchout(2), contg, varipg, varimg, depla, ssoup
     complex(kind=8) :: c16b
 !
@@ -118,7 +120,6 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 110
     noma = chgeom(1:8)
-    mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
 !
 !      NOMLIG = '&&PERITR'
@@ -266,7 +267,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 numema = zr(lvale+3)
                 if (optcal(2) .eq. 'OUI') then
                     numa = nint(numema)
-                    call jenuno(jexnum(mlgnma, numa), nomail)
+                    nomail = int_to_char8(numa)
                     valek(1) = nomail
                     valek(2) = 'MAILLE'
                 else
@@ -329,7 +330,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     numema = zr(lvale+3)
                     if (optcal(2) .eq. 'OUI') then
                         numa = nint(numema)
-                        call jenuno(jexnum(mlgnma, numa), nomail)
+                        nomail = int_to_char8(numa)
                         valek(1) = nomail
                         valek(2) = 'MAILLE'
                     else
@@ -357,14 +358,14 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 call wkvect('&&PERITR_MAILLE', 'V V K8', nbmail, jma)
                 call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc, &
                             nbmail, zk8(jma), nm)
+                call jelira(noma//'.TYPMAIL', 'LONMAX', nbMaiT)
                 do im = 1, nbmail
                     nommai = zk8(jma+im-1)
-                    call jeexin(jexnom(mlgnma, nommai), iret)
-                    if (iret .eq. 0) then
-                        call utmess('A', 'UTILITAI3_49', sk=nommai)
+                    nume = char8_to_int(nommai)
+                    if ((nume .gt. nbMaiT) .or. (nume .le. 0)) then
+                        call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
                         goto 70
                     end if
-                    call jenonu(jexnom(mlgnma, nommai), nume)
                     if (optcal(2) .eq. 'OUI') then
                         call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp, &
                                     vr, 1, [nume])
@@ -390,7 +391,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     numema = zr(lvale+3)
                     if (optcal(2) .eq. 'OUI') then
                         numa = nint(numema)
-                        call jenuno(jexnum(mlgnma, numa), nomail)
+                        nomail = int_to_char8(numa)
                         valek(1) = nomail
                         valek(2) = 'MAILLE'
                     else

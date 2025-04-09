@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
         call wkvect(nomsd//'.NOMA', base//' V K8', 1, jma)
         zk8(jma) = nomast
         call dismoi('NB_NO_MAILLA', nomast, 'MAILLAGE', repi=nbnoeu)
-        call jelira(nomast//'.NOMMAI', 'NOMUTI', nbmail)
+        call jelira(nomast//'.TYPMAIL', 'LONMAX', nbmail)
         call jeveuo(nomast//'.COORDO    .VALE', 'L', vr=coordo)
         call jeveuo(nomast//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(nomast//'.CONNEX', 'LONCUM'), 'L', vi=point)

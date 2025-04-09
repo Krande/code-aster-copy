@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 #include "asterfort/utmess.h"
 #include "asterfort/vrcin1.h"
 #include "asterfort/vrcin2.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=2) :: codret
     character(len=19) :: chvarc
@@ -223,7 +224,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
                     if (nbsp .eq. 1 .and. .not. exival) goto 70
 !
                     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-                    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                    nomail = int_to_char8(ima)
                     call jeveuo(modele//'.MAILLE', 'L', jmaille)
                     nute = zi(jmaille-1+ima)
                     call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)

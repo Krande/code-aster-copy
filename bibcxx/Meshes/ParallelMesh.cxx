@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -76,8 +76,9 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
     std::vector< JeveuxChar32 > allgONNames;
     AsterMPI::all_gather( gONNames, allgONNames );
 
-    for ( auto &nameOfGrp : allgONNames )
+    for ( auto &nameOfGrp : allgONNames ) {
         _setOfAllGON.insert( strip( nameOfGrp.toString() ) );
+    }
 
     if ( _globalGroupOfNodes.exists() )
         _globalGroupOfNodes->deallocate();
@@ -219,7 +220,7 @@ VectorLong ParallelMesh::getCells( const std::string name ) const {
 VectorLong ParallelMesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -244,7 +245,7 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     CALL_JEMARQ();
     VectorLong listOfNodes;
     if ( name.empty() ) {
-        listOfNodes = irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
+        listOfNodes = irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfNodes() - 1 ) );
     } else if ( !hasGroupOfNodes( name, true ) ) {
         CALL_JEDEMA();
         return VectorLong();

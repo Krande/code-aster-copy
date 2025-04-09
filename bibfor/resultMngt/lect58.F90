@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,7 @@ subroutine lect58(fileUnit, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/ulisop.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/ulopen.h"
 !
     integer, intent(in) :: fileUnit
@@ -321,12 +322,12 @@ subroutine lect58(fileUnit, &
         if (label .eq. 0) then
             ligne = rec(irec)
             labk8 = ligne(32:41)
-            call jenonu(jexnom(meshAst//'.NOMNOE', labk8), label)
+            label = char8_to_int(labk8, meshAst, "NOEUD")
         else
 ! PRE_IDEAS RAJOUTE UN 'N' DEVANT LE NUMERO DU NOEUD (VOIR ECRNEU)
             call codnop(labk8, prfnoe, 1, 1)
             call codent(label, 'G', labk8(2:8))
-            call jenonu(jexnom(meshAst//'.NOMNOE', labk8), label)
+            label = char8_to_int(labk8, meshAst, "NOEUD")
         end if
         zi(lcorr-1+nbmesu) = label
 !

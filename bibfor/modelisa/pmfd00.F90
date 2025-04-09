@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine pmfd00()
 #include "asterfort/rgcmpg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,8 +141,8 @@ subroutine pmfd00()
     modnom = nomo//'.MODELE    .LGRF'
     call jeveuo(modnom, 'L', jdnm)
     noma = zk8(jdnm)
-    mommai = noma//'.NOMMAI'
-    call jelira(mommai, 'NOMMAX', nmailp)
+    mommai = noma//'.TYPMAIL'
+    call jelira(mommai, 'LONMAX', nmailp)
 ! --------------------------------------------------------------------------------------------------
 !   s'il n'y a pas d'elements a sous-points, on saute tout
     call getfac('COQUE', nbocc1)
@@ -283,7 +284,7 @@ subroutine pmfd00()
                 end do
             end do
             if (iasbon .eq. 0) then
-                call jenuno(jexnum(mommai, nummai), valmk(1))
+                valmk(1) = int_to_char8(nummai)
                 call utmess('F', 'ALGELINE_34', sk=valmk(1))
             end if
 160         continue
@@ -294,7 +295,7 @@ subroutine pmfd00()
             irviy1 = rgcmpg(icode, iriy1)
             irviz1 = rgcmpg(icode, iriz1)
             if (irva1 .eq. 0 .or. irviy1 .eq. 0 .or. irviz1 .eq. 0) then
-                call jenuno(jexnum(mommai, nummai), valmk(1))
+                valmk(1) = int_to_char8(nummai)
                 call utmess('F', 'MODELISA8_3', sk=valmk(1))
             end if
 !           on recupere les composantes : a1, iy1, iz1 de cette zone
@@ -302,16 +303,16 @@ subroutine pmfd00()
             moinoy = vale(1+(iasbon-1)*nbcmp+irviy1-1)
             moinoz = vale(1+(iasbon-1)*nbcmp+irviz1-1)
             if (airpou .le. r8prem()) then
-                call jenuno(jexnum(mommai, nummai), valmk(1))
+                valmk(1) = int_to_char8(nummai)
                 call utmess('F', 'MODELISA8_1', sk=valmk(1))
             end if
             if (moinoy .le. r8prem()) then
-                call jenuno(jexnum(mommai, nummai), valmk(1))
+                valmk(1) = int_to_char8(nummai)
                 valmk(2) = 'IY'
                 call utmess('F', 'MODELISA8_2', nk=2, valk=valmk)
             end if
             if (moinoz .le. r8prem()) then
-                call jenuno(jexnum(mommai, nummai), valmk(1))
+                valmk(1) = int_to_char8(nummai)
                 valmk(2) = 'IZ'
                 call utmess('F', 'MODELISA8_2', nk=2, valk=valmk)
             end if
@@ -321,7 +322,7 @@ subroutine pmfd00()
             erre = abs(airpou-casect(1))/airpou
             if (erre .gt. precai) then
                 valmi = ioc
-                call jenuno(jexnum(mommai, nummai), valmk(1))
+                valmk(1) = int_to_char8(nummai)
                 valmr(1) = airpou
                 valmr(2) = casect(1)
                 valmr(3) = erre
@@ -335,7 +336,7 @@ subroutine pmfd00()
                 erre = abs(moinoy-casect(5))/moinoy
                 if (erre .gt. precai) then
                     valmi = ioc
-                    call jenuno(jexnum(mommai, nummai), valmk(1))
+                    valmk(1) = int_to_char8(nummai)
                     valmk(2) = 'IY'
                     valmr(1) = moinoy
                     valmr(2) = casect(5)
@@ -346,7 +347,7 @@ subroutine pmfd00()
                 erre = abs(moinoz-casect(4))/moinoz
                 if (erre .gt. precai) then
                     valmi = ioc
-                    call jenuno(jexnum(mommai, nummai), valmk(1))
+                    valmk(1) = int_to_char8(nummai)
                     valmk(2) = 'IZ'
                     valmr(1) = moinoz
                     valmr(2) = casect(4)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine cflecq(mesh, model, sdcont_defi, nb_cont_surf, nb_cont_node0, &
 #include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -106,7 +107,7 @@ subroutine cflecq(mesh, model, sdcont_defi, nb_cont_surf, nb_cont_node0, &
             elem_nume = v_sdcont_mailco(jdecma+i_elem)
             type_nume = v_mesh_typmail(elem_nume)
             call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name)
-            call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+            elem_name = int_to_char8(elem_nume)
             if (type_name(1:5) .eq. 'QUAD9') then
                 call iscoqu(model, elem_nume, l_coq3d)
                 node_middle_nume = 9
@@ -119,7 +120,7 @@ subroutine cflecq(mesh, model, sdcont_defi, nb_cont_surf, nb_cont_node0, &
             if (l_coq3d) then
                 call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi=v_mesh_connex)
                 node_nume = v_mesh_connex(node_middle_nume)
-                call jenuno(jexnum(mesh//'.NOMNOE', node_nume), node_name)
+                node_name = int_to_char8(node_nume)
             end if
             if (l_coq3d) then
                 call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node, jdecno)

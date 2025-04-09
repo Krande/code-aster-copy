@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -478,7 +478,7 @@ TEST_TABLE(
 ACCELE = REST_GENE_PHYS(RESU_GENE=RESU, NOM_CHAM="ACCE", TOUT_INST="OUI")
 
 liste_grpno = ("A1", "B1", "C1", "D1")
-liste_noeud = ("N78", "N84", "N129", "N133")
+liste_noeud = ("78", "84", "129", "133")
 
 TAB_RESU = CREA_TABLE(
     RESU=_F(RESULTAT=ACCELE, GROUP_NO=liste_grpno, NOM_CHAM="ACCE", NOM_CMP=("DX", "DY", "DZ"))

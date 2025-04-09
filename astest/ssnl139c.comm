@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 MAPOU = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
 # definition d'un groupe de 3 mailles pour valider EXTR_RESU / RESTREINT :
-DEFI_GROUP(
-    reuse=MAPOU,
-    MAILLAGE=MAPOU,
-    CREA_GROUP_MA=_F(NOM="GM1", MAILLE=("SEG2004", "SEG2005", "SEG2001")),
-)
+DEFI_GROUP(reuse=MAPOU, MAILLAGE=MAPOU, CREA_GROUP_MA=_F(NOM="GM1", MAILLE=("M4", "M5", "M1")))
 
 # lecture maillage section grossiere
 MASEC = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=19)
@@ -222,11 +218,11 @@ MA1B = CREA_MAILLAGE(MAILLAGE=MAPOU, RESTREINT=_F(GROUP_MA="GM1"))
 MA1B = DEFI_GROUP(
     reuse=MA1B,
     MAILLAGE=MA1B,
-    CREA_GROUP_MA=(_F(NOM="SEG2001", MAILLE="SEG2001"),),
+    CREA_GROUP_MA=(_F(NOM="SEG2001", MAILLE="M1"),),
     CREA_GROUP_NO=(
-        _F(NOM="N006", NOEUD="N006"),
-        _F(NOM="N001", NOEUD="N001"),
-        _F(NOM="N002", NOEUD="N002"),
+        _F(NOM="N006", NOEUD="N5"),
+        _F(NOM="N001", NOEUD="N1"),
+        _F(NOM="N002", NOEUD="N2"),
     ),
 )
 
@@ -258,8 +254,8 @@ TEST_TABLE(
     FILTRE=(
         _F(NOM_PARA="NOM_CHAM", VALE_K="SIEF_ELNO"),
         _F(NOM_PARA="INST", VALE=1.0),
-        _F(NOM_PARA="MAILLE", VALE_K="SEG2001"),
-        _F(NOM_PARA="NOEUD", VALE_K="N002"),
+        _F(NOM_PARA="MAILLE", VALE_K="1"),
+        _F(NOM_PARA="NOEUD", VALE_K="2"),
         _F(NOM_PARA="SOUS_POINT", VALE_I=200),
     ),
 )

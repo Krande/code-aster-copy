@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utreno.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
@@ -53,7 +54,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
     real(kind=8) :: tole
     character(len=8) :: noma, crit, nom1
     character(len=16) :: motfac, motcle(2), typmcl(2)
-    character(len=24) :: lisnoe, nomnoe
+    character(len=24) :: lisnoe
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
@@ -66,8 +67,6 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
     lisnoe = lisnoz
 !   INDICATEUR DE COMMANDE POUR OREINO: 1-DEFI_GROUP/SEGM_DROI_ORDO
     iera = 1
-!
-    nomnoe = noma//'.NOMNOE'
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
@@ -89,10 +88,10 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- RECUPERATION DES NOEUDS EXTREMITES :
 !     ----------------------------------
     call utreno(motfac, 'ORIG', iocc, noma, nom1)
-    call jenonu(jexnom(nomnoe, nom1), numori)
+    numori = char8_to_int(nom1)
 !
     call utreno(motfac, 'EXTR', iocc, noma, nom1)
-    call jenonu(jexnom(nomnoe, nom1), numext)
+    numext = char8_to_int(nom1)
 !
 ! --- RECUPERATION DE LA PRECISION ET DU CRITERE :
 !     ------------------------------------------

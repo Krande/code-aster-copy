@@ -30,7 +30,7 @@ test = CA.TestCase()
 # from MED format
 mesh = CA.Mesh()
 mesh.readMedFile("zzzz503a.mmed", verbose=2)
-with test.assertRaisesRegex(AssertionError, "not empty"):
+with test.assertRaisesRegex(RuntimeError, "not empty"):
     mesh.readMedFile("zzzz503a.mmed")
 
 test.assertFalse(mesh.isParallel())
@@ -66,8 +66,8 @@ test.assertFalse(mesh.hasGroupOfNodes("AA", True))
 test.assertFalse(mesh.hasGroupOfNodes("AA", False))
 
 test.assertSequenceEqual(mesh._getGroupsOfCellsContainingIds(40), ["Bas"])
-test.assertSequenceEqual(mesh._getGroupsOfCellsContainingIds((40, 47)), ["Bas", "Haut"])
-test.assertSequenceEqual(mesh._getGroupsOfNodesContainingIds(5), ["B", "Bas"])
+test.assertSequenceEqual(mesh._getGroupsOfCellsContainingIds((40, 47)), ["Haut", "Bas"])
+test.assertSequenceEqual(mesh._getGroupsOfNodesContainingIds(5), ["Bas", "B"])
 
 # do the same thing (compatibily with ParallelMesh)
 test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), ["Bas", "Haut"])
@@ -231,8 +231,8 @@ test.assertTrue((medtypes[49:] == 308).all())
 quad47 = connect[47 - 1]
 test.assertSequenceEqual(quad47, [9, 0, 17, 25])
 test.assertSequenceEqual(medconn[47 - 1], [9, 0, 17, 25])
-test.assertEqual("M47", mesh.getCellName(47 - 1))
-test.assertEqual("N10", mesh.getNodeName(10 - 1))
+test.assertEqual("47", mesh.getCellName(47 - 1))
+test.assertEqual("10", mesh.getNodeName(10 - 1))
 
 # always 3 coordinates, even if 'getDimension() == 2'
 npcoord = np.array(values).reshape((-1, 3))

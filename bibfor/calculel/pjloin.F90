@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
+#include "asterfort/int_to_char8.h"
 !
 !     BUT :
 !       Emettre (eventuellement) le message d'alarme de projection sur
@@ -79,7 +80,7 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
             call codent(ico, 'D0', kico)
             do ii = 1, nbnod
                 ino2m = tino2m(ii)
-                call jenuno(jexnum(m2//'.NOMNOE', ino2m), nono2)
+                nono2 = int_to_char8(ino2m)
                 valr(1) = geom2(3*(ino2m-1)+1)
                 valr(2) = geom2(3*(ino2m-1)+2)
                 valr(3) = geom2(3*(ino2m-1)+3)

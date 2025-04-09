@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -299,7 +299,7 @@ TEST_RESU(
 
 MA_POI = CREA_MAILLAGE(MAILLAGE=MA, INFO=2, CREA_POI1=_F(GROUP_NO="A", NOM_GROUP_MA="POI_A"))
 
-MA_POI = DEFI_GROUP(reuse=MA_POI, MAILLAGE=MA_POI, CREA_GROUP_MA=(_F(NOM="N1", MAILLE="N1"),))
+MA_POI = DEFI_GROUP(reuse=MA_POI, MAILLAGE=MA_POI, CREA_GROUP_MA=(_F(NOM="N1", MAILLE="M2"),))
 
 CHMAT_D = AFFE_MATERIAU(MAILLAGE=MA_POI, AFFE=_F(TOUT="OUI", MATER=MATE))
 

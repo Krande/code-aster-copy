@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -202,7 +203,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
         do ino = 1, nbterm
             nomnoe = zk8(idnoeu+ino-1)
-            call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
+            in = char8_to_int(nomnoe, noma, "NOEUD")
             noeud_rela(ino) = in
             cmp = zk8(iddl+ino-1)
             icmp = indik8(nomcmp, cmp, 1, nbcmp)

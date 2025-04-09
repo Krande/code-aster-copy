@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
 #include "asterfort/mmtann.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -96,9 +97,9 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
 ! --- NOM DE L'ENTITE (NOEUD OU MAILLE)
 !
     if (typenm .eq. 'MAIL') then
-        call jenuno(jexnum(noma//'.NOMMAI', numenm), nomenm)
+        nomenm = int_to_char8(numenm)
     else if (typenm .eq. 'NOEU') then
-        call jenuno(jexnum(noma//'.NOMNOE', numenm), nomenm)
+        nomenm = int_to_char8(numenm)
     else
         ASSERT(.false.)
     end if

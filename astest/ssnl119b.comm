@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,10 +84,8 @@ MAIL = MODI_MAILLAGE(
 )
 
 # creation du renforcement supplementaire
-MA = CREA_MAILLAGE(
-    MAILLAGE=MAIL, CREA_MAILLE=(_F(NOM="RENF_H", GROUP_MA="POUTRE", PREF_MAILLE="H"),)
-)
-DEFI_GROUP(MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="HM52", MAILLE="H52"))
+MA = CREA_MAILLAGE(MAILLAGE=MAIL, CREA_MAILLE=(_F(NOM="RENF_H", GROUP_MA="POUTRE"),))
+DEFI_GROUP(MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="HM52", MAILLE="M84"))
 
 # -----------------------------------------------
 # CREATION DU MODELE

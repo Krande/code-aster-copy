@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,6 @@ subroutine stkcoo(ifl, icl, iv, rv, cv, &
     else if (irtet .eq. 2) then
         goto 2
     end if
-!
 ! - CREATION DE NOM_DU_NOEUD DANS LE REPERTOIRE NOMNOE
 !
     nomn = '        '
@@ -111,6 +110,7 @@ subroutine stkcoo(ifl, icl, iv, rv, cv, &
     else
         call utmess('F', 'MODELISA7_10', sk=nomn)
     end if
+!
 !
 ! - INCREMENTATION NUMERO DU NOEUD
 !

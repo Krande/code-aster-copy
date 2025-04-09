@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -729,7 +729,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N1"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1"),
 )
 
 TEST_TABLE(
@@ -739,7 +739,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N321"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="321"),
 )
 
 TEST_TABLE(
@@ -749,7 +749,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N961"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="961"),
 )
 
 TEST_TABLE(
@@ -759,7 +759,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N993"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="993"),
 )
 
 TEST_TABLE(
@@ -769,7 +769,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N962"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="962"),
 )
 
 TEST_TABLE(
@@ -779,7 +779,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N3361"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="3361"),
 )
 
 TEST_TABLE(
@@ -789,7 +789,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N3364"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="3364"),
 )
 
 TEST_TABLE(
@@ -799,7 +799,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N3360"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="3360"),
 )
 
 TEST_TABLE(
@@ -809,7 +809,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N3359"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="3359"),
 )
 
 TEST_TABLE(
@@ -819,7 +819,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N3355"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="3355"),
 )
 
 TEST_TABLE(
@@ -829,7 +829,7 @@ TEST_TABLE(
     PRECISION=1.0e-3,
     NOM_PARA="SIYY",
     TABLE=T1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N3356"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="3356"),
 )
 
 FIN()

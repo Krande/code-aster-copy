@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ IMPR_TABLE(
 
 
 TEST_TABLE(
-    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="N1531"),
+    FILTRE=_F(NOM_PARA="NOEUD_CABLE", VALE_K="1531"),
     REFERENCE="AUTRE_ASTER",
     VALE_CALC=6.5854399299915,
     VALE_REFE=6.461066164316,

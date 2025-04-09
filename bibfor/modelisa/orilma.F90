@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine orilma(noma, ndim, listCellNume, nbCell, norien, &
 #include "asterfort/oriema.h"
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: ndim, nbCell, norien, ntrait, nbmavo, mailvo(*)
     integer, pointer :: listCellNume(:)
@@ -71,7 +72,7 @@ subroutine orilma(noma, ndim, listCellNume, nbCell, norien, &
     aster_logical :: hasSkin1D, hasSkin2D
     character(len=2) :: kdim
     character(len=8) :: cellTypeName, nomail, typ3d
-    character(len=24) :: mailma, nomob1
+    character(len=24) :: nomob1
     character(len=24) :: valk(2)
     integer, pointer :: ori1(:) => null()
     integer, pointer :: ori2(:) => null()
@@ -88,7 +89,6 @@ subroutine orilma(noma, ndim, listCellNume, nbCell, norien, &
 ! --- INITIALISATIONS :
 !     ---------------
     call infniv(ifm, niv)
-    mailma = noma//'.NOMMAI'
 !
 ! --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
 !     ---------------------------------------
@@ -117,7 +117,7 @@ subroutine orilma(noma, ndim, listCellNume, nbCell, norien, &
     hasSkin2D = .false.
     do iCell = 1, nbCell
         cellNume = listCellNume(iCell)
-        call jenuno(jexnum(mailma, cellNume), nomail)
+        nomail = int_to_char8(cellNume, noma, 'MAILLE')
         ori3(iCell) = nomail
         ori1(iCell) = zi(p2+cellNume+1-1)-zi(p2+cellNume-1)
         ori2(iCell) = zi(p2+cellNume-1)

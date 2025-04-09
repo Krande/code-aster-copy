@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,12 +47,12 @@ MA1 = LIRE_MAILLAGE(VERI_MAIL=_F(VERIF="OUI"), FORMAT="MED")
 
 MA1 = DEFI_GROUP(reuse=MA1, MAILLAGE=MA1, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MA = CREA_MAILLAGE(MAILLAGE=MA1, CREA_MAILLE=_F(NOM="PLAQ2", GROUP_MA="PLAQ1", PREF_MAILLE="MAILM"))
+MA = CREA_MAILLAGE(MAILLAGE=MA1, CREA_MAILLE=_F(NOM="PLAQ2", GROUP_MA="PLAQ1"))
 
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_MA=(_F(NOM="MAILM10", MAILLE="MAILM40"), _F(NOM="M10", MAILLE="M40")),
+    CREA_GROUP_MA=(_F(NOM="MAILM10", MAILLE="M90"), _F(NOM="M10", MAILLE="M40")),
     CREA_GROUP_NO=(
         _F(NOM="N10", NOEUD="N10"),
         _F(NOM="N12", NOEUD="N12"),

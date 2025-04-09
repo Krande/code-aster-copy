@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ MATER2 = DEFI_MATERIAU(ELAS=_F(E=220000.0, NU=0.33, ALPHA=1.6e-7, RHO=8300.0))
 # 2. Lecture du maillage
 #
 MAILTRQU = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=19)
-DEFI_GROUP(MAILLAGE=MAILTRQU, CREA_GROUP_MA=_F(NOM="M43", MAILLE="M43"))
+DEFI_GROUP(MAILLAGE=MAILTRQU, CREA_GROUP_MA=_F(NOM="M43", MAILLE="M23"))
 #
 # 3. Calcul
 # 3.1. Modele mecanique
@@ -195,7 +195,7 @@ IMPR_RESU(
     FORMAT="MED",
     RESU=(
         _F(RESULTAT=RESUTRQ2, NOM_CHAM="DEPL", GROUP_NO="OPPOSE"),
-        _F(RESULTAT=RESUTRQ2, NOM_CHAM="EPSI_ELNO", GROUP_MA="TRIA", MAILLE="M43"),
+        _F(RESULTAT=RESUTRQ2, NOM_CHAM="EPSI_ELNO", GROUP_MA="TRIA", MAILLE="M23"),
     ),
 )
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ subroutine cfapre(mesh, ds_contact, time_curr)
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -156,7 +157,7 @@ subroutine cfapre(mesh, ds_contact, time_curr)
 !
 ! ------- NOM DU NOEUD
 !
-            call jenuno(jexnum(mesh//'.NOMNOE', numnoe(1)), nomnoe)
+            nomnoe = int_to_char8(numnoe(1))
 !
 ! ------- INFOS APPARIEMENT
 !

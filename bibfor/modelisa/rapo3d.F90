@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/veripl.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: charge
     character(len=14) :: numddl
@@ -91,7 +92,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=16) :: motfac, motcle(4), typmcl(4), option
     character(len=19) :: ligrmo, ligrel
     character(len=24) :: lchin(2), lchout(2), nolili, lismai, valk(2)
-    character(len=24) :: lisnoe, noeuma, vale1, vale2, grnoma
+    character(len=24) :: lisnoe, vale1, vale2, grnoma
     integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, vali(2)
     integer :: iop, nliai, i, narl, ibid, inom
     integer :: nbcmp, nddla, nbec, nlili, k, iaprno, lonlis, ilisno
@@ -192,7 +193,6 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- MAILLAGE ASSOCIE AU MODELE
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
-    noeuma = noma//'.NOMNOE'
     grnoma = noma//'.GROUPENO'
 !
 ! --- -----------------------------------------------------------------
@@ -285,7 +285,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     end if
     call jeveuo('&&RAPO3D.NO2', 'L', jno2)
     noepou = zk8(jno2)
-    call jenonu(jexnom(noeuma, noepou), numnop)
+    numnop = char8_to_int(noepou, noma, 'NOEUD')
     call jedetr('&&RAPO3D.NO2')
 !   --- coordonnees du noeud poutre
     xpou = vale(3*(numnop-1)+1)
@@ -299,7 +299,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     if (option .eq. 'PLAQ_POUT_ORTH') then
         do i = 1, lonlis
 !           NUMERO DU NOEUD COURANT DE LA LISTE
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1)), ino)
+            ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !           IL DOIT ETRE DIFFERENT DU NOEUD DE LA POUTRE
             if (ino .eq. numnop) then
                 valk(1) = noepou
@@ -323,7 +323,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     else
         do i = 1, lonlis
 !           NUMERO DU NOEUD COURANT DE LA LISTE
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1)), ino)
+            ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
             dg = prnm((ino-1)*nbec+1)
             do j = 4, 6
                 icmp(j) = indik8(nomcmp, cmp(j), 1, nddla)
@@ -537,7 +537,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -561,7 +561,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -585,7 +585,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -616,7 +616,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA COQUE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -656,7 +656,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE SURFACE DU MASSIF
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -696,7 +696,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE SURFACE DU MASSIF
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -741,7 +741,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         nbterm = 3*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
         do i = 1, lonlis
-            call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+            ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
             ival = zi(iaprno+(ino-1)*(nbec+2))
 !
@@ -777,7 +777,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         nbterm = 3*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
         do i = 1, lonlis
-            call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+            ino = char8_to_int(zk8(ilisno+i-1), noma, 'NOEUD')
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
             ival = zi(iaprno+(ino-1)*(nbec+2))
 !

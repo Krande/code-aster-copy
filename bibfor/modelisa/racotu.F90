@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/normev.h"
 #include "asterfort/raorfi.h"
 #include "asterfort/reajre.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: lonlis, iprno(*)
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod
@@ -61,7 +62,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 !     CALCUL DU RAYON DU MAILLAGE COQUE A L'AIDE DU PREMIER N
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
-    call jenonu(jexnom(noma//'.NOMNOE', klisno(1)), numno1)
+    numno1 = char8_to_int(klisno(1))
     coori1(1) = vale(3*(numno1-1)+1)
     coori1(2) = vale(3*(numno1-1)+2)
     coori1(3) = vale(3*(numno1-1)+3)

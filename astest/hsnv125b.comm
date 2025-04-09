@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,17 +32,17 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_MA=(
-        _F(NOM="BAS", MAILLE="BAS"),
-        _F(NOM="DROITE", MAILLE="DROITE"),
-        _F(NOM="GAUCHE", MAILLE="GAUCHE"),
-        _F(NOM="HAUT", MAILLE="HAUT"),
+        _F(NOM="BAS", MAILLE="M5"),
+        _F(NOM="DROITE", MAILLE="M3"),
+        _F(NOM="GAUCHE", MAILLE="M2"),
+        _F(NOM="HAUT", MAILLE="M4"),
     ),
     CREA_GROUP_NO=(
-        _F(NOM="NO4", NOEUD="NO4"),
-        _F(NOM="NO6", NOEUD="NO6"),
-        _F(NOM="NO2", NOEUD="NO2"),
-        _F(NOM="NO1", NOEUD="NO1"),
-        _F(NOM="NO8", NOEUD="NO8"),
+        _F(NOM="NO4", NOEUD="N4"),
+        _F(NOM="NO6", NOEUD="N6"),
+        _F(NOM="NO2", NOEUD="N2"),
+        _F(NOM="NO1", NOEUD="N1"),
+        _F(NOM="NO8", NOEUD="N8"),
     ),
 )
 

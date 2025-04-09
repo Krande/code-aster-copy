@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     real(kind=8) :: axex(3), axey(3), xnorm, epsi, vecnor(3)
     real(kind=8) :: vn1n2(3), vn1n3(3)
     character(len=19) :: cartgr
-    character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex
+    character(len=24) :: tmpngr, tmpvgr, nomagr, connex
     character(len=32) :: kjexn
     integer, pointer :: nume_ma(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -78,7 +78,6 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat0)
     AS_ALLOCATE(vi=nume_ma, size=nbmat0)
     nomagr = noma//'.GROUPEMA'
-    nomama = noma//'.NOMMAI'
     connex = noma//'.CONNEX'
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION

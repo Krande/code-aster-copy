@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -610,7 +610,7 @@ TEST_TABLE(
     VALE_CALC=8.2925753893e-05,
     NOM_PARA="ECART",
     TABLE=DYN0,
-    FILTRE=(_F(NOM_PARA="NOEUD_I", VALE_K="N024"), _F(NOM_PARA="NOEUD_J", VALE_K="N024")),
+    FILTRE=(_F(NOM_PARA="NOEUD_I", VALE_K="24"), _F(NOM_PARA="NOEUD_J", VALE_K="24")),
 )
 
 

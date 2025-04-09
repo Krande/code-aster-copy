@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,6 @@ Ceci est dangereux car cela peut produire un maillage non conforme."""
         """Vous essayez de modifier la topologie du maillage après avoir fait CREA_MAILLAGE/DECOUPE_LAC sur ce même maillage.
 C'est interdit, vous ne pouvez modifier que les coordonnées des noeuds comme dans les mots clés DEFORME et TRANSLATION.
 Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/DECOUPE_LAC sur votre maillage."""
-    ),
-    14: _(
-        """Erreur utilisateur dans CREA_POI1 : on cherche à créer une maille de type POI1 de nom %(k1)s, mais il existe déjà dans le maillage une maille de même nom."""
     ),
     15: _("""Le mot-clef MAILLAGE est obligatoire."""),
     20: _(

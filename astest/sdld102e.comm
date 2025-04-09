@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -263,7 +263,7 @@ SQUEL = DEFI_SQUELETTE(
         ),
     ),
 )
-DEFI_GROUP(MAILLAGE=SQUEL, CREA_GROUP_NO=_F(NOEUD="NO3", NOM="NO3"))
+DEFI_GROUP(MAILLAGE=SQUEL, CREA_GROUP_NO=_F(NOEUD="N3", NOM="NO3"))
 #
 
 MODCOT = REST_SOUS_STRUC(RESU_GENE=RESGEN, TOUT_ORDRE="OUI", SOUS_STRUC="COTE1")
@@ -416,7 +416,7 @@ TRAN1 = REST_GENE_PHYS(
     LIST_INST=LIST_R,
     INTERPOL="LIN",
     TOUT_CHAM="OUI",
-    NOEUD="NO3",
+    NOEUD="N3",
 )
 
 
@@ -428,7 +428,7 @@ TRAN2 = REST_GENE_PHYS(
     LIST_INST=LIST_R,
     INTERPOL="LIN",
     TOUT_CHAM="OUI",
-    NOEUD="NO3",
+    NOEUD="N3",
 )
 
 
@@ -440,7 +440,7 @@ TRAN3 = REST_GENE_PHYS(
     LIST_INST=LIST_R,
     INTERPOL="LIN",
     TOUT_CHAM="OUI",
-    NOEUD="NO3",
+    NOEUD="N3",
 )
 
 #
@@ -451,7 +451,7 @@ TRAN4 = REST_GENE_PHYS(
     LIST_INST=LIST_R,
     INTERPOL="LIN",
     TOUT_CHAM="OUI",
-    NOEUD="NO3",
+    NOEUD="N3",
 )
 
 
@@ -464,7 +464,7 @@ TRAN5 = REST_SOUS_STRUC(
     LIST_INST=LIST_R,
     INTERPOL="LIN",
     TOUT_CHAM="OUI",
-    NOEUD="NO3",
+    NOEUD="N3",
     SQUELETTE=SQUEL,
 )
 

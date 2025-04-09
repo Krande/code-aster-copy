@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,10 +56,11 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: ifm, ifl
     character(len=24) :: cooval, coodsc, grpnoe, grpmai, connex
-    character(len=24) :: titre, nommai, nomnoe, typmai
+    character(len=24) :: titre, nomnoe, nommai, typmai
     character(len=24) :: adapma
     character(len=8) :: nomu
 !     OUT
@@ -220,7 +221,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
     call jemarq()
 !
-    call sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
+    call sdmail(nomu, cooval, coodsc, &
                 grpnoe, gpptnn, grpmai, gpptnm, &
                 connex, titre, typmai, adapma)
 !
@@ -434,15 +435,17 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
 !  3  CREATION  DES OBJETS TEMPORAIRES A TRANSCODER SUR LA VOLATILE
 !     ET DES OBJETS PERMANENTS NON TRANSCODABLES SUR LA GLOBALE
-!     -------------------------------------------------------------
+!     --------------------------------------------------------------
 !
 ! -   OBJET NOMMAI    = REPERTOIRE NOMS DE MAILLES  K8 SUR GLOBALE
 !
+    nommai = '&&LRMAST.NOMMAI'
     call jecreo(nommai, 'G N K8')
     call jeecra(nommai, 'NOMMAX', nbmail)
 !
 ! -   OBJET NOMNOE    = REPERTOIRE NOMS DE NOEUDS K8 SUR GLOBALE
 !
+    nomnoe = '&&LRMAST.NOMNOE'
     call jecreo(nomnoe, 'G N K8')
     call jeecra(nomnoe, 'NOMMAX', nbnoeu)
 !
@@ -603,7 +606,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 !
     call stkmai(ifl, icl, iv, rv, cv, &
                 cnl, mclmai, nbmmai, numele, numnod, &
-                conxv, typmai, fmtmai, irtet)
+                conxv, typmai, fmtmai, irtet, nommai)
     if (irtet .eq. 1) then
         goto 800
     else if (irtet .eq. 2) then
@@ -659,7 +662,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
         call jenuno(jexnum(conxv, i), nomn)
         call jeveuo(jexnum(conxv, i), 'L', jvcnx)
         call jelira(jexnum(conxv, i), 'LONMAX', nbno)
-        call jenonu(jexnom(nomu//'.NOMMAI', nomn), ibid)
+        call jenonu(jexnom(nommai, nomn), ibid)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbno)
         call jeecra(jexnum(connex, ibid), 'LONUTI', nbno)
         call jeveuo(jexnum(connex, ibid), 'E', jgcnx)
@@ -808,6 +811,8 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
     call jedetr(nomu//'.GROUPMAV')
     call jedetr(gpptnv)
     call jedetr(gpptmv)
+    call jedetr(nomnoe)
+    call jedetr(nommai)
 !
 ! FERMETURE DU FICHIER
 !

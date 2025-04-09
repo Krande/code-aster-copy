@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,31 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 
 
 MA = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=19)
+nodeLabels = ["N" + str(i) for i in range(MA.getNumberOfNodes())]
+MA.addNodeLabels(nodeLabels)
+cellLabels = [
+    "M9",
+    "M10",
+    "M11",
+    "M12",
+    "M13",
+    "M14",
+    "M15",
+    "M16",
+    "M17",
+    "M18",
+    "M19",
+    "M20",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+]
+MA.addCellLabels(cellLabels)
 
 MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
@@ -77,7 +102,6 @@ PRESLU = LIRE_RESU(
         NOM_CMP=("PRES",),
     ),
 )
-
 
 TEST_RESU(
     RESU=_F(

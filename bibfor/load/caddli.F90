@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=16), intent(in) :: keywordfact
     character(len=8), intent(in) :: load, mesh, model
@@ -159,7 +160,8 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
 ! - Local coordinate system (dummy)
 !
-    call jelira(mesh//'.NOMNOE', 'NOMMAX', nbnoeu)
+    call jelira(mesh//'.COORDO    .VALE', 'LONMAX', nbnoeu)
+    nbnoeu = nbnoeu/3
     call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !
 ! - Xfem fields
@@ -219,7 +221,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
-                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                name_node = int_to_char8(nume_node, mesh, "NOEUD")
                 cmp_nb = 0
                 cmp_nb_depl = 0
                 cmp_nb_rota = 0
@@ -307,7 +309,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
-                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                name_node = int_to_char8(nume_node, mesh, "NOEUD")
                 call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node, &
                             zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)), &
                             coef_type, cmp_nb, cmp_name, cmp_acti, valeType, &

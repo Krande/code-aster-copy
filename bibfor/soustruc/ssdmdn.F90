@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine ssdmdn(mag)
 #include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -37,6 +38,8 @@ subroutine ssdmdn(mag)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
@@ -59,7 +62,7 @@ subroutine ssdmdn(mag)
     integer ::  ianon2, iasupm, ino, ino1
     integer :: inol, iocc, isma, kk, lmail, lnoeu, longt
     integer :: lpref, n1, n2, n3, nbnoe, nbnoet, nbnoex, lpr(1)
-    integer :: nbnol, nbsma, nnnoe, nocc
+    integer :: nbnol, nbsma, nnnoe, nocc, exinno
     character(len=8), pointer :: vnomacr(:) => null()
     integer, pointer :: dime_2(:) => null()
     integer, pointer :: conx(:) => null()
@@ -111,6 +114,7 @@ subroutine ssdmdn(mag)
                 nomacr = vnomacr(isma)
                 call jeveuo(nomacr//'.CONX', 'L', vi=conx)
                 call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
+                call jeexin(mal//'.NOMNOE', exinno)
                 nbnoe = dime_2(4*(isma-1)+1)
                 nbnol = dime_2(4*(isma-1)+2)
                 nbnoet = nbnoe+nbnol
@@ -118,7 +122,10 @@ subroutine ssdmdn(mag)
                     ino = zi(iasupm-1+i)
                     if (ino .gt. nnnoe) goto 3
                     ino1 = conx(3*(i-1)+2)
-                    call jenuno(jexnum(mal//'.NOMNOE', ino1), nomnol)
+                    nomnol = int_to_char8(ino1, mal, "NOEUD")
+                    if (exinno .eq. 0) then
+                        nomnol = "N"//nomnol(1:7)
+                    end if
                     i1 = 1
                     if (lpref .gt. 0) zk8(ianon2-1+ino) (i1:i1-1+lpref) = pref(1:lpref)
                     i1 = i1+lpref
@@ -145,7 +152,7 @@ subroutine ssdmdn(mag)
             call jeveuo(nomacr//'.LINO', 'L', vi=lino)
             call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
-            call jenonu(jexnom(mal//'.NOMNOE', nomnol), inol)
+            inol = char8_to_int(nomnol, mal, 'NOEUD')
             kk = indiis(lino, inol, 1, nbnoex)
             if (kk .eq. 0) then
                 valk(1) = nomnol

@@ -90,7 +90,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     tol = 1.0d+08*r8prem()
 !
 !     RECUPERATION DU NOMBRE DE MAILLES
-    call jelira(noma//'.NOMMAI', 'NOMUTI', nbmail)
+    call jelira(noma//'.TYPMAIL', 'LONMAX', nbmail)
 !
 !     RECUPERATION DE LA MODELISATION DES MAILLES
 !     VERIFICATION : PAS DE MAILLES TARDIVES

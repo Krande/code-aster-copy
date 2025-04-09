@@ -277,13 +277,11 @@ ASTERINTEGER ContactPairing::getContCellType( const ContactAlgo contAlgo,
     return contTypeNume;
 }
 
-void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, const int nbZoneCont,
-                                                  MapLong &contactElemType,
-                                                  const JeveuxCollectionLong meshConnectivity,
-                                                  std::vector< VectorLong > &listContElem,
-                                                  std::vector< VectorPairLong > &listContType,
-                                                  SetLong &slaveNodePaired,
-                                                  SetLong &slaveCellPaired ) {
+void ContactPairing::createVirtualElemForContact(
+    const ASTERLOGICAL lAxis, const int nbZoneCont, MapLong &contactElemType,
+    const JeveuxContiguousCollectionLong meshConnectivity, std::vector< VectorLong > &listContElem,
+    std::vector< VectorPairLong > &listContType, SetLong &slaveNodePaired,
+    SetLong &slaveCellPaired ) {
 
     // contactElemType: the number of elements for a given type
     // listContType: list of contact cells attached to pair (cellType, iPair)
@@ -349,25 +347,26 @@ void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, cons
 
             // Get nodes
             auto slav_cell_con = ( *meshConnectivity )[slavCellUsedNume + 1];
+            auto toAdd1 = slav_cell_con->toVector();
+            slav_cell_con = JeveuxCollectionObject< long int >();
             auto mast_cell_con = ( *meshConnectivity )[mastCellNume + 1];
+            auto toAdd2 = mast_cell_con->toVector();
 
             // Contact element on zone
             VectorLong contactElemZone;
-            contactElemZone.reserve( slav_cell_con->size() + mast_cell_con->size() + 1 );
+            contactElemZone.reserve( toAdd1.size() + toAdd2.size() + 1 );
 
             // Copy slave nodes to contact element
-            auto toAdd = slav_cell_con->toVector();
-            contactElemZone.insert( contactElemZone.end(), toAdd.begin(), toAdd.end() );
+            contactElemZone.insert( contactElemZone.end(), toAdd1.begin(), toAdd1.end() );
 
             // Add slave nodes to list of paired nodes
-            slaveNodePaired.insert( toAdd.begin(), toAdd.end() );
+            slaveNodePaired.insert( toAdd1.begin(), toAdd1.end() );
 
             // Add slave cell to list of paired cells
             slaveCellPaired.insert( slavCellNume );
 
             // Copy master nodes to contact element
-            toAdd = mast_cell_con->toVector();
-            contactElemZone.insert( contactElemZone.end(), toAdd.begin(), toAdd.end() );
+            contactElemZone.insert( contactElemZone.end(), toAdd2.begin(), toAdd2.end() );
 
             // Add type of contact element
             contactElemZone.push_back( typeElemNume );
@@ -383,7 +382,7 @@ void ContactPairing::createVirtualElemForContact( const ASTERLOGICAL lAxis, cons
 
 void ContactPairing::createVirtualElemForOrphelanNodes(
     const ASTERLOGICAL lAxis, const int nbZoneCont, MapLong &contactElemType,
-    const JeveuxCollectionLong meshConnectivity, std::vector< VectorLong > &listContElem,
+    const JeveuxContiguousCollectionLong meshConnectivity, std::vector< VectorLong > &listContElem,
     std::vector< VectorPairLong > &listContType, SetLong &slaveNodePaired,
     SetLong &slaveCellPaired ) {
 
@@ -522,7 +521,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     // Mesh
     auto mesh = getMesh();
-    const JeveuxCollectionLong meshConnectivity = mesh->getConnectivity();
+    const auto meshConnectivity = mesh->getConnectivity();
 
     // Get pairing parameters
     const ASTERINTEGER nbZoneCont = _contDefi->getNumberOfContactZones();
@@ -564,7 +563,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     // Create list of virtual elements (NEMA object)
     auto ContactResFEDNema = _fed->getVirtualCellsDescriptor();
-    ContactResFEDNema->allocateContiguousNumbered( listContElem );
+    ContactResFEDNema->allocate( listContElem );
 
     // Number of groups of elements and length of FED for contact element
     ASTERINTEGER nbGrel = 0, lielLont = 0;
@@ -576,7 +575,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     // Create list of elements (LIEL object)
     auto ContactResFEDLiel = _fed->getListOfGroupsOfElements();
-    ContactResFEDLiel->allocateContiguousNumbered( nbGrel, lielLont, Variable );
+    ContactResFEDLiel->allocate( nbGrel, lielLont, Variable );
 
     // Add virtual elements for each GREL
     for ( auto &[type, size] : contactElemType ) {

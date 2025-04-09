@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine cnonor(nomo, gran, base, cno)
 #include "asterfort/utmess.h"
 #include "asterfort/vericp.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=1) :: base
     character(len=8) :: nomo, gran, cno
@@ -148,8 +149,9 @@ subroutine cnonor(nomo, gran, base, cno)
 !
 !-----------------------------------------------------------------------
 !
-    nomnoe = noma//'.NOMNOE'
-    call jelira(nomnoe, 'NOMMAX', nbnoeu)
+    nomnoe = noma//'.COORDO    .VALE'
+    call jelira(nomnoe, 'LONMAX', nbnoeu)
+    nbnoeu = nbnoeu/3
     typval = 'R'
 !
 !     AFFE DU CHAMP AUX NOEUDS
@@ -164,7 +166,7 @@ subroutine cnonor(nomo, gran, base, cno)
 !
     do ii = 1, nbno
         ino = ln(ii)
-        call jenuno(jexnum(nomnoe, ino), zk8(jnno+ino-1))
+        zk8(jnno+ino-1) = int_to_char8(ino)
 !
         do idim = 1, ndim
             valr(idim) = normale(ndim*(ii-1)+idim)

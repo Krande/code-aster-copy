@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 # Python dump of geometry from salome: unit 26
 mesh = LIRE_MAILLAGE(UNITE=20)
 
-mesh1 = CREA_MAILLAGE(
-    COQUE_SOLIDE=_F(GROUP_MA=("Vol",), GROUP_MA_SURF=("Ssup",), PREF_NOEUD="NS", PREF_NUME=1),
-    MAILLAGE=mesh,
-)
+mesh1 = CREA_MAILLAGE(COQUE_SOLIDE=_F(GROUP_MA=("Vol",), GROUP_MA_SURF=("Ssup",)), MAILLAGE=mesh)
 
 model = AFFE_MODELE(
     AFFE=_F(MODELISATION="COQUE_SOLIDE", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh1

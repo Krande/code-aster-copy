@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MA = CREA_MAILLAGE(MAILLAGE=MAIL, MODI_MAILLE=_F(GROUP_MA="ELT", OPTION="QUAD8_9", PREF_NOEUD="NC"))
+MA = CREA_MAILLAGE(MAILLAGE=MAIL, MODI_MAILLE=_F(GROUP_MA="ELT", OPTION="QUAD8_9"))
 
 MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(GROUP_MA=("LI1", "LI2", "LI3", "LI4")))
 S = 2.82743338823e-05

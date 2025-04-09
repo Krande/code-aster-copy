@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ GLOC1 = CALC_G(
 TEST_TABLE(
     TABLE=GLOC1,
     NOM_PARA="G",
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N373"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="373"),
     VALE_CALC=11.697421209558945,
     VALE_REFE=1.158648e01,
     PRECISION=0.04,
@@ -94,7 +94,7 @@ TEST_TABLE(
 TEST_TABLE(
     TABLE=GLOC1,
     NOM_PARA="G",
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2670"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="2670"),
     VALE_CALC=11.685601151464493,
     VALE_REFE=1.158648e01,
     PRECISION=0.01,
@@ -104,7 +104,7 @@ TEST_TABLE(
 TEST_TABLE(
     TABLE=GLOC1,
     NOM_PARA="G",
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N345"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="345"),
     VALE_CALC=11.678091585435155,
     VALE_REFE=1.158648e01,
     PRECISION=0.035,
@@ -114,7 +114,7 @@ TEST_TABLE(
 TEST_TABLE(
     TABLE=GLOC1,
     NOM_PARA="G_EPSI",
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N277"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="277"),
     VALE_CALC=11.205934362427195,
     VALE_REFE=1.158648e01,
     PRECISION=0.04,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ MAYA = LIRE_MAILLAGE(FORMAT="ASTER")
 MAYA = DEFI_GROUP(
     reuse=MAYA,
     MAILLAGE=MAYA,
-    CREA_GROUP_MA=(_F(NOM="MC2", MAILLE="MC2"), _F(NOM="MC1", MAILLE="MC1")),
-    CREA_GROUP_NO=(_F(NOM="N8", NOEUD="N8"), _F(NOM="M8", NOEUD="M8"), _F(NOM="O8", NOEUD="O8")),
+    CREA_GROUP_MA=(_F(NOM="MC2", MAILLE="M44"), _F(NOM="MC1", MAILLE="M43")),
+    CREA_GROUP_NO=(_F(NOM="N8", NOEUD="N8"), _F(NOM="M8", NOEUD="N22"), _F(NOM="O8", NOEUD="N35")),
 )
 
 #

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine mmmcri_geom(mesh, disp_prev, loop_geom_disp, disp_curr, &
 #include "asterfort/jexnum.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/vtaxpy.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -137,7 +138,7 @@ subroutine mmmcri_geom(mesh, disp_prev, loop_geom_disp, disp_curr, &
     if (geom_dif1_node .eq. 0) then
         loop_geom_node = ' '
     else
-        call jenuno(jexnum(mesh//'.NOMNOE', geom_dif1_node), node_name)
+        node_name = int_to_char8(geom_dif1_node)
     end if
     loop_geom_node = node_name
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine cm_dclac(meshIn, meshOut)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnmpmc.h"
+#include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/cpifpa.h"
 #include "asterfort/cppagn.h"
@@ -30,7 +31,13 @@ subroutine cm_dclac(meshIn, meshOut)
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gtgrma.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/infniv.h"
 #include "asterfort/as_allocate.h"
@@ -52,12 +59,13 @@ subroutine cm_dclac(meshIn, meshOut)
 !
     integer :: ifm, niv
     character(len=24), parameter :: cninv = '&&CPPAGN.CNINV'
-    character(len=24) :: typ_dec_lac
+    character(len=24) :: typ_dec_lac, nomnoe, nommai
     character(len=16), parameter :: keywfact = 'DECOUPE_LAC'
     character(len=16) :: ligrma
-    character(len=8) :: meshAux
+    character(len=8) :: meshAux, nomn
+    character(len=7) :: knume
     integer :: nbSlavCellGroup, iSlavCellGroup, nbtrav, jvConxInv
-    integer :: nbCell, nbCellInit, nb_ma_test
+    integer :: nbCell, nbCellInit, nb_ma_test, nbnoeu, nbmail, ino, ima
     integer :: typ_dec
     integer, pointer :: li_trav(:) => null()
     integer, pointer :: listCell(:) => null()
@@ -89,6 +97,25 @@ subroutine cm_dclac(meshIn, meshOut)
     end if
 !
     call copisd('MAILLAGE', 'V', meshIn, meshAux)
+    call jelira(meshAux//'.COORDO    .VALE', 'LONMAX', nbnoeu)
+    nbnoeu = nbnoeu/3
+    nomnoe = meshAux//'.NOMNOE'
+    call jecreo(nomnoe, 'G N K8')
+    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
+    do ino = 1, nbnoeu
+        call codent(ino, 'G', knume)
+        nomn = 'N'//knume
+        call jecroc(jexnom(nomnoe, nomn))
+    end do
+    call jelira(meshAux//'.TYPMAIL', 'LONMAX', nbmail)
+    nommai = meshAux//'.NOMMAI'
+    call jecreo(nommai, 'G N K8')
+    call jeecra(nommai, 'NOMMAX', nbmail)
+    do ima = 1, nbmail
+        call codent(ima, 'G', knume)
+        nomn = 'M'//knume
+        call jecroc(jexnom(nommai, nomn))
+    end do
 !
     do iSlavCellGroup = 1, nbSlavCellGroup
 ! ----- LISTE DE MAILLE DU GROUP_MA
@@ -137,6 +164,8 @@ subroutine cm_dclac(meshIn, meshOut)
     call jedetr(meshAux//'.CONOPA')
     call jedetr(meshAux//'.COMAPA')
     call jedetr(meshAux)
+    call jedetr(meshOut//'.NOMNOE')
+    call jedetr(meshOut//'.NOMMAI')
     call jedetr(ligrma)
 !
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,9 +63,7 @@ MAIL = MODI_MAILLAGE(
     ORIE_NORM_COQUE=_F(GROUP_MA="DALLE", VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="A1"),
 )
 
-MA = CREA_MAILLAGE(
-    MAILLAGE=MAIL, CREA_MAILLE=(_F(NOM="DALLE_G", GROUP_MA="DALLE", PREF_MAILLE="G"),)
-)
+MA = CREA_MAILLAGE(MAILLAGE=MAIL, CREA_MAILLE=(_F(NOM="DALLE_G", GROUP_MA="DALLE"),))
 
 MO_G = AFFE_MODELE(
     MAILLAGE=MA,

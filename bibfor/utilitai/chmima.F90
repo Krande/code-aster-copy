@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/idensd.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbordr
     character(len=*) :: nomsd, nomsy, typmax, nocham, typcha
@@ -66,7 +67,6 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
     character(len=16) :: noms2
     character(len=19) :: nocha2, chextr, knum, chs1, chs2
     character(len=19) :: mcf
-    character(len=24) :: nomnoe
     character(len=5) :: sufv, sufsl
 !-----------------------------------------------------------------------
     integer :: i, iad, in, inoe, inumer, iocc
@@ -405,7 +405,6 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
         call dismoi('NUME_EQUA', chextr, 'CHAM_NO', repk=prno)
         call dismoi('NOM_MAILLA', chextr, 'CHAM_NO', repk=noma)
         call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
-        nomnoe = noma//'.NOMNOE'
 !
         do j = 0, neq-1
             zr(nvale+j) = zr(ivale+j)
@@ -421,7 +420,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
         call wkvect('&&CHMIMA.VALE_P.NT', 'V V R', nbnoe, jvpnt)
 !
         do in = 0, nbnoe-1
-            call jenuno(jexnum(nomnoe, in+1), nomn)
+            nomn = int_to_char8(in+1)
             call posddl('CHAM_NO', chextr, nomn, 'DX', inoe, &
                         zi(jddlx+in))
             call posddl('CHAM_NO', chextr, nomn, 'DY', inoe, &

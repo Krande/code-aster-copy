@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: champ1, repere, type, nom_cham
 ! ----------------------------------------------------------------------
@@ -409,7 +410,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                     xnormr = 0.0d0
                     call normev(axer, xnormr)
                     if (xnormr .lt. epsi) then
-                        call jenuno(jexnum(ma//'.NOMNOE', inoe), k8b)
+                        k8b = int_to_char8(inoe)
                         call utmess('A', 'ALGORITH2_13')
                         call jeveuo(ma//'.CONNEX', 'L', jconx1)
                         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -464,7 +465,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         xnormr = 0.0d0
                         call normev(axer, xnormr)
                         if (xnormr .lt. epsi) then
-                            call jenuno(jexnum(ma//'.NOMNOE', inoe), k8b)
+                            k8b = int_to_char8(inoe)
                             valk = k8b
                             call utmess('F', 'ALGORITH14_91', sk=valk)
                         end if
@@ -568,7 +569,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                     xnormr = 0.0d0
                     call normev(axer, xnormr)
                     if (xnormr .lt. epsi) then
-                        call jenuno(jexnum(ma//'.NOMNOE', inoe), k8b)
+                        k8b = int_to_char8(inoe)
                         call utmess('A', 'ALGORITH2_13')
                         call jeveuo(ma//'.CONNEX', 'L', jconx1)
                         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -621,7 +622,7 @@ subroutine chrpno(champ1, repere, nom_cham, type)
                         xnormr = 0.0d0
                         call normev(axer, xnormr)
                         if (xnormr .lt. epsi) then
-                            call jenuno(jexnum(ma//'.NOMNOE', inoe), k8b)
+                            k8b = int_to_char8(inoe)
                             valk = k8b
                             call utmess('F', 'ALGORITH14_91', sk=valk)
                         end if

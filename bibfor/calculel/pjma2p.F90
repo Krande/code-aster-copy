@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     integer :: ima, ipt, icmp, iad, iadime
     integer ::  jdimt, jpo2, nbtrou, jlitr
     integer :: jcesd, jcesl, iatypm
-    character(len=8) :: nom, mail2, noma
+    character(len=8) :: nom, mail2
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc, limato, litrou
     real(kind=8) :: xmoy(3), rayo
@@ -183,7 +183,6 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
         if (zi(jdimt) .eq. ndim) then
             nbpt = zi(jcesd-1+5+4*(ima-1)+1)
             if (nbpt .eq. 0) cycle
-            call jenuno(jexnum(mail2//'.NOMMAI', ima), noma)
             do ipg = 1, nbpt
                 zi(jpo2-1+ipo) = ima
                 zi(jpo2-1+ipo+1) = ipg
@@ -200,31 +199,6 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     zi(iadime-1+1) = nbno2p
     zi(iadime-1+3) = nbno2p
     zi(iadime-1+6) = 3
-!
-!
-!     4. CREATION DU .NOMNOE ET DU .NOMMAI DU NOUVEAU MAILLAGE
-!     ---------------------------------------------------------
-    call jecreo(ma2p//'.NOMNOE', 'V N K8')
-    call jeecra(ma2p//'.NOMNOE', 'NOMMAX', nbno2p)
-    call jecreo(ma2p//'.NOMMAI', 'V N K8')
-    call jeecra(ma2p//'.NOMMAI', 'NOMMAX', nbno2p)
-!
-!
-    if (nbno2p .ge. 10000000) then
-!       -- PLUS DE 10 MILLIONS DE NOEUDS, ON PASSE EN BASE 36
-        do k = 1, nbno2p
-            call codlet(k, 'G', nom(2:8))
-            call jecroc(jexnom(ma2p//'.NOMNOE', 'N'//nom(2:8)))
-            call jecroc(jexnom(ma2p//'.NOMMAI', 'M'//nom(2:8)))
-        end do
-    else
-!       -- MOINS DE 10 MILLIONS DE NOEUDS, ON RESTE EN BASE 10
-        do k = 1, nbno2p
-            call codent(k, 'G', nom(2:8))
-            call jecroc(jexnom(ma2p//'.NOMNOE', 'N'//nom(2:8)))
-            call jecroc(jexnom(ma2p//'.NOMMAI', 'M'//nom(2:8)))
-        end do
-    end if
 !
 !
 !

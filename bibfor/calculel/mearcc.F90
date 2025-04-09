@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine mearcc(option, mo, chin, chout)
 #include "asterfort/jexnum.h"
 #include "asterfort/srlima.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: mo
     character(len=16) :: option
@@ -153,8 +154,8 @@ subroutine mearcc(option, mo, chin, chout)
         if (zi(jma3d+ima-1) .eq. 0) goto 1
 !
         npt = zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
-        call jenuno(jexnum(ma//'.NOMMAI', zi(jma2d+ima-1)), k8b)
-        call jenuno(jexnum(ma//'.NOMMAI', zi(jma3d+ima-1)), k8b)
+        k8b = int_to_char8(zi(jma2d+ima-1))
+        k8b = int_to_char8(zi(jma3d+ima-1))
         do ipt = 1, npt
             do icp = 1, nbcmp2
                 nucmp = indik8(cesc3, comp(icp), 1, zi(jcesd3+1) &
@@ -165,8 +166,8 @@ subroutine mearcc(option, mo, chin, chout)
                 if (iad3 .eq. 0) then
                     numasu = zi(jma2d+ima-1)
                     numavo = zi(jma3d+ima-1)
-                    call jenuno(jexnum(ma//'.NOMMAI', numasu), nomasu)
-                    call jenuno(jexnum(ma//'.NOMMAI', numavo), nomavo)
+                    nomasu = int_to_char8(numasu)
+                    nomavo = int_to_char8(numavo)
                     valk(1) = nomavo
                     valk(2) = nomasu
                     call utmess('F', 'CALCULEL5_52', nk=2, valk=valk)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
     integer :: imail
     integer :: nbno, nbmat, nctot
     integer :: iret
-    character(len=24) :: maidim, cooval, nomnoe
+    character(len=24) :: maidim, cooval
     integer :: jdime, jcoor
     integer :: jcooro, jconxo, jcumuo
     character(len=19) :: ngrm1, ngrm2
@@ -139,7 +139,6 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
 !
     maidim = mailar(1:8)//'.DIME           '
     cooval = mailar(1:8)//'.COORDO    .VALE'
-    nomnoe = mailar(1:8)//'.NOMNOE         '
     call jeveuo(maidim, 'E', jdime)
     call jeveuo(cooval, 'E', jcoor)
 !
@@ -147,18 +146,6 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
 !
     do i = 1, 3*nbno
         zr(jcoor+i-1) = zr(jcooro+i-1)
-    end do
-!
-! --- RECOPIE DES NOMS DES ANCIENS NOEUDS
-!
-    do i = 1, nbno
-        call jenuno(jexnum(mail(1:8)//'.NOMNOE         ', i), nom)
-        call jeexin(jexnom(nomnoe, nom), iret)
-        if (iret == 0) then
-            call jecroc(jexnom(nomnoe, nom))
-        else
-            call utmess('F', 'MODELISA7_10', 1, nom)
-        end if
     end do
 !
 ! --- TABLEAU DE CORRESPONDANCE NOUV. MAILLES -> ANCIENNES MAILLES

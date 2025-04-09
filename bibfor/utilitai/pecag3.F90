@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle, &
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: ndim, nbmail
     real(kind=8) :: valpar(*)
@@ -101,7 +102,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle, &
 !
     else if (motcle(1:6) .eq. 'MAILLE') then
         do im = 1, nbmail
-            call jenonu(jexnom(noma8//'.NOMMAI', noment(im)), ibid)
+            ibid = char8_to_int(noment(im))
             call jeveuo(jexnum(mlgcox, ibid), 'L', jdes)
             call jelira(jexnum(mlgcox, ibid), 'LONMAX', nbno)
             do in = 1, nbno

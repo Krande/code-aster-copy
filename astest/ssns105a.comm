@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,27 +25,25 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 
 MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MAILTOT = CREA_MAILLAGE(
-    MAILLAGE=MAIL, CREA_MAILLE=_F(NOM="GEOBB", GROUP_MA="GEOB", PREF_MAILLE="BM")
-)
+MAILTOT = CREA_MAILLAGE(MAILLAGE=MAIL, CREA_MAILLE=_F(NOM="GEOBB", GROUP_MA="GEOB"))
 
 MAILTOT = DEFI_GROUP(
     reuse=MAILTOT,
     MAILLAGE=MAILTOT,
     CREA_GROUP_MA=(
-        _F(NOM="BMA1", MAILLE="BMA1"),
-        _F(NOM="MA1", MAILLE="MA1"),
-        _F(NOM="MA3", MAILLE="MA3"),
+        _F(NOM="BMA1", MAILLE="M4"),
+        _F(NOM="MA1", MAILLE="M1"),
+        _F(NOM="MA3", MAILLE="M3"),
     ),
     CREA_GROUP_NO=(
-        _F(NOM="NO1", NOEUD="NO1"),
-        _F(NOM="NO5", NOEUD="NO5"),
-        _F(NOM="NO4", NOEUD="NO4"),
-        _F(NOM="NO6", NOEUD="NO6"),
-        _F(NOM="NO2", NOEUD="NO2"),
-        _F(NOM="NO7", NOEUD="NO7"),
-        _F(NOM="NO8", NOEUD="NO8"),
-        _F(NOM="NO3", NOEUD="NO3"),
+        _F(NOM="NO1", NOEUD="N1"),
+        _F(NOM="NO5", NOEUD="N5"),
+        _F(NOM="NO4", NOEUD="N4"),
+        _F(NOM="NO6", NOEUD="N6"),
+        _F(NOM="NO2", NOEUD="N2"),
+        _F(NOM="NO7", NOEUD="N7"),
+        _F(NOM="NO8", NOEUD="N8"),
+        _F(NOM="NO3", NOEUD="N3"),
     ),
 )
 

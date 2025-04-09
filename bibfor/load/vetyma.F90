@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine vetyma(mesh, ndim, loadType, listCell, nbCell)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: nbCell
@@ -109,7 +110,7 @@ subroutine vetyma(mesh, ndim, loadType, listCell, nbCell)
     else if (ndim .eq. 23) then
 ! ----- We determine from the first element
         cellNume = listCellNume(1)
-        call jenuno(jexnum(mesh//'.NOMMAI', cellNume), cellName)
+        cellName = int_to_char8(cellNume)
         cellTypeNume = meshTypmail(cellNume)
         call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
         call getPropertiesOfCell(cellTypeName, topoRequired)
@@ -120,7 +121,7 @@ subroutine vetyma(mesh, ndim, loadType, listCell, nbCell)
 
 ! ----- Current cell
         cellNume = listCellNume(iCell)
-        call jenuno(jexnum(mesh//'.NOMMAI', cellNume), cellName)
+        cellName = int_to_char8(cellNume)
         cellTypeNume = meshTypmail(cellNume)
         call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
 

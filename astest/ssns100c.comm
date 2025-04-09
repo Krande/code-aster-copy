@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,18 +26,14 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 MAILL1 = LIRE_MAILLAGE(FORMAT="ASTER")
 
 
-MAILTOT = CREA_MAILLAGE(
-    MAILLAGE=MAILL1, CREA_MAILLE=_F(NOM="GEOBB", GROUP_MA="GEOB", PREF_MAILLE="BM")
-)
+MAILTOT = CREA_MAILLAGE(MAILLAGE=MAILL1, CREA_MAILLE=_F(NOM="GEOBB", GROUP_MA="GEOB"))
 #
 # -----------------------------------------------------
 # DEFINITION DES MATERIAUX
 # -----------------------------------------------------
 #
 
-MAILTOT = DEFI_GROUP(
-    reuse=MAILTOT, MAILLAGE=MAILTOT, CREA_GROUP_MA=(_F(NOM="BMA1", MAILLE="BMA1"),)
-)
+MAILTOT = DEFI_GROUP(reuse=MAILTOT, MAILLAGE=MAILTOT, CREA_GROUP_MA=(_F(NOM="BMA1", MAILLE="M3"),))
 
 ACIER = DEFI_MATERIAU(
     ELAS=_F(E=2.0e11, NU=0.3, ALPHA=1.0e-5),

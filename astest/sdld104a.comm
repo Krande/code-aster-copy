@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,13 +92,13 @@ MODES = CALC_MODES(
 
 #
 MAILMES0 = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=33)
-MAILMESU = CREA_MAILLAGE(MAILLAGE=MAILMES0, CREA_POI1=_F(NOM_GROUP_MA="N2N3", NOEUD=("N2", "N3")))
+MAILMESU = CREA_MAILLAGE(MAILLAGE=MAILMES0, CREA_POI1=_F(NOM_GROUP_MA="N2N3", NOEUD=("N1", "N2")))
 
 MAILMESU = DEFI_GROUP(
     reuse=MAILMESU,
     MAILLAGE=MAILMESU,
     CREA_GROUP_MA=(_F(NOM="M1", MAILLE=("M1")), _F(NOM="M2", MAILLE=("M2"))),
-    CREA_GROUP_NO=(_F(NOM="N2", NOEUD=("N2")), _F(NOM="N3", NOEUD=("N3"))),
+    CREA_GROUP_NO=(_F(NOM="N2", NOEUD=("N1")), _F(NOM="N3", NOEUD=("N2"))),
 )
 #
 MODLMESU = AFFE_MODELE(
@@ -117,7 +117,7 @@ MESURE = LIRE_RESU(
     TYPE_RESU="DYNA_TRANS",
     NOM_CHAM=("DEPL", "VITE", "SIEF_NOEU"),
     #   NOM_CHAM='DEPL',
-    REDEFI_ORIENT=(_F(CODE_DIR=1, DIRECTION=(1.0, 1.0, 0.0), NOEUD=("N3",)),),
+    REDEFI_ORIENT=(_F(CODE_DIR=1, DIRECTION=(1.0, 1.0, 0.0), NOEUD=("N2",)),),
     TOUT_ORDRE="OUI",
 )
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,6 +70,7 @@ FIN
 
 mesh = CA.Mesh()
 mesh.readAsterFile("noeud.mail")
+mesh.addNodeLabels(["NO1"])
 
 # nouveau maillage en integrant le point créé - POI ----------------
 MAILLAGE = ASSE_MAILLAGE(MAILLAGE_1=MAILLAG0, MAILLAGE_2=mesh, OPERATION="SOUS_STR")
@@ -316,7 +317,6 @@ MAYADYN = DEFI_MAILLAGE(
 )
 
 MAILB = ASSE_MAILLAGE(MAILLAGE_1=MAILLAGE, MAILLAGE_2=MAYADYN, OPERATION="SOUS_STR")
-
 
 MODELB = AFFE_MODELE(
     MAILLAGE=MAILB,

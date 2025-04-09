@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cesz, celz, basez, ligrez, optini, nompaz, prolz
     character(len=1) :: kstop
@@ -472,7 +473,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                                     goto 140
                                 else
                                     if (nbpt .lt. nbpt2 .or. .not. prol) then
-                                        call jenuno(jexnum(ma//'.NOMMAI', numa), nomma)
+                                        nomma = int_to_char8(numa)
                                         valk(1) = nomma
                                         valk(2) = nomgd
                                         vali(1) = nbpt
@@ -493,7 +494,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                                         goto 130
                                     else
                                         nomcmp = zk8(jcmpgd-1+icmp)
-                                        call jenuno(jexnum(ma//'.NOMMAI', numa), nomma)
+                                        nomma = int_to_char8(numa)
                                         valk(1) = nomcmp
                                         valk(2) = nomma
                                         messag = 'CALCULEL_58'
@@ -567,7 +568,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                     if ((nbpt2 .eq. 0) .and. prol2) then
                         goto 210
                     else
-                        call jenuno(jexnum(ma//'.NOMMAI', numa), nomma)
+                        nomma = int_to_char8(numa)
                         valk(1) = nomma
                         valk(2) = nomgd
                         vali(1) = nbpt
@@ -589,7 +590,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
                                 else
                                     nomcmp = 'V'
                                     call codent(icmp, 'G', nomcmp(2:8))
-                                    call jenuno(jexnum(ma//'.NOMMAI', numa), nomma)
+                                    nomma = int_to_char8(numa)
                                     valk(1) = nomcmp
                                     valk(2) = nomma
                                     messag = 'CALCULEL_58'

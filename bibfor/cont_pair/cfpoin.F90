@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine cfpoin(mesh, ds_contact)
 #include "asterfort/jeexin.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jelira.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -133,7 +134,7 @@ subroutine cfpoin(mesh, ds_contact)
 !
 ! --------- Name of point
 !
-            call jenuno(jexnum(mesh//'.NOMNOE', node_slav_nume(1)), node_slav_name)
+            node_slav_name = int_to_char8(node_slav_nume(1))
             poin_name = 'NOEUD   '//node_slav_name
             v_sdappa_noms(i_poin) = poin_name
 !

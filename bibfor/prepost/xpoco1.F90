@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -59,6 +60,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
     integer :: i, j, ino1, iret, nbgn, iagno
     integer :: iacon1, n, iacon2
     integer :: ino2, nbgm2, i1, i2, iagma1, iagma2, n1, n2, ima
+    character(len=7) :: ch7
     character(len=8) :: noma2, nono2
     character(len=24) :: nogma
     integer, pointer :: typm1(:) => null()
@@ -89,7 +91,8 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
 !     .NOMMAI ET .TYPMAIL
     do i = 1, nbma
         if (dirma(i) .ne. 0) then
-            call jenuno(jexnum(ma1//'.NOMMAI', dirma(i)), noma2)
+            call codent(i, 'G', ch7)
+            noma2 = 'M'//ch7
             call jecroc(jexnom(ma2//'.NOMMAI', noma2))
             typm2(dirma(i)) = typm1(i)
         end if
@@ -98,7 +101,8 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
 !     .NOMNOE
     do i = 1, nbno
         if (dirno(i) .ne. 0) then
-            call jenuno(jexnum(ma1//'.NOMNOE', dirno(i)), nono2)
+            call codent(i, 'G', ch7)
+            nono2 = 'N'//ch7
             call jecroc(jexnom(ma2//'.NOMNOE', nono2))
         end if
     end do

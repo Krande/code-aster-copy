@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,6 +31,7 @@
 #include "IOManager/MedCalculationSequence.h"
 #include "IOManager/MedFamily.h"
 #include "IOManager/MedFilePointer.h"
+#include "IOManager/MedJoint.h"
 
 #include <iostream>
 #include <memory>
@@ -56,6 +57,8 @@ class MedMesh {
     std::vector< MedFamilyPtr > _families;
     /** @brief med file id */
     const MedFilePointer &_filePtr;
+    /** @brief all families */
+    std::vector< MedJointPtr > _joints;
 
   public:
     /**
@@ -119,11 +122,17 @@ class MedMesh {
     /** @brief get mesh dimension */
     med_int getDimension() const { return _dim; };
 
+    /** @brief get mesh dimension */
+    const std::vector< MedJointPtr > &getJoints() const { return _joints; };
+
     /** @brief get all families */
     std::vector< MedFamilyPtr > getFamilies() const { return _families; };
 
     /** @brief get type vector from sequence */
     std::vector< med_int > getGeometricTypesAtSequence( int numdt, int numit ) const;
+
+    /** @brief get global node numbering */
+    std::vector< med_int > getGlobalNodeNumberingAtSequence( int numdt, int numit ) const;
 
     /** @brief get mesh name in med file */
     std::string getName() const { return _name; };
@@ -134,6 +143,7 @@ class MedMesh {
     /** @brief get node number from sequence */
     med_int getNodeNumberAtSequence( int numdt, int numit ) const;
 
+    /** @brief get node number for geo type */
     med_int getNodeNumberForGeometricType( med_int geoType ) const;
 
     /** @brief get sequence number for mesh (usualy 1 for aster) */
@@ -142,8 +152,16 @@ class MedMesh {
     /** @brief get sequence (numdt, numit) from id */
     std::vector< med_int > getSequence( int index ) const {
         const auto &curSeq = _sequences[index].getNumDtNumIt();
-        return {curSeq.first, curSeq.second};
+        return { curSeq.first, curSeq.second };
     };
+
+    /** @brief get split cell number and node id start number from sequence for current proc */
+    std::pair< med_int, med_int >
+    getSplitCellNumberForGeometricTypeAtSequence( int numdt, int numit,
+                                                  med_geometry_type geotype ) const;
+
+    /** @brief get split node number and node id start number from sequence for current proc */
+    std::pair< med_int, med_int > getSplitNodeNumberAtSequence( int numdt, int numit ) const;
 
     /** @brief get coordinates from sequence */
     std::vector< double > readCoordinates( int numdt, int numit ) const;

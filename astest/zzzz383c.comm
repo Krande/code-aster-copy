@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,7 +124,7 @@ TEST_RESU(
 
 ### TEST HEXA27/Face
 
-Mailh27 = CREA_MAILLAGE(MAILLAGE=Mailh8, HEXA20_27=_F(TOUT="OUI", PREF_NOEUD="NN", PREF_NUME=1))
+Mailh27 = CREA_MAILLAGE(MAILLAGE=Mailh8, HEXA20_27=_F(TOUT="OUI"))
 
 Mailh82 = CREA_MAILLAGE(MAILLAGE=Mailh27, DECOUPE_LAC=_F(GROUP_MA_ESCL="Face_2"))
 

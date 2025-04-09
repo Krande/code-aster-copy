@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ module crea_maillage_module
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -547,7 +548,7 @@ contains
         this%nb_total_nodes = this%nb_nodes
         owner = 0
         do i_node = 1, nb_node_mesh
-            call jenuno(jexnum(mesh_in//'.NOMNOE', i_node), name)
+            name = int_to_char8(i_node)
             if (this%isHPC) then
                 owner = v_noex(i_node)
             end if
@@ -1069,8 +1070,7 @@ contains
         this%cells(this%nb_total_cells)%id = this%nb_total_cells
         this%cells(this%nb_total_cells)%ss_id = cell_index
         this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
-        call jenuno(jexnum(this%mesh_in//'.NOMMAI', cell_id), &
-                    this%cells(this%nb_total_cells)%name)
+        this%cells(this%nb_total_cells)%name = int_to_char8(cell_id)
 !
     end subroutine
 !
@@ -1394,7 +1394,7 @@ contains
         class(Mmesh), intent(inout) :: this
         character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-        character(len=24) :: nommai, nomnoe, cooval, coodsc, grpnoe
+        character(len=24) :: cooval, coodsc, grpnoe
         character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
         character(len=32) :: name
         character(len=4) :: dimesp
@@ -1425,26 +1425,12 @@ contains
             call cpu_time(start)
         end if
 !
-        call sdmail(mesh_out, nommai, nomnoe, cooval, coodsc, &
-                    grpnoe, gpptnn, grpmai, gpptnm, &
-                    connex, titre, typmai, adapma)
+        call sdmail(mesh_out, cooval, coodsc, grpnoe, gpptnn, &
+                    grpmai, gpptnm, connex, titre, typmai, &
+                    adapma)
 !
 ! --- Create nodes
 !
-! ------ Set names
-        call jecreo(nomnoe, 'G N K8')
-        call jeecra(nomnoe, 'NOMMAX', this%nb_nodes)
-        do i_node = 1, this%nb_total_nodes
-            if (this%nodes(i_node)%keep) then
-                name = jexnom(nomnoe, this%nodes(i_node)%name)
-                call jeexin(name, iret)
-                if (iret == 0) then
-                    call jecroc(name)
-                else
-                    call utmess('F', 'MESH2_3', sk=this%nodes(i_node)%name)
-                end if
-            end if
-        end do
 ! ------ Copy coordinates
         call wkvect(cooval, 'G V R', this%nb_nodes*3, vr=v_coor)
         if (this%isHPC) then
@@ -1498,20 +1484,6 @@ contains
 !
 ! --- Create cells
 !
-! ------ Set names
-        call jecreo(nommai, 'G N K8')
-        call jeecra(nommai, 'NOMMAX', this%nb_cells)
-        do i_cell = 1, this%nb_total_cells
-            if (this%cells(i_cell)%keep) then
-                name = jexnom(nommai, this%cells(i_cell)%name)
-                call jeexin(name, iret)
-                if (iret == 0) then
-                    call jecroc(name)
-                else
-                    call utmess('F', 'MESH2_2', sk=this%cells(i_cell)%name)
-                end if
-            end if
-        end do
 ! ------ Count total number of nodes (repeated)
         nbnoma = 0
         do i_cell = 1, this%nb_total_cells

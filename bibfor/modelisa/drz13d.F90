@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 #include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: noma
@@ -151,14 +152,14 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
 30  continue
 !
-    call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
+    nomnoe_a = int_to_char8(numnoe_a, noma, 'NOEUD')
     nom_noeuds(1) = nomnoe_a
 !
 ! - Loop on nodes
 !
     do i_no = 1, nb_node
         numnoe_m = zi(jlino+i_no-1)
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
+        nomnoe_m = int_to_char8(numnoe_m, noma, 'NOEUD')
 !
         if (numnoe_m .ne. numnoe_a) then
 !

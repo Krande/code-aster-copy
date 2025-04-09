@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -271,25 +271,25 @@ DYN = DYNA_ALEA_MODAL(
 
 # Restitution de la mesure sur 19 capteurs
 noeuds = (
-    "N3",
-    "N4",
-    "N79",
-    "N83",
-    "N87",
-    "N91",
-    "N95",
-    "N99",
-    "N103",
-    "N107",
-    "N111",
-    "N115",
-    "N119",
-    "N123",
-    "N127",
-    "N131",
-    "N135",
-    "N139",
-    "N143",
+    "3",
+    "4",
+    "79",
+    "83",
+    "87",
+    "91",
+    "95",
+    "99",
+    "103",
+    "107",
+    "111",
+    "115",
+    "119",
+    "123",
+    "127",
+    "131",
+    "135",
+    "139",
+    "143",
 )
 cmp = tuple(["DX"] * 19)
 SPECTR19 = REST_SPEC_PHYS(
@@ -463,7 +463,7 @@ CALC_ESSAI(
 # celles-ci et comparaison entre les deplacements calcules a partir des
 # vrais efforts (valeurs RMS dans liste_ref et dans FONC0_X) et a partir des depl identifies (FONC1_X)
 
-test_no = ("N3", "N79", "N83", "N87", "N91", "N107", "N115", "N119", "N123")
+test_no = ("3", "79", "83", "87", "91", "107", "115", "119", "123")
 
 FONC0 = [None] * 9
 FONC1 = [None] * 9

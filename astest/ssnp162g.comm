@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,9 +93,9 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_NO=(
-        _F(NOEUD=("NO4", "NO2", "NS2"), NOM="DROITE"),
-        _F(NOEUD=("NO1", "NO3", "NS4"), NOM="GAUCHE"),
-        _F(NOEUD=("NS7"), NOM="NS7"),
+        _F(NOEUD=("N4", "N2", "N8"), NOM="DROITE"),
+        _F(NOEUD=("N1", "N3", "N10"), NOM="GAUCHE"),
+        _F(NOEUD=("N13"), NOM="NS7"),
     ),
 )
 
@@ -149,7 +149,7 @@ TRAC_1 = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=(_F(GROUP_MA="DROITE", DX=cos(angle
 # LE MAILLAGE COMPORTE DEUX NOEUD DE PRESSION : NS5 ET NS7
 # ON IMPOSE UNE PRESSION SUR LE NS5 ET ON TESTE LA VALEUR DE LA PRESSION SUR NS7
 
-PAM_J = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=(_F(NOEUD="NS5", PRE1=press)))
+PAM_J = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=(_F(NOEUD="N11", PRE1=press)))
 
 # CREATION DE LISTE D'INSTANT
 L_INST = DEFI_LIST_REEL(VALE=list(range(insfin + 1)))
@@ -225,7 +225,7 @@ TDELTA_N = POST_RELEVE_T(
         RESULTAT=U_HM,
         NOM_CHAM="DEPL",
         TOUT_ORDRE="OUI",
-        NOEUD="NO2",
+        NOEUD="2",
         NOM_CMP=("DX", "DY"),
     )
 )

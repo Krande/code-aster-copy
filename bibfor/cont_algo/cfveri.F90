@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmnpoi.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -59,13 +60,13 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
     integer, pointer :: v_ncomp_zone(:)
 
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 ! Contact - Post-treatment for no computation methods
 !
 ! Method discrete - Evaluate
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
@@ -76,7 +77,7 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 ! In  v_ncomp_enti     : pointer to save name of entities
 ! In  v_ncomp_zone     : pointer to save contact zone index
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
     character(len=19) :: newgeo, sdappa
     integer :: pair_type, pair_enti
@@ -96,7 +97,7 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
     character(len=16) :: poin_name, enti_name
     aster_logical :: l_veri
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
     node_slav_indx = 0
     i_ncomp_poin = 1
@@ -143,7 +144,7 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 !
             node_slav_indx(1) = jdecne+i_cont_node
             call cfnumn(ds_contact%sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
-            call jenuno(jexnum(mesh//'.NOMNOE', node_slav_nume(1)), node_slav_name)
+            node_slav_name = int_to_char8(node_slav_nume(1))
 !
 ! --------- Parameters from pairing
 !
@@ -170,7 +171,7 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 !
                 elem_mast_indx = pair_enti
                 call cfnumm(ds_contact%sdcont_defi, elem_mast_indx, elem_mast_nume)
-                call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+                elem_mast_name = int_to_char8(elem_mast_nume)
                 enti_name = elem_mast_name
 !
 ! ------------- Coordinates of projection
@@ -200,7 +201,7 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 !
                 node_slav_indx(1) = pair_enti
                 call cfnumn(ds_contact%sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
-                call jenuno(jexnum(mesh//'.NOMNOE', node_slav_nume(1)), node_slav_name)
+                node_slav_name = int_to_char8(node_slav_nume(1))
                 enti_name = node_slav_name
 !
 ! ------------- Coordinate of master node
@@ -210,8 +211,8 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 ! ------------- Define new local basis
 !
                 call cftanr(mesh, model_ndim, ds_contact, i_zone, &
-                           node_slav_indx(1), 'NOEU', node_slav_indx(1), node_slav_nume(1), r8bid, &
-                            r8bid, tau1m, tau2m, tau1, tau2)
+                            node_slav_indx(1), 'NOEU', node_slav_indx(1), node_slav_nume(1), &
+                            r8bid, r8bid, tau1m, tau2m, tau1, tau2)
                 call mmnorm(model_ndim, tau1, tau2, norm, noor)
                 if (noor .le. r8prem()) then
                     call utmess('F', 'CONTACT3_26', sk=node_slav_name)

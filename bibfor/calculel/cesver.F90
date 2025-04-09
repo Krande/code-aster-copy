@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine cesver(cesz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cesz
 ! ---------------------------------------------------------------------
@@ -145,7 +146,8 @@ subroutine cesver(cesz)
             valr(1) = rdispx
             valr(2) = rmax
             valr(3) = 100.d0*rdispx/rmax
-            call jenuno(jexnum(ma//'.NOMMAI', ima1), nomma)
+            nomma = int_to_char8(ima1)
+
             valk(1) = nomma
             valk(2) = cesc(icmp)
             valk(3) = nomgd

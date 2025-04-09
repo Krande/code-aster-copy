@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
 #include "asterfort/jexnum.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/vtaxpy.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -111,7 +112,7 @@ subroutine mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
     if (frot_diff_node .eq. 0) then
         node_name = ' '
     else
-        call jenuno(jexnum(mesh//'.NOMNOE', frot_diff_node), node_name)
+        node_name = int_to_char8(frot_diff_node)
     end if
     loop_fric_node = node_name
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq, &
 #include "asterfort/posddl.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbnoeu, neq
     character(len=8) :: mailla
@@ -108,7 +109,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq, &
     idec = 0
     do i = 1, nbnoeu
         ino = zi(jnoeu+i-1)
-        call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
+        nomnoe = int_to_char8(ino)
         do iec = 1, nec
             tabec(iec) = zi(jprno-1+(ino-1)*(nec+2)+2+iec)
         end do

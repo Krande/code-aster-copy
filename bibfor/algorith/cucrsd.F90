@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine cucrsd(mesh, nume_dof, ds_contact)
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -74,7 +75,7 @@ subroutine cucrsd(mesh, nume_dof, ds_contact)
     integer :: ier, iret, jdecal, i, neq
     character(len=24) :: cmpgcu, lisnoe, poinoe, apcoef, nomnoe, nomcmp
     integer :: jcmpg, jnoe, jpoi, japcoe, jnomno, jnomcm
-    character(len=24) :: mesh_nomnoe, coefmu
+    character(len=24) :: coefmu
     integer :: jcoef
     character(len=24) :: cm1a, coco, liac, mu, delt0, delta, liot
     integer :: jcoco, jliac, jmu, jdelt0, jdelta, jliot
@@ -95,7 +96,6 @@ subroutine cucrsd(mesh, nume_dof, ds_contact)
 !
     sdunil_defi = ds_contact%sdunil_defi
     sdunil_solv = ds_contact%sdunil_solv
-    mesh_nomnoe = mesh//'.NOMNOE'
     call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=neq)
     l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
 !
@@ -137,7 +137,7 @@ subroutine cucrsd(mesh, nume_dof, ds_contact)
     do ino = 1, nnocu
 !
         numno = zi(jnoe+ino-1)
-        call jenuno(jexnum(mesh_nomnoe, numno), nomno)
+        nomno = int_to_char8(numno)
         nbcmp = zi(jpoi+ino)-zi(jpoi+ino-1)
         jdecal = zi(jpoi+ino-1)
 !

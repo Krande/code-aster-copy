@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
 #include "asterfort/wkvect.h"
 #include "asterfort/xelfis_lists.h"
 #include "asterfort/xtyhea.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
     character(len=24) :: trav
@@ -191,7 +192,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
 !
                     if (zi(jtab-1+5*(ima-1)+4) .eq. 0) then
 ! --- BLINDAGE DANS LE CAS DU MULTI-HEAVISIDE
-                        call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                        nomail = int_to_char8(ima)
                         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                         call dismoi('EXI_THM', model, 'MODELE', repk=exithm)
                         if (.not. ismali(typma) .and. exithm .eq. 'NON') then

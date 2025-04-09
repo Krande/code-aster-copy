@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ MAIL0 = LIRE_MAILLAGE(FORMAT="MED")
 # -------------------------------------------------------------
 MAIL = CREA_MAILLAGE(MAILLAGE=MAIL0, LINE_QUAD=_F(TOUT="OUI"))
 
-MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=(_F(NOM="NS76", NOEUD="NS76"),))
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=(_F(NOM="NS76", NOEUD="N410"),))
 
 MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(GROUP_MA="top"))
 

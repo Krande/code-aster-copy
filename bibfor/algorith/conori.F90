@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,6 +87,8 @@ subroutine conori(ma)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: idum, ic, ifm, niv, ichk
     integer :: io8gco, nbgco, igco
@@ -168,8 +170,9 @@ subroutine conori(ma)
             write (ifm, *) ' '
         end if
 !     ------------------------------------------------------------------
-        call jelira(ma//'.NOMMAI', 'NOMUTI', nbmar)
-        call jelira(ma//'.NOMNOE', 'NOMUTI', nbnoe)
+        call jelira(ma//'.TYPMAIL', 'LONMAX', nbmar)
+        call jelira(ma//'.COORDO    .VALE', 'LONMAX', nbnoe)
+        nbnoe = nbnoe/3
 !
         call wkvect('&&OP0154.NOE', 'V V I', nbnoe, inoe)
         call wkvect('&&OP0154.MAI', 'V V I', nbmar, imai)
@@ -231,7 +234,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
 !     ------------------------------------------------------------------
-                    call jenuno(jexnum(ma//'.NOMMAI', imac), kmac)
+                    kmac = int_to_char8(imac)
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
 !     ------------------------------------------------------------------
@@ -266,7 +269,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DU NOEUD
 !     ------------------------------------------------------------------
-                        call jenuno(jexnum(ma//'.NOMNOE', inoc), knoc)
+                        knoc = int_to_char8(inoc)
                         macoc(icoc+2) = knoc
                     end do
 !
@@ -313,7 +316,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DU NOEUD
 !     ------------------------------------------------------------------
-                            call jenuno(jexnum(ma//'.NOMNOE', inor), knor)
+                            knor = int_to_char8(inor)
                             macor(icor+2) = knor
                         end do
 !     ==================================================================
@@ -395,7 +398,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L'ORDRE DU NOEUD
 !     ------------------------------------------------------------------
-                            call jenonu(jexnom(ma//'.NOMNOE', knoc), inoc)
+                            inoc = char8_to_int(knoc)
 !     ------------------------------------------------------------------
 !     MODIFICATION DE L ORIENTATION DE LA MAILLE
 !     ------------------------------------------------------------------

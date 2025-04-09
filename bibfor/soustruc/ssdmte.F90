@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ subroutine ssdmte(mag)
 !     ----------------------
     if (nbnola .gt. 0) then
         call wkvect(mag//'.TYPL', 'G V I', nbnola, iatypl)
-        do 2, isma = 1, nbsma
+        do isma = 1, nbsma
             nomacr = vnomacr(isma)
             call jeveuo(nomacr//'.CONX', 'L', vi=conx)
             call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupm)
@@ -131,78 +131,78 @@ subroutine ssdmte(mag)
                     zi(iatypl-1+ino-nbnoph) = conx(3*(i-1)+3)
                 end if
             end do
-2           continue
-            end if
+        end do
+    end if
 !
 !
 !     -- CREATION DU CHAMP .COORDO :
 !     ------------------------------
-            coordo = mag//'.COORDO'
+    coordo = mag//'.COORDO'
 !
-            call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igeomr)
-            call wkvect(coordo//'.DESC', 'G V I', 3, iadesc)
-            call jeecra(coordo//'.DESC', 'DOCU', ibid, 'CHGO')
-            zi(iadesc-1+1) = igeomr
+    call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igeomr)
+    call wkvect(coordo//'.DESC', 'G V I', 3, iadesc)
+    call jeecra(coordo//'.DESC', 'DOCU', ibid, 'CHGO')
+    zi(iadesc-1+1) = igeomr
 !     -- TOUJOURS 3 COMPOSANTES X, Y ET Z
-            zi(iadesc-1+2) = -3
+    zi(iadesc-1+2) = -3
 !     -- 14 = 2**1 + 2**2 + 2**3
-            zi(iadesc-1+3) = 14
+    zi(iadesc-1+3) = 14
 !
-            call wkvect(coordo//'.VALE', 'G V R', 3*nbnop2, iavale)
+    call wkvect(coordo//'.VALE', 'G V R', 3*nbnop2, iavale)
 !     -- NOM DES NOEUDS PHYSIQUES (ET LEUR COORDONNEES) :
-            ico = 0
-            do 3, ino = 1, nbnoph
-                jno = noeud_conf(ino)
-                if (ino .ne. jno) goto 3
-                ico = ico+1
-                if (nomnoe_2(ino) .ne. ' ') then
-                    nomnoe = nomnoe_2(ino)
-                else
-                    nomnoe = 'N?'
-                    call codent(ico, 'G', nomnoe(2:8))
-                end if
-                call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
-                do k = 1, 3
-                    zr(iavale-1+3*(ico-1)+k) = coordo_2(3*(ino-1)+k)
-                end do
-3           end do
+    ico = 0
+    do 3, ino = 1, nbnoph
+        jno = noeud_conf(ino)
+        if (ino .ne. jno) goto 3
+        ico = ico+1
+        if (nomnoe_2(ino) .ne. ' ') then
+            nomnoe = nomnoe_2(ino)
+        else
+            nomnoe = 'N?'
+            call codent(ico, 'G', nomnoe(2:8))
+        end if
+        call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
+        do k = 1, 3
+            zr(iavale-1+3*(ico-1)+k) = coordo_2(3*(ino-1)+k)
+        end do
+3   end do
 !     -- NOM DES NOEUDS DE LAGRANGE :
-            nomnoe = '&?'
-            do 4, ino = 1, nbnola
-                call codent(ino, 'G', nomnoe(2:8))
-                call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
-4           end do
+    nomnoe = '&?'
+    do 4, ino = 1, nbnola
+        call codent(ino, 'G', nomnoe(2:8))
+        call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
+4   end do
 !
 !
 !     -- ON OTE LA "RECURSIVITE" DE .NOEUD_CONF:
 !     ------------------------------------------
-5           continue
-            recom = .false.
-            do 6, ino = 1, nbnoph
-                jno = noeud_conf(ino)
-                if (jno .ne. ino) then
-                    ASSERT(jno .le. ino)
-                    kno = noeud_conf(jno)
-                    if (kno .ne. jno) then
-                        noeud_conf(ino) = kno
-                        recom = .true.
-                    end if
-                end if
-6           end do
-            if (recom) goto 5
+5   continue
+    recom = .false.
+    do 6, ino = 1, nbnoph
+        jno = noeud_conf(ino)
+        if (jno .ne. ino) then
+            ASSERT(jno .le. ino)
+            kno = noeud_conf(jno)
+            if (kno .ne. jno) then
+                noeud_conf(ino) = kno
+                recom = .true.
+            end if
+        end if
+6   end do
+    if (recom) goto 5
 !
 !
 !     -- ON COMPACTE LES NUMEROS DES NOEUDS CONSERVES:
 !     ------------------------------------------------
-            call wkvect(mag//'.NENO', 'V V I', nbnoph, ianeno)
-            ico = 0
-            do 7, ino = 1, nbnoph
-                jno = noeud_conf(ino)
-                if (jno .eq. ino) then
-                    ico = ico+1
-                    zi(ianeno-1+ino) = ico
-                end if
-7           end do
+    call wkvect(mag//'.NENO', 'V V I', nbnoph, ianeno)
+    ico = 0
+    do 7, ino = 1, nbnoph
+        jno = noeud_conf(ino)
+        if (jno .eq. ino) then
+            ico = ico+1
+            zi(ianeno-1+ino) = ico
+        end if
+7   end do
 !
 !
 !     -- MODIFICATION DES OBJETS POUR TENIR COMPTE DE .NOEUD_CONF:
@@ -210,63 +210,63 @@ subroutine ssdmte(mag)
 !
 !     -- MODIFICATION DE .CONNEX:
 !     ---------------------------
-            if (nbma .gt. 0) then
-                call jeveuo(mag//'.CONNEX', 'E', iacoex)
-                call jeveuo(jexatr(mag//'.CONNEX', 'LONCUM'), 'L', ilcoex)
+    if (nbma .gt. 0) then
+        call jeveuo(mag//'.CONNEX', 'E', iacoex)
+        call jeveuo(jexatr(mag//'.CONNEX', 'LONCUM'), 'L', ilcoex)
+    end if
+    do ima = 1, nbma
+        nbno = zi(ilcoex-1+ima+1)-zi(ilcoex-1+ima)
+        i2coex = iacoex-1+zi(ilcoex-1+ima)
+        do i = 1, nbno
+            ino = zi(i2coex-1+i)
+            if (ino .le. nbnoph) then
+                jno = zi(ianeno-1+noeud_conf(ino))
+                zi(i2coex-1+i) = jno
+            else
+                zi(i2coex-1+i) = ino-nbnoco
             end if
-            do ima = 1, nbma
-                nbno = zi(ilcoex-1+ima+1)-zi(ilcoex-1+ima)
-                i2coex = iacoex-1+zi(ilcoex-1+ima)
-                do i = 1, nbno
-                    ino = zi(i2coex-1+i)
-                    if (ino .le. nbnoph) then
-                        jno = zi(ianeno-1+noeud_conf(ino))
-                        zi(i2coex-1+i) = jno
-                    else
-                        zi(i2coex-1+i) = ino-nbnoco
-                    end if
-                end do
-            end do
+        end do
+    end do
 !
 !     -- MODIFICATION DE .SUPMAIL:
 !     ----------------------------
-            do isma = 1, nbsma
-                call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
-                nbnoe = dime_2(4*(isma-1)+1)
-                nbnol = dime_2(4*(isma-1)+2)
-                nbnoet = nbnoe+nbnol
-                do i = 1, nbnoet
-                    ino = zi(iasupm-1+i)
-                    if (ino .le. nbnoph) then
-                        jno = zi(ianeno-1+noeud_conf(ino))
-                        zi(iasupm-1+i) = jno
-                    else
-                        zi(iasupm-1+i) = ino-nbnoco
-                    end if
-                end do
-            end do
+    do isma = 1, nbsma
+        call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
+        nbnoe = dime_2(4*(isma-1)+1)
+        nbnol = dime_2(4*(isma-1)+2)
+        nbnoet = nbnoe+nbnol
+        do i = 1, nbnoet
+            ino = zi(iasupm-1+i)
+            if (ino .le. nbnoph) then
+                jno = zi(ianeno-1+noeud_conf(ino))
+                zi(iasupm-1+i) = jno
+            else
+                zi(iasupm-1+i) = ino-nbnoco
+            end if
+        end do
+    end do
 !
 !     -- MODIFICATION DE .GROUPENO:
 !     ----------------------------
-            call jeexin(mag//'.GROUPENO', iret)
-            if (iret .gt. 0) then
-                call jelira(mag//'.GROUPENO', 'NUTIOC', nbgno)
-                do 9, igno = 1, nbgno
-                    call jeveuo(jexnum(mag//'.GROUPENO', igno), 'E', iagno)
-                    call jelira(jexnum(mag//'.GROUPENO', igno), 'LONUTI', nbnogn)
-                    do i = 1, nbnogn
-                        ino = zi(iagno-1+i)
-                        jno = zi(ianeno-1+noeud_conf(ino))
-                        zi(iagno-1+i) = jno
-                    end do
-9                   continue
-                    end if
+    call jeexin(mag//'.GROUPENO', iret)
+    if (iret .gt. 0) then
+        call jelira(mag//'.GROUPENO', 'NUTIOC', nbgno)
+        do 9, igno = 1, nbgno
+            call jeveuo(jexnum(mag//'.GROUPENO', igno), 'E', iagno)
+            call jelira(jexnum(mag//'.GROUPENO', igno), 'LONUTI', nbnogn)
+            do i = 1, nbnogn
+                ino = zi(iagno-1+i)
+                jno = zi(ianeno-1+noeud_conf(ino))
+                zi(iagno-1+i) = jno
+            end do
+9           continue
+            end if
 !
 !
 !     -- REMISE A JOUR DEFINITIVE DU NOMBRE DE NOEUDS PHYSIQUES:
 !     ----------------------------------------------------------
-                    dime(1) = nbnop2
+            dime(1) = nbnop2
 !
 !
-                    call jedema()
-                    end subroutine
+            call jedema()
+            end subroutine

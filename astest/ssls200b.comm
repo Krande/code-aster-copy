@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ M1 = DEFI_GROUP(reuse=M1, MAILLAGE=M1, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
 MA = CREA_MAILLAGE(
     MAILLAGE=M1,
-    MODI_MAILLE=(_F(MAILLE="Q9", OPTION="QUAD8_9"), _F(GROUP_MA="T7", OPTION="TRIA6_7")),
+    MODI_MAILLE=(_F(MAILLE="N9", OPTION="QUAD8_9"), _F(GROUP_MA="T7", OPTION="TRIA6_7")),
 )
 
 MO = AFFE_MODELE(

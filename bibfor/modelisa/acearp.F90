@@ -58,6 +58,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 #include "asterfort/rairep.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !&<
 ! --------------------------------------------------------------------------------------------------
     integer :: nbcar, nbval, nrd
@@ -78,7 +79,6 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     character(len=16) :: rep, repdis(nrd)
     character(len=19) :: cart(3), cartdi
     character(len=24) :: nogp
-    character(len=24) :: mlgnno, mlgnma
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: transl, trarot, okunite
     aster_logical :: l_pmesh
@@ -98,9 +98,6 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     endif
 !   Pour les discrets c'est obligatoirement du 2D ou 3D
     ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
-!
-    mlgnno = noma//'.NOMNOE'
-    mlgnma = noma//'.NOMMAI'
 !
     call wkvect('&&TMPDISCRET', 'V V K24', lmax, jdls)
     call wkvect('&&TMPTABNO', 'V V K8', lmax, itbno)
@@ -269,7 +266,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
                     call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[nogp,nommai])
                 endif
 !               Nom de la maille du discret
-                call jenuno(jexnum(mlgnma, nummail), nommai)
+                nommai = int_to_char8(nummail)
 !               Vérification que la maille DISCRET fait partie du modèle
                 if ( zjdlm(nummail) .eq. 0 ) then
                     call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[nogp,nommai])
@@ -286,7 +283,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
                 do inbn = 1, nbnma
                     inoe = zi(ldnm+inbn-1)
 !                   Nom du noeud
-                    call jenuno(jexnum(mlgnno, inoe), nomnoe)
+                    nomnoe = int_to_char8(inoe)
 !                   Vérification que le noeud fait partie de la surface (sortie de rairep)
                     do ino = 1, nbno
                         if (zk8(itbno+ino-1) .eq. nomnoe) then
@@ -316,7 +313,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
             if (nc .eq. 1) then
                 do ino = 1, nbno
                     if (zk8(itbmp+ino-1) .eq. ' ') then
-                        call jenuno(jexnum(mlgnno, ino), nomnoe)
+                        nomnoe = int_to_char8(ino)
                         call utmess('F', 'MODELISA2_8', sk=nomnoe)
                     end if
                 end do

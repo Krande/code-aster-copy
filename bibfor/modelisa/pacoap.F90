@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta, &
 #include "asterfort/parotr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: lonlis
     character(len=*) :: lisi1z, lisi2z, nomaz, liso1z, liso2z
@@ -77,7 +78,6 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta, &
     character(len=8) :: nomno1, nomno2, nomo2
     character(len=24) :: lisin1, lisin2, lisou1, lisou2
     character(len=24) :: valk(5)
-    character(len=24) :: noeuma
     integer, pointer :: num_lisin1(:) => null()
     integer, pointer :: num_lisin2(:) => null()
     character(len=8), pointer :: lisinv(:) => null()
@@ -93,7 +93,6 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta, &
     noma = nomaz
     ier = 0
 !
-    noeuma = noma//'.NOMNOE'
     m8blan = '        '
     call jeveuo(noma//'.COORDO    .VALE', 'L', iageom)
 !
@@ -132,8 +131,8 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta, &
 !     -- DES NOEUDS DE LISIN1 ET LISIN2 :
 !
     do k = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(idlin1-1+k)), num_lisin1(k))
-        call jenonu(jexnom(noeuma, zk8(idlin2-1+k)), num_lisin2(k))
+        num_lisin1(k) = char8_to_int(zk8(idlin1-1+k))
+        num_lisin2(k) = char8_to_int(zk8(idlin2-1+k))
     end do
 !
 ! --- CONSTITUTION DE LA CORRESPONDANCE ENTRE LES LISTES

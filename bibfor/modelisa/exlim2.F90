@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: lismai(*), nbmail
     character(len=*) :: ligrmoz, basez, ligrez
@@ -99,7 +100,7 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
         if (numail .gt. 0) then
             igrel = repe(1+2*(numail-1))
             if (igrel .eq. 0) then
-                call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
+                nomail = int_to_char8(numail)
                 call utmess('A', 'MODELISA4_50', sk=nomail)
                 cycle
             end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/xtmafi.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
@@ -121,7 +122,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
                 do i = 1, zi(jtem4-1+ifiss)
                     nbmala = nbmala+1
                     zi(idlist+nbmala-1) = zi(jlmas+i-1)
-                    call jenuno(jexnum(noma//'.NOMMAI', zi(jlmas+i-1)), nomail)
+                    nomail = int_to_char8(zi(jlmas+i-1))
                 end do
             end do
         end if
@@ -187,7 +188,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
                 if (test .eq. 1) then
                     nbmalo = nbmalo+1
                     tem5(nbmalo) = zi(jlmas+ii-1)
-                    call jenuno(jexnum(noma//'.NOMMAI', tem5(nbmalo)), nomail)
+                    nomail = int_to_char8(tem5(nbmalo))
                 end if
             end do
             call jedetr(lismar)

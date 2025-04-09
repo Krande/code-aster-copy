@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,13 +114,11 @@ MA = DEFI_GROUP(
     CREA_GROUP_MA=(_F(NOM="PLAQ_P1S", GROUP_MA="PLAQ_P1"),),
 )
 
-MAIL = CREA_MAILLAGE(
-    MAILLAGE=MA, INFO=2, CREA_MAILLE=_F(NOM="PLAQ_P1I", GROUP_MA="PLAQ_P1S", PREF_MAILLE="S")
-)
+MAIL = CREA_MAILLAGE(MAILLAGE=MA, INFO=2, CREA_MAILLE=_F(NOM="PLAQ_P1I", GROUP_MA="PLAQ_P1S"))
 MAIL = DEFI_GROUP(
     reuse=MAIL,
     MAILLAGE=MAIL,
-    CREA_GROUP_MA=(_F(NOM="MA13", MAILLE="M1"), _F(NOM="SMA3", MAILLE="S6")),
+    CREA_GROUP_MA=(_F(NOM="MA13", MAILLE="M1"), _F(NOM="SMA3", MAILLE="M18")),
 )
 
 MODEL = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=mod_EF))
@@ -340,7 +338,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="EP",
     TABLE=TABCOQ,
-    FILTRE=_F(NOM_PARA="MAILLE", VALE_K="M2"),
+    FILTRE=_F(NOM_PARA="MAILLE", VALE_K="2"),
     VALE_CALC=8.0e-2,
     VALE_REFE=8.0e-2,
 )
@@ -394,7 +392,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FZ",
     TABLE=TABF13,
-    FILTRE=_F(NOM_PARA="MAILLE", VALE_K="M1"),
+    FILTRE=_F(NOM_PARA="MAILLE", VALE_K="1"),
     VALE_CALC=-2.0e5,
     VALE_REFE=-2.0e5,
 )

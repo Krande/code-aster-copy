@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine cafaci(load, mesh, model, valeType)
 #include "asterfort/xddlim.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=4), intent(in) :: valeType
@@ -152,7 +153,8 @@ subroutine cafaci(load, mesh, model, valeType)
 !
 ! - Local coordinate system (dummy)
 !
-    call jelira(mesh//'.NOMNOE', 'NOMMAX', nbnoeu)
+    call jelira(mesh//'.COORDO    .VALE', 'LONMAX', nbnoeu)
+    nbnoeu = nbnoeu/3
     call wkvect('&&CAFACI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !
 ! - Xfem fields
@@ -233,7 +235,7 @@ subroutine cafaci(load, mesh, model, valeType)
         if (l_dnor) then
             do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
-                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                name_node = int_to_char8(nume_node)
                 do idim = 1, geomDime
                     repe_defi(idim) = normale(geomDime*(ino-1)+idim)
                 end do
@@ -263,7 +265,7 @@ subroutine cafaci(load, mesh, model, valeType)
             do ino = 1, nb_node
 
                 nume_node = zi(jlino+ino-1)
-                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                name_node = int_to_char8(nume_node)
                 do idim = 1, geomDime
                     repe_defi(idim) = normale(geomDime*(ino-1)+idim)
                 end do
@@ -281,7 +283,7 @@ subroutine cafaci(load, mesh, model, valeType)
         if (l_dtan) then
             do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
-                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                name_node = int_to_char8(nume_node)
                 do idim = 1, geomDime
                     repe_defi(idim) = tangent(geomDime*(ino-1)+idim)
                 end do
@@ -317,7 +319,7 @@ subroutine cafaci(load, mesh, model, valeType)
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
-                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                name_node = int_to_char8(nume_node)
                 call afddli(model, geomDime, nbcmp, zk8(inom), nume_node, name_node, &
                             zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)), &
                             coef_type, n_keyword, keywordlist, nbterm, valeType, &

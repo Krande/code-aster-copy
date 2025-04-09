@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -318,10 +318,10 @@ TEST_RESU(
 TU1_1 = CREA_TABLE(RESU=_F(RESULTAT=U1, TOUT="OUI", NOM_CHAM="EFGE_NOEU", TOUT_CMP="OUI"))
 
 PourTest = [
-    [1, "N3", "COOR_X", 5.0],
-    [1, "N3", "VZ", -5000.0],
-    [1, "N2", "COOR_X", 2.5],
-    [1, "N2", "MFY", 12500.0],
+    [1, "3", "COOR_X", 5.0],
+    [1, "3", "VZ", -5000.0],
+    [1, "2", "COOR_X", 2.5],
+    [1, "2", "MFY", 12500.0],
 ]
 for numordre, noeud, npara, lavale in PourTest:
     TEST_TABLE(
@@ -364,14 +364,14 @@ TEST_RESU(
 TU2_1 = CREA_TABLE(RESU=_F(RESULTAT=U2, TOUT="OUI", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI"))
 # IMPR_TABLE(TABLE=TU2_1)
 PourTest = [
-    [1, "M1", 2, 1, "COOR_X", 5.28312e-01],
-    [1, "M1", 2, 1, "SIXX", 436557.404914],
-    [1, "M1", 2, 66, "COOR_X", 5.28312e-01],
-    [1, "M1", 2, 66, "SIXX", 278261.568353],
-    [1, "M2", 1, 23, "COOR_X", 4.47169e00],
-    [1, "M2", 1, 23, "SIXX", 617466.784938],
-    [1, "M2", 1, 138, "COOR_X", 4.47169e00],
-    [1, "M2", 1, 138, "SIXX", -701643.679789],
+    [1, "1", 2, 1, "COOR_X", 5.28312e-01],
+    [1, "1", 2, 1, "SIXX", 436557.404914],
+    [1, "1", 2, 66, "COOR_X", 5.28312e-01],
+    [1, "1", 2, 66, "SIXX", 278261.568353],
+    [1, "2", 1, 23, "COOR_X", 4.47169e00],
+    [1, "2", 1, 23, "SIXX", 617466.784938],
+    [1, "2", 1, 138, "COOR_X", 4.47169e00],
+    [1, "2", 1, 138, "SIXX", -701643.679789],
 ]
 for numordre, maille, point, spoint, npara, lavale in PourTest:
     TEST_TABLE(

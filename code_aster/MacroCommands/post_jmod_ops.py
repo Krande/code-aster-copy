@@ -4565,7 +4565,7 @@ def post_jmod_ops(
                         #                   ---------------
                         #                   TQ[1]
 
-                        NODESBOUGE = [int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[1][0:NB_COUCHES]]
+                        NODESBOUGE = [int(iNo) - 1 for iNo in TLIPSUPCAL[1][0:NB_COUCHES]]
 
                         XAIRE = calc_vari_area_no_bord(
                             self,
@@ -4583,7 +4583,7 @@ def post_jmod_ops(
                         #                   ---------------
                         #                   TQ[NP]
 
-                        NODESBOUGE = [int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[NP][0:NB_COUCHES]]
+                        NODESBOUGE = [int(iNo) - 1 for iNo in TLIPSUPCAL[NP][0:NB_COUCHES]]
 
                         XAIRE = calc_vari_area_no_bord(
                             self,
@@ -4604,7 +4604,7 @@ def post_jmod_ops(
                         if NP > 2:
                             for iNP in range(1, NP - 1):
                                 NODESBOUGE = [
-                                    int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
+                                    int(iNo) - 1 for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
                                 ]
 
                                 XAIRE = calc_vari_area_no_midd(
@@ -4628,7 +4628,7 @@ def post_jmod_ops(
                         NODESBOUGE = {}
                         for iKey in TLIPSUPCAL.keys():
                             NODESBOUGE[iKey] = [
-                                int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES]
+                                int(iNo) - 1 for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES]
                             ]
 
                         if NP == 2:
@@ -4665,9 +4665,7 @@ def post_jmod_ops(
                         #                   TQ[iNP]
 
                         for iNP in range(NP):
-                            NODESBOUGE = [
-                                int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
-                            ]
+                            NODESBOUGE = [int(iNo) - 1 for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]]
 
                             XAIRE = calc_vari_area_no_midd(
                                 self,
@@ -4690,7 +4688,7 @@ def post_jmod_ops(
                         NODESBOUGE = {}
                         for iKey in TLIPSUPCAL.keys():
                             NODESBOUGE[iKey] = [
-                                int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES]
+                                int(iNo) - 1 for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES]
                             ]
 
                         XAIRE = calc_vari_area_no_glob(
@@ -4716,7 +4714,7 @@ def post_jmod_ops(
                         #                   TQ[1]
 
                         NODESBOUGE = [
-                            int(iNo[1:]) - 1
+                            int(iNo) - 1
                             for iNo in TLIPSUPCAL[1][0:NB_COUCHES] + TLIPINFCAL[1][1:NB_COUCHES]
                         ]
 
@@ -4737,7 +4735,7 @@ def post_jmod_ops(
                         #                   TQ[NP]
 
                         NODESBOUGE = [
-                            int(iNo[1:]) - 1
+                            int(iNo) - 1
                             for iNo in TLIPSUPCAL[NP][0:NB_COUCHES] + TLIPINFCAL[NP][1:NB_COUCHES]
                         ]
 
@@ -4760,7 +4758,7 @@ def post_jmod_ops(
                         if NP > 2:
                             for iNP in range(1, NP - 1):
                                 NODESBOUGE = [
-                                    int(iNo[1:]) - 1
+                                    int(iNo) - 1
                                     for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
                                     + TLIPINFCAL[iNP + 1][1:NB_COUCHES]
                                 ]
@@ -4786,7 +4784,7 @@ def post_jmod_ops(
                         NODESBOUGE = {}
                         for iKey in TLIPSUPCAL.keys():
                             NODESBOUGE[iKey] = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES]
                                 + TLIPINFCAL[iKey][1:NB_COUCHES]
                             ]
@@ -4826,7 +4824,7 @@ def post_jmod_ops(
 
                         for iNP in range(NP):
                             NODESBOUGE = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
                                 + TLIPINFCAL[iNP + 1][1:NB_COUCHES]
                             ]
@@ -4852,7 +4850,7 @@ def post_jmod_ops(
                         NODESBOUGE = {}
                         for iKey in TLIPSUPCAL.keys():
                             NODESBOUGE[iKey] = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES]
                                 + TLIPINFCAL[iKey][1:NB_COUCHES]
                             ]
@@ -4880,9 +4878,7 @@ def post_jmod_ops(
                         #                   ---------------
                         #                   TQ[1]
 
-                        NODESBOUGE = [
-                            int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[1][0 : 2 * NB_COUCHES - 1]
-                        ]
+                        NODESBOUGE = [int(iNo) - 1 for iNo in TLIPSUPCAL[1][0 : 2 * NB_COUCHES - 1]]
 
                         XAIRE = calc_vari_area_no_bord(
                             self,
@@ -4901,7 +4897,7 @@ def post_jmod_ops(
                         #                   TQ[NP]
 
                         NODESBOUGE = [
-                            int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[NP][0 : 2 * NB_COUCHES - 1]
+                            int(iNo) - 1 for iNo in TLIPSUPCAL[NP][0 : 2 * NB_COUCHES - 1]
                         ]
 
                         XAIRE = calc_vari_area_no_bord(
@@ -4923,7 +4919,7 @@ def post_jmod_ops(
                         if NP > 3:
                             for iNP in range(1, (NP - 1) // 2):
                                 NODESBOUGE = [
-                                    int(iNo[1:]) - 1
+                                    int(iNo) - 1
                                     for iNo in TLIPSUPCAL[2 * iNP + 1][0 : 2 * NB_COUCHES - 1]
                                 ]
 
@@ -4948,9 +4944,7 @@ def post_jmod_ops(
                         #                   TQ[2*iNP]
 
                         for iNP in range(1, (NP + 1) // 2):
-                            NODESBOUGE = [
-                                int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]
-                            ]
+                            NODESBOUGE = [int(iNo) - 1 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]]
 
                             XAIRE = calc_vari_area_no_midd(
                                 self,
@@ -4973,12 +4967,12 @@ def post_jmod_ops(
                         NODESBOUGE = {}
                         for iKey in range((NP + 1) // 2):
                             NODESBOUGE[2 * iKey + 1] = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iKey + 1][0 : 2 * NB_COUCHES - 1]
                             ]
                             if iKey > 0:
                                 NODESBOUGE[2 * iKey] = [
-                                    int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[2 * iKey][0:NB_COUCHES]
+                                    int(iNo) - 1 for iNo in TLIPSUPCAL[2 * iKey][0:NB_COUCHES]
                                 ]
 
                         if NP == 3:
@@ -5016,7 +5010,7 @@ def post_jmod_ops(
 
                         for iNP in range((NP + 1) // 2):
                             NODESBOUGE = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iNP + 1][0 : 2 * NB_COUCHES - 1]
                             ]
                             XAIRE = calc_vari_area_no_midd(
@@ -5040,9 +5034,7 @@ def post_jmod_ops(
                         #                   TQ[2*iNP]
 
                         for iNP in range(1, NP // 2 + 1):
-                            NODESBOUGE = [
-                                int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]
-                            ]
+                            NODESBOUGE = [int(iNo) - 1 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]]
 
                             XAIRE = calc_vari_area_no_midd(
                                 self,
@@ -5065,13 +5057,13 @@ def post_jmod_ops(
                         NODESBOUGE = {}
                         for iKey in range((NP + 1) // 2):
                             NODESBOUGE[2 * iKey + 1] = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iKey + 1][0 : 2 * NB_COUCHES - 1]
                             ]
 
                         for iKey in range(1, NP // 2 + 1):
                             NODESBOUGE[2 * iKey] = [
-                                int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[2 * iKey][0:NB_COUCHES]
+                                int(iNo) - 1 for iNo in TLIPSUPCAL[2 * iKey][0:NB_COUCHES]
                             ]
 
                         XAIRE = calc_vari_area_no_glob(
@@ -5097,7 +5089,7 @@ def post_jmod_ops(
                         #                   TQ[1]
 
                         NODESBOUGE = [
-                            int(iNo[1:]) - 1
+                            int(iNo) - 1
                             for iNo in TLIPSUPCAL[1][0 : 2 * NB_COUCHES - 1]
                             + TLIPINFCAL[1][1 : 2 * NB_COUCHES - 1]
                         ]
@@ -5119,7 +5111,7 @@ def post_jmod_ops(
                         #                   TQ[NP]
 
                         NODESBOUGE = [
-                            int(iNo[1:]) - 1
+                            int(iNo) - 1
                             for iNo in TLIPSUPCAL[NP][0 : 2 * NB_COUCHES - 1]
                             + TLIPINFCAL[NP][1 : 2 * NB_COUCHES - 1]
                         ]
@@ -5143,7 +5135,7 @@ def post_jmod_ops(
                         if NP > 3:
                             for iNP in range(1, (NP - 1) // 2):
                                 NODESBOUGE = [
-                                    int(iNo[1:]) - 1
+                                    int(iNo) - 1
                                     for iNo in TLIPSUPCAL[2 * iNP + 1][0:NB_COUCHES]
                                     + TLIPINFCAL[2 * iNP + 1][1:NB_COUCHES]
                                 ]
@@ -5170,7 +5162,7 @@ def post_jmod_ops(
 
                         for iNP in range(1, (NP + 1) // 2):
                             NODESBOUGE = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]
                                 + TLIPINFCAL[2 * iNP][1:NB_COUCHES]
                             ]
@@ -5196,13 +5188,13 @@ def post_jmod_ops(
                         NODESBOUGE = {}
                         for iKey in range((NP + 1) // 2):
                             NODESBOUGE[2 * iKey + 1] = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iKey + 1][0 : 2 * NB_COUCHES - 1]
                                 + TLIPINFCAL[2 * iKey + 1][1 : 2 * NB_COUCHES - 1]
                             ]
                             if iKey > 0:
                                 NODESBOUGE[2 * iKey] = [
-                                    int(iNo[1:]) - 1
+                                    int(iNo) - 1
                                     for iNo in TLIPSUPCAL[2 * iKey][0:NB_COUCHES]
                                     + TLIPINFCAL[2 * iKey][1:NB_COUCHES]
                                 ]
@@ -5242,7 +5234,7 @@ def post_jmod_ops(
 
                         for iNP in range((NP + 1) // 2):
                             NODESBOUGE = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iNP + 1][0:NB_COUCHES]
                                 + TLIPINFCAL[2 * iNP + 1][1:NB_COUCHES]
                             ]
@@ -5269,7 +5261,7 @@ def post_jmod_ops(
 
                         for iNP in range(1, NP // 2 + 1):
                             NODESBOUGE = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]
                                 + TLIPINFCAL[2 * iNP][1:NB_COUCHES]
                             ]
@@ -5295,14 +5287,14 @@ def post_jmod_ops(
                         NODESBOUGE = {}
                         for iKey in range((NP + 1) // 2):
                             NODESBOUGE[2 * iKey + 1] = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iKey + 1][0 : 2 * NB_COUCHES - 1]
                                 + TLIPINFCAL[2 * iKey + 1][1 : 2 * NB_COUCHES - 1]
                             ]
 
                         for iKey in range(1, NP // 2 + 1):
                             NODESBOUGE[2 * iKey] = [
-                                int(iNo[1:]) - 1
+                                int(iNo) - 1
                                 for iNo in TLIPSUPCAL[2 * iKey][0:NB_COUCHES]
                                 + TLIPINFCAL[2 * iKey][1:NB_COUCHES]
                             ]

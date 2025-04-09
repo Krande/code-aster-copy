@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -233,7 +233,7 @@ TEST_TABLE(
     NOM_PARA="VALE_R",
     FILTRE=(
         _F(NOM_PARA="NOM_CHAM", VALE_K="FORC_NODA"),
-        _F(NOM_PARA="NOEUD", VALE_K="N2797"),
+        _F(NOM_PARA="NOEUD", VALE_K="2797"),
         _F(NOM_PARA="NOM_CMP", VALE_K="DX"),
     ),
 )
@@ -244,7 +244,7 @@ TEST_TABLE(
     NOM_PARA="VALE_R",
     FILTRE=(
         _F(NOM_PARA="NOM_CHAM", VALE_K="FORC_NODA"),
-        _F(NOM_PARA="NOEUD", VALE_K="N2798"),
+        _F(NOM_PARA="NOEUD", VALE_K="2798"),
         _F(NOM_PARA="NOM_CMP", VALE_K="DY"),
     ),
 )

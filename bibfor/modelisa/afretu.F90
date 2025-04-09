@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: lonlis, iprno(*), idec, nbcoef
     real(kind=8) :: coef(nbcoef)
@@ -44,7 +45,6 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
 
     character(len=8) :: betaf
     character(len=16) :: motfac
-    character(len=24) :: noeuma
     real(kind=8) :: beta
     complex(kind=8) :: betac
     complex(kind=8), pointer :: coec(:) => null()
@@ -60,7 +60,6 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
     betaf = '&FOZERO'
     beta = 0.0d0
     betac = (0.0d0, 0.0d0)
-    noeuma = noma//'.NOMNOE'
     motfac = 'LIAISON_ELEM'
     call jeveuo(vale1, 'L', idch1)
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
@@ -89,7 +88,7 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
 !        DE TUYAU SUR LE DDL NOMDDL
 !
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, klisno(i)), ino)
+        ino = char8_to_int(klisno(i))
 !           ADRESSE DE LA PREMIERE CMP DU NOEUD INO DANS LES CHAMNO
         ival = iprno((ino-1)*(nbec+2)+1)
 !

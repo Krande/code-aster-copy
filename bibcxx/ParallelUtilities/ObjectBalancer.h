@@ -6,7 +6,7 @@
  * @brief Header of an object balancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -266,7 +266,8 @@ class ObjectBalancer {
 
     /** @brief Balance JeveuxCollection over processes by following elementary sends */
     template < typename T, typename Mask = ObjectBalancer::DummyMask >
-    void balanceObjectOverProcesses2( const JeveuxCollection< T > &, JeveuxCollection< T > &,
+    void balanceObjectOverProcesses2( const JeveuxCollection< T, ASTERINTEGER, Contiguous > &,
+                                      JeveuxCollection< T, ASTERINTEGER, Contiguous > &,
                                       const Mask &mask = Mask() ) const;
     template < typename T, typename Mask = ObjectBalancer::DummyMask >
     void balanceObjectOverProcesses2( const std::vector< std::vector< T > > &,
@@ -304,7 +305,7 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
             for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
                 const auto vecPos = nbCmp * curSendList[iPos] + iCmp;
                 if ( vecPos >= sizeIn ) {
-                    throw std::runtime_error( "Index to send grower than vector size" );
+                    throw std::runtime_error( "Index to send grower than vector size " );
                 }
                 if ( sizeToKeep == 0 ) {
                     toKeep[vecPos] = false;
@@ -410,9 +411,9 @@ void ObjectBalancer::balanceObjectOverProcesses( const T &in, T &out ) const {
 };
 
 template < typename T, typename Mask >
-void ObjectBalancer::balanceObjectOverProcesses2( const JeveuxCollection< T > &in,
-                                                  JeveuxCollection< T > &out,
-                                                  const Mask &mask ) const {
+void ObjectBalancer::balanceObjectOverProcesses2(
+    const JeveuxCollection< T, ASTERINTEGER, Contiguous > &in,
+    JeveuxCollection< T, ASTERINTEGER, Contiguous > &out, const Mask &mask ) const {
     balanceObjectOverProcesses3( *in, *out, mask );
 };
 
@@ -455,8 +456,9 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             const auto curSizeOC = getSize( occ );
             occSize[proc].push_back( curSizeOC );
             toSend += curSizeOC;
-            if ( vecPos >= sizeIn )
+            if ( vecPos >= sizeIn ) {
                 throw std::runtime_error( "Index to send grower than vector size" );
+            }
             if ( sizeToKeep == 0 ) {
                 if ( toKeep[vecPos] )
                     toRemove += curSizeOC;

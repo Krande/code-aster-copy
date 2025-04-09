@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab, &
 #include "asterfort/jexnum.h"
 #include "asterfort/testli.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=24) :: noms(*)
     character(len=8) :: nomo, noma
@@ -87,7 +88,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab, &
                 else
                     do kma = 1, nn
                         if (ityp .eq. 1) then
-                            call jenonu(jexnom(noma//'.NOMMAI', noms(kma)), ima)
+                            ima = char8_to_int(noms(kma))
                         else
                             ima = itab(kma)
                         end if

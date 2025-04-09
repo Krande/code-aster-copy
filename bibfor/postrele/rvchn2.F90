@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig, &
 #include "asterfort/utpvgl.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbno, numnd(*)
     character(len=*) :: deplaz, nomjv
@@ -105,7 +106,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig, &
             xnormr = xnormr+axer(i)*axer(i)
         end do
         if (xnormr .lt. epsi) then
-            call jenuno(jexnum(mesh//'.NOMNOE', nunoe), nomnoe)
+            nomnoe = int_to_char8(nunoe)
             call utmess('F', 'POSTRELE_30', sk=nomnoe)
         end if
         xnormr = sqrt(xnormr)
@@ -120,7 +121,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig, &
         end do
         xnormr = sqrt(xnormr)
         if (xnormr .lt. epsi) then
-            call jenuno(jexnum(mesh//'.NOMNOE', nunoe), nomnoe)
+            nomnoe = int_to_char8(nunoe)
             call utmess('F', 'POSTRELE_31', sk=nomnoe)
         end if
         do i = 1, 3

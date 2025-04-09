@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 #include "asterfort/jexnum.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 #include "blas/ddot.h"
 !
     character(len=8) :: resu, noma
@@ -151,7 +152,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 !
 !         BOUCLE SUR LES MAILLES DES LEVRES POUR TROUVER LE BON COTE
             do i = 1, nblev
-                call jenonu(jexnom(noma//'.NOMMAI', mail(i)), iret)
+                iret = char8_to_int(mail(i))
                 call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', iamase)
                 ityp = iatyma-1+iret
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)

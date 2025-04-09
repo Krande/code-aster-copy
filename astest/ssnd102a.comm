@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -399,7 +399,7 @@ ListeDiscrets = ["DN_TR", "DN_T", "DL_TR", "DL_T", "DL_T0"]
 LesDiscrets = {}
 
 LesDiscrets["DL_T"] = {}
-LesDiscrets["DL_T"]["NOEUD"] = "N2"
+LesDiscrets["DL_T"]["NOEUD"] = "2"
 LesDiscrets["DL_T"]["COMPO"] = [("N", "DX"), ("VY", "DY"), ("VZ", "DZ")]
 LesDiscrets["DL_T"]["ENERG"] = [9.08390, 35.56339, 51.15544]
 LesDiscrets["DL_T"]["N"] = R1000
@@ -407,7 +407,7 @@ LesDiscrets["DL_T"]["VY"] = R1500
 LesDiscrets["DL_T"]["VZ"] = R2000
 
 LesDiscrets["DL_T0"] = {}
-LesDiscrets["DL_T0"]["NOEUD"] = "N20"
+LesDiscrets["DL_T0"]["NOEUD"] = "6"
 LesDiscrets["DL_T0"]["COMPO"] = [("N", "DZ"), ("VY", "DZ"), ("VZ", "DX")]
 LesDiscrets["DL_T0"]["ENERG"] = [9.08390, 35.56339, 51.15544]
 LesDiscrets["DL_T0"]["N"] = R1000
@@ -415,7 +415,7 @@ LesDiscrets["DL_T0"]["VY"] = R1500
 LesDiscrets["DL_T0"]["VZ"] = R2000
 
 LesDiscrets["DL_TR"] = {}
-LesDiscrets["DL_TR"]["NOEUD"] = "N3"
+LesDiscrets["DL_TR"]["NOEUD"] = "3"
 LesDiscrets["DL_TR"]["COMPO"] = [
     ("N", "DX"),
     ("VY", "DY"),
@@ -433,7 +433,7 @@ LesDiscrets["DL_TR"]["MFY"] = R3500
 LesDiscrets["DL_TR"]["MFZ"] = R2500
 
 LesDiscrets["DN_T"] = {}
-LesDiscrets["DN_T"]["NOEUD"] = "N4"
+LesDiscrets["DN_T"]["NOEUD"] = "4"
 LesDiscrets["DN_T"]["COMPO"] = [("N", "DX"), ("VY", "DY"), ("VZ", "DZ")]
 LesDiscrets["DN_T"]["ENERG"] = [9.08390, 35.56339, 51.15544]
 LesDiscrets["DN_T"]["N"] = R1000
@@ -441,7 +441,7 @@ LesDiscrets["DN_T"]["VY"] = R1500
 LesDiscrets["DN_T"]["VZ"] = R2000
 
 LesDiscrets["DN_TR"] = {}
-LesDiscrets["DN_TR"]["NOEUD"] = "N5"
+LesDiscrets["DN_TR"]["NOEUD"] = "5"
 LesDiscrets["DN_TR"]["COMPO"] = [
     ("N", "DX"),
     ("VY", "DY"),
@@ -594,7 +594,7 @@ ListeDiscrets = ["DN_T0"]
 LesDiscrets = {}
 
 LesDiscrets["DN_T0"] = {}
-LesDiscrets["DN_T0"]["NOEUD"] = "N40"
+LesDiscrets["DN_T0"]["NOEUD"] = "7"
 LesDiscrets["DN_T0"]["COMPO"] = [("N", "DX"), ("VY", "DY"), ("VZ", "DZ")]
 LesDiscrets["DN_T0"]["ENERG"] = [5.0559739467, 14.6025, 25.62048]
 LesDiscrets["DN_T0"]["N"] = R1000L

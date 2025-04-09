@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ subroutine arlgrm(mail, nomgrp, dime, ima, connex, loncum, &
 #include "asterfort/jexnum.h"
 #include "asterfort/arlcnn.h"
 #include "asterfort/jedema.h"
+#include "asterfort/int_to_char8.h"
 
 !     ARGUMENTS:
 !     ----------
@@ -83,7 +84,7 @@ subroutine arlgrm(mail, nomgrp, dime, ima, connex, loncum, &
 ! --- NUMERO ABSOLU ET NOM DE LA MAILLE
 
     nummai = zi(jgrp-1+aima)
-    call jenuno(jexnum(mail(1:8)//'.NOMMAI', nummai), nommai)
+    nommai = int_to_char8(nummai)
 
 ! --- TYPE DE LA MAILLE
 

@@ -80,6 +80,7 @@ module calcG_type
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcourb.h"
+#include "asterfort/char8_to_int.h"
 
 !
     public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat, CalcG_Paramaters
@@ -1000,7 +1001,7 @@ contains
         call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
         call jeveuo(this%mesh//'.TYPMAIL', 'L', vi=typmail)
 !
-        call jenonu(jexnom(this%mesh//'.NOMMAI', zk8(jma)), nume)
+        nume = char8_to_int(zk8(jma))
 !
         call jenuno(jexnum('&CATA.TM.NOMTM', typmail(nume)), typma)
 !
@@ -1071,7 +1072,7 @@ contains
             !       temporaire à supprimer quand issue 33988 sera corrigée
             call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
             call jeveuo(this%mesh//'.TYPMAIL', 'L', vi=typmail)
-            call jenonu(jexnom(this%mesh//'.NOMMAI', zk8(jma)), nume)
+            nume = char8_to_int(zk8(jma))
             call jenuno(jexnum('&CATA.TM.NOMTM', typmail(nume)), typma)
 !
             if ((typma .eq. 'QUAD9') .or. (typma .eq. 'TRIA7')) then
@@ -1810,14 +1811,14 @@ contains
 !
 ! --- First and last nodes
 !
-            call jenonu(jexnom(this%nomNoeud, fondNoeud(1)), nume)
+            nume = char8_to_int(fondNoeud(1))
             fondNoeudNume(1) = nume
             v_noeuf(1) = fondNoeud(1)
             fondNoeudCoor(1:3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
             v_absfon(1) = 0.d0
             v_basfon(1:6) = basfon(1:6)
 !
-            call jenonu(jexnom(this%nomNoeud, fondNoeud(this%nb_fondNoeud)), nume)
+            nume = char8_to_int(fondNoeud(this%nb_fondNoeud))
             fondNoeudNume(this%nb_point_fond) = nume
             v_noeuf(this%nb_point_fond) = fondNoeud(this%nb_fondNoeud)
             fondNoeudCoor(3*(this%nb_point_fond-1)+1:3*(this%nb_point_fond-1)+3) = &
@@ -1838,11 +1839,11 @@ contains
                 end do
 !         ON INTERPOLE LES COORD ENTRE CELLES DU SEGMENT [K-1,K]
                 s1 = absfon(node_nume-1)
-                call jenonu(jexnom(this%nomNoeud, fondNoeud(node_nume-1)), nume)
+                nume = char8_to_int(fondNoeud(node_nume-1))
                 coor1(1:3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
                 base1(1:6) = basfon(6*(node_nume-1-1)+1:6*(node_nume-1-1)+6)
                 s2 = absfon(node_nume)
-                call jenonu(jexnom(this%nomNoeud, fondNoeud(node_nume)), nume)
+                nume = char8_to_int(fondNoeud(node_nume))
                 coor2(1:3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
                 base2(1:6) = basfon(6*(node_nume-1)+1:6*(node_nume-1)+6)
 !
@@ -1854,7 +1855,7 @@ contains
             end do
 
             do i_node = 1, this%nb_point_fond
-                call jenonu(jexnom(this%nomNoeud, fondNoeud(i_node)), nume)
+                nume = char8_to_int(fondNoeud(i_node))
             end do
 !
 ! --- Create Local Basis
@@ -1964,7 +1965,7 @@ contains
         else
             do i_node = 1, this%nb_fondNoeud
 !               Récupération du numéro de noeud
-                call jenonu(jexnom(this%nomNoeud, fondNoeud(i_node)), nume)
+                nume = char8_to_int(fondNoeud(i_node))
                 fondNoeudNume(i_node) = nume
                 fondNoeudCoor(3*(i_node-1)+1:3*(i_node-1)+3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
             end do

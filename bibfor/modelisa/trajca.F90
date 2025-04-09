@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,6 +81,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca, &
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: mailla
     character(len=19) :: xnoca, ynoca, znoca, tablca
@@ -99,7 +100,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca, &
     real(kind=8) :: xmin, xmax, ymin, ymax, zmin, zmax, rr
     complex(kind=8) :: cbid
     character(len=3) :: k3b
-    character(len=24) :: coorno, nonoca, nonoma
+    character(len=24) :: coorno, nonoca
     aster_logical :: lsplin
 !
     integer :: nbsub, jgmai
@@ -169,11 +170,10 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca, &
     xmax = -r8maem()
     ymax = -r8maem()
     zmax = -r8maem()
-    nonoma = mailla//'.NOMNOE'
     coorno = mailla//'.COORDO    .VALE'
     call jeveuo(coorno, 'L', jcoor)
     do ino = 1, nbno
-        call jenonu(jexnom(nonoma, zk8(jnoca+idecal+ino-1)), numnoe)
+        numnoe = char8_to_int(zk8(jnoca+idecal+ino-1))
         zr(jx+idecal+ino-1) = zr(jcoor+3*(numnoe-1))
         zr(jy+idecal+ino-1) = zr(jcoor+3*(numnoe-1)+1)
         zr(jz+idecal+ino-1) = zr(jcoor+3*(numnoe-1)+2)

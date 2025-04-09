@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -141,7 +141,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUX",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N7"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="7"),
 )
 
 TEST_TABLE(
@@ -151,7 +151,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUX",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N8"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="8"),
 )
 
 TEST_TABLE(
@@ -161,7 +161,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUX",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N9"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="9"),
 )
 
 TEST_TABLE(
@@ -171,7 +171,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUX",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N4"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="4"),
 )
 
 TEST_TABLE(
@@ -181,7 +181,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUX",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N6"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="6"),
 )
 
 #
@@ -193,7 +193,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUZ",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N7"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="7"),
 )
 
 TEST_TABLE(
@@ -203,7 +203,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUZ",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N8"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="8"),
 )
 
 TEST_TABLE(
@@ -213,7 +213,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUZ",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N9"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="9"),
 )
 
 TEST_TABLE(
@@ -223,7 +223,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUZ",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N4"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="4"),
 )
 
 TEST_TABLE(
@@ -233,7 +233,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUZ",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N6"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="6"),
 )
 
 #
@@ -246,7 +246,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUY",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N7"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="7"),
 )
 
 TEST_TABLE(
@@ -257,7 +257,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUY",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N8"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="8"),
 )
 
 TEST_TABLE(
@@ -268,7 +268,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUY",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N9"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="9"),
 )
 
 TEST_TABLE(
@@ -279,7 +279,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUY",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N4"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="4"),
 )
 
 TEST_TABLE(
@@ -290,7 +290,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     NOM_PARA="FLUY",
     TABLE=TR1,
-    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N6"),
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="6"),
 )
 
 # -----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 !
 !
@@ -306,13 +307,13 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2, &
             ip = zi(llistb-1+jnode)
             inu = zi(llint1-1+i)
             nuno = nldesc1(inu)
-            call jenuno(jexnum(mail1//'.NOMNOE', nuno), nomnoi)
+            nomnoi = int_to_char8(nuno)
             inu = zi(llint2-1+jnode)
             nuno = nldesc2(inu)
-            call jenuno(jexnum(mail2//'.NOMNOE', nuno), nomnoj)
+            nomnoj = int_to_char8(nuno)
             inu = zi(llint1-1+ip)
             nuno = nldesc1(inu)
-            call jenuno(jexnum(mail1//'.NOMNOE', nuno), nomnop)
+            nomnop = int_to_char8(nuno)
             valk(1) = nomnoj
             valk(2) = nomnop
             valk(3) = nomnoi

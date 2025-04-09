@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ MODELP = AFFE_MODELE(
 ModP = DEFI_GROUP(
     reuse=ModP,
     MAILLAGE=ModP,
-    CREA_GROUP_MA=_F(NOM="Pou1", MAILLE=("M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8")),
+    CREA_GROUP_MA=_F(NOM="Pou1", MAILLE=("M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9")),
     CREA_GROUP_NO=_F(GROUP_MA="Pou1"),
 )
 
@@ -65,7 +65,7 @@ ModP = DEFI_GROUP(
     reuse=ModP,
     MAILLAGE=ModP,
     CREA_GROUP_MA=_F(
-        NOM="Pou2", MAILLE=("M21", "M22", "M23", "M24", "M25", "M26", "M27", "M28", "M29")
+        NOM="Pou2", MAILLE=("M22", "M23", "M24", "M25", "M26", "M27", "M28", "M29", "M30")
     ),
     CREA_GROUP_NO=_F(GROUP_MA="Pou2"),
 )
@@ -74,16 +74,16 @@ ModP = DEFI_GROUP(
     reuse=ModP,
     MAILLAGE=ModP,
     CREA_GROUP_MA=_F(
-        NOM="PouInt", MAILLE=("M10", "M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19")
+        NOM="PouInt", MAILLE=("M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19", "M20")
     ),
     CREA_GROUP_NO=_F(GROUP_MA="PouInt"),
 )
 
-ModP = DEFI_GROUP(reuse=ModP, MAILLAGE=ModP, CREA_GROUP_NO=_F(NOEUD=("N0", "N30"), NOM="CLModP"))
+ModP = DEFI_GROUP(reuse=ModP, MAILLAGE=ModP, CREA_GROUP_NO=_F(NOEUD=("N1", "N31"), NOM="CLModP"))
 
-ModP = DEFI_GROUP(reuse=ModP, MAILLAGE=ModP, CREA_GROUP_NO=_F(NOEUD=("N14",), NOM="NFP"))
+ModP = DEFI_GROUP(reuse=ModP, MAILLAGE=ModP, CREA_GROUP_NO=_F(NOEUD=("N15",), NOM="NFP"))
 
-ModP = DEFI_GROUP(reuse=ModP, MAILLAGE=ModP, CREA_GROUP_NO=_F(NOEUD=("N16",), NOM="NdP"))
+ModP = DEFI_GROUP(reuse=ModP, MAILLAGE=ModP, CREA_GROUP_NO=_F(NOEUD=("N17",), NOM="NdP"))
 
 Carelem = AFFE_CARA_ELEM(
     MODELE=MODELP, POUTRE=_F(GROUP_MA=("AllNode",), SECTION="CERCLE", CARA="R", VALE=0.005)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -270,7 +270,7 @@ TEST_TABLE(
     VALE_CALC=23.9803025869,
     NOM_PARA="RMS_T_TOTAL",
     TABLE=POST,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="FORCE_NORMALE"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="FORCE_NORMALE"), _F(NOM_PARA="NOEUD", VALE_K="2")),
 )
 
 # ON PASSE EN SDVERI=NON LE TEMPS DE LA REST_GENE_PHYS
@@ -330,8 +330,8 @@ SVY_N1X = RECU_FONCTION(
     FILTRE=(
         _F(NOM_PARA="NOM_CMP", VALE_K="SVY"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="SIPO_ELNO"),
-        _F(NOM_PARA="NOEUD", VALE_K="N1"),
-        _F(NOM_PARA="MAILLE", VALE_K="M1"),
+        _F(NOM_PARA="NOEUD", VALE_K="1"),
+        _F(NOM_PARA="MAILLE", VALE_K="1"),
     ),
 )
 
@@ -342,8 +342,8 @@ MFZ_N1X = RECU_FONCTION(
     FILTRE=(
         _F(NOM_PARA="NOM_CMP", VALE_K="MFZ"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="EFGE_ELNO"),
-        _F(NOM_PARA="NOEUD", VALE_K="N1"),
-        _F(NOM_PARA="MAILLE", VALE_K="M1"),
+        _F(NOM_PARA="NOEUD", VALE_K="1"),
+        _F(NOM_PARA="MAILLE", VALE_K="1"),
     ),
 )
 
@@ -353,7 +353,7 @@ DY_N3X = RECU_FONCTION(
     PARA_Y="VALE_R",
     FILTRE=(
         _F(NOM_PARA="NOM_CMP", VALE_K="DY"),
-        _F(NOM_PARA="NOEUD", VALE_K="N3"),
+        _F(NOM_PARA="NOEUD", VALE_K="3"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="DEPL"),
     ),
 )
@@ -364,7 +364,7 @@ ADRZ_N3X = RECU_FONCTION(
     PARA_Y="VALE_R",
     FILTRE=(
         _F(NOM_PARA="NOM_CMP", VALE_K="DRZ"),
-        _F(NOM_PARA="NOEUD", VALE_K="N3"),
+        _F(NOM_PARA="NOEUD", VALE_K="3"),
         _F(NOM_PARA="NOM_CHAM", VALE_K="ACCE"),
     ),
 )
@@ -376,7 +376,7 @@ VY_G1X = RECU_FONCTION(
     FILTRE=(
         _F(NOM_PARA="NOM_CMP", VALE_K="VY"),
         _F(NOM_PARA="POINT", VALE_K="PT 1"),
-        _F(NOM_PARA="MAILLE", VALE_K="M1"),
+        _F(NOM_PARA="MAILLE", VALE_K="1"),
     ),
 )
 
@@ -587,7 +587,7 @@ TEST_TABLE(
     VALE_CALC=24.5347532050,
     NOM_PARA="RMS_T_TOTAL",
     TABLE=POST2,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="FORCE_NORMALE"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="FORCE_NORMALE"), _F(NOM_PARA="NOEUD", VALE_K="2")),
 )
 
 

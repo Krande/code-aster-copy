@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbma, nbgr, nbto, numnot(nbto)
     character(len=8) :: mailla, nomma(nbma)
@@ -82,7 +83,7 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr, &
     if (nbma .gt. 0) then
         do i = 1, nbma
             nomcou = nomma(i)
-            call jenonu(jexnom(mailla//'.NOMMAI', nomcou), numa)
+            numa = char8_to_int(nomcou)
 !
             if (numa .eq. 0) then
                 valk(1) = mailla

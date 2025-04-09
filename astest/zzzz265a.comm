@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,9 +62,7 @@ MAIL0 = DEFI_GROUP(
     reuse=MAIL0, MAILLAGE=MAIL0, CREA_GROUP_NO=_F(GROUP_MA="TOTAL", NOM="NCABLE", CRIT_NOEUD="TOUS")
 )
 
-MAIL1 = CREA_MAILLAGE(
-    MAILLAGE=MAIL0, CREA_MAILLE=_F(NOM="TOTAL1", GROUP_MA="TOTAL", PREF_MAILLE="ZZ")
-)
+MAIL1 = CREA_MAILLAGE(MAILLAGE=MAIL0, CREA_MAILLE=_F(NOM="TOTAL1", GROUP_MA="TOTAL"))
 
 MAIL2 = CREA_MAILLAGE(MAILLAGE=MAIL1, CREA_POI1=_F(NOM_GROUP_MA="DIS", GROUP_NO="NCABLE"))
 
