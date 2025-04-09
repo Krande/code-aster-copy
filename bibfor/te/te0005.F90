@@ -72,7 +72,7 @@ subroutine te0005(option, nomte)
 ! - Get adresses for fields
 !
 
-    call dilcar(option, icontm, ivarim, ideplm, ideplp, &
+    call dilcar(option, compor, icontm, ivarim, ideplm, ideplp, &
                 igeom, imate, imatuu, ivectu, icontp, &
                 ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
 

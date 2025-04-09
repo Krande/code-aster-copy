@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dilcar(option, icontm, ivarim, ideplm, ideplp, &
+subroutine dilcar(option, compor, icontm, ivarim, ideplm, ideplp, &
                   igeom, imate, imatuu, ivectu, icontp, &
                   ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
 !
@@ -33,7 +33,7 @@ subroutine dilcar(option, icontm, ivarim, ideplm, ideplp, &
     integer :: icontm, ivarim, ideplm, ideplp, igeom, imate, jcret
     integer :: imatuu, ivectu, icontp, ichg, ichn, ivarip, icarcr, iinstm, iinstp
     character(len=16) :: option
-    character(len=16), pointer :: compor(:) => null()
+    character(len=16), pointer :: compor(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !

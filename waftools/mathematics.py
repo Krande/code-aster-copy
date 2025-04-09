@@ -127,7 +127,7 @@ def detect_mkl(self):
     core = "mkl_core"
     libs = []
     # http://software.intel.com/en-us/articles/intel-mkl-link-line-advisor/
-    if "ifort" in self.env.FC_NAME.lower() or ("icc" or "icx") in self.env.CC_NAME.lower():
+    if "ifort" in self.env.FC_NAME.lower() or "icc" in self.env.CC_NAME.lower():
         if self.get_define("ASTER_HAVE_OPENMP"):
             thread = "mkl_intel_thread"
         interf = "mkl_intel" + suffix

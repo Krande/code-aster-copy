@@ -68,7 +68,7 @@ subroutine te0244(option, nomte)
     real(kind=8) :: resi_mp(MAX_BS), resi_p(MAX_BS)
     real(kind=8) ::  deltat, theta, chal(1), diff, Kglo(3, 3)
     real(kind=8) :: beta, dbeta, tpg, dtpg(3), tpsec, flux(3)
-    integer :: kp, imate, icomp, ifon(6), itemps
+    integer :: kp, imate, ifon(6), itemps
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: lhyd, aniso
     real(kind=8), pointer :: tempi(:) => null()
@@ -83,7 +83,7 @@ subroutine te0244(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PINSTR', 'L', itemps)
     call jevech('PTEMPER', 'L', vr=tempi)
-    call jevech('PCOMPOR', 'L', icomp, vk16=compor)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     rela_name = compor(RELA_NAME)
 !
     deltat = zr(itemps+1)

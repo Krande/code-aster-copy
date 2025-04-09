@@ -28,8 +28,6 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -98,8 +96,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         goto 999
     end if
 !
-    AS_ALLOCATE(vr=varia, size=nddl*nddl)
-    AS_ALLOCATE(vr=smatr, size=nddl*nddl)
+    allocate (varia(4*nddl*nddl))
+    allocate (smatr(nddl*nddl))
+    varia = 0.d0
+    smatr = 0.d0
 !
 ! --  INITIALISATION (PREMIER APPEL)
 !
@@ -350,8 +350,8 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         call dcopy(b_n, matper, b_incx, zr(ematrc), b_incy)
     end if
 !
-    AS_DEALLOCATE(vr=smatr)
-    AS_DEALLOCATE(vr=varia)
+    deallocate (smatr)
+    deallocate (varia)
 !
 999 continue
 !

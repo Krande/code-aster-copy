@@ -304,11 +304,13 @@ contains
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  From COMPOR'
         end if
-        read (compor(DEFO_LDC), '(A16)') defo_ldc
-        read (compor(DEFO), '(A16)') defo_comp
-        read (compor(REGUVISC), '(A16)') regu_visc
-        read (compor(POSTINCR), '(A16)') postIncr
-        read (compor(MGIS_ADDR), '(A16)') mgisAddr
+        !
+        defo_ldc = compor(DEFO_LDC)
+        defo_comp = compor(DEFO)
+        regu_visc = compor(REGUVISC)
+        postIncr = compor(POSTINCR)
+        mgisAddr = compor(MGIS_ADDR)
+        !
         BEHinteg%behavPara%lFiniteStrain = defo_comp .eq. 'SIMO_MIEHE' .or. &
                                            defo_comp .eq. 'GROT_GDEP'
         BEHinteg%behavPara%lGdefLog = defo_comp .eq. 'GDEF_LOG'

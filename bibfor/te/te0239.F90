@@ -160,7 +160,7 @@ subroutine te0239(option, nomte)
     rela_comp = compor(RELA_NAME)
     defo_comp = compor(DEFO)
     rela_cpla = compor(PLANESTRESS)
-    read (compor(RELA_NAME), '(I16)') nbvari
+    read (compor(NVAR), '(I16)') nbvari
 
 ! - Some checks
     if (rela_cpla .eq. 'COMP_ELAS') then

@@ -62,7 +62,7 @@ subroutine te0243(option, nomte)
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: sechf(:) => null()
     integer ::  kp, ifon(6)
-    integer ::  imate, icomp, j
+    integer ::  imate, j
     character(len=16) :: rela_name
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: aniso, l_rhs
@@ -73,7 +73,7 @@ subroutine te0243(option, nomte)
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPEI', 'L', vr=tempi)
-    call jevech('PCOMPOR', 'L', icomp, vk16=compor)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 
     rela_name = compor(RELA_NAME)
     l_rhs = option == "RAPH_THER"

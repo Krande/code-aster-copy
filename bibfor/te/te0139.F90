@@ -81,7 +81,7 @@ subroutine te0139(option, nomte)
     integer :: jtab(7)
     real(kind=8) :: angl_naut(7)
     aster_logical :: matsym
-    character(len=16), pointer :: compor(:) => null()
+    character(len=16), pointer :: compor(:) => null(), v_mult_comp(:) => null()
     character(len=16) :: mult_comp, defo_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     integer :: codret
@@ -114,14 +114,14 @@ subroutine te0139(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
-    call jevech('PMULCOM', 'L', jv_mult_comp)
+    call jevech('PMULCOM', 'L', vk16=v_mult_comp)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Properties of behaviour
 !
-    mult_comp = zk16(jv_mult_comp-1+1)
+    mult_comp = v_mult_comp(1)
     defo_comp = compor(DEFO)
 !
     call FECell%init()
