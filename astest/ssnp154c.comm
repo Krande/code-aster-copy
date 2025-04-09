@@ -180,9 +180,13 @@ MESH = MODI_MAILLAGE(reuse=MESH, MAILLAGE=MESH, DEFORME=_F(OPTION="TRAN", DEPL=m
 
 PS_FONCF = RECU_FONCTION(TABLE=CALC_PSF, PARA_X="ABSC_CURV", PARA_Y="PRES")
 
+PS_FONCF = CALC_FONCTION(ABS=_F(FONCTION=PS_FONCF), NOM_PARA="ABSC")
+
 PS_TANG = RECU_FONCTION(TABLE=CALC_PSF, PARA_X="ABSC_CURV", PARA_Y="CISA")
 
 PM_FONCF = RECU_FONCTION(TABLE=CALC_PMF, PARA_X="ABSC_CURV", PARA_Y="PRES")
+
+PM_FONCF = CALC_FONCTION(ABS=_F(FONCTION=PM_FONCF), NOM_PARA="ABSC")
 
 PM_TANG = RECU_FONCTION(TABLE=CALC_PMF, PARA_X="ABSC_CURV", PARA_Y="CISA")
 
@@ -206,8 +210,8 @@ IMPR_FONCTION(
     ECHELLE_Y="LIN",
     GRILLE_X=1,
     GRILLE_Y=500,
-    LEGENDE_X="Densite surfacique (N/mm2)",
-    LEGENDE_Y="Abscisse curviligne (mm)",
+    LEGENDE_X="Abscisse curviligne (mm)",
+    LEGENDE_Y="Densite surfacique (N/mm2)",
 )
 
 
@@ -237,6 +241,28 @@ TEST_RESU(
             VALE_CALC=-3727.837891279944,
             VALE_REFE=-3670.2561088662001,
             PRECISION=0.016,
+        ),
+    )
+)
+
+# Verification de la force tangentielle
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="PRES_NOEU",
+            NOM_CMP="VX",
+            VALE_CALC=272.8972461688923,
+        ),
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="PRES_NOEU",
+            NOM_CMP="VY",
+            VALE_CALC=2.9322911927895867,
         ),
     )
 )

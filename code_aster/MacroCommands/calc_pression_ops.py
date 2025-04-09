@@ -115,7 +115,9 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
 
     # Corps de la commande
     __chp = [None] * len(insts)
-    __chpFriction = [None] * len(insts)
+    nom_dir = ["X", "Y", "Z"]
+    ncmps_neut = [f"X{i + 1}" for i in range(dim + 2)]
+    ncmps_depl = ["PRES", "CISA"] + [f"V{nom_dir[i]}" for i in range(dim)]
     for i, inst in enumerate(insts):
         __sigm = CREA_CHAMP(
             TYPE_CHAM="NOEU_SIEF_R",
@@ -156,11 +158,15 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
             )
 
         #######################################
+        l_vale_f = [__Pression, __PressionT, __PressionX, __PressionY]
+        if dim == 3:
+            l_vale_f.append(__PressionZ)
+
         __presTol = CREA_CHAMP(
             TYPE_CHAM="NOEU_NEUT_F",
             OPERATION="AFFE",
             MAILLAGE=MAILLAGE,
-            AFFE=_F(GROUP_MA=GROUP_MA, NOM_CMP=("X1", "X2"), VALE_F=(__Pression, __PressionT)),
+            AFFE=_F(GROUP_MA=GROUP_MA, NOM_CMP=ncmps_neut, VALE_F=l_vale_f),
         )
         __pFTol = CREA_CHAMP(
             TYPE_CHAM="NOEU_NEUT_R",
@@ -173,76 +179,15 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
             OPERATION="ASSE",
             MODELE=model,
             ASSE=(
-                _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFTol, NOM_CMP="X1", NOM_CMP_RESU="PRES"),
-                _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFTol, NOM_CMP="X2", NOM_CMP_RESU="CISA"),
+                _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFTol, NOM_CMP=ncmps_neut, NOM_CMP_RESU=ncmps_depl),
             ),
         )
-        ####################################
-        if dim == 3:
-            __presCom = CREA_CHAMP(
-                TYPE_CHAM="NOEU_NEUT_F",
-                OPERATION="AFFE",
-                MAILLAGE=MAILLAGE,
-                AFFE=_F(
-                    GROUP_MA=GROUP_MA,
-                    NOM_CMP=("X1", "X2", "X3"),
-                    VALE_F=(__PressionX, __PressionY, __PressionZ),
-                ),
-            )
-            __pFCom = CREA_CHAMP(
-                TYPE_CHAM="NOEU_NEUT_R",
-                OPERATION="EVAL",
-                CHAM_F=__presCom,
-                CHAM_PARA=(__NormaleF, __sigm),
-            )
-            __chpFriction[i] = CREA_CHAMP(
-                TYPE_CHAM="NOEU_DEPL_R",
-                OPERATION="ASSE",
-                MODELE=model,
-                ASSE=(
-                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X1", NOM_CMP_RESU="DX"),
-                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X2", NOM_CMP_RESU="DY"),
-                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X3", NOM_CMP_RESU="DZ"),
-                ),
-            )
-        else:
-            __presCom = CREA_CHAMP(
-                TYPE_CHAM="NOEU_NEUT_F",
-                OPERATION="AFFE",
-                MAILLAGE=MAILLAGE,
-                AFFE=_F(GROUP_MA=GROUP_MA, NOM_CMP=("X1", "X2"), VALE_F=(__PressionX, __PressionY)),
-            )
-            __pFCom = CREA_CHAMP(
-                TYPE_CHAM="NOEU_NEUT_R",
-                OPERATION="EVAL",
-                CHAM_F=__presCom,
-                CHAM_PARA=(__NormaleF, __sigm),
-            )
-            __chpFriction[i] = CREA_CHAMP(
-                TYPE_CHAM="NOEU_DEPL_R",
-                OPERATION="ASSE",
-                MODELE=model,
-                ASSE=(
-                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X1", NOM_CMP_RESU="DX"),
-                    _F(GROUP_MA=GROUP_MA, CHAM_GD=__pFCom, NOM_CMP="X2", NOM_CMP_RESU="DY"),
-                ),
-            )
 
     MasquerAlarme("ALGORITH11_87")
     MasquerAlarme("COMPOR2_23")
 
     affe = []
     for i, inst in enumerate(insts):
-        affe.append(
-            _F(
-                NOM_CHAM="FORC_NODA",
-                INST=inst,
-                CHAM_GD=__chpFriction[i],
-                MODELE=model,
-                PRECISION=PRECISION,
-                CRITERE=CRITERE,
-            )
-        )
         affe.append(
             _F(
                 NOM_CHAM="PRES_NOEU",
