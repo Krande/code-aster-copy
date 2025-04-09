@@ -273,6 +273,34 @@ MAYAEXP = CREA_MAILLAGE(
     CREA_POI1=_F(TOUT="OUI", NOM_GROUP_MA="NOEU"),
 )
 
+MAYAEXP.addNodeLabels(
+    [
+        "N1011",
+        "N1001",
+        "N2012",
+        "N1012",
+        "N2005",
+        "N1005",
+        "N1008",
+        "N1111",
+        "N1101",
+        "N2112",
+        "N1112",
+        "N2105",
+        "N1105",
+        "N1108",
+        "N1201",
+        "N2201",
+        "N3201",
+        "N1206",
+        "N1205",
+        "N1302",
+        "N2301",
+        "N1301",
+        "N2303",
+        "N1303",
+    ]
+)
 
 MODEXP = AFFE_MODELE(
     MAILLAGE=MAYAEXP, AFFE=_F(GROUP_MA="NOEU", PHENOMENE="MECANIQUE", MODELISATION="DIS_T")
