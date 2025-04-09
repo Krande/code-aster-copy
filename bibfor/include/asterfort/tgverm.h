@@ -25,8 +25,8 @@ interface
                       nno3, geom, ndim, nddl, deplp,&
                       sdepl, vu, vg, vp, vectu,&
                       svect, ncont, contp, scont, nvari,&
-                      varip, svari, matuu, matsym,&
-                      epsilo, epsilp, epsilg, iret)
+                      varip, svari, matuu, smatr, matsym,&
+                      epsilo, epsilp, epsilg, varia, iret)
         integer :: nddl
         character(len=16) :: option
         real(kind=8) :: carcri(*)
@@ -50,6 +50,8 @@ interface
         real(kind=8) :: varip(*)
         real(kind=8) :: svari(*)
         real(kind=8) :: matuu(*)
+        real(kind=8) :: smatr(*)
+        real(kind=8) :: varia(*)
         aster_logical :: matsym
         real(kind=8) :: epsilo
         real(kind=8) :: epsilp

@@ -41,6 +41,7 @@ subroutine te0139(option, nomte)
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tgveri.h"
+#include "asterfort/tgveri_use.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "FE_module.h"
@@ -73,7 +74,7 @@ subroutine te0139(option, nomte)
     character(len=4) :: fami
     integer :: sz_tens, ndim
     integer :: nno, npg, imatuu, lgpg, iret
-    integer :: igeom, imate
+    integer :: igeom, imate, iuse
     integer :: icontm, ivarim
     integer :: iinstm, iinstp, ideplm, ideplp, icarcr
     integer :: ivectu, icontp, ivarip
@@ -89,7 +90,7 @@ subroutine te0139(option, nomte)
 !     POUR TGVERI
     real(kind=8) :: sdepl(3*27), svect(3*27), scont(6*27)
     real(kind=8) :: epsilo, disp_curr(MAX_BV)
-
+    real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
@@ -129,6 +130,12 @@ subroutine te0139(option, nomte)
     ASSERT(nno .le. 27)
     ndim = FECell%ndim
     sz_tens = 2*ndim
+!
+    call tgveri_use(option, zr(icarcr), compor, iuse)
+    if (iuse == 1) then
+        allocate (varia(2*3*27*3*27))
+        allocate (smatr(3*27*3*27))
+    end if
 !
     if (defo_comp == "PETIT_REAC") then
         b_n = to_blas_int(ndim*nno)
@@ -257,8 +264,8 @@ subroutine te0139(option, nomte)
     call tgveri(option, zr(icarcr), compor, nno, zr(igeom), &
                 ndim, ndim*nno, zr(ideplp), sdepl, zr(ivectu), &
                 svect, sz_tens*npg, zr(icontp), scont, npg*lgpg, &
-                zr(ivarip), zr(ivarix), zr(imatuu), matsym, &
-                epsilo, iret)
+                zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym, &
+                epsilo, varia, iret)
     if (iret .ne. 0) then
         goto 500
     end if
@@ -270,6 +277,12 @@ subroutine te0139(option, nomte)
     if (lSigm) then
         call jevech('PCODRET', 'E', jv_codret)
         zi(jv_codret) = codret
+    end if
+!
+! - Free large arrays
+    if (iuse == 1) then
+        deallocate (smatr)
+        deallocate (varia)
     end if
 !
 end subroutine

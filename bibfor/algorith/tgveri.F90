@@ -19,8 +19,8 @@
 subroutine tgveri(option, carcri, compor, nno, geom, &
                   ndim, nddl, deplp, sdepl, vectu, &
                   svect, ncont, contp, scont, nvari, &
-                  varip, svari, matuu, matsym, &
-                  epsilo, iret)
+                  varip, svari, matuu, smatr, matsym, &
+                  epsilo, varia, iret)
 !
 ! aslint: disable=W1504
     implicit none
@@ -35,6 +35,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/tgveri_use.h"
 #include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
     aster_logical :: matsym
@@ -42,7 +43,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
     integer :: iret, nno, ndim
     real(kind=8) :: carcri(CARCRI_SIZE), sdepl(*), scont(*), svect(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
-    real(kind=8) :: varip(*), svari(*)
+    real(kind=8) :: varip(*), svari(*), smatr(*), varia(*)
 !
 ! ----------------------------------------------------------------------
 ! VAR OPTION NOM DE L'OPTION DE CALCUL
@@ -70,11 +71,10 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
     integer :: ematra, ematrc, exi
     integer :: nddl, typeMatr
     integer :: nvari, ncont
-    integer :: i, j, k, indi, nvar, init, pos
+    integer :: i, j, k, indi, nvar, init, pos, iuse
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo
     real(kind=8) :: matper(3*27*3*27)
     blas_int :: b_incx, b_incy, b_n
-    real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     save init, pos
     data matra/'PYTHON.TANGENT.MATA'/
     data matrc/'PYTHON.TANGENT.MATC'/
@@ -87,22 +87,10 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 !
     iret = 0
     typeMatr = nint(carcri(TYPE_MATR_T))
-    if (typeMatr .eq. 0 .or. typeMatr .eq. 3 .or. typeMatr .eq. 4) then
-        goto 999
-    else
-! INCOMATIBILITE AVEC LES COMPORTEMENTS QUI UTILISENT PVARIMP
-        if (compor(PLANESTRESS) .eq. 'DEBORST') then
-            goto 999
-        end if
+    call tgveri_use(option, carcri, compor, iuse)
+    if (iuse == 0) then
+        go to 999
     end if
-    if (option(1:9) .eq. 'RIGI_MECA') then
-        goto 999
-    end if
-!
-    allocate (varia(4*nddl*nddl))
-    allocate (smatr(nddl*nddl))
-    varia = 0.d0
-    smatr = 0.d0
 !
 ! --  INITIALISATION (PREMIER APPEL)
 !
@@ -192,7 +180,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
         b_n = to_blas_int(nddl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl:), b_incy)
+        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl), b_incy)
     end if
 !
     pos = pos+1
@@ -295,9 +283,6 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, matper, b_incx, zr(ematrc), b_incy)
     end if
-!
-    deallocate (smatr)
-    deallocate (varia)
 !
 999 continue
 !

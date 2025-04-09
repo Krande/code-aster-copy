@@ -39,6 +39,7 @@ subroutine te0590(option, nomte)
 #include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tgverm.h"
+#include "asterfort/tgveri_use.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 !
@@ -65,7 +66,7 @@ subroutine te0590(option, nomte)
     integer :: iw, ivf1, ivf2, ivf3, idf1, idf2
     integer :: jtab(7), lgpg
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, imate, icontm, ivarim
+    integer :: igeom, imate, icontm, ivarim, iuse
     integer :: iinstm, iinstp, iddlm, iddld, icarcr, ivarix
     integer :: ivectu, icontp, ivarip, imatuu
     integer :: idbg, nddl, ia, ja
@@ -78,6 +79,7 @@ subroutine te0590(option, nomte)
     real(kind=8) :: sdepl(135), svect(135), scont(6*27)
     real(kind=8) :: epsilo, epsilp, epsilg
     real(kind=8) :: tab_out(27*3*27*3)
+    real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     character(len=16), pointer :: compor(:) => null()
     integer :: na, os, nb, ib, kk
     blas_int :: b_incx, b_incy, b_n
@@ -181,6 +183,12 @@ subroutine te0590(option, nomte)
         call dcopy(b_n, zr(ivarix), b_incx, zr(ivarip), b_incy)
     end if
 !
+    call tgveri_use(option, zr(icarcr), compor, iuse)
+    if (iuse == 1) then
+        allocate (varia(2*135*135))
+        allocate (smatr(135*135))
+    end if
+!
 100 continue
 ! - PETITES DEFORMATIONS
     if (defo_comp(1:6) .eq. 'PETIT ') then
@@ -224,8 +232,8 @@ subroutine te0590(option, nomte)
                 nno3, zr(igeom), ndim, nddl, zr(iddld), &
                 sdepl, vu, vg, vp, zr(ivectu), &
                 svect, ndim*2*npg, zr(icontp), scont, npg*lgpg, &
-                zr(ivarip), zr(ivarix), zr(imatuu), matsym, &
-                epsilo, epsilp, epsilg, iret)
+                zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym, &
+                epsilo, epsilp, epsilg, varia, iret)
     if (iret .ne. 0) goto 100
 !
 200 continue
@@ -391,6 +399,12 @@ subroutine te0590(option, nomte)
             write (6, *) 'FORCE INTERNE'
             write (6, '(108(1X,E11.4))') (zr(ivectu+ja-1), ja=1, nddl)
         end if
+    end if
+!
+! - Free large arrays
+    if (iuse == 1) then
+        deallocate (smatr)
+        deallocate (varia)
     end if
 !
 end subroutine

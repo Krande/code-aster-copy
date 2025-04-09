@@ -20,8 +20,8 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
                   nno3, geom, ndim, nddl, deplp, &
                   sdepl, vu, vg, vp, vectu, &
                   svect, ncont, contp, scont, nvari, &
-                  varip, svari, matuu, matsym, &
-                  epsilo, epsilp, epsilg, iret)
+                  varip, svari, matuu, smatr, matsym, &
+                  epsilo, epsilp, epsilg, varia, iret)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
@@ -35,6 +35,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 #include "asterfort/mavec.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
+#include "asterfort/tgveri_use.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     aster_logical :: matsym
@@ -43,7 +44,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     integer :: vu(3, 27), vg(27), vp(27)
     real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
-    real(kind=8) :: varip(*), svari(*)
+    real(kind=8) :: varip(*), svari(*), smatr(*), varia(*)
 !
 ! ----------------------------------------------------------------------
 ! VAR OPTION NOM DE L'OPTION DE CALCUL
@@ -67,11 +68,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     character(len=24) :: matra, matrc
     integer :: ematra, ematrc, exi
     integer :: nddl
-    integer :: nvari, ncont
+    integer :: nvari, ncont, iuse
     integer :: i, j, k, l, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo, maxpre, maxgon
     real(kind=8) :: matper(nddl*nddl), epsilp, epsilg
-    real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     blas_int :: b_incx, b_incy, b_n
     save init, pos
     data matra/'PYTHON.TANGENT.MATA'/
@@ -84,22 +84,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 !     Calcul de la matrice TGTE par PERTURBATION
 !
     iret = 0
-    if (abs(carcri(2)) .lt. 0.1d0) then
-        goto 999
-    else
-! INCOMATIBILITE AVEC LES COMPORTEMENTS QUI UTILISENT PVARIMP
-        if (compor(5) (1:7) .eq. 'DEBORST') then
-            goto 999
-        end if
-    end if
-    if (option(1:9) .eq. 'RIGI_MECA') then
+    call tgveri_use(option, carcri, compor, iuse)
+    if (iuse == 0) then
         goto 999
     end if
-!
-    allocate (varia(4*nddl*nddl))
-    allocate (smatr(nddl*nddl))
-    varia = 0.d0
-    smatr = 0.d0
 !
 ! --  INITIALISATION (PREMIER APPEL)
 !
@@ -204,7 +192,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         b_n = to_blas_int(nddl)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl:), b_incy)
+        call dcopy(b_n, vectu, b_incx, varia(1+(pos-1)*nddl), b_incy)
     end if
 !
     pos = pos+1
@@ -349,9 +337,6 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
         b_incy = to_blas_int(1)
         call dcopy(b_n, matper, b_incx, zr(ematrc), b_incy)
     end if
-!
-    deallocate (smatr)
-    deallocate (varia)
 !
 999 continue
 !
