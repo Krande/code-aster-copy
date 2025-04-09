@@ -87,9 +87,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     real(kind=8), allocatable :: N_P5(:), M_P5(:)
     real(kind=8), allocatable :: N_P6(:), M_P6(:)
 
-    nrd = 0.0
-    mrd = 0.0
-
 !   Paramètres de calcul
     if (uc .eq. 0) then
         unite_pa = 1.e-6
@@ -131,6 +128,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
         write (6, *) "SyntaxError: nrd and mrd are required"
         return
     end if
+    nrd = 0.0
+    mrd = 0.0
 
 !-----------------------------------------------------------------------
 !Traitement des différents cas (Pivots A / B / C)
