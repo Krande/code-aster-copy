@@ -77,9 +77,9 @@ SHELL = /bin/bash
 
 .PHONY: help default bootstrap bootstrap_debug all
 # targets for ASTER_BUILD configuration
-.PHONY: configure install safe fast doc distclean install-tests test
+.PHONY: configure install safe fast build doc distclean install-tests test
 # same targets for 'debug' configuration
-.PHONY: configure_debug install_debug safe_debug fast_debug doc_debug distclean_debug
+.PHONY: configure_debug install_debug safe_debug fast_debug build_debug doc_debug distclean_debug
 .PHONY: install-tests_debug test_debug
 .PHONY: clean_cache
 
@@ -101,6 +101,9 @@ safe:
 
 fast:
 	./waf_$(ASTER_BUILD) install $(OPTS) --fast $(JOBS)
+
+build:
+	./waf_$(ASTER_BUILD) build $(OPTS) --safe $(JOBS)
 
 doc:
 	@( \
@@ -140,6 +143,9 @@ safe_debug:
 
 fast_debug:
 	$(MAKE) ASTER_BUILD=debug fast
+
+build_debug:
+	$(MAKE) ASTER_BUILD=debug build
 
 doc_debug:
 	$(MAKE) ASTER_BUILD=debug doc
