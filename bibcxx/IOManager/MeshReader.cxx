@@ -43,7 +43,7 @@ static const std::map< int, med_int > asterMedMatching = {
 
 const std::set< med_int > medTypeToRenumber = { 304, 308, 305, 306, 310, 320, 313, 315, 318, 327 };
 
-template < std::size_t N, const int ( &indices )[N] >
+template < std::size_t N, const int indices[N] >
 void applyPermutation( const ASTERINTEGER *in, ASTERINTEGER *out ) {
     for ( size_t i = 0; i < N; i++ ) {
         out[i] = in[indices[i]];
