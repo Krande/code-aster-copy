@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504,C1505,W0104
 !
-subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
+subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
                   typmod, imate, compor, carcri, instam, &
                   instap, neps, epsm, deps, nsig, &
                   sigm, nvi, vim, option, angmas, &
-                  sigp, vip, ndsde, dsidep, codret)
+                  sigp, vip, ndsidep_loc, dsidep, codret)
 !
     use Behaviour_type
     use BehaviourMGIS_module
@@ -48,6 +48,8 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 #include "asterfort/mfrontPrepareStrain.h"
 #include "asterfort/use_orient.h"
 #include "asterfort/utmess.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/czm_post.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
@@ -67,16 +69,16 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8), intent(out) :: sigp(nsig)
     real(kind=8), intent(out) :: vip(nvi)
-    integer, intent(in) :: ndsde
-    real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
-                                        merge(neps, 6, nsig*neps .eq. ndsde))
+    integer, intent(in) :: ndsidep_loc
+    real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsidep_loc), &
+                                        merge(neps, 6, nsig*neps .eq. ndsidep_loc))
     integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Behaviour
 !
-! MFRONT for CZM with ELEMJOINT elements
+! MFRONT for CZM with INTERFAC elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +87,6 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! In  kpg              : current point gauss
 ! In  ksp              : current "sous-point" gauss
 ! In  ndim             : dimension of problem (2 or 3)
-! In  typmod           : type of modelization (TYPMOD2)
 ! In  imate            : coded material address
 ! In  compor           : name of comportment definition (field)
 ! In  carcri           : parameters for comportment
@@ -100,7 +101,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! In  vim              : internal state variables at beginning of current step time
 ! In  option           : name of option to compute
 ! In  angmas           : nautical angles
-! Out sigm             : stresses at end of current step time
+! Out sigp             : stresses at end of current step time
 ! Out vip              : internal state variables at end of current step time
 ! Out dsidep           : tangent matrix
 ! Out codret           : code for error
@@ -120,6 +121,8 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8) :: props(MGIS_MAX_PROPS)
     integer :: ntens, nprops, retcode
     aster_logical :: dbg
+    integer :: cod(1)
+    real(kind=8) :: val(1)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -131,8 +134,8 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     props = 0.d0
     codret = 0
 
-    ASSERT(nsig .ge. ndim)
-    ASSERT(neps .ge. ndim)
+    ASSERT(nsig .ge. 2*ndim)
+    ASSERT(neps .ge. 2*ndim)
 
 ! - Flags for quantity to compute
     lSigm = L_SIGM(option)
@@ -149,10 +152,10 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     extern_addr = compor(MGIS_ADDR)
 
 ! - Management of dimensions
-    lCZM = typmod(2) .eq. 'ELEMJOIN'
+    lCZM = typmod(2) .eq. 'INTERFAC'
     ASSERT(lCZM)
     call getMGISDime(lGreenLagr, lCZM, ndim, &
-                     neps, nsig, nvi, ndsde, &
+                     neps, nsig, nvi, ndsidep_loc, &
                      nstran, nforc, nstatv, nmatr)
 
 ! - Get and set the material properties
@@ -162,7 +165,12 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
                                 ksp, imate, props, nprops)
 
 ! - Prepare strains
-    call mfrontPrepareStrain(lGreenLagr, neps, epsm, deps, stran, dstran)
+    call rcvalb(fami, kpg, ksp, '+', imate, ' ', rela_comp, 0, ' ', [0.d0], &
+                1, 'PENA_LAGR', val, cod, 2)
+    call mfrontPrepareStrain(lGreenLagr, neps, &
+                             epsm(ndim+1:2*ndim)+val(1)*epsm(1:ndim), &
+                             deps(ndim+1:2*ndim)+val(1)*deps(1:ndim), &
+                             stran, dstran)
 
 ! - Input internal state variables
     vi_loc(1:nstatv) = vim(1:nstatv)
@@ -202,8 +210,6 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     call mgis_integrate(extern_addr, sigp_loc, vi_loc, dsidepMGIS, dtime, &
                         pnewdt, retcode)
 
-! - Convert stresses (nothing to do: same convention in code_aster)
-
 ! - Convert matrix
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         do i = 1, ndim
@@ -235,20 +241,11 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
         end if
     end if
 
-! - Copy outputs
-    if (lSigm) then
-        sigp = 0.d0
-        sigp(1:nforc) = sigp_loc(1:nforc)
-    end if
-
-    if (lMatr) then
-        dsidep = 0.d0
-        do i = 1, nmatr
-            do j = 1, nmatr
-                dsidep(i, j) = dsidep_loc(j, i)
-            end do
-        end do
-    end if
+! - Copy output
+    call czm_post(ndim, lSigm, lMatr, val(1), &
+                  epsm(ndim+1:2*ndim)+deps(ndim+1:2*ndim), &
+                  epsm(1:ndim)+deps(1:ndim), &
+                  sigp_loc, dsidep_loc, sigp, dsidep)
 
     if (lVari) then
         vip = 0.d0

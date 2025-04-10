@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -159,7 +159,7 @@ subroutine nmcomp(BEHinteg, &
     lMatrPred = L_MATR_PRED(option)
     lPred = L_PRED(option)
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
-    l_czm = typmod(2) .eq. 'ELEMJOIN'
+    l_czm = typmod(2) .eq. 'ELEMJOIN' .or. typmod(2) .eq. 'INTERFAC'
     l_grad_vari = typmod(2) .eq. 'GRADVARI'
     l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP' &
               .or. defo_comp .eq. 'GREEN_LAGRANGE'

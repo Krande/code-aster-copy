@@ -118,6 +118,7 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lc9049.h"
 #include "asterfort/lc9051.h"
 #include "asterfort/lc9056.h"
+#include "asterfort/lc9058.h"
 #include "asterfort/lc9077.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
@@ -923,6 +924,14 @@ subroutine lc0000(BEHinteg, &
                     deps, nsig, sigm, nvi, vim, option, angmas, &
                     sigp, vip, typmod, icomp, &
                     ndsde, dsidep, codret)
+!     MFRONT
+    case (9058)
+        call lc9058(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    neps, epsm, deps, nsig, sigm, &
+                    nvi, vim, option, angmas, &
+                    sigp, vip, ndsde, dsidep, codret)
     case (9077)
         call lc9077(BEHinteg, fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, neps, epsm, &
