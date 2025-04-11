@@ -575,22 +575,62 @@ def Endo_Loca_TC(DMATER, args):
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
 
     # Lecture et interprétation des paramètres utilisateurs
-    young = float(MATER["E"])
-    nu = float(MATER["NU"])
-    gf = float(MATER["GF"])
-    ft = float(MATER["FT"])
     fc = float(MATER["FC"])
-    p = float(MATER["P"])
+    p = float(MATER["COEF_ECRO_TRAC"])
     lf = float(MATER["DIST_FISSURE"])
-    sig0 = float(MATER["SIG0"])
     tauv = float(MATER["TAU_REGU_VISC"])
+
+    code = MATER['CODIFICATION']
+    assert code in ('FIB_MODEL_CODE','ESSAI')
+    
+    if code == 'ESSAI': 
+        young = float(MATER["E"])
+        nu = float(MATER["NU"])
+        gf = float(MATER["GF"])
+        ft = float(MATER["FT"])
+        sig0 = float(MATER["SEUIL_INIT_COMP"])
+
+    elif code == 'FIB_MODEL_CODE':
+        unit_Pa = dict(Pa=1., MPa=1.e-6)[MATER['UNITE_CONTRAINTE']]
+        unit_MPa = 1.e6*unit_Pa
+        
+        unit_m = dict(m=1.0, mm=1.e3)[MATER['UNITE_LONGUEUR']]
+        unit_mm = 1.e-3 * unit_m
+
+        fc_MPa = fc / unit_MPa
+        
+        if type(MATER["E"]) != type(None):
+            young = float(MATER["E"])
+        else:
+            young = 21500*unit_MPa * (fc_MPa/10.)**(1./3.)
+
+        if type(MATER["NU"]) != type(None):
+            nu = float(MATER["NU"])
+        else:
+            nu = 0.2
+
+        if type(MATER["GF"]) != type(None):
+            gf = float(MATER["GF"])
+        else:
+            gf = 73 * (unit_Pa*unit_m) * fc_MPa**0.18
+
+        if type(MATER["FT"]) != type(None):
+            ft = float(MATER["FT"])
+        else:
+            ft = 0.3 *unit_MPa * (fc_MPa - 8)**(2./3.)
+
+        if type(MATER["SEUIL_INIT_COMP"]) != type(None):
+            sig0 = float(MATER["SEUIL_INIT_COMP"])
+        else:
+            sig0 = 0.4*fc
+            
 
     # Paramètres internes au modèle
     lbd = young * nu / ((1 + nu) * (1 - 2 * nu))
     dmu = young / (1 + nu)
     ec = lbd + dmu
     wc = ft**2 / (2 * ec)
-    kappa = gf / (lf * wc)
+    omega_bar = gf / (lf * wc)
 
     # Controle de la distance inter-fissure
     dc = 0.75 * math.pi * gf / wc * (p + 2.0) ** (-1.5)
@@ -599,9 +639,14 @@ def Endo_Loca_TC(DMATER, args):
 
     # Paramètres pour DEFI_MATERIAU
 
-    prms = dict(FT=ft, KAPPA=kappa, P=p, SIG0=sig0, FC=fc)
-
-    prms["TAU_REGU_VISC"] = tauv
+    prms = dict(
+        FT=ft, 
+        ENER_RUPT_NORM=omega_bar, 
+        COEF_ECRO_TRAC=p, 
+        SEUIL_INIT_COMP=sig0, 
+        FC=fc,
+        TAU_REGU_VISC=tauv,
+    )
 
     mclef = elastic_properties(young, nu, args)
     mclef["ENDO_LOCA_TC"] = prms

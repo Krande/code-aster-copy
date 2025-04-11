@@ -124,16 +124,18 @@ wpos_c = wall_c - wneg_c
 
 MATE = DEFI_MATER_GC(
     ENDO_LOCA_TC=_F(
-        FC=fc,
+        CODIFICATION = 'ESSAI',
+        COEF_ECRO_TRAC = p,
+        DIST_FISSURE   = Lf,
+        FC             = fc,
         NU=nu,
         E=young,
         FT=ft,
         GF=GF,
-        P=p,
-        DIST_FISSURE=Lf,
-        SIG0=sig0,
+        SEUIL_INIT_COMP=sig0,
     )
 )
+
 
 TEMPS1 = DEFI_LIST_REEL(
     DEBUT=0.0,

@@ -112,17 +112,17 @@ t_cib = np.trapz(y=spl_f, x=spl_b) * tauv
 
 MATE = DEFI_MATER_GC(
     ENDO_LOCA_TC=_F(
-        FC=fc,
-        NU=nu,
-        E=young,
-        FT=ft,
-        GF=GF,
-        P=p,
-        DIST_FISSURE=Lf,
-        SIG0=sig0,
+        CODIFICATION = 'FIB_MODEL_CODE',
+        UNITE_CONTRAINTE = 'MPa',
+        UNITE_LONGUEUR = 'mm',
+        COEF_ECRO_TRAC = p,
+        DIST_FISSURE   = Lf,
+        FC             = fc,
+        SEUIL_INIT_COMP = fc/3.0,
         TAU_REGU_VISC=tauv,
     )
 )
+
 
 TEMPS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=t_cib, NOMBRE=100))
 

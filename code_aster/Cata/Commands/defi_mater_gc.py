@@ -325,22 +325,55 @@ DEFI_MATER_GC = MACRO(
         statut="f",
         max=1,
         fr=tr("Définir les paramètres matériaux du béton pour la loi ENDO_LOCA_TC"),
-        E=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Module d'Young")),
-        NU=SIMP(statut="o", typ="R", val_min=0.0e0, val_max=0.5e0, fr=tr("Coefficient de poisson")),
-        FT=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Limite en traction simple")),
         FC=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Limite en compression simple")),
-        SIG0=SIMP(
-            statut="o", typ="R", val_min=0.0e0, fr=tr("Limite de linéarité compression simple")
-        ),
-        GF=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Energie de fissuration")),
-        P=SIMP(
+        COEF_ECRO_TRAC=SIMP(
             statut="o",
             typ="R",
             val_min=(4 / (3 * pi)) ** (-2.0 / 3.0) - 2,
-            fr=tr("Parametre de forme de la reponse cohesive"),
+            fr=tr("Coefficient d'écrouissage en traction"),
         ),
         DIST_FISSURE=SIMP(
             statut="o", typ="R", val_min=0.0e0, fr=tr("Distance moyenne inter-fissures")
+        ),
+
+        CODIFICATION=SIMP(statut="f", typ="TXM", into=("ESSAI", "FIB_MODEL_CODE"), defaut='ESSAI'),
+        b_fib=BLOC(
+            condition=""" equal_to("CODIFICATION", 'FIB_MODEL_CODE')""",
+            UNITE_CONTRAINTE=SIMP(
+                statut="o",
+                typ="TXM",
+                into=("MPa", "Pa"),
+                fr=tr("Unité des contraintes du problème"),
+            ),
+            UNITE_LONGUEUR=SIMP(
+                statut="o",
+                typ="TXM",
+                into=("m", "mm"),
+                fr=tr("Unité des longueurs du problème"),
+            ),
+            E=SIMP(statut="f", typ="R", val_min=0.0e0, fr=tr("Module d'Young")),
+            NU=SIMP(statut="f", typ="R", val_min=0.0e0, val_max=0.5e0, fr=tr("Coefficient de poisson")),
+            GF=SIMP(statut="f", typ="R", val_min=0.0e0, fr=tr("Energie de fissuration")),
+            FT=SIMP(statut="f", typ="R", val_min=0.0e0, fr=tr("Limite en traction simple")),
+            SEUIL_INIT_COMP=SIMP(
+                statut="f", 
+                typ="R", 
+                val_min=0.0e0, 
+                fr=tr("Limite de linéarité en compression simple")
+            ),
+        ),
+        b_essai=BLOC(
+            condition=""" equal_to("CODIFICATION", 'ESSAI')""",
+            E=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Module d'Young")),
+            NU=SIMP(statut="o", typ="R", val_min=0.0e0, val_max=0.5e0, fr=tr("Coefficient de poisson")),
+            GF=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Energie de fissuration")),
+            FT=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Limite en traction simple")),
+            SEUIL_INIT_COMP=SIMP(
+                statut="o", 
+                typ="R", 
+                val_min=0.0e0, 
+                fr=tr("Limite de linéarité en compression simple")
+            ),
         ),
         TAU_REGU_VISC=SIMP(
             statut="f",

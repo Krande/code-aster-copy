@@ -54,7 +54,7 @@ module endo_tc_module
     type MATERIAL
         real(kind=8)   :: lambda
         real(kind=8)   :: deuxmu
-        real(kind=8)   :: kappa
+        real(kind=8)   :: omega_bar
         real(kind=8)   :: m0
         real(kind=8)   :: d1
         real(kind=8)   :: r
@@ -206,7 +206,7 @@ contains
         real(kind=8):: lambda, deuxmu, nu, cvsig, coef_trac, coef_comp
 ! ----------------------------------------------------------------------
         data nomel/'E', 'NU'/
-        data nomen/'KAPPA', 'P', 'FT', 'SIG0', 'FC'/
+        data nomen/'ENER_RUPT_NORM', 'COEF_ECRO_TRAC', 'FT', 'SEUIL_INIT_COMP', 'FC'/
         data nomrg/'TAU_REGU_VISC'/
 ! ----------------------------------------------------------------------
 
@@ -227,7 +227,7 @@ contains
         mat%lambda = valel(1)*valel(2)/((1+valel(2))*(1-2*valel(2)))
         mat%deuxmu = valel(1)/(1+valel(2))
 
-        mat%kappa = valen(1)
+        mat%omega_bar = valen(1)
         mat%m0 = 1.5d0*pi*(valen(2)+2)**(-1.5d0)
         mat%d1 = 0.75d0*pi*sqrt(1+valen(2))
         mat%r = (2*(mat%d1-1)-mat%m0)/(2-mat%m0)
@@ -245,21 +245,21 @@ contains
 
 
         ! Admissibilite du jeu de parametres
-        if (mat%kappa*mat%m0 .le. 2) call utmess('F', 'COMPOR1_98', sr=mat%m0)
+        if (mat%omega_bar*mat%m0 .le. 2) call utmess('F', 'COMPOR1_98', sr=mat%m0)
         ASSERT(mat%ft .gt. 0.d0)
-        ASSERT(mat%kappa .gt. 0.d0)
+        ASSERT(mat%omega_bar .gt. 0.d0)
         ASSERT(mat%m0 .gt. 0.d0)
         ASSERT(mat%m0 .lt. 2.d0)
         ASSERT(mat%d1 .gt. mat%m0)
         ASSERT(mat%r .gt. 1.d0)
-        ASSERT(mat%sig0 .gt. mat%ft)
+        ASSERT(mat%sig0 .gt. 2*mat%ft)
         ASSERT(mat%beta .gt. 1.d0)
         ASSERT(mat%coef_v .ge. 0.d0)
         
         ! Calcul des parametres de regularisation en fonction de la precision souhaitee
         cvsig = mat%ft*self%cvuser
         mat%unil%regbet = cvsig/(mat%lambda + mat%deuxmu)
-        coef_trac = (mat%m0*mat%kappa-2)/(mat%m0*mat%kappa)*(cvsig/mat%ft)
+        coef_trac = (mat%m0*mat%omega_bar-2)/(mat%m0*mat%omega_bar)*(cvsig/mat%ft)
         coef_comp = cvsig/mat%fc
         mat%crit_p = log(3.d0)*max((1+coef_trac)/coef_trac, (1+coef_comp)/coef_comp)
 
@@ -500,8 +500,8 @@ contains
         real(kind=8):: c1, cr
 ! ---------------------------------------------------------------------
 
-        c1 = 0.5d0*self%mat%kappa*self%mat%m0-1
-        cr = 0.5d0*self%mat%kappa*(self%mat%d1-self%mat%m0)
+        c1 = 0.5d0*self%mat%omega_bar*self%mat%m0-1
+        cr = 0.5d0*self%mat%omega_bar*(self%mat%d1-self%mat%m0)
         res = 1+c1*b+cr*b**self%mat%r
 
     end function Fh
@@ -516,8 +516,8 @@ contains
         real(kind=8):: c1, cr
 ! ---------------------------------------------------------------------
 
-        c1 = 0.5d0*self%mat%kappa*self%mat%m0-1
-        cr = 0.5d0*self%mat%kappa*(self%mat%d1-self%mat%m0)
+        c1 = 0.5d0*self%mat%omega_bar*self%mat%m0-1
+        cr = 0.5d0*self%mat%omega_bar*(self%mat%d1-self%mat%m0)
         res = c1+cr*self%mat%r*b**(self%mat%r-1)
 
     end function Db_Fh
