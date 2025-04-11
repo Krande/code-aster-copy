@@ -5811,7 +5811,7 @@ DEFI_MATERIAU = MACRO(
     MFRONT=FACT(
         statut="f",
         LISTE_COEF=SIMP(statut="o", typ="R", min=2, max="**"),
-        PENA_LAGR=SIMP(statut="o", typ="R"),
+        PENA_LAGR=SIMP(statut="f", typ="R"),
     ),
     MFRONT_FO=FACT(
         statut="f", LISTE_COEF=SIMP(statut="o", typ=(fonction_sdaster, formule), min=2, max="**")

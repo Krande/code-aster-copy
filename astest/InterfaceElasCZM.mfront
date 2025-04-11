@@ -1,0 +1,28 @@
+@DSL DefaultCZM;
+@Behaviour InterfaceElasCZM;
+@ModellingHypotheses {Tridimensional, PlaneStrain};
+
+@MaterialProperty real kn;
+kn.setGlossaryName("NormalStiffness");
+@MaterialProperty real kt;
+kt.setEntryName("TangentStiffness");
+@MaterialProperty real r;
+r.setEntryName("PenaLagr");
+
+@Integrator {
+  // Elastic matrix
+  auto Ke = tmatrix<N,N,real>{0.};
+  Ke(0,0) = 1. / (kn+r);
+  Ke(1,1) = 1. / (kt+r);
+  Ke(2,2) = 1. / (kt+r);
+  t = Ke * (u+du);
+}
+
+@TangentOperator {
+  // Tangent matrix (Kt = Ke because the law is elastic!)
+  auto Kt = tmatrix<N,N,real>{0.};
+  Kt(0,0) = 1. / (kn+r);
+  Kt(1,1) = 1. / (kt+r);
+  Kt(2,2) = 1. / (kt+r);
+  Dt = Kt;
+}
