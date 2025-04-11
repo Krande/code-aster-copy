@@ -470,6 +470,12 @@ m=%(r1)f et p=%(r2)f ne respectent pas la contrainte m>p+2.
 ITER_INTE_PAS ne peut admettre qu'une valeur positive pour un comportement MFRONT.
  """
     ),
+    96: _(
+        """
+Le pas de temps devient trop petit par rapport au temps caractéristique TAU_REGU_VISC :
+ratio DT/tau_regu_visc = %(r1)g
+"""
+    ),
     97: _(
         """
 La distance inter-fissure DIST_FISSURE est supérieure à la distance critique %(r1)f. Il faut diminuer

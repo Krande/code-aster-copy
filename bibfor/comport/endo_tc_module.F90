@@ -47,6 +47,7 @@ module endo_tc_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 
 ! --------------------------------------------------------------------------------------------------
@@ -238,7 +239,12 @@ contains
         mat%beta = mat%fc/mat%sig0
 
         mat%coef_v = 0.d0
-        if (valrg(1) .gt. 0.d0) mat%coef_v = valrg(1)/self%deltat
+        if (valrg(1) .gt. 0.d0) then
+            if (self%deltat < valrg(1)*r8prem()) then 
+                call utmess('F', 'COMPOR1_96', sr=self%deltat/valrg(1))
+            end if
+            mat%coef_v = valrg(1)/self%deltat
+        end if
 
         mat%unil%lambda = mat%lambda
         mat%unil%deuxmu = mat%deuxmu
