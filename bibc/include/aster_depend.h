@@ -66,7 +66,7 @@
 #define ASTER_STRLEN_AT_END
 #define ASTER_INT_SIZE 8
 #define ASTER_REAL8_SIZE 8
-#define ASTER_C_FORTRAN_INT long long
+#define ASTER_HAVE_LONG_LONG 1
 #endif
 
 /* stdcall must be defined explicitly because it does not seem required anywhere */

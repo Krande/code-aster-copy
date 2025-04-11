@@ -375,7 +375,7 @@ def _test_type(size, values):
 def check_c_fortran_integer(self):
     """Check the C type equivalent to fortran integer"""
     assert self.env["ASTER_INT_SIZE"], "ASTER_INT_SIZE must be computed before"
-    into = ("int", "long", "long long")
+    into = ("int64_t", "long")
     fragment = _test_type(self.env["ASTER_INT_SIZE"], into)
     self.code_checker(
         "ASTER_C_FORTRAN_INT",
@@ -385,15 +385,13 @@ def check_c_fortran_integer(self):
         "unexpected value for C integer type: %(size)s",
         into=into,
     )
-    if self.env["ASTER_C_FORTRAN_INT"] == "long long":
-        self.define("ASTER_HAVE_LONG_LONG", 1)
 
 
 @Configure.conf
 def check_c_fortran_integer4(self):
     """Check the C type equivalent to fortran integer"""
     assert self.env["ASTER_INT4_SIZE"], "ASTER_INT4_SIZE must be computed before"
-    into = ("int", "short int", "long")
+    into = ("int32_t", "int")
     fragment = _test_type(self.env["ASTER_INT4_SIZE"], into)
     self.code_checker(
         "ASTER_C_FORTRAN_INT4",
