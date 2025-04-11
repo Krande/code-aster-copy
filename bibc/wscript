@@ -76,10 +76,6 @@ def configure(self):
 
     if "ifort" in self.env.FC_NAME.lower():
         self.add_linkflags("-nofor-main", dest="LINKFLAGS_fcprogram")
-        if opts.embed_all or opts.embed_aster:
-            self.add_linkflags("-static-intel", dest="LINKFLAGS_fcprogram")
-            if self.get_define("ASTER_HAVE_MPI"):
-                self.add_linkflags("-static-mpi", dest="LINKFLAGS_fcprogram")
     self.check_c_compiler_flags()
 
 
