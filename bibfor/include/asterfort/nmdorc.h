@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
         character(len=*), intent(in) :: modelZ, chmateZ
         aster_logical, intent(in) :: l_etat_init
         character(len=*), intent(in) :: comporZ
-        character(len=*), intent(out) :: carcriZ
+        character(len=*), intent(in) :: carcriZ
         character(len=*), optional, intent(in) :: mult_compZ_
     end subroutine nmdorc
 end interface
