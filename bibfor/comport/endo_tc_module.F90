@@ -35,6 +35,7 @@ module endo_tc_module
         UNIL_MAT => MATERIAL, &
         InitUnilateral => Init, &
         ComputeStress, &
+        ComputeStress_eig, &
         ComputeStiffness, &
         ComputeEnergy
 
@@ -52,6 +53,19 @@ module endo_tc_module
 
 ! --------------------------------------------------------------------------------------------------
 
+    ! Variables internes
+    integer, parameter:: ENDO     = 1
+    integer, parameter:: ENDOTRAC = 2
+    integer, parameter:: HISTTRAC = 3
+    integer, parameter:: ENERTRAC = 4
+    integer, parameter:: ENDOCOMP = 5
+    integer, parameter:: HISTCOMP = 6
+    integer, parameter:: ENERCOMP = 7
+    integer, parameter:: SIGMVISC = 8
+    integer, parameter:: ENDOTOT  = 9
+
+
+    ! Material parameters
     type MATERIAL
         real(kind=8)   :: lambda
         real(kind=8)   :: deuxmu
@@ -67,15 +81,27 @@ module endo_tc_module
         real(kind=8)   :: coef_v
         type(UNIL_MAT) :: unil
     end type MATERIAL
+    
+    
+    ! Required precision and impact on the different quantities   
+    type PRECISION
+        real(kind=8):: cvuser
+        real(kind=8):: cvsig
+        real(kind=8):: cveps
+        real(kind=8):: cvdam
+    end type PRECISION
+    
 
     ! Shared attibutes through the global variable self
     type CONSTITUTIVE_LAW
         integer         :: exception = 0
-        aster_logical   :: elas, rigi, vari, pilo, pred
+        aster_logical   :: elas, rigi, vari, pilo, pred, visc
         integer         :: ndimsi, itemax
-        real(kind=8)    :: deltat, cvuser
+        real(kind=8)    :: deltat
+        type(PRECISION) :: prec
         type(MATERIAL)  :: mat
         type(UNILATERAL):: unil
+        type(CRITERION) :: critTens, critComp
     end type CONSTITUTIVE_LAW
 
     ! Post-treatment results
@@ -85,6 +111,7 @@ module endo_tc_module
         real(kind=8)  :: wpos
         real(kind=8)  :: wneg
         real(kind=8)  :: deq
+        real(kind=8)  :: sigmvisc
     end type POST_TREATMENT
 
 contains
@@ -128,8 +155,13 @@ contains
         self%ndimsi = ndimsi
         self%deltat = deltat
         self%itemax = itemax
-        self%cvuser = precvg
-        self%mat = GetMaterial(self, fami, kpg, ksp, imate)
+        self%mat = GetMaterial(self, fami, kpg, ksp, imate, precvg)
+
+        ! Expected accuracy for the stress, the strain and the damage
+        self%prec%cvuser = precvg
+        self%prec%cvsig = self%mat%ft*precvg
+        self%prec%cveps = self%prec%cvsig/(self%mat%unil%lambda+self%mat%unil%deuxmu)
+        self%prec%cvdam = precvg
 
     end function Init
 
@@ -156,11 +188,14 @@ contains
 ! ---------------------------------------------------------------------
 
 ! unpack internal variables
-        bem = vim(3)
-        cmaxm = vim(6)
+        bem = vim(HISTTRAC)
+        cmaxm = vim(HISTCOMP)
 
+! Strain split tension/compression and strain measures in tension and compression
+        call ComputeStrainQuantities(self, eps)
+        
 ! damage behaviour integration
-        call ComputeDamage(self, eps, bem, cmaxm, be, cmax, sig, dsde)
+        call ComputeLaw(self, eps, bem, cmaxm, be, cmax, sig, dsde)
         if (self%exception .ne. 0) goto 999
 
 ! Post-treatments
@@ -168,13 +203,15 @@ contains
 
 ! pack internal variables
         if (self%vari) then
-            vip(1) = merge(post%deq, vim(1), post%deq .ne. r8vide())
-            vip(2) = 1.d0-post%tens_stf
-            vip(3) = be
-            vip(4) = post%wpos
-            vip(5) = 1.d0-post%comp_stf
-            vip(6) = cmax
-            vip(7) = post%wneg
+            vip(ENDO) = merge(post%deq, vim(1), post%deq .ne. r8vide())
+            vip(ENDOTRAC) = 1.d0-post%tens_stf
+            vip(HISTTRAC) = be
+            vip(ENERTRAC) = post%wpos
+            vip(ENDOCOMP) = 1.d0-post%comp_stf
+            vip(HISTCOMP) = cmax
+            vip(ENERCOMP) = post%wneg
+            vip(SIGMVISC) = post%sigmvisc
+            vip(ENDOTOT)  = 1.d0 -post%tens_stf*post%comp_stf
         end if
 
 999     continue
@@ -184,19 +221,21 @@ contains
 !  MATERIAL CHARACTERISTICS
 ! =====================================================================
 
-    function GetMaterial(self, fami, kpg, ksp, imate) result(mat)
+    function GetMaterial(self, fami, kpg, ksp, imate, precvg) result(mat)
 
         implicit none
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
         integer, intent(in)                   :: kpg, ksp, imate
         character(len=*), intent(in)          :: fami
+        real(kind=8), intent(in)              :: precvg
         type(MATERIAL)                       :: mat
 ! ---------------------------------------------------------------------
 ! fami      Gauss point set
 ! kpg       Gauss point number
 ! ksp       Layer number (for structure elements)
 ! imate     material pointer
+! precvg    required precision
 ! ---------------------------------------------------------------------
         integer, parameter:: nbel = 2, nben = 5, nbrg = 1
 ! ----------------------------------------------------------------------
@@ -239,7 +278,8 @@ contains
         mat%beta = mat%fc/mat%sig0
 
         mat%coef_v = 0.d0
-        if (valrg(1) .gt. 0.d0) then
+        self%visc = valrg(1) .gt. 0.d0
+        if (self%visc) then
             if (self%deltat < valrg(1)*r8prem()) then 
                 call utmess('F', 'COMPOR1_96', sr=self%deltat/valrg(1))
             end if
@@ -263,7 +303,7 @@ contains
         ASSERT(mat%coef_v .ge. 0.d0)
         
         ! Calcul des parametres de regularisation en fonction de la precision souhaitee
-        cvsig = mat%ft*self%cvuser
+        cvsig = mat%ft*precvg
         mat%unil%regbet = cvsig/(mat%lambda + mat%deuxmu)
         coef_trac = (mat%m0*mat%omega_bar-2)/(mat%m0*mat%omega_bar)*(cvsig/mat%ft)
         coef_comp = cvsig/mat%fc
@@ -271,11 +311,51 @@ contains
 
     end function GetMaterial
 
-! =====================================================================
-!  DAMAGE COMPUTATION AND TANGENT OPERATOR (ACCORDING TO RIGI AND RESI)
-! =====================================================================
 
-    subroutine ComputeDamage(self, eps, bem, cmaxm, be, cmax, sig, dsde)
+
+! ==================================================================================================
+!  COMPUTE STRAIN QUANTITIES (STRAIN SPLIT AND STRAIN MEASURES)
+! ==================================================================================================
+
+    subroutine ComputeStrainQuantities(self, eps)
+
+        implicit none
+
+        type(CONSTITUTIVE_LAW), intent(inout):: self
+        real(kind=8), intent(in)             :: eps(:)
+
+! --------------------------------------------------------------------------------------------------
+! self  -> Compute self.unil (unilateral object), self.critTens and self.critComp (strain measures)
+! eps   strain at the end of the time step
+! --------------------------------------------------------------------------------------------------
+        real(kind=8), dimension(self%ndimsi):: kr
+        real(kind=8), dimension(self%ndimsi):: sigpos, signeg, tnsTens, tnsComp
+! --------------------------------------------------------------------------------------------------
+
+        ! Initialiation
+        kr = kron(self%ndimsi)
+
+        ! Split tension / compression
+        self%unil = InitUnilateral(self%mat%unil, eps, self%prec%cveps)
+        call ComputeStress(self%unil, sigpos, signeg)
+
+        ! tensile damage measure
+        tnsTens = (self%mat%lambda*sum(eps(1:3))*kr+self%mat%deuxmu*eps)/self%mat%ft
+        self%critTens = InitCrit(self%mat%crit_p, tnsTens, self%prec%cvuser)
+       
+        ! Compressive strain measure
+        tnsComp = -signeg/self%mat%sig0
+        self%critComp = InitCrit(self%mat%crit_p, tnsComp, self%prec%cvuser)
+
+    end subroutine ComputeStrainQuantities
+    
+    
+
+! ==================================================================================================
+!  DAMAGE AND STRESS COMPUTATION AND TANGENT OPERATOR (ACCORDING TO RIGI AND RESI)
+! ==================================================================================================
+
+    subroutine ComputeLaw(self, eps, bem, cmaxm, be, cmax, sig, dsde)
 
         implicit none
 
@@ -284,54 +364,138 @@ contains
         real(kind=8), intent(in)              :: bem, cmaxm
         real(kind=8), intent(out)             :: be, cmax
         real(kind=8), intent(out)             :: sig(:), dsde(:, :)
-! ---------------------------------------------------------------------
-! self  -> Compute self.unil (unilateral object)
+! --------------------------------------------------------------------------------------------------
+! self  
 ! eps   strain at the end of the time step
 ! be    damage at the beginning (in) of the time-step then its end (out)
 ! cmax  maximal compressive driving variable
 ! sig   stress at the end of the time step
 ! dsde  tangent matrix (ndimsi,ndimsi)
-! ---------------------------------------------------------------------
-        integer     :: iter, tens_state, comp_state
-        type(CRITERION):: critTens, critComp
+! --------------------------------------------------------------------------------------------------
+        integer     :: tens_state, comp_state
         real(kind=8), dimension(self%ndimsi):: kr
-        real(kind=8), dimension(self%ndimsi):: sigpos, signeg, tnsTens, tnsComp
+        real(kind=8), dimension(self%ndimsi):: sigpos, signeg
         real(kind=8), dimension(self%ndimsi, self%ndimsi):: deps_sigpos, deps_signeg
-        real(kind=8):: cvsig, cveps, cvdam
-        real(kind=8):: quad, equ, db_equ, phi, visc, tens_stf, comp_stf
-        real(kind=8):: bemin, equmin, bemax, equmax, signrm, dsig, dbemax, becpt, equcpt, be_pert
+        real(kind=8):: quad, tens_stf, comp_stf, be_pert
         real(kind=8):: db_B, db_phi, dtns_chit(self%ndimsi), db_visc, dq_visc
         real(kind=8):: deps_chit(self%ndimsi), deps_b(self%ndimsi)
         real(kind=8):: deps_C(self%ndimsi), dtns_chic(self%ndimsi), deps_chic(self%ndimsi)
-        type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
 
         ! Initialiation
         kr = kron(self%ndimsi)
 
-        ! Expected accuracy for the stress, the strain and the damage
-        cvsig = self%mat%ft*self%cvuser
-        cveps = cvsig/(self%mat%unil%lambda+self%mat%unil%deuxmu)
-        cvdam = self%cvuser
+
+! --------------------------------------------------------------------------------------------------
+!  Damage computation
+! --------------------------------------------------------------------------------------------------
+
+        ! Tensile damage
+        call ComputeTensileDamage(self,bem,be,tens_state)
+        if (self%exception .ne. 0) goto 999
+        
+        ! Compressive damage 
+        call ComputeCompressionDamage(self, cmaxm, cmax, comp_state)
+
+
+! --------------------------------------------------------------------------------------------------
+!  Stress computation
+! --------------------------------------------------------------------------------------------------
+
+        call ComputeStress(self%unil, sigpos, signeg)
+        tens_stf = FB(self, be)
+        comp_stf = FC(self, cmax)
+        sig = comp_stf*(tens_stf*sigpos+signeg)
+
+
+! --------------------------------------------------------------------------------------------------
+!  Tangent matrix computation
+! --------------------------------------------------------------------------------------------------
+
+        if (self%rigi) then
+
+            quad = self%critTens%chi**2
+
+            ! Contribution elastique (non lineaire) a endommagement fixe
+            call ComputeStiffness(self%unil, deps_sigpos, deps_signeg)
+            dsde = comp_stf*(tens_stf*deps_sigpos+deps_signeg)
+
+            ! Actualisation des regimes en phase de prediction (si valeurs proches des seuils)
+            if (self%pred .and. .not. self%elas) then
+                if (tens_state .eq. 0) then
+                    be_pert = max(0.d0, be-self%prec%cvdam)
+                    if (quad .ge. Fphi(self, be_pert)+Fvisc(self, be_pert-bem, quad)) tens_state = 1
+                end if
+                comp_state = merge(1, 0, self%critComp%chi .gt. max(1.d0, (cmaxm-self%prec%cvuser)))
+            end if
+
+            ! Contribution liee a la variation d'endommagement de traction
+            if ((.not. self%elas) .and. (tens_state .eq. 1)) then
+                dtns_chit = DerivativeCrit(self%critTens)
+                deps_chit = (self%mat%lambda*sum(dtns_chit(1:3))*kr+self%mat%deuxmu*dtns_chit) &
+                            /self%mat%ft
+                db_phi = db_Fphi(self, be)
+                db_visc = db_Fvisc(self, be-bem, quad)
+                dq_visc = dquad_Fvisc(self, be-bem, quad)
+                deps_b = (1-dq_visc)*2*self%critTens%chi*deps_chit/(db_phi+db_visc)
+                db_B = db_FB(self, be)
+                dsde = dsde+comp_stf*db_B*proten(sigpos, deps_b)
+            end if
+
+            ! Contribution liee a la variation d'endommagement de compression
+            if ((.not. self%elas) .and. (comp_state .eq. 1)) then
+                dtns_chic = DerivativeCrit(self%critComp)
+                deps_chic = -matmul(deps_signeg, dtns_chic)/self%mat%sig0
+                deps_C = Dx_FC(self, self%critComp%chi)*deps_chic
+                dsde = dsde+proten(tens_stf*sigpos+signeg, deps_C)
+            end if
+
+        end if
+
+999     continue
+    end subroutine ComputeLaw
+
+
+
+! ==================================================================================================
+!  TENSILE DAMAGE COMPUTATION
+! ==================================================================================================
+
+    subroutine ComputeTensileDamage(self, bem, be, tens_state)
+
+        implicit none
+
+        type(CONSTITUTIVE_LAW), intent(inout):: self
+        real(kind=8), intent(in)              :: bem
+        real(kind=8), intent(out)             :: be
+        integer, intent(out)                  :: tens_state
+! --------------------------------------------------------------------------------------------------
+! self  
+! bem   tensile damage at the beginning of the time step
+! be    tensile damage at the end of the time step
+! tens_state  state of damage 
+!               0 = elastic  
+!               1 = damage
+!               2 = saturated
+! --------------------------------------------------------------------------------------------------
+        integer     :: iter
+        real(kind=8), dimension(self%ndimsi):: sigpos, signeg
+        real(kind=8):: quad, equ, db_equ, phi, visc
+        real(kind=8):: bemin, equmin, bemax, equmax, signrm, dsig, dbemax, becpt, equcpt
+        type(newton_state):: mem
+! --------------------------------------------------------------------------------------------------
 
         ! Nonlinear elastic stresses and tangent (or secant) matrices
-        self%unil = InitUnilateral(self%mat%unil, eps, cveps)
         call ComputeStress(self%unil, sigpos, signeg)
 
-! --------------------------------------------------------------------------------------------------
-!  Tensile damage computation
-! --------------------------------------------------------------------------------------------------
-
         ! tensile damage measure
-        tnsTens = (self%mat%lambda*sum(eps(1:3))*kr+self%mat%deuxmu*eps)/self%mat%ft
-        critTens = InitCrit(self%mat%crit_p, tnsTens, self%cvuser)
-        quad = critTens%chi**2
+        quad = self%critTens%chi**2
 
         ! Already saturated point
         if (bem .ge. 1.d0) then
             tens_state = 2
             be = 1.d0
-            goto 200
+            goto 999
         end if
 
         ! Elastic regime
@@ -340,7 +504,7 @@ contains
         if (equmin .ge. 0.d0) then
             tens_state = 0
             be = bem
-            goto 200
+            goto 999
         end if
 
         ! Saturated point
@@ -349,7 +513,7 @@ contains
         if (equmax .le. 0.d0) then
             tens_state = 2
             be = 1.d0
-            goto 200
+            goto 999
         end if
 
         ! Damage regime
@@ -368,10 +532,10 @@ contains
 
             ! Required accuracy
             dsig = abs(db_FB(self, be))*signrm
-            if (cvdam*dsig .le. cvsig) then
-                dbemax = cvdam
+            if (self%prec%cvdam*dsig .le. self%prec%cvsig) then
+                dbemax = self%prec%cvdam
             else
-                dbemax = cvsig/dsig
+                dbemax = self%prec%cvsig/dsig
             end if
 
             ! Search interval
@@ -390,71 +554,38 @@ contains
             goto 999
         end if
 
-200     continue
-
-! --------------------------------------------------------------------------------------------------
-!  Compressive damage
-! --------------------------------------------------------------------------------------------------
-
-        ! Compressive damage measure
-        tnsComp = -signeg/self%mat%sig0
-        critComp = InitCrit(self%mat%crit_p, tnsComp, self%cvuser)
-
-        comp_state = merge(1, 0, critComp%chi .gt. max(1.d0, cmaxm))
-        cmax = max(cmaxm, critComp%chi)
-
-! --------------------------------------------------------------------------------------------------
-!  Stress computation
-! --------------------------------------------------------------------------------------------------
-
-        tens_stf = FB(self, be)
-        comp_stf = FC(self, cmax)
-        sig = comp_stf*(tens_stf*sigpos+signeg)
-
-! --------------------------------------------------------------------------------------------------
-!  Tangent matrix computation
-! --------------------------------------------------------------------------------------------------
-
-        if (self%rigi) then
-
-            ! Contribution elastique (non lineaire) a endommagement fixe
-            call ComputeStiffness(self%unil, deps_sigpos, deps_signeg)
-            dsde = comp_stf*(tens_stf*deps_sigpos+deps_signeg)
-
-            ! Actualisation des regimes en phase de prediction (si valeurs proches des seuils)
-            if (self%pred .and. .not. self%elas) then
-                if (tens_state .eq. 0) then
-                    be_pert = max(0.d0, be-cvdam)
-                    if (quad .ge. Fphi(self, be_pert)+Fvisc(self, be_pert-bem, quad)) tens_state = 1
-                end if
-                comp_state = merge(1, 0, critComp%chi .gt. max(1.d0, (cmaxm-self%cvuser)))
-            end if
-
-            ! Contribution liee a la variation d'endommagement de traction
-            if ((.not. self%elas) .and. (tens_state .eq. 1)) then
-                dtns_chit = DerivativeCrit(critTens)
-                deps_chit = (self%mat%lambda*sum(dtns_chit(1:3))*kr+self%mat%deuxmu*dtns_chit) &
-                            /self%mat%ft
-                db_phi = db_Fphi(self, be)
-                db_visc = db_Fvisc(self, be-bem, quad)
-                dq_visc = dquad_Fvisc(self, be-bem, quad)
-                deps_b = (1-dq_visc)*2*critTens%chi*deps_chit/(db_phi+db_visc)
-                db_B = db_FB(self, be)
-                dsde = dsde+comp_stf*db_B*proten(sigpos, deps_b)
-            end if
-
-            ! Contribution liee a la variation d'endommagement de compression
-            if ((.not. self%elas) .and. (comp_state .eq. 1)) then
-                dtns_chic = DerivativeCrit(critComp)
-                deps_chic = -matmul(deps_signeg, dtns_chic)/self%mat%sig0
-                deps_C = Dx_FC(self, critComp%chi)*deps_chic
-                dsde = dsde+proten(tens_stf*sigpos+signeg, deps_C)
-            end if
-
-        end if
-
 999     continue
-    end subroutine ComputeDamage
+    end subroutine ComputeTensileDamage
+
+
+
+! ==================================================================================================
+!  COMPRESSION DAMAGE COMPUTATION
+! ==================================================================================================
+
+    subroutine ComputeCompressionDamage(self, cmaxm, cmax, comp_state)
+
+        implicit none
+
+        type(CONSTITUTIVE_LAW), intent(inout):: self
+        real(kind=8), intent(in)              :: cmaxm
+        real(kind=8), intent(out)             :: cmax
+        integer, intent(out)                  :: comp_state
+! --------------------------------------------------------------------------------------------------
+! self  
+! bem   tensile damage at the beginning of the time step
+! be    tensile damage at the end of the time step
+! tens_state  state of damage 
+!               0 = elastic  
+!               1 = damage
+! --------------------------------------------------------------------------------------------------
+
+        comp_state = merge(1, 0, self%critComp%chi .gt. max(1.d0, cmaxm))
+        cmax = max(cmaxm, self%critComp%chi)
+
+    end subroutine ComputeCompressionDamage
+    
+    
 
 ! =====================================================================
 !  POST-TREATMENTS
@@ -463,15 +594,16 @@ contains
     function PostTreatment(self, be, cmax) result(post)
 
         implicit none
-        type(CONSTITUTIVE_LAW), intent(in)  :: self
+        type(CONSTITUTIVE_LAW)    :: self
         real(kind=8), intent(in)  :: be
         real(kind=8), intent(in)  :: cmax
-        type(POST_TREATMENT)                :: post
+        type(POST_TREATMENT)      :: post
 ! ---------------------------------------------------------------------
 ! be    damage at the end of the time-step
 ! cmax  maximal compressive driving variable
 ! ---------------------------------------------------------------------
-        real(kind=8):: we
+        integer:: state_free
+        real(kind=8):: we, be_free, tens_stf_free,sigpos_eig(3), signeg_eig(3)
 ! ---------------------------------------------------------------------
 
         ! stiffness damage
@@ -490,6 +622,16 @@ contains
             post%deq = max(0.d0, min(1.d0, post%deq))
         end if
 
+        ! Viscous stress
+        post%sigmvisc = 0
+        if (self%visc) then
+            self%visc = .FALSE.
+            call ComputeStress_eig(self%unil, sigpos_eig, signeg_eig)
+            call ComputeTensileDamage(self, be, be_free, state_free)
+            tens_stf_free = FB(self,be_free)
+            post%sigmvisc = post%comp_stf*(post%tens_stf-tens_stf_free)*sigpos_eig(1)
+            self%visc = .TRUE.
+        end if
     end function PostTreatment
 
 ! =====================================================================
@@ -597,7 +739,7 @@ contains
         real(kind=8):: res
         real(kind=8):: delta_b, quad
 ! ---------------------------------------------------------------------
-        res = self%mat%coef_v*quad*delta_b
+        res = merge(self%mat%coef_v*quad*delta_b, 0.d0, self%visc)
 
     end function Fvisc
 ! ---------------------------------------------------------------------
@@ -609,7 +751,7 @@ contains
         real(kind=8):: res
         real(kind=8):: delta_b, quad
 ! ---------------------------------------------------------------------
-        res = self%mat%coef_v*quad
+        res = merge(self%mat%coef_v*quad, 0.d0, self%visc)
 
     end function Db_Fvisc
 ! ---------------------------------------------------------------------
@@ -621,7 +763,7 @@ contains
         real(kind=8):: res
         real(kind=8):: delta_b, quad
 ! ---------------------------------------------------------------------
-        res = self%mat%coef_v*delta_b
+        res = merge(self%mat%coef_v*delta_b, 0.d0, self%visc)
 
     end function Dquad_Fvisc
 ! ---------------------------------------------------------------------

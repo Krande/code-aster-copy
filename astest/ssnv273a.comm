@@ -105,6 +105,11 @@ spl_f = h_max**2 / (h_max**2 - H(spl_b) ** 2)
 t_cib = np.trapz(y=spl_f, x=spl_b) * tauv
 
 
+# raideurs cible et min
+A_c = (1-b_cib)/H(b_cib)
+A_m = (1-b_max)/H(b_max)
+
+
 # ----------------------------------------------------------------#
 # MATERIAU                                                       #
 # ----------------------------------------------------------------#
@@ -178,5 +183,15 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t_cib, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
+TEST_TABLE(
+    TABLE=evol,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=tol,
+    VALE_CALC = 0.6286922475853159,
+    VALE_REFE=ec*eps_max*(A_c-A_m),
+    NOM_PARA=vi_num["SIGMVISC"],
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t_cib, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 FIN()

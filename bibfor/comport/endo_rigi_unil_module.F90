@@ -22,7 +22,8 @@ module endo_rigi_unil_module
 
     implicit none
     private
-    public:: MATERIAL, UNILATERAL, Init, ComputeEnergy, ComputeStress, ComputeStiffness
+    public:: MATERIAL, UNILATERAL, Init, ComputeEnergy, ComputeStress, ComputeStress_eig, &
+    ComputeStiffness
 
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -42,12 +43,11 @@ module endo_rigi_unil_module
     type UNILATERAL
         type(MATERIAL)                           :: mat
         integer                                  :: ndimsi
-        real(kind=8)                             :: eigeps(3)
+        real(kind=8)   ,dimension(3)             :: eps_eig, sigall_eig, sigpos_eig, signeg_eig 
         real(kind=8)                             :: treps
         real(kind=8)                             :: unitr
         real(kind=8)                             :: dertr
-        real(kind=8), dimension(:), allocatable    :: eps
-        real(kind=8), dimension(:), allocatable    :: unieps
+        real(kind=8), dimension(:), allocatable    :: eps, unieps, sigall, sigpos, signeg
         real(kind=8), dimension(:, :), allocatable  :: dereps
     end type UNILATERAL
 
@@ -69,13 +69,15 @@ contains
 ! eps       Current strain state
 ! prece     relative accuracy with respect to the strain components
 ! --------------------------------------------------------------------------------------------------
-        real(kind=8):: para(2)
-        real(kind=8), dimension(3)::eigeps
+        integer:: i
+        real(kind=8):: para(2), rdum
+        real(kind=8), dimension(size(eps)):: kr
+        real(kind=8), dimension(3)::eps_eig, negeps_eig
         real(kind=8), dimension(6)::unieps_6
         real(kind=8), dimension(6, 6)::dereps_66
 ! --------------------------------------------------------------------------------------------------
         real(kind=8), parameter::safe = 1.d2
-! --------------------------------------------------------------------------------------------------
+! ---------------------------------------------------------------------! --------------------------------------------------------------------------------------------------
 
         ! Size allocation
         self%ndimsi = size(eps)
@@ -84,6 +86,7 @@ contains
         allocate (self%dereps(self%ndimsi, self%ndimsi))
 
         ! Initialisation
+        kr = kron(self%ndimsi)
         para(1) = mat%regbet
         para(2) = 0.d0
 
@@ -94,14 +97,27 @@ contains
         ! Trace term
         call NegPart(self%treps, para, self%unitr, self%dertr)
 
-        ! Eigenvalues
-        call lcvalp(rs(6, eps), eigeps)
-        self%eigeps = eigeps
+        ! Eigenvalues in decreasing order
+        call lcvalp(rs(6, eps), eps_eig)
+        self%eps_eig = eps_eig
 
         ! Value and derivative of the tensorial unilateral function (negative part)
-        call lcesme(rs(6, eps), eigeps, para, NegPart, prece/safe, unieps_6, dereps_66)
+        call lcesme(rs(6, eps), eps_eig, para, NegPart, prece/safe, unieps_6, dereps_66)
         self%unieps = unieps_6(1:self%ndimsi)
         self%dereps = dereps_66(1:self%ndimsi, 1:self%ndimsi)
+
+        ! Principal stresses
+        do i=1,3
+            call NegPart(self%eps_eig(i), para, negeps_eig(i), rdum)
+        end do
+        self%sigall_eig = self%mat%lambda*self%treps + self%mat%deuxmu*self%eps_eig
+        self%signeg_eig = self%mat%lambda*self%unitr + self%mat%deuxmu*negeps_eig
+        self%sigpos_eig = self%sigall_eig-self%signeg_eig
+
+        ! Stresses
+        self%sigall = self%mat%lambda*self%treps*kr+self%mat%deuxmu*self%eps
+        self%signeg = self%mat%lambda*self%unitr*kr+self%mat%deuxmu*self%unieps
+        self%sigpos = self%sigall-self%signeg
 
     end function Init
 
@@ -128,18 +144,18 @@ contains
         para(1) = self%mat%regbet
 
 !   Total energy
-        wall = 0.5d0*(self%mat%lambda*self%treps**2+self%mat%deuxmu*sum(self%eigeps**2))
+        wall = 0.5d0*(self%mat%lambda*self%treps**2+self%mat%deuxmu*sum(self%eps_eig**2))
 
 !   Negative and positive parts
         trNhs = NegHalfSquare(self%treps, para)
-        eigNhs = [(NegHalfSquare(self%eigeps(i), para), i=1, size(self%eigeps))]
+        eigNhs = [(NegHalfSquare(self%eps_eig(i), para), i=1, size(self%eps_eig))]
         wneg = self%mat%lambda*trNhs+self%mat%deuxmu*sum(eigNhs)
         wpos = wall-wneg
 
     end subroutine ComputeEnergy
 
 ! =====================================================================
-!  CONTRAINTES ET RIGIDITE AVEC RESTAURATION DE RIGIDITE
+!  CONTRAINTES AVEC RESTAURATION DE RIGIDITE
 ! =====================================================================
 
     subroutine ComputeStress(self, sigpos, signeg)
@@ -151,18 +167,31 @@ contains
 ! sigpos    contrainte positive (traction)
 ! signeg    contrainte negative (compression)
 ! ---------------------------------------------------------------------
-        real(kind=8), dimension(self%ndimsi):: sigall, kr
+
+        sigpos = self%sigpos
+        signeg = self%signeg
+        
+    end subroutine ComputeStress
+
+
+! =====================================================================
+!  CONTRAINTES AVEC RESTAURATION DE RIGIDITE
+! =====================================================================
+
+    subroutine ComputeStress_eig(self, sigpos_eig, signeg_eig)
+        implicit none
+
+        type(UNILATERAL), intent(in):: self
+        real(kind=8), intent(out)   :: sigpos_eig(3), signeg_eig(3)
+! ---------------------------------------------------------------------
+! sigpos_eig    contrainte principales de traction (ordre decroissant)
+! signeg_eig    contrainte principales de compression (ordre devroissant)
 ! ---------------------------------------------------------------------
 
-!   Initialisation
-        kr = kron(self%ndimsi)
-
-!   Stresses
-        sigall = self%mat%lambda*self%treps*kr+self%mat%deuxmu*self%eps
-        signeg = self%mat%lambda*self%unitr*kr+self%mat%deuxmu*self%unieps
-        sigpos = sigall-signeg
-
-    end subroutine ComputeStress
+        sigpos_eig = self%sigpos_eig
+        signeg_eig = self%signeg_eig
+        
+    end subroutine ComputeStress_eig
 
 ! =====================================================================
 !  RIGIDITE UNILATERALES
