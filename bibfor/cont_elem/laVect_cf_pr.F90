@@ -62,7 +62,7 @@ subroutine laVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
     integer :: i_qp, nb_qp, nbPoinInte
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2), norm_slav(3)
-    real(kind=8) :: coor_qp(2, 48), weight_qp(48)
+    real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)
     real(kind=8) :: gap, gamma_c, projRmVal, lagr_g(3), thres
     real(kind=8) :: gamma_f, projBsVal(3)
     real(kind=8) :: jump_v(MAX_LAGA_DOFS, 3), mu_g(MAX_LAGA_DOFS, 3)
