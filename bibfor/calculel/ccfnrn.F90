@@ -475,7 +475,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 !
 ! separation reel imag si dyna_harmo
             call vefnme_cplx(option, 'V', model, mateco, caraElem, &
-                             compor, nh, ligrel, chvarc, sigma, &
+                             compor, time, time, nh, ligrel, chvarc, sigma, sigma, &
                              strx, chdepl, vfono)
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
 

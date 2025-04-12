@@ -148,7 +148,6 @@ subroutine ccbcop(resultIn, resultOut, &
     do iOption = 1, nbOption
         option = listOption(iOption)
         call deprecated_option(option)
-
         if (option .eq. ' ') then
             cycle
         elseif ((option .eq. 'FORC_NODA') .or. (option .eq. 'REAC_NODA')) then
@@ -157,6 +156,7 @@ subroutine ccbcop(resultIn, resultOut, &
                             resultType)
             else
                 postComp%lPostNoda = ASTER_TRUE
+                print*, 'toto'
                 call ccfnrnLegacy(option, postComp)
             end if
         else

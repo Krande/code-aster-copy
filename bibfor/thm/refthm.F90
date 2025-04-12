@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -197,7 +197,7 @@ subroutine refthm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
                             dt, dimdef, dimcon, dimuel, jv_poids, &
                             jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
                             nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
-                            nddl_2nd, sigtm, b, r, bsigm(1))
+                            nddl_2nd, sigtm, sigtm, b, r, bsigm(1))
                 do k = 1, dimuel
                     ftemp(k) = ftemp(k)+abs(bsigm(k))
                 end do

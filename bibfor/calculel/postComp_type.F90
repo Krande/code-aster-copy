@@ -68,6 +68,7 @@ module postComp_type
         aster_logical :: hasAcce = ASTER_FALSE
         character(len=24) :: acce = " "
         character(len=24) :: sigm = " "
+        character(len=24) :: sigmPrev = " "
         character(len=24) :: strx = " "
     end type POST_COMP_FIELDS
 ! ==================================================================================================
@@ -108,6 +109,7 @@ module postComp_type
 ! ----- Value for time access
         aster_logical :: hasTime = ASTER_FALSE
         real(kind=8) :: time = 0.d0
+        real(kind=8) :: timePrev = 0.d0
 ! ----- Value for pulsation
         aster_logical :: hasOmega = ASTER_FALSE
         real(kind=8) :: omega = -1.d0

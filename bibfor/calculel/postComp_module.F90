@@ -750,8 +750,10 @@ contains
         call vefnme_cplx(option, 'V', &
                          postComp%postCompPara%model, postComp%postCompPara%materCode, &
                          postComp%postCompPara%caraElem, postComp%postCompPara%compor, &
+                         postComp%postCompPara%timePrev, postComp%postCompPara%time, &
                          postComp%postCompPara%nh, postComp%postCompPara%calcLigrel, &
-                         postComp%postCompPara%chvarc, postComp%postCompFields%sigm, &
+                         postComp%postCompPara%chvarc, & 
+                         postComp%postCompFields%sigmPrev, postComp%postCompFields%sigm, &
                          postComp%postCompFields%strx, postComp%postCompFields%disp, &
                          veFnod)
 

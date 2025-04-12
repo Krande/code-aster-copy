@@ -68,6 +68,10 @@ subroutine ccfnrnLegacy(option, postComp)
     do iStore = 1, postComp%postCompResu%nbStore
         call jemarq()
 
+! ----- Save the previous time and the previous generalized stresses
+        postComp%postCompPara%timePrev = postComp%postCompPara%time
+        postComp%postCompFields%sigmPrev = postComp%postCompFields%sigm
+
 ! ----- Current storing index
         numeStore = postComp%postCompResu%listStore(iStore)
 
