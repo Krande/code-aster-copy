@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,17 @@ loi = LoiComportement(
     doc="""Comportement quasi-fragile isotrope pour le béton - R7.01.47""",
     num_lc=79,
     nb_vari=9,
-    nom_vari=("ENDO", "ENDOTRAC", "HISTTRAC", "ENERTRAC", "ENDOCOMP", "HISTCOMP", "ENERCOMP", "SIGMVISC", "ENDOTOT"),
+    nom_vari=(
+        "ENDO",
+        "ENDOTRAC",
+        "HISTTRAC",
+        "ENERTRAC",
+        "ENDOCOMP",
+        "HISTCOMP",
+        "ENERCOMP",
+        "SIGMVISC",
+        "ENDOTOT",
+    ),
     mc_mater=("ELAS", "ENDO_LOCA_TC"),
     modelisation=("3D", "AXIS", "D_PLAN"),
     deformation=("PETIT", "GDEF_LOG"),

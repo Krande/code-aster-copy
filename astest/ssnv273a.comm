@@ -106,8 +106,8 @@ t_cib = np.trapz(y=spl_f, x=spl_b) * tauv
 
 
 # raideurs cible et min
-A_c = (1-b_cib)/H(b_cib)
-A_m = (1-b_max)/H(b_max)
+A_c = (1 - b_cib) / H(b_cib)
+A_m = (1 - b_max) / H(b_max)
 
 
 # ----------------------------------------------------------------#
@@ -117,13 +117,13 @@ A_m = (1-b_max)/H(b_max)
 
 MATE = DEFI_MATER_GC(
     ENDO_LOCA_TC=_F(
-        CODIFICATION = 'FIB_MODEL_CODE',
-        UNITE_CONTRAINTE = 'MPa',
-        UNITE_LONGUEUR = 'mm',
-        COEF_ECRO_TRAC = p,
-        DIST_FISSURE   = Lf,
-        FC             = fc,
-        SEUIL_INIT_COMP = fc/3.0,
+        CODIFICATION="FIB_MODEL_CODE",
+        UNITE_CONTRAINTE="MPa",
+        UNITE_LONGUEUR="mm",
+        COEF_ECRO_TRAC=p,
+        DIST_FISSURE=Lf,
+        FC=fc,
+        SIGM_COMP_SEUIL=fc / 3.0,
         TAU_REGU_VISC=tauv,
     )
 )
@@ -177,7 +177,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 0.09979140733546707,
+    VALE_CALC=0.09979140733546707,
     VALE_REFE=b_cib,
     NOM_PARA=vi_num["HISTTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t_cib, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -188,8 +188,8 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 0.6286922475853159,
-    VALE_REFE=ec*eps_max*(A_c-A_m),
+    VALE_CALC=0.6286922475853159,
+    VALE_REFE=ec * eps_max * (A_c - A_m),
     NOM_PARA=vi_num["SIGMVISC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t_cib, CRITERE="RELATIF", PRECISION=1.0e-08),
 )

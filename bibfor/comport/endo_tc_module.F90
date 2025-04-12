@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ module endo_tc_module
 ! --------------------------------------------------------------------------------------------------
 
     ! Variables internes
-    integer, parameter:: ENDO     = 1
+    integer, parameter:: ENDO = 1
     integer, parameter:: ENDOTRAC = 2
     integer, parameter:: HISTTRAC = 3
     integer, parameter:: ENERTRAC = 4
@@ -62,8 +62,7 @@ module endo_tc_module
     integer, parameter:: HISTCOMP = 6
     integer, parameter:: ENERCOMP = 7
     integer, parameter:: SIGMVISC = 8
-    integer, parameter:: ENDOTOT  = 9
-
+    integer, parameter:: ENDOTOT = 9
 
     ! Material parameters
     type MATERIAL
@@ -81,16 +80,14 @@ module endo_tc_module
         real(kind=8)   :: coef_v
         type(UNIL_MAT) :: unil
     end type MATERIAL
-    
-    
-    ! Required precision and impact on the different quantities   
+
+    ! Required precision and impact on the different quantities
     type PRECISION
         real(kind=8):: cvuser
         real(kind=8):: cvsig
         real(kind=8):: cveps
         real(kind=8):: cvdam
     end type PRECISION
-    
 
     ! Shared attibutes through the global variable self
     type CONSTITUTIVE_LAW
@@ -116,9 +113,9 @@ module endo_tc_module
 
 contains
 
-! =====================================================================
+! ==================================================================================================
 !  OBJECT CREATION AND INITIALISATION
-! =====================================================================
+! ==================================================================================================
 
     function Init(ndimsi, option, fami, kpg, ksp, imate, deltat, itemax, precvg) result(self)
 
@@ -165,9 +162,9 @@ contains
 
     end function Init
 
-! =====================================================================
+! ==================================================================================================
 !  INTEGRATION OF ENDO_LOCA_TC (MAIN ROUTINE)
-! =====================================================================
+! ==================================================================================================
 
     subroutine Integrate(self, eps, vim, sig, vip, dsde)
 
@@ -182,10 +179,10 @@ contains
 ! sig   stress at the end of the time step
 ! vip   internal variables at the end of the time step
 ! dsde  tangent matrix (ndimsi,ndimsi)
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         real(kind=8)        :: bem, cmaxm, be, cmax
         type(POST_TREATMENT):: post
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
 ! unpack internal variables
         bem = vim(HISTTRAC)
@@ -193,9 +190,9 @@ contains
 
 ! Strain split tension/compression and strain measures in tension and compression
         call ComputeStrainQuantities(self, eps)
-        
+
 ! damage behaviour integration
-        call ComputeLaw(self, eps, bem, cmaxm, be, cmax, sig, dsde)
+        call ComputeLaw(self, bem, cmaxm, be, cmax, sig, dsde)
         if (self%exception .ne. 0) goto 999
 
 ! Post-treatments
@@ -211,15 +208,15 @@ contains
             vip(HISTCOMP) = cmax
             vip(ENERCOMP) = post%wneg
             vip(SIGMVISC) = post%sigmvisc
-            vip(ENDOTOT)  = 1.d0 -post%tens_stf*post%comp_stf
+            vip(ENDOTOT) = 1.d0-post%tens_stf*post%comp_stf
         end if
 
 999     continue
     end subroutine Integrate
 
-! =====================================================================
+! ==================================================================================================
 !  MATERIAL CHARACTERISTICS
-! =====================================================================
+! ==================================================================================================
 
     function GetMaterial(self, fami, kpg, ksp, imate, precvg) result(mat)
 
@@ -230,25 +227,25 @@ contains
         character(len=*), intent(in)          :: fami
         real(kind=8), intent(in)              :: precvg
         type(MATERIAL)                       :: mat
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 ! fami      Gauss point set
 ! kpg       Gauss point number
 ! ksp       Layer number (for structure elements)
 ! imate     material pointer
 ! precvg    required precision
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         integer, parameter:: nbel = 2, nben = 5, nbrg = 1
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         integer :: iokel(nbel), ioken(nben), iokrg(nbrg)
         real(kind=8) :: valel(nbel), valen(nben), valrg(nbrg)
         character(len=16) :: nomel(nbel), nomen(nben), nomrg(nbrg)
         real(kind=8):: pi
-        real(kind=8):: lambda, deuxmu, nu, cvsig, coef_trac, coef_comp
-! ----------------------------------------------------------------------
+        real(kind=8):: cvsig, coef_trac, coef_comp
+! --------------------------------------------------------------------------------------------------
         data nomel/'E', 'NU'/
-        data nomen/'ENER_RUPT_NORM', 'COEF_ECRO_TRAC', 'FT', 'SEUIL_INIT_COMP', 'FC'/
+        data nomen/'ENER_TRAC_RUPT_N', 'COEF_ECRO_TRAC', 'FT', 'SIGM_COMP_SEUIL', 'FC'/
         data nomrg/'TAU_REGU_VISC'/
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
         pi = r8pi()
 
@@ -280,7 +277,7 @@ contains
         mat%coef_v = 0.d0
         self%visc = valrg(1) .gt. 0.d0
         if (self%visc) then
-            if (self%deltat < valrg(1)*r8prem()) then 
+            if (self%deltat < valrg(1)*r8prem()) then
                 call utmess('F', 'COMPOR1_96', sr=self%deltat/valrg(1))
             end if
             mat%coef_v = valrg(1)/self%deltat
@@ -288,7 +285,6 @@ contains
 
         mat%unil%lambda = mat%lambda
         mat%unil%deuxmu = mat%deuxmu
-
 
         ! Admissibilite du jeu de parametres
         if (mat%omega_bar*mat%m0 .le. 2) call utmess('F', 'COMPOR1_98', sr=mat%m0)
@@ -301,17 +297,15 @@ contains
         ASSERT(mat%sig0 .gt. 2*mat%ft)
         ASSERT(mat%beta .gt. 1.d0)
         ASSERT(mat%coef_v .ge. 0.d0)
-        
+
         ! Calcul des parametres de regularisation en fonction de la precision souhaitee
         cvsig = mat%ft*precvg
-        mat%unil%regbet = cvsig/(mat%lambda + mat%deuxmu)
+        mat%unil%regbet = cvsig/(mat%lambda+mat%deuxmu)
         coef_trac = (mat%m0*mat%omega_bar-2)/(mat%m0*mat%omega_bar)*(cvsig/mat%ft)
         coef_comp = cvsig/mat%fc
         mat%crit_p = log(3.d0)*max((1+coef_trac)/coef_trac, (1+coef_comp)/coef_comp)
 
     end function GetMaterial
-
-
 
 ! ==================================================================================================
 !  COMPUTE STRAIN QUANTITIES (STRAIN SPLIT AND STRAIN MEASURES)
@@ -342,31 +336,26 @@ contains
         ! tensile damage measure
         tnsTens = (self%mat%lambda*sum(eps(1:3))*kr+self%mat%deuxmu*eps)/self%mat%ft
         self%critTens = InitCrit(self%mat%crit_p, tnsTens, self%prec%cvuser)
-       
+
         ! Compressive strain measure
         tnsComp = -signeg/self%mat%sig0
         self%critComp = InitCrit(self%mat%crit_p, tnsComp, self%prec%cvuser)
 
     end subroutine ComputeStrainQuantities
-    
-    
 
 ! ==================================================================================================
 !  DAMAGE AND STRESS COMPUTATION AND TANGENT OPERATOR (ACCORDING TO RIGI AND RESI)
 ! ==================================================================================================
 
-    subroutine ComputeLaw(self, eps, bem, cmaxm, be, cmax, sig, dsde)
+    subroutine ComputeLaw(self, bem, cmaxm, be, cmax, sig, dsde)
 
         implicit none
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
-        real(kind=8), intent(in)             :: eps(:)
         real(kind=8), intent(in)              :: bem, cmaxm
         real(kind=8), intent(out)             :: be, cmax
         real(kind=8), intent(out)             :: sig(:), dsde(:, :)
 ! --------------------------------------------------------------------------------------------------
-! self  
-! eps   strain at the end of the time step
 ! be    damage at the beginning (in) of the time-step then its end (out)
 ! cmax  maximal compressive driving variable
 ! sig   stress at the end of the time step
@@ -385,18 +374,16 @@ contains
         ! Initialiation
         kr = kron(self%ndimsi)
 
-
 ! --------------------------------------------------------------------------------------------------
 !  Damage computation
 ! --------------------------------------------------------------------------------------------------
 
         ! Tensile damage
-        call ComputeTensileDamage(self,bem,be,tens_state)
+        call ComputeTensileDamage(self, bem, be, tens_state)
         if (self%exception .ne. 0) goto 999
-        
-        ! Compressive damage 
-        call ComputeCompressionDamage(self, cmaxm, cmax, comp_state)
 
+        ! Compressive damage
+        call ComputeCompressionDamage(self, cmaxm, cmax, comp_state)
 
 ! --------------------------------------------------------------------------------------------------
 !  Stress computation
@@ -406,7 +393,6 @@ contains
         tens_stf = FB(self, be)
         comp_stf = FC(self, cmax)
         sig = comp_stf*(tens_stf*sigpos+signeg)
-
 
 ! --------------------------------------------------------------------------------------------------
 !  Tangent matrix computation
@@ -455,8 +441,6 @@ contains
 999     continue
     end subroutine ComputeLaw
 
-
-
 ! ==================================================================================================
 !  TENSILE DAMAGE COMPUTATION
 ! ==================================================================================================
@@ -470,11 +454,11 @@ contains
         real(kind=8), intent(out)             :: be
         integer, intent(out)                  :: tens_state
 ! --------------------------------------------------------------------------------------------------
-! self  
+! self
 ! bem   tensile damage at the beginning of the time step
 ! be    tensile damage at the end of the time step
-! tens_state  state of damage 
-!               0 = elastic  
+! tens_state  state of damage
+!               0 = elastic
 !               1 = damage
 !               2 = saturated
 ! --------------------------------------------------------------------------------------------------
@@ -557,8 +541,6 @@ contains
 999     continue
     end subroutine ComputeTensileDamage
 
-
-
 ! ==================================================================================================
 !  COMPRESSION DAMAGE COMPUTATION
 ! ==================================================================================================
@@ -572,11 +554,11 @@ contains
         real(kind=8), intent(out)             :: cmax
         integer, intent(out)                  :: comp_state
 ! --------------------------------------------------------------------------------------------------
-! self  
+! self
 ! bem   tensile damage at the beginning of the time step
 ! be    tensile damage at the end of the time step
-! tens_state  state of damage 
-!               0 = elastic  
+! tens_state  state of damage
+!               0 = elastic
 !               1 = damage
 ! --------------------------------------------------------------------------------------------------
 
@@ -584,12 +566,10 @@ contains
         cmax = max(cmaxm, self%critComp%chi)
 
     end subroutine ComputeCompressionDamage
-    
-    
 
-! =====================================================================
+! ==================================================================================================
 !  POST-TREATMENTS
-! =====================================================================
+! ==================================================================================================
 
     function PostTreatment(self, be, cmax) result(post)
 
@@ -598,13 +578,13 @@ contains
         real(kind=8), intent(in)  :: be
         real(kind=8), intent(in)  :: cmax
         type(POST_TREATMENT)      :: post
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 ! be    damage at the end of the time-step
 ! cmax  maximal compressive driving variable
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         integer:: state_free
-        real(kind=8):: we, be_free, tens_stf_free,sigpos_eig(3), signeg_eig(3)
-! ---------------------------------------------------------------------
+        real(kind=8):: we, be_free, tens_stf_free, sigpos_eig(3), signeg_eig(3)
+! --------------------------------------------------------------------------------------------------
 
         ! stiffness damage
         post%tens_stf = FB(self, be)
@@ -628,15 +608,15 @@ contains
             self%visc = .FALSE.
             call ComputeStress_eig(self%unil, sigpos_eig, signeg_eig)
             call ComputeTensileDamage(self, be, be_free, state_free)
-            tens_stf_free = FB(self,be_free)
+            tens_stf_free = FB(self, be_free)
             post%sigmvisc = post%comp_stf*(post%tens_stf-tens_stf_free)*sigpos_eig(1)
             self%visc = .TRUE.
         end if
     end function PostTreatment
 
-! =====================================================================
+! ==================================================================================================
 !  Intermediate function h(b)
-! =====================================================================
+! ==================================================================================================
 
     function Fh(self, b) result(res)
 
@@ -653,6 +633,7 @@ contains
         res = 1+c1*b+cr*b**self%mat%r
 
     end function Fh
+! --------------------------------------------------------------------------------------------------
 
     function Db_Fh(self, b) result(res)
 
@@ -660,9 +641,9 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: b
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         real(kind=8):: c1, cr
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
         c1 = 0.5d0*self%mat%omega_bar*self%mat%m0-1
         cr = 0.5d0*self%mat%omega_bar*(self%mat%d1-self%mat%m0)
@@ -670,9 +651,9 @@ contains
 
     end function Db_Fh
 
-! =====================================================================
+! ==================================================================================================
 !  Stiffness function FB(b)
-! =====================================================================
+! ==================================================================================================
 
     function FB(self, b) result(res)
 
@@ -680,11 +661,10 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: b
-! ---------------------------------------------------------------------
-
+! --------------------------------------------------------------------------------------------------
         res = (1-b)/Fh(self, b)
-
     end function FB
+! --------------------------------------------------------------------------------------------------
 
     function Db_FB(self, b) result(res)
 
@@ -692,19 +672,18 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: b
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         real(kind=8):: h, db_h
-! ---------------------------------------------------------------------
-
+! --------------------------------------------------------------------------------------------------
         h = Fh(self, b)
         db_h = Db_Fh(self, b)
         res = -(h+(1-b)*db_h)/h**2
 
     end function Db_FB
 
-! =====================================================================
+! ==================================================================================================
 !  Threshold function Phi(b)
-! =====================================================================
+! ==================================================================================================
 
     function Fphi(self, b) result(res)
 
@@ -712,10 +691,11 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: b
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         res = Fh(self, b)**2
 
     end function Fphi
+! --------------------------------------------------------------------------------------------------
 
     function Db_Fphi(self, b) result(res)
 
@@ -723,14 +703,14 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: b
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         res = 2*Db_Fh(self, b)*Fh(self, b)
 
     end function Db_Fphi
 
-! =====================================================================
+! ==================================================================================================
 !  Viscous function Fvisc(b)
-! =====================================================================
+! ==================================================================================================
 
     function Fvisc(self, delta_b, quad) result(res)
 
@@ -738,11 +718,11 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: delta_b, quad
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         res = merge(self%mat%coef_v*quad*delta_b, 0.d0, self%visc)
 
     end function Fvisc
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
     function Db_Fvisc(self, delta_b, quad) result(res)
 
@@ -750,11 +730,11 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: delta_b, quad
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         res = merge(self%mat%coef_v*quad, 0.d0, self%visc)
 
     end function Db_Fvisc
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
     function Dquad_Fvisc(self, delta_b, quad) result(res)
 
@@ -762,15 +742,15 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: delta_b, quad
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         res = merge(self%mat%coef_v*delta_b, 0.d0, self%visc)
 
     end function Dquad_Fvisc
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
-! =====================================================================
+! ==================================================================================================
 !  Compression function C(x)
-! =====================================================================
+! ==================================================================================================
 
     function FC(self, x) result(res)
 
@@ -778,8 +758,7 @@ contains
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
         real(kind=8):: x
-! ---------------------------------------------------------------------
-
+! --------------------------------------------------------------------------------------------------
         if (x .le. 1.d0) then
             res = 1.d0
         else
@@ -787,16 +766,16 @@ contains
         end if
 
     end function FC
+! --------------------------------------------------------------------------------------------------
 
     function Dx_FC(self, x) result(res)
 
         implicit none
         type(CONSTITUTIVE_LAW), intent(in):: self
         real(kind=8):: res
-        real(kind=8):: w
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         real(kind=8):: x, th, num, dx_num
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
         if (x .le. 1.d0) then
             res = 0.d0
@@ -808,5 +787,6 @@ contains
         end if
 
     end function Dx_FC
+! --------------------------------------------------------------------------------------------------
 
 end module endo_tc_module

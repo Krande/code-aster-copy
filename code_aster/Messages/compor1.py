@@ -473,7 +473,7 @@ ITER_INTE_PAS ne peut admettre qu'une valeur positive pour un comportement MFRON
     96: _(
         """
 Le pas de temps devient trop petit par rapport au temps caractéristique TAU_REGU_VISC :
-ratio DT/tau_regu_visc = %(r1)g
+ratio DT/TAU_REGU_VISC = %(r1)g
 """
     ),
     97: _(

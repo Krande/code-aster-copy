@@ -59,7 +59,6 @@ b = 0.1  # endommagement cible en traction
 rct = 15  # ratio deformation compression max / deformation traction max
 
 
-
 print("fc    = ", fc)
 print("nu    = ", nu)
 print("p     = ", p)
@@ -98,7 +97,7 @@ wpos_t = wall_t - wneg_t
 # Branche en compression
 eps_c = -rct * eps_t
 sigall_c = ec * eps_c
-signeg_c = ec * min(eps_c,0)
+signeg_c = ec * min(eps_c, 0)
 sigpos_c = sigall_c - signeg_c
 chi_c = -signeg_c / sig0
 
@@ -113,7 +112,7 @@ sig_c = stf_c * (stf_t * sigpos_c + signeg_c)
 
 # Post-traitements en compression
 wall_c = 0.5 * ec * eps_c**2
-wneg_c = 0.5 * ec * min(eps_c,0)**2 
+wneg_c = 0.5 * ec * min(eps_c, 0) ** 2
 wpos_c = wall_c - wneg_c
 
 
@@ -124,15 +123,15 @@ wpos_c = wall_c - wneg_c
 
 MATE = DEFI_MATER_GC(
     ENDO_LOCA_TC=_F(
-        CODIFICATION = 'ESSAI',
-        COEF_ECRO_TRAC = p,
-        DIST_FISSURE   = Lf,
-        FC             = fc,
+        CODIFICATION="ESSAI",
+        COEF_ECRO_TRAC=p,
+        DIST_FISSURE=Lf,
+        FC=fc,
         NU=nu,
         E=young,
         FT=ft,
         GF=GF,
-        SEUIL_INIT_COMP=sig0,
+        SIGM_COMP_SEUIL=sig0,
     )
 )
 
@@ -188,7 +187,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 2.721429467772542,
+    VALE_CALC=2.721429467772542,
     VALE_REFE=sig_t,
     NOM_PARA="SIXX",
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -200,7 +199,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 0.10000000000006483,
+    VALE_CALC=0.10000000000006483,
     VALE_REFE=b,
     NOM_PARA=vi_num["HISTTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -212,7 +211,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 0.19167385922560198,
+    VALE_CALC=0.19167385922560198,
     VALE_REFE=1 - stf_t,
     NOM_PARA=vi_num["ENDOTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -224,7 +223,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 0.00014945426341367903,
+    VALE_CALC=0.00014945426341367903,
     VALE_REFE=wpos_t,
     NOM_PARA=vi_num["ENERTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -241,7 +240,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = -36.90674800974,
+    VALE_CALC=-36.90674800974,
     VALE_REFE=sig_c,
     NOM_PARA="SIXX",
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -253,7 +252,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 0.10000000000006483,
+    VALE_CALC=0.10000000000006483,
     VALE_REFE=b,
     NOM_PARA=vi_num["HISTTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -265,7 +264,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 0.26919070676544277,
+    VALE_CALC=0.26919070676544277,
     VALE_REFE=1 - stf_c,
     NOM_PARA=vi_num["ENDOCOMP"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -276,8 +275,8 @@ TEST_TABLE(
     TABLE=evol,
     CRITERE="ABSOLU",
     REFERENCE="ANALYTIQUE",
-    PRECISION=tol*wall_c,
-    VALE_CALC = 2.0134637013224932e-11,
+    PRECISION=tol * wall_c,
+    VALE_CALC=2.0134637013224932e-11,
     VALE_REFE=wpos_c,
     NOM_PARA=vi_num["ENERTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
@@ -289,7 +288,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC = 0.03362720924794314,
+    VALE_CALC=0.03362720924794314,
     VALE_REFE=wneg_c,
     NOM_PARA=vi_num["ENERCOMP"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),

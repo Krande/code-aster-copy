@@ -73,7 +73,7 @@ BETON_E = DEFI_MATER_GC(
         FT=FTM,
         GF=gf,
         COEF_ECRO_TRAC=p,
-        SEUIL_INIT_COMP=(fcm / 3),
+        SIGM_COMP_SEUIL=(fcm / 3),
         TAU_REGU_VISC=TAUB,
     ),
     RHO=RHOB,

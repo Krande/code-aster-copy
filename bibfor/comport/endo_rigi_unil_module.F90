@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ module endo_rigi_unil_module
     implicit none
     private
     public:: MATERIAL, UNILATERAL, Init, ComputeEnergy, ComputeStress, ComputeStress_eig, &
-    ComputeStiffness
+             ComputeStiffness
 
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,7 +31,7 @@ module endo_rigi_unil_module
 #include "asterfort/lcesme.h"
 #include "asterc/r8vide.h"
 
-! --------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
     ! Material characteristics
 
@@ -43,7 +43,7 @@ module endo_rigi_unil_module
     type UNILATERAL
         type(MATERIAL)                           :: mat
         integer                                  :: ndimsi
-        real(kind=8)   ,dimension(3)             :: eps_eig, sigall_eig, sigpos_eig, signeg_eig 
+        real(kind=8), dimension(3)             :: eps_eig, sigall_eig, sigpos_eig, signeg_eig
         real(kind=8)                             :: treps
         real(kind=8)                             :: unitr
         real(kind=8)                             :: dertr
@@ -53,9 +53,9 @@ module endo_rigi_unil_module
 
 contains
 
-! =====================================================================
+! ==================================================================================================
 !  OBJECT CREATION AND INITIALISATION
-! =====================================================================
+! ==================================================================================================
 
     function Init(mat, eps, prece) result(self)
 
@@ -77,7 +77,7 @@ contains
         real(kind=8), dimension(6, 6)::dereps_66
 ! --------------------------------------------------------------------------------------------------
         real(kind=8), parameter::safe = 1.d2
-! ---------------------------------------------------------------------! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
         ! Size allocation
         self%ndimsi = size(eps)
@@ -107,11 +107,11 @@ contains
         self%dereps = dereps_66(1:self%ndimsi, 1:self%ndimsi)
 
         ! Principal stresses
-        do i=1,3
+        do i = 1, 3
             call NegPart(self%eps_eig(i), para, negeps_eig(i), rdum)
         end do
-        self%sigall_eig = self%mat%lambda*self%treps + self%mat%deuxmu*self%eps_eig
-        self%signeg_eig = self%mat%lambda*self%unitr + self%mat%deuxmu*negeps_eig
+        self%sigall_eig = self%mat%lambda*self%treps+self%mat%deuxmu*self%eps_eig
+        self%signeg_eig = self%mat%lambda*self%unitr+self%mat%deuxmu*negeps_eig
         self%sigpos_eig = self%sigall_eig-self%signeg_eig
 
         ! Stresses
@@ -121,24 +121,24 @@ contains
 
     end function Init
 
-! =====================================================================
+! ==================================================================================================
 !  ENERGIE AVEC RESTAURATION DE RIGIDITE
-! =====================================================================
+! ==================================================================================================
 
     subroutine ComputeEnergy(self, wpos, wneg)
         implicit none
 
         type(UNILATERAL), intent(in):: self
         real(kind=8), intent(out)   :: wpos, wneg
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 ! wpos      (regularised) tensile contribution to the energy
 ! wneg      (regularised) compressive contribution to the energy
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         integer     :: i
         real(kind=8):: para(1)
         real(kind=8):: trNhs, wall
         real(kind=8), dimension(3):: eigNhs
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
 !   Initialisation
         para(1) = self%mat%regbet
@@ -154,62 +154,61 @@ contains
 
     end subroutine ComputeEnergy
 
-! =====================================================================
+! ==================================================================================================
 !  CONTRAINTES AVEC RESTAURATION DE RIGIDITE
-! =====================================================================
+! ==================================================================================================
 
     subroutine ComputeStress(self, sigpos, signeg)
         implicit none
 
         type(UNILATERAL), intent(in):: self
         real(kind=8), intent(out)   :: sigpos(:), signeg(:)
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 ! sigpos    contrainte positive (traction)
 ! signeg    contrainte negative (compression)
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
         sigpos = self%sigpos
         signeg = self%signeg
-        
+
     end subroutine ComputeStress
 
-
-! =====================================================================
+! ==================================================================================================
 !  CONTRAINTES AVEC RESTAURATION DE RIGIDITE
-! =====================================================================
+! ==================================================================================================
 
     subroutine ComputeStress_eig(self, sigpos_eig, signeg_eig)
         implicit none
 
         type(UNILATERAL), intent(in):: self
         real(kind=8), intent(out)   :: sigpos_eig(3), signeg_eig(3)
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 ! sigpos_eig    contrainte principales de traction (ordre decroissant)
 ! signeg_eig    contrainte principales de compression (ordre devroissant)
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
         sigpos_eig = self%sigpos_eig
         signeg_eig = self%signeg_eig
-        
+
     end subroutine ComputeStress_eig
 
-! =====================================================================
+! ==================================================================================================
 !  RIGIDITE UNILATERALES
-! =====================================================================
+! ==================================================================================================
 
     subroutine ComputeStiffness(self, de_spos, de_sneg)
         implicit none
 
         type(UNILATERAL), intent(in):: self
         real(kind=8), intent(out)   :: de_spos(:, :), de_sneg(:, :)
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 ! de_spos   derivee de la contrainte sigpos / deformation
 ! de_sneg   derivee de la contrainte signeg / deformation
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         integer:: i
         real(kind=8), dimension(self%ndimsi, self%ndimsi):: de_sall
         real(kind=8), dimension(self%ndimsi):: kr
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
 !   Initialisation
         kr = kron(self%ndimsi)
@@ -228,25 +227,25 @@ contains
 
     end subroutine ComputeStiffness
 
-! =====================================================================
+! ==================================================================================================
 !   SMOOTHED NEGATIVE HALF SQUARE FUNCTION
 !   f(x) approximate 0.5 * <-x>**2
 !     f(x) = 0.5 * x**2 * exp(beta/x)) if x<0
 !     f(x) = 0                             if x>0
-! =====================================================================
+! ==================================================================================================
 
     function NegHalfSquare(x, p) result(nhs)
         implicit none
 
         real(kind=8), intent(in):: x, p(:)
         real(kind=8)           :: nhs
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 ! x:   array argument (the function is applied to each x(i))
 ! p:   additional parameters
 !        p(1) = beta (smoothing parameter)
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         real(kind=8) :: beta
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
         ASSERT(size(p) .eq. 1)
         beta = p(1)
@@ -258,28 +257,28 @@ contains
 
     end function NegHalfSquare
 
-! =====================================================================
+! ==================================================================================================
 !   SMOOTHED UNILATERAL FUNCTION AND ITS DERIVATIVE
 !     f(x) = (x - 0.5*beta) * exp(beta/x)) if x<0
 !     f(x) = 0                                  if x>0
-! =====================================================================
+! ==================================================================================================
 
     subroutine NegPart(x, p, fct, der)
         implicit none
 
         real(kind=8), intent(in) :: x, p(:)
         real(kind=8), intent(out):: fct, der
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 ! x:   argument
 ! p:   additional parameters
 !        p(1) = beta (smoothing parameter)
 !        p(2) = 0 si secant, 1 si tangent
 ! fct: f(x)
 ! der: f'(x) ou f(x)/x si secant
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
         aster_logical:: elas
-        real(kind=8) :: beta,u
-! ---------------------------------------------------------------------
+        real(kind=8) :: beta, u
+! --------------------------------------------------------------------------------------------------
 
         ASSERT(size(p) .eq. 2)
         beta = p(1)
@@ -289,7 +288,7 @@ contains
             fct = 0
             der = 0
         else
-            u = - beta/x
+            u = -beta/x
             fct = (x-0.5d0*beta)*exp(beta/x)
             der = merge(fct/x, (1+u*(1+0.5d0*u))*exp(-u), elas)
         end if
