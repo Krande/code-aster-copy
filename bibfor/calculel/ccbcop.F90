@@ -156,7 +156,6 @@ subroutine ccbcop(resultIn, resultOut, &
                             resultType)
             else
                 postComp%lPostNoda = ASTER_TRUE
-                print*, 'toto'
                 call ccfnrnLegacy(option, postComp)
             end if
         else
