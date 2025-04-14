@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,16 @@ test.assertSequenceEqual(
     sorted(cMesh6.getGroupsOfCells()), sorted(["bas", "haut", "bords", "affVols"])
 )
 test.assertEqual(sum(list(cMesh6.getNodesGlobalNumbering())), 192089986)
-test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 61384088)
+if rank == 0:
+    test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 26066904)
+elif rank == 1:
+    test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 13008940)
+elif rank == 2:
+    test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 11429323)
+elif rank == 3:
+    test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 23482281)
+else:
+    assert False
 
 
 # Test model

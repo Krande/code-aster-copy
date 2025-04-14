@@ -145,14 +145,18 @@ if nconv > 0:
         eigvecs[i] = mode.copy()
         if k.imag != 0.0:
             Print(" %9f%+9f j %12g" % (k.real, k.imag, error))
-            Print("But we should not pass here...")
-            assert False
-        else:
-            Print(" %12f      %12g" % (np.sqrt(np.abs(k.real)) / 2.0 / np.pi, error))
-            eigs.append(np.sqrt(np.abs(k.real)) / 2.0 / np.pi)
-            norm_r = vr.norm(PETSc.NormType.NORM_INFINITY)
-            vr.scale(1 / norm_r)
-            eigvecs[i].fromPetsc(vr)
+            Print("Imaginary part non zero... This should not happen")
+            Print("We set nevertheless the imaginary part to 0")
+        if k.real < 0.0:
+            Print(" %9f%+9f j %12g" % (k.real, k.imag, error))
+            Print("Real part negative... This should not happen")
+            Print("We set the real part to its abs value")
+
+        Print(" %12f      %12g" % (np.sqrt(np.abs(k.real)) / 2.0 / np.pi, error))
+        eigs.append(np.sqrt(np.abs(k.real)) / 2.0 / np.pi)
+        norm_r = vr.norm(PETSc.NormType.NORM_INFINITY)
+        vr.scale(1 / norm_r)
+        eigvecs[i].fromPetsc(vr)
     Print()
 
 # Store results in code_aster datastructure

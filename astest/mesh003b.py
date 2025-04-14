@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,10 +87,23 @@ test.assertSequenceEqual(
     sorted(cMesh3.getNodesGlobalNumbering()),
     [1, 2, 7, 21, 22, 26, 40, 95, 100, 115, 116, 121, 136, 137, 138, 310, 338, 340],
 )
-test.assertSequenceEqual(
-    sorted(cMesh3.getNodesLocalNumbering()),
-    [2, 6, 12, 17, 35, 41, 46, 47, 48, 49, 52, 53, 54, 56, 57, 89, 95, 96],
-)
+if rank == 0:
+    test.assertSequenceEqual(
+        sorted(cMesh3.getNodesLocalNumbering()),
+        [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2, 6, 12, 17, 41, 47, 52, 53, 54],
+    )
+elif rank == 1:
+    test.assertSequenceEqual(
+        sorted(cMesh3.getNodesLocalNumbering()),
+        [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+    )
+elif rank == 2:
+    test.assertSequenceEqual(
+        sorted(cMesh3.getNodesLocalNumbering()),
+        [-1, -1, -1, -1, -1, -1, -1, -1, -1, 35, 46, 48, 49, 56, 57, 89, 95, 96],
+    )
+else:
+    assert False
 
 
 # Test ConnectionMesh - a part mesh
