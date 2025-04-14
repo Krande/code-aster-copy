@@ -133,7 +133,7 @@ VT = STAT_NON_LINE(
 s = VT.getField("SIEF_ELGA", VT.getAccessParameters()["NUME_ORDRE"][-1])
 
 with SharedTmpdir("foo") as tmpdir:
-    VT.printMedFile(osp.join(tmpdir.path, f"hsnv121f_{rank}.resu.med"))
+    VT.printMedFile(osp.join(tmpdir.path, f"hsnv121f_{rank}.resu.med"), local=True)
 
 test = CA.TestCase()
 

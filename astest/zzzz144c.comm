@@ -155,6 +155,6 @@ TEST_RESU(
     )
 )
 with SharedTmpdir("foo") as tmpdir:
-    RESU.printMedFile(osp.join(tmpdir.path, "resu_{}.med".format(rank)))
+    RESU.printMedFile(osp.join(tmpdir.path, "resu_{}.med".format(rank)), local=True)
 
 FIN()

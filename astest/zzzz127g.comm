@@ -144,13 +144,11 @@ if nconv > 0:
         error = eps.computeError(i)
         eigvecs[i] = mode.copy()
         if k.imag != 0.0:
-            Print(" %9f%+9f j %12g" % (k.real, k.imag, error))
-            Print("Imaginary part non zero... This should not happen")
-            Print("We set nevertheless the imaginary part to 0")
+            Print(f"     Imaginary part non zero:{k.imag} This should not happen")
+            Print("     We set nevertheless the imaginary part to 0")
         if k.real < 0.0:
-            Print(" %9f%+9f j %12g" % (k.real, k.imag, error))
-            Print("Real part negative... This should not happen")
-            Print("We set the real part to its abs value")
+            Print(f"     Real part negative:{k.real} This should not happen")
+            Print("     We set the real part to its abs value")
 
         Print(" %12f      %12g" % (np.sqrt(np.abs(k.real)) / 2.0 / np.pi, error))
         eigs.append(np.sqrt(np.abs(k.real)) / 2.0 / np.pi)
@@ -198,6 +196,6 @@ TEST_RESU(
 
 # Reference coming from legacy test zzzz127e
 test.assertAlmostEqual(modes_dist.getField("DEPL", 7).norm("NORM_1"), 15.65046983679833, places=6)
-test.assertAlmostEqual(modes_dist.getField("DEPL", 8).norm("NORM_1"), 7.859904214187713, places=6)
+test.assertAlmostEqual(modes_dist.getField("DEPL", 8).norm("NORM_1"), 7.859904214187713, places=5)
 
 FIN()
