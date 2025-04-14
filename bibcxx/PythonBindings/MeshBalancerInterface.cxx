@@ -3,7 +3,7 @@
  * @brief Interface python de MeshBalancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,11 +45,13 @@ This function returns a ParallelMesh with joints, ghosts and so on.
 
 Arguments:
     vector: list of nodes to get on local process
+    outMesh: out mesh (optional)
+    ghost_layer: ghost layer size (optional)
 
 Returns:
     mesh: ParallelMesh
         )",
-              py::arg( "vector" ), py::arg( "outMesh" ) = nullptr )
+              py::arg( "vector" ), py::arg( "out_mesh" ) = nullptr, py::arg( "ghost_layer" ) = 1 )
         .def( "buildFromBaseMesh", &MeshBalancer::buildFromBaseMesh, R"(
 Build balancer on an IncompleteMesh or a Mesh
 

@@ -65,7 +65,14 @@ void buildSortedVectorToSend( const VectorLong &localIds, const VectorLong &glob
 }
 
 ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalNodesList,
-                                                      ParallelMeshPtr outMesh ) {
+                                                      ParallelMeshPtr outMesh,
+                                                      const int &ghostLayer ) {
+    _ghostLayer = ghostLayer;
+    if ( _mesh != nullptr ) {
+        if ( ghostLayer != 1 && _mesh->isParallel() ) {
+            throw std::runtime_error( "Ghost layer number must be equal to 1 with ParallelMesh" );
+        }
+    }
     _nodesBalancer = std::make_shared< ObjectBalancer >();
     _cellsBalancer = std::make_shared< ObjectBalancer >();
     ObjectBalancer &nodesBalancer = *_nodesBalancer, cellsBalancer = *_cellsBalancer;
@@ -344,40 +351,51 @@ void MeshBalancer::deleteReverseConnectivity() {
     _bReverseConnex = false;
 };
 
-void MeshBalancer::_enrichBalancers( VectorInt &newLocalNodesList, int iProc, int rank,
+VectorInt MeshBalancer::filterAlreadySeenNodes( VectorInt &vec1, const SetInt &alreadySeenNodes ) {
+    SetInt newSet;
+    for ( const auto &nodeId : vec1 ) {
+        if ( alreadySeenNodes.count( nodeId ) == 0 ) {
+            if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                newSet.insert( nodeId );
+            }
+        }
+    }
+    VectorInt newList;
+    for ( const auto &tmp : newSet )
+        newList.push_back( tmp );
+    std::sort( newList.begin(), newList.end() );
+    VectorInt gatheredList;
+    AsterMPI::all_gather( newList, gatheredList );
+    return gatheredList;
+}
+
+void MeshBalancer::_enrichBalancers( const VectorInt &newLocalNodesList, int iProc, int rank,
                                      VectorOfVectorsLong &procInterfaces,
                                      VectorOfVectorsLong &fastConnex ) {
-    AsterMPI::bcast( newLocalNodesList, iProc );
+    SetInt alreadySeenNodes( newLocalNodesList.begin(), newLocalNodesList.end() );
+    SetInt alreadySeenCells;
 
-    std::set< int > toAdd;
-    auto returnPairToKeep =
-        findNodesAndElementsInNodesNeighborhood( newLocalNodesList, toAdd, fastConnex );
-    VectorInt toAddV, test2;
-    for ( const auto &val : toAdd ) {
-        toAddV.push_back( val );
-    }
-    AsterMPI::all_gather( toAddV, test2 );
+    auto iterNodeList( newLocalNodesList );
+    std::pair< VectorInt, VectorInt > returnPairToKeep;
+    for ( int i = 1; i <= _ghostLayer; ++i ) {
+        returnPairToKeep = findNodesAndElementsInNodesNeighborhood( iterNodeList, fastConnex );
 
-    std::set< int > filter;
-    // In test2 ids start at 0 in global numbering
-    for ( const auto &val : test2 )
-        filter.insert( val );
-    // In returnPairToSend.first ids start at 0 in local numbering
-    if ( _mesh != nullptr && _mesh->isParallel() ) {
-        const auto l2G = _mesh->getLocalToGlobalNodeIds();
-        for ( const auto &val : returnPairToKeep.first )
-            filter.insert( ( *l2G )[val] );
-    } else {
-        for ( const auto &val : returnPairToKeep.first )
-            filter.insert( val + _range[0] );
+        iterNodeList = filterAlreadySeenNodes( returnPairToKeep.first, alreadySeenNodes );
+        alreadySeenNodes.insert( iterNodeList.begin(), iterNodeList.end() );
+        alreadySeenCells.insert( returnPairToKeep.second.begin(), returnPairToKeep.second.end() );
+        int sizeCheck = iterNodeList.size();
+        AsterMPI::all_reduce( sizeCheck, MPI_MIN );
+        if ( sizeCheck == 0 ) {
+            break;
+        }
     }
-    VectorInt filterV;
-    // So in filterV, ids start at 0 in global numbering
-    for ( const auto &val : filter )
-        filterV.push_back( val );
+
     // And in addedNodes, ids start at 0 in local numbering
-    const auto addedNodes = findNodesToSend( filterV );
-    if ( filterV.size() != 0 ) {
+    const auto addedNodes = findNodesToSend( alreadySeenNodes );
+    VectorInt addedCells( alreadySeenCells.begin(), alreadySeenCells.end() );
+    std::sort( addedCells.begin(), addedCells.end() );
+
+    if ( addedNodes.size() != 0 ) {
         for ( const auto &tmp : addedNodes ) {
             procInterfaces[tmp].push_back( iProc );
         }
@@ -424,26 +442,26 @@ void MeshBalancer::_enrichBalancers( VectorInt &newLocalNodesList, int iProc, in
                 _nodesBalancer->addElementarySend( iProc, addedNodes );
         }
     }
-    if ( returnPairToKeep.second.size() != 0 ) {
+    if ( addedCells.size() != 0 ) {
         if ( iProc == rank ) {
 #ifdef ASTER_DEBUG_CXX
             std::cout << "#" << iProc << " will keep (local numbering+1) elements: [";
-            for ( const auto locId : returnPairToKeep.second ) {
+            for ( const auto locId : addedCells ) {
                 std::cout << locId + 1 << ", ";
             }
             std::cout << "]" << std::endl << std::flush;
 #endif
-            _cellsBalancer->setElementsToKeep( returnPairToKeep.second );
+            _cellsBalancer->setElementsToKeep( addedCells );
         } else {
 #ifdef ASTER_DEBUG_CXX
             std::cout << "#" << rank << " will send (local numbering+1) elements to #" << iProc
                       << ": [";
-            for ( const auto locId : returnPairToKeep.second ) {
+            for ( const auto locId : addedCells ) {
                 std::cout << locId + 1 << ", ";
             }
             std::cout << "]" << std::endl << std::flush;
 #endif
-            _cellsBalancer->addElementarySend( iProc, returnPairToKeep.second );
+            _cellsBalancer->addElementarySend( iProc, addedCells );
         }
     }
     if ( _mesh != nullptr && _mesh->isParallel() ) {
@@ -501,8 +519,10 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
         // To know what to keep and what to send, 2 phases are necessary
         // because IncompleteMesh shape
         if ( iProc == rank ) {
+            AsterMPI::bcast( newLocalNodesList, iProc );
             _enrichBalancers( newLocalNodesList, iProc, rank, procInterfaces, fastConnect );
         } else {
+            AsterMPI::bcast( nodesLists, iProc );
             _enrichBalancers( nodesLists, iProc, rank, procInterfaces, fastConnect );
         }
         if ( !parallelMesh ) {
@@ -576,13 +596,14 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
     }
 };
 
-std::pair< VectorInt, VectorInt > MeshBalancer::findNodesAndElementsInNodesNeighborhood(
-    const VectorInt &nodesListIn, std::set< int > &toAddSet, VectorOfVectorsLong &fastConnex ) {
-
+std::pair< VectorInt, VectorInt >
+MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesListIn,
+                                                       VectorOfVectorsLong &fastConnex ) {
+    std::set< int > toAddSet;
     int rank = 0;
 
     std::pair< VectorInt, VectorInt > toReturn;
-    auto &nodesList = toReturn.first;
+    VectorInt nodesList;
     auto &elemList = toReturn.second;
     if ( _mesh == nullptr )
         return toReturn;
@@ -695,10 +716,37 @@ std::pair< VectorInt, VectorInt > MeshBalancer::findNodesAndElementsInNodesNeigh
     }
     std::sort( nodesList.begin(), nodesList.end() );
     std::sort( elemList.begin(), elemList.end() );
+
+    VectorInt toAddV, test2;
+    for ( const auto &val : toAddSet ) {
+        toAddV.push_back( val );
+    }
+    AsterMPI::all_gather( toAddV, test2 );
+
+    std::set< int > filter;
+    // In test2 ids start at 0 in global numbering
+    for ( const auto &val : test2 )
+        filter.insert( val );
+
+    // In returnPairToSend.first ids start at 0 in local numbering
+    if ( _mesh != nullptr && _mesh->isParallel() ) {
+        const auto l2G = _mesh->getLocalToGlobalNodeIds();
+        for ( const auto &val : nodesList )
+            filter.insert( ( *l2G )[val] );
+    } else {
+        for ( const auto &val : nodesList )
+            filter.insert( val + _range[0] );
+    }
+    VectorInt filterV;
+    // So in filterV, ids start at 0 in global numbering
+    for ( const auto &val : filter )
+        filterV.push_back( val );
+    toReturn.first = filterV;
+
     return toReturn;
 };
 
-VectorInt MeshBalancer::findNodesToSend( const VectorInt &nodesListIn ) {
+VectorInt MeshBalancer::findNodesToSend( const SetInt &nodesListIn ) {
     VectorInt nodesList;
     int rank = 0;
 

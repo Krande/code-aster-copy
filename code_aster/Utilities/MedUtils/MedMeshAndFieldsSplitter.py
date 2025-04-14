@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,17 +33,18 @@ class MedSequenceToOrder(Enum):
     Iteration = auto()
 
 
-def _splitMeshAndFieldsFromMedFile(
+def splitMeshFromMedFile(
     filename,
+    ghost=1,
+    fileReader=False,
     cellBalancer=False,
     nodeBalancer=False,
     outMesh=None,
     nodeGrpToGather=[],
     deterministic=False,
     parallel=True,
-    sequenceToOrder=MedSequenceToOrder.Both,
 ):
-    """Split a MED mesh and MED fields from a filename
+    """Split a MED mesh from a filename
 
     Arguments:
         filename (Path|str): filename of MED file.
@@ -52,18 +53,18 @@ def _splitMeshAndFieldsFromMedFile(
         outMesh (ParallelMesh): split mesh.
         nodeGrpToGather (list of list): list of list of node groups to gather
             each item of list will be gather on a sigle MPI processor
+        deterministic (bool): for PtScotch, true if partitioning must be deterministic
         parallel (bool): True if med file must be open in parallel
-        sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
 
     Returns:
-        tuple: first element: split mesh, second element: dict with split fields,
+        tuple: first element: split mesh
+               second element: file reader,
                third element: cell balancer (if asked),
                fourth element: node balancer (if asked).
     """
-    fr = MedFileReader()
     nBalancer = None
     cBalancer = None
-
+    fr = MedFileReader()
     if parallel:
         fr.openParallel(filename, MedFileAccessType.MedReadOnly)
         mesh = IncompleteMesh()
@@ -84,7 +85,7 @@ def _splitMeshAndFieldsFromMedFile(
         part2.buildGraph(meshGraph, idsToGather)
         scotchPart = part2.partitionGraph(deterministic)
 
-        outMesh = bMesh.applyBalancingStrategy(scotchPart, outMesh)
+        outMesh = bMesh.applyBalancingStrategy(scotchPart, outMesh, ghost)
 
         nBalancer = bMesh.getNodeObjectBalancer()
         cBalancer = bMesh.getCellObjectBalancer()
@@ -92,6 +93,52 @@ def _splitMeshAndFieldsFromMedFile(
         fr.open(filename, MedFileAccessType.MedReadOnly)
         outMesh = ParallelMesh()
         outMesh.readMedFile(filename, partitioned=True, verbose=0)
+    toReturn = (outMesh,)
+    if fileReader:
+        toReturn += (fr,)
+    if cellBalancer:
+        toReturn += (cBalancer,)
+    if nodeBalancer:
+        toReturn += (nBalancer,)
+    return toReturn
+
+
+def _splitMeshAndFieldsFromMedFile(
+    filename,
+    cellBalancer=False,
+    nodeBalancer=False,
+    outMesh=None,
+    nodeGrpToGather=[],
+    deterministic=False,
+    parallel=True,
+    sequenceToOrder=MedSequenceToOrder.Both,
+):
+    """Split a MED mesh and MED fields from a filename
+
+    Arguments:
+        filename (Path|str): filename of MED file.
+        cellBalancer (bool): True if cell balancer must be return.
+        nodeBalancer (bool): True if node balancer must be return.
+        outMesh (ParallelMesh): split mesh.
+        nodeGrpToGather (list of list): list of list of node groups to gather
+            each item of list will be gather on a sigle MPI processor
+        deterministic (bool): for PtScotch, true if partitioning must be deterministic
+        parallel (bool): True if med file must be open in parallel
+        sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
+
+    Returns:
+        tuple: first element: split mesh, second element: dict with split fields,
+               third element: cell balancer (if asked),
+               fourth element: node balancer (if asked).
+    """
+
+    returnTuple = splitMeshFromMedFile(
+        filename, True, True, True, outMesh, nodeGrpToGather, deterministic, parallel
+    )
+    outMesh = returnTuple[0]
+    fr = returnTuple[1]
+    nBalancer = returnTuple[2]
+    cBalancer = returnTuple[3]
 
     cellTypes = outMesh.getAllMedCellsTypes()
     asterTypes = [toAsterGeoType(item) for item in cellTypes]
@@ -163,6 +210,7 @@ def splitMeshAndFieldsFromMedFile(
         outMesh (ParallelMesh): split mesh.
         nodeGrpToGather (list of list): list of list of node groups to gather
             each item of list will be gather on a sigle MPI processor
+        deterministic (bool): for PtScotch, true if partitioning must be deterministic
         sequenceToOrder (MedSequenceToOrder): strategy to convert med sequence to aster order od
 
     Returns:
