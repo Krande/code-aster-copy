@@ -121,12 +121,12 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
     real(kind=8) :: wmaxys
     real(kind=8) :: wmaxzi
     real(kind=8) :: wmaxzs
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: kt
     real(kind=8) :: eys
     real(kind=8) :: facier
@@ -150,17 +150,17 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
     real(kind=8) :: sigmczs
     real(kind=8) :: alphay
     real(kind=8) :: alphaz
-    integer :: pivoty
-    integer :: pivotz
-    integer :: etaty
-    integer :: etatz
+    integer(kind=8) :: pivoty
+    integer(kind=8) :: pivotz
+    integer(kind=8) :: etaty
+    integer(kind=8) :: etatz
     real(kind=8) :: wfinyi
     real(kind=8) :: wfinys
     real(kind=8) :: wfinzi
     real(kind=8) :: wfinzs
     real(kind=8) :: kvarfy
     real(kind=8) :: kvarfz
-    integer :: ierr
+    integer(kind=8) :: ierr
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -169,13 +169,13 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
     real(kind=8) :: rhoyi, rhoys, rhozi, rhozs
     real(kind=8) :: BRES, mrdyE, mrdy1, mrdy2, mrdzE, mrdz1, mrdz2, nrdyzE, a, nrd0
     logical :: COND
-    integer :: s, COUNT_BRES
+    integer(kind=8) :: s, COUNT_BRES
     real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
     real(kind=8) :: unite_m, Calc, seuil_moment
     real(kind=8) :: ssmaxy, ssmaxz
-    integer :: ntoty, ndemiy, ntotz, ndemiz
+    integer(kind=8) :: ntoty, ndemiy, ntotz, ndemiz
 
     pnrdy = 'POINT_NRD_Y'
     pmrdy = 'POINT_MRD_Y'

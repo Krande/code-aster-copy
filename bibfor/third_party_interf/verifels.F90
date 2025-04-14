@@ -66,19 +66,19 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     real(kind=8) :: scmaxi
     real(kind=8) :: scmaxs
     real(kind=8) :: ssmax
-    integer :: uc
+    integer(kind=8) :: uc
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
     real(kind=8) :: effm
     real(kind=8) :: effn
-    integer :: verif
+    integer(kind=8) :: verif
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
 
     real(kind=8) :: Calc
-    integer :: s, ntot, ndemi
+    integer(kind=8) :: s, ntot, ndemi
     logical :: COND_OK
     real(kind=8) :: nrd0, nrd1, mrd0, mrd1
     character(24) :: pnrd, pmrd
