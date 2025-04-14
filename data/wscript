@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ except ImportError:
 
 from waflib import Configure, Errors, Logs, Utils
 from waftools.wafutils import pyenv_abspath
+
 
 def options(self):
     group = self.get_option_group("code_aster options")
@@ -278,9 +279,8 @@ def build(self):
         chmod=Utils.O755,
     )
     if self.env.ASTER_PLATFORM_MINGW:
-        # in PREFIX ?!
         self.install_files(
-            self.env.PREFIX,
+            self.env.ASTERDATADIR,
             [self.path.get_src().find_node(src) for src in ("update_pyd_links.bat",)],
             chmod=Utils.O755,
         )

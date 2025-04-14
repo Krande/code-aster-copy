@@ -348,7 +348,7 @@ void ContactPairing::createVirtualElemForContact(
             // Get nodes
             auto slav_cell_con = ( *meshConnectivity )[slavCellUsedNume + 1];
             auto toAdd1 = slav_cell_con->toVector();
-            slav_cell_con = JeveuxCollectionObject< long int >();
+            slav_cell_con = JeveuxCollectionObject< ASTERINTEGER >();
             auto mast_cell_con = ( *meshConnectivity )[mastCellNume + 1];
             auto toAdd2 = mast_cell_con->toVector();
 

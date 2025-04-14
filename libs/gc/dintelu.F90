@@ -64,7 +64,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     use, intrinsic :: iso_c_binding
     implicit none
 !
-    integer(c_long), intent(in) :: typco
+    integer(c_int64_t), intent(in) :: typco
     real(c_double), intent(in) :: alphacc
     real(c_double), intent(in) :: ht
     real(c_double), intent(in) :: bw
@@ -74,16 +74,16 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     real(c_double), intent(in) :: fbeton
     real(c_double), intent(in) :: gammas
     real(c_double), intent(in) :: gammac
-    integer(c_long), intent(in) :: clacier
+    integer(c_int64_t), intent(in) :: clacier
     real(c_double), intent(in) :: eys
-    integer(c_long), intent(in) :: typdiag
-    integer(c_long), intent(in) :: uc
-    integer(c_long), intent(inout) :: ntot
+    integer(c_int64_t), intent(in) :: typdiag
+    integer(c_int64_t), intent(in) :: uc
+    integer(c_int64_t), intent(inout) :: ntot
     real(c_double), intent(in), optional :: dnsinf
     real(c_double), intent(in), optional :: dnssup
     real(c_double), intent(out), optional :: nrd(1:ntot)
     real(c_double), intent(out), optional :: mrd(1:ntot)
-    integer(c_long), intent(out), optional :: ndemi
+    integer(c_int64_t), intent(out), optional :: ndemi
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -98,7 +98,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     real(kind=8) :: DELTA, x1, y1, Beta, yE
     real(kind=8) :: EcINF, EcSUP, EsSUP, EsINF
     real(kind=8) :: SigmAsSUP, SigmAsINF, Ncc, Mcc
-    integer :: N_ET, N_PC, N_EC, N_PCN, k
+    integer(kind=8) :: N_ET, N_PC, N_EC, N_PCN, k
 
     real(kind=8), allocatable :: N_P1(:), M_P1(:)
     real(kind=8), allocatable :: N_P2(:), M_P2(:)

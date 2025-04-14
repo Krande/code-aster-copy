@@ -13,7 +13,12 @@ if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
     opts+=( "--coverage" )
 fi
 
-./configure "${opts[@]}"
-
 jobs=$(( ${NPROC_MAX} / 2 ))
-make install -j ${jobs}
+
+if [ "${OSNAME}" != "win" ]; then
+    ./configure "${opts[@]}"
+    make install -j ${jobs}
+else
+    ./waf_std configure --mingw-cross-compilation "${opts[@]}"
+    ./waf_std install -j ${jobs}
+fi

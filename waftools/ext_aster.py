@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,17 @@ import os.path as osp
 import re
 
 from waflib import Configure, Logs, TaskGen, Utils
-from waflib.Context import Context
+from waflib.Context import WAFVERSION, Context
 from waflib.Task import CRASHED, Task
 from waflib.Tools import c, ccroot, cxx, fc
 
+MINGW_CROSS_COMPILATION = False
 
+# wrappings and overloadings must be checked/adapted to each waf version
+assert WAFVERSION == "2.1.5"
+
+
+###############################################################################
 def sig_explicit_deps(self):
     """Hash `inputs` and `dep_nodes` signatures."""
     lst = []
@@ -48,7 +54,7 @@ def _inputs_changed(self):
             try:
                 if os.stat(x.abspath()).st_mtime > os.stat(y.abspath()).st_mtime:
                     return True
-            except:
+            except Exception:
                 return True
     return False
 
@@ -72,6 +78,28 @@ def signature(self):
 
 
 fc.fc.signature = signature
+
+
+###############################################################################
+run_process_native = Utils.run_process
+
+
+def run_process_with_wine(cmd, kwargs, cargs={}):
+    """Wraps :py:func:`waflib.Utils.run_process` using `wine` when necessary."""
+    if MINGW_CROSS_COMPILATION:
+        shell = kwargs["shell"]
+        prog = cmd[0] if not shell else cmd.split()[0]
+        ext = osp.splitext(prog)[-1]
+        if ext == ".exe":
+            Logs.debug(f"DEBUG: cmd={cmd}")
+            if shell:
+                cmd = "wine " + cmd
+            else:
+                cmd = ["wine"] + cmd
+    return run_process_native(cmd, kwargs, cargs)
+
+
+Utils.run_process = run_process_with_wine
 
 ###############################################################################
 # original run_str command line is store as hcode
@@ -156,7 +184,7 @@ def format_error(self):
         bldlog = osp.join(self.generator.bld.path.get_bld().abspath(), "%s.log" % name)
         try:
             os.makedirs(osp.dirname(bldlog))
-        except:
+        except Exception:
             pass
         slog = ""
         try:
@@ -226,11 +254,6 @@ class CustomInfo:
             if i in dirn:
                 return True, osp.join(self.prefix, i)
         return False, dirn
-
-
-def build(self):
-    if Logs.verbose < 1:
-        Logs.info = CustomInfo(self.env.PREFIX)
 
 
 # support for the "dynamic_source" attribute
@@ -307,3 +330,23 @@ def remove_duplicates(self, list_in):
     dset = set()
     # relies on the fact that dset.add() always returns None.
     return [path for path in list_in if path not in dset and not dset.add(path)]
+
+
+###############################################################################
+def _enable_wine_wrapping(self):
+    global MINGW_CROSS_COMPILATION
+    if self.env.DEST_MINGW:
+        MINGW_CROSS_COMPILATION = True
+
+
+def configure(self):
+    _enable_wine_wrapping(self)
+    if MINGW_CROSS_COMPILATION:
+        self.start_msg("Setting up 'wine' wrapping")
+        self.end_msg("enabled")
+
+
+def build(self):
+    _enable_wine_wrapping(self)
+    if Logs.verbose < 1:
+        Logs.info = CustomInfo(self.env.PREFIX)

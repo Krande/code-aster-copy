@@ -44,15 +44,16 @@ static const std::map< int, med_int > asterMedMatching = {
 const std::set< med_int > medTypeToRenumber = { 304, 308, 305, 306, 310, 320, 313, 315, 318, 327 };
 
 template < std::size_t N, const int indices[N] >
-void applyPermutation( const ASTERINTEGER *in, ASTERINTEGER *out ) {
+void applyPermutation( const med_int *in, med_int *out ) {
     for ( size_t i = 0; i < N; i++ ) {
         out[i] = in[indices[i]];
     }
 };
 
-VectorLong medToAsterRenumbering( const med_int &medType, const VectorLong &toRenumber,
-                                  const int &nbElem ) {
-    VectorLong out( toRenumber.size() );
+std::vector< med_int > medToAsterRenumbering( const med_int &medType,
+                                              const std::vector< med_int > &toRenumber,
+                                              const int &nbElem ) {
+    std::vector< med_int > out( toRenumber.size() );
     switch ( medType ) {
     case 304: {
         constexpr std::size_t N = 4;
@@ -160,6 +161,7 @@ void MeshReader::readMeshFromMedFile( MeshPtr &toReturn, const std::filesystem::
     toReturn->endDefinition();
 }
 
+#ifdef ASTER_HAVE_MPI
 void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
                                                 const std::filesystem::path &filename,
                                                 const std::string &meshName, int verbosity ) {
@@ -237,12 +239,16 @@ void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
     toReturn->create_joints( domains, globNum, nodeOwner, {}, allJoints );
     toReturn->endDefinition();
 }
+#endif
 
 void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::string &meshName,
                             int verbosity ) {
+#ifdef ASTER_HAVE_MPI
     const auto iM = std::dynamic_pointer_cast< IncompleteMesh >( toReturn );
     const bool incompleteMesh = ( iM ? true : false );
-
+#else
+    const bool incompleteMesh = false;
+#endif
     auto coordsToFill = toReturn->getCoordinates();
     if ( coordsToFill->exists() ) {
         throw std::runtime_error( "not empty" );
@@ -328,10 +334,11 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         elemNbAndSizeVec.push_back( nbNodesForGeoT );
     }
 
+#ifdef ASTER_HAVE_MPI
     if ( incompleteMesh ) {
         iM->setCellRange( cellRange );
     }
-
+#endif
     // Get families in mesh
     const auto families = curMesh->getFamilies();
     med_int maxId = 0, minId = 0, nodeGrpCount = 0, cellGrpCount = 0;
@@ -367,10 +374,12 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
     // Get node families
     auto curNFam = curMesh->getNodeFamilyAtSequence( seq[0], seq[1] );
     if ( incompleteMesh ) {
+#ifdef ASTER_HAVE_MPI
         iM->setNodeRange(
             { nodeNbAndStart.second - 1, nodeNbAndStart.second - 1 + nodeNbAndStart.first } );
         VectorLong nodeFam( curNFam.begin(), curNFam.end() );
         iM->setNodeFamily( nodeFam );
+#endif
     } else {
         // Group informations are only needed in non IncompleteMesh case
         auto index = 0;
@@ -426,7 +435,9 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         // Get cell family
         auto curFam = curMesh->getCellFamilyForGeometricTypeAtSequence( seq[0], seq[1], medType );
         if ( incompleteMesh ) {
+#ifdef ASTER_HAVE_MPI
             std::copy( curFam.begin(), curFam.end(), cellFamStart + cumElem - 1 );
+#endif
         } else {
             auto index = 0;
             // Group informations are only needed in non IncompleteMesh case
@@ -444,7 +455,9 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
     }
 
     if ( incompleteMesh ) {
+#ifdef ASTER_HAVE_MPI
         iM->setCellFamily( cellFam );
+#endif
     } else {
         int index = 0;
         VectorOfVectorsLong nodeIdGroupList( nodeGroupList.size(), VectorLong() );
@@ -508,5 +521,4 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
     toReturn->buildNamesVectors();
     toReturn->show( verbosity );
 }
-
 #endif

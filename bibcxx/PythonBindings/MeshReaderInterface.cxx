@@ -49,10 +49,11 @@ Arguments:
             )",
             py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
             py::arg( "verbosity" ) = 0 );
+#ifdef ASTER_HAVE_MPI
     c1.def( "readIncompleteMeshFromMedFile", &MeshReader::readIncompleteMeshFromMedFile,
             R"(
       Open med file
-      
+
       Arguments:
           IncompleteMesh: return mesh to fill
           path (Path|str): path to med file
@@ -64,7 +65,7 @@ Arguments:
     c1.def( "readParallelMeshFromMedFile", &MeshReader::readParallelMeshFromMedFile,
             R"(
       Open med file
-      
+
       Arguments:
           ParallelMesh: return mesh to fill
           path (Path|str): path to med file
@@ -73,5 +74,6 @@ Arguments:
                   )",
             py::arg( "mesh" ), py::arg( "path" ), py::arg( "mesh_name" ) = "",
             py::arg( "verbosity" ) = 0 );
+#endif
 #endif
 };

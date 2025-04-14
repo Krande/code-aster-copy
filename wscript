@@ -92,17 +92,17 @@ def options(self):
 
     # see waflib/Tools/gnu_dirs.py for the group name
     group = self.get_option_group("Installation prefix")
-    descr = group.get_description() or ""
+    descr = group.description or ""
     # replace path in description
     new_descr = descr.replace("/usr/local", default_prefix)
     new_descr += (
         ". Using 'waf_variant', '%s' will be automatically replaced by 'variant'." % install_suffix
     )
-    group.set_description(new_descr)
+    group.description = new_descr
     # change default value for '--prefix'
-    option = group.get_option("--prefix")
+    option = self.parser.get_option("--prefix")
     if option:
-        group.remove_option("--prefix")
+        self.parser.remove_option("--prefix")
     group.add_option(
         "--prefix",
         dest="prefix",
@@ -144,6 +144,13 @@ def options(self):
         dest="enable_asan",
         action="store_false",
         help="disable address sanitizer in debug mode",
+    )
+    group.add_option(
+        "--mingw-cross-compilation",
+        dest="dest_mingw",
+        action="store_true",
+        default=os.environ.get("ENABLE_MINGW", "0") != "0",
+        help="enable cross compilation for mingw",
     )
 
     group = self.add_option_group("code_aster options")
@@ -273,6 +280,8 @@ def configure(self):
         self.env.PREFIX = osp.join(os.environ["PREFIX_ROOT"], install_suffix)
     self.msg("Setting prefix to", self.env.PREFIX)
 
+    # wine wrapper must be set up before checking compilers
+    self.env.DEST_MINGW = opts.dest_mingw
     self.load("ext_aster", tooldir="waftools")
     self.load("use_config")
     self.load("gnu_dirs")
@@ -458,7 +467,7 @@ def set_installdirs(self):
 @Configure.conf
 def check_platform(self):
     self.start_msg("Getting platform")
-    # convert waf (sys.plaform) to code_aster terminology
+    # convert waf (sys.platform) to code_aster terminology
     os_name = self.env.DEST_OS
     if os_name == "cygwin":
         os_name = "linux"

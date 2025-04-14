@@ -60,11 +60,13 @@ class MeshReader {
     void readMeshFromMedFile( MeshPtr &, const std::filesystem::path &filename,
                               const std::string &meshName = "", int verbosity = 0 );
 
+#ifdef ASTER_HAVE_MPI
     void readIncompleteMeshFromMedFile( IncompleteMeshPtr &, const std::filesystem::path &filename,
                                         const std::string &meshName = "", int verbosity = 0 );
 
     void readParallelMeshFromMedFile( ParallelMeshPtr &, const std::filesystem::path &filename,
                                       const std::string &meshName = "", int verbosity = 0 );
+#endif
 #endif
 };
 

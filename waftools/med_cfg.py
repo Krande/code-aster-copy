@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ def options(self):
     group = self.add_option_group("HDF5/Med libraries options")
     group.add_option(
         "--med-libs",
-        type="string",
+        type=str,
         dest="med_libs",
         default=None,
         help="MED librairies to link against med",
@@ -54,11 +54,7 @@ def options(self):
     )
 
     group.add_option(
-        "--hdf5-libs",
-        type="string",
-        dest="hdf5_libs",
-        default=None,
-        help="HDF5 librairies to link with",
+        "--hdf5-libs", type=str, dest="hdf5_libs", default=None, help="HDF5 librairies to link with"
     )
     group.add_option(
         "--embed-hdf5",

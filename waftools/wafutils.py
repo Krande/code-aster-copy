@@ -4,7 +4,6 @@ This modules defines some utilities shared by several *wscript* files.
 
 import os
 import os.path as osp
-from subprocess import check_output
 
 from waflib import Context, Errors, Logs, Utils
 
@@ -22,8 +21,8 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     python = list(env.PYTHON)[0]
 
     python_ld_path = env.ASTERLIBDIR
-    add_to_env_paths(environ, "PYTHONPATH", python_ld_path)
-    add_to_env_paths(environ, "LD_LIBRARY_PATH", python_ld_path)
+    add_to_env_paths(self, environ, "PYTHONPATH", python_ld_path)
+    add_to_env_paths(self, environ, "LD_LIBRARY_PATH", python_ld_path)
 
     cmdexe = [python, pyfile] + args
     # this position allows CATALO_CMD to define an environment variable
@@ -65,14 +64,14 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         raise
 
 
-def add_to_env_paths(environ, name, path):
+def add_to_env_paths(bld, environ, name, path):
     if not hasattr(add_to_env_paths, "pathsep"):
         add_to_env_paths.pathsep = os.pathsep
         # pathsep should be the one returned by the defined python exe interpreter
         # that may differ from the python used to run waf in case of cross compiling
         if "PYTHON" in environ.keys():
-            add_to_env_paths.pathsep = check_output(
-                [environ["PYTHON"], "-c", "import os; print(os.pathsep, end='')"], encoding="utf-8"
+            add_to_env_paths.pathsep = bld.cmd_and_log(
+                [environ["PYTHON"], "-c", "import os; print(os.pathsep, end='')"], env=environ, quiet=0
             )
 
     if not path:
