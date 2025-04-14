@@ -387,7 +387,7 @@ std::vector< VectorReal > MeshPairing::getQuadraturePoints( const ASTERINTEGER &
 
     ASTERINTEGER nbPoinQuad = 0;
     VectorReal poinQuadReal;
-    poinQuadReal.reserve( 3 * 48 );
+    poinQuadReal.reserve( 3 * 56 );
     CALLO_QUADPOINCOORWRAP( _mesh->getName(), _currentCoordinates->getName(), getBasename(),
                             &indexPair, &nbPoinQuad, poinQuadReal.data() );
 
