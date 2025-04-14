@@ -43,11 +43,8 @@ def get_nodes(MAILLAGE, GROUP_NO=None):
     nodes_num = []
     nodes_name = []
     if GROUP_NO is not None:
-        # for each group_no  by user
-        for group_no in GROUP_NO:
-            num_no_in_grno = MAILLAGE.getNodes(group_no)
-            nodes_num.extend(num_no_in_grno)
-            nodes_name.extend([MAILLAGE.getNodeName(i) for i in num_no_in_grno])
+        nodes_num = MAILLAGE.getNodes(GROUP_NO)
+        nodes_name = [MAILLAGE.getNodeName(i) for i in nodes_num]
     return nodes_num, nodes_name
 
 
