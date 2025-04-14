@@ -3372,11 +3372,21 @@ class FieldOnNodesReal(DataField):
             SimpleFieldOnNodesReal: field converted
         """
 
+    def transferFromConnectionToParallelMesh(self, arg0):
+        """Transfer FieldOnNodes from a ConnectionMesh to a ParallelMesh
+
+        Arguments:
+            mesh [Mesh]: the target mesh
+
+        Returns:
+            FieldOnNodesReal: transfered field
+        """
+
     def transfertToConnectionMesh(self, arg0):
         """Transfer SimpleFieldOnNodes to a ConnectionMesh
 
         Returns:
-            SimpleFieldOnNodesReal: transfered field
+            FieldOnNodesReal: transfered field
         """
 
     def transform(self, func):
@@ -3388,6 +3398,9 @@ class FieldOnNodesReal(DataField):
         Returns:
             FieldOnNodesReal: New FieldOnNodes object with the transformed values
         """
+
+    def updateGhostValues(self):
+        """Communicates the values of the ghost DOFs on a FieldOnNodes."""
 
     def updateValuePointers(self):
         pass
@@ -13476,7 +13489,7 @@ class NonLinearResult(TransientResult):
     def getTangentMatrix(self):
         pass
 
-    def printMedFile(self, filename, medname="", local=True, internalVar=True):
+    def printMedFile(self, filename, medname="", local=False, internalVar=True):
         """Print the result in a MED file.
 
         Args:

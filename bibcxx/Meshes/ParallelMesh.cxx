@@ -459,7 +459,8 @@ ParallelMeshPtr ParallelMesh::convertToBiQuadratic( const ASTERINTEGER info ) {
     return mesh_out;
 };
 
-ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob ) const {
+ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob,
+                                                   const bool &stop ) const {
     if ( !_global2localNodeIdsPtr || _global2localNodeIdsPtr->empty() ) {
         raiseAsterError( "GlobalToLocalNodeIds mapping is not build" );
     }
@@ -468,9 +469,11 @@ ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob ) co
     if ( search != ( *_global2localNodeIdsPtr ).end() ) {
         return search->second;
     }
-    auto rank = getMPIRank();
-    throw std::out_of_range( "Global node number " + std::to_string( glob ) +
-                             " not found on rank " + std::to_string( rank ) );
+    if ( stop ) {
+        auto rank = getMPIRank();
+        throw std::out_of_range( "Global node number " + std::to_string( glob ) +
+                                 " not found on rank " + std::to_string( rank ) );
+    }
     return -1;
 }
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crnlgn(numddl)
+subroutine crnlgn(nume_equa)
     implicit none
 #include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_comm.h"
@@ -39,13 +39,13 @@ subroutine crnlgn(numddl)
 #include "asterfort/nbec.h"
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
-    character(len=14) :: numddl
+    character(len=19) :: nume_equa
 
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
     integer :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
-    integer :: nbddll, i_proc, ino, iret, nbcmp
+    integer :: nbddll, i_proc, ino, iret, nbcmp, nlili
     integer :: numero_noeud, numero_cmp, rang, nbproc, jrefn
     integer :: nec, numloc, nbddl_lag
     integer :: pos, i_ddl, jnbddl, gd, nec_max
@@ -65,7 +65,7 @@ subroutine crnlgn(numddl)
     integer, pointer :: v_mdlag(:) => null()
 !
     character(len=8) :: k8bid, mesh
-    character(len=19) :: nomlig, nume_equa
+    character(len=19) :: nomlig
     character(len=24) :: owner, mult1, mult2
 !
 !----------------------------------------------------------------------
@@ -82,17 +82,20 @@ subroutine crnlgn(numddl)
 #define zzprno(ili,nunoel,l)  zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !
     call jemarq()
+!
+    call jeexin(nume_equa//'.NULG', iret)
+    if (iret .ne. 0) goto 999
+!
     call asmpi_comm('GET', mpicou)
 !
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-    nume_equa = numddl//'.NUME'
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
 !
-    call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
+    call dismoi('NUM_GD_SI', nume_equa, 'NUME_EQUA', repi=gd)
     nec = nbec(gd)
     nec_max = nec
     call asmpi_comm_vect('MPI_MAX', 'I', sci=nec_max)
@@ -104,12 +107,12 @@ subroutine crnlgn(numddl)
     call jeveuo(nume_equa//'.NEQU', 'L', vi=v_nequ)
     call jeveuo(nume_equa//'.DELG', 'L', vi=v_delg)
     nbddll = v_nequ(1)
-
+!
 !   Creation de la numerotation globale
-    call wkvect(nume_equa//'.NULG', 'G V I', nbddll, vi=v_nugll)
-    call wkvect(nume_equa//'.PDDL', 'G V I', nbddll, vi=v_posdd)
-    call wkvect('&&CRNUGL.MULT_DDL', 'V V I', nbddll, vi=v_mult)
-    call wkvect('&&CRNUGL.MULT_DDL2', 'V V I', nbddll, vi=v_mults)
+    call wkvect(nume_equa//'.NULG', 'G V I', max(nbddll, 1), vi=v_nugll)
+    call wkvect(nume_equa//'.PDDL', 'G V I', max(nbddll, 1), vi=v_posdd)
+    call wkvect('&&CRNUGL.MULT_DDL', 'V V I', max(nbddll, 1), vi=v_mult)
+    call wkvect('&&CRNUGL.MULT_DDL2', 'V V I', max(nbddll, 1), vi=v_mults)
 !
 ! --- Il ne faut pas changer la valeur d'initialisation car on s'en sert pour detecter
 !     qui est propriétaire d'un noeud (-1 si pas propriétaire)
@@ -133,7 +136,16 @@ subroutine crnlgn(numddl)
 !
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
     call jeveuo(nume_equa//'.PRNO', 'E', idprn1)
-    call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    call jelira(nume_equa//'.PRNO', 'NMAXOC', nlili, k8bid)
+    if (nlili .eq. 1) then
+        ! si la longueur de la collection '.PRNO' est 1, on ne peut pas utiliser
+        ! l'attribut '.LONCUM'. On crée un objet temporaire contenant le
+        ! décalage pour le seul de la collection qui vaut donc 0
+        call wkvect('&&CRNLGN.IDPRN', 'V V I', 1, idprn2)
+        zi(idprn2) = 0
+    else
+        call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    end if
     call jelira(nume_equa//'.PRNO', 'NMAXOC', ntot, k8bid)
 !
 ! --- On numérote les lagranges des noeuds tardifs
@@ -223,11 +235,14 @@ subroutine crnlgn(numddl)
     call jedetr("&&CRNUGL.MULT_DDL")
     call jedetr("&&CRNUGL.MULT_DDL2")
     call jedetr('&&CRNULG.NBDDLL')
+    call jedetr('&&CRNLGN.IDPRN')
+!
+999 continue
 !
     call jedema()
 #else
     character(len=14) :: k14
-    k14 = numddl
+    k14 = nume_equa
 #endif
 !
 end subroutine

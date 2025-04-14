@@ -53,6 +53,11 @@ extern void DEFSSPPP( VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, const char *, 
 
 #endif
 
+#define CALLO_VECT_ASSE_UPDATE_GHOST_VALUES( a, b )                                                \
+    CALLOO( VECT_ASSE_UPDATE_GHOST_VALUES, vect_asse_update_ghost_values, a, b )
+extern void DEFSS( VECT_ASSE_UPDATE_GHOST_VALUES, vect_asse_update_ghost_values, const char *,
+                   STRING_SIZE, const char *, STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif

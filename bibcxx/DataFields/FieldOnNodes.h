@@ -455,6 +455,17 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     };
 #endif
 
+    /**
+     * @brief Communicates the values of the ghosts DOFs
+     *
+     */
+    FieldOnNodes *updateGhostValues() {
+        CALLO_VECT_ASSE_UPDATE_GHOST_VALUES( getName(), _dofDescription->getName() );
+        _values->updateValuePointer();
+
+        return this;
+    };
+
     void applyLagrangeScaling( const ValueType scaling ) {
         _values->updateValuePointer();
 
@@ -811,11 +822,13 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileN
     if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
         if ( rank == 0 )
             a.openFile( fileName, Binary, New );
+        if ( getMesh()->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
-        AsterMPI::barrier();
+            AsterMPI::barrier();
 #endif /* ASTER_HAVE_MPI */
-        if ( rank != 0 )
-            a.openFile( fileName, Binary, Old );
+            if ( rank != 0 )
+                a.openFile( fileName, Binary, Old );
+        }
         retour = a.getLogicalUnit();
     }
 

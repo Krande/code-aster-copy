@@ -442,7 +442,13 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     _nodesOwner->allocate( totalNumberOfNodes );
 
     for ( auto i = 0; i < totalNumberOfNodes; ++i ) {
-        ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i] + 1;
+        const auto locNum = mesh->getGlobalToLocalNodeId( numNodesGathered[3 * i + 1], false );
+        // the node id local to the subdomain is stored in order to handle ghost nodes
+        if ( locNum != -1 ) {
+            ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = locNum + 1;
+        } else {
+            ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = -1;
+        }
         ( *_nodesGlobalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 1];
         ( *_nodesOwner )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 2];
         numNodesGloLoc[numNodesGathered[3 * i + 1]] = renumNodesLocNew[i];

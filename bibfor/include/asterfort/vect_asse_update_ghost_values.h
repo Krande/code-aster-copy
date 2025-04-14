@@ -16,21 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnscno_wrap(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret)
 !
-    implicit none
 !
-#include "asterfort/cnscno.h"
-#include "asterfort/crnggn.h"
-#include "asterfort/crnggc.h"
-    !
-    character(len=*) :: cnsz, cnoz, basez, nume_equaz, prol0
-    character(len=1) :: kstop
-    integer :: iret
-!
-    call cnscno(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret, lprofconst=ASTER_FALSE)
-    ! create numbering
-    call crnggn(cnoz)
-    ! communicate numbering
-    call crnggc(cnoz)
-end subroutine
+interface
+    subroutine vect_asse_update_ghost_values(vasse, numddl)
+        character(len=19), intent(inout) :: vasse
+        character(len=19), intent(in) :: numddl
+    end subroutine vect_asse_update_ghost_values
+end interface

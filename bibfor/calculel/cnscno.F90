@@ -531,6 +531,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
         end if
     end if
 !
+!
     iret = 0
     goto 80
 !

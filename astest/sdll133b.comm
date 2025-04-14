@@ -21,7 +21,7 @@
 from math import cos, pi, sin
 
 import numpy as np
-from numpy.linalg import svd
+import scipy.linalg
 
 
 from code_aster.Commands import *
@@ -302,26 +302,19 @@ TEST_RESU(
 modes_reconstruit = REST_GENE_PHYS(RESU_GENE=MODES_elim)
 
 # Vérification que les modes reconstruits sont les mêmes que les modes originaux
-# Pour cela, on calcule les valeurs singulières des 2 bases ainsi que des deux bases concaténées
-# et on vérifie que le nombre de valeurs singulières significatives est le même
+# Pour cela, on calcule l'angle entre les 2 sous-espaces engendrés par les modes
+# originaux et les modes reconstruits à l'aide de la fonction subspace_angles de scipy
 
 vecs = np.vstack([MODES.getField("DEPL", r).getValues() for r in MODES.getIndexes()])
 vecs_r = np.vstack(
     [modes_reconstruit.getField("DEPL", r).getValues() for r in modes_reconstruit.getIndexes()]
 )
 
-tol = 1.0e-6
+tol = 1.0e-15
 with CA.disable_fpe():
-    _, s, _ = svd(vecs)
-    ns = len(np.where(s / np.max(s) > tol)[-1])
-    _, s_r, _ = svd(vecs_r)
-    ns_r = len(np.where(s_r / np.max(s_r) > tol)[-1])
-    _, s_both, _ = svd(np.vstack([vecs, vecs_r]))
-    ns_both = len(np.where(s_both / np.max(s_both) > tol)[-1])
+    angles = scipy.linalg.subspace_angles(vecs, vecs_r)
 
-test.assertEqual(ns, 6)
-test.assertEqual(ns, ns_r)
-test.assertEqual(ns, ns_both)
+test.assertTrue((np.abs(angles) < tol).all())
 
 test.assertEqual(rigi_elim.getType(), "MATR_ASSE_ELIM_R")
 test.assertEqual(mass_elim.getType(), "MATR_ASSE_ELIM_R")

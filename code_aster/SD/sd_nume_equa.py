@@ -60,7 +60,7 @@ class sd_nume_equa(AsBase):
         deeq = self.DEEQ.get()
         neq = len(deeq) // 2
         for x in nueq:
-            assert 1 <= x and x <= neq
+            assert 0 <= x and x <= neq
 
         for k in range(neq):
             nuno = deeq[2 * k]
@@ -73,8 +73,8 @@ class sd_nume_equa(AsBase):
         nequ = self.NEQU.get()
         delg = self.DELG.get()
         neq = nequ[0]
-        assert neq > 0
+        assert neq >= 0
         assert nequ[1] >= 0
-        assert len(delg) == neq
+        assert len(delg) >= neq
         for x in delg:
             assert x in (-2, -1, 0)

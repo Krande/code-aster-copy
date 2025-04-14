@@ -138,4 +138,43 @@ FieldOnNodesRealPtr transferToConnectionMesh( const FieldOnNodesRealPtr toTransf
     }
     return toFieldOnNodes( rSFON );
 };
+
+FieldOnNodesRealPtr transferFromConnectionToParallelMesh( const FieldOnNodesRealPtr toTransfer,
+                                                          const BaseMeshPtr mesh ) {
+    const auto sFON = toSimpleFieldOnNodes( toTransfer );
+    sFON->updateValuePointers();
+    const auto inputMesh = toTransfer->getMesh();
+    // Check if the input mesh is a ConnectionMesh
+    const auto cMesh = std::dynamic_pointer_cast< const ConnectionMesh >( inputMesh );
+    if ( !cMesh ) {
+        throw std::runtime_error( "Only valid for ConnectionMesh" );
+    }
+    // Check the mesh is a ParallelMesh
+    const auto pMesh = std::dynamic_pointer_cast< ParallelMesh >( mesh );
+    if ( !pMesh ) {
+        throw std::runtime_error( "Only valid for ParallelMesh" );
+    }
+
+    SimpleFieldOnNodesRealPtr rSFON = std::make_shared< SimpleFieldOnNodesReal >(
+        pMesh, sFON->getPhysicalQuantity(), sFON->getComponents(), true );
+    rSFON->updateValuePointers();
+
+    const auto &cLNum = cMesh->getNodesLocalNumbering();
+    const auto &nbNodes = cLNum->size();
+    const auto &lAllocated = sFON->getLogicalValues();
+    const auto &nbCmpIn = sFON->getNumberOfComponents();
+
+    for ( int inode = 0; inode < nbNodes; ++inode ) {
+        if ( ( *lAllocated )[inode] && ( *cLNum )[inode] != -1 ) {
+            const auto &curPos = ( *cLNum )[inode] - 1;
+            for ( int icmp = 0; icmp < nbCmpIn; ++icmp ) {
+                ( *rSFON )( curPos, icmp ) = ( *sFON )[inode * nbCmpIn + icmp];
+            }
+        }
+    }
+
+    auto ret = toFieldOnNodes( rSFON );
+
+    return ret;
+};
 #endif /* ASTER_HAVE_MPI */

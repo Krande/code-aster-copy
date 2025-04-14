@@ -67,7 +67,21 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 Transfer SimpleFieldOnNodes to a ConnectionMesh
 
 Returns:
-    SimpleFieldOnNodesReal: transfered field
+    FieldOnNodesReal: transfered field
+        )" )
+        .def(
+            "transferFromConnectionToParallelMesh",
+            []( const FieldOnNodesRealPtr f, const BaseMeshPtr m ) {
+                return transferFromConnectionToParallelMesh( f, m );
+            },
+            R"(
+            Transfer FieldOnNodes from a ConnectionMesh to a ParallelMesh
+
+            Arguments:
+                mesh [Mesh]: the target mesh
+
+            Returns:
+                FieldOnNodesReal: transfered field
         )" )
 #endif /* ASTER_HAVE_MPI */
         .def(
@@ -264,6 +278,10 @@ Returns:
             )",
               py::arg( "vec" ), py::arg( "scaling" ) = 1.0, py::arg( "local" ) = false )
 #endif
+        .def( "updateGhostValues", &FieldOnNodesReal::updateGhostValues,
+              R"(
+            Communicates the values of the ghost DOFs on a FieldOnNodes.
+  )" )
         .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
               R"(
             Set values of the field
