@@ -360,234 +360,252 @@ def filter_ordre_freq(
     return l_nume_ordre_filtered, l_freq_filtered, l_nume_mode_filtered
 
 
-def cqc_array(amors, freqs):
-    """Matrix des coefficients CQC
 
-    Arguments:
-        amors           : list of damping coefficients
-        freqs           : list of frequencies
+class CombModalResponse:
 
-    Returns:
-        H: matrix of correlation between modes for CQC rule
-    """
-    nbmode = len(freqs)
-    H = np.zeros((nbmode, nbmode))
-    if np.any(amors == 0):
-        H[np.diag_indices_from(H)] = 1
-        return H
-    omega = 2 * np.pi * freqs
-    for i, (amor_i, w_i) in enumerate(zip(amors, omega)):
-        for j, (amor_j, w_j) in enumerate(zip(amors, omega)):
-            wij = w_i * w_j
-            amor_ij = amor_i * amor_j
-            H[i, j] = (8 * sqrt(amor_ij * wij) * (amor_i * w_i + amor_j * w_j) * wij) / (
-                (w_i**2 - w_j**2) ** 2
-                + 4 * amor_ij * wij * (w_i**2 + w_j**2)
-                + 4 * (amor_i**2 + amor_j**2) * wij**2
-            )
-    # return
-    return H
+    def __init__(self, comb_mode, type_analyse, amors, freqs):
+        """Combines modals responses
 
+        Args:
+            comb_mode: input for key_factor COMB_MODE
+            type_analyse: input for key TYPE_ANALYSE (MONO_APPUI or MULT_APPUI)
+            amors: list of all damping coefficients
+            freqs: list of all frequencies
+    
+        Returns:
+            R_qs : quasi-statique combined response (for Gupta rule only)
+            R_m2 : dynamic combined response of all oscillators in square
+    
+        """
+        self._type_comb = comb_mode["TYPE"]
+        self._amors = amors
+        self._freqs = freqs
+        self._H = None
 
-def dsc_array(amors, freqs, s):
-    """Matrix des coefficients DSC
+        if self._type_comb == "GUPTA":
+            if type_analyse != "MONO_APPUI":
+                raise Exception("Pour la combinaison type Gupta n'existe qu'en cas de mono-appui")
+            self._freq1, self._freq2 = comb_mode["FREQ_1"], comb_mode["FREQ_2"]
+            self._alpha_r = None
 
-    Arguments:
-        amors           : list of damping coefficients
-        freqs           : list of frequencies
-        s               : duration in second
+        elif self._type_comb in ("DSC", "NRC_DSA"):
+            self._duree = comb_mode["DUREE"]
+            if self._duree is None:
+                raise Exception("Il faut renseigner DUREE")
+        
+        elif self._type_comb == "NRC_GROUPING":
+            self._groups = None
 
-    Returns:
-        H: matrix of correlation between modes for DSC rule
-    """
-    if np.any(amors == 0) or np.any(amors > 1):
-        raise Exception("Impossible de faire TYPE_COMB DSC avec des amortissements nuls ou > 1")
-    nbmode = len(freqs)
-    H = np.zeros((nbmode, nbmode))
-    omega = 2 * np.pi * freqs
-    # correlation coefficients for DSC rule
-    for i, (amor_i, w_i) in enumerate(zip(amors, omega)):
-        for j, (amor_j, w_j) in enumerate(zip(amors, omega)):
-            H[i, j] = 1 / (
-                1
-                + (w_i * sqrt(1 - amor_i**2) - w_j * sqrt(1 - amor_j**2)) ** 2
-                / (w_i * (amor_i + 2 / (s * w_i)) + w_j * (amor_j + 2 / (s * w_j))) ** 2
-            )
-    # return
-    return H
-
-
-def nrc_ten_percent_array(freqs):
-    """Matrix des coefficients DPC (selon NRC_TEN_PERCENT)
-
-    Arguments:
-        freqs           : list of frequencies
-
-    Returns:
-        H: matrix of correlation between modes for NRC_TEN_PERCENT rule
-    """
-
-    nbmode = len(freqs)
-    H = np.zeros((nbmode, nbmode))
-    # correlation coefficients for DSC rule
-    # using round() to invoid approximated values of frequencies
-    for i in range(nbmode):
-        for j in range(nbmode):
-            if freqs[i] <= freqs[j]:
-                if freqs[j] <= round(1.1 * freqs[i], 5):
-                    H[i, j] = 1
-            else:
-                if freqs[i] <= round(1.1 * freqs[j], 5):
-                    H[i, j] = 1
-    # return
-    return H
-
-
-def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
-    """Combines modals responses
-
-    Args:
-        COMB_MODE: input for key_factor COMB_MODE
-        type_analyse: input for key TYPE_ANALYSE (MONO_APPUI or MULT_APPUI)
-        R_mi: list of all vectors corresponding to all modal responses (mode by mode)
-        amors: list of all damping coefficients
-        freqs: list of all frequencies
-
-    Returns:
-        R_qs : quasi-statique combined response (for Gupta rule only)
-        R_m2 : dynamic combined response of all oscillators in square
-
-    """
-    # type of analyse: mono_appui or mult_appui
-    type_comb = COMB_MODE["TYPE"]
-    # preparing for modal combinaisons
-    R_m2, R_qs = 0, 0
-    if type_comb == "SRSS":
-        R_m2 = np.sum(R_mi**2, axis=0)
-    elif type_comb == "ABS":
-        R_m2 = np.sum(np.abs(R_mi), axis=0) ** 2
-    elif type_comb == "CQC":
-        H = cqc_array(amors, freqs)
-        H[np.diag_indices_from(H)] /= 2
-        for i, r_i in enumerate(R_mi):
-            for j, r_j in enumerate(R_mi[i:], i):
-                R_m2 += 2 * H[i, j] * r_i * r_j
-        R_m2 = np.maximum(R_m2, 0)
-    elif type_comb == "DSC":
-        if COMB_MODE["DUREE"] is None:
-            raise Exception("Il faut renseigner DUREE")
-        H = dsc_array(amors, freqs, COMB_MODE["DUREE"])
-        H[np.diag_indices_from(H)] /= 2
-        for i, r_i in enumerate(R_mi):
-            for j, r_j in enumerate(R_mi[i:], i):
-                R_m2 += 2 * H[i, j] * r_i * r_j
-        R_m2 = np.maximum(R_m2, 0)
-
-    elif type_comb == "NRC_DSA":  # DSA : Double sum absolute
-        if COMB_MODE["DUREE"] is None:
-            raise Exception("Il faut renseigner DUREE")
-        H = dsc_array(amors, freqs, COMB_MODE["DUREE"])
-        H[np.diag_indices_from(H)] /= 2
-        for i, r_i in enumerate(R_mi):
-            for j, r_j in enumerate(R_mi[i:], i):
-                R_m2 += 2 * H[i, j] * np.abs(r_i * r_j)
-        R_m2 = np.maximum(R_m2, 0)
-
-    elif type_comb == "NRC_TEN_PERCENT":  # Méthode dix pourcent (D) selon NRC
-        H = nrc_ten_percent_array(freqs)
-        H[np.diag_indices_from(H)] /= 2
-        for i, r_i in enumerate(R_mi):
-            for j, r_j in enumerate(R_mi[i:], i):
-                R_m2 += 2 * H[i, j] * np.abs(r_i * r_j)
-        R_m2 = np.maximum(R_m2, 0)
-
-    elif type_comb == "DPC":
-        # neighbor modes (frequence close until 10%) will be combined by abs
-        f0, r_r = freqs[0], R_mi[0]
-        l_abs_R_r = [np.abs(r_r)]
-        for i_freq in range(1, len(freqs)):
-            freq = freqs[i_freq]
-            r_r = R_mi[i_freq]
-            fm_ = 0.5 * (f0 + freq)
-            if abs(freq - f0) / fm_ >= 0.10:  # discrepance in freq bigger than 10%
-                f0 = freq
-                l_abs_R_r.append(np.abs(r_r))
-            else:  # # discrepance in freq bigger than 10% --> sum by abs
-                f0 = freq
-                # combinied by abs value
-                l_abs_R_r[-1] += np.abs(r_r)
-        R_m2 = sum(r_x**2 for r_x in l_abs_R_r)
-
-    elif type_comb == "NRC_GROUPING":
-        # Create the modal group list by analyzing the frequencies
-        # **bottom-up** as required by RG 1.92 Rev.1
-        groups = []
-        for fidx, ff in enumerate(freqs):
-            if fidx == 0:
-                # Initialize first group with the first mode
-                groups.append([fidx])
-                continue
-            #
-            # "Current" group reference frequency
-            ff_ref = freqs[groups[-1][0]]
-            #
-            if (ff - ff_ref) / ff_ref > 0.1:
-                # Start a new group if the 10% is exceeded
-                groups.append([fidx])
-            else:
-                # Else, just append the mode index to the preceding group
-                groups[-1].append(fidx)
-
-        # The regular Squared-Sum contribution (no correlation part)
-        sum_rk_sq = np.sum(R_mi**2, axis=0)
-
-        # The correlated part
-        sum_rl_rm = np.zeros_like(sum_rk_sq)
-        for group in groups:
-            nbmodes = len(group)
-            if nbmodes == 1:
-                continue
-            for ii in range(0, nbmodes - 1):
-                rl = R_mi[group[ii]]
-                for jj in range(ii + 1, nbmodes):
-                    rm = R_mi[group[jj]]
-                    sum_rl_rm += 2.0 * np.abs(rl * rm)
-
-        R_m2 = sum_rk_sq + sum_rl_rm
-
-    elif type_comb == "GUPTA":
-        f1 = min(COMB_MODE["FREQ_1"], COMB_MODE["FREQ_2"])
-        f2 = max(COMB_MODE["FREQ_1"], COMB_MODE["FREQ_2"])
-        # check if f1 < f2
-        if f1 > f2:
-            raise Exception(
-                "Pour la combinaison type Gupta '{f1}' doit être inférieure à '{f2}'".format(
-                    f1=f1, f2=f2
+    @staticmethod
+    def cqc_array(amors, freqs):
+        """Matrix des coefficients CQC
+    
+        Arguments:
+            amors           : list of damping coefficients
+            freqs           : list of frequencies
+    
+        Returns:
+            H: matrix of correlation between modes for CQC rule
+        """
+        nbmode = len(freqs)
+        H = np.zeros((nbmode, nbmode))
+        if np.any(amors == 0):
+            H[np.diag_indices_from(H)] = 1
+            return H
+        omega = 2 * np.pi * freqs
+        for i, (amor_i, w_i) in enumerate(zip(amors, omega)):
+            for j, (amor_j, w_j) in enumerate(zip(amors, omega)):
+                wij = w_i * w_j
+                amor_ij = amor_i * amor_j
+                H[i, j] = (8 * sqrt(amor_ij * wij) * (amor_i * w_i + amor_j * w_j) * wij) / (
+                    (w_i**2 - w_j**2) ** 2
+                    + 4 * amor_ij * wij * (w_i**2 + w_j**2)
+                    + 4 * (amor_i**2 + amor_j**2) * wij**2
                 )
-            )
-        # check if mono_appui
-        if type_analyse != "MONO_APPUI":
-            raise Exception("Pour la combinaison type Gupta n'existe qu'en cas de mono-appui")
-        alpha_r = np.expand_dims(np.log(freqs / f1) / np.log(f2 / f1), axis=1)
-        alpha_r[freqs < f1] = 0
-        alpha_r[freqs > f2] = 1
-        # CQC coefficients
-        H_cqc = cqc_array(amors, freqs)
-        coeff_p = np.sqrt(1 - alpha_r**2)
-        H_p = H_cqc * coeff_p.T * coeff_p
-        H_p[np.diag_indices_from(H_p)] /= 2
-        for i, r_i in enumerate(R_mi):
-            for j, r_j in enumerate(R_mi[i:], i):
-                R_m2 += 2 * H_p[i, j] * r_i * r_j
-        R_m2 = np.maximum(R_m2, 0)
-        R_qs = np.sum(R_mi * alpha_r, axis=0)
-    else:
-        raise Exception("Le TYPE '{type_comb}' n'est pas reconnu".format(type_comb=type_comb))
-    # if type combi is not GUPTA
-    if type_comb != "GUPTA":
-        R_qs = np.zeros((np.shape(R_m2)))
-    # return
-    return R_m2, R_qs
+        # return
+        return H
+    
+    @staticmethod
+    def dsc_array(amors, freqs, s):
+        """Matrix des coefficients DSC
+    
+        Arguments:
+            amors           : list of damping coefficients
+            freqs           : list of frequencies
+            s               : duration in second
+    
+        Returns:
+            H: matrix of correlation between modes for DSC rule
+        """
+        if np.any(amors == 0) or np.any(amors > 1):
+            raise Exception("Impossible de faire TYPE_COMB DSC avec des amortissements nuls ou > 1")
+        nbmode = len(freqs)
+        H = np.zeros((nbmode, nbmode))
+        omega = 2 * np.pi * freqs
+        # correlation coefficients for DSC rule
+        for i, (amor_i, w_i) in enumerate(zip(amors, omega)):
+            for j, (amor_j, w_j) in enumerate(zip(amors, omega)):
+                H[i, j] = 1 / (
+                    1
+                    + (w_i * sqrt(1 - amor_i**2) - w_j * sqrt(1 - amor_j**2)) ** 2
+                    / (w_i * (amor_i + 2 / (s * w_i)) + w_j * (amor_j + 2 / (s * w_j))) ** 2
+                )
+        # return
+        return H
+    
+    @staticmethod
+    def nrc_ten_percent_array(freqs):
+        """Matrix des coefficients DPC (selon NRC_TEN_PERCENT)
+    
+        Arguments:
+            freqs           : list of frequencies
+    
+        Returns:
+            H: matrix of correlation between modes for NRC_TEN_PERCENT rule
+        """
+    
+        nbmode = len(freqs)
+        H = np.zeros((nbmode, nbmode))
+        # correlation coefficients for DSC rule
+        # using round() to invoid approximated values of frequencies
+        for i in range(nbmode):
+            for j in range(nbmode):
+                if freqs[i] <= freqs[j] :
+                    if freqs[j] <= round(1.1*freqs[i], 5):
+                        H[i, j] = 1
+                else:
+                    if freqs[i] <= round(1.1*freqs[j], 5):
+                        H[i, j] = 1
+        # return
+        return H
+
+    @property
+    def alpha_r(self):
+        if self._alpha_r is None:
+            f1 = min(self._freq1, self._freq2)
+            f2 = max(self._freq1, self._freq2)
+            # check if f1 < f2
+            if f1 > f2:
+                raise Exception(
+                    "Pour la combinaison type Gupta '{f1}' doit être inférieure à '{f2}'".format(
+                        f1=f1, f2=f2
+                    )
+                )
+            self._alpha_r = np.expand_dims(np.log(self._freqs / f1) / np.log(f2 / f1), axis=1)
+            self._alpha_r[self._freqs < f1] = 0
+            self._alpha_r[self._freqs > f2] = 1
+        return self._alpha_r
+
+    @property
+    def H(self):
+        if self._H is None:
+            if self._type_comb in ("CQC", "GUPTA"):
+                self._H = self.cqc_array(self._amors, self._freqs)
+                if self._type_comb == "GUPTA":
+                    coeff_p = np.sqrt(1 - self.alpha_r**2)
+                    self._H  = self._H * coeff_p.T * coeff_p
+            elif self._type_comb in ("DSC", "NRC_DSA"):
+                self._H = self.dsc_array(self._amors, self._freqs, self._duree)
+            elif self._type_comb == "NRC_TEN_PERCENT":
+                self._H = self.nrc_ten_percent_array(self._freqs)
+            self._H[np.diag_indices_from(self._H)] /= 2
+        return self._H
+
+    @property
+    def groups(self):
+        """
+        Create the modal group list by analyzing the frequencies
+        **bottom-up** as required by RG 1.92 Rev.1
+        """
+        if self._groups is None:
+            self._groups = []
+            for fidx, ff in enumerate(self._freqs):
+                if fidx == 0:
+                    # Initialize first group with the first mode
+                    self._groups.append([fidx])
+                    continue
+                #
+                # "Current" group reference frequency
+                ff_ref = self._freqs[self._groups[-1][0]]
+                #
+                if (ff-ff_ref)/ff_ref > 0.1:
+                    # Start a new group if the 10% is exceeded
+                    self._groups.append([fidx])
+                else:
+                    # Else, just append the mode index to the preceding group
+                    self._groups[-1].append(fidx)
+        return self._groups
+
+    def get(self, R_mi):
+        """
+        Args:
+            R_mi: list of all vectors corresponding to all modal responses (mode by mode)
+
+        Returns:
+            R_qs : quasi-statique combined response (for Gupta rule only)
+            R_m2 : dynamic combined response of all oscillators in square
+        """
+
+        if self._type_comb == "SRSS":
+            R_m2 = np.sum(R_mi**2, axis=0)
+        elif self._type_comb == "ABS":
+            R_m2 = np.sum(np.abs(R_mi), axis=0) ** 2
+        elif self._type_comb in ("CQC", "DSC", "GUPTA"):
+            H = self.H
+            R_m2 = 0
+            for i, r_i in enumerate(R_mi):
+                for j, r_j in enumerate(R_mi[i:], i):
+                    R_m2 += 2 * H[i, j] * r_i * r_j
+            R_m2 = np.maximum(R_m2, 0)
+        elif self._type_comb in ("NRC_DSA", "NRC_TEN_PERCENT"):
+            H = self.H
+            R_m2 = 0
+            for i, r_i in enumerate(R_mi):
+                for j, r_j in enumerate(R_mi[i:], i):
+                    R_m2 += 2 * H[i, j] * np.abs(r_i * r_j)
+            R_m2 = np.maximum(R_m2, 0)
+        elif self._type_comb == "DPC":
+            # neighbor modes (frequence close until 10%) will be combined by abs
+            f0, r_r = self._freqs[0], R_mi[0]
+            l_abs_R_r = [np.abs(r_r)]
+            for i_freq in range(1, len(self._freqs)):
+                freq = self._freqs[i_freq]
+                r_r = R_mi[i_freq]
+                fm_ = 0.5 * (f0 + freq)
+                if abs(freq - f0) / fm_ >= 0.10:  # discrepance in freq bigger than 10%
+                    f0 = freq
+                    l_abs_R_r.append(np.abs(r_r))
+                else:  # # discrepance in freq bigger than 10% --> sum by abs
+                    f0 = freq
+                    # combinied by abs value
+                    l_abs_R_r[-1] += np.abs(r_r)
+            return sum(r_x**2 for r_x in l_abs_R_r), 0
+    
+        elif self._type_comb == "NRC_GROUPING":
+            # The regular Squared-Sum contribution (no correlation part)
+            sum_rk_sq = np.sum(R_mi**2, axis=0)
+            # The correlated part
+            sum_rl_rm = np.zeros_like(sum_rk_sq)
+            for group in self.groups:
+                nbmodes = len(group)
+                if nbmodes == 1:
+                    continue
+                for ii in range(0, nbmodes-1):
+                    rl = R_mi[group[ii]]
+                    for jj in range(ii+1, nbmodes):
+                        rm = R_mi[group[jj]]
+                        sum_rl_rm += 2.*np.abs(rl*rm)
+
+            R_m2 = sum_rk_sq + sum_rl_rm
+        else:
+            raise Exception("Le TYPE '{type_comb}' n'est pas reconnu".format(type_comb=self._type_comb))
+
+        if self._type_comb == "GUPTA":
+            R_qs = np.sum(R_mi * self.alpha_r, axis=0)
+        else:
+            R_qs = np.zeros((np.shape(R_m2)))
+
+        return R_m2, R_qs
 
 
 def comb_appui_corr(COMB_MULT_APPUI_CORR, R_mi):
@@ -1833,6 +1851,8 @@ def comb_sism_modal_ops(self, **args):
     # --------------------------------------------------------------------------
     # Iteration on option result to combine
     i_option = 0
+
+    comb_modal_response = CombModalResponse(comb_mode, type_analyse, amors, freqs)
     for option in args["OPTION"]:
         i_option += 1
         if type_analyse == "MONO_APPUI":
@@ -1939,7 +1959,7 @@ def comb_sism_modal_ops(self, **args):
                     )
                 # step 3: modal combinaison
                 # Get input COMB_MODE
-                R_m2, R_qs = comb_modal_response(comb_mode, type_analyse, R_mi, amors, freqs)
+                R_m2, R_qs = comb_modal_response.get(R_mi)
                 # Automatic correction for ACCE_ABSOLU in mono-appui
                 if option == "ACCE_ABSOLU":
                     # field of unit value for acce_absolu
@@ -2376,9 +2396,7 @@ def comb_sism_modal_ops(self, **args):
                     # response of DDS by group_appui)
                     R_e_group_appui = comb_appui_corr(comb_dds_correle, R_e_j)
                     # step 6: modal combinaison pour R_m_group_appui
-                    R_m2, R_qs = comb_modal_response(
-                        comb_mode, type_analyse, R_m_group_appui, amors, freqs
-                    )
+                    R_m2, R_qs = comb_modal_response.get(R_m_group_appui)
                     # Automatic correction for ACCE_ABSOLU: not used in mult-appui
                     if option == "ACCE_ABSOLU":
                         # raise fatal error message to stop
@@ -2735,7 +2753,7 @@ def comb_sism_modal_ops(self, **args):
                     )
                 # step 3: modal combinaison
                 # Get input COMB_MODE
-                R_m2, R_qs = comb_modal_response(comb_mode, type_analyse, R_mi, amors, freqs)
+                R_m2, R_qs = comb_modal_response.get(R_mi)
                 # Automatic correction for ACCE_ABSOLU in mono-appui
                 if option == "ACCE_ABSOLU":
                     # field of unit value for acce_absolu
