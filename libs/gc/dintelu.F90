@@ -107,9 +107,6 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     real(kind=8), allocatable :: N_P5(:), M_P5(:)
     real(kind=8), allocatable :: N_P6(:), M_P6(:)
 
-    nrd = 0.0
-    mrd = 0.0
-
     k = 1
 
     if (typco .eq. 1) then
@@ -191,6 +188,8 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         write (6, *) "SyntaxError: nrd and mrd are required"
         return
     end if
+    nrd = 0.0
+    mrd = 0.0
 
 !-----------------------------------------------------------------------
 !Traitement des différents cas (Pivots A / B / C)
