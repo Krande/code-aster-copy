@@ -454,7 +454,7 @@ PROJ_CHAMP = OPER(
     # utiliser un ConnectionMesh en parallélisme distribué ?
     b_distribue=BLOC(
         condition="""exists("MAILLAGE_1") and AsType(MAILLAGE_1)==maillage_p or exists("MAILLAGE_2") and AsType(MAILLAGE_2)==maillage_p""",
-        DISTRIBUTION=SIMP(statut="o", typ="TXM", defaut="NON", into=("OUI", "NON")),
+        DISTRIBUTION=SIMP(statut="o", typ="TXM", into=("OUI", "NON")),
         # ----------------------------------------------------------------------------------------------
         # 1er cas : on fait tout d'un coup : création de la sd_corresp_2_mailla + projection des champs
         # ----------------------------------------------------------------------------------------------
