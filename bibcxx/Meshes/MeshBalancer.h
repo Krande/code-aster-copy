@@ -79,7 +79,7 @@ class MeshBalancer {
     void _enrichBalancers( const VectorInt &newLocalNodesList, int iProc, int rank,
                            VectorOfVectorsLong &procInterfaces, VectorOfVectorsLong & );
 
-    VectorInt filterAlreadySeenNodes( VectorInt &vec1, const SetInt &alreadySeenNodes );
+    VectorInt filterAlreadySeenNodes( const VectorInt &vec1, const SetInt &alreadySeenNodes );
 
   public:
     /**

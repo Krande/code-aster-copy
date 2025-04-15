@@ -351,21 +351,48 @@ void MeshBalancer::deleteReverseConnectivity() {
     _bReverseConnex = false;
 };
 
-VectorInt MeshBalancer::filterAlreadySeenNodes( VectorInt &vec1, const SetInt &alreadySeenNodes ) {
+VectorInt MeshBalancer::filterAlreadySeenNodes( const VectorInt &vec1,
+                                                const SetInt &alreadySeenNodes ) {
+    bool parallelMesh = false;
+    int rank = 0;
+    JeveuxVectorLong meshNodeOwner;
+    std::shared_ptr< const MapLong > g2LMap;
+    if ( _mesh != nullptr ) {
+        if ( _mesh->isParallel() ) {
+            rank = getMPIRank();
+            parallelMesh = true;
+            meshNodeOwner = _mesh->getNodesOwner();
+            g2LMap = _mesh->getGlobalToLocalNodeIds();
+        }
+    }
+
     SetInt newSet;
-    for ( const auto &nodeId : vec1 ) {
-        if ( alreadySeenNodes.count( nodeId ) == 0 ) {
-            if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+    if ( parallelMesh ) {
+        const auto endGlob = g2LMap->end();
+        for ( const auto &nodeId : vec1 ) {
+            const auto iterLoc = g2LMap->find( nodeId );
+            if ( iterLoc == endGlob )
+                continue;
+            const auto idBis = iterLoc->second;
+            if ( ( *meshNodeOwner )[idBis] == rank ) {
                 newSet.insert( nodeId );
+            }
+        }
+    } else {
+        for ( const auto &nodeId : vec1 ) {
+            if ( alreadySeenNodes.count( nodeId ) == 0 ) {
+                if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                    newSet.insert( nodeId );
+                }
             }
         }
     }
     VectorInt newList;
     for ( const auto &tmp : newSet )
         newList.push_back( tmp );
-    std::sort( newList.begin(), newList.end() );
     VectorInt gatheredList;
     AsterMPI::all_gather( newList, gatheredList );
+    std::sort( gatheredList.begin(), gatheredList.end() );
     return gatheredList;
 }
 
@@ -376,9 +403,9 @@ void MeshBalancer::_enrichBalancers( const VectorInt &newLocalNodesList, int iPr
     SetInt alreadySeenCells;
 
     auto iterNodeList( newLocalNodesList );
-    std::pair< VectorInt, VectorInt > returnPairToKeep;
     for ( int i = 1; i <= _ghostLayer; ++i ) {
-        returnPairToKeep = findNodesAndElementsInNodesNeighborhood( iterNodeList, fastConnex );
+        const auto returnPairToKeep =
+            findNodesAndElementsInNodesNeighborhood( iterNodeList, fastConnex );
 
         iterNodeList = filterAlreadySeenNodes( returnPairToKeep.first, alreadySeenNodes );
         alreadySeenNodes.insert( iterNodeList.begin(), iterNodeList.end() );
@@ -605,117 +632,119 @@ MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesLis
     std::pair< VectorInt, VectorInt > toReturn;
     VectorInt nodesList;
     auto &elemList = toReturn.second;
-    if ( _mesh == nullptr )
-        return toReturn;
-    // Build reverse connectivity to be able to build ObjectBalancer (what to send to which process)
-    const auto &reverseConnex = _mesh->buildReverseConnectivity();
+    const bool somethingToDo = ( _mesh == nullptr ) ? false : true;
+    if ( somethingToDo ) {
+        // Build reverse connectivity to be able to build ObjectBalancer
+        // (what to send to which process)
+        const auto &reverseConnex = _mesh->buildReverseConnectivity();
 
-    std::set< int > inSet;
-    for ( const auto &nodeId : nodesListIn ) {
-        inSet.insert( nodeId );
-    }
-    const auto endSet = inSet.end();
-
-    bool parallelMesh = _mesh->isParallel();
-    JeveuxVectorLong meshNodeOwner, meshCellOwner, l2G;
-    std::shared_ptr< const MapLong > g2LMap;
-    if ( parallelMesh ) {
-        rank = getMPIRank();
-        meshNodeOwner = _mesh->getNodesOwner();
-        meshCellOwner = _mesh->getCellsOwner();
-        meshCellOwner->updateValuePointer();
-        g2LMap = _mesh->getGlobalToLocalNodeIds();
-        if ( meshCellOwner->size() != _mesh->getNumberOfCells() ) {
-            throw std::runtime_error( "Size inconsistency" );
-        }
-        l2G = _mesh->getLocalToGlobalNodeIds();
-    }
-
-    // Find every nodes and cells in environment on nodes asks by the current process
-    // Build from connectivity and reverse connectivity
-    // checkedElem and checkedNodes avoid to have cells or nodes marked twice
-    // !!!! WARNING : node and cell ids start at 0 !!!!
-    VectorBool checkedElem( _mesh->getNumberOfCells(), false );
-    VectorBool checkedNodes( _mesh->getNumberOfNodes(), false );
-    const auto endPtr = reverseConnex.end();
-    const auto endGlob = g2LMap->end();
-    if ( parallelMesh ) {
-        for ( const auto &nodeIdGlob : nodesListIn ) {
-            const auto locIter = g2LMap->find( nodeIdGlob );
-            if ( locIter == endGlob )
-                continue;
-            const auto nodeIdL = ( *locIter ).second;
-            if ( ( *meshNodeOwner )[nodeIdL] == rank ) {
-                if ( !checkedNodes[nodeIdL] ) {
-                    nodesList.push_back( nodeIdL );
-                    checkedNodes[nodeIdL] = true;
-                }
-            }
-            const auto &elemSetPtr = reverseConnex.find( nodeIdL );
-            if ( elemSetPtr == endPtr )
-                continue;
-            const auto elemSet = elemSetPtr->second;
-            for ( const auto &elemId : elemSet ) {
-                if ( ( *meshCellOwner )[elemId] != rank )
-                    continue;
-                if ( checkedElem[elemId] )
-                    continue;
-                checkedElem[elemId] = true;
-                // !!!! WARNING : in connex node ids starts at 1 (aster convention) !!!!
-                for ( const auto &nodeIdL : fastConnex[elemId] ) {
-                    const auto &nodeIdG = ( *l2G )[nodeIdL - 1];
-                    if ( ( *meshNodeOwner )[nodeIdL - 1] == rank ) {
-                        const auto idBis = nodeIdL - 1;
-                        if ( !checkedNodes[idBis] ) {
-                            nodesList.push_back( idBis );
-                            checkedNodes[idBis] = true;
-                        }
-                    } else {
-                        if ( inSet.find( nodeIdG ) == endSet ) {
-                            toAddSet.insert( nodeIdG );
-                        }
-                    }
-                }
-                elemList.push_back( elemId );
-            }
-        }
-    } else {
+        std::set< int > inSet;
         for ( const auto &nodeId : nodesListIn ) {
-            if ( nodeId >= _range[0] && nodeId < _range[1] ) {
-                const auto idBis = nodeId - _range[0];
-                if ( !checkedNodes[idBis] ) {
-                    nodesList.push_back( idBis );
-                    checkedNodes[idBis] = true;
-                }
+            inSet.insert( nodeId );
+        }
+        const auto endSet = inSet.end();
+
+        bool parallelMesh = _mesh->isParallel();
+        JeveuxVectorLong meshNodeOwner, meshCellOwner, l2G;
+        std::shared_ptr< const MapLong > g2LMap;
+        if ( parallelMesh ) {
+            rank = getMPIRank();
+            meshNodeOwner = _mesh->getNodesOwner();
+            meshCellOwner = _mesh->getCellsOwner();
+            meshCellOwner->updateValuePointer();
+            g2LMap = _mesh->getGlobalToLocalNodeIds();
+            if ( meshCellOwner->size() != _mesh->getNumberOfCells() ) {
+                throw std::runtime_error( "Size inconsistency" );
             }
-            const auto &elemSetPtr = reverseConnex.find( nodeId );
-            if ( elemSetPtr == endPtr )
-                continue;
-            const auto elemSet = elemSetPtr->second;
-            for ( const auto &elemId : elemSet ) {
-                if ( checkedElem[elemId] )
+            l2G = _mesh->getLocalToGlobalNodeIds();
+        }
+
+        // Find every nodes and cells in environment on nodes asks by the current process
+        // Build from connectivity and reverse connectivity
+        // checkedElem and checkedNodes avoid to have cells or nodes marked twice
+        // !!!! WARNING : node and cell ids start at 0 !!!!
+        VectorBool checkedElem( _mesh->getNumberOfCells(), false );
+        VectorBool checkedNodes( _mesh->getNumberOfNodes(), false );
+        const auto endPtr = reverseConnex.end();
+        const auto endGlob = g2LMap->end();
+        if ( parallelMesh ) {
+            for ( const auto &nodeIdGlob : nodesListIn ) {
+                const auto locIter = g2LMap->find( nodeIdGlob );
+                if ( locIter == endGlob )
                     continue;
-                checkedElem[elemId] = true;
-                // !!!! WARNING : in connex node ids start at 1 (aster convention) !!!!
-                for ( const auto &nodeId2 : fastConnex[elemId] ) {
-                    if ( nodeId2 >= _range[0] + 1 && nodeId2 < _range[1] + 1 ) {
-                        const auto idBis = nodeId2 - 1 - _range[0];
-                        if ( !checkedNodes[idBis] ) {
-                            nodesList.push_back( idBis );
-                            checkedNodes[idBis] = true;
-                        }
-                    } else {
-                        if ( inSet.find( nodeId2 - 1 ) == endSet ) {
-                            toAddSet.insert( nodeId2 - 1 );
-                        }
+                const auto nodeIdL = ( *locIter ).second;
+                if ( ( *meshNodeOwner )[nodeIdL] == rank ) {
+                    if ( !checkedNodes[nodeIdL] ) {
+                        nodesList.push_back( nodeIdL );
+                        checkedNodes[nodeIdL] = true;
                     }
                 }
-                elemList.push_back( elemId );
+                const auto &elemSetPtr = reverseConnex.find( nodeIdL );
+                if ( elemSetPtr == endPtr )
+                    continue;
+                const auto elemSet = elemSetPtr->second;
+                for ( const auto &elemId : elemSet ) {
+                    if ( ( *meshCellOwner )[elemId] != rank )
+                        continue;
+                    if ( checkedElem[elemId] )
+                        continue;
+                    checkedElem[elemId] = true;
+                    // !!!! WARNING : in connex node ids starts at 1 (aster convention) !!!!
+                    for ( const auto &nodeIdL : fastConnex[elemId] ) {
+                        const auto &nodeIdG = ( *l2G )[nodeIdL - 1];
+                        if ( ( *meshNodeOwner )[nodeIdL - 1] == rank ) {
+                            const auto idBis = nodeIdL - 1;
+                            if ( !checkedNodes[idBis] ) {
+                                nodesList.push_back( idBis );
+                                checkedNodes[idBis] = true;
+                            }
+                        } else {
+                            if ( inSet.find( nodeIdG ) == endSet ) {
+                                toAddSet.insert( nodeIdG );
+                            }
+                        }
+                    }
+                    elemList.push_back( elemId );
+                }
+            }
+        } else {
+            for ( const auto &nodeId : nodesListIn ) {
+                if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                    const auto idBis = nodeId - _range[0];
+                    if ( !checkedNodes[idBis] ) {
+                        nodesList.push_back( idBis );
+                        checkedNodes[idBis] = true;
+                    }
+                }
+                const auto &elemSetPtr = reverseConnex.find( nodeId );
+                if ( elemSetPtr == endPtr )
+                    continue;
+                const auto elemSet = elemSetPtr->second;
+                for ( const auto &elemId : elemSet ) {
+                    if ( checkedElem[elemId] )
+                        continue;
+                    checkedElem[elemId] = true;
+                    // !!!! WARNING : in connex node ids start at 1 (aster convention) !!!!
+                    for ( const auto &nodeId2 : fastConnex[elemId] ) {
+                        if ( nodeId2 >= _range[0] + 1 && nodeId2 < _range[1] + 1 ) {
+                            const auto idBis = nodeId2 - 1 - _range[0];
+                            if ( !checkedNodes[idBis] ) {
+                                nodesList.push_back( idBis );
+                                checkedNodes[idBis] = true;
+                            }
+                        } else {
+                            if ( inSet.find( nodeId2 - 1 ) == endSet ) {
+                                toAddSet.insert( nodeId2 - 1 );
+                            }
+                        }
+                    }
+                    elemList.push_back( elemId );
+                }
             }
         }
+        std::sort( nodesList.begin(), nodesList.end() );
+        std::sort( elemList.begin(), elemList.end() );
     }
-    std::sort( nodesList.begin(), nodesList.end() );
-    std::sort( elemList.begin(), elemList.end() );
 
     VectorInt toAddV, test2;
     for ( const auto &val : toAddSet ) {

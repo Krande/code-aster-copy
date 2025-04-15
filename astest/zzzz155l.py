@@ -87,11 +87,6 @@ resu = MECA_STATIQUE(MODELE=model, CHAM_MATER=mater, EXCIT=_F(CHARGE=cl), INST=0
 depl = resu.getField("DEPL", 1)
 sDepl = depl.toSimpleFieldOnNodes()
 
-txt = str(sDepl.toNumpy())
-monFichier = open("/home/H85256/resu" + str(rank) + ".txt", "w")
-monFichier.write(txt)
-monFichier.close()
-
 if rank == 0:
     check = np.array(
         [

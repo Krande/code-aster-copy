@@ -133,12 +133,12 @@ def _splitMeshAndFieldsFromMedFile(
     """
 
     returnTuple = splitMeshFromMedFile(
-        filename, True, True, True, outMesh, nodeGrpToGather, deterministic, parallel
+        filename, 1, True, True, True, outMesh, nodeGrpToGather, deterministic, parallel
     )
     outMesh = returnTuple[0]
     fr = returnTuple[1]
-    nBalancer = returnTuple[2]
-    cBalancer = returnTuple[3]
+    cBalancer = returnTuple[2]
+    nBalancer = returnTuple[3]
 
     cellTypes = outMesh.getAllMedCellsTypes()
     asterTypes = [toAsterGeoType(item) for item in cellTypes]
