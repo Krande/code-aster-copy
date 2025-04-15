@@ -1,0 +1,10 @@
+P time_limit 70
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 4
+P mpi_nbnoeud 1
+P testlist submit ci verification parallel
+
+F comm zzzz155l.py D 1
+R nom zzzz155l.med D 0
+R nom petsc04a.mmed D 0

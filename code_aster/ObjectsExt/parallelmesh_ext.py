@@ -45,7 +45,7 @@ from ..Objects import (
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, SharedTmpdir
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
-from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshFromMedFile
 from . import mesh_builder
 from .simplefieldonnodes_ext import SimpleFieldOnNodesReal
 
@@ -120,7 +120,9 @@ class ExtendedParallelMesh:
         print("waiting for all plotting processes...")
         comm.Barrier()
 
-    def readMedFile(self, filename, meshname="", partitioned=False, deterministic=False, verbose=0):
+    def readMedFile(
+        self, filename, meshname="", partitioned=False, deterministic=False, ghost=1, verbose=0
+    ):
         """Read a MED file containing a mesh and eventually partition it.
 
         Arguments:
@@ -129,12 +131,14 @@ class ExtendedParallelMesh:
             partitioned (bool): False if the mesh is not yet partitioned and have to
                 be partitioned before reading.
             deterministic (bool): True if partitioning must be deterministic
+            ghost (int): ghost layer number
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
         """
         if not partitioned:
-            self, field = splitMeshAndFieldsFromMedFile(
-                filename, outMesh=self, deterministic=deterministic
+            returnTuple = splitMeshFromMedFile(
+                filename, ghost=ghost, outMesh=self, deterministic=deterministic
             )
+            self = returnTuple[0]
             self.show(verbose & 3)
         else:
             mr = MeshReader()

@@ -16608,13 +16608,15 @@ class MeshBalancer:
     def __pickling_disabled__(self):
         pass
 
-    def applyBalancingStrategy(self, vector, outMesh=None):
+    def applyBalancingStrategy(self, vector, out_mesh=None, ghost_layer=1):
         """Apply balancing strategy to given mesh. User must give nodes that local process
         will own (without ghost nodes).
         This function returns a ParallelMesh with joints, ghosts and so on.
 
         Arguments:
             vector: list of nodes to get on local process
+            outMesh: out mesh (optional)
+            ghost_layer: ghost layer size (optional)
 
         Returns:
             mesh: ParallelMesh
