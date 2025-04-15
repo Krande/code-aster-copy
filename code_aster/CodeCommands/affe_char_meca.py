@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -27,7 +27,6 @@ from ..Utilities import deprecate, force_list
 
 
 class MechanicalLoadDefinition(ExecuteCommand):
-
     """Command that defines :class:`~code_aster.Objects.MechanicalLoadReal`."""
 
     command_name = "AFFE_CHAR_MECA"
@@ -134,8 +133,12 @@ class MechanicalLoadDefinition(ExecuteCommand):
             super(MechanicalLoadDefinition, self).exec_(keywords)
         else:
             model = keywords.pop("MODELE")
-            nodeGroups, cellGroups = _getGroups(self._cata, keywords)
-            connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
+            if "LIAISON_PROJ" in list(keywords.keys()):
+                matr_proj = keywords["LIAISON_PROJ"][0]["MATR_PROJECTION"]
+                connectionMesh = matr_proj.getSecondMesh()
+            else:
+                nodeGroups, cellGroups = _getGroups(self._cata, keywords)
+                connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
             connectionModel = Model(connectionMesh)
             connectionModel.setFrom(model)
@@ -214,6 +217,8 @@ def _getGroups(cata, keywords):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO_MAIT", "GROUP_NO_ESCL"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA_MAIT", "GROUP_MA_ESCL"))
+        elif key in ("LIAISON_PROJ",):
+            pass
         elif key in load_types:
             raise NotImplementedError(
                 "Type of load {0!r} not yet " "implemented in parallel".format(key)

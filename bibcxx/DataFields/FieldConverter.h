@@ -255,6 +255,8 @@ toFieldOnCells( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field,
 
 #ifdef ASTER_HAVE_MPI
 FieldOnNodesRealPtr transferToConnectionMesh( const FieldOnNodesRealPtr, const ConnectionMeshPtr );
+FieldOnNodesRealPtr transferFromConnectionToParallelMesh( const FieldOnNodesRealPtr,
+                                                          const BaseMeshPtr );
 #endif /* ASTER_HAVE_MPI */
 
 using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;

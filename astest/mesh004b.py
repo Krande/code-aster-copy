@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import numpy as N
+import numpy as np
 
 from code_aster.Commands import *
 from code_aster import CA
@@ -134,6 +134,24 @@ test.assertListEqual(
 )
 test.assertListEqual(ghostRows, [[12, 13, 14, 15], [4, 5, 6, 7]][rank])
 
+# ------------------------------------
+# verify the ghosts update
+ghostRows = numeDDL.getGhostDOFs(local=True)
+resu2 = resu.copy()
+
+# Check the local values including ghosts are the same
+test.assertAlmostEqual(np.linalg.norm(resu2.getValues()), np.linalg.norm(resu.getValues()))
+
+for dof in ghostRows:
+    resu2[dof] = 999999
+
+# Check the local values including ghosts are no longer the same
+test.assertNotAlmostEqual(np.linalg.norm(resu2.getValues()), np.linalg.norm(resu.getValues()))
+
+resu2.updateGhostValues()
+
+# Check the local values including ghosts are the same again
+test.assertAlmostEqual(np.linalg.norm(resu2.getValues()), np.linalg.norm(resu.getValues()))
 
 # ------------------------------------
 # Some petsc4py manipulations
@@ -146,8 +164,8 @@ rank = pA.getComm().getRank()
 print("rank=", rank)
 rs, re = pA.getOwnershipRange()
 ce, _ = pA.getSize()
-rows = N.array(list(range(rs, re)), dtype=PETSc.IntType)
-cols = N.array(list(range(0, ce)), dtype=PETSc.IntType)
+rows = np.array(list(range(rs, re)), dtype=PETSc.IntType)
+cols = np.array(list(range(0, ce)), dtype=PETSc.IntType)
 rows = PETSc.IS().createGeneral(rows, comm=pA.getComm())
 cols = PETSc.IS().createGeneral(cols, comm=pA.getComm())
 (S,) = pA.createSubMatrices(rows, cols)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,10 +113,10 @@ subroutine crnggn(chamnz)
     nbddll = v_nequ(1)
 
 !   Creation de la numerotation globale
-    call wkvect(nume_equa//'.NULG', 'G V I', nbddll, vi=v_nugll)
-    call wkvect(nume_equa//'.PDDL', 'G V I', nbddll, vi=v_posdd)
-    call wkvect('&&CRNUGL.MULT_DDL', 'V V I', nbddll, vi=v_mult)
-    call wkvect('&&CRNUGL.MULT_DDL2', 'V V I', nbddll, vi=v_mults)
+    call wkvect(nume_equa//'.NULG', 'G V I', max(nbddll, 1), vi=v_nugll)
+    call wkvect(nume_equa//'.PDDL', 'G V I', max(nbddll, 1), vi=v_posdd)
+    call wkvect('&&CRNUGL.MULT_DDL', 'V V I', max(nbddll, 1), vi=v_mult)
+    call wkvect('&&CRNUGL.MULT_DDL2', 'V V I', max(nbddll, 1), vi=v_mults)
 !
 ! --- Il ne faut pas changer la valeur d'initialisation car on s'en sert pour detecter
 !     qui est propriétaire d'un noeud (-1 si pas propriétaire)

@@ -30,19 +30,20 @@ import numpy as np
 
 from code_aster.Commands import *
 from code_aster import CA
-
+from code_aster.Utilities import MPI
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="ABORT"))
 
 test = CA.TestCase()
 
 PLOT = False
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 # -------------------------------------------------------------------------------
 # Build the meshes
 
-# The initial mesh, available on every MPI process
-ma0 = CA.Mesh.buildCube(refine=2)
+# The initial parallel mesh
+ma0 = CA.ParallelMesh.buildCube(refine=3)
 # It is rotated in order to not be aligned with the axis (the projection algorithm uses an octree sort)
 ma0 = MODI_MAILLAGE(
     reuse=ma0,
@@ -51,7 +52,7 @@ ma0 = MODI_MAILLAGE(
 )
 mo0 = AFFE_MODELE(MAILLAGE=ma0, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
 
-# The parallel mesh
+# The destination parallel mesh
 ma1 = CA.ParallelMesh.buildCube(refine=2)
 ma1 = MODI_MAILLAGE(
     reuse=ma1,
@@ -61,7 +62,7 @@ ma1 = MODI_MAILLAGE(
 mo1 = AFFE_MODELE(MAILLAGE=ma1, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
 
 # -------------------------------------------------------------------------------
-# Build the field
+# Build the initial field
 
 # Extract the coords of the mesh
 coo = ma0.getCoordinatesAsSimpleFieldOnNodes()
@@ -79,12 +80,33 @@ if PLOT:
     vec_ini.plot()
 # -------------------------------------------------------------------------------
 # Project the field
+
+# Test1
+# The LEFT group only lives on proc #1 so that vec_proj is empty on proc #0
 vec_proj = PROJ_CHAMP(
+    METHODE="AUTO",
+    DISTRIBUTION="OUI",
+    CHAM_GD=vec_ini,
+    MAILLAGE_1=ma0,
+    MAILLAGE_2=ma1,
+    VIS_A_VIS=(_F(GROUP_MA_1="LEFT", GROUP_MA_2="LEFT"),),
+)
+if PLOT:
+    vec_proj.plot(local=True, split=True)
+
+if rank == 0:
+    test.assertEqual(len(vec_proj.getValues()), 0)
+else:
+    test.assertEqual(len(vec_proj.getValues()), 25)
+
+# Test2
+# Projection on the whole domain
+vec_proj = PROJ_CHAMP(
+    DISTRIBUTION="OUI",
     METHODE="AUTO",
     CHAM_GD=vec_ini,
     MAILLAGE_1=ma0,
     MAILLAGE_2=ma1,
-    DISTRIBUTION="NON",
     VIS_A_VIS=(
         _F(GROUP_MA_1="TOP", GROUP_MA_2="TOP"),
         _F(GROUP_MA_1="BOTTOM", GROUP_MA_2="BOTTOM"),
@@ -98,6 +120,7 @@ vec_proj = PROJ_CHAMP(
 if PLOT:
     ma1.getOwnerField().plot(local=True, split=True)
     vec_proj.plot(local=True, split=True)
+
 # -------------------------------------------------------------------------------
 # Verification
 

@@ -196,6 +196,10 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
             call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc, &
                         3, motcle, tymocl, '&&PJEFCO.LIMANU1', nbma1)
+            parallelMesh = isParallelMesh(noma1)
+            if (parallelMesh .and. nbma1 == 0) then
+                goto 99
+            end if
             call jeveuo('&&PJEFCO.LIMANU1', 'L', vi=limanu1)
 
 !
@@ -210,7 +214,10 @@ subroutine pjefco(moa1, moa2, corres, base)
             tymocl(3) = 'TOUT'
             call reliem(' ', noma2, 'NU_MAILLE', 'VIS_A_VIS', iocc, &
                         3, motcle, tymocl, '&&PJEFCO.LIMANU2', nbma2)
-
+            parallelMesh = isParallelMesh(noma2)
+            if (parallelMesh .and. nbma2 == 0) then
+                goto 99
+            end if
             nbnoma2 = 0
             if (nbma2 .gt. 0) then
                 call jeveuo('&&PJEFCO.LIMANU2', 'L', vi=limanu2)
