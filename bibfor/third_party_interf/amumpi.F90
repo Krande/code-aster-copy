@@ -46,7 +46,8 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "threading_interfaces.h"
-    integer(kind=8) :: kxmps, option
+    integer(kind=4) :: option
+    integer(kind=8) :: kxmps
     aster_logical :: lquali, ldist, lmhpc, lbloc
     character(len=1) :: type
 !

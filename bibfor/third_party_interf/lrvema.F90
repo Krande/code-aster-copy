@@ -179,8 +179,8 @@ subroutine lrvema(nomail, mfich, nochmd)
     call as_mfdfin(idfimd, nochmd, nomamd, nbtv, cunit(1), &
                    cname(1), codret)
 !
-    call wkvect('&&LRVERIMO_NBETYP1', 'V V I', MT_NTYMAX, jnbtyp)
-    call wkvect('&&LRVERIMO_NBETYP2', 'V V I', MT_NTYMAX, jnbty2)
+    call wkvect('&&LRVERIMO_NBETYP1', 'V V I', int(MT_NTYMAX, 8), jnbtyp)
+    call wkvect('&&LRVERIMO_NBETYP2', 'V V I', int(MT_NTYMAX, 8), jnbty2)
     do i = 1, MT_NTYMAX
         zi(jnbtyp+i-1) = 0
         if (nummed(i) .ne. 0) then
@@ -224,11 +224,11 @@ subroutine lrvema(nomail, mfich, nochmd)
                 if (zi(jnbtyp+i-1) .lt. zi(jnbty2+i-1)) then
                     vali(1) = zi(jnbtyp+i-1)
                     vali(2) = zi(jnbty2+i-1)
-                    call utmess('F', 'MED_59', sk=nomast(i), ni=2, vali=vali)
+                    call utmess('F', 'MED_59', sk=nomast(i), ni=int(2, 8), vali=vali)
                 else
                     vali(1) = zi(jnbtyp+i-1)
                     vali(2) = zi(jnbty2+i-1)
-                    call utmess('F', 'MED_61', sk=nomast(i), ni=2, vali=vali)
+                    call utmess('F', 'MED_61', sk=nomast(i), ni=int(2, 8), vali=vali)
                 end if
 !
             end if

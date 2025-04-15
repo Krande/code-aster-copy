@@ -22,11 +22,12 @@
 !
 interface
     subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, nbfact)
-        integer(kind=8) :: option, nbfact
+        integer(kind=4) :: option
         character(len=1) :: type
         integer(kind=8) :: kxmps
         character(len=12) :: usersm
         integer(kind=8) :: nprec
         aster_logical :: lresol
+        integer(kind=8) :: nbfact
     end subroutine amumpu
 end interface

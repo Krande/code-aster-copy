@@ -76,7 +76,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
-    integer :: option, nbsol, kxmps, ifmump
+    integer(kind=4) :: option
+    integer :: nbsol, kxmps, ifmump
     aster_logical :: ldist, eli2lg, prepos, lpreco, lmhpc
     character(len=1) :: type
     character(len=14) :: impr

@@ -70,7 +70,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
 #include "mumps/dmumps.h"
 #include "mumps/smumps.h"
 #include "mumps/zmumps.h"
-    integer(kind=8) :: option, kxmps, nprec, nbfact
+    integer(kind=4) :: option
+    integer(kind=8) :: kxmps, nprec, nbfact
     character(len=1) :: type
     character(len=12) :: usersm
     aster_logical :: lresol
@@ -266,7 +267,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
         k8tab(1) = 'VMPEAK  '
         k8tab(2) = 'MEM_TOTA'
         k8tab(3) = 'VMSIZE'
-        call utgtme(3, k8tab, rval, iret)
+        call utgtme(3_8, k8tab, rval, iret)
         rval1 = rval(1)
         rval2 = rval(2)
         rval3 = rval(3)
@@ -299,7 +300,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                 vali(2) = tmax
                 vali(3) = nsizema+execmu
                 vali(4) = nbfact
-                call utmess('A', 'FACTOR_74', ni=4, vali=vali)
+                call utmess('A', 'FACTOR_74', ni=4_8, vali=vali)
             end if
         case ('OUT_OF_CORE')
 ! ------------------
@@ -312,7 +313,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                 vali(2) = tmax
                 vali(3) = nsizema+execmu
                 vali(4) = nbfact
-                call utmess('A', 'FACTOR_75', ni=4, vali=vali)
+                call utmess('A', 'FACTOR_75', ni=4_8, vali=vali)
             end if
         case ('AUTO')
 ! -----------------------------------------------------------------
@@ -325,10 +326,10 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                 icn22 = 0
                 icn23 = max(min(3*maxmem_ic, tmax), 1)
             else
-                call jjldyn(0, -1, ltot)
+                call jjldyn(0_8, -1_8, ltot)
                 k8tab(1) = 'MEM_TOTA'
                 k8tab(2) = 'VMSIZE'
-                call utgtme(2, k8tab, rval, iret)
+                call utgtme(2_8, k8tab, rval, iret)
                 rval2b = rval(1)
                 rval3b = rval(2)
                 if ((rval2b .le. 0) .or. (rval3b .le. 0) .or. (rval2b .le. rval3b) .or. &
@@ -362,9 +363,9 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                     vali(5) = nsizema+execmu
                     vali(6) = nbfact
                     if (.not. lpbmem) then
-                        call utmess('A', 'FACTOR_76', ni=6, vali=vali)
+                        call utmess('A', 'FACTOR_76', ni=6_8, vali=vali)
                     else
-                        call utmess('A', 'FACTOR_69', ni=6, vali=vali)
+                        call utmess('A', 'FACTOR_69', ni=6_8, vali=vali)
                     end if
                 end if
             end if
@@ -376,7 +377,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
             icn23 = -1
             k8tab(1) = 'CUSE_JV'
             k8tab(2) = 'RLQ_MEM'
-            call utgtme(2, k8tab, rval, iret)
+            call utgtme(2_8, k8tab, rval, iret)
             rval1 = rval(1)
             rval2 = rval(2)
             if ((rval1 .le. 0) .or. (rval2 .le. 0) .or. (iret .ne. 0)) then
@@ -391,7 +392,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
             vali(6) = vali(2)+vali(3)
             vali(7) = vali(2)+vali(4)
             vali(8) = nbfact
-            call utmess('I', 'FACTOR_81', ni=8, vali=vali)
+            call utmess('I', 'FACTOR_81', ni=8_8, vali=vali)
         case default
             ASSERT(.false.)
         end select
@@ -574,7 +575,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
             if (ibid .ne. 0) then
                 call jeveuo(kpiv, 'E', ipiv)
             else
-                call wkvect(kpiv, 'V V R', 3, ipiv)
+                call wkvect(kpiv, 'V V R', 3_8, ipiv)
             end if
 ! --- ON STOCKE LE CALCUL DU DET: MANTISSE * (2**EXP)
 ! --- MANTISSE=DCMPLX(RINF12,RINF13)

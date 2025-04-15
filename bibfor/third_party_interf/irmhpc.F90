@@ -95,7 +95,8 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
     nonulg = nomast//'.NUNOLG'
     call jeveuo(nonulg, 'L', jnumno)
 !
-    call as_mmhgnw(idfimd, nomamd, MED_NODE, MED_NONE, zi(jnumno), nbnoeu, codret)
+    call as_mmhgnw(idfimd, nomamd, to_aster_int(MED_NODE), to_aster_int(MED_NONE), &
+                   zi(jnumno), nbnoeu, codret)
     ASSERT(codret == 0)
 !
 ! -- Impression des joints
@@ -149,8 +150,10 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
                 call jelira(nojoin, 'LONMAX', nbnoj, k8bid)
                 call jeveuo(nojoin, 'L', jjoinr)
 !
-                call as_msdcrw(idfimd, nomamd, nomjoi, MED_NO_DT, MED_NO_IT, MED_NODE, &
-                               MED_NONE, MED_NODE, MED_NONE, nbnoj/2, zi(jjoinr), codret)
+                call as_msdcrw(idfimd, nomamd, nomjoi, to_aster_int(MED_NO_DT), &
+                               to_aster_int(MED_NO_IT), to_aster_int(MED_NODE), &
+                               to_aster_int(MED_NONE), to_aster_int(MED_NODE), &
+                               to_aster_int(MED_NONE), nbnoj/2, zi(jjoinr), codret)
                 ASSERT(codret == 0)
             end do
         end do

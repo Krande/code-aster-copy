@@ -28,7 +28,11 @@
 #define PATH __FILE__
 #endif
 
+#ifndef WITHOUT_INT64
 #define ASSERT(cond) call assert(to_aster_logical(cond), ASTER_TO_STRING(cond), PATH, __LINE__)
+#else
+#define ASSERT(cond) call assert(to_aster_logical(cond), ASTER_TO_STRING(cond), PATH, to_aster_int(__LINE__))
+#endif
 
 #define absent(a)   (.not.present(a))
 

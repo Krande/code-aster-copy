@@ -71,6 +71,7 @@ def build(self):
         name="asterbibfor_ext",
         target="bibfor_ext",
         source=src_ext,
+        defines=["WITHOUT_INT64"],
         use=use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,

@@ -107,7 +107,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !       ------------------------------------------------
 ! --- ON DESACTIVE LA LEVEE D'EXCEPTION FPE DANS LA BIBLIOTHEQUE MKL
 ! --  CAR CES EXCEPTIONS NE SONT PAS JUSTIFIEES
-    call matfpe(-1)
+    call matfpe(int(-1, 8))
     call infdbg('SOLVEUR', ifm, niv)
 !
 ! --- PARAMETRE POUR IMPRESSION FICHIER
@@ -359,7 +359,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
                             vali(1) = ifactm
                             vali(2) = pcpi
                             vali(3) = zmpsk%icntl(14)
-                            call utmess('F', 'FACTOR_53', ni=3, vali=vali)
+                            call utmess('F', 'FACTOR_53', ni=3_8, vali=vali)
                         end if
                     else
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
@@ -370,7 +370,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
                             vali(2) = zmpsk%icntl(14)
                             vali(3) = ifact
                             vali(4) = ifactm
-                            call utmess('I', 'FACTOR_58', ni=4, vali=vali)
+                            call utmess('I', 'FACTOR_58', ni=4_8, vali=vali)
                         end if
 ! --- DERNIERE CHANCE: ON RAJOUTE L'OOC
                         if (ifact .eq. (ifactm-1)) then
@@ -534,7 +534,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
             if (zmpsk%rinfog(9) .gt. epsmax) then
                 valr(1) = zmpsk%rinfog(9)
                 valr(2) = epsmax
-                call utmess('F', 'FACTOR_57', nr=2, valr=valr)
+                call utmess('F', 'FACTOR_57', nr=2_8, valr=valr)
             end if
         end if
 !
@@ -601,7 +601,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !
 !     -- ON REACTIVE LA LEVEE D'EXCEPTION
 99  continue
-    call matfpe(1)
+    call matfpe(int(1, 8))
     call jedema()
 !
 #endif

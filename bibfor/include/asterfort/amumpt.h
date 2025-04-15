@@ -21,10 +21,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine amumpt(option, kmonit, temps, rang, nbproc,&
-                      kxmps, lquali, type, ietdeb, ietrat,&
+    subroutine amumpt(option, kmonit, temps, rang, nbproc, &
+                      kxmps, lquali, type, ietdeb, ietrat, &
                       rctdeb, ldist)
-        integer(kind=8) :: option
+        integer(kind=4) :: option
         character(len=24) :: kmonit(12)
         real(kind=8) :: temps(6)
         integer(kind=8) :: rang

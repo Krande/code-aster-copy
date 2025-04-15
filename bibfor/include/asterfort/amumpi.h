@@ -22,7 +22,7 @@
 !
 interface
     subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
-        integer(kind=8) :: option
+        integer(kind=4) :: option
         aster_logical :: lquali
         aster_logical :: ldist
         integer(kind=8) :: kxmps

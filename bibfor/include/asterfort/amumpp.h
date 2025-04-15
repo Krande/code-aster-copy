@@ -21,10 +21,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine amumpp(option, nbsol, kxmps, ldist, type,&
-                      impr, ifmump, eli2lg, rsolu, csolu,&
+    subroutine amumpp(option, nbsol, kxmps, ldist, type, &
+                      impr, ifmump, eli2lg, rsolu, csolu, &
                       vcine, prepos, lpreco, lmhpc)
-        integer(kind=8) :: option
+        integer(kind=4) :: option
         integer(kind=8) :: nbsol
         integer(kind=8) :: kxmps
         aster_logical :: ldist

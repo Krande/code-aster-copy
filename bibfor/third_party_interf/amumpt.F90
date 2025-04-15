@@ -50,7 +50,8 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
-    integer :: option, rang, nbproc, kxmps, ietdeb, ietrat
+    integer(kind=4) :: option
+    integer :: rang, nbproc, kxmps, ietdeb, ietrat
     character(len=1) :: type
     character(len=24) :: kmonit(12)
     real(kind=8) :: temps(6), rctdeb
