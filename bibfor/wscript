@@ -49,7 +49,7 @@ def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
-    use = ["BIBFOR", "PETSC", "MUMPS", "MATH", "NUMPY"]
+    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY"]
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 

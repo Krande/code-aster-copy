@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,22 +49,22 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 #include "asterfort/jeveuo.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
-#include "asterf_med.h"
+#include "med_parameter.hf"
 !
 ! 0.1. ==> ARGUMENTS
 !
     med_idt :: idfimd
-    integer :: nbnoeu
+    integer(kind=8) :: nbnoeu
     character(len=*) :: nomamd, nomast
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
     character(len=6), parameter :: nompro = 'IRMHPC'
-    integer :: codret, iret
-    integer :: jnumno, nbjoin, i_join, nbnoj, jjoinr
-    integer :: ifm, nivinf, domdis, rang, nbproc, i
-    integer, pointer :: v_dojoin(:) => null()
+    integer(kind=8) :: codret, iret
+    integer(kind=8) :: jnumno, nbjoin, i_join, nbnoj, jjoinr
+    integer(kind=8) :: ifm, nivinf, domdis, rang, nbproc, i
+    integer(kind=8), pointer :: v_dojoin(:) => null()
     mpi_int :: mrank, msize
 !
     character(len=8) :: chrang, chdomdis, k8bid

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
 #include "mumps/dmumps.h"
 #include "mumps/smumps.h"
 #include "mumps/zmumps.h"
-    integer :: option, kxmps, nprec, nbfact
+    integer(kind=8) :: option, kxmps, nprec, nbfact
     character(len=1) :: type
     character(len=12) :: usersm
     aster_logical :: lresol
@@ -83,12 +83,12 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
     type(zmumps_struc), pointer :: zmpsk => null()
     real(kind=8) :: rval(3), rval1, rval2, rval3, rval2b, rval3b, rinf12
     real(kind=8) :: rinf13
-    integer :: infog16, infog26, infog36, infog38, icntl35
-    integer :: maxmem_ic, maxmem_ooc, vali(10), icoefm, icn22, icn23, rang, n, iaux1
-    integer :: info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
-    integer :: tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
-    integer :: info34, icnt33
-    integer :: pid
+    integer(kind=8) :: infog16, infog26, infog36, infog38, icntl35
+    integer(kind=8) :: maxmem_ic, maxmem_ooc, vali(10), icoefm, icn22, icn23, rang, n, iaux1
+    integer(kind=8) :: info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
+    integer(kind=8) :: tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
+    integer(kind=8) :: info34, icnt33
+    integer(kind=8) :: pid
 !    integer ::  NTHREADS, TID, OMP_GET_NUM_THREADS, OMP_GET_THREAD_NUM
     mpi_int :: mpicou
     aster_logical :: lpara, lpbmem, lpb1

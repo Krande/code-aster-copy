@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
+subroutine amumps(action, kxmps, rsolu, vcine, nbsol, &
                   iret, impr, ifmump, prepos, pcentp)
 !
 !
     implicit none
 !--------------------------------------------------------------
-! OBJET: DRIVER EN MODE COMPLEXE DE LA RESOLUTION DE SYSTEMES LINEAIRES
-!        VIA MUMPS (EN DOUBLE PRECISION AUSSI POUR MUMPS)
+! OBJET: DRIVER EN MODE REEL DE LA RESOLUTION DE SYSTEMES LINEAIRES
+!        VIA MUMPS (EN SIMPLE PRECISION POUR MUMPS UNIQUEMENT)
 !
 ! IN : ACTION :
 !     /'PRERES'  : POUR DEMANDER LA FACTORISATION
@@ -31,9 +31,9 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !     /'DETR_MAT/OCC': POUR DEMANDER LA DESTRUCTION DE L'INSTANCE MUMPS
 !                  ASSOCIEE A UNE MATRICE
 !
-! IN : KXMPS (I)   : INDICE DE L'INSTANCE MUMPS DANS ZMPS
-! VAR: CSOLU (C)   : EN ENTREE : VECTEUR SECOND MEMBRE (COMPLEXE)
-!                    EN SORTIE : VECTEUR SOLUTION (COMPLEXE)
+! IN : KXMPS (I)   : INDICE DE L'INSTANCE MUMPS DANS SMPS
+! VAR: RSOLU (R)   : EN ENTREE : VECTEUR SECOND MEMBRE (REEL)
+!                    EN SORTIE : VECTEUR SOLUTION (REEL)
 !            (SI ACTION=RESOUD)
 ! IN : VCINE (K19) : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
 !            (SI ACTION=RESOUD)
@@ -43,11 +43,11 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !            2 : MATRICE NUMERIQUEMENT SINGULIERE
 ! IN  : NBSOL  : NBRE DE SYSTEMES A RESOUDRE
 ! IN  : IMPR,IFMUMP : PARAMETRES POUR SORTIE FICHIER MATRICE CF AMUMPH
-! IN  : PREPOS (LOG) : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
+! IN : PREPOS (LOG) : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
 !           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
 !           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
 !           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
-! IN  : PCENTP  VECTEUR D'ENTIER GERE PAR AMUMPH POUR PARAMETRER LES
+! IN  : PCENTP VECTEUR D'ENTIER GERE PAR AMUMPH POUR PARAMETRER LES
 !                STRATEGIES D'ADAPTATION EN CAS DE PB PCENT_PIVOT
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
@@ -70,21 +70,21 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
-#include "mumps/zmumps.h"
+#include "mumps/smumps.h"
 #include "asterfort/isParallelMatrix.h"
-
+!
     character(len=*) :: action
     character(len=14) :: impr
     character(len=19) :: vcine, nosolv
-    integer :: iret, nbsol, kxmps, ifmump, pcentp(2)
-    complex(kind=8) :: csolu(*)
+    integer(kind=8) :: iret, nbsol, kxmps, ifmump, pcentp(2)
+    real(kind=8) :: rsolu(*)
     aster_logical :: prepos
 !
 #ifdef ASTER_HAVE_MUMPS
 #include "asterf_mumps.h"
-    type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
-    integer :: ietrat, nprec, ifact, iaux, vali(4), pcpi
+    type(smumps_struc), pointer :: smpsk => null()
+    integer(kind=8) :: rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
+    integer(kind=8) :: ietrat, nprec, ifact, iaux, vali(4), pcpi
     character(len=1) :: rouc, type, prec
     character(len=3) :: matd, mathpc
     character(len=5) :: etam, klag2
@@ -93,13 +93,14 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
     character(len=14) :: nonu
     character(len=19) :: nomat
     character(len=24) :: kmonit(12), k24aux, posttrait
-    real(kind=8) :: epsmax, valr(2), rctdeb, rbid(1), temps(6), epsmat
+    real(kind=8) :: epsmax, valr(2), rctdeb, temps(6), epsmat
+    complex(kind=8) :: cbid(1)
     aster_logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
     aster_logical :: lopfac, l_parallel_matrix, lbloc
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     call jemarq()
 !
 !       ------------------------------------------------
@@ -114,7 +115,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
     lresol = ((impr(1:3) .eq. 'NON') .or. (impr(1:9) .eq. 'OUI_SOLVE'))
 !
 ! --- TYPE DE SYSTEME: REEL OU COMPLEXE
-    type = 'Z'
+    type = 'S'
     ASSERT(kxmps .gt. 0)
     ASSERT(kxmps .le. nmxins)
     nomat = nomats(kxmps)
@@ -123,15 +124,15 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
     etam = etams(kxmps)
     rouc = roucs(kxmps)
     prec = precs(kxmps)
-    ASSERT((rouc .eq. 'C') .and. (prec .eq. 'D'))
-    zmpsk => zmps(kxmps)
+    ASSERT((rouc .eq. 'R') .and. (prec .eq. 'S'))
+    smpsk => smps(kxmps)
     iret = 0
 !
 ! --- MUMPS PARALLELE DISTRIBUE ?
     call jeveuo(nomat//'.REFA', 'L', vk24=refa)
     ldist = (refa(11) .ne. 'MPI_COMPLET')
-    rang = zmpsk%myid
-    nbproc = zmpsk%nprocs
+    rang = smpsk%myid
+    nbproc = smpsk%nprocs
 !
 ! --- MATRICE ASTER DISTRIBUEE ?
     call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
@@ -179,9 +180,6 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !
 ! --- TYPE DE RESOLUTION
         ktypr = slvk(3) (1:8)
-        if (ktypr(1:6) .eq. 'SYMDEF') then
-            call utmess('F', 'FACTOR_80')
-        end if
 !
 ! --- PARAMETRE NPREC
         nprec = slvi(1)
@@ -213,9 +211,10 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !        INITIALISATION DE L'OCCURENCE MUMPS KXMPS:
 !       ------------------------------------------------
         call amumpi(0, lquali, ldist, kxmps, type, l_parallel_matrix, lbid)
-        call zmumps(zmpsk)
-        rang = zmpsk%myid
-        nbproc = zmpsk%nprocs
+        call smumps(smpsk)
+
+        rang = smpsk%myid
+        nbproc = smpsk%nprocs
 !
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (ANALYSE+FACTO):
@@ -250,7 +249,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !       CONSERVE-T-ON LES FACTEURS OU NON ?
 !       -----------------------------------------------------
         if (slvi(4) .eq. 1) then
-            zmpsk%icntl(31) = 1
+            smpsk%icntl(31) = 1
         end if
 !
 !       ------------------------------------------------
@@ -269,8 +268,8 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
         call amumpt(2, kmonit, temps, rang, nbproc, &
                     kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
-        zmpsk%job = 1
-        call zmumps(zmpsk)
+        smpsk%job = 1
+        call smumps(smpsk)
         call amumpt(4, kmonit, temps, rang, nbproc, &
                     kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
@@ -278,19 +277,19 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !       ------------------------------------------------
 !        GESTION ERREURS ET MENAGE ASTER:
 !       ------------------------------------------------
-        if (zmpsk%infog(1) .eq. 0) then
+        if (smpsk%infog(1) .eq. 0) then
 !              -- C'EST OK
-        else if ((zmpsk%infog(1) .eq. -5) .or. (zmpsk%infog(1) .eq. -7)) then
+        else if ((smpsk%infog(1) .eq. -5) .or. (smpsk%infog(1) .eq. -7)) then
             call utmess('F', 'FACTOR_64')
-        else if (zmpsk%infog(1) .eq. -6) then
+        else if (smpsk%infog(1) .eq. -6) then
             iret = 2
             goto 99
-        else if (zmpsk%infog(1) .eq. -38) then
+        else if (smpsk%infog(1) .eq. -38) then
             call utmess('F', 'FACTOR_91')
-        else if (zmpsk%infog(1) .eq. -51) then
+        else if (smpsk%infog(1) .eq. -51) then
             call utmess('F', 'FACTOR_92')
         else
-            iaux = zmpsk%infog(1)
+            iaux = smpsk%infog(1)
             if (iaux .lt. 0) then
                 call utmess('F', 'FACTOR_55', si=iaux)
             else
@@ -299,19 +298,19 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
                 end if
             end if
         end if
-        if ((slvk(4) .ne. 'AUTO') .and. (zmpsk%icntl(7) .ne. zmpsk%infog(7)) .and. &
-            (.not. lpreco) .and. (zmpsk%infog(32) .eq. 1) .and. (niv .ge. 2)) then
+        if ((slvk(4) .ne. 'AUTO') .and. (smpsk%icntl(7) .ne. smpsk%infog(7)) .and. &
+            (.not. lpreco) .and. (smpsk%infog(32) .eq. 1) .and. (niv .ge. 2)) then
             call utmess('I', 'FACTOR_50', sk=slvk(4))
         end if
-        if ((slvk(4) .ne. 'AUTO') .and. (zmpsk%icntl(29) .ne. zmpsk%infog(7)) .and. &
-            (.not. lpreco) .and. (zmpsk%infog(32) .eq. 2) .and. (niv .ge. 2)) then
+        if ((slvk(4) .ne. 'AUTO') .and. (smpsk%icntl(29) .ne. smpsk%infog(7)) .and. &
+            (.not. lpreco) .and. (smpsk%infog(32) .eq. 2) .and. (niv .ge. 2)) then
             call utmess('I', 'FACTOR_50', sk=slvk(4))
         end if
 !
 !       -----------------------------------------------------
 !        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 !       -----------------------------------------------------
-        if (.not. lpb13) call amumpu(1, 'Z', kxmps, usersm, ibid, &
+        if (.not. lpb13) call amumpu(1, 'S', kxmps, usersm, ibid, &
                                      lbid, nbfact)
 !
 ! ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
@@ -321,7 +320,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !       -----------------------------------------------------
 !       CALCUL DU DETERMINANT PART II ?
 !       -----------------------------------------------------
-        if (ldet) zmpsk%icntl(33) = 1
+        if (ldet) smpsk%icntl(33) = 1
 !
 !       ------------------------------------------------
 !        FACTORISATION NUMERIQUE MUMPS:
@@ -338,12 +337,12 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 ! --- ON FAIT LA MEME CHOSE EN CAS DE PB D'ALLOCATION MEMOIRE (INFOG=-13
 ! --- CELA PEUT ETRE DU A UN ICNTL(23) MAL ESTIME
 !
-        zmpsk%job = 2
+        smpsk%job = 2
         if (lresol) then
-            pcpi = zmpsk%icntl(14)
+            pcpi = smpsk%icntl(14)
             do ifact = 1, ifactm
-                call zmumps(zmpsk)
-                iaux = zmpsk%infog(1)
+                call smumps(smpsk)
+                iaux = smpsk%infog(1)
 !
 ! --- TRAITEMENT CORRECTIF ICNTL(14)
                 if ((iaux .eq. -8) .or. (iaux .eq. -9) .or. (iaux .eq. -14) &
@@ -358,16 +357,16 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
                         else
                             vali(1) = ifactm
                             vali(2) = pcpi
-                            vali(3) = zmpsk%icntl(14)
+                            vali(3) = smpsk%icntl(14)
                             call utmess('F', 'FACTOR_53', ni=3, vali=vali)
                         end if
                     else
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
-                        zmpsk%icntl(14) = zmpsk%icntl(14)*to_mumps_int(pcentp(2))
-                        slvi(2) = zmpsk%icntl(14)
+                        smpsk%icntl(14) = smpsk%icntl(14)*to_mumps_int(pcentp(2))
+                        slvi(2) = smpsk%icntl(14)
                         if ((niv .ge. 2) .and. (.not. lpreco)) then
-                            vali(1) = zmpsk%icntl(14)/pcentp(2)
-                            vali(2) = zmpsk%icntl(14)
+                            vali(1) = smpsk%icntl(14)/pcentp(2)
+                            vali(2) = smpsk%icntl(14)
                             vali(3) = ifact
                             vali(4) = ifactm
                             call utmess('I', 'FACTOR_58', ni=4, vali=vali)
@@ -375,8 +374,8 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 ! --- DERNIERE CHANCE: ON RAJOUTE L'OOC
                         if (ifact .eq. (ifactm-1)) then
                             lpb13 = .true.
-                            zmpsk%icntl(23) = 0
-                            zmpsk%icntl(22) = 1
+                            smpsk%icntl(23) = 0
+                            smpsk%icntl(22) = 1
                         end if
                         ifactm = max(ifactm-ifact, 1)
                         goto 10
@@ -387,12 +386,12 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
                 else if (((iaux .eq. -13) .or. (iaux .eq. -19)) .and. (.not. lpb13)) then
 ! ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
                     if ((niv .ge. 2) .and. (.not. lpreco)) then
-                        vali(1) = zmpsk%icntl(23)
+                        vali(1) = smpsk%icntl(23)
                         call utmess('I', 'FACTOR_85', si=vali(1))
                     end if
                     lpb13 = .true.
-                    zmpsk%icntl(23) = 0
-                    zmpsk%icntl(22) = 1
+                    smpsk%icntl(23) = 0
+                    smpsk%icntl(22) = 1
                     ifactm = max(ifactm-ifact, 1)
                     goto 10
                 else
@@ -406,7 +405,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
         if (niv .ge. 2) then
             write (ifm, *)
             write (ifm, *)&
-     &      '<AMUMPZ> FACTO. NUM. - NBRE TENTATIVES/MAX: ', ifact, ifactm
+     &      '<AMUMPS> FACTO. NUM. - NBRE TENTATIVES/MAX: ', ifact, ifactm
         end if
         call amumpt(6, kmonit, temps, rang, nbproc, &
                     kxmps, lquali, type, ietdeb, ietrat, &
@@ -416,25 +415,25 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !        GESTION ERREURS ET MENAGE ASTER (SAUF ERREUR ICNTL(14/23)
 !           TRAITEE EN AMONT):
 !       ------------------------------------------------
-        valr(1) = (zmpsk%infog(13)*100.d0)/zmpsk%n
+        valr(1) = (smpsk%infog(13)*100.d0)/smpsk%n
         if (valr(1) .gt. 10.0) then
             if ((niv .ge. 2) .and. (.not. lpreco)) then
                 call utmess('I', 'FACTOR_73')
             end if
         end if
-        if (zmpsk%infog(1) .eq. 0) then
+        if (smpsk%infog(1) .eq. 0) then
 !              -- C'EST OK
-        else if (zmpsk%infog(1) .eq. -10) then
+        else if (smpsk%infog(1) .eq. -10) then
             iret = 2
             goto 99
-        else if (zmpsk%infog(1) .eq. -13) then
+        else if (smpsk%infog(1) .eq. -13) then
             call utmess('F', 'FACTOR_54')
-        else if (zmpsk%infog(1) .eq. -37) then
+        else if (smpsk%infog(1) .eq. -37) then
             call utmess('F', 'FACTOR_65')
-        else if (zmpsk%infog(1) .eq. -90) then
+        else if (smpsk%infog(1) .eq. -90) then
             call utmess('F', 'FACTOR_66')
         else
-            iaux = zmpsk%infog(1)
+            iaux = smpsk%infog(1)
             if (iaux .lt. 0) then
                 call utmess('F', 'FACTOR_55', si=iaux)
             else
@@ -447,13 +446,13 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !       ------------------------------------------------
 !        DETECTION DE SINGULARITE SI NECESSAIRE:
 !       ------------------------------------------------
-        call amumpu(2, 'Z', kxmps, k12bid, nprec, &
+        call amumpu(2, 'S', kxmps, k12bid, nprec, &
                     lresol, ibid)
 !
 !       ------------------------------------------------
 !        RECUPERATION DU DETERMINANT SI NECESSAIRE:
 !       ------------------------------------------------
-        call amumpu(4, 'Z', kxmps, k12bid, ibid, &
+        call amumpu(4, 'S', kxmps, k12bid, ibid, &
                     lbid, ibid)
 !
 !       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
@@ -461,13 +460,13 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
         if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist) .or. (l_parallel_matrix)) then
             if (.not. (lquali) .and. (posttrait(1:4) .ne. 'MINI') .and. .not. lopfac) then
                 if (ldist .or. l_parallel_matrix) then
-                    deallocate (zmpsk%a_loc, stat=ibid)
-                    deallocate (zmpsk%irn_loc, stat=ibid)
-                    deallocate (zmpsk%jcn_loc, stat=ibid)
+                    deallocate (smpsk%a_loc, stat=ibid)
+                    deallocate (smpsk%irn_loc, stat=ibid)
+                    deallocate (smpsk%jcn_loc, stat=ibid)
                 else
-                    deallocate (zmpsk%a, stat=ibid)
-                    deallocate (zmpsk%irn, stat=ibid)
-                    deallocate (zmpsk%jcn, stat=ibid)
+                    deallocate (smpsk%a, stat=ibid)
+                    deallocate (smpsk%irn, stat=ibid)
+                    deallocate (smpsk%jcn, stat=ibid)
                 end if
             end if
         end if
@@ -485,7 +484,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
                     kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
         call amumpp(0, nbsol, kxmps, ldist, type, &
-                    impr, ifmump, lbis, rbid, csolu, &
+                    impr, ifmump, lbis, rsolu, cbid, &
                     vcine, prepos, lpreco, l_parallel_matrix)
 !
 !       --------------------------------------------------------------
@@ -499,8 +498,8 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
         call amumpt(8, kmonit, temps, rang, nbproc, &
                     kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
-        zmpsk%job = 3
-        if (lresol) call zmumps(zmpsk)
+        smpsk%job = 3
+        if (lresol) call smumps(smpsk)
 
         call amumpt(10, kmonit, temps, rang, nbproc, &
                     kxmps, lquali, type, ietdeb, ietrat, &
@@ -509,30 +508,30 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !       ------------------------------------------------
 !        GESTION ERREURS ET MENAGE ASTER:
 !       ------------------------------------------------
-        if (zmpsk%infog(1) .eq. 0) then
+        if (smpsk%infog(1) .eq. 0) then
 !              -- C'EST OK
-        else if ((zmpsk%infog(1) .eq. 8) .and. (lquali)) then
-            iaux = zmpsk%icntl(10)
+        else if ((smpsk%infog(1) .eq. 8) .and. (lquali)) then
+            iaux = smpsk%infog(10)
             if ((.not. lpreco) .and. (niv .ge. 2)) then
                 call utmess('A', 'FACTOR_62', si=iaux)
             end if
-        else if (zmpsk%infog(1) .lt. 0) then
-            iaux = zmpsk%icntl(1)
+        else if (smpsk%infog(1) .lt. 0) then
+            iaux = smpsk%infog(1)
             call utmess('F', 'FACTOR_55', si=iaux)
-        else if (zmpsk%infog(1) .eq. 4) then
-!          -- PERMUTATION DE COLONNES, ZMPSK%JCN MODIFIE VOLONTAIREMENT
+        else if (smpsk%infog(1) .eq. 4) then
+!          -- PERMUTATION DE COLONNES, SMPSK%JCN MODIFIE VOLONTAIREMENT
 !          -- PAR MUMPS. IL NE FAUT DONC PAS LE MANIPULER TEL QUE
 !          -- PAS GRAVE POUR ASTER.
         else
-            iaux = zmpsk%infog(1)
+            iaux = smpsk%infog(1)
             if ((.not. lpreco) .and. (iaux .ne. 2) .and. (niv .ge. 2)) then
                 call utmess('A', 'FACTOR_55', si=iaux)
             end if
         end if
 ! --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
         if ((lquali) .and. (posttrait(1:4) .ne. 'MINI')) then
-            if (zmpsk%rinfog(9) .gt. epsmax) then
-                valr(1) = zmpsk%rinfog(9)
+            if (smpsk%rinfog(9) .gt. epsmax) then
+                valr(1) = smpsk%rinfog(9)
                 valr(2) = epsmax
                 call utmess('F', 'FACTOR_57', nr=2, valr=valr)
             end if
@@ -542,7 +541,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 !        POST-TRAITEMENTS ASTER DE/DES (LA) SOLUTION(S) :
 !       ------------------------------------------------
         call amumpp(2, nbsol, kxmps, ldist, type, &
-                    impr, ifmump, lbis, rbid, csolu, &
+                    impr, ifmump, lbis, rsolu, cbid, &
                     vcine, prepos, lpreco, l_parallel_matrix)
 !
 !       ------------------------------------------------
@@ -564,17 +563,17 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
         if (nomats(kxmps) .ne. ' ') then
             if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist) .or. (l_parallel_matrix)) then
                 if (ldist .or. l_parallel_matrix) then
-                    deallocate (zmpsk%a_loc, stat=ibid)
-                    deallocate (zmpsk%irn_loc, stat=ibid)
-                    deallocate (zmpsk%jcn_loc, stat=ibid)
+                    deallocate (smpsk%a_loc, stat=ibid)
+                    deallocate (smpsk%irn_loc, stat=ibid)
+                    deallocate (smpsk%jcn_loc, stat=ibid)
                 else
-                    deallocate (zmpsk%a, stat=ibid)
-                    deallocate (zmpsk%irn, stat=ibid)
-                    deallocate (zmpsk%jcn, stat=ibid)
+                    deallocate (smpsk%a, stat=ibid)
+                    deallocate (smpsk%irn, stat=ibid)
+                    deallocate (smpsk%jcn, stat=ibid)
                 end if
             end if
             if ((rang .eq. 0) .and. lbloc) then
-                deallocate (zmpsk%blkptr, stat=ibid)
+                deallocate (smpsk%blkptr, stat=ibid)
             end if
             etams(kxmps) = ' '
             nonus(kxmps) = ' '
@@ -582,8 +581,8 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
             nosols(kxmps) = ' '
             roucs(kxmps) = ' '
             precs(kxmps) = ' '
-            zmpsk%job = -2
-            call zmumps(zmpsk)
+            smpsk%job = -2
+            call smumps(smpsk)
 ! NETTOYAGE OBJETS AUXILIAIRES AU CAS OU
             k24aux = '&&TAILLE_OBJ_MUMPS'
             call jeexin(k24aux, ibid)
