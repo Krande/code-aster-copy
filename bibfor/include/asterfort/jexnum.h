@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
           interface 
             function jexnum(nomc,num)
               character(len=*), intent(in) :: nomc
-              integer, intent(in) :: num
+              integer(kind=8), intent(in) :: num
               character(len=32) :: jexnum
             end function jexnum
           end interface 

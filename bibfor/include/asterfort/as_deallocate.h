@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ interface
                              vk8, vk16, vk24, vk32, vk80, &
                              strdbg)
     aster_logical,           optional, pointer :: vl(:)
-    integer,           optional, pointer :: vi(:)
+    integer(kind=8),           optional, pointer :: vi(:)
     integer(kind=4),   optional, pointer :: vi4(:)
     real(kind=8),      optional, pointer :: vr(:)
     complex(kind=8),   optional, pointer :: vc(:)

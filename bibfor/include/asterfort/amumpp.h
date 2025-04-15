@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@ interface
     subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                       impr, ifmump, eli2lg, rsolu, csolu,&
                       vcine, prepos, lpreco, lmhpc)
-        integer :: option
-        integer :: nbsol
-        integer :: kxmps
+        integer(kind=8) :: option
+        integer(kind=8) :: nbsol
+        integer(kind=8) :: kxmps
         aster_logical :: ldist
         character(len=1) :: type
         character(len=14) :: impr
-        integer :: ifmump
+        integer(kind=8) :: ifmump
         aster_logical :: eli2lg
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
