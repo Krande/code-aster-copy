@@ -49,7 +49,9 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 #include "asterfort/jeveuo.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
+#ifdef ASTER_HAVE_MED
 #include "med_parameter.hf"
+#endif
 !
 ! 0.1. ==> ARGUMENTS
 !
@@ -59,7 +61,7 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-!
+#ifdef ASTER_HAVE_MED
     character(len=6), parameter :: nompro = 'IRMHPC'
     integer(kind=8) :: codret, iret
     integer(kind=8) :: jnumno, nbjoin, i_join, nbnoj, jjoinr
@@ -164,5 +166,5 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
     end if
 !
     call jedema()
-!
+#endif
 end subroutine

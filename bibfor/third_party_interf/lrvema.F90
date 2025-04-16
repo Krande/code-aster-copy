@@ -23,7 +23,9 @@ subroutine lrvema(nomail, mfich, nochmd)
     implicit none
 !
 #include "asterf_types.h"
+#ifdef ASTER_HAVE_MED
 #include "med_parameter.hf"
+#endif
 #include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdfin.h"
@@ -63,6 +65,7 @@ subroutine lrvema(nomail, mfich, nochmd)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+#ifdef ASTER_HAVE_MED
     integer(kind=8) :: iret, nmatyp, ncmp
     integer(kind=8) :: nbma, jnbtyp, jmatyp, nbtym, nbtv, codret
     med_idt :: idfimd
@@ -243,4 +246,5 @@ subroutine lrvema(nomail, mfich, nochmd)
 !
     call jedema()
 !
+#endif
 end subroutine

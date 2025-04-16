@@ -31,7 +31,9 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#ifdef ASTER_HAVE_MED
 #include "med_parameter.hf"
+#endif
 !
     integer(kind=8), intent(out), optional :: nbtyp
     character(len=8), intent(out), optional :: nomtyp(MT_NTYMAX)
@@ -60,6 +62,7 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
 !               numnoa_(ityp, j) = k : node j in aster is the node k in med
 !
 ! --------------------------------------------------------------------------------------------------
+#ifdef ASTER_HAVE_MED
 !   local variables for optional arguments
     integer(kind=8) :: nbtyp_
     character(len=8) :: nomtyp_(MT_NTYMAX)
@@ -530,4 +533,5 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
         numnoa = numnoa_
     end if
     !
+#endif
 end subroutine
