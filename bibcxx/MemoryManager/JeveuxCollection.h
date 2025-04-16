@@ -188,6 +188,38 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
     };
 
   public:
+    // template< class ValueType, class AccessType, JeveuxCollectionMemoryStorageType MemoryType >
+    class FastCollectionObject {
+        const int _position;
+        int _size;
+        const JeveuxCollectionClass< ValueType, AccessType, MemoryType > &_ref;
+        ValueType *_ptr = nullptr;
+
+      public:
+        FastCollectionObject( const JeveuxCollectionClass< ValueType, AccessType, MemoryType > &ref,
+                              const int &pos )
+            : _ref( ref ), _position( pos ) {
+            std::string charJeveuxName( 32, ' ' );
+            ASTERINTEGER num = _position;
+            CALLO_JEXNUM( charJeveuxName, _ref.getName(), &num );
+
+            const std::string read( "L" );
+            CALLO_JEVEUOC( charJeveuxName, read, (void *)( &_ptr ) );
+
+            ASTERINTEGER valTmp;
+            JeveuxChar8 param( "LONMAX" );
+            std::string charval = std::string( 32, ' ' );
+            CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
+            _size = valTmp;
+        };
+
+        std::vector< ValueType > toVector() const {
+            std::vector< ValueType > toReturn( _size, 0 );
+            std::copy( _ptr, _ptr + _size, &toReturn[0] );
+            return toReturn;
+        };
+    };
+
     /**
      * @brief Constructeur dans le cas où AccessType n'a pas d'importance
      * @param name Chaine representant le nom de la collection
@@ -769,6 +801,19 @@ class JeveuxCollectionClass : public JeveuxObjectClass,
         }
         _temporaryCollectionObject->updateValuePointer();
         return _temporaryCollectionObject;
+    };
+
+    inline FastCollectionObject fastAccess( const int &pos ) const {
+        return FastCollectionObject( *this, pos );
+    };
+
+    inline FastCollectionObject fastAccess( const std::string &name ) const {
+        const auto &curIter = _mapNumObject.find( strip( name ) );
+        if ( curIter == _mapNumObject.end() ) {
+            AS_ABORT( "Name not in collection: " + name );
+        }
+        const auto pos = curIter->second;
+        return fastAccess( pos );
     };
 
     inline ASTERINTEGER size() const { return _objectCount; };
