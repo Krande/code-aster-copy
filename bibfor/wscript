@@ -87,8 +87,10 @@ def check_fortran_compiler_flags(self):
     self.check_fortran_compiler_options("-fPIC")
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
-            flags = ["-fdefault-%s-%i" % (name, 8) for name in ("integer", "double", "real")]
-            self.check_fortran_compiler_options(flags, dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options(
+                ["-fdefault-real-8", "-fdefault-double-8"], dest="FCFLAGS"
+            )
         self.check_fortran_compiler_options("-Wimplicit-interface")
         self.check_fortran_compiler_options("-Wintrinsic-shadow")
         self.check_fortran_compiler_options("-fno-aggressive-loop-optimizations")
@@ -97,7 +99,8 @@ def check_fortran_compiler_flags(self):
     if "ifort" in self.env.FC_NAME.lower():
         self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
-            self.check_fortran_compiler_options(["-i8", "-r8"], dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options("-r8", dest="FCFLAGS")
         self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
