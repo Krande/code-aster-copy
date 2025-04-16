@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,16 +54,18 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
 #include "asterfort/vectpe.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/vectrn.h"
     character(len=16) :: nomte
     integer :: ncmp, jnbspi
     real(kind=8) :: pk2(ncmp, *), sigma(ncmp, *)
 ! -----  VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: i, icara, icompo, icou, idepl, igeom, ii
+    integer :: i, icara, icou, idepl, igeom, ii
     integer :: in, inte, intsn, iret, j, kpgs, lzi
     integer :: lzr, nb1, nb2, nbcou, nbinco, npge, npgsn
 !
+    character(len=16), pointer :: compor(:) => null()
     real(kind=8) :: cof11, cof21, cof31, detf, detfm1, detj, deux
     real(kind=8) :: epais, eptot, un, zic, zmin
 !-----------------------------------------------------------------------
@@ -107,9 +109,9 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 ! --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 !     ----------------------------------------
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
-    if (zk16(icompo+2) .eq. 'GROT_GDEP') then
+    if (compor(DEFO) .eq. 'GROT_GDEP') then
         lgreen = .true.
     end if
 !

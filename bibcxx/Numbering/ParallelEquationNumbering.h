@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -170,14 +170,14 @@ class ParallelEquationNumbering : public EquationNumbering {
      * @return Return the local number if the dof if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER globalToLocalDOF( const ASTERINTEGER ) const;
+    ASTERINTEGER globalToLocalDOF( const ASTERINTEGER ) const;
 
     /**
      * @brief Return the global number of a local Dof
      * @return Return the global number if the dof if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER localToGlobalDOF( const ASTERINTEGER );
+    ASTERINTEGER localToGlobalDOF( const ASTERINTEGER ) const;
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC

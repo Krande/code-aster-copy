@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,7 @@ subroutine ef0415(nomte)
     character(len=16) :: nomte
 !
 !-----------------------------------------------------------------------
-    integer ::  ichg, icompo
-    integer ::  iret
+    integer ::  ichg
     integer ::  jcara, jeffg, jgeom
     integer :: lzi, lzr, nbcou
     integer :: npge, npgt
@@ -65,8 +64,6 @@ subroutine ef0415(nomte)
 !
     call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', &
                 ichg, 'S')
-!
-    call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
 !
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)

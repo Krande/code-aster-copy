@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,12 +54,13 @@ subroutine te0334(option, nomte)
     real(kind=8) :: epsi_meca(mxcmel), epsi_plas(mxcmel)
     real(kind=8) :: sigma(nbsgm)
     real(kind=8) :: epsi_creep(nbsgm)
-    integer :: i, ndim, nno, nbsig, idsig, icompo
+    integer :: i, ndim, nno, nbsig, idsig
     integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, idefp, itemps
     integer :: imate, nbvari, ivari, jtab(7), iret
     real(kind=8) :: c1, c2, trsig
     real(kind=8) :: angl_naut(3), nharm, e, nu, zero, un, time
     integer :: elas_id
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: optio2, kit_comp_2, rela_comp, elas_keyword
     aster_logical :: l_creep
 !
@@ -106,9 +107,9 @@ subroutine te0334(option, nomte)
 !
 ! - Comportment
 !
-    call jevech('PCOMPOR', 'L', icompo)
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    kit_comp_2 = zk16(icompo-1+CREEP_NAME)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    rela_comp = compor(RELA_NAME)
+    kit_comp_2 = compor(CREEP_NAME)
 !
 ! - Internal variables
 !

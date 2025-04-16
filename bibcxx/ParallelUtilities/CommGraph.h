@@ -6,7 +6,7 @@
  * @brief Header of connection graph
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -72,7 +72,7 @@ class CommGraph {
 
         reference operator*() const { return *m_ptr; }
 
-        const pointer operator->() { return m_ptr; }
+        pointer operator->() const { return m_ptr; }
 
         iterator &operator++() {
             m_ptr++;
@@ -108,7 +108,7 @@ class CommGraph {
 
         reference operator*() const { return *m_ptr; }
 
-        const pointer operator->() { return m_ptr; }
+        pointer operator->() const { return m_ptr; }
 
         const_iterator &operator++() {
             m_ptr++;

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,13 +52,14 @@ subroutine te0407(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: mult_comp, defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=4), parameter :: fami = 'RIGI'
     integer :: nno, npg, i, imatuu, lgpg, ndim
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: icontm, ivarim, jv_mult_comp
-    integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
+    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
     integer :: ivectu, icontp, ivarip
     integer :: ivarix, iret
     integer :: jtab(7), jcret, codret
@@ -90,7 +91,7 @@ subroutine te0407(option, nomte)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PMULCOM', 'L', jv_mult_comp)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
@@ -100,16 +101,16 @@ subroutine te0407(option, nomte)
     call getElemOrientation(ndim, nno, igeom, angl_naut)
 
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 
 ! - Properties of behaviour
     mult_comp = zk16(jv_mult_comp-1+1)
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    type_comp = zk16(icompo-1+INCRELAS)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    type_comp = compor(INCRELAS)
 
 ! - Get output fields
     if (lMatr) then
@@ -136,7 +137,7 @@ subroutine te0407(option, nomte)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndim, typmod, option, &
-                              zk16(icompo), zr(icarcr), &
+                              compor, zr(icarcr), &
                               zr(iinstm), zr(iinstp), &
                               fami, zi(imate), &
                               BEHinteg)
@@ -157,7 +158,7 @@ subroutine te0407(option, nomte)
         call nmas3d(BEHinteg, &
                     fami, nno, npg, ipoids, ivf, &
                     idfde, zr(igeom), typmod, option, zi(imate), &
-                    zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), &
+                    compor, mult_comp, lgpg, zr(icarcr), zr(iinstm), &
                     zr(iinstp), zr(ideplm), zr(ideplp), angl_naut, zr(icontm), &
                     zr(ivarim), dfdi, def, zr(icontp), zr(ivarip), &
                     zr(imatuu), zr(ivectu), codret)

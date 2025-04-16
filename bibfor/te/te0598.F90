@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine te0598(option, nomte)
 #include "asterfort/nurfpd.h"
 #include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
@@ -48,8 +49,9 @@ subroutine te0598(option, nomte)
     integer :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
     integer :: iw, ivf1, ivf2, idf1, idf2
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, ivectu, icompo
+    integer :: igeom, ivectu
     real(kind=8) :: sigref, epsref, piref
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: lielrf(10), typmod(2)
     character(len=24) :: valk
 ! ----------------------------------------------------------------------
@@ -76,12 +78,12 @@ subroutine te0598(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call terefe('SIGM_REFE', 'MECA_INCO', sigref)
     call terefe('EPSI_REFE', 'MECA_INCO', epsref)
 !
 ! - CALCUL DE REFE_FORC_NODA
-    if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
+    if (compor(DEFO) .eq. 'PETIT ') then
 !
         if (lteatt('INCO', 'C2 ')) then
 ! --------- Get index of dof
@@ -97,13 +99,13 @@ subroutine te0598(option, nomte)
             call norfpd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1, &
                         vu, vp, vpi, typmod, nomte, zr(igeom), sigref, epsref, piref, zr(ivectu))
         else
-            valk = zk16(icompo+2)
+            valk = compor(DEFO)
             call utmess('F', 'MODELISA10_17', sk=valk)
         end if
-    else if (zk16(icompo+2) (1:8) .eq. 'GDEF_LOG') then
+    else if (compor(DEFO) .eq. 'GDEF_LOG') then
 !
         if (.not. lteatt('INCO', 'C2 ')) then
-            valk = zk16(icompo+2)
+            valk = compor(DEFO)
             call utmess('F', 'MODELISA10_17', sk=valk)
         end if
 ! ----- Get index of dof
@@ -112,7 +114,7 @@ subroutine te0598(option, nomte)
         call nurfgd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp, &
                     typmod, zr(igeom), sigref, epsref, zr(ivectu))
     else
-        call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
+        call utmess('F', 'ELEMENTS3_16', sk=compor(DEFO))
     end if
 !
 end subroutine

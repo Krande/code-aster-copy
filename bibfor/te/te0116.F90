@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,8 @@ subroutine te0116(nomopt, nomte)
                                     (/'TEMP_MINI', 'TEMP_MAXI', 'EPSQ_MINI'/)
     real(kind=8) :: resuVale(nbResu)
     integer :: ipg, npg, nb_vari, ivari, ispg
-    integer :: jmate, jcompo, j_vari_out, j_vari_in, jtimem, jtimep
+    integer :: jmate, j_vari_out, j_vari_in, jtimem, jtimep
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, postIncr
     real(kind=8) :: instp, instm
     real(kind=8) :: tau_inf(1), x0, alpha(1)
@@ -76,14 +77,14 @@ subroutine te0116(nomopt, nomte)
 
 ! - Get input fields
     call jevech('PMATERC', 'L', jmate)
-    call jevech('PCOMPOR', 'L', jcompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PVARIMR', 'L', j_vari_in)
     call jevech('PINSTPR', 'L', jtimep)
     call jevech('PINSTMR', 'L', jtimem)
 !
-    rela_comp = zk16(jcompo-1+RELA_NAME)
-    read (zk16(jcompo-1+NVAR), '(I16)') nb_vari
-    postIncr = zk16(jcompo-1+POSTINCR)
+    rela_comp = compor(RELA_NAME)
+    read (compor(NVAR), '(I16)') nb_vari
+    postIncr = compor(POSTINCR)
 
 ! - Get output field
     call jevech('PVARIPR', 'E', j_vari_out)

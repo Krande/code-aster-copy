@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -170,7 +170,7 @@ subroutine te0409(option, nomte)
 !
     integer :: ndim, nno, npg, ipoids, icoopg
     integer :: imate, iret, icontm, ivarim, igeom, icarcr, ideplm, ideplp
-    integer :: icompo, icacoq, icontp, ivarip, ino, nbcont, ivectu, jcret, imatuu
+    integer :: icacoq, icontp, ivarip, ino, nbcont, ivectu, jcret, imatuu
     integer :: nbvari, ipg
     integer :: i, i1, i2, j, k, l
     integer :: icpg, icpv
@@ -196,6 +196,7 @@ subroutine te0409(option, nomte)
     real(kind=8) :: matr(50), sigm(8), alfmc
     real(kind=8) :: epsi_c, epsi_els, epsi_lim, val_param_opt(10)
 !
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: type_comp, mult_comp, rela_plas, rela_comp, defo_comp
 !
     integer      ::  codret2(1)
@@ -283,8 +284,8 @@ subroutine te0409(option, nomte)
         codret = 0
     else
 ! ----- Select objects to construct from option name
-        call jevech('PCOMPOR', 'L', icompo)
-        call behaviourOption(option, zk16(icompo), &
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        call behaviourOption(option, compor, &
                              lMatr, lVect, &
                              lVari, lSigm, &
                              codret)
@@ -294,11 +295,11 @@ subroutine te0409(option, nomte)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PVARIMR', 'L', ivarim)
 
-        rela_comp = zk16(icompo-1+RELA_NAME)
-        type_comp = zk16(icompo-1+INCRELAS)
-        defo_comp = zk16(icompo-1+DEFO)
+        rela_comp = compor(RELA_NAME)
+        type_comp = compor(INCRELAS)
+        defo_comp = compor(DEFO)
         leul = defo_comp .eq. 'GROT_GDEP'
-        read (zk16(icompo-1+NVAR), '(I16)') nbvari
+        read (compor(NVAR), '(I16)') nbvari
 !           -- on verifie que le nombre de varint tient dans ecr
         ASSERT(nbvari .le. nbvarmax)
 !
@@ -339,7 +340,6 @@ subroutine te0409(option, nomte)
         call rccoma(zi(imate), 'ELAS', 1, rela_comp(1:10), iret)
         icarcr = 1
         ivarim = 1
-        icompo = 1
         icontm = 1
     end if
 
@@ -694,7 +694,7 @@ subroutine te0409(option, nomte)
             call coqgth(zi(imate), rela_comp, 'RIGI', ipg, ep, epsm, deps)
 !               -- endommagement plus plasticite
             call r8inir(3, r8vide(), angmas, 1)
-            rela_plas = zk16(icompo+PLAS_NAME-1)
+            rela_plas = compor(PLAS_NAME)
             call kit_glrc_dm_vmis(zi(imate), rela_plas, epsm, deps, ecr, &
                                   option, sigm, sig, ecrp, dsidep, &
                                   zr(icarcr), codret, t2iu)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine te0246(option, nomte)
 !
     implicit none
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
@@ -51,12 +52,13 @@ subroutine te0246(option, nomte)
     type(FE_basis) :: FEBasis
 !
     integer :: icodre(1)
-    character(len=16) :: phenom
+    character(len=16) :: phenom, rela_name
     real(kind=8) :: valQP(MAX_QP), tpgi, r8bid
     real(kind=8) :: mass(MAX_BS, MAX_BS)
-    integer :: kp, imate, icomp
+    integer :: kp, imate
     integer :: ifon(6)
     aster_logical :: aniso
+    character(len=16), pointer :: compor(:) => null()
     real(kind=8), pointer :: tempi(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -65,8 +67,9 @@ subroutine te0246(option, nomte)
     call FEQuadCell%initCell(FECell, "MASS")
     call FEBasis%initCell(FECell)
 !
-    call jevech('PCOMPOR', 'L', icomp)
-    if (zk16(icomp) (1:5) .eq. 'THER_') then
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    rela_name = compor(RELA_NAME)
+    if (rela_name(1:5) .eq. 'THER_') then
         call jevech('PTEMPEI', 'L', vr=tempi)
         call jevech('PMATERC', 'L', imate)
 !
@@ -75,15 +78,15 @@ subroutine te0246(option, nomte)
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
             aniso = ASTER_TRUE
         end if
-        call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
+        call ntfcma(rela_name, zi(imate), aniso, ifon)
     end if
 !
     valQP = 0.0
     do kp = 1, FEQuadCell%nbQuadPoints
-        if (zk16(icomp) (1:5) .eq. 'THER_') then
+        if (rela_name(1:5) .eq. 'THER_') then
             tpgi = FEEvalFuncRScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
             call rcfode(ifon(1), tpgi, r8bid, valQP(kp))
-        else if (zk16(icomp) (1:5) .eq. 'SECH_') then
+        else if (rela_name(1:5) .eq. 'SECH_') then
             valQP(kp) = 1.d0
         else
             ASSERT(ASTER_FALSE)

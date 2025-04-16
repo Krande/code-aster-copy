@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! Copyright (C) 2022 - Anthony McDonald - anthony.mcdonald .at. wave-venture.com
 ! This file is part of code_aster.
 !
@@ -88,6 +88,7 @@ subroutine te0435(option, nomte)
     aster_logical :: lNonLine, lLine
     aster_logical :: pttdef, grddef
     aster_logical :: lVect, lMatr, lVari, lSigm
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: defo_comp, rela_comp
     blas_int :: b_incx, b_incy, b_n
 !
@@ -122,7 +123,7 @@ subroutine te0435(option, nomte)
         call jevech('PMATERC', 'L', imate)
     end if
     if (lNonLine) then
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', icompo, vk16=compor)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PINSTMR', 'L', iinstm)
         call jevech('PINSTPR', 'L', iinstp)
@@ -140,11 +141,11 @@ subroutine te0435(option, nomte)
 !
     if (lNonLine) then
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+        call behaviourOption(option, compor, lMatr, lVect, lVari, &
                              lSigm)
 ! ----- Properties of behaviour
-        rela_comp = zk16(icompo-1+RELA_NAME)
-        defo_comp = zk16(icompo-1+DEFO)
+        rela_comp = compor(RELA_NAME)
+        defo_comp = compor(DEFO)
         pttdef = (defo_comp .eq. 'PETIT')
         grddef = (defo_comp .eq. 'GROT_GDEP')
         if (.not. pttdef .and. .not. grddef) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine te0252(option, nomte)
 !
     implicit none
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
@@ -55,9 +56,11 @@ subroutine te0252(option, nomte)
     real(kind=8) :: valQP(MAX_QP), tpgi, r8bid
     real(kind=8) :: resi(MAX_BS)
     real(kind=8) :: chal(1)
-    integer :: kp, imate, icomp
+    integer :: kp, imate
     integer :: ifon(6), nbDof
     aster_logical :: aniso
+    character(len=16), pointer :: compor(:) => null()
+    character(len=16) :: rela_name
     real(kind=8), pointer :: hydrgp(:) => null()
     real(kind=8), pointer :: tempi(:) => null()
 !
@@ -68,19 +71,20 @@ subroutine te0252(option, nomte)
     call FEBasis%initCell(FECell)
     nbDof = FEBasis%size
 !
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PTEMPEI', 'L', vr=tempi)
     call jevech('PMATERC', 'L', imate)
 !
-    if (zk16(icomp) (1:5) .eq. 'THER_') then
+    rela_name = compor(RELA_NAME)
+    if (rela_name(1:5) .eq. 'THER_') then
 !
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
         aniso = ASTER_FALSE
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
             aniso = ASTER_TRUE
         end if
-        call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
-        if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
+        call ntfcma(rela_name, zi(imate), aniso, ifon)
+        if (rela_name(1:9) .eq. 'THER_HYDR') then
             call jevech('PHYDRPR', 'L', vr=hydrgp)
             call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                         ' ', 'THER_HYDR', 0, ' ', [r8bid], &
@@ -93,12 +97,12 @@ subroutine te0252(option, nomte)
     do kp = 1, FEQuadCell%nbQuadPoints
         tpgi = FEEvalFuncRScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
 !
-        if (zk16(icomp) (1:5) .eq. 'THER_') then
+        if (rela_name(1:5) .eq. 'THER_') then
             call rcfode(ifon(1), tpgi, valQP(kp), r8bid)
-            if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
+            if (rela_name(1:9) .eq. 'THER_HYDR') then
                 valQP(kp) = valQP(kp)-chal(1)*hydrgp(kp)
             end if
-        else if (zk16(icomp) (1:5) .eq. 'SECH_') then
+        else if (rela_name(1:5) .eq. 'SECH_') then
             valQP(kp) = tpgi
         else
             ASSERT(ASTER_FALSE)

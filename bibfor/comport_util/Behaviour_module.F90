@@ -201,7 +201,8 @@ contains
 ! ----- Parameters
         integer, intent(in) :: ldcDime
         character(len=8), intent(in) :: typmod(2)
-        character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+        character(len=16), intent(in) :: option
+        character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: timePrev, timeCurr
         character(len=4), intent(in) :: fami
@@ -294,7 +295,7 @@ contains
     subroutine setFromCompor(compor, BEHinteg)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=16), intent(in) :: compor(COMPOR_SIZE)
+        character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Locals
         character(len=16) :: defo_ldc, defo_comp, regu_visc, postIncr, mgisAddr
@@ -303,11 +304,13 @@ contains
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  From COMPOR'
         end if
-        read (compor(DEFO_LDC), '(A16)') defo_ldc
-        read (compor(DEFO), '(A16)') defo_comp
-        read (compor(REGUVISC), '(A16)') regu_visc
-        read (compor(POSTINCR), '(A16)') postIncr
-        read (compor(MGIS_ADDR), '(A16)') mgisAddr
+        !
+        defo_ldc = compor(DEFO_LDC)
+        defo_comp = compor(DEFO)
+        regu_visc = compor(REGUVISC)
+        postIncr = compor(POSTINCR)
+        mgisAddr = compor(MGIS_ADDR)
+        !
         BEHinteg%behavPara%lFiniteStrain = defo_comp .eq. 'SIMO_MIEHE' .or. &
                                            defo_comp .eq. 'GROT_GDEP'
         BEHinteg%behavPara%lGdefLog = defo_comp .eq. 'GDEF_LOG'
@@ -2176,7 +2179,8 @@ contains
                                codret_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
+        character(len=16), intent(in) :: option
+        character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         aster_logical, intent(out) :: lMatr, lVect, lVari, lSigm
         integer, optional, intent(out) :: codret_
 ! ----- Local

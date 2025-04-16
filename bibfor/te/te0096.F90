@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine te0096(option, nomte)
     integer :: icodre(1), kpg, spt
     character(len=4) :: fami
     character(len=8) :: nompar(3), typmod(2), famil, poum
-    character(len=16) :: compor(4), phenom
+    character(len=16) :: phenom
 !
     real(kind=8) :: epsref(6), e(1), mu
     real(kind=8) :: epsi, rac2
@@ -79,13 +79,14 @@ subroutine te0096(option, nomte)
     real(kind=8) :: ecin, prod3, prod4, nu(1), accele(3)
 !
     integer :: ipoids, ivf, idfde
-    integer :: icomp, igeom, itemps, idepl, imate
+    integer :: igeom, itemps, idepl, imate
     integer :: iepsr, iepsf, isigi, isigm
     integer :: iforc, iforf, ithet, igthet, irota, ipesa, ier
     integer :: ivites, iaccel, j1, j2
     integer :: nno, nnos, ncmp, jgano
     integer :: i, j, k, kk, l, m, kp, ndim, compt
     integer :: ij, ij1, matcod, i1, iret, iret1, npg1
+    character(len=16), pointer :: compor(:) => null()
     type(Behaviour_Integ) :: BEHinteg
 !
     aster_logical :: grand, axi, cp, fonc, incr, epsini
@@ -154,11 +155,8 @@ subroutine te0096(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     matcod = zi(imate)
-    do i = 1, 4
-        compor(i) = zk16(icomp+i-1)
-    end do
 !
 ! RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
 ! CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI

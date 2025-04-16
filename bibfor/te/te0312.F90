@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine te0312(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lmater, icompo, iret, ig, icp
+    integer :: lmater, iret, ig, icp
     integer :: icodre(2), kpg, spt
     integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, jgano, igau
     real(kind=8)      :: bendog(1), kdessi(1), alpha(1), epsa(6)
@@ -68,6 +68,7 @@ subroutine te0312(option, nomte)
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
     integer, pointer :: cpri(:) => null()
+    character(len=16), pointer :: compor(:) => null()
     character(len=24), pointer :: cprk24(:) => null()
 !.......................................................................
 !
@@ -78,8 +79,8 @@ subroutine te0312(option, nomte)
     IsPmf = ASTER_FALSE
 !   Si c'est une PMF : Il peut y avoir plusieurs matériaux sur la maille
     if (lteatt('TYPMOD2', 'PMF')) then
-        call jevech('PCOMPOR', 'L', icompo)
-        mult_comp = zk16(icompo-1+MULTCOMP)
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        mult_comp = compor(MULTCOMP)
         ! Récupération de la SD_COMPOR où le comportement des groupes de fibres est stocké
         call jeexin(mult_comp, iret)
         ASSERT(iret .ne. 0)

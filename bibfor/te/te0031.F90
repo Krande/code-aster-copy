@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,6 +103,7 @@ subroutine te0031(option, nomte)
 !     --->   DUL : INCREMENT DE DEPLACEMENT   (REPERE LOCAL)
     real(kind=8) :: uml(6, 4), dul(6, 4)
     aster_logical :: lVect, lMatr, lVari, lSigm, matsym
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -236,10 +237,10 @@ subroutine te0031(option, nomte)
 !
         call jevech('PDEPLMR', 'L', jvDisp)
         call jevech('PDEPLPR', 'L', jdepr)
-        call jevech('PCOMPOR', 'L', jvCompor)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         call jevech('PCARCRI', 'L', icarcr)
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(jvCompor), &
+        call behaviourOption(option, compor, &
                              lMatr, lVect, &
                              lVari, lSigm, &
                              codret)
@@ -247,7 +248,7 @@ subroutine te0031(option, nomte)
             call utmess('F', 'PLATE1_75')
         end if
 ! ----- Update configuration
-        defo_comp = zk16(jvCompor-1+DEFO)
+        defo_comp = compor(DEFO)
         if ((defo_comp(6:10) .eq. '_REAC') .or. (defo_comp .eq. 'GROT_GDEP')) then
             do i = 1, nno
                 i1 = 3*(i-1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine te0243(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/ntcomp.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
@@ -61,7 +62,9 @@ subroutine te0243(option, nomte)
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: sechf(:) => null()
     integer ::  kp, ifon(6)
-    integer ::  imate, icomp, j
+    integer ::  imate, j
+    character(len=16) :: rela_name
+    character(len=16), pointer :: compor(:) => null()
     aster_logical :: aniso, l_rhs
 ! ----------------------------------------------------------------------
     call FECell%init()
@@ -70,18 +73,19 @@ subroutine te0243(option, nomte)
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPEI', 'L', vr=tempi)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 
+    rela_name = compor(RELA_NAME)
     l_rhs = option == "RAPH_THER"
 
     if (l_rhs) then
         call jevech('PFLUXPR', 'E', vr=flux)
     end if
 !
-    if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
-        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. &
-            zk16(icomp) (1:10) .eq. 'SECH_NAPPE' .or. &
-            zk16(icomp) (1:8) .eq. 'SECH_RFT') then
+    if ((rela_name(1:5) .eq. 'SECH_')) then
+        if (rela_name(1:12) .eq. 'SECH_GRANGER' .or. &
+            rela_name(1:10) .eq. 'SECH_NAPPE' .or. &
+            rela_name(1:8) .eq. 'SECH_RFT') then
             call jevech('PTMPCHF', 'L', vr=sechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
@@ -89,13 +93,13 @@ subroutine te0243(option, nomte)
             call jevech('PTEMPEI', 'L', vr=sechf)
         end if
 !
-    else if (zk16(icomp) (1:5) .eq. 'THER_') then
+    else if (rela_name(1:5) .eq. 'THER_') then
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
         aniso = ASTER_FALSE
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
             aniso = ASTER_TRUE
         end if
-        call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
+        call ntfcma(rela_name, zi(imate), aniso, ifon)
     end if
 !
     resi = 0.0
@@ -105,15 +109,15 @@ subroutine te0243(option, nomte)
         BGSEval = FEBasis%grad(FEQuadCell%points_param(1:3, kp), FEQuadCell%jacob(1:3, 1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp), BGSEval)
 !
-        if (zk16(icomp) (1:5) .eq. 'THER_') then
-            call ntcomp(icomp, FECell%ndim, tpg, dtpg, &
+        if (rela_name(1:5) .eq. 'THER_') then
+            call ntcomp(rela_name, FECell%ndim, tpg, dtpg, &
                         FEQuadCell%points(1:3, kp), aniso, ifon, fluglo, Kglo)
             if (l_rhs) then
                 flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
             end if
-        else if (zk16(icomp) (1:5) .eq. 'SECH_') then
+        else if (rela_name(1:5) .eq. 'SECH_') then
             tpsec = FEEvalFuncRScal(FEBasis, sechf, FEQuadCell%points_param(1:3, kp))
-            call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
+            call rcdiff(zi(imate), rela_name, tpsec, tpg, diff)
             fluglo = diff*dtpg
             Kglo = 0.d0
             do j = 1, FECell%ndim

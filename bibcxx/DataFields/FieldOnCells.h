@@ -539,7 +539,7 @@ class FieldOnCells : public DataField {
     /**
      * @brief Size of the FieldOnNodes
      */
-    const ASTERINTEGER size() const { return _values->size(); }
+    ASTERINTEGER size() const { return _values->size(); }
 
     // norm and dot methods
 

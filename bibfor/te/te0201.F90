@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,11 +52,12 @@ subroutine te0201(option, nomte)
     integer, parameter :: ndim = 2
     character(len=4), parameter :: fami = "RIGI"
     integer :: kk, i, j, npg
-    integer :: igeom, imater, icarcr, icomp, idepm, iddep, icoret
+    integer :: igeom, imater, icarcr, idepm, iddep, icoret
     integer :: icontm, icontp, ivect, imatr
     integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
     integer :: lgpg, codret
     real(kind=8) :: mat(8, 8), fint(8), sigmo(6, 2), sigma(6, 2)
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2)
     character(len=16) :: rela_comp
     aster_logical :: matsym
@@ -85,7 +86,7 @@ subroutine te0201(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imater)
     call jevech('PCARCRI', 'L', icarcr)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PDEPLMR', 'L', idepm)
     call jevech('PDEPLPR', 'L', iddep)
     call jevech('PVARIMR', 'L', ivarim)
@@ -101,19 +102,19 @@ subroutine te0201(option, nomte)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndim, typmod, option, &
-                              zk16(icomp), zr(icarcr), &
+                              compor, zr(icarcr), &
                               zr(iinstm), zr(iinstp), &
                               fami, zi(imater), &
                               BEHinteg)
 
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icomp), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 
 ! - Properties of behaviour
-    rela_comp = zk16(icomp-1+RELA_NAME)
+    rela_comp = compor(RELA_NAME)
 
 ! - Get output fields
     if (lMatr) then
@@ -143,7 +144,7 @@ subroutine te0201(option, nomte)
                 npg, lgpg, zi(imater), option, zr(igeom), &
                 zr(idepm), zr(iddep), sigmo, sigma, fint, &
                 mat, zr(ivarim), zr(ivarip), zr(iinstm), zr(iinstp), &
-                zr(icarcr), zk16(icomp), typmod, lMatr, lVect, lSigm, &
+                zr(icarcr), compor, typmod, lMatr, lVect, lSigm, &
                 codret)
 
 ! - Save matrix

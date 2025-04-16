@@ -200,7 +200,8 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
     auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
                      const std::string &name, const std::string &param,
                      const FiniteElementDescriptorPtr FED,
-                     std::vector< std::pair< std::string, DataFieldPtr > > field_in = {} ) {
+                     std::vector< std::pair< std::string, DataFieldPtr > > field_in =
+                         std::vector< std::pair< std::string, DataFieldPtr > >() ) {
         if ( load->hasLoadField( name ) ) {
             calcul->setOption( option );
             calcul->setFiniteElementDescriptor( FED );
@@ -333,7 +334,8 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
     auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
                      const std::string &name, const std::string &param,
                      const FiniteElementDescriptorPtr FED,
-                     std::vector< std::pair< std::string, DataFieldPtr > > field_in = {} ) {
+                     std::vector< std::pair< std::string, DataFieldPtr > > field_in =
+                         std::vector< std::pair< std::string, DataFieldPtr > >() ) {
         if ( load->hasLoadField( name ) ) {
             calcul->setOption( option );
             calcul->setFiniteElementDescriptor( FED );

@@ -3,7 +3,7 @@
  * @brief Interface python de ParMetisPartitioner
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,7 +30,7 @@
 
 void exportParMetisPartitionerToPython( py::module_ &mod ) {
 
-#ifdef ASTER_HAVE_PTSCOTCH
+#ifdef ASTER_HAVE_PARMETIS
     py::class_< ParMetisPartitioner, ParMetisPartitionerPtr >( mod, "ParMetisPartitioner" )
         .def( py::init( &initFactoryPtr< ParMetisPartitioner > ) )
         .def( "__pickling_disabled__", disable_pickling< ParMetisPartitioner >() )
@@ -51,5 +51,5 @@ Call ParMetis partitioning
 Returns:
     list[int]: Owner for each nodes
         )" );
-#endif /* ASTER_HAVE_PTSCOTCH */
+#endif /* ASTER_HAVE_PARMETIS */
 };

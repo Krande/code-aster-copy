@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ntcomp(icomp, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo)
+subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo)
 !.
     implicit none
 !
@@ -26,7 +26,8 @@ subroutine ntcomp(icomp, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo)
 #include "asterfort/rcfode.h"
 #include "asterfort/matrRotLGTher.h"
 !
-    integer, intent(in) :: icomp, ndim, ifon(6)
+    character(len=16), intent(in) :: rela_name
+    integer, intent(in) :: ndim, ifon(6)
     real(kind=8), intent(in) :: temp, dtemp(3), coorpg(3)
     aster_logical, intent(in) :: aniso
     real(kind=8), intent(out) :: fluxglo(3)
@@ -39,7 +40,7 @@ subroutine ntcomp(icomp, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo)
     fluxglo = 0.d0
     Kglo = 0.d0
 !
-    if (zk16(icomp) (1:5) .eq. 'THER_') then
+    if (rela_name(1:5) .eq. 'THER_') then
 !
 ! ------- EVALUATION DE LA CONDUCTIVITE LAMBDA
 !

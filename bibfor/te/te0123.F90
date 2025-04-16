@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine te0123(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: ivfb, idfdeb
     integer :: icontm, ivarim
-    integer :: iinstm, iinstp, idplgm, iddplg, icompo, icarcr
+    integer :: iinstm, iinstp, idplgm, iddplg, icarcr
     integer :: ivectu, icontp, ivarip
     integer :: ivarix
     integer :: jtab(7), iadzi, iazk24, icoret, codret
@@ -77,6 +77,7 @@ subroutine te0123(option, nomte)
     integer :: icodr1(1)
     character(len=8) :: typmod(2), lielrf(10), nomail
     character(len=16) :: phenom, rela_comp, defo_comp
+    character(len=16), pointer :: compor(:) => null()
     aster_logical :: lVect, lMatr, lVari, lSigm, lMass
     blas_int :: b_incx, b_incy, b_n
 !
@@ -153,9 +154,9 @@ subroutine te0123(option, nomte)
         ASSERT(jtab(1) .eq. ivarim)
         lgpg = max(jtab(6), 1)*jtab(7)
 ! ----- Properties of behaviour
-        call jevech('PCOMPOR', 'L', icompo)
-        rela_comp = zk16(icompo-1+RELA_NAME)
-        defo_comp = zk16(icompo-1+DEFO)
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        rela_comp = compor(RELA_NAME)
+        defo_comp = compor(DEFO)
         if (rela_comp .ne. 'ENDO_HETEROGENE') then
             call utmess('F', 'COMPOR2_13')
         end if
@@ -163,7 +164,7 @@ subroutine te0123(option, nomte)
             call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
         end if
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+        call behaviourOption(option, compor, lMatr, lVect, lVari, &
                              lSigm, codret)
 ! ----- Get orientation
         call getElemOrientation(ndim, nno, igeom, angl_naut)
@@ -208,7 +209,7 @@ subroutine te0123(option, nomte)
 ! ----- Compute
         call nmplgs(ndim, nno, zr(ivf), idfde, nnob, &
                     zr(ivfb), idfdeb, npg, ipoids, zr(igeom), &
-                    typmod, option, zi(imate), zk16(icompo), zr(icarcr), &
+                    typmod, option, zi(imate), compor, zr(icarcr), &
                     zr(iinstm), zr(iinstp), angl_naut, zr(idplgm), zr(iddplg), &
                     zr(icontm), lgpg, zr(ivarim), zr(icontp), zr(ivarip), &
                     zr(imatuu), zr(ivectu), codret, livois, nbvois, &

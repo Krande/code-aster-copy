@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine te0558(option, nomte)
     integer :: contac, ndim, nnop, nnops, ibid, nddls, nddlm, nnopm
     integer :: dimuel, iadzi, iazk24, lact(16), igeom, idepd, idepm
     integer :: jlsn, jlst, jptint, jaint, jcface, jheafa, ncomph, pos(16)
-    integer :: jlonch, jbasec, icompo, jout1, ninter, jheavn, ncompp, ncompc
+    integer :: jlonch, jbasec, jout1, ninter, jheavn, ncompp, ncompc
     integer :: nface, nptf, nnof, npgf, ipoidf, ivff, idfdef, jdonco, jfisco
     integer :: cface(30, 6), j, jcohes, jcoheo, iret, jtab(7), ncompv
     integer :: vstnc(32), nnol, pla(27), nlact(2), algocr, ifiss, nfiss
@@ -64,6 +64,7 @@ subroutine te0558(option, nomte)
     aster_logical :: lbid
     real(kind=8) :: rela
     character(len=8) :: typma, elrefp, elrefc, elc, fpg
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: enr
 !
     integer :: nfimax
@@ -150,7 +151,7 @@ subroutine te0558(option, nomte)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PBASECO', 'L', jbasec)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PINCOCA', 'E', jout1)
     call jevech('PHEA_NO', 'L', jheavn)
     call jevech('PSTANO', 'L', jstano)
@@ -316,7 +317,7 @@ subroutine te0558(option, nomte)
                          dimuel, nface, npgf, nbspg, nptf, &
                          jcohes, jptint, igeom, jbasec, &
                          nlact, cface, fpg, ncompv, &
-                         zk16(icompo), jmate, ndim, idepm, &
+                         compor, jmate, ndim, idepm, &
                          idepd, jcoheo, incoca, pla, rela, &
                          algocr, jheavn, ncompn, ifiss, nfiss, nfh, &
                          jheafa, ncomph, pos)

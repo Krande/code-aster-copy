@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,14 +35,15 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/tgveri_use.h"
 #include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
     aster_logical :: matsym
     character(len=16) :: option, compor(COMPOR_SIZE)
     integer :: iret, nno, ndim
-    real(kind=8) :: carcri(CARCRI_SIZE), sdepl(*), scont(*), svect(*), smatr(*), varia(*)
+    real(kind=8) :: carcri(CARCRI_SIZE), sdepl(*), scont(*), svect(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
-    real(kind=8) :: varip(*), svari(*)
+    real(kind=8) :: varip(*), svari(*), smatr(*), varia(*)
 !
 ! ----------------------------------------------------------------------
 ! VAR OPTION NOM DE L'OPTION DE CALCUL
@@ -70,7 +71,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
     integer :: ematra, ematrc, exi
     integer :: nddl, typeMatr
     integer :: nvari, ncont
-    integer :: i, j, k, indi, nvar, init, pos
+    integer :: i, j, k, indi, nvar, init, pos, iuse
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo
     real(kind=8) :: matper(3*27*3*27)
     blas_int :: b_incx, b_incy, b_n
@@ -86,16 +87,9 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 !
     iret = 0
     typeMatr = nint(carcri(TYPE_MATR_T))
-    if (typeMatr .eq. 0 .or. typeMatr .eq. 3 .or. typeMatr .eq. 4) then
-        goto 999
-    else
-! INCOMATIBILITE AVEC LES COMPORTEMENTS QUI UTILISENT PVARIMP
-        if (compor(PLANESTRESS) .eq. 'DEBORST') then
-            goto 999
-        end if
-    end if
-    if (option(1:9) .eq. 'RIGI_MECA') then
-        goto 999
+    call tgveri_use(option, carcri, compor, iuse)
+    if (iuse == 0) then
+        go to 999
     end if
 !
 ! --  INITIALISATION (PREMIER APPEL)

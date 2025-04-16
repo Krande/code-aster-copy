@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,11 +52,12 @@ subroutine te0005(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lSigm, lMatr, lVect
-    integer :: i, ivf, ivf2, idfde, idfde2, jgano, ndim, lgpg, ipoids, npi
-    integer :: ipoid2, dimdef, icompo, ichg, ichn
+    integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, lgpg, ipoids, npi
+    integer :: ipoid2, dimdef, ichg, ichn
     integer :: icontm, ideplm, ideplp, igeom, imate, jcret, nddls, nddlm
     integer :: imatuu, ivectu, icontp, nnos, nnom, dimuel, dimcon
     integer :: ivarim, ivarip, icarcr, iinstm, iinstp
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2)
     real(kind=8) :: sigref, lagref, epsref
     real(kind=8), allocatable:: sref(:)
@@ -71,7 +72,7 @@ subroutine te0005(option, nomte)
 ! - Get adresses for fields
 !
 
-    call dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
+    call dilcar(option, compor, icontm, ivarim, ideplm, ideplp, &
                 igeom, imate, imatuu, ivectu, icontp, &
                 ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
 
@@ -89,7 +90,7 @@ subroutine te0005(option, nomte)
     if (option(1:9) .eq. 'RIGI_MECA') then
         call dilele(option, typmod, ds_dil, ndim, nnos, &
                     nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
-                    zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
+                    zr(ivf2), idfde, idfde2, zr(igeom), compor, &
                     zi(imate), lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), &
                     zr(icontm), zr(ivarim), &
@@ -98,7 +99,7 @@ subroutine te0005(option, nomte)
              .eq. 'FULL_MECA') then
         call dilele(option, typmod, ds_dil, ndim, nnos, &
                     nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
-                    zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
+                    zr(ivf2), idfde, idfde2, zr(igeom), compor, &
                     zi(imate), lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), &
                     zr(icontp), zr(ivarip), &
@@ -106,7 +107,7 @@ subroutine te0005(option, nomte)
     else if (option .eq. 'FORC_NODA') then
         call fnodil(option, typmod, ds_dil, ndim, nnos, &
                     nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
-                    zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
+                    zr(ivf2), idfde, idfde2, zr(igeom), compor, &
                     zr(icontm), zr(ivectu))
     else if (option .eq. 'REFE_FORC_NODA') then
 
@@ -127,7 +128,7 @@ subroutine te0005(option, nomte)
 
         call fnodil(option, typmod, ds_dil, ndim, nnos, &
                     nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
-                    zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
+                    zr(ivf2), idfde, idfde2, zr(igeom), compor, &
                     transpose(spread(sref, 1, npi)), &
                     zr(ivectu))
 

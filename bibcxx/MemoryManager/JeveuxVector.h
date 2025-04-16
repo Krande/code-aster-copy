@@ -613,9 +613,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
         reference operator*() const { return *m_ptr; }
 
-        const pointer operator->() { return m_ptr; }
+        pointer operator->() const { return m_ptr; }
 
-        const pointer operator&() const { return m_ptr; }
+        pointer operator&() const { return m_ptr; }
 
         const_iterator &operator++() {
             m_ptr++;

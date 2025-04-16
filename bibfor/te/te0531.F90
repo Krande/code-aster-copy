@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,12 +54,13 @@ subroutine te0531(option, nomte)
     integer :: npg
     integer :: nbcmp, jnbspi, idefo, nbcou, icomp, imate, iret
     integer :: nbsp, ipg, ksp, i, idefto, icomp2, idsig, icomp3
-    integer :: nbgf, icp, isdcom, icompo, ig, nbfig, ifib, icaba
+    integer :: nbgf, icp, isdcom, ig, nbfig, ifib, icaba
     integer :: nbsec, iret1, nbpar, nbv, icodre(2), tygrfi, nbcarm, nug(10)
     real(kind=8) :: epsth, sigma(6), trsig, temp, valres(2), e, nu, c1, c2, a
     character(len=4)  :: fami
     character(len=8)  :: materi, nompar, nomres(2)
     character(len=32) :: phenom
+    character(len=16), pointer :: compor(:) => null()
     aster_logical :: lmeca, pmf, grille, tuyau, barre, coque, lplas
 
     nbcmp = 1
@@ -221,8 +222,8 @@ subroutine te0531(option, nomte)
 !       Récupération des caractéristiques des fibres
         call pmfinfo(nbsp, nbgf, tygrfi, nbcarm, nug)
 !
-        call jevech('PCOMPOR', 'L', icompo)
-        call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        call jeveuo(compor(MULTCOMP), 'L', isdcom)
         do ipg = 1, npg
             ksp = 0
             do ig = 1, nbgf

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,15 +35,16 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 #include "asterfort/mavec.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
+#include "asterfort/tgveri_use.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     aster_logical :: matsym
     character(len=16) :: option, compor(*)
     integer :: iret, nno1, nno2, nno3, ndim
     integer :: vu(3, 27), vg(27), vp(27)
-    real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*), smatr(*), varia(*)
+    real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
-    real(kind=8) :: varip(*), svari(*)
+    real(kind=8) :: varip(*), svari(*), smatr(*), varia(*)
 !
 ! ----------------------------------------------------------------------
 ! VAR OPTION NOM DE L'OPTION DE CALCUL
@@ -67,7 +68,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
     character(len=24) :: matra, matrc
     integer :: ematra, ematrc, exi
     integer :: nddl
-    integer :: nvari, ncont
+    integer :: nvari, ncont, iuse
     integer :: i, j, k, l, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo, maxpre, maxgon
     real(kind=8) :: matper(nddl*nddl), epsilp, epsilg
@@ -83,15 +84,8 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 !     Calcul de la matrice TGTE par PERTURBATION
 !
     iret = 0
-    if (abs(carcri(2)) .lt. 0.1d0) then
-        goto 999
-    else
-! INCOMATIBILITE AVEC LES COMPORTEMENTS QUI UTILISENT PVARIMP
-        if (compor(5) (1:7) .eq. 'DEBORST') then
-            goto 999
-        end if
-    end if
-    if (option(1:9) .eq. 'RIGI_MECA') then
+    call tgveri_use(option, carcri, compor, iuse)
+    if (iuse == 0) then
         goto 999
     end if
 !

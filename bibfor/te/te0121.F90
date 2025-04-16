@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine te0121(option, nomte)
     integer :: iret, nbddl
     integer :: i, j, kns, ks
     integer :: jvMate, jvMateCod
-    integer :: nbNode, iNode
+    integer :: nbNode
     real(kind=8) :: alpha, beta
     integer :: matrRigiSize, matrResuSize, matrMassSize
     aster_logical :: lAbso
@@ -134,7 +134,7 @@ subroutine te0121(option, nomte)
 
 !   si l'élément est multifibre, il faut prendre le materiau "section"
 !   pour récupérer les coefficients de dilatation :
-    call pmfmats(jvMateCod, materPMF)
+    call pmfmats(materPMF)
     resuVale = 0.d0
     call rcvalb('RIGI', 1, 1, '+', jvMateCod, materPMF, elasKeyword, &
                 0, ' ', [0.d0], &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,14 +60,15 @@ subroutine te0288(option, nomte)
     integer :: ndim, nno, nnop, npg, nptf, jbasec, nfiss
     integer :: nfh, nfe, ddlc, nse, ise, in, ino
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
-    integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate, icomp, jheavn
+    integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate, jheavn
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, icode
     integer :: ninter, nface, cface(30, 6), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
     integer :: icodre(3), contac, iadzi, iazk24, jstno
     character(len=8) :: elrefp, elrese(6), fami(6), fami_se, nompar(4), enr
-    character(len=16) :: compor(4), nomres(3)
+    character(len=16) :: nomres(3)
+    character(len=16), pointer :: compor(:) => null()
     aster_logical :: incr
 !
 !
@@ -99,15 +100,11 @@ subroutine te0288(option, nomte)
                 contac)
 !
 !
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
     call jevech('PGTHETA', 'E', igthet)
-!
-    do i = 1, 4
-        compor(i) = zk16(icomp+i-1)
-    end do
 !
     incr = compor(4) .eq. 'COMP_INCR'
 

@@ -114,7 +114,7 @@ class BaseEquationNumbering : public DataStructure {
      * @return Return the local number if the dof if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER globalToLocalDOF( const ASTERINTEGER ) const {
+    ASTERINTEGER globalToLocalDOF( const ASTERINTEGER ) const {
         throw std::runtime_error( "Vector globalToLocalDOF doesn't exist in sequential" );
         return -1;
     };
@@ -124,7 +124,7 @@ class BaseEquationNumbering : public DataStructure {
      * @return Return the global number if the dof if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER localToGlobalDOF( const ASTERINTEGER ) {
+    ASTERINTEGER localToGlobalDOF( const ASTERINTEGER ) const {
         throw std::runtime_error( "Vector globalToLocalDOF doesn't exist in sequential" );
         return -1;
     };

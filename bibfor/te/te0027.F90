@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine te0027(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: ipoids, ivf, idfde
-    integer :: icomp, igeom, itemps, idepl, imate
+    integer :: igeom, itemps, idepl, imate
     integer :: iepsr, iepsf, isigi, isigm
     integer :: iforc, iforf, ithet, igthet, irota, ipesa, ier
     integer :: jgano, nno, nnos, npg, ncmp
@@ -85,7 +85,8 @@ subroutine te0027(option, nomte)
     integer :: icodre(1)
     character(len=4) :: fami
     character(len=8) :: nompar(4), typmod(2)
-    character(len=16) :: compor(4), phenom
+    character(len=16), pointer :: compor(:) => null()
+    character(len=16) :: phenom
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -129,7 +130,7 @@ subroutine te0027(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     matcod = zi(imate)
 ! RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
 ! CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
@@ -151,10 +152,6 @@ subroutine te0027(option, nomte)
         if (iepsr .ne. 0) epsini = .true.
     end if
 !
-! LOI DE COMPORTEMENT
-    do i = 1, 4
-        compor(i) = zk16(icomp+i-1)
-    end do
     grand = ASTER_FALSE
     incr = compor(4) (1:9) .eq. 'COMP_INCR'
     if (incr) then

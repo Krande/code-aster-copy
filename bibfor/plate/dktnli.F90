@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -161,7 +161,7 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
     integer, parameter :: ndimLdc = 2
     integer :: ndim, nbNode, npg, ipoids, icoopg
     integer :: jtab(7), codkpg, i, ksp
-    integer :: icacoq, icarcr, icompo, icontm, icontp, icou, icpg, igauh, iinstm
+    integer :: icacoq, icarcr, icontm, icontp, icou, icpg, igauh, iinstm
     integer :: iinstp, imate, ino, ipg, iret, isp, ivarim, ivarip, ivarix, ivpg
     integer :: j, k, nbsp, nbvar
     real(kind=8), parameter :: deux = 2.d0, rac2 = sqrt(2.d0)
@@ -182,6 +182,7 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
     character(len=4), parameter :: fami = 'RIGI'
     type(Behaviour_Integ) :: BEHinteg
     aster_logical :: lVect, lMatr, lVari, lSigm
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -237,16 +238,16 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
     end if
 !
 ! - Properties of behaviour
-    call jevech('PCOMPOR', 'L', icompo)
-    defo_comp = zk16(icompo-1+DEFO)
-    incr_elas = zk16(icompo-1+INCRELAS)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    defo_comp = compor(DEFO)
+    incr_elas = compor(INCRELAS)
     leul = defo_comp .eq. 'GROT_GDEP'
-    read (zk16(icompo-1+NVAR), '(I16)') nbvar
+    read (compor(NVAR), '(I16)') nbvar
     ASSERT((.not. defo_comp .eq. 'GROT_GDEP') .or. (.not. incr_elas .eq. 'COMP_ELAS'))
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndimLdc, typmod, option, &
-                              zk16(icompo), zr(icarcr), &
+                              compor, zr(icarcr), &
                               instm, instp, &
                               fami, zi(imate), &
                               BEHinteg)
@@ -429,7 +430,7 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 ! ------------- Integrator
                 call nmcomp(BEHinteg, &
                             fami, ipg, ksp, ndimLdc, typmod, &
-                            zi(imate), zk16(icompo), zr(icarcr), instm, instp, &
+                            zi(imate), compor, zr(icarcr), instm, instp, &
                             4, eps2d, deps2d, 4, sigmPrep, &
                             zr(ivarim+ivpg), option, angmas, &
                             zr(icontp+icpg), varip(1+ivpg), 36, dsidep, &

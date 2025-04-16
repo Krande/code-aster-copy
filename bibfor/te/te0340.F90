@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,7 @@ subroutine te0340(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: comporKit(COMPOR_SIZE)
     character(len=8) :: typmod(2), lielrf(10)
     integer :: nno1, nno2, npg, imatuu, lgpg, lgpg1, lgpg2
@@ -59,7 +60,7 @@ subroutine te0340(option, nomte)
     integer :: npgn, idf1n
     integer :: ivf2, ino, i, nddl1
     integer :: ivarim, ivarip, iinstm, iinstp
-    integer :: iddlm, iddld, icompo, icarcr
+    integer :: iddlm, iddld, icarcr
     integer :: ivectu, icontp
     integer :: ivarix
     integer :: jtab(7), jcret, codret
@@ -105,7 +106,7 @@ subroutine te0340(option, nomte)
     call jevech('PDEPLMR', 'L', iddlm)
     call jevech('PDEPLPR', 'L', iddld)
     call jevech('PCONTMR', 'L', icontm)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PCAGNBA', 'L', isect)
     call jevech('PINSTMR', 'L', iinstm)
@@ -113,14 +114,14 @@ subroutine te0340(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, compor, lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    rela_cpla = zk16(icompo-1+PLANESTRESS)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    rela_cpla = compor(PLANESTRESS)
 !
 !     MISE A JOUR EVENTUELLE DE LA GEOMETRIE
 !
@@ -189,7 +190,7 @@ subroutine te0340(option, nomte)
 ! - FORCES INTERIEURES ET MATRICE TANGENTE
 !
     do i = 1, COMPOR_SIZE
-        comporKit(i) = zk16(icompo-1+i)
+        comporKit(i) = compor(i)
     end do
     call cgfint(ndim, nno1, nno2, npg, zr(iw), &
                 zr(ivf1), zr(ivf2), zr(idf1), geom, tang, &

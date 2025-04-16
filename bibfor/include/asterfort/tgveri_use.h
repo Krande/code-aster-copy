@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+!
+#include "asterfort/Behaviour_type.h"
 #include "asterf_types.h"
 !
 interface
-    subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo)
-        character(len=16), intent(in) :: rela_name
-        integer, intent(in) :: ndim, ifon(6)
-        real(kind=8), intent(in) :: temp, dtemp(3), coorpg(3)
-        aster_logical, intent(in) :: aniso
-        real(kind=8), intent(out) :: fluxglo(3)
-        real(kind=8), intent(out) :: Kglo(3,3)
-    end subroutine ntcomp
+    subroutine tgveri_use(option, carcri, compor, iret)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
+        integer, intent(out) :: iret
+    end subroutine tgveri_use
 end interface

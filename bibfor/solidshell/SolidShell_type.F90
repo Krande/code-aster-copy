@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -288,8 +288,8 @@ module SolidShell_type
 
     type SSH_BEHA_PARA
 ! - JEVEUX adress to behaviour parameters
-        integer               :: jvCompor = 0
-        integer               :: jvCarcri = 0
+        character(len=16), pointer :: compor(:) => null()
+        real(kind=8), pointer :: carcri(:) => null()
 ! - Flag when compute tangent matrix
         aster_logical         :: lMatr = ASTER_FALSE
         aster_logical         :: lMatrSyme = ASTER_TRUE

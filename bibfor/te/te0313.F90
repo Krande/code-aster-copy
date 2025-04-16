@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine te0313(option, nomte)
     integer :: idf2, npi, npg
     integer :: codret
     integer :: ipoids, ivf1, idf1, igeom
-    integer :: iinstp, ideplm, ideplp, jvCompor, icamas
+    integer :: iinstp, ideplm, ideplp, icamas
     integer :: icontm, ivarip, ivarim, ivectu, icontp, jvSief
     integer :: mecani(8), press1(9), press2(9), tempe(5), dimuel
     integer :: dimdef, dimcon, nbvari, nb_vari_meca
@@ -80,6 +80,7 @@ subroutine te0313(option, nomte)
     aster_logical :: axi
     aster_logical :: fnoevo
     real(kind=8) :: dt
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: compor_copy(COMPOR_SIZE)
     integer :: iCompor
 !
@@ -129,13 +130,13 @@ subroutine te0313(option, nomte)
         call jevech('PINSTPR', 'L', iinstp)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-        call jevech('PCOMPOR', 'L', jvCompor)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PCONTMR', 'L', icontm)
 
 ! ----- Make copy of COMPOR map
         do iCompor = 1, COMPOR_SIZE
-            compor_copy(iCompor) = zk16(jvCompor-1+iCompor)
+            compor_copy(iCompor) = compor(iCompor)
         end do
 
 ! ----- Force DEFO_LDC="MECANIQUE" for THM
@@ -250,9 +251,9 @@ subroutine te0313(option, nomte)
         ichg = itabin(1)
         ichn = itabou(1)
 !
-        call jevech('PCOMPOR', 'L', jvCompor)
-        read (zk16(jvCompor-1+NVAR), '(I16)') nbvari
-        read (zk16(jvCompor-1+MECA_NVAR), '(I16)') nb_vari_meca
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        read (compor(NVAR), '(I16)') nbvari
+        read (compor(MECA_NVAR), '(I16)') nb_vari_meca
         call poeihm(nomte, option, modint, jgano, nno1, &
                     nno2, nbvari, nb_vari_meca, zr(ichg), zr(ichn))
     end if

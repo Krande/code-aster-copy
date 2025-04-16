@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine te0239(option, nomte)
 !
     integer, parameter :: ndimLdc = 2
     character(len=4), parameter :: fami = "RIGI"
-    integer :: icompo, nbcou, npge, icontm, ideplm, ivectu, icou, inte, icontp
+    integer :: nbcou, npge, icontm, ideplm, ivectu, icou, inte, icontp
     integer :: kpki, k1, k2, kompt, ivarim, ivarip, iinstm, iinstp, lgpg, ideplp
     integer :: icarcr, nbvari, jcret, codret
     real(kind=8) :: cisail, zic, coef, rhos, rhot, epsx3, gsx3, sgmsx3
@@ -86,6 +86,7 @@ subroutine te0239(option, nomte)
     aster_logical :: testl1, testl2
     type(Behaviour_Integ) :: BEHinteg
     integer, parameter :: nbres = 2
+    character(len=16), pointer :: compor(:) => null()
     character(len=16), parameter :: nomres(nbres) = (/'E ', 'NU'/)
     integer :: valret(nbres)
     real(kind=8) :: valres(nbres)
@@ -124,7 +125,7 @@ subroutine te0239(option, nomte)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=itab)
@@ -144,22 +145,22 @@ subroutine te0239(option, nomte)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndimLdc, typmod, option, &
-                              zk16(icompo), zr(icarcr), &
+                              compor, zr(icarcr), &
                               zr(iinstm), zr(iinstp), &
                               fami, zi(imate), &
                               BEHinteg)
 
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 
 ! - Properties of behaviour
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    rela_cpla = zk16(icompo-1+PLANESTRESS)
-    read (zk16(icompo-1+2), '(I16)') nbvari
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    rela_cpla = compor(PLANESTRESS)
+    read (compor(NVAR), '(I16)') nbvari
 
 ! - Some checks
     if (rela_cpla .eq. 'COMP_ELAS') then
@@ -320,7 +321,7 @@ subroutine te0239(option, nomte)
                 cod = 0
                 call nmcomp(BEHinteg, &
                             fami, kp, ksp, ndimLdc, typmod, &
-                            zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
+                            zi(imate), compor, zr(icarcr), zr(iinstm), zr(iinstp), &
                             4, eps2d, deps2d, 4, sigm2d, &
                             zr(ivarim+k2), option, angmas, &
                             sigp2d, zr(ivarip+k2), 36, dsidep, cod)

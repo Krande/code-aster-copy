@@ -6,7 +6,7 @@
  * @brief Definition of code_aster exceptions
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -66,7 +66,7 @@ class ErrorCpp : public AbstractErrorCpp {
                     VectorReal valr = {} )
         : AbstractErrorCpp( idmess, valk, vali, valr ) {}
 
-    const int id() const { return _id; }
+    int id() const { return _id; }
 };
 
 using AsterErrorCpp = ErrorCpp< ASTER_ERROR >;

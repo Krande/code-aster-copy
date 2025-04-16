@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine te0139(option, nomte)
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tgveri.h"
+#include "asterfort/tgveri_use.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "FE_module.h"
@@ -73,22 +74,23 @@ subroutine te0139(option, nomte)
     character(len=4) :: fami
     integer :: sz_tens, ndim
     integer :: nno, npg, imatuu, lgpg, iret
-    integer :: igeom, imate
+    integer :: igeom, imate, iuse
     integer :: icontm, ivarim
-    integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
+    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
     integer :: ivectu, icontp, ivarip
     integer :: ivarix, jv_mult_comp
     integer :: jtab(7)
     real(kind=8) :: angl_naut(7)
     aster_logical :: matsym
+    character(len=16), pointer :: compor(:) => null(), v_mult_comp(:) => null()
     character(len=16) :: mult_comp, defo_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     integer :: codret
     integer :: jv_codret
 !     POUR TGVERI
-    real(kind=8) :: sdepl(3*27), svect(3*27), scont(6*27), smatr(3*27*3*27)
+    real(kind=8) :: sdepl(3*27), svect(3*27), scont(6*27)
     real(kind=8) :: epsilo, disp_curr(MAX_BV)
-    real(kind=8) :: varia(2*3*27*3*27)
+    real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,23 +113,29 @@ subroutine te0139(option, nomte)
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
-    call jevech('PMULCOM', 'L', jv_mult_comp)
+    call jevech('PMULCOM', 'L', vk16=v_mult_comp)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Properties of behaviour
 !
-    mult_comp = zk16(jv_mult_comp-1+1)
-    defo_comp = zk16(icompo-1+DEFO)
+    mult_comp = v_mult_comp(1)
+    defo_comp = compor(DEFO)
 !
     call FECell%init()
     nno = FECell%nbnodes
     ASSERT(nno .le. 27)
     ndim = FECell%ndim
     sz_tens = 2*ndim
+!
+    call tgveri_use(option, zr(icarcr), compor, iuse)
+    if (iuse == 1) then
+        allocate (varia(2*3*27*3*27))
+        allocate (smatr(3*27*3*27))
+    end if
 !
     if (defo_comp == "PETIT_REAC") then
         b_n = to_blas_int(ndim*nno)
@@ -172,7 +180,7 @@ subroutine te0139(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, compor, lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! - Get output fields
@@ -206,7 +214,7 @@ subroutine te0139(option, nomte)
 !
     if (defo_comp .eq. 'PETIT') then
         call nmplxd(FECell, FEBasis, FEQuad, nno, npg, &
-                    ndim, typmod, option, zi(imate), zk16(icompo), &
+                    ndim, typmod, option, zi(imate), compor, &
                     mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(ivarim), &
                     matsym, zr(icontp), zr(ivarip), zr(imatuu), zr(ivectu), &
@@ -215,7 +223,7 @@ subroutine te0139(option, nomte)
 !
     else if (defo_comp .eq. 'PETIT_REAC') then
         call nmplxd(FECell, FEBasis, FEQuad, nno, npg, &
-                    ndim, typmod, option, zi(imate), zk16(icompo), &
+                    ndim, typmod, option, zi(imate), compor, &
                     mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(ivarim), &
                     matsym, zr(icontp), zr(ivarip), zr(imatuu), zr(ivectu), &
@@ -224,7 +232,7 @@ subroutine te0139(option, nomte)
 !
     else if (defo_comp .eq. 'SIMO_MIEHE') then
         call nmgpfi(fami, option, typmod, ndim, nno, &
-                    npg, zr(igeom), zk16(icompo), zi(imate), mult_comp, &
+                    npg, zr(igeom), compor, zi(imate), mult_comp, &
                     lgpg, zr(icarcr), angl_naut, zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
                     zr(ivarip), zr(ivectu), zr(imatuu), codret)
@@ -233,7 +241,7 @@ subroutine te0139(option, nomte)
     else if (defo_comp .eq. 'GREEN_LAGRANGE') then
         call nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
                     zi(imate), ndim, nno, npg, lgpg, &
-                    zk16(icompo), zr(icarcr), mult_comp, zr(iinstm), zr(iinstp), &
+                    compor, zr(icarcr), mult_comp, zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(icontp), &
                     zr(ivarim), zr(ivarip), matsym, zr(imatuu), zr(ivectu), &
                     codret)
@@ -241,7 +249,7 @@ subroutine te0139(option, nomte)
 !
     else if (defo_comp .eq. 'GDEF_LOG') then
         call nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
-                    ndim, nno, npg, zk16(icompo), mult_comp, &
+                    ndim, nno, npg, compor, mult_comp, &
                     zi(imate), lgpg, zr(icarcr), angl_naut, zr(iinstm), &
                     zr(iinstp), matsym, zr(ideplm), zr(ideplp), zr(icontm), &
                     zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
@@ -253,7 +261,7 @@ subroutine te0139(option, nomte)
     end if
 !
 ! ----- Calcul eventuel de la matrice TGTE par PERTURBATION
-    call tgveri(option, zr(icarcr), zk16(icompo), nno, zr(igeom), &
+    call tgveri(option, zr(icarcr), compor, nno, zr(igeom), &
                 ndim, ndim*nno, zr(ideplp), sdepl, zr(ivectu), &
                 svect, sz_tens*npg, zr(icontp), scont, npg*lgpg, &
                 zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym, &
@@ -269,6 +277,12 @@ subroutine te0139(option, nomte)
     if (lSigm) then
         call jevech('PCODRET', 'E', jv_codret)
         zi(jv_codret) = codret
+    end if
+!
+! - Free large arrays
+    if (iuse == 1) then
+        deallocate (smatr)
+        deallocate (varia)
     end if
 !
 end subroutine

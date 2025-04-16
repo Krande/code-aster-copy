@@ -62,8 +62,9 @@ subroutine te0067(option, nomte)
     integer :: itempi
     integer :: jvPhaseIn, jvPhaseOut, jvPhasePrev
     integer :: jvMaterCode
-    integer :: jvComporMeta, itab(7), iret, jvComporMetaTemper
+    integer :: itab(7), iret, jvComporMetaTemper
     aster_logical :: hasTemper, prevMetaIsTemper
+    character(len=16), pointer :: comporMeta(:) => null()
     type(META_MaterialParameters) :: metaPara
     aster_logical, parameter :: lNodeDebug = ASTER_FALSE
     integer :: iadzi, iazk24
@@ -85,14 +86,14 @@ subroutine te0067(option, nomte)
     call jevech('PTEMPIR', 'L', itempi)
     call jevech('PTIMMTR', 'L', jvTime)
     call jevech('PPHASIN', 'L', jvPhaseIn)
-    call jevech('PCOMPME', 'L', jvComporMeta)
+    call jevech('PCOMPME', 'L', vk16=comporMeta)
     call jevech('PPHASOUT', 'E', jvPhaseOut)
 
 ! - Get parameters from metallurgy behaviour (without tempering)
-    metaType = zk16(jvComporMeta-1+ZMETATYPE)
-    read (zk16(jvComporMeta-1+ZNUMECOMP), '(I16)') numeComp
-    read (zk16(jvComporMeta-1+ZNBPHASE), '(I16)') nbPhase
-    read (zk16(jvComporMeta-1+ZNBVARI), '(I16)') nbVari
+    metaType = comporMeta(ZMETATYPE)
+    read (comporMeta(ZNUMECOMP), '(I16)') numeComp
+    read (comporMeta(ZNBPHASE), '(I16)') nbPhase
+    read (comporMeta(ZNBVARI), '(I16)') nbVari
 
 ! - Specific input/output fields
     hasTemper = ASTER_FALSE

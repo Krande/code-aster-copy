@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,11 +64,12 @@ subroutine pmfrig(nomte, icdmat, klv)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbasspou, maxfipoutre, jacf
-    integer :: i, ii, pos, posfib, ig, codres(4), icp, icompo, isdcom
+    integer :: i, ii, pos, posfib, ig, codres(4), icp, isdcom
     real(kind=8) :: g, xjx, gxjx, xl, casect(6), vs(6), val(4)
     real(kind=8) :: cars1(6), a, alfay, alfaz, ey, ez, xjg, skt(78)
     character(len=16) :: ch16
     character(len=32) :: materi
+    character(len=16), pointer :: compor(:) => null()
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 ! --------------------------------------------------------------------------------------------------
@@ -128,8 +129,8 @@ subroutine pmfrig(nomte, icdmat, klv)
         allocate (skp(78, nbasspou))
         allocate (vfv(7, maxfipoutre))
         call r8inir(nbasspou*78, 0.d0, skp, 1)
-        call jevech('PCOMPOR', 'L', icompo)
-        call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        call jeveuo(compor(MULTCOMP), 'L', isdcom)
         !   6 caractéristiques utiles par fibre : y z aire yp zp numgr
         !   Boucle sur les poutres
         pos = 1

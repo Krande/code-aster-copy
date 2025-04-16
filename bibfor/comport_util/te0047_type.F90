@@ -128,6 +128,7 @@ contains
         !
         integer       :: icompo, itype, ideplm, ideplp, jtempsm, jtempsp, ii
         integer       :: imate, codret, cod_res(1), igeom
+        character(len=16), pointer :: compor(:) => null()
         real(kind=8)  :: temp_moins, temp_plus, temp_refe, val_res(1), xl2
         aster_logical :: isOk, isNonLin
         !
@@ -139,18 +140,19 @@ contains
         !
         D%neq = D%nno*D%nc
         ! Récupération des infos concernant les comportements :
-        !     rela_comp   zk16(icompo-1+RELA_NAME)   NOM_DU_COMPORTEMENT
-        !     nbvar       zk16(icompo-1+NVAR)        nbvar = read (zk16(icompo-1+NVAR),'(i16)')
-        !     defo_comp   zk16(icompo-1+DEFO)        PETIT   PETIT_REAC  GROT_GDEP
-        !     type_comp   zk16(icompo-1+INCRELAS)    COMP_ELAS   COMP_INCR
+        !     rela_comp   compor(RELA_NAME)   NOM_DU_COMPORTEMENT
+        !     nbvar       compor(NVAR)        nbvar = read (compor(NVAR),'(i16)')
+        !     defo_comp   compor(DEFO)        PETIT   PETIT_REAC  GROT_GDEP
+        !     type_comp   compor(INCRELAS)    COMP_ELAS   COMP_INCR
         !
         ! Properties of behaviour
         call tecach('ONO', 'PCOMPOR', 'L', codret, iad=icompo)
         isNonLin = codret .eq. 0
         if (isNonLin) then
-            D%rela_comp = zk16(icompo-1+RELA_NAME)
-            D%defo_comp = zk16(icompo-1+DEFO)
-            D%type_comp = zk16(icompo-1+INCRELAS)
+            call jevech('PCOMPOR', 'L', vk16=compor)
+            D%rela_comp = compor(RELA_NAME)
+            D%defo_comp = compor(DEFO)
+            D%type_comp = compor(INCRELAS)
         else
             D%rela_comp = "ELAS"
             D%defo_comp = "PETIT"
@@ -214,7 +216,7 @@ contains
         !   lMatr       :                   (1:9)'FULL_MECA'  (1:9)'RIGI_MECA'
         !   lPred       :                                          'RIGI_MECA_TANG'
         !   lMatrPred   :                                     (1:4)'RIGI'
-        call behaviourOption(D%option, zk16(icompo), D%lMatr, D%lVect, &
+        call behaviourOption(D%option, compor, D%lMatr, D%lVect, &
                              D%lVari, D%lSigm, codret)
         D%lMatrPred = D%option(1:4) .eq. 'RIGI'
         D%lPred = D%option .eq. 'RIGI_MECA_TANG'

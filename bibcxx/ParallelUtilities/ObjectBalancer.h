@@ -148,7 +148,7 @@ class ObjectBalancer {
 
         DistributedMaskOut() = delete;
 
-        const ASTERINTEGER apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
+        ASTERINTEGER apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
 
         const ASTERINTEGER &reverse( const ASTERINTEGER &valueIn ) const {
 #ifdef ASTER_DEBUG_CXX
@@ -166,16 +166,16 @@ class ObjectBalancer {
 
     struct DummyMask {
       public:
-        const ASTERINTEGER apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
+        ASTERINTEGER apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
 
-        const ASTERINTEGER reverse( const ASTERINTEGER &valueIn ) const { return valueIn; };
+        ASTERINTEGER reverse( const ASTERINTEGER &valueIn ) const { return valueIn; };
     };
 
     struct DummyMaskDouble {
       public:
-        const double apply( const double &valueIn ) const { return valueIn; };
+        double apply( const double &valueIn ) const { return valueIn; };
 
-        const double reverse( const double &valueIn ) const { return valueIn; };
+        double reverse( const double &valueIn ) const { return valueIn; };
     };
 
     template < typename Type >

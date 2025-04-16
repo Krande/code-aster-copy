@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,9 +63,10 @@ subroutine te0041(option, nomte)
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/vecma.h"
+#include "asterfort/Behaviour_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer         ::  nddlm, nl1, nl2, infodi, ntermx, icompo
+    integer         ::  nddlm, nl1, nl2, infodi, ntermx
     parameter(nddlm=12, nl1=nddlm*(nddlm+1)/2, nl2=nddlm*nddlm, ntermx=144)
 !
     real(kind=8)    :: mata1(nl1), mata2(nl1), mata3(nl2), mata4(nl2)
@@ -84,6 +85,7 @@ subroutine te0041(option, nomte)
     integer             :: icodre(3)
     real(kind=8)        :: valres(3)
     character(len=16)   :: nomres(3)
+    character(len=16), pointer :: compor(:) => null()
 ! --------------------------------------------------------------------------------------------------
     aster_logical       :: assemble_amor
 ! --------------------------------------------------------------------------------------------------
@@ -110,8 +112,8 @@ subroutine te0041(option, nomte)
         end if
         if (lNonLinear) then
 ! --------- Nonlinear cases (=> only for DIS_CHOC)
-            call jevech('PCOMPOR', 'L', icompo)
-            assemble_amor = zk16(icompo) .eq. 'DIS_CHOC'
+            call jevech('PCOMPOR', 'L', vk16=compor)
+            assemble_amor = compor(RELA_NAME) .eq. 'DIS_CHOC'
         else
 ! --------- Linear case (=> for all cases)
             assemble_amor = ASTER_TRUE

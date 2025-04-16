@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine ef0517(nomte)
         xl = lonele()
         !  coefficient dependant de la temperature moyenne
         call moytem('RIGI', npg, 1, '+', temp, iret)
-        call pmfmats(imate, mator)
+        call pmfmats(mator)
         ASSERT(mator .ne. ' ')
         call matela(zi(imate), mator, 1, temp, young, nu)
         gcis = young/(2.d0*(1.d0+nu))

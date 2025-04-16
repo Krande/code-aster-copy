@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine te0039(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/dis_choc_frot_syme.h"
 #include "asterfort/discret_sief.h"
 #include "asterfort/infdis.h"
@@ -64,7 +65,7 @@ subroutine te0039(option, nomte)
     integer :: lorien, lmater, ii, jj
     integer :: ivectu, jvSief, neq
     integer :: iplouf, infodi, itype, ibid
-    integer :: igeom, jvCompor, jdc, irep, ifono, ilogic, jvDisp
+    integer :: igeom, jdc, irep, ifono, ilogic, jvDisp
 !
     real(kind=8) :: pgl(3, 3), force(3)
     real(kind=8) :: fs(12), ugp(12), ulp(12), dvl(12), dpe(12), dve(12)
@@ -75,6 +76,7 @@ subroutine te0039(option, nomte)
 !
     character(len=8) :: k8bid
     character(len=16) :: kmess(5)
+    character(len=16), pointer :: compor(:) => null()
 !
     aster_logical, parameter :: Predic = ASTER_FALSE
     blas_int :: b_incx, b_incy, b_n
@@ -148,7 +150,7 @@ subroutine te0039(option, nomte)
     else if (option .eq. 'FONL_NOEU') then
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PDEPLAR', 'L', jvDisp)
-        call jevech('PCOMPOR', 'L', jvCompor)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         call jevech('PMATERC', 'L', lmater)
         if (lteatt('MODELI', 'DTR') .or. lteatt('MODELI', 'DIT')) then
 !   PARAMETRES EN ENTREE
@@ -200,7 +202,7 @@ subroutine te0039(option, nomte)
                 call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, kgv)
             end if
             !
-            if (zk16(jvCompor) .eq. 'DIS_CHOC') then
+            if (compor(RELA_NAME) .eq. 'DIS_CHOC') then
                 varmo(:) = 0.0; dvl(:) = 0.0; dpe(:) = 0.0; dve(:) = 0.0
 ! Relation de comportement de choc : forces nodales
                 call jevech('PVECTUR', 'E', ifono)

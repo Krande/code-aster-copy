@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine te0591(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -46,8 +47,9 @@ subroutine te0591(option, nomte)
     integer :: ndim, nno1, nno2, nno3, nnos, npg, jgn, ntrou
     integer :: iw, ivf1, ivf2, ivf3, idf1, idf2, idf3
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, jvSief, jvDisp, icompo, imate, ivectu
+    integer :: igeom, jvSief, jvDisp, imate, ivectu
     character(len=8) :: lielrf(10), typmod(2)
+    character(len=16), pointer :: compor(:) => null()
 ! ----------------------------------------------------------------------
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
@@ -78,17 +80,17 @@ subroutine te0591(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSIEFR', 'L', jvSief)
     call jevech('PDEPLAR', 'L', jvDisp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PVECTUR', 'E', ivectu)
 !
 ! - CALCUL DES FORCES INTERIEURES
-    if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
+    if (compor(DEFO) (1:6) .eq. 'PETIT ') then
 !
         call nifnpd(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     vu, vg, vp, typmod, zr(igeom), &
                     zr(jvSief), zr(jvDisp), zr(ivectu))
-    else if (zk16(icompo+2) (1:8) .eq. 'GDEF_LOG') then
+    else if (compor(DEFO) (1:8) .eq. 'GDEF_LOG') then
 !
         call jevech('PMATERC', 'L', imate)
         call nifnlg(ndim, nno1, nno2, nno3, npg, &
@@ -96,7 +98,7 @@ subroutine te0591(option, nomte)
                     idf2, vu, vg, vp, typmod, &
                     zi(imate), zr(igeom), zr(jvSief), zr(jvDisp), zr(ivectu))
 
-    else if (zk16(icompo+2) (1:10) .eq. 'SIMO_MIEHE') then
+    else if (compor(DEFO) (1:10) .eq. 'SIMO_MIEHE') then
 !
         call jevech('PMATERC', 'L', imate)
         call nifnsm(ndim, nno1, nno2, nno3, npg, &
@@ -105,7 +107,7 @@ subroutine te0591(option, nomte)
                     zi(imate), zr(igeom), zr(jvSief), zr(jvDisp), zr(ivectu))
 !
     else
-        call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
+        call utmess('F', 'ELEMENTS3_16', sk=compor(DEFO))
     end if
 !
 end subroutine

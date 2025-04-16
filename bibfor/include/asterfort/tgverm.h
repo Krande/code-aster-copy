@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,11 +51,11 @@ interface
         real(kind=8) :: svari(*)
         real(kind=8) :: matuu(*)
         real(kind=8) :: smatr(*)
+        real(kind=8) :: varia(*)
         aster_logical :: matsym
         real(kind=8) :: epsilo
         real(kind=8) :: epsilp
         real(kind=8) :: epsilg
-        real(kind=8) :: varia(*)
         integer :: iret
     end subroutine tgverm
 end interface

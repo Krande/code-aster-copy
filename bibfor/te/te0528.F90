@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine te0528(option, nomte)
 ! ----------------------------------------------------------------------
 !
     integer :: jgano, mxcmel, nbsgm, i, ndim, nno, nbsig, nnos, npg, ipoids, ivf
-    integer :: idfde, igau, isig, igeom, idef, icompo, nbvari, ivari, jtab(7)
+    integer :: idfde, igau, isig, igeom, idef, nbvari, ivari, jtab(7)
     integer :: iret, imate, itemps
     parameter(mxcmel=162)
     parameter(nbsgm=6)
@@ -59,6 +59,7 @@ subroutine te0528(option, nomte)
     real(kind=8) :: valpar, nu(1)
     integer :: icodre(1)
     character(len=8) ::  nompar
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: nomres, compo1, compo2, valk(2)
     aster_logical :: lflu
 ! DEB ------------------------------------------------------------------
@@ -68,10 +69,10 @@ subroutine te0528(option, nomte)
 !
 ! --- RECUPERATION DU COMPORTEMENT  :
 !     -------------------------------
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
-    compo1 = zk16(icompo-1+RELA_NAME)
-    compo2 = zk16(icompo-1+CREEP_NAME)
+    compo1 = compor(RELA_NAME)
+    compo2 = compor(CREEP_NAME)
 !
 !    VERIFICATION DU COMPORTEMENT FLUAGE
     lflu = .false.

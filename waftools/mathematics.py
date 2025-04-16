@@ -132,22 +132,23 @@ def detect_mkl(self):
             thread = "mkl_intel_thread"
         interf = "mkl_intel" + suffix
         if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
-            scalapack = "mkl_scalapack" + suffix
-            blacs = "mkl_blacs_intelmpi" + suffix
+            # scalapack = "mkl_scalapack" + suffix
+            # blacs = "mkl_blacs_intelmpi" + suffix
+            scalapack = "scalapack"
     else:
+        if self.get_define("ASTER_HAVE_OPENMP"):
+            thread = "mkl_gnu_thread"
+        interf = "mkl_gf" + suffix
         if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
             # This needs to add all libs into LD_PRELOAD (libmpi.so + all mkl libs...)
             # scalapack = "mkl_scalapack" + suffix
             # blacs = "mkl_blacs_openmpi" + suffix
             scalapack = "scalapack"
-        if self.get_define("ASTER_HAVE_OPENMP"):
-            thread = "mkl_gnu_thread"
-        interf = "mkl_gf" + suffix
-    if scalapack:
-        libs.append(scalapack)
     libs.append(interf)
     libs.append(thread)
     libs.append(core)
+    if scalapack:
+        libs.append(scalapack)
     if blacs:
         libs.append(blacs)
     try:
