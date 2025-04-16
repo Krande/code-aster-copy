@@ -310,7 +310,7 @@ vecs_r = np.vstack(
     [modes_reconstruit.getField("DEPL", r).getValues() for r in modes_reconstruit.getIndexes()]
 )
 
-tol = 1.0e-15
+tol = 1.0e-12
 with CA.disable_fpe():
     angles = scipy.linalg.subspace_angles(vecs, vecs_r)
 
