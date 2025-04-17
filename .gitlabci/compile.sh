@@ -21,4 +21,8 @@ if [ "${OSNAME}" != "win" ]; then
 else
     ./waf_std configure --mingw-cross-compilation "${opts[@]}"
     ./waf_std install -j ${jobs}
+
+    cp -a /opt/public/win/Python37 ./install/
+    cp -a /opt/public/win/tools ./install/outils
+    cp -a /opt/public/win/MEDCOUPLING_9_11_0 ./install/std/medcoupling
 fi

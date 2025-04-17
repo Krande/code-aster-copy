@@ -47,21 +47,27 @@ if [ "${BUILDTYPE}" = "ci" ]; then
     args+=( "--only-failed-results" )
 fi
 
+run_ctest="./install/bin/run_ctest"
+if [ "${OSNAME}" = "win" ]; then
+    run_ctest="wine ./install/bin/run_ctest.bat"
+fi
+
+printf "\nrun_ctest command: ${run_ctest}\n"
 printf "\nrun_ctest arguments: ${args}\n"
 
 printf "\nrunning testcases #1... - $(date)\n"
-./install/bin/run_ctest "${args[@]}"
+${run_ctest} "${args[@]}"
 iret=$?
 
 if [ ${iret} -ne 0 ]; then
     printf "\nrunning testcases #2 (rerun-failed)... - $(date)\n"
-    ./install/bin/run_ctest "${args[@]}" --rerun-failed
+    ${run_ctest} "${args[@]}" --rerun-failed
     iret=$?
 fi
 
 if [ ${iret} -ne 0 ]; then
     printf "\nrunning testcases #3 (rerun-failed)... - $(date)\n"
-    ./install/bin/run_ctest "${args[@]}" --rerun-failed
+    ${run_ctest} "${args[@]}" --rerun-failed
     iret=$?
 fi
 
