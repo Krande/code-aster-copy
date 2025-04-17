@@ -30,6 +30,7 @@
 #include "aster_mpi.h"
 
 #include "ParallelUtilities/AsterMPI.h"
+#include "Supervis/Exceptions.h"
 
 #include <algorithm>
 
@@ -37,6 +38,7 @@ Joints::Joints() : Joints( DataStructureNaming::getNewName() ) {};
 
 Joints::Joints( const std::string name )
     : DataStructure( name, 19, "DOMJOINTS" ),
+      _layer( JeveuxVectorLong( getName() + ".NBLG" ) ),
       _domj( JeveuxVectorLong( getName() + ".DOMJ" ) ),
       _send( JeveuxCollectionLong( getName() + ".SEND" ) ),
       _recv( JeveuxCollectionLong( getName() + ".RECV" ) ),
@@ -138,6 +140,24 @@ VectorLong Joints::getReceivedElements( const ASTERINTEGER &id ) const {
     const auto &obj = ( *_recv )[id + 1];
     obj->updateValuePointer();
     return obj->toVector();
+};
+
+void Joints::setNumberOfGhostLayer( const ASTERINTEGER &nb_layer ) {
+    if ( !_layer->exists() ) {
+        _layer->allocate( 1 );
+    }
+    _layer->updateValuePointer();
+
+    if ( nb_layer < 1 ) {
+        raiseAsterError( "ValueError: ghost layer number must be at least 1." );
+    }
+
+    ( *_layer )[0] = nb_layer;
+};
+
+ASTERINTEGER Joints::getNumberOfGhostLayer( void ) const {
+    _layer->updateValuePointer();
+    return ( *_layer )[0];
 };
 
 #endif /* ASTER_HAVE_MPI */

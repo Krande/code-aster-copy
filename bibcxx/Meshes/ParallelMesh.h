@@ -238,7 +238,7 @@ class ParallelMesh : public BaseMesh {
     /* Mesh builder functions */
     void create_joints( const VectorLong &domains, const VectorLong &globalNodeIds,
                         const VectorLong &nodesOwner, const VectorLong &globalCellIds,
-                        const VectorOfVectorsLong &joints );
+                        const VectorOfVectorsLong &joints, const ASTERINTEGER &nbLayer );
 
     void endDefinition();
 

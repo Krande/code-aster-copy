@@ -426,6 +426,7 @@ VectorLong ParallelMesh::getOuterCells() const {
 
 bool ParallelMesh::build() {
     _buildGlobal2LocalNodeIdsMapPtr();
+    _joints->build();
     return BaseMesh::build();
 }
 
@@ -479,10 +480,11 @@ ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob,
 
 void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &globalNodeIds,
                                   const VectorLong &nodesOwner, const VectorLong &globalCellIds,
-                                  const VectorOfVectorsLong &joints ) {
+                                  const VectorOfVectorsLong &joints, const ASTERINTEGER &nbLayer ) {
     AS_ASSERT( joints.size() == 2 * domains.size() )
 
     _joints->setOppositeDomains( domains );
+    _joints->setNumberOfGhostLayer( nbLayer );
     ( *_globalNodeIds ) = globalNodeIds;
     ( *_nodesOwner ) = nodesOwner;
     const std::string cadre( "G" );

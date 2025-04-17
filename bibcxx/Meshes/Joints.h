@@ -3,7 +3,7 @@
  * @brief Fichier entete de la classe Joints
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -41,6 +41,8 @@
  */
 class Joints : public DataStructure {
   private:
+    /** @brief Number of ghost layers */
+    JeveuxVectorLong _layer;
     /** @brief List of connected domains */
     JeveuxVectorLong _domj;
     /** @brief two-side index of nodes to send */
@@ -81,6 +83,10 @@ class Joints : public DataStructure {
     void setSendedElements( const VectorOfVectorsLong &send );
 
     void setReceivedElements( const VectorOfVectorsLong &recv );
+
+    void setNumberOfGhostLayer( const ASTERINTEGER &nb_layer );
+
+    ASTERINTEGER getNumberOfGhostLayer( void ) const;
 
     bool build();
 };

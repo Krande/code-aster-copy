@@ -236,7 +236,7 @@ void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
     }
 
     // Add parallel informations to mesh
-    toReturn->create_joints( domains, globNum, nodeOwner, {}, allJoints );
+    toReturn->create_joints( domains, globNum, nodeOwner, {}, allJoints, 1 );
     toReturn->endDefinition();
 }
 #endif

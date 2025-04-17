@@ -140,7 +140,7 @@ module crea_maillage_module
         integer(kind=8) :: nb_nodes = 0, nb_edges = 0, nb_faces = 0, nb_volumes = 0, nb_cells = 0
         integer(kind=8) :: nb_total_nodes = 0, nb_total_cells = 0
         integer(kind=8) :: max_nodes = 0, max_edges = 0, max_faces = 0, max_volumes = 0
-        integer(kind=8) :: max_cells = 0, dim_mesh = 0
+        integer(kind=8) :: max_cells = 0, dim_mesh = 0, nb_layer = 0
 !
         type(Mnode), allocatable :: nodes(:)
         type(Medge), allocatable :: edges(:)
@@ -487,8 +487,10 @@ contains
 ! TETRA15, HEXA27, PENTA21 and PYRAM19
 ! For an other cell type is only necessary to know which nodes to use
 ! --------------------------------------------------------------------------------------------------
+        character(len=19) :: joints
         integer(kind=8), pointer :: v_mesh_dime(:) => null()
         integer(kind=8), pointer :: v_noex(:) => null()
+        integer(kind=8), pointer :: v_nblg(:) => null()
         real(kind=8), pointer :: v_coor(:) => null()
         integer(kind=8) :: nb_elem_mesh, nb_node_mesh, i_node
         integer(kind=8) :: i_cell, nno, node_id, owner
@@ -531,6 +533,10 @@ contains
         call jeveuo(mesh_in//'.COORDO    .VALE', 'L', vr=v_coor)
         if (this%isHPC) then
             call jeveuo(mesh_in//'.NOEX', 'L', vi=v_noex)
+            joints = mesh_in//".JOIN"
+            call jeveuo(joints//'.NBLG', 'L', vi=v_nblg)
+            this%nb_layer = v_nblg(1)
+            ASSERT(this%nb_layer > 0)
         end if
 !
 ! --- Fill mesh
@@ -2183,34 +2189,13 @@ contains
         class(Mmesh), intent(inout) :: this
 ! -----------------------------------------------------------------------
         integer(kind=8) :: i_node, i_cell, nno, node_id, rank
-        mpi_int :: mrank, msize
+        integer(kind=8) :: i_layer, nb_ghost_cell, i_ghost_cell
+        integer(kind=8), pointer :: ghost_cells(:) => null()
+        mpi_int :: mrank
         aster_logical :: keep
 !
-        call asmpi_info(rank=mrank, size=msize)
+        call asmpi_info(rank=mrank)
         rank = to_aster_int(mrank)
-!
-        do i_node = 1, this%nb_total_nodes
-            this%nodes(i_node)%keep = ASTER_FALSE
-        end do
-!
-! --- Do not keep cells with no-owner nodes
-        if (this%isHPC) then
-            do i_cell = 1, this%nb_total_cells
-                if (this%cells(i_cell)%keep) then
-                    nno = this%converter%nno(this%cells(i_cell)%type)
-!
-                    keep = ASTER_FALSE
-                    do i_node = 1, nno
-                        node_id = this%cells(i_cell)%nodes(i_node)
-                        if (this%nodes(node_id)%owner == rank) then
-                            keep = ASTER_TRUE
-                            exit
-                        end if
-                    end do
-                    this%cells(i_cell)%keep = keep
-                end if
-            end do
-        end if
 !
 ! --- Keep initial orphelan nodes
         do i_node = 1, this%nb_total_nodes
@@ -2219,6 +2204,29 @@ contains
                 this%nodes(i_node)%keep = ASTER_TRUE
             end if
         end do
+!
+! --- Remove ghost cells - added later
+        nb_ghost_cell = 0
+        if (this%isHPC) then
+            AS_ALLOCATE(vi=ghost_cells, size=this%nb_total_cells)
+            do i_cell = 1, this%nb_total_cells
+                if (this%cells(i_cell)%keep) then
+                    nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                    keep = ASTER_TRUE
+                    do i_node = 1, nno
+                        node_id = this%cells(i_cell)%nodes(i_node)
+                        if (this%nodes(node_id)%owner .ne. rank) then
+                            keep = ASTER_FALSE
+                            nb_ghost_cell = nb_ghost_cell+1
+                            ghost_cells(nb_ghost_cell) = i_cell
+                            exit
+                        end if
+                    end do
+                    this%cells(i_cell)%keep = keep
+                end if
+            end do
+        end if
 !
 ! --- Keep only nodes of cells
         do i_cell = 1, this%nb_total_cells
@@ -2237,7 +2245,54 @@ contains
             end if
         end do
 !
-! --- Renumbering and rename
+        if (this%isHPC) then
+! --- Add ghost layers
+            do i_layer = 1, this%nb_layer
+                do i_ghost_cell = 1, nb_ghost_cell
+                    i_cell = ghost_cells(i_ghost_cell)
+                    if (i_cell > 0) then
+                        if (.not. this%cells(i_cell)%keep) then
+                            nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                            keep = ASTER_FALSE
+                            do i_node = 1, nno
+                                node_id = this%cells(i_cell)%nodes(i_node)
+                                if (this%nodes(node_id)%keep) then
+                                    keep = ASTER_TRUE
+                                    exit
+                                end if
+                            end do
+                            this%cells(i_cell)%keep = keep
+                        end if
+                    end if
+                end do
+!
+! --- Keep only nodes of cells
+                do i_ghost_cell = 1, nb_ghost_cell
+                    i_cell = ghost_cells(i_ghost_cell)
+                    if (i_cell > 0) then
+                        if (this%cells(i_cell)%keep) then
+                            nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                            if (this%debug) then
+                                print *, "Cell: ", i_cell, this%cells(i_cell)%type, nno, &
+                                    this%cells(i_cell)%nodes(1:nno)
+                            end if
+!
+                            do i_node = 1, nno
+                                node_id = this%cells(i_cell)%nodes(i_node)
+                                this%nodes(node_id)%keep = ASTER_TRUE
+                            end do
+                            ghost_cells(i_ghost_cell) = -1
+                        end if
+                    end if
+                end do
+            end do
+!
+            AS_DEALLOCATE(vi=ghost_cells)
+        end if
+!
+! --- Renumbering
         this%nb_nodes = 0
         do i_node = 1, this%nb_total_nodes
             if (this%nodes(i_node)%keep) then
@@ -2808,7 +2863,7 @@ contains
         class(Mmesh), intent(in) :: this
         character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-        character(len=24) :: send, recv, domj, gcom, pgin
+        character(len=24) :: send, recv, domj, gcom, pgin, nblg
         character(len=19) :: joints
         integer(kind=8), pointer :: v_rnode(:) => null()
         integer(kind=8), pointer :: v_noex(:) => null()
@@ -2823,6 +2878,7 @@ contains
         integer(kind=8), pointer :: v_gcom(:) => null()
         integer(kind=8), pointer :: v_comm(:) => null()
         integer(kind=8), pointer :: v_tag(:) => null()
+        integer(kind=8), pointer :: v_nblg(:) => null()
         aster_logical, pointer :: v_keep(:) => null()
         real(kind=8), pointer :: v_send(:) => null()
         real(kind=8), pointer :: v_recv(:) => null()
@@ -2847,12 +2903,17 @@ contains
             recv = joints//".RECV"
             gcom = joints//".GCOM"
             pgin = joints//".PGID"
+            nblg = joints//".NBLG"
 
             call jemarq()
             call asmpi_comm('GET', mpicou)
             call asmpi_info(rank=mrank, size=msize)
             rank = to_aster_int(mrank)
             nbproc = to_aster_int(msize)
+!
+! --- 0: On enregiste le nombre de couches de ghost
+            call wkvect(nblg, 'G V I', 1, vi=v_nblg)
+            v_nblg(1) = this%nb_layer
 !
 ! --- 1: On commence par compter le nombre de noeuds que l'on doit recevoir
 !
@@ -2863,8 +2924,8 @@ contains
 
             call wkvect("&&CREAMA.RNODE", 'V V I', nbproc, vi=v_rnode)
             do i_node = 1, this%nb_nodes
-                ind = v_noex(i_node)+1
-                v_rnode(ind) = v_rnode(ind)+1
+                owner = v_noex(i_node)
+                v_rnode(owner+1) = v_rnode(owner+1)+1
             end do
             v_rnode(rank+1) = 0
 ! --- On compte combien on doit recevoir et envoyer
@@ -2961,29 +3022,41 @@ contains
 ! --- Pour accélérer la recherche, on garde les noeuds voisins des non-proprio
                 v_keep = ASTER_FALSE
                 nb_nodes_keep = 0
-                do i_cell = 1, nb_cells_keep
-                    cell_id = v_ckeep(i_cell)
-                    keep = ASTER_FALSE
-                    nno = this%converter%nno(this%cells(cell_id)%type)
-                    do i_node = 1, nno
-                        owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
-                        if (owner == proc_id) then
-                            keep = ASTER_TRUE
-                            exit
-                        end if
-                    end do
-                    if (keep) then
+
+                if (this%nb_layer == 1) then
+                    do i_cell = 1, nb_cells_keep
+                        cell_id = v_ckeep(i_cell)
+                        keep = ASTER_FALSE
+                        nno = this%converter%nno(this%cells(cell_id)%type)
                         do i_node = 1, nno
-                            node_id = this%cells(cell_id)%nodes(i_node)
-                            owner = v_noex(this%nodes(node_id)%id)
-                            if (owner == rank .and. (.not. v_keep(node_id))) then
-                                v_keep(node_id) = ASTER_TRUE
-                                nb_nodes_keep = nb_nodes_keep+1
-                                v_nkeep(nb_nodes_keep) = node_id
+                            owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
+                            if (owner == proc_id) then
+                                keep = ASTER_TRUE
+                                exit
                             end if
                         end do
-                    end if
-                end do
+                        if (keep) then
+                            do i_node = 1, nno
+                                node_id = this%cells(cell_id)%nodes(i_node)
+                                owner = v_noex(this%nodes(node_id)%id)
+                                if (owner == rank .and. (.not. v_keep(node_id))) then
+                                    v_keep(node_id) = ASTER_TRUE
+                                    nb_nodes_keep = nb_nodes_keep+1
+                                    v_nkeep(nb_nodes_keep) = node_id
+                                end if
+                            end do
+                        end if
+                    end do
+                else
+                    ! A optimiser car on regarde tous les noeuds
+                    ! voir comment généraliser
+                    ! il faut trouver une liste de candidats
+                    ! pas trop grande
+                    do i_node = 1, this%nb_total_nodes
+                        nb_nodes_keep = nb_nodes_keep+1
+                        v_nkeep(nb_nodes_keep) = i_node
+                    end do
+                end if
                 ASSERT(nb_nodes_keep >= n_coor_recv)
 !
                 !  On regarde que les noeuds ne sont pas confondu.
