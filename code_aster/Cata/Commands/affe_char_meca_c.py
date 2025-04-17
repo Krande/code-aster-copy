@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,18 @@ AFFE_CHAR_MECA_C = OPER(
         regles=(
             AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", "NOEUD"),
             AU_MOINS_UN(
-                "DX", "DY", "DZ", "DRX", "DRY", "DRZ", "GRX", "PRES", "PHI", "BLOCAGE", "GLIS"
+                "DX",
+                "DY",
+                "DZ",
+                "DRX",
+                "DRY",
+                "DRZ",
+                "GRX",
+                "PRES",
+                "PHI",
+                "PSI",
+                "BLOCAGE",
+                "GLIS",
             ),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
@@ -70,6 +81,7 @@ AFFE_CHAR_MECA_C = OPER(
         GRX=SIMP(statut="f", typ="C"),
         PRES=SIMP(statut="f", typ="C"),
         PHI=SIMP(statut="f", typ="C"),
+        PSI=SIMP(statut="f", typ="C"),
         GLIS=SIMP(statut="f", typ="C"),
     ),
     FORCE_POUTRE=FACT(
