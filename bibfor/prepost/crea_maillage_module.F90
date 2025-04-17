@@ -57,7 +57,6 @@ module crea_maillage_module
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -93,7 +92,6 @@ module crea_maillage_module
         integer :: nodes(27) = 0
         integer :: child(10) = 0
         integer :: nb_child = 0
-        character(len=8) :: name = ' '
         aster_logical :: keep = ASTER_TRUE
     end type
 !
@@ -129,7 +127,6 @@ module crea_maillage_module
         real(kind=8) :: coor(3) = 0.d0
         aster_logical :: keep = ASTER_FALSE
         aster_logical :: orphelan = ASTER_FALSE
-        character(len=8) :: name = ' '
         integer :: owner = -1
 ! used to improve search of edges and faces
 ! it could be improved a lot to decrease memory consumption
@@ -156,12 +153,6 @@ module crea_maillage_module
 !
         character(len=8) :: mesh_in = ' '
         character(len=19) :: connex_in = ' '
-!
-        character(len=8)  :: node_prefix = 'N'
-        integer :: node_index = 1
-!
-        character(len=8)  :: cell_prefix = 'M'
-        integer :: cell_index = 1
 !
         integer, pointer :: v_typema(:) => null()
         aster_logical :: debug = ASTER_FALSE
@@ -499,7 +490,6 @@ contains
         integer, pointer :: v_mesh_dime(:) => null()
         integer, pointer :: v_noex(:) => null()
         real(kind=8), pointer :: v_coor(:) => null()
-        character(len=8) :: name
         integer :: nb_elem_mesh, nb_node_mesh, i_node
         integer :: i_cell, nno, node_id, owner
         real(kind=8):: start, end
@@ -548,11 +538,10 @@ contains
         this%nb_total_nodes = this%nb_nodes
         owner = 0
         do i_node = 1, nb_node_mesh
-            name = int_to_char8(i_node)
             if (this%isHPC) then
                 owner = v_noex(i_node)
             end if
-            node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner, name)
+            node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner)
             ASSERT(i_node == node_id)
             this%nodes(node_id)%orphelan = ASTER_TRUE
             this%nodes(node_id)%max_faces = 30
@@ -1070,7 +1059,6 @@ contains
         this%cells(this%nb_total_cells)%id = this%nb_total_cells
         this%cells(this%nb_total_cells)%ss_id = cell_index
         this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
-        this%cells(this%nb_total_cells)%name = int_to_char8(cell_id)
 !
     end subroutine
 !
@@ -1355,14 +1343,13 @@ contains
 !
 ! ==================================================================================================
 !
-    function add_node(this, coor, owner, name) result(node_id)
+    function add_node(this, coor, owner) result(node_id)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         real(kind=8), intent(in) :: coor(3)
         integer, intent(in) :: owner
-        character(len=8), intent(in), optional :: name
         integer :: node_id
 ! ----------------------------------------------------------------------
 !
@@ -1377,11 +1364,6 @@ contains
         this%nodes(node_id)%keep = ASTER_TRUE
         this%nodes(node_id)%coor(1:3) = coor
         this%nodes(node_id)%owner = owner
-        if (present(name)) then
-            this%nodes(node_id)%name = name
-        else
-            this%nodes(node_id)%name = 'XXXXXXXX'
-        end if
 !
     end function
 !
@@ -1396,9 +1378,8 @@ contains
 ! ------------------------------------------------------------------
         character(len=24) :: cooval, coodsc, grpnoe
         character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
-        character(len=32) :: name
         character(len=4) :: dimesp
-        integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, iret, nb_no_loc
+        integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, nb_no_loc
         integer :: rank, nbproc, i_proc, deca, cell_id, pCellShift, hugeValue, iProc, iCount
         mpi_int :: mrank, msize
         real(kind=8):: start, end
@@ -1567,14 +1548,12 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine convert_cells(this, nb_cells, list_cells, prefix, ndinit)
+    subroutine convert_cells(this, nb_cells, list_cells)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         integer, intent(in) :: nb_cells, list_cells(nb_cells)
-        character(len=8), intent(in), optional :: prefix
-        integer, intent(in), optional :: ndinit
 ! ------------------------------------------------------------------
         integer :: i_cell, cell_id, cell_dim, object_id, nno, cell_type
         integer :: i_node, nodes_loc(27)
@@ -1583,13 +1562,6 @@ contains
         if (this%info >= 2) then
             print *, "Converting cells..."
             call cpu_time(start)
-        end if
-!
-        if (present(prefix)) then
-            this%node_prefix = prefix
-        end if
-        if (present(ndinit)) then
-            this%node_index = ndinit
         end if
 !
         do i_cell = 1, nb_cells
@@ -2204,22 +2176,15 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine update(this, rename_nodes_)
+    subroutine update(this)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        aster_logical, intent(in), optional :: rename_nodes_
 ! -----------------------------------------------------------------------
-        integer :: i_node, i_cell, nno, node_id, rank, len_max
+        integer :: i_node, i_cell, nno, node_id, rank
         mpi_int :: mrank, msize
-        aster_logical :: keep, cod, rename_nodes
-        character(len=8) :: nume
-!
-        rename_nodes = ASTER_FALSE
-        if (present(rename_nodes_)) then
-            rename_nodes = rename_nodes_
-        end if
+        aster_logical :: keep
 !
         call asmpi_info(rank=mrank, size=msize)
         rank = to_aster_int(mrank)
@@ -2274,22 +2239,10 @@ contains
 !
 ! --- Renumbering and rename
         this%nb_nodes = 0
-        len_max = 10**(8-len_trim(this%node_prefix))-1
-        if (rename_nodes) this%node_index = 1
-        cod = this%nb_total_nodes .ge. len_max
         do i_node = 1, this%nb_total_nodes
             if (this%nodes(i_node)%keep) then
                 this%nb_nodes = this%nb_nodes+1
                 this%nodes(i_node)%id = this%nb_nodes
-                if (rename_nodes .or. this%nodes(i_node)%name == "XXXXXXXX") then
-                    if (cod) then
-                        call codlet(this%node_index, 'G', nume)
-                    else
-                        call codent(this%node_index, 'G', nume)
-                    end if
-                    this%nodes(i_node)%name = trim(this%node_prefix)//trim(nume)
-                    this%node_index = this%node_index+1
-                end if
             end if
         end do
 !
@@ -2412,7 +2365,6 @@ contains
         integer :: nb_sub, sub_type(10), sub_loc(10, 10), i_sub, i_node, obj, cell_id_sub
         integer :: nodes_loc(27), nno, conv_type(10), edges(12), nb_edges, i_edge, edge_id
         integer :: nb_sub2, sub_type2(10), sub_loc2(10, 10), conv_type2(10), i_face, face_id
-        character(len=8) :: nume
 !
         cell_dim = this%cells(cell_id)%dim
         cell_type = this%cells(cell_id)%type
@@ -2521,9 +2473,6 @@ contains
             this%cells(cell_id_sub)%dim = cell_dim
             this%cells(cell_id_sub)%id = cell_id_sub
             this%cells(cell_id_sub)%ss_id = cell_index
-            call codlet(this%cell_index, 'G', nume)
-            this%cells(cell_id_sub)%name = trim(this%cell_prefix)//trim(nume)
-            this%cell_index = this%cell_index+1
 !
             this%cells(cell_id)%child(i_sub) = cell_id_sub
             this%cells(cell_id)%nb_child = this%cells(cell_id)%nb_child+1
@@ -2567,7 +2516,6 @@ contains
         integer :: i_cell, nb_cells_ref, i_level
         real(kind=8) :: start, end
 !
-        this%cell_index = this%nb_total_cells
 ! --- Refine cells
         this%nb_level = level
         if (this%info >= 2) then
@@ -2586,7 +2534,7 @@ contains
             end do
         end do
 !
-        call this%update(ASTER_TRUE)
+        call this%update()
         if (this%info >= 2) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."

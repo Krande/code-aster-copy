@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem, prefix, ndinit)
+subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem)
 !
     use crea_maillage_module
 !
@@ -25,9 +25,8 @@ subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem, prefix, ndinit)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-    integer, intent(in) :: ndinit, nb_list_elem, list_elem(nb_list_elem)
+    integer, intent(in) :: nb_list_elem, list_elem(nb_list_elem)
     character(len=8), intent(in) :: mesh_in, mesh_out
-    character(len=8), intent(in) :: prefix
 !
 ! ----------------------------------------------------------------------
 !         TRANSFORMATION DES MAILLES POUR HHO
@@ -36,8 +35,6 @@ subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem, prefix, ndinit)
 ! IN/JXOUT  mesh_out  K8  NOM DU MAILLAGE TRANSFORME
 ! IN        NBMA    I  NOMBRE DE MAILLES A TRAITER
 ! IN        LIMA    I  NUMERO ET TYPE DES MAILLES A TRAITER
-! IN        PREFIX K8  PREFIXE DU NOM DES NOEUDS CREES (EX: N, NO, ...)
-! IN        NDINIT  I  NUMERO INITIAL DES NOEUDS CREES
 ! ----------------------------------------------------------------------
 !
     type(Mmesh) :: mesh_hho
@@ -85,7 +82,7 @@ subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem, prefix, ndinit)
 !
 ! - Convert cells
 !
-    call mesh_hho%convert_cells(nb_list_elem, list_elem, prefix, ndinit)
+    call mesh_hho%convert_cells(nb_list_elem, list_elem)
 !
 ! - Copy mesh
 !
