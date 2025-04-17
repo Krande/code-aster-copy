@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,9 +110,24 @@ def parse_args(argv):
     parser.add_argument(
         "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
     )
-    parser.add_argument("--ctest", action="store_true", help="pass the --ctest option to run_aster")
     parser.add_argument(
         "--output", action="store", help="output file (default: <export filename>-%%j.txt)"
+    )
+    parser.add_argument(
+        "--ctest",
+        dest="opts",
+        action="append_const",
+        const="--ctest",
+        help="shortcut for --run_aster_option='--ctest'",
+    )
+    parser.add_argument(
+        "--run_aster_option",
+        dest="opts",
+        action="extend",
+        nargs="*",
+        default=[],
+        help="option to be passed to run_aster, can be repeated "
+        "(example: --run_aster_option='--only-proc0')",
     )
     parser.add_argument(
         "file", metavar="FILE.export", help="Export file (.export) defining the calculation."
@@ -165,7 +180,6 @@ def main(argv=None):
     # initialized with default values
     addmem = CFG.get("addmem", 0.0)
     memory = export.get("memory_limit", 16384) + addmem
-    opts = "--ctest" if args.ctest else ""
     params = {
         "name": osp.splitext(osp.basename(args.file))[0],
         "mpi_nbcpu": export.get("mpi_nbcpu", 1),
@@ -176,7 +190,7 @@ def main(argv=None):
         "memory_node": memory,
         "options": "",
         "study": args.file,
-        "run_aster_options": opts,
+        "run_aster_options": " ".join(args.opts),
         "RUNASTER_ROOT": RUNASTER_ROOT,
         "testlist": export.get("testlist", []),
     }
