@@ -2886,7 +2886,7 @@ contains
         integer(kind=8) :: nbproc, rank, ind, nb_recv, i_proc, recv1(1)
         integer(kind=8) :: n_coor_send, n_coor_recv, proc_id, i_comm, domj_i
         integer(kind=8) :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
-        integer(kind=8) :: i_cell, nno, nb_cells_keep, owner, cell_id
+        integer(kind=8) :: i_cell, nno, nb_cells_keep, owner, cell_id, i_layer
         real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end
         real(kind=8), parameter :: tole = 1.d-15
         aster_logical :: find, keep
@@ -3022,24 +3022,51 @@ contains
 ! --- Pour accélérer la recherche, on garde les noeuds voisins des non-proprio
                 v_keep = ASTER_FALSE
                 nb_nodes_keep = 0
-
-                if (this%nb_layer == 1) then
-                    do i_cell = 1, nb_cells_keep
-                        cell_id = v_ckeep(i_cell)
-                        keep = ASTER_FALSE
-                        nno = this%converter%nno(this%cells(cell_id)%type)
+!
+! --- Add first layer of cells
+                do i_cell = 1, nb_cells_keep
+                    cell_id = v_ckeep(i_cell)
+                    keep = ASTER_FALSE
+                    nno = this%converter%nno(this%cells(cell_id)%type)
+                    do i_node = 1, nno
+                        owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
+                        if (owner == proc_id) then
+                            keep = ASTER_TRUE
+                            exit
+                        end if
+                    end do
+                    if (keep) then
                         do i_node = 1, nno
-                            owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
-                            if (owner == proc_id) then
+                            node_id = this%cells(cell_id)%nodes(i_node)
+                            owner = v_noex(this%nodes(node_id)%id)
+                            if (owner == rank .and. (.not. v_keep(node_id))) then
+                                v_keep(node_id) = ASTER_TRUE
+                                nb_nodes_keep = nb_nodes_keep+1
+                                v_nkeep(nb_nodes_keep) = node_id
+                            end if
+                        end do
+                    end if
+                end do
+!
+! --- Add additional layer
+                do i_layer = 2, this%nb_layer
+                    do i_cell = 1, this%nb_total_cells
+                        if (.not. this%cells(i_cell)%keep) cycle
+                        nno = this%converter%nno(this%cells(i_cell)%type)
+                        keep = ASTER_FALSE
+                        do i_node = 1, nno
+                            node_id = this%cells(i_cell)%nodes(i_node)
+                            owner = v_noex(this%nodes(node_id)%id)
+                            if (owner == rank .and. v_keep(node_id)) then
                                 keep = ASTER_TRUE
                                 exit
                             end if
                         end do
                         if (keep) then
                             do i_node = 1, nno
-                                node_id = this%cells(cell_id)%nodes(i_node)
+                                node_id = this%cells(i_cell)%nodes(i_node)
                                 owner = v_noex(this%nodes(node_id)%id)
-                                if (owner == rank .and. (.not. v_keep(node_id))) then
+                                if (owner == rank .and. .not. v_keep(node_id)) then
                                     v_keep(node_id) = ASTER_TRUE
                                     nb_nodes_keep = nb_nodes_keep+1
                                     v_nkeep(nb_nodes_keep) = node_id
@@ -3047,16 +3074,7 @@ contains
                             end do
                         end if
                     end do
-                else
-                    ! A optimiser car on regarde tous les noeuds
-                    ! voir comment généraliser
-                    ! il faut trouver une liste de candidats
-                    ! pas trop grande
-                    do i_node = 1, this%nb_total_nodes
-                        nb_nodes_keep = nb_nodes_keep+1
-                        v_nkeep(nb_nodes_keep) = i_node
-                    end do
-                end if
+                end do
                 ASSERT(nb_nodes_keep >= n_coor_recv)
 !
                 !  On regarde que les noeuds ne sont pas confondu.
