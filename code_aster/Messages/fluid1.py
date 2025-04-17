@@ -42,4 +42,5 @@ l'orientation des normales doit être sortante du fluide vers la structure."""
             il faut tout simplement enlever les éléments absorbants fluides de la modélisation"""
     ),
     7: _("""Le paramètre %(k1)s ne peut pas être inférieure à 0"""),
+    8: _("""Certains élements fluides utilisent une autre formulation. Il faut utiliser unique formulation (U-P, U-P-PHI ou U-PSI) pour modéliser tous les élements fluides !"""),
 }

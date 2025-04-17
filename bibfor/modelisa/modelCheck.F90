@@ -28,6 +28,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 #include "asterfort/utmess.h"
 #include "asterfort/taxis.h"
 #include "asterfort/modelCheckFSINormals.h"
+#include "asterfort/modelCheckFluidFormulation.h"
 #include "asterfort/modelCheckPlaneity.h"
 !
     character(len=8), intent(in) :: model
@@ -137,7 +138,9 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
     if (lCheckFSINorms) then
         call modelCheckFSINormals(model)
     end if
-
+! - Check that we have the same formulation in fluid modelisation
+    call modelCheckFluidFormulation(model)
+    
 ! - Check planeity of plate elements
     if (lCheckPlaneity) then
         call modelCheckPlaneity(mesh, model)

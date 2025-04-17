@@ -172,16 +172,18 @@ contains
                     end if
                 end if
             end do
-            iCellFluid = 0
-            AS_ALLOCATE(vi=cellFluid, size=nbCellFluid)
-            do iCell = 1, nbCell
-                if (isCellFluid(iCell)) then
-                    iCellFluid = iCellFluid+1
-                    cellFluid(iCellFluid) = iCell
-                end if
-            end do
-            ASSERT(iCellFluid .eq. nbCellFluid)
-            AS_DEALLOCATE(vl=isCellFluid)
+            if (nbCellFluid .ne. 0) then
+                iCellFluid = 0
+                AS_ALLOCATE(vi=cellFluid, size=nbCellFluid)
+                do iCell = 1, nbCell
+                    if (isCellFluid(iCell)) then
+                        iCellFluid = iCellFluid+1
+                        cellFluid(iCellFluid) = iCell
+                    end if
+                end do
+                ASSERT(iCellFluid .eq. nbCellFluid)
+             end if 
+             AS_DEALLOCATE(vl=isCellFluid)
         end if
 !
 !   ------------------------------------------------------------------------------------------------
