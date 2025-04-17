@@ -255,8 +255,13 @@ def parse_args(argv):
         "--no-comm",
         dest="no_comm",
         action="store_true",
-        help="do not execute the `.comm` files but start an interactive Python session. "
+        help="do not execute the `.comm` files but start an interactive Python session"
         "`CA.init()` is automatically called.",
+    )
+    parser.add_argument(
+        "--save_db",
+        action="store_true",
+        help="force the closure of the database results even if there is none",
     )
     parser.add_argument(
         "--gdb",
@@ -475,6 +480,7 @@ def main(argv=None):
         else:
             opts["tee"] = not args.ctest
         opts["interactive"] = args.interactive
+        opts["savedb"] = args.save_db
         if args.exectool:
             wrapper = CFG.get("exectool", {}).get(args.exectool)
             if not wrapper:
