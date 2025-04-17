@@ -44,7 +44,7 @@ stages:
 image:
   name: ${IMAGE_URL}
 
-prepare:
+.prepare:
   interruptible: true
   stage: setup
   script:
@@ -57,7 +57,7 @@ prepare:
   rules:
     - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
-compile:
+.compile:
   interruptible: true
   stage: build
   needs: ["prepare"]
@@ -142,7 +142,7 @@ minimal_test:
   rules:
     - if: $CI_MERGE_REQUEST_IID
 
-verification_test:
+.verification_test:
   interruptible: true
   stage: test
   tags:
@@ -265,3 +265,61 @@ docker:
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
     - if: $BUILDTYPE == "docker"
+
+# --- default build
+prepare:
+  extends: .prepare
+
+compile:
+  extends: .compile
+
+verification_test:
+  extends: .verification_test
+
+# --- variant debian-12 for nightly build
+prepare_debian-12:
+  variables:
+    OSNAME: debian-12
+  extends: .prepare
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+compile_debian-12:
+  variables:
+    OSNAME: debian-12
+  needs: ["prepare_debian-12"]
+  extends: .compile
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+verification_test_debian-12:
+  variables:
+    OSNAME: debian-12
+  needs: ["compile_debian-12"]
+  extends: .verification_test
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+# --- variant win for nightly build
+prepare_win:
+  variables:
+    OSNAME: win
+  extends: .prepare
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+compile_win:
+  variables:
+    OSNAME: win
+  needs: ["prepare_win"]
+  extends: .compile
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+verification_test_win:
+  variables:
+    OSNAME: win
+  needs: ["compile_win"]
+  extends: .verification_test
+  rules:
+    - if: $BUILDTYPE == "nightly"
