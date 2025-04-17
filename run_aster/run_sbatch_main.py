@@ -114,13 +114,6 @@ def parse_args(argv):
         "--output", action="store", help="output file (default: <export filename>-%%j.txt)"
     )
     parser.add_argument(
-        "--ctest",
-        dest="opts",
-        action="append_const",
-        const="--ctest",
-        help="shortcut for --run_aster_option='--ctest'",
-    )
-    parser.add_argument(
         "--run_aster_option",
         dest="opts",
         action="extend",
@@ -128,6 +121,29 @@ def parse_args(argv):
         default=[],
         help="option to be passed to run_aster, can be repeated "
         "(example: --run_aster_option='--only-proc0')",
+    )
+    parser.add_argument(
+        "--ctest",
+        dest="opts",
+        action="append_const",
+        const="--ctest",
+        help="shortcut for --run_aster_option='--ctest'",
+    )
+    parser.add_argument(
+        "--time_limit",
+        dest="time_limit",
+        type=float,
+        action="store",
+        default=None,
+        help="override the time limit in seconds",
+    )
+    parser.add_argument(
+        "--memory_limit",
+        dest="memory_limit",
+        type=float,
+        action="store",
+        default=None,
+        help="override the memory limit in MB",
     )
     parser.add_argument(
         "file", metavar="FILE.export", help="Export file (.export) defining the calculation."
@@ -179,15 +195,20 @@ def main(argv=None):
 
     # initialized with default values
     addmem = CFG.get("addmem", 0.0)
-    memory = export.get("memory_limit", 16384) + addmem
+    memory = args.memory_limit or export.get("memory_limit", 16384)
+    memory += addmem
+    if args.time_limit:
+        args.opts.append(f"--time_limit={args.time_limit}")
+    if args.memory_limit:
+        args.opts.append(f"--memory_limit={args.memory_limit}")
     params = {
         "name": osp.splitext(osp.basename(args.file))[0],
         "mpi_nbcpu": export.get("mpi_nbcpu", 1),
         "mpi_nbnodes": nbnodes,
         "nbthreads": export.get("ncpus", 1),
-        "time_limit": export.get("time_limit", 3600),
+        "time_limit": args.time_limit or export.get("time_limit", 3600),
         "memory_limit": memory,
-        "memory_node": memory,
+        "memory_node": None,
         "options": "",
         "study": args.file,
         "run_aster_options": " ".join(args.opts),
