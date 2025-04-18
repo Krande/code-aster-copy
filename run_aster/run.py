@@ -228,6 +228,12 @@ class RunAster:
         os.environ["PYTHONFAULTHANDLER"] = "1"
         exitcode = run_command(cmd, exitcode_file=EXITCODE_FILE)
         status = self._get_status(exitcode)
+        # workaround on windows to write the output into the '.mess' file running by ctest
+        if RUNASTER_PLATFORM == "win" and not self._tee:
+            with open(self._output, "rb") as fobj:
+                text = fobj.read().decode(errors="replace")
+            logger.info(text)
+
         msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={status.exitcode}\n\n"
         logger.info(msg)
         self._log_mess(msg)

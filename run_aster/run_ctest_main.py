@@ -164,14 +164,14 @@ def parse_args(argv):
         "--clean",
         action="store_true",
         default="auto",
-        help="remove the content of 'resutest' directory " "before starting",
+        help="remove the content of 'resutest' directory before starting",
     )
     parser.add_argument(
         "--no-clean",
         action="store_false",
         default="auto",
         dest="clean",
-        help="do not remove the content of 'resutest' " "directory at startup",
+        help="do not remove the content of 'resutest' directory at startup",
     )
     parser.add_argument(
         "--timefactor",
@@ -225,7 +225,7 @@ def parse_args(argv):
         action="append",
         metavar="regex",
         default=[],
-        help="run tests with labels matching regular " "expression.",
+        help="run tests with labels matching regular expression.",
     )
     group.add_argument(
         "-LE",
@@ -233,7 +233,7 @@ def parse_args(argv):
         action="append",
         metavar="regex",
         default=[],
-        help="exclude tests with labels matching regular " "expression.",
+        help="exclude tests with labels matching regular expression.",
     )
     group.add_argument(
         "--print-labels", action="store_true", help="print all available test labels"
@@ -259,6 +259,13 @@ def parse_args(argv):
 def _run(cmd, shell=False):
     print("execute:", " ".join(cmd))
     return run(cmd, shell=shell)
+
+
+def _rmtree(dirpath):
+    if RUNASTER_PLATFORM == "linux":
+        _run(["rm", "-rf", dirpath])
+    else:
+        _run(["rd", "/s", "/q", dirpath], shell=True)
 
 
 def main(argv=None):
@@ -295,10 +302,7 @@ def main(argv=None):
             if answ.lower() not in ("y", "o"):
                 print("interrupt by user")
                 sys.exit(1)
-        if RUNASTER_PLATFORM == "linux":
-            _run(["rm", "-rf", resutest])
-        else:
-            _run(["rd", "/s", "/q", resutest], shell=True)
+        _rmtree(resutest)
 
     if not osp.exists(resutest):
         os.makedirs(resutest, exist_ok=True)
@@ -342,7 +346,7 @@ def main(argv=None):
         report.read_ctest()
         report.write_xml("run_testcases.xml")
     else:
-        _run(["rm", "-rf", resutest])
+        _rmtree(resutest)
     return proc.returncode
 
 
@@ -360,7 +364,7 @@ def create_ctest_file(testlist, exclude, destdir, options, nlist=None, testdir=N
     datadir = Path(osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))).as_posix()
     if testdir is None:
         testdir = osp.join(datadir, "tests")
-    testdir = osp.abspath(testdir)
+    testdir = Path(testdir).absolute().as_posix()
 
     assert osp.isdir(testdir), f"no such directory {testdir}"
     re_comment = re.compile("^ *#.*$", re.M)
