@@ -5,29 +5,22 @@ name = "codeaster-src"
 platforms = ["linux-64"]
 version = "0.1.0"
 
-[pypi-options]
-index-url = "https://nexus.retd.edf.fr/repository/pypi-all/simple"
-
 [tasks]
 configure = {cmd = [
-  "CC=mpicc",
-  "CXX=mpicxx",
-  "FC=mpif90",
   "./configure",
-  "--enable-mpi",
   "--med-libs='medfwrap medC'",
-  "--disable-metis",
-], env = {BUILD = "debug", PREFIX_ROOT = "$HOME/.install/pixi"}}
+]}
 
-build = {cmd = ["make"], env = {BUILD = "debug"}}
+build = {cmd = ["make"]}
 install = {depends-on = ["build"]}
-make = {cmd = "make", env = {BUILD = "debug"}}
+make = {cmd = "make"}
 
 [dependencies]
 mpi = "==1.0"
 python = "3.11.*"
 # compilers = "1.7.*"
 blas = {version = "*", build = "openblas"}
+ccache = ">=4.11.2,<5"
 clang-format = ">=20.1.4,<21"
 gcc = "12.2.*"
 gfortran = "12.2.*"
@@ -38,6 +31,8 @@ ipython = ">=9.0.2,<10"
 libmed = {version = "4.1.*", build = "mpi_openmpi*"}
 libptscotch = ">7"
 make = ">=4.4.1,<5"
+mfront = "<5.0"
+mgis = "<3.0"
 mpi4py = "4.0.*"
 mumps-mpi = ">5.4,<5.9"
 numpy = "1.24.*"
