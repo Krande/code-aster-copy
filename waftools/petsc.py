@@ -20,6 +20,7 @@
 import os.path as osp
 import re
 from functools import partial
+from pathlib import PureWindowsPath
 
 from waflib import Configure, Errors, Utils
 
@@ -202,12 +203,44 @@ def check_petsc4py(self):
         return
     try:
         self.check_python_module("petsc4py")
+        self.check_petsc4py_headers()
     except Errors.ConfigurationError:
         self.undefine("ASTER_HAVE_PETSC4PY")
         if self.options.enable_petsc4py:
             raise
     else:
         self.define("ASTER_HAVE_PETSC4PY", 1)
+
+
+@Configure.conf
+def check_petsc4py_headers(self):
+    if not self.env["PYTHON"]:
+        self.fatal("load python tool first")
+    self.start_msg("Checking for petsc4py includes")
+    # retrieve includes dir from petsc4py module
+    cmd = self.env.PYTHON + ["-c", "\nimport petsc4py\nprint(petsc4py.get_include())"]
+    petsc4py_includes = self.cmd_and_log(cmd, shell=False).strip()
+    self.end_msg(petsc4py_includes)
+    self.start_msg("Checking for petsc4py.h")
+    if self.is_defined("ASTER_PLATFORM_MINGW"):
+        incs = PureWindowsPath(petsc4py_includes)
+        parts = list(incs.parts)
+        if incs.anchor:
+            parts[0] = incs.root
+        for i, sub in enumerate(parts):
+            if sub == "lib":
+                parts[i] = "Lib"
+        petsc4py_includes = PureWindowsPath(*parts).as_posix()
+    # check the given includes dirs
+    self.check(
+        feature="c",
+        header_name="Python.h petsc4py/petsc4py.h",
+        includes=petsc4py_includes,
+        use="PETSC PYEXT",
+        uselib_store="PETSC",
+        errmsg="Could not find the petsc4py development headers",
+    )
+    self.end_msg(petsc4py_includes)
 
 
 @Configure.conf
