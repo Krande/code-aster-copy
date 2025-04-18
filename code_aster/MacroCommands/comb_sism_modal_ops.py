@@ -724,15 +724,16 @@ def corr_pseudo_mode_mult(
     ps_noeud_cmps = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
     if all(noeud_cmp in ps_noeud_cmps for noeud_cmp in l_noeud_cmp):
         # ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
-        ps_nume_mode_grno = []
+        l_phi_ps = []
         for noeud_cmp in l_noeud_cmp:
-            ps_nume_mode_grno.append(ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)])
+            ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
+            l_phi_ps.append(pseudo_mode.getField(option, ps_nume_mode))
+        phi_ps = l_phi_ps[0].copy()
+        for x in l_phi_ps[1:]:
+            phi_ps += x
         # get static mode for component (noeud_cmp)
         if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-            phi_ps = []
-            for ps_nume_mode in ps_nume_mode_grno:
-                phi_ps.append(pseudo_mode.getField(option, ps_nume_mode).getValues())
-            R_c_noeud = (np.sum(phi_ps, axis=0) - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
+            R_c_noeud = (phi_ps.getValues() - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
         elif option in [
             "EFGE_ELNO",
             "EGRU_ELNO",
@@ -741,31 +742,18 @@ def corr_pseudo_mode_mult(
             "SIPO_ELNO",
             "SIEF_ELNO",
         ]:
-            # phi_ps = pseudo_mode.getField(option, ps_nume_mode).getValues()
-            phi_ps = []
-            for ps_nume_mode in ps_nume_mode_grno:
-                phi_ps.append(pseudo_mode.getField(option, ps_nume_mode).getValues())
-            # reponse by pseudo-mode
-            R_c_noeud = (np.sum(phi_ps, axis=0) - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
+            R_c_noeud = (phi_ps.getValues() - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
         if option == "VITE":  # pseudo-mode is not allowed
             UTMESS("F", "SEISME_10", valk=option)
-            # phi_ps = pseudo_mode.getField("DEPL", ps_nume_mode).getValues()
-            phi_ps = []
-            for ps_nume_mode in ps_nume_mode_grno:
-                phi_ps.append(pseudo_mode.getField(option, ps_nume_mode).getValues())
-            R_c_noeud = (np.sum(phi_ps, axis=0) * w_r - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
+            R_c_noeud = (phi_ps.getValues() * w_r - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
         if (
             option == "ACCE_ABSOLU"
         ):  # correction by pseudo-mode is not allowed for ACCE_ABSOLU in mutl_appui
             UTMESS("F", "SEISME_10", valk=option)
-            # phi_ps = pseudo_mode.getField("DEPL", ps_nume_mode).getValues()
-            phi_ps = []
-            for ps_nume_mode in ps_nume_mode_grno:
-                phi_ps.append(pseudo_mode.getField(option, ps_nume_mode).getValues())
-            R_c_noeud = np.zeros((np.shape(np.sum(phi_ps, axis=0))))
+            R_c_noeud = np.zeros(phi_ps.size())
     else:  # noued_cmp is not calculated in pseudo-mode --> need to be done
         raise Exception(
-            "NOUED_CMP: {0} n'existe pas dans la base MODE_STATIQUE - mot-clé PSEUDO_MODE".format(
+            "NOEUD_CMP: {0} n'existe pas dans la base MODE_STATIQUE - mot-clé PSEUDO_MODE".format(
                 noeud_cmp
             )
         )
@@ -1972,8 +1960,6 @@ def comb_sism_modal_ops(self, **args):
                 # Iteration on appuis
                 nb_appui = len(nom_appuis_all)
                 R_appuis = []  # list reponse tous appuis
-                # Stocke pr_wr2_phi pour acce_absolu
-                pr_wr2_phi_acce = {}
                 for i_appui in range(nb_appui):
                     nom_appui = spectres[i_appui][5]
                     # ("iteration on support:", nom_appui)
@@ -2049,31 +2035,24 @@ def comb_sism_modal_ops(self, **args):
                         # Spectral response at node, mode, direction
                         if option not in ["VITE", "ACCE_ABSOLU"]:
                             R_mi_all = (S_r_freq * fact_partici / w_r**2)[:, None] * phis
-                            pr_wr2_phi_all = (fact_partici / w_r**2)[:, None] * phis
                             pr_wr2_phi_c_all = (fact_partici / (2 * np.pi * freqs) ** 2)[
                                 :, None
                             ] * phis
                         elif option == "VITE":  # ici: phis correspond à DEPL
                             R_mi_all = (S_r_freq * fact_partici / w_r)[:, None] * phis
-                            pr_wr2_phi_all = (fact_partici / w_r)[:, None] * phis
                             pr_wr2_phi_c_all = (fact_partici / (2 * np.pi * freqs))[:, None] * phis
                         elif option == "ACCE_ABSOLU":  # ici: phis correspond à DEPL
                             R_mi_all = (S_r_freq * fact_partici)[:, None] * phis
-                            pr_wr2_phi_all = (fact_partici)[:, None] * phis
                             pr_wr2_phi_c_all = (fact_partici)[:, None] * phis
                         # Check if cutting frequency is smaller than firt mode
                         if freq_coup is not None and freq_coup >= freqs[0]:
                             R_mi = R_mi_all
-                            pr_wr2_phi = pr_wr2_phi_all
                             pr_wr2_phi_c = pr_wr2_phi_c_all
                         elif freq_coup < freqs[0]:
                             R_mi = np.zeros(np.shape(phis))
-                            pr_wr2_phi = np.zeros(np.shape(phis))
                             pr_wr2_phi_c = np.zeros(np.shape(phis))
                             # Raise alarm message if first mode bigger than cutting frequency
                             UTMESS("A", "SEISME_96", valr=freq_coup)
-                        # stocke pr_wr2_phi for acce_absolu
-                        pr_wr2_phi_acce[i_appui] = pr_wr2_phi
                         # saving all responses at all nodes of considerd appui
                         R_m_noeuds.append(R_mi)
                         # --- pseudo mode response
