@@ -117,7 +117,7 @@ from .export import Export, File, split_export
 from .logger import DEBUG, WARNING, logger
 from .run import RunAster, create_temporary_dir, get_procid
 from .status import Status
-from .utils import RUNASTER_ROOT
+from .utils import RUNASTER_PLATFORM, RUNASTER_ROOT
 
 try:
     import debugpy
@@ -470,7 +470,10 @@ def main(argv=None):
         opts = {}
         opts["test"] = args.test
         opts["env"] = make_env
-        opts["tee"] = not args.only_proc0 or procid == 0
+        if RUNASTER_PLATFORM == "linux":
+            opts["tee"] = not args.only_proc0 or procid == 0
+        else:
+            opts["tee"] = not args.ctest
         opts["interactive"] = args.interactive
         if args.exectool:
             wrapper = CFG.get("exectool", {}).get(args.exectool)
