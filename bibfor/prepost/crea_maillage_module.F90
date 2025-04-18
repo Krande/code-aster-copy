@@ -2216,7 +2216,7 @@ contains
                     keep = ASTER_TRUE
                     do i_node = 1, nno
                         node_id = this%cells(i_cell)%nodes(i_node)
-                        if (this%nodes(node_id)%owner .ne. rank) then
+                        if (this%nodes(node_id)%owner /= rank) then
                             keep = ASTER_FALSE
                             nb_ghost_cell = nb_ghost_cell+1
                             ghost_cells(nb_ghost_cell) = i_cell
@@ -2254,15 +2254,15 @@ contains
                         if (.not. this%cells(i_cell)%keep) then
                             nno = this%converter%nno(this%cells(i_cell)%type)
 !
-                            keep = ASTER_FALSE
                             do i_node = 1, nno
                                 node_id = this%cells(i_cell)%nodes(i_node)
-                                if (this%nodes(node_id)%keep) then
-                                    keep = ASTER_TRUE
+
+                                if (this%nodes(node_id)%keep .or. &
+                                    this%nodes(node_id)%owner == rank) then
+                                    this%cells(i_cell)%keep = ASTER_TRUE
                                     exit
                                 end if
                             end do
-                            this%cells(i_cell)%keep = keep
                         end if
                     end if
                 end do
@@ -2292,7 +2292,7 @@ contains
             AS_DEALLOCATE(vi=ghost_cells)
         end if
 !
-! --- Renumbering
+! --- Renumbering nodes
         this%nb_nodes = 0
         do i_node = 1, this%nb_total_nodes
             if (this%nodes(i_node)%keep) then
@@ -2301,7 +2301,7 @@ contains
             end if
         end do
 !
-! --- Renumbering
+! --- Renumbering cells
         this%nb_cells = 0
         do i_cell = 1, this%nb_total_cells
             if (this%cells(i_cell)%keep) then
