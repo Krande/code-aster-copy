@@ -310,11 +310,14 @@ vecs_r = np.vstack(
     [modes_reconstruit.getField("DEPL", r).getValues() for r in modes_reconstruit.getIndexes()]
 )
 
-tol = 1.0e-12
-with CA.disable_fpe():
-    angles = scipy.linalg.subspace_angles(vecs, vecs_r)
+try:
+    tol = 1.0e-12
+    with CA.disable_fpe():
+        angles = scipy.linalg.subspace_angles(vecs, vecs_r)
 
-test.assertTrue((np.abs(angles) < tol).all())
+    test.assertTrue((np.abs(angles) < tol).all())
+except AttributeError:
+    print("scipy > 1.0 is needed for this test")
 
 test.assertEqual(rigi_elim.getType(), "MATR_ASSE_ELIM_R")
 test.assertEqual(mass_elim.getType(), "MATR_ASSE_ELIM_R")
