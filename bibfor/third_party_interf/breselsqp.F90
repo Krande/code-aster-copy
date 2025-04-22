@@ -16,26 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine breselu(typco, alphacc, effmy, effmz, effn, &
-                   ht, bw, enrobyi, enrobys, enrobzi, enrobzs, &
-                   facier, fbeton, gammas, gammac, &
-                   clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, &
-                   uc, um, &
-                   dnsyi, dnsys, dnszi, dnszs, &
-                   sigmsyi, sigmsys, ecyi, ecys, &
-                   sigmszi, sigmszs, eczi, eczs, &
-                   alphay, alphaz, pivoty, pivotz, etaty, etatz, ierr)
+subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
+                     enrobyi, enrobys, enrobzi, enrobzs, &
+                     wmaxyi, wmaxys, wmaxzi, wmaxzs, &
+                     ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                     kt, eys, facier, fbeton, sigelsqp, &
+                     phiyi, phiys, phizi, phizs, &
+                     dnsyi, dnsys, dnszi, dnszs, &
+                     sigmsyi, sigmsys, sigmcyi, sigmcys, &
+                     sigmszi, sigmszs, sigmczi, sigmczs, &
+                     alphay, alphaz, pivoty, pivotz, etaty, etatz, &
+                     wfinyi, wfinys, wfinzi, wfinzs, kvarfy, kvarfz, ierr)
+
 !______________________________________________________________________
 !
-!      BRESELU
+!      BRESELSQP
 
-!      CALCUL DES ACIERS EN FLEXION COMPOSEE DEVIEE A L'ELU
+!      CALCUL DES ACIERS EN FLEXION COMPOSEE DEVIEE A L'ELS QP
 !      METHODE DE VERIFICATION DE BRESLER
-!      CRITERE = LIMITATION DES DEFORMATIONS
+!      CRITERE = LIMITATION DES OUVERTURES DES FISSURES
 !
-!      I TYPCO     CODIFICATION UTILISEE (1 = BAEL91, 2 = EC2)
-!      I ALPHACC   COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                  DE CALCUL DU BETON EN COMPRESSION
+!      I CEQUI     COEFFICIENT D'EQUIVALENCE ACIER/BETON
 !      I EFFMY     MOMENT DE FLEXION SUIVANT L'AXE Y
 !      I EFFMZ     MOMENT DE FLEXION SUIVANT L'AXE Z
 !      I EFFN      EFFORT NORMAL
@@ -45,35 +46,32 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 !      I ENROBYS   ENROBAGE DES ARMATURES SUP SUIVANT L'AXE Y
 !      I ENROBZI   ENROBAGE DES ARMATURES INF SUIVANT L'AXE Z
 !      I ENROBZS   ENROBAGE DES ARMATURES SUP SUIVANT L'AXE Z
-!      I FACIER    LIMITE D'ELASTICITE DES ACIERS (CONTRAINTE)
-!      I FBETON    RESISTANCE EN COMPRESSION DU BETON (CONTRAINTE)
-!      I GAMMAS    COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                  DE CALCUL DES ACIERS
-!      I GAMMAC    COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                  DE CALCUL DU BETON
-!      I CLACIER   CLASSE DE DUCTILITE DES ACIERS (UTILISE POUR EC2) :
-!                     CLACIER = 0 ACIER PEU DUCTILE (CLASSE A)
-!                     CLACIER = 1 ACIER MOYENNEMENT DUCTILE (CLASSE B)
-!                     CLACIER = 3 ACIER FORTEMENT DUCTILE (CLASSE C)
-!      I EYS       MODULE D'YOUNG DE L'ACIER
-!      I TYPDIAG   TYPE DE DIAGRAMME UTILISÉ POUR L'ACIER
-!                     TYPDIAG = 1 ("B1" ==> PALIER INCLINÉ)
-!                     TYPDIAG = 2 ("B2" ==> PALIER HORIZONTAL)
+!      I WMAXYI    OUVERTURE MAX DE FISS ADMIS EN FIBRE INF SUIVANT L'AXE Y
+!      I WMAXYS    OUVERTURE MAX DE FISS ADMIS EN FIBRE SUP SUIVANT L'AXE Y
+!      I WMAXZI    OUVERTURE MAX DE FISS ADMIS EN FIBRE INF SUIVANT L'AXE Z
+!      I WMAXZS    OUVERTURE MAX DE FISS ADMIS EN FIBRE SUP SUIVANT L'AXE Z
 !      I FERRCOMP  PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
 !                     FERRCOMP = 1 (NON)
 !                     FERRCOMP = 2 (OUI)
 !      I PRECS     PRECISION ITERATION
-!      I FERRSYME  FERRAILLAGE SYMETRIQUE?
+!      I FERRSYME   FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
-!      I SLSYME    SECTION SEUIL DE TOLERANCE POUR
-!                     UN FERRAILLAGE SYMETRIQUE
+!      I SLSYME    SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE
 !      I UC        UNITE DES CONTRAINTES :
 !                     UC = 0 CONTRAINTES EN Pa
 !                     UC = 1 CONTRAINTES EN MPa
 !      I UM        UNITE DES DIMENSIONS :
 !                     UM = 0 DIMENSIONS EN m
 !                     UM = 1 DIMENSIONS EN mm
+!      I KT        COEFFICIENT DE DUREE DE CHARGEMENT
+!      I FACIER    LIMITE D'ELASTICITÉ DES ACIERS (CONTRAINTE)
+!      I FBETON    RESISTANCE EN COMPRESSION DU BÉTON (CONTRAINTE)
+!      I SIGELSQP  CONTRAINTE ADMISSIBLE DANS LE BETON À L'ELS QP
+!      I PHIYINF   DIAMETRE ESTIMATIF DES ARMA EN FIBRE INF SUIVANT L'AXE Y
+!      I PHIYSUP   DIAMETRE ESTIMATIF DES ARMA EN FIBRE SUP SUIVANT L'AXE Y
+!      I PHIZINF   DIAMETRE ESTIMATIF DES ARMA EN FIBRE INF SUIVANT L'AXE Z
+!      I PHIZSUP   DIAMETRE ESTIMATIF DES ARMA EN FIBRE SUP SUIVANT L'AXE Z
 !
 !      O DNSYI     DENSITE DE L'ACIER INF SUIVANT L'AXE Y
 !      O DNSYS     DENSITE DE L'ACIER SUP SUIVANT L'AXE Y
@@ -81,21 +79,21 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 !      O DNSZS     DENSITE DE L'ACIER SUP SUIVANT L'AXE Z
 !      O SIGMSYI   CONTRAINTE DANS L'ACIER INF SUIVANT L'AXE Y
 !      O SIGMSYS   CONTRAINTE DANS L'ACIER SUP SUIVANT L'AXE Y
-!      O ECYI      DEFORMATION EN FIBRE INF SUIVANT L'AXE Y
-!      O ECYS      DEFORMATION EN FIBRE SUP SUIVANT L'AXE Y
+!      O SIGMCYI   CONTRAINTE EN FIBRE INF BETON SUIVANT L'AXE Y
+!      O SIGMCYS   CONTRAINTE EN FIBRE SUP BETON SUIVANT L'AXE Y
 !      O SIGMSZI   CONTRAINTE DANS L'ACIER INF SUIVANT L'AXE Z
 !      O SIGMSZS   CONTRAINTE DANS L'ACIER SUP SUIVANT L'AXE Z
-!      O ECZI      DEFORMATION EN FIBRE INF SUIVANT L'AXE Z
-!      O ECZS      DEFORMATION EN FIBRE SUP SUIVANT L'AXE Z
-!      O ALPHAY    COEF DE PROFONDEUR DE L'AN SUIVANT L'AXE Y
-!      O ALPHAZ    COEF DE PROFONDEUR DE L'AN SUIVANT L'AXE Z
-!      O PIVOTY    PIVOT EN FC SUIVANT L'AXE Y
-!      O PIVOTZ    PIVOT EN FC SUIVANT L'AXE Z
-!      O ETATY     ETAT EN FC SUIVANT L'AXE Y
-!      O ETATZ     ETAT EN FC SUIVANT L'AXE Z
+!      O SIGMCZI   CONTRAINTE EN FIBRE INF BETON SUIVANT L'AXE Z
+!      O SIGMCZS   CONTRAINTE EN FIBRE SUP BETON SUIVANT L'AXE Z
+!      O WFINYI    OUVERTURE DES FISSURES EN FIBRE INF SUIVANT L'AXE Y
+!      O WFINYS    OUVERTURE DES FISSURES EN FIBRE SUP SUIVANT L'AXE Y
+!      O WFINZI    OUVERTURE DES FISSURES EN FIBRE INF SUIVANT L'AXE Z
+!      O WFINZS    OUVERTURE DES FISSURES EN FIBRE SUP SUIVANT L'AXE Z
+!      O KVARFY    TAUX DE CONTRT DE TRACT LIM DS L'ACIER SUIVANT L'AXE Y
+!      O KVARFZ    TAUX DE CONTRT DE TRACT LIM DS L'ACIER SUIVANT L'AXE Z
 !      O IERR      CODE RETOUR (0 = OK)
 !
-!______________________________________________________________________
+!_______________________________________________________________________
 !
 !
     implicit none
@@ -105,12 +103,11 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 #include "asterfort/jedetr.h"
 #include "asterfort/juveca.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/cafelu.h"
-#include "extern/dintelu.h"
+#include "asterfort/cafelsqp.h"
+#include "extern/dintels.h"
 #include "asterc/r8prem.h"
 !
-    integer :: typco
-    real(kind=8) :: alphacc
+    real(kind=8) :: cequi
     real(kind=8) :: effmy
     real(kind=8) :: effmz
     real(kind=8) :: effn
@@ -120,52 +117,65 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     real(kind=8) :: enrobys
     real(kind=8) :: enrobzi
     real(kind=8) :: enrobzs
+    real(kind=8) :: wmaxyi
+    real(kind=8) :: wmaxys
+    real(kind=8) :: wmaxzi
+    real(kind=8) :: wmaxzs
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
+    real(kind=8) :: slsyme
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
+    real(kind=8) :: kt
+    real(kind=8) :: eys
     real(kind=8) :: facier
     real(kind=8) :: fbeton
-    real(kind=8) :: gammas
-    real(kind=8) :: gammac
-    integer :: clacier
-    real(kind=8) :: eys
-    integer :: typdiag
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
-    real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    real(kind=8) :: sigelsqp
+    real(kind=8) :: phiyi
+    real(kind=8) :: phiys
+    real(kind=8) :: phizi
+    real(kind=8) :: phizs
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
     real(kind=8) :: dnszi
     real(kind=8) :: dnszs
     real(kind=8) :: sigmsyi
     real(kind=8) :: sigmsys
-    real(kind=8) :: ecyi
-    real(kind=8) :: ecys
+    real(kind=8) :: sigmcyi
+    real(kind=8) :: sigmcys
     real(kind=8) :: sigmszi
     real(kind=8) :: sigmszs
-    real(kind=8) :: eczi
-    real(kind=8) :: eczs
+    real(kind=8) :: sigmczi
+    real(kind=8) :: sigmczs
     real(kind=8) :: alphay
     real(kind=8) :: alphaz
-    integer :: pivoty
-    integer :: pivotz
-    integer :: etaty
-    integer :: etatz
-    integer :: ierr
+    integer(kind=8) :: pivoty
+    integer(kind=8) :: pivotz
+    integer(kind=8) :: etaty
+    integer(kind=8) :: etatz
+    real(kind=8) :: wfinyi
+    real(kind=8) :: wfinys
+    real(kind=8) :: wfinzi
+    real(kind=8) :: wfinzs
+    real(kind=8) :: kvarfy
+    real(kind=8) :: kvarfz
+    integer(kind=8) :: ierr
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
-    real(kind=8) :: Acc, fcd, fyd, coeff, Ass, Aiter, Calc
-    real(kind=8) :: rhoyinf, rhoysup, rhozinf, rhozsup
+    real(kind=8) :: Acc, fcd, fyd, coeff, Ass, Aiter
+    real(kind=8) :: rhoyi, rhoys, rhozi, rhozs
     real(kind=8) :: BRES, mrdyE, mrdy1, mrdy2, mrdzE, mrdz1, mrdz2, nrdyzE, a, nrd0
     logical :: COND
-    integer :: s, COUNT_BRES
+    integer(kind=8) :: s, COUNT_BRES
     real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
-    real(kind=8) :: unite_m, seuil_moment
-    integer :: ntoty, ndemiy, ntotz, ndemiz
+    real(kind=8) :: unite_m, Calc, seuil_moment
+    real(kind=8) :: ssmaxy, ssmaxz
+    integer(kind=8) :: ntoty, ndemiy, ntotz, ndemiz
 
     pnrdy = 'POINT_NRD_Y'
     pmrdy = 'POINT_MRD_Y'
@@ -173,10 +183,11 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     pmrdz = 'POINT_MRD_Z'
 
     Acc = bw*ht
-    fcd = fbeton/gammac
-    fyd = facier/gammas
+    fcd = sigelsqp
 
     !Initialisation
+    kvarfy = 1.0
+    kvarfz = 1.0
     ntoty = 1
     ndemiy = 1
     ntotz = 1
@@ -195,19 +206,23 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     !Effort Axial uniquement
     !if ((effmy.eq.0) .and. (effmz.eq.0) .and. (effn.ne.0)) then
     if ((abs(effmy) .lt. seuil_moment) .and. (abs(effmz) .lt. seuil_moment)) then
-        call cafelu(typco, alphacc, effmy, 0.5*effn, ht, bw, &
-                    enrobzi, enrobzs, facier, fbeton, gammas, gammac, &
-                    clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
-                    dnszi, dnszs, sigmszi, sigmszs, eczi, eczs, &
-                    alphaz, pivotz, etatz, ierr)
+        call cafelsqp(cequi, effmy, 0.5*effn, ht, bw, &
+                      enrobzi, enrobzs, wmaxzi, wmaxzs, &
+                      ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                      kt, facier, fbeton, eys, sigelsqp, phizi, phizs, &
+                      dnszi, dnszs, sigmszi, sigmszs, sigmczi, sigmczs, &
+                      alphaz, pivotz, etatz, &
+                      wfinzi, wfinzs, kvarfz, ierr)
         if (ierr .ne. 0) then
             goto 998
         end if
-        call cafelu(typco, alphacc, effmz, 0.5*effn, bw, ht, &
-                    enrobyi, enrobys, facier, fbeton, gammas, gammac, &
-                    clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
-                    dnsyi, dnsys, sigmsyi, sigmsys, ecyi, ecys, &
-                    alphay, pivoty, etaty, ierr)
+        call cafelsqp(cequi, effmz, 0.5*effn, bw, ht, &
+                      enrobyi, enrobys, wmaxyi, wmaxys, &
+                      ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                      kt, facier, fbeton, eys, sigelsqp, phiyi, phiys, &
+                      dnsyi, dnsys, sigmsyi, sigmsys, sigmcyi, sigmcys, &
+                      alphay, pivoty, etaty, &
+                      wfinyi, wfinys, kvarfy, ierr)
         if (ierr .ne. 0) then
             goto 998
         end if
@@ -217,11 +232,13 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
         !Calcul suivant "y"
         !if (effmy.ne.0) then
         if (abs(effmy) .gt. seuil_moment) then
-            call cafelu(typco, alphacc, effmy, effn, ht, bw, &
-                        enrobzi, enrobzs, facier, fbeton, gammas, gammac, &
-                        clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
-                        dnszi, dnszs, sigmszi, sigmszs, eczi, eczs, &
-                        alphaz, pivotz, etatz, ierr)
+            call cafelsqp(cequi, effmy, effn, ht, bw, &
+                          enrobzi, enrobzs, wmaxzi, wmaxzs, &
+                          ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                          kt, facier, fbeton, eys, sigelsqp, phizi, phizs, &
+                          dnszi, dnszs, sigmszi, sigmszs, sigmczi, sigmczs, &
+                          alphaz, pivotz, etatz, &
+                          wfinzi, wfinzs, kvarfz, ierr)
             if (ierr .ne. 0) then
                 goto 998
             end if
@@ -230,11 +247,13 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
         !Calcul suivant "z"
         !if (effmz.ne.0) then
         if (abs(effmz) .gt. seuil_moment) then
-            call cafelu(typco, alphacc, effmz, effn, bw, ht, &
-                        enrobyi, enrobys, facier, fbeton, gammas, gammac, &
-                        clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
-                        dnsyi, dnsys, sigmsyi, sigmsys, ecyi, ecys, &
-                        alphay, pivoty, etaty, ierr)
+            call cafelsqp(cequi, effmz, effn, bw, ht, &
+                          enrobyi, enrobys, wmaxyi, wmaxys, &
+                          ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                          kt, facier, fbeton, eys, sigelsqp, phiyi, phiys, &
+                          dnsyi, dnsys, sigmsyi, sigmsys, sigmcyi, sigmcys, &
+                          alphay, pivoty, etaty, &
+                          wfinyi, wfinys, kvarfy, ierr)
             if (ierr .ne. 0) then
                 goto 998
             end if
@@ -242,37 +261,39 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 
     end if
 
+    fyd = 0.5*(kvarfy+kvarfz)*facier
+
     !if ((effmy.ne.0) .and. (effmz.ne.0)) then
     if ((abs(effmy) .gt. seuil_moment) .and. (abs(effmz) .gt. seuil_moment)) then
 
+        !Iteration Bresler
+        COND = .false.
+        COUNT_BRES = 0
+        BRES = 1.5
+
+        !Dimensionnement des vecteurs
         if (um .eq. 0) then
             unite_m = 1.e3
         elseif (um .eq. 1) then
             unite_m = 1.
         end if
 
-        !Iteration Bresler
+        ssmaxy = kvarfy*facier
+        ssmaxz = kvarfz*facier
 
-        COND = .false.
-        COUNT_BRES = 0
-        BRES = 1.5
-
-        !Dimensionnement des vecteurs
         !Pour MFY
         ntoty = -1
-        call dintelu(typco, alphacc, ht, bw, enrobzi, enrobzs, facier, fbeton, &
-                     gammas, gammac, clacier, eys, typdiag, uc, &
+        call dintels(cequi, ht, bw, enrobzi, enrobzs, &
+                     sigelsqp, sigelsqp, ssmaxz, uc, &
                      ntoty, ndemi=ndemiy)
-
         call wkvect(pnrdy, ' V V R ', ntoty, vr=nrdy)
         call wkvect(pmrdy, ' V V R ', ntoty, vr=mrdy)
 
         !Pour MFZ
         ntotz = -1
-        call dintelu(typco, alphacc, bw, ht, enrobyi, enrobys, facier, fbeton, &
-                     gammas, gammac, clacier, eys, typdiag, uc, &
+        call dintels(cequi, bw, ht, enrobyi, enrobys, &
+                     sigelsqp, sigelsqp, ssmaxy, uc, &
                      ntotz, ndemi=ndemiz)
-
         call wkvect(pnrdz, ' V V R ', ntotz, vr=nrdz)
         call wkvect(pmrdz, ' V V R ', ntotz, vr=mrdz)
 
@@ -283,8 +304,13 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 
             !Determiner MRd,y
 
-            call dintelu(typco, alphacc, ht, bw, enrobzi, enrobzs, facier, fbeton, &
-                         gammas, gammac, clacier, eys, typdiag, uc, &
+            do s = 1, ntoty
+                nrdy(s) = -1.0
+                mrdy(s) = -1.0
+            end do
+
+            call dintels(cequi, ht, bw, enrobzi, enrobzs, &
+                         sigelsqp, sigelsqp, ssmaxz, uc, &
                          ntoty, dnszi, dnszs, nrdy, mrdy)
 
             s = 1
@@ -321,7 +347,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
                     mrdy2 = 0.5*(mrdy(s-1)+mrdy(s))
                 end if
             end if
-            if (effmy .ge. 0.0) then
+            if (effmy .gt. 0.0) then
                 mrdy1 = max(mrdy1, 0.0)
                 mrdy2 = max(mrdy2, 0.0)
                 mrdyE = max(mrdy1, mrdy2)
@@ -338,8 +364,8 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
                 mrdz(s) = -1.0
             end do
 
-            call dintelu(typco, alphacc, bw, ht, enrobyi, enrobys, facier, fbeton, &
-                         gammas, gammac, clacier, eys, typdiag, uc, &
+            call dintels(cequi, bw, ht, enrobyi, enrobys, &
+                         sigelsqp, sigelsqp, ssmaxy, uc, &
                          ntotz, dnsyi, dnsys, nrdz, mrdz)
 
             s = 1
@@ -376,7 +402,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
                     mrdz2 = 0.5*(mrdz(s-1)+mrdz(s))
                 end if
             end if
-            if (effmz .ge. 0.0) then
+            if (effmz .gt. 0.0) then
                 mrdz1 = max(mrdz1, 0.0)
                 mrdz2 = max(mrdz2, 0.0)
                 mrdzE = max(mrdz1, mrdz2)
@@ -393,7 +419,6 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
             else
                 coeff = 0.0
             end if
-
             if (coeff .le. 0.1) then
                 a = 1.0
             elseif (coeff .le. 0.7) then
@@ -413,32 +438,31 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 999         continue
 
             COUNT_BRES = COUNT_BRES+1
-
             if (BRES .gt. 1) then
                 if (Ass .lt. epsilon(Ass)) then
                     Ass = (1.e2)/(unite_m*unite_m)
-                    rhoyinf = 0.25
-                    rhoysup = 0.25
-                    rhozinf = 0.25
-                    rhozsup = 0.25
+                    rhoyi = 0.25
+                    rhoys = 0.25
+                    rhozi = 0.25
+                    rhozs = 0.25
                 else
                     if (ferrsyme .eq. 1) then
-                        rhoyinf = 0.5*(dnsyi+dnsys)/Ass
-                        rhoysup = 0.5*(dnsyi+dnsys)/Ass
-                        rhozinf = 0.5*(dnszi+dnszs)/Ass
-                        rhozsup = 0.5*(dnszi+dnszs)/Ass
+                        rhoyi = 0.5*(dnsyi+dnsys)/Ass
+                        rhoys = 0.5*(dnsyi+dnsys)/Ass
+                        rhozi = 0.5*(dnszi+dnszs)/Ass
+                        rhozs = 0.5*(dnszi+dnszs)/Ass
                     else
-                        rhoyinf = dnsyi/Ass
-                        rhoysup = dnsys/Ass
-                        rhozinf = dnszi/Ass
-                        rhozsup = dnszs/Ass
+                        rhoyi = dnsyi/Ass
+                        rhoys = dnsys/Ass
+                        rhozi = dnszi/Ass
+                        rhozs = dnszs/Ass
                     end if
                 end if
                 Aiter = 0.10*Ass
-                dnsyi = dnsyi+rhoyinf*Aiter
-                dnsys = dnsys+rhoysup*Aiter
-                dnszi = dnszi+rhozinf*Aiter
-                dnszs = dnszs+rhozsup*Aiter
+                dnsyi = dnsyi+rhoyi*Aiter
+                dnsys = dnsys+rhoys*Aiter
+                dnszi = dnszi+rhozi*Aiter
+                dnszs = dnszs+rhozs*Aiter
                 if (COUNT_BRES .eq. 100) then
                     ierr = 4
                     dnsyi = -1

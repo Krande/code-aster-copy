@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,22 +49,24 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 #include "asterfort/jeveuo.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
-#include "asterf_med.h"
+#ifdef ASTER_HAVE_MED
+#include "med_parameter.hf"
+#endif
 !
 ! 0.1. ==> ARGUMENTS
 !
     med_idt :: idfimd
-    integer :: nbnoeu
+    integer(kind=8) :: nbnoeu
     character(len=*) :: nomamd, nomast
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-!
+#ifdef ASTER_HAVE_MED
     character(len=6), parameter :: nompro = 'IRMHPC'
-    integer :: codret, iret
-    integer :: jnumno, nbjoin, i_join, nbnoj, jjoinr
-    integer :: ifm, nivinf, domdis, rang, nbproc, i
-    integer, pointer :: v_dojoin(:) => null()
+    integer(kind=8) :: codret, iret
+    integer(kind=8) :: jnumno, nbjoin, i_join, nbnoj, jjoinr
+    integer(kind=8) :: ifm, nivinf, domdis, rang, nbproc, i
+    integer(kind=8), pointer :: v_dojoin(:) => null()
     mpi_int :: mrank, msize
 !
     character(len=8) :: chrang, chdomdis, k8bid
@@ -95,7 +97,8 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
     nonulg = nomast//'.NUNOLG'
     call jeveuo(nonulg, 'L', jnumno)
 !
-    call as_mmhgnw(idfimd, nomamd, MED_NODE, MED_NONE, zi(jnumno), nbnoeu, codret)
+    call as_mmhgnw(idfimd, nomamd, to_aster_int(MED_NODE), to_aster_int(MED_NONE), &
+                   zi(jnumno), nbnoeu, codret)
     ASSERT(codret == 0)
 !
 ! -- Impression des joints
@@ -149,8 +152,10 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
                 call jelira(nojoin, 'LONMAX', nbnoj, k8bid)
                 call jeveuo(nojoin, 'L', jjoinr)
 !
-                call as_msdcrw(idfimd, nomamd, nomjoi, MED_NO_DT, MED_NO_IT, MED_NODE, &
-                               MED_NONE, MED_NODE, MED_NONE, nbnoj/2, zi(jjoinr), codret)
+                call as_msdcrw(idfimd, nomamd, nomjoi, to_aster_int(MED_NO_DT), &
+                               to_aster_int(MED_NO_IT), to_aster_int(MED_NODE), &
+                               to_aster_int(MED_NONE), to_aster_int(MED_NODE), &
+                               to_aster_int(MED_NONE), nbnoj/2, zi(jjoinr), codret)
                 ASSERT(codret == 0)
             end do
         end do
@@ -161,5 +166,5 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
     end if
 !
     call jedema()
-!
+#endif
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine mrconl(oper, lmat, neq2, typev, rvect,&
                       nvect)
         character(len=4) :: oper
-        integer :: lmat
-        integer :: neq2
+        integer(kind=8) :: lmat
+        integer(kind=8) :: neq2
         character(len=1) :: typev
         real(kind=8) :: rvect(*)
-        integer :: nvect
+        integer(kind=8) :: nvect
     end subroutine mrconl
 end interface

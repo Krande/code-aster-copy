@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,9 @@ subroutine lrvema(nomail, mfich, nochmd)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterf_med.h"
+#ifdef ASTER_HAVE_MED
+#include "med_parameter.hf"
+#endif
 #include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdfin.h"
@@ -45,7 +47,7 @@ subroutine lrvema(nomail, mfich, nochmd)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: mfich
+    integer(kind=8) :: mfich
     character(len=8) :: nomail
     character(len=64) :: nochmd
 !
@@ -63,12 +65,13 @@ subroutine lrvema(nomail, mfich, nochmd)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nmatyp, ncmp
-    integer :: nbma, jnbtyp, jmatyp, nbtym, nbtv, codret
+#ifdef ASTER_HAVE_MED
+    integer(kind=8) :: iret, nmatyp, ncmp
+    integer(kind=8) :: nbma, jnbtyp, jmatyp, nbtym, nbtv, codret
     med_idt :: idfimd
-    integer :: i, j, iaux, jnbty2, nchmed
-    integer :: vali(2), lnomam
-    integer, parameter :: edlect = 0, edconn = 1, edmail = 0, ednoda = 0
+    integer(kind=8) :: i, j, iaux, jnbty2, nchmed
+    integer(kind=8) :: vali(2), lnomam
+    integer(kind=8), parameter :: edlect = 0, edconn = 1, edmail = 0, ednoda = 0
     character(len=1) :: k1b
     character(len=8) :: saux08
     character(len=64) :: nomamd
@@ -78,7 +81,7 @@ subroutine lrvema(nomail, mfich, nochmd)
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
     character(len=80), pointer :: v_names(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     character(len=8), parameter :: nomast(MT_NTYMAX) = (/'POI1    ', 'SEG2    ', 'SEG22   ', &
                                                          'SEG3    ', 'SEG33   ', 'SEG4    ', &
                                                          'TRIA3   ', 'TRIA33  ', 'TRIA6   ', &
@@ -107,35 +110,35 @@ subroutine lrvema(nomail, mfich, nochmd)
                                                          'TR3SE3  ', 'TR6SE2  ', 'TR6SE3  ', &
                                                          'QU4SE2  ', 'QU4SE3  ', 'QU8SE2  ', &
                                                          'QU8SE3  ', 'QU9SE2  ', 'QU9SE3  '/)
-    integer, parameter :: nummed(MT_NTYMAX) = (/ &
-                          MED_POINT1, MED_SEG2, MED_UNDEF_GEOTYPE, &
-                          MED_SEG3, MED_UNDEF_GEOTYPE, MED_SEG4, &
-                          MED_TRIA3, MED_UNDEF_GEOTYPE, MED_TRIA6, &
-                          MED_UNDEF_GEOTYPE, MED_TRIA7, MED_QUAD4, &
-                          MED_UNDEF_GEOTYPE, MED_QUAD8, MED_UNDEF_GEOTYPE, &
-                          MED_QUAD9, MED_UNDEF_GEOTYPE, MED_TETRA4, &
-                          MED_TETRA10, MED_PENTA6, MED_PENTA15, &
-                          MED_PENTA18, MED_PYRA5, MED_PYRA13, &
-                          MED_HEXA8, MED_HEXA20, MED_HEXA27, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE/)
+    integer(kind=8), parameter :: nummed(MT_NTYMAX) = (/ &
+                                  MED_POINT1, MED_SEG2, MED_UNDEF_GEOTYPE, &
+                                  MED_SEG3, MED_UNDEF_GEOTYPE, MED_SEG4, &
+                                  MED_TRIA3, MED_UNDEF_GEOTYPE, MED_TRIA6, &
+                                  MED_UNDEF_GEOTYPE, MED_TRIA7, MED_QUAD4, &
+                                  MED_UNDEF_GEOTYPE, MED_QUAD8, MED_UNDEF_GEOTYPE, &
+                                  MED_QUAD9, MED_UNDEF_GEOTYPE, MED_TETRA4, &
+                                  MED_TETRA10, MED_PENTA6, MED_PENTA15, &
+                                  MED_PENTA18, MED_PYRA5, MED_PYRA13, &
+                                  MED_HEXA8, MED_HEXA20, MED_HEXA27, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -179,8 +182,8 @@ subroutine lrvema(nomail, mfich, nochmd)
     call as_mfdfin(idfimd, nochmd, nomamd, nbtv, cunit(1), &
                    cname(1), codret)
 !
-    call wkvect('&&LRVERIMO_NBETYP1', 'V V I', MT_NTYMAX, jnbtyp)
-    call wkvect('&&LRVERIMO_NBETYP2', 'V V I', MT_NTYMAX, jnbty2)
+    call wkvect('&&LRVERIMO_NBETYP1', 'V V I', int(MT_NTYMAX, 8), jnbtyp)
+    call wkvect('&&LRVERIMO_NBETYP2', 'V V I', int(MT_NTYMAX, 8), jnbty2)
     do i = 1, MT_NTYMAX
         zi(jnbtyp+i-1) = 0
         if (nummed(i) .ne. 0) then
@@ -224,11 +227,11 @@ subroutine lrvema(nomail, mfich, nochmd)
                 if (zi(jnbtyp+i-1) .lt. zi(jnbty2+i-1)) then
                     vali(1) = zi(jnbtyp+i-1)
                     vali(2) = zi(jnbty2+i-1)
-                    call utmess('F', 'MED_59', sk=nomast(i), ni=2, vali=vali)
+                    call utmess('F', 'MED_59', sk=nomast(i), ni=int(2, 8), vali=vali)
                 else
                     vali(1) = zi(jnbtyp+i-1)
                     vali(2) = zi(jnbty2+i-1)
-                    call utmess('F', 'MED_61', sk=nomast(i), ni=2, vali=vali)
+                    call utmess('F', 'MED_61', sk=nomast(i), ni=int(2, 8), vali=vali)
                 end if
 !
             end if
@@ -243,4 +246,5 @@ subroutine lrvema(nomail, mfich, nochmd)
 !
     call jedema()
 !
+#endif
 end subroutine

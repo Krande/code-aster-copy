@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,14 +31,16 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterf_med.h"
+#ifdef ASTER_HAVE_MED
+#include "med_parameter.hf"
+#endif
 !
-    integer, intent(out), optional :: nbtyp
+    integer(kind=8), intent(out), optional :: nbtyp
     character(len=8), intent(out), optional :: nomtyp(MT_NTYMAX)
-    integer, intent(out), optional :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
-    integer, intent(out), optional :: renumd(MT_NTYMAX), modnum(MT_NTYMAX)
-    integer, intent(out), optional :: nuanom(MT_NTYMAX, MT_NNOMAX)
-    integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8), intent(out), optional :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
+    integer(kind=8), intent(out), optional :: renumd(MT_NTYMAX), modnum(MT_NTYMAX)
+    integer(kind=8), intent(out), optional :: nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8), intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,15 +62,16 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
 !               numnoa_(ityp, j) = k : node j in aster is the node k in med
 !
 ! --------------------------------------------------------------------------------------------------
+#ifdef ASTER_HAVE_MED
 !   local variables for optional arguments
-    integer :: nbtyp_
+    integer(kind=8) :: nbtyp_
     character(len=8) :: nomtyp_(MT_NTYMAX)
-    integer :: nnotyp_(MT_NTYMAX), typgeo_(MT_NTYMAX)
-    integer :: renumd_(MT_NTYMAX), modnum_(MT_NTYMAX)
-    integer :: nuanom_(MT_NTYMAX, MT_NNOMAX)
-    integer :: numnoa_(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: nnotyp_(MT_NTYMAX), typgeo_(MT_NTYMAX)
+    integer(kind=8) :: renumd_(MT_NTYMAX), modnum_(MT_NTYMAX)
+    integer(kind=8) :: nuanom_(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: numnoa_(MT_NTYMAX, MT_NNOMAX)
 !
-    integer :: iaux, jaux, ityp
+    integer(kind=8) :: iaux, jaux, ityp
     character(len=8), parameter :: nomast(MT_NTYMAX) = (/'POI1    ', 'SEG2    ', 'SEG22   ', &
                                                          'SEG3    ', 'SEG33   ', 'SEG4    ', &
                                                          'TRIA3   ', 'TRIA33  ', 'TRIA6   ', &
@@ -97,35 +100,35 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                                                          'TR3SE3  ', 'TR6SE2  ', 'TR6SE3  ', &
                                                          'QU4SE2  ', 'QU4SE3  ', 'QU8SE2  ', &
                                                          'QU8SE3  ', 'QU9SE2  ', 'QU9SE3  '/)
-    integer, parameter :: nummed(MT_NTYMAX) = (/ &
-                          MED_POINT1, MED_SEG2, MED_UNDEF_GEOTYPE, &
-                          MED_SEG3, MED_UNDEF_GEOTYPE, MED_SEG4, &
-                          MED_TRIA3, MED_UNDEF_GEOTYPE, MED_TRIA6, &
-                          MED_UNDEF_GEOTYPE, MED_TRIA7, MED_QUAD4, &
-                          MED_UNDEF_GEOTYPE, MED_QUAD8, MED_UNDEF_GEOTYPE, &
-                          MED_QUAD9, MED_UNDEF_GEOTYPE, MED_TETRA4, &
-                          MED_TETRA10, MED_PENTA6, MED_PENTA15, &
-                          MED_PENTA18, MED_PYRA5, MED_PYRA13, &
-                          MED_HEXA8, MED_HEXA20, MED_HEXA27, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE/)
+    integer(kind=8), parameter :: nummed(MT_NTYMAX) = (/ &
+                                  MED_POINT1, MED_SEG2, MED_UNDEF_GEOTYPE, &
+                                  MED_SEG3, MED_UNDEF_GEOTYPE, MED_SEG4, &
+                                  MED_TRIA3, MED_UNDEF_GEOTYPE, MED_TRIA6, &
+                                  MED_UNDEF_GEOTYPE, MED_TRIA7, MED_QUAD4, &
+                                  MED_UNDEF_GEOTYPE, MED_QUAD8, MED_UNDEF_GEOTYPE, &
+                                  MED_QUAD9, MED_UNDEF_GEOTYPE, MED_TETRA4, &
+                                  MED_TETRA10, MED_PENTA6, MED_PENTA15, &
+                                  MED_PENTA18, MED_PYRA5, MED_PYRA13, &
+                                  MED_HEXA8, MED_HEXA20, MED_HEXA27, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -530,4 +533,5 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
         numnoa = numnoa_
     end if
     !
+#endif
 end subroutine

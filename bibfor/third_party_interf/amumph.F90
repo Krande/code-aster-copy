@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 #include "asterfort/isParallelMatrix.h"
 
     character(len=*) :: action, matasz, vcinez, solvez
-    integer :: iret, nbsol
+    integer(kind=8) :: iret, nbsol
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
     aster_logical :: prepos
@@ -96,13 +96,13 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 #ifdef ASTER_HAVE_MUMPS
 #include "asterf_mumps.h"
 !
-    integer :: iprem
+    integer(kind=8) :: iprem
     type(smumps_struc), pointer :: smpsk => null()
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
-    integer :: nprec, iretz, pcentp(2), ipiv, iretp
+    integer(kind=8) :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
+    integer(kind=8) :: nprec, iretz, pcentp(2), ipiv, iretp
     aster_logical :: lpreco, limpr_matsing, l_parallel_matrix
     character(len=1) :: rouc, prec
     character(len=4) :: etam
@@ -110,8 +110,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
     character(len=19) :: matas, vcine, nomat, nosolv, solveu
     character(len=24) :: kpiv
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: slvi(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
 !----------------------------------------------------------------
     save iprem
     data iprem/0/

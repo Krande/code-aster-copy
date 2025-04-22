@@ -16,39 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
-                    gammas, gammac, clacier, eys, typdiag, uc, &
+subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
+                    scmaxi, scmaxs, ssmax, uc, &
                     dnsinf, dnssup, effm, effn, verif)
 !______________________________________________________________________
 !
-!      VERIFELU
+!      VERIFELS
 
 !      VERIFICATION D'UN TORSEUR D'EFFORTS (N,M)
 !      SOLLICITANT UNE SECTION DE FERRAILLAGE CONNUE
 !      PAR LA MÉTHODE DU DIAGRAMME D'INTERACTION
-!      CRITERE = LIMITATION DES DEFORMATIONS
+!      CRITERE = LIMITATION DES CONTRAINTES
 
-!      I TYPCO     CODIFICATION UTILISEE (1 = BAEL91, 2 = EC2)
-!      I ALPHACC   COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                  DE CALCUL DU BETON EN SUPRESSION
+!      I CEQUI     COEFFICIENT D'EQUIVALENCE ACIER/BETON
 !      I HT        HAUTEUR DE LA SECTION
 !      I BW        LARGEUR DE LA SECTION
 !      I ENROBI    ENROBAGE DES ARMATURES INFERIEURES
 !      I ENROBS    ENROBAGE DES ARMATURES SUPERIEURES
-!      I FACIER    LIMITE D'ELASTICITE DES ACIERS (CONTRAINTE)
-!      I FBETON    RESISTANCE EN SUPRESSION DU BETON (CONTRAINTE)
-!      I GAMMAS    COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                  DE CALCUL DES ACIERS
-!      I GAMMAC    COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                  DE CALCUL DU BETON
-!      I CLACIER   CLASSE DE DUCTILITE DES ACIERS (UTILISE POUR EC2) :
-!                     CLACIER = 0 ACIER PEU DUCTILE (CLASSE A)
-!                     CLACIER = 1 ACIER MOYENNEMENT DUCTILE (CLASSE B)
-!                     CLACIER = 3 ACIER FORTEMENT DUCTILE (CLASSE C)
-!      I EYS       MODULE D'YOUNG DE L'ACIER
-!      I TYPDIAG   TYPE DE DIAGRAMME UTILISÉ POUR L'ACIER
-!                     TYPDIAG = 1 ("B1" ==> PALIER INCLINÉ)
-!                     TYPDIAG = 2 ("B2" ==> PALIER HORIZONTAL)
+!      I SCMAXI    CONTRAINTE DE COMPRESSION MAXI DU BETON EN FIBRE INF
+!      I SCMAXS    CONTRAINTE DE COMPRESSION MAXI DU BETON EN FIBRE SUP
+!      I SSMAX     CONTRAINTE MAXI DE L'ACIER DE FLEXION
 !      I UC        UNITE DES CONTRAINTES :
 !                     UC = 0 CONTRAINTES EN Pa
 !                     UC = 1 CONTRAINTES EN MPa
@@ -66,37 +53,32 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !
     implicit none
 !
-#include "extern/dintelu.h"
+#include "extern/dintels.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !
-    integer :: typco
-    real(kind=8) :: alphacc
+    real(kind=8) :: cequi
     real(kind=8) :: ht
     real(kind=8) :: bw
     real(kind=8) :: enrobi
     real(kind=8) :: enrobs
-    real(kind=8) :: facier
-    real(kind=8) :: fbeton
-    real(kind=8) :: gammas
-    real(kind=8) :: gammac
-    integer :: clacier
-    real(kind=8) :: eys
-    integer :: typdiag
-    integer :: uc
+    real(kind=8) :: scmaxi
+    real(kind=8) :: scmaxs
+    real(kind=8) :: ssmax
+    integer(kind=8) :: uc
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
     real(kind=8) :: effm
     real(kind=8) :: effn
-    integer :: verif
+    integer(kind=8) :: verif
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
 
     real(kind=8) :: Calc
-    integer :: s, ntot, ndemi
+    integer(kind=8) :: s, ntot, ndemi
     logical :: COND_OK
     real(kind=8) :: nrd0, nrd1, mrd0, mrd1
     character(24) :: pnrd, pmrd
@@ -109,15 +91,14 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     pmrd = 'POINT_MRD'
 
     ntot = -1
-    call dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
-                 gammas, gammac, clacier, eys, typdiag, uc, &
+    call dintels(cequi, ht, bw, enrobi, enrobs, &
+                 scmaxi, scmaxs, ssmax, uc, &
                  ntot, ndemi=ndemi)
-
     call wkvect(pnrd, ' V V R ', ntot, vr=nrd)
     call wkvect(pmrd, ' V V R ', ntot, vr=mrd)
 
-    call dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
-                 gammas, gammac, clacier, eys, typdiag, uc, &
+    call dintels(cequi, ht, bw, enrobi, enrobs, &
+                 scmaxi, scmaxs, ssmax, uc, &
                  ntot, dnsinf, dnssup, nrd, mrd)
 
     nrd0 = nrd(1)
@@ -173,7 +154,7 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 
 998 continue
 
-    if (COND_OK .eqv. (.true.)) then
+    if (COND_OK) then
         verif = 0
     else
         verif = 1

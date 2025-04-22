@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ interface
     subroutine as_allocate(size, vl, vi, vi4, vr, &
                            vc, vk8, vk16, vk24, vk32, &
                            vk80, strdbg)
-        integer :: size
+        integer(kind=8) :: size
     aster_logical,           pointer, optional :: vl(:)
-    integer,           pointer, optional :: vi(:)
+    integer(kind=8),           pointer, optional :: vi(:)
     integer(kind=4),   pointer, optional :: vi4(:)
     real(kind=8),      pointer, optional :: vr(:)
     complex(kind=8),   pointer, optional :: vc(:)

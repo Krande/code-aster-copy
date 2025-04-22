@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,12 @@
 !
 interface
     subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, nbfact)
-        integer :: option, nbfact
+        integer(kind=4) :: option
         character(len=1) :: type
-        integer :: kxmps
+        integer(kind=8) :: kxmps
         character(len=12) :: usersm
-        integer :: nprec
+        integer(kind=8) :: nprec
         aster_logical :: lresol
+        integer(kind=8) :: nbfact
     end subroutine amumpu
 end interface

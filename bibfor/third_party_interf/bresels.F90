@@ -112,12 +112,12 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     real(kind=8) :: scmaxzi
     real(kind=8) :: scmaxzs
     real(kind=8) :: ssmax
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
     real(kind=8) :: dnszi
@@ -132,11 +132,11 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     real(kind=8) :: sigmczs
     real(kind=8) :: alphay
     real(kind=8) :: alphaz
-    integer :: pivoty
-    integer :: pivotz
-    integer :: etaty
-    integer :: etatz
-    integer :: ierr
+    integer(kind=8) :: pivoty
+    integer(kind=8) :: pivotz
+    integer(kind=8) :: etaty
+    integer(kind=8) :: etatz
+    integer(kind=8) :: ierr
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -145,12 +145,12 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     real(kind=8) :: rhoyinf, rhoysup, rhozinf, rhozsup
     real(kind=8) :: BRES, mrdyE, mrdy1, mrdy2, mrdzE, mrdz1, mrdz2, nrdyzE, a, nrd0
     logical :: COND
-    integer :: s, COUNT_BRES
+    integer(kind=8) :: s, COUNT_BRES
     real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
     real(kind=8) :: unite_m, seuil_moment
-    integer :: ntoty, ndemiy, ntotz, ndemiz
+    integer(kind=8) :: ntoty, ndemiy, ntotz, ndemiz
 
     pnrdy = 'POINT_NRD_Y'
     pmrdy = 'POINT_MRD_Y'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,11 @@
 #define PATH __FILE__
 #endif
 
+#ifndef WITHOUT_INT64
 #define ASSERT(cond) call assert(to_aster_logical(cond), ASTER_TO_STRING(cond), PATH, __LINE__)
+#else
+#define ASSERT(cond) call assert(to_aster_logical(cond), ASTER_TO_STRING(cond), PATH, to_aster_int(__LINE__))
+#endif
 
 #define absent(a)   (.not.present(a))
 
@@ -57,6 +61,6 @@ interface
         aster_logical :: cond
         character(len=*) :: str_cond
         character(len=*) :: fname
-        integer :: line
+        integer(kind=8) :: line
     end subroutine assert
 end interface

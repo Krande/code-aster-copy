@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -66,7 +66,7 @@
 #define ASTER_STRLEN_AT_END
 #define ASTER_INT_SIZE 8
 #define ASTER_REAL8_SIZE 8
-#define ASTER_C_FORTRAN_INT long long
+#define ASTER_HAVE_LONG_LONG 1
 #endif
 
 /* stdcall must be defined explicitly because it does not seem required anywhere */

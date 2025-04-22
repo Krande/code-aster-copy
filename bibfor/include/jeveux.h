@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 !
     integer(kind=4)           :: zi4
     common  / i4vaje / zi4(1)
-    integer :: zi
+    integer(kind=8) :: zi
     common  / ivarje / zi(1)
     real(kind=8)              :: zr
     common  / rvarje / zr(1)

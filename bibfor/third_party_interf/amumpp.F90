@@ -76,7 +76,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
-    integer :: option, nbsol, kxmps, ifmump
+    integer(kind=4) :: option
+    integer(kind=8) :: nbsol, kxmps, ifmump
     aster_logical :: ldist, eli2lg, prepos, lpreco, lmhpc
     character(len=1) :: type
     character(len=14) :: impr
@@ -90,11 +91,12 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, k, ifm, niv
-    integer :: jj, nbeql, nuglo, jrhs, j, dime, ntot, nec, nlili, ili
-    integer :: jrefn, jmlogl, jdeeq, nuno, nucmp, lonmax, iret
-    integer :: nbno_prno, ino, ieq, nbcmp, jdee2, idprn1, idprn2, jconl
-    integer :: iret1, iret2, iret3, js1, js2, js3, izrhs, i1, i2, nzrhs
+    integer(kind=4) :: n, nnbsol
+    integer(kind=8) :: rang, lmat, i, ierd, idvalc, k, ifm, niv
+    integer(kind=8) :: jj, nbeql, nuglo, jrhs, j, dime, ntot, nec, nlili, ili
+    integer(kind=8) :: jrefn, jmlogl, jdeeq, nuno, nucmp, lonmax, iret
+    integer(kind=8) :: nbno_prno, ino, ieq, nbcmp, jdee2, idprn1, idprn2, jconl
+    integer(kind=8) :: iret1, iret2, iret3, js1, js2, js3, izrhs, i1, i2, nzrhs
     character(len=1) :: rouc
     character(len=4) :: etam
     character(len=8) :: mesh, k8bid
@@ -105,11 +107,11 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     aster_logical, parameter :: l_debug = ASTER_FALSE
     real(kind=8) :: rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
-    integer, pointer :: delg(:) => null()
-    integer, pointer :: dlg2(:) => null()
-    integer, pointer :: nequ(:) => null()
-    integer, pointer :: pddl(:) => null()
-    integer, pointer :: nulg(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
+    integer(kind=8), pointer :: dlg2(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: pddl(:) => null()
+    integer(kind=8), pointer :: nulg(:) => null()
     real(kind=8), pointer :: rsolu2(:) => null()
     complex(kind=8), pointer :: csolu2(:) => null()
     type(c_ptr) :: pteur_c
@@ -215,7 +217,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     if (l_debug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
-        call wkvect(nonu//'.NUME.DEE2', 'V V I', 2*nnbsol, jdee2)
+        call wkvect(nonu//'.NUME.DEE2', 'V V I', int(2*nnbsol, 8), jdee2)
         mesh = zk24(jrefn) (1:8)
         if (lmhpc) then
             nonulg = mesh//'.NUNOLG'
@@ -223,7 +225,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         end if
 !
         call jeveuo(mesh//'.DIME', 'L', dime)
-        call jelira(jexnum(nonu//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
+        call jelira(jexnum(nonu//'.NUME.PRNO', 1_8), 'LONMAX', ntot, k8bid)
         call jeveuo(nonu//'.NUME.PRNO', 'L', idprn1)
         call jeveuo(jexatr(nonu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
         nec = ntot/zi(dime)-2
@@ -366,9 +368,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !         --- SUR LA DIAGONALE
                 if (ldist) then
                     if (ltypr) then
-                        call asmpi_comm_vect('REDUCE', 'R', nbval=nnbsol, vr=rsolu)
+                        call asmpi_comm_vect('REDUCE', 'R', nbval=int(nnbsol, 8), vr=rsolu)
                     else
-                        call asmpi_comm_vect('REDUCE', 'C', nbval=nnbsol, vc=csolu)
+                        call asmpi_comm_vect('REDUCE', 'C', nbval=int(nnbsol, 8), vc=csolu)
                     end if
                 end if
 !
@@ -379,9 +381,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         if (lmhpc) then
             ASSERT(nbsol .eq. 1)
             if (ltypr) then
-                call wkvect('&&AMUMPP.RHS', 'V V R', nnbsol, jrhs)
+                call wkvect('&&AMUMPP.RHS', 'V V R', int(nnbsol, 8), jrhs)
             else
-                call wkvect('&&AMUMPP.RHS', 'V V C', nnbsol, jrhs)
+                call wkvect('&&AMUMPP.RHS', 'V V C', int(nnbsol, 8), jrhs)
             end if
             if (.not. lpreco) then
                 do j = 1, nbeql
@@ -411,11 +413,11 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                 if (l_debug) flush (101+rang)
                 if (l_debug) flush (201+rang)
                 if (ltypr) then
-                    call asmpi_comm_vect('REDUCE', 'R', nbval=nnbsol, vr=zr(jrhs))
+                    call asmpi_comm_vect('REDUCE', 'R', nbval=int(nnbsol, 8), vr=zr(jrhs))
                     call jgetptc(jrhs, pteur_c, vr=zr(1))
                     call c_f_pointer(pteur_c, rsolu2, [nnbsol])
                 else
-                    call asmpi_comm_vect('REDUCE', 'C', nbval=nnbsol, vc=zc(jrhs))
+                    call asmpi_comm_vect('REDUCE', 'C', nbval=int(nnbsol, 8), vc=zc(jrhs))
                     call jgetptc(jrhs, pteur_c, vc=zc(1))
                     call c_f_pointer(pteur_c, csolu2, [nnbsol])
                 end if
@@ -448,10 +450,10 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     end do
                     flush (49)
                 end if
-                call jgetptc(1, pteur_c, vr=rsolu(1))
+                call jgetptc(1_8, pteur_c, vr=rsolu(1))
                 call c_f_pointer(pteur_c, rsolu2, [nnbsol])
             else
-                call jgetptc(1, pteur_c, vc=csolu(1))
+                call jgetptc(1_8, pteur_c, vc=csolu(1))
                 call c_f_pointer(pteur_c, csolu2, [nnbsol])
             end if
         end if
@@ -491,7 +493,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     else if (rtest .gt. rmax) then
                         valr(1) = rtest
                         valr(2) = rmax
-                        call utmess('F', 'FACTOR_79', si=i, nr=2, valr=valr)
+                        call utmess('F', 'FACTOR_79', si=i, nr=2_8, valr=valr)
                     end if
                     dmpsk%rhs(i) = raux
                 end do
@@ -504,7 +506,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     else if (rtest .gt. rmax) then
                         valr(1) = rtest
                         valr(2) = rmax
-                        call utmess('F', 'FACTOR_79', si=i, nr=2, valr=valr)
+                        call utmess('F', 'FACTOR_79', si=i, nr=2_8, valr=valr)
                     end if
                     zmpsk%rhs(i) = caux
                 end do
@@ -548,20 +550,20 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !
         if (lmhpc) then
             if (ltypr) then
-                call wkvect('&&AMUMPP.RHS', 'V V R', nnbsol, jrhs)
+                call wkvect('&&AMUMPP.RHS', 'V V R', int(nnbsol, 8), jrhs)
                 call jgetptc(jrhs, pteur_c, vr=zr(1))
                 call c_f_pointer(pteur_c, rsolu2, [nnbsol])
             else
-                call wkvect('&&AMUMPP.RHS', 'V V C', nnbsol, jrhs)
+                call wkvect('&&AMUMPP.RHS', 'V V C', int(nnbsol, 8), jrhs)
                 call jgetptc(jrhs, pteur_c, vc=zc(1))
                 call c_f_pointer(pteur_c, csolu2, [nnbsol])
             end if
         else
             if (ltypr) then
-                call jgetptc(1, pteur_c, vr=rsolu(1))
+                call jgetptc(1_8, pteur_c, vr=rsolu(1))
                 call c_f_pointer(pteur_c, rsolu2, [nnbsol])
             else
-                call jgetptc(1, pteur_c, vc=csolu(1))
+                call jgetptc(1_8, pteur_c, vc=csolu(1))
                 call c_f_pointer(pteur_c, csolu2, [nnbsol])
             end if
         end if
@@ -600,7 +602,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !
             if (lmhpc) then
                 if (ltypr) then
-                    call asmpi_comm_vect('BCAST', 'R', nbval=nnbsol, bcrank=0, vr=rsolu2)
+                    call asmpi_comm_vect('BCAST', 'R', nbval=int(nnbsol, 8), bcrank=0_8, vr=rsolu2)
                     if (l_debug) then
                         do j = 1, nbeql
                             nuno = zi(jdeeq+2*(j-1))
@@ -626,7 +628,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                         end do
                     end if
                 else
-                    call asmpi_comm_vect('BCAST', 'C', nbval=nnbsol, bcrank=0, vc=csolu2)
+                    call asmpi_comm_vect('BCAST', 'C', nbval=int(nnbsol, 8), bcrank=0_8, vc=csolu2)
                     if (.not. lpreco) then
                         do j = 1, nbeql
                             csolu(j) = csolu2(nulg(j)+1)
@@ -688,9 +690,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !       -- BROADCAST DE SOLU A TOUS LES PROC
         if (.not. lmhpc) then
             if (ltypr) then
-                call asmpi_comm_vect('BCAST', 'R', nbval=nnbsol, bcrank=0, vr=rsolu)
+                call asmpi_comm_vect('BCAST', 'R', nbval=int(nnbsol, 8), bcrank=0_8, vr=rsolu)
             else
-                call asmpi_comm_vect('BCAST', 'C', nbval=nnbsol, bcrank=0, vc=csolu)
+                call asmpi_comm_vect('BCAST', 'C', nbval=int(nnbsol, 8), bcrank=0_8, vc=csolu)
             end if
         end if
 !

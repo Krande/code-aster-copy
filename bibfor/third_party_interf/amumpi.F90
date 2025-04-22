@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,22 +46,23 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "threading_interfaces.h"
-    integer :: kxmps, option
+    integer(kind=4) :: option
+    integer(kind=8) :: kxmps
     aster_logical :: lquali, ldist, lmhpc, lbloc
     character(len=1) :: type
 !
 #ifdef ASTER_HAVE_MUMPS
 #include "asterf_mumps.h"
     mpi_int :: mpicou, mpimum
-    integer :: nicntl, ncntl
+    integer(kind=8) :: nicntl, ncntl
     parameter(nicntl=60, ncntl=15)
     type(smumps_struc), pointer :: smpsk => null()
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: ifm, niv, i, isymm, isymv, isym, nbproc, i1, i2
-    integer :: nprec, nbomp, nbrhs, iret1, iret2, iret3
-    integer :: k370, k371, k401, k268, iaux, redmpi
+    integer(kind=8) :: ifm, niv, i, isymm, isymv, isym, nbproc, i1, i2
+    integer(kind=8) :: nprec, nbomp, nbrhs, iret1, iret2, iret3
+    integer(kind=8) :: k370, k371, k401, k268, iaux, redmpi
     mumps_int :: i4, icntl(nicntl)
     real(kind=8) :: cntl(ncntl), rr4max, blreps
     aster_logical :: lverbose
@@ -73,7 +74,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
     character(len=24), pointer :: refa(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)

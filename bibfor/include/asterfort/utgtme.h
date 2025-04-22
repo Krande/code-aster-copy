@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine utgtme(nbarg, nomarg, valarg, iret)
-        integer :: nbarg
+        integer(kind=8) :: nbarg
         character(len=8) :: nomarg(*)
         real(kind=8) :: valarg(*)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine utgtme
 end interface

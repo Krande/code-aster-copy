@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,8 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
-    integer :: option, rang, nbproc, kxmps, ietdeb, ietrat
+    integer(kind=4) :: option
+    integer(kind=8) :: rang, nbproc, kxmps, ietdeb, ietrat
     character(len=1) :: type
     character(len=24) :: kmonit(12)
     real(kind=8) :: temps(6), rctdeb
@@ -62,8 +63,8 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: ifm, niv, ibid, iaux1, iaux2, iaux3, k, i, n, info(100), iret
-    integer :: monit(12), ietfin, ietmax, isizemu, execmu
+    integer(kind=8) :: ifm, niv, ibid, iaux1, iaux2, iaux3, k, i, n, info(100), iret
+    integer(kind=8) :: monit(12), ietfin, ietmax, isizemu, execmu
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd
     character(len=19) :: ktemp
@@ -198,7 +199,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
         call uttcpu('CPU.RESO.3', 'FIN', ' ')
         call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
         call uttcpu('CPU.AMUMPT', 'FIN', ' ')
-        call uttcpr('CPU.AMUMPT', 6, temps)
+        call uttcpr('CPU.AMUMPT', 6_8, temps)
         if ((.not. lcmde) .and. (niv .ge. 2)) then
             zi(monit(10)+rang) = info(15)
             zi(monit(11)+rang) = info(17)
@@ -217,7 +218,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
 !
     else if (option .eq. 6) then
         call uttcpu('CPU.AMUMPT', 'FIN', ' ')
-        call uttcpr('CPU.AMUMPT', 6, temps)
+        call uttcpr('CPU.AMUMPT', 6_8, temps)
         if ((.not. lcmde) .and. (niv .ge. 2)) then
             if (info(9) .gt. 0.d0) then
                 zi(monit(2)+rang) = info(9)
@@ -256,7 +257,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
 !
     else if (option .eq. 10) then
         call uttcpu('CPU.AMUMPT', 'FIN', ' ')
-        call uttcpr('CPU.AMUMPT', 6, temps)
+        call uttcpr('CPU.AMUMPT', 6_8, temps)
         if (ldebug) then
             call system_clock(ietfin)
             retfin = real(ietfin-ietdeb)/real(ietrat)

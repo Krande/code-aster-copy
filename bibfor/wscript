@@ -49,16 +49,29 @@ def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
-    use = ["BIBFOR", "PETSC", "MUMPS", "MATH", "NUMPY"]
+    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY"]
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 
-    srcF90 = get_srcs("**/*.F90")
+    src_i8 = get_srcs("**/*.F90", excl="third_party_interf/*.F90")
+    src_ext = get_srcs("third_party_interf/*.F90")
+    # use int64 as default integer...
     self(
         features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
         name="asterbibfor",
         target="bibfor",
-        source=srcF90,
+        source=src_i8,
+        use=use + ["INT64"],
+        env=env.derive(),
+        install_path=env.ASTERLIBDIR,
+    )
+    # ... except for subroutines linked against external libraries
+    self(
+        features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
+        name="asterbibfor_ext",
+        target="bibfor_ext",
+        source=src_ext,
+        defines=["WITHOUT_INT64"],
         use=use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
@@ -74,8 +87,10 @@ def check_fortran_compiler_flags(self):
     self.check_fortran_compiler_options("-fPIC")
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
-            flags = ["-fdefault-%s-%i" % (name, 8) for name in ("double", "integer", "real")]
-            self.check_fortran_compiler_options(flags)
+            self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options(
+                ["-fdefault-real-8", "-fdefault-double-8"], dest="FCFLAGS"
+            )
         self.check_fortran_compiler_options("-Wimplicit-interface")
         self.check_fortran_compiler_options("-Wintrinsic-shadow")
         self.check_fortran_compiler_options("-fno-aggressive-loop-optimizations")
@@ -84,7 +99,8 @@ def check_fortran_compiler_flags(self):
     if "ifort" in self.env.FC_NAME.lower():
         self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
-            self.check_fortran_compiler_options(["-i8", "-r8"])
+            self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options("-r8", dest="FCFLAGS")
         self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
@@ -96,13 +112,13 @@ def check_fortran_compiler_flags(self):
 
 
 @Configure.conf
-def check_fortran_compiler_options(self, options):
+def check_fortran_compiler_options(self, options, dest="FCFLAGS"):
     """Check fortran compiler options"""
     if type(options) not in (list, tuple):
         options = [options]
     self.start_msg("Checking for fortran option")
     if self.check_fc(fragment=MAIN, fcflags=options, mandatory=False):
-        self.env.append_unique("FCFLAGS", options)
+        self.env.append_unique(dest, options)
         self.end_msg("yes (%s)" % " ".join(options))
     else:
         self.end_msg("no (%s)" % " ".join(options), "YELLOW")
@@ -252,12 +268,12 @@ def set_define_from_env(self, define, start_msg, error_msg, into=None, default=N
 @Configure.conf
 def check_sizeof_integer(self):
     """Check fortran integer size"""
-    fragment = "\n".join(["integer :: i", "print *, sizeof(i)", "end"])
+    fragment = "\n".join(["integer(kind=8) :: i", "print *, sizeof(i)", "end"])
     self.code_checker(
         "ASTER_INT_SIZE",
         self.check_fc,
         fragment,
-        "Checking size of default integer",
+        "Checking size of integer8 size",
         "unexpected value for sizeof(aster_int): %(size)s",
         into=(4, 8),
     )
@@ -375,7 +391,7 @@ def _test_type(size, values):
 def check_c_fortran_integer(self):
     """Check the C type equivalent to fortran integer"""
     assert self.env["ASTER_INT_SIZE"], "ASTER_INT_SIZE must be computed before"
-    into = ("int", "long", "long long")
+    into = ("int64_t", "long")
     fragment = _test_type(self.env["ASTER_INT_SIZE"], into)
     self.code_checker(
         "ASTER_C_FORTRAN_INT",
@@ -385,15 +401,13 @@ def check_c_fortran_integer(self):
         "unexpected value for C integer type: %(size)s",
         into=into,
     )
-    if self.env["ASTER_C_FORTRAN_INT"] == "long long":
-        self.define("ASTER_HAVE_LONG_LONG", 1)
 
 
 @Configure.conf
 def check_c_fortran_integer4(self):
     """Check the C type equivalent to fortran integer"""
     assert self.env["ASTER_INT4_SIZE"], "ASTER_INT4_SIZE must be computed before"
-    into = ("int", "short int", "long")
+    into = ("int32_t", "int")
     fragment = _test_type(self.env["ASTER_INT4_SIZE"], into)
     self.code_checker(
         "ASTER_C_FORTRAN_INT4",

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 !
 !
 interface
-     subroutine cafelsqp(cequi, effm, effn, ht, bw,&
-                         enrobi, enrobs, wmaxi, wmaxs,&
-                         ferrcomp, precs, ferrsyme, slsyme, uc, um,&
-                         kt, facier, fbeton, eys, sigelsqp, phiinf, phisup,&
-                         dnsinf, dnssup, sigmsi, sigmss, sigmci, sigmcs,&
-                         alpha, pivot, etat,&
-                         wfini, wfins, kvarf, ierr)
+    subroutine cafelsqp(cequi, effm, effn, ht, bw, &
+                        enrobi, enrobs, wmaxi, wmaxs, &
+                        ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                        kt, facier, fbeton, eys, sigelsqp, phiinf, phisup, &
+                        dnsinf, dnssup, sigmsi, sigmss, sigmci, sigmcs, &
+                        alpha, pivot, etat, &
+                        wfini, wfins, kvarf, ierr)
         real(kind=8) :: cequi
         real(kind=8) :: effm
         real(kind=8) :: effn
@@ -35,12 +35,12 @@ interface
         real(kind=8) :: enrobs
         real(kind=8) :: wmaxi
         real(kind=8) :: wmaxs
-        integer :: ferrcomp
-        integer :: precs
-        integer :: ferrsyme
+        integer(kind=8) :: ferrcomp
+        integer(kind=8) :: precs
+        integer(kind=8) :: ferrsyme
         real(kind=8) :: slsyme
-        integer :: uc
-        integer :: um
+        integer(kind=8) :: uc
+        integer(kind=8) :: um
         real(kind=8) :: kt
         real(kind=8) :: facier
         real(kind=8) :: fbeton
@@ -55,11 +55,11 @@ interface
         real(kind=8) :: sigmci
         real(kind=8) :: sigmcs
         real(kind=8) :: alpha
-        integer :: pivot
-        integer :: etat
+        integer(kind=8) :: pivot
+        integer(kind=8) :: etat
         real(kind=8) :: wfini
         real(kind=8) :: wfins
         real(kind=8) :: kvarf
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine cafelsqp
 end interface
