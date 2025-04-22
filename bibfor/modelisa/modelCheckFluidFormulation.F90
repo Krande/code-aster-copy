@@ -72,31 +72,26 @@ subroutine modelCheckFluidFormulation(model)
         call getFluidCell(model, nbCellFluid, cellFluid)
 
 ! ----- Check that all fluid are modeled with the same formulation
-
-        if (nbCellFluid .ne. 0) then
-
-! ---------- Get type of formulation in the first fluid cell
-            iCellFluid = 1
+        FEForm = ' '
+        do iCellFluid = 1, nbCellFluid
             cellTypeNume = modelCells(cellFluid(iCellFluid))
             if (cellTypeNume .ne. 0) then
                 call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
-            end if
-            call teattr('S', 'FORMULATION', FEForm, iret, typel=cellTypeName)
-
-! ---------- Get type of formulation in the "iCellFluid" fluid cell
-            do iCellFluid = 2, nbCellFluid
-                cellTypeNume = modelCells(cellFluid(iCellFluid))
-                if (cellTypeNume .ne. 0) then
-                    call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
+                call teattr('C', 'FORMULATION', FEForm2, iret, typel=cellTypeName)
+                if (iret .ne. 0) then
+                    cycle
                 end if
-                call teattr('S', 'FORMULATION', FEForm2, iret, typel=cellTypeName)
-
-! -------------- Check that we used the same formulation
+                if (FEForm .eq. ' ') then
+                    ! Store the type of formulation in the first fluid cell
+                    FEForm = FEForm2
+                    cycle
+                end if
+                ! Check that we used the same formulation
                 if (FEForm2 .ne. FEForm) then
                     call utmess('F', 'FLUID1_8')
                 end if
-            end do
-            AS_DEALLOCATE(vi=cellFluid)
-        end if
+            end if
+        end do
+        AS_DEALLOCATE(vi=cellFluid)
     end if
 end subroutine
