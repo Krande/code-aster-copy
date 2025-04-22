@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine modelCheckFluidFormulation(model)
-! 
+!
     use model_module, only: getFluidCell
 !
     implicit none
@@ -49,11 +49,11 @@ subroutine modelCheckFluidFormulation(model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, iret, iret2
+    integer :: ifm, niv, iret
     character(len=8) :: mesh
-    integer :: nbCell, nbCellFluid
+    integer :: nbCellFluid
     integer, pointer :: cellFluid(:) => null()
-    integer, pointer :: modelCells(:)
+    integer, pointer :: modelCells(:) => null()
     integer :: iCellFluid, cellTypeNume
     character(len=16) :: cellTypeName, FEForm, FEForm2
 !
@@ -65,45 +65,38 @@ subroutine modelCheckFluidFormulation(model)
     if (iret .ne. 0) then
 
 ! ----- Get list of cell in model
-        modelCells => null()
         call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
-        
-! ----- Get list of cells with fluid model (Note that FSI cells are alreary considered as Fluid cell)
+
+! ----- Get list of cells with fluid model (Note that FSI cells are alreary considered
+!       as Fluid cell)
         call getFluidCell(model, nbCellFluid, cellFluid)
 
-! ----- Check that all fluid are modeled with the same formulation 
+! ----- Check that all fluid are modeled with the same formulation
 
         if (nbCellFluid .ne. 0) then
 
-! ---------- Get type of formulation in the first fluid cell 
-             iCellFluid = 1
-             cellTypeNume = modelCells(cellFluid(iCellFluid))
-             if (cellTypeNume .ne. 0) then
-                 call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
-             end if
-             call teattr('S', 'FORMULATION', FEForm, iret, typel = cellTypeName)
-             
-! ---------- Get type of formulation in the "iCellFluid" fluid cell 
-             do iCellFluid = 2, nbCellFluid
-                 cellTypeNume = modelCells(cellFluid(iCellFluid))
-                 if (cellTypeNume .ne. 0) then
-                     call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
-                 end if
-                 call teattr('S', 'FORMULATION', FEForm2, iret, typel = cellTypeName)
+! ---------- Get type of formulation in the first fluid cell
+            iCellFluid = 1
+            cellTypeNume = modelCells(cellFluid(iCellFluid))
+            if (cellTypeNume .ne. 0) then
+                call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
+            end if
+            call teattr('S', 'FORMULATION', FEForm, iret, typel=cellTypeName)
 
-! -------------- Check that we used the same formulation 
-                 if (FEForm2 .ne. FEForm) then
-                     call utmess('F', 'FLUID1_8')
-                 end if 
-             end do 
-             AS_DEALLOCATE(vi=cellFluid)
-             
+! ---------- Get type of formulation in the "iCellFluid" fluid cell
+            do iCellFluid = 2, nbCellFluid
+                cellTypeNume = modelCells(cellFluid(iCellFluid))
+                if (cellTypeNume .ne. 0) then
+                    call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
+                end if
+                call teattr('S', 'FORMULATION', FEForm2, iret, typel=cellTypeName)
+
+! -------------- Check that we used the same formulation
+                if (FEForm2 .ne. FEForm) then
+                    call utmess('F', 'FLUID1_8')
+                end if
+            end do
+            AS_DEALLOCATE(vi=cellFluid)
         end if
-        
-    end if 
-!
-
+    end if
 end subroutine
-
-
-
