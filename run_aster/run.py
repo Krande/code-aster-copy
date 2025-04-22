@@ -87,7 +87,15 @@ class RunAster:
 
     @classmethod
     def factory(
-        cls, export, test=False, env=False, tee=False, output=None, interactive=False, exectool=None
+        cls,
+        export,
+        test=False,
+        env=False,
+        tee=False,
+        output=None,
+        interactive=False,
+        exectool=None,
+        savedb=None,
     ):
         """Return a *RunAster* object from an *Export* object.
 
@@ -104,10 +112,17 @@ class RunAster:
         class_ = RunAster
         if env:
             class_ = RunOnlyEnv
-        return class_(export, test, tee, output, interactive, exectool)
+        return class_(export, test, tee, output, interactive, exectool, savedb)
 
     def __init__(
-        self, export, test=False, tee=False, output=None, interactive=False, exectool=None
+        self,
+        export,
+        test=False,
+        tee=False,
+        output=None,
+        interactive=False,
+        exectool=None,
+        savedb=None,
     ):
         self.export = export
         self.jobnum = str(os.getpid())
@@ -132,7 +147,7 @@ class RunAster:
         if not export.has_param("nbsteps"):
             export.set("nbsteps", len(self.export.commfiles))
         self._last = export.get("step") + 1 == export.get("nbsteps")
-        self._savdb = bool([i for i in export.resultfiles if i.filetype == "base"])
+        self._savdb = savedb or bool([i for i in export.resultfiles if i.filetype == "base"])
 
     def execute(self, wrkdir):
         """Execution in a working directory.
