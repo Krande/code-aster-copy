@@ -928,12 +928,20 @@ def macr_lign_coupe_ops(
     # On récupère les minimum des DISTANCE_MAX et DISTANCE_ALARME, ces valeurs
     # serviront pour le PROJ_CHAMP pour toutes les coupes
 
-    min_distance_max = min(
-        [m.get("DISTANCE_MAX") for m in LIGN_COUPE if m.get("DISTANCE_MAX")], default=0.0
-    )
-    min_distance_alarme = min(
-        [m.get("DISTANCE_ALARME") for m in LIGN_COUPE if m.get("DISTANCE_ALARME")], default=0.0
-    )
+    all_distance_max = [m.get("DISTANCE_MAX") for m in LIGN_COUPE if m.get("DISTANCE_MAX")]
+    all_distance_alarme = [m.get("DISTANCE_ALARME") for m in LIGN_COUPE if m.get("DISTANCE_ALARME")]
+
+    min_distance_max = min(all_distance_max, default=0.0)
+    min_distance_alarme = min(all_distance_alarme, default=0.0)
+
+    # On émet une alarme dès qu'au moins une des valeurs des DISTANCE_MAX
+    # ou DISTANCE_ALARME est différente de la valeur retenue
+
+    if not all(dist == min_distance_max for dist in all_distance_max):
+        UTMESS("A", "POST0_53", valr=[min_distance_max])
+
+    if not all(dist == min_distance_alarme for dist in all_distance_alarme):
+        UTMESS("A", "POST0_54", valr=[min_distance_alarme])
 
     __recou = PROJ_CHAMP(
         METHODE="COLLOCATION",
