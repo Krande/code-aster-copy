@@ -11,7 +11,6 @@ variables:
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
   NPROC_MAX: 12
-  reg_debugging: '/^debugci.*/'
   FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
 
 default:
@@ -27,11 +26,12 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "web"
       variables:
         REFREV: main
-    - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
-      variables:
-        ASTER_BUILD: debug
     - if: $BUILDTYPE == "code-checking"
     - if: $BUILDTYPE == "docker"
+    - if: $BUILDTYPE == "nightly-coverage"
+      variables:
+        ASTER_BUILD: debug
+
   auto_cancel:
     on_new_commit: interruptible
 
@@ -176,7 +176,7 @@ minimal_test:
   rules:
     - if: $OSNAME == "win"
       when: never
-    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker" && $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
 known_failures_test:
   interruptible: true
@@ -202,27 +202,6 @@ known_failures_test:
       junit: results_failures/run_testcases.xml
   rules:
     - if: $CI_MERGE_REQUEST_IID
-
-debugging_test:
-  interruptible: true
-  stage: test
-  needs: ["prepare", "compile"]
-  script:
-    - .gitlabci/test.sh
-        --testlist .gitlabci/debugging.list
-        --resutest=results_debugging
-  allow_failure: true
-  artifacts:
-    when: always
-    paths:
-      - results_debugging/run_testcases.xml
-      - results_debugging/Testing/Temporary/*
-      - results_debugging/*
-    expire_in: 3 days
-    reports:
-      junit: results_debugging/run_testcases.xml
-  rules:
-    - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
 
 sonarqube:
   interruptible: true
