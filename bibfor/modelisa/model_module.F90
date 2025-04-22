@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -172,15 +172,17 @@ contains
                     end if
                 end if
             end do
-            iCellFluid = 0
-            AS_ALLOCATE(vi=cellFluid, size=nbCellFluid)
-            do iCell = 1, nbCell
-                if (isCellFluid(iCell)) then
-                    iCellFluid = iCellFluid+1
-                    cellFluid(iCellFluid) = iCell
-                end if
-            end do
-            ASSERT(iCellFluid .eq. nbCellFluid)
+            if (nbCellFluid .ne. 0) then
+                iCellFluid = 0
+                AS_ALLOCATE(vi=cellFluid, size=nbCellFluid)
+                do iCell = 1, nbCell
+                    if (isCellFluid(iCell)) then
+                        iCellFluid = iCellFluid+1
+                        cellFluid(iCellFluid) = iCell
+                    end if
+                end do
+                ASSERT(iCellFluid .eq. nbCellFluid)
+            end if
             AS_DEALLOCATE(vl=isCellFluid)
         end if
 !

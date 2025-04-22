@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,4 +42,9 @@ l'orientation des normales doit être sortante du fluide vers la structure."""
             il faut tout simplement enlever les éléments absorbants fluides de la modélisation"""
     ),
     7: _("""Le paramètre %(k1)s ne peut pas être inférieure à 0"""),
+    8: _(
+        """
+Tous les éléments fluides doivent utiliser la même formulation : U-P, U-P-PHI ou U-PSI.
+    """
+    ),
 }
