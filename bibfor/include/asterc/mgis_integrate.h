@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 
 interface
-    subroutine mgis_integrate(extern_addr, stress, statev, ddsdde, dtime, &
+    subroutine mgis_integrate(extern_addr, stress, statev, ddsdde, dtime, rdt, &
                               pnewdt, retcode)
         character(len=16), intent(in) :: extern_addr
         real(kind=8), intent(inout) :: stress(*)
         real(kind=8), intent(inout) :: statev(*)
         real(kind=8), intent(out) :: ddsdde(*)
-        real(kind=8), intent(in) :: dtime
+        real(kind=8), intent(in) :: rdt, dtime
         real(kind=8), intent(out) :: pnewdt
         integer, intent(out) :: retcode
     end subroutine mgis_integrate

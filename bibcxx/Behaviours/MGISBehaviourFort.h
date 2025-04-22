@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -109,9 +109,9 @@ void DEFSPPP( MGIS_SET_MATERIAL_PROPERTIES, mgis_set_material_properties, const 
 void DEFSPP( MGIS_LOAD_LIBRARY, mgis_load_library, const char *hexid, STRING_SIZE l_id,
              ASTERINTEGER *model_, ASTERINTEGER *strain_ );
 
-void DEFSPPPPPP( MGIS_INTEGRATE, mgis_integrate, const char *hexid, STRING_SIZE l_id,
-                 ASTERDOUBLE *stress, ASTERDOUBLE *statev, ASTERDOUBLE *ddsdde, ASTERDOUBLE *dtime,
-                 ASTERDOUBLE *pnewdt, ASTERINTEGER *retcode );
+void DEFSPPPPPPP( MGIS_INTEGRATE, mgis_integrate, const char *hexid, STRING_SIZE l_id,
+                  ASTERDOUBLE *stress, ASTERDOUBLE *statev, ASTERDOUBLE *ddsdde, ASTERDOUBLE *dtime,
+                  ASTERDOUBLE *rdt, ASTERDOUBLE *pnewdt, ASTERINTEGER *retcode );
 
 void DEFSS( MGIS_DEBUG, mgis_debug, const char *hexid, STRING_SIZE l_id, const char *title,
             STRING_SIZE l_tit );

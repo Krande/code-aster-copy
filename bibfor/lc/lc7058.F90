@@ -100,7 +100,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! In  vim              : internal state variables at beginning of current step time
 ! In  option           : name of option to compute
 ! In  angmas           : nautical angles
-! Out sigm             : stresses at end of current step time
+! Out sigp             : stresses at end of current step time
 ! Out vip              : internal state variables at end of current step time
 ! Out dsidep           : tangent matrix
 ! Out codret           : code for error
@@ -112,13 +112,13 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     integer :: nstran, nforc, nstatv, nmatr
     aster_logical, parameter :: lGreenLagr = ASTER_FALSE
     integer, parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: drot(3, 3), dstran(3), stran(3), dsidepMGIS(36)
-    real(kind=8) :: dtime, pnewdt
+    real(kind=8) :: dstran(3), stran(3), dsidepMGIS(36)
+    real(kind=8) :: dtime, pnewdt, rdt
     character(len=16) :: rela_comp, extern_addr
     aster_logical :: lCZM
     real(kind=8) :: sigp_loc(6), dsidep_loc(6, 6), vi_loc(nvi)
     real(kind=8) :: props(MGIS_MAX_PROPS)
-    integer :: ntens, nprops, retcode
+    integer :: nprops, retcode
     aster_logical :: dbg
 !
 ! --------------------------------------------------------------------------------------------------
@@ -170,8 +170,12 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Time increment
     dtime = instap-instam
 
+! - Anisotropic case
+    if (use_orient(angmas, 3)) then
+        call utmess('F', 'MGIS1_2', sk=typmod(2))
+    end if
+
 ! - Type of matrix for MFront
-    pnewdt = 1.d0
     dsidepMGIS = 0.d0
     if (option .eq. 'RIGI_MECA_TANG') then
         dsidepMGIS(1) = float(MGIS_BV_INTEGRATION_CONSISTENT_TANGENT_OPERATOR)
@@ -198,14 +202,27 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Set internal state variables
     call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
 
+! - Désactivation de l'augmentation du pas de temps dans la LdC
+    rdt = 1.d0
+
 ! - Call to integrator
-    call mgis_integrate(extern_addr, sigp_loc, vi_loc, dsidepMGIS, dtime, &
+    call mgis_integrate(extern_addr, sigp_loc, vi_loc, dsidepMGIS, dtime, rdt, &
                         pnewdt, retcode)
+
+! - Debug - Outputs
+    if (dbg) then
+        write (6, *) "+++ outputs +++"
+        write (6, *) "sigp_loc", (sigp_loc(i), i=1, nforc)
+        write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
+        write (6, *) "dsidepMGIS", (dsidepMGIS(i), i=1, nmatr*nmatr)
+        write (6, *) "pnewdt( pas utilisé par aster)", pnewdt
+        write (6, *) "retcode:", retcode
+    end if
 
 ! - Convert stresses (nothing to do: same convention in code_aster)
 
 ! - Convert matrix
-    if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+    if (lMatr) then
         do i = 1, ndim
             do j = 1, ndim
                 dsidep_loc(i, j) = dsidepMGIS(ndim*(i-1)+j)
@@ -217,22 +234,14 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 !    -1: integration failed
 !     0: integration succeeded but results are unreliable
 !     1: integration succeeded and results are reliable
-!   Use 'pnewdt' to return state to caller:
-    if (retcode .lt. 0) then
+    if (retcode .eq. -1) then
         codret = 1
-    end if
-    if (pnewdt .lt. 0.0d0) then
-        if (pnewdt .lt. -0.99d0 .and. pnewdt .gt. -1.01d0) then
-            codret = 1
-        else if (pnewdt .lt. -1.99d0 .and. pnewdt .gt. -2.01d0) then
-            call utmess('F', 'MFRONT_1')
-        else if (pnewdt .lt. -2.99d0 .and. pnewdt .gt. -3.01d0) then
-            call utmess('F', 'MFRONT_2')
-        else if (pnewdt .lt. -3.99d0 .and. pnewdt .gt. -4.01d0) then
-            codret = 1
-        else
-            call utmess('F', 'MFRONT_3')
-        end if
+    elseif (retcode .eq. 0) then
+        codret = 2
+    elseif (retcode .eq. 1) then
+        codret = 0
+    else
+        ASSERT(ASTER_FALSE)
     end if
 
 ! - Copy outputs
