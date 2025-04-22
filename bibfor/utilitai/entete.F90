@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,8 @@ subroutine entete()
 #endif
 ! --- LIBRARIES HDF5 ET MED
 #ifdef ASTER_HAVE_HDF5
-    call lihdfv(vali(1), vali(2), vali(3))
-    call utmess('I', 'SUPERVIS2_14', ni=3, vali=vali)
+    ! call lihdfv(vali(1), vali(2), vali(3))
+    ! call utmess('I', 'SUPERVIS2_14', ni=3, vali=vali)
 #else
     call utmess('I', 'SUPERVIS2_15')
 #endif

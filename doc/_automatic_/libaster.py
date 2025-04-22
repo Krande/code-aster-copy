@@ -16730,14 +16730,15 @@ class PtScotchPartitioner:
     def buildGraph(self, *args, **kwargs):
         """Overloaded function.
 
-        1. buildGraph(self: libaster.PtScotchPartitioner, vertloctab: list[int], edgeloctab: list[int]) -> int
+        1. buildGraph(self: libaster.PtScotchPartitioner, vertices: list[int], edges: list[int], weights: list[int]) -> int
 
 
         Build the PtScotch graph from 2 integer vectors (PtScotch format)
 
         Arguments:
-            vertloctab: Gives the position of starts of each vertex connections in edgeloctab
-            edgeloctab: Describes vertex connections (at which vertices each vertex is connected)
+            vertices (list[int]): Gives the position of starts of each vertex connections in edgeloctab
+            edges (list[int]): Describes vertex connections (at which vertices each vertex is connected)
+            weights (list[int], optional): Vertex weights
 
 
         2. buildGraph(self: libaster.PtScotchPartitioner, meshConnectionGraph: MeshConnectionGraph, nodesToGather: list[list[int]] = []) -> int

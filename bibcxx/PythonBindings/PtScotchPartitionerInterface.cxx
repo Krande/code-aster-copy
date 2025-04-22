@@ -3,7 +3,7 @@
  * @brief Interface python de PtScotchPartitioner
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,16 +36,17 @@ void exportPtScotchPartitionerToPython( py::module_ &mod ) {
         .def( "__pickling_disabled__", disable_pickling< PtScotchPartitioner >() )
 
         .def( "buildGraph",
-              py::overload_cast< const VectorLong &, const VectorLong & >(
+              py::overload_cast< const VectorLong &, const VectorLong &, const VectorLong & >(
                   &PtScotchPartitioner::buildGraph ),
               R"(
 Build the PtScotch graph from 2 integer vectors (PtScotch format)
 
 Arguments:
-    vertloctab: Gives the position of starts of each vertex connections in edgeloctab
-    edgeloctab: Describes vertex connections (at which vertices each vertex is connected)
+    vertices (list[int]): Gives the position of starts of each vertex connections in edgeloctab
+    edges (list[int]): Describes vertex connections (at which vertices each vertex is connected)
+    weights (list[int], optional): Vertex weights
         )",
-              py::arg( "vertloctab" ), py::arg( "edgeloctab" ) )
+              py::arg( "vertices" ), py::arg( "edges" ), py::arg( "weights" ) )
         .def( "buildGraph",
               py::overload_cast< const MeshConnectionGraphPtr &, const VectorOfVectorsLong & >(
                   &PtScotchPartitioner::buildGraph ),
