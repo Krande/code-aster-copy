@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
         Mat, intent(in) :: mat
         PetscErrorCode, intent(out) :: ierr
 #else
-        integer, intent(out) :: ksp
-        integer, intent(in) :: mat
-        integer, intent(out) :: ierr
+        integer(kind=8), intent(out) :: ksp
+        integer(kind=8), intent(in) :: mat
+        integer(kind=8), intent(out) :: ierr
 #endif
     end subroutine create_custom_ksp
 end interface

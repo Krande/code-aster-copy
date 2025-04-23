@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
           interface
             subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
-                integer :: kptsc
+                integer(kind=8) :: kptsc
                 mpi_int :: mpicou
                 character(len=19) :: nosolv
                 aster_logical :: lmd
@@ -29,8 +29,8 @@
                 KSPConvergedReason :: indic
                 PetscInt :: its
 # else
-                integer :: indic
-                integer :: its
+                integer(kind=8) :: indic
+                integer(kind=8) :: its
 # endif
             end subroutine ap2foi
           end interface

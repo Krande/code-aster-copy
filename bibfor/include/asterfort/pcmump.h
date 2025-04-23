@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine pcmump(matasz, solvez, iretz, new_facto)
         character(len=*) :: matasz
         character(len=*) :: solvez
-        integer :: iretz
+        integer(kind=8) :: iretz
         aster_logical, intent(out), optional :: new_facto
     end subroutine pcmump
 end interface

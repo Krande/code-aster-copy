@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                       iret)
         character(len=*) :: action
-        integer :: kptsc
+        integer(kind=8) :: kptsc
         real(kind=8) :: rsolu(*)
         character(len=19) :: vcine
-        integer :: istop
-        integer :: iret
+        integer(kind=8) :: istop
+        integer(kind=8) :: iret
     end subroutine apmain
 end interface

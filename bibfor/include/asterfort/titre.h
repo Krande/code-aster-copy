@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,6 @@
 interface
     subroutine titre(defTitle, lDefTitle)
         character(len=80), optional, intent(in) :: defTitle
-        integer, optional, intent(in) :: lDefTitle
+        integer(kind=8), optional, intent(in) :: lDefTitle
     end subroutine titre
 end interface

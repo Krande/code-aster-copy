@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
        Vec, intent(inout)          ::  y
        PetscErrorCode, intent(out) ::  ierr
 #else
-       integer  :: pc
-       integer  :: x1
-       integer  :: y
+       integer(kind=8)  :: pc
+       integer(kind=8)  :: x1
+       integer(kind=8)  :: y
        integer(kind=4) :: ierr
 #endif
     end subroutine ldsp2
