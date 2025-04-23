@@ -148,7 +148,6 @@ subroutine ccbcop(resultIn, resultOut, &
     do iOption = 1, nbOption
         option = listOption(iOption)
         call deprecated_option(option)
-
         if (option .eq. ' ') then
             cycle
         elseif ((option .eq. 'FORC_NODA') .or. (option .eq. 'REAC_NODA')) then
