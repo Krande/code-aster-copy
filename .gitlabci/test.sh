@@ -49,6 +49,7 @@ fi
 
 run_ctest="./install/bin/run_ctest"
 if [ "${OSNAME}" = "win" ]; then
+    export LANG=en_EN.UTF-8
     run_ctest="wine ./install/bin/run_ctest.bat"
 fi
 
