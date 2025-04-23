@@ -25,14 +25,15 @@ subroutine entete()
 ! ----------------------------------------------------------------------
 !     ECRITURE DE L'ENTETE
 ! ----------------------------------------------------------------------
-#include "asterf_types.h"
-#include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/gtopti.h"
 #include "asterc/lihdfv.h"
 #include "asterc/limedv.h"
 #include "asterc/liscov.h"
+#include "asterc/matfpe.h"
 #include "asterc/prhead.h"
+#include "asterf_types.h"
+#include "asterf.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/utmess.h"
     mpi_int :: rank, size
@@ -61,8 +62,12 @@ subroutine entete()
 #endif
 ! --- LIBRARIES HDF5 ET MED
 #ifdef ASTER_HAVE_HDF5
-    ! call lihdfv(vali(1), vali(2), vali(3))
-    ! call utmess('I', 'SUPERVIS2_14', ni=3, vali=vali)
+!   Disable fpe that may be raised by H5Tinit_float in hdf5<1.14.4
+!   Must be done before any other hdf5 use.
+    call matfpe(-1)
+    call lihdfv(vali(1), vali(2), vali(3))
+    call utmess('I', 'SUPERVIS2_14', ni=3, vali=vali)
+    call matfpe(+1)
 #else
     call utmess('I', 'SUPERVIS2_15')
 #endif

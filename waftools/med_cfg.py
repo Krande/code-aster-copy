@@ -216,7 +216,7 @@ int main(void){
     return 0;
 }"""
     self.code_checker(
-        "ASTER_HDF_HID_SIZE",
+        "ASTER_HDF5_HID_SIZE",
         self.check_cc,
         fragment,
         "Checking size of hid_t integers",
