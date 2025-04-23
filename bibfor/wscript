@@ -373,6 +373,7 @@ def _test_type(size, values):
     code = r"""
     #include <stdlib.h>
     #include <stdio.h>
+    #include <stdint.h>
     #define SIZE  %s
     #define test(a) if (sizeof(a) == SIZE) { printf("%%s\n", #a); }
     int main(void){

@@ -564,6 +564,8 @@ class ConfigHelper:
 
     def define(self, var, value=""):
         if self._lang == "Python":
+            if not value.isdigit():
+                value = "r" + value
             fmt = "   {0}=" + "{1}," if value else "True"
         else:
             fmt = "#define {0} {1}"

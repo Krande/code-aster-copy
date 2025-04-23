@@ -294,6 +294,9 @@ def get_mathlib_from_numpy(self):
     So we will try to get then using ldd if available"""
     libblas = []
     liblapack = []
+    if self.env.ASTER_PLATFORM_MINGW:
+        # to be rewrite for windows if needed
+        return libblas, liblapack
 
     # numpy already checked
     cmd = self.env.PYTHON + [
