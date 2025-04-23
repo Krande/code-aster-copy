@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,9 +104,31 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
 ! RACCORD  3D_TUYAU : IDEC=0 DANS TOUS LES APPELS A AFRETU
 ! RACCORD COQ_TUYAU : IDEC=0 OU 3 DANS LES APPELS A AFRETU
 !
-        coer(1+3*(i-1)+1-1) = zr(idch1+ival-1+idec+0)
-        coer(1+3*(i-1)+2-1) = zr(idch1+ival-1+idec+1)
-        coer(1+3*(i-1)+3-1) = zr(idch1+ival-1+idec+2)
+        if (idec .ge. 0) then
+            coer(1+3*(i-1)+1-1) = zr(idch1+ival-1+idec+0)
+            coer(1+3*(i-1)+2-1) = zr(idch1+ival-1+idec+1)
+            coer(1+3*(i-1)+3-1) = zr(idch1+ival-1+idec+2)
+        end if
+!
+!   Gestion des cas WI1 et WO1, où les conditions d'orthogonalité
+!   imposent wi1 = vo1 et wo1 = -vi1 comme coeff. devant les cos(phi) et sin(phi)
+!   L'entier "idec" est détourné de son utilisation
+!
+!       Cas WI1 = VO1
+        if (idec .eq. -1) then
+            ival = 6*(i-1)
+            coer(1+3*(i-1)+1-1) = zr(idch1+ival+0+0)
+            coer(1+3*(i-1)+2-1) = zr(idch1+ival+0+1)
+            coer(1+3*(i-1)+3-1) = zr(idch1+ival+0+2)
+        end if
+!
+!       Cas WO1 = -VI1
+        if (idec .eq. -2) then
+            ival = 6*(i-1)
+            coer(1+3*(i-1)+1-1) = zr(idch1+ival+3+0)
+            coer(1+3*(i-1)+2-1) = zr(idch1+ival+3+1)
+            coer(1+3*(i-1)+3-1) = zr(idch1+ival+3+2)
+        end if
     end do
 !
     do i = 1, nbcoef
