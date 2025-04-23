@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -284,10 +284,22 @@ CALC_NEWMARK ne sait pas traiter des maillages 3D
     ),
     52: _(
         """
-L'option VERIF_MASSE de POST_NEWMARK n'est pas disponible pour un calcul dynamique 
+L'option VERIF_MASSE de POST_NEWMARK n'est pas disponible pour un calcul dynamique
 réalisé directement avec les matrices de rigidité et masse.
 Vous pouvez réaliser le même calcul en fournissant directement le champ matériau
 obtenu par AFFE_MATERIAU, via le mot-clé CHAM_MATER.
+"""
+    ),
+    53: _(
+        """
+Dans l'opérateur MACR_LIGN_COUPE, une seule valeur peut-être pour DISTANCE_MAX.
+Plusieurs valeurs ont été détectées. On ne retient que la valeur la plus basse : %(r1)f
+"""
+    ),
+    54: _(
+        """
+Dans l'opérateur MACR_LIGN_COUPE, une seule valeur peut-être pour DISTANCE_ALARME.
+Plusieurs valeurs ont été détectées. On ne retient que la valeur la plus basse : %(r1)f
 """
     ),
 }
