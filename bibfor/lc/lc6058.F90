@@ -195,7 +195,7 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Type of matrix for MFront
     dsidepMGIS = 0.d0
     if (option .eq. 'RIGI_MECA_TANG') then
-        dsidepMGIS(1) = float(MGIS_BV_INTEGRATION_CONSISTENT_TANGENT_OPERATOR)
+        dsidepMGIS(1) = float(MGIS_BV_INTEGRATION_TANGENT_OPERATOR)
     else if (option .eq. 'RIGI_MECA_ELAS') then
         dsidepMGIS(1) = float(MGIS_BV_INTEGRATION_ELASTIC_OPERATOR)
     else if (option .eq. 'FULL_MECA_ELAS') then
