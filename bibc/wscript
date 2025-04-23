@@ -52,7 +52,6 @@ def options(self):
 
 def configure(self):
     self.load("compiler_c")
-    opts = self.options
     # preserve symbols in the dyn table for stdcalls
     if self.env.ASTER_PLATFORM_MINGW:
         self.add_linkflags(["-Wl,--export-all-symbols"])
@@ -163,7 +162,7 @@ def build_libaster(self, env):
         use.append("astermfront")
     # {bibfor, bibc, bibcxx}/*.o
     if self.env.ASTER_PLATFORM_MINGW:
-        # fix circular dependencies betw bibc.a and bibfor.a
+        # fix circular dependencies between bibc.a and bibfor.a
         env = env.derive()
         env.detach()
         env.append_value("STLIB_MARKER", "-Wl,--start-group")
@@ -183,14 +182,11 @@ def build_libaster(self, env):
     libaster = "libaster.so"
     if env.ASTER_PLATFORM_MINGW:
         extlib = ".pyd"
-        mods.append("libaster")
+        mods.extend(["libaster", "libAsterGC"])
         libaster = "aster.dll"
     for submodule in mods:
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
         self.symlink_as(src, libaster)
-    if env.ASTER_PLATFORM_MINGW:
-        src = osp.join(env.ASTERLIBDIR, "libAsterGC" + extlib)
-        self.symlink_as(src, "AsterGC.dll")
 
 
 @Configure.conf
