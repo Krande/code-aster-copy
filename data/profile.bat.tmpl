@@ -1,10 +1,10 @@
 :: created by waf using data/wscript
 
-set PYTHONPATH=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster;%ASTER_ROOT%\lib\python3.7\site-packages;%ASTER_ROOT%\@BASE_PREFIX@\medcoupling\lib\python3.7\site-packages;%ASTER_ROOT%\@BASE_PREFIX@\med\lib\python3.7\site-packages;%PYTHONPATH%
+set PYTHONPATH=%RUNASTER_ROOT%\lib\aster;%ASTER_ROOT%\lib\python3.7\site-packages;%RUNASTER_ROOT%\medcoupling\lib\python3.7\site-packages;%RUNASTER_ROOT%\med\lib\python3.7\site-packages;%PYTHONPATH%
 
-set ASTER_DATADIR=%ASTER_ROOT%\@BASE_PREFIX@\share\aster
-set ASTER_LIBDIR=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster
-set ASTER_LOCALEDIR=%ASTER_ROOT%\@BASE_PREFIX@\share\locale\aster
-set ASTER_ELEMENTSDIR=%ASTER_ROOT%\@BASE_PREFIX@\lib\aster
+set ASTER_DATADIR=%RUNASTER_ROOT%\share\aster
+set ASTER_LIBDIR=%RUNASTER_ROOT%\lib\aster
+set ASTER_LOCALEDIR=%RUNASTER_ROOT%\share\locale\aster
+set ASTER_ELEMENTSDIR=%RUNASTER_ROOT%\lib\aster
 
-set PATH=%ASTER_ROOT%\@BASE_PREFIX@\medcoupling\lib;%ASTER_ROOT%\@BASE_PREFIX@\medcoupling\lib\python3.7\site-packages;%ASTER_ROOT%\@BASE_PREFIX@\med\lib\python3.7\site-packages;%PATH%
+set PATH=%RUNASTER_ROOT%\medcoupling\lib;%RUNASTER_ROOT%\medcoupling\lib\python3.7\site-packages;%RUNASTER_ROOT%\med\lib\python3.7\site-packages;%PATH%

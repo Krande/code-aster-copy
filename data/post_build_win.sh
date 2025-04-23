@@ -12,8 +12,10 @@ prefix="$1"
 
 rm -rf ${prefix}/Python37
 rm -rf ${prefix}/tools
+rm -rf ${prefix}/med
 rm -rf ${prefix}/medcoupling
 
 cp -a /opt/public/win/Python37 ${prefix}/
 cp -a /opt/public/win/tools ${prefix}/
+cp -a /opt/public/win/med-4.1.1 ${prefix}/med
 cp -a /opt/public/win/MEDCOUPLING_9_11_0 ${prefix}/medcoupling
