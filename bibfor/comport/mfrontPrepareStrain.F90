@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,25 +54,47 @@ subroutine mfrontPrepareStrain(l_greenlag, neps, epsm, deps, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8), parameter :: rac2 = 1.0
-!sqrt(2.d0)
+    real(kind=8) :: stran_loc(neps), dstran_loc(neps)
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
     stran(1:neps) = 0.d0
     dstran(1:neps) = 0.d0
+    stran_loc(1:neps) = 0.d0
+    dstran_loc(1:neps) = 0.d0
 !
     if (l_greenlag) then
         ASSERT(neps .eq. 9)
         b_n = to_blas_int(neps)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, epsm, b_incx, stran, b_incy)
+        call dcopy(b_n, epsm, b_incx, stran_loc, b_incy)
+        ! - Reordering to be consistent with mfront
+        stran(1) = stran_loc(1)
+        stran(2) = stran_loc(5)
+        stran(3) = stran_loc(9)
+        stran(4) = stran_loc(4)
+        stran(5) = stran_loc(2)
+        stran(6) = stran_loc(7)
+        stran(7) = stran_loc(3)
+        stran(8) = stran_loc(8)
+        stran(9) = stran_loc(6)
         b_n = to_blas_int(neps)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, deps, b_incx, dstran, b_incy)
+        call dcopy(b_n, deps, b_incx, dstran_loc, b_incy)
+        ! - Reordering to be consistent with mfront
+        dstran(1) = dstran_loc(1)
+        dstran(2) = dstran_loc(5)
+        dstran(3) = dstran_loc(9)
+        dstran(4) = dstran_loc(4)
+        dstran(5) = dstran_loc(2)
+        dstran(6) = dstran_loc(7)
+        dstran(7) = dstran_loc(3)
+        dstran(8) = dstran_loc(8)
+        dstran(9) = dstran_loc(6)
+
     else
         ASSERT(neps .ne. 9)
         b_n = to_blas_int(neps)
@@ -86,18 +108,18 @@ subroutine mfrontPrepareStrain(l_greenlag, neps, epsm, deps, &
         if (neps .eq. 6) then
             b_n = to_blas_int(3)
             b_incx = to_blas_int(1)
-            call dscal(b_n, rac2, dstran(4), b_incx)
+            call dscal(b_n, 1.d0, dstran(4), b_incx)
             b_n = to_blas_int(3)
             b_incx = to_blas_int(1)
-            call dscal(b_n, rac2, stran(4), b_incx)
+            call dscal(b_n, 1.d0, stran(4), b_incx)
         end if
         if (neps .eq. 4) then
             b_n = to_blas_int(1)
             b_incx = to_blas_int(1)
-            call dscal(b_n, rac2, dstran(4), b_incx)
+            call dscal(b_n, 1.d0, dstran(4), b_incx)
             b_n = to_blas_int(1)
             b_incx = to_blas_int(1)
-            call dscal(b_n, rac2, stran(4), b_incx)
+            call dscal(b_n, 1.d0, stran(4), b_incx)
         end if
     end if
 !

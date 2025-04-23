@@ -94,6 +94,7 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lc6036.h"
 #include "asterfort/lc6046.h"
 #include "asterfort/lc6057.h"
+#include "asterfort/lc6058.h"
 #include "asterfort/lc6075.h"
 #include "asterfort/lc6076.h"
 #include "asterfort/lc7010.h"
@@ -758,6 +759,15 @@ subroutine lc0000(BEHinteg, &
                     deps, nsig, sigm, nvi, vim, option, angmas, &
                     sigp, vip, typmod, icomp, &
                     ndsde, dsidep, codret)
+!
+    case (6058)
+!     MFRONT
+        call lc6058(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    neps, epsm, deps, nsig, sigm, &
+                    nvi, vim, option, angmas, &
+                    sigp, vip, ndsde, dsidep, codret)
 !
     case (6075)
 !     GTN
