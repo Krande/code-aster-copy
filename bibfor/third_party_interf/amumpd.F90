@@ -86,7 +86,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
     integer(kind=8) :: rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer(kind=8) :: ietrat, nprec, ifact, iaux, vali(4), pcpi
     character(len=1) :: rouc, type, prec
-    character(len=3) :: matd, mathpc
+    character(len=3) :: matd
     character(len=5) :: etam, klag2
     character(len=8) :: ktypr
     character(len=12) :: usersm, k12bid
@@ -379,7 +379,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
                             dmpsk%icntl(23) = 0
                             dmpsk%icntl(22) = 1
                         end if
-                        ifactm = max(ifactm-ifact, 1)
+                        ifactm = max(ifactm-ifact, 1_8)
                         goto 10
                     end if
 !
@@ -394,7 +394,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
                     lpb13 = .true.
                     dmpsk%icntl(23) = 0
                     dmpsk%icntl(22) = 1
-                    ifactm = max(ifactm-ifact, 1)
+                    ifactm = max(ifactm-ifact, 1_8)
                     goto 10
                 else
 ! ---  SORTIE STANDARD SANS ERREUR

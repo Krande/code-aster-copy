@@ -172,7 +172,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     else
         ASSERT(.false.)
     end if
-    nnbsol = n*nbsol
+    nnbsol = int(n*nbsol, 4)
     nomat = nomats(kxmps)
     nosolv = nosols(kxmps)
     nonu = nonus(kxmps)
@@ -276,17 +276,17 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
             call jeveuo(conl, 'L', jconl)
             jconl = jconl-1
             allocate (dmpsk%rhs(nnbsol))
-            dmpsk%nz_rhs = nzrhs
+            dmpsk%nz_rhs = int(nzrhs, 4)
             allocate (dmpsk%rhs_sparse(nzrhs))
             allocate (dmpsk%irhs_sparse(nzrhs))
             do i = 0, dmpsk%nz_rhs-1
                 dmpsk%rhs_sparse(i+1) = zr(js1+i1+i)*zr(jconl+zi(js2+i1+i))
-                dmpsk%irhs_sparse(i+1) = zi(js2+i1+i)
+                dmpsk%irhs_sparse(i+1) = int(zi(js2+i1+i), 4)
             end do
             allocate (dmpsk%irhs_ptr(nbsol+1))
             dmpsk%irhs_ptr(1) = 1
             do i = 0, nbsol
-                dmpsk%irhs_ptr(i+1) = zi(js3+izrhs+i)-(i1-1)
+                dmpsk%irhs_ptr(i+1) = int(zi(js3+izrhs+i)-(i1-1), 4)
             end do
 !
             if (lverbose) then
