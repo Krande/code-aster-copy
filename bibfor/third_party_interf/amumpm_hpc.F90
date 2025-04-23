@@ -65,7 +65,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
 #include "asterfort/wkvect.h"
 #include "asterfort/crnustd.h"
 #include "asterfort/filtering.h"
-    integer :: kxmps, ifmump
+    integer(kind=8) :: kxmps, ifmump
     aster_logical :: lpreco, lbloc
     real(kind=8) :: epsmat
     character(len=1) :: type
@@ -82,13 +82,13 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: nsmdi, nsmhc, neql, n1, nzl, nvale, jvale
-    integer :: nlong, jvale2, nzloc, iterm, ifm, niv, k
-    integer :: sym, iret, jcoll, iligl, kzero, ltot
-    integer :: ibid, vali(2), nbproc, nfilt1, nfilt2
-    integer :: nfilt3, isizemu, nsizemu, rang, esizemu
-    integer :: nuno1, nuno2, procol, prolig, nucmp1, nucmp2
-    integer ::  nzdeb, nzfin, numno1, numno2, iligg, jcolg, nloc
+    integer(kind=8) :: nsmdi, nsmhc, neql, n1, nzl, nvale, jvale
+    integer(kind=8) :: nlong, jvale2, nzloc, iterm, ifm, niv, k
+    integer(kind=8) :: sym, iret, jcoll, iligl, kzero, ltot
+    integer(kind=8) :: ibid, vali(2), nbproc, nfilt1, nfilt2
+    integer(kind=8) :: nfilt3, isizemu, nsizemu, rang, esizemu
+    integer(kind=8) :: nuno1, nuno2, procol, prolig, nucmp1, nucmp2
+    integer(kind=8) ::  nzdeb, nzfin, numno1, numno2, iligg, jcolg, nloc
     mumps_int :: neqg, nz2, iligg4, jcolg4
     character(len=8) :: k8bid
     character(len=14) :: nonu
@@ -100,15 +100,15 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     aster_logical :: lmnsy, ltypr, lnn, lfiltr, eli2lg, lsimpl, lcmde
     aster_logical :: lgive, lnn2, lspd
     aster_logical, parameter :: ldebug = ASTER_FALSE
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: nequ(:) => null()
-    integer, pointer :: nuls(:) => null()
-    integer, pointer :: deeg(:) => null()
-    integer, pointer :: owner(:) => null()
-    integer, pointer :: delg(:) => null()
-    integer, pointer :: nulg(:) => null()
-    integer, pointer :: pddl(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: nuls(:) => null()
+    integer(kind=8), pointer :: deeg(:) => null()
+    integer(kind=8), pointer :: owner(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
+    integer(kind=8), pointer :: nulg(:) => null()
+    integer(kind=8), pointer :: pddl(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
     integer(kind=4), pointer :: iok(:) => null()
     integer(kind=4), pointer :: iok2(:) => null()
@@ -245,12 +245,12 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     nzl = smdi(neql)
     ASSERT(nzl .le. nsmhc)
 !
-    call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvale)
-    call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
+    call jeveuo(jexnum(nomat//'.VALM', 1_8), 'L', jvale)
+    call jelira(jexnum(nomat//'.VALM', 1_8), 'LONMAX', nlong)
     ASSERT(nlong == nzl)
     if (lmnsy) then
-        call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvale2)
-        call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong)
+        call jeveuo(jexnum(nomat//'.VALM', 2_8), 'L', jvale2)
+        call jelira(jexnum(nomat//'.VALM', 2_8), 'LONMAX', nlong)
         ASSERT(nlong == nzl)
     end if
 !
@@ -448,12 +448,12 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
         vali(2) = nfilt2
         do k = 1, nzl
             if (iok(k) == -1) then
-                call utmess('F', 'FACTOR_78', ni=2, vali=vali)
+                call utmess('F', 'FACTOR_78', ni=2_8, vali=vali)
             end if
         end do
         do k = 1, nzl
             if (iok2(k) == -1) then
-                call utmess('F', 'FACTOR_78', ni=2, vali=vali)
+                call utmess('F', 'FACTOR_78', ni=2_8, vali=vali)
             end if
         end do
     end if
@@ -765,8 +765,8 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
 !
     call jelibe(nonu//'.SMOS.SMDI')
     call jelibe(nonu//'.SMOS.SMHC')
-    call jelibe(jexnum(nomat//'.VALM', 1))
-    if (lmnsy) call jelibe(jexnum(nomat//'.VALM', 2))
+    call jelibe(jexnum(nomat//'.VALM', 1_8))
+    if (lmnsy) call jelibe(jexnum(nomat//'.VALM', 2_8))
     call jelibe(nonu//'.NUME.DELG')
 !
     if (niv >= 2) then
@@ -856,8 +856,8 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     call jelibd(nonu//'.NUME.NEQU', ltot)
     call jelibd(nonu//'.NUME.PDDL', ltot)
     call jelibd(nonu//'.NUME.NULG', ltot)
-    call jelibd(jexnum(nomat//'.VALM', 1), ltot)
-    if (lmnsy) call jelibd(jexnum(nomat//'.VALM', 2), ltot)
+    call jelibd(jexnum(nomat//'.VALM', 1_8), ltot)
+    if (lmnsy) call jelibd(jexnum(nomat//'.VALM', 2_8), ltot)
 !
 !
     call jedema()

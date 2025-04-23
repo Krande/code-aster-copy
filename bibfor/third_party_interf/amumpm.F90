@@ -69,7 +69,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 #include "asterfort/utmess.h"
 #include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
-    integer :: kxmps, ifmump
+    integer(kind=8) :: kxmps, ifmump
     aster_logical :: ldist, lmd, lpreco, lmhpc, lbloc
     real(kind=8) :: epsmat
     character(len=1) :: type
@@ -86,11 +86,11 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
-    integer :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k, maxnz2
-    integer :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp
-    integer :: kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2, nblk
-    integer :: nfilt3, isizemu, nsizemu, rang, esizemu, jdeeq, iblock
+    integer(kind=8) :: nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
+    integer(kind=8) :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k, maxnz2
+    integer(kind=8) :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp
+    integer(kind=8) :: kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2, nblk
+    integer(kind=8) :: nfilt3, isizemu, nsizemu, rang, esizemu, jdeeq, iblock
     mumps_int :: nbeq, nz2, iligg, jcolg
     character(len=4) :: etam
     character(len=8) :: k8bid
@@ -102,8 +102,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     complex(kind=8) :: caux
     aster_logical :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl, lcmde
     aster_logical ::  lvbloc
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -237,7 +237,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             end if
             kblock = '&&AMUMPM.BLOCKS'
             call wkvect(kblock, 'V V I', n, iblock)
-            call vecint(n, -1, zi(iblock))
+            call vecint(n, -1_8, zi(iblock))
             nblk = 1
 ! premier bloc
             zi(iblock+nblk-1) = 1
@@ -315,12 +315,12 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         nz2 = to_mumps_int(nz)
         if (sym .eq. 0) nz2 = to_mumps_int(2*nz-n)
 !
-        call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvale)
-        call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
+        call jeveuo(jexnum(nomat//'.VALM', 1_8), 'L', jvale)
+        call jelira(jexnum(nomat//'.VALM', 1_8), 'LONMAX', nlong)
         ASSERT(nlong .eq. nz)
         if (lmnsy) then
-            call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvale2)
-            call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong)
+            call jeveuo(jexnum(nomat//'.VALM', 2_8), 'L', jvale2)
+            call jelira(jexnum(nomat//'.VALM', 2_8), 'LONMAX', nlong)
             ASSERT(nlong .eq. nz)
         end if
 !
@@ -512,7 +512,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 ! --- GARDE-FOU POUR NE PAS TRANSMETTRE A MUMPS DES SYSTEMES VIDES
         maxnz2 = nzloc
         if (ldist) then
-            call asmpi_comm_vect('MPI_MAX', 'I', nbval=1, sci=maxnz2)
+            call asmpi_comm_vect('MPI_MAX', 'I', nbval=1_8, sci=maxnz2)
         end if
         if ((maxnz2 .le. 0) .or. (n .le. 0)) then
             call utmess('F', 'FACTOR_41')
@@ -633,13 +633,13 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         vali(2) = nfilt2
         do kterm = 1, nz
             if (zi4(iok+kterm-1) .eq. -1) then
-                call utmess('F', 'FACTOR_78', ni=2, vali=vali)
+                call utmess('F', 'FACTOR_78', ni=2_8, vali=vali)
             end if
         end do
         if (sym .eq. 0) then
             do kterm = 1, nz
                 if (zi4(iok2+kterm-1) .eq. -1) then
-                    call utmess('F', 'FACTOR_78', ni=2, vali=vali)
+                    call utmess('F', 'FACTOR_78', ni=2_8, vali=vali)
                 end if
             end do
         end if
@@ -876,8 +876,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     ASSERT(jcoll .eq. n)
     call jelibe(nonu//'.SMOS.SMDI')
     call jelibe(nonu//'.SMOS.SMHC')
-    call jelibe(jexnum(nomat//'.VALM', 1))
-    if (lmnsy) call jelibe(jexnum(nomat//'.VALM', 2))
+    call jelibe(jexnum(nomat//'.VALM', 1_8))
+    if (lmnsy) call jelibe(jexnum(nomat//'.VALM', 2_8))
     call jelibe(nonu//'.NUME.DELG')
     if (lmd) then
         call jelibe(nonu//'.NUML.DELG')
@@ -984,8 +984,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     call jelibd(nonu//'.NUME.DEEQ', ltot)
     call jelibd(nonu//'.NUME.NUEQ', ltot)
     call jelibd(nonu//'.NUME.LILI', ltot)
-    call jelibd(jexnum(nomat//'.VALM', 1), ltot)
-    if (lmnsy) call jelibd(jexnum(nomat//'.VALM', 2), ltot)
+    call jelibd(jexnum(nomat//'.VALM', 1_8), ltot)
+    if (lmnsy) call jelibd(jexnum(nomat//'.VALM', 2_8), ltot)
     if (lmd) then
         call jelibd(nonu//'.NUML.NULG', ltot)
         call jelibd(nonu//'.NUML.DELG', ltot)
