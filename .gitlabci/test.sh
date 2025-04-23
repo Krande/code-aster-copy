@@ -49,11 +49,14 @@ fi
 
 run_ctest="./install/bin/run_ctest"
 if [ "${OSNAME}" = "win" ]; then
+    export LANG=en_EN.UTF-8
     run_ctest="wine ./install/bin/run_ctest.bat"
 fi
 
-printf "\nrun_ctest command: ${run_ctest}\n"
-printf "\nrun_ctest arguments: ${args}\n"
+printf "\nrun_ctest command:\n    "
+echo "${run_ctest}"
+printf "\nrun_ctest arguments:\n    "
+echo "${args[@]}"
 
 printf "\nrunning testcases #1... - $(date)\n"
 ${run_ctest} "${args[@]}"
