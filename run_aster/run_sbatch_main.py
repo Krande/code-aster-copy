@@ -116,8 +116,7 @@ def parse_args(argv):
     parser.add_argument(
         "--run_aster_option",
         dest="opts",
-        action="extend",
-        nargs="*",
+        action="append",
         default=[],
         help="option to be passed to run_aster, can be repeated "
         "(example: --run_aster_option='--only-proc0')",
