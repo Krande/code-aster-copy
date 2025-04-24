@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ from functools import partial
 
 import aster_core
 import libaster
+
 from run_aster.run import copy_datafiles
 
 from ..Behaviours import catalc
@@ -48,7 +49,7 @@ from ..Supervis import CommandSyntax, ExecuteCommand, Serializer, loadObjects
 from ..Supervis.code_file import track_coverage
 from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
-from ..Utilities import MPI, ExecutionParameter, Options, import_object, logger
+from ..Utilities import MPI, ExecutionParameter, Options, config, import_object, logger
 from ..Utilities.general import Random
 from ..Utilities.i18n import localization
 from ..Utilities.rc import rc
@@ -189,7 +190,11 @@ class Starter(ExecuteCommand):
             if erreur.get("ERREUR_F"):
                 stop_with = erreur["ERREUR_F"]
             if erreur.get("ALARME") == "EXCEPTION":
-                params.enable(Options.WarningAsError)
+                # too many warnings on migw for currently unsupported features
+                if config["ASTER_PLATFORM_MINGW"]:
+                    UTMESS("I", "SUPERVIS_11")
+                else:
+                    params.enable(Options.WarningAsError)
         if params.option & Options.SlaveMode:
             stop_with = "EXCEPTION"
         # must be the first call to correctly set 'vini' in onerrf
