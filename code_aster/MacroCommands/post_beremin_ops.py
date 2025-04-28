@@ -85,6 +85,8 @@ class PostBeremin:
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
     _intvar_idx = _stress_idx = None
     _use_hist = _use_indiplas = _use_FO = _use_function = _use_cham = None
+    _use_sigm_corr = None
+    _corr_resu = None
     _coef_mult = None
     _weib_params = None
     _params_dependancy = None
@@ -111,7 +113,11 @@ class PostBeremin:
             stress_option (str): Type of stress to be used or calculated.
         """
         self._result = result
-        assert stress_option in ("SIGM_ELGA", "SIGM_ELMOY"), f"unknown value: {stress_option}"
+        assert stress_option in (
+            "SIGM_ELGA",
+            "SIGM_ELMOY",
+            "SIGM_CORR",
+        ), f"unknown value: {stress_option}"
         self._stress_option = stress_option
         self._strain_type = strain_type
 
@@ -225,6 +231,17 @@ class PostBeremin:
         """
         self._use_hist = value
 
+    def use_sigm_corr(self, args) -> None:
+        """Enable the use of a corrected stress (e.g. with plastic correction).
+
+        Args:
+            args (dict): Keywords for POST_BEREMIN.
+        """
+        self._use_sigm_corr = False
+        if "SIGM_CORR" in args:
+            self._use_sigm_corr = True
+            self._corr_resu = args["SIGM_CORR"]
+
     def set_coef_mult(self, value: float = 1.0) -> None:
         """Define the multiplicative factor to take symmetric into account.
 
@@ -324,6 +341,27 @@ class PostBeremin:
         sieq = self._rsieq.getField("SIEQ_ELGA", idx)
         sieq = sieq.toSimpleFieldOnCells()
         return sieq.PRIN_3
+
+    def get_corrected_major_stress(self, idx):
+        """Return the major principal stress corrected with a user-defined plastic correction.
+
+        Args:
+            idx (int): storage index.
+
+        Returns:
+            *ComponentOnCells*: Corrected major principal stress.
+        """
+        if "UT01_ELGA" not in self._corr_resu.getFieldsNames():
+            UTMESS("F", "RUPTURE4_25")
+        corr_sig1 = self._corr_resu.getField("UT01_ELGA", idx + 1)
+        corr_sig1 = corr_sig1.toSimpleFieldOnCells()
+        if "X1" not in corr_sig1.getComponents():
+            UTMESS("F", "RUPTURE4_25")
+        try:
+            corr_sig1.X1.restrict(self._zone_ids)
+        except:
+            UTMESS("F", "RUPTURE4_26")
+        return corr_sig1.X1
 
     def compute_sieq(self):
         """Compute SIEQ_ELGA stress."""
@@ -707,8 +745,11 @@ class PostBeremin:
                 if self._use_indiplas:
                     indip = self.get_internal_variables(idx)
 
-                sig1 = self.get_major_stress(idx)
-                sig1.restrict(self._zone_ids)
+                if self._use_sigm_corr:
+                    sig1 = self.get_corrected_major_stress(idx)
+                else:
+                    sig1 = self.get_major_stress(idx)
+                    sig1.restrict(self._zone_ids)
 
                 if self._use_indiplas:
                     sig1 = self.apply_threshold(sig1, indip)
@@ -829,6 +870,7 @@ def post_beremin_ops(self, RESULTAT, DEFORMATION, FILTRE_SIGM, **args):
         if DEFORMATION == "GDEF_LOG":
             post.set_indexes(stress_idx=args["LIST_NUME_SIEF"])
         post.use_history(args["HIST_MAXI"] == "OUI")
+        post.use_sigm_corr(args)
         post.set_coef_mult(args["COEF_MULT"])
         post.set_projection_parameters(args)
 

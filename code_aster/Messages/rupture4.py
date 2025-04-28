@@ -142,4 +142,26 @@ Ceci passe par la définition d'un champ de type NOEU_NEUT_R ou ELGA_NEUT_R
 dont la composante X1 doit être la valeur de SIGM_REFE ou SIGM_SEUIL.
         """
     ),
+    25: _(
+        """
+POST_BEREMIN / SIGM_CORR : il manque le champ UT01_ELGA et/ou sa composante X1
+dans la sd résultat donnée sous le mot-clé SIGM_CORR.
+
+Pour utiliser une contrainte corrigée dans le calcul de la contrainte de Weibull,
+l'utilisateur doit donner sous le mot-clé SIGM_CORR un résultat de type evol_noli
+contenant à chaque instant le champ de contrainte corrigée aux points de Gauss.
+
+Ceci passe par la définition d'un champ de type UT01_ELGA dont la composante
+X1 doit être la valeur de la contrainte corrigée désirée.
+        """
+    ),
+    26: _(
+        """
+POST_BEREMIN / SIGM_CORR : le champ de contrainte principale maximale corrigée donné en entrée
+sous SIGM_CORR n'est pas défini sur tout ou partie du groupe de mailles
+du post-traitement de la contrainte de WEIBULL.
+
+Veillez à définir ce champ sur tous les groupes de mailles utilisés sous le mot-clé WEIBULL(_FO).
+        """
+    ),
 }

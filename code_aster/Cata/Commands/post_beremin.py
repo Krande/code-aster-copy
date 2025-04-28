@@ -51,7 +51,7 @@ POST_BEREMIN = MACRO(
     FILTRE_SIGM=SIMP(
         statut="o",
         typ="TXM",
-        into=("SIGM_ELGA", "SIGM_ELMOY"),
+        into=("SIGM_ELGA", "SIGM_ELMOY", "SIGM_CORR"),
         fr=tr("Option de moyennation des contraintes"),
     ),
     NUME_VARI=SIMP(
@@ -76,6 +76,10 @@ POST_BEREMIN = MACRO(
     ),
     COEF_MULT=SIMP(
         statut="f", typ="R", defaut=1.0, fr=tr("Coefficient à renseigner selon u4.81.22")
+    ),
+    b_sigmcorr=BLOC(
+        condition="""equal_to("FILTRE_SIGM", 'SIGM_CORR')""",
+        SIGM_CORR=SIMP(statut="o", typ=evol_noli, fr=tr("Contrainte principale maximale corrigée")),
     ),
     WEIBULL=FACT(
         statut="f",
