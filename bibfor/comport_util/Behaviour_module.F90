@@ -925,6 +925,10 @@ contains
             CASE ('Temperature')
                 ASSERT(lMGIS)
                 indxField = ESVA_FIELD_TEMP
+                exist = BEHInteg%behavESVA%behavESVAField(indxField)%exist
+                if (.not. exist) then
+                    call utmess('A', 'COMPOR4_26', sk=exteNameAster)
+                end if
                 BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
                     BEHInteg%behavESVA%behavESVAField(indxField)%valeScalPrev
                 BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(iESVA) = &
