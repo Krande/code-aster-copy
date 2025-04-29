@@ -116,6 +116,7 @@ ASSEMBLAGE(
 modes = CALC_MODES(
     MATR_MASS=MASS_M, MATR_RIGI=RIGI_K, OPTION="PLUS_PETITE", VERI_MODE=_F(STOP_ERREUR="NON")
 )
+modes.setElementaryCharacteristics(elemprop)
 
 modes = CALC_CHAMP(reuse=modes, CONTRAINTE=("EFGE_ELNO", "SIEF_ELGA"), RESULTAT=modes)
 
