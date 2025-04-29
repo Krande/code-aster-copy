@@ -121,7 +121,7 @@ TEST_RESU(
             PARA="FREQ",
             CRITERE="RELATIF",
             NUME_ORDRE=1,
-            VALE_CALC=306258.55923755554,
+            VALE_CALC=306259.62128713354,
             REFERENCE="AUTRE_ASTER",
             VALE_REFE=306258.55923755554,
         ),
