@@ -926,7 +926,7 @@ contains
                 ASSERT(lMGIS)
                 indxField = ESVA_FIELD_TEMP
                 exist = BEHInteg%behavESVA%behavESVAField(indxField)%exist
-                if (.not. exist) then
+                if (exist) then
                     BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
                         BEHInteg%behavESVA%behavESVAField(indxField)%valeScalPrev
                     BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(iESVA) = &
