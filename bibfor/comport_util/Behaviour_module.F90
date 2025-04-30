@@ -927,12 +927,13 @@ contains
                 indxField = ESVA_FIELD_TEMP
                 exist = BEHInteg%behavESVA%behavESVAField(indxField)%exist
                 if (.not. exist) then
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
+                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalPrev
+                    BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(iESVA) = &
+                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalIncr
+                else
                     call utmess('A', 'COMPOR4_26', sk=exteNameAster)
                 end if
-                BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
-                    BEHInteg%behavESVA%behavESVAField(indxField)%valeScalPrev
-                BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(iESVA) = &
-                    BEHInteg%behavESVA%behavESVAField(indxField)%valeScalIncr
 
             case ('ElementSize')
                 ASSERT(lMGIS)

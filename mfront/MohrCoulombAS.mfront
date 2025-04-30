@@ -7,7 +7,7 @@
 ///
 /// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-@Parser Implicit;
+@Parser Implicit {automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
 @Behaviour MohrCoulombAS;
 @Author Thomas Nagel;
 @Date 22 / 07 / 2021;

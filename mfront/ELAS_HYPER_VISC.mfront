@@ -1,4 +1,4 @@
-@DSL DefaultFiniteStrain;
+@DSL DefaultFiniteStrain {automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
 @Author Thomas Helfer;
 @Behaviour ELAS_HYPER_VISC;
 @Date 9/12/2016;

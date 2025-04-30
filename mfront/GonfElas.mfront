@@ -1,4 +1,4 @@
-@DSL Default;
+@DSL Default {automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
 @Behaviour GonfElas;
 @Author G. Melot, S. Raude;
 @Description{"Simple elastic model with the effect of capillary pressure"}
