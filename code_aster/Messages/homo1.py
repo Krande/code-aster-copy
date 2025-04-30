@@ -106,4 +106,9 @@ Les correcteurs fournis ne respectent pas le type d'homogénéisation '%(k1)s'.
 Le fichier fourni ne contient pas de correcteurs.
 """
     ),
+    17: _(
+        """
+Le maillage fourni %(k1)s est de type parallèle et n'est pas supporté par cette fonctionnalité.
+"""
+    ),
 }

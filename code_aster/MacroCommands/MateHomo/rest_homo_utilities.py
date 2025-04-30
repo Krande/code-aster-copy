@@ -33,7 +33,7 @@ from ...Messages import ASSERT, UTMESS
 from ...Utilities import SearchList, no_new_attributes, medcoupling as medc
 from ...CodeCommands import PROJ_CHAMP
 from .syme_homo_corr import BuildFullSymmetryMassif
-from . import MESH_TOL, HomoType
+from . import MESH_TOL, HomoType, check_mesh
 
 
 class RelocManager:
@@ -257,7 +257,7 @@ class RelocManager:
         if mmeca is not None and mther is not None:
             ASSERT(mther[0] is mmeca[0])
 
-        return mesh
+        return check_mesh(mesh)
 
     def _createVerMesh(self):
         """Internal function. Creates the VER mesh used for field localisation.
