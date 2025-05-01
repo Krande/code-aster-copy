@@ -1,4 +1,4 @@
-@DSL Implicit;
+@DSL Implicit{automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
 @Behaviour Plasticity_brick;
 
 @Algorithm NewtonRaphson;
