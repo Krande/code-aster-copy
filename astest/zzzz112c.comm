@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ TEST_RESU(
             RESULTAT=RESU2,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIYY",
-            VALE_CALC=93.104660099057,
+            VALE_CALC=93.10466012325256,
             VALE_REFE=100.0,
             PRECISION=0.070000000000000007,
             GROUP_MA="M1",
@@ -146,7 +146,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N1",
             NOM_CMP="DY",
-            VALE_CALC=-4.8590399660082e-11,
+            VALE_CALC=-4.859039974935581e-11,
             VALE_REFE=-5.0000000000000002e-11,
             PRECISION=0.040000000000000001,
         ),
@@ -155,10 +155,10 @@ TEST_RESU(
 
 TEST_RESU(
     OBJET=(
-        _F(VALE_CALC=90.250001545811003, NOM=MAINI.getName() + ".COORDO    .VALE"),
-        _F(VALE_CALC=90.250001545811003, NOM=MAIN2.getName() + ".COORDO    .VALE"),
-        _F(VALE_CALC=10.500000141560999, NOM=MAILPLE.getName() + ".COORDO    .VALE"),
-        _F(VALE_CALC=10.500000141560999, NOM=MAILPLEX.getName() + ".COORDO    .VALE"),
+        _F(VALE_CALC=90.25000154581055, NOM=MAINI.getName() + ".COORDO    .VALE"),
+        _F(VALE_CALC=90.25000154581055, NOM=MAIN2.getName() + ".COORDO    .VALE"),
+        _F(VALE_CALC=10.500000141560959, NOM=MAILPLE.getName() + ".COORDO    .VALE"),
+        _F(VALE_CALC=10.500000141560959, NOM=MAILPLEX.getName() + ".COORDO    .VALE"),
     )
 )
 
@@ -174,8 +174,11 @@ TEST_RESU(
         RESULTAT=RESU2,
         NOM_CHAM="EFGE_ELGA",
         NOM_CMP="N",
-        VALE_CALC=2.4527023426964e-3,
+        VALE_CALC=1.3943661644825718e-13,
         GROUP_MA="M102",
+        VALE_REFE=0.0,
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
     )
 )
 
@@ -188,8 +191,11 @@ TEST_RESU(
         RESULTAT=RESU2B,
         NOM_CHAM="EFGE_ELGA",
         NOM_CMP="N",
-        VALE_CALC=2.4527023426964e-3,
+        VALE_CALC=1.3943661644825718e-13,
         GROUP_MA="M102",
+        VALE_REFE=0.0,
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
     )
 )
 

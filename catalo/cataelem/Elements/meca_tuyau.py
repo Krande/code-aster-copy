@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -279,7 +279,7 @@ class MET3SEG3(Element):
 
     meshType = MT.SEG3
     elrefe = (
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
+        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2", "MASS=FPG3", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
     )
 
     calculs = (
@@ -784,7 +784,7 @@ class MET3SEG4(MET3SEG3):
 
     meshType = MT.SEG4
     elrefe = (
-        ElrefeLoc(MT.SE4, gauss=("RIGI=FPG3", "MASS=FPG4", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
+        ElrefeLoc(MT.SE4, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
     )
 
     def postInit(self):
@@ -871,7 +871,7 @@ class MET6SEG3(MET3SEG3):
 
     meshType = MT.SEG3
     elrefe = (
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
+        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2", "MASS=FPG3", "FPG1=FPG1"), mater=("RIGI", "FPG1")),
     )
 
     def postInit(self):

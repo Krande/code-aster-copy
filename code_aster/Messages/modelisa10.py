@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ cata_msg = {
     1: _(
         """
 AFFE_CARA_ELEM :
-Vous avez activé le mot-clé MODI_METRIQUE='OUI' sur des éléments pour lesquels cette fonctionnalité n'a
-pas d'effet ou n'est pas programmée.
+Vous avez activé le mot-clé MODI_METRIQUE='OUI' sur des éléments pour lesquels cette fonctionnalité n'est
+pas disponible.
 
 Cette fonctionnalité est disponible avec les modélisations suivantes uniquement :
-COQUE_AXIS, TUYAU_3M et TUYAU_6M.
+COQUE_AXIS.
 """
     ),
     2: _(
@@ -40,7 +40,7 @@ mot-clé facteur MASSIF. En 3D, il faut également fournir le mot-clé ANGL_AXE 
     3: _(
         """
 AFFE_CARA_ELEM :
-Vous souhaitez affecter une orientation de type repère cylindrique sur des éléments massifs 2D. 
+Vous souhaitez affecter une orientation de type repère cylindrique sur des éléments massifs 2D.
 En 2D, ANGL_AXE ne doit pas être fourni, seul ORIG_AXE est demandé.
 """
     ),

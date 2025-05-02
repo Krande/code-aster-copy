@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option, &
 !
 !    ENTIER DECRIVANT LA CINEMATIQUE DU COMPORTEMENT DE L INTERFACE
 !     (CODE DANS LA ROUTINE RCSTOC)
-    cinema = nint(val(4))
+    cinema = nint(val(6))
 !
 !    LECTURE DES VARIABLES INTERNES
     ka = vim(1)

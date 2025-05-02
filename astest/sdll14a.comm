@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ CARELEM = AFFE_CARA_ELEM(
         SECTION="CERCLE",
         CARA=("R", "EP"),
         VALE=(0.010, 0.002),
-        MODI_METRIQUE="OUI",
+        MODI_METRIQUE="NON",
     ),
     ORIENTATION=_F(GROUP_NO="D", CARA="GENE_TUYAU", VALE=(0.0, 0.0, 1.0), CRITERE="ABSOLU"),
 )
@@ -137,41 +137,41 @@ TEST_RESU(
             NUME_ORDRE=1,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=17.844938864,
+            VALE_CALC=17.541339457923147,
             VALE_REFE=17.899999999999999,
             REFERENCE="NON_DEFINI",
             CRITERE="RELATIF",
-            PRECISION=5.0000000000000001e-3,
+            PRECISION=0.03,
         ),
         _F(
             NUME_ORDRE=2,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=24.820701389,
+            VALE_CALC=24.280451380850174,
             VALE_REFE=24.800000000000001,
             REFERENCE="NON_DEFINI",
             CRITERE="RELATIF",
-            PRECISION=5.0000000000000001e-3,
+            PRECISION=0.03,
         ),
         _F(
             NUME_ORDRE=3,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=25.815780419,
+            VALE_CALC=24.788317940693776,
             VALE_REFE=25.300000000000001,
             REFERENCE="NON_DEFINI",
             CRITERE="RELATIF",
-            PRECISION=0.029999999999999999,
+            PRECISION=0.03,
         ),
         _F(
             NUME_ORDRE=4,
             PARA="FREQ",
             RESULTAT=MODES,
-            VALE_CALC=27.649572193,
+            VALE_CALC=26.55918506711169,
             VALE_REFE=27.0,
             REFERENCE="NON_DEFINI",
             CRITERE="RELATIF",
-            PRECISION=0.029999999999999999,
+            PRECISION=0.03,
         ),
     )
 )

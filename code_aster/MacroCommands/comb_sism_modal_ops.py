@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -17,11 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
-import numpy as np
-from ..Messages import UTMESS
-from math import sqrt
 from itertools import count, product
+from math import sqrt
+
+import numpy as np
+from libaster import setFortranLoggingLevel
+
+from ..Messages import UTMESS
 from ..Objects import MultipleElasticResult
 from ..Supervis.ExecuteCommand import _get_object_repr
 
@@ -1847,12 +1849,10 @@ def comb_sism_modal_ops(self, **args):
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
                 # info of mode_meca
-                UTMESS(
-                    "I",
-                    "SEISME_15",
-                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])),
-                    vali=len(freqs),
+                dict_args = dict(
+                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])), vali=len(freqs)
                 )
+                UTMESS("I", "SEISME_15", **dict_args)
                 # info for modal basis to be considered/combined
                 for direction in ["OX", "OY", "OZ"]:
                     if "OX" in direction:
@@ -1869,9 +1869,7 @@ def comb_sism_modal_ops(self, **args):
                         masse_effe_un = l_masse_effe_un[2]
                     UTMESS("I", "SEISME_48")
                     for i_freq in range(len(freqs)):
-                        UTMESS(
-                            "I",
-                            "SEISME_49",
+                        dict_args = dict(
                             vali=nume_modes[i_freq],
                             valr=(
                                 freqs[i_freq],
@@ -1881,6 +1879,7 @@ def comb_sism_modal_ops(self, **args):
                             ),
                             valk=direction,
                         )
+                        UTMESS("I", "SEISME_49", **dict_args)
                 # about spectra
                 for i_dir in range(len(spectres[0])):
                     # Spectrum information
@@ -1896,13 +1895,12 @@ def comb_sism_modal_ops(self, **args):
                     # info of read value on spectra
                     UTMESS("I", "SEISME_53")
                     for i_freq in range(len(freqs)):
-                        UTMESS(
-                            "I",
-                            "SEISME_54",
+                        dict_args = dict(
                             vali=nume_modes[i_freq],
                             valr=(freqs[i_freq], amors[i_freq], l_SA[spectre_dir][i_freq]),
                             valk=spectre_dir,
                         )
+                        UTMESS("I", "SEISME_54", **dict_args)
                 # about correction by pseudo-mode
                 if mode_corr == "OUI":
                     for i_dir in range(len(spectres[0])):
@@ -1915,12 +1913,11 @@ def comb_sism_modal_ops(self, **args):
                         ] = [spectres[i][i_dir] for i in range(5)]
                         # cutting frequency et ZPA
                         UTMESS("I", "SEISME_56")
-                        UTMESS(
-                            "I",
-                            "SEISME_57",
+                        dict_args = dict(
                             valr=(l_pseudo[spectre_dir][0], l_pseudo[spectre_dir][1]),
                             valk=(spectre_dir, "mono_appui"),
                         )
+                        UTMESS("I", "SEISME_57", **dict_args)
                 # about combinaison of response due to DDS
                 if comb_dds_correle:
                     UTMESS("I", "SEISME_19", valk=comb_dds_correle)
@@ -2362,12 +2359,10 @@ def comb_sism_modal_ops(self, **args):
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
                 # info of mode_meca
-                UTMESS(
-                    "I",
-                    "SEISME_15",
-                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])),
-                    vali=len(freqs),
+                dict_args = dict(
+                    valk=(show_name, comb_mode["TYPE"], str(args["OPTION"])), vali=len(freqs)
                 )
+                UTMESS("I", "SEISME_15", **dict_args)
                 # info for modal basis to be considered/combined
                 for direction in ["OX", "OY", "OZ"]:
                     if "OX" in direction:
@@ -2384,9 +2379,7 @@ def comb_sism_modal_ops(self, **args):
                         masse_effe_un = l_masse_effe_un[2]
                     UTMESS("I", "SEISME_48")
                     for i_freq in range(len(freqs)):
-                        UTMESS(
-                            "I",
-                            "SEISME_49",
+                        dict_args = dict(
                             vali=nume_modes[i_freq],
                             valr=(
                                 freqs[i_freq],
@@ -2396,6 +2389,7 @@ def comb_sism_modal_ops(self, **args):
                             ),
                             valk=direction,
                         )
+                        UTMESS("I", "SEISME_49", **dict_args)
                 # about spectra
                 for i_dir in range(max(len(dir_all), len(D_e_dirs_all))):
                     direction = dir_all[i_dir]
@@ -2432,15 +2426,14 @@ def comb_sism_modal_ops(self, **args):
                             if mode_corr == "OUI":
                                 # cutting frequency et ZPA
                                 UTMESS("I", "SEISME_56")
-                                UTMESS(
-                                    "I",
-                                    "SEISME_57",
+                                dict_args = dict(
                                     valr=(
                                         l_pseudo[spectre_dir][nom_appui][0],
                                         l_pseudo[spectre_dir][nom_appui][1],
                                     ),
                                     valk=(spectre_dir, nom_appui),
                                 )
+                                UTMESS("I", "SEISME_57", **dict_args)
                 # about combinaison of response due to DDS
                 if comb_dds_correle:
                     UTMESS("I", "SEISME_19", valk=comb_dds_correle)
@@ -2448,4 +2441,12 @@ def comb_sism_modal_ops(self, **args):
                     UTMESS("I", "SEISME_18", valk=comb_direction)
         # end mult_appui
     # end
+    model = mode_meca.getModel()
+    if model:
+        output_result.setModel(model)
+    else:
+        output_result.setMesh(MAILLAGE)
+    cara_elem = mode_meca.getElementaryCharacteristics()
+    if cara_elem:
+        output_result.setElementaryCharacteristics(cara_elem)
     return output_result

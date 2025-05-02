@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ CARELEM = AFFE_CARA_ELEM(
         SECTION="CERCLE",
         CARA=("R", "EP"),
         VALE=(0.010, 0.002),
-        MODI_METRIQUE="OUI",
+        MODI_METRIQUE="NON",
     ),
     ORIENTATION=_F(GROUP_NO="D", CARA="GENE_TUYAU", VALE=(0.0, 0.0, 1.0)),
 )
@@ -121,9 +121,9 @@ TEST_RESU(
             PARA="FREQ",
             CRITERE="RELATIF",
             NUME_ORDRE=1,
-            VALE_CALC=3.0520927416196e05,
+            VALE_CALC=306259.62128713354,
             REFERENCE="AUTRE_ASTER",
-            VALE_REFE=3.05197690121e05,
+            VALE_REFE=306258.55923755554,
         ),
     )
 )
