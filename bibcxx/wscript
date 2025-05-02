@@ -19,7 +19,7 @@
 
 import os.path as osp
 
-from waflib import Configure, Utils
+from waflib import Configure, Errors, Utils
 
 
 def options(self):
@@ -65,18 +65,18 @@ def build(self):
         source=get_srcs("**/*.cxx", excl="MFront/*.cxx"),
         target="bibcxx",
         use=[
-            "BIBCXX",
-            "PYBIND11",
-            "PETSC",
-            "MGIS",
-            "MED",
-            "HDF5",
             "PYEXT",
+            "PYBIND11",
             "NUMPY",
             "CXX",
-            "SCOTCH",
+            "BIBCXX",
+            "HDF5",
+            "MED",
+            "MGIS",
             "METIS",
             "PARMETIS",
+            "SCOTCH",
+            "PETSC",
         ],
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
@@ -98,7 +98,11 @@ def check_cxx_compiler_flags(self):
     # compiler independent (icpc/icpx & g++)
     self.check_cxx_compiler_options("-fPIC")
     # self.check_cxx_compiler_options("-flto")
-    self.check_cxx_compiler_options("-std=c++17")
+    try:
+        self.check_cxx_compiler_options("-std=c++20", optional=False)
+    except Errors.ConfigurationError:
+        # for GCC 9 and earlier
+        self.check_cxx_compiler_options("-std=c++2a")
     # FIXME: should globally add -fvisibility-hidden
     self.check_cxx_compiler_options("-Wno-attributes")
     # New in 12.x: https://github.com/pybind/pybind11/issues/5224
@@ -112,8 +116,9 @@ def check_cxx_compiler_flags(self):
 
 
 @Configure.conf
-def check_cxx_compiler_options(self, options):
+def check_cxx_compiler_options(self, options, optional=True):
     """Check C++ compiler options"""
+    # do not use mandatory argument as it is consumed by 'Configure.conf' decorator
     if type(options) not in (list, tuple):
         options = [options]
     self.start_msg("Checking for C++ option")
@@ -122,6 +127,8 @@ def check_cxx_compiler_options(self, options):
         self.end_msg("yes (%s)" % " ".join(options))
     else:
         self.end_msg("no (%s)" % " ".join(options), "YELLOW")
+        if not optional:
+            raise Errors.ConfigurationError(f"unsupported options: {options}")
 
 
 @Configure.conf
