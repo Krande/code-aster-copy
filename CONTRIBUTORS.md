@@ -261,6 +261,7 @@ Please keep this list sorted.
 - Meysam Joulaian <@mjoulaian> on gitlab.com
 - Pierre Juillard <pierre.juillard .at. gmail.com>
 - Assia Khemakhem <assia.khemakhem .at. edfenergy.com>
+- Ladya Khoun <ladya-a.khoun .at. naval-group.com>
 - Joachim Kopp
 - Denis Laxalde <denis.laxalde .at. logilab.fr>
 - Alain Leufroy <alain.leufroy .at. logilab.fr>
