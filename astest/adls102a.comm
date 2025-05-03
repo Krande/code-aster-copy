@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -119,6 +119,9 @@ BC = AFFE_CHAR_MECA(
 
 pressure = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA="EFS_P_IN", PRES=-17.0e06))
 
+# Load: speed
+funcViteFace = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 0.1, 0.0, 0.2, 0.0))
+viteFace = AFFE_CHAR_MECA_F(MODELE=MODELE, VITE_FACE=_F(GROUP_MA="EFS_P_IN", VNOR=funcViteFace))
 
 #
 # ----------------------------------------------------------------------
@@ -144,7 +147,9 @@ AE = CALC_MATR_ELEM(
     CHARGE=BC,
 )
 
-VE = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=pressure, CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE)
+VE = CALC_VECT_ELEM(
+    OPTION="CHAR_MECA", CHARGE=(pressure, viteFace), CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE
+)
 
 NUM = NUME_DDL(MATR_RIGI=KE1)
 
