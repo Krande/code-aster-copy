@@ -57,7 +57,6 @@ module crea_maillage_module
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -70,15 +69,15 @@ module crea_maillage_module
 !
     type Mconverter
         aster_logical :: to_convert(MT_NTYMAX) = ASTER_FALSE
-        integer :: convert_to(MT_NTYMAX) = 0
-        integer :: convert_max(MT_NTYMAX) = 0
+        integer(kind=8) :: convert_to(MT_NTYMAX) = 0
+        integer(kind=8) :: convert_max(MT_NTYMAX) = 0
         character(len=8) :: name(MT_NTYMAX) = ' '
         character(len=8) :: short_name(MT_NTYMAX) = ' '
-        integer :: cata_type(MT_NTYMAX) = 0
-        integer :: map_type(MT_NTYMAX) = 0
-        integer :: dim(MT_NTYMAX) = 0
-        integer :: nno(MT_NTYMAX) = 0
-        integer :: nnos(MT_NTYMAX) = 0
+        integer(kind=8) :: cata_type(MT_NTYMAX) = 0
+        integer(kind=8) :: map_type(MT_NTYMAX) = 0
+        integer(kind=8) :: dim(MT_NTYMAX) = 0
+        integer(kind=8) :: nno(MT_NTYMAX) = 0
+        integer(kind=8) :: nnos(MT_NTYMAX) = 0
 ! ----- member functions
     contains
         procedure, public, pass :: init => init_conv
@@ -86,64 +85,62 @@ module crea_maillage_module
     end type
 !
     type Mcell
-        integer :: type = 0
-        integer :: dim = 0
-        integer :: id = 0
-        integer :: ss_id = 0
-        integer :: nodes(27) = 0
-        integer :: child(10) = 0
-        integer :: nb_child = 0
-        character(len=8) :: name = ' '
+        integer(kind=8) :: type = 0
+        integer(kind=8) :: dim = 0
+        integer(kind=8) :: id = 0
+        integer(kind=8) :: ss_id = 0
+        integer(kind=8) :: nodes(27) = 0
+        integer(kind=8) :: child(10) = 0
+        integer(kind=8) :: nb_child = 0
         aster_logical :: keep = ASTER_TRUE
     end type
 !
     type Mvolume
-        integer :: type = 0
-        integer :: nodes(27) = 0
-        integer :: nb_faces = 0, faces(6) = 0
-        integer :: nb_edges = 0, edges(12) = 0
-        integer :: parent = -1
-        integer :: isub = 0
+        integer(kind=8) :: type = 0
+        integer(kind=8) :: nodes(27) = 0
+        integer(kind=8) :: nb_faces = 0, faces(6) = 0
+        integer(kind=8) :: nb_edges = 0, edges(12) = 0
+        integer(kind=8) :: parent = -1
+        integer(kind=8) :: isub = 0
     end type
 !
     type Mface
-        integer :: type = 0
-        integer :: nnos = 0
-        integer :: nodes(9) = 0
-        integer :: nnos_sort(4) = 0
-        integer :: nb_edges = 0, edges(4) = 0
-        integer :: parent = -1
-        integer :: isub = 0
+        integer(kind=8) :: type = 0
+        integer(kind=8) :: nnos = 0
+        integer(kind=8) :: nodes(9) = 0
+        integer(kind=8) :: nnos_sort(4) = 0
+        integer(kind=8) :: nb_edges = 0, edges(4) = 0
+        integer(kind=8) :: parent = -1
+        integer(kind=8) :: isub = 0
     end type
 !
     type Medge
-        integer :: type = 0
-        integer :: nodes(4) = 0
-        integer :: nnos_sort(2) = 0
-        integer :: parent = -1
-        integer :: isub = 0
+        integer(kind=8) :: type = 0
+        integer(kind=8) :: nodes(4) = 0
+        integer(kind=8) :: nnos_sort(2) = 0
+        integer(kind=8) :: parent = -1
+        integer(kind=8) :: isub = 0
     end type
 !
     type Mnode
-        integer :: id
+        integer(kind=8) :: id
         real(kind=8) :: coor(3) = 0.d0
         aster_logical :: keep = ASTER_FALSE
         aster_logical :: orphelan = ASTER_FALSE
-        character(len=8) :: name = ' '
-        integer :: owner = -1
+        integer(kind=8) :: owner = -1
 ! used to improve search of edges and faces
 ! it could be improved a lot to decrease memory consumption
-        integer :: max_faces = 0, nb_faces = 0
-        integer :: max_edges = 0, nb_edges = 0
-        integer, allocatable :: faces(:)
-        integer, allocatable :: edges(:)
+        integer(kind=8) :: max_faces = 0, nb_faces = 0
+        integer(kind=8) :: max_edges = 0, nb_edges = 0
+        integer(kind=8), allocatable :: faces(:)
+        integer(kind=8), allocatable :: edges(:)
     end type
 !
     type Mmesh
-        integer :: nb_nodes = 0, nb_edges = 0, nb_faces = 0, nb_volumes = 0, nb_cells = 0
-        integer :: nb_total_nodes = 0, nb_total_cells = 0
-        integer :: max_nodes = 0, max_edges = 0, max_faces = 0, max_volumes = 0, max_cells = 0
-        integer :: dim_mesh = 0
+        integer(kind=8) :: nb_nodes = 0, nb_edges = 0, nb_faces = 0, nb_volumes = 0, nb_cells = 0
+        integer(kind=8) :: nb_total_nodes = 0, nb_total_cells = 0
+        integer(kind=8) :: max_nodes = 0, max_edges = 0, max_faces = 0, max_volumes = 0
+        integer(kind=8) :: max_cells = 0, dim_mesh = 0, nb_layer = 0
 !
         type(Mnode), allocatable :: nodes(:)
         type(Medge), allocatable :: edges(:)
@@ -152,21 +149,15 @@ module crea_maillage_module
         type(Mcell), allocatable :: cells(:)
         type(Mconverter) :: converter
 !
-        integer :: nb_level = 0
+        integer(kind=8) :: nb_level = 0
 !
         character(len=8) :: mesh_in = ' '
         character(len=19) :: connex_in = ' '
 !
-        character(len=8)  :: node_prefix = 'N'
-        integer :: node_index = 1
-!
-        character(len=8)  :: cell_prefix = 'M'
-        integer :: cell_index = 1
-!
-        integer, pointer :: v_typema(:) => null()
+        integer(kind=8), pointer :: v_typema(:) => null()
         aster_logical :: debug = ASTER_FALSE
         aster_logical :: isHPC
-        integer :: info = 0
+        integer(kind=8) :: info = 0
 ! ----- member functions
     contains
         procedure, public, pass :: add_cell
@@ -220,7 +211,7 @@ contains
         class(Mconverter), intent(inout) :: this
         character(len=8), intent(in) :: from_type, to_type
 !
-        integer :: from_i, to_i
+        integer(kind=8) :: from_i, to_i
 !
         call jemarq()
 !
@@ -244,13 +235,13 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: nnos_sort(2)
+        integer(kind=8), intent(in) :: nnos_sort(2)
         aster_logical, intent(out) :: find
-        integer, intent(out) :: edge_id
+        integer(kind=8), intent(out) :: edge_id
 !
 ! Find edge_id of edges
 !
-        integer :: i_edge, nb_edges, edge_i
+        integer(kind=8) :: i_edge, nb_edges, edge_i
         aster_logical :: ok
 !
         find = ASTER_FALSE
@@ -287,14 +278,14 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) ::this
-        integer, intent(in) :: nnos
-        integer, intent(in) :: nnos_sort(4)
+        integer(kind=8), intent(in) :: nnos
+        integer(kind=8), intent(in) :: nnos_sort(4)
         aster_logical, intent(out) :: find
-        integer, intent(out) :: face_id
+        integer(kind=8), intent(out) :: face_id
 !
 ! Find face_id of face
 !
-        integer :: i_face, i_node, nb_faces, face_i
+        integer(kind=8) :: i_face, i_node, nb_faces, face_i
         aster_logical :: ok
 !
         find = ASTER_FALSE
@@ -334,10 +325,10 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: nb_nodes
-        integer, intent(inout) :: nodes(1:nb_nodes)
+        integer(kind=8), intent(in) :: nb_nodes
+        integer(kind=8), intent(inout) :: nodes(1:nb_nodes)
 !
-        integer :: tmp(27), ind_min, i_node, val_min
+        integer(kind=8) :: tmp(27), ind_min, i_node, val_min
 !
         ASSERT(nb_nodes <= 27)
 
@@ -384,7 +375,7 @@ contains
 !
         class(Mconverter), intent(inout) :: this
 !
-        integer :: i_type, type_nume
+        integer(kind=8) :: i_type, type_nume
 !
         call jemarq()
 !
@@ -489,19 +480,20 @@ contains
 !
         class(Mmesh), intent(inout) :: this
         character(len=8), intent(in) :: mesh_in
-        integer, optional :: info
+        integer(kind=8), optional :: info
 ! --------------------------------------------------------------------------------------------------
 ! The idea is to read a given mesh (mesh_in). Internally, all the cells are stored with all nodes
 ! possibles for a cell. The internal cells stored are POI1, SEG3, SEG4, TRIA7, QUAD9,
 ! TETRA15, HEXA27, PENTA21 and PYRAM19
 ! For an other cell type is only necessary to know which nodes to use
 ! --------------------------------------------------------------------------------------------------
-        integer, pointer :: v_mesh_dime(:) => null()
-        integer, pointer :: v_noex(:) => null()
+        character(len=19) :: joints
+        integer(kind=8), pointer :: v_mesh_dime(:) => null()
+        integer(kind=8), pointer :: v_noex(:) => null()
+        integer(kind=8), pointer :: v_nblg(:) => null()
         real(kind=8), pointer :: v_coor(:) => null()
-        character(len=8) :: name
-        integer :: nb_elem_mesh, nb_node_mesh, i_node
-        integer :: i_cell, nno, node_id, owner
+        integer(kind=8) :: nb_elem_mesh, nb_node_mesh, i_node
+        integer(kind=8) :: i_cell, nno, node_id, owner
         real(kind=8):: start, end
 !
         call jemarq()
@@ -541,6 +533,10 @@ contains
         call jeveuo(mesh_in//'.COORDO    .VALE', 'L', vr=v_coor)
         if (this%isHPC) then
             call jeveuo(mesh_in//'.NOEX', 'L', vi=v_noex)
+            joints = mesh_in//".JOIN"
+            call jeveuo(joints//'.NBLG', 'L', vi=v_nblg)
+            this%nb_layer = v_nblg(1)
+            ASSERT(this%nb_layer > 0)
         end if
 !
 ! --- Fill mesh
@@ -548,11 +544,10 @@ contains
         this%nb_total_nodes = this%nb_nodes
         owner = 0
         do i_node = 1, nb_node_mesh
-            name = int_to_char8(i_node)
             if (this%isHPC) then
                 owner = v_noex(i_node)
             end if
-            node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner, name)
+            node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner)
             ASSERT(i_node == node_id)
             this%nodes(node_id)%orphelan = ASTER_TRUE
             this%nodes(node_id)%max_faces = 30
@@ -592,7 +587,7 @@ contains
 !
         class(Mmesh), intent(inout) :: this
 !
-        integer :: i_node, nb_nodes
+        integer(kind=8) :: i_node, nb_nodes
 !
         if (this%info >= 2) then
             print *, "Cleaning objects..."
@@ -622,8 +617,8 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: cell_type
-        integer, intent(out) :: nb_edge, edge_type(12), edge_loc(3, 12)
+        integer(kind=8), intent(in) :: cell_type
+        integer(kind=8), intent(out) :: nb_edge, edge_type(12), edge_loc(3, 12)
 ! --------------------------------------------------------------------------------------------------
 ! Get edge connectivity of a cell
 !
@@ -746,8 +741,8 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: cell_type
-        integer, intent(out) :: nb_face, face_type(6), face_loc(9, 6)
+        integer(kind=8), intent(in) :: cell_type
+        integer(kind=8), intent(out) :: nb_face, face_type(6), face_loc(9, 6)
 ! ---------------------------------------------------------------------------------
 ! Get face connectivity of a cell
 !
@@ -875,11 +870,11 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: cell_type
-        integer, intent(out) :: nodes_loc(27)
+        integer(kind=8), intent(in) :: cell_type
+        integer(kind=8), intent(out) :: nodes_loc(27)
 ! -----------------------------------------------------------------------------------
 ! Add special treatment
-        integer :: i_node, nno
+        integer(kind=8) :: i_node, nno
 !
         nodes_loc = 0
         nno = this%converter%nno(cell_type)
@@ -904,8 +899,8 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: cell_type
-        integer, intent(out) :: nb_sub, sub_type(10), sub_loc(10, 10), conv_type(10)
+        integer(kind=8), intent(in) :: cell_type
+        integer(kind=8), intent(out) :: nb_sub, sub_type(10), sub_loc(10, 10), conv_type(10)
 ! --------------------------------------------------------------------------------------------------
 ! Get subdivision of a cell (node connectivity)
 !
@@ -1011,12 +1006,12 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: nb_nodes
-        integer, intent(in) :: nodes(:)
-        integer :: owner_cell
+        integer(kind=8), intent(in) :: nb_nodes
+        integer(kind=8), intent(in) :: nodes(:)
+        integer(kind=8) :: owner_cell
 ! -----------------------------------------------------------------------------------
 ! Add special treatment
-        integer :: i_node
+        integer(kind=8) :: i_node
 !
         owner_cell = this%nodes(nodes(1))%owner
 !
@@ -1033,10 +1028,10 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: cell_id
+        integer(kind=8), intent(in) :: cell_id
 !
-        integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index
-        integer, pointer :: v_connex(:) => null()
+        integer(kind=8) :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index
+        integer(kind=8), pointer :: v_connex(:) => null()
 !
         ASSERT(this%nb_total_cells < this%max_cells)
         this%nb_cells = this%nb_cells+1
@@ -1070,7 +1065,6 @@ contains
         this%cells(this%nb_total_cells)%id = this%nb_total_cells
         this%cells(this%nb_total_cells)%ss_id = cell_index
         this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
-        this%cells(this%nb_total_cells)%name = int_to_char8(cell_id)
 !
     end subroutine
 !
@@ -1081,14 +1075,14 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: type, nodes(27)
-        integer, intent(in), optional :: parent, isub
-        integer :: volume_id
+        integer(kind=8), intent(in) :: type, nodes(27)
+        integer(kind=8), intent(in), optional :: parent, isub
+        integer(kind=8) :: volume_id
 ! ----------------------------------------------------------------------
-        integer :: nno, i_face
-        integer :: nb_edges, edge_type(12), edge_loc(3, 12), edge_id, edge_nno
-        integer :: nb_faces, face_type(6), face_loc(9, 6), i_node, i_edge
-        integer :: face_nno, face_nodes(27), face_id, edge_nodes(27)
+        integer(kind=8) :: nno, i_face
+        integer(kind=8) :: nb_edges, edge_type(12), edge_loc(3, 12), edge_id, edge_nno
+        integer(kind=8) :: nb_faces, face_type(6), face_loc(9, 6), i_node, i_edge
+        integer(kind=8) :: face_nno, face_nodes(27), face_id, edge_nodes(27)
 !
         ASSERT(this%converter%dim(type) == 3)
         nno = this%converter%nno(type)
@@ -1157,14 +1151,14 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: face_type, nodes(27)
-        integer, intent(in), optional :: parent, isub
-        integer :: face_id
+        integer(kind=8), intent(in) :: face_type, nodes(27)
+        integer(kind=8), intent(in), optional :: parent, isub
+        integer(kind=8) :: face_id
 ! ----------------------------------------------------------------------
-        integer :: nno, nnos, nnos_sort(4), i_edge, edge_id
-        integer :: nb_edge, edge_type(12), edge_loc(3, 12), i_node
-        integer :: edge_nno, edge_nodes(27), old_size
-        integer, allocatable :: new_faces(:)
+        integer(kind=8) :: nno, nnos, nnos_sort(4), i_edge, edge_id
+        integer(kind=8) :: nb_edge, edge_type(12), edge_loc(3, 12), i_node
+        integer(kind=8) :: edge_nno, edge_nodes(27), old_size
+        integer(kind=8), allocatable :: new_faces(:)
         aster_logical :: find
 !
         ASSERT(face_type > 0)
@@ -1255,12 +1249,12 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: type, nodes(27)
-        integer, intent(in), optional :: parent, isub, face_id
-        integer :: edge_id
+        integer(kind=8), intent(in) :: type, nodes(27)
+        integer(kind=8), intent(in), optional :: parent, isub, face_id
+        integer(kind=8) :: edge_id
 ! ----------------------------------------------------------------------
-        integer :: nno, nnos_sort(2), old_size
-        integer, allocatable :: new_edges(:)
+        integer(kind=8) :: nno, nnos_sort(2), old_size
+        integer(kind=8), allocatable :: new_edges(:)
         aster_logical :: find
 !
         ASSERT(this%converter%dim(type) == 1)
@@ -1336,8 +1330,8 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: type, nodes(27)
-        integer :: point_id
+        integer(kind=8), intent(in) :: type, nodes(27)
+        integer(kind=8) :: point_id
 ! ----------------------------------------------------------------------
 !
         ASSERT(this%converter%dim(type) == 0)
@@ -1355,15 +1349,14 @@ contains
 !
 ! ==================================================================================================
 !
-    function add_node(this, coor, owner, name) result(node_id)
+    function add_node(this, coor, owner) result(node_id)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         real(kind=8), intent(in) :: coor(3)
-        integer, intent(in) :: owner
-        character(len=8), intent(in), optional :: name
-        integer :: node_id
+        integer(kind=8), intent(in) :: owner
+        integer(kind=8) :: node_id
 ! ----------------------------------------------------------------------
 !
         this%nb_nodes = this%nb_nodes+1
@@ -1377,11 +1370,6 @@ contains
         this%nodes(node_id)%keep = ASTER_TRUE
         this%nodes(node_id)%coor(1:3) = coor
         this%nodes(node_id)%owner = owner
-        if (present(name)) then
-            this%nodes(node_id)%name = name
-        else
-            this%nodes(node_id)%name = 'XXXXXXXX'
-        end if
 !
     end function
 !
@@ -1396,21 +1384,20 @@ contains
 ! ------------------------------------------------------------------
         character(len=24) :: cooval, coodsc, grpnoe
         character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
-        character(len=32) :: name
         character(len=4) :: dimesp
-        integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, iret, nb_no_loc
-        integer :: rank, nbproc, i_proc, deca, cell_id, pCellShift, hugeValue, iProc, iCount
+        integer(kind=8) :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, nb_no_loc
+        integer(kind=8) :: rank, nbproc, i_proc, deca, cell_id, pCellShift, hugeValue, iProc, iCount
         mpi_int :: mrank, msize
         real(kind=8):: start, end
         real(kind=8), pointer :: v_coor(:) => null()
-        integer, pointer :: v_int(:) => null()
-        integer, pointer :: v_connex(:) => null()
-        integer, pointer :: v_noex(:) => null()
-        integer, pointer :: v_maex(:) => null()
-        integer, pointer :: v_nuloc(:) => null()
-        integer, pointer :: v_nulogl(:) => null()
-        integer, pointer :: v_numagl(:) => null()
-        integer, pointer :: nbCellPerProc(:) => null()
+        integer(kind=8), pointer :: v_int(:) => null()
+        integer(kind=8), pointer :: v_connex(:) => null()
+        integer(kind=8), pointer :: v_noex(:) => null()
+        integer(kind=8), pointer :: v_maex(:) => null()
+        integer(kind=8), pointer :: v_nuloc(:) => null()
+        integer(kind=8), pointer :: v_nulogl(:) => null()
+        integer(kind=8), pointer :: v_numagl(:) => null()
+        integer(kind=8), pointer :: nbCellPerProc(:) => null()
 !
         call jemarq()
 !
@@ -1567,29 +1554,20 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine convert_cells(this, nb_cells, list_cells, prefix, ndinit)
+    subroutine convert_cells(this, nb_cells, list_cells)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: nb_cells, list_cells(nb_cells)
-        character(len=8), intent(in), optional :: prefix
-        integer, intent(in), optional :: ndinit
+        integer(kind=8), intent(in) :: nb_cells, list_cells(nb_cells)
 ! ------------------------------------------------------------------
-        integer :: i_cell, cell_id, cell_dim, object_id, nno, cell_type
-        integer :: i_node, nodes_loc(27)
+        integer(kind=8) :: i_cell, cell_id, cell_dim, object_id, nno, cell_type
+        integer(kind=8) :: i_node, nodes_loc(27)
         real(kind=8):: start, end
 !
         if (this%info >= 2) then
             print *, "Converting cells..."
             call cpu_time(start)
-        end if
-!
-        if (present(prefix)) then
-            this%node_prefix = prefix
-        end if
-        if (present(ndinit)) then
-            this%node_index = ndinit
         end if
 !
         do i_cell = 1, nb_cells
@@ -1647,12 +1625,12 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: volu_id
+        integer(kind=8), intent(in) :: volu_id
 ! ------------------------------------------------------------------
-        integer :: volu_type, volu_type_end
-        integer :: nno, nno_end, node_id, i_face, i_node, face_type, face_nno
-        integer :: nb_edges, edge_type(12), edge_loc(3, 12), face_id
-        integer :: nb_faces, faces_type(6), face_loc(9, 6), i_edge, owner
+        integer(kind=8) :: volu_type, volu_type_end
+        integer(kind=8) :: nno, nno_end, node_id, i_face, i_node, face_type, face_nno
+        integer(kind=8) :: nb_edges, edge_type(12), edge_loc(3, 12), face_id
+        integer(kind=8) :: nb_faces, faces_type(6), face_loc(9, 6), i_edge, owner
 !
         volu_type = this%volumes(volu_id)%type
         nno = this%converter%nno(volu_type)
@@ -1710,10 +1688,10 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: face_id
+        integer(kind=8), intent(in) :: face_id
 ! ------------------------------------------------------------------
-        integer :: face_type, face_type_end, owner
-        integer :: nno, nno_end, node_id, i_edge, i_node
+        integer(kind=8) :: face_type, face_type_end, owner
+        integer(kind=8) :: nno, nno_end, node_id, i_edge, i_node
 !
         face_type = this%faces(face_id)%type
         nno = this%converter%nno(face_type)
@@ -1758,11 +1736,11 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: edge_id
-        integer, intent(in), optional :: face_id
+        integer(kind=8), intent(in) :: edge_id
+        integer(kind=8), intent(in), optional :: face_id
 ! ------------------------------------------------------------------
-        integer :: edge_type, edge_type_end, owner
-        integer :: nno, nno_end, node_id, i_node
+        integer(kind=8) :: edge_type, edge_type_end, owner
+        integer(kind=8) :: nno, nno_end, node_id, i_node
 !
         edge_type = this%edges(edge_id)%type
         nno = this%converter%nno(edge_type)
@@ -1810,7 +1788,7 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: cell_id, cell_dim
+        integer(kind=8), intent(in) :: cell_id, cell_dim
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
 !
@@ -1832,10 +1810,10 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: edge_id
+        integer(kind=8), intent(in) :: edge_id
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
-        integer :: i_node, node
+        integer(kind=8) :: i_node, node
         real(kind=8) :: basis(27), coor_ref(3)
 !
         coor = 0.d0
@@ -1873,10 +1851,10 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: edge_id, face_id
+        integer(kind=8), intent(in) :: edge_id, face_id
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
-        integer :: i_node, node, type, nbnode, parent
+        integer(kind=8) :: i_node, node, type, nbnode, parent
         real(kind=8) :: basis(27), coor_ref(3)
 !
         coor = 0.d0
@@ -1999,10 +1977,10 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: face_id
+        integer(kind=8), intent(in) :: face_id
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
-        integer :: i_node, node, nbnode, parent, type
+        integer(kind=8) :: i_node, node, nbnode, parent, type
         real(kind=8) :: basis(27), coor_ref(3)
         character(len=8) :: stype
 !
@@ -2070,10 +2048,10 @@ contains
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: volu_id
+        integer(kind=8), intent(in) :: volu_id
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
-        integer :: i_node, node, nbnode, parent, type
+        integer(kind=8) :: i_node, node, nbnode, parent, type
         real(kind=8) :: basis(27), coor_ref(3)
         character(len=8) :: stype
 !
@@ -2204,48 +2182,20 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine update(this, rename_nodes_)
+    subroutine update(this)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        aster_logical, intent(in), optional :: rename_nodes_
 ! -----------------------------------------------------------------------
-        integer :: i_node, i_cell, nno, node_id, rank, len_max
-        mpi_int :: mrank, msize
-        aster_logical :: keep, cod, rename_nodes
-        character(len=8) :: nume
+        integer(kind=8) :: i_node, i_cell, nno, node_id, rank
+        integer(kind=8) :: i_layer, nb_ghost_cell, i_ghost_cell
+        integer(kind=8), pointer :: ghost_cells(:) => null()
+        mpi_int :: mrank
+        aster_logical :: keep
 !
-        rename_nodes = ASTER_FALSE
-        if (present(rename_nodes_)) then
-            rename_nodes = rename_nodes_
-        end if
-!
-        call asmpi_info(rank=mrank, size=msize)
+        call asmpi_info(rank=mrank)
         rank = to_aster_int(mrank)
-!
-        do i_node = 1, this%nb_total_nodes
-            this%nodes(i_node)%keep = ASTER_FALSE
-        end do
-!
-! --- Do not keep cells with no-owner nodes
-        if (this%isHPC) then
-            do i_cell = 1, this%nb_total_cells
-                if (this%cells(i_cell)%keep) then
-                    nno = this%converter%nno(this%cells(i_cell)%type)
-!
-                    keep = ASTER_FALSE
-                    do i_node = 1, nno
-                        node_id = this%cells(i_cell)%nodes(i_node)
-                        if (this%nodes(node_id)%owner == rank) then
-                            keep = ASTER_TRUE
-                            exit
-                        end if
-                    end do
-                    this%cells(i_cell)%keep = keep
-                end if
-            end do
-        end if
 !
 ! --- Keep initial orphelan nodes
         do i_node = 1, this%nb_total_nodes
@@ -2254,6 +2204,29 @@ contains
                 this%nodes(i_node)%keep = ASTER_TRUE
             end if
         end do
+!
+! --- Remove ghost cells - added later
+        nb_ghost_cell = 0
+        if (this%isHPC) then
+            AS_ALLOCATE(vi=ghost_cells, size=this%nb_total_cells)
+            do i_cell = 1, this%nb_total_cells
+                if (this%cells(i_cell)%keep) then
+                    nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                    keep = ASTER_TRUE
+                    do i_node = 1, nno
+                        node_id = this%cells(i_cell)%nodes(i_node)
+                        if (this%nodes(node_id)%owner /= rank) then
+                            keep = ASTER_FALSE
+                            nb_ghost_cell = nb_ghost_cell+1
+                            ghost_cells(nb_ghost_cell) = i_cell
+                            exit
+                        end if
+                    end do
+                    this%cells(i_cell)%keep = keep
+                end if
+            end do
+        end if
 !
 ! --- Keep only nodes of cells
         do i_cell = 1, this%nb_total_cells
@@ -2272,28 +2245,63 @@ contains
             end if
         end do
 !
-! --- Renumbering and rename
+        if (this%isHPC) then
+! --- Add ghost layers
+            do i_layer = 1, this%nb_layer
+                do i_ghost_cell = 1, nb_ghost_cell
+                    i_cell = ghost_cells(i_ghost_cell)
+                    if (i_cell > 0) then
+                        if (.not. this%cells(i_cell)%keep) then
+                            nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                            do i_node = 1, nno
+                                node_id = this%cells(i_cell)%nodes(i_node)
+
+                                if (this%nodes(node_id)%keep .or. &
+                                    this%nodes(node_id)%owner == rank) then
+                                    this%cells(i_cell)%keep = ASTER_TRUE
+                                    exit
+                                end if
+                            end do
+                        end if
+                    end if
+                end do
+!
+! --- Keep only nodes of cells
+                do i_ghost_cell = 1, nb_ghost_cell
+                    i_cell = ghost_cells(i_ghost_cell)
+                    if (i_cell > 0) then
+                        if (this%cells(i_cell)%keep) then
+                            nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                            if (this%debug) then
+                                print *, "Cell: ", i_cell, this%cells(i_cell)%type, nno, &
+                                    this%cells(i_cell)%nodes(1:nno)
+                            end if
+!
+                            do i_node = 1, nno
+                                node_id = this%cells(i_cell)%nodes(i_node)
+                                this%nodes(node_id)%keep = ASTER_TRUE
+                            end do
+                            ghost_cells(i_ghost_cell) = -1
+                        end if
+                    end if
+                end do
+            end do
+!
+            AS_DEALLOCATE(vi=ghost_cells)
+        end if
+!
+! --- Renumbering nodes
         this%nb_nodes = 0
-        len_max = 10**(8-len_trim(this%node_prefix))-1
-        if (rename_nodes) this%node_index = 1
-        cod = this%nb_total_nodes .ge. len_max
         do i_node = 1, this%nb_total_nodes
             if (this%nodes(i_node)%keep) then
                 this%nb_nodes = this%nb_nodes+1
                 this%nodes(i_node)%id = this%nb_nodes
-                if (rename_nodes .or. this%nodes(i_node)%name == "XXXXXXXX") then
-                    if (cod) then
-                        call codlet(this%node_index, 'G', nume)
-                    else
-                        call codent(this%node_index, 'G', nume)
-                    end if
-                    this%nodes(i_node)%name = trim(this%node_prefix)//trim(nume)
-                    this%node_index = this%node_index+1
-                end if
             end if
         end do
 !
-! --- Renumbering
+! --- Renumbering cells
         this%nb_cells = 0
         do i_cell = 1, this%nb_total_cells
             if (this%cells(i_cell)%keep) then
@@ -2329,10 +2337,10 @@ contains
 !
         class(Mmesh), intent(in) :: this
 ! -----------------------------------------------------------------------
-        integer :: i_cell, i_node, i_edge, i_face, i_volume, nno, nno1, nno2
-        integer :: nb_edges, edges_type(12), edges_loc(3, 12), edge_id
-        integer :: face_type, volu_type, face_id
-        integer :: nb_faces, faces_type(6), faces_loc(9, 6)
+        integer(kind=8) :: i_cell, i_node, i_edge, i_face, i_volume, nno, nno1, nno2
+        integer(kind=8) :: nb_edges, edges_type(12), edges_loc(3, 12), edge_id
+        integer(kind=8) :: face_type, volu_type, face_id
+        integer(kind=8) :: nb_faces, faces_type(6), faces_loc(9, 6)
 !
 ! --- Check Nodes
         do i_cell = 1, this%nb_total_cells
@@ -2406,13 +2414,12 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: cell_id
+        integer(kind=8), intent(in) :: cell_id
 !
-        integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, cell_type_sub
-        integer :: nb_sub, sub_type(10), sub_loc(10, 10), i_sub, i_node, obj, cell_id_sub
-        integer :: nodes_loc(27), nno, conv_type(10), edges(12), nb_edges, i_edge, edge_id
-        integer :: nb_sub2, sub_type2(10), sub_loc2(10, 10), conv_type2(10), i_face, face_id
-        character(len=8) :: nume
+        integer(kind=8) :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, cell_type_sub
+        integer(kind=8) :: nb_sub, sub_type(10), sub_loc(10, 10), i_sub, i_node, obj, cell_id_sub
+        integer(kind=8) :: nodes_loc(27), nno, conv_type(10), edges(12), nb_edges, i_edge, edge_id
+        integer(kind=8) :: nb_sub2, sub_type2(10), sub_loc2(10, 10), conv_type2(10), i_face, face_id
 !
         cell_dim = this%cells(cell_id)%dim
         cell_type = this%cells(cell_id)%type
@@ -2521,9 +2528,6 @@ contains
             this%cells(cell_id_sub)%dim = cell_dim
             this%cells(cell_id_sub)%id = cell_id_sub
             this%cells(cell_id_sub)%ss_id = cell_index
-            call codlet(this%cell_index, 'G', nume)
-            this%cells(cell_id_sub)%name = trim(this%cell_prefix)//trim(nume)
-            this%cell_index = this%cell_index+1
 !
             this%cells(cell_id)%child(i_sub) = cell_id_sub
             this%cells(cell_id)%nb_child = this%cells(cell_id)%nb_child+1
@@ -2562,12 +2566,11 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(in) :: level
+        integer(kind=8), intent(in) :: level
 ! -----------------------------------------------------------------------
-        integer :: i_cell, nb_cells_ref, i_level
+        integer(kind=8) :: i_cell, nb_cells_ref, i_level
         real(kind=8) :: start, end
 !
-        this%cell_index = this%nb_total_cells
 ! --- Refine cells
         this%nb_level = level
         if (this%info >= 2) then
@@ -2586,7 +2589,7 @@ contains
             end do
         end do
 !
-        call this%update(ASTER_TRUE)
+        call this%update()
         if (this%info >= 2) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."
@@ -2600,10 +2603,10 @@ contains
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        integer, intent(inout) :: nb_cells, cell_id
-        integer, allocatable :: cells(:)
+        integer(kind=8), intent(inout) :: nb_cells, cell_id
+        integer(kind=8), allocatable :: cells(:)
 ! -----------------------------------------------------------------------
-        integer :: i_cell
+        integer(kind=8) :: i_cell
 !
         if (this%cells(cell_id)%keep) then
             nb_cells = nb_cells+1
@@ -2627,12 +2630,12 @@ contains
         class(Mmesh), intent(in) :: this
         character(len=24), intent(in) :: grpnoe, gpptnn
 ! -----------------------------------------------------------------------
-        integer :: i_node, nb_nodes_in, nb_nodes_out, codret, nb_grno_out
-        integer :: i_group, node_id, nb_grno_in
+        integer(kind=8) :: i_node, nb_nodes_in, nb_nodes_out, codret, nb_grno_out
+        integer(kind=8) :: i_group, node_id, nb_grno_in
         character(len=24) :: grno_in, nomgrp
-        integer, pointer :: nodes_in(:) => null()
-        integer, pointer :: grno_out(:) => null()
-        integer, pointer :: nodes_out(:) => null()
+        integer(kind=8), pointer :: nodes_in(:) => null()
+        integer(kind=8), pointer :: grno_out(:) => null()
+        integer(kind=8), pointer :: nodes_out(:) => null()
 !
         call jemarq()
 !
@@ -2707,14 +2710,14 @@ contains
         class(Mmesh), intent(inout) :: this
         character(len=24), intent(in) :: grpmai, gpptnm
 ! -----------------------------------------------------------------------
-        integer :: i_cell, nb_cells_in, nb_cells_out, codret, nb_grma_out
-        integer :: i_group, cell_id, nb_grma_in
-        integer :: nb_cells
+        integer(kind=8) :: i_cell, nb_cells_in, nb_cells_out, codret, nb_grma_out
+        integer(kind=8) :: i_group, cell_id, nb_grma_in
+        integer(kind=8) :: nb_cells
         character(len=24) :: grma_in, nomgrp
-        integer, pointer :: cells_in(:) => null()
-        integer, pointer :: grma_out(:) => null()
-        integer, pointer :: cells_out(:) => null()
-        integer, allocatable :: cells(:)
+        integer(kind=8), pointer :: cells_in(:) => null()
+        integer(kind=8), pointer :: grma_out(:) => null()
+        integer(kind=8), pointer :: cells_out(:) => null()
+        integer(kind=8), allocatable :: cells(:)
 !
         call jemarq()
 !
@@ -2791,9 +2794,9 @@ contains
 !
         class(Mmesh), intent(inout) :: this
         character(len=8), intent(in) :: object
-        integer, intent(in) :: new_size
+        integer(kind=8), intent(in) :: new_size
 ! -----------------------------------------------------------------------
-        integer :: old_size
+        integer(kind=8) :: old_size
         type(Mnode), allocatable :: nodes(:)
         type(Medge), allocatable :: edges(:)
         type(Mface), allocatable :: faces(:)
@@ -2860,29 +2863,30 @@ contains
         class(Mmesh), intent(in) :: this
         character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-        character(len=24) :: send, recv, domj, gcom, pgin
+        character(len=24) :: send, recv, domj, gcom, pgin, nblg
         character(len=19) :: joints
-        integer, pointer :: v_rnode(:) => null()
-        integer, pointer :: v_noex(:) => null()
-        integer, pointer :: v_nojoin(:) => null()
-        integer, pointer :: v_snume(:) => null()
-        integer, pointer :: v_rnume(:) => null()
-        integer, pointer :: v_nkeep(:) => null()
-        integer, pointer :: v_ckeep(:) => null()
-        integer, pointer :: v_nulogl(:) => null()
-        integer, pointer :: v_proc(:) => null()
+        integer(kind=8), pointer :: v_rnode(:) => null()
+        integer(kind=8), pointer :: v_noex(:) => null()
+        integer(kind=8), pointer :: v_nojoin(:) => null()
+        integer(kind=8), pointer :: v_snume(:) => null()
+        integer(kind=8), pointer :: v_rnume(:) => null()
+        integer(kind=8), pointer :: v_nkeep(:) => null()
+        integer(kind=8), pointer :: v_ckeep(:) => null()
+        integer(kind=8), pointer :: v_nulogl(:) => null()
+        integer(kind=8), pointer :: v_proc(:) => null()
         integer(kind=4), pointer :: v_pgid(:) => null()
-        integer, pointer :: v_gcom(:) => null()
-        integer, pointer :: v_comm(:) => null()
-        integer, pointer :: v_tag(:) => null()
+        integer(kind=8), pointer :: v_gcom(:) => null()
+        integer(kind=8), pointer :: v_comm(:) => null()
+        integer(kind=8), pointer :: v_tag(:) => null()
+        integer(kind=8), pointer :: v_nblg(:) => null()
         aster_logical, pointer :: v_keep(:) => null()
         real(kind=8), pointer :: v_send(:) => null()
         real(kind=8), pointer :: v_recv(:) => null()
         mpi_int :: msize, mrank, count_send, count_recv, id, tag, mpicou
-        integer :: nbproc, rank, ind, nb_recv, i_proc, recv1(1)
-        integer :: n_coor_send, n_coor_recv, proc_id, i_comm, domj_i
-        integer :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
-        integer :: i_cell, nno, nb_cells_keep, owner, cell_id
+        integer(kind=8) :: nbproc, rank, ind, nb_recv, i_proc, recv1(1)
+        integer(kind=8) :: n_coor_send, n_coor_recv, proc_id, i_comm, domj_i
+        integer(kind=8) :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
+        integer(kind=8) :: i_cell, nno, nb_cells_keep, owner, cell_id, i_layer
         real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end
         real(kind=8), parameter :: tole = 1.d-15
         aster_logical :: find, keep
@@ -2899,12 +2903,17 @@ contains
             recv = joints//".RECV"
             gcom = joints//".GCOM"
             pgin = joints//".PGID"
+            nblg = joints//".NBLG"
 
             call jemarq()
             call asmpi_comm('GET', mpicou)
             call asmpi_info(rank=mrank, size=msize)
             rank = to_aster_int(mrank)
             nbproc = to_aster_int(msize)
+!
+! --- 0: On enregiste le nombre de couches de ghost
+            call wkvect(nblg, 'G V I', 1, vi=v_nblg)
+            v_nblg(1) = this%nb_layer
 !
 ! --- 1: On commence par compter le nombre de noeuds que l'on doit recevoir
 !
@@ -2915,8 +2924,8 @@ contains
 
             call wkvect("&&CREAMA.RNODE", 'V V I', nbproc, vi=v_rnode)
             do i_node = 1, this%nb_nodes
-                ind = v_noex(i_node)+1
-                v_rnode(ind) = v_rnode(ind)+1
+                owner = v_noex(i_node)
+                v_rnode(owner+1) = v_rnode(owner+1)+1
             end do
             v_rnode(rank+1) = 0
 ! --- On compte combien on doit recevoir et envoyer
@@ -3013,6 +3022,8 @@ contains
 ! --- Pour accélérer la recherche, on garde les noeuds voisins des non-proprio
                 v_keep = ASTER_FALSE
                 nb_nodes_keep = 0
+!
+! --- Add first layer of cells
                 do i_cell = 1, nb_cells_keep
                     cell_id = v_ckeep(i_cell)
                     keep = ASTER_FALSE
@@ -3035,6 +3046,34 @@ contains
                             end if
                         end do
                     end if
+                end do
+!
+! --- Add additional layer
+                do i_layer = 2, this%nb_layer
+                    do i_cell = 1, this%nb_total_cells
+                        if (.not. this%cells(i_cell)%keep) cycle
+                        nno = this%converter%nno(this%cells(i_cell)%type)
+                        keep = ASTER_FALSE
+                        do i_node = 1, nno
+                            node_id = this%cells(i_cell)%nodes(i_node)
+                            owner = v_noex(this%nodes(node_id)%id)
+                            if (owner == rank .and. v_keep(node_id)) then
+                                keep = ASTER_TRUE
+                                exit
+                            end if
+                        end do
+                        if (keep) then
+                            do i_node = 1, nno
+                                node_id = this%cells(i_cell)%nodes(i_node)
+                                owner = v_noex(this%nodes(node_id)%id)
+                                if (owner == rank .and. .not. v_keep(node_id)) then
+                                    v_keep(node_id) = ASTER_TRUE
+                                    nb_nodes_keep = nb_nodes_keep+1
+                                    v_nkeep(nb_nodes_keep) = node_id
+                                end if
+                            end do
+                        end if
+                    end do
                 end do
                 ASSERT(nb_nodes_keep >= n_coor_recv)
 !
@@ -3155,10 +3194,10 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: nb_nodes
-        integer, intent(inout) :: nodes(1:nb_nodes)
+        integer(kind=8), intent(in) :: nb_nodes
+        integer(kind=8), intent(inout) :: nodes(1:nb_nodes)
 !
-        integer :: i_node, j_node
+        integer(kind=8) :: i_node, j_node
 !
         ASSERT(nb_nodes <= 27)
         mult_elem = .false.

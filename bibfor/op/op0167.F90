@@ -101,7 +101,7 @@ subroutine op0167()
     character(len=4) :: answer
     character(len=4) :: cdim
     character(len=8) :: meshIn, meshOut, model, geofi
-    character(len=8) :: nomori, plan, trans, knume
+    character(len=8) :: nomori, plan, trans
     character(len=16) :: option, keywfact
     character(len=16) :: kbi1, kbi2
     character(len=19) :: table, ligrel
@@ -121,7 +121,7 @@ subroutine op0167()
     integer :: nbCellIn, nbCellOut, nbCell, nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
     integer :: nbNodeInCellOut, nbNodeInCellIn, iCount, hugeValue, nbCellOut2
     integer :: nbGrCellFromCreaCell, nbGrCellFromCreaPoi1, nbGrCellIn, nbGrCellOut
-    integer :: nbGrNodeIn, nbGrNodeOut, saveValue
+    integer :: nbGrNodeIn, nbGrNodeOut
     integer :: nbCellInGrOut, nbCellInGrIn, nbNodeInGrOut, nbNodeInGrIn
     integer :: nbNodeCrea, nbNodeIn, nbNodeOut, nbNode
     integer :: nbField, oldInsideCells, newInsideCells
@@ -297,14 +297,12 @@ subroutine op0167()
             call utmess('F', 'MESH1_8')
         end if
         keywfact = 'LINE_QUAD'
-        prefNodeName = 'N'
-        prefNodeNume = 1
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
         if (nbCell .ne. nbCellIn) then
             call utmess('A', 'MESH1_4', sk=keywfact)
         end if
         call jeveuo(jvCellNume, 'L', vi=listCellNume)
-        call cmlqlq(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
+        call cmlqlq(meshIn, meshOut, nbCell, listCellNume)
         goto 350
     end if
 !
@@ -336,9 +334,6 @@ subroutine op0167()
                 call utmess('A', 'MESH1_11', sk=keywfact)
             end if
 !
-            prefNodeName = 'N'
-            prefNodeNume = 1
-!
             call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
             call jeveuo(jvCellNume, 'L', vi=listCellNume)
             if (nbCell .ne. nbCellIn) then
@@ -346,9 +341,9 @@ subroutine op0167()
             end if
 !
             if (keywfact .eq. 'HEXA20_27') then
-                call cm2027(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
+                call cm2027(meshIn, meshOut, nbCell, listCellNume)
             else if (keywfact .eq. 'PENTA15_18') then
-                call cm1518(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
+                call cm1518(meshIn, meshOut, nbCell, listCellNume)
             end if
             goto 350
         end if
@@ -391,11 +386,9 @@ subroutine op0167()
 ! --------- Get parameters
             call getelem(meshIn, keywfact, iocc, 'F', jvCellNume, nbCell)
             call jeveuo(jvCellNume, 'L', vi=listCellNume)
-            prefNodeName = 'N'
-            prefNodeNume = 1
 
 ! --------- Convert cells
-            call meshSolidShell%convert_cells(nbCell, listCellNume, prefNodeName, prefNodeNume)
+            call meshSolidShell%convert_cells(nbCell, listCellNume)
             call jedetr(jvCellNume)
 
         end do
@@ -456,9 +449,7 @@ subroutine op0167()
             call utmess('A', 'MESH1_4', sk=keywfact)
         end if
         call jeveuo(jvCellNume, 'L', vi=listCellNume)
-        prefNodeName = 'N'
-        prefNodeNume = 1
-        call cmhho(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
+        call cmhho(meshIn, meshOut, nbCell, listCellNume)
         goto 350
     end if
 !

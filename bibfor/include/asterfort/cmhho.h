@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem, prefix,&
-                      ndinit)
-        integer, intent(in) :: ndinit, nb_list_elem, list_elem(nb_list_elem)
+    subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem)
+        integer, intent(in) :: nb_list_elem, list_elem(nb_list_elem)
         character(len=8), intent(in) :: mesh_in, mesh_out
-        character(len=8), intent(in) :: prefix
     end subroutine cmhho
 end interface

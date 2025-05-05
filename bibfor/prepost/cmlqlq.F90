@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cmlqlq(main, maout, nbma, lima, prefix, ndinit)
+subroutine cmlqlq(main, maout, nbma, lima)
 !
     use crea_maillage_module
 !
@@ -25,8 +25,8 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix, ndinit)
 #include "asterfort/jedema.h"
 #include "jeveux.h"
 !
-    integer :: ndinit, nbma, lima(nbma)
-    character(len=8) :: main, maout, prefix
+    integer :: nbma, lima(nbma)
+    character(len=8) :: main, maout
 ! ----------------------------------------------------------------------
 !         TRANSFORMATION DES MAILLES LINEAIRES -> QUADRATIQUES
 ! ----------------------------------------------------------------------
@@ -34,8 +34,6 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix, ndinit)
 ! IN/JXOUT  MAOUT  K8  NOM DU MAILLAGE TRANSFORME
 ! IN        NBMA    I  NOMBRE DE MAILLES A TRAITER
 ! IN        LIMA    I  NUMERO ET TYPE DES MAILLES A TRAITER
-! IN        PREFIX K8  PREFIXE DU NOM DES NOEUDS CREES (EX: N, NO, ...)
-! IN        NDINIT  I  NUMERO INITIAL DES NOEUDS CREES
 ! ----------------------------------------------------------------------
 !
 !
@@ -101,7 +99,7 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix, ndinit)
 !
 ! - Convert cells
 !
-    call mesh_conv%convert_cells(nbma, lima, prefix, ndinit)
+    call mesh_conv%convert_cells(nbma, lima)
 !
 ! - Copy mesh
 !

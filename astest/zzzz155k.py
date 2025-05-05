@@ -59,10 +59,18 @@ def checkJoinSize(mesh, size, checker):
 mesh1 = CA.ParallelMesh()
 mesh1.readMedFile("zzzz155k.med", ghost=2)
 
-checkJoinSize(mesh1, 6, test)
+checkJoinSize(mesh1, 3 * 2, test)
 
 test.assertTrue(mesh1.checkConsistency("zzzz155k.med"))
 test.assertTrue(mesh1.checkJoints())
+
+mesh1r = mesh1.refine()
+checkJoinSize(mesh1r, 5 * 2, test)
+test.assertTrue(mesh1r.checkJoints())
+
+mesh1r2 = mesh1.refine(2)
+checkJoinSize(mesh1r2, 9 * 2, test)
+test.assertTrue(mesh1r2.checkJoints())
 
 # Mesh reading 2
 mesh2 = CA.ParallelMesh()
@@ -72,6 +80,10 @@ checkJoinSize(mesh2, 9, test)
 
 test.assertTrue(mesh2.checkConsistency("zzzz155k.med"))
 test.assertTrue(mesh2.checkJoints())
+
+mesh2r = mesh2.refine()
+checkJoinSize(mesh2r, 15, test)
+test.assertTrue(mesh2r.checkJoints())
 
 model = AFFE_MODELE(
     MAILLAGE=mesh2, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN")

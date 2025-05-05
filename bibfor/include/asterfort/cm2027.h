@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,10 @@
 !
 !
 interface
-    subroutine cm2027(main, maout, nbma, lima, prefix,&
-                      ndinit)
+    subroutine cm2027(main, maout, nbma, lima)
         integer :: nbma
         character(len=8) :: main
         character(len=8) :: maout
         integer :: lima(nbma)
-        character(len=8) :: prefix
-        integer :: ndinit
     end subroutine cm2027
 end interface

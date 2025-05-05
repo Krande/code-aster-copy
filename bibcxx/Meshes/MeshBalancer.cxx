@@ -282,7 +282,8 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
 
     // Build "dummy" name vectors (for cells and nodes)
     outMesh->buildNamesVectors();
-    outMesh->create_joints( domains, globNodeNumVect2, nOwners, globCellNumVect2, graphInterfaces );
+    outMesh->create_joints( domains, globNodeNumVect2, nOwners, globCellNumVect2, graphInterfaces,
+                            _ghostLayer );
 
     outMesh->updateGlobalGroupOfNodes();
     outMesh->updateGlobalGroupOfCells();

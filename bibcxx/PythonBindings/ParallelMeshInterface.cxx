@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -222,9 +222,10 @@ Returns:
         )",
               py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
               py::arg( "same_rank" ) = PythonBool::None )
-        .def( "getGlobalToLocalNodeIds",
-              []( const ParallelMesh &pm ) -> MapLong { return *pm.getGlobalToLocalNodeIds(); },
-              R"(
+        .def(
+            "getGlobalToLocalNodeIds",
+            []( const ParallelMesh &pm ) -> MapLong { return *pm.getGlobalToLocalNodeIds(); },
+            R"(
         Returns global to local IDs mapping for nodes
 
         Returns:
@@ -259,9 +260,10 @@ Arguments:
     nodesOwner (list[int]): Owner of each node.
     globalCellIds (list[int]): Global IDs of each cell.
     joints (list[list[int]]): Definition of *E* mission and *R* eception joints.
+    nbLayer (int]): Number of ghost layers.
         )",
               py::arg( "domains" ), py::arg( "globalNodeIds" ), py::arg( "nodesOwner" ),
-              py::arg( "globalCellIds" ), py::arg( "joints" ) )
+              py::arg( "globalCellIds" ), py::arg( "joints" ), py::arg( "nbLayer" ) )
         .def( "_endDefinition", &ParallelMesh::endDefinition, R"(
 Terminate the mesh creation (*for internal use*).
         )" )
