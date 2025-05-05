@@ -80,9 +80,10 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
     integer :: jprnm, jval, jvalv, nangl, nbec, nbecf
     integer :: nbno, nbnoeu, nsurch, numel
     integer :: igrel, inema
-    integer :: ntypel(nmocl), forimp(nmocl)
+    integer :: ntypel(nmocl), forimp(nmocl), ier
     real(kind=8) :: dgrd, valfor(nmocl)
     aster_logical :: verif, l_occu_void
+    aster_logical :: lcolle
     character(len=8) :: nomn, typmcl(2), valfof(nmocl)
     character(len=16) :: motcle(nmocl), motcls(2)
     character(len=19) :: carte, modelLigrel
@@ -201,6 +202,11 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 !     BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR FORCE_NODALE
 ! --------------------------------------------------------------
 !
+    lcolle = .false.
+    call jeexin(mesh//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
     do i = 1, nfono
         do ii = 1, nbcomp
             forimp(ii) = 0
@@ -263,7 +269,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 !
         l_occu_void = .true.
         do jj = 1, nbno
-            ino = char8_to_int(zk8(jno-1+jj), mesh, "NOEUD")
+            ino = char8_to_int(zk8(jno-1+jj), lcolle, mesh, "NOEUD")
             noms_noeuds(ino) = zk8(jno-1+jj)
             call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm-1+(ino-1)*nbec+1), nbcomp, &
                         valeType, zk8(jno-1+jj), ino, nsurch, forimp, &
@@ -335,7 +341,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
         if (desgi(ino) .ne. 0) then
 !
             nomn = noms_noeuds(ino)
-            in = char8_to_int(nomn, mesh, "NOEUD")
+            in = char8_to_int(nomn, lcolle, mesh, "NOEUD")
             idgex = jprnm-1+(in-1)*nbec+1
 !
             do i = 1, 6

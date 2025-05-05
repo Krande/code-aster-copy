@@ -47,6 +47,7 @@ subroutine calimc(chargz)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -85,7 +86,7 @@ subroutine calimc(chargz)
     integer :: ibid, icmp, icmp2, idbase
     integer :: iddl, iddl2, ii
     integer :: imod, imod2, inoe, iocc, j, j2
-    integer :: j3, jj, k, n2
+    integer :: j3, jj, k, n2, ier
     integer :: nbec, nbmdef, nbmdyn, nbmode(1), nbnde2, nbndef, nbndyn
     integer :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq, nueq2
     integer :: nmc, nbmdy2
@@ -101,6 +102,7 @@ subroutine calimc(chargz)
     integer, pointer :: idc_defo(:) => null()
     character(len=24), pointer :: mael_refe(:) => null()
     integer, pointer :: lino(:) => null()
+    aster_logical :: lcolle
 !-----------------------------------------------------------------------
     data liscmp/'DX      ', 'DY      ', 'DZ      ',&
      &               'DRX     ', 'DRY     ', 'DRZ     '/
@@ -152,6 +154,11 @@ subroutine calimc(chargz)
                     ibid)
         call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numedd)
         call dismoi('NOM_MAILLA', numedd(1:14), 'NUME_DDL', repk=mailla)
+        lcolle = .false.
+        call jeexin(mailla//'.NOMNOE', ier)
+        if (ier .ne. 0) then
+            lcolle = .true.
+        end if
         call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=lintf)
 ! On recupere le nbre de noeuds presents dans interf_dyna
         call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
@@ -175,7 +182,7 @@ subroutine calimc(chargz)
         call jeveuo(macrel//'.LINO', 'L', vi=lino)
         do i = 1, nbndef
             i2 = i+nbndyn
-            nomnol = int_to_char8(lino(i2), mailla, 'NOEUD')
+            nomnol = int_to_char8(lino(i2), lcolle, mailla, 'NOEUD')
             do j = 1, nec
                 ncmpsd(1+2*nec*(i-1)+2*j-2) = nomnol
                 ncmpsd(1+2*nec*(i-1)+2*j-1) = liscmp(j)
@@ -183,7 +190,7 @@ subroutine calimc(chargz)
         end do
         AS_ALLOCATE(vk8=ncmpin, size=2*nbnoe*nec)
         do i = 1, nbnoe
-            nomnol = int_to_char8(idc_defo(i), mailla, 'NOEUD')
+            nomnol = int_to_char8(idc_defo(i), lcolle, mailla, 'NOEUD')
             do j = 1, nec
                 ncmpin(1+2*nec*(i-1)+2*j-2) = nomnol
                 ncmpin(1+2*nec*(i-1)+2*j-1) = liscmp(j)
@@ -244,7 +251,7 @@ subroutine calimc(chargz)
                 k = 0
                 nomnoe = ncmpin(1+2*nec*(i-1)+2*j-2)
                 nomcmp = ncmpin(1+2*nec*(i-1)+2*j-1)
-                inoe = char8_to_int(nomnoe, mailla, 'NOEUD')
+                inoe = char8_to_int(nomnoe, lcolle, mailla, 'NOEUD')
                 if (nomcmp .eq. 'DX') icmp = 1
                 if (nomcmp .eq. 'DY') icmp = 2
                 if (nomcmp .eq. 'DZ') icmp = 3
@@ -294,7 +301,7 @@ subroutine calimc(chargz)
                 imod = nbmdyn+(i-1)*nec+j
                 do i2 = 1, nbnoe
                     nomnoe = ncmpin(1+2*nec*(i2-1))
-                    inoe = char8_to_int(nomnoe, mailla, 'NOEUD')
+                    inoe = char8_to_int(nomnoe, lcolle, mailla, 'NOEUD')
                     iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                     nueq = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                     do j2 = 1, nec
@@ -322,7 +329,7 @@ subroutine calimc(chargz)
                         vale = zero
                         do i3 = 1, nbnoe
                             nmnoe2 = ncmpin(1+2*nec*(i3-1))
-                            inoe = char8_to_int(nmnoe2, mailla, 'NOEUD')
+                            inoe = char8_to_int(nmnoe2, lcolle, mailla, 'NOEUD')
                             iddl2 = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                             nueq2 = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                             do j3 = 1, nec

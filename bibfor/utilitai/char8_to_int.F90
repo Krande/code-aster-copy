@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function char8_to_int(to_convert, nommai, typent)
+function char8_to_int(to_convert, lcolle, nommai, typent)
 !
     implicit none
 #include "asterf_types.h"
@@ -27,34 +27,30 @@ function char8_to_int(to_convert, nommai, typent)
 #include "asterfort/jexnom.h"
 !
     character(len=8), intent(in) :: to_convert
+    aster_logical, optional, intent(in) :: lcolle
     character(len=8), optional, intent(in) :: nommai
     character(len=*), optional, intent(in) :: typent
     integer :: char8_to_int
 !
-    integer :: ier
     character(len=16) nomobj
-    aster_logical :: lcolle
+    aster_logical :: lcolle2
 !
-    lcolle = .false.
+    if (present(lcolle)) then
+        lcolle2 = lcolle
+    else
+        lcolle2 = .false.
+    end if
     if (present(nommai) .and. present(typent)) then
-        ier = -1
         if (typent .eq. "MAILLE") then
             nomobj = nommai//".NOMMAI "
-            call jeexin(nomobj, ier)
         else if (typent .eq. "NOEUD") then
             nomobj = nommai//".NOMNOE "
-            call jeexin(nomobj, ier)
         else
             ASSERT(.false.)
         end if
-        if (ier .eq. 0) then
-            lcolle = .false.
-        else
-            lcolle = .true.
-        end if
     end if
 !
-    if (.not. lcolle) then
+    if (.not. lcolle2) then
         if (to_convert .ne. ' ') then
             if (to_convert(1:1) .eq. 'M' .or. to_convert(1:1) .eq. 'N') then
                 if (.not. is_numeric(to_convert(2:8))) then

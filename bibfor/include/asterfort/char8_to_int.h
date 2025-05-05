@@ -18,8 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    function char8_to_int(to_convert, nommai, typent)
+    function char8_to_int(to_convert, lcolle, nommai, typent)
         character(len=8), intent(in) :: to_convert
+        aster_logical, optional, intent(in) :: lcolle
         character(len=8), optional, intent(in) :: nommai
         character(len=*), optional, intent(in) :: typent
         integer :: char8_to_int
