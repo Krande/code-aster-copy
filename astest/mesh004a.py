@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -123,6 +123,18 @@ l2G = pMesh.getLocalToGlobalNodeIds()
 test.assertEqual(
     numeDDL.getNodeAndComponentFromDOF(local=False)[::3], [(l2G[i], "DX") for i in range(nnodes)]
 )
+
+dof_glo = [3003, 1002, 1014, 15]
+node_glo = [12, 7, 47, 11]
+dof_loc = [18, 3, 6, 9]
+node_loc = [6, 1, 2, 3]
+test.assertEqual(
+    numeDDL.getNodeAndComponentFromDOF(dof_glo[rank], local=False), (node_glo[rank], "DX")
+)
+test.assertEqual(
+    numeDDL.getNodeAndComponentFromDOF(dof_loc[rank], local=True), (node_loc[rank], "DX")
+)
+
 test.printSummary()
 
 CA.close()

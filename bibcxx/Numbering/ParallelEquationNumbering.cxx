@@ -425,10 +425,19 @@ std::pair< ASTERINTEGER, std::string >
 ParallelEquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof,
                                                        const bool local ) const {
     auto localrow = dof;
-    if ( !local )
+    if ( !local ) {
         localrow = globalToLocalDOF( dof );
+    }
 
     auto ret = EquationNumbering::getNodeAndComponentFromDOF( localrow );
+
+    AS_ASSERT( _mesh->isParallel() );
+    if ( !local ) {
+        auto mapLG = _mesh->getLocalToGlobalNodeIds();
+        mapLG->updateValuePointer();
+        auto node_id = ret.first;
+        ret.first = ( *mapLG )[node_id];
+    }
 
     return ret;
 };
