@@ -59,7 +59,6 @@ subroutine medom1(modele, mater, mateco, cara, kcha, nbLoad, &
     integer :: n, n1, n2, n3, n5, nbLoadEff
 !-----------------------------------------------------------------------
     character(len=8) :: k8b, nomo, materi, loadType
-    character(len=4) :: phen
     character(len=8) :: blan8
     character(len=16) :: concep, nomcmd, phenom
     character(len=19) :: excit
@@ -90,9 +89,9 @@ subroutine medom1(modele, mater, mateco, cara, kcha, nbLoad, &
 !
         call rslesd(result, nuord, modele, materi, cara, &
                     excit, iexcit)
-        call dismoi('PHENOMENE', modele, 'MODELE', repk=phen)
+        call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom)
         l_ther = ASTER_FALSE
-        if (phen .eq. 'THERM') then
+        if (phenom(1:5) .eq. 'THERM') then
             l_ther = ASTER_TRUE
         end if
 
@@ -109,9 +108,9 @@ subroutine medom1(modele, mater, mateco, cara, kcha, nbLoad, &
         if ((n2 .eq. 0) .and. (k8b(1:3) .eq. 'OUI')) then
             call utmess('A', 'CALCULEL3_39')
         end if
-        call dismoi('PHENOMENE', modele, 'MODELE', repk=phen)
+        call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom)
         l_ther = ASTER_FALSE
-        if (phen .eq. 'THERM') then
+        if (phenom(1:5) .eq. 'THERM') then
             l_ther = ASTER_TRUE
         end if
 !

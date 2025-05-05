@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine medomp(result, modele, mater, mateco, carele, nh)
     character(len=16) :: repons
     character(len=19) :: knum
     character(len=8) :: crit
-    character(len=4) :: phen
+    character(len=5) :: phen
     aster_logical :: lrdm, lmater, l_ther
     integer :: lfour
     integer, pointer :: v_list_store(:) => null()
