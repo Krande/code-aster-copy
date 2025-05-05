@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                       nbtrou)
         character(len=*), intent(in) :: nomsd
         character(len=*), intent(in) :: acces
-        integer, intent(in) :: ival
+        integer(kind=8), intent(in) :: ival
         real(kind=8), intent(in) :: rval
         character(len=*), intent(in) :: kval
         complex(kind=8), intent(in) :: cval
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit
-        integer, intent(out) :: nutrou(*)
-        integer, intent(in) :: ndim
-        integer, intent(out) :: nbtrou
+        integer(kind=8), intent(out) :: nutrou(*)
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(out) :: nbtrou
     end subroutine rsorac
 end interface

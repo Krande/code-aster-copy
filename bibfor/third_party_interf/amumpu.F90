@@ -324,7 +324,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
             ASSERT((maxmem_ooc .ge. 0) .and. (nsizema .gt. 0))
             if (tmax .ge. maxmem_ic) then
                 icn22 = 0
-                icn23 = max(min(3*maxmem_ic, tmax), 1)
+                icn23 = max(min(3*maxmem_ic, tmax), 1_8)
             else
                 call jjldyn(0_8, -1_8, ltot)
                 k8tab(1) = 'MEM_TOTA'
@@ -337,7 +337,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                     lpbmem = .true.
                     call utmess('A', 'FACTOR_82')
                 else
-                    tmaxb = max(int(0.95*(rval2b-rval3b)/nbfact), 1)
+                    tmaxb = max(int(0.95*(rval2b-rval3b)/nbfact, 8), 1_8)
                 end if
                 if (niv .ge. 2) then
                     write (ifm, *) '<AMUMPU> RVALB2/3, TMAXB ', rval2b, rval3b, tmaxb
@@ -348,11 +348,11 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                 end if
                 if ((tmaxb .gt. maxmem_ic) .and. (.not. lpbmem)) then
                     icn22 = 0
-                    icn23 = max(min(3*maxmem_ic, tmaxb), 1)
+                    icn23 = max(min(3*maxmem_ic, tmaxb), 1_8)
                 else if ((tmaxb .gt. maxmem_ooc) .and. (tmaxb .lt. maxmem_ic) .and. &
                          (.not. lpbmem)) then
                     icn22 = 1
-                    icn23 = max(min(3*maxmem_ooc, tmaxb), 1)
+                    icn23 = max(min(3*maxmem_ooc, tmaxb), 1_8)
                 else
                     icn22 = 1
                     icn23 = 0
@@ -385,10 +385,10 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
             end if
             iaux1 = int(nbfact*rval1+rval2)
             vali(1) = n
-            vali(2) = max(iaux1, 1)
-            vali(3) = max((maxmem_ic+nsizema)*nbfact+execmu, 1)
-            vali(4) = max((maxmem_ooc+nsizema)*nbfact+execmu, 1)
-            vali(5) = max(info3*nbfact, 1)
+            vali(2) = max(iaux1, 1_8)
+            vali(3) = max((maxmem_ic+nsizema)*nbfact+execmu, 1_8)
+            vali(4) = max((maxmem_ooc+nsizema)*nbfact+execmu, 1_8)
+            vali(5) = max(info3*nbfact, 1_8)
             vali(6) = vali(2)+vali(3)
             vali(7) = vali(2)+vali(4)
             vali(8) = nbfact

@@ -679,7 +679,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 ! pour conserver les post-traitements qualite avec nbrhs=1
             if (nbrhs .ne. 1) then
                 if ((nbrhs .lt. 0) .and. ((iret1*iret2*iret3) .ne. 0)) dmpsk%icntl(20) = 3
-                dmpsk%icntl(27) = -abs(nbrhs)
+                dmpsk%icntl(27) = int(-abs(nbrhs), 4)
             end if
         else if (type .eq. 'Z') then
             zmpsk%icntl(1) = icntl(1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,16 +21,16 @@
           interface 
             subroutine rsadpa(nomsd,cel,npara,lpara,iordr,itype,tjv,ttyp&
      &,sjv,styp,istop)
-              integer, intent(in) :: npara
+              integer(kind=8), intent(in) :: npara
               character(len=*), intent(in) :: nomsd
               character(len=1), intent(in) :: cel
               character(len=*), intent(in) :: lpara(*)
-              integer, intent(in) :: iordr
-              integer, intent(in) :: itype
-              integer ,optional, intent(out) :: tjv(*)
+              integer(kind=8), intent(in) :: iordr
+              integer(kind=8), intent(in) :: itype
+              integer(kind=8) ,optional, intent(out) :: tjv(*)
               character(len=*) ,optional, intent(out) :: ttyp(*)
-              integer ,optional, intent(out) :: sjv
+              integer(kind=8) ,optional, intent(out) :: sjv
               character(len=*) ,optional, intent(out) :: styp
-              integer ,optional, intent(in) :: istop
+              integer(kind=8) ,optional, intent(in) :: istop
             end subroutine rsadpa
           end interface 

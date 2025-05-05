@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
         use aster_petsc_module
         Vec :: vect1
 # else
-        integer :: vect1
+        integer(kind=8) :: vect1
 # endif
-        integer :: n1
+        integer(kind=8) :: n1
     end subroutine elg_allocvr
 end interface
