@@ -114,7 +114,9 @@ def check_petsc(self):
     self.check_petsc_conf("PETSC_HAVE_ML", "ASTER_PETSC_HAVE_ML")
     self.check_petsc_conf("PETSC_HAVE_HYPRE", "ASTER_PETSC_HAVE_HYPRE")
     self.check_petsc_conf("PETSC_HAVE_SUPERLU", "ASTER_PETSC_HAVE_SUPERLU")
+    self.check_petsc_conf("PETSC_HAVE_SLEPC", "ASTER_PETSC_HAVE_SLEPC")
     self.check_petsc_conf("PETSC_HAVE_MUMPS", "ASTER_PETSC_HAVE_MUMPS")
+    self.check_petsc_conf("PETSC_HAVE_HPDDM", "ASTER_PETSC_HAVE_HPDDM")
 
 
 @Configure.conf
