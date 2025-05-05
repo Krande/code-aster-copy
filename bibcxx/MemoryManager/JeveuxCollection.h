@@ -965,8 +965,11 @@ bool JeveuxCollectionClass< ValueType, AccessType, MemoryType >::build( bool for
             ++_objectCount;
 
             if ( _isNamed ) {
-                const auto obj = this->operator[]( i );
-                _mapNumObject[obj->getStringName()] = i;
+                std::string charJeveuxName( 32, ' ' );
+                ASTERINTEGER num = i;
+                CALLO_JEXNUM( charJeveuxName, _name, &num );
+                const std::string objName = strip( charJeveuxName );
+                _mapNumObject[objName] = i;
             }
         }
     }
