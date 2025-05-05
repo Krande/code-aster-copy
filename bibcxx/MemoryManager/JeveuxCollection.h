@@ -959,6 +959,7 @@ bool JeveuxCollectionClass< ValueType, AccessType, MemoryType >::build( bool for
 
     _objectCount = 0;
     _indirection.clear();
+    std::string collectionObjectName( 32, ' ' );
     for ( ASTERINTEGER i = 1; i <= _capacity; ++i ) {
         if ( contains( i ) ) {
             _indirection.push_back( i );
@@ -968,7 +969,8 @@ bool JeveuxCollectionClass< ValueType, AccessType, MemoryType >::build( bool for
                 std::string charJeveuxName( 32, ' ' );
                 ASTERINTEGER num = i;
                 CALLO_JEXNUM( charJeveuxName, _name, &num );
-                const std::string objName = strip( charJeveuxName );
+                CALLO_JENUNO( charJeveuxName, collectionObjectName );
+                const std::string objName = strip( std::string( collectionObjectName ) );
                 _mapNumObject[objName] = i;
             }
         }
