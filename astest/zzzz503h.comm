@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ cst1 = DEFI_CONSTANTE(VALE=1.0)
 cst2 = DEFI_CONSTANTE(VALE=2.0)
 
 mater = DEFI_MATERIAU(
-    ELAS=_F(E=3.7272000000e10, NU=0.0, RHO=2400.0),
+    ELAS=_F(E=150000.0, NU=0.0, RHO=2400.0),
     TRACTION=_F(SIGM=trac),
     MFRONT=_F(LISTE_COEF=(3.69e10, 0.3, 151.0, 87.0, 2.3)),
     UMAT_FO=_F(LISTE_COEF=(cst1, cst2)),
