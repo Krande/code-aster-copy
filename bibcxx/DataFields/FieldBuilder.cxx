@@ -36,7 +36,9 @@ EquationNumberingPtr FieldBuilder::newEquationNumbering( const std::string &name
 
     EquationNumberingPtr curDesc;
     if ( mesh->isParallel() ) {
+#ifdef ASTER_HAVE_MPI
         curDesc = std::make_shared< ParallelEquationNumbering >( name );
+#endif
     } else {
         curDesc = std::make_shared< EquationNumbering >( name );
     }
