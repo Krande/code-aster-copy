@@ -68,20 +68,7 @@ class FieldBuilder {
     /**
      * @brief Add a existing EquationNumbering in FieldBuilder
      */
-    EquationNumberingPtr newEquationNumbering( const std::string &name, const BaseMeshPtr mesh ) {
-        if ( _setGlobNume.count( strip( name ) ) > 0 ) {
-            raiseAsterError( "NUME_EQUA already exists: " + name );
-        }
-
-        auto curDesc = std::make_shared< EquationNumbering >( name );
-        if ( mesh->isParallel() )
-            curDesc = std::dynamic_pointer_cast< ParallelEquationNumbering >( curDesc );
-
-        curDesc->setMesh( mesh );
-        addEquationNumbering( curDesc );
-
-        return curDesc;
-    };
+    EquationNumberingPtr newEquationNumbering( const std::string &name, const BaseMeshPtr mesh );
 
     /**
      * @brief Add a existing generalizedEquationNumbering in FieldBuilder

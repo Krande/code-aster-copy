@@ -3,7 +3,7 @@
  * @brief Implementation de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,3 +27,22 @@
 
 std::set< std::string > FieldBuilder::_setGlobNume;
 std::set< std::string > FieldBuilder::_setLigrel;
+
+EquationNumberingPtr FieldBuilder::newEquationNumbering( const std::string &name,
+                                                         const BaseMeshPtr mesh ) {
+    if ( _setGlobNume.count( strip( name ) ) > 0 ) {
+        raiseAsterError( "NUME_EQUA already exists: " + name );
+    }
+
+    EquationNumberingPtr curDesc;
+    if ( mesh->isParallel() ) {
+        curDesc = std::make_shared< ParallelEquationNumbering >( name );
+    } else {
+        curDesc = std::make_shared< EquationNumbering >( name );
+    }
+
+    curDesc->setMesh( mesh );
+    addEquationNumbering( curDesc );
+
+    return curDesc;
+};
