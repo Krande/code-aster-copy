@@ -233,7 +233,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 #ifndef ASTER_MUMPS_REDUCMPI
         if (redmpi > 1) then
 ! version non compatible avec option REDUCTION_MPI
-            call utmess('A', 'FACTOR_49')
+            call utmess('I', 'FACTOR_49')
             redmpi = -9999
         end if
 #endif
@@ -253,10 +253,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
             !ok
         case ('FR+', 'FR++')
             kacmum = 'FR'
-            call utmess('A', 'FACTOR_48', sk=kacmum)
+            call utmess('I', 'FACTOR_48', sk=kacmum)
         case ('LR+', 'LR++')
             kacmum = 'LR'
-            call utmess('A', 'FACTOR_48', sk=kacmum)
+            call utmess('I', 'FACTOR_48', sk=kacmum)
         case ('AUTO')
             kacmum = 'FR'
         case default
@@ -279,7 +279,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
             i1 = nbproc/redmpi
             i2 = nbproc-(redmpi*i1)
             if (i2 .ne. 0) then
-                call utmess('A', 'FACTOR_47')
+                call utmess('I', 'FACTOR_47')
             else
                 icntl(17) = to_mumps_int(redmpi)
             end if
@@ -421,7 +421,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 #else
             icntl(28) = 1
             icntl(7) = 3
-            call utmess('A', 'FACTOR_89')
+            call utmess('I', 'FACTOR_89')
 #endif
         else if (slvk(4) .eq. 'PORD') then
             icntl(28) = 1
@@ -436,7 +436,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 #else
             icntl(28) = 1
             icntl(7) = 5
-            call utmess('A', 'FACTOR_90')
+            call utmess('I', 'FACTOR_90')
 #endif
         else if (slvk(4) .eq. 'QAMD') then
             icntl(28) = 1

@@ -247,7 +247,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
 #ifdef ASTER_PLATFORM_MINGW
         if (type .eq. 'Z' .and. (usersm(1:4) .eq. 'AUTO' .or. usersm(1:11) .eq. 'OUT_OF_CORE')) then
             usersm = 'IN_CORE'
-            call utmess('A', 'FACTOR_86')
+            call utmess('I', 'FACTOR_86')
         end if
 #endif
 !
