@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function int_to_char8(to_convert, nommai, typent)
+function int_to_char8(to_convert, lcolle, nommai, typent)
 !
     implicit none
 #include "asterf_types.h"
@@ -26,34 +26,30 @@ function int_to_char8(to_convert, nommai, typent)
 #include "asterfort/jexnum.h"
 !
     integer, intent(in) :: to_convert
+    aster_logical, optional, intent(in) :: lcolle
     character(len=8), optional, intent(in) :: nommai
     character(len=*), optional, intent(in) :: typent
     character(len=8) :: int_to_char8
 !
-    integer :: ier
     character(len=16) nomobj
-    aster_logical :: lcolle
+    aster_logical :: lcolle2
 !
-    lcolle = .false.
+    if (present(lcolle)) then
+        lcolle2 = lcolle
+    else
+        lcolle2 = .false.
+    end if
     if (present(nommai) .and. present(typent)) then
-        ier = -1
         if (typent .eq. "MAILLE") then
             nomobj = nommai//".NOMMAI "
-            call jeexin(nomobj, ier)
         else if (typent .eq. "NOEUD") then
             nomobj = nommai//".NOMNOE "
-            call jeexin(nomobj, ier)
         else
             ASSERT(.false.)
         end if
-        if (ier .eq. 0) then
-            lcolle = .false.
-        else
-            lcolle = .true.
-        end if
     end if
 !
-    if (lcolle) then
+    if (lcolle2) then
         call jenuno(jexnum(nomobj, to_convert), int_to_char8)
     else
         write (int_to_char8, 10) to_convert

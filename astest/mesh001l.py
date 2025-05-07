@@ -54,7 +54,7 @@ test = CA.TestCase()
 
 
 medfile = "mesh001l.mmed"
-create_mesh(5, medfile)
+create_mesh(20, medfile)
 
 DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY", ACCES="OLD")
 

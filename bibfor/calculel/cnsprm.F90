@@ -28,6 +28,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -66,7 +67,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     character(len=19) :: cns1, cns2, trav
     character(len=24) :: vnoeud, vrange, vnoeum, vrangm, vmes, vsu, k24bid
     character(len=24) :: valk(2), vorien, vref, vrefpm
-    integer :: jcns1l, jcns1v, icmp1, icmp2
+    integer :: jcns1l, jcns1v, icmp1, icmp2, ier
     integer :: jcns2l, jcns2v, jcns2k, jcns2d, lvsu, lcmp
     integer :: ncmp, ibid, gd, ncmp2, ino2, icmp, ino1, icmpd
     integer :: isma, lori, lref, lrefms
@@ -79,6 +80,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     character(len=8), pointer :: cns1c(:) => null()
     character(len=8), pointer :: cns2c(:) => null()
     integer, pointer :: cns1d(:) => null()
+    aster_logical :: lcolle, lcolle2
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -103,6 +105,11 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     call jeveuo(ma1//'.NOMACR', 'L', vk8=nomacr)
+    lcolle = .false.
+    call jeexin(ma1//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
 !
     call getvtx(' ', 'SUPER_MAILLE', scal=mail, nbret=ibid)
 !
@@ -144,6 +151,11 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=k24bid)
     numddl = k24bid(1:8)
     call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=ma2)
+    lcolle2 = .false.
+    call jeexin(ma2//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle2 = .true.
+    end if
 !
     call dismoi('NOM_MAILLA', model3, 'MODELE', repk=ma3)
 !
@@ -264,8 +276,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             ino1 = zi(lnoeum-1+jddl)
             kcmp = zk8(lrangm-1+jddl)
 ! ICI ON SUPPOSE QUE LES NOEUDS INTERFACES ONT LE MEME NOM
-            nono = int_to_char8(ino1, ma2, 'NOEUD')
-            ino1 = char8_to_int(nono, ma1, 'NOEUD')
+            nono = int_to_char8(ino1, lcolle2, ma2, 'NOEUD')
+            ino1 = char8_to_int(nono, lcolle, ma1, 'NOEUD')
 !
             do icmp = 1, ncmp
                 if (cns1c(icmp) .eq. kcmp) then

@@ -32,6 +32,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -79,7 +80,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
     real(kind=8) :: copror, difrel, eps1, eps2, epsrel, rapcoe, coemax
     integer :: i, icmp, icomp, iddl, iddl1, iddl2, ideca1, ideca2
-    integer :: idecal, in, indmax, ino
+    integer :: idecal, in, indmax, ino, ier
     integer ::  inom, ipntr1, ipntr2, ipntrl, irela, irela1
     integer :: irela2
     integer ::  jprnm, jrlco, jrlco1, jrlco2, jrlcof
@@ -98,6 +99,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
     real(kind=8), pointer :: coef_r(:) => null()
     integer, pointer :: noeud_occ(:) => null()
     integer, pointer :: noeud_rela(:) => null()
+    aster_logical :: lcolle
 !
     call jemarq()
 !
@@ -110,6 +112,11 @@ subroutine ordlrl(charge, lisrel, nomgd)
     ligrmo = mod(1:8)//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
+    lcolle = .false.
+    call jeexin(noma//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
@@ -203,7 +210,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
         do ino = 1, nbterm
             nomnoe = zk8(idnoeu+ino-1)
-            in = char8_to_int(nomnoe, noma, "NOEUD")
+            in = char8_to_int(nomnoe, lcolle, noma, "NOEUD")
             noeud_rela(ino) = in
             cmp = zk8(iddl+ino-1)
             icmp = indik8(nomcmp, cmp, 1, nbcmp)

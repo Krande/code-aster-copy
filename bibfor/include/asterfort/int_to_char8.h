@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    function int_to_char8(to_convert, nommai, typent)
+    function int_to_char8(to_convert, lcolle, nommai, typent)
         integer, intent(in) :: to_convert
+        aster_logical, optional, intent(in) :: lcolle
         character(len=8), optional, intent(in) :: nommai
         character(len=*), optional, intent(in) :: typent
         character(len=8) :: int_to_char8

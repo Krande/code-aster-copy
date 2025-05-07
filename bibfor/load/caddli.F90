@@ -39,6 +39,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -80,7 +81,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
     integer :: iocc, ino, icmp, nume_node
     integer :: jdirec, jprnm, jnom, jcompt
-    integer :: nbcmp, nbec, nbnoeu, nddli
+    integer :: nbcmp, nbec, nbnoeu, nddli, ier
     character(len=8) :: name_node, nomg
     character(len=19) :: list_rela
     character(len=4) :: coef_type
@@ -106,6 +107,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
     aster_logical :: istypblc(3)
     integer :: cmp_nb_depl, cmp_nb_rota, cmp_nb_fourier
     integer :: pointer
+    aster_logical :: lcolle
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,6 +142,11 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
         coef_type = 'COMP'
     else
         ASSERT(.false.)
+    end if
+    lcolle = .false.
+    call jeexin(mesh//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
     end if
 !
 ! - Information about <GRANDEUR>
@@ -221,7 +228,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
-                name_node = int_to_char8(nume_node, mesh, "NOEUD")
+                name_node = int_to_char8(nume_node, lcolle, mesh, "NOEUD")
                 cmp_nb = 0
                 cmp_nb_depl = 0
                 cmp_nb_rota = 0
@@ -309,7 +316,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
-                name_node = int_to_char8(nume_node, mesh, "NOEUD")
+                name_node = int_to_char8(nume_node, lcolle, mesh, "NOEUD")
                 call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node, &
                             zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)), &
                             coef_type, cmp_nb, cmp_name, cmp_acti, valeType, &

@@ -60,7 +60,7 @@ subroutine asmael(ma1, ma2, mag)
     integer :: itrou, j, l1, l2, l3, n, nbgm1
     integer :: nbgm2, nbgma, nbgn1, nbgn2, nbgno, nbl1, nbm1
     integer :: nbm2, nbma, nbn1, nbn2, nbno, nbnoe, nbnol
-    integer :: nbsm1, nbsm2, nbsma, ncoor
+    integer :: nbsm1, nbsm2, nbsma, ncoor, ier
     integer, pointer :: dim1(:) => null()
     integer, pointer :: dim2(:) => null()
     real(kind=8), pointer :: par1(:) => null()
@@ -68,6 +68,7 @@ subroutine asmael(ma1, ma2, mag)
     integer, pointer :: desm(:) => null()
     character(len=8), pointer :: nmc1(:) => null()
     character(len=8), pointer :: nmc2(:) => null()
+    aster_logical :: lcolle, lcolle2
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -386,8 +387,9 @@ subroutine asmael(ma1, ma2, mag)
             call jecroc(jexnom(ma1//'.NOMNOE', nono))
         end do
     end if
+    lcolle = .true.
     do i = 1, nbn1
-        nono = int_to_char8(i, ma1, 'NOEUD')
+        nono = int_to_char8(i, lcolle, ma1, 'NOEUD')
         zk8(ianon2-1+i) = nono
     end do
     call jeexin(ma2//'.NOMNOE', iret)
@@ -400,10 +402,20 @@ subroutine asmael(ma1, ma2, mag)
             call jecroc(jexnom(ma2//'.NOMNOE', nono))
         end do
     end if
+    lcolle = .false.
+    call jeexin(ma1//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
+    lcolle2 = .false.
+    call jeexin(ma2//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle2 = .true.
+    end if
     do i = 1, nbn2
-        nono = int_to_char8(i, ma2, 'NOEUD')
+        nono = int_to_char8(i, lcolle2, ma2, 'NOEUD')
         zk8(ianon2-1+nbn1+i) = nono
-        itrou = char8_to_int(nono, ma1, 'NOEUD')
+        itrou = char8_to_int(nono, lcolle, ma1, 'NOEUD')
         if (itrou .gt. 0) then
             zi(iancnf-1+nbn1+i) = itrou
         end if
