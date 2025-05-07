@@ -31,7 +31,7 @@ from ...Objects import (
 )
 from ...Messages import ASSERT, UTMESS
 from ...Utilities import SearchList, no_new_attributes, medcoupling as medc
-from ...CodeCommands import PROJ_CHAMP
+from .rest_homo_proj import MOCK_PROJ_CHAMP
 from .syme_homo_corr import BuildFullSymmetryMassif
 from . import MESH_TOL, HomoType, check_mesh
 
@@ -442,15 +442,13 @@ class RelocManager:
             if not name in resu.getFieldsNames():
                 UTMESS("F", "HOMO1_6", valk=(name, resu.getName()))
 
-        resu_p0 = PROJ_CHAMP(
+        resu_p0 = MOCK_PROJ_CHAMP(
             RESULTAT=resu,
             METHODE="COLLOCATION",
             MAILLAGE_1=resu.getMesh(),
             MAILLAGE_2=self.mesh_p0,
             NOM_CHAM=("DEPL", "EPSI_NOEU"),
             TYPE_CHAM="NOEU",
-            PROL_VALE=0.0,
-            ALARME="OUI",
         )
 
         dp0 = {}
@@ -488,15 +486,13 @@ class RelocManager:
             if not name in resu.getFieldsNames():
                 UTMESS("F", "HOMO1_6", valk=(name, resu.getName()))
 
-        resu_p0 = PROJ_CHAMP(
+        resu_p0 = MOCK_PROJ_CHAMP(
             RESULTAT=resu,
             METHODE="COLLOCATION",
             MAILLAGE_1=resu.getMesh(),
             MAILLAGE_2=self.mesh_p0,
             NOM_CHAM=("TEMP", "GRAT_NOEU"),
             TYPE_CHAM="NOEU",
-            PROL_VALE=0.0,
-            ALARME="OUI",
         )
 
         tp0 = {}

@@ -1,0 +1,183 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import os
+import os.path as osp
+
+from code_aster.CodeCommands import *
+from code_aster import CA
+
+rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+
+test = CA.TestCase()
+
+ACIER = INCLUDE_MATERIAU(
+    NOM_AFNOR="16MND5",
+    TYPE_MODELE="REF",
+    VARIANTE="A",
+    TYPE_VALE="NOMI",
+    UNITE_LONGUEUR="MM",
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+    INFO=1,
+)
+
+MAVER = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+
+step = 27.43
+
+MA = CA.ParallelMesh.buildCube(l=step, refine=4)
+
+TAB_HOMO = CALC_MATE_HOMO(
+    MAILLAGE=MAVER,
+    AFFE=(_F(TOUT="OUI", MATER=ACIER)),
+    VARC=_F(NOM_VARC="TEMP", VALE=(20.0, 40.0)),
+    TYPE_HOMO="MASSIF",
+    CORR_MECA=CO("CORR_MECA"),
+    CORR_THER=CO("CORR_THER"),
+)
+
+MAT_HOMO = DEFI_MATERIAU(
+    TABLE=_F(TABLE=TAB_HOMO, NOM_PARA="TEMP", COMPOR=("THER_NL_ORTH", "ELAS_ORTH_FO"))
+)
+
+MOD_MECA = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=("3D",))
+)
+
+MOD_THER = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION=("3D",))
+)
+
+
+CHMAT_THER = AFFE_MATERIAU(MODELE=MOD_THER, AFFE=(_F(TOUT="OUI", MATER=MAT_HOMO)))
+
+CH_THER_FIX = AFFE_CHAR_CINE(MODELE=MOD_THER, THER_IMPO=(_F(GROUP_MA=("LEFT", "RIGHT"), TEMP=20.0)))
+
+INSTS = [0.0, 10.0]
+EVOL_TEMP = [20.0, 40.0]
+EVOL_PRES = [1.0, 2.0]
+
+L_R = DEFI_LIST_REEL(VALE=INSTS)
+L_I = DEFI_LIST_INST(
+    METHODE="MANUEL",
+    DEFI_LIST=_F(LIST_INST=L_R),
+    ECHEC=(
+        _F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_NIVEAU=4, SUBD_PAS=2),
+        _F(
+            EVENEMENT="DIVE_RESI",
+            ACTION="DECOUPE",
+            SUBD_METHODE="MANUEL",
+            SUBD_NIVEAU=4,
+            SUBD_PAS=2,
+        ),
+    ),
+)
+
+
+F_H = DEFI_CONSTANTE(VALE=30e-6)
+F_EVOL_TEMP = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=INSTS, ORDONNEE=EVOL_TEMP)
+
+CH_THER = AFFE_CHAR_THER_F(
+    MODELE=MOD_THER, ECHANGE=(_F(COEF_H=F_H, GROUP_MA=("BOTTOM"), TEMP_EXT=F_EVOL_TEMP),)
+)
+
+TEMP_INI_THER = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
+)
+
+ORIE = AFFE_CARA_ELEM(MODELE=MOD_THER, MASSIF=_F(ANGL_REP=(0.0, 0.0, 0.0), GROUP_MA="VOLUME"))
+
+RESU_THER = THER_NON_LINE(
+    MODELE=MOD_THER,
+    CHAM_MATER=CHMAT_THER,
+    CARA_ELEM=ORIE,
+    ETAT_INIT=_F(CHAM_NO=TEMP_INI_THER),
+    INCREMENT=_F(LIST_INST=L_I),
+    EXCIT=(_F(CHARGE=CH_THER), _F(CHARGE=CH_THER_FIX)),
+)
+RESU_THER = CALC_CHAMP(RESULTAT=RESU_THER, reuse=RESU_THER, THERMIQUE="GRAT_NOEU")
+
+
+CHMAT_MECA = AFFE_MATERIAU(
+    MODELE=MOD_MECA,
+    AFFE=_F(TOUT="OUI", MATER=(MAT_HOMO)),
+    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=RESU_THER, NOM_CHAM="TEMP", VALE_REF=20.0),
+)
+
+CHMECA_FIX = AFFE_CHAR_CINE(
+    MODELE=MOD_MECA,
+    MECA_IMPO=(
+        _F(GROUP_MA=("BOTTOM"), DZ=0.0),
+        _F(GROUP_MA=("LEFT",), DY=0.0),
+        _F(GROUP_MA=("BACK",), DX=0.0),
+    ),
+)
+
+F_EVOL_PRES = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=INSTS, ORDONNEE=EVOL_PRES)
+
+
+CHMECA = AFFE_CHAR_MECA(MODELE=MOD_MECA, PRES_REP=(_F(GROUP_MA=("TOP",), PRES=10.0),))
+
+RESU_MECA = MECA_STATIQUE(
+    MODELE=MOD_MECA,
+    CHAM_MATER=CHMAT_MECA,
+    EXCIT=(_F(CHARGE=CHMECA, FONC_MULT=F_EVOL_PRES), _F(CHARGE=CHMECA_FIX)),
+    LIST_INST=L_R,
+)
+RESU_MECA = CALC_CHAMP(RESULTAT=RESU_MECA, reuse=RESU_MECA, DEFORMATION="EPSI_NOEU")
+
+x0, y0, z0 = (step / 2, step / 2, step - 5)
+
+RESU_RELOC = REST_HOMO_LOCAL(
+    TYPE_HOMO="MASSIF",
+    POSITION=(x0, y0, z0),
+    AFFE=(_F(TOUT="OUI", MATER=ACIER)),
+    CORR_MECA=CORR_MECA,
+    CORR_THER=CORR_THER,
+    TEMP_REF=20,
+    PRESSION=0.0,
+    EVOL_ELAS=RESU_MECA,
+    EVOL_THER=RESU_THER,
+    OPTION="SIEF_ELGA",
+    TRANSLATION="OUI",
+    INST=INSTS,
+)
+
+norm_depl = RESU_RELOC.getField("DEPL", 2).norm("NORM_2")
+norm_sief = RESU_RELOC.getField("SIEF_ELGA", 2).norm("NORM_2")
+
+norm_depl_seq = 0.15582960377612987
+norm_sief_seq = 2553.766730629023
+
+# Le point P0 est partagé par plusieurs domaines (HOMO1_18)
+# On ne peut pas atteindre le résultat du calcul séquentiel à la précision machine.
+
+test.assertAlmostEqual(norm_depl, norm_depl_seq, places=5, msg="NORM DEPL")
+test.assertAlmostEqual(norm_sief, norm_sief_seq, places=0, msg="NORM SIEF")
+test.assertTrue(RESU_MECA.getMesh().isParallel())
+test.assertFalse(RESU_RELOC.getMesh().isParallel())
+test.printSummary()
+
+FIN()
