@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 !
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/utmess.h"
     integer :: iret, k1, k2, nmaxsd, ndigit, iessai, inum, n1, n2
@@ -58,13 +58,13 @@ subroutine gnomsd(nomres, noojb, k1, k2)
     noojb1(1:8) = nomu
 !
     ndigit = k2-k1+1
-    nmaxsd = int(10**ndigit)
+    nmaxsd = int(36**ndigit)
 !
 !
 !     -- SI 0 EST LIBRE C'EST GAGNE :
 !     ----------------------------------------------------------
     inum = 0
-    call codent(inum, 'D0', noojb1(k1:k2))
+    call codlet(inum, 'D0', noojb1(k1:k2))
     call jeexin(noojb1, iret)
     if (iret .eq. 0) goto 40
 !
@@ -73,7 +73,7 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 !        (TOUS LES NOMS SONT DEJA UTILISES)
 !     ----------------------------------------------------------
     inum = nmaxsd-1
-    call codent(inum, 'D0', noojb1(k1:k2))
+    call codlet(inum, 'D0', noojb1(k1:k2))
     call jeexin(noojb1, iret)
     if (iret .gt. 0) then
         call utmess('F', 'MODELISA4_69', si=inum)
@@ -86,7 +86,7 @@ subroutine gnomsd(nomres, noojb, k1, k2)
     n1 = 0
     iessai = 2
 10  continue
-    call codent(iessai, 'D0', noojb1(k1:k2))
+    call codlet(iessai, 'D0', noojb1(k1:k2))
     call jeexin(noojb1, iret)
     if (iret .eq. 0) then
         n2 = iessai
@@ -115,7 +115,7 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 !
     else
         iessai = n1+(n2-n1)/2
-        call codent(iessai, 'D0', noojb1(k1:k2))
+        call codlet(iessai, 'D0', noojb1(k1:k2))
         call jeexin(noojb1, iret)
         if (iret .eq. 0) then
             n2 = iessai
@@ -131,7 +131,7 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 !
 !
 40  continue
-    call codent(inum, 'D0', noojb1(k1:k2))
+    call codlet(inum, 'D0', noojb1(k1:k2))
     noojb = noojb1
 !
 !
