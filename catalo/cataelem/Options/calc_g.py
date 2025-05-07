@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,12 @@ PDEG = InputParameter(phys=PHY.NEUT_I)
 
 PLAG = InputParameter(phys=PHY.NEUT_R)
 
+
+PCER = InputParameter(phys=PHY.NEUT_R)
+
+
+PELI = InputParameter(phys=PHY.NEUT_R)
+
 CALC_G = Option(
     para_in=(
         SP.PACCELE,
@@ -70,6 +76,8 @@ CALC_G = Option(
         SP.PVITESS,
         PDEG,
         PLAG,
+        PCER,
+        PELI,
     ),
     para_out=(SP.PGTHETA,),
     condition=(
