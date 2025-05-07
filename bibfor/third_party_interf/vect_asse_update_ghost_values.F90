@@ -56,10 +56,10 @@ subroutine vect_asse_update_ghost_values(vasse, nume_equa)
     integer(kind=8) :: rang, nbproc, numpro, jjointr, jjointe
     integer(kind=8) :: lgenvo, lgrecep, jvaleue, jvaleur, iaux, jaux, jnulg
     integer(kind=8) :: jprddl, jnequ, nloc, nlili, ili, iret, ijoin
-    integer(kind=8) :: numglo, nuno1, nucmp1, numloc, numpr2
+    integer(kind=8) :: nuno1, nucmp1, numloc, numpr2
     integer(kind=8) :: iret1, iret2, jjoine, nbnoee, idprn1, idprn2, nec
-    integer(kind=8) :: jjoinr, jnujoi1, jnujoi2, nbnoer, nddll, neq
-    integer(kind=8) :: numnoe, nb_comm, gd, ieq, domj_i
+    integer(kind=8) :: jjoinr, jnujoi1, jnujoi2, nbnoer, nddll
+    integer(kind=8) :: numnoe, nb_comm, gd, domj_i
     aster_logical :: ldebug, l_parallel_mesh
     integer(kind=8), pointer :: v_nuls(:) => null()
     integer(kind=8), pointer :: v_deeg(:) => null()
@@ -69,7 +69,6 @@ subroutine vect_asse_update_ghost_values(vasse, nume_equa)
     integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer(kind=8), pointer :: deeq(:) => null()
 !
     mpi_int :: n4r, n4e, tag4, numpr4
     mpi_int :: mrank, msize, mpicou
@@ -136,7 +135,7 @@ subroutine vect_asse_update_ghost_values(vasse, nume_equa)
         call jeveuo(domj, 'L', vi=v_dom)
         call jeveuo(gcom, 'L', vi=v_gco)
         call jeveuo(pgid, 'L', vi4=v_pgid)
-        mpicou = v_gco(1)
+        mpicou = int(v_gco(1), 4)
     end if
 !
     do iaux = 1, nb_comm
@@ -158,8 +157,8 @@ subroutine vect_asse_update_ghost_values(vasse, nume_equa)
             end if
             ASSERT((lgenvo+lgrecep) .gt. 0)
 !
-            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1, lgenvo), jvaleue)
-            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1, lgrecep), jvaleur)
+            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1_8, lgenvo), jvaleue)
+            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1_8, lgrecep), jvaleur)
 
             if (lgenvo > 0) then
                 call jeveuo(nojoine, 'L', jjointe)
@@ -215,7 +214,7 @@ subroutine vect_asse_update_ghost_values(vasse, nume_equa)
             pgid = joints//".PGID"
             call jeveuo(gcom, 'L', vi=v_gco)
             call jeveuo(pgid, 'L', vi4=v_pgid)
-            mpicou = v_gco(1)
+            mpicou = int(v_gco(1), 4)
             call jeveuo(domj, 'L', vi=v_dom)
             do ijoin = 1, nb_comm
                 domj_i = v_comm(ijoin)

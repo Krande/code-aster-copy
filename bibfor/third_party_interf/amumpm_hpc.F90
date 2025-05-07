@@ -85,7 +85,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     integer(kind=8) :: nsmdi, nsmhc, neql, n1, nzl, nvale, jvale
     integer(kind=8) :: nlong, jvale2, nzloc, iterm, ifm, niv, k
     integer(kind=8) :: sym, iret, jcoll, iligl, kzero, ltot
-    integer(kind=8) :: ibid, vali(2), nbproc, nfilt1, nfilt2
+    integer(kind=8) :: iad, vali(2), nbproc, nfilt1, nfilt2
     integer(kind=8) :: nfilt3, isizemu, nsizemu, rang, esizemu
     integer(kind=8) :: nuno1, nuno2, procol, prolig, nucmp1, nucmp2
     integer(kind=8) ::  nzdeb, nzfin, numno1, numno2, iligg, jcolg, nloc
@@ -144,8 +144,8 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
         smpsk => smps(kxmps)
         ltypr = ASTER_TRUE
         sym = smpsk%sym
-        rmax = r4maem()*0.5
-        rmin = r4miem()*2.0
+        rmax = r4maem()*real(0.5d0, 4)
+        rmin = r4miem()*real(2.0d0, 4)
         nbproc = smpsk%nprocs
         rang = smpsk%myid
         esizemu = 4
@@ -153,8 +153,8 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
         cmpsk => cmps(kxmps)
         ltypr = ASTER_FALSE
         sym = cmpsk%sym
-        rmax = r4maem()*0.5
-        rmin = r4miem()*2.0
+        rmax = r4maem()*real(0.5d0, 4)
+        rmin = r4miem()*real(2.0d0, 4)
         nbproc = cmpsk%nprocs
         rang = cmpsk%myid
         esizemu = 8
@@ -162,8 +162,8 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
         dmpsk => dmps(kxmps)
         ltypr = ASTER_TRUE
         sym = dmpsk%sym
-        rmax = 0.5d0*r8maem()
-        rmin = -2.d0*r8miem()
+        rmax = r8maem()*0.5d0
+        rmin = r8miem()*2.0d0
         nbproc = dmpsk%nprocs
         rang = dmpsk%myid
         esizemu = 8
@@ -171,8 +171,8 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
         zmpsk => zmps(kxmps)
         ltypr = ASTER_FALSE
         sym = zmpsk%sym
-        rmax = r8maem()*0.5
-        rmin = r8miem()*2.0
+        rmax = r8maem()*0.5d0
+        rmin = r8miem()*2.0d0
         nbproc = zmpsk%nprocs
         rang = zmpsk%myid
         esizemu = 16
@@ -461,8 +461,8 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
 ! --- On remplit la matrice comme avec Petsc (voir apmamh.F90)
     raux = 0.d0
     raux2 = 0.d0
-    caux = cmplx(0.d0, 0.d0)
-    caux2 = cmplx(0.d0, 0.d0)
+    caux = dcmplx(0.d0, 0.d0)
+    caux2 = dcmplx(0.d0, 0.d0)
     iterm = 0
     do jcoll = 1, nloc
         if (jcoll == 1) then
@@ -784,8 +784,8 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
             call jeexin(kmonit(1), iret)
             if (iret /= 0) then
 ! --- CAS CMDE STD AVEC MUMPS SOLVEUR DIRECT
-                call jeveuo(kmonit(1), 'E', ibid)
-                zi(ibid+rang) = nz2
+                call jeveuo(kmonit(1), 'E', iad)
+                zi(iad+rang) = nz2
             else
 ! --- L'OBJET KMONIT(1) DEVRAIT EXISTER
                 ASSERT(ASTER_FALSE)

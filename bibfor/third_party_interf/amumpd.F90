@@ -418,7 +418,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
 !           TRAITEE EN AMONT):
 !       ------------------------------------------------
         valr(1) = (dmpsk%infog(13)*100.d0)/dmpsk%n
-        if (valr(1) .gt. 10.0) then
+        if (valr(1) .gt. 10.0d0) then
             if ((niv .ge. 2) .and. (.not. lpreco)) then
                 call utmess('I', 'FACTOR_73')
             end if

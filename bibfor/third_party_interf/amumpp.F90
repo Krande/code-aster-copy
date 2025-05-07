@@ -140,8 +140,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         smpsk%nrhs = to_mumps_int(nbsol)
         smpsk%lrhs = to_mumps_int(n)
         ltypr = .true.
-        rmax = r4maem()*0.5
-        rmin = r4miem()*2.0
+        rmax = r4maem()*real(0.5d0, 4)
+        rmin = r4miem()*real(2.0d0, 4)
     else if (type .eq. 'C') then
         cmpsk => cmps(kxmps)
         rang = cmpsk%myid
@@ -149,8 +149,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         cmpsk%nrhs = to_mumps_int(nbsol)
         cmpsk%lrhs = to_mumps_int(n)
         ltypr = .false.
-        rmax = r4maem()*0.5
-        rmin = r4miem()*2.0
+        rmax = r4maem()*real(0.5d0, 4)
+        rmin = r4miem()*real(2.0d0, 4)
     else if (type .eq. 'D') then
         dmpsk => dmps(kxmps)
         rang = dmpsk%myid
@@ -158,8 +158,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         dmpsk%nrhs = to_mumps_int(nbsol)
         dmpsk%lrhs = to_mumps_int(n)
         ltypr = .true.
-        rmax = r8maem()*0.5
-        rmin = r8miem()*2.0
+        rmax = r8maem()*0.5d0
+        rmin = r8miem()*2.0d0
     else if (type .eq. 'Z') then
         zmpsk => zmps(kxmps)
         rang = zmpsk%myid
@@ -167,8 +167,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         zmpsk%nrhs = to_mumps_int(nbsol)
         zmpsk%lrhs = to_mumps_int(n)
         ltypr = .false.
-        rmax = r8maem()*0.5
-        rmin = r8miem()*2.0
+        rmax = r8maem()*0.5d0
+        rmin = r8miem()*2.0d0
     else
         ASSERT(.false.)
     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -411,8 +411,8 @@ contains
         IS                  :: is
         ! Local variables
         mpi_int :: mpicomm, rank, nbproc
-        integer(kind=8) :: ndof, pass, ii, jerr
-        PetscInt :: istart, iend, my_ndof
+        integer(kind=8) ::  pass, ii, jerr
+        PetscInt :: istart, iend, ndof, my_ndof
         integer(kind=8), dimension(:), pointer :: idof => null()
         PetscInt, dimension(:), allocatable    :: my_idof
         Vec :: vtmp
@@ -446,7 +446,7 @@ contains
             ! l'index set retourné
             ! par cette fonction a la même répartition
             ! parallèle qu'un vecteur PETSc de taille ndof
-            call VecCreateMPI(mpicomm, PETSC_DECIDE, to_petsc_int(ndof), vtmp, ierr)
+            call VecCreateMPI(mpicomm, PETSC_DECIDE, ndof, vtmp, ierr)
             ASSERT(ierr == 0)
             call VecGetOwnerShipRange(vtmp, istart, iend, ierr)
             ASSERT(ierr == 0)
@@ -460,7 +460,7 @@ contains
             do ii = istart, iend-1
                 my_ndof = my_ndof+1
                 if (pass == 2) then
-                    my_idof(my_ndof) = idof(ii+1)
+                    my_idof(my_ndof) = to_petsc_int(idof(ii+1))
                 end if
             end do
             if (pass == 1) then

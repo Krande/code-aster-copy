@@ -158,11 +158,11 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
         icn22 = -9999
         icn23 = -9999
         nsizema = -9999
-        rval1 = -9999.0
-        rval2 = -9999.0
-        rval3 = -9999.0
-        rval2b = -9999.0
-        rval3b = -9999.0
+        rval1 = -9999.0d0
+        rval2 = -9999.0d0
+        rval3 = -9999.0d0
+        rval2b = -9999.0d0
+        rval3b = -9999.0d0
 !
 ! ---   INITS. PROPRE A L'OPTION
 !       On récupère dans la structure de données MUMPS
@@ -281,7 +281,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
             end if
         else
             ASSERT((nbfact .ge. 1) .and. (nbfact .le. nmxins))
-            tmax = max(int(0.95*(rval2-rval3)/nbfact), 1)
+            tmax = max(int(0.95d0*(rval2-rval3)/nbfact), 1)
         end if
 !
         if (niv .ge. 2) write (ifm, *) '<AMUMPU> RVAL1/2/3, maxmem_ic/26, NSIZEMA, TMAX ', rval1, &
@@ -337,7 +337,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                     lpbmem = .true.
                     call utmess('A', 'FACTOR_82')
                 else
-                    tmaxb = max(int(0.95*(rval2b-rval3b)/nbfact, 8), 1_8)
+                    tmaxb = max(int(0.95d0*(rval2b-rval3b)/nbfact, 8), 1_8)
                 end if
                 if (niv .ge. 2) then
                     write (ifm, *) '<AMUMPU> RVALB2/3, TMAXB ', rval2b, rval3b, tmaxb

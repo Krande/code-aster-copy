@@ -226,7 +226,7 @@ contains
         !
         ! l1 = l2 = l/2,
         ! Scale lagrange multipliers ( x 0.5)
-        alpha = 0.5
+        alpha = 0.5d0
         call VecScale(sp_context%x2, alpha, ierr)
         ASSERT(ierr == 0)
         !
