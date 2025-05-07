@@ -3,7 +3,7 @@
  * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -86,6 +86,34 @@ Returns:
     int: local number of the DOF.
         )",
               py::arg( "glob" ) )
+        // ---------------------------------------------------------------------
+        .def( "getNodeAndComponentFromDOF",
+              py::overload_cast< const bool >(
+                  &ParallelEquationNumbering::getNodeAndComponentFromDOF, py::const_ ),
+              R"(
+Return the list of node id and name of component for each dofs
+
+Arguments:
+  local (bool) = True: if True use local node index else use global index in HPC
+Returns:
+  list[tuple[int, str]] : node id and name of component for each dofs
+          )",
+              py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
+        .def( "getNodeAndComponentFromDOF",
+              py::overload_cast< const ASTERINTEGER, const bool >(
+                  &ParallelEquationNumbering::getNodeAndComponentFromDOF, py::const_ ),
+              R"(
+Return the node id and name of component for given DOF
+
+Arguments:
+  dof (int): DOF index
+  local (bool) = True: if True use local node index else use global index in HPC
+Returns:
+  tuple[int, str] : node id and name of component
+          )",
+              py::arg( "dof" ), py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
         // ---------------------------------------------------------------------
         .def( "getDOFsWithDescription",
               py::overload_cast< const VectorString &, const VectorString &, const bool,

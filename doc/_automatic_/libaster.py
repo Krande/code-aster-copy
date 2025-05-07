@@ -15002,6 +15002,32 @@ class ParallelEquationNumbering(EquationNumbering):
             int: indexes of the DOFs owned locally.
         """
 
+    def getNodeAndComponentFromDOF(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getNodeAndComponentFromDOF(self: libaster.ParallelEquationNumbering, local: bool = True) -> list[tuple[int, str]]
+
+
+        Return the list of node id and name of component for each dofs
+
+        Arguments:
+          local (bool) = True: if True use local node index else use global index in HPC
+        Returns:
+          list[tuple[int, str]] : node id and name of component for each dofs
+
+
+        2. getNodeAndComponentFromDOF(self: libaster.ParallelEquationNumbering, dof: int, local: bool = True) -> tuple[int, str]
+
+
+        Return the node id and name of component for given DOF
+
+        Arguments:
+          dof (int): DOF index
+          local (bool) = True: if True use local node index else use global index in HPC
+        Returns:
+          tuple[int, str] : node id and name of component
+        """
+
     def getNumberOfDOFs(self, local=False):
         """Returns the number of DOFs.
 
