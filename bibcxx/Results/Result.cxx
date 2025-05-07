@@ -1156,7 +1156,8 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                     break;
             }
             if ( it == _mapLoads.end() ) {
-                _mapLoads[storageIndex] = std::make_shared< ListOfLoads >( name );
+                _mapLoads[storageIndex] =
+                    std::make_shared< ListOfLoads >( name, this->getModel( storageIndex ) );
             } else
                 _mapLoads[storageIndex] = it->second;
         }

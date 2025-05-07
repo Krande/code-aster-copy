@@ -332,26 +332,28 @@ class ExtendedResult:
 
             for dictLoad in excit:
                 charge = dictLoad["CHARGE"]
-                if charge.getName() not in loadNames:
-                    raise ValueError(f"Load {charge.getName()} is not present in the result.")
-                if "FONC_MULT" in dictLoad:
-                    if isinstance(charge, DirichletBC):
-                        litsLoads.addDirichletBC(charge, dictLoad["FONC_MULT"])
-                    elif charge.getType() == "CHAR_MECA" and not isinstance(
-                        charge, MechanicalLoadComplex
-                    ):
-                        litsLoads.addLoad(charge, dictLoad["FONC_MULT"], dictLoad["TYPE_CHARGE"])
+                # some load like RELA_CINE_BP are not stored
+                if charge.getName() in loadNames:
+                    if "FONC_MULT" in dictLoad:
+                        if isinstance(charge, DirichletBC):
+                            litsLoads.addDirichletBC(charge, dictLoad["FONC_MULT"])
+                        elif charge.getType() == "CHAR_MECA" and not isinstance(
+                            charge, MechanicalLoadComplex
+                        ):
+                            litsLoads.addLoad(
+                                charge, dictLoad["FONC_MULT"], dictLoad["TYPE_CHARGE"]
+                            )
+                        else:
+                            litsLoads.addLoad(charge, dictLoad["FONC_MULT"])
                     else:
-                        litsLoads.addLoad(charge, dictLoad["FONC_MULT"])
-                else:
-                    if isinstance(charge, DirichletBC):
-                        litsLoads.addDirichletBC(charge)
-                    elif charge.getType() == "CHAR_MECA" and not isinstance(
-                        charge, MechanicalLoadComplex
-                    ):
-                        litsLoads.addLoad(charge, dictLoad["TYPE_CHARGE"])
-                    else:
-                        litsLoads.addLoad(charge)
+                        if isinstance(charge, DirichletBC):
+                            litsLoads.addDirichletBC(charge)
+                        elif charge.getType() == "CHAR_MECA" and not isinstance(
+                            charge, MechanicalLoadComplex
+                        ):
+                            litsLoads.addLoad(charge, dictLoad["TYPE_CHARGE"])
+                        else:
+                            litsLoads.addLoad(charge)
 
     def getField(
         self, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6, updatePtr=True
