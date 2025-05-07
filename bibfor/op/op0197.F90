@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine op0197()
 #include "asterfort/rs_getlast.h"
 #include "asterfort/rs_getfirst.h"
 !
-    integer :: nbparr, nbpark, nbpars, nbpart, info, kk
+    integer :: nbparr, nbpark, nbpars, nbpart, info
     integer :: valii
     parameter(nbparr=4, nbpark=3, nbpars=3, nbpart=3)
     character(len=6) :: chtemp
@@ -420,10 +420,6 @@ subroutine op0197()
         noobj = '12345678.TB00000   .TBNP'
         call gnomsd(' ', noobj, 12, 16)
         zk16(itabw-1+iresu) = noobj(1:16)
-        read (noobj(12:16), '(I5)') kk
-        kk = kk+1
-        call codent(kk, 'D0', noobj(12:16))
-        zk16(itabr-1+iresu) = noobj(1:16)
 !
         nchar = 0
         call wkvect('&&OP0197.CHARGES', 'V V K8', 1, jcha)
@@ -471,6 +467,11 @@ subroutine op0197()
 !
         call jeveuo('&&OP0197.NOM_INSSIG', 'L', vr=nom_inssig)
 !
+        !  DETERMINATION DU NOM DES 2 TABLES A CREER:
+        noobj = '12345678.TB00000   .TBNP'
+        call gnomsd(' ', noobj, 12, 16)
+        zk16(itabr-1+iresu) = noobj(1:16)
+
         call tbcrsd(zk16(itabr-1+iresu), 'V')
         call tbajpa(zk16(itabr-1+iresu), nbparr, noparr, typarr)
 !
