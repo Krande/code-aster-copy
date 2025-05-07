@@ -325,11 +325,6 @@ def info_fonction_ops(self, INFO, **args):
                 inte_arias = __a2.trapeze(0.0).vale_y[-1]
                 inte_arias = inte_arias * math.pi / NOCI_SEISME["PESANTEUR"] / 2.0
                 l_table.append(_F(LISTE_R=inte_arias, PARA="INTE_ARIAS"))
-            if option in ("TOUT", "POUV_DEST"):
-                __v2 = __vi * __vi
-                pouv_dest = __v2.trapeze(0.0).vale_y[-1]
-                pouv_dest = pouv_dest * (math.pi) ** 3 / NOCI_SEISME["PESANTEUR"] / 2.0
-                l_table.append(_F(LISTE_R=pouv_dest, PARA="POUV_DEST"))
             if option in ("TOUT", "VITE_ABSO_CUMU"):
                 __vc = __aa.trapeze(0.0)
                 vite_abso = __vc.vale_y[-1]
