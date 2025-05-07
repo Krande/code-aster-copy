@@ -160,7 +160,11 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
         #######################################
         l_vale_f = [__Pression, __PressionT, __PressionX, __PressionY]
         if dim == 3:
-            l_vale_f.append(__PressionZ)
+            # l_vale_f.append(__PressionZ)
+            # REX3185 : faute de test, on n'active pas le calcul de la pression tangentielle en 3D
+            l_vale_f = [__Pression]
+            ncmps_neut = ["X1"]
+            ncmps_depl = ["PRES"]
 
         __presTol = CREA_CHAMP(
             TYPE_CHAM="NOEU_NEUT_F",
