@@ -59,14 +59,25 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        if "reuse" not in keywords:
-            self._result.setModel(keywords["MODELE"])
-            self._result.setMesh(keywords["MODELE"].getMesh())
-            self._result.setMaterialField(keywords["CHAM_MATER"])
-            if "CARA_ELEM" in keywords:
-                self._result.setElementaryCharacteristics(keywords["CARA_ELEM"])
+        self._result.setModel(keywords["MODELE"], exists_ok=True)
+        self._result.setMaterialField(keywords["CHAM_MATER"], exists_ok=True)
+        if "CARA_ELEM" in keywords:
+            self._result.setElementaryCharacteristics(keywords["CARA_ELEM"], exists_ok=True)
 
-        self._result.build(excit=keywords.get("EXCIT"))
+        feds = []
+        fnds = []
+        if "ETAT_INIT" in keywords:
+            etat = keywords["ETAT_INIT"]
+
+            field = "CHAM_NO"
+            if field in etat:
+                fnds.append(etat[field].getDescription())
+
+            if "EVOL_THER" in etat:
+                feds += etat["EVOL_THER"].getFiniteElementDescriptors()
+                fnds += etat["EVOL_THER"].getEquationNumberings()
+
+        self._result.build(feds, fnds, keywords.get("EXCIT"))
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
@@ -76,6 +87,10 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
         """
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "RESULTAT")
+        self.remove_dependencies(keywords, "MODELE")
+        self.remove_dependencies(keywords, "CHAM_MATER")
+        self.remove_dependencies(keywords, "CARA_ELEM")
+        self.remove_dependencies(keywords, "RESU_THER_SECH")
         self.remove_dependencies(keywords, "ETAT_INIT", ("EVOL_THER, 'CHAM_NO"))
         self.remove_dependencies(keywords, "EXCIT", ("CHARGE", "FONC_MULT"))
 

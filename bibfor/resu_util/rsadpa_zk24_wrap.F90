@@ -34,6 +34,5 @@ subroutine rsadpa_zk24_wrap(nomsd, nuordr, value, typesd, cel)
         zk24(jpara) = value
     else
         value = zk24(jpara)
-        print *, nomsd, nuordr, typesd, cel, value
     end if
 end subroutine
