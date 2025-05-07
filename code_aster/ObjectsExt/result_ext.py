@@ -328,8 +328,12 @@ class ExtendedResult:
         if excit:
             litsLoads = self.getListOfLoads(self.getLastIndex())
 
+            loadNames = litsLoads.getLoadNames()
+
             for dictLoad in excit:
                 charge = dictLoad["CHARGE"]
+                if charge.getName() not in loadNames:
+                    raise ValueError(f"Load {charge.getName()} is not present in the result.")
                 if "FONC_MULT" in dictLoad:
                     if isinstance(charge, DirichletBC):
                         litsLoads.addDirichletBC(charge, dictLoad["FONC_MULT"])

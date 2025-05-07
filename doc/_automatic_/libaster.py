@@ -4906,6 +4906,13 @@ class ListOfLoads(DataStructure):
             ListDiriBC: a list of DirichletBC
         """
 
+    def getLoadNames(self):
+        """Returns list of load's names.
+
+        Returns:
+            list[str]: list of load's names.
+        """
+
     def getMechanicalLoadsFunction(self):
         """Return list of Function mechanical loads
 

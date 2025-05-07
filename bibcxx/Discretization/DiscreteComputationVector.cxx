@@ -71,7 +71,7 @@ DiscreteComputation::_getDirichletBC( const ASTERDOUBLE time_curr ) const {
     if ( !_listOfLoads->isBuilt() )
         _listOfLoads->build( _phys_problem->getModel() );
 
-    JeveuxVectorChar24 listOfLoadsList = _listOfLoads->getListVector();
+    JeveuxVectorChar24 listOfLoadsList = _listOfLoads->getLoadNames();
     JeveuxVectorLong listOfLoadsInfo = _listOfLoads->getInformationVector();
     JeveuxVectorChar24 listOfLoadsFunc = _listOfLoads->getListOfFunctions();
     std::string nameLcha = ljust( listOfLoadsList->getName(), 24 );
