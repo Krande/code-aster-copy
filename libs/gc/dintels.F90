@@ -89,9 +89,9 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !   Paramètres de calcul
     if (uc .eq. 0) then
-        unite_pa = 1.e-6
+        unite_pa = 1.d-6
     else if (uc .eq. 1) then
-        unite_pa = 1.
+        unite_pa = 1.d0
     end if
 
     d = ht-enrobi
@@ -101,17 +101,17 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     d0neg = enrobi
     scmaxneg = scmaxi
 
-    alpha_12 = 1.0/(1.0+(ssmax/cequi)/scmax)
-    alpha_12neg = 1.0/(1.0+(ssmax/cequi)/scmaxneg)
+    alpha_12 = 1.0d0/(1.0d0+(ssmax/cequi)/scmax)
+    alpha_12neg = 1.0d0/(1.0d0+(ssmax/cequi)/scmaxneg)
 
 !   Initialisation des entiers
 
     N_ET = 11
     N_PC = 101
-    N_EC = ceiling(10*(scmaxneg*unite_pa))+1
+    N_EC = ceiling(10.d0*(scmaxneg*unite_pa))+1
     N_PCAC = ceiling((N_PC-1)*(ht/d))+1
     N_PCACN = ceiling((N_PC-1)*(ht/dneg))+1
-    N_ECN = ceiling(10*(scmax*unite_pa))+1
+    N_ECN = ceiling(10.d0*(scmax*unite_pa))+1
     k = 1
     if (ntot < 0) then
         ntot = N_ET+N_PCAC+N_EC+N_ECN+N_PCACN+N_ET
@@ -128,8 +128,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
         write (6, *) "SyntaxError: nrd and mrd are required"
         return
     end if
-    nrd = 0.0
-    mrd = 0.0
+    nrd = 0.0d0
+    mrd = 0.0d0
 
 !-----------------------------------------------------------------------
 !Traitement des différents cas (Pivots A / B / C)
@@ -148,11 +148,11 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     do k = 1, N_ET
 
         SsINF = -ssmax
-        ScSUP = -(ssmax/cequi)*(1-0.1*(k-1))
+        ScSUP = -(ssmax/cequi)*(1.d0-0.1d0*(k-1.d0))
         SsSUP = ((SsINF/cequi-ScSUP)*(d0/d)+ScSUP)*cequi
         ScINF = (SsINF/cequi-ScSUP)*(ht/d)+ScSUP
         N_P1(k) = dnsinf*SsINF+dnssup*SsSUP
-        M_P1(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)
+        M_P1(k) = -dnsinf*SsINF*(d-0.5d0*ht)+dnssup*SsSUP*(0.5d0*ht-d0)
 
     end do
 
@@ -165,7 +165,7 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     do k = 1, N_PCAC
 
         if (k .lt. N_PCAC) then
-            alpha = real(k-1)/real(N_PC-1)
+            alpha = (k-1.d0)/(N_PC-1.d0)
         else
             alpha = ht/d
         end if
@@ -175,14 +175,14 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
             ScSUP = (X/(d-X))*(ssmax/cequi)
         else
             ScSUP = scmax
-            SsINF = scmax*cequi*(1-d/X)
+            SsINF = scmax*cequi*(1.d0-d/X)
         end if
         ScINF = ScSUP+(SsINF/cequi-ScSUP)*(ht/d)
         SsSUP = (ScSUP+(SsINF/cequi-ScSUP)*(d0/d))*cequi
-        Ncc = ScSUP*0.5*X*bw
-        Mcc = ScSUP*((1./4.)*ht*X-(1./6.)*X*X)*bw
+        Ncc = ScSUP*0.5d0*X*bw
+        Mcc = ScSUP*((1.d0/4.d0)*ht*X-(1.d0/6.d0)*X*X)*bw
         N_P2(k) = dnsinf*SsINF+dnssup*SsSUP+Ncc
-        M_P2(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)+Mcc
+        M_P2(k) = -dnsinf*SsINF*(d-0.5d0*ht)+dnssup*SsSUP*(0.5d0*ht-d0)+Mcc
 
     end do
 
@@ -194,21 +194,21 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
     do k = 1, N_EC
 
-        ScINF = scmaxneg*(real(k-1)/real(N_EC-1))
+        ScINF = scmaxneg*((k-1.d0)/(N_EC-1.d0))
         ScSUP = scmax
         Delta = ScSUP-ScINF
         if (abs(Delta) .gt. epsilon(Delta)) then
             X = (ScSUP/(ScSUP-ScINF))*ht
             alpha = X/d
         else
-            alpha = -1000
+            alpha = -1000.d0
         end if
-        Ncc = 0.5*(ScSUP+ScINF)*ht*bw
-        Mcc = (1./12.)*(ScSUP-ScINF)*ht*ht*bw
+        Ncc = 0.5d0*(ScSUP+ScINF)*ht*bw
+        Mcc = (1.d0/12.d0)*(ScSUP-ScINF)*ht*ht*bw
         SsSUP = (ScSUP+(ScINF-ScSUP)*(d0/ht))*cequi
         SsINF = (ScSUP+(ScINF-ScSUP)*(d/ht))*cequi
         N_P3(k) = dnsinf*SsINF+dnssup*SsSUP+Ncc
-        M_P3(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)+Mcc
+        M_P3(k) = -dnsinf*SsINF*(d-0.5d0*ht)+dnssup*SsSUP*(0.5d0*ht-d0)+Mcc
 
     end do
 
@@ -220,21 +220,21 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
     do k = 1, N_ECN
 
-        ScSUP = scmax*(1-real(k-1)/real(N_ECN-1))
+        ScSUP = scmax*(1.d0-(k-1.d0)/(N_ECN-1.d0))
         ScINF = scmaxneg
         Delta = ScSUP-ScINF
         if (abs(Delta) .gt. epsilon(Delta)) then
             X = (ScSUP/(ScSUP-ScINF))*ht
             alpha = X/d
         else
-            alpha = -1000
+            alpha = -1000.d0
         end if
-        Ncc = 0.5*(ScSUP+ScINF)*ht*bw
-        Mcc = (1./12.)*(ScINF-ScSUP)*ht*ht*bw
+        Ncc = 0.5d0*(ScSUP+ScINF)*ht*bw
+        Mcc = (1.d0/12.d0)*(ScINF-ScSUP)*ht*ht*bw
         SsSUP = (ScINF+(ScSUP-ScINF)*(dneg/ht))*cequi
         SsINF = (ScINF+(ScSUP-ScINF)*(d0neg/ht))*cequi
         N_P4(k) = dnsinf*SsINF+dnssup*SsSUP+Ncc
-        M_P4(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)-Mcc
+        M_P4(k) = -dnsinf*SsINF*(d-0.5d0*ht)+dnssup*SsSUP*(0.5d0*ht-d0)-Mcc
 
     end do
 
@@ -247,9 +247,9 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     do k = 1, N_PCACN
 
         if (k .lt. N_PCACN) then
-            alpha = ht/dneg-real(k-1)/real(N_PC-1)
+            alpha = ht/dneg-(k-1.d0)/(N_PC-1.d0)
         else
-            alpha = 0
+            alpha = 0.d0
         end if
         X = alpha*dneg
         if (alpha .lt. alpha_12neg) then
@@ -257,14 +257,14 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
             ScINF = (X/(dneg-X))*(ssmax/cequi)
         else
             ScINF = scmaxneg
-            SsSUP = scmaxneg*cequi*(1-dneg/X)
+            SsSUP = scmaxneg*cequi*(1.d0-dneg/X)
         end if
         ScSUP = ScINF+(SsSUP/cequi-ScINF)*(ht/dneg)
         SsINF = (ScINF+(SsSUP/cequi-ScINF)*(d0neg/dneg))*cequi
-        Ncc = ScINF*0.5*X*bw
-        Mcc = ScINF*((1./4.)*ht*X-(1./6.)*X*X)*bw
+        Ncc = ScINF*0.5d0*X*bw
+        Mcc = ScINF*((1.d0/4.d0)*ht*X-(1.d0/6.d0)*X*X)*bw
         N_P5(k) = dnsinf*SsINF+dnssup*SsSUP+Ncc
-        M_P5(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)-Mcc
+        M_P5(k) = -dnsinf*SsINF*(d-0.5d0*ht)+dnssup*SsSUP*(0.5d0*ht-d0)-Mcc
 
     end do
 
@@ -276,11 +276,11 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     do k = 1, N_ET
 
         SsSUP = -ssmax
-        ScINF = -(ssmax/cequi)*0.1*(k-1)
+        ScINF = -(ssmax/cequi)*0.1d0*(k-1.d0)
         SsINF = ((SsSUP/cequi-ScINF)*(d0neg/dneg)+ScINF)*cequi
         ScSUP = (SsSUP/cequi-ScINF)*(ht/dneg)+ScINF
         N_P6(k) = dnsinf*SsINF+dnssup*SsSUP
-        M_P6(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)
+        M_P6(k) = -dnsinf*SsINF*(d-0.5d0*ht)+dnssup*SsSUP*(0.5d0*ht-d0)
 
     end do
 
