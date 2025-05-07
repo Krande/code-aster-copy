@@ -397,7 +397,7 @@ Returns:
         .def( "getIndexesForFieldName", &Result::getIndexesForFieldName, R"(
             Returns the list of indexes used to store a specific field,
              indicated by its name.
-            
+
             Returns:
                 list[int]: List of indexs used to store fields.
                     )" )
@@ -555,14 +555,14 @@ Arguments:
 
         )",
               py::arg( "mesh" ) )
-        .def( "build", &Result::build, R"(
+        .def( "_build", &Result::build, R"(
 Build the result from the name of the result. It stores fields which are setted in c++ or
 created in fortran
 
 Arguments:
     feds (list[FiniteElementDescriptor]) : list of additional finite element descriptor used to
         build FieldOnCells
-    fnds (list[EquationNumberingPtr]) : list of additional field description used to
+    fnds (list[EquationNumbering]) : list of additional field description used to
         build FieldOnNodes
 
 Returns:

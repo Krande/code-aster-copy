@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -59,16 +59,14 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        if "reuse" in keywords:
-            self._result.build()
-        else:
+        if "reuse" not in keywords:
             self._result.setModel(keywords["MODELE"])
             self._result.setMesh(keywords["MODELE"].getMesh())
             self._result.setMaterialField(keywords["CHAM_MATER"])
             if "CARA_ELEM" in keywords:
                 self._result.setElementaryCharacteristics(keywords["CARA_ELEM"])
 
-            self._result.build()
+        self._result.build(excit=keywords.get("EXCIT"))
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
@@ -79,6 +77,7 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "RESULTAT")
         self.remove_dependencies(keywords, "ETAT_INIT", ("EVOL_THER, 'CHAM_NO"))
+        self.remove_dependencies(keywords, "EXCIT", ("CHARGE", "FONC_MULT"))
 
 
 THER_NON_LINE_FORT = NonLinearThermalAnalysisFort.run
