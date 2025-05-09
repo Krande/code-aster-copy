@@ -39,14 +39,14 @@ void exportPtScotchPartitionerToPython( py::module_ &mod ) {
               py::overload_cast< const VectorLong &, const VectorLong &, const VectorLong & >(
                   &PtScotchPartitioner::buildGraph ),
               R"(
-Build the PtScotch graph from 2 integer vectors (PtScotch format)
+  Build the PtScotch graph from 2 integer vectors (PtScotch format)
 
-Arguments:
-    vertices (list[int]): Gives the position of starts of each vertex connections in edgeloctab
-    edges (list[int]): Describes vertex connections (at which vertices each vertex is connected)
-    weights (list[int], optional): Vertex weights
-        )",
-              py::arg( "vertices" ), py::arg( "edges" ), py::arg( "weights" ) )
+  Arguments:
+      vertices (list[int]): Gives the position of starts of each vertex connections in edgeloctab
+      edges (list[int]): Describes vertex connections (at which vertices each vertex is connected)
+      weights (list[int], optional): Vertex weights
+          )",
+              py::arg( "vertices" ), py::arg( "edges" ), py::arg( "weights" ) = VectorLong() )
         .def( "buildGraph",
               py::overload_cast< const MeshConnectionGraphPtr &, const VectorOfVectorsLong & >(
                   &PtScotchPartitioner::buildGraph ),

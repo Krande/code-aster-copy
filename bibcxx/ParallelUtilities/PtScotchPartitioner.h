@@ -69,8 +69,9 @@ class PtScotchPartitioner {
 
     /**
      * @brief Define graph (Warning: vertloctab and edgeloctab are copied)
-     * @param vertloctab Local vertex begin array
-     * @param edgeloctab Local edge array
+     * @param vertices Local vertex begin array
+     * @param edges Local edge array
+     * @param weights Local weights array
      */
     int buildGraph( const VectorLong &vertices, const VectorLong &edges,
                     const VectorLong &weights = {} );
