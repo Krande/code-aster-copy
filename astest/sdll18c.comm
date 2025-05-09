@@ -1,0 +1,91 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+DEBUT()
+
+# Definition of geometric variables
+
+EPAIS = 0.01
+
+RMOY = 1.0
+
+# Definition of material variables
+
+E = 2.1e11
+
+NU = 0.3
+
+RHO = 7850
+
+# Read mesh
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+# Define mechanical model
+MODMECA = AFFE_MODELE(
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="TUYAU_6M"), MAILLAGE=MAIL
+)
+
+CAREMECA = AFFE_CARA_ELEM(
+    POUTRE=_F(
+        GROUP_MA="LIGNE_MOY",
+        SECTION="CERCLE",
+        CARA=("R", "EP"),
+        VALE=(RMOY+EPAIS/2, EPAIS),
+        MODI_METRIQUE="NON",
+    ),
+    MODELE=MODMECA,
+    ORIENTATION=_F(GROUP_NO="POINT_A", CARA="GENE_TUYAU", VALE=(0.0, 1.0, 0.0)),
+)
+
+# Define material and affect it to model
+MATER = DEFI_MATERIAU(ELAS=_F(E=E, NU=NU, RHO=RHO))
+
+CHMATER = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
+
+# Set boundary conditions
+BLOCAGE = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(
+        GROUP_NO=("POINT_A", "POINT_B"),
+        BLOCAGE=("DEPLACEMENT", "ROTATION", "TUYAU_FOURIER")
+    ),
+    MODELE=MODMECA,
+)
+
+# Assemble mass and stiffness matrices
+ASSEMBLAGE(
+    CARA_ELEM=CAREMECA,
+    CHAM_MATER=CHMATER,
+    CHARGE=(BLOCAGE,),
+    MATR_ASSE=(
+        _F(MATRICE=CO("RIGIDITE"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASSE"), OPTION="MASS_MECA"),
+    ),
+    MODELE=MODMECA,
+    NUME_DDL=CO("NUMEDDL"),
+)
+
+MODES = CALC_MODES(
+    CALC_FREQ=_F(NMAX_FREQ=20),
+    MATR_MASS=MASSE,
+    MATR_RIGI=RIGIDITE,
+    OPTION="PLUS_PETITE",
+)
+
+FIN()
