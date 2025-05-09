@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,8 @@ def compat_syntax(keywords):
     if keywords.get("DEBUG", {}):
         if keywords["DEBUG"].pop("HIST_ETAPE", None):
             deprecate("DEBUG/HIST_ETAPE", case=2, level=7)
-    if keywords.get("CODE", {}) in ("OUI", "NON"):
-        if keywords.pop("CODE") == "OUI":
-            # the value is not used in POURSUITE
-            keywords["CODE"] = _F(NIV_PUB_WEB="INTERNET")
+    if isinstance(keywords.get("CODE", "NON"), dict):
+        keywords["CODE"] = "OUI"
 
 
 DEBUT = MACRO(
@@ -77,12 +75,11 @@ DEBUT = MACRO(
         FICHIER=SIMP(statut="o", typ="TXM"),
         UNITE=SIMP(statut="f", typ=UnitType(), inout="in"),
     ),
-    CODE=FACT(
-        fr=tr("paramètres réservés aux cas-tests"),
+    CODE=SIMP(
+        fr=tr("paramètre réservé aux cas-tests (erreurs, fichier de couverture...)"),
         statut="f",
-        min=1,
-        max=1,
-        NIV_PUB_WEB=SIMP(statut="o", typ="TXM", into=("INTERNET", "INTRANET")),
+        typ="TXM",
+        into=("OUI", "NON"),
     ),
     ERREUR=FACT(
         fr=tr("comportement en cas d'erreur"),
