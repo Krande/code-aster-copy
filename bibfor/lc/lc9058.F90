@@ -112,12 +112,11 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
     aster_logical :: lMatr, lSigm, lVari
     integer :: i, j
     integer :: nstran, nforc, nstatv, nmatr
-    aster_logical, parameter :: lGreenLagr = ASTER_FALSE
     integer, parameter :: s0 = 0, s1 = 1
     real(kind=8) :: dstran(3), stran(3), dsidepMGIS(36)
     real(kind=8) :: dtime, pnewdt, rdt
-    character(len=16) :: rela_comp, extern_addr
-    aster_logical :: lCZM
+    character(len=16) :: rela_comp, defo_comp, extern_addr
+    aster_logical :: lGreenLagr, lCZM, lGradVari
     real(kind=8) :: sigp_loc(6), dsidep_loc(6, 6), vi_loc(nvi)
     real(kind=8) :: props(MGIS_MAX_PROPS)
     integer :: nprops, retcode
@@ -146,16 +145,19 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Debug flag
     dbg = is_enabled(LOGLEVEL_MGIS, DEBUG)
 
-! - Get the relation
+! - Get main parameters
     rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    lCZM = typmod(2) .eq. 'INTERFAC'
+    lGradVari = typmod(2) .eq. 'GRADVARI'
+    lGreenLagr = defo_comp .eq. 'GREEN_LAGRANGE'
+    ASSERT(lCZM)
 
 ! - Pointer to MGISBehaviour
     extern_addr = compor(MGIS_ADDR)
 
 ! - Management of dimensions
-    lCZM = typmod(2) .eq. 'INTERFAC'
-    ASSERT(lCZM)
-    call getMGISDime(lGreenLagr, lCZM, ndim, &
+    call getMGISDime(lGreenLagr, lCZM, lGradVari, ndim, &
                      neps, nsig, nvi, ndsidep_loc, &
                      nstran, nforc, nstatv, nmatr)
 

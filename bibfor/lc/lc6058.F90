@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504,C1505,W0104
 !
-subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
+subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
                   typmod, imate, compor, carcri, instam, &
                   instap, neps, epsm, deps, nsig, &
                   sigm, nvi, vim, option, angmas, &
@@ -38,7 +38,6 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 #include "asterc/mgis_set_material_properties.h"
 #include "asterc/mgis_set_rotation_matrix.h"
 #include "asterc/mgis_set_thermodynamic_forces.h"
-#include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
@@ -48,6 +47,8 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 #include "asterfort/mfrontPrepareStrain.h"
 #include "asterfort/use_orient.h"
 #include "asterfort/utmess.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/lcgrad.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
@@ -76,7 +77,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! Behaviour
 !
-! MFRONT for CZM with ELEMJOINT elements
+! MFRONT with GRADVARI
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,7 +101,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! In  vim              : internal state variables at beginning of current step time
 ! In  option           : name of option to compute
 ! In  angmas           : nautical angles
-! Out sigp             : stresses at end of current step time
+! Out sigm             : stresses at end of current step time
 ! Out vip              : internal state variables at end of current step time
 ! Out dsidep           : tangent matrix
 ! Out codret           : code for error
@@ -111,27 +112,34 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     integer :: i, j
     integer :: nstran, nforc, nstatv, nmatr
     integer, parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: dstran(3), stran(3), dsidepMGIS(36)
+    real(kind=8) :: dstran(2*ndim+1), stran(2*ndim+1), dsidepMGIS((2*ndim)*(2*ndim+2)+1)
     real(kind=8) :: dtime, pnewdt, rdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
     aster_logical :: lGreenLagr, lCZM, lGradVari
-    real(kind=8) :: sigp_loc(6), dsidep_loc(6, 6), vi_loc(nvi)
+    real(kind=8) :: sig_gene(2*ndim+1), sig(2*ndim), vi_reg, vi(nvi)
+    real(kind=8) :: dsig_ddeto(2*ndim, 2*ndim), dsig_ddphi(2*ndim), da_ddeto(2*ndim), da_ddphi
+    real(kind=8) :: apg, lag, grad(ndim)
     real(kind=8) :: props(MGIS_MAX_PROPS)
     integer :: nprops, retcode
     aster_logical :: dbg
+    integer :: cod(2)
+    real(kind=8) :: val(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sigp_loc = 0.d0
-    vi_loc = 0.d0
-    dsidep_loc = 0.d0
+    sig = 0.d0
+    vi = 0.d0
+    dsig_ddeto = 0.d0
+    dsig_ddphi = 0.d0
+    da_ddeto = 0.d0
+    da_ddphi = 0.d0
     stran = 0.d0
     dstran = 0.d0
     props = 0.d0
     codret = 0
-
-    ASSERT(nsig .ge. ndim)
-    ASSERT(neps .ge. ndim)
+    apg = 0.d0
+    lag = 0.d0
+    grad = 0.d0
 
 ! - Flags for quantity to compute
     lSigm = L_SIGM(option)
@@ -147,7 +155,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     lCZM = typmod(2) .eq. 'ELEMJOIN'
     lGradVari = typmod(2) .eq. 'GRADVARI'
     lGreenLagr = defo_comp .eq. 'GREEN_LAGRANGE'
-    ASSERT(lCZM)
+    ASSERT(lGradVari)
 
 ! - Pointer to MGISBehaviour
     extern_addr = compor(MGIS_ADDR)
@@ -164,10 +172,17 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
                                 ksp, imate, props, nprops)
 
 ! - Prepare strains
-    call mfrontPrepareStrain(lGreenLagr, neps, epsm, deps, stran, dstran)
+    call rcvalb(fami, kpg, ksp, '+', imate, ' ', rela_comp, 0, ' ', [0.d0], &
+                1, 'PENA_LAGR', val(1), cod(1), 2)
+    call rcvalb(fami, kpg, ksp, '+', imate, ' ', rela_comp, 0, ' ', [0.d0], &
+                1, 'C_GRAD_VARI', val(2), cod(2), 2)
+    stran(1:2*ndim) = epsm(1:2*ndim)
+    stran(2*ndim+1) = epsm(2*ndim+2)+val(1)*epsm(2*ndim+1)
+    dstran(1:2*ndim) = deps(1:2*ndim)
+    dstran(2*ndim+1) = deps(2*ndim+2)+val(1)*deps(2*ndim+1)
 
 ! - Input internal state variables
-    vi_loc(1:nstatv) = vim(1:nstatv)
+    vi(1:nstatv) = vim(1:nstatv)
 
 ! - Time increment
     dtime = instap-instam
@@ -180,7 +195,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Type of matrix for MFront
     dsidepMGIS = 0.d0
     if (option .eq. 'RIGI_MECA_TANG') then
-        dsidepMGIS(1) = float(MGIS_BV_INTEGRATION_CONSISTENT_TANGENT_OPERATOR)
+        dsidepMGIS(1) = float(MGIS_BV_INTEGRATION_TANGENT_OPERATOR)
     else if (option .eq. 'RIGI_MECA_ELAS') then
         dsidepMGIS(1) = float(MGIS_BV_INTEGRATION_ELASTIC_OPERATOR)
     else if (option .eq. 'FULL_MECA_ELAS') then
@@ -202,20 +217,20 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     call mgis_set_gradients(extern_addr, s1, stran+dstran, nstran)
 
 ! - Set internal state variables
-    call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
+    call mgis_set_internal_state_variables(extern_addr, s0, vi, nstatv)
 
 ! - Désactivation de l'augmentation du pas de temps dans la LdC
     rdt = 1.d0
 
 ! - Call to integrator
-    call mgis_integrate(extern_addr, sigp_loc, vi_loc, dsidepMGIS, dtime, rdt, &
+    call mgis_integrate(extern_addr, sig_gene, vi, dsidepMGIS, dtime, rdt, &
                         pnewdt, retcode)
 
 ! - Debug - Outputs
     if (dbg) then
         write (6, *) "+++ outputs +++"
-        write (6, *) "sigp_loc", (sigp_loc(i), i=1, nforc)
-        write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
+        write (6, *) "sigp_loc", (sig_gene(i), i=1, nforc)
+        write (6, *) "vi_loc", (vi(i), i=1, nstatv)
         write (6, *) "dsidepMGIS", (dsidepMGIS(i), i=1, nmatr*nmatr)
         write (6, *) "pnewdt( pas utilisé par aster)", pnewdt
         write (6, *) "retcode:", retcode
@@ -225,11 +240,12 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 
 ! - Convert matrix
     if (lMatr) then
-        do i = 1, ndim
-            do j = 1, ndim
-                dsidep_loc(i, j) = dsidepMGIS(ndim*(i-1)+j)
-            end do
-        end do
+        call lcicma(dsidepMGIS, nmatr, nmatr, nmatr, nmatr, &
+                    1, 1, dsig_ddeto, nmatr, nmatr, &
+                    1, 1)
+        dsig_ddphi = dsidepMGIS(2*ndim*2*ndim+1:2*ndim*(2*ndim+1))
+        da_ddeto = dsidepMGIS(2*ndim*(2*ndim+1)+1:2*ndim*(2*ndim+2))
+        da_ddphi = dsidepMGIS(2*ndim*(2*ndim+2)+1)
     end if
 
 ! - Returned code from mgis_integrate (retcode):
@@ -246,24 +262,19 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
         ASSERT(ASTER_FALSE)
     end if
 
-! - Copy outputs
-    if (lSigm) then
-        sigp = 0.d0
-        sigp(1:nforc) = sigp_loc(1:nforc)
-    end if
+! - Initialize inputs for grad_vari
+    apg = epsm(2*ndim+1)+deps(2*ndim+1)
+    lag = epsm(2*ndim+2)+deps(2*ndim+2)
+    grad = epsm(2*ndim+3:2*ndim+2+ndim)+deps(2*ndim+3:2*ndim+2+ndim)
+    sig = sig_gene(1:2*ndim)
+    vi_reg = sig_gene(2*ndim+1)
 
-    if (lMatr) then
-        dsidep = 0.d0
-        do i = 1, nmatr
-            do j = 1, nmatr
-                dsidep(i, j) = dsidep_loc(j, i)
-            end do
-        end do
-    end if
-
+! - Outputs
     if (lVari) then
         vip = 0.d0
-        vip(1:nstatv) = vi_loc(1:nstatv)
+        vip(1:nstatv) = vi(1:nstatv)
     end if
+    call lcgrad(lSigm, lMatr, sig, apg, lag, grad, vi_reg, &
+                val(1), val(2), dsig_ddeto, dsig_ddphi, da_ddeto, da_ddphi, sigp, dsidep)
 
 end subroutine

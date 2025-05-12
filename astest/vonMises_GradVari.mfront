@@ -1,0 +1,134 @@
+@DSL DefaultGenericBehaviour;
+@Behaviour vonMises_GradVari;
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// von Mises plasticity with linear isotropic hardening + GRAD_VARI
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+// >>>>>>>>>>>>>>>>>>>
+// Material properties
+// <<<<<<<<<<<<<<<<<<<
+
+@MaterialProperty stress k;
+@MaterialProperty stress mu;
+@MaterialProperty stress s0;
+@MaterialProperty stress H;
+@MaterialProperty stress r;
+
+// >>>>>>>>>>>>>>>>>
+// Gradient and flux
+// <<<<<<<<<<<<<<<<<
+
+@Gradient Stensor eto;
+@Gradient real phi; // phi := lambda + r*alpha (see [r5.04.01])
+@ThermodynamicForce Stensor sig;
+@ThermodynamicForce real a; // a := cumulative plastic strain (see [r5.04.01])
+
+// >>>>>>>>>>>>>>>>>
+// Tangent operators
+// <<<<<<<<<<<<<<<<<
+
+@TangentOperatorBlocks{dsig_ddeto, dsig_ddphi, da_ddeto, da_ddphi};
+
+/// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/// Local and auxiliary variables
+/// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@AuxiliaryStateVariable real a_n;
+@AuxiliaryStateVariable Stensor epl_n;
+@AuxiliaryStateVariable real iP_n;
+@LocalVariable real da;
+@LocalVariable Stensor depl;
+@LocalVariable real iP;
+@LocalVariable Stensor4 De;
+
+// >>>>>>>>>>>>>>>>>>>>
+// Init Local Variables
+// <<<<<<<<<<<<<<<<<<<<
+
+@InitLocalVariables{
+    De = 3.*k*Stensor4::J()+2.*mu*Stensor4::K();
+}
+
+// >>>>>>>>>>>
+// Integration
+// <<<<<<<<<<<
+
+@Integrator {
+    const Stensor sel = De*(eto+deto-epl_n);
+    const stress Rel = -(H+r)*a_n+phi+dphi;
+    const stress seqel = sigmaeq(sel);
+    const stress fel = seqel+Rel-s0;
+    if (fel<=0.){
+        da = 0.;
+        depl = Stensor(0.);
+        iP = 0.;
+    }
+    else{
+        const auto iseqel = 1./max(seqel, 1.e-12*s0);
+        const Stensor nel = 3.*deviator(sel)*iseqel/2.;
+        const auto iHt = 1./(3.*mu+H+r);
+        da = fel*iHt;
+        depl = da*nel;
+        iP = 1.;
+    }
+    sig = De*(eto+deto-epl_n-depl);
+    a = a_n+da;
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>
+// Auxiliary state variables
+// <<<<<<<<<<<<<<<<<<<<<<<<<
+
+@UpdateAuxiliaryStateVariables{
+    a_n += da;
+    epl_n += depl;
+}
+
+// >>>>>>>>>>>>>>>>>
+// Tangent operators
+// <<<<<<<<<<<<<<<<<
+
+@TangentOperator {
+    if (smt == CONSISTENTTANGENTOPERATOR){
+        // Case of FULL_MECA option
+        if (iP == 0.){
+            dsig_ddeto = De;
+            dsig_ddphi = Stensor(0.);
+            da_ddeto = Stensor(0.);
+            da_ddphi = 0.;
+        }
+        else if (iP == 1.){
+            const Stensor sel = De*(eto+deto-epl_n);
+            const stress seqel = sigmaeq(sel);
+            const auto iseqel = 1./max(seqel, 1.e-12*s0);
+            const Stensor nel = 3.*deviator(sel)*iseqel/2.;
+            const auto iHt = 1./(3.*mu+H+r);
+            dsig_ddeto = De-4.*mu*mu*((nel^nel)*iHt+da*(3.*Stensor4::K()/2.-(nel^nel))*iseqel);
+            dsig_ddphi = -2.*mu*nel*iHt;
+            da_ddeto = 2.*mu*nel*iHt;
+            da_ddphi = 1.*iHt;
+        }
+    }
+    else if (smt == TANGENTOPERATOR){
+        // Case of RIGI_META_TANG option
+        if (iP_n == 0.){
+            dsig_ddeto = De;
+            dsig_ddphi = Stensor(0.);
+            da_ddeto = Stensor(0.);
+            da_ddphi = 0.;
+        }
+        else if (iP_n == 1.){
+            const Stensor s_n = De*(eto-epl_n);
+            const stress seq_n = sigmaeq(s_n);
+            const auto iseq_n = 1./max(seq_n, 1.e-12*s0);
+            const Stensor n_n = 3.*deviator(s_n)*iseq_n/2.;
+            const auto iHt = 1./(3.*mu+H+r);
+            dsig_ddeto = De-4.*mu*mu*(n_n^n_n)*iHt;
+            dsig_ddphi = -2.*mu*n_n*iHt;
+            da_ddeto = 2.*mu*n_n*iHt;
+            da_ddphi = 1.*iHt;
+        }
+    }
+    iP_n = iP;
+}
