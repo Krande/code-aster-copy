@@ -4906,6 +4906,13 @@ class ListOfLoads(DataStructure):
             ListDiriBC: a list of DirichletBC
         """
 
+    def getLoadNames(self):
+        """Returns list of load's names.
+
+        Returns:
+            list[str]: list of load's names.
+        """
+
     def getMechanicalLoadsFunction(self):
         """Return list of Function mechanical loads
 
@@ -12786,20 +12793,6 @@ class Result(DataStructure):
 
         Arguments:
             nb_index (int):  number of index to allocate
-        """
-
-    def build(self, feds=[], fnds=[]):
-        """Build the result from the name of the result. It stores fields which are setted in c++ or
-        created in fortran
-
-        Arguments:
-            feds (list[FiniteElementDescriptor]) : list of additional finite element descriptor used to
-                build FieldOnCells
-            fnds (list[EquationNumberingPtr]) : list of additional field description used to
-                build FieldOnNodes
-
-        Returns:
-            bool: *True* if ok.
         """
 
     def clear(self, *args, **kwargs):

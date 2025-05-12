@@ -101,6 +101,12 @@ Set differential displacement field for DIDI loads
     c1.def( "hasDifferentialLoads", &ListOfLoads::hasDifferentialLoads, R"(
 Return True if there are DIDI loads
     )" );
+    c1.def( "getLoadNames", &ListOfLoads::getLoadNames, R"(
+Returns list of load's names.
+
+Returns:
+    list[str]: list of load's names.
+            )" );
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
     addThermalLoadToInterface( c1 );

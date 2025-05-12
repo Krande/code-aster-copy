@@ -76,6 +76,28 @@ struct type_caster< JeveuxVector< T > > {
     }
 };
 
+/** @brief Converter for JeveuxVector */
+template < int lengthT >
+struct type_caster< JeveuxVector< JeveuxString< lengthT > > > {
+  public:
+    PYBIND11_TYPE_CASTER( JeveuxVector< JeveuxString< lengthT > >, const_name( "JeveuxVector" ) );
+
+    bool load( handle /* src */, bool ) { return false; }
+
+    static handle cast( const JeveuxVector< JeveuxString< lengthT > > &vect,
+                        return_value_policy /* policy */, handle /* parent */ ) {
+        py::list pylist;
+        if ( vect.exists() ) {
+            vect->updateValuePointer();
+            auto size = vect->size();
+            for ( int i = 0; i < size; ++i ) {
+                pylist.append( ( *vect )[i].rstrip() );
+            }
+        }
+        return pylist.inc_ref();
+    }
+};
+
 /** @brief Converter for JeveuxCollection */
 template < typename T >
 struct type_caster< JeveuxCollection< T > > {
