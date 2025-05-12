@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,6 +99,7 @@ subroutine nmprac(listFuncActi, listLoad, numeDof, solveu, &
     integer :: ifm, niv
     character(len=19) :: asseMass, elemMass, elemDiri
     integer, pointer :: slvi(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -150,11 +151,15 @@ subroutine nmprac(listFuncActi, listLoad, numeDof, solveu, &
 
 ! --- ON ACTIVE LA DETECTION DE SINGULARITE (NPREC=8)
 ! --- ON EVITE L'ARRET FATAL LORS DE L'INVERSION DE LA MATRICE
-    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
-    zislv1 = slvi(1)
-    zislv3 = slvi(3)
-    slvi(1) = 8
-    slvi(3) = 2
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    if ((slvk(1) (1:5) .eq. 'MUMPS') .or. (slvk(1) (1:4) .eq. 'LDLT') .or. &
+        (slvk(1) (1:10) .eq. 'MULT_FRONT')) then
+        call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+        zislv1 = slvi(1)
+        zislv3 = slvi(3)
+        slvi(1) = 8
+        slvi(3) = 2
+    end if
 
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
     call nmtime(ds_measure, 'Init', 'Factor')
@@ -164,9 +169,11 @@ subroutine nmprac(listFuncActi, listLoad, numeDof, solveu, &
     call nmrinc(ds_measure, 'Factor')
 
 ! - RETABLISSEMENT CODE
-    slvi(1) = zislv1
-    slvi(3) = zislv3
-
+    if ((slvk(1) (1:5) .eq. 'MUMPS') .or. (slvk(1) (1:4) .eq. 'LDLT') .or. &
+        (slvk(1) (1:10) .eq. 'MULT_FRONT')) then
+        slvi(1) = zislv1
+        slvi(3) = zislv3
+    end if
     call jedema()
 !
 end subroutine
