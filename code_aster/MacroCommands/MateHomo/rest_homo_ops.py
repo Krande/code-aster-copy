@@ -65,7 +65,7 @@ def rest_homo_ops(self, **kwargs):
         mod_ther.addModelingOnMesh(Physics.Thermal, Modelings.Tridimensional)
         mod_ther.build()
 
-        fmat_ther = AFFE_MATERIAU(MODELE=mod_ther, AFFE=kwaffemat, AFFE_VARC=_F(**varckw))
+        fmat_ther = AFFE_MATERIAU(MODELE=mod_ther, AFFE=kwaffemat)
         resu_ther.setModel(mod_ther)
         resu_ther.setMaterialField(fmat_ther)
 

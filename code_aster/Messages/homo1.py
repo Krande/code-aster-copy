@@ -111,4 +111,12 @@ Le fichier fourni ne contient pas de correcteurs.
 Le maillage fourni %(k1)s est de type parallèle et n'est pas supporté par cette fonctionnalité.
 """
     ),
+    18: _(
+        """
+Le point demandé est partagé par plusieurs (%(i1)d) domaines du calcul distribué et cela peut avoir une influence négligeable sur les valeurs interpolées.
+
+Conseil :
+Vous pouvez sauvegarder le résultat dans un fichier unique puis le recharger en séquentiel.
+"""
+    ),
 }

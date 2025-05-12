@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       model_     , materi_, cara_elem_,&
                       list_load_ , iexcit_)
         character(len=8), intent(in) :: result
-        integer, intent(in) :: nume
+        integer(kind=8), intent(in) :: nume
         character(len=8), optional, intent(out) :: model_
         character(len=8), optional, intent(out) :: materi_
         character(len=8), optional, intent(out) :: cara_elem_
         character(len=19), optional, intent(out) :: list_load_
-        integer, optional, intent(out) :: iexcit_
+        integer(kind=8), optional, intent(out) :: iexcit_
     end subroutine rslesd
 end interface

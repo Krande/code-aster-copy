@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,12 @@ MAIL = CREA_MAILLAGE(MAILLAGE=MA, MODI_MAILLE=_F(OPTION="QUAD8_9", GROUP_MA="SQU
 #
 MO = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN"))
 #
-MAT = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=0.0))
+UN = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(1.0, 1.0), PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT")
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+MAT = DEFI_MATERIAU(
+    THER_NL=_F(LAMBDA=UN, RHO_CP=ZERO), ELAS_FO=_F(E=UN, NU=ZERO, ALPHA=UN, TEMP_DEF_ALPHA=20.0)
+)
 #
 CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MAT))
 #
