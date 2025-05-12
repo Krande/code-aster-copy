@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -202,7 +202,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling, ilocal)
                 call jeveuo(domj, 'L', vi=v_dom)
                 call jeveuo(gcom, 'L', vi=v_gco)
                 call jeveuo(pgid, 'L', vi4=v_pgid)
-                mpicou = v_gco(1)
+                mpicou = int(v_gco(1), 4)
             end if
 !
             do iaux = 1, nb_comm
@@ -224,8 +224,8 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling, ilocal)
                     end if
                     ASSERT((lgenvo+lgrecep) .gt. 0)
 !
-                    call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1, lgenvo), jvaleue)
-                    call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1, lgrecep), jvaleur)
+                    call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1_8, lgenvo), jvaleue)
+                    call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1_8, lgrecep), jvaleur)
 
                     if (lgenvo > 0) then
                         call jeveuo(nojoine, 'L', jjointe)
@@ -281,7 +281,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling, ilocal)
                     pgid = joints//".PGID"
                     call jeveuo(gcom, 'L', vi=v_gco)
                     call jeveuo(pgid, 'L', vi4=v_pgid)
-                    mpicou = v_gco(1)
+                    mpicou = int(v_gco(1), 4)
                     call jeveuo(domj, 'L', vi=v_dom)
                     do ijoin = 1, nb_comm
                         domj_i = v_comm(ijoin)

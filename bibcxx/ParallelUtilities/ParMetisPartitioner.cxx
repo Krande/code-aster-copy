@@ -66,7 +66,7 @@ VectorLong ParMetisPartitioner::partitionGraph() {
     return distributed;
 };
 
-void ParMetisPartitioner::buildPartition( const VectorLong &partition, VectorLong &distributed ) {
+void ParMetisPartitioner::buildPartition( const VectorIdxT &partition, VectorLong &distributed ) {
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
     VectorLong toDistribute( _nbVertex, -1 );
@@ -79,7 +79,7 @@ void ParMetisPartitioner::buildPartition( const VectorLong &partition, VectorLon
     ObjectBalancer balancer;
     for ( int curProc = 0; curProc < nbProcs; ++curProc ) {
         if ( curProc != rank && sendLists[curProc].size() != 0 ) {
-            balancer.addElementarySend( curProc, sendLists[curProc] );
+            balancer.addElementarySend( (int)curProc, sendLists[curProc] );
         }
     }
     balancer.endElementarySendDefinition();

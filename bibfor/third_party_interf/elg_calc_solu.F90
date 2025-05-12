@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,11 +60,9 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
 !
 !
 !================================================================
-    character(len=1) :: kbid
     character(len=14) :: nu1, nu2
     character(len=19) :: matas2
     real(kind=8) :: val
-    integer(kind=8) ::  ibid
     integer(kind=8) :: neq1, neq2, ico, ieq2
     integer(kind=8) :: k1, k2
     real(kind=8), pointer :: conl(:) => null()
@@ -132,7 +130,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
     call elg_allocvr(x1, int(n1, 8))
     call VecCopy(elg_context(ke)%vx0, x1, ierr)
     ASSERT(ierr == 0)
-    p1 = 1.
+    p1 = 1.d0
     call VecAXPY(x1, p1, tmp1, ierr)
     ASSERT(ierr == 0)
 !

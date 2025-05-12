@@ -20,6 +20,7 @@
 import os.path as osp
 import re
 from functools import partial
+from pathlib import PureWindowsPath
 
 from waflib import Configure, Errors, Utils
 
@@ -113,7 +114,9 @@ def check_petsc(self):
     self.check_petsc_conf("PETSC_HAVE_ML", "ASTER_PETSC_HAVE_ML")
     self.check_petsc_conf("PETSC_HAVE_HYPRE", "ASTER_PETSC_HAVE_HYPRE")
     self.check_petsc_conf("PETSC_HAVE_SUPERLU", "ASTER_PETSC_HAVE_SUPERLU")
+    self.check_petsc_conf("PETSC_HAVE_SLEPC", "ASTER_PETSC_HAVE_SLEPC")
     self.check_petsc_conf("PETSC_HAVE_MUMPS", "ASTER_PETSC_HAVE_MUMPS")
+    self.check_petsc_conf("PETSC_HAVE_HPDDM", "ASTER_PETSC_HAVE_HPDDM")
 
 
 @Configure.conf
@@ -180,10 +183,11 @@ int main(void){
         mat = re.search(r"PETSCVER: *(?P<vers>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)", ret)
         vers = mat and mat.group("vers")
         major, minor, sub, patch = [int(i) for i in vers.split(".")]
-        vers = "%d.%d.%dp%d" % (major, minor, sub, patch)
-        if major < 3 or (major == 3 and minor < 17):
+        vers = f"{major}.{minor}.{sub}p{patch}"
+        ok = major == 3 and (17 <= minor < 22)
+        if not ok:
             self.end_msg(
-                "unsupported petsc version: {0} " "(expected 3.17 or newer)".format(vers), "RED"
+                "unsupported petsc version: {0} (expected >=3.17,<=3.21)".format(vers), "RED"
             )
             raise Errors.ConfigurationError
         self.define("ASTER_PETSC_VERSION", vers)
@@ -201,12 +205,44 @@ def check_petsc4py(self):
         return
     try:
         self.check_python_module("petsc4py")
+        self.check_petsc4py_headers()
     except Errors.ConfigurationError:
         self.undefine("ASTER_HAVE_PETSC4PY")
         if self.options.enable_petsc4py:
             raise
     else:
         self.define("ASTER_HAVE_PETSC4PY", 1)
+
+
+@Configure.conf
+def check_petsc4py_headers(self):
+    if not self.env["PYTHON"]:
+        self.fatal("load python tool first")
+    self.start_msg("Checking for petsc4py includes")
+    # retrieve includes dir from petsc4py module
+    cmd = self.env.PYTHON + ["-c", "\nimport petsc4py\nprint(petsc4py.get_include())"]
+    petsc4py_includes = self.cmd_and_log(cmd, shell=False).strip()
+    self.end_msg(petsc4py_includes)
+    self.start_msg("Checking for petsc4py.h")
+    if self.is_defined("ASTER_PLATFORM_MINGW"):
+        incs = PureWindowsPath(petsc4py_includes)
+        parts = list(incs.parts)
+        if incs.anchor:
+            parts[0] = incs.root
+        for i, sub in enumerate(parts):
+            if sub == "lib":
+                parts[i] = "Lib"
+        petsc4py_includes = PureWindowsPath(*parts).as_posix()
+    # check the given includes dirs
+    self.check(
+        feature="c",
+        header_name="Python.h petsc4py/petsc4py.h",
+        includes=petsc4py_includes,
+        use="PETSC PYEXT",
+        uselib_store="PETSC",
+        errmsg="Could not find the petsc4py development headers",
+    )
+    self.end_msg(petsc4py_includes)
 
 
 @Configure.conf

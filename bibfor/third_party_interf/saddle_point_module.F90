@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ contains
         !
         ! Set to zero the Vector x3
         !
-        call VecSet(sp_context%x3, 0.0, ierr)
+        call VecSet(sp_context%x3, 0.d0, ierr)
         ASSERT(ierr == 0)
         ! And load the values of x3 to vector b
         call VecScatterBegin(sp_context%scatter_to_lag2, sp_context%x3, b, &
@@ -226,7 +226,7 @@ contains
         !
         ! l1 = l2 = l/2,
         ! Scale lagrange multipliers ( x 0.5)
-        alpha = 0.5
+        alpha = 0.5d0
         call VecScale(sp_context%x2, alpha, ierr)
         ASSERT(ierr == 0)
         !

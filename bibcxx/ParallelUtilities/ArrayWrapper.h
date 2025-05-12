@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ArrayWrapper
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,9 +48,9 @@ class VectorInterface< std::vector< T > > {
   public:
     typedef T value_type;
 
-    VectorInterface< std::vector< T > >() = delete;
+    VectorInterface() = delete;
 
-    VectorInterface< std::vector< T > >( std::vector< T > &obj ) : _object( obj ) {};
+    VectorInterface( std::vector< T > &obj ) : _object( obj ) {};
 
     void allocate( const int &nbElem ) { _object = std::vector< T >( nbElem, -1 ); };
 
@@ -73,9 +73,9 @@ class VectorInterface< JeveuxVector< T > > {
   public:
     typedef T value_type;
 
-    VectorInterface< JeveuxVector< T > >() = delete;
+    VectorInterface() = delete;
 
-    VectorInterface< JeveuxVector< T > >( JeveuxVector< T > &obj ) : _object( obj ) {};
+    VectorInterface( JeveuxVector< T > &obj ) : _object( obj ) {};
 
     void allocate( const int &nbElem ) { _object->allocate( nbElem ); };
 

@@ -109,6 +109,12 @@ def check_mfront(self):
     if not self.env.TFELHOME:
         self.add_os_flags("TFELHOME")
     if not self.env.TFELHOME:
+        self.find_program("tfel-config", var="TFEL_CONFIG", mandatory=False)
+        if self.env.TFEL_CONFIG:
+            cmd = self.env.TFEL_CONFIG + ["--library-path"]
+            path = self.cmd_and_log(cmd).strip()
+            self.env.TFELHOME = osp.dirname(path)
+    if not self.env.TFELHOME:
         self.end_msg("no", "YELLOW")
         raise Errors.ConfigurationError("TFELHOME must be defined!")
     self.end_msg(self.env.TFELHOME)

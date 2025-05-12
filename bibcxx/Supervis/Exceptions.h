@@ -62,8 +62,8 @@ class ErrorCpp : public AbstractErrorCpp {
     int _id = Id;
 
   public:
-    ErrorCpp< Id >( std::string idmess, VectorString valk = {}, VectorLong vali = {},
-                    VectorReal valr = {} )
+    ErrorCpp( std::string idmess, VectorString valk = {}, VectorLong vali = {},
+              VectorReal valr = {} )
         : AbstractErrorCpp( idmess, valk, vali, valr ) {}
 
     int id() const { return _id; }

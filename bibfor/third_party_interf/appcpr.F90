@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -482,6 +482,7 @@ subroutine appcpr(kptsc)
 
 !-----------------------------------------------------------------------
     else if (precon == 'HPDDM') then
+#ifdef ASTER_PETSC_HAVE_HPDDM
 !     HPDDM works only in hpc mode
         if (.not. l_parallel_matrix) call utmess('F', 'PETSC_23')
 !     Set HPPDM pc
@@ -510,7 +511,7 @@ subroutine appcpr(kptsc)
                              PETSC_COPY_VALUES, auxIS, ierr)
         ASSERT(ierr == 0)
 
-        if (ASTER_FALSE) call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
+        ! call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
 !     Set the Neumann matrix
         call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, &
                                     PETSC_NULL_INTEGER, ierr)
@@ -561,6 +562,9 @@ subroutine appcpr(kptsc)
         AS_DEALLOCATE(vi4=nulg_ip)
 #else
         AS_DEALLOCATE(vi=nulg_ip)
+#endif
+#else
+        call utmess('F', 'GENERIC_1', sk='unsupported feature: HPDDM')
 #endif
 
 !-----------------------------------------------------------------------

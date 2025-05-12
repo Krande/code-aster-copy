@@ -89,7 +89,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     integer(kind=8) :: nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
     integer(kind=8) :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k, maxnz2
     integer(kind=8) :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp
-    integer(kind=8) :: kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2, nblk
+    integer(kind=8) :: kzero, iad, ifiltr, vali(2), nbproc, nfilt1, nfilt2, nblk
     integer(kind=8) :: nfilt3, isizemu, nsizemu, rang, esizemu, jdeeq, iblock
     mumps_int :: nbeq, nz2, iligg, jcolg
     character(len=4) :: etam
@@ -133,8 +133,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         smpsk => smps(kxmps)
         ltypr = .true.
         sym = smpsk%sym
-        rmax = r4maem()*0.5
-        rmin = r4miem()*2.0
+        rmax = r4maem()*real(0.5d0, 4)
+        rmin = r4miem()*real(2.0d0, 4)
         nbproc = smpsk%nprocs
         rang = smpsk%myid
         esizemu = 4
@@ -142,8 +142,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         cmpsk => cmps(kxmps)
         ltypr = .false.
         sym = cmpsk%sym
-        rmax = r4maem()*0.5
-        rmin = r4miem()*2.0
+        rmax = r4maem()*real(0.5d0, 4)
+        rmin = r4miem()*real(2.0d0, 4)
         nbproc = cmpsk%nprocs
         rang = cmpsk%myid
         esizemu = 8
@@ -151,8 +151,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         dmpsk => dmps(kxmps)
         ltypr = .true.
         sym = dmpsk%sym
-        rmax = r8maem()*0.5
-        rmin = r8miem()*2.0
+        rmax = r8maem()*0.5d0
+        rmin = r8miem()*2.0d0
         nbproc = dmpsk%nprocs
         rang = dmpsk%myid
         esizemu = 8
@@ -160,8 +160,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         zmpsk => zmps(kxmps)
         ltypr = .false.
         sym = zmpsk%sym
-        rmax = r8maem()*0.5
-        rmin = r8miem()*2.0
+        rmax = r8maem()*0.5d0
+        rmin = r8miem()*2.0d0
         nbproc = zmpsk%nprocs
         rang = zmpsk%myid
         esizemu = 16
@@ -374,8 +374,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 ! --- KPIV2: IDEM SUP
         kpiv = '&&AMUMPM.TERMEOK'
         kpiv2 = '&&AMUMPM.TERMEOK2'
-        call jeexin(kpiv, ibid)
-        if (ibid .ne. 0) then
+        call jeexin(kpiv, iad)
+        if (iad .ne. 0) then
             ASSERT(.false.)
         else
             call wkvect(kpiv, 'V V S', nz, iok)
@@ -384,8 +384,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             end do
         end if
         if (sym .eq. 0) then
-            call jeexin(kpiv2, ibid)
-            if (ibid .ne. 0) then
+            call jeexin(kpiv2, iad)
+            if (iad .ne. 0) then
                 ASSERT(.false.)
             else
                 call wkvect(kpiv2, 'V V S', nz, iok2)
@@ -898,8 +898,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             call jeexin(kmonit(1), iret)
             if (iret .ne. 0) then
 ! --- CAS CMDE STD AVEC MUMPS SOLVEUR DIRECT
-                call jeveuo(kmonit(1), 'E', ibid)
-                zi(ibid+rang) = nz2
+                call jeveuo(kmonit(1), 'E', iad)
+                zi(iad+rang) = nz2
             else
 ! --- L'OBJET KMONIT(1) DEVRAIT EXISTER
                 ASSERT(.false.)

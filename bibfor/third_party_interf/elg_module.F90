@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ contains
         !
         ! Local variables
         !
-        integer(kind=8) :: iret, ii
+        integer(kind=8) :: iret
         integer(kind=8) :: kptsc, kptscr, ifm, niv, nlag
         aster_logical :: verbose
         character(len=3) :: matd
@@ -212,7 +212,7 @@ contains
             !
             call KSPSetOperators(elg_ctxt%ksp, elg_ctxt%cct, elg_ctxt%cct, ierr)
             ASSERT(ierr == 0)
-            tol = 1.e-7
+            tol = 1.d-7
             call KSPSetTolerances(elg_ctxt%ksp, tol, PETSC_DEFAULT_REAL, &
                                   PETSC_DEFAULT_REAL, PETSC_DEFAULT_INTEGER, ierr)
             ASSERT(ierr == 0)
@@ -239,7 +239,7 @@ contains
             call MatMumpsSetIcntl(factor, icntl, ival, ierr)
             ASSERT(ierr == 0)
             icntl = 3
-            val = 1.e-6
+            val = 1.d-6
             call MatMumpsSetCntl(factor, icntl, val, ierr)
             ASSERT(ierr == 0)
             call KSPSetUp(elg_ctxt%ksp, ierr)
@@ -275,7 +275,6 @@ contains
         PetscErrorCode :: ierr
         integer(kind=8) :: ifm, niv
         real(kind=8)::  t0, t1
-        character(len=19) :: matas1
         type(csc_matrix) :: ct_csc, b_csc, z_csc
         Mat :: cz_mat
         PetscScalar :: c_nrm, cz_nrm, z_nrm
@@ -328,7 +327,7 @@ contains
             print *, "ELG Norme de CZ                            : ", cz_nrm
             print *, "ELG Norme de CZ/( Norme de C * Norme de Z ): ", cz_nrm/(c_nrm*z_nrm)
         end if
-        ASSERT(cz_nrm/(c_nrm*z_nrm) < 1.e-2)
+        ASSERT(cz_nrm/(c_nrm*z_nrm) < 1.d-2)
 ! Libération de la mémoire
         call free_csc_matrix(b_csc)
         call free_csc_matrix(z_csc)

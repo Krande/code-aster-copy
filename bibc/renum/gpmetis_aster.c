@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* Copyright 1994-2011, Regents of the University of Minnesota          */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
@@ -37,6 +37,8 @@ void DEFPPPPPP( GPMETIS_ASTER, gpmetis_aster, ASTERINTEGER *nbnd, ASTERINTEGER *
     idx_t objval;
     int status = 0;
     idx_t ncon = 1;
+    idx_t mnbpart = (idx_t)*nbpart;
+    idx_t mnbnd = (idx_t)*nbnd;
     long k, l;
 
     METIS_SetDefaultOptions( options );
@@ -58,14 +60,14 @@ void DEFPPPPPP( GPMETIS_ASTER, gpmetis_aster, ASTERINTEGER *nbnd, ASTERINTEGER *
     part = malloc( ( *nbnd ) * sizeof( idx_t ) );
 
     for ( k = 0; k <= *nbnd; k++ ) {
-        xadj[k] = xadjd[k] - 1; /* -1 on est en C */
+        xadj[k] = (idx_t)xadjd[k] - 1; /* -1 on est en C */
     }
     for ( k = 0; k < *nadj; k++ ) {
-        adjnc[k] = adjncy[k] - 1; /* -1 on est en C */
+        adjnc[k] = (idx_t)adjncy[k] - 1; /* -1 on est en C */
     }
 
-    status = METIS_PartGraphKway( nbnd, &ncon, xadj, adjnc, NULL, NULL, NULL, nbpart, NULL, NULL,
-                                  options, &objval, part );
+    status = METIS_PartGraphKway( &mnbnd, &ncon, xadj, adjnc, NULL, NULL, NULL, &mnbpart, NULL,
+                                  NULL, options, &objval, part );
     if ( status != METIS_OK ) {
         printf( "\n***Metis returned with an error.\n" );
     } else {

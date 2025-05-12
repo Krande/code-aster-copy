@@ -216,7 +216,7 @@ int main(void){
     return 0;
 }"""
     self.code_checker(
-        "ASTER_HDF_HID_SIZE",
+        "ASTER_HDF5_HID_SIZE",
         self.check_cc,
         fragment,
         "Checking size of hid_t integers",
@@ -232,27 +232,37 @@ def check_med(self):
     if opts.enable_med is False:
         raise Errors.ConfigurationError("MED disabled")
 
-    if opts.med_libs is None:
-        opts.med_libs = "med"
-
-    if opts.med_libs:
-        self.check_med_libs()
+    self.check_med_libs()
     self.check_med_headers()
     self.check_sizeof_med_int()
     self.check_sizeof_med_idt()
-    self.check_med_version()
     self.check_med_python()
 
 
 @Configure.conf
 def check_med_libs(self):
     opts = self.options
-    check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
-    if opts.embed_all or opts.embed_med:
-        check_lib = lambda lib: check_med(stlib=lib)
-    else:
-        check_lib = lambda lib: check_med(lib=lib)
-    list(map(check_lib, Utils.to_list(opts.med_libs)))
+    candidates = ["med", "medfwrap medC"]
+    if opts.med_libs is not None:
+        candidates = [opts.med_libs]
+
+    def do_check(libs):
+        check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
+        kwd = "stlib" if opts.embed_all or opts.embed_med else "lib"
+        for lib in Utils.to_list(libs):
+            check_med(**{kwd: lib})
+
+    success = False
+    while not success and candidates:
+        libsset = candidates.pop(0)
+        try:
+            self.env.stash()
+            do_check(libsset)
+            # using MEDlibraryNumVersion symbol is sufficient
+            self.check_med_version()
+            success = True
+        except Errors.ConfigurationError:
+            self.env.revert()
 
 
 @Configure.conf

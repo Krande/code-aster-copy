@@ -361,9 +361,9 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc, &
                     zi(monit(12)+k) = zi(monit(12)+k)+execmu+zi(isizemu+k)
                 end do
 !           POUR LE CALCUL DES MOYENNES
-                rmonit(1) = 0.0
-                rmonit(2) = 0.0
-                rmonit(3) = 0.0
+                rmonit(1) = 0.0d0
+                rmonit(2) = 0.0d0
+                rmonit(3) = 0.0d0
 !           POUR LE CALCUL DES MAX
                 rmonit(4) = zi(monit(10))
                 rmonit(5) = zi(monit(11))

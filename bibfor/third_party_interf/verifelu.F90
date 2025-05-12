@@ -143,7 +143,7 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         if (abs(Calc) .gt. epsilon(Calc)) then
             mrd0 = ((mrd(s)-mrd(s-1))/(nrd(s)-nrd(s-1)))*(effn-nrd(s-1))+mrd(s-1)
         else
-            mrd0 = 0.5*(mrd(s-1)+mrd(s))
+            mrd0 = 0.5d0*(mrd(s-1)+mrd(s))
         end if
     end if
 
@@ -161,7 +161,7 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         if (abs(Calc) .gt. epsilon(Calc)) then
             mrd1 = ((mrd(s)-mrd(s-1))/(nrd(s)-nrd(s-1)))*(effn-nrd(s-1))+mrd(s-1)
         else
-            mrd1 = 0.5*(mrd(s-1)+mrd(s))
+            mrd1 = 0.5d0*(mrd(s-1)+mrd(s))
         end if
     end if
 

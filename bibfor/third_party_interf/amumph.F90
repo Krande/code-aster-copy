@@ -157,9 +157,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
     if (iprem .eq. 0) then
         if (impr(1:3) .ne. 'NON') then
             if (impr(1:9) .eq. 'OUI_SOLVE') then
-                call utmess('A', 'FACTOR_70', si=ifmump)
+                call utmess('I', 'FACTOR_70', si=ifmump)
             else if (impr(1:11) .eq. 'OUI_NOSOLVE') then
-                call utmess('A', 'FACTOR_71', si=ifmump)
+                call utmess('I', 'FACTOR_71', si=ifmump)
             else
 ! --- OPTION NON PREVUE
                 ASSERT(.false.)

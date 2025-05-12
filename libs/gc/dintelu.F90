@@ -112,10 +112,10 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     if (typco .eq. 1) then
 !       CALCUL DES PARAMETRES POUR CODIFICATION = 'BAEL91'
 
-        piv_a = 10.0E-3
-        piv_b = 3.5E-3
-        piv_c = 2.0E-3
-        nC = 2
+        piv_a = 10.0d-3
+        piv_b = 3.5d-3
+        piv_c = 2.0d-3
+        nC = 2.d0
         fyd = facier/gammas
         fcd = fbeton*alphacc/gammac
 
@@ -123,39 +123,39 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 !       CALCUL DES PARAMETRES POUR CODIFICATION = 'EC2'
 
         if (uc .eq. 0) then
-            unite_pa = 1.e-6
+            unite_pa = 1.d-6
         elseif (uc .eq. 1) then
-            unite_pa = 1.
+            unite_pa = 1.d0
         end if
         if (clacier .eq. 0) then
-            piv_a = 0.9*2.5e-2
-            ktys = 1.05
+            piv_a = 0.9d0*2.5d-2
+            ktys = 1.05d0
         else if (clacier .eq. 1) then
-            piv_a = 0.9*5.e-2
-            ktys = 1.08
+            piv_a = 0.9d0*5.d-2
+            ktys = 1.08d0
         else
-            piv_a = 0.9*7.5e-2
-            ktys = 1.15
+            piv_a = 0.9d0*7.5d-2
+            ktys = 1.15d0
         end if
-        piv_b = min(3.5E-3, 0.26*0.01+3.5*0.01*(((90.d0-fbeton*unite_pa)/100.d0)**4))
-        piv_c = 2.0E-3
+        piv_b = min(3.5d-3, 0.26d0*0.01d0+3.5d0*0.01d0*(((90.d0-fbeton*unite_pa)/100.d0)**4))
+        piv_c = 2.0d-3
         if ((fbeton*unite_pa) .ge. (50.d0)) then
-            piv_c = 0.2*0.01+0.0085*0.01*((fbeton*unite_pa-50.d0)**(0.53))
+            piv_c = 0.2d0*0.01d0+0.0085d0*0.01d0*((fbeton*unite_pa-50.d0)**(0.53d0))
         end if
-        nC = min(2.0, 1.4+23.4*(((90.d0-fbeton*unite_pa)/100.d0)**4))
+        nC = min(2.0d0, 1.4d0+23.4d0*(((90.d0-fbeton*unite_pa)/100.d0)**4))
         fyd = facier/gammas
         fcd = fbeton*alphacc/gammac
 
     end if
 
     Esu = piv_a
-    Euk = Esu/0.9
+    Euk = Esu/0.9d0
     Ecu = piv_b
     Ec2 = piv_c
     Ese = fyd/eys
-    alphaAB = 1./(1+Esu/Ecu)
-    alphaR = 1./(1+Ese/Ecu)
-    alphaBC = 1.
+    alphaAB = 1.d0/(1.d0+Esu/Ecu)
+    alphaR = 1.d0/(1.d0+Ese/Ecu)
+    alphaBC = 1.d0
     d = ht-enrobi
     d0 = enrobs
     dneg = ht-enrobs
@@ -163,16 +163,16 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 
 !   Paramètres de calcul
     Xsup = piv_b/piv_c
-    xC = (1-piv_c/piv_b)*ht
+    xC = (1.d0-piv_c/piv_b)*ht
     yC = ht-xC
     xCt = xC/ht
-    m1 = (((1-xCt)**(nC+1))/(2.d0*(nC+1)))*(1-(2.d0*(1-xCt))/(nC+2))
-    m2 = -((1-xCt)**(nC+1))/(nC+1)
+    m1 = (((1.d0-xCt)**(nC+1.d0))/(2.d0*(nC+1)))*(1.d0-(2.d0*(1.d0-xCt))/(nC+2.d0))
+    m2 = -((1.d0-xCt)**(nC+1.d0))/(nC+1.d0)
 
-    N_ET = floor(Esu*1000)+1
-    N_PC = ceiling((ht/d)*100)+1
-    N_EC = ceiling(Xsup*100)+1
-    N_PCN = ceiling((ht/dneg)*100)+1
+    N_ET = floor(Esu*1000.d0)+1.d0
+    N_PC = ceiling((ht/d)*100.d0)+1.d0
+    N_EC = ceiling(Xsup*100.d0)+1
+    N_PCN = ceiling((ht/dneg)*100.d0)+1.d0
     if (ntot < 0) then
         ntot = N_ET+N_ET+N_PC+N_EC+N_EC+N_PCN
         if (present(ndemi)) then
@@ -188,8 +188,8 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         write (6, *) "SyntaxError: nrd and mrd are required"
         return
     end if
-    nrd = 0.0
-    mrd = 0.0
+    nrd = 0.0d0
+    mrd = 0.0d0
 
 !-----------------------------------------------------------------------
 !Traitement des différents cas (Pivots A / B / C)
@@ -211,7 +211,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         if (k .eq. 1) then
             EcSUP = -Esu
         else
-            EcSUP = -(1.e-3)*(N_ET-k)
+            EcSUP = -(1.d-3)*(N_ET-k)
         end if
 
         EsINF = -Esu
@@ -250,7 +250,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         end if
 
         N_P1(k) = dnsinf*SigmAsINF+dnssup*SigmAsSUP
-        M_P1(k) = -dnsinf*SigmAsINF*(d-0.5*ht)+dnssup*SigmAsSUP*(0.5*ht-d0)
+        M_P1(k) = -dnsinf*SigmAsINF*(d-0.5d0*ht)+dnssup*SigmAsSUP*(0.5d0*ht-d0)
 
     end do
 
@@ -264,17 +264,17 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     do k = 1, N_PC
 
         if (k .lt. N_PC) then
-            alpha = (k-1)*0.01
+            alpha = (k-1.d0)*0.01d0
         else
             alpha = ht/d
         end if
 
         if (alpha .lt. alphaAB) then
             EsINF = -Esu
-            EcSUP = Esu*alpha/(1-alpha)
+            EcSUP = Esu*alpha/(1.d0-alpha)
         else
             EcSUP = Ecu
-            EsINF = -Ecu*(1-alpha)/alpha
+            EsINF = -Ecu*(1.d0-alpha)/alpha
         end if
 
         EsSUP = ((EsINF-EcSUP)/d)*(d0)+EcSUP
@@ -316,37 +316,37 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         DELTA = d/ht
 
         if (EcSUP .le. Ec2) then
-            Beta = 0
+            Beta = 0.d0
         else
             yE = ((Ec2-EcSUP)/(EsINF-EcSUP))*d
             Beta = yE/d
         end if
 
-        COEF1 = (1-y1-alpha*x1)
-        COEF2 = (1-y1-Beta*x1)
+        COEF1 = (1.d0-y1-alpha*x1)
+        COEF2 = (1.d0-y1-Beta*x1)
         if (abs(COEF1) .gt. epsilon(COEF1)) then
             VAR_COEF1 = Abs(COEF1)/COEF1
         else
-            VAR_COEF1 = 1
+            VAR_COEF1 = 1.d0
         end if
         if (abs(COEF2) .gt. epsilon(COEF2)) then
             VAR_COEF2 = Abs(COEF2)/COEF2
         else
-            VAR_COEF2 = 1
+            VAR_COEF2 = 1.d0
         end if
 
-        Ncc = (fcd*bw*d)*(alpha+(1/((nC+1)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1)) &
-               & -VAR_COEF2*((Abs(COEF2))**(nC+1))))
-        Mcc = (bw*d*d*fcd)*(0.5*alpha*(1/DELTA-alpha) &
-               & +(1/(2*DELTA))*(1/((nC+1)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1)) &
-               & -VAR_COEF2*((Abs(COEF2))**(nC+1))) &
-               & -(1/((nC+1)*x1))*(alpha*VAR_COEF1*((Abs(COEF1))**(nC+1)) &
-               & -Beta*VAR_COEF2*((Abs(COEF2))**(nC+1))) &
-               & -(1/((nC+1)*(nC+2)*x1*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+2)) &
-               & -VAR_COEF2*((Abs(COEF2))**(nC+2))))
+        Ncc = (fcd*bw*d)*(alpha+(1.d0/((nC+1.d0)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1.d0)) &
+               & -VAR_COEF2*((Abs(COEF2))**(nC+1.d0))))
+        Mcc = (bw*d*d*fcd)*(0.5d0*alpha*(1.d0/DELTA-alpha) &
+               & +(1.d0/(2.d0*DELTA))*(1.d0/((nC+1.d0)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1.d0)) &
+               & -VAR_COEF2*((Abs(COEF2))**(nC+1.d0))) &
+               & -(1.d0/((nC+1.d0)*x1))*(alpha*VAR_COEF1*((Abs(COEF1))**(nC+1.d0)) &
+               & -Beta*VAR_COEF2*((Abs(COEF2))**(nC+1.d0))) &
+               & -(1.d0/((nC+1.d0)*(nC+2)*x1*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+2.d0)) &
+               & -VAR_COEF2*((Abs(COEF2))**(nC+2.d0))))
 
         N_P2(k) = dnsinf*SigmAsINF+dnssup*SigmAsSUP+Ncc
-        M_P2(k) = -dnsinf*SigmAsINF*(d-0.5*ht)+dnssup*SigmAsSUP*(0.5*ht-d0)+Mcc
+        M_P2(k) = -dnsinf*SigmAsINF*(d-0.5d0*ht)+dnssup*SigmAsSUP*(0.5d0*ht-d0)+Mcc
 
     end do
 
@@ -358,24 +358,24 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
 
     do k = 1, N_EC
 
-        X = (N_EC-k)/100.0
+        X = (N_EC-k)/100.0d0
         if (k .eq. 1) then
             X = Xsup
         end if
 
         DE = X*Ec2
-        EcINF = Ec2-DE*(1-xCt)
+        EcINF = Ec2-DE*(1.d0-xCt)
         EcSUP = DE+EcINF
         EsINF = EcINF+(DE/ht)*(ht-d)
         EsSUP = EcINF+(DE/ht)*(ht-d0)
 
-        Ncc = bw*ht*fcd*(1+m2*(X**(nC)))
+        Ncc = bw*ht*fcd*(1.d0+m2*(X**(nC)))
         Mcc = bw*ht*ht*fcd*m1*(X**(nC))
         Calc = EcSUP-EcINF
         if (abs(Calc) .gt. epsilon(Calc)) then
-            alpha = (1/(1-EcINF/EcSUP))*(ht/d)
+            alpha = (1.d0/(1.d0-EcINF/EcSUP))*(ht/d)
         else
-            alpha = -1000
+            alpha = -1000.d0
         end if
 
         if (typdiag .eq. 1) then
@@ -410,7 +410,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         end if
 
         N_P3(k) = dnsinf*SigmAsINF+dnssup*SigmAsSUP+Ncc
-        M_P3(k) = -dnsinf*SigmAsINF*(d-0.5*ht)+dnssup*SigmAsSUP*(0.5*ht-d0)+Mcc
+        M_P3(k) = -dnsinf*SigmAsINF*(d-0.5d0*ht)+dnssup*SigmAsSUP*(0.5d0*ht-d0)+Mcc
 
     end do
 
@@ -420,22 +420,22 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     allocate (M_P4(N_EC))
 
     do k = 1, N_EC
-        X = (1-k)/100.0
+        X = (1-k)/100.0d0
         if (k .eq. N_EC) then
             X = -Xsup
         end if
 
         DE = X*Ec2
-        EcINF = Ec2-DE*(1-xCt)
+        EcINF = Ec2-DE*(1.d0-xCt)
         EcSUP = DE+EcINF
         EsINF = EcINF+(DE/ht)*(ht-d)
         EsSUP = EcINF+(DE/ht)*(ht-d0)
 
-        Ncc = bw*ht*fcd*(1+m2*(abs(X)**(nC)))
+        Ncc = bw*ht*fcd*(1.d0+m2*(abs(X)**(nC)))
         Mcc = bw*ht*ht*fcd*m1*(abs(X)**(nC))
         Calc = EcSUP-EcINF
         if (abs(Calc) .gt. epsilon(Calc)) then
-            alpha = (1/(1-EcINF/EcSUP))*(ht/d)
+            alpha = (1.d0/(1.d0-EcINF/EcSUP))*(ht/d)
         else
             alpha = -1000
         end if
@@ -472,7 +472,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         end if
 
         N_P4(k) = dnsinf*SigmAsINF+dnssup*SigmAsSUP+Ncc
-        M_P4(k) = -dnsinf*SigmAsINF*(d-0.5*ht)+dnssup*SigmAsSUP*(0.5*ht-d0)-Mcc
+        M_P4(k) = -dnsinf*SigmAsINF*(d-0.5d0*ht)+dnssup*SigmAsSUP*(0.5d0*ht-d0)-Mcc
 
     end do
 
@@ -485,17 +485,17 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     do k = 1, N_PCN
 
         if (k .gt. 1) then
-            alpha = (N_PCN-k)*0.01
+            alpha = (N_PCN-k)*0.01d0
         else
             alpha = ht/dneg
         end if
 
         if (alpha .lt. alphaAB) then
             EsSUP = -Esu
-            EcINF = Esu*alpha/(1-alpha)
+            EcINF = Esu*alpha/(1.d0-alpha)
         else
             EcINF = Ecu
-            EsSUP = -Ecu*(1-alpha)/alpha
+            EsSUP = -Ecu*(1.d0-alpha)/alpha
         end if
 
         EsINF = ((EsSUP-EcINF)/dneg)*(d0neg)+EcINF
@@ -543,31 +543,31 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
             Beta = yE/dneg
         end if
 
-        COEF1 = (1-y1-alpha*x1)
-        COEF2 = (1-y1-Beta*x1)
+        COEF1 = (1.d0-y1-alpha*x1)
+        COEF2 = (1.d0-y1-Beta*x1)
         if (abs(COEF1) .gt. epsilon(COEF1)) then
             VAR_COEF1 = Abs(COEF1)/COEF1
         else
-            VAR_COEF1 = 1
+            VAR_COEF1 = 1.d0
         end if
         if (abs(COEF2) .gt. epsilon(COEF2)) then
             VAR_COEF2 = Abs(COEF2)/COEF2
         else
-            VAR_COEF2 = 1
+            VAR_COEF2 = 1.d0
         end if
 
-        Ncc = (fcd*bw*dneg)*(alpha+(1/((nC+1)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1)) &
-               & -VAR_COEF2*((Abs(COEF2))**(nC+1))))
-        Mcc = (bw*dneg*dneg*fcd)*(0.5*alpha*(1/DELTA-alpha) &
-               & +(1/(2*DELTA))*(1/((nC+1)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1)) &
-               & -VAR_COEF2*((Abs(COEF2))**(nC+1))) &
-               & -(1/((nC+1)*x1))*(alpha*VAR_COEF1*((Abs(COEF1))**(nC+1)) &
-               & -Beta*VAR_COEF2*((Abs(COEF2))**(nC+1))) &
-               & -(1/((nC+1)*(nC+2)*x1*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+2)) &
-               & -VAR_COEF2*((Abs(COEF2))**(nC+2))))
+        Ncc = (fcd*bw*dneg)*(alpha+(1.d0/((nC+1.d0)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1.d0)) &
+               & -VAR_COEF2*((Abs(COEF2))**(nC+1.d0))))
+        Mcc = (bw*dneg*dneg*fcd)*(0.5d0*alpha*(1.d0/DELTA-alpha) &
+               & +(1.d0/(2*DELTA))*(1.d0/((nC+1.d0)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1.d0)) &
+               & -VAR_COEF2*((Abs(COEF2))**(nC+1.d0))) &
+               & -(1.d0/((nC+1.d0)*x1))*(alpha*VAR_COEF1*((Abs(COEF1))**(nC+1.d0)) &
+               & -Beta*VAR_COEF2*((Abs(COEF2))**(nC+1.d0))) &
+               & -(1.d0/((nC+1.d0)*(nC+2.d0)*x1*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+2.d0)) &
+               & -VAR_COEF2*((Abs(COEF2))**(nC+2.d0))))
 
         N_P5(k) = dnsinf*SigmAsINF+dnssup*SigmAsSUP+Ncc
-        M_P5(k) = -dnsinf*SigmAsINF*(d-0.5*ht)+dnssup*SigmAsSUP*(0.5*ht-d0)-Mcc
+        M_P5(k) = -dnsinf*SigmAsINF*(d-0.5d0*ht)+dnssup*SigmAsSUP*(0.5d0*ht-d0)-Mcc
 
     end do
 
@@ -581,7 +581,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         if (k .eq. N_ET) then
             EcINF = -Esu
         else
-            EcINF = -(1.e-3)*(k-1)
+            EcINF = -(1.d-3)*(k-1.d0)
         end if
 
         EsSUP = -Esu
@@ -620,7 +620,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         end if
 
         N_P6(k) = dnsinf*SigmAsINF+dnssup*SigmAsSUP
-        M_P6(k) = -dnsinf*SigmAsINF*(d-0.5*ht)+dnssup*SigmAsSUP*(0.5*ht-d0)
+        M_P6(k) = -dnsinf*SigmAsINF*(d-0.5d0*ht)+dnssup*SigmAsSUP*(0.5d0*ht-d0)
 
     end do
 

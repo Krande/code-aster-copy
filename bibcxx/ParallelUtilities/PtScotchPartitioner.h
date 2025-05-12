@@ -4,7 +4,7 @@
 /**
  * @file PtScotch.h
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,6 +37,7 @@ extern "C" {
 }
 
 using VectorOfVectorsInt = std::vector< VectorInt >;
+using VectorScotchNum = std::vector< SCOTCH_Num >;
 
 /**
  * @class PtScotchPartitioner
@@ -52,14 +53,14 @@ class PtScotchPartitioner {
     /** @brief Number of vertices in graph and local minimum id */
     int _nbVertex = 0, _minId = 0;
     /** @brief Graph in PtScotch format */
-    VectorLong _vertices, _edges;
+    VectorScotchNum _vertices, _edges, _weights;
     /** @brief If some nodes are gathered */
     bool _gatheredNodes = false;
     VectorLong _range;
     VectorOfVectorsLong _toForgetVector;
-    VectorLong _newVertices, _newEdges, _weights;
+    VectorScotchNum _newVertices, _newEdges;
 
-    void buildPartition( const VectorLong &, VectorLong & );
+    void buildPartition( const VectorScotchNum &, VectorLong & );
 
   public:
     PtScotchPartitioner();
@@ -68,10 +69,12 @@ class PtScotchPartitioner {
 
     /**
      * @brief Define graph (Warning: vertloctab and edgeloctab are copied)
-     * @param vertloctab Local vertex begin array
-     * @param edgeloctab Local edge array
+     * @param vertices Local vertex begin array
+     * @param edges Local edge array
+     * @param weights Local weights array
      */
-    int buildGraph( const VectorLong &vertloctab, const VectorLong &edgeloctab );
+    int buildGraph( const VectorLong &vertices, const VectorLong &edges,
+                    const VectorLong &weights = {} );
 
     /**
      * @brief Define graph for existing graph (Warning: works with reference)

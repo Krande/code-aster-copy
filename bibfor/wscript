@@ -34,8 +34,9 @@ def configure(self):
 
     self.check_fortran()
     self.check_fortran_dummy_main()
-    self.check_fortran_compiler_flags()
+    # mangling check may fail with some FCFLAGS (-flto for example)
     self.check_fortran_mangling()
+    self.check_fortran_compiler_flags()
     if self.env.FORTRAN_MANGLING and self.env.FORTRAN_MANGLING[0] == "":
         self.define("ASTER_NO_UNDERSCORE", 1)
     else:
@@ -85,11 +86,12 @@ MAIN = "      program main\n      end program main\n"
 @Configure.conf
 def check_fortran_compiler_flags(self):
     self.check_fortran_compiler_options("-fPIC")
+    # self.check_fortran_compiler_options("-flto")
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")
             self.check_fortran_compiler_options(
-                ["-fdefault-real-8", "-fdefault-double-8"], dest="FCFLAGS"
+                ["-fdefault-real-8", "-fdefault-double-8"], dest="FCFLAGS_INT64"
             )
         self.check_fortran_compiler_options("-Wimplicit-interface")
         self.check_fortran_compiler_options("-Wintrinsic-shadow")
@@ -100,7 +102,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
-            self.check_fortran_compiler_options("-r8", dest="FCFLAGS")
+            self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
         self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx

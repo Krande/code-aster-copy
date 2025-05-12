@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,7 +117,7 @@ contains
         pre_type = mumps_pre
         ! TODO déterminer les bonnes valeurs
         niremp = 1
-        fillp = 1.0
+        fillp = 1.0d0
         !
         ! Notation
         sp_ctxt => ctxt%sp_ctxt

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ contains
         call MatMultTranspose(sp_ctxt%c_mat, sp_ctxt%x2, sp_ctxt%xtmp, ierr)
         ASSERT(ierr == 0)
         ! x1 = x1 + (2*gamma)* xtmp
-        beta = 2.0*sp_pc_context%gamma
+        beta = 2.0d0*sp_pc_context%gamma
         call VecAXPY(sp_ctxt%x1, beta, sp_ctxt%xtmp, ierr)
         ASSERT(ierr == 0)
         !

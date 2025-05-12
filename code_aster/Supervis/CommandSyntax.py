@@ -528,7 +528,7 @@ class CommandSyntax:
             str: Command name.
         """
         jev, typ, cmd = self.getResultName(), self.getResultType(), self.getName()
-        logger.debug("Command %s: result name %r, type %r", cmd, jev, typ)
+        # logger.debug("Command %s: result name %r, type %r", cmd, jev, typ)
         return jev, typ, cmd
 
     def setres(self, value):
@@ -552,7 +552,7 @@ class CommandSyntax:
             int: 1 if the keyword exists, else 0.
         """
         catadef = self._getCataDefinition(factName)
-        logger.debug("getexm: %s / %s", factName, simpName)
+        # logger.debug("getexm: %s / %s", factName, simpName)
         if not catadef:
             return 0
         if not simpName.strip():

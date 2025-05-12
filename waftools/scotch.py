@@ -81,6 +81,8 @@ def check_scotch(self):
         raise Errors.ConfigurationError("SCOTCH disabled")
 
     self.check_scotch_headers()
+    self.check_scotch_num()
+    self.check_scotch_idx()
     self.check_scotch_version()
 
     if opts.scotch_libs is None:
@@ -134,12 +136,55 @@ def check_scotch_headers(self):
 
 
 @Configure.conf
-def check_scotch_version(self):
-    # scotch.h may use int64_t without including <sys/types.h>
+def check_scotch_num(self):
     fragment = r"""
 #include <stdio.h>
 #include <stdint.h>
-#include <sys/types.h>
+#include <scotch.h>
+int main(void){
+    SCOTCH_Num num;
+    printf("%d", (int)sizeof(num));
+    return 0;
+}"""
+    self.code_checker(
+        "ASTER_SCOTCH_NUM_SIZE",
+        self.check_cc,
+        fragment,
+        "Checking size of SCOTCH_Num integers",
+        "unexpected value for sizeof(SCOTCH_Num): %(size)s",
+        into=(4, 8),
+        use="SCOTCH",
+    )
+
+
+@Configure.conf
+def check_scotch_idx(self):
+    fragment = r"""
+#include <stdio.h>
+#include <stdint.h>
+#include <scotch.h>
+int main(void){
+    SCOTCH_Idx idx;
+    printf("%d", (int)sizeof(idx));
+    return 0;
+}"""
+    self.code_checker(
+        "ASTER_SCOTCH_IDX_SIZE",
+        self.check_cc,
+        fragment,
+        "Checking size of SCOTCH_Idx integers",
+        "unexpected value for sizeof(SCOTCH_Idx): %(size)s",
+        into=(4, 8),
+        use="SCOTCH",
+    )
+
+
+@Configure.conf
+def check_scotch_version(self):
+    # scotch.h may use int64_t without including <stdint.h>
+    fragment = r"""
+#include <stdio.h>
+#include <stdint.h>
 #include "scotch.h"
 
 int main(void){

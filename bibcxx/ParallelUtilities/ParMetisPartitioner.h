@@ -52,7 +52,7 @@ class ParMetisPartitioner {
     /** @brief Graph in Metis format */
     VectorIdxT _vtxdist, _xadj, _adjncy;
 
-    void buildPartition( const VectorLong &, VectorLong & );
+    void buildPartition( const VectorIdxT &, VectorLong & );
 
   public:
     ParMetisPartitioner();
