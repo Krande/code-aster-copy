@@ -38,7 +38,7 @@ def crea_elem_ssd_ops(self, **args):
        DEFI_INTERF_DYNA + DEFI_BASE_MODALE + MACR_ELEM_DYNA
     """
 
-    numeddl = args.get("NUME_DDL")
+    NUMEDDL = args.get("NUME_DDL")
     INTERFACE = args.get("INTERFACE")
     BASE_MODALE = args.get("BASE_MODALE")
     CALC_FREQ = args.get("CALC_FREQ")
@@ -49,7 +49,7 @@ def crea_elem_ssd_ops(self, **args):
     _kelem = CALC_MATR_ELEM(
         CHARGE=args["CHARGE"],
         OPTION="RIGI_MECA",
-        CARA_ELEM=args["CARA_ELEM"],
+        CARA_ELEM=args.get("CARA_ELEM"),
         MODELE=args["MODELE"],
         CHAM_MATER=args["CHAM_MATER"],
     )
@@ -57,36 +57,31 @@ def crea_elem_ssd_ops(self, **args):
     __melem = CALC_MATR_ELEM(
         CHARGE=args["CHARGE"],
         OPTION="MASS_MECA",
-        CARA_ELEM=args["CARA_ELEM"],
+        CARA_ELEM=args.get("CARA_ELEM"),
         MODELE=args["MODELE"],
         CHAM_MATER=args["CHAM_MATER"],
     )
 
     _nume_ddl = NUME_DDL(MATR_RIGI=_kelem)
 
-    if numeddl:
-        self.register_result(_nume_ddl, numeddl)
+    if NUMEDDL:
+        self.register_result(_nume_ddl, NUMEDDL)
 
     _matrigi = ASSE_MATRICE(NUME_DDL=_nume_ddl, MATR_ELEM=_kelem)
 
-    _mmass = ASSE_MATRICE(NUME_DDL=_nume_ddl, MATR_ELEM=__melem)
+    _matmass = ASSE_MATRICE(NUME_DDL=_nume_ddl, MATR_ELEM=__melem)
 
     # recuperation des options de CALC_MODES
     motscit = {}
     motscfa = {}
     motscsm = {}
 
-    if CALC_FREQ["OPTION"] == "PLUS_PETITE":
-        nbande = 1
+    NBANDE_OPTIONS = {"PLUS_PETITE": 1, "CENTRE": 1, "SANS": 0}
 
-    if CALC_FREQ["OPTION"] == "CENTRE":
-        nbande = 1
+    nbande = NBANDE_OPTIONS.get(CALC_FREQ["OPTION"])
 
-    if CALC_FREQ["OPTION"] == "BANDE":
+    if CALC_FREQ["OPTION"]=="BANDE":
         nbande = len(CALC_FREQ["FREQ"]) - 1
-
-    if CALC_FREQ["OPTION"] == "SANS":
-        nbande = 0
 
     if CALC_FREQ["DIM_SOUS_ESPACE"]:
         motscsm["DIM_SOUS_ESPACE"] = CALC_FREQ["DIM_SOUS_ESPACE"]
@@ -118,7 +113,7 @@ def crea_elem_ssd_ops(self, **args):
 
         __modes = CALC_MODES(
             MATR_RIGI=_matrigi,
-            MATR_MASS=_mmass,
+            MATR_MASS=_matmass,
             OPTION=CALC_FREQ["OPTION"],
             INFO=args["INFO"],
             **motscit
@@ -184,7 +179,7 @@ def crea_elem_ssd_ops(self, **args):
             mcfacti.append(_F(**arg_int))
             modstati["MODE_INTERF"] = mcfacti
             _mode_intf = MODE_STATIQUE(
-                MATR_RIGI=_matrigi, MATR_MASS=_mmass, SOLVEUR=mSolveur, **modstati
+                MATR_RIGI=_matrigi, MATR_MASS=_matmass, SOLVEUR=mSolveur, **modstati
             )
             lmodint.append(_mode_intf)
 
@@ -217,19 +212,19 @@ def crea_elem_ssd_ops(self, **args):
     _interf = DEFI_INTERF_DYNA(NUME_DDL=_nume_ddl, **interface)
 
     base = {}
+    mcfact = []
+    arg_base = {}
     if args["INFO"]:
         base["INFO"] = args["INFO"]
-    mcfact = []
 
     if BASE_MODALE[0]["TYPE"] == "CLASSIQUE":
-        arg_base = {}
         type_base = "CLASSIQUE"
         arg_base["NMAX_MODE"] = CALC_FREQ[0]["NMAX_FREQ"]
         mcfact.append(_F(INTERF_DYNA=_interf, MODE_MECA=_mode_meca, **arg_base))
 
     if BASE_MODALE[0]["TYPE"] == "RITZ":
+
         type_base = "RITZ"
-        arg_base = {}
         if BASE_MODALE[0]["TYPE_MODE"] == "STATIQUE":
             mcfact.append(_F(MODE_MECA=_mode_intf))
         else:
@@ -241,9 +236,7 @@ def crea_elem_ssd_ops(self, **args):
                 arg_base["NMAX_MODE"] = 0
                 mcfact.append(_F(MODE_MECA=_mode_intf, **arg_base))
 
-        # il faut deux occurrences du mot cle facteur RITZ
-        arg_base = {}
-        if BASE_MODALE[0]["TYPE_MODE"] == "INTERFACE":
+            arg_base = {}
             if BASE_MODALE[0]["NMAX_MODE_INTF"]:
                 arg_base["NMAX_MODE"] = BASE_MODALE[0]["NMAX_MODE_INTF"]
             mcfact.append(_F(MODE_INTF=_mode_intf, **arg_base))
@@ -256,11 +249,7 @@ def crea_elem_ssd_ops(self, **args):
         base["NUME_REF"] = _nume_ddl
 
     _base_modale = DEFI_BASE_MODALE(**base)
-
-    elem = {}
-    elem["MATR_RIGI"] = _matrigi
-    elem["MATR_MASS"] = _mmass
-
+    elem = {"MATR_RIGI":_matrigi, "MATR_MASS":_matmass}
     macr_elem = MACR_ELEM_DYNA(BASE_MODALE=_base_modale, **elem)
 
     return macr_elem

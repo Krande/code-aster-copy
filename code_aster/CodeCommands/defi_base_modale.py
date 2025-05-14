@@ -43,11 +43,14 @@ class ModalBasisDef(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+
         classique = keywords.get("CLASSIQUE")
         ritz = keywords.get("RITZ")
         diag = keywords.get("DIAG_MASS")
         ortho = keywords.get("ORTHO_BASE")
+
         if classique is not None:
+
             mode_meca = classique[0]["MODE_MECA"][0]
             self._result.setStructureInterface(classique[0]["INTERF_DYNA"])
             self._result.setDOFNumbering(mode_meca.getDOFNumbering())
@@ -61,9 +64,10 @@ class ModalBasisDef(ExecuteCommand):
                 self._result.addFiniteElementDescriptor(fED)
             for fOND in mode_meca.getEquationNumberings():
                 self._result.addEquationNumbering(fOND)
+
         elif ritz is not None:
-            if "INTERF_DYNA" in ritz[0]:
-                self._result.setStructureInterface(ritz[0]["INTERF_DYNA"])
+            if keywords.get("INTERF_DYNA") is not None:
+                self._result.setStructureInterface(keywords.get("INTERF_DYNA"))
             if keywords.get("MATRICE") is not None:
                 self._result.setDOFNumbering(keywords.get("MATRICE").getDOFNumbering())
             elif keywords.get("NUME_REF") is not None:
@@ -71,6 +75,7 @@ class ModalBasisDef(ExecuteCommand):
             elif "BASE_MODALE" in ritz[0]:
                 nume_ddl = ritz[0]["BASE_MODALE"].getDOFNumbering()
                 self._result.setDOFNumbering(nume_ddl)
+
             if "MODE_MECA" in ritz[0]:
                 mode_meca = ritz[0]["MODE_MECA"][0]
                 model = mode_meca.getModel()
@@ -81,16 +86,22 @@ class ModalBasisDef(ExecuteCommand):
                     self._result.setMesh(mesh)
                 else:
                     self._result.setMesh(mode_meca.getMesh())
+
                 for fED in mode_meca.getFiniteElementDescriptors():
                     self._result.addFiniteElementDescriptor(fED)
+
+                for fOND in mode_meca.getEquationNumberings():
+                    self._result.addEquationNumbering(fOND)
+
                 # EquationNumberings and DOFNumbering seem unused in this case
                 if self._result.getDOFNumbering() is None:
-                    nume_ddl = mode_meca.getDOFNumbering()
-                    self._result.setDOFNumbering(nume_ddl)
+                    self._result.setDOFNumbering(mode_meca.getDOFNumbering())
+
         elif diag is not None:
             self._result.setMesh(diag[0]["MODE_MECA"][0].getMesh())
             nume_ddl = diag[0]["MODE_MECA"][0].getDOFNumbering()
             self._result.setDOFNumbering(nume_ddl)
+
         elif ortho is not None:
             self._result.setDOFNumbering(ortho[0]["MATRICE"].getDOFNumbering())
             self._result.setMesh(ortho[0]["BASE"].getMesh())
