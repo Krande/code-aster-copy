@@ -363,4 +363,10 @@ A cause des erreurs précédentes, le code s'arrête.
     73: _(
         """L'option RESI_COMP_RELA n'est pas disponible pour les méthodes HHO. Il faut utiliser un autre critère de convergence."""
     ),
+    74: _(
+        """
+  Vous voulez "poursuivre" un calcul non-linéaire. Le modèle sous-jacent à CARA_ELEM est différent du modèle pour le calcul.
+Le calcul peut s'arrêter plus tard si certaines informations ne sont pas cohérentes.
+"""
+    ),
 }
