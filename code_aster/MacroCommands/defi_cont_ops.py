@@ -19,7 +19,6 @@
 
 from ..Messages import UTMESS
 from ..Objects import (
-    ConnectionMesh,
     ContactAlgo,
     ContactNew,
     ContactParameter,
@@ -44,7 +43,6 @@ def _hasFriction(zones):
     for zone in zones:
         if zone["FROTTEMENT"] == "OUI":
             return True
-
     return False
 
 
@@ -55,7 +53,7 @@ def defi_cont_ops(self, **keywords):
         keywords (dict): User's keywords.
     """
 
-    UTMESS("A", "QUALITY1_2")
+    UTMESS("A", "QUALITY1_2", valk="DEFI_CONT")
 
     model = keywords["MODELE"]
     verbosity = keywords["INFO"]
