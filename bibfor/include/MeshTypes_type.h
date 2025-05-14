@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 
 ! Total number of cell types
-#define MT_NTYMAX  84
+#define MT_NTYMAX  81
 ! Total number of real (physical) cell types
 #define MT_NPHMAX  25
 ! Maximum number of nodes of all cells
@@ -54,5 +54,5 @@
 #define MT_HEXA8   25
 #define MT_HEXA20  26
 #define MT_HEXA27  27
-#define MT_HEXA9   73
-#define MT_PENTA7  74
+#define MT_HEXA9   70
+#define MT_PENTA7  71
