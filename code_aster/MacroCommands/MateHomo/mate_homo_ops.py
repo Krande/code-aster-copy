@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,12 @@ from .mate_homo_utilities import setup_calcul
 from .mate_homo_mesh import prepare_mesh_syme
 from .mate_homo_massif import calc_tabpara_massif, calc_corr_massif_syme
 from .mate_homo_plaque import calc_tabpara_plaque, calc_corr_plaque_syme
+from . import check_mesh
 
 
 def mate_homo_ops(self, **kwargs):
 
-    meshin = kwargs.get("MAILLAGE")
+    meshin = check_mesh(kwargs.get("MAILLAGE"))
     ls_affe = kwargs.get("AFFE")
     ls_varc = kwargs.get("VARC")
     unit = kwargs.get("UNITE")
