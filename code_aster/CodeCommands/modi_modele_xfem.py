@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -35,6 +35,10 @@ class XfemModelModication(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Model(keywords["MODELE_IN"].getMesh(), True)
+
+        # set model in FED (because of circular reference)
+        FED = self._result.getFiniteElementDescriptor()
+        FED.setModel(self._result)
 
     def post_exec(self, keywords):
         """Execute the command.

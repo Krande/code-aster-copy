@@ -511,6 +511,8 @@ def _get_field_and_check_model(state, name_field, model, fieldModel=None):
         simpleFieldModel = fieldModel.toSimpleFieldOnCells()
         simpleField = field.toSimpleFieldOnCells(simpleFieldModel)
         field = simpleField.toFieldOnCells(model.getFiniteElementDescriptor(), "TOU_INI_ELGA", "")
+    elif field.getLocalization() == "ELNO":
+        field = field.asLocalization("ELGA")
     if model is field.getModel():
         return field
     _raise_elga_error()
