@@ -88,7 +88,7 @@
 !
 #include "asterfort/cmarge.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/trgfct.h"
+#include "asterfort/trgfct2.h"
 #include "asterfort/wkvect.h"
 #include "extern/dintels.h"
 #include "extern/dintelu.h"
@@ -152,7 +152,7 @@
 !
 !   INITIALISATION DES FACETTES
       allocate (fcttab(nb, 6))
-      call trgfct(nb, fcttab)
+      call trgfct2(nb, fcttab)
 !   Largeur de la section
       bw = 1.0
 
