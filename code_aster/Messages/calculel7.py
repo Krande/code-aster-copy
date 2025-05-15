@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -289,7 +289,7 @@ Commande CALC_FERRAILLAGE :
     ),
     35: _(
         """
- Commande CALC_FERRAILLAGE :    
+ Commande CALC_FERRAILLAGE :
    ELU : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
    Pour au moins une des couches périphériques du modèle 'Sandwich', l'épaisseur est trop comprimée.
    ATTENTION : Si vous avez retenu FERR_COMP = 'NON', les aciers en compression ne sont pas calculés !

@@ -19,8 +19,8 @@
 !
 !
 interface
-   subroutine trgfct(nb, fcttab)
+   subroutine trgfct2(nb, fcttab)
       integer :: nb
-      real(kind=8) :: fcttab(nb, 5)
-   end subroutine trgfct
+      real(kind=8) :: fcttab(nb, 6)
+   end subroutine trgfct2
 end interface

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -250,6 +250,7 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
         "EPMG_NOEU": "NOEU_EPSI_R",
         "ERME_ELEM": "ELEM_ERRE_R",
         "FERRAILLAGE": "ELEM_FER2_R",
+        "MARG_ELEM": "ELEM_VFER2_R",
         "DERA_ELNO": "ELNO_DERA_R",
         "EPSI_ELGA": "ELGA_EPSI_R",
         "QIRE_ELNO": "ELNO_ERRE_R",

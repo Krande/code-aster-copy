@@ -59,6 +59,7 @@ def C_NOM_GRANDEUR():
         "FACY_R",
         "FLAP_R",
         "FER2_R",
+        "VFER2_R",
         "FISS_R",
         "FLUN_F",
         "FLUN_R",
