@@ -118,11 +118,6 @@ Erreur utilisateur :
  Le pilotage de type DEFORMATION n'est pas disponible pour la modélisation %(k1)s
 """
     ),
-    62: _(
-        """
- Pilotage: SELECTION='MIXTE' incompatible avec ACTION='AUTRE_PILOTAGE' dans DEFI_LIST_INST
-"""
-    ),
     69: _(
         """
  Problème rencontré :

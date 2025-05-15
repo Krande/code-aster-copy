@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,8 +63,6 @@ subroutine nmcrli(listInst, sddisc)
     character(len=16) :: list_inst_type
     character(len=24) :: sddisc_bcle
     integer, pointer :: v_sddisc_bcle(:) => null()
-    character(len=24) :: sddisc_epil
-    integer, pointer :: v_sddisc_epil(:) => null()
     real(kind=8), pointer :: listInstWork(:) => null()
     character(len=24) :: sddisc_dini
     integer, pointer :: v_sddisc_dini(:) => null()
@@ -87,12 +85,6 @@ subroutine nmcrli(listInst, sddisc)
 ! --- 3 - Fixed loops (NIVEAU)
     sddisc_bcle = sddisc(1:19)//'.BCLE'
     call wkvect(sddisc_bcle, 'V V I', 3, vi=v_sddisc_bcle)
-
-! - Create continuation choice object
-    sddisc_epil = sddisc(1:19)//'.EPIL'
-    call wkvect(sddisc_epil, 'V V I', 2, vi=v_sddisc_epil)
-    v_sddisc_epil(1) = 1
-    v_sddisc_epil(2) = 1
 
 ! - Type of listInst
     call gettco(listInst, list_inst_type)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dfllac(keywf          , i_fail       , dtmin     , event_typek,&
-                      action_typek   ,&
-                      subd_methode   , subd_pas_mini,&
-                      subd_niveau    , subd_pas     ,&
-                      subd_auto      , subd_inst    , subd_duree,&
-                      pcent_iter_plus, coef_maxi    )
-        character(len=16), intent(in) :: keywf
+    subroutine dfllac(factorKeyword, i_fail, dtmin, event_typek, &
+                      action_typek, &
+                      subd_methode, subd_pas_mini, &
+                      subd_niveau, subd_pas, &
+                      subd_auto, subd_inst, subd_duree, &
+                      pcent_iter_plus, coef_maxi)
+        character(len=16), intent(in) :: factorKeyword
         integer, intent(in) :: i_fail
         real(kind=8), intent(in) :: dtmin
         character(len=16), intent(in) :: event_typek

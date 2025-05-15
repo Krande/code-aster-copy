@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine op0028()
 !
@@ -44,40 +43,36 @@ subroutine op0028()
     integer :: ifm, niv
     integer:: nocc
     character(len=8)::model
-    character(len=8), pointer:: v_model(:) => null()
+    character(len=8), pointer:: sdlistModel(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infmaj()
     call infniv(ifm, niv)
-!
+
 ! - Get result datastructure
-!
     call getres(sdlist, k16bid, k16bid)
-!
+
 ! - Read model if present
-!
     call getvid(' ', 'MODELE', scal=model, nbret=nocc)
-    if (nocc .eq. 0) model = ' '
-    call wkvect(sdlist//'.MODELE', 'G V K8', 1, vk8=v_model)
-    v_model(1) = model
-!
+    if (nocc .eq. 0) then
+        model = ' '
+    end if
+    call wkvect(sdlist//'.MODELE', 'G V K8', 1, vk8=sdlistModel)
+    sdlistModel(1) = model
+
 ! - Read parameters for keyword DEFI_LIST
-!
     call dfllty(sdlist, list_method, dtmin)
-!
+
 ! - Read parameters for keyword ECHEC
-!
     call dfllec(sdlist, dtmin)
-!
+
 ! - Read parameters for keyword ADAPTATION
-!
     if (list_method .eq. 'AUTO') then
         call dfllad(sdlist)
     end if
-!
+
 ! - Print debug
-!
     if (niv .ge. 1) then
         call dflldb(sdlist)
     end if

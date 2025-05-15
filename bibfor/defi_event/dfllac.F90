@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfllac(keywf, i_fail, dtmin, event_typek, &
+subroutine dfllac(factorKeyword, i_fail, dtmin, event_typek, &
                   action_typek, &
                   subd_methode, subd_pas_mini, &
                   subd_niveau, subd_pas, &
@@ -33,7 +33,7 @@ subroutine dfllac(keywf, i_fail, dtmin, event_typek, &
 #include "asterfort/dfllin.h"
 #include "asterfort/getvtx.h"
 !
-    character(len=16), intent(in) :: keywf
+    character(len=16), intent(in) :: factorKeyword
     integer, intent(in) :: i_fail
     real(kind=8), intent(in) :: dtmin
     character(len=16), intent(in) :: event_typek
@@ -56,7 +56,7 @@ subroutine dfllac(keywf, i_fail, dtmin, event_typek, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywf            : factor keyword to read failures
+! In  factorKeyword    : factor keyword to read failures
 ! In  i_fail           : index of current factor keyword to read failure
 ! In  dtmin            : minimum time increment in list of times
 ! In  event_typek      : type of event
@@ -78,35 +78,29 @@ subroutine dfllac(keywf, i_fail, dtmin, event_typek, &
 ! --------------------------------------------------------------------------------------------------
 !
     action_typek = ' '
-!
+
 ! - Read
-!
-    call getvtx(keywf, 'ACTION', iocc=i_fail, scal=action_typek, nbret=nocc)
+    call getvtx(factorKeyword, 'ACTION', iocc=i_fail, scal=action_typek, nbret=nocc)
     ASSERT(nocc .gt. 0)
     if (action_typek .eq. failActionKeyword(FAIL_ACT_STOP)) then
 !
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_CUT)) then
-        call dflldc(keywf, i_fail, dtmin, event_typek, &
+        call dflldc(factorKeyword, i_fail, dtmin, event_typek, &
                     subd_methode, subd_pas_mini, &
                     subd_niveau, subd_pas, &
                     subd_auto, subd_inst, subd_duree)
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_ITER)) then
-        call dfllae(keywf, i_fail, pcent_iter_plus)
-        call dflldc(keywf, i_fail, dtmin, event_typek, &
+        call dfllae(factorKeyword, i_fail, pcent_iter_plus)
+        call dflldc(factorKeyword, i_fail, dtmin, event_typek, &
                     subd_methode, subd_pas_mini, &
                     subd_niveau, subd_pas, &
                     subd_auto, subd_inst, subd_duree)
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_ADAPT_COEF)) then
-        call dfllin(keywf, i_fail, coef_maxi)
-    else if (action_typek .eq. failActionKeyword(FAIL_ACT_PILOTAGE)) then
-        call dflldc(keywf, i_fail, dtmin, event_typek, &
-                    subd_methode, subd_pas_mini, &
-                    subd_niveau, subd_pas, &
-                    subd_auto, subd_inst, subd_duree)
+        call dfllin(factorKeyword, i_fail, coef_maxi)
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_CONTINUE)) then
 !
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine
