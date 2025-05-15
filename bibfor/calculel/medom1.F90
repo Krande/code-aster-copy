@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,6 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
     integer ::    n, n1, n2, n3, n5
 !-----------------------------------------------------------------------
     character(len=8) :: k8b, nomo, materi, loadType
-    character(len=4) :: phen
     character(len=8) :: blan8
     character(len=16) :: concep, nomcmd, phenom
     character(len=19) :: excit
@@ -82,16 +81,17 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
     call getres(k8b, concep, nomcmd)
 !
     if ((nomcmd .eq. 'CALC_CHAMP') .or. (nomcmd .eq. 'CALC_ERREUR') .or. &
-      (nomcmd .eq. 'CALC_META  ') .or. (nomcmd .eq. 'CALC_G_XFEM') .or. (nomcmd .eq. 'CALC_G')) then
+        (nomcmd .eq. 'CALC_META  ') .or. (nomcmd .eq. 'CALC_G_XFEM') .or. &
+        (nomcmd .eq. 'CALC_G')) then
 !
 !        RECUPERATION DU MODELE, MATERIAU, CARA_ELEM et EXCIT
 !        POUR LE NUMERO d'ORDRE NUORD
 !
         call rslesd(result, nuord, modele, materi, cara, &
                     excit, iexcit)
-        call dismoi('PHENOMENE', modele, 'MODELE', repk=phen)
+        call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom)
         l_ther = ASTER_FALSE
-        if (phen .eq. 'THERM') then
+        if (phenom(1:5) .eq. 'THERM') then
             l_ther = ASTER_TRUE
         end if
 
@@ -108,9 +108,9 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha, &
         if ((n2 .eq. 0) .and. (k8b(1:3) .eq. 'OUI')) then
             call utmess('A', 'CALCULEL3_39')
         end if
-        call dismoi('PHENOMENE', modele, 'MODELE', repk=phen)
+        call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom)
         l_ther = ASTER_FALSE
-        if (phen .eq. 'THERM') then
+        if (phenom(1:5) .eq. 'THERM') then
             l_ther = ASTER_TRUE
         end if
 !
