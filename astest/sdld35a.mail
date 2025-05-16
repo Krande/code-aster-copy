@@ -1,0 +1,59 @@
+ TITRE
+   SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE                                  
+   ANALYSE SPECTRALE MULTI SUPPORTEE                                            
+ FINSF
+ %
+ COOR_3D
+ P1        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ P2        2.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ P3        2.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ P4        2.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ E12      P1       P2      
+ E13      P1       P3      
+ E14      P1       P4  
+ FINSF
+ %
+ GROUP_NO
+ MASSE                   
+ P2       P3      P4
+ FINSF
+ %
+ GROUP_NO
+ P1                      
+ P1      
+ FINSF
+ %
+ GROUP_NO
+ P2                      
+ P2      
+ FINSF
+ %
+ GROUP_NO
+ P3                      
+ P3      
+ FINSF
+ %
+ GROUP_NO
+ P4                      
+ P4      
+ FINSF
+ %
+ GROUP_MA
+ RESK1                    
+ E12     
+ FINSF
+ %
+ GROUP_MA
+ RESK2                    
+ E13           
+ FINSF
+ %
+ GROUP_MA
+ RESK3                   
+ E14     
+ FINSF
+ %
+ FIN
