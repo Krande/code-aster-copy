@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine create_enthalpy(rhocp, enthalpy)
 
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8t0.h"
 #include "asterfort/focain.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -54,9 +55,9 @@ subroutine create_enthalpy(rhocp, enthalpy)
 
     if (.not. is_cste) then
         rhomoy = values(nbval/2+2)+values(nbval/2+1)
-        beta0 = 0.5d0*rhomoy*(-273.15-values(1))
+        beta0 = 0.5d0*rhomoy*(-r8t0()-values(1))
     else
-        beta0 = values(2)*(-273.15-values(1))
+        beta0 = values(2)*(-r8t0()-values(1))
     end if
 
     call focain('TRAPEZE', rhocp, -beta0, enthalpy, 'G')

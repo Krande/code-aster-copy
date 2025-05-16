@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 ! --------------------------------------------------------------------
 subroutine leverettIsot(temp, satuIn, alpha, beta, ad, t0_C, hygr, dpc)
     implicit none
+#include "asterc/r8t0.h"
 #include "asterfort/utmess.h"
     real(kind=8), intent(in) :: temp, satuIn, alpha, beta, ad, t0_C
     real(kind=8), intent(out) :: hygr
@@ -30,8 +31,8 @@ subroutine leverettIsot(temp, satuIn, alpha, beta, ad, t0_C, hygr, dpc)
 !   idealGasConstant (J/K/mol)
     real(kind=8), parameter :: idealGasConstant = 8.314d0
 !       to Kelvin
-    tempK = temp+273.15d0
-    t0_K = t0_C+273.15d0
+    tempK = temp+r8t0()
+    t0_K = t0_C+r8t0()
     dtemp = tempK-t0_K
     satu = satuIn
 
@@ -82,7 +83,7 @@ contains
 !   Density of liquid water
 !
         waterDensity = 314.4d0+685.6d0*(1.d0 &
-                                        -((tempK-273.15d0)/374.14d0)**(1.d0/0.55d0))**0.55d0
+                                        -((tempK-r8t0())/374.14d0)**(1.d0/0.55d0))**0.55d0
 !
     end function waterDensity
 !   --------------------------------------------------------------------
