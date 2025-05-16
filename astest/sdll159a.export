@@ -1,0 +1,10 @@
+P time_limit 3600
+P memjob 8601600
+P tpsjob 3600
+
+A memjeveux 64.0
+A tpmax 60.0
+
+F comm sdll159a.comm D 1
+F mmed sdll159a.med D 20
+
