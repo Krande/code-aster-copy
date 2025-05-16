@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,6 +74,7 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
     implicit none
 !
 !
+#include "asterc/r8pi.h"
 #include "asterfort/utmess.h"
 !
 !
@@ -118,11 +119,11 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
     real(kind=8) :: alphaCW, z1, z2, zMOY
     real(kind=8) :: Nu, Nu1, kBAR, vmin, CRdc, k1, rhoL, vCALC
     real(kind=8), dimension(0:232) :: thetab_ITER, eq_ITER, dnstra_ITER
-    real(kind=8) :: gammac, gammas, denom
+    real(kind=8) :: gammac, gammas, denom, pi
     integer :: countV, j
-    real(kind=8), parameter :: pi = 3.1415927
 !------------------------------------------------------------------------
 
+    pi = r8pi()
     if (effm .ge. 0.) then
         d = ht-enrobi
         d0 = enrobs

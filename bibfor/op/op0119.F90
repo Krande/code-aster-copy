@@ -34,6 +34,7 @@ subroutine op0119()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/r8pi.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -70,7 +71,6 @@ subroutine op0119()
     integer :: ncarfi1, ncarfi2
     parameter(ncarfi1=3, ncarfi2=7)
     real(kind=8) :: pi4
-    parameter(pi4=0.7853981633974483d+00)
 !
     integer :: nbvfibre, maxfibre1, maxfibre2, nbfibres1, nbfibres2
     integer :: iret, ifm, niv, nboccsec, nboccfib, nboccasf, ii, nbmagr, iidepnoeud, nbocctype1
@@ -118,6 +118,7 @@ subroutine op0119()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     iret = 0
+    pi4 = r8pi()/4.d0
 !
 !   récupération des arguments de la commande
     call getres(sdgf, concep, cmd)

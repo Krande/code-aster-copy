@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,6 +98,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 !______________________________________________________________________
 !
     implicit none
+#include "asterc/r8pi.h"
 #include "asterfort/sandcas1.h"
 #include "asterfort/sandcas2.h"
 #include "asterfort/sandcas3.h"
@@ -157,7 +158,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: tC, zMOY, CRdc, kBAR, rho, k1, vmin, vCALC, VRdc, AsT, ThetaB, VRdmax
     real(kind=8) :: thetaB_ITER(233), EQ_ITER(233), AsT_ITER(233)
 
-    pi = 3.14159265
+    pi = r8pi()
     fcd = fbeton/gammac
     fyd = facier/gammas
 

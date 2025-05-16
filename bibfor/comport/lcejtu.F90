@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
 !
     implicit none
 !
+#include "asterc/r8pi.h"
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8nnem.h"
@@ -93,7 +94,7 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
 ! INITIALISATIONS
     type_comp = 'COMP_ELAS'
     zero = r8prem()
-    pi = 3.14159265
+    pi = r8pi()
     resi = .false.
     rigi = .false.
     elas = .false.

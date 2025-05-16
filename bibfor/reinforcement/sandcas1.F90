@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,6 +98,7 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 !
     use sand_solvers_module
     implicit none
+#include "asterc/r8pi.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/juveca.h"
@@ -167,7 +168,7 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     real(kind=8) :: theta_sup_F, theta_inf_F, t_sup_F, t_inf_F, alpha_INF
     real(kind=8) :: ci, cs, ss, si
 
-    pi = 3.14159265
+    pi = r8pi()
     ierr = 0
     fcd = fbeton/gammac
     fyd = facier/gammas

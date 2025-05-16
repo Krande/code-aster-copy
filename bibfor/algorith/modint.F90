@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 #include "asterc/getran.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8vide.h"
+#include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
@@ -106,8 +107,6 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 !
 !
 !-- VARIABLES DE LA ROUTINE
-    real(kind=8) :: pi
-    parameter(pi=3.141592653589793238462643d0)
     aster_logical :: l_hpp
     integer :: lmatmo, i1, j1, k1, m1, lmakry, nsekry, nsekry2, nsekry3, nbborn
     integer :: lmatk, lmatm, lmapro, nbrss, lkpro, lmatrm, lmatrk, lwork
@@ -116,7 +115,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     integer(kind=4) :: info
     real(kind=8) :: temp, rbid, norm, lambda, comlin(2), swork(1), max, omecor
     real(kind=8) :: bande(2), freq1, freq2, alpha, tolsor, precsh, fcorig, precdc
-    real(kind=8) :: mval, normx, valx, avalx, r8bid, vrbid(1)
+    real(kind=8) :: mval, normx, valx, avalx, r8bid, vrbid(1), pi
     complex(kind=8) :: cbid
     character(len=1) :: listyp(2), k1bid
     character(len=4) :: mod45
@@ -143,6 +142,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 !-- DEBUT --C
 !
     cbid = dcmplx(0.d0, 0.d0)
+    pi = r8pi()
     call jemarq()
     call infniv(ifm, niv)
 !

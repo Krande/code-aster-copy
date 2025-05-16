@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -741,6 +741,7 @@ contains
                                nSX_INF, nSY_INF, nSX_SUP, nSY_SUP, nS_TOT, &
                                ncMAX_INF, ncMIN_INF, ncMAX_SUP, ncMIN_SUP)
 
+#include "asterc/r8pi.h"
 #include "asterfort/mgauss.h"
 
 !Variables principales
@@ -783,7 +784,7 @@ contains
         Mxx = effrts(4)
         Myy = effrts(5)
         Mxy = effrts(6)
-        pi = 3.14159265
+        pi = r8pi()
 
         fc = fcd1
 
