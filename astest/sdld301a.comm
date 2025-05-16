@@ -198,7 +198,7 @@ MODE_STA = MODE_STATIQUE(
     MODE_STAT=_F(GROUP_NO=("P1", "P4"), AVEC_CMP=("DX",)),
 )
 
-#
+# Réponse à un déplacement unitaire aux noeuds 
 MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))
 
 
@@ -251,6 +251,55 @@ TEST_RESU(
         ),
     )
 )
+
+
+#
+# Réaction nodale aux noeds 1 et 4 :
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_STA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=4.00000000E+04,
+            VALE_REFE= 4.00000000e+04,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_STA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=-4.00000000E+04,
+            VALE_REFE=-4.00000000e+04,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_STA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=-4.00000000E+04,
+            VALE_REFE=-4.00000000e+04,
+            NOEUD_CMP=("4", "DX"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_STA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=4.00000000E+04,
+            VALE_REFE=4.00000000e+04,
+            NOEUD_CMP=("4", "DX"),
+        ),
+    )
+)
+
 
 #
 #
@@ -326,6 +375,56 @@ TEST_RESU(
         ),
     )
 )
+
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_CO2,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=-1.31716000E+03,
+            VALE_REFE=-1317.16,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_CO2,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=-1.21584000E+03,
+            VALE_REFE=-1215.84,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_CO2,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=-1.21584000E+03,
+            VALE_REFE=-1215.84,
+            NOEUD_CMP=("4", "DX"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_CO2,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=-1.31716000E+03,
+            VALE_REFE=-1317.16,
+            NOEUD_CMP=("4", "DX"),
+        ),
+    )
+)
+
+
+
 #
 # DUPLICATION DU CALCUL POUR COUVERTURE DE CODE
 #
@@ -487,9 +586,11 @@ SPEC2 = DEFI_NAPPE(
 #
 L_TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=30.0, PAS=0.01))
 
-#
-# --------------------------------
-#
+# 
+# ------------------------------------------------------------------------------------------
+#       3.3.4 : Réponse globale sur base modale complète (calcul multi-appui décorrélé)
+
+# Calcul no. 1 : COMB_MODE=’SRSS’
 MUQASRS = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
@@ -530,6 +631,33 @@ TEST_RESU(
     )
 )
 
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQASRS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788E+02,
+            VALE_REFE=5.6512973681333403e+02,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQASRS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788E+02,
+            VALE_REFE=5.6512973681333403e+02,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# Calcul no. 2 : COMB_MODE=ABS
 MUQAABS = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
@@ -572,6 +700,33 @@ TEST_RESU(
 )
 
 #
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQAABS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=6.47688578E+02,
+            VALE_REFE=6.4768847673871358e+02,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQAABS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=6.47688578E+02,
+            VALE_REFE=6.4768847673871358e+02,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
+# Calcul no. 3 : COMB_MODE=DPC
 MUQADPC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
@@ -612,6 +767,33 @@ TEST_RESU(
     )
 )
 
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQADPC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788E+02,
+            VALE_REFE=5.6512973681333403e+02,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQADPC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788E+02,
+            VALE_REFE=5.6512973681333403e+02,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# Calcul no. 4 : COMB_MODE=CQC
 MUQACQC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.05,
@@ -654,6 +836,32 @@ TEST_RESU(
 )
 
 #
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQACQC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=5.65049549E+02,
+            VALE_REFE=5.6504949848205490e+02,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQACQC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=5.65210016E+02,
+            VALE_REFE=5.6520996375382026e+02,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# Calcul no. 5 : COMB_MODE=DSC
 MUQADSC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.05,
@@ -697,6 +905,316 @@ TEST_RESU(
 )
 
 #
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT= MUQADSC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=5.64969410E+02 ,
+            VALE_REFE=5.6496935953324066e+02,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT= MUQADSC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=5.65290122E+02,
+            VALE_REFE=5.6529006859312176e+02,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
+# Calcul no. 6 : COMB_MODE=NRC_DSA
+# Nouvelle méthode : NRC_DSA  = DSC avec les réponses modales en valeur absolue
+MUQA_NRC_DSA = COMB_SISM_MODAL(
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.05,
+    TYPE_ANALYSE="MULT_APPUI",
+    # MASS_INER=MAS,
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_4", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),
+        _F(NOM_APPUI="A_4", LIST_AXE=("X"), SPEC_OSCI=SPEC2, ECHELLE=1.0, CORR_FREQ="NON"),
+    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1"), NOM="GA_1"), _F(LIST_APPUI=("A_4"), NOM="GA_4")),
+    COMB_MODE=_F(TYPE="NRC_DSA", DUREE=15.0),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_DSA,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=5.67485121E-03,
+            VALE_REFE=5.6748506752841727e-03,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_DSA,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=5.67485121E-03,
+            VALE_REFE=5.6748506752841727e-03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_DSA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=5.67485121E+02,
+            VALE_REFE=5.6748506752841718e+02 ,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_DSA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=5.67485121E+02,
+            VALE_REFE=5.6748506752841718e+02 ,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# Calcul no. 7 : COMB_MODE=NRC_GROUPING
+# Nouvelle méthode : NRC_GROUPING , très proche de DPC ?
+MUQA_NRC_GROUPING = COMB_SISM_MODAL(
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_4", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),
+        _F(NOM_APPUI="A_4", LIST_AXE=("X"), SPEC_OSCI=SPEC2, ECHELLE=1.0, CORR_FREQ="NON"),
+    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1"), NOM="GA_1"), _F(LIST_APPUI=("A_4"), NOM="GA_4")),
+    COMB_MODE=_F(TYPE="NRC_GROUPING"),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_GROUPING,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788E-03,
+            VALE_REFE=5.6512973681333420e-03,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_GROUPING,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788E-03,
+            VALE_REFE=5.6512973681333402e-03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_GROUPING ,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788E+02 ,
+            VALE_REFE=5.6512973681333403e+02 ,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_GROUPING ,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788E+02 ,
+            VALE_REFE=5.6512973681333403e+02 ,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# -------------------------------------------------------------------------------------------------
+# Test CUMUL_INTER : Cummulation des réponses entre les groupes d'appuis (DEFAULT = 'QUAD')
+#
+# Calcul no. 8 : COMB_MODE=SRSS, CUMUL_INTER='LINE'
+MUQA_SRSS_LINE = COMB_SISM_MODAL(
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_4", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),
+        _F(NOM_APPUI="A_4", LIST_AXE=("X"), SPEC_OSCI=SPEC2, ECHELLE=1.0, CORR_FREQ="NON"),
+    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1"), NOM="GA_1"), _F(LIST_APPUI=("A_4"), NOM="GA_4")),
+    COMB_MODE=_F(TYPE="SRSS"),
+    CUMUL_INTER='LINE',
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_SRSS_LINE,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=7.54862877E-03,
+            VALE_REFE=7.5486277753660166e-03,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_SRSS_LINE,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=7.54862877E-03,
+            VALE_REFE=7.5486277753660149e-03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT= MUQA_SRSS_LINE,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC= 7.54862877E+02,
+            VALE_REFE= 7.5486277753660170e+02,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT= MUQA_SRSS_LINE,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC= 7.54862877E+02,
+            VALE_REFE= 7.5486277753660147e+02,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# Calcul no. 9 : COMB_MODE=SRSS, CUMUL_INTER='ABS'
+MUQA_SRSS_ABS = COMB_SISM_MODAL(
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_4", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),
+        _F(NOM_APPUI="A_4", LIST_AXE=("X"), SPEC_OSCI=SPEC2, ECHELLE=1.0, CORR_FREQ="NON"),
+    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1"), NOM="GA_1"), _F(LIST_APPUI=("A_4"), NOM="GA_4")),
+    COMB_MODE=_F(TYPE="SRSS"),
+    CUMUL_INTER='ABS',
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_SRSS_ABS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=7.54862877E-03,
+            VALE_REFE=7.5486277753660166e-03,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_SRSS_ABS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=7.54862877E-03,
+            VALE_REFE=7.5486277753660149e-03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT= MUQA_SRSS_ABS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC= 7.54862877E+02,
+            VALE_REFE= 7.5486277753660170e+02,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT= MUQA_SRSS_ABS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC= 7.54862877E+02,
+            VALE_REFE= 7.5486277753660147e+02,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
 #
 # --------------------------------------
 #
