@@ -742,6 +742,7 @@ contains
                                ncMAX_INF, ncMIN_INF, ncMAX_SUP, ncMIN_SUP)
 
 #include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/mgauss.h"
 
 !Variables principales
@@ -790,7 +791,7 @@ contains
 
         Calc1 = abs(AngleSUP)
         Calc2 = abs(abs(AngleSUP)-90)
-        theta_sup = AngleSUP*pi/180.0
+        theta_sup = AngleSUP*r8dgrd()
         if ((Calc1 .ge. epsilon(Calc1)) .and. (Calc2 .ge. epsilon(Calc2))) then
             a00 = -fc*sin(theta_sup)*cos(theta_sup)
             b00 = fc*sin(theta_sup)*cos(theta_sup)*(2*ht-tINF)

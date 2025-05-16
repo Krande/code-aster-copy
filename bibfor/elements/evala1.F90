@@ -36,6 +36,7 @@ subroutine evala1(fami, kpg, ksp, mod, relcom, &
     implicit none
 #include "asterc/r8prem.h"
 #include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/hujtid.h"
 #include "asterfort/redrpr.h"
@@ -59,7 +60,7 @@ subroutine evala1(fami, kpg, ksp, mod, relcom, &
 ! --- QUI FONT VARIER LA DISCRETISATION ANGULAIRE
 ! =====================================================================
     pi = r8pi()
-    degr = pi/180.d0
+    degr = r8dgrd()
     incang(1) = 5.d0
     nbind(1) = 36
     incang(2) = 1.0d0

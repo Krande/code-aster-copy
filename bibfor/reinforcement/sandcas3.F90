@@ -98,6 +98,7 @@ subroutine sandcas3(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     use sand_solvers_module
     implicit none
 #include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/juveca.h"
@@ -230,7 +231,7 @@ subroutine sandcas3(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
             AngleINF(i) = -((N_INF-1)/2-i+1)*thiter
         end if
 
-        theta_inf = AngleINF(i)*pi/180.0
+        theta_inf = AngleINF(i)*r8dgrd()
 
         !Calc pour tSUPA
         tSUPA = 0

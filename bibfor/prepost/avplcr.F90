@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/avcipr.h"
 #include "asterfort/avgrdo.h"
 #include "asterfort/getvr8.h"
@@ -170,8 +171,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
         end if
 !
         if (abs(gammam) .lt. epsilo) then
-            gamma = 5.0d0*(pi/180.0d0)
-            dphi2 = 60.0d0*(pi/180.0d0)
+            gamma = 5.0d0*r8dgrd()
+            dphi2 = 60.0d0*r8dgrd()
             ideb = 1
             ifin = 6
             n = 0
@@ -204,7 +205,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
 !
 !
         else
-            dgam2 = 2.0d0*(pi/180.0d0)
+            dgam2 = 2.0d0*r8dgrd()
             dphi2 = dgam2/sin(gammam)
             n = 0
             k = 2
@@ -260,8 +261,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
         end if
 !
         if (abs(gammam) .lt. epsilo) then
-            gamma = 5.0d0*(pi/180.0d0)
-            dphi2 = 60.0d0*(pi/180.0d0)
+            gamma = 5.0d0*r8dgrd()
+            dphi2 = 60.0d0*r8dgrd()
             ideb = 1
             ifin = 6
             n = 0
@@ -293,7 +294,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
                         jvmax, jomin, jomax)
 !
         else
-            dgam2 = 1.0d0*(pi/180.0d0)
+            dgam2 = 1.0d0*r8dgrd()
             dphi2 = dgam2/sin(gammam)
             n = 0
             k = 2
@@ -347,8 +348,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
         end if
 !
         if (abs(gammam) .lt. epsilo) then
-            gamma = 5.0d0*(pi/180.0d0)
-            dphi2 = 60.0d0*(pi/180.0d0)
+            gamma = 5.0d0*r8dgrd()
+            dphi2 = 60.0d0*r8dgrd()
             ideb = 1
             ifin = 6
             n = 0
@@ -380,7 +381,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
                         jvmax, jomin, jomax)
 !
         else
-            dgam2 = 0.5d0*(pi/180.0d0)
+            dgam2 = 0.5d0*r8dgrd()
             dphi2 = dgam2/sin(gammam)
             n = 0
             k = 2
@@ -433,8 +434,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
         end if
 !
         if (abs(gammam) .lt. epsilo) then
-            gamma = 5.0d0*(pi/180.0d0)
-            dphi2 = 60.0d0*(pi/180.0d0)
+            gamma = 5.0d0*r8dgrd()
+            dphi2 = 60.0d0*r8dgrd()
             ideb = 1
             ifin = 6
             n = 0
@@ -466,7 +467,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
                         jvmax, jomin, jomax)
 !
         else
-            dgam2 = 0.25d0*(pi/180.0d0)
+            dgam2 = 0.25d0*r8dgrd()
             dphi2 = dgam2/sin(gammam)
             n = 0
             k = 2

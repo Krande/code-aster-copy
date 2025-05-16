@@ -104,6 +104,7 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
     use sand_solvers_module
     implicit none
 #include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/mgauss.h"
@@ -257,7 +258,7 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
             else
                 AngleSUP(i) = 0.0
             end if
-            theta_sup = AngleSUP(i)*pi/180.0
+            theta_sup = AngleSUP(i)*r8dgrd()
 
             do j = 1, N1
 
@@ -266,7 +267,7 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
                 else
                     AngleINF(j) = 0.0
                 end if
-                theta_inf = AngleINF(j)*pi/180.0
+                theta_inf = AngleINF(j)*r8dgrd()
 
                 do k = 1, N2
 
@@ -401,7 +402,7 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
             else
                 AngleSUP(i) = -((N1-1)/2-i+1)*thiter
             end if
-            theta_sup = AngleSUP(i)*pi/180.0
+            theta_sup = AngleSUP(i)*r8dgrd()
 
             do j = 1, N1
 
@@ -412,7 +413,7 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
                 else
                     AngleINF(j) = -((N1-1)/2-j+1)*thiter
                 end if
-                theta_inf = AngleINF(j)*pi/180.0
+                theta_inf = AngleINF(j)*r8dgrd()
 
                 do k = 1, N2
 

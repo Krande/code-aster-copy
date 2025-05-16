@@ -75,6 +75,7 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
 !
 !
 #include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/utmess.h"
 !
 !
@@ -158,7 +159,7 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
             sigmat = (VEd+VEdT)/(bw*d)
         end if
         dnstra = sigmat/fyd
-        thetab = 45.0*pi/180.0
+        thetab = 45.0*r8dgrd()
 
 !CALCUL POUR CODIFICATION = EC2
 
@@ -295,7 +296,7 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
 
             do j = 0, 232
                 thetab_ITER(j) = 21.8+j*0.1
-                thetab = Thetab_ITER(j)*pi/180.0
+                thetab = Thetab_ITER(j)*r8dgrd()
                 VRdmax = alphaCW*bw*zMOY*Nu1*fcd/(tan(thetab)+1.0/(tan(thetab)))
                 TRdmax = 2*Nu*alphaCW*fcd*Ak*tk*sin(thetab)*cos(thetab)
                 eq_ITER(j) = VEd/VRdmax+TEd/TRdmax
@@ -310,11 +311,11 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
                 if (eq_ITER(j) .le. 1) then
                     countV = countV+1
                     if (countV .eq. 1) then
-                        thetab = thetab_ITER(j)*pi/180.0
+                        thetab = thetab_ITER(j)*r8dgrd()
                         dnstra = dnstra_ITER(j)
                     else
                         if (dnstra_ITER(j) .lt. dnstra) then
-                            thetab = thetab_ITER(j)*pi/180.0
+                            thetab = thetab_ITER(j)*r8dgrd()
                             dnstra = dnstra_ITER(j)
                         end if
                     end if
