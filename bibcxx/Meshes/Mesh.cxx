@@ -140,7 +140,6 @@ VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINT
             nodes.push_back( _groupsOfNodes->fastAccess( name ).toVector() );
         }
     }
-    std::cout << std::flush;
 
     if ( nodes.empty() ) {
         return VectorLong();
