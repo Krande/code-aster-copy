@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -268,7 +268,8 @@ void MGISBehaviour::setMaterialProperties( const StateId stid, const ASTERDOUBLE
 }
 
 /* General */
-void MGISBehaviour::setInitialState( ASTERDOUBLE dt, ASTERDOUBLE *K ) {
+void MGISBehaviour::setInitialState( ASTERDOUBLE rdt, ASTERDOUBLE dt, ASTERDOUBLE *K ) {
+    _data->rdt = (double)rdt;
     _data->dt = (double)dt;
     _data->K[0] = (double)K[0];
     _data->K[1] = (double)K[1];
