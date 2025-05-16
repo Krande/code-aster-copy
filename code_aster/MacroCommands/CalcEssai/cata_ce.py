@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -501,13 +501,13 @@ class InterSpectre:
         for nume_i, nume_j in coupl_ddl:
             if not self.nume_phy or not self.isnume:
                 # rangement alpha-numerique des donnees de l'inter-spectre
-                ind_l = nume_ordr_l.index(nume_i)
-                ind_c = nume_ordr_c.index(nume_j)
+                ind_l = nume_ordr_l.index(nume_i[1:])
+                ind_c = nume_ordr_c.index(nume_j[1:])
                 __fonc = RECU_FONCTION(INTE_SPEC=self.obj, NUME_ORDRE_I=nume_i, NUME_ORDRE_J=nume_j)
             elif self.nume_phy:
                 # rangement selon l'ordre des DDL donne par self.nume
-                ind_l = self.nume_phy.index(nume_i)
-                ind_c = self.nume_phy.index(nume_j)
+                ind_l = self.nume_phy.index(nume_i[1:])
+                ind_c = self.nume_phy.index(nume_j[1:])
                 if nume_i == nume_j:
                     __fonc = RECU_FONCTION(
                         INTE_SPEC=self.obj,
