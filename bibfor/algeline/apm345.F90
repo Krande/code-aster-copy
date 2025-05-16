@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/apchar.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -72,7 +73,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk, &
     call jemarq()
     call infniv(ifm, niv)
     pi = r8pi()
-    raddeg = 180.d0/pi
+    raddeg = r8rddg()
 !
 !   --- VERBOSE MODE FOR APM STEPS ---
 !      NIV=2

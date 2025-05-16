@@ -375,8 +375,8 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     do k = 1, ndimsi
         sigdv(k) = sigm(k)-sigmo*kron(k)
         sieqm = sieqm+sigdv(k)**2
-        sigmp(k) = (theta*deuxmu+(1.d0-theta)*deumum)/deumum*(sigm(k)- &
-                                         sigmo*kron(k))+(theta*troikp+(1.d0-theta)*troikm)/troikm* &
+        sigmp(k) = (theta*deuxmu+(1.d0-theta)*deumum)/deumum &
+                   *(sigm(k)-sigmo*kron(k))+(theta*troikp+(1.d0-theta)*troikm)/troikm* &
                    sigmo*kron(k)
     end do
     sieqm = sqrt(1.5d0*sieqm)

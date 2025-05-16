@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine ircnc8(fileUnit, realFormat, cplxFormat, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 #include "asterc/r8vide.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -121,7 +121,7 @@ subroutine ircnc8(fileUnit, realFormat, cplxFormat, &
 !
 ! - Initializations
 !
-    c1 = 180.d0/r8pi()
+    c1 = r8rddg()
     rundf = r8vide()
     fmtLen = lxlgut(realFormat)
 !

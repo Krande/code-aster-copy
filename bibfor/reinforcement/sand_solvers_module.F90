@@ -743,6 +743,7 @@ contains
 
 #include "asterc/r8pi.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/mgauss.h"
 
 !Variables principales
@@ -932,9 +933,9 @@ contains
             end if
 
             if (AngleINF .ge. 0) then
-                AngleINF = 90-AngleINF*(180.0/pi)
+                AngleINF = 90-AngleINF*r8rddg()
             else
-                AngleINF = -90-AngleINF*(180.0/pi)
+                AngleINF = -90-AngleINF*r8rddg()
             end if
 
             nS_TOT = abs(nSX_SUP)+abs(nSX_INF)+abs(nSY_SUP)+abs(nSY_INF)

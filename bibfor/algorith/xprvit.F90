@@ -28,7 +28,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/dismoi.h"
@@ -120,7 +120,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
     integer :: jbasef, k, ier
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, ppi(3), normij
-    real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan, pi
+    real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan
     aster_logical :: grille, fonvir, fvirtu
 !
     character(len=19) :: covir, bavir, vitvir, angvir, numvir
@@ -168,9 +168,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
     call infmaj()
     call infniv(ifm, niv)
 !
-    pi = r8pi()
-    t0 = 0.5d0/180.d0*pi
-    t180 = 179.5d0/180.d0*pi
+    t0 = 0.5d0*r8dgrd()
+    t180 = 179.5d0*r8dgrd()
     radtor = rdtor
     radimp = rdimp
 !

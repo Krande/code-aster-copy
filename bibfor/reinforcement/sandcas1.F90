@@ -100,6 +100,7 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     implicit none
 #include "asterc/r8pi.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/juveca.h"
@@ -352,8 +353,8 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
             ierr = 0
             t_sup = t_sup_F
             t_inf = t_inf_F
-            theta_sup = (180.0/pi)*theta_sup_F
-            theta_inf = (180.0/pi)*theta_inf_F
+            theta_sup = r8rddg()*theta_sup_F
+            theta_inf = r8rddg()*theta_inf_F
             dnsxi = nSX_INF(indx_F)/fyd
             dnsxs = nSX_SUP(indx_F)/fyd
             dnsyi = nSY_INF(indx_F)/fyd

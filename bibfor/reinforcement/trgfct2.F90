@@ -28,6 +28,7 @@ subroutine trgfct2(nb, fcttab)
     !
     implicit none
 #include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 
     !
     !     ! FACETTES POUR METHODE DE CAPRA ET MAURY
@@ -68,6 +69,6 @@ subroutine trgfct2(nb, fcttab)
         fcttab(i, 3) = -2.d0*sin(angle)*cos(angle)
         fcttab(i, 4) = cos(angle)
         fcttab(i, 5) = sin(angle)
-        fcttab(i, 6) = angle*180.d0/pi
+        fcttab(i, 6) = angle*r8rddg()
 20      continue
         end subroutine

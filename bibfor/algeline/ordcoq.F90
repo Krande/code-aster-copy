@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno, &
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/dcabs2.h"
 #include "asterfort/fft.h"
 #include "asterfort/fointr.h"
@@ -400,7 +401,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno, &
     write (ifm, 502) ipmax-1
     write (ifm, 510)
     write (ifm, 511) err
-    write (ifm, 512) theta0*180.d0/pi
+    write (ifm, 512) theta0*r8rddg()
 !
     call jedetr('&&ORDCOQ.TEMP.NOCR')
     call jedetr('&&ORDCOQ.TEMP.THETA')
