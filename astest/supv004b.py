@@ -38,8 +38,8 @@ test.assertEqual(syntax.getName(), "DEBUT")
 catadef = DEBUT.definition
 test.assertIn("INFO", catadef.simple_keywords)
 test.assertNotIn("INFO", catadef.factor_keywords)
-test.assertIn("CODE", catadef.factor_keywords)
-test.assertNotIn("CODE", catadef.simple_keywords)
+test.assertNotIn("CODE", catadef.factor_keywords)
+test.assertIn("CODE", catadef.simple_keywords)
 
 userkw = _F(
     IMPR_MACRO="OUI",
@@ -59,7 +59,7 @@ syntax.define(userkw)
 test.assertEqual(syntax.getFactorKeywordNbOcc("ERREUR"), 1)
 
 test.assertTrue(syntax.getexm("", "IMPR_MACRO"))
-test.assertFalse(syntax.getexm(" ", "CODE"))
+test.assertTrue(syntax.getexm(" ", "CODE"))
 test.assertFalse(syntax.getexm("ERREUR", "ALARM"))
 test.assertTrue(syntax.getexm("ERREUR", ""))
 test.assertTrue(syntax.getexm("ERREUR", " "))
