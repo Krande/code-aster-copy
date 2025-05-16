@@ -17,9 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ... import CA
 from ...CodeCommands import PROJ_CHAMP, AFFE_MODELE
 from ...Messages import UTMESS
+from ...Objects import Mesh
+from ...Utilities import MPI
 
 
 class MockField:
@@ -101,7 +102,7 @@ def MOCK_PROJ_CHAMP(RESULTAT, METHODE, MAILLAGE_1, MAILLAGE_2, NOM_CHAM, TYPE_CH
     assert isinstance(NOM_CHAM, (list, tuple))
 
     if MAILLAGE_1.isParallel():
-        rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
+        rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
         # The target point
         p0 = MAILLAGE_2.getCoordinates().toNumpy().tolist()[0]
@@ -109,7 +110,7 @@ def MOCK_PROJ_CHAMP(RESULTAT, METHODE, MAILLAGE_1, MAILLAGE_2, NOM_CHAM, TYPE_CH
         p1 = MAILLAGE_1.getCoordinates().toNumpy().tolist()[0]
 
         # Build a new point cloud mesh from the coordinate points
-        MP0 = CA.Mesh.buildPointCloud([p0, p1], info=0)
+        MP0 = Mesh.buildPointCloud([p0, p1], info=0)
 
         # Define the mechanical model for the source mesh
         MOD_3D = AFFE_MODELE(
@@ -144,7 +145,7 @@ def MOCK_PROJ_CHAMP(RESULTAT, METHODE, MAILLAGE_1, MAILLAGE_2, NOM_CHAM, TYPE_CH
         if refe_values_mask.all():
             root0 = rank
 
-        roots = CA.MPI.ASTER_COMM_WORLD.allreduce([root0], CA.MPI.SUM)
+        roots = MPI.ASTER_COMM_WORLD.allreduce([root0], MPI.SUM)
         root = max(roots)
 
         nb_shared = len(roots) - roots.count(-1)
@@ -164,7 +165,7 @@ def MOCK_PROJ_CHAMP(RESULTAT, METHODE, MAILLAGE_1, MAILLAGE_2, NOM_CHAM, TYPE_CH
                     values[fld][n] = v[0].tolist()
 
         # Broadcast the collected values to all processes
-        valbcast = CA.MPI.ASTER_COMM_WORLD.bcast(values, root=root)
+        valbcast = MPI.ASTER_COMM_WORLD.bcast(values, root=root)
         resu = MockResult(valbcast)
 
     else:
