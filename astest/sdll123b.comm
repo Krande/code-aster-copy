@@ -41,7 +41,7 @@ from math import pi, sqrt
 from code_aster.Commands import *
 from code_aster import CA
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 test = CA.TestCase()
 

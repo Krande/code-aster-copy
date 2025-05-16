@@ -19,7 +19,7 @@
 
 # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 #       (3D ET FORCE_INTERNE_F)
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 

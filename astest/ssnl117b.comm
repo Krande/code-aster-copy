@@ -25,7 +25,7 @@ from math import pi
 from code_aster.Commands import *
 from code_aster.MacroCommands.Contrib.macro_rota_globale import MACR_ROTA_GLOBALE
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 behaviour = CREA_LIB_MFRONT(NOM_COMPOR="Plasticity", UNITE_MFRONT=38)
 

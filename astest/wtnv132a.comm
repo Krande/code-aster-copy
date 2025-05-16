@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ R_ELA_ISO = 0.01
 
 list_no_later_dro = ["N46", "N47", "N48", "N49", "N50", "N51", "N52", "N53", "N54", "N55", "N137"]
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM=("CALCULEL4_9",), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", IGNORE_ALARM=("CALCULEL4_9",), DEBUG=_F(SDVERI="OUI"))
 
 VISCOLIQ = DEFI_CONSTANTE(VALE=0.001)
 

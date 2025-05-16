@@ -21,9 +21,7 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.Solvers import NonLinearOperator, TimeStepper
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"), INFO=1
-)
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = CA.TestCase()
 

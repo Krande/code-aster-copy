@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 D = 0.040  # Tube diameter  = 4 cm
 t = 0.005  # Tube thickness = 5 mm
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
 
 TUBE = LIRE_MAILLAGE(FORMAT="ASTER")
 MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE, ABSC_CURV=_F(GROUP_NO_ORIG="N001", TOUT="OUI"))

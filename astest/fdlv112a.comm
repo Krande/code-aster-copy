@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # FLUIDES INCOMPRESSIBLES - MASSES AJOUTEES.
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 LIST_IN = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=11.14, PAS=0.01))
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ import pdb
 
 # Pour des raisons de performances, on force SDVERI='NON'.
 DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    CODE="OUI",
     IGNORE_ALARM=("CALCULEL4_9", "DYNAMIQUE_2", "MECANONLINE_78"),
     DEBUG=_F(SDVERI="NON"),
 )

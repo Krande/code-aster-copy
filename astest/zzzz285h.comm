@@ -32,7 +32,7 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.Utilities import MPI
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="ABORT"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="ABORT"))
 
 test = CA.TestCase()
 

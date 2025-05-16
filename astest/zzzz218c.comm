@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 # aslint: disable=W2005
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE="OUI")
 
 pr_int = 10.0e5
 pr_atmos = 1.0e5

@@ -31,7 +31,7 @@
 # --------------------------------------------------------------------------------------------------
 import numpy as NU
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 

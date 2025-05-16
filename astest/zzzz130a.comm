@@ -33,11 +33,7 @@
 #   pouvant servir de champ de variables internes initiales pour STAT_NON_LINE
 # ----------------------------------------------------------------
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    IGNORE_ALARM=("MECANONLINE5_37", "MECANONLINE2_37"),
-    DEBUG=_F(SDVERI="OUI"),
-)
+DEBUT(CODE="OUI", IGNORE_ALARM=("MECANONLINE5_37", "MECANONLINE2_37"), DEBUG=_F(SDVERI="OUI"))
 
 # IGNORE_ALARME: ARRET='NON' AUTORISE POUR VALIDATION CREA_RESU
 

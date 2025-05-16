@@ -31,7 +31,7 @@ test = CA.TestCase()
 # >>> Isotropic compression test on a 3D HEXA8 element with the CSSM model
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
 
 ### >>>>>>>>>>>>>
 ### Read the mesh

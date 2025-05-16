@@ -51,7 +51,7 @@ jeuy = 0.005
 from code_aster.Utilities import ExecutionParameter
 
 #
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 #
 max_print = ExecutionParameter().get_option("max_print")
 #

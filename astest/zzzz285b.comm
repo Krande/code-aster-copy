@@ -19,7 +19,7 @@
 
 #       PROJECTION D'UN MAILLAGE SUR LUI-MEME
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM=("MODELE1_63",), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", IGNORE_ALARM=("MODELE1_63",), DEBUG=_F(SDVERI="OUI"))
 
 # F2 : formule utilisee pour calculer l'erreur relative :
 F2 = FORMULE(VALE="abs(X3/X1)", NOM_PARA=["X1", "X3"])

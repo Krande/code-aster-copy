@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 # PLAQUE CIRCULAIRE EN APPUI SIMPLE SOUMISE A UNE PRESSION UNIFORME
 # MAILLAGE 1/4 DE PLAQUE

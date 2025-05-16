@@ -22,7 +22,7 @@ from code_aster.Commands import *
 # on souhaite verifier que l'alarme MECANONLINE10_25 a ete emise
 from code_aster.Messages import MessageLog
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ERREUR_F="EXCEPTION"))
+DEBUT(CODE="OUI", ERREUR=_F(ERREUR_F="EXCEPTION"))
 
 # donnes similaires a hsnv125g
 MA = LIRE_MAILLAGE(FORMAT="ASTER")

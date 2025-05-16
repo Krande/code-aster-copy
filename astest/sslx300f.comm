@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    CODE="OUI",
     DEBUG=_F(SDVERI="OUI"),
     IGNORE_ALARM=("COMPOR4_17", "UTILITAI_3", "CALCULEL_40", "MESH1_4"),
 )

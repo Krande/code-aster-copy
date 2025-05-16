@@ -21,7 +21,7 @@
 
 # ESSAI TRACTION UNE MAILLE QUAD8
 # MODELISATION D_PLAN
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # -------------------------------------------------

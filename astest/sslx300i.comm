@@ -17,11 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("UTILITAI_3", "CHARGES2_4", "MODELE1_14"),
-)
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("UTILITAI_3", "CHARGES2_4", "MODELE1_14"))
 
 # table des coefficients
 t1 = LIRE_TABLE(UNITE=31, FORMAT="ASTER")

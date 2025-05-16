@@ -22,7 +22,7 @@
 # Validation de la prise en compte de l'option d'interpolation déclarée
 # dans les fonctions fournies à GENE_ACCE_SEISME
 #
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 #
 graine = 1000  # Graine
 t_pas = 0.01  # Fréquence d'échantillonage du signal

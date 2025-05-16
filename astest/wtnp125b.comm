@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 tint = 236520000.0
 tfin = 630720000.0
