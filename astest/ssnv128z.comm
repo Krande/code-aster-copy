@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 #       CAS_TEST SSNV128: 2D, ELEMENTS Q8, METHODE CONTINUE
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM=("MODELE1_63"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", IGNORE_ALARM=("MODELE1_63"), DEBUG=_F(SDVERI="OUI"))
 
 # <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
 #  LE MODELE PROVOQUANT CES ALARMES CONTIENT UNE SURFACE RIGIDE POUR LE CONTACT

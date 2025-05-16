@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ test.assertEqual(syntax.getName(), "DEBUT")
 catadef = DEBUT.definition
 test.assertIn("INFO", catadef.simple_keywords)
 test.assertNotIn("INFO", catadef.factor_keywords)
-test.assertIn("CODE", catadef.factor_keywords)
-test.assertNotIn("CODE", catadef.simple_keywords)
+test.assertNotIn("CODE", catadef.factor_keywords)
+test.assertIn("CODE", catadef.simple_keywords)
 
 userkw = _F(
     IMPR_MACRO="OUI",
@@ -58,9 +58,8 @@ test.assertSequenceEqual(syntax.getres(), ("result", "type", "DEBUT"))
 syntax.define(userkw)
 test.assertEqual(syntax.getFactorKeywordNbOcc("ERREUR"), 1)
 
-test.assertTrue(syntax.getexm("CODE", "NIV_PUB_WEB"))
 test.assertTrue(syntax.getexm("", "IMPR_MACRO"))
-test.assertFalse(syntax.getexm(" ", "CODE"))
+test.assertTrue(syntax.getexm(" ", "CODE"))
 test.assertFalse(syntax.getexm("ERREUR", "ALARM"))
 test.assertTrue(syntax.getexm("ERREUR", ""))
 test.assertTrue(syntax.getexm("ERREUR", " "))

@@ -21,7 +21,7 @@
 from code_aster.Commands import *
 from code_aster.CA import MPI
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 

@@ -23,7 +23,7 @@
 #
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
 al = 32.0 * pi / 180.0

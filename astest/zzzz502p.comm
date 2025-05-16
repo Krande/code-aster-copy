@@ -21,7 +21,7 @@ import os.path as osp
 
 from code_aster.Utilities import SharedTmpdir, petscInitialize
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE="OUI")
 
 petscInitialize("-mat_view ::ascii_info -ksp_monitor -log_view")
 

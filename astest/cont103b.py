@@ -31,7 +31,7 @@ import numpy as np
 # -------------------------------------
 #       - Main
 # -------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = CA.TestCase()
 

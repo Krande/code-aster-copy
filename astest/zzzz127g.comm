@@ -21,7 +21,7 @@ from code_aster import CA
 from code_aster.Utilities import PETSc, SLEPc, get_shared_tmpdir
 import numpy as np
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
 
 test = CA.TestCase()
 

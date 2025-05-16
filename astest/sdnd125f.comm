@@ -55,7 +55,7 @@ K3 = 1.0e5  # [N/m]
 om = 2.0 * pi * freq
 #################################################
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 MESH = LIRE_MAILLAGE(FORMAT="ASTER")
 

@@ -20,7 +20,7 @@
 #                               PAR LA SEULE FORCE DE GRAVITE
 #                       MODELISATION VF DECENTRE ARETE (VFDA)
 #
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 
 # =============================================================

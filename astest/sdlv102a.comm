@@ -26,7 +26,7 @@ import numpy as np
 
 test = CA.TestCase()
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 # ------------------------------------------------------#
 # --                                                  --#

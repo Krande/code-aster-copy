@@ -179,7 +179,7 @@ class Starter(ExecuteCommand):
         stop_with = "EXCEPTION"
         if params.option & Options.Abort:
             stop_with = "ABORT"
-        if params.option & Options.TestMode or keywords.get("CODE"):
+        if params.option & Options.TestMode or keywords.get("CODE", "NON") == "OUI":
             params.enable(Options.TestMode)
             stop_with = "ABORT"
             iwarn = True

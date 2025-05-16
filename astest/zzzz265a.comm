@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 # A RAJOUTER AUX TESTS MPI SUR 2 PROCS
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE="OUI")
 
 _IMAX = 1.73435331104e-08
 
