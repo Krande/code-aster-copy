@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -247,9 +247,9 @@ subroutine fcesnd(nomte, ind, xi1, xi2, xi3, &
 !
             f1 = (xi1-b)*(xi2-b)*(xi1-a)*(xi2-a)/c
             alf1 = -0.204545454545450d0
-            bet1 = 22.4415584415586
-            gam1 = -0.788961038961030
-            del1 = -90.2045454545460
+            bet1 = 22.4415584415586d0
+            gam1 = -0.788961038961030d0
+            del1 = -90.2045454545460d0
 !
             alf2 = -9.734528142543403d-02
             bet2 = 0.292035844276301d0
