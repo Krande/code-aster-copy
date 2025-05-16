@@ -2014,7 +2014,7 @@ D_calc = [
 
 for j in range(len(D_ref)):
     for i, ncmp in enumerate(COMP):
-        if D_ref[j][i] == 0:
+        if abs(D_ref[j][i]) < 1.0e-8:
             TEST_RESU(
                 RESU=_F(
                     RESULTAT=RESUELU8,
@@ -2372,7 +2372,7 @@ D_calc = [
 
 for j in range(len(D_ref)):
     for i, ncmp in enumerate(COMP):
-        if D_ref[j][i] == 0:
+        if abs(D_ref[j][i]) < 1.0e-8:
             TEST_RESU(
                 RESU=_F(
                     RESULTAT=RESUELU9,
@@ -2727,7 +2727,7 @@ D_calc = [
 
 for j in range(len(D_ref)):
     for i, ncmp in enumerate(COMP):
-        if D_ref[j][i] == 0:
+        if abs(D_ref[j][i]) < 1.0e-8:
             TEST_RESU(
                 RESU=_F(
                     RESULTAT=RESUELU10,
@@ -3083,7 +3083,7 @@ D_calc = [
 
 for j in range(len(D_ref)):
     for i, ncmp in enumerate(COMP):
-        if D_ref[j][i] == 0:
+        if abs(D_ref[j][i]) < 1.0e-8:
             TEST_RESU(
                 RESU=_F(
                     RESULTAT=RESUELU11,
@@ -3439,7 +3439,7 @@ D_calc = [
 
 for j in range(len(D_ref)):
     for i, ncmp in enumerate(COMP):
-        if D_ref[j][i] == 0:
+        if abs(D_ref[j][i]) < 1.0e-8:
             TEST_RESU(
                 RESU=_F(
                     RESULTAT=RESUELU12,
@@ -3651,7 +3651,7 @@ D_calc = [
 
 for j in range(len(D_ref)):
     for i, ncmp in enumerate(COMP):
-        if D_ref[j][i] == 0:
+        if abs(D_ref[j][i]) < 1.0e-8:
             TEST_RESU(
                 RESU=_F(
                     RESULTAT=RESUELU13,
@@ -3866,7 +3866,7 @@ D_calc = [
 
 for j in range(len(D_ref)):
     for i, ncmp in enumerate(COMP):
-        if D_ref[j][i] == 0:
+        if abs(D_ref[j][i]) < 1.0e-8:
             TEST_RESU(
                 RESU=_F(
                     RESULTAT=RESUELU14,
@@ -4061,7 +4061,7 @@ D_calc = [
 
 for j in range(len(D_ref)):
     for i, ncmp in enumerate(COMP):
-        if D_ref[j][i] == 0:
+        if abs(D_ref[j][i]) < 1.0e-8:
             TEST_RESU(
                 RESU=_F(
                     RESULTAT=RESUELU15,
