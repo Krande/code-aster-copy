@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -147,18 +147,16 @@ ASTERDOUBLE DEF0( R8T0, r8t0 ) { return (ASTERDOUBLE)R8_T0; }
 ASTERDOUBLE DEF0( R8PI, r8pi ) { return (ASTERDOUBLE)R8_PI; }
 
 /* -------------------------------------------------- VALXEM 2PI*/
-ASTERDOUBLE DEF0( R8DEPI, r8depi ) {
-    return ( ASTERDOUBLE )( (ASTERDOUBLE)2. * (ASTERDOUBLE)R8_PI );
-}
+ASTERDOUBLE DEF0( R8DEPI, r8depi ) { return (ASTERDOUBLE)( (ASTERDOUBLE)2. * (ASTERDOUBLE)R8_PI ); }
 
 /* ------------------------------------------------- VALXEM DGRD*/
 ASTERDOUBLE DEF0( R8DGRD, r8dgrd ) {
-    return ( ASTERDOUBLE )( (ASTERDOUBLE)R8_PI / (ASTERDOUBLE)180. );
+    return (ASTERDOUBLE)( (ASTERDOUBLE)R8_PI / (ASTERDOUBLE)180. );
 }
 
 /* ------------------------------------------------- VALXEM RDDG*/
 ASTERDOUBLE DEF0( R8RDDG, r8rddg ) {
-    return ( ASTERDOUBLE )( (ASTERDOUBLE)180. / (ASTERDOUBLE)R8_PI );
+    return (ASTERDOUBLE)( (ASTERDOUBLE)180. / (ASTERDOUBLE)R8_PI );
 }
 
 /* ------------------------------------ LONGUEUR de BLOC pour MULT_FRONT */
@@ -169,3 +167,8 @@ ASTERDOUBLE DEF0( R4MAEM, r4maem ) { return R4MAX; }
 
 /* -------------------------------------- VALEUR MINIMALE REELLE R4*/
 ASTERDOUBLE DEF0( R4MIEM, r4miem ) { return R4MIN; }
+
+/* ---------------------------------------------  SIGNE */
+ASTERDOUBLE DEFP( R8SIGN, r8sign, ASTERDOUBLE *v ) {
+    return (ASTERDOUBLE)( ( R8PREC < *v ) - ( *v < -R8PREC ) );
+}

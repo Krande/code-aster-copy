@@ -25,6 +25,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8sign.h"
 #include "asterfort/diraidklv.h"
 #include "asterfort/diklvraid.h"
 #include "asterfort/in_liste_entier.h"
@@ -202,7 +203,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 call utmess('F', 'DISCRETS_34', nk=2, valk=messak)
             end if
             do ii = 1, 3
-                SigneAxe(axes(ii)) = LeSigne(ldm(axes(ii)))
+                SigneAxe(axes(ii)) = r8sign(ldm(axes(ii)))
             end do
         end if
         ! Instant '-' : Longueur du discret, repère GLOBAL
@@ -242,11 +243,11 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 ldpglob = 0.0
                 if (abs(ldp(axes(1))) <= abs(ldp(axes(2)))) then
                     ldpglob(axes(1)) = ldp(axes(1))
-                    ldpglob(axes(2)) = abs(ldpglob(axes(1)))*LeSigne(ldp(axes(2)))
+                    ldpglob(axes(2)) = abs(ldpglob(axes(1)))*r8sign(ldp(axes(2)))
                     forceglob(axes(1)) = rignor*ldpglob(axes(1))
                     raideglob(axes(1)) = rignor
                 else
-                    ldpglob(axes(1)) = abs(ldp(axes(2)))*LeSigne(ldp(axes(1)))
+                    ldpglob(axes(1)) = abs(ldp(axes(2)))*r8sign(ldp(axes(1)))
                     ldpglob(axes(2)) = ldp(axes(2))
                     forceglob(axes(2)) = rignor*ldpglob(axes(2))
                     raideglob(axes(2)) = rignor
@@ -434,20 +435,4 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
         end if
     end if
 !
-contains
-!
-    function LeSigne(xx)
-        implicit none
-#include "asterc/r8prem.h"
-        real(kind=8) :: LeSigne
-        real(kind=8), intent(in) :: xx
-!
-        if (xx >= r8prem()) then
-            LeSigne = 1.0
-        else if (xx <= -r8prem()) then
-            LeSigne = -1.0
-        else
-            LeSigne = 0.0
-        end if
-    end function LeSigne
 end subroutine
