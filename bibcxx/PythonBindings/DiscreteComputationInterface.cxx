@@ -931,5 +931,6 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
       Returns:
             FieldOnNodesReal: residual reference forces vector
-        )" );
+        )" )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 };

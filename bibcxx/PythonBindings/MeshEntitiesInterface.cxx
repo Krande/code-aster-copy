@@ -44,7 +44,8 @@ Enumeration for entity type.
         // fake initFactoryPtr: created by subclass
         .def( define_pickling< VirtualMeshEntity >() )
         .def( "getType", &VirtualMeshEntity::getType )
-        .def( "getNames", &VirtualMeshEntity::getNames );
+        .def( "getNames", &VirtualMeshEntity::getNames )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< AllMeshEntities, AllMeshEntitiesPtr, VirtualMeshEntity >( mod, "AllMeshEntities" )
         // fake initFactoryPtr: created by subclass

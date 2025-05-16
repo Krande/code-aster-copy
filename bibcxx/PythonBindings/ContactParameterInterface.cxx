@@ -95,7 +95,8 @@ Set the contact coefficient used. It is a value of a float
 Arguments:
     float: contact coefficient.
         )",
-              py::arg( "coeff" ) );
+              py::arg( "coeff" ) )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< FrictionParameter, FrictionParameter::FrictionParameterPtr >( mod,
                                                                               "FrictionParameter" )
@@ -169,7 +170,8 @@ Arguments:
         .def_property( "hasFriction", &FrictionParameter::hasFriction,
                        &FrictionParameter::enableFriction, R"(
 bool: enable or disable the use of friction.
-        )" );
+        )" )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< PairingParameter, PairingParameter::PairingParameterPtr >( mod, "PairingParameter" )
         .def( py::init( &initFactoryPtr< PairingParameter > ) )
@@ -246,5 +248,6 @@ bool: enable or disable the use of a fictive distance for beam.
         .def_property( "hasShellDistance", &PairingParameter::hasShellDistance,
                        &PairingParameter::enableShellDistance, R"(
 bool: enable or disable the use of a fictive distance for shell.
-        )" );
+        )" )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 };

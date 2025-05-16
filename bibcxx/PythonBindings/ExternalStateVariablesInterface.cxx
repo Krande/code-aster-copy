@@ -141,7 +141,8 @@ void exportExternalStateVariablesToPython( py::module_ &mod ) {
             Arguments:
                 evolutionParameter (EvolutionParameter): object EvolutionParameter to define
             )",
-              py::arg( "evolutionParameter" ) );
+              py::arg( "evolutionParameter" ) )
+        .attr( "pickling_mode" ) = py::int_( 1 );
     py::class_< ExternalVariableTraits >( mod, "ExternalVariableTraits" )
         .def( "getExternVarTypeStr", &ExternalVariableTraits::getExternVarTypeStr, R"()" );
     py::enum_< externVarEnumInt >( mod, "externVarEnumInt", R"(

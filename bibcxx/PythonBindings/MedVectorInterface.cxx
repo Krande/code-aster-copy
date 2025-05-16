@@ -3,7 +3,7 @@
  * @brief Interface python de MedVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -73,7 +73,8 @@ Set vector values (WARNING values are owned by MedVector: no copy)
             )" )
         .def( "size", &MedVector< double >::size, R"(
 Get vector size, ie: number of elements (cells or nodes)
-)" );
-};
+)" )
+        .attr( "pickling_mode" ) = py::int_( 1 );
+}
 
 #endif

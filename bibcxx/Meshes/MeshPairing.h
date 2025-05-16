@@ -274,7 +274,6 @@ class MeshPairing : public DataStructure {
 
     /** @brief Set method */
     void setMethod( const PairingMethod &method ) { _method = method; };
-    PairingMethod getMethod() const { return _method; };
 };
 
 using MeshPairingPtr = std::shared_ptr< MeshPairing >;

@@ -3,7 +3,7 @@
  * @brief Interface python de MaterialField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,7 +33,8 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
             &initFactoryPtr< PartOfMaterialField, std::vector< MaterialPtr >, MeshEntityPtr > ) )
         .def( define_pickling< PartOfMaterialField >() )
         .def( "getVectorOfMaterial", &PartOfMaterialField::getVectorOfMaterial )
-        .def( "getMeshEntity", &PartOfMaterialField::getMeshEntity );
+        .def( "getMeshEntity", &PartOfMaterialField::getMeshEntity )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< MaterialField, MaterialFieldPtr, DataStructure >( mod, "MaterialField" )
         .def( py::init( &initFactoryPtr< MaterialField, const BaseMeshPtr & > ) )

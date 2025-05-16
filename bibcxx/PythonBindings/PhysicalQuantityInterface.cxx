@@ -70,63 +70,73 @@ Enumeration for physical component.
         .def( py::init( &initFactoryPtr< ForceReal > ) )
         .def( define_pickling< ForceReal >() )
         .def( "debugPrint", &ForceReal::debugPrint )
-        .def( "setValue", &ForceReal::setValue );
+        .def( "setValue", &ForceReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< StructuralForceReal, StructuralForceReal::PhysicalQuantityPtr >(
         mod, "StructuralForceReal" )
         .def( py::init( &initFactoryPtr< StructuralForceReal > ) )
         .def( define_pickling< StructuralForceReal >() )
         .def( "debugPrint", &StructuralForceReal::debugPrint )
-        .def( "setValue", &StructuralForceReal::setValue );
+        .def( "setValue", &StructuralForceReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< LocalBeamForceReal, LocalBeamForceReal::PhysicalQuantityPtr >(
         mod, "LocalBeamForceReal" )
         .def( py::init( &initFactoryPtr< LocalBeamForceReal > ) )
         .def( define_pickling< LocalBeamForceReal >() )
         .def( "debugPrint", &LocalBeamForceReal::debugPrint )
-        .def( "setValue", &LocalBeamForceReal::setValue );
+        .def( "setValue", &LocalBeamForceReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< LocalShellForceReal, LocalShellForceReal::PhysicalQuantityPtr >(
         mod, "LocalShellForceReal" )
         .def( py::init( &initFactoryPtr< LocalShellForceReal > ) )
         .def( define_pickling< LocalShellForceReal >() )
         .def( "debugPrint", &LocalShellForceReal::debugPrint )
-        .def( "setValue", &LocalShellForceReal::setValue );
+        .def( "setValue", &LocalShellForceReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< DisplacementReal, DisplacementReal::PhysicalQuantityPtr >( mod, "DisplacementReal" )
         .def( py::init( &initFactoryPtr< DisplacementReal > ) )
         .def( define_pickling< DisplacementReal >() )
         .def( "debugPrint", &DisplacementReal::debugPrint )
-        .def( "setValue", &DisplacementReal::setValue );
+        .def( "setValue", &DisplacementReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< PressureReal, PressureReal::PhysicalQuantityPtr >( mod, "PressureReal" )
         .def( py::init( &initFactoryPtr< PressureReal > ) )
         .def( define_pickling< PressureReal >() )
         .def( "debugPrint", &PressureReal::debugPrint )
-        .def( "setValue", &PressureReal::setValue );
+        .def( "setValue", &PressureReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< ImpedanceReal, ImpedanceReal::PhysicalQuantityPtr >( mod, "ImpedanceReal" )
         .def( py::init( &initFactoryPtr< ImpedanceReal > ) )
         .def( define_pickling< ImpedanceReal >() )
         .def( "debugPrint", &ImpedanceReal::debugPrint )
-        .def( "setValue", &ImpedanceReal::setValue );
+        .def( "setValue", &ImpedanceReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< NormalSpeedReal, NormalSpeedReal::PhysicalQuantityPtr >( mod, "NormalSpeedReal" )
         .def( py::init( &initFactoryPtr< NormalSpeedReal > ) )
         .def( define_pickling< NormalSpeedReal >() )
         .def( "debugPrint", &NormalSpeedReal::debugPrint )
-        .def( "setValue", &NormalSpeedReal::setValue );
+        .def( "setValue", &NormalSpeedReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< HeatFluxReal, HeatFluxReal::PhysicalQuantityPtr >( mod, "HeatFluxReal" )
         .def( py::init( &initFactoryPtr< HeatFluxReal > ) )
         .def( define_pickling< HeatFluxReal >() )
         .def( "debugPrint", &HeatFluxReal::debugPrint )
-        .def( "setValue", &HeatFluxReal::setValue );
+        .def( "setValue", &HeatFluxReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< HydraulicFluxReal, HydraulicFluxReal::PhysicalQuantityPtr >( mod,
                                                                              "HydraulicFluxReal" )
         .def( py::init( &initFactoryPtr< HydraulicFluxReal > ) )
         .def( define_pickling< HydraulicFluxReal >() )
         .def( "debugPrint", &HydraulicFluxReal::debugPrint )
-        .def( "setValue", &HydraulicFluxReal::setValue );
+        .def( "setValue", &HydraulicFluxReal::setValue )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 };

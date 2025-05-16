@@ -48,7 +48,7 @@ from io import IOBase
 import libaster
 import numpy
 
-from ..Objects import DataStructure, ResultNaming, MeshPairing
+from ..Objects import DataStructure, ResultNaming
 from ..Utilities import (
     DEBUG,
     MPI,
@@ -388,13 +388,13 @@ class PicklingHelper:
         return cls.memods[objName]
 
 
-def subtypes(cls, exclude):
+def subtypes(cls):
     """Return subclasses of 'cls'."""
     types = [cls]
     if not cls:
         return types
     for subclass in cls.__subclasses__():
-        types.extend([k for k in subtypes(subclass, exclude) if k not in exclude])
+        types.extend(subtypes(subclass))
     return types
 
 
@@ -412,7 +412,10 @@ class AsterPickler(pickle.Pickler):
     """
 
     dispatch_table = copyreg.dispatch_table.copy()
-    for subcl in subtypes(DataStructure, exclude=(MeshPairing,)):
+    for subcl in subtypes(DataStructure):
+        # the attribute does not exist when building the Sphinx doc
+        if getattr(subcl, "pickling_mode", 0) != 0:
+            continue
         dispatch_table[subcl] = PicklingHelper.reducer
 
 

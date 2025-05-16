@@ -232,6 +232,9 @@ class DataStructure:
             int: Identifier (address as int).
         """
 
+    def pickling_mode(self):
+        """int: Type of pickling."""
+
     def removeDependency(self, ds):
         """Remove a dependency to a *DataStructure*.
 
@@ -6376,6 +6379,9 @@ class ContactNew(DataStructure):
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -6383,6 +6389,9 @@ class ContactNew(DataStructure):
 
         2. __init__(self: libaster.ContactNew, arg0: Model) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def appendContactZone(self, zone):
         """Append a new contact zone to the contact definition
@@ -6489,6 +6498,9 @@ class FrictionNew(ContactNew):
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -6496,6 +6508,9 @@ class FrictionNew(ContactNew):
 
         2. __init__(self: libaster.FrictionNew, arg0: Model) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
 
 # class ContactZone in libaster
@@ -6512,6 +6527,9 @@ class ContactZone(DataStructure):
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -6519,6 +6537,9 @@ class ContactZone(DataStructure):
 
         2. __init__(self: libaster.ContactZone) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def build(self, arg0):
         """Build and check internal objects
@@ -6690,6 +6711,9 @@ class MeshPairing(DataStructure):
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -6697,6 +6721,9 @@ class MeshPairing(DataStructure):
 
         2. __init__(self: libaster.MeshPairing) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def checkNormals(self, model):
         """Check orientation of normals

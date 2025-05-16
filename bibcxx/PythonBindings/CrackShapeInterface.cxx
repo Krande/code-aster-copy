@@ -3,7 +3,7 @@
  * @brief Interface python de CrackShape
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,5 +53,6 @@ void exportCrackShapeToPython( py::module_ &mod ) {
         .def( "getEndPoint", &CrackShape::getEndPoint )
         .def( "getNormal", &CrackShape::getNormal )
         .def( "getTangent", &CrackShape::getTangent )
-        .def( "getStartingPoint", &CrackShape::getStartingPoint );
+        .def( "getStartingPoint", &CrackShape::getStartingPoint )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 };
