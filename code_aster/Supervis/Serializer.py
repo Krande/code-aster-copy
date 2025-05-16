@@ -48,7 +48,7 @@ from io import IOBase
 import libaster
 import numpy
 
-from ..Objects import DataStructure, ResultNaming
+from ..Objects import DataStructure, ResultNaming, MeshPairing
 from ..Utilities import (
     DEBUG,
     MPI,
@@ -375,7 +375,7 @@ class PicklingHelper:
         logger.debug("+ reducing %s '%s'...", type(obj).__name__, obj.getName())
         initargs = obj.__getinitargs__()
         state = obj.__getstate__()
-        logger.debug("- saving %s %s", initargs, state._st)
+        logger.debug("- saving %s %s", initargs, getattr(state, "_st", None))
         return partial(cls.builder, obj.__class__, obj.getName()), initargs, state
 
     @classmethod
@@ -388,13 +388,13 @@ class PicklingHelper:
         return cls.memods[objName]
 
 
-def subtypes(cls):
+def subtypes(cls, exclude):
     """Return subclasses of 'cls'."""
     types = [cls]
     if not cls:
         return types
     for subclass in cls.__subclasses__():
-        types.extend(subtypes(subclass))
+        types.extend([k for k in subtypes(subclass, exclude) if k not in exclude])
     return types
 
 
@@ -412,7 +412,7 @@ class AsterPickler(pickle.Pickler):
     """
 
     dispatch_table = copyreg.dispatch_table.copy()
-    for subcl in subtypes(DataStructure):
+    for subcl in subtypes(DataStructure, exclude=(MeshPairing,)):
         dispatch_table[subcl] = PicklingHelper.reducer
 
 

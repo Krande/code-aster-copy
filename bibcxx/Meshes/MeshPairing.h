@@ -146,8 +146,12 @@ class MeshPairing : public DataStructure {
     /** @brief Constructor with automatic name */
     MeshPairing() : MeshPairing( ResultNaming::getNewResultName() ) {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    MeshPairing( const py::tuple &tup );
+    py::tuple _getState() const;
+
     /** @brief Initializations of datastructures defining pairing */
-    bool initObjects();
+    bool build();
 
     /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _mesh; };
@@ -270,6 +274,7 @@ class MeshPairing : public DataStructure {
 
     /** @brief Set method */
     void setMethod( const PairingMethod &method ) { _method = method; };
+    PairingMethod getMethod() const { return _method; };
 };
 
 using MeshPairingPtr = std::shared_ptr< MeshPairing >;

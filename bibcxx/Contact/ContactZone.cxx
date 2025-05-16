@@ -55,7 +55,7 @@ bool ContactZone::build( const ModelPtr model ) {
         UTMESS( "F", "CONTACT1_2" );
 
     _meshPairing->setMesh( _model->getMesh() );
-    _meshPairing->initObjects();
+    _meshPairing->build();
     _meshPairing->setVerbosity( getVerbosity() );
 
     // Some checks

@@ -43,6 +43,28 @@ MeshPairing::MeshPairing( const std::string name )
       _method( PairingMethod::Fast ),
       _currentCoordinates( nullptr ) {};
 
+MeshPairing::MeshPairing( const py::tuple &tup ) : MeshPairing( tup[0].cast< std::string >() ) {
+    int i = 0;
+    _mesh = tup[++i].cast< BaseMeshPtr >();
+    _verbosity = tup[++i].cast< ASTERINTEGER >();
+    _method = tup[++i].cast< PairingMethod >();
+    _slaveCellsGroup = tup[++i].cast< std::string >();
+    _masterCellsGroup = tup[++i].cast< std::string >();
+    _nbPairs = tup[++i].cast< ASTERINTEGER >();
+    _pairs = tup[++i].cast< VectorLong >();
+    _nbPoinInte = tup[++i].cast< VectorLong >();
+    _poinInteSlav = tup[++i].cast< VectorReal >();
+    _slavSurf2Volu = tup[++i].cast< MapLong >();
+    std::cout << "DBG: restore " << getName() << " nbPairs: " << _nbPairs << std::endl;
+};
+
+py::tuple MeshPairing::_getState() const {
+    std::cout << "DBG: getState " << getName() << " nbPairs: " << _nbPairs << std::endl;
+    return py::make_tuple( getName(), _mesh, _verbosity, _method, _slaveCellsGroup,
+                           _masterCellsGroup, _nbPairs, _pairs, _nbPoinInte, _poinInteSlav,
+                           _slavSurf2Volu );
+};
+
 void MeshPairing::setMesh( const BaseMeshPtr &mesh ) {
     _mesh = mesh;
     if ( _currentCoordinates == nullptr ) {
@@ -64,7 +86,7 @@ void MeshPairing::setPair( const std::string &groupNameSlav, const std::string &
     MeshPairing::setMasterGroupOfCells( groupNameMast );
     MeshPairing::setSlaveGroupOfCells( groupNameSlav );
 
-    this->initObjects();
+    this->build();
 };
 
 ASTERBOOL
@@ -104,6 +126,9 @@ MeshPairing::buildInverseConnectivity() {
 }
 
 ASTERBOOL MeshPairing::buildCellsNeighbors() {
+    if ( _masterNeighbors->exists() && _slaveNeighbors->exists() ) {
+        return true;
+    }
 
     ASTERINTEGER ind_max, ind_min;
 
@@ -543,7 +568,7 @@ void MeshPairing::setExcludedSlaveGroupOfNodes( const VectorString &groupsName )
     _excludedSlaveNodes = groupsName;
 };
 
-ASTERBOOL MeshPairing::initObjects() {
+ASTERBOOL MeshPairing::build() {
     if ( getMesh()->hasGroupOfCells( _slaveCellsGroup ) ) {
         _slaveNodes = getMesh()->getNodesFromCells( _slaveCellsGroup, false, true );
         _slaveCells = getMesh()->getCells( _slaveCellsGroup );

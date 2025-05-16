@@ -36,6 +36,13 @@ Type of coordinates: Slave or Global.)" )
         .export_values();
     class_.def( py::init( &initFactoryPtr< MeshPairing, std::string > ) );
     class_.def( py::init( &initFactoryPtr< MeshPairing > ) );
+    class_.def( define_pickling< MeshPairing >() );
+    class_.def( "build", &MeshPairing::build, R"(
+Setup internal objects.
+
+Returns:
+    bool: *True* if it succeeds, *False* in case of error.
+            )" );
     class_.def( "getNumberOfPairs", &MeshPairing::getNumberOfPairs, R"(
 Get number of pairs
 
@@ -169,6 +176,32 @@ Return the mesh
 Returns:
     Mesh: mesh.
         )" );
+    class_.def( "getMasterGroupOfCells", &MeshPairing::getMasterGroupOfCells, R"(
+Get the name of the group of the master cells.
+
+Returns:
+    str: group name
+            )" );
+    class_.def( "getSlaveGroupOfCells", &MeshPairing::getSlaveGroupOfCells, R"(
+Get the name of the group of the slave cells.
+
+Returns:
+    str: group name
+            )" );
+    class_.def( "setMasterGroupOfCells", &MeshPairing::setMasterGroupOfCells, R"(
+Get the name of the group of the master cells.
+
+Arguments:
+    name (str): group name
+            )",
+                py::arg( "name" ) );
+    class_.def( "setSlaveGroupOfCells", &MeshPairing::setSlaveGroupOfCells, R"(
+Get the name of the group of the slave cells.
+
+Arguments:
+    name (str): group name
+            )",
+                py::arg( "name" ) );
     class_.def( "getMasterCellsFromNode", &MeshPairing::getMasterCellsFromNode, R"(
 Get the master cells associated with a node number
 
@@ -241,6 +274,12 @@ Arguments:
     method (PairingMethod): method ("OLD", "Fast", "Robust)
         )",
                 py::arg( "method" ) );
+    class_.def( "getMethod", &MeshPairing::getMethod, R"(
+Get the current method of pairing
+
+Returns:
+    PairingMethod: method used ("OLD", "Fast", "Robust)
+        )" );
     py::enum_< PairingMethod >( mod, "PairingMethod", R"(
 Type of pairing: Fast, BrutForce and Legacy.)" )
         .value( "Fast", PairingMethod::Fast )
