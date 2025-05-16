@@ -2097,12 +2097,12 @@ class BaseDOFNumbering(DataStructure):
     def computeNumbering(self, *args, **kwargs):
         """Overloaded function.
 
-        1. computeNumbering(self: libaster.BaseDOFNumbering, arg0: Model, arg1: ListOfLoads) -> bool
+        1. computeNumbering(self: libaster.BaseDOFNumbering, model: Model, listOfLoads: ListOfLoads, verbose: bool = True) -> bool
 
-        2. computeNumbering(self: libaster.BaseDOFNumbering, arg0: list[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]]) -> bool
+        2. computeNumbering(self: libaster.BaseDOFNumbering, matrix: list[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]], verbose: bool = True) -> bool
         """
 
-    def computeRenumbering(self, arg0, arg1, arg2, arg3):
+    def computeRenumbering(self, model, listOfLoads, defiCont, vContElem, verbose=True):
         pass
 
     def getEquationNumbering(self):

@@ -121,24 +121,26 @@ void DEFSS( ACDOCH_WRAP, acdoch_wrap, const char *, STRING_SIZE, const char *, S
 void DEFSSSS( NUMCIMA, numcima, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
               STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_NUMERO_WRAP( a, b, c, d, e ) CALLOOOOO( NUMERO_WRAP, numero_wrap, a, b, c, d, e )
-void DEFSSSSS( NUMERO_WRAP, numero_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
-               const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
-
-#define CALLO_NUMER3_WRAP( a, b, c, d, e, f )                                                      \
-    CALLOOOOOO( NUMER3_WRAP, numer3_wrap, a, b, c, d, e, f )
-void DEFSSSSSS( NUMER3_WRAP, numer3_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+#define CALLO_NUMERO_WRAP( a, b, c, d, e, f )                                                      \
+    CALLOOOOOP( NUMERO_WRAP, numero_wrap, a, b, c, d, e, f )
+void DEFSSSSSP( NUMERO_WRAP, numero_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
                 const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                const char *, STRING_SIZE );
+                ASTERLOGICAL * );
 
-#define CALLO_NUME_DDL_MATR( a, b, c ) CALLOOP( NUME_DDL_MATR, nume_ddl_matr, a, b, c )
-void DEFSSP( NUME_DDL_MATR, nume_ddl_matr, const char *, STRING_SIZE, const char *, STRING_SIZE,
-             ASTERINTEGER * );
+#define CALLO_NUMER3_WRAP( a, b, c, d, e, f, g )                                                   \
+    CALLOOOOOOP( NUMER3_WRAP, numer3_wrap, a, b, c, d, e, f, g )
+void DEFSSSSSSP( NUMER3_WRAP, numer3_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 const char *, STRING_SIZE, ASTERLOGICAL * );
 
-#define CALLO_NUME_DDL_CHAMELEM( a, b, c, d )                                                      \
-    CALLOOOO( NUME_DDL_CHAMELEM, nume_ddl_chamelem, a, b, c, d )
-void DEFSSSS( NUME_DDL_CHAMELEM, nume_ddl_chamelem, const char *, STRING_SIZE, const char *,
-              STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_NUME_DDL_MATR( a, b, c, d ) CALLOOPP( NUME_DDL_MATR, nume_ddl_matr, a, b, c, d )
+void DEFSSPP( NUME_DDL_MATR, nume_ddl_matr, const char *, STRING_SIZE, const char *, STRING_SIZE,
+              ASTERINTEGER *, ASTERLOGICAL * );
+
+#define CALLO_NUME_DDL_CHAMELEM( a, b, c, d, e )                                                   \
+    CALLOOOOP( NUME_DDL_CHAMELEM, nume_ddl_chamelem, a, b, c, d, e )
+void DEFSSSSP( NUME_DDL_CHAMELEM, nume_ddl_chamelem, const char *, STRING_SIZE, const char *,
+               STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL * );
 
 #define CALL_MVMULT( a, b, c ) CALLOOO( MVMULT, mvmult, a, b, c )
 void DEFSSS( MVMULT, mvmult, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,

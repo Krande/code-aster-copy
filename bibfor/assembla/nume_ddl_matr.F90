@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem)
+subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem, verbose)
 !
     implicit none
 !
@@ -24,9 +24,12 @@ subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem)
 #include "asterfort/jeveuo.h"
 #include "asterfort/numddl.h"
 #include "asterfort/promor.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
 !
     character(len=*), intent(in) :: numeDofZ, jvListOfMatrZ
     integer, intent(in) :: nbMatrElem
+    aster_logical, intent(in) :: verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,6 +51,10 @@ subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    if (.not. verbose) then
+        call infmue()
+    end if
+!
     numeDof = numeDofZ
 
 ! - Get list of matrix
@@ -58,5 +65,7 @@ subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem)
 
 ! - CREATION ET CALCUL DU STOCKAGE MORSE DE LA MATRICE :
     call promor(numeDof, 'G')
+!
+    call infbav()
 !
 end subroutine

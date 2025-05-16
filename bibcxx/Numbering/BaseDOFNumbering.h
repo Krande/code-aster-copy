@@ -285,28 +285,30 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Build the Numbering of DOFs
      */
-    virtual bool computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads );
+    virtual bool computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
+                                   bool verbose = true );
 
     virtual bool computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
-                                   const FiniteElementDescriptorPtr defiCont );
+                                   const FiniteElementDescriptorPtr defiCont, bool verbose = true );
 
     /**
      * @brief Build the Numbering of DOFs
      */
-    virtual bool computeNumbering( const std::vector< MatrElem > matrix );
+    virtual bool computeNumbering( const std::vector< MatrElem > matrix, bool verbose = true );
 
     /**
      * @brief renumbering of DOFs
      */
     virtual bool computeRenumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
                                      const FiniteElementDescriptorPtr defiCont,
-                                     const FiniteElementDescriptorPtr virtContElem );
+                                     const FiniteElementDescriptorPtr virtContElem,
+                                     bool verbose = true );
 
     /**
      * @brief Build the Numbering of DOFs
      */
     virtual bool computeNumbering( const std::vector< FiniteElementDescriptorPtr > &Feds,
-                                   const std::string &localMode );
+                                   const std::string &localMode, bool verbose = true );
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC

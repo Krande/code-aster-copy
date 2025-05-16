@@ -19,9 +19,10 @@
 interface
     subroutine numer3_wrap(numeDofZ, base, &
                            modelZ, listLoadZ, &
-                           contactZ, virtContElemZ)
+                           contactZ, virtContElemZ, verbose)
         character(len=*), intent(inout) :: numeDofZ
         character(len=2), intent(in) :: base
         character(len=*), intent(in) :: modelZ, listLoadZ, contactZ, virtContElemZ
+        aster_logical, intent(in) :: verbose
     end subroutine numer3_wrap
 end interface
