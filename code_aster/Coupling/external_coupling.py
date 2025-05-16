@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -372,18 +372,17 @@ class SaturneCoupling(ExternalCoupling):
             (bool): True if the computation is a success else False.
         """
 
-        nb_step = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBPDTM", self.MPI.INT)
         self._params.nb_iter = self.MPI.COUPLING_COMM_WORLD.recv(0, "NBSSIT", self.MPI.INT)
         self._params.adapt_step = bool(self.MPI.COUPLING_COMM_WORLD.recv(0, "TADAPT", self.MPI.INT))
 
         self._params.epsilon = self.MPI.COUPLING_COMM_WORLD.recv(0, "EPSILO", self.MPI.DOUBLE)
         init_time = self.MPI.COUPLING_COMM_WORLD.recv(0, "TTINIT", self.MPI.DOUBLE)
+        final_time = self.MPI.COUPLING_COMM_WORLD.recv(0, "TTMAX", self.MPI.DOUBLE)
         delta_t = self.MPI.COUPLING_COMM_WORLD.recv(0, "PDTREF", self.MPI.DOUBLE)
 
-        if nb_step > 0:
-            self._params.set_values(
-                {"nb_step": nb_step, "init_time": init_time, "delta_t": delta_t}
-            )
+        self._params.set_values(
+            {"init_time": init_time, "final_time": final_time, "delta_t": delta_t, "nb_step": 1}
+        )
 
     def run(self, solver):
         """Execute the coupling loop.
@@ -397,6 +396,7 @@ class SaturneCoupling(ExternalCoupling):
 
         current_time = self._params.init_time
         delta_time = self._params.delta_t
+        delta_one = self._params.final_time - self._params.init_time
         completed = exit_coupling = False
         istep = 0
 
@@ -405,7 +405,9 @@ class SaturneCoupling(ExternalCoupling):
 
         while not completed and not exit_coupling:
             istep += 1
-            self.MPI.COUPLING_COMM_WORLD.send(istep, "DTAST", delta_time, self.MPI.DOUBLE)
+            # for the moment the time_step is controlled by code_saturne
+            # modify delta one to adapt code_saturne time_step
+            self.MPI.COUPLING_COMM_WORLD.send(istep, "DTAST", delta_one, self.MPI.DOUBLE)
             delta_time = self.MPI.COUPLING_COMM_WORLD.recv(istep, "DTCALC", self.MPI.DOUBLE)
             current_time += delta_time
 
