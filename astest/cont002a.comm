@@ -79,6 +79,6 @@ test.assertTrue(mesh_pairing.compute())
 lp = mesh_pairing.getListOfPairs()
 test.assertEqual(len(lp), 26)
 
-del zones, z0
+del zones, z0, pairing, cp, mesh_pairing
 
 FIN()

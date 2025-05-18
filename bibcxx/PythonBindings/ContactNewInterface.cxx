@@ -29,6 +29,7 @@ void exportContactNewToPython( py::module_ &mod ) {
     py::class_< ContactNew, ContactNewPtr, DataStructure >( mod, "ContactNew" )
         .def( py::init( &initFactoryPtr< ContactNew, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ContactNew, ModelPtr > ) )
+        .def( define_pickling< ContactNew >() )
         .def( "getModel", &ContactNew::getModel, R"(
 Return the model used in the contact definition
 
@@ -106,9 +107,12 @@ bool: enable or disable  the use of smoothing.
         )" )
         .def( "isParallel", &ContactNew::isParallel, R"(
 bool: true if parallel contact.
-        )" );
+        )" )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 
     py::class_< FrictionNew, FrictionNewPtr, ContactNew >( mod, "FrictionNew" )
         .def( py::init( &initFactoryPtr< FrictionNew, std::string, ModelPtr > ) )
-        .def( py::init( &initFactoryPtr< FrictionNew, ModelPtr > ) );
+        .def( py::init( &initFactoryPtr< FrictionNew, ModelPtr > ) )
+        .def( define_pickling< FrictionNew >() )
+        .attr( "pickling_mode" ) = py::int_( 1 );
 };

@@ -66,6 +66,10 @@ class ContactNew : public DataStructure {
     /** @brief Constructor with automatic name */
     ContactNew( const ModelPtr model ) : ContactNew( ResultNaming::getNewResultName(), model ) {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    ContactNew( const py::tuple &tup );
+    py::tuple _getState() const;
+
     /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _model->getMesh(); }
 
@@ -159,6 +163,10 @@ class FrictionNew : public ContactNew {
 
     /** @brief Constructor with automatic name */
     FrictionNew( const ModelPtr model ) : FrictionNew( ResultNaming::getNewResultName(), model ) {};
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    FrictionNew( const py::tuple &tup );
+    py::tuple _getState() const;
 
     /** @brief Builder from Fortran part */
     bool build() {

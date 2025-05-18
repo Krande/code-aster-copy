@@ -38,6 +38,33 @@ using VectorLongIter = VectorLong::iterator;
 ContactNew::ContactNew( const std::string name, const ModelPtr model, const std::string type )
     : DataStructure( name, 8, type ), _model( model ), _FEDesc( nullptr ), _verbosity( 1 ) {};
 
+/** @brief restricted constructor (Set) and method (Get) to support pickling */
+ContactNew::ContactNew( const py::tuple &tup )
+    : ContactNew( tup[0].cast< std::string >(), tup[1].cast< ModelPtr >() ) {
+    int i = 1;
+    _FEDesc = tup[++i].cast< FiniteElementDescriptorPtr >();
+    _zones = tup[++i].cast< std::vector< ContactZonePtr > >();
+    _verbosity = tup[++i].cast< ASTERINTEGER >();
+    // _FEDesc =
+    //     std::make_shared< FiniteElementDescriptor >( getName() + ".CONT.LIGRE", _model->getMesh()
+    //     );
+}
+py::tuple ContactNew::_getState() const {
+    return py::make_tuple( getName(), _model, _FEDesc, _zones, _verbosity );
+}
+
+FrictionNew::FrictionNew( const py::tuple &tup )
+    : FrictionNew( tup[0].cast< std::string >(), tup[1].cast< ModelPtr >() ) {
+    int i = 1;
+    _FEDesc = tup[++i].cast< FiniteElementDescriptorPtr >();
+    _zones = tup[++i].cast< std::vector< ContactZonePtr > >();
+    _verbosity = tup[++i].cast< ASTERINTEGER >();
+}
+
+py::tuple FrictionNew::_getState() const {
+    return py::make_tuple( getName(), _model, _FEDesc, _zones, _verbosity );
+}
+
 void ContactNew::appendContactZone( const ContactZonePtr zone ) {
     _zones.push_back( zone );
     _zones.back()->setVerbosity( getVerbosity() );

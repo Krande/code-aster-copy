@@ -26,23 +26,27 @@ CA.init("--test")
 
 test = CA.TestCase()
 
-# the same checks are done at restart
-test = CA.TestCase()
-# zones = DEFICO.getContactZones()
+zones = DEFICO.getContactZones()
 
-# test.assertEqual(len(zones), 1)
-# z0 = zones[0]
+test.assertEqual(len(zones), 1)
+z0 = zones[0]
 
 # check PairingParameter
+pairing = z0.getPairingParameter()
 test.assertEqual(pairing.getAlgorithm(), CA.PairingAlgo.Mortar)
 
 # check ContactParameter
+cp = z0.getContactParameter()
 test.assertEqual(cp.getAlgorithm(), CA.ContactAlgo.Lagrangian)
 test.assertAlmostEqual(cp.getCoefficient(), 2000.0)
 
 # check MeshPairing
+mesh_pairing = z0.getMeshPairing()
+# FIXME works only once!
+# test.assertTrue(mesh_pairing.compute())
 lp = mesh_pairing.getListOfPairs()
 test.assertEqual(len(lp), 26)
+
 
 # lisi = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1, PAS=0.5))
 
