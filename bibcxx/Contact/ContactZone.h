@@ -61,6 +61,10 @@ class ContactZone : public DataStructure {
     /** @brief Constructor with automatic name */
     ContactZone() : ContactZone( ResultNaming::getNewResultName() ) {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    ContactZone( const py::tuple &tup );
+    py::tuple _getState() const;
+
     /** @brief Get model */
     ModelPtr getModel() const { return _model; }
 

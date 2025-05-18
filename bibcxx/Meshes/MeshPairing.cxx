@@ -55,11 +55,9 @@ MeshPairing::MeshPairing( const py::tuple &tup ) : MeshPairing( tup[0].cast< std
     _nbPoinInte = tup[++i].cast< VectorLong >();
     _poinInteSlav = tup[++i].cast< VectorReal >();
     _slavSurf2Volu = tup[++i].cast< MapLong >();
-    std::cout << "DBG: restore " << getName() << " nbPairs: " << _nbPairs << std::endl;
 };
 
 py::tuple MeshPairing::_getState() const {
-    std::cout << "DBG: getState " << getName() << " nbPairs: " << _nbPairs << std::endl;
     return py::make_tuple( getName(), _mesh, _verbosity, _method, _slaveCellsGroup,
                            _masterCellsGroup, _nbPairs, _pairs, _nbPoinInte, _poinInteSlav,
                            _slavSurf2Volu );

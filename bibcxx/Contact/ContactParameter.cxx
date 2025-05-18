@@ -47,8 +47,6 @@ PairingParameter::PairingParameter( const py::tuple &tup ) : PairingParameter() 
     _algo = tup[0].cast< PairingAlgo >();
     _cont_init = tup[1].cast< InitialState >();
     _dist_ratio = tup[2].cast< ASTERDOUBLE >();
-    // _beam = (bool)tup[3].cast< int >();
-    // _shell = (bool)tup[4].cast< int >();
     _beam = tup[3].cast< bool >();
     _shell = tup[4].cast< bool >();
     _dist_supp = tup[5].cast< GenericFunctionPtr >();

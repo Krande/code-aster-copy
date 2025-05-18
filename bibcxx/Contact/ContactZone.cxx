@@ -40,6 +40,22 @@ ContactZone::ContactZone( const std::string name )
       _pairParam( std::make_shared< PairingParameter >() ),
       _meshPairing( std::make_shared< MeshPairing >( getName() + ".APMA" ) ) {};
 
+ContactZone::ContactZone( const py::tuple &tup ) : ContactZone( tup[0].cast< std::string >() ) {
+    int i = 0;
+    _model = tup[++i].cast< ModelPtr >();
+    _verbosity = tup[++i].cast< ASTERINTEGER >();
+    _checkNormal = tup[++i].cast< bool >();
+    _smoothing = tup[++i].cast< bool >();
+    _contParam = tup[++i].cast< ContactParameterPtr >();
+    _fricParam = tup[++i].cast< FrictionParameterPtr >();
+    _pairParam = tup[++i].cast< PairingParameterPtr >();
+    _meshPairing = tup[++i].cast< MeshPairingPtr >();
+}
+py::tuple ContactZone::_getState() const {
+    return py::make_tuple( getName(), _model, _verbosity, _checkNormal, _smoothing, _contParam,
+                           _fricParam, _pairParam, _meshPairing );
+}
+
 void ContactZone::setVerbosity( const ASTERINTEGER &level ) {
     _verbosity = level;
     _meshPairing->setVerbosity( getVerbosity() );
