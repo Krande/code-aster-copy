@@ -114,9 +114,9 @@ bool ContactNew::build() {
 
     // same cata for contact and friction since no Lagrange
     cata[std::make_tuple( 2, ContactAlgo::Nitsche, false )] = "CONT_NIT_SL_2D";
-    // cata[std::make_tuple( 3, ContactAlgo::Nitsche, false )] = "CONT_NIT_SL_3D";
-    // cata[std::make_tuple( 2, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_2D";
-    // cata[std::make_tuple( 3, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_3D";
+    cata[std::make_tuple( 3, ContactAlgo::Nitsche, false )] = "CONT_NIT_SL_3D";
+    cata[std::make_tuple( 2, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_2D";
+    cata[std::make_tuple( 3, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_3D";
 
     // Same elements for contact and friction
     cata[std::make_tuple( 2, ContactAlgo::Penalization, false )] = "CONT_PENA_SL_2D";
@@ -196,8 +196,6 @@ bool ContactNew::build() {
                          list_elem->getDataPtr(), phenom.c_str(), modeli.c_str() );
         }
     }
-
-    std::cout << "Nb slave: " << nb_slave_cells << std::endl;
 
     // hpc : only when the proc has slave cells, so with ligret
     if ( nb_slave_cells != 0 ) {
