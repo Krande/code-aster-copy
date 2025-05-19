@@ -22,7 +22,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
@@ -113,7 +113,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
         s = vdir(1, 1)*vdir(2, 1)+vdir(1, 2)*vdir(2, 2)+vdir(1, 3)*vdir(2, 3)
 !
 !        ATTENTION, NE JAMAIS UTILISER LA FONCTION FORTRAN ACOS
-        alpha = trigom('ACOS', s)*180.d0/r8pi()
+        alpha = trigom('ACOS', s)*r8rddg()
 !
 !        CAS SYMETRIQUE
         if (syme .eq. 'OUI') then
@@ -296,7 +296,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         s = ddot(b_n, vecnor, b_incx, vnprec, b_incy)
-        beta = trigom('ACOS', s)*180.d0/r8pi()
+        beta = trigom('ACOS', s)*r8rddg()
         if (abs(beta) .gt. 10.d0) then
             call utmess('A', 'RUPTURE0_61')
         end if

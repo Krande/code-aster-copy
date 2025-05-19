@@ -17,8 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatr)
+    subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatr, verbose)
         character(len=*), intent(in) :: numeDofZ, jvListOfMatrZ
         integer, intent(in) :: nbMatr
+        aster_logical, intent(in) :: verbose
     end subroutine nume_ddl_matr
 end interface

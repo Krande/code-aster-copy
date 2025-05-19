@@ -19,7 +19,7 @@
 !
 subroutine numer3_wrap(numeDofZ, base, &
                        modelZ, listLoadZ, &
-                       defiContZ, virtContElemZ)
+                       defiContZ, virtContElemZ, verbose)
 !
     use NonLin_Datastructure_type
 !
@@ -27,10 +27,13 @@ subroutine numer3_wrap(numeDofZ, base, &
 !
 #include "asterf_types.h"
 #include "asterfort/numer3.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
 !
     character(len=*), intent(inout) :: numeDofZ
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: modelZ, listLoadZ, defiContZ, virtContElemZ
+    aster_logical, intent(in) :: verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +58,10 @@ subroutine numer3_wrap(numeDofZ, base, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+    if (.not. verbose) then
+        call infmue()
+    end if
+!
 ! - Prepare datastructure from contact
     if (defiContZ .ne. " ") then
         ds_contact%l_contact = ASTER_TRUE
@@ -66,5 +72,7 @@ subroutine numer3_wrap(numeDofZ, base, &
 
 ! - Numbering
     call numer3(modelZ, base, listLoadZ, numeDofZ, ds_contact)
+!
+    call infbav()
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine mazarsmu(option, epsela, deps, dimloc, mazars, &
 !
     aster_logical :: rigi, resi
 !
-    real(kind=8), parameter :: rac2 = 1.4142135623731, grdexp = 200.0
+    real(kind=8), parameter :: grdexp = 200.0
     real(kind=8), parameter :: domlim = 0.99999
 !
     real(kind=8) :: epst0, kk, ac, bc, at, bt, ee, nu, sgels, epelu
@@ -137,13 +137,13 @@ subroutine mazarsmu(option, epsela, deps, dimloc, mazars, &
         ! On est en contraintes planes.
         epsloc(3) = -nu*(epsloc(1)+epsloc(2))/(1.0-nu)
         ! Le cisaillement est mis comme il faut, pour utiliser le 'vrai' calcul tensoriel
-        epsloc(4) = epsloc(4)/rac2
+        epsloc(4) = epsloc(4)/sqrt(2.d0)
     else if (dimloc == 6) then
         !  On est en 3D
         ! Le cisaillement est mis comme il faut, pour utiliser le 'vrai' calcul tensoriel
-        epsloc(4) = epsloc(4)/rac2
-        epsloc(5) = epsloc(5)/rac2
-        epsloc(6) = epsloc(6)/rac2
+        epsloc(4) = epsloc(4)/sqrt(2.d0)
+        epsloc(5) = epsloc(5)/sqrt(2.d0)
+        epsloc(6) = epsloc(6)/sqrt(2.d0)
     else if (dimloc == 1) then
         ! On est en 1D
         epsloc(2) = -nu*epsloc(1)

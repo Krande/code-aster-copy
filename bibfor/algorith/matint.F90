@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine matint(kr, mr, direc, vtest, rayon)
 !
 !-- VARIABLES EN ENTREES / SORTIE
 #include "jeveux.h"
+#include "asterc/r8pi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     real(kind=8) :: kr(12, 12), mr(12, 12), direc(3), vtest(3), rayon
@@ -45,8 +46,8 @@ subroutine matint(kr, mr, direc, vtest, rayon)
     integer :: i1, j1, k1, l1
     real(kind=8) :: e, i, s, g, rho, pi, l, t(12, 12), v1(3), v2(3), v3(3), temp
     real(kind=8) :: kini(12, 12), mini(12, 12), fact
-    parameter(pi=3.141592653589793238462643d0)
 !
+    pi = r8pi()
     fact = (20*rayon/5.d-2)
 !
     e = 2.1d11/(fact**2)

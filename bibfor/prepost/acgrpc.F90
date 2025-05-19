@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
 #include "asterc/r8maem.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/acgrcr.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedisp.h"
@@ -135,8 +136,8 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
     ideb = 1
     dim = 627
     do j = 1, 18
-        gamma = (j-1)*dgam*(pi/180.0d0)
-        dphi = tab1(j)*(pi/180.0d0)
+        gamma = (j-1)*dgam*r8dgrd()
+        dphi = tab1(j)*r8dgrd()
         phi0 = dphi/2.0d0
         ngam = tab2(j)
 !
@@ -192,8 +193,8 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
         end if
 !
         if (abs(gammam) .lt. epsilo) then
-            gamma = 5.0d0*(pi/180.0d0)
-            dphi2 = 60.0d0*(pi/180.0d0)
+            gamma = 5.0d0*r8dgrd()
+            dphi2 = 60.0d0*r8dgrd()
             phi0 = 0.0d0
             n = 0
 !
@@ -216,7 +217,7 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
                         vanocr, respc, vnmax)
 !
         else
-            dgam2 = 2.0d0*(pi/180.0d0)
+            dgam2 = 2.0d0*r8dgrd()
             dphi2 = dgam2/sin(gammam)
             n = 0
             do j = 1, 3

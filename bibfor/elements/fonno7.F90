@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir, &
                   hmax)
     implicit none
 #include "jeveux.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/conare.h"
 #include "asterfort/dismoi.h"
@@ -134,7 +134,7 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir, &
             normv = sqrt(ddot(b_n, vect, b_incx, vect, b_incy))
 !
             cosinu = p/normv
-            cos70 = cos(70*r8pi()/180.d0)
+            cos70 = cos(70*r8dgrd())
             if (abs(cosinu) .lt. cos70) goto 100
 !
 !          ON PREND LE MAX DES PROJECTIONS

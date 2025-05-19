@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ subroutine evala1(fami, kpg, ksp, mod, relcom, &
 ! =====================================================================
     implicit none
 #include "asterc/r8prem.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/hujtid.h"
 #include "asterfort/redrpr.h"
@@ -47,8 +49,6 @@ subroutine evala1(fami, kpg, ksp, mod, relcom, &
     character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: relcom
-    parameter(degr=0.0174532925199d0)
-    parameter(pi=3.14159265358979d0)
 !
 ! =====================================================================
 ! DEFINITION DES ELEMENTS NECESSAIRES A L'EVALUATION DU MODULE
@@ -59,6 +59,8 @@ subroutine evala1(fami, kpg, ksp, mod, relcom, &
 ! --- DEFINITION DE 3 NIVEAUX DE RECHERCHE
 ! --- QUI FONT VARIER LA DISCRETISATION ANGULAIRE
 ! =====================================================================
+    pi = r8pi()
+    degr = r8dgrd()
     incang(1) = 5.d0
     nbind(1) = 36
     incang(2) = 1.0d0

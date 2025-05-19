@@ -38,6 +38,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
 !
 !
 #include "asterf_types.h"
+#include "asterc/r8pi.h"
 #include "jeveux.h"
 #include "asterfort/bmnoin.h"
 #include "asterfort/dismoi.h"
@@ -80,7 +81,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
     distzj = 0.d0
 !
     call jemarq()
-    pi = 4.d0*atan(1.d0)
+    pi = r8pi()
 !
 !--------VERIFICATION NOMBRE DE NOEUDS INTERFACES DROITE ET GAUCHE------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine chreco(chou)
 !    - SA PARTIE IMAGINAIRE EST NULLE.
 !-----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
@@ -98,7 +98,7 @@ subroutine chreco(chou)
 
     call getvtx(' ', 'PARTIE', scal=partie, nbret=iret)
 
-    c1 = 180.d0/r8pi()
+    c1 = r8rddg()
     do i = 1, nbval
         if (partie .eq. 'REEL') then
             zr(jvale+i-1) = dble(zc(jvalin+i-1))

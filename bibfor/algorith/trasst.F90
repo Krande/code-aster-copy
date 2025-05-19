@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
 !
 !
 #include "jeveux.h"
+#include "asterc/r8pi.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvis.h"
@@ -66,7 +67,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
     integer :: i1, ibid, iret, j1, k1, l1, nbeq1, nbmod, isst1, llint1, nbddl1
     integer :: tach1, lmod1, lbid, leff1
     integer :: lintf, nbint, lcopy1, lsecme, limped, unit, numsst
-    real(kind=8) :: travm, travk, traint, comlin(2), shift
+    real(kind=8) :: travm, travk, traint, comlin(2), shift, pi
     character(len=24) :: lisint
     real(kind=8), pointer :: mode_sst1_eff2(:) => null()
     real(kind=8), pointer :: pulsa_propres(:) => null()
@@ -78,6 +79,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     i1 = numsst
+    pi = r8pi()
 !
 !-- RECHERCHE DU MACRO ELEMENT ASSOCIE A LA SST
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
@@ -107,7 +109,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
 !
     call getvr8(' ', 'SHIFT', scal=shift, nbret=ibid)
     comlin(1) = 1.d0
-    comlin(2) = -((shift*2.d0*3.1415927d0)**2)
+    comlin(2) = -((shift*2.d0*pi)**2)
     listyp(1) = 'R'
     listyp(2) = 'R'
     call mtcmbl(2, listyp, comlin, lismat, imped, &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine arg126(nomres)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -146,7 +147,7 @@ subroutine arg126(nomres)
             call getvr8(clesst, clerot, iocc=i, nbval=3, vect=zr(ldrot), &
                         nbret=ibid)
             do j = 1, 3
-                zr(ldrot+j-1) = zr(ldrot+j-1)*pi/180.d+00
+                zr(ldrot+j-1) = zr(ldrot+j-1)*r8dgrd()
             end do
         else
             valk(1) = nomsst

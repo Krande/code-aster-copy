@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
                         temp, diff)
     implicit none
+#include "asterc/r8t0.h"
 #include "asterfort/assert.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -87,8 +88,8 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     end if
 !
     satu = c/poro/1.d3
-    t0_K = t0_C+273.15d0
-    tempK = temp+273.15d0
+    t0_K = t0_C+r8t0()
+    tempK = temp+r8t0()
 
     call vapourDiffusion(satu, tempK, dpc, hygr, poro, a_mil, b_mil, &
                          vapourDiffusionCoef)
@@ -205,7 +206,7 @@ contains
 !   Effective diffusion coefficient of concrete
 !
         ! Diffusion of water vapour in air
-        D0 = 0.217d0*1d-4*((tempk/273.15))**1.88
+        D0 = 0.217d0*1d-4*((tempk/r8t0()))**1.88
         ! Millington resistance factor
         resitanceFactor = ((poro)**a_mil)*(1.d0-satu)**b_mil
         fickDiffusion = D0*resitanceFactor
@@ -219,7 +220,7 @@ contains
 !   Density of liquid water
 !
         waterDensity = 314.4d0+685.6d0*(1.d0 &
-                                        -((tempK-273.15d0)/374.14d0)**(1.d0/0.55d0))**0.55d0
+                                        -((tempK-r8t0())/374.14d0)**(1.d0/0.55d0))**0.55d0
 !
     end function waterDensity
 !

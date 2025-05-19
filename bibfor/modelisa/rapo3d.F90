@@ -59,6 +59,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
+#include "asterc/r8pi.h"
 !
     character(len=8) :: charge
     character(len=14) :: numddl
@@ -102,7 +103,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: ival, ier
     integer :: ncara, iocc
     real(kind=8) :: ig(6), coorig(3), angt, beta, eps, un, vtang(6)
-    real(kind=8) :: xpou, ypou, zpou, s, s1, xg, yg, zg, dnorme
+    real(kind=8) :: xpou, ypou, zpou, s, s1, xg, yg, zg, dnorme, pi
     real(kind=8) :: ax, ay, az, axx, ayy, azz, axy, axz, ayz, valr(9)
     complex(kind=8) :: betac, ccmp(3)
     complex(kind=8), pointer :: coec(:) => null()
@@ -121,6 +122,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- RECUPERATION DES PARAMETRE D IMPRESSION
     call infniv(ifm, niv)
 ! -------------------------------------------------------
+    pi = r8pi()
     numddl = numdlz
     charge = chargz
     lisrel = lisrez
@@ -404,8 +406,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 !     VERIFICATION DE L'IDENTITE GEOMETRIQUE DE G AVEC LE
 !     NOEUD POUTRE A RACCORDER :
-    dnorme = sqrt( &
-             (xpou-xg)*(xpou-xg)+(ypou-yg)*(ypou-yg)+(zpou-zg)*(zpou-zg))/sqrt(s/3.14159265d0)
+    dnorme = sqrt((xpou-xg)*(xpou-xg)+(ypou-yg)*(ypou-yg)+(zpou-zg)*(zpou-zg))/sqrt(s/pi)
     if (dnorme .gt. eps) then
         valr(1) = xg
         valr(2) = yg
@@ -414,7 +415,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         valr(5) = ypou
         valr(6) = zpou
         valr(7) = eps*100.0d0
-        valr(8) = sqrt(s/3.14159265d0)
+        valr(8) = sqrt(s/pi)
         valr(9) = dnorme
         valk(1) = option
         vali(1) = iocc

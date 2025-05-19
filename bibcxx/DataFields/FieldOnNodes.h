@@ -157,14 +157,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( fed->getMesh()->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
             auto dofNume = std::make_shared< ParallelDOFNumbering >();
-            dofNume->computeNumbering( { fed }, localMode );
+            dofNume->computeNumbering( { fed }, localMode, false );
 
             _dofDescription = dofNume->getEquationNumbering();
 #endif
         } else {
             auto dofNume = std::make_shared< DOFNumbering >();
 
-            dofNume->computeNumbering( { fed }, localMode );
+            dofNume->computeNumbering( { fed }, localMode, false );
 
             _dofDescription = dofNume->getEquationNumbering();
         }
@@ -190,7 +190,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         ListOfLoadsPtr lOL = std::make_shared< ListOfLoads >( model );
 
-        dofNume->computeNumbering( model, lOL );
+        dofNume->computeNumbering( model, lOL, false );
 
         _dofDescription = dofNume->getEquationNumbering();
 

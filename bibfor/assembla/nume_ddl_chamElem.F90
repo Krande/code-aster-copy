@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ)
+subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ, verbose)
 !
     implicit none
 !
@@ -26,10 +26,13 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/numero.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
 !
     character(len=*), intent(in) :: numeDofZ
     character(len=*), intent(in) :: listLigrelJvZ
     character(len=*), intent(in) :: modeLocZ, modelZ
+    aster_logical, intent(in) :: verbose
 !
 ! ----------------------------------------------------------------------------------------------
 !
@@ -53,6 +56,10 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ)
 !
 ! ----------------------------------------------------------------------------------------------
 !
+    if (.not. verbose) then
+        call infmue()
+    end if
+!
     numeDof = numeDofZ
     call dismoi("NOM_LIGREL", modelZ, "MODELE", repk=modelLigrel)
 
@@ -71,5 +78,7 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ)
                 modeLocZ_=modeLocZ, modelZ_=modelZ)
 
     AS_DEALLOCATE(vk24=listLigr)
+!
+    call infbav()
 !
 end subroutine

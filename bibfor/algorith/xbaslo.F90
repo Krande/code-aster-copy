@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "blas/ddot.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -166,7 +166,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
             cosi = ddot(b_n, ui, b_incx, uf, b_incy)/(sqrt(ddot(b_n, ui, b_incx, ui, b_incy))*sq&
                    &rt(ddot(b_n, uf, b_incx, uf, b_incy)))
             theta = trigom('ACOS', cosi)
-            is_continu(ni) = abs(theta) .le. (angle_max*r8pi()/180.)
+            is_continu(ni) = abs(theta) .le. (angle_max*r8dgrd())
         end do
     end if
 !

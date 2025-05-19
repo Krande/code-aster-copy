@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -561,6 +561,7 @@ contains
     subroutine beton_rag_mecanique_fluage(mater_br, param_br, grd_press, vim, &
                                           dt, yy0, dy0, dyy, decoup)
         implicit none
+#include "asterc/r8t0.h"
 #include "asterf_types.h"
         !
         type(beton_rag_materiau), intent(in) :: mater_br
@@ -665,7 +666,7 @@ contains
         if (param_br%loi_integre == 3) then
             if ((yy0(9) > mater_br%gel%sr0) .and. &
                 (yy0(9) > yy0(24))) then
-                vaux1 = (yy0(7)-mater_br%gel%Tref)/(yy0(7)+273.15)/(mater_br%gel%Tref+273.15)
+                vaux1 = (yy0(7)-mater_br%gel%Tref)/(yy0(7)+r8t0())/(mater_br%gel%Tref+r8t0())
                 xx1 = mater_br%gel%ear*vaux1
                 vaux1 = mater_br%gel%alpha0*exp(min(max(-100.0, xx1), 100.0))
                 dyy(24) = vaux1*(yy0(9)-mater_br%gel%sr0)*(yy0(9)-yy0(24))/(1.0-mater_br%gel%sr0)

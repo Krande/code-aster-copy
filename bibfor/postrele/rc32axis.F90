@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, momen2_axis, rho)
     implicit none
 #include "asterfort/rcrot.h"
+#include "asterc/r8pi.h"
     integer :: nbabsc
     real(kind=8) :: absc(nbabsc), vale(4, nbabsc), xcoo(nbabsc)
     real(kind=8) :: ycoo(nbabsc), momen0_axis(4), momen1_axis(4), momen2_axis(4), rho
@@ -35,7 +36,7 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
 ! DEB ------------------------------------------------------------------
 !
 !
-    pi = 4.0d0*atan(1.0d0)
+    pi = r8pi()
     l = absc(nbabsc)-absc(1)
     nbsgt = nbabsc-1
     dx = l/nbsgt

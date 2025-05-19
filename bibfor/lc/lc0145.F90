@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
     implicit none
 #include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/r8t0.h"
 #include "asterfort/assert.h"
 #include "asterfort/get_varc.h"
 #include "asterfort/rcexistvarc.h"
@@ -261,7 +262,7 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
         mater_bet_rag%gel%ear = valres(3)
         mater_bet_rag%gel%sr0 = valres(4)
         ! vérification des données
-        isnogood = (valres(1) < 0.0) .or. (valres(2) <= -273.15) .or. (valres(3) <= 0.0)
+        isnogood = (valres(1) < 0.0) .or. (valres(2) <= -r8t0()) .or. (valres(3) <= 0.0)
         if (isnogood) then
             valk(1) = 'GEL_ALPHA0 GEL_TREF GEL_EAR'
             call utmess('F', 'COMPOR3_54', nk=1, valk=valk)

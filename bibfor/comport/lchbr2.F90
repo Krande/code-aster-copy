@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm, &
 !
     implicit none
 #include "asterf_types.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcvh.h"
 #include "asterfort/hbcalc.h"
@@ -120,8 +120,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm, &
     mod = typmod(1)
     itmax = int(carcri(1))
     toler = carcri(3)
-    pi = r8pi()
-    pi = pi/180.d0
+    pi = r8dgrd()
     nbmat = 16
 !
 ! - Get temperatures

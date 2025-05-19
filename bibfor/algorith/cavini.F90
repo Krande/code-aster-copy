@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,13 @@ subroutine cavini(ndim, nno, geom, vim, npg, &
 !
     implicit none
 #include "asterc/getran.h"
+#include "asterc/r8pi.h"
 #include "asterfort/casurf.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
     integer :: ndim, nno, npg, lgpg, imate, zz, zzz, zzzz, nono, nitert, ntirmx
     real(kind=8) :: geom(1:ndim, 1:nno)
-    real(kind=8) :: vim(1:lgpg, 1:npg), gr
+    real(kind=8) :: vim(1:lgpg, 1:npg), gr, pi
     real(kind=8) :: lc(1), mm, echp, ki, epai, ct1, ct2, randd, surff
     integer :: icodre(5)
     integer :: k2(1), kpg, spt
@@ -41,6 +42,7 @@ subroutine cavini(ndim, nno, geom, vim, npg, &
 !
 !
     nitert = 0
+    pi = r8pi()
 567 continue
 !
     nono = 0
@@ -103,7 +105,7 @@ subroutine cavini(ndim, nno, geom, vim, npg, &
         ct2 = 0.d0
         ct2 = 0.5736d0
         sp = 0.d0
-        sp = ct2*((ki**2.d0/(3.1416d0*lc(1)))**(0.5d0))
+        sp = ct2*((ki**2.d0/(pi*lc(1)))**(0.5d0))
         do zzz = 1, npg
             vim(4, zzz) = sp
         end do

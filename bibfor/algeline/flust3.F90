@@ -23,6 +23,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/extmod.h"
@@ -183,7 +184,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor, &
 !
 ! ---    CALCUL DES COORDONNEES DES QUATRES SOMMETS DE L'ENCEINTE
 !
-        ang = don(5)*pi/180.d0
+        ang = don(5)*r8dgrd()
         som(1) = don(1)+(don(3)*cos(ang)-don(4)*sin(ang))/2
         som(2) = don(2)+(don(3)*sin(ang)+don(4)*cos(ang))/2
         som(3) = don(1)-(don(3)*cos(ang)+don(4)*sin(ang))/2

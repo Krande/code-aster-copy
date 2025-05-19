@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine calcyc(nomres)
 !
 !
 #include "asterf_types.h"
+#include "asterc/r8pi.h"
 #include "jeveux.h"
 #include "asterfort/askcyc.h"
 #include "asterfort/asmcyc.h"
@@ -81,7 +82,7 @@ subroutine calcyc(nomres)
 !
 !
     call jemarq()
-    pi = 4.d0*atan(1.d0)
+    pi = r8pi()
     llitmp = 1
     imes = iunifi('MESSAGE')
 !

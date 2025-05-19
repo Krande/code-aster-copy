@@ -62,6 +62,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
+#include "asterc/r8pi.h"
 !
     integer :: iocc
     character(len=8) :: charge
@@ -106,7 +107,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     integer ::  iaprno, idch2, idch1, ilisno, inom
     real(kind=8) :: ig(6), coorig(3), axepou(3), valr(9)
     real(kind=8) :: ayz, axx, ax, ay, axz, axy, ayy, azz, az, beta, dnorme, eps
-    real(kind=8) :: un
+    real(kind=8) :: un, pi
     real(kind=8) :: xg, yg, zg, xpou, ypou, zpou, xnorm, s1, s
     complex(kind=8) :: betac, ccmp(3)
     complex(kind=8), pointer :: coec(:) => null()
@@ -128,6 +129,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     numddl = numdlz
     charge = chargz
     lisrel = lisrez
+    pi = r8pi()
 !
     motfac = 'LIAISON_ELEM'
     call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
@@ -435,10 +437,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- VERIFICATION DE L'IDENTITE GEOMETRIQUE DE G AVEC LE
 ! --- NOEUD POUTRE A RACCORDER :
 !     ------------------------
-    dnorme = sqrt( &
-             (xpou-xg)*(xpou-xg)+(ypou-yg)*(ypou-yg)+(zpou-zg)*(zpou-zg))/sqrt(s/3.1415926&
-             &5d0 &
-             )
+    dnorme = sqrt((xpou-xg)*(xpou-xg)+(ypou-yg)*(ypou-yg)+(zpou-zg)*(zpou-zg))/sqrt(s/pi)
     if (dnorme .gt. eps) then
         valr(1) = xg
         valr(2) = yg
@@ -447,7 +446,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         valr(5) = ypou
         valr(6) = zpou
         valr(7) = eps*100.0d0
-        valr(8) = sqrt(s/3.14159265d0)
+        valr(8) = sqrt(s/pi)
         valr(9) = dnorme
         valk(1) = option
         vali(1) = iocc

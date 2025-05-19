@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 subroutine calamo(nomres, classe, basmod)
 ! aslint: disable=
     implicit none
+#include "asterc/r8pi.h"
 !    T. KERBER     DATE 02/06/93
 !-----------------------------------------------------------------------
 !    BUT : CALCUL DE LA MATRICE D'AMORTISSEMENT MODAL
@@ -69,7 +70,7 @@ subroutine calamo(nomres, classe, basmod)
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    pi = 4.d0*atan(1.d0)
+    pi = r8pi()
 !
 ! --- CREATION DU .REFE
 !
