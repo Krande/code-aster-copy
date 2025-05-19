@@ -21,12 +21,7 @@
 # trois configurations differentes
 # Les points testés sont Nmax, Nmin, Mmax et Mmin
 
-DEBUT(
-    CODE="OUI",
-    ERREUR=_F(ALARME="ALARME"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("CALCULEL_83", "CALCULEL_88", "CALCULEL7_28"),
-)
+DEBUT(CODE="OUI")
 
 MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
@@ -115,6 +110,7 @@ MARGE1 = VERI_FERRAILLAGE(
             FCK=30000000,
             # Steel/concrete modulus ratio
             ALPHA_E=14,
+            EYS=200.0e9,
         ),
     ),
 )
@@ -225,6 +221,7 @@ MARGE2 = VERI_FERRAILLAGE(
             FCK=30000000,
             # Steel/concrete modulus ratio
             ALPHA_E=14,
+            EYS=200.0e9,
         ),
     ),
 )
@@ -333,6 +330,7 @@ MARGE3 = VERI_FERRAILLAGE(
             FCK=30000000,
             # Steel/concrete modulus ratio
             ALPHA_E=14,
+            EYS=200.0e9,
         ),
     ),
 )

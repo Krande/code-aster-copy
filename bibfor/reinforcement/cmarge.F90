@@ -72,6 +72,10 @@ subroutine cmarge(N, M, Ned, Med, Ned_g, Med_g, margin, Nrd, Mrd, load_rate, c0_
     if (inside .eqv. .FALSE.) then
         margin = 2.0
         load_rate = -1.0
+        c0_c = sqrt((Ned-Ned_g)**2+(Med-Med_g)**2)
+        Nrd = -1.d0
+        Mrd = -1.d0
+        c0_crd = -1.d0
         call utmess('A', 'VERIFERRAILLAGE_11')
         goto 998
     end if
@@ -81,9 +85,10 @@ subroutine cmarge(N, M, Ned, Med, Ned_g, Med_g, margin, Nrd, Mrd, load_rate, c0_
         margin = 1.0
         load_rate = 0.d0
         c0_c = sqrt((Ned-Ned_g)**2+(Med-Med_g)**2)
-        Nrd = 0.d0
-        Mrd = 0.d0
+        Nrd = -1.d0
+        Mrd = -1.d0
         c0_crd = -1.d0
+        call utmess('A', 'VERIFERRAILLAGE_18')
     else
 
         ! Slope origin_load

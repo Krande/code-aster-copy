@@ -24,12 +24,7 @@
 # La marge attendue est égale à  (1 - coef. de proportionnalité)
 # Pour ce test UNITE_CONTRAINTE = MPa et UNITE_DIMENSION = mm
 
-DEBUT(
-    CODE="OUI",
-    ERREUR=_F(ALARME="ALARME"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("CALCULEL_83", "CALCULEL_88", "CALCULEL7_28"),
-)
+DEBUT(CODE="OUI")
 
 MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 

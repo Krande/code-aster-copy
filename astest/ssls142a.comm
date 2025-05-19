@@ -21,12 +21,7 @@
 # quatres configurations differentes.
 # Les points testés sont Nmax, Nmin, Mmax et Mmin
 
-DEBUT(
-    CODE="OUI",
-    ERREUR=_F(ALARME="ALARME"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("CALCULEL_83", "CALCULEL_88", "CALCULEL7_28"),
-)
+DEBUT(CODE="OUI")
 
 MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 

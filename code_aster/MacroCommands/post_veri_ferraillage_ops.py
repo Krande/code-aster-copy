@@ -20,6 +20,7 @@ import libAsterGC
 import aster
 from ..CodeCommands import CREA_TABLE
 from ..Messages import UTMESS
+from .PostVeriFerraillage.calculetatsect import sectionELU, sectionELS
 
 
 def trouver_marges_seuil(data, seuil):
@@ -118,13 +119,15 @@ def post_veri_ferraillage_ops(self, CHAM_VFER, **args):
     for i in range(len(list_ma)):
         for j, nom in enumerate(cmps):
             resultats[nom].append(dint_param[i * n_composantes + j])
-
+    marge_crit = resultats["MARGE"]
     dnsinf_crit = resultats["DNSINF"]
     dnssup_crit = resultats["DNSSUP"]
     effn0_crit = resultats["N0"]
     effm0_crit = resultats["M0"]
     effn_crit = resultats["NED"]
     effm_crit = resultats["MED"]
+    Nrd_crit = resultats["N_DIAG"]
+    Mrd_crit = resultats["M_DIAG"]
     typcmb = resultats["TYPCMB"]
     typco = resultats["TYPCO"]
     cequi = resultats["CEQUI"]
@@ -151,6 +154,13 @@ def post_veri_ferraillage_ops(self, CHAM_VFER, **args):
     nom_results = []
     nrd_results = []
     mrd_results = []
+    hc_results = []
+    epsilon_beton_results = []
+    epsilon_acierinf_results = []
+    epsilon_aciersup_results = []
+    sigma_beton_results = []
+    sigma_acierinf_results = []
+    sigma_aciersup_results = []
     for i in range(length):
         if typcmb[i] == 0:
             typco[i] = int(typco[i])
@@ -175,7 +185,48 @@ def post_veri_ferraillage_ops(self, CHAM_VFER, **args):
                 dnsinf_crit[i],
                 dnssup_crit[i],
             )
-
+            my_section = sectionELU(
+                marge_crit[i],
+                typco[i],
+                uc[i],
+                clacier[i],
+                typdiag[i],
+                ht[i],
+                enrobs[i],
+                enrobi[i],
+                facier[i],
+                fbeton[i],
+                alphacc[i],
+                eys[i],
+                gammac[i],
+                gammas[i],
+                dnsinf_crit[i],
+                dnssup_crit[i],
+                effn_crit[i],
+                effm_crit[i],
+                Nrd_crit[i],
+                Mrd_crit[i],
+            )
+            # The starting point for NR iterations at ELU is the solution at ELS
+            my_section_ELS = sectionELS(
+                marge_crit[i],
+                ht[i],
+                enrobs[i],
+                enrobi[i],
+                sigs[i],
+                sigcs[i],
+                sigci[i],
+                eys[i],
+                15.0,
+                dnsinf_crit[i],
+                dnssup_crit[i],
+                effn_crit[i],
+                effm_crit[i],
+                Nrd_crit[i],
+                Mrd_crit[i],
+            )
+            etat0 = my_section_ELS.compute_x_and_curv_ELS()
+            etat = my_section.compute_etat_section_ELU(etat0)
         elif typcmb[i] == 1:
             uc[i] = int(uc[i])
             nrd, mrd = libAsterGC.dintels(
@@ -191,6 +242,24 @@ def post_veri_ferraillage_ops(self, CHAM_VFER, **args):
                 dnsinf_crit[i],
                 dnssup_crit[i],
             )
+            my_section = sectionELS(
+                marge_crit[i],
+                ht[i],
+                enrobs[i],
+                enrobi[i],
+                sigs[i],
+                sigcs[i],
+                sigci[i],
+                eys[i],
+                cequi[i],
+                dnsinf_crit[i],
+                dnssup_crit[i],
+                effn_crit[i],
+                effm_crit[i],
+                Nrd_crit[i],
+                Mrd_crit[i],
+            )
+            etat = my_section.compute_etat_section_ELS()
         # on ajoute 1 au numero de maille pour correspondre a la numerotation de salome
         nom_results.extend([list_ma[i] + 1] * (len(nrd) + 2))
         nrd_results.extend(nrd)
@@ -199,12 +268,35 @@ def post_veri_ferraillage_ops(self, CHAM_VFER, **args):
         mrd_results.extend(mrd)
         mrd_results.append(effm0_crit[i])
         mrd_results.append(effm_crit[i])
+        hc_results.extend([etat[0]] * (len(nrd) + 2))
+
+        if typcmb[i] == 1:
+            epsilon_beton_results.extend([max(etat[1][0], etat[1][1])] * (len(nrd) + 2))
+            epsilon_acierinf_results.extend([etat[1][2]] * (len(nrd) + 2))
+            epsilon_aciersup_results.extend([etat[1][3]] * (len(nrd) + 2))
+            sigma_beton_results.extend([max(etat[2][0], etat[2][1])] * (len(nrd) + 2))
+            sigma_acierinf_results.extend([etat[2][2]] * (len(nrd) + 2))
+            sigma_aciersup_results.extend([etat[2][3]] * (len(nrd) + 2))
+        else:
+            epsilon_beton_results.extend([etat[1][0]] * (len(nrd) + 2))
+            epsilon_acierinf_results.extend([etat[1][1]] * (len(nrd) + 2))
+            epsilon_aciersup_results.extend([etat[1][2]] * (len(nrd) + 2))
+            sigma_beton_results.extend([etat[2][0]] * (len(nrd) + 2))
+            sigma_acierinf_results.extend([etat[2][1]] * (len(nrd) + 2))
+            sigma_aciersup_results.extend([etat[2][2]] * (len(nrd) + 2))
 
     tabout = CREA_TABLE(
         LISTE=(
             _F(PARA="NUMERO_MAILLE", LISTE_I=nom_results),
             _F(PARA="N", LISTE_R=nrd_results),
             _F(PARA="M", LISTE_R=mrd_results),
+            _F(PARA="hauteur comprimée", LISTE_R=hc_results),
+            _F(PARA="epsilon beton", LISTE_R=epsilon_beton_results),
+            _F(PARA="epsilon acier inf", LISTE_R=epsilon_acierinf_results),
+            _F(PARA="epsilon acier sup", LISTE_R=epsilon_aciersup_results),
+            _F(PARA="sigma beton", LISTE_R=sigma_beton_results),
+            _F(PARA="sigma acier inf", LISTE_R=sigma_acierinf_results),
+            _F(PARA="sigma acier sup", LISTE_R=sigma_aciersup_results),
         )
     )
 
