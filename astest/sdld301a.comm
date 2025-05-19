@@ -198,7 +198,7 @@ MODE_STA = MODE_STATIQUE(
     MODE_STAT=_F(GROUP_NO=("P1", "P4"), AVEC_CMP=("DX",)),
 )
 
-# Réponse à un déplacement unitaire aux noeuds 
+# Réponse à un déplacement unitaire aux noeuds
 MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))
 
 
@@ -263,8 +263,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=4.00000000E+04,
-            VALE_REFE= 4.00000000e+04,
+            VALE_CALC=4.00000000e04,
+            VALE_REFE=4.00000000e04,
             NOEUD_CMP=("1", "DX"),
         ),
         _F(
@@ -273,8 +273,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=-4.00000000E+04,
-            VALE_REFE=-4.00000000e+04,
+            VALE_CALC=-4.00000000e04,
+            VALE_REFE=-4.00000000e04,
             NOEUD_CMP=("1", "DX"),
         ),
         _F(
@@ -283,8 +283,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=-4.00000000E+04,
-            VALE_REFE=-4.00000000e+04,
+            VALE_CALC=-4.00000000e04,
+            VALE_REFE=-4.00000000e04,
             NOEUD_CMP=("4", "DX"),
         ),
         _F(
@@ -293,8 +293,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=4.00000000E+04,
-            VALE_REFE=4.00000000e+04,
+            VALE_CALC=4.00000000e04,
+            VALE_REFE=4.00000000e04,
             NOEUD_CMP=("4", "DX"),
         ),
     )
@@ -386,7 +386,7 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=-1.31716000E+03,
+            VALE_CALC=-1.31716000e03,
             VALE_REFE=-1317.16,
             NOEUD_CMP=("1", "DX"),
         ),
@@ -396,7 +396,7 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=-1.21584000E+03,
+            VALE_CALC=-1.21584000e03,
             VALE_REFE=-1215.84,
             NOEUD_CMP=("1", "DX"),
         ),
@@ -406,7 +406,7 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=-1.21584000E+03,
+            VALE_CALC=-1.21584000e03,
             VALE_REFE=-1215.84,
             NOEUD_CMP=("4", "DX"),
         ),
@@ -416,13 +416,12 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=-1.31716000E+03,
+            VALE_CALC=-1.31716000e03,
             VALE_REFE=-1317.16,
             NOEUD_CMP=("4", "DX"),
         ),
     )
 )
-
 
 
 #
@@ -586,7 +585,7 @@ SPEC2 = DEFI_NAPPE(
 #
 L_TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=30.0, PAS=0.01))
 
-# 
+#
 # ------------------------------------------------------------------------------------------
 #       3.3.4 : Réponse globale sur base modale complète (calcul multi-appui décorrélé)
 
@@ -640,8 +639,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=5.65129788E+02,
-            VALE_REFE=5.6512973681333403e+02,
+            VALE_CALC=5.65129788e02,
+            VALE_REFE=5.6512973681333403e02,
             NOM_CAS="TOTA",
         ),
         _F(
@@ -650,8 +649,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=5.65129788E+02,
-            VALE_REFE=5.6512973681333403e+02,
+            VALE_CALC=5.65129788e02,
+            VALE_REFE=5.6512973681333403e02,
             NOM_CAS="TOTA",
         ),
     )
@@ -708,8 +707,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=6.47688578E+02,
-            VALE_REFE=6.4768847673871358e+02,
+            VALE_CALC=6.47688578e02,
+            VALE_REFE=6.4768847673871358e02,
             NOM_CAS="TOTA",
         ),
         _F(
@@ -718,8 +717,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=6.47688578E+02,
-            VALE_REFE=6.4768847673871358e+02,
+            VALE_CALC=6.47688578e02,
+            VALE_REFE=6.4768847673871358e02,
             NOM_CAS="TOTA",
         ),
     )
@@ -776,8 +775,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=5.65129788E+02,
-            VALE_REFE=5.6512973681333403e+02,
+            VALE_CALC=5.65129788e02,
+            VALE_REFE=5.6512973681333403e02,
             NOM_CAS="TOTA",
         ),
         _F(
@@ -786,8 +785,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=5.65129788E+02,
-            VALE_REFE=5.6512973681333403e+02,
+            VALE_CALC=5.65129788e02,
+            VALE_REFE=5.6512973681333403e02,
             NOM_CAS="TOTA",
         ),
     )
@@ -844,8 +843,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=5.65049549E+02,
-            VALE_REFE=5.6504949848205490e+02,
+            VALE_CALC=5.65049549e02,
+            VALE_REFE=5.6504949848205490e02,
             NOM_CAS="TOTA",
         ),
         _F(
@@ -854,8 +853,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=5.65210016E+02,
-            VALE_REFE=5.6520996375382026e+02,
+            VALE_CALC=5.65210016e02,
+            VALE_REFE=5.6520996375382026e02,
             NOM_CAS="TOTA",
         ),
     )
@@ -909,22 +908,22 @@ TEST_RESU(
     RESU=(
         _F(
             REFERENCE="ANALYTIQUE",
-            RESULTAT= MUQADSC,
+            RESULTAT=MUQADSC,
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=5.64969410E+02 ,
-            VALE_REFE=5.6496935953324066e+02,
+            VALE_CALC=5.64969410e02,
+            VALE_REFE=5.6496935953324066e02,
             NOM_CAS="TOTA",
         ),
         _F(
             REFERENCE="ANALYTIQUE",
-            RESULTAT= MUQADSC,
+            RESULTAT=MUQADSC,
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=5.65290122E+02,
-            VALE_REFE=5.6529006859312176e+02,
+            VALE_CALC=5.65290122e02,
+            VALE_REFE=5.6529006859312176e02,
             NOM_CAS="TOTA",
         ),
     )
@@ -958,7 +957,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P2",
             NOM_CMP="DX",
-            VALE_CALC=5.67485121E-03,
+            VALE_CALC=5.67485121e-03,
             VALE_REFE=5.6748506752841727e-03,
             NOM_CAS="TOTA",
         ),
@@ -968,7 +967,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P3",
             NOM_CMP="DX",
-            VALE_CALC=5.67485121E-03,
+            VALE_CALC=5.67485121e-03,
             VALE_REFE=5.6748506752841727e-03,
             NOM_CAS="TOTA",
         ),
@@ -984,8 +983,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=5.67485121E+02,
-            VALE_REFE=5.6748506752841718e+02 ,
+            VALE_CALC=5.67485121e02,
+            VALE_REFE=5.6748506752841718e02,
             NOM_CAS="TOTA",
         ),
         _F(
@@ -994,8 +993,8 @@ TEST_RESU(
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=5.67485121E+02,
-            VALE_REFE=5.6748506752841718e+02 ,
+            VALE_CALC=5.67485121e02,
+            VALE_REFE=5.6748506752841718e02,
             NOM_CAS="TOTA",
         ),
     )
@@ -1028,7 +1027,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P2",
             NOM_CMP="DX",
-            VALE_CALC=5.65129788E-03,
+            VALE_CALC=5.65129788e-03,
             VALE_REFE=5.6512973681333420e-03,
             NOM_CAS="TOTA",
         ),
@@ -1038,7 +1037,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P3",
             NOM_CMP="DX",
-            VALE_CALC=5.65129788E-03,
+            VALE_CALC=5.65129788e-03,
             VALE_REFE=5.6512973681333402e-03,
             NOM_CAS="TOTA",
         ),
@@ -1050,22 +1049,22 @@ TEST_RESU(
     RESU=(
         _F(
             REFERENCE="ANALYTIQUE",
-            RESULTAT=MUQA_NRC_GROUPING ,
+            RESULTAT=MUQA_NRC_GROUPING,
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=5.65129788E+02 ,
-            VALE_REFE=5.6512973681333403e+02 ,
+            VALE_CALC=5.65129788e02,
+            VALE_REFE=5.6512973681333403e02,
             NOM_CAS="TOTA",
         ),
         _F(
             REFERENCE="ANALYTIQUE",
-            RESULTAT=MUQA_NRC_GROUPING ,
+            RESULTAT=MUQA_NRC_GROUPING,
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=5.65129788E+02 ,
-            VALE_REFE=5.6512973681333403e+02 ,
+            VALE_CALC=5.65129788e02,
+            VALE_REFE=5.6512973681333403e02,
             NOM_CAS="TOTA",
         ),
     )
@@ -1086,11 +1085,10 @@ MUQA_SRSS_LINE = COMB_SISM_MODAL(
     ),
     GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1"), NOM="GA_1"), _F(LIST_APPUI=("A_4"), NOM="GA_4")),
     COMB_MODE=_F(TYPE="SRSS"),
-    CUMUL_INTER='LINE',
+    CUMUL_INTER="LINE",
     OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
     TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
-
 
 
 #
@@ -1102,7 +1100,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P2",
             NOM_CMP="DX",
-            VALE_CALC=7.54862877E-03,
+            VALE_CALC=7.54862877e-03,
             VALE_REFE=7.5486277753660166e-03,
             NOM_CAS="TOTA",
         ),
@@ -1112,7 +1110,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P3",
             NOM_CMP="DX",
-            VALE_CALC=7.54862877E-03,
+            VALE_CALC=7.54862877e-03,
             VALE_REFE=7.5486277753660149e-03,
             NOM_CAS="TOTA",
         ),
@@ -1124,22 +1122,22 @@ TEST_RESU(
     RESU=(
         _F(
             REFERENCE="ANALYTIQUE",
-            RESULTAT= MUQA_SRSS_LINE,
+            RESULTAT=MUQA_SRSS_LINE,
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC= 7.54862877E+02,
-            VALE_REFE= 7.5486277753660170e+02,
+            VALE_CALC=7.54862877e02,
+            VALE_REFE=7.5486277753660170e02,
             NOM_CAS="TOTA",
         ),
         _F(
             REFERENCE="ANALYTIQUE",
-            RESULTAT= MUQA_SRSS_LINE,
+            RESULTAT=MUQA_SRSS_LINE,
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC= 7.54862877E+02,
-            VALE_REFE= 7.5486277753660147e+02,
+            VALE_CALC=7.54862877e02,
+            VALE_REFE=7.5486277753660147e02,
             NOM_CAS="TOTA",
         ),
     )
@@ -1157,7 +1155,7 @@ MUQA_SRSS_ABS = COMB_SISM_MODAL(
     ),
     GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1"), NOM="GA_1"), _F(LIST_APPUI=("A_4"), NOM="GA_4")),
     COMB_MODE=_F(TYPE="SRSS"),
-    CUMUL_INTER='ABS',
+    CUMUL_INTER="ABS",
     OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
     TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
@@ -1172,7 +1170,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P2",
             NOM_CMP="DX",
-            VALE_CALC=7.54862877E-03,
+            VALE_CALC=7.54862877e-03,
             VALE_REFE=7.5486277753660166e-03,
             NOM_CAS="TOTA",
         ),
@@ -1182,7 +1180,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P3",
             NOM_CMP="DX",
-            VALE_CALC=7.54862877E-03,
+            VALE_CALC=7.54862877e-03,
             VALE_REFE=7.5486277753660149e-03,
             NOM_CAS="TOTA",
         ),
@@ -1194,22 +1192,22 @@ TEST_RESU(
     RESU=(
         _F(
             REFERENCE="ANALYTIQUE",
-            RESULTAT= MUQA_SRSS_ABS,
+            RESULTAT=MUQA_SRSS_ABS,
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC= 7.54862877E+02,
-            VALE_REFE= 7.5486277753660170e+02,
+            VALE_CALC=7.54862877e02,
+            VALE_REFE=7.5486277753660170e02,
             NOM_CAS="TOTA",
         ),
         _F(
             REFERENCE="ANALYTIQUE",
-            RESULTAT= MUQA_SRSS_ABS,
+            RESULTAT=MUQA_SRSS_ABS,
             NOM_CHAM="REAC_NODA",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC= 7.54862877E+02,
-            VALE_REFE= 7.5486277753660147e+02,
+            VALE_CALC=7.54862877e02,
+            VALE_REFE=7.5486277753660147e02,
             NOM_CAS="TOTA",
         ),
     )

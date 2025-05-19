@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 #
-DEBUT(PAR_LOT='NON',)
+DEBUT(CODE="OUI")
 #
 MAILLAG0 = LIRE_MAILLAGE(FORMAT="ASTER")
 #
@@ -35,7 +35,7 @@ MODELE = AFFE_MODELE(
     ),
 )
 
-k = 1.e5
+k = 1.0e5
 m = 2533
 #
 CARA = AFFE_CARA_ELEM(
@@ -69,8 +69,7 @@ CARA = AFFE_CARA_ELEM(
                 0.0,
             ),
         ),
-
-        _F(GROUP_MA="RESK2", CARA="K_T_D_L", VALE=(1.21*k, 1.0, 1.0)) ,
+        _F(GROUP_MA="RESK2", CARA="K_T_D_L", VALE=(1.21 * k, 1.0, 1.0)),
         _F(
             GROUP_MA="RESK2",
             CARA="M_T_L",
@@ -98,8 +97,7 @@ CARA = AFFE_CARA_ELEM(
                 0.0,
             ),
         ),
-
-        _F(GROUP_MA="RESK3", CARA="K_T_D_L", VALE=(1.44*k, 1.0, 1.0)) ,
+        _F(GROUP_MA="RESK3", CARA="K_T_D_L", VALE=(1.44 * k, 1.0, 1.0)),
         _F(
             GROUP_MA="RESK3",
             CARA="M_T_L",
@@ -201,27 +199,24 @@ TEST_RESU(
             PARA="FREQ",
             REFERENCE="ANALYTIQUE",
             RESULTAT=MODES,
-            VALE_CALC=1.0,
+            VALE_CALC=1.0000058410919896,
             VALE_REFE=1.0,
-            TOLE_MACHINE = 1e-4,
         ),
         _F(
             NUME_ORDRE=2,
             PARA="FREQ",
             REFERENCE="ANALYTIQUE",
             RESULTAT=MODES,
-            VALE_CALC=1.1,
+            VALE_CALC=1.100006425201189,
             VALE_REFE=1.1,
-            TOLE_MACHINE = 1e-4,
         ),
-	_F(
+        _F(
             NUME_ORDRE=3,
             PARA="FREQ",
             REFERENCE="ANALYTIQUE",
             RESULTAT=MODES,
-            VALE_CALC=1.2,
+            VALE_CALC=1.2000070093103878,
             VALE_REFE=1.2,
-            TOLE_MACHINE = 1e-4,
         ),
     )
 )
@@ -257,7 +252,7 @@ TEST_RESU(
             RESULTAT=MODE_STA,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=-8.73114914E-11,
+            VALE_CALC=-8.73114914e-11,
             NOEUD_CMP=("1", "DX"),
         ),
         _F(
@@ -265,7 +260,7 @@ TEST_RESU(
             RESULTAT=MODE_STA,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=4.36557457E-11,
+            VALE_CALC=4.36557457e-11,
             NOEUD_CMP=("1", "DX"),
         ),
         _F(
@@ -273,7 +268,7 @@ TEST_RESU(
             RESULTAT=MODE_STA,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=4.36557457E-11,
+            VALE_CALC=4.36557457e-11,
             NOEUD_CMP=("1", "DX"),
         ),
         _F(
@@ -281,7 +276,7 @@ TEST_RESU(
             RESULTAT=MODE_STA,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=0.00000000E+00,
+            VALE_CALC=0.00000000e00,
             NOEUD_CMP=("1", "DX"),
         ),
     )
@@ -300,12 +295,11 @@ MODE_CO2 = MODE_STATIQUE(
     MATR_MASS=MATRMASS,
     CARA_ELEM=CARA,
     PSEUDO_MODE=_F(
-        GROUP_NO=("P1", ),
+        GROUP_NO=("P1",),
         AVEC_CMP=("DX",),
         # AVEC_CMP = ( 'DX','DY','DZ' ),
     ),
 )
-
 
 
 #
@@ -326,16 +320,15 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P1",
             NOM_CMP="DX",
-            VALE_CALC=0.00000000E+00,
+            VALE_CALC=0.00000000e00,
         ),
         _F(
-
             RESULTAT=MODE_CO2,
             NOEUD_CMP=("1", "DX"),
             NOM_CHAM="DEPL",
             GROUP_NO="P2",
             NOM_CMP="DX",
-            VALE_CALC=2.53300000E-02,
+            VALE_CALC=2.53300000e-02,
         ),
         _F(
             RESULTAT=MODE_CO2,
@@ -343,7 +336,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P3",
             NOM_CMP="DX",
-            VALE_CALC=2.09338843E-02,
+            VALE_CALC=2.09338843e-02,
         ),
         _F(
             RESULTAT=MODE_CO2,
@@ -351,7 +344,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="P4",
             NOM_CMP="DX",
-            VALE_CALC=1.75902778E-02,
+            VALE_CALC=1.75902778e-02,
         ),
     )
 )
@@ -363,7 +356,7 @@ TEST_RESU(
             RESULTAT=MODE_CO2,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=-7.59900000E+03,
+            VALE_CALC=-7.59900000e03,
             NOEUD_CMP=("1", "DX"),
         ),
         _F(
@@ -371,7 +364,7 @@ TEST_RESU(
             RESULTAT=MODE_CO2,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=2.53300000E+03,
+            VALE_CALC=2.53300000e03,
             NOEUD_CMP=("1", "DX"),
         ),
         _F(
@@ -379,7 +372,7 @@ TEST_RESU(
             RESULTAT=MODE_CO2,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=2.53300000E+03,
+            VALE_CALC=2.53300000e03,
             NOEUD_CMP=("1", "DX"),
         ),
         _F(
@@ -387,7 +380,7 @@ TEST_RESU(
             RESULTAT=MODE_CO2,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=2.53300000E+03,
+            VALE_CALC=2.53300000e03,
             NOEUD_CMP=("1", "DX"),
         ),
     )
@@ -490,15 +483,12 @@ TEST_RESU(
             RESULTAT=MUQASRS,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=2.87538397E+03,
-            VALE_REFE=2.8754E+03,
+            VALE_CALC=2.87538397e03,
+            VALE_REFE=2.8754e03,
             NOM_CAS="TOTA",
         ),
     )
 )
-
-
-
 
 
 # Calcul no. 2 : COMB_MODE=ABS
@@ -513,7 +503,6 @@ MUQAABS = COMB_SISM_MODAL(
 )
 
 
-
 # Check ABS
 
 TEST_RESU(
@@ -524,8 +513,8 @@ TEST_RESU(
             RESULTAT=MUQAABS,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=4.73841154E+03,
-            VALE_REFE=4.7384E+03,
+            VALE_CALC=4.73841154e03,
+            VALE_REFE=4.7384e03,
             NOM_CAS="TOTA",
         ),
     )
@@ -552,13 +541,12 @@ TEST_RESU(
             RESULTAT=MUQADPC,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=4.73841154E+03,
-            VALE_REFE=4.7384E+03,
+            VALE_CALC=4.73841154e03,
+            VALE_REFE=4.7384e03,
             NOM_CAS="TOTA",
         ),
     )
 )
-
 
 
 # Calcul no. 4 : COMB_MODE=CQC
@@ -582,8 +570,8 @@ TEST_RESU(
             RESULTAT=MUQACQC,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=3.82763360E+03,
-            VALE_REFE=3.8276E+03,
+            VALE_CALC=3.82763360e03,
+            VALE_REFE=3.8276e03,
             NOM_CAS="TOTA",
         ),
     )
@@ -611,13 +599,12 @@ TEST_RESU(
             RESULTAT=MUQADSC,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=4.08971428E+03,
-            VALE_REFE=4.0897E+03,
+            VALE_CALC=4.08971428e03,
+            VALE_REFE=4.0897e03,
             NOM_CAS="TOTA",
         ),
     )
 )
-
 
 
 # Calcul no. 6 : COMB_MODE=NRC_DSA
@@ -642,13 +629,12 @@ TEST_RESU(
             RESULTAT=MUQA_NRC_DSA,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=4.08971428E+03,
-            VALE_REFE=4.08971E+03,
+            VALE_CALC=4.08971428e03,
+            VALE_REFE=4.08971e03,
             NOM_CAS="TOTA",
         ),
     )
 )
-
 
 
 # Calcul no. 7 : COMB_MODE=NRC_GROUPING
@@ -673,8 +659,8 @@ TEST_RESU(
             RESULTAT=MUQA_NRC_GROUPING,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=3.86052581E+03,
-            VALE_REFE=3.8605E+03,
+            VALE_CALC=3.86052581e03,
+            VALE_REFE=3.8605e03,
             NOM_CAS="TOTA",
         ),
     )
@@ -702,8 +688,8 @@ TEST_RESU(
             RESULTAT=MUQA_NRC_10,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=4.22962730E+03,
-            VALE_REFE=4.2296E+03,
+            VALE_CALC=4.22962730e03,
+            VALE_REFE=4.2296e03,
             NOM_CAS="TOTA",
         ),
     )

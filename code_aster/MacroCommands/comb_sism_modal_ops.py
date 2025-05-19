@@ -433,11 +433,11 @@ def nrc_ten_percent_array(freqs):
     # using round() to invoid approximated values of frequencies
     for i in range(nbmode):
         for j in range(nbmode):
-            if freqs[i] <= freqs[j] :
-                if freqs[j] <= round(1.1*freqs[i], 5):
+            if freqs[i] <= freqs[j]:
+                if freqs[j] <= round(1.1 * freqs[i], 5):
                     H[i, j] = 1
             else:
-                if freqs[i] <= round(1.1*freqs[j], 5):
+                if freqs[i] <= round(1.1 * freqs[j], 5):
                     H[i, j] = 1
     # return
     return H
@@ -483,7 +483,7 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
                 R_m2 += 2 * H[i, j] * r_i * r_j
         R_m2 = np.maximum(R_m2, 0)
 
-    elif type_comb == "NRC_DSA" :  # DSA : Double sum absolute
+    elif type_comb == "NRC_DSA":  # DSA : Double sum absolute
         if COMB_MODE["DUREE"] is None:
             raise Exception("Il faut renseigner DUREE")
         H = dsc_array(amors, freqs, COMB_MODE["DUREE"])
@@ -492,8 +492,8 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
             for j, r_j in enumerate(R_mi[i:], i):
                 R_m2 += 2 * H[i, j] * np.abs(r_i * r_j)
         R_m2 = np.maximum(R_m2, 0)
-    
-    elif type_comb == "NRC_TEN_PERCENT" :  # Méthode dix pourcent (D) selon NRC
+
+    elif type_comb == "NRC_TEN_PERCENT":  # Méthode dix pourcent (D) selon NRC
         H = nrc_ten_percent_array(freqs)
         H[np.diag_indices_from(H)] /= 2
         for i, r_i in enumerate(R_mi):
@@ -531,7 +531,7 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
             # "Current" group reference frequency
             ff_ref = freqs[groups[-1][0]]
             #
-            if (ff-ff_ref)/ff_ref > 0.1:
+            if (ff - ff_ref) / ff_ref > 0.1:
                 # Start a new group if the 10% is exceeded
                 groups.append([fidx])
             else:
@@ -547,11 +547,11 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
             nbmodes = len(group)
             if nbmodes == 1:
                 continue
-            for ii in range(0, nbmodes-1):
+            for ii in range(0, nbmodes - 1):
                 rl = R_mi[group[ii]]
-                for jj in range(ii+1, nbmodes):
+                for jj in range(ii + 1, nbmodes):
                     rm = R_mi[group[jj]]
-                    sum_rl_rm += 2.*np.abs(rl*rm)
+                    sum_rl_rm += 2.0 * np.abs(rl * rm)
 
         R_m2 = sum_rk_sq + sum_rl_rm
 
@@ -895,7 +895,7 @@ def corr_pseudo_mode_enveloppe(
     # search for index (NUME_CMP) in MODE_STATIQUE corresponding to direction
     ps_noeud_cmp = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
     ps_nume_mode = pseudo_mode.getAccessParameters()["NUME_MODE"]
-                                                            
+
     if "OX" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    X")]
         components = "DX"
@@ -1714,9 +1714,9 @@ def comb_sism_modal_ops(self, **args):
     # Get input group_appui_correle
     group_appui_correle = args.get("GROUP_APPUI_CORRELE")
     # Get input CUMUL_INTRA : Combination of the contributions of each response of support inside a group
-    cumul_intra = args.get("CUMUL_INTRA") 
+    cumul_intra = args.get("CUMUL_INTRA")
     # Get input CUMUL_INTER : Combination of the contributions of each group of supports
-    cumul_inter = args.get("CUMUL_INTER") 
+    cumul_inter = args.get("CUMUL_INTER")
     # Get input COMB_DDS_CORRELE
     comb_dds_correle = args.get("COMB_DDS_CORRELE")
     # Get input depl_mult_appui
@@ -2432,19 +2432,19 @@ def comb_sism_modal_ops(self, **args):
                 # While nb of group_appui > 1: rule = QUAD (considered as DECORRELATED)
                 if len(l_R_x_j) > 1:
                     # combi all group_appui
-                    if cumul_inter == 'QUAD':
+                    if cumul_inter == "QUAD":
                         R_x = np.sqrt(np.sum(np.array(l_R_x_j) ** 2, axis=0))
                         part_d_x = np.sqrt(np.sum(np.array(l_part_d_j) ** 2, axis=0))
                         part_s_x = np.sqrt(np.sum(np.array(l_part_s_j) ** 2, axis=0))
                         R_prim_x = np.sqrt(np.sum(np.array(l_R_prim_j) ** 2, axis=0))
                         R_seco_x = np.sqrt(np.sum(np.array(l_R_seco_j) ** 2, axis=0))
-                    elif cumul_inter == 'ABS': # HB: NEW METHOD
+                    elif cumul_inter == "ABS":  # HB: NEW METHOD
                         R_x = np.sum(np.abs(np.array(l_R_x_j)), axis=0)
                         part_d_x = np.sum(np.abs(np.array(l_part_d_j)), axis=0)
                         part_s_x = np.sum(np.abs(np.array(l_part_s_j)), axis=0)
                         R_prim_x = np.sum(np.abs(np.array(l_R_prim_j)), axis=0)
                         R_seco_x = np.sum(np.abs(np.array(l_R_seco_j)), axis=0)
-                    elif cumul_inter == 'LINE': # HB: NEW METHOD
+                    elif cumul_inter == "LINE":  # HB: NEW METHOD
                         R_x = np.sum(np.array(l_R_x_j), axis=0)
                         part_d_x = np.sum(np.array(l_part_d_j), axis=0)
                         part_s_x = np.sum(np.array(l_part_s_j), axis=0)
@@ -2618,7 +2618,7 @@ def comb_sism_modal_ops(self, **args):
             is_corr_freq = sorted(set(l_corr_freq))
             spec_nat = sorted(set(l_spec_nat))  # spectre nature
 
-            corr_freq_overall = 'NON'
+            corr_freq_overall = "NON"
             # correction in frequencies is taken into account if correction is required for all supports:
             if len(is_corr_freq) == 1:
                 corr_freq_overall = is_corr_freq[0]
@@ -2749,7 +2749,9 @@ def comb_sism_modal_ops(self, **args):
                     for i_spec, spec in enumerate(spectres):
                         if axis in spec[0]:
                             i_axis = spec[0].index(axis)
-                            spec_freq_coup_allgr.append(spec[1][i_axis](amors[-1], freq_coup) * spec[2][i_axis])
+                            spec_freq_coup_allgr.append(
+                                spec[1][i_axis](amors[-1], freq_coup) * spec[2][i_axis]
+                            )
                     # maximal values of ZPA at the cutting frequency
                     S_r_freq_coup = max(spec_freq_coup_allgr)
 
@@ -2771,7 +2773,9 @@ def comb_sism_modal_ops(self, **args):
                     for i_spec, spec in enumerate(spectres):
                         if axis in spec[0]:
                             i_axis = spec[0].index(axis)
-                            spec_freq_coup_allgr.append(spec[1][i_axis](amors[-1], freq_coup) * spec[2][i_axis])
+                            spec_freq_coup_allgr.append(
+                                spec[1][i_axis](amors[-1], freq_coup) * spec[2][i_axis]
+                            )
                     # maximal values of ZPA at the cutting frequency
                     S_r_freq_coup = max(spec_freq_coup_allgr)
                     spectre_corr_freq = corr_freq_overall  # for all supports
@@ -2841,7 +2845,7 @@ def comb_sism_modal_ops(self, **args):
                     # impr_vale_dds_tota(
                     #     output_result, type_resu, option, mode_meca, R_seco, R_seco_newmark_all
                     # )
-                    print('Pas de VALE_DDS calculée pour la méthode ENVELOPPE')
+                    print("Pas de VALE_DDS calculée pour la méthode ENVELOPPE")
                     pass
                 # save for INFO
                 l_SA[spectre_dir] = S_r_freq
@@ -2911,13 +2915,9 @@ def comb_sism_modal_ops(self, **args):
                     # info of read value on spectra
                     UTMESS("I", "SEISME_53")
                     for i_freq in range(len(freqs)):
-                        UTMESS(
-                            "I",
-                            "SEISME_54",
-                            vali=nume_modes[i_freq],
-                            valr=(freqs[i_freq], amors[i_freq], l_SA[spectre_dir][i_freq]),
-                            valk=spectre_dir,
-                        )
+                        vali = nume_modes[i_freq]
+                        valr = (freqs[i_freq], amors[i_freq], l_SA[spectre_dir][i_freq])
+                        UTMESS("I", "SEISME_54", vali=vali, valr=valr, valk=spectre_dir)
                 # about correction by pseudo-mode
                 if mode_corr == "OUI":
                     # for i_dir in range(len(spectres[0])):
@@ -2928,15 +2928,11 @@ def comb_sism_modal_ops(self, **args):
                     #         spectre_corr_freq,
                     #         spectre_nature,
                     #     ] = [spectres[i][i_dir] for i in range(5)]
-                        spectre_dir = axes_retenu[i_dir]
-                        # cutting frequency et ZPA
-                        UTMESS("I", "SEISME_56")
-                        UTMESS(
-                            "I",
-                            "SEISME_57",
-                            valr=(l_pseudo[spectre_dir][0], l_pseudo[spectre_dir][1]),
-                            valk=(spectre_dir, "ENVELOPPE"),
-                        )
+                    spectre_dir = axes_retenu[i_dir]
+                    # cutting frequency et ZPA
+                    UTMESS("I", "SEISME_56")
+                    valr = (l_pseudo[spectre_dir][0], l_pseudo[spectre_dir][1])
+                    UTMESS("I", "SEISME_57", valr=valr, valk=(spectre_dir, "ENVELOPPE"))
                 # about combinaison of response due to DDS
                 if comb_dds_correle:
                     UTMESS("I", "SEISME_19", valk=comb_dds_correle)

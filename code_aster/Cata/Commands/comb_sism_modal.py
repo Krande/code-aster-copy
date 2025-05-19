@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,6 @@ COMB_SISM_MODAL = MACRO(
             GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
         ),
     ),
-
     # ENVELOPPE = définition des appuis comme MULTI_APPUI
     b_enveloppe_appui=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
@@ -113,7 +112,6 @@ COMB_SISM_MODAL = MACRO(
             NOM_APPUI=SIMP(statut="o", typ="TXM", max=1),
         ),
     ),
-
     b_spectre_enveloppe=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
         SPECTRE=FACT(
@@ -146,8 +144,20 @@ COMB_SISM_MODAL = MACRO(
         statut="o",
         max=1,
         TYPE=SIMP(
-            statut="f", typ="TXM", into=("SRSS", "CQC", "DSC", "ABS", "DPC", "GUPTA",
-                                         "NRC_GROUPING", "NRC_DSA", "NRC_TEN_PERCENT"), defaut="CQC"
+            statut="f",
+            typ="TXM",
+            into=(
+                "SRSS",
+                "CQC",
+                "DSC",
+                "ABS",
+                "DPC",
+                "GUPTA",
+                "NRC_GROUPING",
+                "NRC_DSA",
+                "NRC_TEN_PERCENT",
+            ),
+            defaut="CQC",
         ),
         b_gupta=BLOC(
             condition="""equal_to("TYPE", 'GUPTA') """,
@@ -155,7 +165,9 @@ COMB_SISM_MODAL = MACRO(
             FREQ_2=SIMP(statut="o", typ="R"),
         ),
         b_dsc=BLOC(condition="""equal_to("TYPE", 'DSC') """, DUREE=SIMP(statut="o", typ="R")),
-        b_nrc_dsa=BLOC(condition="""equal_to("TYPE", 'NRC_DSA') """, DUREE=SIMP(statut="o", typ="R")),
+        b_nrc_dsa=BLOC(
+            condition="""equal_to("TYPE", 'NRC_DSA') """, DUREE=SIMP(statut="o", typ="R")
+        ),
     ),
     # --- regle combinaison des directions
     COMB_DIRECTION=SIMP(statut="f", typ="TXM", into=("ABS", "QUAD", "NEWMARK"), defaut="NEWMARK"),
@@ -185,7 +197,6 @@ COMB_SISM_MODAL = MACRO(
         condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI')""",
         CUMUL_INTER=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="QUAD"),
     ),
-
     b_group_appui_corr_env=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
         GROUP_APPUI_CORRELE=FACT(
@@ -211,7 +222,6 @@ COMB_SISM_MODAL = MACRO(
         condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE')""",
         CUMUL_INTER=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE", "ABS"), defaut="QUAD"),
     ),
-
     # --- grandeurs interets de sortie
     OPTION=SIMP(
         statut="o",
@@ -302,8 +312,6 @@ COMB_SISM_MODAL = MACRO(
             ),
         ),
     ),
-
-
     b_type_resu_env=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'ENVELOPPE') """,
         TYPE_RESU=FACT(
@@ -378,7 +386,6 @@ COMB_SISM_MODAL = MACRO(
             ),
         ),
     ),
-
     b_type_resu_mult=BLOC(
         condition="""equal_to("TYPE_ANALYSE", 'MULT_APPUI') """,
         TYPE_RESU=FACT(
