@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine dtmforc_rotf(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
 #include "jeveux.h"
 #include "asterc/r8depi.h"
+#include "asterc/r8rddg.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dtmget.h"
@@ -157,7 +158,7 @@ subroutine dtmforc_rotf(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     ASSERT((finish-start) .eq. NBVARINT_ROTF)
 
 !   --- Angle, in degrees
-    vint(start) = phi*180.d0/(r8depi())
+    vint(start) = phi*r8rddg()
 
 !   --- Force (local)
     vint(start+1) = ml(2)
