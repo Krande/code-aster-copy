@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ def compat_syntax(keywords):
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
 
     if "PARM_THETA" in keywords:
-        keywords["SCHEMA_TEMPS"] = {"SCHEMA": "HHT", "THETA": keywords["PARM_THETA"]}
+        keywords["SCHEMA_TEMPS"] = {"SCHEMA": "THETA", "THETA": keywords["PARM_THETA"]}
         del keywords["PARM_THETA"]
 
 
@@ -110,9 +110,9 @@ THER_LINEAIRE = MACRO(
         SCHEMA_TEMPS=FACT(
             max=1,
             statut="d",
-            SCHEMA=SIMP(statut="f", min=1, max=1, typ="TXM", into=("HHT",), defaut="HHT"),
-            b_hht=BLOC(
-                condition="""equal_to("SCHEMA", 'HHT')""",
+            SCHEMA=SIMP(statut="f", min=1, max=1, typ="TXM", into=("THETA",), defaut="THETA"),
+            b_theta=BLOC(
+                condition="""equal_to("SCHEMA", 'THETA')""",
                 THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
             ),
         ),
