@@ -98,6 +98,6 @@ subroutine dfc_read_lac(sdcont, zoneKeyword, mesh, model, model_ndim, &
     call caraxi(sdcont, model, mesh, model_ndim)
 
 ! - Create virtual slave elements in model
-    call mmprel_lac(sdcont, mesh, model, slavElemLigr)
+    call mmprel_lac(sdcont, mesh, slavElemLigr)
 !
 end subroutine

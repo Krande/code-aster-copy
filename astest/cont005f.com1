@@ -1,0 +1,53 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+
+# -- Validation des resultats compared to LAC method
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            NOM_CHAM="DEPL",
+            LEGENDE="DZ_MIN",
+            NOM_CMP="DZ",
+            REFERENCE="AUTRE_ASTER",
+            VALE_CALC=-0.7963571947789149,
+            VALE_REFE=-0.77059296485,
+            PRECISION=0.04,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            NOM_CHAM="DEPL",
+            LEGENDE="DZ_MAX",
+            NOM_CMP="DZ",
+            REFERENCE="AUTRE_ASTER",
+            VALE_CALC=2.512950695100283,
+            VALE_REFE=2.59493897883,
+            PRECISION=0.06,
+        ),
+    )
+)
+
+FIN()

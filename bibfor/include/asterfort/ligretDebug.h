@@ -17,11 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine ajellt(ligretZ, meshZ, nbCell, listCell, &
-                      phenomZ, modelisaZ)
-        character(len=*), intent(in) :: ligretZ, meshZ
-        integer, intent(in) :: nbCell
-        integer, intent(in) :: listCell(nbCell)
-        character(len=*), intent(in) :: phenomZ, modelisaZ
-    end subroutine ajellt
+    subroutine ligretDebug(ligretZ)
+        character(len=*), intent(in) :: ligretZ
+    end subroutine ligretDebug
 end interface

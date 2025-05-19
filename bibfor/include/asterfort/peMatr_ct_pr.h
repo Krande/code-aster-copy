@@ -16,12 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+#include "asterf_types.h"
+#include "contact_module.h"
+!
 interface
-    subroutine ajellt(ligretZ, meshZ, nbCell, listCell, &
-                      phenomZ, modelisaZ)
-        character(len=*), intent(in) :: ligretZ, meshZ
-        integer, intent(in) :: nbCell
-        integer, intent(in) :: listCell(nbCell)
-        character(len=*), intent(in) :: phenomZ, modelisaZ
-    end subroutine ajellt
+    subroutine peMatr_ct_pr(parameters, geom, matr_cont, matr_fric)
+        use contact_type
+        type(ContactParameters), intent(in) :: parameters
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(inout) :: matr_cont(MAX_PENA_DOFS, MAX_PENA_DOFS)
+        real(kind=8), intent(inout) :: matr_fric(MAX_PENA_DOFS, MAX_PENA_DOFS)
+    end subroutine peMatr_ct_pr
 end interface

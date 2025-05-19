@@ -3334,7 +3334,7 @@ phen.add(
 )
 
 
-# -- Define CONTACT elements for LAGRANGIAN AUGMENTED method (in STAT_NON_LINE) - Contact
+# -- Define CONTACT elements for LAGRANGIAN AUGMENTED method (in MECA_NON_LINE) - Contact
 
 phen.add(
     "CONT_LAG_EL_2D",
@@ -3480,7 +3480,137 @@ phen.add(
     ),
 )
 
-# -- Define CONTACT elements for NITSCHE method (in STAT_NON_LINE) - Contact
+# -- Define CONTACT elements for PENALTY method (in MECA_NON_LINE) - Contact
+
+phen.add(
+    "CONT_PENA_EL_2D",
+    Modelisation(
+        dim=(1, 2),
+        code="P2C",
+        attrs=((AT.CONTACT, "OUI"), (AT.FROTTEMENT, "OUI")),
+        elements=(
+            (MT.SEG22, EL.CPS2S2),
+            (MT.SEG33, EL.CPS3S3),
+            (MT.SEG23, EL.CPS2S3),
+            (MT.SEG32, EL.CPS3S2),
+            (MT.POI1, EL.CPP1L2),
+            (MT.POI1, EL.CPP1N2),
+        ),
+    ),
+)
+
+phen.add(
+    "CONT_PENA_EL_2DA",
+    Modelisation(
+        dim=(1, 2),
+        code="P2A",
+        attrs=((AT.CONTACT, "OUI"), (AT.FROTTEMENT, "OUI"), (AT.AXIS, "OUI")),
+        elements=(
+            (MT.SEG22, EL.CPS2S2A),
+            (MT.SEG33, EL.CPS3S3A),
+            (MT.SEG23, EL.CPS2S3A),
+            (MT.SEG32, EL.CPS3S2A),
+            (MT.POI1, EL.CPP1L2A),
+            (MT.POI1, EL.CPP1N2A),
+        ),
+    ),
+)
+
+phen.add(
+    "CONT_PENA_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="P3C",
+        attrs=((AT.CONTACT, "OUI"), (AT.FROTTEMENT, "OUI")),
+        elements=(
+            (MT.QU4QU8, EL.CPQ4Q8),
+            (MT.QU4QU9, EL.CPQ4Q9),
+            (MT.QU4TR3, EL.CPQ4T3),
+            (MT.QU4TR6, EL.CPQ4T6),
+            (MT.QU8QU4, EL.CPQ8Q4),
+            (MT.QU8QU9, EL.CPQ8Q9),
+            (MT.QU8TR3, EL.CPQ8T3),
+            (MT.QU8TR6, EL.CPQ8T6),
+            (MT.QU9QU4, EL.CPQ9Q4),
+            (MT.QU9QU8, EL.CPQ9Q8),
+            (MT.QU9TR3, EL.CPQ9T3),
+            (MT.QU9TR6, EL.CPQ9T6),
+            (MT.QUAD44, EL.CPQ4Q4),
+            (MT.QUAD88, EL.CPQ8Q8),
+            (MT.QUAD99, EL.CPQ9Q9),
+            (MT.TR3QU4, EL.CPT3Q4),
+            (MT.TR3QU8, EL.CPT3Q8),
+            (MT.TR3QU9, EL.CPT3Q9),
+            (MT.TR3TR6, EL.CPT3T6),
+            (MT.TR6QU4, EL.CPT6Q4),
+            (MT.TR6QU8, EL.CPT6Q8),
+            (MT.TR6QU9, EL.CPT6Q9),
+            (MT.TR6TR3, EL.CPT6T3),
+            (MT.TRIA33, EL.CPT3T3),
+            (MT.TRIA66, EL.CPT6T6),
+            (MT.POI1, EL.CPP1L3),
+            (MT.POI1, EL.CPP1N3),
+        ),
+    ),
+)
+
+
+phen.add(
+    "FRIC_PENA_EL_2DA",
+    Modelisation(
+        dim=(1, 2),
+        code="PAF",
+        attrs=((AT.CONTACT, "OUI"), (AT.FROTTEMENT, "OUI"), (AT.AXIS, "OUI")),
+        elements=(
+            (MT.SEG22, EL.CPS2S2A),
+            (MT.SEG33, EL.CPS3S3A),
+            (MT.SEG23, EL.CPS2S3A),
+            (MT.SEG32, EL.CPS3S2A),
+            (MT.POI1, EL.CPP1L2A),
+            (MT.POI1, EL.CPP1N2A),
+        ),
+    ),
+)
+
+phen.add(
+    "FRIC_PENA_EL_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="P3F",
+        attrs=((AT.CONTACT, "OUI"), (AT.FROTTEMENT, "OUI")),
+        elements=(
+            (MT.QU4QU8, EL.CPQ4Q8),
+            (MT.QU4QU9, EL.CPQ4Q9),
+            (MT.QU4TR3, EL.CPQ4T3),
+            (MT.QU4TR6, EL.CPQ4T6),
+            (MT.QU8QU4, EL.CPQ8Q4),
+            (MT.QU8QU9, EL.CPQ8Q9),
+            (MT.QU8TR3, EL.CPQ8T3),
+            (MT.QU8TR6, EL.CPQ8T6),
+            (MT.QU9QU4, EL.CPQ9Q4),
+            (MT.QU9QU8, EL.CPQ9Q8),
+            (MT.QU9TR3, EL.CPQ9T3),
+            (MT.QU9TR6, EL.CPQ9T6),
+            (MT.QUAD44, EL.CPQ4Q4),
+            (MT.QUAD88, EL.CPQ8Q8),
+            (MT.QUAD99, EL.CPQ9Q9),
+            (MT.TR3QU4, EL.CPT3Q4),
+            (MT.TR3QU8, EL.CPT3Q8),
+            (MT.TR3QU9, EL.CPT3Q9),
+            (MT.TR3TR6, EL.CPT3T6),
+            (MT.TR6QU4, EL.CPT6Q4),
+            (MT.TR6QU8, EL.CPT6Q8),
+            (MT.TR6QU9, EL.CPT6Q9),
+            (MT.TR6TR3, EL.CPT6T3),
+            (MT.TRIA33, EL.CPT3T3),
+            (MT.TRIA66, EL.CMT6T6),
+            (MT.POI1, EL.CPP1L3),
+            (MT.POI1, EL.CPP1N3),
+        ),
+    ),
+)
+
+# -- Define CONTACT elements for NITSCHE method (in MECA_NON_LINE) - Contact
 
 phen.add(
     "CONT_NIT_EL_2D",

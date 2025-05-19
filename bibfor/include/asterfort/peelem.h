@@ -16,12 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine ajellt(ligretZ, meshZ, nbCell, listCell, &
-                      phenomZ, modelisaZ)
-        character(len=*), intent(in) :: ligretZ, meshZ
-        integer, intent(in) :: nbCell
-        integer, intent(in) :: listCell(nbCell)
-        character(len=*), intent(in) :: phenomZ, modelisaZ
-    end subroutine ajellt
+    subroutine peelem(nomte, geom, param)
+        use contact_type
+        character(len=16), intent(in) :: nomte
+        type(ContactGeom), intent(inout) :: geom
+        type(ContactParameters), intent(inout) :: param
+    end subroutine peelem
 end interface

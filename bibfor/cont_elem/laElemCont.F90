@@ -99,6 +99,10 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
     b_2 = 2
     b_3 = 3
     glob_coor = (parameters%l_fric) .and. (parameters%vari_cont == CONT_VARI_ROBU)
+    ! write (6, *) 'glob_coor=', glob_coor
+    ! write (6, *) 'parameters%l_fric=', parameters%l_fric
+    ! write (6, *) 'parameters%vari_cont=', parameters%vari_cont
+    ! write (6, *) 'CONT_VARI_ROBU=', CONT_VARI_ROBU
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -128,6 +132,10 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
 !
     lagr_c_ = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagc_slav_curr)
     gamma_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_cont)/hF
+    if (geom%nb_lagr_c == 0) then
+        ! gamma_c = parameters%coef_cont(1)/hF
+        gamma_c = evalPoly(geom%nb_node_slav, shape_func_sl, parameters%coef_cont)/hF
+    end if
 
     lagr_f_(1) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(1, :))
     lagr_f_(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(2, :))
@@ -220,6 +228,7 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
         else
             lagr_v_ = (lagr_c_*norm_slav_+matmul(tau_slav_, lagr_f_))-gamma_f*speed_
         end if
+
         if (present(lagr_v)) lagr_v = lagr_v_
 !
         projBsVal_ = projBs(parameters, lagr_v_, thres_qp, norm_slav_)

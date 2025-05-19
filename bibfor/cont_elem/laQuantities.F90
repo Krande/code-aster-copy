@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,10 +117,10 @@ subroutine laQuantities(geom, param)
 !
 ! - Times
 !
-    call jevech('PINSTMR', 'L', j_time)
-    geom%time_prev = zr(j_time)
-    call jevech('PINSTPR', 'L', j_time)
-    geom%time_curr = zr(j_time)
+    ! call jevech('PINSTMR', 'L', j_time)
+    ! geom%time_prev = zr(j_time)
+    ! call jevech('PINSTPR', 'L', j_time)
+    ! geom%time_curr = zr(j_time)
 !
 ! - COEF_CONT and COEF_FROT
 !
@@ -129,7 +129,7 @@ subroutine laQuantities(geom, param)
         call jevech('PCFROTR', 'L', jv_frot)
     end if
 !
-    do i_node_slav = 1, geom%nb_lagr_c
+    do i_node_slav = 1, geom%nb_node_slav
         param%coef_cont(i_node_slav) = zr(jv_cont-1+i_node_slav)
         if (l_fric) then
             param%coef_fric(i_node_slav) = zr(jv_frot-1+i_node_slav)
