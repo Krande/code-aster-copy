@@ -907,6 +907,7 @@ contains
         end if
 
         do iNodeProj = 1, nbNodeProj
+
 ! --------- Original edge
             edgeOrig = 0.d0
             edgeOrig = &
@@ -997,11 +998,11 @@ contains
             end if
         end do
         if (meshPairing%debug) then
-            if (inteIsEmpty) then
-                WRITE (6, *) "      Empty intersection"
-            else
-                WRITE (6, *) "      Not empty intersection"
-            end if
+        if (inteIsEmpty) then
+            WRITE (6, *) "      Empty intersection"
+        else
+            WRITE (6, *) "      Not empty intersection"
+        end if
         end if
 !
 !   ------------------------------------------------------------------------------------------------
@@ -1194,6 +1195,8 @@ contains
         else
             ASSERT(ASTER_FALSE)
         end if
+
+! ----- Trop de points d'intersection (avant tri) => on ne sait pas gérer
         ASSERT(nbPoinInteI .le. 2*MAX_NB_INTE)
 
 ! ----- Error management
@@ -1249,10 +1252,12 @@ contains
         nbPoinInte = nbPoinInteS
 
 ! ----- Compute weight of intersection
-        call inteCellArea(meshPairing%spaceDime, nbPoinInte, poinInteOrig, &
-                          inteArea)
-        if (meshPairing%debug) then
-            WRITE (6, *) "     Area of intersection : ", inteArea
+        inteArea = 0.d0
+        if (nbPoinInte .ne. 0) then
+            call inteCellArea(meshPairing%spaceDime, nbPoinInte, poinInteOrig, inteArea)
+            if (meshPairing%debug) then
+                WRITE (6, *) "     Area of intersection : ", inteArea
+            end if
         end if
 
 ! ----- Error
@@ -1420,6 +1425,9 @@ contains
         inteNeigh = 0
         nbPoinInte = 0
         iret = ERR_PAIR_NONE
+        if (meshPairing%debug) then
+            WRITE (6, *) "Inter. - Détection de la position des noeuds projetés."
+        end if
 
 ! ----- Liste orientée des noeuds projetés de la cellule
         ASSERT(nbNodeProj .le. 4)
@@ -1438,14 +1446,14 @@ contains
             if (meshPairing%debug) then
                 WRITE (6, *) "Project original nodes inside target cell: ", &
                     iNodeProj, nodeProjPara(1:2)
-                WRITE (6, *) " on cell ", cellTargLine%cellCode
+                WRITE (6, *) " Target cell type:", cellTargLine%cellCode
             end if
             pointIsInside = cellPoinInside(cellTargLine, meshPairing%pairTole, nodeProjPara)
             if (meshPairing%debug) then
                 if (pointIsInside) then
-                    WRITE (6, *) " => is inside"
+                    WRITE (6, *) " => this node is inside target cell"
                 else
-                    WRITE (6, *) " => is NOT inside"
+                    WRITE (6, *) " => this node is NOT inside target cell"
                 end if
             end if
             if (pointIsInside) then
@@ -1480,9 +1488,9 @@ contains
                                        errorInside)
             if (meshPairing%debug) then
                 if (pointIsInside) then
-                    WRITE (6, *) " => is inside"
+                    WRITE (6, *) " => this node is inside original cell"
                 else
-                    WRITE (6, *) " => is NOT inside"
+                    WRITE (6, *) " => this node is NOT inside original cell"
                 end if
             end if
 
@@ -1504,7 +1512,9 @@ contains
             end if
         end do
         if (meshPairing%debug) then
+            WRITE (6, *) "Inter. - Détection de la position des noeuds projetés."
             WRITE (6, *) "     Neighbours after points intersection : ", inteNeigh
+            WRITE (6, *) "     Nb pts intersection after points intersection : ", nbPoinInte
         end if
 !
 !   ------------------------------------------------------------------------------------------------
@@ -1785,6 +1795,7 @@ contains
                 t2 .lt. 1.d0+meshPairing%pairTole .and. &
                 t2 .gt. 0.d0-meshPairing%pairTole) then
                 nbPoinInte = nbPoinInte+1
+                ASSERT(nbPoinInte .gt. 0)
                 ASSERT(nbPoinInte .le. 2*MAX_NB_INTE)
                 poinInte(1, nbPoinInte) = (t2*c+x2+t1*a+x1)/2.d0
                 poinInte(2, nbPoinInte) = (t2*d+y2+t1*b+y1)/2.d0
@@ -1836,6 +1847,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(nbNodeProj .le. 4)
+
+        if (meshPairing%debug) then
+            WRITE (6, *) "Intersection des mailles de peau - Compute intersection of edges."
+        end if
 
 ! ----- Set index of next nodes
         listNodeNext = 0
@@ -1915,7 +1930,9 @@ contains
             end if
         end do
         if (meshPairing%debug) then
+            WRITE (6, *) "Intersection des mailles de peau - Compute intersection of edges."
             WRITE (6, *) "     Neighbours after segments intersection : ", inteNeigh
+            WRITE (6, *) "     Nb pts intersection after points intersection : ", nbPoinInte
         end if
 !
 !   ------------------------------------------------------------------------------------------------
@@ -2236,10 +2253,11 @@ contains
             poinInteOut(:, iPoinInte) = poinInteIn(:, iPoinInte)
 
 !---------- Adjust point inside element
-            call cellPoinAdjust(cellGeom, meshPairing%pairTole, poinInteOut)
+            call cellPoinAdjust(cellGeom, meshPairing%pairTole, poinInteOut(:, iPoinInte))
 
 ! --------- Test if point is inside element
-            pointIsInside = cellPoinInside(cellGeom, meshPairing%pairTole, poinInteOut)
+            pointIsInside = &
+                cellPoinInside(cellGeom, meshPairing%pairTole, poinInteOut(:, iPoinInte))
             ASSERT(pointIsInside)
 
         end do
@@ -2270,6 +2288,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         inteArea = 0.d0
+        ASSERT(nbPoinInte .gt. 0)
 
 ! ----- Set index of next points
         if (spaceDime .eq. 3) then
