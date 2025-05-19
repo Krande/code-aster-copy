@@ -215,5 +215,19 @@ Returns:
                 list[int]: list of dofs.
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "nodes" ) = VectorLong(),
-              py::arg( "local" ) = true, py::arg( "same_rank" ) = PythonBool::None );
+              py::arg( "local" ) = true, py::arg( "same_rank" ) = PythonBool::None )
+        .def( "getDOFs", &EquationNumbering::getDOFs,
+              R"(
+            Return list of DOFs
+
+            Arguments:
+                sameRank = False: Use only owned nodes / False: Use all nodes
+                list_cmp = []: Use all cmp / keep only cmp given
+                list_grpno = []: Use all nodes / keep only nodes given
+
+            Returns:
+                list[int]: list of dofs.
+            )",
+              py::arg( "sameRank" ) = false, py::arg( "list_cmp" ) = VectorString(),
+              py::arg( "list_grpno" ) = VectorString() );
 };
