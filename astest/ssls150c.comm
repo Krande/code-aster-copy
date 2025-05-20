@@ -17,9 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# Objectif: Verification avec la feuille DIPDE de la marge ELU de VERI_FERRAILLAGE:
-# On impose un chargement egal au chargement ultime obtenu avec la feuille.
-# La marge attendue est nulle
+
+# Objectif: Verification analytique de la marge ELU VERI_FERRAILLAGE: On impose
+# un chargement proportionnel aux points particuliers du diagramme calculés
+#  analytiquement
+# La marge attendue est égale à  (1 - coef. de proportionnalité)
+# Pour ce test UNITE_CONTRAINTE = MPa et UNITE_DIMENSION = mm
 
 DEBUT(
     CODE="OUI",
@@ -34,24 +37,24 @@ MODEL = AFFE_MODELE(
     MAILLAGE=MA, AFFE=_F(GROUP_MA="PLAQUE", PHENOMENE="MECANIQUE", MODELISATION="DKT")
 )
 
-CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=1.0))
+CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=500))
 
-# on cree une sd evol_elas avec des champs d'efforts imposes :
-# -------------------------------------------------------------
 
 # Ferraillage de reference
 
-# dnsxi = phi20@200 = 0.00157 m2/m
-# dnsxs = phi20@200 = 0.00157 m2/m
-# dnsyi = phi20@200 = 0.00157 m2/m
-# dnsys = phi20@200 = 0.00157 m2/m
+# dnsxi = phi20@200 = 1.570 mm2/mm
+# dnsxs = phi20@200 = 1.570 mm2/mm
+# dnsyi = phi20@200 = 1.570 mm2/mm
+# dnsys = phi20@200 = 1.570 mm2/mm
 
+
+# FERRAILLAGE DE REFERENCE POUR UNITE_DIMENSION = mm
 FERRAILLAGE_REF1 = CREA_CHAMP(
     AFFE=(
         _F(
             GROUP_MA=("PLAQUE",),
             NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
-            VALE=(0.004021, 0.0, 0.004021, 0.0),
+            VALE=(1.570, 1.570, 1.570, 1.570),
         ),
     ),
     MODELE=MODEL,
@@ -61,8 +64,7 @@ FERRAILLAGE_REF1 = CREA_CHAMP(
     TYPE_CHAM="ELEM_FER2_R",
 )
 
-
-# Pivot A - marge attentdue 0
+# traction uniforme - pivot A vertical - Marge attendue : 0.5
 CHEFF1 = CREA_CHAMP(
     MAILLAGE=MA,
     OPERATION="AFFE",
@@ -70,11 +72,11 @@ CHEFF1 = CREA_CHAMP(
     AFFE=_F(
         GROUP_MA="PLAQUE",
         NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
-        VALE=(0.0, 0.0, 0.0, 0.0, -1.534e6, 0.0, 0.0, 0.0),
+        VALE=(0.0, 1.3652e3 * 0.5, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
     ),
 )
 
-# Pivot B aciers tendu - Marge attendue : 0
+# traction uniforme - pivot A vertical - Marge attendue : -1
 CHEFF2 = CREA_CHAMP(
     MAILLAGE=MA,
     OPERATION="AFFE",
@@ -82,11 +84,11 @@ CHEFF2 = CREA_CHAMP(
     AFFE=_F(
         GROUP_MA="PLAQUE",
         NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
-        VALE=(0.0, -5.0e6, 0.0, 0.0, -3.2309e6, 0.0, 0.0, 0.0),
+        VALE=(0.0, 1.3652e3 * 2, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
     ),
 )
 
-# Pivot B aciers comprimé - Marge attendue : 0
+# Pivot A (acier inf) & Pivot B (beton sup) - Marge attendue : 0.3
 CHEFF3 = CREA_CHAMP(
     MAILLAGE=MA,
     OPERATION="AFFE",
@@ -94,11 +96,11 @@ CHEFF3 = CREA_CHAMP(
     AFFE=_F(
         GROUP_MA="PLAQUE",
         NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
-        VALE=(0.0, -20.0e6, 0.0, 0.0, -2.2898e6, 0.0, 0.0, 0.0),
+        VALE=(0.0, -1.666e3 * 0.7, 0.0, 0.0, -0.587e6 * 0.7, 0.0, 0.0, 0.0),
     ),
 )
 
-# Pivot C- Marge attendue : 0
+# Pivot B beton Sup - Epsilon acier inf EPSY - Marge attendue : 0.8
 CHEFF4 = CREA_CHAMP(
     MAILLAGE=MA,
     OPERATION="AFFE",
@@ -106,10 +108,89 @@ CHEFF4 = CREA_CHAMP(
     AFFE=_F(
         GROUP_MA="PLAQUE",
         NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
-        VALE=(0.0, -25.0e6, 0.0, 0.0, -0.5531e6, 0.0, 0.0, 0.0),
+        VALE=(0.0, -4.8937e3 * 0.2, 0.0, 0.0, -0.9281e6 * 0.2, 0.0, 0.0, 0.0),
     ),
 )
 
+
+# Pivot B beton Sup - - Epsilon beton inf 0 - Marge attendue ~ 0.2
+CHEFF5 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -10.303e3 * 0.8, 0.0, 0.0, -0.483e6 * 0.8, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Compression uniforme - Pivot C - Marge attendue : 1
+CHEFF6 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -12.923e3 * 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Compression uniforme - Pivot C - Marge attendue : 0.6
+CHEFF7 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -12.923e3 * 0.4, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
+    ),
+)
+
+
+### Partie inferieure du diagramme d interaction - Symetrie
+
+# Pivot A (acier inf) & Pivot B (beton sup) - Marge attendue : 0.3
+CHEFF8 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -1.666e3 * 0.7, 0.0, 0.0, 0.587e6 * 0.7, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B beton Sup - Epsilon acier inf EPSY - Marge attendue : 0.8
+CHEFF9 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -4.8937e3 * 0.2, 0.0, 0.0, 0.9281e6 * 0.2, 0.0, 0.0, 0.0),
+    ),
+)
+
+
+# Pivot B beton Sup - - Epsilon beton inf 0 - Marge attendue ~ 0.2
+CHEFF10 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -10.303e3 * 0.8, 0.0, 0.0, 0.483e6 * 0.8, 0.0, 0.0, 0.0),
+    ),
+)
+
+# on cree une sd evol_elas avec des champs d'efforts imposes :
+# -------------------------------------------------------------
 
 RESUELU = CREA_RESU(
     OPERATION="AFFE",
@@ -119,33 +200,39 @@ RESUELU = CREA_RESU(
         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA),
         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA),
         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF4, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF5, INST=5.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF6, INST=6.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF7, INST=7.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF8, INST=8.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF9, INST=9.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF10, INST=10.0, MODELE=MODEL, CARA_ELEM=CARA),
     ),
 )
 
 
-# # Appel a la commande VERI_FERRAILLAGE : Sans chref
+# CAS1 - Appel a la commande VERI_FERRAILLAGE AVEC CHAMP EFFORT DE REFERENCE NUL
 MARGE1 = VERI_FERRAILLAGE(
     reuse=RESUELU,
     RESULTAT=RESUELU,
     CARA_ELEM=CARA,
     CODIFICATION="EC2",
     TYPE_COMB="ELU",
-    UNITE_CONTRAINTE="Pa",
-    UNITE_DIMENSION="m",
+    UNITE_CONTRAINTE="MPa",
+    UNITE_DIMENSION="mm",
     CHAM_FERR=FERRAILLAGE_REF1,
-    INST=(1.0, 2.0, 3.0, 4.0),
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         # Reinf/EC2
         _F(
             TOUT="OUI",
             TYPE_DIAGRAMME="B2",
             # Enrobage (2D)
-            C_SUP=0.08,
-            C_INF=0.08,
+            C_SUP=80,
+            C_INF=80,
             #
-            FYK=500.0e6,
-            FCK=40.0e6,
-            EYS=200.0e9,
+            FYK=500.0,
+            FCK=35.0,
+            EYS=200.0e3,
             GAMMA_S=1.15,
             GAMMA_C=1.5,
             ALPHA_CC=1.0,
@@ -156,16 +243,59 @@ MARGE1 = VERI_FERRAILLAGE(
 # -----------------------------------------------------
 # Tests
 # -----------------------------------------------------
-D_ref = [[0.0], [0.0], [0.0], [0.0]]  # 1  # 2  # 3  # 4
-
-D_calc = [
-    [0.02100363028178942],  # 1
-    [0.0006922822587589472],  # 2
-    [0.004125664998677947],  # 3
-    [-0.0005643415314280364],  # 4
+marge_ref = [
+    [0.5],  # 1
+    [-1],  # 2
+    [0.3],  # 3
+    [0.8],  # 4
+    [0.2],  # 5
+    [1.0],  # 6
+    [0.6],  # 7
+    [0.3],  # 8
+    [0.8],  # 9
+    [0.2],  # 10
 ]
 
-for j in range(len(D_ref)):
+marge_calc = [
+    0.5000063694267516,
+    -0.9999745222929934,
+    0.3011604840099644,
+    0.799857813638741,
+    0.19996038510168335,
+    1.0,
+    0.5999896822121337,
+    0.3011604840099644,
+    0.799857813638741,
+    0.19996038510168335,
+]
+
+theta_ref = [
+    [-90.0],  # 1
+    [-90.0],  # 2
+    [-90.0],  # 3
+    [-90.0],  # 4
+    [-90.0],  # 5
+    [-90.0],  # 6
+    [-90.0],  # 7
+    [-90.0],  # 8
+    [-90.0],  # 9
+    [-90.0],  # 10
+]
+
+theta_calc = [
+    [-90.0],  # 1
+    [-90.0],  # 2
+    [-90.0],  # 3
+    [-90.0],  # 4
+    [-90.0],  # 5
+    [-90.0],  # 6
+    [-90.0],  # 7
+    [-90.0],  # 8
+    [-90.0],  # 9
+    [-90.0],  # 10
+]
+
+for j in range(len(marge_ref)):
     TEST_RESU(
         RESU=_F(
             RESULTAT=RESUELU,
@@ -174,10 +304,27 @@ for j in range(len(D_ref)):
             NOM_CMP="MARGE",
             GROUP_MA="M1",
             LEGENDE="ELU",
-            VALE_REFE=D_ref[j],
-            VALE_CALC=D_calc[j],
-            REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.05,
+            VALE_REFE=marge_ref[j],
+            VALE_CALC=marge_calc[j],
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.005,
+            CRITERE="ABSOLU",
+        )
+    )
+
+for j in range(len(theta_ref)):
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=RESUELU,
+            INST=j + 1.0,
+            NOM_CHAM="MARG_ELEM",
+            NOM_CMP="THETA",
+            GROUP_MA="M1",
+            LEGENDE="ELU",
+            VALE_REFE=theta_ref[j],
+            VALE_CALC=theta_calc[j],
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.1,
             CRITERE="ABSOLU",
         )
     )

@@ -42,7 +42,7 @@ def trouver_marges_seuil(data, seuil):
     mailles = data[1][0]
     mailles_correspondantes = []
     for i, marge in enumerate(marges):
-        if marge < seuil:
+        if marge <= seuil:
             mailles_correspondantes.append(mailles[i])
 
     return mailles_correspondantes

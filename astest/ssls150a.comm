@@ -18,10 +18,15 @@
 # --------------------------------------------------------------------
 
 
-# Objectif: Verification analytique de la marge ELU VERI_FERRAILLAGE: On impose
+# Objectif configuration 1&2: Verification analytique de la marge ELU VERI_FERRAILLAGE: On impose
 # un chargement proportionnel aux points particuliers du diagramme calculés
 #  analytiquement
 # La marge attendue est égale à  (1 - coef. de proportionnalité)
+
+
+# Objectif configuration 3: Verification avec la feuille DIPDE de la marge ELU de VERI_FERRAILLAGE:
+# On impose un chargement egal au chargement ultime obtenu avec la feuille.
+# La marge attendue est nulle
 
 DEBUT(
     CODE="OUI",
@@ -36,7 +41,12 @@ MODEL = AFFE_MODELE(
     MAILLAGE=MA, AFFE=_F(GROUP_MA="PLAQUE", PHENOMENE="MECANIQUE", MODELISATION="DKT")
 )
 
+# Epaisseur pour configuration 1 et 2
 CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=0.50))
+
+# Epaisseur pour configuration 3
+CARA2 = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=1.0))
+
 
 # Ferraillage de reference
 
@@ -45,12 +55,30 @@ CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=0.50))
 # dnsyi = phi20@200 = 0.00157 m2/m
 # dnsys = phi20@200 = 0.00157 m2/m
 
+
+# FERRAILLAGE DE REFERENCE POUR CONFIGURATION 1 ET 2
 FERRAILLAGE_REF1 = CREA_CHAMP(
     AFFE=(
         _F(
             GROUP_MA=("PLAQUE",),
             NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
             VALE=(0.00157, 0.00157, 0.00157, 0.00157),
+        ),
+    ),
+    MODELE=MODEL,
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    OPTION="FERR_ELEM",
+    TYPE_CHAM="ELEM_FER2_R",
+)
+
+# FERRAILLAGE DE REFERENCE POUR CONFIGURATION 3
+FERRAILLAGE_REF2 = CREA_CHAMP(
+    AFFE=(
+        _F(
+            GROUP_MA=("PLAQUE",),
+            NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
+            VALE=(0.004021, 0.0, 0.004021, 0.0),
         ),
     ),
     MODELE=MODEL,
@@ -186,6 +214,56 @@ CHEFF10 = CREA_CHAMP(
     ),
 )
 
+# CHAMP EFFORTS POUR CONFIGURATION 3
+
+# Pivot A - marge attentdue 0
+CHEFF11 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, 0.0, 0.0, 0.0, -1.534e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B aciers tendu - Marge attendue : 0
+CHEFF12 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -5.0e6, 0.0, 0.0, -3.2309e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B aciers comprimé - Marge attendue : 0
+CHEFF13 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -20.0e6, 0.0, 0.0, -2.2898e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot C- Marge attendue : 0
+CHEFF14 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -25.0e6, 0.0, 0.0, -0.5531e6, 0.0, 0.0, 0.0),
+    ),
+)
+
 # on cree une sd evol_elas avec des champs d'efforts imposes :
 # -------------------------------------------------------------
 
@@ -203,6 +281,10 @@ RESUELU = CREA_RESU(
         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF8, INST=8.0, MODELE=MODEL, CARA_ELEM=CARA),
         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF9, INST=9.0, MODELE=MODEL, CARA_ELEM=CARA),
         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF10, INST=10.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF11, INST=11.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF12, INST=12.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF13, INST=13.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF14, INST=14.0, MODELE=MODEL, CARA_ELEM=CARA),
     ),
 )
 
@@ -437,80 +519,145 @@ TEST_RESU(
     )
 )
 
-# # CAS3 - Appel a la commande VERI_FERRAILLAGE AVEC BAEL91
 
-# MARGE3               = VERI_FERRAILLAGE(
-#     reuse            = RESUELU,
-#     RESULTAT         = RESUELU,
-#     CARA_ELEM        = CARA,
-#     CODIFICATION     = 'BAEL91',
-#     TYPE_COMB        = 'ELU',
-#     UNITE_CONTRAINTE = 'Pa',
-#     UNITE_DIMENSION  = 'm',
-#     CHAM_FERR        = FERRAILLAGE_REF1,
-#     INST             = (1.0, 2.0, 3.0, 4.0, 5.0, 6.0,7.0,8.0,9.0,10.0),
-#      AFFE            = (
-#                         # Reinf/EC2
-#                         _F(
-#                             TOUT="OUI",
-#                             TYPE_DIAGRAMME = 'B2',
-#                             # Enrobage (2D)
-#                             C_SUP     = 0.08,
-#                             C_INF     = 0.08,
-#                             #
-#                             FE=500.0e6,
-#                             FCJ=35.0e6,
-#                             EYS       = 200.0e9,
-#                             GAMMA_S   = 1.15,
-#                             GAMMA_C   = 1.5,
-#                             ALPHA_CC  = 1.0,
-#                            ),
-#                             ),)
+# CAS3- On compare avec la feuille DIPDE
+# # Appel a la commande VERI_FERRAILLAGE : Sans chref
+MARGE3 = VERI_FERRAILLAGE(
+    reuse=RESUELU,
+    RESULTAT=RESUELU,
+    CARA_ELEM=CARA2,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    CHAM_FERR=FERRAILLAGE_REF2,
+    INST=(11.0, 12.0, 13.0, 14.0),
+    AFFE=(
+        # Reinf/EC2
+        _F(
+            TOUT="OUI",
+            TYPE_DIAGRAMME="B2",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            FYK=500.0e6,
+            FCK=40.0e6,
+            EYS=200.0e9,
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
 
-# # -----------------------------------------------------
-# # Tests
-# # -----------------------------------------------------
-# D_ref = [
-#     [0.5 ],  # 1
-#     [-1 ],  # 2
-#     [0.3 ],  # 3
-#     [0.8],  # 4
-#     [0.2 ],  # 5
-#     [1.0 ],  # 6
-#     [0.6 ],  # 7
-#     [0.3 ],  # 8
-#     [0.8],  # 9
-#     [0.2 ],  # 10
-# ]
+# -----------------------------------------------------
+# Tests
+# -----------------------------------------------------
+D_ref = [[0.0], [0.0], [0.0], [0.0]]  # 1  # 2  # 3  # 4
 
-# D_calc = [
-#     [ 0.5000063694267516  ],  # 1
-#     [ -0.9999745222929934   ],  # 2
-#     [ 0.2761203120578223   ],  # 3
-#     [ 0.8013274803450019   ],  # 4
-#     [ 0.1999916338299642 ],  # 5
-#     [ 1.0 ],  # 6
-#     [ 0.5999896822121338   ],  # 7
-#     [ 0.2761203120578223   ],  # 8
-#     [ 0.8013274803450019],  # 9
-#     [0.1999916338299642  ],  # 10
-# ]
+D_calc = [
+    [0.02100363028178942],  # 1
+    [0.0006922822587589472],  # 2
+    [0.004125664998677947],  # 3
+    [-0.0005643415314280364],  # 4
+]
 
-# for j in range(len(D_ref)):
-#     TEST_RESU(
-#         RESU=_F(
-#             RESULTAT=RESUELU,
-#             INST=j + 1.0,
-#             NOM_CHAM="MARG_ELEM",
-#             NOM_CMP='MARGE',
-#             GROUP_MA="M1",
-#             LEGENDE="ELU",
-#             VALE_REFE=D_ref[j],
-#             VALE_CALC=D_calc[j],
-#             REFERENCE="ANALYTIQUE",
-#             PRECISION=0.005,
-#             CRITERE="ABSOLU",
-#         )
-#     )
+for j in range(len(D_ref)):
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=RESUELU,
+            INST=j + 11.0,
+            NOM_CHAM="MARG_ELEM",
+            NOM_CMP="MARGE",
+            GROUP_MA="M1",
+            LEGENDE="ELU",
+            VALE_REFE=D_ref[j],
+            VALE_CALC=D_calc[j],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.05,
+            CRITERE="ABSOLU",
+        )
+    )
+
+# CAS3 - Appel a la commande VERI_FERRAILLAGE AVEC BAEL91 et GROUP_MA
+
+MARGE3 = VERI_FERRAILLAGE(
+    reuse=RESUELU,
+    RESULTAT=RESUELU,
+    CARA_ELEM=CARA,
+    CODIFICATION="BAEL91",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    CHAM_FERR=FERRAILLAGE_REF1,
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
+    AFFE=(
+        # Reinf/EC2
+        _F(
+            GROUP_MA="M1",
+            TYPE_DIAGRAMME="B2",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            FE=500.0e6,
+            FCJ=35.0e6,
+            EYS=200.0e9,
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+# -----------------------------------------------------
+# Tests
+# -----------------------------------------------------
+D_ref = [
+    [0.5],  # 1
+    [-1],  # 2
+    [0.3],  # 3
+    [0.8],  # 4
+    [0.2],  # 5
+    [1.0],  # 6
+    [0.6],  # 7
+    [0.3],  # 8
+    [0.8],  # 9
+    [0.2],  # 10
+]
+
+D_calc = [
+    [0.5000063694267516],  # 1
+    [-0.9999745222929934],  # 2
+    [0.3030789795519139],  # 3
+    [0.8013274803450019],  # 4
+    [0.1999916338299642],  # 5
+    [1.0],  # 6
+    [0.5999896822121338],  # 7
+    [0.3030789795519139],  # 8
+    [0.8013274803450019],  # 9
+    [0.1999916338299642],  # 10
+]
+
+for j in range(len(D_ref)):
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=RESUELU,
+            INST=j + 1.0,
+            NOM_CHAM="MARG_ELEM",
+            NOM_CMP="MARGE",
+            GROUP_MA="M1",
+            LEGENDE="ELU",
+            VALE_REFE=D_ref[j],
+            VALE_CALC=D_calc[j],
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.005,
+            CRITERE="ABSOLU",
+        )
+    )
+
+
+# CAS4: test VERI_FERRAILLAGE AVEC GROUP_MA = 1D
 
 FIN()
