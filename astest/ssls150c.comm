@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 
-# Objectif: Verification analytique de la marge ELU VERI_FERRAILLAGE: On impose
+# Objectif: Verification analytique de la marge BAEL VERI_FERRAILLAGE: On impose
 # un chargement proportionnel aux points particuliers du diagramme calculés
 #  analytiquement
 # La marge attendue est égale à  (1 - coef. de proportionnalité)

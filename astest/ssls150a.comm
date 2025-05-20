@@ -28,6 +28,11 @@
 # On impose un chargement egal au chargement ultime obtenu avec la feuille.
 # La marge attendue est nulle
 
+# Objectif configuration 4: Verification analytique de la marge VERI_FERRAILLAGE avec le BAEL91: On impose
+# un chargement proportionnel aux points particuliers du diagramme calculés
+#  analytiquement
+# La marge attendue est égale à  (1 - coef. de proportionnalité)
+
 DEBUT(
     CODE="OUI",
     ERREUR=_F(ALARME="ALARME"),
@@ -289,7 +294,7 @@ RESUELU = CREA_RESU(
 )
 
 
-# CAS1 - Appel a la commande VERI_FERRAILLAGE AVEC CHAMP EFFORT DE REFERENCE NUL
+# configuration1 - Appel a la commande VERI_FERRAILLAGE AVEC CHAMP EFFORT DE REFERENCE NUL
 MARGE1 = VERI_FERRAILLAGE(
     reuse=RESUELU,
     RESULTAT=RESUELU,
@@ -318,6 +323,7 @@ MARGE1 = VERI_FERRAILLAGE(
         ),
     ),
 )
+
 
 # -----------------------------------------------------
 # Tests
@@ -407,7 +413,7 @@ for j in range(len(theta_ref)):
             CRITERE="ABSOLU",
         )
     )
-# CAS2 - Appel a la commande VERI_FERRAILLAGE AVEC CHAMP EFFORT DE REFERENCE
+# configuration2 - Appel a la commande VERI_FERRAILLAGE AVEC CHAMP EFFORT DE REFERENCE
 # De compression pure
 
 # CHAMP DE REFERENCE
@@ -422,6 +428,8 @@ CHEFFREF = CREA_CHAMP(
     ),
 )
 
+linst = [1.0, 2.0, 6.0, 7.0]
+L_INST = DEFI_LIST_REEL(VALE=linst)
 
 MARGE2 = VERI_FERRAILLAGE(
     reuse=RESUELU,
@@ -433,7 +441,7 @@ MARGE2 = VERI_FERRAILLAGE(
     UNITE_DIMENSION="m",
     CHAM_FERR=FERRAILLAGE_REF1,
     CHAM_REFE=CHEFFREF,
-    INST=(1.0, 2.0, 6.0, 7.0),
+    LIST_INST=L_INST,
     AFFE=(
         # Reinf/EC2
         _F(
@@ -520,7 +528,7 @@ TEST_RESU(
 )
 
 
-# CAS3- On compare avec la feuille DIPDE
+# configuration3- On compare avec la feuille DIPDE
 # # Appel a la commande VERI_FERRAILLAGE : Sans chref
 MARGE3 = VERI_FERRAILLAGE(
     reuse=RESUELU,
@@ -531,7 +539,7 @@ MARGE3 = VERI_FERRAILLAGE(
     UNITE_CONTRAINTE="Pa",
     UNITE_DIMENSION="m",
     CHAM_FERR=FERRAILLAGE_REF2,
-    INST=(11.0, 12.0, 13.0, 14.0),
+    NUME_ORDRE=(11, 12, 13, 14),
     AFFE=(
         # Reinf/EC2
         _F(
@@ -580,9 +588,9 @@ for j in range(len(D_ref)):
         )
     )
 
-# CAS3 - Appel a la commande VERI_FERRAILLAGE AVEC BAEL91 et GROUP_MA
+# configuration4 - Appel a la commande VERI_FERRAILLAGE AVEC BAEL91
 
-MARGE3 = VERI_FERRAILLAGE(
+MARGE4 = VERI_FERRAILLAGE(
     reuse=RESUELU,
     RESULTAT=RESUELU,
     CARA_ELEM=CARA,
@@ -591,7 +599,7 @@ MARGE3 = VERI_FERRAILLAGE(
     UNITE_CONTRAINTE="Pa",
     UNITE_DIMENSION="m",
     CHAM_FERR=FERRAILLAGE_REF1,
-    INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
+    TOUT_ORDRE="OUI",
     AFFE=(
         # Reinf/EC2
         _F(
@@ -657,7 +665,5 @@ for j in range(len(D_ref)):
         )
     )
 
-
-# CAS4: test VERI_FERRAILLAGE AVEC GROUP_MA = 1D
 
 FIN()
