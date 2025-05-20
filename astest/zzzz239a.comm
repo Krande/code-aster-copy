@@ -144,8 +144,18 @@ U1 = STAT_NON_LINE(
     CARA_ELEM=CARAEL,
     EXCIT=(_F(CHARGE=CHAR_U3, FONC_MULT=chf1), _F(CHARGE=DEPL_1)),
     NEWTON=_F(MATRICE=matrice, MATR_RIGI_SYME=mat_sym1),
-    COMPORTEMENT=(_F(RELATION=rela_ldc, GROUP_MA="DALLE", ITER_CPLAN_MAXI=50, REGU_VISC=reg),),
-    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=20),
+    COMPORTEMENT=(
+        _F(
+            RELATION=rela_ldc,
+            GROUP_MA="DALLE",
+            ITER_CPLAN_MAXI=50,
+            RESI_CPLAN_MAXI=FTM * 1.0e-5,
+            REGU_VISC=reg,
+        ),
+    ),
+    CONVERGENCE=_F(
+        RESI_REFE_RELA=1.0e-3, EFFORT_REFE=FTM * EP, MOMENT_REFE=FTM * EP**2, ITER_GLOB_MAXI=20
+    ),
     ARCHIVAGE=_F(LIST_INST=inst1),
     INCREMENT=_F(LIST_INST=lisnt1, INST_FIN=tjusqua),
     MESURE=_F(TABLE="OUI"),
@@ -158,6 +168,6 @@ tab_iter = iterations.EXTR_TABLE()
 val_itermax = max(tab_iter.ITER_GLOB.values())
 
 test = CA.TestCase()
-test.assertLessEqual(val_itermax, 10)
+test.assertLessEqual(val_itermax, 5)
 
 FIN()
