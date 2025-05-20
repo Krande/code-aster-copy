@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 !
     type(te0047_dscr), intent(in) :: for_discret
     integer :: icodma
-    real(kind=8) :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
+    real(kind=8) :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*), klvp(36)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer, parameter :: nbre1 = 9
+    integer, parameter :: nbre1 = 11
     integer :: codre1(nbre1)
     real(kind=8) :: valre1(nbre1)
     character(len=8) :: nomre1(nbre1)
@@ -62,13 +62,13 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 !
     integer :: indic, ii
     real(kind=8) :: xl(6), xd(3), rignor, rigtan
-    real(kind=8) :: coulom, dist12, utot, depx, depy, depz
-    real(kind=8) :: lambda, fort, dist0, rtmp
+    real(kind=8) :: coulom, dist12, utotx, utoty, utotz, depx, depy, depz
+    real(kind=8) :: lambda, fort, dist0, rtmp, kp, kt
 !
     character(len=32) :: messak(3)
 !
     data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', 'COULOMB', &
-        'DIST_1', 'DIST_2', 'JEU', 'CONTACT'/
+        'DIST_1', 'DIST_2', 'JEU', 'CONTACT', 'KP', 'KT'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,12 +79,12 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 #define id3(i,j) i+(j-1)*3
 !
 !   Initialisation
-    xl(:) = 0.0; xd(:) = 0.0; fort = 0.0
+    xl(:) = 0.d0; xd(:) = 0.d0; fort = 0.d0
 !   Coordonnées dans le repere local
     call utpvgl(for_discret%nno, 3, for_discret%pgl, xg, xl)
 !   Raideurs du discret
 !       ==> Elles sont surchargées par celles du matériau
-    valre1(:) = 0.0
+    valre1(:) = 0.d0
     valre1(1) = klv(1); valre1(2) = klv(3)
 !   Caractéristiques du matériau
     call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', &
@@ -99,23 +99,30 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
     rignor = abs(valre1(1))
     rigtan = abs(valre1(2))
     coulom = abs(valre1(5))
+    kp = valre1(10)
+    kt = valre1(11)
 !
 !   Élément avec 2 noeuds
     if (for_discret%nno .eq. 2) then
         dist12 = valre1(6)+valre1(7)
-        utot = ulp(1+for_discret%nc)-ulp(1)
+        utotx = ulp(1+for_discret%nc)-ulp(1)
+        utoty = ulp(2+for_discret%nc)-ulp(2)
+        utotz = ulp(3+for_discret%nc)-ulp(3)
         do ii = 1, 3
             xd(ii) = xl(ii+3)-xl(ii)
         end do
-        depx = xd(1)-dist12+utot
-        depy = xd(2)+ulp(2+for_discret%nc)-ulp(2)
-        depz = xd(3)+ulp(3+for_discret%nc)-ulp(3)
+        depx = xd(1)-dist12+utotx
+        depy = xd(2)+utoty
+        depz = xd(3)+utotz
 !
 !   Élément avec 1 noeud
     else
         dist12 = valre1(6)
+        utotx = ulp(1)
+        utoty = ulp(2)
+        utotz = ulp(3)
         dist0 = valre1(8)
-        depx = ulp(1)+dist12-dist0
+        depx = utotx+dist12-dist0
         depy = ulp(2)
         depz = ulp(3)
     end if
@@ -125,7 +132,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
     varpl(icalc) = EnPlasticite
 !   Calcul des variables internes et efforts
     if (for_discret%lVari .or. for_discret%lVect) then
-        if (depx .le. 0.0) then
+        if (depx .le. 0.d0) then
             force(1) = rignor*depx
             force(2) = rigtan*(depy-varmo(idepyp))
             force(3) = rigtan*(depz-varmo(idepzp))
@@ -143,16 +150,16 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                 varpl(iidic) = EtatAdher
             end if
         else
-            force(1) = 0.0
-            force(2) = 0.0
-            force(3) = 0.0
-            fort = 0.0
-            varpl(idepyp) = 0.0
-            varpl(idepzp) = 0.0
+            force(1) = 0.d0
+            force(2) = 0.d0
+            force(3) = 0.d0
+            fort = 0.d0
+            varpl(idepyp) = 0.d0
+            varpl(idepzp) = 0.d0
             varpl(iidic) = EtatDecol
         end if
     end if
-!   Calcul de la matrice complete, elle est remontée !!! dimension de klv = 78
+!   Calcul de la matrice complete
     if (for_discret%lMatr) then
         if (for_discret%option(1:9) .eq. 'FULL_MECA') then
             indic = nint(varpl(iidic))
@@ -164,7 +171,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
             fort = (force(2)**2+force(3)**2)**0.50
         end if
         if (for_discret%nno .eq. 2) then
-            klv(1:36) = 0.0
+            klv(1:36) = 0.d0
             if (indic .eq. EtatAdher) then
                 klv(id6(1, 1)) = rignor
                 klv(id6(4, 1)) = -rignor
@@ -216,8 +223,24 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                 klv(id6(5, 6)) = rtmp
                 klv(id6(6, 5)) = rtmp
             end if
+            ! Elément élastique en parallèle
+            klvp = 0.d0
+            klvp(id6(1, 1)) = kp
+            klvp(id6(4, 1)) = -kp
+            klvp(id6(1, 4)) = -kp
+            klvp(id6(4, 4)) = kp
+            klvp(id6(2, 2)) = kt
+            klvp(id6(3, 3)) = kt
+            klvp(id6(5, 5)) = kt
+            klvp(id6(6, 6)) = kt
+            klvp(id6(5, 2)) = -kt
+            klvp(id6(2, 5)) = -kt
+            klvp(id6(6, 3)) = -kt
+            klvp(id6(3, 6)) = -kt
+            ! Cumul des raideurs
+            klv(1:36) = klv(1:36)+klvp(1:36)
         else
-            klv(1:9) = 0.0
+            klv(1:9) = 0.d0
             if (indic .eq. EtatAdher) then
                 klv(id3(1, 1)) = rignor
                 klv(id3(2, 2)) = rigtan
@@ -239,8 +262,20 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                 klv(id3(2, 3)) = rtmp
                 klv(id3(3, 2)) = rtmp
             end if
+            ! Elément élastique en parallèle
+            klvp = 0.d0
+            klvp(id3(1, 1)) = rignor
+            klvp(id3(2, 2)) = rigtan
+            klvp(id3(3, 3)) = rigtan
+            ! Cumul des raideurs
+            klv(1:9) = klv(1:9)+klvp(1:9)
+
         end if
     end if
+    ! Elément élastique en parallèle
+    force(1) = force(1)+kp*utotx
+    force(2) = force(2)+kt*utoty
+    force(3) = force(3)+kt*utotz
     varpl(ifx) = force(1)
     varpl(ify) = force(2)
     varpl(ifz) = force(3)

@@ -581,14 +581,8 @@ class Assemblage:
             ),
             # ressort pour blocage bas crayons
             _F(
-                GROUP_MA="CREI",
-                REPERE="GLOBAL",
-                CARA="K_T_D_L",
-                VALE=vale_K_T_D_L(1.0e4, self.nb_cr_mesh),
-            ),
-            _F(
-                GROUP_MA="CREIC",
-                REPERE="GLOBAL",
+                GROUP_MA="CREI_%s" % self.pos_aster,
+                REPERE="LOCAL",
                 CARA="K_T_D_L",
                 VALE=vale_K_T_D_L(1.0e9, self.nb_cr_mesh),
             ),

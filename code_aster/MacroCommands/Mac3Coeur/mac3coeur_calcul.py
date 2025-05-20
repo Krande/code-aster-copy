@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -616,10 +616,9 @@ class Mac3CoeurCalcul:
                     RIGI_GEOM=self._option_rigi_geom,
                 ),
                 _F(RELATION="DIS_GRICRA", GROUP_MA="ELA"),
-                _F(RELATION="DIS_CHOC", GROUP_MA=("CREIC", "RES_TOT")),
+                _F(RELATION="DIS_CHOC", GROUP_MA=("CREI", "RES_TOT")),
                 _F(
-                    RELATION="ELAS",
-                    GROUP_MA=("GRIL_I", "GRIL_E", "CREI", "EBOINF", "EBOSUP", "RIG", "DIL"),
+                    RELATION="ELAS", GROUP_MA=("GRIL_I", "GRIL_E", "EBOINF", "EBOSUP", "RIG", "DIL")
                 ),
                 _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
             ),

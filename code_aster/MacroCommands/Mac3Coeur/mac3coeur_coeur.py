@@ -223,6 +223,51 @@ class Coeur:
         """Retourne la géométrie du coeur."""
         raise NotImplementedError
 
+    def watergap_toaster(self, gap):
+        """Retourne la position de la lame d'eau DAMAC au format Aster."""
+
+        data = gap.split("_")
+        sz = len(data)
+        errmsg = "Water Gap position error %s." % gap
+
+        assert sz in (2, 3), errmsg
+        tag = data[0]
+        assert tag in ("RES", "CU"), errmsg
+
+        if tag == "RES":
+            ac1, ac2 = data[1][:3], data[1][3:]
+            p1 = self.position_toaster(ac1).replace("_", "")
+            p2 = self.position_toaster(ac2).replace("_", "")
+            loc = f"{tag}_{p1}{p2}"
+        else:
+            ac1, orie = data[1], data[2]
+            p1 = self.position_toaster(ac1).replace("_", "")
+            loc = f"{tag}_{p1}_{orie}"
+
+        return loc
+
+    def watergap_todamac(self, gap):
+        """Retourne la position de la lame d'eau Aster au format DAMAC."""
+        data = gap.split("_")
+        sz = len(data)
+        errmsg = "Water Gap position error %s." % gap
+
+        assert sz in (2, 3), errmsg
+        tag = data[0]
+        assert tag in ("RES", "CU"), errmsg
+
+        if tag == "RES":
+            ac1, ac2 = data[1][:2], data[1][2:]
+            p1 = self.position_todamac("%s_%s" % (ac1[0], ac1[1]))
+            p2 = self.position_todamac("%s_%s" % (ac2[0], ac2[1]))
+            loc = f"{tag}_{p1}{p2}"
+        else:
+            ac1, orie = data[1], data[2]
+            p1 = self.position_todamac("%s_%s" % (ac1[0], ac1[1]))
+            loc = f"{tag}_{p1}_{orie}"
+
+        return loc
+
     def position_toaster(self, position):
         """Retourne la position Aster correspondant à la position DAMAC."""
         raise NotImplementedError
@@ -629,23 +674,15 @@ class Coeur:
             else:
                 grids_middle.append(grid_name)
 
-        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
+        MA = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
 
-        dict_creic = [
-            {"GROUP_MA": "CREI_%s" % ac.pos_aster, "NOM": "CREIC_%s" % ac.pos_aster}
-            for ac in self.collAC
-        ]
-
-        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=dict_creic)
-
-        _MA = DEFI_GROUP(
-            reuse=_MA,
+        MA = DEFI_GROUP(
+            reuse=MA,
             ALARME="NON",
-            MAILLAGE=_MA,
+            MAILLAGE=MA,
             CREA_GROUP_MA=(
                 _F(NOM="GRIL_I", UNION=tuple(grids_middle)),
                 _F(NOM="GRIL_E", UNION=tuple(grids_extr)),
-                _F(NOM="CREIC", UNION=[i["NOM"] for i in dict_creic]),
             ),
             CREA_GROUP_NO=(
                 _F(GROUP_MA=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN")),
@@ -653,7 +690,7 @@ class Coeur:
             ),
         )
 
-        return _MA
+        return MA
 
     def check_groups(self, mesh):
         cu_groups = [i for i in mesh.getGroupsOfCells() if i.startswith("CU_")]
@@ -775,7 +812,7 @@ class Coeur:
                 ),
                 _F(GROUP_MA=("ELA", "RIG"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
                 _F(
-                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC"),
+                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI"),
                     PHENOMENE="MECANIQUE",
                     MODELISATION="DIS_T",
                 ),
@@ -1349,7 +1386,9 @@ class Coeur:
         else:
             _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e1))
 
-        _M_BCR = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9, JEU=0.0))
+        # Avec raideur en parallele KP et KT
+        kp = kt = 1.0e4 / self.nb_cr_mesh
+        _M_BCR = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9, JEU=0.0, KP=kp, KT=kt))
 
         mcf_affe_mater = self.mcf_coeur_mater(_M_RES, _M_BCR)
         mcf_affe_varc = self.mcf_coeur_varc(FLUENCE, CHTH)
@@ -1449,7 +1488,7 @@ class Coeur:
                 _F(GROUP_MA="DI_%s" % ac.pos_aster, MATER=ac.materiau["DIL"]),
             )
             mcf.extend(mtmp)
-        mtmp = (_F(GROUP_MA="CREIC", MATER=_M_BCR),)
+        mtmp = (_F(GROUP_MA="CREI", MATER=_M_BCR),)
         mcf.extend(mtmp)
         return mcf
 
