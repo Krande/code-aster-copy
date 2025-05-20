@@ -73,6 +73,11 @@ void Result::_setFieldBase(
     // Check mesh
     setMesh( field->getMesh() );
 
+    // Check existence
+    if ( !exists() ) {
+        UTMESS( "F", "RESULT2_10" );
+    }
+
     // Get index of this symbolic name
     auto indexSymbName = _symbolicNamesOfFields->getIndexFromString( strip( symbName ) );
 
@@ -147,7 +152,10 @@ void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
         raiseAsterError( "ValueError: ElementaryCharacteristics already assigned at index " +
                          std::to_string( storageIndex ) );
     }
-
+    // Check existence
+    if ( !exists() ) {
+        UTMESS( "F", "RESULT2_10" );
+    }
     _mapElemCara[storageIndex] = cara;
     std::string type( "CARAELEM" );
     std::string cel( "E" );
@@ -164,7 +172,10 @@ void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER storageInd
         raiseAsterError( "ValueError: Load already assigned at index " +
                          std::to_string( storageIndex ) );
     }
-
+    // Check existence
+    if ( !exists() ) {
+        UTMESS( "F", "RESULT2_10" );
+    }
     _mapLoads[storageIndex] = load;
     std::string type( "EXCIT" );
     std::string cel( "E" );
@@ -181,7 +192,10 @@ void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER stora
         raiseAsterError( "ValueError: MaterialField already assigned at index " +
                          std::to_string( storageIndex ) );
     }
-
+    // Check existence
+    if ( !exists() ) {
+        UTMESS( "F", "RESULT2_10" );
+    }
     _mapMaterial[storageIndex] = mater;
     std::string type( "CHAMPMAT" );
     std::string cel( "E" );
@@ -197,6 +211,10 @@ void Result::setModel( const ModelPtr &model, ASTERINTEGER storageIndex, bool ex
             return;
         raiseAsterError( "ValueError: Model already assigned at index " +
                          std::to_string( storageIndex ) );
+    }
+    // Check existence
+    if ( !exists() ) {
+        UTMESS( "F", "RESULT2_10" );
     }
 
     _mapModel[storageIndex] = model;

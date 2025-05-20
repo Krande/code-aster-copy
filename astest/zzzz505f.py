@@ -19,7 +19,6 @@
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
-
 test = CA.TestCase()
 
 fmt_raison = (
@@ -117,8 +116,6 @@ is_ok = 0
 try:
     pouet = elasMult.getTime(1)
 except CA.AsterError as err:
-    print(fmt_raison % str(err))
-    # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "RESULT2_9":
         is_ok = 1
 test.assertEqual(is_ok, 1)
