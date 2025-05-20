@@ -22,35 +22,39 @@
 #include "Contact/ContactParameter.h"
 
 ContactParameter::ContactParameter( const py::tuple &tup ) : ContactParameter() {
-    _algo = tup[0].cast< ContactAlgo >();
-    _type = tup[1].cast< ContactType >();
-    _vari = tup[2].cast< ContactVariant >();
-    _coeff = tup[3].cast< ASTERDOUBLE >();
-    _jacType = tup[4].cast< JacobianType >();
+    int i = -1;
+    _algo = tup[++i].cast< ContactAlgo >();
+    _type = tup[++i].cast< ContactType >();
+    _vari = tup[++i].cast< ContactVariant >();
+    _coeff = tup[++i].cast< ASTERDOUBLE >();
+    _jacType = tup[++i].cast< JacobianType >();
 };
 py::tuple ContactParameter::_getState() const {
     return py::make_tuple( _algo, _type, _vari, _coeff, _jacType );
 };
 
 FrictionParameter::FrictionParameter( const py::tuple &tup ) : FrictionParameter() {
-    _algo = tup[0].cast< FrictionAlgo >();
-    _type = tup[1].cast< FrictionType >();
-    _coeff = tup[2].cast< ASTERDOUBLE >();
-    _tresca = tup[3].cast< ASTERDOUBLE >();
-    _coulomb = tup[4].cast< ASTERDOUBLE >();
+    int i = -1;
+    _friction = tup[++i].cast< bool >();
+    _algo = tup[++i].cast< FrictionAlgo >();
+    _type = tup[++i].cast< FrictionType >();
+    _coeff = tup[++i].cast< ASTERDOUBLE >();
+    _tresca = tup[++i].cast< ASTERDOUBLE >();
+    _coulomb = tup[++i].cast< ASTERDOUBLE >();
 };
 py::tuple FrictionParameter::_getState() const {
-    return py::make_tuple( _algo, _type, _coeff, _tresca, _coulomb );
+    return py::make_tuple( _friction, _algo, _type, _coeff, _tresca, _coulomb );
 };
 
 PairingParameter::PairingParameter( const py::tuple &tup ) : PairingParameter() {
-    _algo = tup[0].cast< PairingAlgo >();
-    _cont_init = tup[1].cast< InitialState >();
-    _dist_ratio = tup[2].cast< ASTERDOUBLE >();
-    _beam = tup[3].cast< bool >();
-    _shell = tup[4].cast< bool >();
-    _dist_supp = tup[5].cast< GenericFunctionPtr >();
-    _cara = tup[6].cast< ElementaryCharacteristicsPtr >();
+    int i = -1;
+    _algo = tup[++i].cast< PairingAlgo >();
+    _cont_init = tup[++i].cast< InitialState >();
+    _dist_ratio = tup[++i].cast< ASTERDOUBLE >();
+    _beam = tup[++i].cast< bool >();
+    _shell = tup[++i].cast< bool >();
+    _dist_supp = tup[++i].cast< GenericFunctionPtr >();
+    _cara = tup[++i].cast< ElementaryCharacteristicsPtr >();
 };
 py::tuple PairingParameter::_getState() const {
     return py::make_tuple( _algo, _cont_init, _dist_ratio, (int)_beam, (int)_shell, _dist_supp,

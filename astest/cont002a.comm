@@ -17,10 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
+
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
 from code_aster.Commands import *
 from code_aster import CA
 
+# Restart with DEFI_CONT do not currently work.
+# This variable allows to check restart during the development phase.
+CHECK_RESTART = "CHECK_RESTART" in os.environ
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
 
@@ -57,12 +62,21 @@ CHAR1 = AFFE_CHAR_CINE(
 )
 CHAR2 = AFFE_CHAR_MECA(MODELE=MODI, PRES_REP=_F(GROUP_MA="Group_4", PRES=25))
 
+lisi = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1, PAS=0.5))
+
+LINST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE"))
+
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
+
 # the same checks are done at restart
 test = CA.TestCase()
 zones = DEFICO.getContactZones()
 
 test.assertEqual(len(zones), 1)
 z0 = zones[0]
+
+# check friction
+test.assertTrue(DEFICO.hasFriction)
 
 # check PairingParameter
 pairing = z0.getPairingParameter()
@@ -78,7 +92,5 @@ mesh_pairing = z0.getMeshPairing()
 test.assertTrue(mesh_pairing.compute())
 lp = mesh_pairing.getListOfPairs()
 test.assertEqual(len(lp), 26)
-
-del zones, z0, pairing, cp, mesh_pairing
 
 FIN()

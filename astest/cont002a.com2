@@ -1,0 +1,103 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI")
+
+RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE=("SIEF_NOEU"))
+
+RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE="SIGM_NOEU", FORCE=("FORC_NODA", "REAC_NODA"))
+
+# Since the contact pressure is expressed in global coordinates, we switch the tests
+# on LAGS_C and LAGS_F1
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="CALC_PRESSION",
+            NOM_CMP="SIYY",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="CALC_PRESSION",
+            NOM_CMP="SIYY",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.00,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_C",
+            NOM_CMP="LAGS_C",
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1e-6,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_C",
+            NOM_CMP="LAGS_C",
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1e-6,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_F1",
+            NOM_CMP="LAGS_F1",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_F1",
+            NOM_CMP="LAGS_F1",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.0,
+        ),
+    )
+)
+
+FIN()

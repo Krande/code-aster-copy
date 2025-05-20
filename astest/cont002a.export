@@ -7,4 +7,6 @@ P testlist submit verification sequential
 
 F comm cont002a.comm D 1
 F comm cont002a.com0 D 1
+F comm cont002a.com1 D 1
+F comm cont002a.com2 D 1
 F mmed ssnp170a.mmed D 20
