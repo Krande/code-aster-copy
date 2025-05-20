@@ -124,7 +124,7 @@ def createLocalElasResult(rmanager, resuglob):
         dot_p_c23 = 2.0 * evol_epsip0[no][1, 2] * chi_23
         dot_p_c31 = 2.0 * evol_epsip0[no][0, 2] * chi_31
         dot_p_dil = -1.0 * (tp0 - rmanager.temp_ref) * chi_di
-        dot_p_pin = rmanager.pres_int * chi_pi
+        dot_p_pin = rmanager.pres_int(time) * chi_pi
 
         dreloc = (
             evol_dp0[no]

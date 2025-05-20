@@ -29,10 +29,12 @@ from ...Objects import (
     ElasticResult,
     SimpleFieldOnNodesReal,
 )
+from ...CodeCommands import DEFI_CONSTANTE
 from ...Messages import ASSERT, UTMESS
 from ...Utilities import SearchList, no_new_attributes, medcoupling as medc
 from .rest_homo_proj import MOCK_PROJ_CHAMP
 from .syme_homo_corr import BuildFullSymmetryMassif
+from .mate_homo_utilities import get_temp_def_alpha_material as get_tda
 from . import MESH_TOL, HomoType, check_mesh
 
 
@@ -65,7 +67,7 @@ class RelocManager:
 
     @property
     def pres_int(self):
-        """Holds the internal pressure value."""
+        """Holds the internal pressure function."""
 
         return self._pres_int
 
@@ -163,8 +165,8 @@ class RelocManager:
 
         self._elas_dict = kwargs.get("CORR_MECA", {})
         self._ther_dict = kwargs.get("CORR_THER", {})
-        self._temp_ref = kwargs.get("TEMP_REF", 20.0)
-        self._pres_int = kwargs.get("PRESSION", 0.0)
+        self._setup_pression(kwargs.get("PRESSION"))
+        self._setup_temp_ref(kwargs.get("AFFE"))
         self._crit = kwargs.get("CRITERE")
         self._prec = kwargs.get("PRECISION")
         self._subinsts = kwargs.get("INST")
@@ -175,6 +177,37 @@ class RelocManager:
         self._full = False
         if kwargs.get("COMPLET") == "OUI":
             self._make_full_correctors()
+
+    def _setup_pression(self, p):
+        """
+        Sets the internal pressure function.
+
+        If `p` is None, a default constant pressure of 0.0 is used.
+        """
+
+        if p is None:
+            self._pres_int = DEFI_CONSTANTE(VALE=0.0)
+        else:
+            if not p.getProperties()[2] in ("INST", "TOUTPARA"):
+                UTMESS("F", "HOMO1_20")
+            self._pres_int = p
+
+    def _setup_temp_ref(self, affe):
+        """
+        Sets the reference temperature (TEMP_DEF_ALPHA) from given materials.
+        """
+
+        stda = set()
+        for item in affe:
+            mater = item["MATER"]
+            tda_current = get_tda(mater)
+            stda.add(tda_current)
+
+        ltda = list(stda)
+        if len(ltda) > 1:
+            UTMESS("F", "HOMO1_14", valk=("TEMP_DEF_ALPHA",))
+
+        self._temp_ref = ltda[0]
 
     def _make_full_correctors(self):
         """

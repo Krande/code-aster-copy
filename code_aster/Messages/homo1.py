@@ -119,4 +119,9 @@ Vous pouvez sauvegarder le résultat dans un fichier unique puis le recharger en
 Le maillage fourni %(k1)s est de type parallèle et n'est pas supporté par cette fonctionnalité.
 """
     ),
+    20: _(
+        """
+La pression fournie n'est pas une fonction du temps.
+"""
+    ),
 }
