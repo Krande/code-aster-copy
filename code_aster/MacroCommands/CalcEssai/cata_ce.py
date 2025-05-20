@@ -499,15 +499,21 @@ class InterSpectre:
                 raise TypeError
 
         for nume_i, nume_j in coupl_ddl:
+            nume_i2 = nume_i
+            if nume_i[0] == "N":
+                nume_i2 = nume_i[1:]
+            nume_j2 = nume_j
+            if nume_j[0] == "N":
+                nume_j2 = nume_j[1:]
             if not self.nume_phy or not self.isnume:
                 # rangement alpha-numerique des donnees de l'inter-spectre
-                ind_l = nume_ordr_l.index(nume_i[1:])
-                ind_c = nume_ordr_c.index(nume_j[1:])
+                ind_l = nume_ordr_l.index(nume_i2)
+                ind_c = nume_ordr_c.index(nume_j2)
                 __fonc = RECU_FONCTION(INTE_SPEC=self.obj, NUME_ORDRE_I=nume_i, NUME_ORDRE_J=nume_j)
             elif self.nume_phy:
                 # rangement selon l'ordre des DDL donne par self.nume
-                ind_l = self.nume_phy.index(nume_i[1:])
-                ind_c = self.nume_phy.index(nume_j[1:])
+                ind_l = self.nume_phy.index(nume_i2)
+                ind_c = self.nume_phy.index(nume_j2)
                 if nume_i == nume_j:
                     __fonc = RECU_FONCTION(
                         INTE_SPEC=self.obj,
