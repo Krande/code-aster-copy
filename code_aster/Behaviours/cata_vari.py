@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -289,6 +289,7 @@ DICT_NOM_VARI = {
     "ENDONOR": _("endommagement normal"),
     "ENDOPLUS": _("JONC_ENDO_PLAS : endommagement en flexion positive, variable interne 7"),
     "ENDORIGI": _("rigidité résiduelle"),
+    "ENDOTOT": _("Endommagement total en traction et compression"),
     "ENDOSUP": _("variable d'endommagement pour la moitié supérieure de la plaque"),
     "ENDOTAN": _("endommagement tangentiel"),
     "ENDOTRAC": _("endommagement scalaire en traction"),
@@ -637,6 +638,7 @@ DICT_NOM_VARI = {
     "SIGMAPIC": _("contrainte de pic"),
     "SIGM_T1": _("contrainte tangentielle 1"),
     "SIGM_T2": _("contrainte tangentielle 2"),
+    "SIGMVISC": ("Estimation de la part des contraintes liée à la viscosité "),
     "SIGN_GLO": _("contrainte mécanique normale (sans pression de fluide)"),
     "SIGP": _("cam_clay : contrainte de confinement"),
     "SIGRN": _(" Pinto-Menegotto, contrainte cycle N"),
