@@ -173,7 +173,14 @@ void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
     const auto curMesh = fr.getMesh( 0 );
     const auto &families = curMesh->getFamilies();
     for ( const auto &curFam : families ) {
-        toReturn->addFamily( curFam->getId(), curFam->getGroups() );
+        const auto &groups = curFam->getGroups();
+        VectorString groupShort;
+        for ( const auto &groupName : groups ) {
+            if ( groupName.size() <= 24 ) {
+                groupShort.push_back( groupName );
+            }
+        }
+        toReturn->addFamily( curFam->getId(), groupShort );
     }
 }
 
