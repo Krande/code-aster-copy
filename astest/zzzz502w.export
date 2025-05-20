@@ -1,0 +1,9 @@
+P time_limit 60
+P memory_limit 64
+P ncpus 1
+P mpi_nbcpu 8
+P mpi_nbnoeud 1
+P testlist verification parallel
+
+F comm zzzz502w.py D  1
+F mmed zzzz502w.mmed D 20
