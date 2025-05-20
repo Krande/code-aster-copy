@@ -127,6 +127,5 @@ Update the *DataStructure* attributes from the *Jeveux* objects.
 
 Returns:
     bool: *True* if all went ok, *False* otherwise.
-        )" )
-        .attr( "pickling_mode" ) = py::int_( 0 );
+        )" );
 };

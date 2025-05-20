@@ -179,7 +179,6 @@ class PairingParameter {
     /** @brief structural element characteristics = CARA_ELEM */
     ElementaryCharacteristicsPtr _cara;
     /** @brief structural element characteristics = DIST_SUPP */
-    //
 
   public:
     /**

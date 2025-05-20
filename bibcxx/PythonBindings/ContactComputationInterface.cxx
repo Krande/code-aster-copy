@@ -68,6 +68,5 @@ and COEF_FROT
 
 Returns:
     list[FieldOnNodesReal]: coefficients (COEF_CONT and COEF_FROT)
-        )" )
-        .attr( "pickling_mode" ) = py::int_( 1 );
+        )" );
 };

@@ -53,6 +53,5 @@ void exportCrackShapeToPython( py::module_ &mod ) {
         .def( "getEndPoint", &CrackShape::getEndPoint )
         .def( "getNormal", &CrackShape::getNormal )
         .def( "getTangent", &CrackShape::getTangent )
-        .def( "getStartingPoint", &CrackShape::getStartingPoint )
-        .attr( "pickling_mode" ) = py::int_( 1 );
+        .def( "getStartingPoint", &CrackShape::getStartingPoint );
 };

@@ -69,6 +69,5 @@ Return coordinate z.
 
 Returns:
     float: z.
-        )" )
-        .attr( "pickling_mode" ) = py::int_( 1 );
+        )" );
 };

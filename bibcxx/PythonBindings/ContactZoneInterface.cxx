@@ -26,10 +26,12 @@
 
 void exportContactZoneToPython( py::module_ &mod ) {
 
-    py::class_< ContactZone, ContactZone::ContactZonePtr, DataStructure >( mod, "ContactZone", R"(
+    py::class_< ContactZone, ContactZone::ContactZonePtr, DataStructure, UseCppPickling >(
+        mod, "ContactZone", R"(
 Object to define a zone of contact.)" )
         .def( py::init( &initFactoryPtr< ContactZone, std::string > ) )
         .def( py::init( &initFactoryPtr< ContactZone > ) )
+        .def( py::init( &initFactoryPtr< ContactZone, const py::tuple & > ) )
         .def( define_pickling< ContactZone >() )
         .def( "getModel", &ContactZone::getModel, R"(
 Return the model used in the contact zone definition
@@ -172,6 +174,5 @@ Returns:
                        py::overload_cast<>( &ContactZone::checkNormals, py::const_ ),
                        py::overload_cast< const bool & >( &ContactZone::checkNormals ), R"(
 bool: attribute that holds the checking of outwards normals.
-        )" )
-        .attr( "pickling_mode" ) = py::int_( 1 );
+        )" );
 };

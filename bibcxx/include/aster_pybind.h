@@ -39,8 +39,7 @@ static std::shared_ptr< DSType > initFactoryPtr( Args... args ) {
 };
 
 /** @brief Defines pickling functions */
-/* If the object inherits from DataStructure, it is mandatory
- * to add the 'pickling_mode' attribute
+/* If the object inherits from DataStructure, it must inherit from UseCppPickling too.
  */
 template < typename DSType >
 static auto define_pickling() {

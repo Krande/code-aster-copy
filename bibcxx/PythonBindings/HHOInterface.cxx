@@ -195,6 +195,5 @@ void exportHHOToPython( py::module_ &mod ) {
       Returns:
             FieldOnNodesReal: HHO field
         )",
-              py::arg( "value" ) )
-        .attr( "pickling_mode" ) = py::int_( 1 );
+              py::arg( "value" ) );
 };

@@ -45,16 +45,17 @@ MeshPairing::MeshPairing( const std::string name )
 
 MeshPairing::MeshPairing( const py::tuple &tup ) : MeshPairing( tup[0].cast< std::string >() ) {
     int i = 0;
-    _mesh = tup[++i].cast< BaseMeshPtr >();
+    setMesh( tup[++i].cast< BaseMeshPtr >() );
     _verbosity = tup[++i].cast< ASTERINTEGER >();
     _method = tup[++i].cast< PairingMethod >();
-    _slaveCellsGroup = tup[++i].cast< std::string >();
-    _masterCellsGroup = tup[++i].cast< std::string >();
+    std::string slavGrp = tup[++i].cast< std::string >();
+    std::string masterGrp = tup[++i].cast< std::string >();
     _nbPairs = tup[++i].cast< ASTERINTEGER >();
     _pairs = tup[++i].cast< VectorLong >();
     _nbPoinInte = tup[++i].cast< VectorLong >();
     _poinInteSlav = tup[++i].cast< VectorReal >();
     _slavSurf2Volu = tup[++i].cast< MapLong >();
+    setPair( slavGrp, masterGrp );
 };
 
 py::tuple MeshPairing::_getState() const {
@@ -188,6 +189,7 @@ ASTERBOOL MeshPairing::surfacesHasBeenDefined() {
 
 ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole ) {
 
+    build();
     CALL_JEMARQ();
 
     // Get and define some input parameters

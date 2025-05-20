@@ -26,12 +26,13 @@
 
 #include "Contact/ContactZone.h"
 #include "DataStructures/DataStructure.h"
+#include "DataStructures/UseCppPickling.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
-class ContactNew : public DataStructure {
+class ContactNew : public DataStructure, public UseCppPickling {
   protected:
     /** @brief Model */
     ModelPtr _model;

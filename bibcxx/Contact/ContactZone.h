@@ -28,12 +28,13 @@
 #include "Contact/ContactEnum.h"
 #include "Contact/ContactParameter.h"
 #include "DataStructures/DataStructure.h"
+#include "DataStructures/UseCppPickling.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/MeshPairing.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
-class ContactZone : public DataStructure {
+class ContactZone : public DataStructure, public UseCppPickling {
   private:
     /** @brief Model */
     ModelPtr _model;
