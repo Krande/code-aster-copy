@@ -69,6 +69,7 @@ module LoadKinematic_module
 #include "asterfort/pj4dco.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
+
 contains
 ! ==================================================================================================
 ! --------------------------------------------------------------------------------------------------

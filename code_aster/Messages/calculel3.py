@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -396,6 +396,18 @@ CREA_CHAMP ne sait pas créer de champ de type %(k1)s.
     99: _(
         """
  Problème de convergence pour calculer la nouvelle carte de taille.
+"""
+    ),
+    100: _(
+        """
+ Problème pour récupérer l'épaisseur de la coque pour la maille  %(i1)d
+"""
+    ),
+    101: _(
+        """
+Attention : la liaison COQ_3D ne prend actuellement en charge que les
+éléments de bord de la partie coque, c’est-à-dire les éléments de type
+SEG2 ou SEG3 uniquement.
 """
     ),
 }

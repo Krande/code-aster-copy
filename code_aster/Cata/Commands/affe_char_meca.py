@@ -689,6 +689,7 @@ AFFE_CHAR_MECA = OPER(
             typ="TXM",
             into=(
                 "3D_TUYAU",
+                "COQ_3D",
                 "3D_POU",
                 "3D_POU_ARLEQUIN",
                 "2D_POU",
@@ -704,6 +705,13 @@ AFFE_CHAR_MECA = OPER(
             GROUP_NO_2=SIMP(statut="f", typ=grno),
             GROUP_MA_2=SIMP(statut="f", typ=grma),
             ANGL_MAX=SIMP(statut="f", typ="R", defaut=1.0),
+        ),
+        b_coq_3d=BLOC(
+            condition="""equal_to("OPTION", 'COQ_3D')""",
+            GROUP_MA_COQUE=SIMP(statut="o", typ=grma),
+            GROUP_MA_MASSIF=SIMP(statut="o", typ=grma),
+            CARA_ELEM=SIMP(statut="o", typ=cara_elem),
+            COEF_RIGI_DRZ=SIMP(statut="f", typ="R", defaut=1.0e-5),
         ),
         b_3d_pou_arlequin=BLOC(
             condition="""equal_to("OPTION", '3D_POU_ARLEQUIN')""",
