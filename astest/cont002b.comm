@@ -1,0 +1,161 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
+
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
+
+Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+
+Mail = MODI_MAILLAGE(
+    reuse=Mail,
+    MAILLAGE=Mail,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("Group_2", "Group_1", "Group_3", "Group_4")),
+)
+
+MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
+
+mat1 = DEFI_MATERIAU(ELAS=_F(E=2000, NU=0.3))
+
+AFFE = AFFE_MATERIAU(MAILLAGE=Mail, MODELE=MODI, AFFE=_F(TOUT="OUI", MATER=mat1))
+
+DEFICO = DEFI_CONT(
+    MODELE=MODI,
+    INFO=2,
+    ZONE=_F(
+        APPARIEMENT="MORTAR",
+        GROUP_MA_MAIT="Group_2",
+        GROUP_MA_ESCL="Group_1",
+        ALGO_CONT="LAGRANGIEN",
+        FROTTEMENT="OUI",
+        COEF_CONT=2000.0,
+        CONTACT_INIT="INTERPENETRE",
+    ),
+)
+
+CHAR1 = AFFE_CHAR_CINE(
+    MODELE=MODI, MECA_IMPO=(_F(GROUP_MA="Sym", DX=0), _F(GROUP_MA="Group_3", DY=0))
+)
+CHAR2 = AFFE_CHAR_MECA(MODELE=MODI, PRES_REP=_F(GROUP_MA="Group_4", PRES=25))
+
+lisi = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1, PAS=0.5))
+
+LINST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE"))
+
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
+
+RES = MECA_NON_LINE(
+    INFO=1,
+    MODELE=MODI,
+    CHAM_MATER=AFFE,
+    EXCIT=(_F(CHARGE=CHAR1, FONC_MULT=RAMPE), _F(CHARGE=CHAR2, FONC_MULT=RAMPE)),
+    CONTACT=_F(DEFINITION=DEFICO, ALGO_RESO_GEOM="NEWTON"),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=lisi),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
+    SOLVEUR=_F(METHODE="MUMPS", RESI_RELA=1.0e-6, PCENT_PIVOT=30),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-6, ITER_GLOB_MAXI=50),
+    ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA", LIST_INST=lisi),
+)
+
+RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE=("SIEF_NOEU"))
+
+RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE="SIGM_NOEU", FORCE=("FORC_NODA", "REAC_NODA"))
+
+# Since the contact pressure is expressed in global coordinates, we switch the tests
+# on LAGS_C and LAGS_F1
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="CALC_PRESSION",
+            NOM_CMP="SIYY",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="SIEF_NOEU",
+            LEGENDE="CALC_PRESSION",
+            NOM_CMP="SIYY",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.00,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_C",
+            NOM_CMP="LAGS_C",
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1e-6,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_C",
+            NOM_CMP="LAGS_C",
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1e-6,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_F1",
+            NOM_CMP="LAGS_F1",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.0,
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            REFERENCE="ANALYTIQUE",
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_F1",
+            NOM_CMP="LAGS_F1",
+            VALE_REFE=-25.0,
+            VALE_CALC=-25.0,
+        ),
+    )
+)
+
+
+FIN()
+# CHECKSUM:9f90ac18752a4c0cdfc3c56aef286888  -:FIN CHECKSUM

@@ -159,6 +159,8 @@ DICT_SDJ = {
     "InterspectralMatrix": "SD.sd_interspectre.sd_interspectre",
     "MeshesMapping": "SD.sd_corresp_2_mailla.sd_corresp_2_mailla",
     "ModeResultComplex": "SD.sd_dyna_phys.sd_dyna_phys",
+    "ParallelContactNew": "SD.sd_char_cont.sd_char_cont",
+    "ParallelFrictionNew": "SD.sd_char_frot.sd_char_frot",
     "RitzBasis": "SD.sd_dyna_phys.sd_dyna_phys",
     "Skeleton": "SD.sd_squelette.sd_squelette",
     "StaticMacroElement": "SD.sd_macr_elem_stat.sd_macr_elem_stat",
