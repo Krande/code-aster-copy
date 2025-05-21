@@ -49,19 +49,24 @@ module LoadKinematic_module
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/base3n.h"
+#include "asterfort/cncinv.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/getelem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/jecrec.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
@@ -69,6 +74,7 @@ module LoadKinematic_module
 #include "asterfort/pj4dco.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
+
 contains
 ! ==================================================================================================
 ! --------------------------------------------------------------------------------------------------
@@ -94,8 +100,9 @@ contains
         character(len=16), parameter :: factorKeyword = 'LIAISON_MAIL'
         character(len=8), parameter :: meshDebugJv = '&&CALIRC'
         character(len=24) :: cellMastJv, geomMastJv
-        character(len=24) :: nodeSlavJv, geomSlavJv
-        character(len=8) :: mesh, chnorm, slavTransf(3), mastTransf(3)
+        character(len=24) :: cellSlavJv, cellSlavJv2
+        character(len=24) :: nodeSlavJv, geomSlavJv, elemList
+        character(len=8) :: mesh, chnorm, slavTransf(3), mastTransf(3), model
         character(len=16) :: linkType
         character(len=4) :: valeType
         character(len=16), parameter :: corres = '&&CALIRC.CORRES'
@@ -108,10 +115,11 @@ contains
         real(kind=8) :: rotaMatr(3, 3)
         aster_logical :: lDistMaxi
         real(kind=8) :: distMaxi, distAlarm, thickness
-        integer :: nbCellMast, nbNodeSlav, nbCellSlav
+        integer :: nbCellMast, nbNodeSlav, nbCellSlav, nbCellSlav2
         character(len=8), pointer :: dofName(:) => null()
         integer, pointer :: cellMast(:) => null()
         integer, pointer :: nodeSlav(:) => null(), cellSlav(:) => null()
+        integer, pointer :: cellSlav2(:) => null()
         integer, pointer :: nodeElim(:) => null(), nodeSkinToBody(:) => null()
         real(kind=8), pointer :: normSlav(:) => null()
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE EN 3D = 2*27 + 3 = 57 and 165 for COQUE_MASSIF
@@ -123,6 +131,7 @@ contains
         ASSERT(valeType .eq. 'REEL')
         call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk=mesh)
         call dismoi('DIM_GEOM', modelZ, 'MODELE', repi=geomDime)
+        model = modelZ
         if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
             call utmess('F', 'CHARGES7_6')
         end if
@@ -217,6 +226,32 @@ contains
                                           nbNodeSlav, geomSlavJv, nodeSlav, &
                                           nbCellMast, cellMast, &
                                           corres, corre1, corre2, corre3)
+                call debug_print(corres, 6)
+                call debug_print(corre1, 6)
+                call debug_print(corre2, 6)
+                call debug_print(corre3, 6)
+
+            else if (linkType .eq. 'COQUE_MASSIF2') then
+                call kineLoadMeshProjShVo2(modelZ, meshNbNode, &
+                                           lDistMaxi, distMaxi, distAlarm, &
+                                           nbNodeSlav, geomSlavJv, nodeSlav, &
+                                           nbCellMast, cellMast, &
+                                           corres)
+! ----- Get list of slave cells
+                ! call kineLoadGetSlaveCells(modelZ, mesh, &
+                !                            factorKeyword, iOcc, &
+                !                            cellSlavJv2, nbCellSlav2, cellSlav2)
+                elemList = "&&TMP"
+                call getelem(mesh, factorKeyword, iOcc, ' ', elemList, nbCellSlav2, "_ESCL", model)
+                call jeveuo(elemList, 'L', vi=cellSlav2)
+                call debug_print(corres, 6)
+                call kineLoadMeshElemShVo(modelZ, meshNbNode, &
+                                          lDistMaxi, distMaxi, distAlarm, &
+                                          nbNodeSlav, geomSlavJv, nodeSlav, &
+                                          nbCellSlav2, elemList, cellSlav2, &
+                                          nbCellMast, cellMast, &
+                                          corres)
+                call jedetr(elemList)
 
             elseif (linkType .eq. 'COQUE') then
                 call kineLoadMeshProjShSh(modelZ, meshNbNode, &
@@ -237,12 +272,15 @@ contains
             end if
 
 ! ----- Apply linear relations
-            call kineLoadGlueMeshMecaLine(linkType, mesh, geomDime, &
-                                          useDisp, dofName, &
-                                          lApplyRota, rotaMatr, &
-                                          useNormal, normSlav, nodeSkinToBody, &
-                                          corres, corre1, corre2, corre3, &
-                                          kineListRela)
+            if (linkType .eq. 'COQUE_MASSIF2') then
+            else
+                call kineLoadGlueMeshMecaLine(linkType, mesh, geomDime, &
+                                              useDisp, dofName, &
+                                              lApplyRota, rotaMatr, &
+                                              useNormal, normSlav, nodeSkinToBody, &
+                                              corres, corre1, corre2, corre3, &
+                                              kineListRela)
+            end if
 
 ! ----- Clean
             call detrsd('CORRESP_2_MAILLA', corres)
@@ -251,6 +289,7 @@ contains
             call jedetr(geomMastJv)
             call jedetr(geomSlavJv)
             call jedetr(cellMastJv)
+            ! call jedetr(cellSlavJv)
             call jedetr(nodeSlavJv)
             call jedetr(corre3)
             AS_DEALLOCATE(vi=nodeSkinToBody)
@@ -477,6 +516,10 @@ contains
             call getvid(factorKeywordZ, 'CHAM_NORMALE', iocc=iocc, scal=chnorm)
             call getvr8(factorKeywordZ, 'EPAIS', iocc=iocc, scal=thickness)
         end if
+        if (linkType .eq. 'COQUE_MASSIF2') then
+            call getvid(factorKeywordZ, 'CHAM_NORMALE', iocc=iocc, scal=chnorm)
+            call getvr8(factorKeywordZ, 'EPAIS', iocc=iocc, scal=thickness)
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -699,6 +742,836 @@ contains
     end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
+! kineLoadMeshProjShVo2
+!
+! Calculates the correspondence slave/master for 'COQUE_MASSIF'
+!
+! In  model            : model
+! In  meshNbNode       : total number of nodes of mesh
+! In  lDistMaxi        : flag to set maximum value of distance for projection
+! In  distMaxi         : maximum value of distance for projection
+! In  distAlarm        : value to emit an alarm of distance for projection
+! In  nbNodeSlav       : number of slave nodes
+! In  geomSlavJv       : name of JEVEUX object for coordinates of slave nodes after transformation
+! Ptr nodeSlav         : pointer to list of slave nodes
+! In  nbCellMast       : number of master cells
+! Ptr cellMast         : pointer to list of master cells
+! In  corres           : name of JEVEUX object for correspondence slave/master
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine kineLoadMeshProjShVo2(modelZ, meshNbNode, &
+                                     lDistMaxi, distMaxi, distAlarm, &
+                                     nbNodeSlav, geomSlavJv, nodeSlav, &
+                                     nbCellMast, cellMast, &
+                                     corres)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+        character(len=*), intent(in) :: modelZ
+        integer, intent(in):: meshNbNode
+        aster_logical, intent(inout) :: lDistMaxi
+        real(kind=8), intent(in) :: distMaxi, distAlarm
+        integer, intent(in) :: nbNodeSlav, nbCellMast
+        character(len=24), intent(in) :: geomSlavJv
+        integer, pointer :: nodeSlav(:), cellMast(:)
+        character(len=16), intent(in) :: corres
+! - Local
+        character(len=8) :: model
+        integer :: nbLink
+!   ------------------------------------------------------------------------------------------------
+!
+        model = modelZ
+
+! - Compute geometric projection (3D <=> Shell) on medium plane
+        call pj3dco('PARTIE', &
+                    model, model, &
+                    nbCellMast, cellMast, &
+                    nbNodeSlav, nodeSlav, &
+                    ' ', geomSlavJv, corres, &
+                    lDistMaxi, distMaxi, distAlarm)
+
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        ASSERT(nbLink .eq. meshNbNode)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! kineLoadMeshProjShVo2
+!
+! Build ligrel for join calculation
+!
+! In  model            : model
+! In  meshNbNode       : total number of nodes of mesh
+! In  lDistMaxi        : flag to set maximum value of distance for projection
+! In  distMaxi         : maximum value of distance for projection
+! In  distAlarm        : value to emit an alarm of distance for projection
+! In  nbNodeSlav       : number of slave nodes
+! In  geomSlavJv       : name of JEVEUX object for coordinates of slave nodes after transformation
+! Ptr nodeSlav         : pointer to list of slave nodes
+! In  nbCellMast       : number of master cells
+! Ptr cellMast         : pointer to list of master cells
+! In  corres           : name of JEVEUX object for correspondence slave/master
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine kineLoadMeshElemShVo(modelZ, meshNbNode, &
+                                    lDistMaxi, distMaxi, distAlarm, &
+                                    nbNodeSlav, geomSlavJv, nodeSlav, &
+                                    nbCellSlav, cellSlavJv, cellSlav, &
+                                    nbCellMast, cellMast, &
+                                    corres)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+        character(len=*), intent(in) :: modelZ
+        integer, intent(in):: meshNbNode
+        aster_logical, intent(inout) :: lDistMaxi
+        real(kind=8), intent(in) :: distMaxi, distAlarm
+        integer, intent(in) :: nbNodeSlav, nbCellMast, nbCellSlav
+        character(len=24), intent(in) :: geomSlavJv, cellSlavJv
+        integer, pointer :: nodeSlav(:), cellMast(:), cellSlav(:)
+        character(len=16), intent(in) :: corres
+! - Local
+        character(len=8) :: model, mesh
+        character(len=24) :: invConnex, jConn1, jConn2
+        character(len=24), pointer :: corresDesc(:) => null()
+        integer :: nbNode, iNode, nbSalveNodes, void(1), curPos, cellId, cellNb, iCell
+        integer :: nodeNb, nodeId, cumPos, numShellNodes, nbNodeMast, shellBuff(3), hexaBuff(9)
+        integer :: shellCnt, hexaCnt, matchCellPos, iNodeMast, iNodeSave1(2), iNodeSave2
+        integer :: iNodeSave3, countProj1, countProj
+        integer, pointer :: connex(:) => null(), elemType(:) => null()
+        integer, pointer :: connExpl(:) => null()
+        integer, pointer :: slaveNodes(:) => null()
+        integer, pointer :: cellNumberInv(:) => null()
+        integer, pointer :: invConnexExpl(:) => null()
+        integer, pointer :: cumPosition(:) => null()
+        integer, pointer :: interpNodes(:) => null()
+        integer, pointer :: numberNodes(:) => null()
+        integer, pointer :: elemICell(:) => null()
+        real(kind=8), pointer :: interpCoeff(:) => null()
+        aster_logical :: node2
+!   ------------------------------------------------------------------------------------------------
+!
+        model = modelZ
+        call jeveuo(corres//'.PJXX_K1', 'L', vk24=corresDesc)
+        ASSERT(corresDesc(1) .eq. corresDesc(2))
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+        call jeveuo(corres//'.PJEF_M1', 'L', vi=slaveNodes)
+        call jelira(corres//'.PJEF_M1', 'LONMAX', nbSalveNodes)
+        call jeveuo(corres//'.PJEF_NB', 'L', vi=numberNodes)
+        call jeveuo(corres//'.PJEF_NU', 'L', vi=interpNodes)
+        call jeveuo(corres//'.PJEF_CF', 'L', vr=interpCoeff)
+        call jeveuo(mesh//'.TYPMAIL', 'L', vi=elemType)
+        call jeveuo(mesh//'.CONNEX', 'L', vi=connex)
+        call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi=connExpl)
+        call wkvect("&&TMP.CUMPOS", "V V I", nbSalveNodes, vi=cumPosition)
+        ! invConnex = "&&MeshElem.invConnex"
+        ! call cncinv(mesh, void, 0, 'V', invConnex)
+
+        cumPos = 0
+        numShellNodes = 0
+        do iNode = 1, nbSalveNodes
+            cumPosition(iNode) = cumPos
+            cumPos = cumPos+numberNodes(iNode)
+        end do
+        call jecrec("&&MeshElem.Elem", 'V V I', 'NU', 'DISPERSE', 'VARIABLE', nbCellSlav)
+
+        do iCell = 1, nbCellSlav
+            cellId = cellSlav(iCell)
+            nodeNb = connExpl(cellId+1)-connExpl(cellId)
+            curPos = connExpl(cellId)
+            shellCnt = 1
+            hexaCnt = 1
+            ASSERT(nodeNb .eq. 4 .or. nodeNb .eq. 9)
+            if (nodeNb .eq. 4) then
+                ! Linear case: elements are coincident
+                ! So 2 shell nodes => 4 hexa nodes
+                do iNode = 1, nodeNb
+                    nodeId = connex(curPos+iNode-1)
+                    if (slaveNodes(nodeId) .ne. 0) then
+                        nbNodeMast = numberNodes(nodeId)
+                        matchCellPos = cumPosition(nodeId)
+                        do iNodeMast = 1, nbNodeMast
+                            if (interpCoeff(matchCellPos+iNodeMast) .ne. 0) then
+                                hexaBuff(hexaCnt) = interpNodes(matchCellPos+iNodeMast)
+                                hexaCnt = hexaCnt+1
+                            end if
+                        end do
+                        shellBuff(shellCnt) = nodeId
+                        shellCnt = shellCnt+1
+                    end if
+                end do
+                ASSERT(shellCnt .ne. 0)
+                ! If there is not 4 hexa nodes: maybe shell and 3d nodes are coincident
+                ! case not taken into account...
+                ASSERT(hexaCnt .eq. 5)
+            else
+                ! biquadratic case: use of middle nodes to find right hexa element
+                iNodeSave1(:) = 0
+                iNodeSave2 = 0
+                iNodeSave3 = 0
+                node2 = .false.
+                countProj1 = 0
+                do iNode = 1, nodeNb
+                    nodeId = connex(curPos+iNode-1)
+                    if (slaveNodes(nodeId) .ne. 0) then
+                        nbNodeMast = numberNodes(nodeId)
+                        matchCellPos = cumPosition(nodeId)
+                        if (iNodeSave3 .eq. 0) then
+                            ASSERT(nbNodeMast .eq. 27)
+                            do iNodeMast = 1, nbNodeMast
+                                if (interpCoeff(matchCellPos+iNodeMast) .ne. 0) then
+                                    ! middle nodes starts from 5th position
+                                    if (iNode .le. 4) then
+                                        if (.not. node2) then
+                                            if (countProj1 .eq. 0) then
+                                                iNodeSave1(1) = iNodeMast
+                                            else
+                                                iNodeSave1(2) = iNodeMast
+                                            end if
+                                            countProj1 = countProj1+1
+                                        else
+                                            iNodeSave2 = iNodeMast
+                                        end if
+                                    else
+                                        if (iNodeSave3 .eq. 0) iNodeSave3 = iNodeMast
+                                    end if
+                                    exit
+                                end if
+                            end do
+                            if (countProj1 .ne. 0) node2 = .true.
+                        end if
+                        shellBuff(shellCnt) = nodeId
+                        shellCnt = shellCnt+1
+                    end if
+                end do
+                ASSERT(shellCnt .ne. 0)
+
+                if (countProj1 .eq. 1) then
+                    if (iNodeSave1(1) .eq. 13) then
+                        if (iNodeSave2 .eq. 14) then
+                            hexaBuff(1) = connex(curPos+5-1)
+                            hexaBuff(2) = connex(curPos+1-1)
+                            hexaBuff(3) = connex(curPos+6-1)
+                            hexaBuff(4) = connex(curPos+2-1)
+                            hexaBuff(5) = connex(curPos+13-1)
+                            hexaBuff(6) = connex(curPos+14-1)
+                            hexaBuff(7) = connex(curPos+17-1)
+                            hexaBuff(8) = connex(curPos+9-1)
+                            hexaBuff(9) = connex(curPos+22-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 16) then
+                            hexaBuff(1) = connex(curPos+1-1)
+                            hexaBuff(2) = connex(curPos+5-1)
+                            hexaBuff(3) = connex(curPos+4-1)
+                            hexaBuff(4) = connex(curPos+8-1)
+                            hexaBuff(5) = connex(curPos+13-1)
+                            hexaBuff(6) = connex(curPos+16-1)
+                            hexaBuff(7) = connex(curPos+12-1)
+                            hexaBuff(8) = connex(curPos+20-1)
+                            hexaBuff(9) = connex(curPos+25-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 14) then
+                        if (iNodeSave2 .eq. 13) then
+                            hexaBuff(1) = connex(curPos+2-1)
+                            hexaBuff(2) = connex(curPos+6-1)
+                            hexaBuff(3) = connex(curPos+1-1)
+                            hexaBuff(4) = connex(curPos+5-1)
+                            hexaBuff(5) = connex(curPos+14-1)
+                            hexaBuff(6) = connex(curPos+13-1)
+                            hexaBuff(7) = connex(curPos+9-1)
+                            hexaBuff(8) = connex(curPos+17-1)
+                            hexaBuff(9) = connex(curPos+22-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 15) then
+                            hexaBuff(1) = connex(curPos+6-1)
+                            hexaBuff(2) = connex(curPos+2-1)
+                            hexaBuff(3) = connex(curPos+7-1)
+                            hexaBuff(4) = connex(curPos+3-1)
+                            hexaBuff(5) = connex(curPos+14-1)
+                            hexaBuff(6) = connex(curPos+15-1)
+                            hexaBuff(7) = connex(curPos+18-1)
+                            hexaBuff(8) = connex(curPos+10-1)
+                            hexaBuff(9) = connex(curPos+23-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 15) then
+                        if (iNodeSave2 .eq. 14) then
+                            hexaBuff(1) = connex(curPos+3-1)
+                            hexaBuff(2) = connex(curPos+7-1)
+                            hexaBuff(3) = connex(curPos+2-1)
+                            hexaBuff(4) = connex(curPos+6-1)
+                            hexaBuff(5) = connex(curPos+15-1)
+                            hexaBuff(6) = connex(curPos+14-1)
+                            hexaBuff(7) = connex(curPos+10-1)
+                            hexaBuff(8) = connex(curPos+18-1)
+                            hexaBuff(9) = connex(curPos+23-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 16) then
+                            hexaBuff(1) = connex(curPos+7-1)
+                            hexaBuff(2) = connex(curPos+3-1)
+                            hexaBuff(3) = connex(curPos+8-1)
+                            hexaBuff(4) = connex(curPos+4-1)
+                            hexaBuff(5) = connex(curPos+15-1)
+                            hexaBuff(6) = connex(curPos+16-1)
+                            hexaBuff(7) = connex(curPos+19-1)
+                            hexaBuff(8) = connex(curPos+11-1)
+                            hexaBuff(9) = connex(curPos+24-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 16) then
+                        if (iNodeSave2 .eq. 15) then
+                            hexaBuff(1) = connex(curPos+8-1)
+                            hexaBuff(2) = connex(curPos+4-1)
+                            hexaBuff(3) = connex(curPos+5-1)
+                            hexaBuff(4) = connex(curPos+1-1)
+                            hexaBuff(5) = connex(curPos+16-1)
+                            hexaBuff(6) = connex(curPos+13-1)
+                            hexaBuff(7) = connex(curPos+20-1)
+                            hexaBuff(8) = connex(curPos+12-1)
+                            hexaBuff(9) = connex(curPos+25-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 13) then
+                            hexaBuff(1) = connex(curPos+8-1)
+                            hexaBuff(2) = connex(curPos+4-1)
+                            hexaBuff(3) = connex(curPos+5-1)
+                            hexaBuff(4) = connex(curPos+1-1)
+                            hexaBuff(5) = connex(curPos+16-1)
+                            hexaBuff(6) = connex(curPos+13-1)
+                            hexaBuff(7) = connex(curPos+20-1)
+                            hexaBuff(8) = connex(curPos+12-1)
+                            hexaBuff(9) = connex(curPos+25-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 10) then
+                        if (iNodeSave2 .eq. 18) then
+                            hexaBuff(1) = connex(curPos+2-1)
+                            hexaBuff(2) = connex(curPos+3-1)
+                            hexaBuff(3) = connex(curPos+6-1)
+                            hexaBuff(4) = connex(curPos+7-1)
+                            hexaBuff(5) = connex(curPos+10-1)
+                            hexaBuff(6) = connex(curPos+18-1)
+                            hexaBuff(7) = connex(curPos+14-1)
+                            hexaBuff(8) = connex(curPos+15-1)
+                            hexaBuff(9) = connex(curPos+23-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 12) then
+                            hexaBuff(1) = connex(curPos+3-1)
+                            hexaBuff(2) = connex(curPos+2-1)
+                            hexaBuff(3) = connex(curPos+4-1)
+                            hexaBuff(4) = connex(curPos+1-1)
+                            hexaBuff(5) = connex(curPos+10-1)
+                            hexaBuff(6) = connex(curPos+12-1)
+                            hexaBuff(7) = connex(curPos+11-1)
+                            hexaBuff(8) = connex(curPos+9-1)
+                            hexaBuff(9) = connex(curPos+21-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 12) then
+                        if (iNodeSave2 .eq. 10) then
+                            hexaBuff(1) = connex(curPos+1-1)
+                            hexaBuff(2) = connex(curPos+4-1)
+                            hexaBuff(3) = connex(curPos+2-1)
+                            hexaBuff(4) = connex(curPos+3-1)
+                            hexaBuff(5) = connex(curPos+12-1)
+                            hexaBuff(6) = connex(curPos+10-1)
+                            hexaBuff(7) = connex(curPos+9-1)
+                            hexaBuff(8) = connex(curPos+11-1)
+                            hexaBuff(9) = connex(curPos+21-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 20) then
+                            hexaBuff(1) = connex(curPos+4-1)
+                            hexaBuff(2) = connex(curPos+1-1)
+                            hexaBuff(3) = connex(curPos+8-1)
+                            hexaBuff(4) = connex(curPos+5-1)
+                            hexaBuff(5) = connex(curPos+12-1)
+                            hexaBuff(6) = connex(curPos+20-1)
+                            hexaBuff(7) = connex(curPos+16-1)
+                            hexaBuff(8) = connex(curPos+13-1)
+                            hexaBuff(9) = connex(curPos+25-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 20) then
+                        if (iNodeSave2 .eq. 12) then
+                            hexaBuff(1) = connex(curPos+5-1)
+                            hexaBuff(2) = connex(curPos+8-1)
+                            hexaBuff(3) = connex(curPos+1-1)
+                            hexaBuff(4) = connex(curPos+4-1)
+                            hexaBuff(5) = connex(curPos+20-1)
+                            hexaBuff(6) = connex(curPos+12-1)
+                            hexaBuff(7) = connex(curPos+13-1)
+                            hexaBuff(8) = connex(curPos+16-1)
+                            hexaBuff(9) = connex(curPos+25-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 18) then
+                            hexaBuff(1) = connex(curPos+8-1)
+                            hexaBuff(2) = connex(curPos+5-1)
+                            hexaBuff(3) = connex(curPos+7-1)
+                            hexaBuff(4) = connex(curPos+6-1)
+                            hexaBuff(5) = connex(curPos+20-1)
+                            hexaBuff(6) = connex(curPos+18-1)
+                            hexaBuff(7) = connex(curPos+19-1)
+                            hexaBuff(8) = connex(curPos+17-1)
+                            hexaBuff(9) = connex(curPos+26-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 18) then
+                        if (iNodeSave2 .eq. 10) then
+                            hexaBuff(1) = connex(curPos+7-1)
+                            hexaBuff(2) = connex(curPos+6-1)
+                            hexaBuff(3) = connex(curPos+3-1)
+                            hexaBuff(4) = connex(curPos+2-1)
+                            hexaBuff(5) = connex(curPos+18-1)
+                            hexaBuff(6) = connex(curPos+10-1)
+                            hexaBuff(7) = connex(curPos+15-1)
+                            hexaBuff(8) = connex(curPos+14-1)
+                            hexaBuff(9) = connex(curPos+23-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 20) then
+                            hexaBuff(1) = connex(curPos+6-1)
+                            hexaBuff(2) = connex(curPos+7-1)
+                            hexaBuff(3) = connex(curPos+5-1)
+                            hexaBuff(4) = connex(curPos+8-1)
+                            hexaBuff(5) = connex(curPos+18-1)
+                            hexaBuff(6) = connex(curPos+20-1)
+                            hexaBuff(7) = connex(curPos+17-1)
+                            hexaBuff(8) = connex(curPos+19-1)
+                            hexaBuff(9) = connex(curPos+26-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 9) then
+                        if (iNodeSave2 .eq. 11) then
+                            hexaBuff(1) = connex(curPos+2-1)
+                            hexaBuff(2) = connex(curPos+1-1)
+                            hexaBuff(3) = connex(curPos+3-1)
+                            hexaBuff(4) = connex(curPos+4-1)
+                            hexaBuff(5) = connex(curPos+9-1)
+                            hexaBuff(6) = connex(curPos+11-1)
+                            hexaBuff(7) = connex(curPos+10-1)
+                            hexaBuff(8) = connex(curPos+12-1)
+                            hexaBuff(9) = connex(curPos+21-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 17) then
+                            hexaBuff(1) = connex(curPos+1-1)
+                            hexaBuff(2) = connex(curPos+2-1)
+                            hexaBuff(3) = connex(curPos+5-1)
+                            hexaBuff(4) = connex(curPos+6-1)
+                            hexaBuff(5) = connex(curPos+9-1)
+                            hexaBuff(6) = connex(curPos+17-1)
+                            hexaBuff(7) = connex(curPos+13-1)
+                            hexaBuff(8) = connex(curPos+14-1)
+                            hexaBuff(9) = connex(curPos+22-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 11) then
+                        if (iNodeSave2 .eq. 9) then
+                            hexaBuff(1) = connex(curPos+4-1)
+                            hexaBuff(2) = connex(curPos+3-1)
+                            hexaBuff(3) = connex(curPos+1-1)
+                            hexaBuff(4) = connex(curPos+2-1)
+                            hexaBuff(5) = connex(curPos+11-1)
+                            hexaBuff(6) = connex(curPos+9-1)
+                            hexaBuff(7) = connex(curPos+12-1)
+                            hexaBuff(8) = connex(curPos+10-1)
+                            hexaBuff(9) = connex(curPos+21-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 19) then
+                            hexaBuff(1) = connex(curPos+3-1)
+                            hexaBuff(2) = connex(curPos+4-1)
+                            hexaBuff(3) = connex(curPos+7-1)
+                            hexaBuff(4) = connex(curPos+8-1)
+                            hexaBuff(5) = connex(curPos+11-1)
+                            hexaBuff(6) = connex(curPos+19-1)
+                            hexaBuff(7) = connex(curPos+15-1)
+                            hexaBuff(8) = connex(curPos+16-1)
+                            hexaBuff(9) = connex(curPos+24-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 19) then
+                        if (iNodeSave2 .eq. 11) then
+                            hexaBuff(1) = connex(curPos+8-1)
+                            hexaBuff(2) = connex(curPos+7-1)
+                            hexaBuff(3) = connex(curPos+4-1)
+                            hexaBuff(4) = connex(curPos+3-1)
+                            hexaBuff(5) = connex(curPos+19-1)
+                            hexaBuff(6) = connex(curPos+11-1)
+                            hexaBuff(7) = connex(curPos+16-1)
+                            hexaBuff(8) = connex(curPos+15-1)
+                            hexaBuff(9) = connex(curPos+24-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 17) then
+                            hexaBuff(1) = connex(curPos+7-1)
+                            hexaBuff(2) = connex(curPos+8-1)
+                            hexaBuff(3) = connex(curPos+6-1)
+                            hexaBuff(4) = connex(curPos+5-1)
+                            hexaBuff(5) = connex(curPos+19-1)
+                            hexaBuff(6) = connex(curPos+17-1)
+                            hexaBuff(7) = connex(curPos+18-1)
+                            hexaBuff(8) = connex(curPos+20-1)
+                            hexaBuff(9) = connex(curPos+26-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    elseif (iNodeSave1(1) .eq. 17) then
+                        if (iNodeSave2 .eq. 9) then
+                            hexaBuff(1) = connex(curPos+6-1)
+                            hexaBuff(2) = connex(curPos+5-1)
+                            hexaBuff(3) = connex(curPos+2-1)
+                            hexaBuff(4) = connex(curPos+1-1)
+                            hexaBuff(5) = connex(curPos+17-1)
+                            hexaBuff(6) = connex(curPos+9-1)
+                            hexaBuff(7) = connex(curPos+14-1)
+                            hexaBuff(8) = connex(curPos+13-1)
+                            hexaBuff(9) = connex(curPos+22-1)
+                            hexaCnt = 9
+                        elseif (iNodeSave2 .eq. 19) then
+                            hexaBuff(1) = connex(curPos+5-1)
+                            hexaBuff(2) = connex(curPos+6-1)
+                            hexaBuff(3) = connex(curPos+8-1)
+                            hexaBuff(4) = connex(curPos+7-1)
+                            hexaBuff(5) = connex(curPos+17-1)
+                            hexaBuff(6) = connex(curPos+19-1)
+                            hexaBuff(7) = connex(curPos+20-1)
+                            hexaBuff(8) = connex(curPos+18-1)
+                            hexaBuff(9) = connex(curPos+26-1)
+                            hexaCnt = 9
+                        else
+                            ASSERT(.false.)
+                        end if
+                    else
+                        ASSERT(.false.)
+                    end if
+                else
+                    ASSERT(.false.)
+                end if
+
+                !     if( iNodeSave3.eq.10 .or. iNodeSave3.eq.18 .or. iNodeSave3.eq.23 ) then
+                !         if( iNodeSave1.eq.3 .or. iNodeSave1.eq.7 .or. iNodeSave1.eq.15 ) then
+                !             hexaBuff(1) = connex(curPos+3-1)
+                !             hexaBuff(2) = connex(curPos+7-1)
+                !             hexaBuff(3) = connex(curPos+2-1)
+                !             hexaBuff(4) = connex(curPos+6-1)
+                !             hexaBuff(5) = connex(curPos+15-1)
+                !             hexaBuff(6) = connex(curPos+14-1)
+                !             hexaBuff(7) = connex(curPos+10-1)
+                !             hexaBuff(8) = connex(curPos+18-1)
+                !             hexaBuff(9) = connex(curPos+23-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.2 .or. iNodeSave1.eq.6 .or. iNodeSave1.eq.14 ) then
+                !             hexaBuff(1) = connex(curPos+6-1)
+                !             hexaBuff(2) = connex(curPos+2-1)
+                !             hexaBuff(3) = connex(curPos+7-1)
+                !             hexaBuff(4) = connex(curPos+3-1)
+                !             hexaBuff(5) = connex(curPos+14-1)
+                !             hexaBuff(6) = connex(curPos+15-1)
+                !             hexaBuff(7) = connex(curPos+18-1)
+                !             hexaBuff(8) = connex(curPos+10-1)
+                !             hexaBuff(9) = connex(curPos+23-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.14 .or. iNodeSave3.eq.15 .or. iNodeSave3.eq.23 ) then
+                !         if( iNodeSave1.eq.6 .or. iNodeSave1.eq.7 .or. iNodeSave1.eq.18 ) then
+                !             hexaBuff(1) = connex(curPos+7-1)
+                !             hexaBuff(2) = connex(curPos+6-1)
+                !             hexaBuff(3) = connex(curPos+3-1)
+                !             hexaBuff(4) = connex(curPos+2-1)
+                !             hexaBuff(5) = connex(curPos+18-1)
+                !             hexaBuff(6) = connex(curPos+10-1)
+                !             hexaBuff(7) = connex(curPos+15-1)
+                !             hexaBuff(8) = connex(curPos+14-1)
+                !             hexaBuff(9) = connex(curPos+23-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.2 .or. iNodeSave1.eq.3 .or. iNodeSave1.eq.10 ) then
+                !             hexaBuff(1) = connex(curPos+2-1)
+                !             hexaBuff(2) = connex(curPos+3-1)
+                !             hexaBuff(3) = connex(curPos+6-1)
+                !             hexaBuff(4) = connex(curPos+7-1)
+                !             hexaBuff(5) = connex(curPos+10-1)
+                !             hexaBuff(6) = connex(curPos+18-1)
+                !             hexaBuff(7) = connex(curPos+14-1)
+                !             hexaBuff(8) = connex(curPos+15-1)
+                !             hexaBuff(9) = connex(curPos+23-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.11 .or. iNodeSave3.eq.19 .or. iNodeSave3.eq.24 ) then
+                !         if( iNodeSave1.eq.4 .or. iNodeSave1.eq.8 .or. iNodeSave1.eq.16 ) then
+                !             hexaBuff(1) = connex(curPos+4-1)
+                !             hexaBuff(2) = connex(curPos+8-1)
+                !             hexaBuff(3) = connex(curPos+3-1)
+                !             hexaBuff(4) = connex(curPos+7-1)
+                !             hexaBuff(5) = connex(curPos+16-1)
+                !             hexaBuff(6) = connex(curPos+15-1)
+                !             hexaBuff(7) = connex(curPos+11-1)
+                !             hexaBuff(8) = connex(curPos+19-1)
+                !             hexaBuff(9) = connex(curPos+24-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.3 .or. iNodeSave1.eq.7 .or. iNodeSave1.eq.15 ) then
+                !             hexaBuff(1) = connex(curPos+7-1)
+                !             hexaBuff(2) = connex(curPos+3-1)
+                !             hexaBuff(3) = connex(curPos+8-1)
+                !             hexaBuff(4) = connex(curPos+4-1)
+                !             hexaBuff(5) = connex(curPos+15-1)
+                !             hexaBuff(6) = connex(curPos+16-1)
+                !             hexaBuff(7) = connex(curPos+19-1)
+                !             hexaBuff(8) = connex(curPos+11-1)
+                !             hexaBuff(9) = connex(curPos+24-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.15 .or. iNodeSave3.eq.16 .or. iNodeSave3.eq.24 ) then
+                !         if( iNodeSave1.eq.7 .or. iNodeSave1.eq.8 .or. iNodeSave1.eq.19 ) then
+                !             hexaBuff(1) = connex(curPos+8-1)
+                !             hexaBuff(2) = connex(curPos+7-1)
+                !             hexaBuff(3) = connex(curPos+4-1)
+                !             hexaBuff(4) = connex(curPos+3-1)
+                !             hexaBuff(5) = connex(curPos+19-1)
+                !             hexaBuff(6) = connex(curPos+11-1)
+                !             hexaBuff(7) = connex(curPos+16-1)
+                !             hexaBuff(8) = connex(curPos+15-1)
+                !             hexaBuff(9) = connex(curPos+24-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.3 .or. iNodeSave1.eq.4 .or. iNodeSave1.eq.11 ) then
+                !             hexaBuff(1) = connex(curPos+3-1)
+                !             hexaBuff(2) = connex(curPos+4-1)
+                !             hexaBuff(3) = connex(curPos+7-1)
+                !             hexaBuff(4) = connex(curPos+8-1)
+                !             hexaBuff(5) = connex(curPos+11-1)
+                !             hexaBuff(6) = connex(curPos+19-1)
+                !             hexaBuff(7) = connex(curPos+15-1)
+                !             hexaBuff(8) = connex(curPos+16-1)
+                !             hexaBuff(9) = connex(curPos+24-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.12 .or. iNodeSave3.eq.20 .or. iNodeSave3.eq.25 ) then
+                !         if( iNodeSave1.eq.1 .or. iNodeSave1.eq.5 .or. iNodeSave1.eq.13 ) then
+                !             hexaBuff(1) = connex(curPos+1-1)
+                !             hexaBuff(2) = connex(curPos+5-1)
+                !             hexaBuff(3) = connex(curPos+4-1)
+                !             hexaBuff(4) = connex(curPos+8-1)
+                !             hexaBuff(5) = connex(curPos+13-1)
+                !             hexaBuff(6) = connex(curPos+16-1)
+                !             hexaBuff(7) = connex(curPos+12-1)
+                !             hexaBuff(8) = connex(curPos+20-1)
+                !             hexaBuff(9) = connex(curPos+25-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.4 .or. iNodeSave1.eq.8 .or. iNodeSave1.eq.16 ) then
+                !             hexaBuff(1) = connex(curPos+8-1)
+                !             hexaBuff(2) = connex(curPos+4-1)
+                !             hexaBuff(3) = connex(curPos+5-1)
+                !             hexaBuff(4) = connex(curPos+1-1)
+                !             hexaBuff(5) = connex(curPos+16-1)
+                !             hexaBuff(6) = connex(curPos+13-1)
+                !             hexaBuff(7) = connex(curPos+20-1)
+                !             hexaBuff(8) = connex(curPos+12-1)
+                !             hexaBuff(9) = connex(curPos+25-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.13 .or. iNodeSave3.eq.16 .or. iNodeSave3.eq.25 ) then
+                !         if( iNodeSave1.eq.5 .or. iNodeSave1.eq.8 .or. iNodeSave1.eq.20 ) then
+                !             hexaBuff(1) = connex(curPos+5-1)
+                !             hexaBuff(2) = connex(curPos+8-1)
+                !             hexaBuff(3) = connex(curPos+1-1)
+                !             hexaBuff(4) = connex(curPos+4-1)
+                !             hexaBuff(5) = connex(curPos+20-1)
+                !             hexaBuff(6) = connex(curPos+12-1)
+                !             hexaBuff(7) = connex(curPos+13-1)
+                !             hexaBuff(8) = connex(curPos+16-1)
+                !             hexaBuff(9) = connex(curPos+25-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.1.or. iNodeSave1.eq.4 .or. iNodeSave1.eq.12 ) then
+                !             hexaBuff(1) = connex(curPos+4-1)
+                !             hexaBuff(2) = connex(curPos+1-1)
+                !             hexaBuff(3) = connex(curPos+8-1)
+                !             hexaBuff(4) = connex(curPos+5-1)
+                !             hexaBuff(5) = connex(curPos+12-1)
+                !             hexaBuff(6) = connex(curPos+20-1)
+                !             hexaBuff(7) = connex(curPos+16-1)
+                !             hexaBuff(8) = connex(curPos+13-1)
+                !             hexaBuff(9) = connex(curPos+25-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.9 .or. iNodeSave3.eq.17 .or. iNodeSave3.eq.22 ) then
+                !         if( iNodeSave1.eq.2 .or. iNodeSave1.eq.6 .or. iNodeSave1.eq.14 ) then
+                !             hexaBuff(1) = connex(curPos+2-1)
+                !             hexaBuff(2) = connex(curPos+6-1)
+                !             hexaBuff(3) = connex(curPos+1-1)
+                !             hexaBuff(4) = connex(curPos+5-1)
+                !             hexaBuff(5) = connex(curPos+14-1)
+                !             hexaBuff(6) = connex(curPos+13-1)
+                !             hexaBuff(7) = connex(curPos+9-1)
+                !             hexaBuff(8) = connex(curPos+17-1)
+                !             hexaBuff(9) = connex(curPos+22-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.1 .or. iNodeSave1.eq.5 .or. iNodeSave1.eq.13 ) then
+                !             hexaBuff(1) = connex(curPos+5-1)
+                !             hexaBuff(2) = connex(curPos+1-1)
+                !             hexaBuff(3) = connex(curPos+6-1)
+                !             hexaBuff(4) = connex(curPos+2-1)
+                !             hexaBuff(5) = connex(curPos+13-1)
+                !             hexaBuff(6) = connex(curPos+14-1)
+                !             hexaBuff(7) = connex(curPos+17-1)
+                !             hexaBuff(8) = connex(curPos+9-1)
+                !             hexaBuff(9) = connex(curPos+22-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.13 .or. iNodeSave3.eq.14 .or. iNodeSave3.eq.22 ) then
+                !         if( iNodeSave1.eq.5 .or. iNodeSave1.eq.6 .or. iNodeSave1.eq.17 ) then
+                !             hexaBuff(1) = connex(curPos+6-1)
+                !             hexaBuff(2) = connex(curPos+5-1)
+                !             hexaBuff(3) = connex(curPos+2-1)
+                !             hexaBuff(4) = connex(curPos+1-1)
+                !             hexaBuff(5) = connex(curPos+17-1)
+                !             hexaBuff(6) = connex(curPos+9-1)
+                !             hexaBuff(7) = connex(curPos+14-1)
+                !             hexaBuff(8) = connex(curPos+13-1)
+                !             hexaBuff(9) = connex(curPos+22-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.1 .or. iNodeSave1.eq.2 .or. iNodeSave1.eq.9 ) then
+                !             hexaBuff(1) = connex(curPos+1-1)
+                !             hexaBuff(2) = connex(curPos+2-1)
+                !             hexaBuff(3) = connex(curPos+5-1)
+                !             hexaBuff(4) = connex(curPos+6-1)
+                !             hexaBuff(5) = connex(curPos+9-1)
+                !             hexaBuff(6) = connex(curPos+17-1)
+                !             hexaBuff(7) = connex(curPos+13-1)
+                !             hexaBuff(8) = connex(curPos+14-1)
+                !             hexaBuff(9) = connex(curPos+22-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.18 .or. iNodeSave3.eq.20 .or. iNodeSave3.eq.26 ) then
+                !         if( iNodeSave1.eq.7 .or. iNodeSave1.eq.8 .or. iNodeSave1.eq.19 ) then
+                !             hexaBuff(1) = connex(curPos+7-1)
+                !             hexaBuff(2) = connex(curPos+8-1)
+                !             hexaBuff(3) = connex(curPos+6-1)
+                !             hexaBuff(4) = connex(curPos+5-1)
+                !             hexaBuff(5) = connex(curPos+19-1)
+                !             hexaBuff(6) = connex(curPos+17-1)
+                !             hexaBuff(7) = connex(curPos+18-1)
+                !             hexaBuff(8) = connex(curPos+20-1)
+                !             hexaBuff(9) = connex(curPos+26-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.5 .or. iNodeSave1.eq.6 .or. iNodeSave1.eq.17 ) then
+                !             hexaBuff(1) = connex(curPos+5-1)
+                !             hexaBuff(2) = connex(curPos+6-1)
+                !             hexaBuff(3) = connex(curPos+8-1)
+                !             hexaBuff(4) = connex(curPos+7-1)
+                !             hexaBuff(5) = connex(curPos+17-1)
+                !             hexaBuff(6) = connex(curPos+19-1)
+                !             hexaBuff(7) = connex(curPos+20-1)
+                !             hexaBuff(8) = connex(curPos+18-1)
+                !             hexaBuff(9) = connex(curPos+26-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.17 .or. iNodeSave3.eq.19 .or. iNodeSave3.eq.26 ) then
+                !         if( iNodeSave1.eq.5 .or. iNodeSave1.eq.8 .or. iNodeSave1.eq.20 ) then
+                !             hexaBuff(1) = connex(curPos+8-1)
+                !             hexaBuff(2) = connex(curPos+5-1)
+                !             hexaBuff(3) = connex(curPos+7-1)
+                !             hexaBuff(4) = connex(curPos+6-1)
+                !             hexaBuff(5) = connex(curPos+20-1)
+                !             hexaBuff(6) = connex(curPos+18-1)
+                !             hexaBuff(7) = connex(curPos+19-1)
+                !             hexaBuff(8) = connex(curPos+17-1)
+                !             hexaBuff(9) = connex(curPos+26-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.6 .or. iNodeSave1.eq.7 .or. iNodeSave1.eq.18 ) then
+                !             hexaBuff(1) = connex(curPos+6-1)
+                !             hexaBuff(2) = connex(curPos+7-1)
+                !             hexaBuff(3) = connex(curPos+5-1)
+                !             hexaBuff(4) = connex(curPos+8-1)
+                !             hexaBuff(5) = connex(curPos+18-1)
+                !             hexaBuff(6) = connex(curPos+20-1)
+                !             hexaBuff(7) = connex(curPos+17-1)
+                !             hexaBuff(8) = connex(curPos+19-1)
+                !             hexaBuff(9) = connex(curPos+26-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.10 .or. iNodeSave3.eq.12 .or. iNodeSave3.eq.21 ) then
+                !         if( iNodeSave1.eq.3 .or. iNodeSave1.eq.4 .or. iNodeSave1.eq.11 ) then
+                !             hexaBuff(1) = connex(curPos+4-1)
+                !             hexaBuff(2) = connex(curPos+3-1)
+                !             hexaBuff(3) = connex(curPos+1-1)
+                !             hexaBuff(4) = connex(curPos+2-1)
+                !             hexaBuff(5) = connex(curPos+11-1)
+                !             hexaBuff(6) = connex(curPos+9-1)
+                !             hexaBuff(7) = connex(curPos+12-1)
+                !             hexaBuff(8) = connex(curPos+10-1)
+                !             hexaBuff(9) = connex(curPos+21-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.1 .or. iNodeSave1.eq.2 .or. iNodeSave1.eq.9 ) then
+                !             hexaBuff(1) = connex(curPos+2-1)
+                !             hexaBuff(2) = connex(curPos+1-1)
+                !             hexaBuff(3) = connex(curPos+3-1)
+                !             hexaBuff(4) = connex(curPos+4-1)
+                !             hexaBuff(5) = connex(curPos+9-1)
+                !             hexaBuff(6) = connex(curPos+11-1)
+                !             hexaBuff(7) = connex(curPos+10-1)
+                !             hexaBuff(8) = connex(curPos+12-1)
+                !             hexaBuff(9) = connex(curPos+21-1)
+                !             hexaCnt = 9
+                !         endif
+                !     elseif( iNodeSave3.eq.9 .or. iNodeSave3.eq.11 .or. iNodeSave3.eq.21 ) then
+                !         if( iNodeSave1.eq.1 .or. iNodeSave1.eq.4 .or. iNodeSave1.eq.12 ) then
+                !             hexaBuff(1) = connex(curPos+1-1)
+                !             hexaBuff(2) = connex(curPos+4-1)
+                !             hexaBuff(3) = connex(curPos+2-1)
+                !             hexaBuff(4) = connex(curPos+3-1)
+                !             hexaBuff(5) = connex(curPos+12-1)
+                !             hexaBuff(6) = connex(curPos+10-1)
+                !             hexaBuff(7) = connex(curPos+9-1)
+                !             hexaBuff(8) = connex(curPos+11-1)
+                !             hexaBuff(9) = connex(curPos+21-1)
+                !             hexaCnt = 9
+                !         elseif( iNodeSave1.eq.2 .or. iNodeSave1.eq.3 .or. iNodeSave1.eq.10 ) then
+                !             hexaBuff(1) = connex(curPos+3-1)
+                !             hexaBuff(2) = connex(curPos+2-1)
+                !             hexaBuff(3) = connex(curPos+4-1)
+                !             hexaBuff(4) = connex(curPos+1-1)
+                !             hexaBuff(5) = connex(curPos+10-1)
+                !             hexaBuff(6) = connex(curPos+12-1)
+                !             hexaBuff(7) = connex(curPos+11-1)
+                !             hexaBuff(8) = connex(curPos+9-1)
+                !             hexaBuff(9) = connex(curPos+21-1)
+                !             hexaCnt = 9
+                !         endif
+                !     endif
+            end if
+            call jeecra(jexnum("&&MeshElem.Elem", iCell), 'LONMAX', shellCnt+hexaCnt-2)
+            call jeveuo(jexnum("&&MeshElem.Elem", iCell), 'E', vi=elemICell)
+            do iNode = 1, shellCnt-1
+                elemICell(iNode) = shellBuff(iNode)
+            end do
+            do iNode = 1, hexaCnt-1
+                elemICell(iNode+shellCnt-1) = hexaBuff(iNode)
+            end do
+        end do
+        call debug_print("&&MeshElem.Elem", 6)
+        call jedetr("&&TMP.CUMPOS")
+        call jedetr(invConnex)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
 ! kineLoadMeshProjVoSh
 !
 ! Calculates the correspondence slave/master for 'MASSIF_COQUE'
@@ -865,6 +1738,11 @@ contains
                                       corres, kineListRela)
 
         elseif (linkType .eq. 'COQUE_MASSIF') then
+            call kineLoadMeshLinkShVo(mesh, geomDime, &
+                                      corres, corre1, corre2, corre3, &
+                                      kineListRela)
+
+        elseif (linkType .eq. 'COQUE_MASSIF2') then
             call kineLoadMeshLinkShVo(mesh, geomDime, &
                                       corres, corre1, corre2, corre3, &
                                       kineListRela)

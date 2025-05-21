@@ -2810,6 +2810,22 @@ phen.add(
 )
 
 # ------------------------------------------------------------------------------------
+# Modelisations sous-terraines pour les raccords
+# ------------------------------------------------------------------------------------
+
+
+phen.add(
+    "RACC_COQ_3D",
+    Modelisation(
+        dim=(2, 3),
+        code="RC3",
+        attrs=((AT.CONTACT, "OUI"),), 
+        elements=((MT.SE2TR3, EL.RACS2T3),)
+    ),
+)
+
+
+# ------------------------------------------------------------------------------------
 # Modelisations sous-terraines pour le contact/frottement en methode "continue" :
 # ------------------------------------------------------------------------------------
 

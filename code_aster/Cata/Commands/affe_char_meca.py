@@ -568,7 +568,7 @@ AFFE_CHAR_MECA = OPER(
             statut="f",
             typ="TXM",
             defaut="MASSIF",
-            into=("MASSIF", "COQUE", "COQUE_MASSIF", "MASSIF_COQUE"),
+            into=("MASSIF", "COQUE", "COQUE_MASSIF", "MASSIF_COQUE", "COQUE_MASSIF2"),
         ),
         b_COQUE=BLOC(
             condition="""equal_to("TYPE_RACCORD", 'COQUE')""",
@@ -620,6 +620,11 @@ AFFE_CHAR_MECA = OPER(
         ),
         b_COQUE_MASSIF=BLOC(
             condition="""equal_to("TYPE_RACCORD", 'COQUE_MASSIF')""",
+            EPAIS=SIMP(statut="o", typ="R"),
+            CHAM_NORMALE=SIMP(statut="o", typ=cham_no_sdaster),
+        ),
+        b_COQUE_MASSIF2=BLOC(
+            condition="""equal_to("TYPE_RACCORD", 'COQUE_MASSIF2')""",
             EPAIS=SIMP(statut="o", typ="R"),
             CHAM_NORMALE=SIMP(statut="o", typ=cham_no_sdaster),
         ),
@@ -689,6 +694,7 @@ AFFE_CHAR_MECA = OPER(
             typ="TXM",
             into=(
                 "3D_TUYAU",
+                "COQ_3D",
                 "3D_POU",
                 "3D_POU_ARLEQUIN",
                 "2D_POU",
@@ -704,6 +710,11 @@ AFFE_CHAR_MECA = OPER(
             GROUP_NO_2=SIMP(statut="f", typ=grno),
             GROUP_MA_2=SIMP(statut="f", typ=grma),
             ANGL_MAX=SIMP(statut="f", typ="R", defaut=1.0),
+        ),
+        b_coq_3d=BLOC(
+            condition="""equal_to("OPTION", 'COQ_3D')""",
+            GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            GROUP_MA_2=SIMP(statut="f", typ=grma),
         ),
         b_3d_pou_arlequin=BLOC(
             condition="""equal_to("OPTION", '3D_POU_ARLEQUIN')""",
