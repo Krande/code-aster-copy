@@ -38,13 +38,13 @@ subroutine rco3d_infos(typmaco, typma3d, epai,  j_geom, nb_gauss, gauss_coor, &
         real(kind=8), intent(in) :: epai
         integer, intent(in) :: j_geom
         integer, intent(out) :: nb_gauss
-        real(kind=8), intent(out) :: gauss_coor(2, 10)
-        real(kind=8), intent(out) :: jac_det(10)
-        real(kind=8), intent(out) :: gauss_weight(10)
-        real(kind=8), intent(out) :: ff_co(3, 10)
-        real(kind=8), intent(out) :: ff_3d(8, 10)
-        real(kind=8), intent(out) :: t(3, 10), n(3, 10), s(3)
-        aster_logical, intent(out) :: skip
+        real(kind=8), intent(out) :: gauss_coor(2, NB_GAUSS_MAX)
+        real(kind=8), intent(out) :: jac_det(NB_GAUSS_MAX)
+        real(kind=8), intent(out) :: gauss_weight(NB_GAUSS_MAX)
+        real(kind=8), intent(out) :: ff_co(3, NB_GAUSS_MAX)
+        real(kind=8), intent(out) :: ff_3d(8, NB_GAUSS_MAX)
+        real(kind=8), intent(out) :: t(3, NB_GAUSS_MAX), n(3, NB_GAUSS_MAX), s(3)
+        aster_logical, intent(out) :: skip(NB_GAUSS_MAX)
 !
 ! -------------------------------------------------------------------------------
 !  SUBROUTINE: rco3d_infos
@@ -86,9 +86,9 @@ subroutine rco3d_infos(typmaco, typma3d, epai,  j_geom, nb_gauss, gauss_coor, &
 
 !
         real(kind=8) :: gscoo2(1*6), gpt_wei(6), x(1), ff(8), df(3,6)
-        real(kind=8) :: df_co(3, 10)
+        real(kind=8) :: df_co(3, NB_GAUSS_MAX)
         real(kind=8) :: coor_pt_co(3, 3), coor_pt_3d(3, 8)
-        real(kind=8) :: coor_gp_cartesian(3, 10)
+        real(kind=8) :: coor_gp_cartesian(3, NB_GAUSS_MAX)
         real(kind=8) :: v1(3), v2(3)
         real(kind=8) :: magnitude
         integer :: i, j, k, l, idx, ndim, nbg, nno_co, nno_3d, nno, dim
@@ -219,15 +219,12 @@ subroutine rco3d_infos(typmaco, typma3d, epai,  j_geom, nb_gauss, gauss_coor, &
             res = find_parametric_coordinates(coor_gp_cartesian(:,i), typma3d, coor_pt_3d, nno_3d)
             ! if the projection exists then get the form functions of the 3d part (at the gauss point i)
             if (res(3) .gt. 0.0d0) then
-                skip = .false.
+                skip(i) = .false.
                 call elrfvf(elrefa_3d, res(1:2), ff, nno)
                 ASSERT(nno .eq. nno_3d)
                 do k=1, nno_3d
                     ff_3d(k, i) = ff(k)
                 end do
-            else
-                ! ensure that the contribution at the gauss point "i" is 0.0
-                ff_co(:,i) = 0.0d0
             end if
         end do
 

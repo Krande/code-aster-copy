@@ -36,6 +36,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/mecact.h"
@@ -47,6 +48,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/raco3d_crealigrel.h"
+#include "asterfort/rco3d_addrela.h"
 !
     integer :: iocc
     character(len=8) :: charge
@@ -86,10 +88,16 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     integer, allocatable :: map_noco_nbnoco(:,:,:)
     integer, allocatable :: map_noco_nbelem(:,:)
     integer, pointer :: list_total_no_co(:) => null()
+
+    
+    
+    
+
+
+    ! TMP
     integer, pointer :: v_ligrel_liel(:) => null()
     integer, pointer :: v_list_no_pair(:) => null()
-    integer :: jv_liel, num_pair, num_no
-    ! TMP
+    integer :: jv_liel, num_pair
     character(len=24) :: matrelem
     integer, pointer :: v_desc(:) => null()
     real(kind=8), pointer :: v_resl(:) => null()
@@ -125,6 +133,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 !     --------------------------
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
+    
 
 !--- RECUPERER EPAISSEUR
     
@@ -154,7 +163,8 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     !
     do i=1, nbnocot
         list_total_no_co(i) = zi(jlisnoco-1+i)
-        write(*,*) "noeuds coque ", list_total_no_co(i)
+        !call jenuno(jexnum(noeuma, zi(jlisnoco-1+i)), nomnoe)
+        !list_total_nano_co(i) = nomnoe
     end do
 
 !-- RECUPERER LA LISTE DES PAIRES
@@ -175,9 +185,9 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     allocate(map_noco_nbelem(9, nbnocot))
     !
     call raco3d_crealigrel(ligrel, noma, mod, list_pairs, &
-                            nb_pairs, nt_nodes, list_total_no_co, &
-                            nbnocot, map_noco_pair, map_noco_nbelem, &
-                            map_noco_nbnoco)
+                            nb_pairs, nt_nodes, &
+                            list_total_no_co, nbnocot, map_noco_pair, &
+                            map_noco_nbelem, map_noco_nbnoco)
 
 !    CREATION DE LA CARTE DES CARACTERISTIQUES DE LA PARTIE COQUE
 !    
@@ -193,10 +203,12 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     icmp(4) = 0.0
     icmp(5) = 0.0
     icmp(6) = 0.0
+    !
     call mecact('G', '&&RACO3D.PCACOQU', 'LIGREL', ligrel, 'CACOQU_R', &
                     ncmp=6, lnomcmp=licmp, vr=icmp)
 
-    ! LISTE DES CHAMPS
+!--  Fields
+!
     lpain(1) = 'PGEOMER'
     lpain(2) = 'PCACOQU'
     lchin(1) = noma//'.COORDO'
@@ -205,37 +217,46 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     lchout(1) = '&&RACO3D.PMATUNS'
 
     
-!
+!-- Compute elementary matrices 
     call calcul('S', 'LIAI_CO_3D', ligrel, 2, lchin, &
                 lpain, 1, lchout, lpaout, 'V', &
                'OUI')
     
-    ! TESTING
 
-    call jeexin(lchout(1)(1:19)//'.DESC', iret)
-    call jeveuo(lchout(1)(1:19)//'.DESC', 'L', vi=v_desc)
+!-- add the linear relations 
+    call rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
+                    list_total_no_co, map_noco_pair, map_noco_nbelem,&
+                    map_noco_nbnoco, lchout(1)(1:19), fonrez, lisrel )
 
-    nb_gr = v_desc(2)
-    nddl = 3
-    do i=1, nb_gr
-        call jeveuo(jexnum(lchout(1)(1:19)//'.RESL', i), 'L', vr=v_resl)
-        call jelira(jexnum(ligrel(1:19)//'.LIEL', i), 'LONMAX', nel)
-        call jeveuo(jexnum(ligrel(1:19)//'.LIEL', i), 'L', vi=v_ligrel_liel)
+
+
+    ! TMP
+    !call jeexin(lchout(1)(1:19)//'.DESC', iret)
+    !call jeveuo(lchout(1)(1:19)//'.DESC', 'L', vi=v_desc)
+
+    !nb_gr = v_desc(2)
+    !nddl = 3
+    !do i=1, nb_gr
+    !    call jeveuo(jexnum(lchout(1)(1:19)//'.RESL', i), 'L', vr=v_resl)
+    !    call jelira(jexnum(ligrel(1:19)//'.LIEL', i), 'LONMAX', nel)
+    !    call jeveuo(jexnum(ligrel(1:19)//'.LIEL', i), 'L', vi=v_ligrel_liel)
         
-        mode = v_desc(2+i)
-        ncomp = digdel(mode)
+    !    mode = v_desc(2+i)
+    !    ncomp = digdel(mode)
         !write(*,*) "noeud   ", list_total_no_co(5)
-        do k=1, map_noco_nbelem(i, 5)
-            jv_liel = map_noco_pair(i, 5, k)
-            num_pair = - v_ligrel_liel(jv_liel)
-            call jeveuo(jexnum(ligrel//'.NEMA', num_pair), 'L', vi=v_list_no_pair)
+    !    do k=1, map_noco_nbelem(i, 5)
+    !        jv_liel = map_noco_pair(i, 5, k)
+    !        num_pair = - v_ligrel_liel(jv_liel)
+    !        call jeveuo(jexnum(ligrel//'.NEMA', num_pair), 'L', vi=v_list_no_pair)
             !write(*,*) "noeud element coque ", v_list_no_pair(1), "  ", v_list_no_pair(2)
-        end do
-        write(*,*) "#########################  ", ncomp
-        do j=1, nel - 1
-            write(*,*) "#########################  ", v_resl((j-1) * ncomp + 1)
-        end do
-    end do
+    !    end do
+        !write(*,*) "#########################  ", ncomp
+    !    do j=1, nel - 1
+    !        write(*,*) "#########################  ", v_resl((j-1) * ncomp + 1)
+     !   end do
+    !end do
+
+
 
 !FIN 
     AS_DEALLOCATE(vi=list_pairs)

@@ -23,10 +23,26 @@ module raco3d_utils
 #include "asterfort/matinv.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
+
+! Global variables (may evolve with time)
+
+    integer :: NB_GAUSS_MAX = 20
+    integer :: NB_GREL_MAX = 9
+    integer :: NB_NO_CO_MAX = 3
+    integer :: NB_NO_3D_MAX = 8
+    integer :: NB_NDDL_MAX = 6*3+3*8
+
+! Shell-3d link structures
+
+    type :: PointerContainer
+        integer, pointer :: iptr(:) => null()
+        real(kind=8), pointer :: rptr(:) => null()
+    end type PointerContainer
 !
 contains
 !
 !
+
     function segseg_distance(coorseg1, coorseg2)
         ! Compute the shortest distance between two 3D line segments
         real(kind=8), intent(in) :: coorseg1(3,2), coorseg2(3,2)
@@ -97,20 +113,6 @@ contains
 
         
     end function segseg_distance
-
-    !function solve_linear_system(A, b) result(x)
-    !   implicit none
-    !   real(kind=8), intent(in) :: A(2, 2), b(2)
-    !   real(kind=8) :: x(2)
-    !   real(kind=8) :: det
-    ! 
-    !   det = A(1, 1) * A(2, 2) - A(1, 2) * A(2, 1)
-    !   if (abs(det) < 1.0d-12) stop "Singular matrix"
-    !
-    !   x(1) = ( A(2, 2) * b(1) - A(1, 2) * b(2)) / det
-    !   x(2) = (-A(2, 1) * b(1) + A(1, 1) * b(2)) / det
-    !end function solve_linear_system
-
 
     function find_parametric_coordinates(p, typma3d, coor_pt_3d, nno_3d) result(res)
         implicit none
@@ -204,6 +206,5 @@ contains
         
     end function find_parametric_coordinates
     
-    !
 !
 end module raco3d_utils

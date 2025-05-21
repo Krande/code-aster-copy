@@ -18,8 +18,9 @@
 !
 subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
                     ff_co, ff_3d, s, t, n, epai, & 
-                    nno_co, nno_3d, mat )
-
+                    nno_co, nno_3d, skip, mat )
+!
+    use  raco3d_utils
 !
     implicit none
 !
@@ -29,13 +30,15 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
 
     real(kind=8), intent(in) :: epai
     integer, intent(in) :: nb_gauss, nno_co, nno_3d
-    real(kind=8), intent(in) :: jac_det(10)
-    real(kind=8), intent(in) :: gauss_weight(10)
-    real(kind=8), intent(in) :: gauss_coor(2, 10)
-    real(kind=8), intent(in) :: ff_co(3, 10)
-    real(kind=8), intent(in) :: ff_3d(8, 10)
-    real(kind=8), intent(in) :: t(3, 10), n(3, 10), s(3)
+    real(kind=8), intent(in) :: jac_det(NB_GAUSS_MAX)
+    real(kind=8), intent(in) :: gauss_weight(NB_GAUSS_MAX)
+    real(kind=8), intent(in) :: gauss_coor(2, NB_GAUSS_MAX)
+    real(kind=8), intent(in) :: ff_co(3, NB_GAUSS_MAX)
+    real(kind=8), intent(in) :: ff_3d(8, NB_GAUSS_MAX)
+    real(kind=8), intent(in) :: t(3, NB_GAUSS_MAX), n(3, NB_GAUSS_MAX), s(3)
+    aster_logical, intent(in) :: skip(NB_GAUSS_MAX)
     real(kind=8), intent(out) :: mat(:,:)
+    
 
 ! -------------------------------------------------------------------------------
 !  SUBROUTINE: rco3d_calcmat
@@ -68,6 +71,7 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
 !  epai             - IN    - R*8  - Thickness of the shell.
 !  nno_co           - IN    - I    - Number of shell nodes at the interface.
 !  nno_3d           - IN    - I    - Number of 3D nodes at the interface.
+!  skip             - IN   - LOG  - Logical flag indicating if the computation should be skipped.
 !
 !  OUTPUT PARAMETERS:
 !  ------------------
@@ -79,6 +83,7 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
     real(kind=8) :: mat1(3,6*nno_co), mat2(3, 6*nno_co+3*nno_3d)
     real(kind=8) :: rot(3,3), mat3(3,3), mat4(3,3)
     integer :: i, j, k, index, ddl_co, ddl_3d
+    real(kind=8) :: epsilon 
 
     
     mat1 = 0.0d0
@@ -87,10 +92,18 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
     mat4 = 0.0d0
     rot  = 0.0d0
     
+    epsilon = 1d-5
+    !
     ddl_co = 6
     ddl_3d = 3
     !
     do i = 1, nb_gauss
+        
+        if (skip(i)) then
+            cycle
+        end if
+
+        
         ! Precompute the repeated index scaling factor
         
         rot(:,1) = s(:)
@@ -108,7 +121,7 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
             mat2(:, ddl_co * (j - 1) + 1: ddl_co * (j - 1) + 3) = mat3
             mat1(:, ddl_co * (j - 1) + 1: ddl_co * (j - 1) + 3) = mat3
             ! rotation ddls
-            mat3(3,3) = 0.0d0
+            mat3(3,3) = epsilon
             mat4 = matmul(matmul(rot, mat3), transpose(rot))
             mat2(:, ddl_co * (j - 1) + 4: ddl_co * (j - 1) + 6) = &
                         0.5d0 * epai * gauss_coor(2, i) * mat4

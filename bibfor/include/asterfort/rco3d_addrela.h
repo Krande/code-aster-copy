@@ -19,19 +19,16 @@
 !
 !
 interface
-    subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
-                        gauss_weight, jac_det, ff_co, ff_3d, s, t, n, skip)
-        use raco3d_utils
-        character(len=8), intent(in) :: typmaco, typma3d
-        real(kind=8), intent(in) :: epai
-        integer, intent(in) :: j_geom
-        integer, intent(out) :: nb_gauss
-        real(kind=8), intent(out) :: gauss_coor(2, NB_GAUSS_MAX)
-        real(kind=8), intent(out) :: jac_det(NB_GAUSS_MAX)
-        real(kind=8), intent(out) :: gauss_weight(NB_GAUSS_MAX)
-        real(kind=8), intent(out) :: ff_co(3,NB_GAUSS_MAX)
-        real(kind=8), intent(out) :: ff_3d(8, NB_GAUSS_MAX)
-        real(kind=8), intent(out) :: t(3, NB_GAUSS_MAX), n(3, NB_GAUSS_MAX), s(3)
-        aster_logical, intent(out) :: skip(NB_GAUSS_MAX)
-    end subroutine rco3d_infos
+    subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot,&
+        list_total_no_co, map_noco_pair, map_noco_nbelem, &
+        map_noco_nbnoco, resuelem, fonrez, lisrel )
+        character(len=19), intent(in) :: ligrel, resuelem, lisrel
+        character(len=8), intent(in) :: noma
+        integer, intent(in) :: nb_pairs, nbnocot
+        integer, intent(in) :: map_noco_pair(:,:,:)
+        integer, intent(in) :: map_noco_nbnoco(:,:,:)
+        integer, intent(in) :: map_noco_nbelem(:,:)
+        integer, pointer, intent(in) :: list_total_no_co(:)
+        character(len=*), intent(in) :: fonrez
+    end subroutine rco3d_addrela
 end interface

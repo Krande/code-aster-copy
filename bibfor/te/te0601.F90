@@ -17,7 +17,9 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0601(option, nomte)
-
+!
+    use raco3d_utils
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -45,14 +47,13 @@ subroutine te0601(option, nomte)
     integer :: nnco, nn3d, dim, index
     integer :: i_node_co, i_node_3d, i
     integer :: nb_gauss, ncols, nrows
-    real(kind=8) :: jac_det(10), gauss_weight(10) 
-    real(kind=8):: gauss_coor(2, 10)
-    real(kind=8):: ff_co(3, 10), epai, ff_3d(8, 10)
-    real(kind=8) :: t(3, 10), n(3, 10), s(3)
+    real(kind=8) :: jac_det(NB_GAUSS_MAX), gauss_weight(NB_GAUSS_MAX) 
+    real(kind=8) :: gauss_coor(2, NB_GAUSS_MAX)
+    real(kind=8) :: ff_co(3, NB_GAUSS_MAX), epai, ff_3d(8,NB_GAUSS_MAX)
+    real(kind=8) :: t(3,NB_GAUSS_MAX), n(3,NB_GAUSS_MAX), s(3)
     character(len=8):: typmaco, typma3d
     real(kind=8), allocatable :: mat(:, :)
-    real(kind=8), allocatable :: matr_tmp(:, :)
-    aster_logical :: skip
+    aster_logical :: skip(NB_GAUSS_MAX)
 
 
     ! RECUPERER GEOMETRIE
@@ -77,13 +78,13 @@ subroutine te0601(option, nomte)
     allocate(mat(nrows,ncols))
     ! initialization
     mat = 0.0d0
-    if (.not. skip) then
-        call  rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
-                        ff_co, ff_3d, s, t, n, epai, & 
-                            nnco, nn3d, mat )
-    end if
+    !
+    call  rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
+                    ff_co, ff_3d, s, t, n, epai, & 
+                        nnco, nn3d, skip, mat )
+    
 
-
+    ! copy the elementary matrix
     call writeMatrix('PMATUNS', nrows, ncols, ASTER_FALSE, mat)
 
     deallocate(mat)
