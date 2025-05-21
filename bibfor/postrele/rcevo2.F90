@@ -342,14 +342,12 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex, &
     call wkvect(cinst, 'V V R', nbinst, jinst)
     call wkvect(cnoc, 'V V I', nbinst, jnocc)
     call wkvect(cresu, 'V V K8', nbinst, jresu)
-    if (lfatig) then
-        ndim = 2*nbinst*ncmp
-        call wkvect(csiex, 'V V R', ndim, jsioe)
-        if (kemixt) then
-            call wkvect(cstex, 'V V R', ndim, jstoe)
-            call wkvect(csmex, 'V V R', ndim, jsmoe)
-        end if
+    call wkvect(csiex, 'V V R', 2*nbinst*ncmp, jsioe)
+    if (kemixt) then
+        call wkvect(cstex, 'V V R', 2*nbinst*ncmp, jstoe)
+        call wkvect(csmex, 'V V R', 2*nbinst*ncmp, jsmoe)
     end if
+!
     if (lrocht) then
         call wkvect(cpres, 'V V K8', nbtran, jresp)
     end if
@@ -543,8 +541,13 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex, &
                     !
                     l = ncmp*(ii-1)+j
                     zr(jsigm-1+l) = momen0
+                    ! Contrainte totale orig
+                    zr(jsioe-1+l) = contraintes(j, 1)
                     l = ncmp*nbinst+ncmp*(ii-1)+j
                     zr(jsigm-1+l) = momen1
+                    ! Contrainte totale extr
+                    zr(jsioe-1+l) = contraintes(j, nbabsc)
+                    !
                     !
                     if (flexii) then
                         call rc32my(nbabsc, zr(jabsc), cont_flexio(j, :), momen0, momen1)
@@ -582,6 +585,9 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex, &
                     zr(jsigm-1+l1+j) = momen0_axis(j)
                     zr(jsigm-1+l2+j) = momen1_axis(j)
                     zr(jsigm-1+l3+j) = momen2_axis(j)
+                    ! Contrainte totale orig et extr
+                    zr(jsioe-1+l1+j) = contraintes(j, 1)
+                    zr(jsioe-1+l2+j) = contraintes(j, nbabsc)
                 end do
 !
                 if (flexii) then

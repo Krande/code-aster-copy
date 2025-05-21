@@ -26,7 +26,7 @@ interface
                       csneo, csnee, cfao, cfae, cspo,&
                       cspe, cresu, kinti, it, jt,&
                       lrocht, symax, cpres, kemixt, cspto,&
-                      cspte, cspmo, cspme, lsymm)
+                      cspte, cspmo, cspme, lsymm, csiex)
         character(len=24) :: csigm
         character(len=24) :: cinst
         character(len=24) :: cnoc
@@ -56,5 +56,6 @@ interface
         character(len=24) :: cspmo
         character(len=24) :: cspme
         aster_logical :: lsymm
+        character(len=24) :: csiex
     end subroutine rcevom
 end interface

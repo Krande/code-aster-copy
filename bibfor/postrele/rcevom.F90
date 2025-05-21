@@ -21,7 +21,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig, &
                   csneo, csnee, cfao, cfae, cspo, &
                   cspe, cresu, kinti, it, jt, &
                   lrocht, symax, cpres, kemixt, cspto, &
-                  cspte, cspmo, cspme, lsymm)
+                  cspte, cspmo, cspme, lsymm, csiex)
 ! aslint: disable=W1501,W1501,W1504
     implicit none
 #include "asterf_types.h"
@@ -43,30 +43,30 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig, &
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, cnoc, csno, csne, csneo, csnee, cfao
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo
-    character(len=24) :: cspme
+    character(len=24) :: cspme, csiex
 !     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
 !     TYPE_RESU = 'VALE_MAX'
 !
 !     ------------------------------------------------------------------
 !
-    integer(kind=8) :: ncmp, jsigm, jinst, nbinst, nbordr, jsno, jsne, ind, i1, i2, icmp
+    integer(kind=8) :: ncmp, jsigm, jinst, nbinst, nbordr, jsno, jsne, ind, i1, i2, icmp, jsigtot
     integer(kind=8) :: l1, l2, l3, l4, l5, l6, npara, ik, ir, i, vaio(5), vaie(5), ioo1, ioo2
     integer(kind=8) :: ioe1, ioe2, npar1, jspo, jspe, jfao, jfae, jnoc, jresu, jresp
     integer(kind=8) :: jspto, jspte, jspmo, jspme
     parameter(ncmp=6)
-    real(kind=8) :: tpm(ncmp), tpb(ncmp), tpbo(ncmp), tpbe(ncmp), tpmpbo(ncmp)
-    real(kind=8) :: tpmpbe(ncmp), pm, pb, pbo, pbe
-    real(kind=8) :: pmpbo, pmpbe, ipm, ipb, ipbo, ipbe, ipmpbo, ipmpbe, sno, sne, i1sno
+    real(kind=8) :: tpm(ncmp), tpb(ncmp), tpbo(ncmp), tpbe(ncmp), tpmpbo(ncmp), qlin
+    real(kind=8) :: tpmpbe(ncmp), pm, pb, pbo, pbe, tfpto(ncmp), tfpte(ncmp), fpto, fpte
+    real(kind=8) :: pmpbo, pmpbe, ipm, ipb, ipbo, ipbe, ipmpbo, ipmpbe, sno, sne, i1sno, ifpte
     real(kind=8) :: i2sno, i1sne, i2sne, spo, spe, keo, kee, sao, sae, nao, nae
-    real(kind=8) :: doo, doe, dco, dce, stlin, stpar, ketho, kethe, tresca
+    real(kind=8) :: doo, doe, dco, dce, stlin, stpar, ketho, kethe, tresca, ifpto
     real(kind=8) :: valo(39), vale(39), spmo, spme, spto, spte
     complex(kind=8) :: c16b
-    character(len=8) :: nomres, typara(39), rpm, rpb, rpbo, rpbe, rpmpbo, rpmpbe, r1sno
-    character(len=8) :: r1sne, r2sno, r2sne
+    character(len=8) :: nomres, typara(39), rpm, rpb, rpbo, rpbe, rpmpbo, rpmpbe, r1sno, rfpte
+    character(len=8) :: r1sne, r2sno, r2sne, rfpto
     character(len=16) :: nomcmd, concep, nopara(39), vako(5), vake(5)
 !
     integer(kind=8) :: nparen, nparpm, nparsn, nparse, nparf1, nparrt, nparf2
-    parameter(nparen=4, nparpm=7, nparsn=5, nparse=3, nparf1=10,&
+    parameter(nparen=4, nparpm=9, nparsn=5, nparse=3, nparf1=10,&
      &             nparrt=5, nparf2=13)
     character(len=8) :: typaen(nparen), typapm(nparpm), typasn(nparsn)
     character(len=8) :: typase(nparse), typaf1(nparf1), typart(nparrt)
@@ -81,8 +81,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig, &
      &              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB'/
     data typart/'K8', 'R', 'R', 'R', 'R'/
     data nopapm/'TABL_RESU', 'INST_PM', 'PM', 'INST_PB', 'PB',&
-     &              'INST_PMB', 'PMB'/
-    data typapm/'K8', 'R', 'R', 'R', 'R', 'R', 'R'/
+     &              'INST_PMB', 'PMB', 'INST_F', 'F'/
+    data typapm/'K8', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'/
     data nopasn/'TABL_RESU_1', 'INST_SN_1',&
      &              'TABL_RESU_2', 'INST_SN_2', 'SN'/
     data typasn/'K8', 'R', 'K8', 'R', 'R'/
@@ -247,24 +247,30 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig, &
 !     ON NE PREND QUE LA PARTIE MECANIQUE
 !
         call jeveuo(csigm, 'L', jsigm)
+        call jeveuo(csiex, 'L', jsigtot)
         pm = 0.d0
         pb = 0.d0
         pbo = 0.d0
         pbe = 0.d0
         pmpbo = 0.d0
         pmpbe = 0.d0
-        rpm = zk8(jresu)
+        fpto = 0.d0
+        fpte = 0.d0
         rpb = zk8(jresu)
         rpbo = zk8(jresu)
         rpbe = zk8(jresu)
         rpmpbo = zk8(jresu)
         rpmpbe = zk8(jresu)
+        rfpto = zk8(jresu)
+        rfpte = zk8(jresu)
         ipm = zr(jinst)
         ipb = zr(jinst)
         ipbo = zr(jinst)
         ipbe = zr(jinst)
         ipmpbo = zr(jinst)
         ipmpbe = zr(jinst)
+        ifpto = zr(jinst)
+        ifpte = zr(jinst)
         do i = 1, nbinst
             do icmp = 1, ncmp
                 if (lsymm) then
@@ -279,6 +285,10 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig, &
                     tpbe(icmp) = zr(jsigm-1+l3)-zr(jsigm-1+l6)
                     tpmpbo(icmp) = tpm(icmp)+tpbo(icmp)
                     tpmpbe(icmp) = tpm(icmp)+tpbe(icmp)
+                    qlin = zr(jsigm-1+l3)+zr(jsigm-1+l4)
+                    ! Calcul de la contrainte de pointe F aux extrémités
+                    tfpto(icmp) = zr(jsigtot-1+l1)-tpmpbo(icmp)-zr(jsigm-1+l4)-zr(jsigm-1+l5)
+                    tfpte(icmp) = zr(jsigtot-1+l2)-tpmpbe(icmp)-zr(jsigm-1+l4)-zr(jsigm-1+l6)
                 else
                     l1 = ncmp*(i-1)+icmp
                     l2 = ncmp*nbinst+ncmp*(i-1)+icmp
@@ -286,10 +296,14 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig, &
                     l4 = 3*ncmp*nbinst+ncmp*(i-1)+icmp
                     tpm(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l3)
                     tpb(icmp) = zr(jsigm-1+l2)-zr(jsigm-1+l4)
+                    qlin = zr(jsigm-1+l3)+zr(jsigm-1+l4)
                     tpmpbo(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l2)-(zr(jsigm-1+l3)-zr(jsigm-&
                                    &1+l4))
                     tpmpbe(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)-(zr(jsigm-1+l3)+zr(jsigm-&
                                    &1+l4))
+                    ! Calcul de la contrainte de pointe F aux extrémités
+                    tfpto(icmp) = zr(jsigtot-1+l1)-tpmpbo(icmp)-qlin
+                    tfpte(icmp) = zr(jsigtot-1+l2)-tpmpbe(icmp)-qlin
                 end if
             end do
             call rctres(tpm, tresca)
@@ -330,6 +344,18 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig, &
                 pmpbe = tresca
                 ipmpbe = zr(jinst+i-1)
                 rpmpbe = zk8(jresu+i-1)
+            end if
+            call rctres(tfpto, tresca)
+            if (tresca .gt. fpto) then
+                fpto = tresca
+                ifpto = zr(jinst+i-1)
+                rfpto = zk8(jresu+i-1)
+            end if
+            call rctres(tfpte, tresca)
+            if (tresca .gt. fpte) then
+                fpte = tresca
+                ifpte = zr(jinst+i-1)
+                rfpte = zk8(jresu+i-1)
             end if
         end do
 !
@@ -406,6 +432,26 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig, &
                     [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale, &
                     [c16b], vake, 0)
+!
+        npar1 = npara+1
+        nopara(npar1) = 'TABL_RESU'
+        vako(ik+1) = rfpto
+        vake(ik+1) = rfpte
+        npar1 = npar1+1
+        nopara(npar1) = 'INST_F'
+        ir = 2+1
+        valo(ir) = ifpto
+        vale(ir) = ifpte
+        npar1 = npar1+1
+        nopara(npar1) = 'F'
+        ir = ir+1
+        valo(ir) = fpto
+        vale(ir) = fpte
+        call tbajli(nomres, npar1, nopara, vaio, valo, &
+                    [c16b], vako, 0)
+        call tbajli(nomres, npar1, nopara, vaie, vale, &
+                    [c16b], vake, 0)
+
     end if
 !
 ! --- POUR L'OPTION "SN"
