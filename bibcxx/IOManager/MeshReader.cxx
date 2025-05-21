@@ -25,6 +25,7 @@
 
 #include "IOManager/MeshReader.h"
 
+#include "Messages/Messages.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
@@ -172,7 +173,14 @@ void MeshReader::readIncompleteMeshFromMedFile( IncompleteMeshPtr &toReturn,
     const auto curMesh = fr.getMesh( 0 );
     const auto &families = curMesh->getFamilies();
     for ( const auto &curFam : families ) {
-        toReturn->addFamily( curFam->getId(), curFam->getGroups() );
+        const auto &groups = curFam->getGroups();
+        VectorString groupShort;
+        for ( const auto &groupName : groups ) {
+            if ( groupName.size() <= 24 ) {
+                groupShort.push_back( groupName );
+            }
+        }
+        toReturn->addFamily( curFam->getId(), groupShort );
     }
 }
 
@@ -492,9 +500,13 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         VectorOfVectorsLong nodeIdGroupList2;
         for ( int i = 0; i < nodeGroupList.size(); ++i ) {
             if ( nodeIdGroupList[i].size() != 0 ) {
-                nodeGroupList2.push_back( nodeGroupList[i] );
-                std::sort( nodeIdGroupList[i].begin(), nodeIdGroupList[i].end() );
-                nodeIdGroupList2.push_back( nodeIdGroupList[i] );
+                if ( nodeGroupList[i].size() <= 24 ) {
+                    nodeGroupList2.push_back( nodeGroupList[i] );
+                    std::sort( nodeIdGroupList[i].begin(), nodeIdGroupList[i].end() );
+                    nodeIdGroupList2.push_back( nodeIdGroupList[i] );
+                } else {
+                    UtmessCore( "A", "MED_7", { nodeGroupList[i] } );
+                }
             }
         }
         if ( nodeGroupList2.size() != 0 ) {
@@ -506,9 +518,13 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         VectorOfVectorsLong cellIdGroupList2;
         for ( int i = 0; i < cellGroupList.size(); ++i ) {
             if ( cellIdGroupList[i].size() != 0 ) {
-                cellGroupList2.push_back( cellGroupList[i] );
-                std::sort( cellIdGroupList[i].begin(), cellIdGroupList[i].end() );
-                cellIdGroupList2.push_back( cellIdGroupList[i] );
+                if ( cellGroupList[i].size() <= 24 ) {
+                    cellGroupList2.push_back( cellGroupList[i] );
+                    std::sort( cellIdGroupList[i].begin(), cellIdGroupList[i].end() );
+                    cellIdGroupList2.push_back( cellIdGroupList[i] );
+                } else {
+                    UtmessCore( "A", "MED_7", { cellGroupList[i] } );
+                }
             }
         }
         if ( cellGroupList2.size() != 0 ) {

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1256,7 +1256,7 @@ class PostMissChar(PostMiss):
             mail = self.MODELE.getMesh()
             list_nuno_affe = []
             for gr in self.param["GROUP_NO_AFFE"]:
-                list_nuno_affe.extend(mail.getNodes(gr))
+                list_nuno_affe.extend([val + 1 for val in mail.getNodes(gr)])
             self.List_Noeu_Fictif = []
             for nuno in list_nuno_affe:
                 self.List_Noeu_Fictif.append(mail.getNodeName(nuno))

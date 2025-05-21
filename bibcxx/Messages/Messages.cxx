@@ -2,7 +2,7 @@
  * @file Message.cxx
  * @brief Fichier entete de la class Messages
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,3 +34,18 @@ void UTMESS( const std::string &typm, const std::string &idmess ) {
 void UTMESS( char *typm, char *idmess ) { UTMESS( std::string( typm ), std::string( idmess ) ); }
 
 void UTMESS( const char *typm, const char *idmess ) { UTMESS( (char *)typm, (char *)idmess ); }
+
+void UtmessCore( const std::string &typm, const std::string &idmess, const VectorString &vec ) {
+    ASTERINTEGER n0 = 0, n1 = 1, ibid = 0;
+    ASTERDOUBLE rbid = 0.;
+    std::string typm2( typm ), idmess2( idmess );
+    char *valk, *fname;
+    fname = MakeBlankFStr( 1 );
+    valk = MakeTabFStr( vec.size(), VALK_SIZE );
+    for ( int i = 0; i < vec.size(); ++i ) {
+        SetTabFStr( valk, i, vec[i].data(), VALK_SIZE );
+    }
+    CALL_UTMESS_CORE( typm2.data(), idmess2.data(), &n1, valk, &n0, &ibid, &n0, &rbid, &n0, fname );
+    FreeStr( valk );
+    FreeStr( fname );
+}

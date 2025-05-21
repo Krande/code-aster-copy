@@ -32,6 +32,7 @@ class sd_maillage(sd_titre):
 
     # un sd_maillage a toujours des noeuds :
     COORDO = sd_cham_geom()
+    NOMNOE = Facultatif(AsPn(ltyp=8))
 
     # normalement, un sd_maillage a toujours une "sd_l_table" contenant des
     # caractéristiques géométriques :
@@ -46,6 +47,7 @@ class sd_maillage(sd_titre):
     # si le sd_maillage a des mailles :
     CONNEX = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
     TYPMAIL = Facultatif(AsVI())
+    NOMMAI = Facultatif(AsPn(ltyp=8))
 
     # si le sd_maillage a des patchs:
     PATCH = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
