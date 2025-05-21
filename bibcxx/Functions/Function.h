@@ -164,6 +164,12 @@ class Function : public BaseFunction {
     Function() : BaseFunction( "FONCTION", "FONCTION" ) {};
 
     Function( const std::string name ) : BaseFunction( name, "FONCTION", "FONCTION" ) {};
+
+    /**
+     * @brief Return the emptyRealFunction (a singleton)
+     * 
+     */
+    static FunctionPtr emptyRealFunction();
 };
 
 /**
@@ -238,12 +244,6 @@ typedef std::shared_ptr< Function > FunctionPtr;
  * @brief  Pointer to a FunctionComplex
  */
 typedef std::shared_ptr< FunctionComplex > FunctionComplexPtr;
-
-/**
- * @name emptyRealFunction
- * @brief  Empty function
- */
-extern FunctionPtr emptyRealFunction;
 
 /**
  * @typedef ListOfFunctions

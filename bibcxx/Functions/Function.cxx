@@ -31,8 +31,6 @@
 #include <string>
 #include <vector>
 
-FunctionPtr emptyRealFunction( new Function( "" ) );
-
 BaseFunction::BaseFunction( const std::string name, const std::string type,
                             const std::string type2 )
     : GenericFunction( name, type, type2 ), _value( JeveuxVectorReal( getName() + ".VALE" ) ) {}
@@ -122,6 +120,11 @@ void BaseFunction::setAsConstant() {
         propertyAllocate();
     _funct_type = "CONSTANT";
     ( *_property )[0] = _funct_type;
+}
+
+FunctionPtr Function::emptyRealFunction() {
+    static FunctionPtr emptyRealFunction {std::make_shared<Function>( "" )};
+    return emptyRealFunction; 
 }
 
 /* Complex function */
