@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
+    subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
                         list_pairs, nb_pairs, nt_nodes)
         character(len=8), intent(in) :: noma
         character(len=24), intent(in) :: lismaco, lismavo
@@ -30,5 +30,5 @@ interface
         integer, intent(out) :: nb_pairs, nt_nodes
         integer, pointer :: list_pairs(:)
 
-    end subroutine apco3d
+    end subroutine rco3d_apco3d
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
                         gauss_weight, jac_det, ff_co, ff_3d, s, t, n, skip)
-        use raco3d_utils
+        use raco3d_module
         character(len=8), intent(in) :: typmaco, typma3d
         real(kind=8), intent(in) :: epai
         integer, intent(in) :: j_geom
@@ -29,8 +29,8 @@ interface
         real(kind=8), intent(out) :: gauss_coor(2, NB_GAUSS_MAX)
         real(kind=8), intent(out) :: jac_det(NB_GAUSS_MAX)
         real(kind=8), intent(out) :: gauss_weight(NB_GAUSS_MAX)
-        real(kind=8), intent(out) :: ff_co(3,NB_GAUSS_MAX)
-        real(kind=8), intent(out) :: ff_3d(8, NB_GAUSS_MAX)
+        real(kind=8), intent(out) :: ff_co(NB_NO_CO_MAX,NB_GAUSS_MAX)
+        real(kind=8), intent(out) :: ff_3d(NB_NO_3D_MAX, NB_GAUSS_MAX)
         real(kind=8), intent(out) :: t(3, NB_GAUSS_MAX), n(3, NB_GAUSS_MAX), s(3)
         aster_logical, intent(out) :: skip(NB_GAUSS_MAX)
     end subroutine rco3d_infos

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ DDL_MECA = LocatedComponents(
     diff=True,
     components=(
         # Shell nodes
-        ("EN1", ("DX", "DY", "DZ", "DRX", "DRY", "DRZ")),       
+        ("EN1", ("DX", "DY", "DZ", "DRX", "DRY", "DRZ")),
         # Volume nodes
-        ("EN2", ("DX", "DY", "DZ",)),
+        ("EN2", ("DX", "DY", "DZ")),
     ),
 )
 
@@ -52,96 +52,80 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 # ------------------------------------------------------------
 class RACS2T3(Element):
     """
-    THE RACS2T3 CLASS ELEMENT : SEG2/TRIA3 (2D EDGE / 3D FACE )
+    THE RACS2T3 CLASS ELEMENT : SEG2/TRIA3 ( EDGE / FACE )
     """
 
     meshType = MT.SE2TR3
-    nodes = (
-        SetOfNodes("EN1", (1, 2)),
-        SetOfNodes("EN2", (3,4,5)),
-        
-    )
+    nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", (3, 4, 5)))
     calculs = (
         OP.LIAI_CO_3D(
             te=601,
-            para_in=(
-                (SP.PGEOMER, NGEOMER),
-                (SP.PCACOQU, CCACOQU),
-            ),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PCACOQU, CCACOQU)),
             para_out=((SP.PMATUNS, MMATUNS),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
-        
     )
+
 
 class RACS2Q4(RACS2T3):
     """
     THE RACSQ4 CLASS ELEMENT : SEG2/QUA4 (2D EDGE / 3D FACE )
     """
+
     meshType = MT.SE2QU4
-    nodes = (
-        SetOfNodes("EN1", (1, 2)),
-        SetOfNodes("EN2", (3,4,5,6)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", (3, 4, 5, 6)))
+
 
 class RACS2T6(RACS2T3):
     """
     THE RACSQ4 CLASS ELEMENT : SEG2/QUA4 (2D EDGE / 3D FACE )
     """
+
     meshType = MT.SE2TR6
-    nodes = (
-        SetOfNodes("EN1", (1, 2)),
-        SetOfNodes("EN2", (3,4,5,6,7,8)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", (3, 4, 5, 6, 7, 8)))
+
 
 class RACS2Q8(RACS2T3):
     """
     THE RACSQ4 CLASS ELEMENT : SEG2/QUA4 (2D EDGE / 3D FACE )
     """
+
     meshType = MT.SE2QU8
-    nodes = (
-        SetOfNodes("EN1", (1, 2)),
-        SetOfNodes("EN2", (3,4,5,6,7,8,9,10)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", (3, 4, 5, 6, 7, 8, 9, 10)))
 
 
 class RACS3T3(RACS2T3):
     """
     THE RACSQ4 CLASS ELEMENT : SEG3/TRIA6 (2D EDGE / 3D FACE )
     """
+
     meshType = MT.SE3TR3
-    nodes = (
-        SetOfNodes("EN1", (1, 2, 3)),
-        SetOfNodes("EN2", (4, 5, 6)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", (4, 5, 6)))
+
 
 class RACS3T6(RACS2T3):
     """
     THE RACSQ4 CLASS ELEMENT : SEG3/TRIA6 (2D EDGE / 3D FACE )
     """
+
     meshType = MT.SE3TR6
-    nodes = (
-        SetOfNodes("EN1", (1, 2, 3)),
-        SetOfNodes("EN2", (4,5,6,7,8,9)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", (4, 5, 6, 7, 8, 9)))
+
 
 class RACS3Q4(RACS2T3):
     """
     THE RACSQ4 CLASS ELEMENT : SEG3/QUA8 (2D EDGE / 3D FACE )
     """
+
     meshType = MT.SE3QU4
-    nodes = (
-        SetOfNodes("EN1", (1, 2, 3)),
-        SetOfNodes("EN2", (4,5,6,7)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", (4, 5, 6, 7)))
+
 
 class RACS3Q8(RACS2T3):
     """
     THE RACSQ4 CLASS ELEMENT : SEG3/QUA8 (2D EDGE / 3D FACE )
     """
+
     meshType = MT.SE3QU8
-    nodes = (
-        SetOfNodes("EN1", (1, 2, 3)),
-        SetOfNodes("EN2", (4,5,6,7,8,9,10,11)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", (4, 5, 6, 7, 8, 9, 10, 11)))

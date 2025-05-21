@@ -16,19 +16,35 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
+subroutine debug_print(sch1, unit)
+    implicit none
+!     --
+!     ARGUMENTS:
+!     ----------
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/utimsd.h"
+    character(len=*), intent(in) :: sch1
+    integer, optional, intent(in) :: unit
 !
+    integer :: rang, nbproc, iproc, unit_
+    mpi_int :: mrank, msize
 !
-interface
-    subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot,&
-        list_total_no_co, map_noco_pair, map_noco_nbelem, &
-        map_noco_nbnoco, resuelem, fonrez, lisrel )
-        character(len=19), intent(in) :: ligrel, resuelem, lisrel
-        character(len=8), intent(in) :: noma
-        integer, intent(in) :: nb_pairs, nbnocot
-        integer, intent(in) :: map_noco_pair(:,:,:)
-        integer, intent(in) :: map_noco_nbnoco(:,:,:)
-        integer, intent(in) :: map_noco_nbelem(:,:)
-        integer, pointer, intent(in) :: list_total_no_co(:)
-        character(len=*), intent(in) :: fonrez
-    end subroutine rco3d_addrela
-end interface
+    if (present(unit)) then
+        unit_ = unit
+    else
+        unit_ = 6
+    end if
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
+    do iproc = 0, nbproc-1
+        if (iproc .eq. rang) then
+            call utimsd(unit_, 2, .false._1, .true._1, sch1, 1, ' ')
+            flush (unit_)
+        end if
+        call asmpi_barrier()
+    end do
+end subroutine

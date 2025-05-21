@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,17 @@
 ! aslint: disable=W1501
 !
 
-subroutine apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
-                    list_pairs, nb_pairs, nt_nodes)
+subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
+                  list_pairs, nb_pairs, nt_nodes)
 !
-use raco3d_utils
-implicit none
+    use raco3d_module
+    implicit none
 !
 
 #include "jeveux.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -36,15 +38,14 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: lismaco, lismavo
+    integer, intent(in) :: nbmavo, nbmaco
+    real(kind=8), intent(in) :: epai
+    integer, intent(out) :: nb_pairs, nt_nodes
+    integer, pointer :: list_pairs(:)
 
-character(len=8), intent(in) :: noma
-character(len=24), intent(in) :: lismaco, lismavo
-integer, intent(in) :: nbmavo, nbmaco
-real(kind=8), intent(in) :: epai
-integer, intent(out) :: nb_pairs, nt_nodes
-integer, pointer :: list_pairs(:)
-
-! Appariemment COQUE-3D 
+! Appariemment COQUE-3D
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,15 +60,16 @@ integer, pointer :: list_pairs(:)
     integer :: mesh_typmail, elem_type_nume
     aster_logical :: check
     real(kind=8) :: xv(3), x1, y1, z1, x2, y2, z2, x3, y3, z3
-    real(kind=8) :: tab1(3), tab2(3), diam, dist, prec
-    real(kind=8) :: coorsegvo(3,2), coorsegco(3,2)
+    real(kind=8) :: tab1(3), tab2(3), diam, dist
+    real(kind=8) :: coorsegvo(3, 2), coorsegco(3, 2)
+
+    call jemarq()
 
 ! INITIALISATIONS
-    AS_ALLOCATE(vi=list_pairs, size=nbmaco*nbmavo)
+    AS_ALLOCATE(vi=list_pairs, size=3*nbmaco*nbmavo)
     nb_pairs = 0
     nt_nodes = 0
 
-    prec = r8prem()
 
     desc = noma(1:8)//'.COORDO    .DESC'
     vale = noma(1:8)//'.COORDO    .VALE'
@@ -91,34 +93,34 @@ integer, pointer :: list_pairs(:)
             call jeveuo(jexnum(connex, imaco), 'L', idconnco)
             call jelira(jexnum(connex, imaco), 'LONMAX', nbnoco)
 
-            do j = 1, nbnovo - 1
+            do j = 1, nbnovo-1
                 inovo1 = zi(idconnvo+j-1)
                 inovo2 = zi(idconnvo+j+1-1)
                 do k = 1, 3
-                    coorsegvo(k,1) = zr(idvale-1+3*(inovo1-1)+k)
-                    coorsegvo(k,2) = zr(idvale-1+3*(inovo2-1)+k)
+                    coorsegvo(k, 1) = zr(idvale-1+3*(inovo1-1)+k)
+                    coorsegvo(k, 2) = zr(idvale-1+3*(inovo2-1)+k)
                 end do
-                do m = 1, nbnoco - 1
+                do m = 1, nbnoco-1
                     inoco1 = zi(idconnco+m-1)
                     inoco2 = zi(idconnco+m+1-1)
                     do k = 1, 3
-                        coorsegco(k,1) = zr(idvale-1+3*(inoco1-1)+k)
-                        coorsegco(k,2) = zr(idvale-1+3*(inoco2-1)+k)
+                        coorsegco(k, 1) = zr(idvale-1+3*(inoco1-1)+k)
+                        coorsegco(k, 2) = zr(idvale-1+3*(inoco2-1)+k)
                     end do
                     !!
                     dist = segseg_distance(coorsegvo, coorsegco)
-                    if (dist .le. 0.5d0 * epai) then
-                        nb_pairs = nb_pairs + 1
-                        list_pairs(2*(nb_pairs - 1) + 1) = imaco
-                        list_pairs(2*(nb_pairs - 1) + 2) = imavo
-                        nt_nodes = nt_nodes + nbnoco + nbnovo
+                    if (dist .le. 0.5d0*epai) then
+                        nb_pairs = nb_pairs+1
+                        list_pairs(2*(nb_pairs-1)+1) = imaco
+                        list_pairs(2*(nb_pairs-1)+2) = imavo
+                        nt_nodes = nt_nodes+nbnoco+nbnovo
                         check = ASTER_TRUE
                         exit
                     end if
                 end do
                 if (check) then
                     ! inutile de comparer les autres segments:
-                    ! passer  à l'element suivant 
+                    ! passer  à l'element suivant
                     exit
                 end if
             end do
@@ -126,9 +128,6 @@ integer, pointer :: list_pairs(:)
         end do
     end do
 
-    !write(*,*) "nb_pair new method ", nb_pairs
-
-
-
+    call jedema()
 
 end subroutine

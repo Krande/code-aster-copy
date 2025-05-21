@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,15 +26,10 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 LIAI_CO_3D = Option(
-    para_in=(
-        SP.PGEOMER,
-        SP.PCACOQU,
-    ),
+    para_in=(SP.PGEOMER, SP.PCACOQU),
     para_out=(SP.PMATUNS, SP.PMATUUR),
-    condition=(CondCalcul("+", ((AT.PHENO, "ME"), )),),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"),)),),
     comment=""" LIAI_CO_3D: CALCUL DES MATRICES ELEMENTAIRES
                     DE LIAISON""",
 )

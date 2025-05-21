@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine rco3d_elem(nomte, ndim, nddl, &
-    typmaco, nnco, typma3d, nn3d)
+                      typmaco, nnco, typma3d, nn3d)
 !
     implicit none
 !
@@ -30,13 +30,21 @@ subroutine rco3d_elem(nomte, ndim, nddl, &
     integer, intent(out) :: ndim, nddl, nnco, nn3d
     character(len=8), intent(out) :: typmaco, typma3d
 
-
     if (nomte(1:7) .eq. 'RACS2T3') then
         ndim = 3
         typmaco = 'SE2'
         nnco = 2
         typma3d = 'TR3'
         nn3d = 3
+        nddl = nn3d*ndim+nnco*(ndim+3)
+    end if
+
+    if (nomte(1:7) .eq. 'RACS2T6') then
+        ndim = 3
+        typmaco = 'SE2'
+        nnco = 2
+        typma3d = 'TR6'
+        nn3d = 6
         nddl = nn3d*ndim+nnco*(ndim+3)
     end if
 
@@ -49,6 +57,49 @@ subroutine rco3d_elem(nomte, ndim, nddl, &
         nddl = nn3d*ndim+nnco*(ndim+3)
     end if
 
+    if (nomte(1:7) .eq. 'RACS2Q8') then
+        ndim = 3
+        typmaco = 'SE2'
+        nnco = 2
+        typma3d = 'QU8'
+        nn3d = 8
+        nddl = nn3d*ndim+nnco*(ndim+3)
+    end if
 
+    if (nomte(1:7) .eq. 'RACS3T3') then
+        ndim = 3
+        typmaco = 'SE3'
+        nnco = 3
+        typma3d = 'TR3'
+        nn3d = 3
+        nddl = nn3d*ndim+nnco*(ndim+3)
+    end if
+
+    if (nomte(1:7) .eq. 'RACS3T6') then
+        ndim = 3
+        typmaco = 'SE3'
+        nnco = 3
+        typma3d = 'TR6'
+        nn3d = 6
+        nddl = nn3d*ndim+nnco*(ndim+3)
+    end if
+
+    if (nomte(1:7) .eq. 'RACS3Q4') then
+        ndim = 3
+        typmaco = 'SE3'
+        nnco = 3
+        typma3d = 'QU4'
+        nn3d = 4
+        nddl = nn3d*ndim+nnco*(ndim+3)
+    end if
+
+    if (nomte(1:7) .eq. 'RACS3Q8') then
+        ndim = 3
+        typmaco = 'SE3'
+        nnco = 3
+        typma3d = 'QU8'
+        nn3d = 8
+        nddl = nn3d*ndim+nnco*(ndim+3)
+    end if
 
 end subroutine
