@@ -1,4 +1,4 @@
-@Parser Implicit;
+@Parser Implicit {automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
 @Behaviour Barcelone;
 @Author Goustan Bacquaert;
 @Date 06/08/2024;
@@ -13,12 +13,12 @@
 // Material properties
 // <<<<<<<<<<<<<<<<<<<
 
-@MaterialProperty stress k;          // Bulk modulus [Pa]                                                 
-@MaterialProperty stress mu;         // Shear modulus [Pa]                                                        
-@MaterialProperty real kp;           // Swelling index [-]                                                    
-@MaterialProperty real kps;          // Succion index [-]   
+@MaterialProperty stress k;          // Bulk modulus [Pa]
+@MaterialProperty stress mu;         // Shear modulus [Pa]
+@MaterialProperty real kp;           // Swelling index [-]
+@MaterialProperty real kps;          // Succion index [-]
 @MaterialProperty stress Ks;         // Capillary modulus [Pa]
-@MaterialProperty real M;            // Critical state line slope [-]                                                                
+@MaterialProperty real M;            // Critical state line slope [-]
 @MaterialProperty stress pc0;        // Initial consolidation pressure in saturated conditions [Pa]
 @MaterialProperty stress s0;         // Initial yield capillary pressure [Pa]
 @MaterialProperty real ks;           // Tensile yield stress slope [-]
@@ -27,7 +27,7 @@
 @MaterialProperty real bta;          // 1st parameter of the compression index [-]
 @MaterialProperty real r;            // 2nd parameter of the compression index [-]
 @MaterialProperty stress pcr;        // Reference consolidation pressure in saturated conditions [Pa]
-@MaterialProperty real alpha;        // Correction of the flow rule on the first plasticity yield criterion [-]                                                      
+@MaterialProperty real alpha;        // Correction of the flow rule on the first plasticity yield criterion [-]
 @MaterialProperty real e0;           // Initial voids ratio [-]
 
 k.setGlossaryName("BulkModulus");
@@ -44,7 +44,7 @@ lm0.setEntryName("PlastStrainIndex");
 bta.setEntryName("PlastStrainPara1");
 r.setEntryName("PlastStrainPara2");
 pcr.setEntryName("RefeConsPress");
-alpha.setEntryName("FlowCorrection"); 
+alpha.setEntryName("FlowCorrection");
 e0.setEntryName("InitVoidsRatio");
 
 // >>>>>>>>>>>>>>>
@@ -62,7 +62,7 @@ epv1.setEntryName("VolPlastStrain1");
 // <<<<<<<<<<<<<<<
 
 @LocalVariable bool b;              // If b true, plastic loading with respect to the first plasticity yield criterion
-@LocalVariable stress PCAPp;        // Capillary pressure at current time increment 
+@LocalVariable stress PCAPp;        // Capillary pressure at current time increment
 @LocalVariable real kp_e0;          // = kp/(1.+e0)
 @LocalVariable real kps_e0;         // = kps/(1.+e0)
 @LocalVariable real lm0_e0;         // = lm0/(1.+e0)
@@ -111,7 +111,7 @@ ip.setEntryName("PlasticIndex");
 
 	// Parameters adjusted to the initial voids ratio
 	kp_e0 = kp/(1.+e0);
-	kps_e0 = kps/(1.+e0); 
+	kps_e0 = kps/(1.+e0);
 	lm0_e0 = lm0/(1.+e0);
 	lms_e0 = lms/(1.+e0);
 	lm_e0 = lm0_e0*((1.-r)*exp(-bta*PCAPp)+r);
@@ -182,7 +182,7 @@ ip.setEntryName("PlasticIndex");
 		// Compute the center and the radius of the first plasticity yield criterion
 		const stress C =(pc-ks*PCAPp)/2.;
 		const stress R =(pc+ks*PCAPp)/2.;
-		
+
 		// Compute the first plasticity yield criterion
 		const stress Teq = sqrt(pow(sigmaeq(sig)/M,2.)+pow(trace(sig)/3.+C,2.));
     	const stress fP = Teq-R;
@@ -216,7 +216,7 @@ ip.setEntryName("PlasticIndex");
 		const Stensor dfP_dA = (3.*deviator(sig)/(2.*pow(M,2.))+(trace(sig)/3.+C)*id2/3.)/Teq;
 		const Stensor dfP_deel = (dfP_dA|dA_deel);
 		const stress dfP_depv1 = (dfP_dA|dA_depv1)-dR_depv1;
-		
+
 		// Derivatives of the flow direction nP
 		const Stensor4  dnP_dA = (3.*alpha*k4/(2.*pow(M,2.))+j4/3.-(nP^nP))/Teq_alpha;
 		const Stensor4 dnP_deel = dnP_dA*dA_deel;
@@ -236,14 +236,14 @@ ip.setEntryName("PlasticIndex");
 		dfepv1_ddeel = -dlam1*(id2|dnP_deel);
 		dfepv1_ddlam1 = -trace(nP);
 		dfepv1_ddepv1 = 1.-dlam1*(id2|dnP_depv1);
-	}	
+	}
 }
 
 /// <<<<<<<<<<<<<<<<
 /// Tangent operator
 /// >>>>>>>>>>>>>>>>
 
-@TangentOperator{ 
+@TangentOperator{
 	const real Exp = exp(-trace(eel)/kp_e0-kps_e0*log((PCAPp+Ks*kps_e0)/(PCAP0+Ks*kps_e0))/kp_e0);
 	StiffnessTensor De = 3.*k*Exp*j4+2.*mu*k4;
 	Stensor4 Je;
@@ -271,4 +271,3 @@ ip.setEntryName("PlasticIndex");
         ip = 3;
     }
 }
-

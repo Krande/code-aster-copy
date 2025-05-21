@@ -7,7 +7,7 @@
 //                                          0. PREAMBLE                                          //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-@DSL Implicit;
+@DSL Implicit {automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
 @Behaviour NLH_CSRM;
 // @UseQt true;
 
@@ -105,13 +105,13 @@ Inst.setEntryName("IniSigTime");
 	// >>> 5.1 Define dome local zero tolerance for strain and stress
 	lzt=real(1e-12);
 	slzt=young*lzt;
-	
+
 	// >>> 5.2 Compute the elastic moduli and the Hooke tensor
 	lambda=computeLambda(young,nu);
 	mu=computeMu(young,nu);
 	ks=lambda+2.*mu/3.;
 	De=3.*ks*Stensor4::J()+2.*mu*Stensor4::K();
-	
+
 	// >>> 5.3 Initialise elastic strain - For cases with initial stresses without displacements, e.g. tunnels or dams
 	if (Inst==time{0} && lam==real(0)) {
         const Stensor4 Se=invert(De);
@@ -126,35 +126,35 @@ Inst.setEntryName("IniSigTime");
 @Predictor{
 
 	const int mBi=static_cast<int>(mB); // mB must be an integer ! @UseQT true: const int mBi=base_type_cast(mB);
-	
+
 	// >>> 6.1 Compute the elastic stress
 	StressStensor sigel(lambda*trace(eel+deto)*Stensor::Id()+2.*mu*(eel+deto));
-	
+
 	// >>> 6.2 Compute the thermo. forces X* and B*
 	const StressStensor Bp=-Hp*alp;
 	const StressStensor Bv=-Hv*alv;
 	const StressStensor Xp=sigel+Bp;
 	const StressStensor Xv=sigel+Bv;
-	
+
 	// >>> 6.3 Compute their invariants
 	const stress XpEQ=sigmaeq(Xp);
 	const stress XvEQ=sigmaeq(Xv);
 	const stress BpEQ=sigmaeq(Bp);
 	const stress BvEQ=sigmaeq(Bv);
 	const stress sigM=trace(sigel)/3.;
-	
+
 	// >>> 6.4 Compute the function fi
 	const real exP=exp(om*(evp+evv));
 	const result_type<stress,stress,OpDiv> fi=(-sigM*exP+ci)/(pci+ci);
-	
+
 	// >>> 6.5 Compute the plastic and viscoplastic functions f*
 	const result_type<stress,stress,OpMult> fP=pci*pci*(fi-pow(fi,mBi))*(2.*(1.-aB)*fi+aB)/exP/exP;
 	const result_type<stress,stress,OpMult> fv=pci*pci*fi*(2.*(1.-aB)*fi+aB)/exP/exP;
-	
+
 	// >>> 6.6 Compute the radius of the criteria
 	const result_type<stress,stress,OpMult> Rp=XpEQ*XpEQ/MCC/MCC+BpEQ*BpEQ/Nd/Nd;
 	const result_type<stress,stress,OpMult> Rv=XvEQ*XvEQ/MCC/MCC+BvEQ*BvEQ/Nd/Nd;
-	
+
 	// >>> 6.7. Conditions for plastic and/or viscoplastic loading
 	b[0]=(Rp-fP)/pci>stress{0}; // Plastic criterion
 	b[1]=(Rv-fv)/pci>stress{0}; // Viscoplastic criterion
@@ -163,7 +163,7 @@ Inst.setEntryName("IniSigTime");
 	if (tau<=time{0}) {
 		b[1]=false;
 	}
-	
+
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -187,7 +187,7 @@ Inst.setEntryName("IniSigTime");
 	// <<<<<<<<<<<<<<<<<<
 
 	if (!b[0] and !b[1]){
-		
+
 		// >>> 8.1.1 Equations to be solved
 		feel=deel-deto;
 		flam=dlam;
@@ -199,7 +199,7 @@ Inst.setEntryName("IniSigTime");
 		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------------------------------------------------------------
 		// Comment this block if @Algorithm NewtonRaphson_NumericalJacobian
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<------------------------------------------------------------------------------------
-		
+
 		// >>> 8.1.2 Jacobian
 
 		// >>> 8.1.2.1 feel
@@ -249,7 +249,7 @@ Inst.setEntryName("IniSigTime");
 		dfalv_ddalp=Stensor4(result_type<strain,strain,OpDiv>(0));
 		dfalv_ddevv=Stensor(result_type<strain,strain,OpDiv>(0));
 		dfalv_ddalv=Stensor4::Id();
-		
+
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<------------------------------------------------------------------------------------
 
 	}
@@ -286,7 +286,7 @@ Inst.setEntryName("IniSigTime");
 
 		// >>> 8.2.6 Compute the derivative of rP |,Bp
 		const derivative_type<result_type<stress,stress,OpMult>,StressStensor> drP_dBp=3.*(deviator(Xp)/MCC/MCC+deviator(Bp)/Nd/Nd);
-		
+
 		// >>> 8.2.7 Compute the plastic flow direction
 		const derivative_type<stress,StressStensor> nP=(drP_dsig-dfP_dsig)/pci;
 		const derivative_type<stress,StressStensor> mP=drP_dBp/pci;
@@ -302,9 +302,9 @@ Inst.setEntryName("IniSigTime");
 		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------------------------------------------------------------
 		// Comment this block if @Algorithm NewtonRaphson_NumericalJacobian
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<------------------------------------------------------------------------------------
-		
+
 		// >>> 8.2.9 Jacobian
-		
+
 		// >>> 8.2.9.1 Tools
 		const derivative_type<derivative_type<result_type<stress,stress,OpMult>,strain>,strain> d2fP_dfi2=pci*pci*(-mBi*(mBi-1)*pow(fi,mBi-2)*(2.*(1.-aB)*fi+aB)+4.*(1.-aB)*(1.-mBi*pow(fi,mBi-1)))/exP/exP;
 		const derivative_type<result_type<stress,stress,OpDiv>,strain> dfi_ddevp=-sigM*om*exP/(pci+ci);
@@ -374,7 +374,7 @@ Inst.setEntryName("IniSigTime");
 		dfalv_ddalp=Stensor4(result_type<strain,strain,OpDiv>(0));
 		dfalv_ddevv=Stensor(result_type<strain,strain,OpDiv>(0));
 		dfalv_ddalv=Stensor4::Id();
-		
+
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<------------------------------------------------------------------------------------
 
 	}
@@ -382,7 +382,7 @@ Inst.setEntryName("IniSigTime");
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	// >>> 8.3. Viscoplastic loading without plastic loading
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	
+
 	if (b[1] and !b[0]) {
 
 		// >>> 8.3.1 Compute the thermo. forces Xv and Bv
@@ -418,7 +418,7 @@ Inst.setEntryName("IniSigTime");
 
 		// >>> 8.3.8 Compute Perzyna function
 		const result_type<stress,stress,OpDiv> phiV=FV>stress{0}?pow(FV/young,nv):strain{0};
-		
+
 		// >>> 8.3.9 Equations to be solved
 		feel=deel-deto+(phiV*nV*dt/tau);
 		flam=dlam;
@@ -430,9 +430,9 @@ Inst.setEntryName("IniSigTime");
 		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------------------------------------------------------------
 		// Comment this block if @Algorithm NewtonRaphson_NumericalJacobian
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<------------------------------------------------------------------------------------
-		
+
 		// >>> 8.3.10 Jacobian
-		
+
 		// >>> 8.3.10.1 Tools
 		const derivative_type<derivative_type<result_type<stress,stress,OpMult>,strain>,strain> d2fV_dfi2=4.*pci*pci*(1.-aB)/exP/exP;
 		const derivative_type<result_type<stress,stress,OpDiv>,strain> dfi_ddevv=-sigM*om*exP/(pci+ci);
@@ -460,7 +460,7 @@ Inst.setEntryName("IniSigTime");
 		const derivative_type<strain,StressStensor> dphiV_dsig=FV>stress{0}?(dphiV_dFV*nV):Stensor(result_type<strain,stress,OpDiv>(0));
 		const derivative_type<strain,strain> dphiV_ddevv=FV>stress{0}?(dphiV_dFV*dFV_ddevv):result_type<strain,strain,OpDiv>(0);
 		const derivative_type<strain,StrainStensor> dphiV_ddalv=FV>stress{0}?(dphiV_dFV*dFV_ddalv):Stensor(result_type<strain,strain,OpDiv>(0));
-		
+
 		// >>> 8.3.10.7 feel
 		dfeel_ddeel=Stensor4::Id()+(((dphiV_dsig^nV)+phiV*dnV_dsig)*De)*dt/tau;
 		dfeel_ddlam=Stensor(result_type<strain,real,OpDiv>(0));
@@ -508,7 +508,7 @@ Inst.setEntryName("IniSigTime");
 		dfalv_ddalp=Stensor4(result_type<strain,strain,OpDiv>(0));
 		dfalv_ddevv=-dphiV_ddevv*mV*dt/tau;
 		dfalv_ddalv=Stensor4::Id()-((dphiV_ddalv^mV)+phiV*dmV_ddalv)*dt/tau;
-		
+
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<------------------------------------------------------------------------------------
 
 	}
@@ -516,7 +516,7 @@ Inst.setEntryName("IniSigTime");
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	// >>> 8.4 Plastic and viscoplastic loading
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	
+
 	if (b[0] and b[1]) {
 
 		// >>> 8.4.1 Compute the thermo. forces X* and B*
@@ -531,7 +531,7 @@ Inst.setEntryName("IniSigTime");
 		const stress BpEQ=sigmaeq(Bp);
 		const stress BvEQ=sigmaeq(Bv);
 		const stress sigM=trace(sig)/3.;
-		
+
 		// >>> 8.4.3 Compute the functions fP and rP
 		const real exP=exp(om*(evp+devp+evv+devv));
 		const result_type<stress,stress,OpDiv> fi=(-sigM*exP+ci)/(pci+ci);
@@ -583,9 +583,9 @@ Inst.setEntryName("IniSigTime");
 		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------------------------------------------------------------
 		// Comment this block if @Algorithm NewtonRaphson_NumericalJacobian
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<------------------------------------------------------------------------------------
-		
+
 		// >>> 8.4.14 Jacobian
-		
+
 		// >>> 8.4.14.1 Tools
 		const derivative_type<derivative_type<result_type<stress,stress,OpMult>,strain>,strain> d2fP_dfi2=pci*pci*(-mBi*(mBi-1)*pow(fi,mBi-2)*(2.*(1.-aB)*fi+aB)+4.*(1.-aB)*(1.-mBi*pow(fi,mBi-1)))/exP/exP;
 		const derivative_type<derivative_type<result_type<stress,stress,OpMult>,strain>,strain> d2fV_dfi2=4.*pci*pci*(1.-aB)/exP/exP;
@@ -619,12 +619,12 @@ Inst.setEntryName("IniSigTime");
 		const derivative_type<derivative_type<stress,StressStensor>,strain> dnV_ddevv=-(d2fV_ddevv_dfi+om*dfV_dfi)*dfi_dsig/pci;
 		const derivative_type<derivative_type<stress,StressStensor>,strain> dnV_ddevp=dnV_ddevv;
 		const derivative_type<derivative_type<stress,StressStensor>,StressStensor> dnV_ddalv=-3.*Hv*(Stensor4::K()*Stensor4::Id())/pci/MCC/MCC;
-		
+
 		// >>> 8.4.14.7 Derivatives of FV |,devv |,devp |,dalv
 		const derivative_type<stress,strain> dFV_ddevv=-(-2.*om*fV+(dfV_dfi*dfi_ddevv))/pci;
 		const derivative_type<stress,strain> dFV_ddevp=dFV_ddevv;
 		const derivative_type<stress,StrainStensor> dFV_ddalv=-3.*Hv*((deviator(Xv)/MCC/MCC+deviator(Bv)/Nd/Nd)|Stensor4::Id())/pci;
-		
+
 		// >>> 8.4.14.8 Derivatives of trace(nV) |,sig |,devv |,devp
 		const derivative_type<derivative_type<stress,stress>,StressStensor> dTnV_dsig=-exP*exP*d2fV_dfi2*Stensor::Id()/3./pci/(pci+ci)/(pci+ci);
 		const derivative_type<derivative_type<stress,stress>,strain> dTnV_ddevv=exP*(om*dfV_dfi+d2fV_ddevv_dfi)/pci/(pci+ci);
@@ -640,7 +640,7 @@ Inst.setEntryName("IniSigTime");
 		const derivative_type<strain,strain> dphiV_ddevp=FV>stress{0}?(dphiV_dFV*dFV_ddevp):result_type<strain,strain,OpDiv>(0);
 		const derivative_type<strain,strain> dphiV_ddevv=FV>stress{0}?(dphiV_dFV*dFV_ddevv):result_type<strain,strain,OpDiv>(0);
 		const derivative_type<strain,StrainStensor> dphiV_ddalv=FV>stress{0}?(dphiV_dFV*dFV_ddalv):Stensor(result_type<strain,strain,OpDiv>(0));
-		
+
 		// >>> 8.4.14.11 feel
 		dfeel_ddeel=Stensor4::Id()+dlam*(dnP_dsig*De)+(((dphiV_dsig^nV)+phiV*dnV_dsig)*De)*dt/tau;
 		dfeel_ddlam=nP;
@@ -648,7 +648,7 @@ Inst.setEntryName("IniSigTime");
 		dfeel_ddalp=dlam*dnP_ddalp;
 		dfeel_ddevv=dlam*dnP_ddevv+((dphiV_ddevv*nV)+phiV*dnV_ddevv)*dt/tau;
 		dfeel_ddalv=((nV^dphiV_ddalv)+phiV*dnV_ddalv)*dt/tau;
-		
+
 		// >>> 8.4.14.12 flam
 		dflam_ddeel=(nP|De)/young;
 		dflam_ddlam=result_type<strain,real,OpDiv>(0);
@@ -664,7 +664,7 @@ Inst.setEntryName("IniSigTime");
 		dfevp_ddalp=Stensor(result_type<strain,strain,OpDiv>(0));
 		dfevp_ddevv=-dlam*dTnP_ddevv;
 		dfevp_ddalv=Stensor(result_type<strain,strain,OpDiv>(0));
-		
+
 		// >>> 8.4.14.14 falp
 		dfalp_ddeel=-dlam*(dmP_dsig*De);
 		dfalp_ddlam=-mP;
@@ -672,7 +672,7 @@ Inst.setEntryName("IniSigTime");
 		dfalp_ddalp=Stensor4::Id()-dlam*dmP_ddalp;
 		dfalp_ddevv=Stensor(result_type<strain,strain,OpDiv>(0));
 		dfalp_ddalv=Stensor4(result_type<strain,strain,OpDiv>(0));
-		
+
 		// >>> 8.4.14.15 fevv
 		dfevv_ddeel=-((trace(nV)*dphiV_dsig+phiV*dTnV_dsig)|De)*dt/tau;
 		dfevv_ddlam=result_type<strain,real,OpDiv>(0);
@@ -680,7 +680,7 @@ Inst.setEntryName("IniSigTime");
 		dfevv_ddalp=Stensor(result_type<strain,strain,OpDiv>(0));
 		dfevv_ddevv=result_type<strain,strain,OpDiv>(1)-(trace(nV)*dphiV_ddevv+phiV*dTnV_ddevv)*dt/tau;
 		dfevv_ddalv=-trace(nV)*dphiV_ddalv*dt/tau;
-		
+
 		// >>> 8.4.14.16 falv
 		dfalv_ddeel=-(((mV^dphiV_dsig)+phiV*dmV_dsig)*De)*dt/tau;
 		dfalv_ddlam=Stensor(result_type<strain,real,OpDiv>(0));
@@ -699,10 +699,10 @@ Inst.setEntryName("IniSigTime");
 //                                9. ADDITIONAL CONVERGENCE CHECKS                               //
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-@AdditionalConvergenceChecks{  
-	
+@AdditionalConvergenceChecks{
+
 	if (converged){
-		
+
 		// >>> 9.1 const int mBi=base_type_cast(mB); // mB must be an integer !
 		const int mBi=static_cast<int>(mB); // mB must be an integer !
 
@@ -711,7 +711,7 @@ Inst.setEntryName("IniSigTime");
 		const StressStensor Bv=-Hv*alv;
 		const StressStensor Xp=sig+Bp;
 		const StressStensor Xv=sig+Bv;
-		
+
 		// >>> 9.3 Compute their invariants
 		const stress XpEQ=sigmaeq(Xp);
 		const stress XvEQ=sigmaeq(Xv);
@@ -728,7 +728,7 @@ Inst.setEntryName("IniSigTime");
 		// >>> 9.5 Compute the function fV and the radius rV
 		const result_type<stress,stress,OpMult> fV=pci*pci*fi*(2.*(1.-aB)*fi+aB)/exP/exP;
 		const result_type<stress,stress,OpMult> rV=XvEQ*XvEQ/MCC/MCC+BvEQ*BvEQ/Nd/Nd;
-		
+
 		// >>> 9.6 Compute the plastic and viscoplastic criteria
 		const stress FP=(rP-fP)/pci;
 		const stress FV=(rV-fV)/pci;
@@ -787,7 +787,7 @@ Inst.setEntryName("IniSigTime");
 		computeElasticStiffness<N,Type>::exe(De, lambda, mu);
 		getPartialJacobianInvert(Je);
 		Dt=De*Je;
-	} 
+	}
 	else {
 		return false;
 	}

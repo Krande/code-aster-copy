@@ -16,7 +16,7 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-@Parser Implicit;
+@Parser Implicit {automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
 @Behaviour MetaAcierEPIL_PT;
 @Algorithm NewtonRaphson_NumericalJacobian;
 

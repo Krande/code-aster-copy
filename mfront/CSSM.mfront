@@ -1,4 +1,4 @@
-@Parser Implicit;
+@Parser Implicit {automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
 @Behaviour CSSM;
 @Author Goustan Bacquaert;
 @Date 26/07/2024;
