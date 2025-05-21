@@ -2,7 +2,7 @@
  * @brief Interface python de MeshCoordinates
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,10 +34,12 @@ void exportNodeToPython( py::module_ &mod ) {
         // .def( py::init( &initFactoryPtr < Node, ASTERINTEGER, std::array< ASTERDOUBLE, 3 > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( define_pickling< Node >() )
-        .def( "__getitem__",
-              +[]( const Node &v, const ASTERINTEGER &i ) { return v.operator[]( i ); } )
-        .def( "__setitem__", +[]( Node &v, const ASTERINTEGER &i,
-                                  ASTERDOUBLE f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__getitem__",
+            +[]( const Node &v, const ASTERINTEGER &i ) { return v.operator[]( i ); } )
+        .def(
+            "__setitem__",
+            +[]( Node &v, const ASTERINTEGER &i, ASTERDOUBLE f ) { return v.operator[]( i ) = f; } )
         .def( "getId", &Node::getId, R"(
 Return the Id of the node.
 

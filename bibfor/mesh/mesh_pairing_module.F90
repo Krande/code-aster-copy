@@ -247,7 +247,7 @@ contains
                 if (nbSlavStart .eq. 1 .and. nbMastStart .eq. 1) then
                     WRITE (6, *) "  New starting point (M/S): ", cellMastStart(1), cellSlavStart(1)
                 else
-                    WRITE (6, *) "  Not new starting point (M/S)"
+                    WRITE (6, *) "  No new starting point (M/S)"
                 end if
             end if
 

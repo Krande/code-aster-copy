@@ -62,14 +62,8 @@ class ContactParameter {
           _jacType( JacobianType::Analytical ) {};
 
     /** @brief restricted constructor (Set) and method (Get) to support pickling */
-    ContactParameter( const py::tuple &tup ) : ContactParameter() {
-        _algo = tup[0].cast< ContactAlgo >();
-        _type = tup[1].cast< ContactType >();
-        _vari = tup[2].cast< ContactVariant >();
-        _coeff = tup[3].cast< ASTERDOUBLE >();
-        _jacType = tup[4].cast< JacobianType >();
-    };
-    py::tuple _getState() const { return py::make_tuple( _algo, _type, _vari, _coeff ); };
+    ContactParameter( const py::tuple &tup );
+    py::tuple _getState() const;
 
     ContactAlgo getAlgorithm() const { return _algo; };
 
@@ -133,16 +127,8 @@ class FrictionParameter {
           _coulomb( -1. ) {};
 
     /** @brief restricted constructor (Set) and method (Get) to support pickling */
-    FrictionParameter( const py::tuple &tup ) : FrictionParameter() {
-        _algo = tup[0].cast< FrictionAlgo >();
-        _type = tup[1].cast< FrictionType >();
-        _coeff = tup[2].cast< ASTERDOUBLE >();
-        _tresca = tup[3].cast< ASTERDOUBLE >();
-        _coulomb = tup[4].cast< ASTERDOUBLE >();
-    };
-    py::tuple _getState() const {
-        return py::make_tuple( _algo, _type, _coeff, _tresca, _coulomb );
-    };
+    FrictionParameter( const py::tuple &tup );
+    py::tuple _getState() const;
 
     FrictionAlgo getAlgorithm() const { return _algo; };
 
@@ -193,7 +179,6 @@ class PairingParameter {
     /** @brief structural element characteristics = CARA_ELEM */
     ElementaryCharacteristicsPtr _cara;
     /** @brief structural element characteristics = DIST_SUPP */
-    //
 
   public:
     /**
@@ -216,18 +201,8 @@ class PairingParameter {
           _cara( nullptr ) {};
 
     /** @brief restricted constructor (Set) and method (Get) to support pickling */
-    PairingParameter( const py::tuple &tup ) : PairingParameter() {
-        _algo = tup[0].cast< PairingAlgo >();
-        _cont_init = tup[1].cast< InitialState >();
-        _dist_ratio = tup[2].cast< ASTERDOUBLE >();
-        _beam = tup[4].cast< bool >();
-        _dist_supp = tup[5].cast< GenericFunctionPtr >();
-        _shell = tup[6].cast< bool >();
-        _cara = tup[7].cast< ElementaryCharacteristicsPtr >();
-    };
-    py::tuple _getState() const {
-        return py::make_tuple( _algo, _cont_init, _dist_ratio, _beam, _dist_supp, _shell, _cara );
-    };
+    PairingParameter( const py::tuple &tup );
+    py::tuple _getState() const;
 
     PairingAlgo getAlgorithm() const { return _algo; };
 

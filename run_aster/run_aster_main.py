@@ -204,6 +204,14 @@ def parse_args(argv):
         help="only processor #0 is writing on stdout",
     )
     parser.add_argument(
+        "--proc0-is",
+        dest="proc0id",
+        action="store",
+        type=int,
+        default=0,
+        help="make this process to replace proc #0 (for example, it will copy the results)",
+    )
+    parser.add_argument(
         "--mpi",
         dest="rerun_mpi",
         action="store_const",
@@ -321,7 +329,8 @@ def main(argv=None):
     argv = argv or sys.argv[1:]
     args = parse_args(argv)
 
-    procid = 0
+    args.proc0id = max(0, args.proc0id)
+    procid = args.proc0id
     if CFG.get("parallel", False):
         procid = get_procid()
 
@@ -470,17 +479,18 @@ def main(argv=None):
             shutil.rmtree(expdir)
             return exitcode
 
-        if args.only_proc0 and procid > 0:
+        if args.only_proc0 and procid != args.proc0id:
             logger.setLevel(WARNING)
         opts = {}
         opts["test"] = args.test
         opts["env"] = make_env
         if RUNASTER_PLATFORM == "linux":
-            opts["tee"] = not args.only_proc0 or procid == 0
+            opts["tee"] = not args.only_proc0 or procid == args.proc0id
         else:
             opts["tee"] = not args.ctest
         opts["interactive"] = args.interactive
         opts["savedb"] = args.save_db
+        opts["proc0id"] = args.proc0id
         if args.exectool:
             wrapper = CFG.get("exectool", {}).get(args.exectool)
             if not wrapper:

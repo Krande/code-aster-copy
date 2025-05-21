@@ -74,7 +74,7 @@ def meca_non_line_ops(self, **args):
     Arguments:
         **args (dict): User's keywords.
     """
-    UTMESS("A", "QUALITY1_2")
+    UTMESS("A", "QUALITY1_2", valk="MECA_NON_LINE")
     reset_stats()
 
     args = _F(args)

@@ -172,6 +172,7 @@
 #include "PythonBindings/TransientResultInterface.h"
 #include "PythonBindings/TurbulentSpectrumInterface.h"
 #include "PythonBindings/UnitaryMechanicalLoadInterface.h"
+#include "PythonBindings/UseCppPicklingInterface.h"
 #include "PythonBindings/XfemCrackInterface.h"
 #include "Supervis/Exceptions.h"
 // Please keep '*Interface.h' files in alphabetical order to ease merging
@@ -199,6 +200,7 @@ PYBIND11_MODULE( libaster, mod ) {
     mod.def( "raiseAsterError", &raiseAsterError, py::arg( "idmess" ) = "VIDE_1" );
 
     // do not sort (compilation error)
+    exportUseCppPicklingToPython( mod );
     exportGenericEnumToPython( mod );
     exportDataStructureToPython( mod );
     exportDebugToPython( mod );

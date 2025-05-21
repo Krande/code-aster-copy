@@ -48,7 +48,7 @@ from io import IOBase
 import libaster
 import numpy
 
-from ..Objects import DataStructure, ResultNaming
+from ..Objects import DataStructure, ResultNaming, UseCppPickling
 from ..Utilities import (
     DEBUG,
     MPI,
@@ -372,10 +372,14 @@ class PicklingHelper:
 
     @classmethod
     def reducer(cls, obj):
-        logger.debug("+ reducing %s '%s'...", type(obj).__name__, obj.getName())
+        use_cpp = isinstance(obj, UseCppPickling)
+        logger.debug("+ reducing (c++: %s) %s '%s'...", use_cpp, type(obj).__name__, obj.getName())
         initargs = obj.__getinitargs__()
         state = obj.__getstate__()
-        logger.debug("- saving %s %s", initargs, state._st)
+        if use_cpp:
+            initargs = (state,)
+            state = None
+        logger.debug("- saving %s %s", initargs, getattr(state, "_st", None))
         return partial(cls.builder, obj.__class__, obj.getName()), initargs, state
 
     @classmethod
@@ -413,6 +417,9 @@ class AsterPickler(pickle.Pickler):
 
     dispatch_table = copyreg.dispatch_table.copy()
     for subcl in subtypes(DataStructure):
+        # if issubclass(subcl, UseCppPickling):
+        #     dispatch_table[subcl] = PicklingHelper.reducer_tuple
+        # else:
         dispatch_table[subcl] = PicklingHelper.reducer
 
 

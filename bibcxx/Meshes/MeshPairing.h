@@ -28,12 +28,13 @@
 #include "DataFields/FieldOnNodes.h"
 #include "DataFields/MeshCoordinatesField.h"
 #include "DataStructures/DataStructure.h"
+#include "DataStructures/UseCppPickling.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/Mesh.h"
 #include "Meshes/MeshEnum.h"
 #include "Supervis/ResultNaming.h"
 
-class MeshPairing : public DataStructure {
+class MeshPairing : public DataStructure, public UseCppPickling {
   private:
     /** @brief Mesh */
     BaseMeshPtr _mesh;
@@ -93,7 +94,7 @@ class MeshPairing : public DataStructure {
     /** @brief Vector of number of intersection points  */
     VectorLong _nbPoinInte;
 
-    /** @brief Vector of coordinates for intersection points in slave parameteric space*/
+    /** @brief Vector of coordinates for intersection points in slave parameteric space */
     VectorReal _poinInteSlav;
 
   private:
@@ -146,8 +147,12 @@ class MeshPairing : public DataStructure {
     /** @brief Constructor with automatic name */
     MeshPairing() : MeshPairing( ResultNaming::getNewResultName() ) {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    MeshPairing( const py::tuple &tup );
+    py::tuple _getState() const;
+
     /** @brief Initializations of datastructures defining pairing */
-    bool initObjects();
+    bool build();
 
     /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _mesh; };

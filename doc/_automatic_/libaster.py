@@ -90,6 +90,23 @@ def raiseAsterError(idmess="VIDE_1"):
     pass
 
 
+# class UseCppPickling in libaster
+
+
+class UseCppPickling:
+    pass
+
+    # Method resolution order:
+    #     UseCppPickling
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+
 # class PythonBool in libaster
 
 
@@ -6365,16 +6382,20 @@ class PairingParameter:
 # class ContactNew in libaster
 
 
-class ContactNew(DataStructure):
+class ContactNew(DataStructure, UseCppPickling):
     pass
 
     # Method resolution order:
     #     ContactNew
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -6382,7 +6403,12 @@ class ContactNew(DataStructure):
         1. __init__(self: libaster.ContactNew, arg0: str, arg1: Model) -> None
 
         2. __init__(self: libaster.ContactNew, arg0: Model) -> None
+
+        3. __init__(self: libaster.ContactNew, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def appendContactZone(self, zone):
         """Append a new contact zone to the contact definition
@@ -6477,17 +6503,21 @@ class ContactNew(DataStructure):
 # class FrictionNew in libaster
 
 
-class FrictionNew(ContactNew):
+class FrictionNew(ContactNew, UseCppPickling):
     pass
 
     # Method resolution order:
     #     FrictionNew
     #     ContactNew
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -6495,22 +6525,31 @@ class FrictionNew(ContactNew):
         1. __init__(self: libaster.FrictionNew, arg0: str, arg1: Model) -> None
 
         2. __init__(self: libaster.FrictionNew, arg0: Model) -> None
+
+        3. __init__(self: libaster.FrictionNew, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
 
 # class ContactZone in libaster
 
 
-class ContactZone(DataStructure):
+class ContactZone(DataStructure, UseCppPickling):
     """Object to define a zone of contact."""
 
     # Method resolution order:
     #     ContactZone
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -6518,7 +6557,12 @@ class ContactZone(DataStructure):
         1. __init__(self: libaster.ContactZone, arg0: str) -> None
 
         2. __init__(self: libaster.ContactZone) -> None
+
+        3. __init__(self: libaster.ContactZone, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def build(self, arg0):
         """Build and check internal objects
@@ -6679,16 +6723,20 @@ class ContactZone(DataStructure):
 # class MeshPairing in libaster
 
 
-class MeshPairing(DataStructure):
+class MeshPairing(DataStructure, UseCppPickling):
     """Object to create a pairing operator between two meshed surfaces."""
 
     # Method resolution order:
     #     MeshPairing
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -6696,7 +6744,12 @@ class MeshPairing(DataStructure):
         1. __init__(self: libaster.MeshPairing, arg0: str) -> None
 
         2. __init__(self: libaster.MeshPairing) -> None
+
+        3. __init__(self: libaster.MeshPairing, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def checkNormals(self, model):
         """Check orientation of normals
@@ -15485,6 +15538,7 @@ class ParallelContactNew(ContactNew):
     #     ParallelContactNew
     #     ContactNew
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -15522,6 +15576,7 @@ class ParallelFrictionNew(ParallelContactNew):
     #     ParallelContactNew
     #     ContactNew
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 

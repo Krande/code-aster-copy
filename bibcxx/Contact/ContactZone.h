@@ -28,12 +28,13 @@
 #include "Contact/ContactEnum.h"
 #include "Contact/ContactParameter.h"
 #include "DataStructures/DataStructure.h"
+#include "DataStructures/UseCppPickling.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/MeshPairing.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
-class ContactZone : public DataStructure {
+class ContactZone : public DataStructure, public UseCppPickling {
   private:
     /** @brief Model */
     ModelPtr _model;
@@ -60,6 +61,10 @@ class ContactZone : public DataStructure {
 
     /** @brief Constructor with automatic name */
     ContactZone() : ContactZone( ResultNaming::getNewResultName() ) {};
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    ContactZone( const py::tuple &tup );
+    py::tuple _getState() const;
 
     /** @brief Get model */
     ModelPtr getModel() const { return _model; }

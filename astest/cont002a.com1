@@ -17,10 +17,20 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from . import *
+POURSUITE(CODE="OUI")
 
+RES = MECA_NON_LINE(
+    INFO=1,
+    MODELE=MODI,
+    CHAM_MATER=AFFE,
+    EXCIT=(_F(CHARGE=CHAR1, FONC_MULT=RAMPE), _F(CHARGE=CHAR2, FONC_MULT=RAMPE)),
+    CONTACT=_F(DEFINITION=DEFICO, ALGO_RESO_GEOM="NEWTON"),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=lisi),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
+    SOLVEUR=_F(METHODE="MUMPS", RESI_RELA=1.0e-6, PCENT_PIVOT=30),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-6, ITER_GLOB_MAXI=50),
+    ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA", LIST_INST=lisi),
+)
 
-class sd_char_frot(AsBase):
-
-    #   Nom des objets préfixé par le nom du concept (8 premiers caractères)
-    nomj = SDNom(fin=8)
+FIN()

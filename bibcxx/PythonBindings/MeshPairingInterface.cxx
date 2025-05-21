@@ -27,7 +27,8 @@
 
 void exportMeshPairingToPython( py::module_ &mod ) {
 
-    py::class_< MeshPairing, MeshPairingPtr, DataStructure > class_( mod, "MeshPairing", R"(
+    py::class_< MeshPairing, MeshPairingPtr, DataStructure, UseCppPickling > class_(
+        mod, "MeshPairing", R"(
 Object to create a pairing operator between two meshed surfaces.)" );
     py::enum_< CoordinatesSpace >( mod, "CoordinatesSpace", R"(
 Type of coordinates: Slave or Global.)" )
@@ -36,6 +37,8 @@ Type of coordinates: Slave or Global.)" )
         .export_values();
     class_.def( py::init( &initFactoryPtr< MeshPairing, std::string > ) );
     class_.def( py::init( &initFactoryPtr< MeshPairing > ) );
+    class_.def( py::init( &initFactoryPtr< MeshPairing, const py::tuple & > ) );
+    class_.def( define_pickling< MeshPairing >() );
     class_.def( "getNumberOfPairs", &MeshPairing::getNumberOfPairs, R"(
 Get number of pairs
 

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshEntities
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -66,7 +66,7 @@ class VirtualMeshEntity {
      * @param name nom de l'entite
      */
     VirtualMeshEntity( const std::string &name, EntityType type )
-        : _names( {name} ), _type( type ) {};
+        : _names( { name } ), _type( type ) {};
 
     /**
      * @brief Constructor

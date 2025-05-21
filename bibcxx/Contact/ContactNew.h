@@ -26,12 +26,13 @@
 
 #include "Contact/ContactZone.h"
 #include "DataStructures/DataStructure.h"
+#include "DataStructures/UseCppPickling.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
-class ContactNew : public DataStructure {
+class ContactNew : public DataStructure, public UseCppPickling {
   protected:
     /** @brief Model */
     ModelPtr _model;
@@ -65,6 +66,10 @@ class ContactNew : public DataStructure {
 
     /** @brief Constructor with automatic name */
     ContactNew( const ModelPtr model ) : ContactNew( ResultNaming::getNewResultName(), model ) {};
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    ContactNew( const py::tuple &tup );
+    py::tuple _getState() const;
 
     /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _model->getMesh(); }
@@ -159,6 +164,10 @@ class FrictionNew : public ContactNew {
 
     /** @brief Constructor with automatic name */
     FrictionNew( const ModelPtr model ) : FrictionNew( ResultNaming::getNewResultName(), model ) {};
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    FrictionNew( const py::tuple &tup );
+    py::tuple _getState() const;
 
     /** @brief Builder from Fortran part */
     bool build() {
