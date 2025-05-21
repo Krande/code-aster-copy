@@ -67,6 +67,9 @@ __all__ = ("libaster", "rc", "__version__")
 # importing cmath may raise a fpe, maybe due to mkl...
 import cmath
 import os
+import sys
+
+python_version = sys.version_info
 
 try:
     # embedded modules must be imported before libaster
@@ -82,7 +85,42 @@ try:
     # ... except for rc and package info
     from .Utilities.rc import rc
     from .Utilities.version import __version__
-except ImportError:
+except ImportError as e:
+    if "DLL load failed" in str(e) and python_version >= (3, 8):
+        # This is a workaround for the issue with DLL loading on Windows
+        # The error occurs when the DLL is not found or cannot be loaded.
+        # It is not related to the code_aster package itself.
+
+        # Try to add the directory using os.add_dll_directory
+        path_dlls = ("C:\\Windows\\System32",
+                     os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+
+        for dll_path in path_dlls:
+            if os.path.isdir(dll_path):
+                print(os.add_dll_directory(dll_path))
+            else:
+                raise ImportError(f"Directory {dll_path} does not exist.")
+        
+        try :
+            import aster
+            import aster_core
+            import aster_fonctions
+            import med_aster
+            import libaster
+
+            # setup, do not keep references here...
+            del aster, aster_core, aster_fonctions, med_aster, libaster
+
+            # ... except for rc and package info
+            from .Utilities.rc import rc
+            from .Utilities.version import __version__
+        except ImportError as e:
+            # If the import fails again, raise the original exception
+            raise ImportError(f"Failed to import aster modules: {e}")
+    else:
+        raise e
+
     # AsterStudy only uses code_aster/Cata without the extensions modules (.so).
     # So, the exception is only raised during the building process.
     if os.environ.get("WAFLOCK"):
