@@ -32,17 +32,18 @@ DDL_MECA = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        # Slave nodes with LAG_C
+        # Slave nodes 
         ("EN1", ("DX", "DY", "DZ", "DRX", "DRY", "DRZ")),
-        # Slave nodes without LAG_C
-        ("EN2", ()),
         # Master nodes
-        ("EN3", ("DX", "DY", "DZ")),
+        ("EN2", ("DX", "DY", "DZ")),
+        # Master nodes
+        #("EN3", ("DX", "DY", "DZ")),
     ),
 )
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 # ----------------
 # Modes locaux :
 # ----------------
@@ -55,17 +56,19 @@ class RACS2T3(Element):
     meshType = MT.SE2TR3
     nodes = (
         SetOfNodes("EN1", (1, 2)),
-        SetOfNodes("EN2", ()),
-        SetOfNodes("EN3", (3, 4, 5)),
+        SetOfNodes("EN2", (3,4,5)),
+        #SetOfNodes("EN3", (3, 4, 5)),
     )
     calculs = (
-        OP.CHAR_MECA_CONT(
-            te=355,
+        OP.RIGI_CONT(
+            te=601,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
             ),
-            para_out=((SP.PVECTCR, MVECTUR),),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
         
     )
 
