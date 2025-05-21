@@ -83,7 +83,7 @@ module calcG_type
 #include "asterfort/char8_to_int.h"
 
 !
-    public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat, CalcG_Paramaters
+    public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -246,6 +246,12 @@ module calcG_type
         character(len=24)       :: fondNoeudNume = ' '
 ! ----- name of coordinates of nodes in the crack
         character(len=24)       :: fondNoeudCoor = '&&CALC_G.COORN'
+! ----- circular or elliptical crack
+        character(len=24)       :: form_fiss = ''
+! ----- parameters of curve crack
+        real(kind=8)            :: rayon = 0.
+        real(kind=8)            :: demi_grand_axe = 0.
+        real(kind=8)            :: demi_petit_axe = 0.
 ! ----- member function
     contains
         procedure, pass    :: initialize => initialize_theta
@@ -265,16 +271,6 @@ module calcG_type
 !
 !=================================================================================================
 !
-    type CalcG_Paramaters
-! ----- circular or elliptical crack
-        character(len=24)       :: form_fiss = ''
-! ----- parameters of curve crack
-        real(kind=8)            :: rayon = 0.
-        real(kind=8)            :: demi_grand_axe = 0.
-        real(kind=8)            :: demi_petit_axe = 0.
-    contains
-        procedure, pass    :: initialize => initialize_Parameters
-    end type CalcG_Paramaters
 !=================================================================================================
 !
     type CalcG_Table
@@ -922,30 +918,6 @@ contains
 !
 !===================================================================================================
 !
-!
-    subroutine initialize_Parameters(this)
-!
-        implicit none
-!
-        class(CalcG_Paramaters), intent(inout)  :: this
-!        type(CalcG_Stat), intent(inout)   :: cgStat
-!
-! --------------------------------------------------------------------------------------------------
-!   initialization of a CalcG_parameters type
-!   In this     : parameters type
-! --------------------------------------------------------------------------------------------------
-        integer :: ier
-!
-! --- Obtain crack parameters to take into account the second order due to crack curvature
-        call getvtx('', 'FORM_FISS', iocc=1, scal=this%form_fiss, nbret=ier)
-        if (this%form_fiss .eq. 'CERCLE') then
-            call getvr8('', 'RAYON', iocc=1, scal=this%rayon, nbret=ier)
-        else
-            call getvr8('', 'DEMI_GRAND_AXE', iocc=1, scal=this%demi_grand_axe, nbret=ier)
-            call getvr8('', 'DEMI_PETIT_AXE', iocc=1, scal=this%demi_petit_axe, nbret=ier)
-        end if
-    end subroutine
-!
 !===================================================================================================
 !
     subroutine initialize_theta(this, cgStat)
@@ -1163,6 +1135,15 @@ contains
             call copisd('CHAMP_GD', 'G', thetafactorsin, this%theta_factors)
         end if
 !
+! --- Obtain crack parameters to take into account the second order due to crack curvature
+        call getvtx('', 'FORM_FISS', iocc=1, scal=this%form_fiss, nbret=ier)
+        if (this%form_fiss .eq. 'CERCLE') then
+            call getvr8('', 'RAYON', iocc=1, scal=this%rayon, nbret=ier)
+        else
+            call getvr8('', 'DEMI_GRAND_AXE', iocc=1, scal=this%demi_grand_axe, nbret=ier)
+            call getvr8('', 'DEMI_PETIT_AXE', iocc=1, scal=this%demi_petit_axe, nbret=ier)
+        end if
+
         call jedema()
 !
         call cpu_time(finish)

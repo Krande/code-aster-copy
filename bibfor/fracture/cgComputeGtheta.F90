@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cgDiscrField.h"
+#include "asterfort/cgHighOrder.h"
 #include "asterfort/cgTempNodes.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/chpver.h"
@@ -68,15 +69,15 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !
 !----------------------------------------------
     integer :: iret, nsig, ino1, ino2, inga, ibid, i_theta, i, j
-    integer :: nchin, nbgrel, iadrt3
-    integer :: jcesd, jcesl
+    integer :: nchin, iadrt3
+    integer :: jcesd, jcesl, jcesd2, jcesl2
     real(kind=8) :: gth(7), som(7)
     real(kind=8) :: s1, s2, s3, sn2, sn1, sn
     character(len=2)  :: codret
     character(len=8)  :: k8b, lpain(50), lpaout(1), model
     character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
-    character(len=19) :: chvarc, chvref, chsdeg, modelLigrel, chslag
+    character(len=19) :: chvarc, chvref, chsdeg, modelLigrel, chslag, chscer, chseli, chcer, cheli
     character(len=24) :: chsigi, celmod, sigelno, chtime, chpuls
     character(len=24) :: chgeom, chsig, chgtheta
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
@@ -86,6 +87,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
     real(kind=8), pointer :: v_absc(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
     real(kind=8), pointer :: v_basf(:) => null()
+    real(kind=8), pointer :: v_cer(:) => null()
+    real(kind=8), pointer :: v_eli(:) => null()
     real(kind=8), dimension(cgTheta%nb_theta_field) :: gthi, k1th, k2th, k3th, g1th, g2th, g3th
     real(kind=8), dimension(cgTheta%nnof) :: gs, k1s, k2s, k3s, g1s, g2s, g3s, gis
     real(kind=8) :: finish, start, start0, finish0
@@ -114,7 +117,11 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
     chpuls = '&&cgtheta.PULS'
     chsdeg = '&&cgtheta.CHSDEG'
     chslag = '&&cgtheta.CHSLAG'
-!
+    chscer = '&&cgtheta.CHSCER'
+    chseli = '&&cgtheta.CHSELI'
+    chcer = '&&cgtheta.CHCER'
+    cheli = '&&cgtheta.CHELI'
+    !
     gthi(:) = 0.0
     k1th(:) = 0.0
     k2th(:) = 0.0
@@ -240,9 +247,7 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
     end if
 !
 !   Création d'un champ constant par élément : LEGENDRE, LAGRANGE
-!   Récupération du nombre de groupes d'éléments du ligrel
-    call jelira(modelLigrel//'.LIEL', 'NMAXOC', nbgrel)
-!
+
     if (cgtheta%discretization .eq. 'LEGENDRE') then
 !
 !       Champ scalaire constant par élement :
@@ -268,6 +273,36 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
         call jeveuo(chslag//'.CESL', 'E', jcesl)
         call jeveuo(chslag//'.CESV', 'E', vr=v_absc)
 !
+    end if
+!
+    if (cgTheta%form_fiss .eq. 'CERCLE') then
+!
+!       Champ scalaire constant par élement :
+!            --  rayon du cercle
+        call cescre('V', chscer, 'ELEM', cgStudy%mesh, 'NEUT_R', &
+                    0, ' ', [-1], [-1], [-1])
+!
+        call jeveuo(chscer//'.CESD', 'L', jcesd2)
+        call jeveuo(chscer//'.CESL', 'E', jcesl2)
+        call jeveuo(chscer//'.CESV', 'E', vr=v_cer)
+
+    elseif (cgTheta%form_fiss .eq. 'ELLIPSE') then
+
+!       Champ scalaire constant par élement :
+!            --  demi grand axe et demi petit axe
+        call cescre('V', chseli, 'ELEM', cgStudy%mesh, 'NEUT_R', &
+                    0, ' ', [-1], [-1], [-2])
+!
+        call jeveuo(chseli//'.CESD', 'L', jcesd2)
+        call jeveuo(chseli//'.CESL', 'E', jcesl2)
+        call jeveuo(chseli//'.CESV', 'E', vr=v_eli)
+
+    end if
+
+    if (cgTheta%form_fiss .eq. 'CERCLE' .or. cgTheta%form_fiss .eq. 'ELLIPSE') then
+
+        call cgHighOrder(cgField, cgTheta, cgStudy, cgStat, chscer, chseli, v_cer, v_eli, &
+                         jcesd2, jcesl2, chcer, cheli)
     end if
 !
 !************************************************
@@ -318,6 +353,17 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !
         call cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, &
                           v_absc, v_basf, v_cesv, jcesd, jcesl, i_theta, lpain, lchin, nchin)
+
+        if (cgTheta%form_fiss .eq. 'CERCLE') then
+            lpain(nchin+1) = 'PCER'
+            lchin(nchin+1) = chcer
+            nchin = nchin+1
+        elseif (cgTheta%form_fiss .eq. 'ELLIPSE') then
+            lpain(nchin+1) = 'PELI'
+            lchin(nchin+1) = cheli
+            nchin = nchin+1
+        end if
+
         if (inco) then
             lpain(nchin+1) = 'PDEPLA'
             lchin(nchin+1) = cgStudy%depl
@@ -394,11 +440,6 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             lchin(nchin+1) = chsig
             nchin = nchin+1
         end if
-!~         do i=1, nchin
-!~             print*,'IMPRSD N°', i, lpain(i)
-!~             call imprsd('CHAMP', lchin(i),6, lpain(i))
-!~         enddo
-
 !
 !       Sommation des G élémentaires
         call cpu_time(start0)
@@ -618,6 +659,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
     call detrsd('CHAMP_GD', celmod)
     call detrsd('CHAMP_GD', chsdeg)
     call detrsd('CHAMP_GD', chslag)
+    call detrsd('CHAMP_GD', chcer)
+    call detrsd('CHAMP_GD', cheli)
 !
 ! --- A ne pas supprimer car on supprime un champ externe sinon
 !    call detrsd('CHAMP_GD', chsigi)
