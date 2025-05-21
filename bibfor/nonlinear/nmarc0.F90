@@ -155,8 +155,7 @@ subroutine nmarc0(result, modele, ds_material, carele, fonact, &
         call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
         typpil = pltk(1)
         typsel = pltk(6)
-        if ((typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') .and. typsel .eq. &
-            'ANGL_INCR_DEPL') then
+        if ((typpil .eq. 'LONG_ARC') .and. (typsel .eq. 'ANGL_INCR_DEPL')) then
             call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
             coef = plir(1)
             call rsadpa(result, 'E', 1, 'COEF_MULT', numarc, 0, sjv=jv_para)

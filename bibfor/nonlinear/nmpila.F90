@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel, &
+! aslint: disable=W0413
+subroutine nmpila(numedd, sdpilo, dtau, depdel, &
                   ddepl0, ddepl1, nbeffe, eta, pilcvg)
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "asterf_types.h"
@@ -31,12 +29,12 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/zerop2.h"
+!
     integer :: pilcvg, nbeffe
     character(len=19) :: sdpilo
     character(len=24) :: numedd
     character(len=19) :: ddepl0, ddepl1, depdel
     real(kind=8) :: dtau, eta(2)
-    aster_logical :: isxfe
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +47,6 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel, &
 !
 ! IN  NUMEDD : NUME_DDL
 ! IN  SDPILO : SD PILOTAGE
-! IN  ISXFE  : INDIQUE S'IL S'AGIT D'UN MODELE XFEM
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT DEPUIS DEBUT PAS DE TEMPS
 ! IN  DDEPL0 : INCREMENT DE DEPLACEMENT K-1.F_DONNE
 ! IN  DDEPL1 : INCREMENT DE DEPLACEMENT K-1.F_PILO
@@ -65,13 +62,12 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel, &
 !
 !
 !
-    integer :: i, j, nrac
-    real(kind=8) :: r0, d0, r1, d1, r2, dtau2, rac(2)
+    integer :: i, nrac
+    real(kind=8) :: r0, r1, r2, dtau2, rac(2)
     integer :: jdepde
     integer :: neq
     integer :: ifm, niv
-    character(len=19) :: chapil, chapic
-    real(kind=8), pointer :: coee(:) => null()
+    character(len=19) :: chapil
     real(kind=8), pointer :: coef(:) => null()
     real(kind=8), pointer :: dep0(:) => null()
     real(kind=8), pointer :: dep1(:) => null()
@@ -103,41 +99,13 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel, &
     call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
     chapil = sdpilo(1:14)//'.PLCR'
     call jeveuo(chapil(1:19)//'.VALE', 'L', vr=coef)
-    if (isxfe) then
-        chapic = sdpilo(1:14)//'.PLCI'
-        call jeveuo(chapic(1:19)//'.VALE', 'L', vr=coee)
-    end if
-!
-! --- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
-!
-    if (isxfe) then
-        do i = 1, neq
-            if (coee(i) .eq. 0.d0) then
-                r0 = r0+coef(i)**2*(zr(jdepde+i-1)+dep0(i))**2
-                r1 = r1+coef(i)**2*(zr(jdepde+i-1)+dep0(i))*dep1(i)
-                r2 = r2+coef(i)**2*dep1(i)*dep1(i)
-            else
-                d0 = 0.d0
-                d1 = 0.d0
-                do j = i+1, neq
-                    if (coee(i) .eq. coee(j)) then
-                        d0 = d0+coef(i)*(zr(jdepde+i-1)+dep0(i))+coef(j)*(zr(jdepde+j-1)+dep0(&
-                             &j))
-                        d1 = d1+coef(i)*dep1(i)+coef(j)*dep1(j)
-                    end if
-                end do
-                r0 = r0+d0**2
-                r1 = r1+d1*d0
-                r2 = r2+d1**2
-            end if
-        end do
-    else
-        do i = 1, neq
-            r0 = r0+coef(i)*(zr(jdepde+i-1)+dep0(i))**2
-            r1 = r1+coef(i)*(zr(jdepde+i-1)+dep0(i))*dep1(i)
-            r2 = r2+coef(i)*dep1(i)*dep1(i)
-        end do
-    end if
+
+    do i = 1, neq
+        r0 = r0+coef(i)*(zr(jdepde+i-1)+dep0(i))**2
+        r1 = r1+coef(i)*(zr(jdepde+i-1)+dep0(i))*dep1(i)
+        r2 = r2+coef(i)*dep1(i)*dep1(i)
+    end do
+
 !
     r1 = 2.d0*r1
     if (r2 .eq. 0) then

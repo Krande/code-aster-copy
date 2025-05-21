@@ -421,28 +421,6 @@ phen.add(
 )
 
 phen.add(
-    "3DXH2C",
-    Modelisation(
-        dim=(3, 3),
-        code="3XE",
-        attrs=(
-            (AT.NBSIGM, "6"),
-            (AT.TYPMOD, "3D"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH2C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.HEXA8, EL.MECA_XH2C_HEXA8),
-            (MT.PENTA6, EL.MECA_XH2C_PENTA6),
-            (MT.PYRAM5, EL.MECA_XH2C_PYRAM5),
-            (MT.TETRA4, EL.MECA_XH2C_TETRA4),
-        ),
-    ),
-)
-
-phen.add(
     "3DXH3",
     Modelisation(
         dim=(3, 3),
@@ -460,28 +438,6 @@ phen.add(
 )
 
 phen.add(
-    "3DXH3C",
-    Modelisation(
-        dim=(3, 3),
-        code="3XF",
-        attrs=(
-            (AT.NBSIGM, "6"),
-            (AT.TYPMOD, "3D"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH3C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.HEXA8, EL.MECA_XH3C_HEXA8),
-            (MT.PENTA6, EL.MECA_XH3C_PENTA6),
-            (MT.PYRAM5, EL.MECA_XH3C_PYRAM5),
-            (MT.TETRA4, EL.MECA_XH3C_TETRA4),
-        ),
-    ),
-)
-
-phen.add(
     "3DXH4",
     Modelisation(
         dim=(3, 3),
@@ -494,132 +450,6 @@ phen.add(
             (MT.TETRA4, EL.MECA_XH4_TETRA4),
             (MT.QUAD4, EL.MECA_XH4_FACE4),
             (MT.TRIA3, EL.MECA_XH4_FACE3),
-        ),
-    ),
-)
-
-phen.add(
-    "3DXH4C",
-    Modelisation(
-        dim=(3, 3),
-        code="3XG",
-        attrs=(
-            (AT.NBSIGM, "6"),
-            (AT.TYPMOD, "3D"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH4C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.HEXA8, EL.MECA_XH4C_HEXA8),
-            (MT.PENTA6, EL.MECA_XH4C_PENTA6),
-            (MT.PYRAM5, EL.MECA_XH4C_PYRAM5),
-            (MT.TETRA4, EL.MECA_XH4C_TETRA4),
-        ),
-    ),
-)
-
-phen.add(
-    "3DXHC",
-    Modelisation(
-        dim=(3, 3),
-        code="3X7",
-        attrs=(
-            (AT.NBSIGM, "6"),
-            (AT.TYPMOD, "3D"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.HEXA8, EL.MECA_XHC_HEXA8),
-            (MT.PENTA6, EL.MECA_XHC_PENTA6),
-            (MT.PYRAM5, EL.MECA_XHC_PYRAM5),
-            (MT.TETRA4, EL.MECA_XHC_TETRA4),
-            (MT.HEXA20, EL.MECA_XHC_HEXA20),
-            (MT.PENTA15, EL.MECA_XHC_PENTA15),
-            (MT.PYRAM13, EL.MECA_XHC_PYRAM13),
-            (MT.TETRA10, EL.MECA_XHC_TETRA10),
-        ),
-    ),
-)
-
-phen.add(
-    "3DXHC3",
-    Modelisation(
-        dim=(3, 3),
-        code="3XH",
-        attrs=(
-            (AT.NBSIGM, "6"),
-            (AT.TYPMOD, "3D"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.HEXA8, EL.MECA_XHC3_HEXA8),
-            (MT.PENTA6, EL.MECA_XHC3_PENTA6),
-            (MT.PYRAM5, EL.MECA_XHC3_PYRAM5),
-            (MT.TETRA4, EL.MECA_XHC3_TETRA4),
-        ),
-    ),
-)
-
-phen.add(
-    "3DXHTC",
-    Modelisation(
-        dim=(3, 3),
-        code="3X9",
-        attrs=(
-            (AT.NBSIGM, "6"),
-            (AT.TYPMOD, "3D"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHTC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.HEXA8, EL.MECA_XHTC_HEXA8),
-            (MT.PENTA6, EL.MECA_XHTC_PENTA6),
-            (MT.PYRAM5, EL.MECA_XHTC_PYRAM5),
-            (MT.TETRA4, EL.MECA_XHTC_TETRA4),
-            (MT.HEXA20, EL.MECA_XHTC_HE20),
-            (MT.PENTA15, EL.MECA_XHTC_PE15),
-            (MT.PYRAM13, EL.MECA_XHTC_PY13),
-            (MT.TETRA10, EL.MECA_XHTC_TE10),
-        ),
-    ),
-)
-
-phen.add(
-    "3DXTC",
-    Modelisation(
-        dim=(3, 3),
-        code="3X8",
-        attrs=(
-            (AT.NBSIGM, "6"),
-            (AT.TYPMOD, "3D"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XTC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.HEXA8, EL.MECA_XTC_HEXA8),
-            (MT.PENTA6, EL.MECA_XTC_PENTA6),
-            (MT.PYRAM5, EL.MECA_XTC_PYRAM5),
-            (MT.TETRA4, EL.MECA_XTC_TETRA4),
-            (MT.HEXA20, EL.MECA_XTC_HEXA20),
-            (MT.PENTA15, EL.MECA_XTC_PENTA15),
-            (MT.PYRAM13, EL.MECA_XTC_PYRAM13),
-            (MT.TETRA10, EL.MECA_XTC_TETRA10),
         ),
     ),
 )
@@ -1393,162 +1223,6 @@ phen.add(
             (MT.HEXA20, EL.HM_HEXA20_XH3),
             (MT.QUAD8, EL.HM_FACE8_XH3),
             (MT.TRIA6, EL.HM_FACE6_XH3),
-        ),
-    ),
-)
-
-phen.add(
-    "3D_HM_XHC",
-    Modelisation(
-        dim=(3, 3),
-        code="3XP",
-        attrs=(
-            (AT.TYPMOD, "3D"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=(
-            (MT.TETRA10, EL.HM_TETRA10_XHC),
-            (MT.PYRAM13, EL.HM_PYRAM13_XHC),
-            (MT.PENTA15, EL.HM_PENTA15_XHC),
-            (MT.HEXA20, EL.HM_HEXA20_XHC),
-        ),
-    ),
-)
-
-phen.add(
-    "3D_HM_XH2C",
-    Modelisation(
-        dim=(3, 3),
-        code="3XQ",
-        attrs=(
-            (AT.TYPMOD, "3D"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH2C"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=(
-            (MT.TETRA10, EL.HM_TETRA10_XH2C),
-            (MT.PYRAM13, EL.HM_PYRAM13_XH2C),
-            (MT.PENTA15, EL.HM_PENTA15_XH2C),
-            (MT.HEXA20, EL.HM_HEXA20_XH2C),
-        ),
-    ),
-)
-
-phen.add(
-    "3D_HM_XH3C",
-    Modelisation(
-        dim=(3, 3),
-        code="3XR",
-        attrs=(
-            (AT.TYPMOD, "3D"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH3C"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=(
-            (MT.TETRA10, EL.HM_TETRA10_XH3C),
-            (MT.PYRAM13, EL.HM_PYRAM13_XH3C),
-            (MT.PENTA15, EL.HM_PENTA15_XH3C),
-            (MT.HEXA20, EL.HM_HEXA20_XH3C),
-        ),
-    ),
-)
-
-phen.add(
-    "3D_HM_XHC3",
-    Modelisation(
-        dim=(3, 3),
-        code="3XS",
-        attrs=(
-            (AT.TYPMOD, "3D"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=(
-            (MT.TETRA10, EL.HM_TETRA10_XHC3),
-            (MT.PYRAM13, EL.HM_PYRAM13_XHC3),
-            (MT.PENTA15, EL.HM_PENTA15_XHC3),
-            (MT.HEXA20, EL.HM_HEXA20_XHC3),
-        ),
-    ),
-)
-
-phen.add(
-    "3D_HM_XH2C3",
-    Modelisation(
-        dim=(3, 3),
-        code="3XT",
-        attrs=(
-            (AT.TYPMOD, "3D"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH2C3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=(
-            (MT.TETRA10, EL.HM_TETRA10_XH2C3),
-            (MT.PYRAM13, EL.HM_PYRAM13_XH2C3),
-            (MT.PENTA15, EL.HM_PENTA15_XH2C3),
-            (MT.HEXA20, EL.HM_HEXA20_XH2C3),
-        ),
-    ),
-)
-
-phen.add(
-    "3D_HM_XH3C3",
-    Modelisation(
-        dim=(3, 3),
-        code="3XU",
-        attrs=(
-            (AT.TYPMOD, "3D"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH3C3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=(
-            (MT.TETRA10, EL.HM_TETRA10_XH3C3),
-            (MT.PYRAM13, EL.HM_PYRAM13_XH3C3),
-            (MT.PENTA15, EL.HM_PENTA15_XH3C3),
-            (MT.HEXA20, EL.HM_HEXA20_XH3C3),
         ),
     ),
 )
@@ -3025,30 +2699,6 @@ phen.add(
 )
 
 phen.add(
-    "AXIS_XHC",
-    Modelisation(
-        dim=(2, 2),
-        code="AX4",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.AXIS, "OUI"),
-            (AT.TYPMOD, "AXIS"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.TRIA3, EL.MEAXTR3_XHC),
-            (MT.TRIA6, EL.MEAXTR6_XHC),
-            (MT.QUAD4, EL.MEAXQU4_XHC),
-            (MT.QUAD8, EL.MEAXQU8_XHC),
-        ),
-    ),
-)
-
-phen.add(
     "AXIS_XHT",
     Modelisation(
         dim=(2, 2),
@@ -3072,25 +2722,6 @@ phen.add(
 )
 
 phen.add(
-    "AXIS_XHTC",
-    Modelisation(
-        dim=(2, 2),
-        code="AX6",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.AXIS, "OUI"),
-            (AT.TYPMOD, "AXIS"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHTC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MEAXTR3_XHTC), (MT.QUAD4, EL.MEAXQU4_XHTC)),
-    ),
-)
-
-phen.add(
     "AXIS_XT",
     Modelisation(
         dim=(2, 2),
@@ -3110,25 +2741,6 @@ phen.add(
             (MT.SEG3, EL.MEAXSE3_XT),
             (MT.SEG2, EL.MEAXSE2_XT),
         ),
-    ),
-)
-
-phen.add(
-    "AXIS_XTC",
-    Modelisation(
-        dim=(2, 2),
-        code="AX5",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.AXIS, "OUI"),
-            (AT.TYPMOD, "AXIS"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XTC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MEAXTR3_XTC), (MT.QUAD4, EL.MEAXQU4_XTC)),
     ),
 )
 
@@ -3965,30 +3577,6 @@ phen.add(
 )
 
 phen.add(
-    "C_PLAN2XHC",
-    Modelisation(
-        dim=(2, 2),
-        code="CX7",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.C_PLAN, "OUI"),
-            (AT.TYPMOD, "C_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.TRIA3, EL.MECPTR3_XHC),
-            (MT.TRIA6, EL.MECPTR6_XHC),
-            (MT.QUAD4, EL.MECPQU4_XHC),
-            (MT.QUAD8, EL.MECPQU8_XHC),
-        ),
-    ),
-)
-
-phen.add(
     "C_PLAN2XHT",
     Modelisation(
         dim=(2, 2),
@@ -4009,30 +3597,6 @@ phen.add(
 )
 
 phen.add(
-    "C_PLAN2XHTC",
-    Modelisation(
-        dim=(2, 2),
-        code="CX9",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.C_PLAN, "OUI"),
-            (AT.TYPMOD, "C_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHTC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.TRIA3, EL.MECPTR3_XHTC),
-            (MT.QUAD4, EL.MECPQU4_XHTC),
-            (MT.TRIA6, EL.MECPTR6_XHTC),
-            (MT.QUAD8, EL.MECPQU8_XHTC),
-        ),
-    ),
-)
-
-phen.add(
     "C_PLAN2XT",
     Modelisation(
         dim=(2, 2),
@@ -4045,30 +3609,6 @@ phen.add(
             (AT.XFEM, "XT"),
         ),
         elements=((MT.TRIA6, EL.MECPTR6_XT), (MT.QUAD8, EL.MECPQU8_XT), (MT.SEG3, EL.MEPLSE3_XT)),
-    ),
-)
-
-phen.add(
-    "C_PLAN2XTC",
-    Modelisation(
-        dim=(2, 2),
-        code="CX8",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.C_PLAN, "OUI"),
-            (AT.TYPMOD, "C_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XTC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.TRIA3, EL.MECPTR3_XTC),
-            (MT.TRIA6, EL.MECPTR6_XTC),
-            (MT.QUAD4, EL.MECPQU4_XTC),
-            (MT.QUAD8, EL.MECPQU8_XTC),
-        ),
     ),
 )
 
@@ -4143,24 +3683,6 @@ phen.add(
 )
 
 phen.add(
-    "C_PLAN_XH2C",
-    Modelisation(
-        dim=(2, 2),
-        code="CXE",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.C_PLAN, "OUI"),
-            (AT.TYPMOD, "C_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH2C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MECPTR3_XH2C), (MT.QUAD4, EL.MECPQU4_XH2C)),
-    ),
-)
-
-phen.add(
     "C_PLAN_XH3",
     Modelisation(
         dim=(2, 2),
@@ -4177,24 +3699,6 @@ phen.add(
 )
 
 phen.add(
-    "C_PLAN_XH3C",
-    Modelisation(
-        dim=(2, 2),
-        code="CXF",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.C_PLAN, "OUI"),
-            (AT.TYPMOD, "C_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH3C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MECPTR3_XH3C), (MT.QUAD4, EL.MECPQU4_XH3C)),
-    ),
-)
-
-phen.add(
     "C_PLAN_XH4",
     Modelisation(
         dim=(2, 2),
@@ -4207,43 +3711,6 @@ phen.add(
             (AT.XFEM, "XH4"),
         ),
         elements=((MT.TRIA3, EL.MECPTR3_XH4), (MT.QUAD4, EL.MECPQU4_XH4)),
-    ),
-)
-
-phen.add(
-    "C_PLAN_XH4C",
-    Modelisation(
-        dim=(2, 2),
-        code="CXG",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.C_PLAN, "OUI"),
-            (AT.TYPMOD, "C_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH4C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MECPTR3_XH4C), (MT.QUAD4, EL.MECPQU4_XH4C)),
-    ),
-)
-
-phen.add(
-    "C_PLAN_XHC3",
-    Modelisation(
-        dim=(2, 2),
-        code="CXH",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.C_PLAN, "OUI"),
-            (AT.TYPMOD, "C_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MECPTR3_XHC3), (MT.QUAD4, EL.MECPQU4_XHC3)),
     ),
 )
 
@@ -4387,30 +3854,6 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN2XHC",
-    Modelisation(
-        dim=(2, 2),
-        code="DX7",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.D_PLAN, "OUI"),
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.TRIA3, EL.MEDPTR3_XHC),
-            (MT.TRIA6, EL.MEDPTR6_XHC),
-            (MT.QUAD4, EL.MEDPQU4_XHC),
-            (MT.QUAD8, EL.MEDPQU8_XHC),
-        ),
-    ),
-)
-
-phen.add(
     "D_PLAN2XHT",
     Modelisation(
         dim=(2, 2),
@@ -4431,30 +3874,6 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN2XHTC",
-    Modelisation(
-        dim=(2, 2),
-        code="DX9",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.D_PLAN, "OUI"),
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHTC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.TRIA3, EL.MEDPTR3_XHTC),
-            (MT.QUAD4, EL.MEDPQU4_XHTC),
-            (MT.TRIA6, EL.MEDPTR6_XHTC),
-            (MT.QUAD8, EL.MEDPQU8_XHTC),
-        ),
-    ),
-)
-
-phen.add(
     "D_PLAN2XT",
     Modelisation(
         dim=(2, 2),
@@ -4467,30 +3886,6 @@ phen.add(
             (AT.XFEM, "XT"),
         ),
         elements=((MT.TRIA6, EL.MEDPTR6_XT), (MT.QUAD8, EL.MEDPQU8_XT), (MT.SEG3, EL.MEPLSE3_XT)),
-    ),
-)
-
-phen.add(
-    "D_PLAN2XTC",
-    Modelisation(
-        dim=(2, 2),
-        code="DX8",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.D_PLAN, "OUI"),
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XTC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=(
-            (MT.TRIA3, EL.MEDPTR3_XTC),
-            (MT.QUAD4, EL.MEDPQU4_XTC),
-            (MT.TRIA6, EL.MEDPTR6_XTC),
-            (MT.QUAD8, EL.MEDPQU8_XTC),
-        ),
     ),
 )
 
@@ -5053,138 +4448,6 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN_HM_XHC",
-    Modelisation(
-        dim=(2, 2),
-        code="DXP",
-        attrs=(
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.D_PLAN, "OUI"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=((MT.QUAD8, EL.HM_DPQ8_XHC), (MT.TRIA6, EL.HM_DPTR6_XHC)),
-    ),
-)
-
-phen.add(
-    "D_PLAN_HM_XH2C",
-    Modelisation(
-        dim=(2, 2),
-        code="DXQ",
-        attrs=(
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.D_PLAN, "OUI"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH2C"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=((MT.QUAD8, EL.HM_DPQ8_XH2C), (MT.TRIA6, EL.HM_DPTR6_XH2C)),
-    ),
-)
-
-phen.add(
-    "D_PLAN_HM_XH3C",
-    Modelisation(
-        dim=(2, 2),
-        code="DXR",
-        attrs=(
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.D_PLAN, "OUI"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH3C"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=((MT.QUAD8, EL.HM_DPQ8_XH3C), (MT.TRIA6, EL.HM_DPTR6_XH3C)),
-    ),
-)
-
-phen.add(
-    "D_PLAN_HM_XHC3",
-    Modelisation(
-        dim=(2, 2),
-        code="DXS",
-        attrs=(
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.D_PLAN, "OUI"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=((MT.QUAD8, EL.HM_DPQ8_XHC3), (MT.TRIA6, EL.HM_DPTR6_XHC3)),
-    ),
-)
-
-phen.add(
-    "D_PLAN_HM_XH2C3",
-    Modelisation(
-        dim=(2, 2),
-        code="DXT",
-        attrs=(
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.D_PLAN, "OUI"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH2C3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=((MT.QUAD8, EL.HM_DPQ8_XH2C3), (MT.TRIA6, EL.HM_DPTR6_XH2C3)),
-    ),
-)
-
-phen.add(
-    "D_PLAN_HM_XH3C3",
-    Modelisation(
-        dim=(2, 2),
-        code="DXU",
-        attrs=(
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.TYPMOD2, "XFEM_HM"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.D_PLAN, "OUI"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH3C3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-        ),
-        elements=((MT.QUAD8, EL.HM_DPQ8_XH3C3), (MT.TRIA6, EL.HM_DPTR6_XH3C3)),
-    ),
-)
-
-phen.add(
     "D_PLAN_HM_XH_D",
     Modelisation(
         dim=(2, 2),
@@ -5674,24 +4937,6 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN_XH2C",
-    Modelisation(
-        dim=(2, 2),
-        code="DXE",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.D_PLAN, "OUI"),
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH2C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MEDPTR3_XH2C), (MT.QUAD4, EL.MEDPQU4_XH2C)),
-    ),
-)
-
-phen.add(
     "D_PLAN_XH3",
     Modelisation(
         dim=(2, 2),
@@ -5712,24 +4957,6 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN_XH3C",
-    Modelisation(
-        dim=(2, 2),
-        code="DXF",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.D_PLAN, "OUI"),
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH3C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MEDPTR3_XH3C), (MT.QUAD4, EL.MEDPQU4_XH3C)),
-    ),
-)
-
-phen.add(
     "D_PLAN_XH4",
     Modelisation(
         dim=(2, 2),
@@ -5746,43 +4973,6 @@ phen.add(
             (MT.QUAD4, EL.MEDPQU4_XH4),
             (MT.SEG2, EL.MEPLSE2_XH4),
         ),
-    ),
-)
-
-phen.add(
-    "D_PLAN_XH4C",
-    Modelisation(
-        dim=(2, 2),
-        code="DXG",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.D_PLAN, "OUI"),
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XH4C"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MEDPTR3_XH4C), (MT.QUAD4, EL.MEDPQU4_XH4C)),
-    ),
-)
-
-phen.add(
-    "D_PLAN_XHC3",
-    Modelisation(
-        dim=(2, 2),
-        code="DXH",
-        attrs=(
-            (AT.NBSIGM, "4"),
-            (AT.D_PLAN, "OUI"),
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.LXFEM, "OUI"),
-            (AT.XFEM, "XHC3"),
-            (AT.XLAG, "NOEUD"),
-            (AT.CONTACT, "OUI"),
-            (AT.FROTTEMENT, "OUI"),
-        ),
-        elements=((MT.TRIA3, EL.MEDPTR3_XHC3), (MT.QUAD4, EL.MEDPQU4_XHC3)),
     ),
 )
 

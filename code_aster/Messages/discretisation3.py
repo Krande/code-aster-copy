@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-# person_in_charge: mickael.abbas at edf.fr
 
 from ..Utilities import _
 
@@ -51,12 +50,6 @@ Nombre de pas maximum: %(i1)d
     31: _("""Si cet événement se déclenche, on découpe le pas de temps."""),
     32: _(
         """Si cet événement se déclenche, on fait quelques itérations de Newton supplémentaires."""
-    ),
-    33: _(
-        """Si cet événement se déclenche, on choisit l'autre solution issue de l'équation de pilotage mais quand on aura essayé les deux solutions, on ne découpera pas le pas de temps."""
-    ),
-    34: _(
-        """Si cet événement se déclenche, on choisit l'autre solution issue de l'équation de pilotage et quand on aura essayé les deux solutions, on pourra découper le pas de temps."""
     ),
     35: _("""Si cet événement se déclenche, on adapte le coefficient de pénalisation."""),
     36: _("""Si cet événement se déclenche, on continue le calcul."""),

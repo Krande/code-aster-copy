@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmfcon(modele, numedd, ds_material, fonact, ds_contact, &
                   ds_measure, valinc, solalg, ds_constitutive)
@@ -61,9 +60,6 @@ subroutine nmfcon(modele, numedd, ds_material, fonact, ds_contact, &
 ! ----------------------------------------------------------------------
 !
     leltc = isfonc(fonact, 'ELT_CONTACT')
-!
-! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
-!
     if (leltc) then
         call nmfocc('CORRECTION', modele, ds_material, numedd, fonact, &
                     ds_contact, ds_measure, solalg, valinc, ds_constitutive)

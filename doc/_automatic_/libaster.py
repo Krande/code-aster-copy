@@ -621,6 +621,13 @@ class BaseMesh(DataStructure):
             list[list[int]]: List of, for each cell, a list of the nodes indexes.
         """
 
+    def getMinMaxEdgeSizes(self, arg0):
+        """Get minimum and maximum length of edges in group of cells
+
+        Returns:
+            tuple(real): values of min and max edges
+        """
+
     def getNodeName(self, index):
         """Return the name of the given node
 

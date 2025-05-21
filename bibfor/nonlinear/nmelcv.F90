@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmelcv(model, &
                   ds_material, ds_contact, ds_constitutive, &
@@ -56,7 +55,7 @@ subroutine nmelcv(model, &
 !
 ! Contact - Solve
 !
-! Continue/XFEM/LAC methods - Compute elementary vectors for contact
+! Continue/LAC methods - Compute elementary vectors for contact
 !
 ! --------------------------------------------------------------------------------------------------
 !

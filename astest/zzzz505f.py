@@ -22,6 +22,18 @@ DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 test = CA.TestCase()
 
+fmt_raison = (
+    "-" * 80
+    + """
+
+   Exception interceptee
+   Raison : %s
+
+"""
+    + "-" * 80
+    + "\n"
+)
+
 E = 200.0e9
 
 rho = 8000.0
@@ -99,6 +111,18 @@ lastIndex = elasMult.getLastIndex()
 test.assertEqual(nbIndexes, 3)
 test.assertEqual(firstIndex, 1)
 test.assertEqual(lastIndex, 3)
+
+# Check error message for wrong access parameter
+is_ok = 0
+try:
+    pouet = elasMult.getTime(1)
+except CA.AsterError as err:
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "RESULT2_9":
+        is_ok = 1
+test.assertEqual(is_ok, 1)
+
 
 allFieldNames = elasMult.getFieldsNames()
 test.assertSequenceEqual(allFieldNames, ["DEPL", "SIEF_ELGA"])

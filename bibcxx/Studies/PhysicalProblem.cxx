@@ -24,6 +24,7 @@
 
 #include "aster_pybind.h"
 
+#include "Messages/Messages.h"
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
 #include "Supervis/CommandSyntax.h"
@@ -45,9 +46,7 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
     // Add checks
     if ( _elemChara ) {
         if ( _model != _elemChara->getModel() ) {
-            const std::string msg = "Inconsistent models: " + _model->getName() + " vs " +
-                                    _elemChara->getModel()->getName();
-            AS_ABORT( msg );
+            UTMESS( "A", "MECANONLINE5_74" );
         }
     }
 

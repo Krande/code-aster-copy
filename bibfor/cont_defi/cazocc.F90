@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
+subroutine cazocc(sdcont, factorKeyword, i_zone, nb_cont_zone)
 !
     implicit none
 !
@@ -35,7 +34,7 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 !
     character(len=8), intent(in) :: sdcont
     integer, intent(in) :: i_zone
-    character(len=16), intent(in) :: keywf
+    character(len=16), intent(in) :: factorKeyword
     integer, optional, intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
@@ -47,7 +46,7 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  keywf            : factor keyword to read
+! In  factorKeyword            : factor keyword to read
 ! In  i_zone           : index of contact zone
 ! In  nb_cont_zone     : number of zones of contact
 !
@@ -66,7 +65,7 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
     real(kind=8) :: coef_augm_frot, coef_augm_cont
     real(kind=8) :: coef_pena_frot, coef_pena_cont, pene_maxi, glis_maxi
     real(kind=8) :: algo_cont, algo_frot
-    real(kind=8) :: type_inte, cont_init, seuil_auto
+    real(kind=8) :: type_inte, contInit, seuil_auto, contInitDist
     integer :: inte_order
     integer :: nbret
     aster_logical :: l_inte_node, l_frot, l_node_excl, l_frot_excl, l_dire_excl_frot
@@ -101,7 +100,7 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
     coef_coul_frot = 0.d0
     seuil_init = 0.d0
     seuil_auto = 0.d0
-    cont_init = 0.d0
+    contInit = 0.d0
     dire_excl_frot_i = 0.d0
     dire_excl_frot(:) = 0.d0
     l_inte_node = ASTER_FALSE
@@ -118,9 +117,9 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
     pene_maxi = 1.d3
     glis_maxi = 1.d3
     nbret = -3
-!
+    contInitDist = -1.d0
+
 ! - Datastructure for contact
-!
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_caracf = sdcont_defi(1:16)//'.CARACF'
     sdcont_exclfr = sdcont_defi(1:16)//'.EXCLFR'
@@ -132,27 +131,26 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
     call jeveuo(sdcont_paracr, 'E', vr=v_sdcont_paracr)
     zcmcf = cfmmvd('ZCMCF')
     zexcl = cfmmvd('ZEXCL')
-!
+
 ! - Parameters
-!
     l_frot = cfdisl(sdcont_defi, 'FROTTEMENT')
     l_cont_cont = cfdisl(sdcont_defi, 'FORMUL_CONTINUE')
     l_newt_fr = cfdisl(sdcont_defi, 'FROT_NEWTON')
 !
 ! - Integration scheme
 !
-    call getvtx(keywf, 'INTEGRATION', iocc=i_zone, scal=s_type_inte)
+    call getvtx(factorKeyword, 'INTEGRATION', iocc=i_zone, scal=s_type_inte)
     if (s_type_inte .eq. 'AUTO') then
         l_inte_node = ASTER_TRUE
         type_inte = 1.d0
     else if (s_type_inte .eq. 'GAUSS') then
-        call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
+        call getvis(factorKeyword, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
         type_inte = 10.d0*inte_order+2.d0
     else if (s_type_inte .eq. 'SIMPSON') then
-        call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
+        call getvis(factorKeyword, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
         type_inte = 10.d0*inte_order+3.d0
     else if (s_type_inte .eq. 'NCOTES') then
-        call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
+        call getvis(factorKeyword, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
         type_inte = 10.d0*inte_order+4.d0
     else
         ASSERT(ASTER_FALSE)
@@ -161,7 +159,7 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 !
 ! - Get algorithm for contact
 !
-    call getvtx(keywf, 'ALGO_CONT', iocc=i_zone, scal=s_algo_cont)
+    call getvtx(factorKeyword, 'ALGO_CONT', iocc=i_zone, scal=s_algo_cont)
     if (s_algo_cont .eq. 'STANDARD') then
         algo_cont = 1.d0
     else if (s_algo_cont .eq. 'PENALISATION') then
@@ -176,7 +174,7 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 ! - Get algorithm for friction
 !
     if (l_frot) then
-        call getvtx(keywf, 'ALGO_FROT', iocc=i_zone, scal=s_algo_frot)
+        call getvtx(factorKeyword, 'ALGO_FROT', iocc=i_zone, scal=s_algo_frot)
         if (s_algo_frot .eq. 'STANDARD') then
             algo_frot = 1.d0
         else if (s_algo_frot .eq. 'PENALISATION') then
@@ -190,7 +188,7 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 !
 ! - Automatic adaptation method
 !
-    call getvtx(keywf, 'ADAPTATION', iocc=i_zone, scal=adaptation, nbret=nbret)
+    call getvtx(factorKeyword, 'ADAPTATION', iocc=i_zone, scal=adaptation, nbret=nbret)
     if (nbret .le. 0) then
         adaptation = 'NON'
     end if
@@ -198,15 +196,15 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
         iadapt = 0
     else if (adaptation .eq. 'ADAPT_COEF') then
         iadapt = -1
-        ! IL FAUT DISTINGUER 3 CAS DE FIGURES :
-        ! FROTTEMENT NEWTON ACTIF : ON ADAPTE COEF_FROT COMME DECRIT DANS LA DOC R + THESE DK
-        !                    PARACI = 1
-        !                    SI PENALISATION CONTACT COEF_CONT ADAPTE SELON BUSSETTA
-        !                    PARACI = 2
-        ! CONTACT PENALISE ACTIF FROTTEMENT TRESCA/NEWTON OU SANS : COEF_CONT ADAPTE SELON BUSSETTA
-        !                    PARACI = 3
-        ! CONTACT STANDARD ACTIF FROTTEMENT TRESCA ACTIF  : ON NE FAIT RIEN
-        !                    PARACI = 0
+! IL FAUT DISTINGUER 3 CAS DE FIGURES :
+! FROTTEMENT NEWTON ACTIF : ON ADAPTE COEF_FROT COMME DECRIT DANS LA DOC R + THESE DK
+!                    PARACI = 1
+!                    SI PENALISATION CONTACT COEF_CONT ADAPTE SELON BUSSETTA
+!                    PARACI = 2
+! CONTACT PENALISE ACTIF FROTTEMENT TRESCA/NEWTON OU SANS : COEF_CONT ADAPTE SELON BUSSETTA
+!                    PARACI = 3
+! CONTACT STANDARD ACTIF FROTTEMENT TRESCA ACTIF  : ON NE FAIT RIEN
+!                    PARACI = 0
         if (l_cont_cont) then
             if (l_newt_fr) then
                 iadapt = 1
@@ -265,14 +263,14 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 !        la variable .PARACR(6) sinon bug dans certaines configurations multi-zone.
 !
     if (s_algo_cont .eq. 'STANDARD') then
-        call getvr8(keywf, 'COEF_CONT', iocc=i_zone, scal=coef_augm_cont)
+        call getvr8(factorKeyword, 'COEF_CONT', iocc=i_zone, scal=coef_augm_cont)
         coef_cont = coef_augm_cont
         pene_maxi = 1.d3
     else if (s_algo_cont .eq. 'PENALISATION') then
         ! L'utilisateur peut ne pas renseigner pene_maxi
-        call getvr8(keywf, 'PENE_MAXI', iocc=i_zone, scal=pene_maxi, nbret=nbret)
+        call getvr8(factorKeyword, 'PENE_MAXI', iocc=i_zone, scal=pene_maxi, nbret=nbret)
         if ((adaptation .eq. 'NON' .or. adaptation .eq. 'CYCLAGE') .and. (nbret .le. 0)) then
-            call getvr8(keywf, 'COEF_PENA_CONT', iocc=i_zone, scal=coef_pena_cont)
+            call getvr8(factorKeyword, 'COEF_PENA_CONT', iocc=i_zone, scal=coef_pena_cont)
             pene_maxi = 1.d3
         elseif (adaptation .eq. 'ADAPT_COEF' .or. adaptation .eq. 'TOUT' .or. (nbret .ge. 1)) then
             if (nbret .le. 0) then
@@ -311,17 +309,17 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
     coef_frot = 0.d0
     if (l_frot) then
         if (s_algo_frot .eq. 'STANDARD') then
-            call getvr8(keywf, 'COEF_FROT', iocc=i_zone, scal=coef_augm_frot)
+            call getvr8(factorKeyword, 'COEF_FROT', iocc=i_zone, scal=coef_augm_frot)
             coef_frot = coef_augm_frot
         else if (s_algo_frot .eq. 'PENALISATION') then
-            call getvr8(keywf, 'COEF_PENA_FROT', iocc=i_zone, scal=coef_pena_frot)
-            call getvr8(keywf, 'GLIS_MAXI', iocc=i_zone, scal=glis_maxi, nbret=nbret)
+            call getvr8(factorKeyword, 'COEF_PENA_FROT', iocc=i_zone, scal=coef_pena_frot)
+            call getvr8(factorKeyword, 'GLIS_MAXI', iocc=i_zone, scal=glis_maxi, nbret=nbret)
             coef_frot = coef_pena_frot
         else
             ASSERT(ASTER_FALSE)
         end if
-        call getvr8(keywf, 'COULOMB', iocc=i_zone, scal=coef_coul_frot)
-        call getvr8(keywf, 'SEUIL_INIT', iocc=i_zone, scal=seuil_init, nbret=noc)
+        call getvr8(factorKeyword, 'COULOMB', iocc=i_zone, scal=coef_coul_frot)
+        call getvr8(factorKeyword, 'SEUIL_INIT', iocc=i_zone, scal=seuil_init, nbret=noc)
         if (noc .eq. 0) then
             seuil_auto = 1.d0
         end if
@@ -340,26 +338,32 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 ! - Contact nodes excluded
 !
     if (s_algo_cont .ne. 'LAC') then
-        call getvtx(keywf, 'SANS_GROUP_NO', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_1)
-        call getvtx(keywf, 'SANS_NOEUD', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_2)
+        call getvtx(factorKeyword, 'SANS_GROUP_NO', iocc=i_zone, &
+                    scal=s_cont_excl, nbret=nb_cont_excl_1)
+        call getvtx(factorKeyword, 'SANS_NOEUD', iocc=i_zone, &
+                    scal=s_cont_excl, nbret=nb_cont_excl_2)
         l_node_excl = (nb_cont_excl_1 .ne. 0) .or. (nb_cont_excl_2 .ne. 0)
-        call getvtx(keywf, 'SANS_GROUP_MA', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_3)
-        call getvtx(keywf, 'SANS_MAILLE', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_4)
+        call getvtx(factorKeyword, 'SANS_GROUP_MA', iocc=i_zone, &
+                    scal=s_cont_excl, nbret=nb_cont_excl_3)
+        call getvtx(factorKeyword, 'SANS_MAILLE', iocc=i_zone, &
+                    scal=s_cont_excl, nbret=nb_cont_excl_4)
         l_node_excl = l_node_excl .or. ((nb_cont_excl_3 .ne. 0) .or. (nb_cont_excl_4 .ne. 0))
     end if
 !
 ! - Friction nodes excluded
 !
     if (s_algo_cont .ne. 'LAC') then
-        call getvtx(keywf, 'SANS_GROUP_NO_FR', iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_1)
-        call getvtx(keywf, 'SANS_NOEUD_FR', iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_2)
+        call getvtx(factorKeyword, 'SANS_GROUP_NO_FR', iocc=i_zone, &
+                    scal=s_frot_excl, nbret=nb_frot_excl_1)
+        call getvtx(factorKeyword, 'SANS_NOEUD_FR', iocc=i_zone, &
+                    scal=s_frot_excl, nbret=nb_frot_excl_2)
         l_frot_excl = (nb_frot_excl_1 .ne. 0) .or. (nb_frot_excl_2 .ne. 0)
     end if
 !
 ! - For friction direction to exclude (vector)
 !
     if (l_frot_excl) then
-        call getvr8(keywf, 'DIRE_EXCL_FROT', iocc=i_zone, nbval=3, vect=dire_excl_frot, &
+        call getvr8(factorKeyword, 'DIRE_EXCL_FROT', iocc=i_zone, nbval=3, vect=dire_excl_frot, &
                     nbret=nb_dire_excl)
         l_dire_excl_frot = (nb_dire_excl .ne. 0)
         if (.not. l_dire_excl_frot) then
@@ -389,24 +393,30 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
             call utmess('F', 'CONTACT_98')
         end if
     end if
-!
+
 ! - Initial contact
-!
-    call getvtx(keywf, 'CONTACT_INIT', iocc=i_zone, scal=s_cont_init)
+    call getvtx(factorKeyword, 'CONTACT_INIT', iocc=i_zone, scal=s_cont_init)
     if (s_cont_init .eq. 'OUI') then
-        cont_init = 1.d0
+        contInit = 1.d0
     else if (s_cont_init .eq. 'INTERPENETRE') then
-        cont_init = 2.d0
+        contInit = 2.d0
+        contInitDist = -1.d0
+        call getvr8(factorKeyword, 'DIST_MAXI', iocc=i_zone, scal=contInitDist, &
+                    nbret=nbRet)
+        if (nbRet == 0) then
+            contInitDist = -1.d0
+        end if
     else if (s_cont_init .eq. 'NON') then
-        cont_init = 0.d0
+        contInit = 0.d0
     else
         ASSERT(ASTER_FALSE)
     end if
+
 !
 ! - Bilateral contact
 !
     if (s_algo_cont .ne. 'LAC') then
-        call getvtx(keywf, 'GLISSIERE', iocc=i_zone, scal=s_gliss)
+        call getvtx(factorKeyword, 'GLISSIERE', iocc=i_zone, scal=s_gliss)
         if (s_gliss .eq. 'OUI') then
             l_gliss = ASTER_TRUE
         else if (s_gliss .eq. 'NON') then
@@ -419,7 +429,7 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 ! - Large sliding method
 !
     if (l_frot .and. l_cont_cont) then
-        call getvtx(keywf, 'GRAND_GLIS', iocc=i_zone, scal=s_grglis, nbret=noc)
+        call getvtx(factorKeyword, 'GRAND_GLIS', iocc=i_zone, scal=s_grglis, nbret=noc)
         if (noc .ge. 1) then
             if (s_grglis(1:3) .eq. 'OUI') then
                 l_granglis = ASTER_TRUE
@@ -439,7 +449,8 @@ subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
         end if
     end if
 !
-    v_sdcont_caracf(zcmcf*(i_zone-1)+8) = cont_init
+    v_sdcont_caracf(zcmcf*(i_zone-1)+8) = contInit
+    v_sdcont_caracf(zcmcf*(i_zone-1)+17) = contInitDist
     if (l_gliss) then
         v_sdcont_caracf(zcmcf*(i_zone-1)+9) = 1.d0
     else

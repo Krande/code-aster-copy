@@ -272,5 +272,11 @@ It returns a dict between the cell id of the initial mesh and the current cell i
 
 Returns:
     dict[int]: a dict between the cell id of the initial mesh and the current cell id.
+        )" )
+        .def( "getMinMaxEdgeSizes", &BaseMesh::getMinMaxEdgeSizes, R"(
+Get minimum and maximum length of edges in group of cells
+
+Returns:
+    tuple(real): values of min and max edges
         )" );
 };

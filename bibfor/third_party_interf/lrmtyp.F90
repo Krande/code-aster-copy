@@ -95,7 +95,6 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                                                          'SE2TR6  ', 'SE2QU4  ', 'SE2QU8  ', &
                                                          'SE2QU9  ', 'SE3TR3  ', 'SE3TR6  ', &
                                                          'SE3QU4  ', 'SE3QU8  ', 'SE3QU9  ', &
-                                                         'H20H20  ', 'P15P15  ', 'T10T10  ', &
                                                          'HEXA9   ', 'PENTA7  ', 'TR3SE2  ', &
                                                          'TR3SE3  ', 'TR6SE2  ', 'TR6SE3  ', &
                                                          'QU4SE2  ', 'QU4SE3  ', 'QU8SE2  ', &
@@ -110,7 +109,6 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                                   MED_TETRA10, MED_PENTA6, MED_PENTA15, &
                                   MED_PENTA18, MED_PYRA5, MED_PYRA13, &
                                   MED_HEXA8, MED_HEXA20, MED_HEXA27, &
-                                  MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                   MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &

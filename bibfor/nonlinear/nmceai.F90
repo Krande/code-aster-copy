@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
-                  sdpilo, rho, eta, isxfe, f, &
-                  indic)
+! aslint: disable=W0413
 !
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
+                  sdpilo, rho, eta, f, &
+                  indic)
 !
     implicit none
 #include "asterf_types.h"
@@ -51,7 +50,6 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
 ! IN  DEPPR2 : INCREMENT DE DEPLACEMENT K-1.F_PILO
 ! IN  RHO    : PARAMETRE DE RECHERCHE LINEAIRE
 ! IN  ETA    : PARAMETRE DE PILOTAGE
-! IN  ISXFE  : INDIQUE SI LE MODELE EST UN MODELE XFEM
 ! OUT F      : VALEUR DU CRITERE
 ! OUT INDIC  : 0 CRITERE NON UTILISABLE
 !              1 CRITERE UTILISABLE
@@ -62,12 +60,8 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
     real(kind=8) :: sca, nodup, coef, nodup1, nodup2
     real(kind=8) :: norm_depold
     integer :: jdu1
-    integer :: neq, i, j
-    character(len=19) :: profch, chapil, chapic, selpil
-    real(kind=8) :: dn, dc, dp, da
-    aster_logical :: isxfe
-    real(kind=8), pointer :: coee(:) => null()
-    real(kind=8), pointer :: vcoef(:) => null()
+    integer :: neq, i
+    character(len=19) :: profch, selpil
     real(kind=8), pointer :: depde(:) => null()
     real(kind=8), pointer :: depol(:) => null()
     real(kind=8), pointer :: du0(:) => null()
@@ -78,18 +72,13 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
 !
     call jemarq()
 !
-    if (isxfe) then
-        chapil = sdpilo(1:14)//'.PLCR'
-        call jeveuo(chapil(1:19)//'.VALE', 'L', vr=vcoef)
-        chapic = sdpilo(1:14)//'.PLCI'
-        call jeveuo(chapic(1:19)//'.VALE', 'L', vr=coee)
-    else
+
 !
 ! --- ACCES VECTEUR DE SELCTION CMP DX/DY/DZ
 !
-        selpil = sdpilo(1:14)//'.PLSL'
-        call jeveuo(selpil(1:19)//'.VALE', 'L', vr=plsl)
-    end if
+    selpil = sdpilo(1:14)//'.PLSL'
+    call jeveuo(selpil(1:19)//'.VALE', 'L', vr=plsl)
+
 !
 !
 ! --- INITIALISATIONS--------------------------------
@@ -114,43 +103,13 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
 !
 ! --- CALCUL DE L'ANGLE
 !
-    if (isxfe) then
-        do i = 1, neq
-            if (deeq(2*i) .gt. 0) then
-                norm_depold = norm_depold+depol(i)**2
-                if (coee(i) .eq. 0.d0) then
-                    sca = sca+depol(i)*vcoef(i)**2*(depde(i)+rho*du0(1+i-1)+eta*zr(jdu1+i-&
-                          &1))
-                    nodup1 = nodup1+vcoef(i)**2*(depde(i)+rho*du0(i)+eta*zr(jdu1+i-1))**2
-                    nodup2 = nodup2+vcoef(i)**2*depol(i)**2
-                else
-                    da = 0.d0
-                    dn = 0.d0
-                    dc = 0.d0
-                    dp = 0.d0
-                    do j = i+1, neq
-                        if (coee(i) .eq. coee(j)) then
-                            da = da+vcoef(i)*depol(i)+vcoef(j)*depol(j)
-                            dn = dn+vcoef(i)*depde(i)+vcoef(j)*depde(j)
-                            dc = dc+vcoef(i)*du0(i)+vcoef(j)*du0(j)
-                            dp = dp+vcoef(i)*zr(jdu1-1+i)+vcoef(j)*zr(jdu1-1+j)
-                        end if
-                    end do
-                    sca = sca+da*(dn+rho*dc+eta*dp)
-                    nodup1 = nodup1+(dn+rho*dc+eta*dp)**2
-                    nodup2 = nodup2+da**2
-                end if
-            end if
-        end do
-        nodup = nodup1*nodup2
-    else
-        do i = 1, neq
-            coef = plsl(i)
-            sca = sca+(depol(i)*(depde(i)+rho*du0(i)+eta*zr(jdu1+i-1)))*coef
-            nodup = nodup+(depde(i)+rho*du0(i)+eta*zr(jdu1+i-1))**2
-            norm_depold = norm_depold+depol(i)**2
-        end do
-    end if
+
+    do i = 1, neq
+        coef = plsl(i)
+        sca = sca+(depol(i)*(depde(i)+rho*du0(i)+eta*zr(jdu1+i-1)))*coef
+        nodup = nodup+(depde(i)+rho*du0(i)+eta*zr(jdu1+i-1))**2
+        norm_depold = norm_depold+depol(i)**2
+    end do
 !
     if (nodup .eq. 0.d0 .or. norm_depold .eq. 0.d0) then
         indic = 0

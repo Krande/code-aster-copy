@@ -131,7 +131,7 @@ subroutine op0167()
     integer :: nbOccCreaPoi1, nbOccCreaMaille, nbOccModiHHO, nbOccCoqueSolide
     aster_logical :: lpb, pMesh
     character(len=8) :: cellNameIn, cellNameOut, nodeNameIn, nodeNameOut
-    aster_logical :: lPrefCellName, lPrefCellNume, lPrefNodeName, lPrefNodeNume
+    aster_logical :: lPrefCellName, lPrefCellNume, lPrefNodeNume
     integer :: prefCellNume, prefNodeNume, prefNume, info
     character(len=8) :: prefCellName, prefNodeName
     integer, pointer :: modiCellNume(:) => null(), modiCellType(:) => null()
@@ -594,8 +594,7 @@ subroutine op0167()
             end if
 
 ! --------- Get options from user for name of new nodes
-            call getNodeOptionForName(keywfact, iocc, &
-                                      lPrefNodeName, lPrefNodeNume, &
+            call getNodeOptionForName(lPrefNodeNume, &
                                       prefNodeName, prefNodeNume)
 
 ! --------- Get list of cells to modify
@@ -675,8 +674,7 @@ subroutine op0167()
 
         do iocc = 1, nbOccCreaMaille
 ! --------- Get options from user for name of new cells
-            call getCellOptionForName(keywfact, iocc, &
-                                      lPrefCellName, lPrefCellNume, &
+            call getCellOptionForName(lPrefCellName, lPrefCellNume, &
                                       prefCellName, prefCellNume)
 
 ! --------- Get list of cells

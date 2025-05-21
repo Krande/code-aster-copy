@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,7 @@ Contact méthode continue et pilotage sont incompatibles
     ),
     99: _(
         """
-Le contact de type LAC et le contact XFEM avec ELIM_ARETE='ELIM' ne sont pas utilisables avec le solveur MULT_FRONT, il faut utiliser MUMPS.
+Le contact de type LAC n'est pas utilisable avec le solveur MULT_FRONT, il faut utiliser MUMPS.
 """
     ),
 }

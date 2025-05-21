@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,18 +60,16 @@ character(len=16), parameter :: failEventKeyword(FAIL_EVT_NB) = (/'ERREUR       
                                                                   'NB_PAS_MAXI     '/)
 
 ! Defines for ECHEC/ACTION
-#define FAIL_ACT_NB               6
+#define FAIL_ACT_NB               5
 #define FAIL_ACT_STOP             1
 #define FAIL_ACT_CUT              2
 #define FAIL_ACT_ITER             3
-#define FAIL_ACT_PILOTAGE         4
-#define FAIL_ACT_ADAPT_COEF       5
-#define FAIL_ACT_CONTINUE         6
+#define FAIL_ACT_ADAPT_COEF       4
+#define FAIL_ACT_CONTINUE         5
 
 character(len=16), parameter :: failActionKeyword(FAIL_ACT_NB) = (/'ARRET           ', &
                                                                    'DECOUPE         ', &
                                                                    'ITER_SUPPL      ', &
-                                                                   'AUTRE_PILOTAGE  ', &
                                                                    'ADAPT_COEF_PENA ', &
                                                                    'CONTINUE        '/)
 ! Defines for ADAPTATION/EVENEMENT

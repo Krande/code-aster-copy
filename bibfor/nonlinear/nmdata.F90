@@ -106,7 +106,7 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
 !
     integer :: ifm, niv
     character(len=1), parameter:: jvBase = "V"
-    character(len=8) :: result
+    character(len=8) :: result, modelCara
     character(len=16) :: k16bid, nomcmd
     aster_logical :: l_etat_init, l_sigm, lHasPilo, staticOperator
     character(len=24) :: typco
@@ -166,6 +166,15 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
             call verif_affe(model, cara_elem, non_lin=ASTER_TRUE)
         end if
     end if
+
+! - Check consistency of models for CARa_ELEM
+    if (cara_elem .ne. ' ') then
+        call dismoi("NOM_MODELE", cara_elem, "CARA_ELEM", repk=modelCara)
+        if (modelCara .ne. model) then
+            call utmess("A", "MECANONLINE5_74")
+        end if
+    end if
+
 !   IF exist ETAT_INIT/EVOL_NOLI : Is cara_elem in ETAT_INIT same as curent ?
     if (ds_inout%l_stin_evol) then
         stin_evol = ds_inout%stin_evol

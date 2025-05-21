@@ -614,6 +614,10 @@ DEFI_CONTACT = OPER(
                     defaut="INTERPENETRE",
                     into=("OUI", "INTERPENETRE", "NON"),
                 ),
+                b_cont_init_inte=BLOC(
+                    condition="""equal_to("CONTACT_INIT", 'INTERPENETRE') """,
+                    DIST_MAXI=SIMP(statut="f", typ="R", max=1),
+                ),
                 GLISSIERE=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
             ),  # fin b_pair_std
             # --- Pairing options (for segment to segment contact)
@@ -634,6 +638,10 @@ DEFI_CONTACT = OPER(
                     typ="TXM",
                     defaut="INTERPENETRE",
                     into=("OUI", "INTERPENETRE", "NON"),
+                ),
+                b_cont_init_inte=BLOC(
+                    condition="""equal_to("CONTACT_INIT", 'INTERPENETRE') """,
+                    DIST_MAXI=SIMP(statut="f", typ="R", max=1),
                 ),
             ),  # fin b_pair_morta
             # --- Method for friction
@@ -781,6 +789,10 @@ DEFI_CONTACT = OPER(
                     typ="TXM",
                     defaut="INTERPENETRE",
                     into=("OUI", "INTERPENETRE", "NON"),
+                ),
+                b_cont_init_inte=BLOC(
+                    condition="""equal_to("CONTACT_INIT", 'INTERPENETRE') """,
+                    DIST_MAXI=SIMP(statut="f", typ="R", max=1),
                 ),
                 GLISSIERE=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
             ),  # fin b_pair_std

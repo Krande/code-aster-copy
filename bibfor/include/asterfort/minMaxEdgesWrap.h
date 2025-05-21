@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
-                      grlt, compo, vect)
-        integer :: noeu1
-        integer :: noeu2
-        integer :: ndim
-        character(len=19) :: cnsln
-        character(len=19) :: grln
-        character(len=19) :: grlt
-        character(len=8) :: compo
-        real(kind=8) :: vect(3)
-    end subroutine nmdire
+    subroutine minMaxEdgesWrap(meshZ, groupNameZ, edgeMin, edgeMax)
+        character(len=*), intent(in) :: meshZ, groupNameZ
+        real(kind=8), intent(out) :: edgeMin, edgeMax
+    end subroutine minMaxEdgesWrap
 end interface

@@ -16,50 +16,44 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cazoco(sdcont, keywf, cont_form, i_zone, &
-                  nb_cont_zone)
+subroutine minMaxEdgesWrap(meshZ, groupNameZ, edgeMin, edgeMax)
+!
+    use mesh_module
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cazocc.h"
-#include "asterfort/cazocd.h"
-#include "asterfort/cazocm.h"
+#include "asterfort/utmess.h"
 !
-    character(len=8), intent(in) :: sdcont
-    character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: cont_form
-    integer, intent(in) :: i_zone
+    character(len=*), intent(in) :: meshZ, groupNameZ
+    real(kind=8), intent(out) :: edgeMin, edgeMax
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_CONTACT
+! Mesh
 !
-! Get parameters (depending on contact zones)
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  keywf            : factor keyword to read
-! In  nb_cont_zone     : number of zones of contact
-! In  cont_form        : formulation of contact
-! In  i_zone           : index of contact zone
+! Compute min and max edges on group of cells
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (cont_form .eq. 1) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocd(sdcont, keywf, i_zone, nb_cont_zone)
-    else if (cont_form .eq. 2) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocc(sdcont, keywf, i_zone, nb_cont_zone=nb_cont_zone)
-    else if (cont_form .eq. 5) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocc(sdcont, keywf, i_zone)
+! In  mesh             : mesh
+! In  groupNameZ       : name of cell group
+! Out edgeMin          : length of smallest edge
+! Out edgeMax          : length of greatest edge
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nbCell
+    integer, pointer :: listCellNume(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call getCellsFromGroup(meshZ, groupNameZ, nbCell, listCellNume)
+    if (nbCell .eq. 0) then
+        call utmess('F', 'MESH3_13', sk=groupNameZ(1:24))
     else
-        ASSERT(ASTER_FALSE)
+        call compMinMaxEdges(meshZ, edgeMin, edgeMax, &
+                             nbCell, listCellNume)
     end if
 !
 end subroutine

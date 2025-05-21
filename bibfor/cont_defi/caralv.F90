@@ -48,7 +48,7 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
     integer :: i_zone
     aster_logical :: l_all, l_exist
     aster_logical :: l_verif, l_newt_geom, l_geom_hpp, l_pena, l_node, l_glis_zone
-    integer :: i_cont_init
+    integer :: contInit
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_paraci
     integer, pointer :: v_sdcont_paraci(:) => null()
@@ -56,14 +56,12 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
 ! --------------------------------------------------------------------------------------------------
 !
     sdcont_defi = sdcont(1:8)//'.CONTACT'
-!
+
 ! - Datastructure for contact definition
-!
     sdcont_paraci = sdcont(1:8)//'.PARACI'
     call jeveuo(sdcont_paraci, 'E', vi=v_sdcont_paraci)
-!
+
 ! - All zones are only contact verification ?
-!
     if ((cont_form .eq. 1) .or. (cont_form .eq. 2)) then
         i_zone = 1
         l_all = mminfl(sdcont_defi, 'VERIF', i_zone)
@@ -74,9 +72,8 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
         if (l_all) then
             v_sdcont_paraci(8) = 1
         end if
-!
+
 ! ----- If contact verification : REAC_GEOM= 'SANS' / ALGO_RESO_GEOM='POINT_FIXE'
-!
         if (l_all) then
             l_newt_geom = cfdisl(sdcont_defi, 'GEOM_NEWTON')
             if (l_newt_geom) then
@@ -93,9 +90,8 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
             end if
         end if
     end if
-!
+
 ! - At least one zone is contact verification ?
-!
     if ((cont_form .eq. 1) .or. (cont_form .eq. 2)) then
         l_exist = ASTER_FALSE
         do i_zone = 1, nb_cont_zone
@@ -106,9 +102,8 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
             v_sdcont_paraci(23) = 1
         end if
     end if
-!
+
 ! - Penalization ? (non-symmetric matrix)
-!
     if (cont_form .eq. 2) then
         l_exist = ASTER_FALSE
         do i_zone = 1, nb_cont_zone
@@ -121,9 +116,8 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
             v_sdcont_paraci(22) = 1
         end if
     end if
-!
+
 ! - Integration scheme for CONTINUE formulation: nodes ?
-!
     if (cont_form .eq. 2) then
         i_zone = 1
         l_all = (mminfi(sdcont_defi, 'INTEGRATION', i_zone) .eq. 1)
@@ -137,9 +131,8 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
     else if (cont_form .eq. 1) then
         v_sdcont_paraci(24) = 1
     end if
-!
+
 ! - Bilateral contact ?
-!
     if (cont_form .eq. 2) then
         l_exist = ASTER_FALSE
         do i_zone = 1, nb_cont_zone
@@ -155,8 +148,8 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
     if (cont_form .eq. 2) then
         l_all = ASTER_TRUE
         do i_zone = 1, nb_cont_zone
-            i_cont_init = mminfi(sdcont_defi, 'CONTACT_INIT', i_zone)
-            l_all = l_all .and. (i_cont_init .eq. 2)
+            contInit = mminfi(sdcont_defi, 'CONTACT_INIT', i_zone)
+            l_all = l_all .and. (contInit .eq. 2)
         end do
         if (l_all) then
             v_sdcont_paraci(11) = 1

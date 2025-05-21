@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 function cfdisl(sdcont_defi_, question_)
 !
@@ -73,8 +72,6 @@ function cfdisl(sdcont_defi_, question_)
         cfdisl = cfdisi(sdcont_defi, 'COEF_ADAPT') .eq. 1
     else if (question .eq. 'CONT_DISC_GLIS') then
         cfdisl = mminfl(sdcont_defi, 'GLISSIERE_ZONE')
-    else if (question .eq. 'EXIS_XFEM_CZM') then
-        cfdisl = cfdisi(sdcont_defi, 'EXIS_XFEM_CZM') .eq. 1
     else if (question .eq. 'EXIS_PENA') then
         cfdisl = cfdisi(sdcont_defi, 'EXIS_PENA') .eq. 1
     else if (question .eq. 'EXIS_ADAP') then
@@ -97,8 +94,6 @@ function cfdisl(sdcont_defi_, question_)
         cfdisl = cfdisi(sdcont_defi, 'ALL_INTERPENETRE') .eq. 1
     else if (question .eq. 'STOP_INTERP') then
         cfdisl = cfdisi(sdcont_defi, 'STOP_INTERP') .eq. 1
-    else if (question .eq. 'ELIM_ARETE') then
-        cfdisl = cfdisi(sdcont_defi, 'ELIM_ARETE_TYPE') .eq. 1
     else if (question .eq. 'FORMUL_MAILLEE') then
         cont_form = cfdisi(sdcont_defi, 'FORMULATION')
         cfdisl = (cont_form .eq. 1) .or. (cont_form .eq. 2)
@@ -108,9 +103,6 @@ function cfdisl(sdcont_defi_, question_)
     else if (question .eq. 'FORMUL_CONTINUE') then
         cont_form = cfdisi(sdcont_defi, 'FORMULATION')
         cfdisl = (cont_form .eq. 2)
-    else if (question .eq. 'FORMUL_XFEM') then
-        cont_form = cfdisi(sdcont_defi, 'FORMULATION')
-        cfdisl = (cont_form .eq. 3)
     else if (question .eq. 'FORMUL_LAC') then
         cont_form = cfdisi(sdcont_defi, 'FORMULATION')
         cfdisl = (cont_form .eq. 5)

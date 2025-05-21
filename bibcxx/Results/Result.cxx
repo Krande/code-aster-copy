@@ -263,8 +263,7 @@ ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
             }
         }
     }
-
-    AS_ASSERT( false );
+    UTMESS( "F", "RESULT2_9" );
     return 0.0;
 };
 

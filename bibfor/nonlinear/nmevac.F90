@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
 #include "asterfort/nmecev.h"
 #include "asterfort/nmeraz.h"
 #include "asterfort/nmerge.h"
-#include "asterfort/nmevdp.h"
 #include "asterfort/nmitsp.h"
 #include "asterfort/utmess.h"
 #include "event_def.h"
@@ -69,7 +68,7 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: retsup, retswa, retpen, retdec, failType, actionType
+    integer :: retsup, retpen, retdec, failType, actionType
     aster_logical :: trydec, litmax
 !
 ! --------------------------------------------------------------------------------------------------
@@ -111,20 +110,6 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
         end if
     else if (actionType .eq. FAIL_ACT_CUT) then
         trydec = ASTER_TRUE
-    else if (actionType .eq. FAIL_ACT_PILOTAGE) then
-        if (litmax) then
-            call utmess('I', 'MECANONLINE10_34')
-            call nmevdp(sddisc, retswa)
-        else
-            retswa = 0
-        end if
-        if (retswa .eq. 0) then
-            trydec = ASTER_TRUE
-        else if (retswa .eq. 1) then
-            retact = 1
-        else
-            ASSERT(ASTER_FALSE)
-        end if
     else if (actionType .eq. FAIL_ACT_ADAPT_COEF) then
         call utmess('I', 'MECANONLINE10_35')
         call nmadcp(sddisc, ds_contact_, i_fail_acti, retpen)

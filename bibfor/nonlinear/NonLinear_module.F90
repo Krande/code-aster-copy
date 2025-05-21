@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -453,7 +453,9 @@ contains
 ! - Update matrix if DIS_CHOC elements
         if (l_dischoc) then
             if (.not. l_update_matr) then
-                call utmess('A', 'MECANONLINE5_5')
+                if (matrType .ne. 'ELASTIQUE') then
+                    call utmess('A', 'MECANONLINE5_5')
+                end if
                 l_update_matr = ASTER_TRUE
             end if
         end if
@@ -461,7 +463,9 @@ contains
 ! - Update if contact matrix in global matrix
         if (ds_system%l_matr_cont) then
             if (.not. l_update_matr) then
-                call utmess('A', 'MECANONLINE5_5')
+                if (matrType .ne. 'ELASTIQUE') then
+                    call utmess('A', 'MECANONLINE5_5')
+                end if
                 l_update_matr = ASTER_TRUE
             end if
         end if

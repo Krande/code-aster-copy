@@ -205,7 +205,7 @@ subroutine nmprta(model, nume_dof, numfix, ds_material, cara_elem, &
                      hval_measse)
 !
 
-! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
+! --- CALCUL DU SECOND MEMBRE POUR CONTACT
 !
     if (leltc) then
         call nmfocc('PREDICTION', model, ds_material, nume_dof, list_func_acti, &

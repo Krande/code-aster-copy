@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ Risques & Conseils :
      ne changent pas.
          """
     ),
+    9: _("""Cette structure de données n'est pas indexée par le temps."""),
     14: _("""Le NUME_DDL a été déterminé à partir de la matrice de rigidité %(k1)s."""),
     15: _("""Les NUME_DDL associés aux matrices MATR_RIGI et MATR_MASS sont différents."""),
     16: _(

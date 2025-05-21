@@ -553,3 +553,14 @@ MapLong BaseMesh::getOriginalToRestrictedCellsIds() const {
 
     return cells;
 }
+
+std::pair< ASTERDOUBLE, ASTERDOUBLE >
+BaseMesh::getMinMaxEdgeSizes( const std::string cellGroupName ) {
+    ASTERDOUBLE edgeMin, edgeMax;
+
+    CALLO_MINMAXEDGESWRAP( this->getName(), cellGroupName, &edgeMin, &edgeMax );
+
+    std::pair< ASTERDOUBLE, ASTERDOUBLE > returnValue = std::make_pair( edgeMin, edgeMax );
+
+    return returnValue;
+}

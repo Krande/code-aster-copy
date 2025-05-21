@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine xmvec3(nnol, pla, ffc, reac, jac,&
-                      cstaco, vtmp)
-        integer :: nnol
-        integer :: pla(27)
-        real(kind=8) :: ffc(8)
-        real(kind=8) :: reac
-        real(kind=8) :: jac
-        real(kind=8) :: cstaco
-        real(kind=8) :: vtmp(400)
-    end subroutine xmvec3
+    subroutine contSetInit(sdcont, mesh, nbContZone)
+        character(len=8), intent(in) :: sdcont, mesh
+        integer, intent(in) :: nbContZone
+    end subroutine contSetInit
 end interface

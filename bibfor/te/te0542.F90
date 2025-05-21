@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine te0542(option, nomte)
 #include "asterfort/terefe.h"
 #include "asterfort/xbsig.h"
 #include "asterfort/xbsir.h"
-#include "asterfort/xbsir2.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
     character(len=16) :: option, nomte
@@ -126,17 +125,6 @@ subroutine te0542(option, nomte)
                    zi(jheavt), zi(jlonch), zr(jbaslo), sigref, nbsig, &
                    zr(jlsn), zr(jlst), ivectu, jpmilt, &
                    nfiss, jheavn, jstno)
-!
-! --- SI ELEMENT DE CONTACT, ON Y AJOUTE LES CONTRIBUTIONS SURFACIQUES
-! --- NOTAMMENT CELLE POUR LES EQUATIONS DUALES
-!
-        if (enr .eq. 'XHC' .or. enr .eq. 'XHTC') then
-            call xbsir2(elref, contac, ddlc, ddlm, ddls, &
-                        igeom, jheavn, jlst, ivectu, singu, &
-                        nddl, ndim, nfh, nfiss, &
-                        nno, nnom, nnos, depref, sigref(1), &
-                        jbaslo, jstno, jlsn)
-        end if
     else
         ASSERT(.false.)
     end if

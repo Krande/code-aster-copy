@@ -22,19 +22,20 @@ subroutine dfc_read_cont(sdcont, zoneKeyword, mesh, model, model_ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/dfc_read_zone.h"
-#include "asterfort/dfc_save_dime.h"
-#include "asterfort/dfc_chck.h"
-#include "asterfort/tablco.h"
-#include "asterfort/utmess.h"
 #include "asterfort/cacoco.h"
 #include "asterfort/capoco.h"
 #include "asterfort/caraxi.h"
+#include "asterfort/contSetInit.h"
+#include "asterfort/dfc_chck.h"
+#include "asterfort/dfc_read_zone.h"
+#include "asterfort/dfc_save_dime.h"
 #include "asterfort/elimco.h"
-#include "asterfort/sansco.h"
-#include "asterfort/sanscc.h"
-#include "asterfort/typeco.h"
 #include "asterfort/mmprel.h"
+#include "asterfort/sanscc.h"
+#include "asterfort/sansco.h"
+#include "asterfort/tablco.h"
+#include "asterfort/typeco.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: sdcont, mesh, model
     character(len=16), intent(in) :: zoneKeyword
@@ -66,58 +67,50 @@ subroutine dfc_read_cont(sdcont, zoneKeyword, mesh, model, model_ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     l_elim_coq3d = .false.
-!
+
 ! - Read zone: nodes and elements
-!
     call dfc_read_zone(sdcont, zoneKeyword, mesh, model, nb_cont_zone, &
                        nb_cont_surf, nb_cont_elem, nb_cont_node)
-!
+
 ! - Cleaning nodes and elements
-!
     call elimco(sdcont, mesh, model, nb_cont_surf, &
                 nb_cont_elem, nb_cont_node, l_elim_coq3d, nb_node_coq3d_=nb_node_coq3d)
     if (nb_node_coq3d .ne. 0) then
         call utmess('F', 'CONTACT_94')
     end if
-!
+
 ! - Inverse connectivities
-!
     call tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
-!
+
 ! - Save contact counters
-!
     call dfc_save_dime(sdcont, mesh, model_ndim, nb_cont_zone, nb_cont_surf, &
                        nb_cont_elem, nb_cont_node)
-!
+
 ! - Keyword SANS_GROUP_NO
-!
     call sansco(sdcont, zoneKeyword, mesh)
-!
+
 ! - Special keywords for CONTINUE method
-!
     call sanscc(sdcont, zoneKeyword, mesh)
-!
+
 ! - Elements and nodes parameters
-!
     call typeco(sdcont, mesh)
-!
+
 ! - Some checks
-!
     call dfc_chck(sdcont, mesh, model_ndim)
-!
+
 ! - Gap for beams
-!
     call capoco(sdcont, zoneKeyword)
-!
+
 ! - Gap for shells
-!
     call cacoco(sdcont, zoneKeyword, mesh)
-!
+
 ! - Check if axi-symmetric
-!
     call caraxi(sdcont, model, mesh, model_ndim)
 
 ! - Create virtual slave elements in model
     call mmprel(sdcont, mesh, model, slavElemLigr)
+
+! - Set value of CONTACT_INIT
+    call contSetInit(sdcont, mesh, nb_cont_zone)
 !
 end subroutine

@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+# Duplicata de wntv140a pour test de MECA_NON_LINE
 
 import numpy as np
 import numpy.linalg as ln
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
-
 
 ## ANGLE NAUTIQUE UTILISES PAR ASTER (A. Nautique classique)
 #
@@ -237,7 +237,7 @@ CH_SYM2 = AFFE_CHAR_CINE(
 #              CALCUL MECANIQUE
 # *****************************************************************
 
-UM = STAT_NON_LINE(
+UM = MECA_NON_LINE(
     MODELE=MODELEM,
     CHAM_MATER=CHMAT1,
     CARA_ELEM=ORIREP,
@@ -384,7 +384,7 @@ CH_INF1 = AFFE_CHAR_CINE(
 CH_P = AFFE_CHAR_CINE(MODELE=PHASE1, MECA_IMPO=(_F(TOUT="OUI", PRE1=PLIMP),))
 # CALCUL HM
 
-U0 = STAT_NON_LINE(
+U0 = MECA_NON_LINE(
     MODELE=PHASE1,
     CHAM_MATER=CHMAT1,
     CARA_ELEM=ORIREP,

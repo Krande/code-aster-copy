@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,47 +68,6 @@ cata_msg = {
     57: _(
         """
  Il faut plus d'un noeud pour le pilotage LONG_ARC.
-"""
-    ),
-    58: _(
-        """
- Renseigner le mot clef FISSURE du mot clef facteur PILOTAGE pour le pilotage
-  SAUT_IMPO ou SAUT_L_ARC.
-"""
-    ),
-    59: _(
-        """
- Renseigner le mot-clé FISSURE du mot-clé facteur PILOTAGE avec les sélections
-  ANGL_INCR_DEPL ou NORM_INCR_DEPL avec un modèle X-FEM.
-"""
-    ),
-    60: _(
-        """
- Les types de pilotage SAUT_IMPO et SAUT_L_ARC ne sont disponibles qu'avec un
- modèle X-FEM.
-"""
-    ),
-    61: _(
-        """
- Le noeud pilote %(i1)d n appartient pas à une arête intersectée par la fissure
-"""
-    ),
-    62: _(
-        """
- Il y a plus de noeuds utilisateur que d'arêtes vitales.
- Diminuer le nombre de noeuds pilotés.
-"""
-    ),
-    63: _(
-        """
- Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arête intersectée.
- Il est conseillé d'entrer des noeuds qui sont tous du même coté de la fissure.
-"""
-    ),
-    64: _(
-        """
- Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arête intersectée.
- Il est conseillé d'entrer des noeuds qui sont tous du même coté de la fissure.
 """
     ),
     83: _(
