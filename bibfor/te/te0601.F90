@@ -23,7 +23,12 @@ subroutine te0601(option, nomte)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
+#include "asterfort/writeMatrix.h"
+#include "asterfort/rco3d_elem.h"
+#include "asterfort/rco3d_infos.h"
+#include "asterfort/rco3d_calcmat.h"
 #include "jeveux.h"
+
 
 !
     character(len=16) :: nomte, option
@@ -33,33 +38,55 @@ subroutine te0601(option, nomte)
 !
 ! SHELL-3D link 
 !
-! Link elementary matrices
+! Link elementary matrix
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom
-    integer :: nb_co_nodes, nb_3d_nodes, dim, index
+    integer :: jv_geom, jv_cacoqu, nddl
+    integer :: nnco, nn3d, dim, index
     integer :: i_node_co, i_node_3d, i
-    real(kind=8) :: coor(3)
+    integer :: nb_gauss, ncols, nrows
+    real(kind=8) :: jac_det(10), gauss_weight(10) 
+    real(kind=8):: gauss_coor(2, 10)
+    real(kind=8):: ff_co(3, 10), epai, ff_3d(8, 10)
+    real(kind=8) :: t(3, 10), n(3, 10), s(3)
+    character(len=8):: typmaco, typma3d
+    real(kind=8), allocatable :: mat(:, :)
+    real(kind=8), allocatable :: matr_tmp(:, :)
+    aster_logical :: skip
 
+
+    ! RECUPERER GEOMETRIE
     call jevech('PGEOMER', 'L', jv_geom)
-    dim = 3
-    index = 0
 
-    do i_node_co = 1, 2
-        do i= 1, dim
-            coor(i) = zr(jv_geom-1+index+i)
-        end do
-        !write(*,*) "les coordonnées", coor(1), " ", coor(2), " ", coor(3)
-        index = index + dim
-    end do
+    ! RECUPERER EPAISSEUR
+    call jevech('PCACOQU', 'L', jv_cacoqu)
+    epai = zr(jv_cacoqu-1+1)
 
-    do i_node_3d = 1, 3
-        do i= 1, dim
-            coor(i) = zr(jv_geom-1+index+i)
-        end do
-        !write(*,*) "les coordonnées", coor(1), " ", coor(2), " ", coor(3)
-        index = index + dim
-    end do
+
+    ! RECUPERER LES INFOS SUR L'ELEMENT
+    call rco3d_elem(nomte, dim, nddl, typmaco, nnco, typma3d, nn3d)
+    nrows = 6 * nnco
+    ncols = 6 * nnco + 3 * nn3d 
+    !
+    
+    ! RECUPERER LES PTS GAUSS 
+    call rco3d_infos(typmaco, typma3d, epai, jv_geom, nb_gauss, gauss_coor, &
+            gauss_weight, jac_det, ff_co, ff_3d, s, t, n, skip)
+
+    ! allocation and calculation of the matrix 
+    allocate(mat(nrows,ncols))
+    ! initialization
+    mat = 0.0d0
+    if (.not. skip) then
+        call  rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
+                        ff_co, ff_3d, s, t, n, epai, & 
+                            nnco, nn3d, mat )
+    end if
+
+
+    call writeMatrix('PMATUNS', nrows, ncols, ASTER_FALSE, mat)
+
+    deallocate(mat)
 
 
 end subroutine

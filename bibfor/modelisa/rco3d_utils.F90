@@ -1,0 +1,209 @@
+! --------------------------------------------------------------------
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
+
+module raco3d_utils
+!
+#include "asterf.h"
+#include "asterf_types.h"
+#include "asterfort/matinv.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
+!
+contains
+!
+!
+    function segseg_distance(coorseg1, coorseg2)
+        ! Compute the shortest distance between two 3D line segments
+        real(kind=8), intent(in) :: coorseg1(3,2), coorseg2(3,2)
+        real(kind=8) :: P1(3), P2(3), Q1(3), Q2(3)
+        real(kind=8) :: dist
+        real(kind=8) :: u(3), v(3), w(3), a, b, c, d, e, t, s
+        real(kind=8) :: det, sc, tc
+        real(kind=8) :: closestP(3), closestQ(3)
+        real(kind=8) :: endpoint_distances(4)
+        integer :: i
+
+        do i=1, 3
+            P1(i) = coorseg1(i, 1)
+            P2(i) = coorseg1(i, 2)
+            Q1(i) = coorseg2(i, 1)
+            Q2(i) = coorseg2(i, 2)
+        end do 
+
+        ! Define vectors along the segments
+        u = P2 - P1  ! Vector along segment 1
+        v = Q2 - Q1  ! Vector along segment 2
+        w = P1 - Q1  ! Vector between the starting points of the segments
+
+        ! Dot products
+        a = dot_product(u, u)  ! u.u
+        b = dot_product(u, v)  ! u.v
+        c = dot_product(v, v)  ! v.v
+        d = dot_product(u, w)  ! u.w
+        e = dot_product(v, w)  ! v.w
+        
+        det = a * c - b * b  
+
+        ! initialize
+        sc = 0.0
+        tc = 0.0
+
+        ! Compute the parameters t and s for the closest points
+        if (det > 1.0e-8 * a) then
+            ! Non-parallel case
+            sc = (b * e - c * d) / det
+            tc = (a * e - b * d) / det
+        else if ((-d/a) .ge. 0 .and. (-d/a) .le. 1) then
+            sc = - d/a
+            tc = 0.0
+        else if ((e/c) .ge. 0 .and. (e/c) .le. 1) then
+            sc = 0.0
+            tc = e/c
+        end if
+
+
+        sc = max(0.0, min(1.0, sc))
+        tc = max(0.0, min(1.0, tc))
+
+        ! Compute the closest points
+        closestP = P1 + sc * u
+        closestQ = Q1 + tc * v
+
+        ! Compute segment-segment distance
+        dist = sqrt(sum((closestP - closestQ) ** 2))
+
+        ! Compute distances between all endpoints 
+        endpoint_distances(1) = sqrt(sum((P1 - Q1) ** 2))
+        endpoint_distances(2) = sqrt(sum((P1 - Q2) ** 2))
+        endpoint_distances(3) = sqrt(sum((P2 - Q1) ** 2))
+        endpoint_distances(4) = sqrt(sum((P2 - Q2) ** 2))
+
+        segseg_distance = min(dist, minval(endpoint_distances))
+
+        
+    end function segseg_distance
+
+    !function solve_linear_system(A, b) result(x)
+    !   implicit none
+    !   real(kind=8), intent(in) :: A(2, 2), b(2)
+    !   real(kind=8) :: x(2)
+    !   real(kind=8) :: det
+    ! 
+    !   det = A(1, 1) * A(2, 2) - A(1, 2) * A(2, 1)
+    !   if (abs(det) < 1.0d-12) stop "Singular matrix"
+    !
+    !   x(1) = ( A(2, 2) * b(1) - A(1, 2) * b(2)) / det
+    !   x(2) = (-A(2, 1) * b(1) + A(1, 1) * b(2)) / det
+    !end function solve_linear_system
+
+
+    function find_parametric_coordinates(p, typma3d, coor_pt_3d, nno_3d) result(res)
+        implicit none
+        ! Inputs
+        character(len=8), intent(in) :: typma3d
+        integer, intent(in) :: nno_3d
+        real(kind=8), intent(in) :: p(3)
+        real(kind=8), intent(in) :: coor_pt_3d(:,:) 
+    
+        ! Outputs
+        real(kind=8) :: res(3)
+        ! Others
+        real(kind=8) :: xi(2), dxi(2), ff(8), df(3, 8)
+        integer :: iret, max_iter = 30
+        integer :: i, j, iter
+        real(kind=8) :: F(3), jac(3,2), det, residual(2)
+        real(kind=8) ::  tol = 1.0e-6
+        real(kind=8), dimension(2, 2) :: JtJ       
+        real(kind=8), dimension(2, 3) :: Jt        
+        real(kind=8), dimension(2, 2) :: JtJ_inv 
+        aster_logical :: converged
+    
+        ! Initialize 
+        res = 0.d0
+        res(3) = -1.d0
+        ff = 0.d0
+        df = 0.d0
+        xi = 0.d0
+        dxi = 0.d0
+        F = 0.d0
+        converged = .false.
+
+
+        do while (.not. converged .and. iter < max_iter)
+
+            call elrfvf(typma3d, xi, ff)
+            call elrfdf(typma3d, xi, df)
+
+            F(1) = sum(ff * coor_pt_3d(1,:)) - p(1)
+            F(2) = sum(ff * coor_pt_3d(2,:)) - p(2)
+            F(3) = sum(ff * coor_pt_3d(3,:)) - p(3)
+
+            ! Jocobian
+            jac(1, 1) = sum(df(1,:) * coor_pt_3d(1,:))
+            jac(1, 2) = sum(df(2,:) * coor_pt_3d(1,:))
+            jac(2, 1) = sum(df(1,:) * coor_pt_3d(2,:))
+            jac(2, 2) = sum(df(2,:) * coor_pt_3d(2,:))
+            jac(3, 1) = sum(df(1,:) * coor_pt_3d(3,:))
+            jac(3, 2) = sum(df(2,:) * coor_pt_3d(3,:))
+
+            ! Compute J^T (transpose of J)
+            Jt = transpose(jac)
+
+            ! Compute J^T * J (2x2 matrix)
+            JtJ = matmul(Jt, jac)
+
+            ! Compute the inverse of J^T * J (2x2 matrix)
+            call matinv('S', 2, JtJ, JtJ_inv, det)
+
+            ! residual
+            residual = - matmul(Jt, F)
+
+            ! solve
+            dxi = matmul(JtJ_inv, residual)
+
+            ! update
+            xi = xi + dxi
+
+            if (maxval(abs(dxi)) < tol) then
+                converged = .true.
+            end if
+
+            iter = iter + 1
+
+        end do
+
+        ! Last check before the return
+        if (converged) then
+            if (((typma3d(1:3) .eq. "TR3" .or.typma3d(1:3) .eq. "TR6") & 
+                .and. xi(1) >= 0.0d0 .and. xi(1) <= 1.0d0 .and. &
+                 xi(2) >= 0.0d0 .and. xi(2) <= 1.0d0) .or. &
+                ((typma3d(1:3) .eq. "QU4" .or. typma3d(1:3) .eq. "QU8") &
+                .and. xi(1) >= -1.0d0 .and. xi(1) <= 1.0d0 .and. &
+                 xi(2) >= -1.0d0 .and. xi(2) <= 1.0d0)) then
+                ! Return the coordinates
+                res(1) = xi(1)
+                res(2) = xi(2)
+                res(3) = 1.d0
+            end if
+        end if
+        
+    end function find_parametric_coordinates
+    
+    !
+!
+end module raco3d_utils

@@ -15,20 +15,40 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
 !
+subroutine rco3d_elem(nomte, ndim, nddl, &
+    typmaco, nnco, typma3d, nn3d)
+!
+    implicit none
 !
 #include "asterf_types.h"
-!
-interface
-    subroutine apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
-                        list_pairs, nb_pairs, nt_nodes)
-        character(len=8), intent(in) :: noma
-        character(len=24), intent(in) :: lismaco, lismavo
-        integer, intent(in) :: nbmavo, nbmaco
-        real(kind=8), intent(in) :: epai
-        integer, intent(out) :: nb_pairs, nt_nodes
-        integer, pointer :: list_pairs(:)
+#include "asterfort/assert.h"
+#include "asterfort/lteatt.h"
 
-    end subroutine apco3d
-end interface
+    character(len=16), intent(in) :: nomte
+    integer, intent(out) :: ndim, nddl, nnco, nn3d
+    character(len=8), intent(out) :: typmaco, typma3d
+
+
+    if (nomte(1:7) .eq. 'RACS2T3') then
+        ndim = 3
+        typmaco = 'SE2'
+        nnco = 2
+        typma3d = 'TR3'
+        nn3d = 3
+        nddl = nn3d*ndim+nnco*(ndim+3)
+    end if
+
+    if (nomte(1:7) .eq. 'RACS2Q4') then
+        ndim = 3
+        typmaco = 'SE2'
+        nnco = 2
+        typma3d = 'QU4'
+        nn3d = 4
+        nddl = nn3d*ndim+nnco*(ndim+3)
+    end if
+
+
+
+end subroutine

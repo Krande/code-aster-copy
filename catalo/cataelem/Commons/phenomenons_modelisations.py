@@ -2820,7 +2820,16 @@ phen.add(
         dim=(2, 3),
         code="RC3",
         attrs=((AT.CONTACT, "OUI"),), 
-        elements=((MT.SE2TR3, EL.RACS2T3),)
+        elements=(
+            (MT.SE2TR3, EL.RACS2T3),
+            (MT.SE2TR6, EL.RACS2T6),
+            (MT.SE2QU4, EL.RACS2Q4),
+            (MT.SE2QU8, EL.RACS2Q8),
+            (MT.SE3TR3, EL.RACS3T3),
+            (MT.SE3TR6, EL.RACS3T6),
+            (MT.SE3QU4, EL.RACS3Q4),
+            (MT.SE3QU8, EL.RACS3Q8),
+            )
     ),
 )
 

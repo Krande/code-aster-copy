@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
-#include "asterf_types.h"
 !
 interface
-    subroutine apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
-                        list_pairs, nb_pairs, nt_nodes)
-        character(len=8), intent(in) :: noma
-        character(len=24), intent(in) :: lismaco, lismavo
-        integer, intent(in) :: nbmavo, nbmaco
-        real(kind=8), intent(in) :: epai
-        integer, intent(out) :: nb_pairs, nt_nodes
-        integer, pointer :: list_pairs(:)
-
-    end subroutine apco3d
+subroutine rco3d_elem(nomte, ndim, nddl, &
+    typmaco, nnco, typma3d, nn3d)
+    character(len=16), intent(in) :: nomte
+    integer, intent(out) :: ndim, nddl, nnco, nn3d
+    character(len=8), intent(out) :: typmaco, typma3d
+    end subroutine rco3d_elem
 end interface

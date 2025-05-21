@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,17 @@
 
 !
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine debug_print(sch1, unit)
-        character(len=*), intent(in) :: sch1
-        integer, optional, intent(in) :: unit
-    end subroutine debug_print
+    subroutine raco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
+                                list_total_no_co, nbnocot, map_noco_pair, map_noco_nbelem, &
+                                map_noco_nbnoco)
+        character(len=19), intent(in) :: ligrel
+        character(len=8), intent(in) :: noma, mod
+        integer, intent(in):: nb_pairs, nt_nodes, nbnocot
+        integer, intent(out) :: map_noco_pair(:,:,:)
+        integer, intent(out) :: map_noco_nbelem(:,:)
+        integer, intent(out) :: map_noco_nbnoco(:,:,:)
+        integer, pointer :: list_total_no_co(:)
+        integer, pointer :: list_pairs(:)
+    end subroutine raco3d_crealigrel
 end interface

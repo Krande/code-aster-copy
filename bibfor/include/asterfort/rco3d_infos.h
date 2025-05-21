@@ -18,17 +18,19 @@
 
 !
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
-                        list_pairs, nb_pairs, nt_nodes)
-        character(len=8), intent(in) :: noma
-        character(len=24), intent(in) :: lismaco, lismavo
-        integer, intent(in) :: nbmavo, nbmaco
+    subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
+                        gauss_weight, jac_det, ff_co, ff_3d, s, t, n, skip)
+        character(len=8), intent(in) :: typmaco, typma3d
         real(kind=8), intent(in) :: epai
-        integer, intent(out) :: nb_pairs, nt_nodes
-        integer, pointer :: list_pairs(:)
-
-    end subroutine apco3d
+        integer, intent(in) :: j_geom
+        integer, intent(out) :: nb_gauss
+        real(kind=8), intent(out) :: gauss_coor(2, 10)
+        real(kind=8), intent(out) :: jac_det(10)
+        real(kind=8), intent(out) :: gauss_weight(10)
+        real(kind=8), intent(out) :: ff_co(3,10)
+        real(kind=8), intent(out) :: ff_3d(8, 10)
+        real(kind=8), intent(out) :: t(3, 10), n(3, 10), s(3)
+        aster_logical, intent(out) :: skip
+    end subroutine rco3d_infos
 end interface

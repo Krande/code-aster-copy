@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,33 +23,30 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     !
     !    ATTENTION CETTE PROGRAMMATION SUPPOSE QUE L'OBJET NUEQ EST UN
     !    VECTEUR IDENTITE. A MODIFIER
+    
 #include "jeveux.h"
 #include "MeshTypes_type.h"
-#include "asterfort/adalig.h"
 #include "asterfort/apco3d.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/initel.h"
-#include "asterfort/jecrec.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/jeecra.h"
+#include "asterfort/digdel.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/mesomm.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/mecact.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/raco3d_crealigrel.h"
 !
     integer :: iocc
     character(len=8) :: charge
@@ -57,10 +54,8 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=19) :: lisrel
     character(len=*) :: numdlz, chargz, fonrez, lisrez
 ! -------------------------------------------------------
-!     RACCO 3D-COQUE PAR DES RELATIONS LINEAIRES
-!     ENTRE LES NOEUDS DES MAILLES DE BORD MODELISANT
-!     LA TRACE DE LA SECTION DE LA POUTRE SUR LA COQUE
-!     ET LE NOEUD DE LA POUTRE DONNE PAR L'UTILISATEUR
+!     LIAISON COQUE-3D PAR DES RELATIONS LINEAIRES
+!     ENTRE LES MAILLES DE BORDS
 ! -------------------------------------------------------
 !  NUMDLZ        - IN    - K14  - : NOM DU NUMEDDL DU LIGREL DU MODELE
 !                                     (IL A ETE CREE SUR LA VOLATILE)
@@ -76,46 +71,30 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=19) :: ligrmo, ligrel
-    character(len=24) :: lismaco, lismavo
-    character(len=8)  :: mod, noma
-    character(len=8)  :: typg_co_name, typg_vo_name
-    character(len=16) :: typg_racc_name, typf_racc_name
-    integer :: typg_racc_nume, typf_racc_nume
+    character(len=24) :: lismaco, lismavo,lisnoco
+    character(len=8)  :: mod, noma, licmp(6)
     integer :: nbmavo, nbmaco, nt_nodes
     character(len=8), pointer :: lgrf(:) => null()
-    integer :: nb_pairs, el_co, el_vo, typg_co_nume, typg_vo_nume
-    integer :: nb_nodes_co, nb_nodes_vo
-    integer :: i, j, l, index, liel_l, nb_grel, elem, deca, jv_liel
+    integer :: nb_pairs
+    integer :: i, j, k, l, index, n1, elem
+    real(kind=8) :: epai, icmp(6)
     integer, pointer :: list_pairs(:) => null()
-    integer, pointer :: v_list_type(:)=> null()
-    integer, pointer :: v_mesh_typmail(:) => null()
-    integer, pointer :: v_connex(:) => null()
-    integer, pointer :: v_connex_lcum(:) => null()
-    integer, pointer :: v_ligr_nbno(:) => null()
-    integer, pointer :: v_index_bool(:) => null()
-    integer, pointer :: v_ligrel_nema(:) => null()
+    character(len=8) :: lpain(2), lpaout(1)
+    character(len=24) :: lchin(2), lchout(1), valech
+    integer :: nbnocot, jlisnoco
+    integer, allocatable :: map_noco_pair(:,:,:)
+    integer, allocatable :: map_noco_nbnoco(:,:,:)
+    integer, allocatable :: map_noco_nbelem(:,:)
+    integer, pointer :: list_total_no_co(:) => null()
     integer, pointer :: v_ligrel_liel(:) => null()
-
-    character(len=8) :: lpain(1), lpaout(1)
-    character(len=24) :: lchin(1), lchout(1), valech
+    integer, pointer :: v_list_no_pair(:) => null()
+    integer :: jv_liel, num_pair, num_no
+    ! TMP
+    character(len=24) :: matrelem
+    integer, pointer :: v_desc(:) => null()
+    real(kind=8), pointer :: v_resl(:) => null()
+    integer :: iret, nb_gr, nel, nddl, i_resl, ncomp, mode
     
-    ! TABLEAUX DE DONNEES
-    integer, parameter :: nb_racc = 2
-    character(len=8), parameter, dimension(nb_racc) :: coq_el = (/&
-                                'SEG2    ', 'SEG2    ' /)
-    
-    character(len=8), parameter, dimension(nb_racc) :: vol_el = (/&
-                                'TRIA3   ', 'QUAD4   ' /)
-    
-    character(len=8), parameter, dimension(nb_racc) :: mesh_type = (/&
-                                'SE2TR3  ', 'SE2QU4  ' /)
-    
-    character(len=8), parameter, dimension(nb_racc) :: fe_type = (/&
-                                'RACS2T3 ', 'RACS2Q4 ' /)
-    integer, parameter, dimension(nb_racc) :: nb_nodes = (/ &
-                                5, 6 /)
-
-    AS_ALLOCATE(vi=v_index_bool, size=nb_racc)
 
     motcle(1) = 'GROUP_MA_1'
     motcle(2) = 'GROUP_MA_2'
@@ -126,8 +105,9 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     charge = chargz
     lisrel = lisrez
 
-    lismavo = '&&RACO3D.LISTE_MAILLES.VOL'
-    lismaco = '&&RACO3D.LISTE_MAILLES.COQ'
+    lismavo = '&&RACO3D.LMAILLES.VOL'
+    lisnoco = '&&RACO3D.LNOEUDS.COQ'
+    lismaco = '&&RACO3D.LMAILLES.COQ'
     motfac = 'LIAISON_ELEM'
     ligrel = '&&RACO3D'
 
@@ -146,10 +126,14 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
 
-! --- MESH INFOS
-    call jeveuo(noma//'.TYPMAIL', 'L', vi=v_mesh_typmail)
-    call jeveuo(noma//'.CONNEX', 'L', vi=v_connex)
-    call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', vi=v_connex_lcum)
+!--- RECUPERER EPAISSEUR
+    
+    call getvr8('LIAISON_ELEM', 'EPAISSEUR', iocc=iocc, scal=epai, nbret=n1)
+
+    if (n1 .eq. 0) then
+        ASSERT(.false.)
+    end if
+    
 
 !--- -----------------------------------
 !-- RECUPERER LA LISTE DES MAILLES
@@ -160,128 +144,110 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     call reliem(' ', noma, 'NU_MAILLE', motfac, iocc, &
                 1, motcle(2), typmcl(2), lismavo, nbmavo)
 
+!- RECUPERER LA LISTE DES NOOEUDS DU BORD DE LA COQUE
+
+    call reliem(' ', noma, 'NU_NOEUD', motfac, iocc, &
+                1, motcle(1), typmcl(1), lisnoco, nbnocot)
+    call jeveuo(lisnoco, 'L', jlisnoco)
+    !
+    AS_ALLOCATE(vi=list_total_no_co, size=nbnocot)
+    !
+    do i=1, nbnocot
+        list_total_no_co(i) = zi(jlisnoco-1+i)
+        write(*,*) "noeuds coque ", list_total_no_co(i)
+    end do
+
 !-- RECUPERER LA LISTE DES PAIRES
     nb_pairs = 0
     nt_nodes = 0
-    call apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, &
-                list_pairs, nb_pairs, nt_nodes)
+
+    call apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
+                    list_pairs, nb_pairs, nt_nodes)
+!
     write(*,*) "nombre de pairs est   ", nb_pairs
+
 !-- CONSTRUCTION DU LIGREL
-!                
-!   ALLOCATION
-    AS_ALLOCATE(vi=v_list_type, size=nb_pairs)
 !
-! - NO LATE NODES
-!
-    call wkvect(ligrel//'.NBNO', 'V V I', 1, vi=v_ligr_nbno)
-    v_ligr_nbno(1) = 0
+!   2D ET 3D ARRAYs POUR ACCELERER L ACCES AUX DONNEES AU MOMENT 
+!   DE L ASSEMBLAGE  DES MATRICES
+    allocate(map_noco_pair(9, nbnocot, nb_pairs))
+    allocate(map_noco_nbnoco(9, nbnocot, nb_pairs))
+    allocate(map_noco_nbelem(9, nbnocot))
+    !
+    call raco3d_crealigrel(ligrel, noma, mod, list_pairs, &
+                            nb_pairs, nt_nodes, list_total_no_co, &
+                            nbnocot, map_noco_pair, map_noco_nbelem, &
+                            map_noco_nbnoco)
 
-!
-! - OBJET NEMA
-!
-    call jecrec(ligrel//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', nb_pairs)
-    call jeecra(ligrel//'.NEMA', 'LONT', nt_nodes+nb_pairs)
-    call jeveuo(ligrel//'.NEMA', 'E', vi=v_ligrel_nema)
-    deca = 0
-    do i = 1, nb_pairs
-        el_co = list_pairs(2*(i-1) + 1)
-        el_vo = list_pairs(2*(i-1) + 2)
-        typg_co_nume = v_mesh_typmail(el_co)
-        typg_vo_nume = v_mesh_typmail(el_vo)
-        call jenuno(jexnum('&CATA.TM.NOMTM', typg_co_nume), typg_co_name)
-        call jenuno(jexnum('&CATA.TM.NOMTM', typg_vo_nume), typg_vo_name)
-        do j = 1, nb_racc
-            if ( (typg_co_name .eq. coq_el(j)) .and. (typg_vo_name .eq. vol_el(j)) ) then
-                    index = j
-                    exit
-            end if
-        end do
-        v_list_type(i) = index
-        v_index_bool(index) = v_index_bool(index) + 1
-        typg_racc_name = mesh_type(index)
-        call jenonu(jexnom('&CATA.TM.NOMTM', typg_racc_name), typg_racc_nume)
-        typf_racc_name = fe_type(index)
-        !
-        !- NOMBRE DES NOEUDS DE CHAQUE PARTIE
-        !
-        nb_nodes_co = v_connex_lcum(el_co+1)-v_connex_lcum(el_co)
-        nb_nodes_vo = v_connex_lcum(el_vo+1)-v_connex_lcum(el_vo)
-        ASSERT(nb_nodes(index) .eq. (nb_nodes_co+nb_nodes_vo))
-        !
-        !- CREER L'ELEMENT
-        !
-        call jecroc(jexnum(ligrel//'.NEMA', i))
-        call jeecra(jexnum(ligrel//'.NEMA', i), 'LONMAX', nb_nodes(index)+1)
-        v_ligrel_nema(deca+nb_nodes(index)+1) = typg_racc_nume
-        !
-        ! - NOEUDS COQUE
-        !
-        do j = 1, nb_nodes_co
-            v_ligrel_nema(deca+j) = v_connex(v_connex_lcum(el_co)-1+j)
-        end do
-        !
-        ! - NOEUDS 3D
-        !
-        do j = 1, nb_nodes_vo
-            v_ligrel_nema(deca+nb_nodes_co+j) = v_connex(v_connex_lcum(el_vo)-1+j)
-        end do
-        deca = deca+nb_nodes(index)+1
-        
-    end do
-!
-! - OBJET LIEL
-!
-    liel_l = 0
-    nb_grel = 0
-    do index = 1, nb_racc
-        if (v_index_bool(index) .gt. 0) then
-            liel_l = liel_l + v_index_bool(index) + 1
-            nb_grel = nb_grel + 1
-        end if
-    end do
-    call jecrec(ligrel//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE', nb_grel)
-    call jeecra(ligrel//'.LIEL', 'LONT', liel_l)
+!    CREATION DE LA CARTE DES CARACTERISTIQUES DE LA PARTIE COQUE
+!    
+    licmp(1) = 'EP'
+    licmp(2) = 'ALPHA'
+    licmp(3) = 'BETA'
+    licmp(4) = 'CTOR'
+    licmp(5) = 'EXCENT'
+    licmp(6) = 'INERTIE'
+    icmp(1) = epai
+    icmp(2) = 0.0
+    icmp(3) = 0.0
+    icmp(4) = 0.0
+    icmp(5) = 0.0
+    icmp(6) = 0.0
+    call mecact('G', '&&RACO3D.PCACOQU', 'LIGREL', ligrel, 'CACOQU_R', &
+                    ncmp=6, lnomcmp=licmp, vr=icmp)
 
-    elem = 0
-    do index = 1, nb_racc
-        jv_liel = 0
-        if (v_index_bool(index) .gt. 0) then
-            elem = elem + 1 
-            call jecroc(jexnum(ligrel//'.LIEL', elem))
-            call jeecra(jexnum(ligrel//'.LIEL', elem), 'LONMAX', v_index_bool(index)+1)
-            call jeveuo(jexnum(ligrel//'.LIEL', elem), 'E', vi=v_ligrel_liel)
-            typf_racc_name = fe_type(index)
-            call jenonu(jexnom('&CATA.TE.NOMTE', typf_racc_name), typf_racc_nume)
-            !write(*,*) "#########################  ", typf_racc_nume
-            v_ligrel_liel(v_index_bool(index)+1) = typf_racc_nume
-            do i = 1, nb_pairs
-                if (v_list_type(i) .eq. index) then
-                    jv_liel = jv_liel + 1
-                    v_ligrel_liel(jv_liel) = -i
-                end if
-            end do
-            ASSERT(jv_liel .eq. v_index_bool(index))
-        end if
-    end do
-!
-!- OBJECT LGRF   
-!
-    call jedupo(mod(1:8)//'.MODELE    .LGRF', 'V', ligrel//'.LGRF', .false._1)
-    call adalig(ligrel)
-    call initel(ligrel)
-
-
+    ! LISTE DES CHAMPS
     lpain(1) = 'PGEOMER'
+    lpain(2) = 'PCACOQU'
     lchin(1) = noma//'.COORDO'
-    lpaout(1) = 'PMATUUR'
-    lchout(1) = '&&RACO3D.PMATUUR'
+    lchin(2) = '&&RACO3D.PCACOQU'
+    lpaout(1) = 'PMATUNS'
+    lchout(1) = '&&RACO3D.PMATUNS'
+
+    
 !
-    call calcul('S', 'RIGI_CONT', ligrel, 1, lchin, &
+    call calcul('S', 'LIAI_CO_3D', ligrel, 2, lchin, &
                 lpain, 1, lchout, lpaout, 'V', &
                'OUI')
+    
+    ! TESTING
+
+    call jeexin(lchout(1)(1:19)//'.DESC', iret)
+    call jeveuo(lchout(1)(1:19)//'.DESC', 'L', vi=v_desc)
+
+    nb_gr = v_desc(2)
+    nddl = 3
+    do i=1, nb_gr
+        call jeveuo(jexnum(lchout(1)(1:19)//'.RESL', i), 'L', vr=v_resl)
+        call jelira(jexnum(ligrel(1:19)//'.LIEL', i), 'LONMAX', nel)
+        call jeveuo(jexnum(ligrel(1:19)//'.LIEL', i), 'L', vi=v_ligrel_liel)
+        
+        mode = v_desc(2+i)
+        ncomp = digdel(mode)
+        !write(*,*) "noeud   ", list_total_no_co(5)
+        do k=1, map_noco_nbelem(i, 5)
+            jv_liel = map_noco_pair(i, 5, k)
+            num_pair = - v_ligrel_liel(jv_liel)
+            call jeveuo(jexnum(ligrel//'.NEMA', num_pair), 'L', vi=v_list_no_pair)
+            !write(*,*) "noeud element coque ", v_list_no_pair(1), "  ", v_list_no_pair(2)
+        end do
+        write(*,*) "#########################  ", ncomp
+        do j=1, nel - 1
+            write(*,*) "#########################  ", v_resl((j-1) * ncomp + 1)
+        end do
+    end do
+
 !FIN 
     AS_DEALLOCATE(vi=list_pairs)
-    AS_DEALLOCATE(vi=v_index_bool)
-    AS_DEALLOCATE(vi=v_list_type)
+    AS_DEALLOCATE(vi=list_total_no_co)
+    deallocate(map_noco_pair)
+    deallocate(map_noco_nbelem)
+    deallocate(map_noco_nbnoco)
+    call detrsd('LIGREL', ligrel)
+    call detrsd('CARTE', '&&RACO3D.PCACOQU')
+    call detrsd('RESUELEM', '&&RACO3D.PMATUNS')
+    call jedetr('&&RACO3D.LMAILLES.VOL')
+    call jedetr('&&RACO3D.LMAILLES.COQ')
+    call jedetr('&&RACO3D.LNOEUDS.COQ')
 
 end subroutine

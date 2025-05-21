@@ -629,6 +629,7 @@ subroutine te0000(numc, opt, te)
 #include "asterfort/te0598.h"
 #include "asterfort/te0599.h"
 #include "asterfort/te0600.h"
+#include "asterfort/te0601.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/assert.h"

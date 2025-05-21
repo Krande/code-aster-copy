@@ -15,36 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+!
+interface
+subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
+                    ff_co, ff_3d, s, t, n, epai, & 
+                    nno_co, nno_3d, mat )
+    real(kind=8), intent(in) :: epai
+    integer, intent(in) :: nb_gauss, nno_co, nno_3d
+    real(kind=8), intent(in) :: jac_det(10)
+    real(kind=8), intent(in) :: gauss_weight(10)
+    real(kind=8), intent(in) :: gauss_coor(2, 10)
+    real(kind=8), intent(in) :: ff_co(3, 10)
+    real(kind=8), intent(in) :: ff_3d(8, 10)
+    real(kind=8), intent(in) :: t(3, 10), n(3, 10), s(3)
+    real(kind=8), intent(out) :: mat(:,:)
+    end subroutine rco3d_calcmat
+end interface
 
-subroutine debug_print(sch1, unit)
-    implicit none
-!     --
-!     ARGUMENTS:
-!     ----------
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/asmpi_barrier.h"
-#include "asterfort/asmpi_info.h"
-#include "asterfort/utimsd.h"
-    character(len=*), intent(in) :: sch1
-    integer, optional, intent(in) :: unit
-!
-    integer :: rang, nbproc, iproc, unit_
-    mpi_int :: mrank, msize
-!
-    if (present(unit)) then
-        unit_ = unit
-    else
-        unit_ = 6
-    end if
-    call asmpi_info(rank=mrank, size=msize)
-    rang = to_aster_int(mrank)
-    nbproc = to_aster_int(msize)
-    do iproc = 0, nbproc-1
-        if (iproc .eq. rang) then
-            call utimsd(unit_, 2, .false._1, .true._1, sch1, 1, ' ')
-            flush (unit_)
-        end if
-        call asmpi_barrier()
-    end do
-end subroutine
