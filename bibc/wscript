@@ -19,8 +19,11 @@
 
 import os.path as osp
 import sys
+import os 
+from pathlib import Path
 
-from waflib import Configure, TaskGen, Utils
+
+from waflib import Configure, TaskGen, Utils, Logs
 
 
 def options(self):
@@ -136,6 +139,35 @@ def process_h(self, node):
     pass
 
 
+def post_install_links(ctx):
+    if not ctx.cmd.startswith('install'):
+        return
+
+    asterlibdir = Path(ctx.env.ASTERLIBDIR)
+    dll_path = asterlibdir / 'aster.dll'
+    if not dll_path.exists():
+        Logs.warn(f"{dll_path} not found")
+        return
+
+    extlib = "so"
+    mods = ["aster", "aster_core", "aster_fonctions"]
+    libaster = "libaster.so"
+    if ctx.env.ASTER_PLATFORM_MINGW:
+        extlib = "pyd"
+        mods.extend(["libaster", "libAsterGC"])
+        libaster = "aster.dll"
+
+    for linkname in (f"{mod}.{extlib}" for mod in mods):
+        linkpath = asterlibdir / linkname
+
+        try:
+            if linkpath.exists():
+                linkpath.unlink()
+            os.link(dll_path, linkpath)
+            Logs.info(f"Created hardlink: {linkpath}")
+        except Exception as e:
+            Logs.warn(f"Failed to create hardlink {linkpath}: {e}")
+
 def build_libbibc(self, env):
     use = [
         "PYEXT",
@@ -189,17 +221,20 @@ def build_libaster(self, env):
         use=use,
         install_path=env.ASTERLIBDIR,
     )
-    extlib = ".so"
-    mods = ["aster", "aster_core", "aster_fonctions"]
-    libaster = "libaster.so"
-    if env.ASTER_PLATFORM_MINGW:
-        extlib = ".pyd"
-        mods.extend(["libaster", "libAsterGC"])
-        libaster = "aster.dll"
-    for submodule in mods:
-        src = osp.join(env.ASTERLIBDIR, submodule + extlib)
-        self.symlink_as(src, libaster)
 
+    self.add_post_fun(post_install_links)
+
+    # extlib = ".so"
+    # mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
+    # libaster = "libaster.so"
+    # if env.ASTER_PLATFORM_MINGW:
+    #     extlib = ".pyd"
+    #     mods.extend(["libaster", "libAsterGC"])
+    #     libaster = "aster.dll"
+    # for submodule in mods:
+    #     src = osp.join(env.ASTERLIBDIR, submodule + extlib)
+    #     #self.symlink_as(src, libaster)
+    #     os.link(src, libaster)
 
 @Configure.conf
 def check_c_compiler_flags(self):
