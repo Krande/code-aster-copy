@@ -65,6 +65,9 @@ class RACS2T3(Element):
     )
 
 
+# ELEMENTS DE RACCORD COQUE/3D
+
+
 class RACS2Q4(RACS2T3):
     """
     THE RACSQ4 CLASS ELEMENT : SEG2/QUA4 (2D EDGE / 3D FACE )

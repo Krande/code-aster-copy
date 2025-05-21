@@ -400,7 +400,7 @@ CREA_CHAMP ne sait pas créer de champ de type %(k1)s.
     ),
     100: _(
         """
- Problème pour récupérer l'épaisseur de la coque pour la maille  %(i1)s
+ Problème pour récupérer l'épaisseur de la coque pour la maille  %(i1)d
 """
     ),
     101: _(

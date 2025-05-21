@@ -123,6 +123,6 @@ subroutine caliel(valeTypeZ, loadZ, modelZ)
         call jedetr('&&CALIEL.NUMED')
 !
     end if
-    
+
     call jedema()
 end subroutine
