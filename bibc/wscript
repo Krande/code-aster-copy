@@ -80,6 +80,10 @@ def configure(self):
         self.add_linkflags("-nofor-main", dest="LINKFLAGS_fcprogram")
     self.check_c_compiler_flags()
 
+    if self.env.ASTER_PLATFORM_MINGW:
+        self.check_cc(lib='gfortran', uselib_store='GFORTRAN')
+        self.check_cc(lib='dbghelp', uselib_store='DBGHELP')
+
 
 @Configure.conf
 def check_bibc_depends(self):
@@ -162,6 +166,9 @@ def build_libbibc(self, env):
 
 def build_libaster(self, env):
     use = ["LIBASTER", "asterbibfor", "asterbibfor_ext", "asterbibc", "asterbibcxx", "astergc"]
+    if self.env.ASTER_PLATFORM_MINGW:
+        use.append("GFORTRAN")
+        use.append("DBGHELP")
     if env.BUILD_MFRONT:
         use.append("astermfront")
     # {bibfor, bibc, bibcxx}/*.o
