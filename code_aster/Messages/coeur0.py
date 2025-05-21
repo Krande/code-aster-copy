@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,4 +59,20 @@ Le fichier THYC est invalide : il n'y a pas de cohérence entre le barycentre et
 On ne trouve que %(i1)d mailles THYC associées aux %(i2)d grilles.
 """
     ),
+    8: {
+        "message": _(
+            """
+La masse de l'assemblage %(k1)s en position %(k2)s est %(r1)1.1f kg (%(r2)1.1f daN)
+"""
+        ),
+        "flags": "DECORATED",
+    },
+    9: {
+        "message": _(
+            """
+La masse totale des assemblages en coeur est %(r1)1.1f kg
+"""
+        ),
+        "flags": "DECORATED",
+    },
 }

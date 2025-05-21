@@ -37,6 +37,7 @@ from ...CodeCommands import (
     DEFI_FONCTION,
     MODI_MAILLAGE,
     STAT_NON_LINE,
+    POST_ELEM,
 )
 from ...Objects import FieldOnCellsReal
 from ...Messages import UTMESS
@@ -188,7 +189,51 @@ class Mac3CoeurCalcul:
     def run(self, **kwargs):
         """Run all the calculation steps"""
         self._prepare_data(**kwargs)
+        self._check_mass()
         return self._run(**kwargs)
+
+    def _check_mass(self):
+        self.compute_core_mass()
+        for ac in self.coeur.collAC:
+            self.compute_ac_mass(ac)
+
+    def compute_core_mass(self):
+
+        MASSE_TOT = POST_ELEM(
+            MODELE=self.model,
+            CHAM_MATER=self.cham_mater_free,
+            CARA_ELEM=self.carael,
+            MASS_INER=_F(TOUT="OUI"),
+        )
+        mtot_core = MASSE_TOT.EXTR_TABLE().values()["MASSE"][0]
+        UTMESS("I", "COEUR0_9", valr=mtot_core)
+
+        return mtot_core
+
+    def compute_ac_mass(self, ac):
+
+        pos = ac.pos_aster
+        cells_with_mass = [f"CR_{pos}", f"TG_{pos}", f"ES_{pos}", f"EI_{pos}", f"GR_{pos}"]
+
+        MASSE_AC = POST_ELEM(
+            MODELE=self.model,
+            CHAM_MATER=self.cham_mater_free,
+            CARA_ELEM=self.carael,
+            MASS_INER=_F(GROUP_MA=cells_with_mass),
+        )
+
+        tab_ac = MASSE_AC.EXTR_TABLE().values()
+        val_ac = dict(zip(tab_ac["LIEU"], tab_ac["MASSE"]))
+        mtot_ac = val_ac.pop("UNION_GROUP_MA")
+        mtot_dan = mtot_ac * 9.81 / 10.0
+
+        for comp, mcomp in val_ac.items():
+            mcomp_dan = mcomp * 9.81 / 10.0
+            logger.debug("<MAC3_CALCUL><MASS>: %s %1.1f kg (%1.1f daN)" % (comp, mcomp, mcomp_dan))
+
+        UTMESS("I", "COEUR0_8", valk=(ac.typeAC, ac.pos_damac), valr=(mtot_ac, mtot_dan))
+
+        return mtot_ac
 
     def restrict_displacement(self, resu, cmps=None, grps=None):
         """
