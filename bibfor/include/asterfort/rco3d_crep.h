@@ -19,12 +19,13 @@
 !
 !
 interface
-    subroutine rco3d_crep(ligrel, noma, chmlrac, cara_elem, epai)
-        character(len=19) :: ligrel
+    subroutine rco3d_crep(cara_elem, noma, &
+                            lismaco, nbmaco, v_epai)
         character(len=8)  :: noma
-        character(len=19) :: chmlrac
         character(len=8)  :: cara_elem
-        real(kind=8)      :: epai
+        character(len=24) :: lismaco
+        integer           :: nbmaco
+        real(kind=8), pointer ::  v_epai(:)
     end subroutine rco3d_crep
 end interface
 

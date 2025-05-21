@@ -629,7 +629,6 @@ subroutine te0000(numc, opt, te)
 #include "asterfort/te0598.h"
 #include "asterfort/te0599.h"
 #include "asterfort/te0600.h"
-#include "asterfort/te0601.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/assert.h"
@@ -652,7 +651,7 @@ subroutine te0000(numc, opt, te)
 !   -- avant d'augmenter la plage des numeros (au dela de 600),
 !      il faut utiliser les numeros "vides" (les routines de 25 lignes)
     ASSERT(numc .gt. 0)
-    ASSERT(numc .le. 601)
+    ASSERT(numc .le. 600)
 
     nomte = zk16(ca_ianote_-1+te)
     nomopt = zk16(ca_ianoop_-1+opt)
@@ -1863,8 +1862,6 @@ subroutine te0000(numc, opt, te)
             call te0599(nomopt, nomte)
         case (600)
             call te0600(nomopt, nomte)
-        case (601)
-            call te0601(nomopt, nomte)
         case default
             call codent(numc, 'D', k8bid)
             call utmess('F', 'CALCUL_27', 1, k8bid)

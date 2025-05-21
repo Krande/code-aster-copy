@@ -18,11 +18,11 @@
 !
 interface
 subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
-                    ff_co, ff_3d, s, t, n, epai, & 
+                    ff_co, ff_3d, s, t, n, epai, crig, & 
                     nno_co, nno_3d, skip, mat )
     use raco3d_module
     !
-    real(kind=8), intent(in) :: epai
+    real(kind=8), intent(in) :: epai, crig
     integer, intent(in) :: nb_gauss, nno_co, nno_3d
     real(kind=8), intent(in) :: jac_det(NB_GAUSS_MAX)
     real(kind=8), intent(in) :: gauss_weight(NB_GAUSS_MAX)

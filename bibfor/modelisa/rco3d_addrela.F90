@@ -40,7 +40,6 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
 #include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 
-
     character(len=19), intent(in) :: ligrel, resuelem, lisrel
     character(len=8), intent(in) :: noma
     integer, intent(in) :: nb_pairs, nbnocot
@@ -109,7 +108,7 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
     type(PointerContainer), allocatable :: grel_ptr(:), resu_ptr(:)
     integer :: nnco, nn3d, idx, nddl, row_index, ico, i3d
     integer :: dofco, dof3d, idof, jdof, taille
-    aster_logical :: found , check
+    aster_logical :: found, check, lcolle
 
     call jemarq()
     ! Fill the linear relations
@@ -203,7 +202,8 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
                     row_index = (jv_liel-1)*ncomp+6*(idx-1)*nddl+(idof-1)*nddl
                     do ico = 1, nnco
                         !call jenuno(jexnum(noeuma, v_list_no_pair(ico)), nomnoe)
-                        nomnoe = int_to_char8(v_list_no_pair(ico), noma, 'NOEUD')
+                        lcolle = .false.
+                        nomnoe = int_to_char8(v_list_no_pair(ico), lcolle, noma, 'NOEUD')
                         do jdof = 1, dofco
                             found = .false.
                             do l = 1, nbterm
@@ -220,20 +220,19 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
                                 lisddl(nbterm) = dofs(jdof)
                                 coer(nbterm) = resu_ptr(i)%rptr(row_index+6*(ico-1)+jdof)
                             end if
-                            !write(*,*) "nom noeud coque ", nomnoe
-                            !write(*,*) "# coque value at ", dofs(jdof), "  ", &
-                            !            resu_ptr(i)%rptr(row_index + 6*(ico-1)+jdof)
                         end do
                     end do
                     do i3d = nnco+1, nno-1
                         !call jenuno(jexnum(noeuma, v_list_no_pair(i3d)), nomnoe)
-                        nomnoe = int_to_char8(v_list_no_pair(i3d), noma, 'NOEUD')
+                        lcolle = .false.
+                        nomnoe = int_to_char8(v_list_no_pair(i3d), lcolle, noma, 'NOEUD')
                         do jdof = 1, dof3d
                             found = .false.
                             do l = 1, nbterm
                                 if ((lisno(l) .eq. nomnoe) .and. (lisddl(l) .eq. dofs(jdof))) then
                                     coer(l) = coer(l) &
-                                             +resu_ptr(i)%rptr(row_index+6*nnco+3*(i3d-nnco-1)+jdof)
+                                              +resu_ptr(i)%rptr( &
+                                              row_index+6*nnco+3*(i3d-nnco-1)+jdof)
                                     found = .true.
                                     exit
                                 end if
@@ -242,17 +241,14 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
                                 nbterm = nbterm+1
                                 lisno(nbterm) = nomnoe
                                 lisddl(nbterm) = dofs(jdof)
-                               coer(nbterm) = resu_ptr(i)%rptr(row_index+6*nnco+3*(i3d-nnco-1)+jdof)
+                                coer(nbterm) = &
+                                    resu_ptr(i)%rptr(row_index+6*nnco+3*(i3d-nnco-1)+jdof)
                             end if
                         end do
                     end do
                 end do
             end do
-            !write (*, *) "############ NEW RELATION #################", list_total_no_co(j), " ", dofs(idof)
-            !write(*,*) "nbterm ", nbterm
-            !write(*,*) "lisno ", lisno
-            !write(*,*) "lisddl ", lisddl
-            !write(*,*) "coer ", coer
+
             call afrela(coer, coec, lisddl, lisno, repe_type, &
                         repe_defi, nbterm, beta, betac, betaf, &
                         typcoe, typval, 0.d0, lisrel)
@@ -275,5 +271,5 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
     AS_DEALLOCATE(vi=repe_type)
 
     call jedema()
-    
+
 end subroutine

@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1501
 !
 
 subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
-                  list_pairs, nb_pairs, nt_nodes)
+                        list_pairs, nb_pairs, nt_nodes)
 !
     use raco3d_module
     implicit none
@@ -69,7 +68,6 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
     AS_ALLOCATE(vi=list_pairs, size=3*nbmaco*nbmavo)
     nb_pairs = 0
     nt_nodes = 0
-
 
     desc = noma(1:8)//'.COORDO    .DESC'
     vale = noma(1:8)//'.COORDO    .VALE'

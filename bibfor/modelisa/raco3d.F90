@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1501
 !
 subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     !
@@ -49,6 +48,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rco3d_apco3d.h"
+#include "asterfort/rco3d_crch.h"
 #include "asterfort/rco3d_crep.h"
 #include "asterfort/rco3d_crealigrel.h"
 #include "asterfort/rco3d_addrela.h"
@@ -90,6 +90,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     integer, allocatable :: map_noco_pair(:, :, :)
     integer, allocatable :: map_noco_nbnoco(:, :, :)
     integer, allocatable :: map_noco_nbelem(:, :)
+    real(kind=8), pointer ::  v_epai(:) => null()
     integer, pointer :: list_total_no_co(:) => null()
     character(len=8) :: cara_elem
 
@@ -123,20 +124,12 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
 
-!--- RECUPERER EPAISSEUR
-
-    call getvr8('LIAISON_ELEM', 'EPAISSEUR', iocc=iocc, scal=epai, nbret=n1)
-
-    if (n1 .eq. 0) then
-        ASSERT(.false.)
-    end if
-
 !--- RECUPERER COEF_RIGI_DRZ
 
     call getvr8('LIAISON_ELEM', 'COEF_RIGI_DRZ', iocc=iocc, scal=crig, nbret=n1)
 
     if (n1 .eq. 0) then
-        crig = 1.d0-6
+        crig = 1.d0-5
     end if
 !--- -----------------------------------
 !-- RECUPERER LA LISTE DES MAILLES
@@ -159,51 +152,43 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
         list_total_no_co(i) = zi(jlisnoco-1+i)
     end do
 
+!-- RECUPERER LES EPAISSEURS
+
+    AS_ALLOCATE(vr=v_epai, size=nbmaco)
+
+    call getvid('LIAISON_ELEM', 'CARA_ELEM', iocc=iocc, scal=cara_elem, nbret=n1)
+    call rco3d_crep(cara_elem, noma, lismaco, nbmaco, v_epai)
+    ! RECUPERER LE MAX POUR L APPARIEMMENT
+    epai = maxval(v_epai)
+    !
+
 !-- RECUPERER LA LISTE DES PAIRES
     nb_pairs = 0
     nt_nodes = 0
 
     call rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
-                list_pairs, nb_pairs, nt_nodes)
+                      list_pairs, nb_pairs, nt_nodes)
 !
 
 !-- CONSTRUCTION DU LIGREL
 !
 !   2D ET 3D ARRAYs POUR ACCELERER L ACCES AUX DONNEES AU MOMENT
 !   DE L ASSEMBLAGE  DES MATRICES
-                
+
     allocate (map_noco_pair(9, nbnocot, nb_pairs))
     allocate (map_noco_nbnoco(9, nbnocot, nb_pairs))
     allocate (map_noco_nbelem(9, nbnocot))
     !
     call rco3d_crealigrel(ligrel, noma, mod, list_pairs, &
-                           nb_pairs, nt_nodes, &
-                           list_total_no_co, nbnocot, map_noco_pair, &
-                           map_noco_nbelem, map_noco_nbnoco)
-!   LIRE EPAISSEUR
-                           
-    call getvid('LIAISON_ELEM', 'CARA_ELEM', iocc=iocc, scal=cara_elem, nbret=n1)
+                          nb_pairs, nt_nodes, &
+                          list_total_no_co, nbnocot, map_noco_pair, &
+                          map_noco_nbelem, map_noco_nbnoco)
+
+!   CREATION DU CHAMP D ENTREE
+
     chmlrac = '&&RACO3D.PCACOQU.CM'
     call alchml(ligrel, 'LIAI_CO_3D', 'PCACOQU', 'V', chmlrac, iret, ' ')
-    call rco3d_crep(ligrel, noma, chmlrac, cara_elem, epai)
-
-!    CREATION DE LA CARTE DES CARACTERISTIQUES DE LA PARTIE COQUE
-!
-    licmp(1) = 'EP'
-    licmp(2) = 'ALPHA'
-    licmp(3) = 'BETA'
-    licmp(4) = 'CTOR'
-    licmp(5) = 'EXCENT'
-    licmp(6) = 'INERTIE'
-    icmp(1) = epai
-    icmp(2) = 0.0d0
-    icmp(3) = 0.0d0
-    icmp(4) = crig
-    icmp(5) = 0.0d0
-    icmp(6) = 0.0d0
-    !
-    call mecact('V', '&&RACO3D.PCACOQU', 'LIGREL', ligrel, 'CACOQU_R', &
-                ncmp=6, lnomcmp=licmp, vr=icmp)
+    call rco3d_crch(ligrel, noma, chmlrac, lismaco, nbmaco, crig, v_epai)
 
 !--  Fields
 !
@@ -221,25 +206,23 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 
 !-- add the linear relations
     call rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
-                     list_total_no_co, map_noco_pair, map_noco_nbelem, &
-                     map_noco_nbnoco, lchout(1) (1:19), fonrez, lisrel)
-
+                       list_total_no_co, map_noco_pair, map_noco_nbelem, &
+                       map_noco_nbnoco, lchout(1) (1:19), fonrez, lisrel)
 
 !FIN
     call detrsd('CHAM_ELEM', chmlrac)
     call detrsd('LIGREL', ligrel)
-    call detrsd('CARTE', '&&RACO3D.PCACOQU')
     call detrsd('RESUELEM', '&&RACO3D.PMATUNS')
     call jedetr('&&RACO3D.LMAILLES.VOL')
     call jedetr('&&RACO3D.LMAILLES.COQ')
     call jedetr('&&RACO3D.LNOEUDS.COQ')
     AS_DEALLOCATE(vi=list_pairs)
     AS_DEALLOCATE(vi=list_total_no_co)
+    AS_DEALLOCATE(vr=v_epai)
     deallocate (map_noco_pair)
     deallocate (map_noco_nbelem)
     deallocate (map_noco_nbnoco)
 
     call jedema()
-
 
 end subroutine

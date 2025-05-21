@@ -59,7 +59,7 @@ class RACS2T3(Element):
     nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", (3, 4, 5)))
     calculs = (
         OP.LIAI_CO_3D(
-            te=601,
+            te=231,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PCACOQU, CCACOQU)),
             para_out=((SP.PMATUNS, MMATUNS),),
         ),

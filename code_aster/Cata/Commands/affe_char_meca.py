@@ -710,9 +710,8 @@ AFFE_CHAR_MECA = OPER(
             condition="""equal_to("OPTION", 'COQ_3D')""",
             GROUP_MA_1=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
             GROUP_MA_2=SIMP(statut="o", typ=grma),
-            EPAISSEUR=SIMP(statut="o", typ="R", defaut=1.0),
             CARA_ELEM=SIMP(statut="f", typ=cara_elem),
-            COEF_RIGI_DRZ=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            COEF_RIGI_DRZ=SIMP(statut="f", typ="R", defaut=1.0e-5),
         ),
         b_3d_pou_arlequin=BLOC(
             condition="""equal_to("OPTION", '3D_POU_ARLEQUIN')""",

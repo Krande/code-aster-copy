@@ -64,16 +64,16 @@ contains
         end do
 
         ! Define vectors along the segments
-        u = P2-P1  ! Vector along segment 1
-        v = Q2-Q1  ! Vector along segment 2
-        w = P1-Q1  ! Vector between the starting points of the segments
+        u = P2-P1
+        v = Q2-Q1
+        w = P1-Q1
 
         ! Dot products
-        a = dot_product(u, u)  ! u.u
-        b = dot_product(u, v)  ! u.v
-        c = dot_product(v, v)  ! v.v
-        d = dot_product(u, w)  ! u.w
-        e = dot_product(v, w)  ! v.w
+        a = dot_product(u, u)
+        b = dot_product(u, v)
+        c = dot_product(v, v)
+        d = dot_product(u, w)
+        e = dot_product(v, w)
 
         det = a*c-b*b
 
@@ -115,7 +115,7 @@ contains
     end function segseg_distance
 
     function det_jacob(t, s, ddf_co, pg_coor, coor_pt_co, nno_co, epai)
-        ! Compute the determinant of the Jacobian at gauss 
+        ! Compute the determinant of the Jacobian at gauss
         ! point of seg(2,3, ..) element
         ! Arguments:
         ! - t, s: Tangent vectors
@@ -143,30 +143,28 @@ contains
 
         ! Compute the normal vector as the cross product of s and t
         call provec(s, t, normal)
-        magnitude =  sqrt(sum(normal(:)**2))
+        magnitude = sqrt(sum(normal(:)**2))
         ! normalize
-        normal(:) = normal(:) / magnitude
+        normal(:) = normal(:)/magnitude
         !
-        ! Compute the vector `vect` 
+        ! Compute the vector `vect`
         do l = 1, 3
             do k = 1, nno_co
                 vect(l) = vect(l)+ddf_co(k)*coor_pt_co(l, k)
             end do
         end do
-        
+
         ! Compute vect1 as the cross product of s and vect
         call provec(s, vect, vect1)
-       
 
         ! Project vect1 orthogonally to the plane defined by the normal vector
-        vect1(:) = (vect1(:) - dot_product(vect1(:), normal(:)) * normal(:)) / magnitude
-        
+        vect1(:) = (vect1(:)-dot_product(vect1(:), normal(:))*normal(:))/magnitude
 
         ! Compute vect2 as a combination of t and a thickness term involving vect1
-        vect2(:) = t(:) + 0.5 * epai * pg_coor * vect1(:)
+        vect2(:) = t(:)+0.5*epai*pg_coor*vect1(:)
 
         ! Compute the determinant of the Jacobian
-        det_jacob = 0.5 * epai * sqrt(sum(vect2(:)**2))
+        det_jacob = 0.5*epai*sqrt(sum(vect2(:)**2))
 
     end function det_jacob
 
@@ -182,16 +180,18 @@ contains
         real(kind=8) :: res(3)
         ! Others
         real(kind=8) :: xi(2), dxi(2), ff(8), df(3, 8)
-        integer :: iret, max_iter = 30
+        integer :: iret, max_iter
         integer :: i, j, iter
         real(kind=8) :: F(3), jac(3, 2), det, residual(2)
-        real(kind=8) ::  tol = 1.0e-6
+        real(kind=8) ::  tol
         real(kind=8), dimension(2, 2) :: JtJ
         real(kind=8), dimension(2, 3) :: Jt
         real(kind=8), dimension(2, 2) :: JtJ_inv
         aster_logical :: converged
 
         ! Initialize
+        tol = 1.0e-6
+        max_iter = 30
         res = 0.d0
         res(3) = -1.d0
         ff = 0.d0

@@ -20,7 +20,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
                        gauss_weight, jac_det, ff_co, ff_3d, s, t, n, skip)
 !
     use raco3d_module, only: NB_GAUSS_MAX, det_jacob, find_parametric_coordinates, &
-                                NB_NO_CO_MAX, NB_NO_3D_MAX
+                             NB_NO_CO_MAX, NB_NO_3D_MAX
 !
     implicit none
 !
@@ -166,7 +166,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
     ! retrieve gauss points in the reference configuration
     ! along with the shape functions and their derivatives
     nb_gauss = nbg*nbg
-    dimd = NB_NO_CO_MAX * 3 * 3
+    dimd = NB_NO_CO_MAX*3*3
     !
     idx = 0
     do i = 1, nbg
@@ -175,7 +175,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
         ASSERT(nno .eq. nno_co)
         call elrfdf(elrefa_co, x, df, nno, dim)
         ASSERT(nno .eq. nno_co)
-        call elrfd2(elrefa_co, x , dimd, ddf, nno, dim)
+        call elrfd2(elrefa_co, x, dimd, ddf, nno, dim)
         ASSERT(nno .eq. nno_co)
         ASSERT(dim .eq. 1)
         do j = 1, nbg
@@ -213,8 +213,8 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
             return
         end if
         ! use this opportunity to calculate the jacobian
-        jac_det(i) = det_jacob(t(:,i), s, ddf_co(:,i), &
-                gauss_coor(2, i), coor_pt_co, nno_co, epai)
+        jac_det(i) = det_jacob(t(:, i), s, ddf_co(:, i), &
+                               gauss_coor(2, i), coor_pt_co, nno_co, epai)
         ! normalize
         t(:, i) = t(:, i)/magnitude
         ! tangent s
@@ -237,8 +237,8 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
         end do
         ! retrieve the parametric coordinates at the surface of the 3d element
         res = find_parametric_coordinates(coor_gp_cartesian(:, i), &
-                                typma3d, coor_pt_3d, nno_3d)
-        ! if the projection exists then get the form 
+                                          typma3d, coor_pt_3d, nno_3d)
+        ! if the projection exists then get the form
         !functions of the 3d part (at the gauss point i)
         if (res(3) .gt. 0.0d0) then
             skip(i) = .false.

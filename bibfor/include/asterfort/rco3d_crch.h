@@ -18,9 +18,16 @@
 
 !
 !
-interface 
-    subroutine te0601(option, nomte)
-        character(len=16), intent(in) :: option
-        character(len=16), intent(in) :: nomte
-    end subroutine te0601
-end interface 
+interface
+    subroutine rco3d_crch(ligrel, noma, chmlrac, lismaco, &
+                                 nbmaco, crig, v_epai)
+        character(len=19) :: ligrel
+        character(len=8)  :: noma
+        character(len=19) :: chmlrac
+        character(len=24) :: lismaco
+        real(kind=8)      :: crig
+        integer           :: nbmaco
+        real(kind=8), pointer ::  v_epai(:)
+    end subroutine rco3d_crch
+end interface
+

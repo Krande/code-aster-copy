@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1501
 !
 subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
-                             list_total_no_co, nbnocot, map_noco_pair, map_noco_nbelem, &
-                             map_noco_nbnoco)
+                            list_total_no_co, nbnocot, map_noco_pair, map_noco_nbelem, &
+                            map_noco_nbnoco)
     !
     implicit none
     !
@@ -108,7 +107,6 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
     integer:: ndim, nddl, nnco, nn3d
     character(len=8):: typmaco, typma3d
 
-
     ! TABLEAUX DE DONNEES
     integer, parameter :: nb_racc = 8
     character(len=8), parameter, dimension(nb_racc) :: coq_el = (/ &
@@ -133,7 +131,7 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
     integer, parameter, dimension(nb_racc) :: nb_nodes = (/ &
                                               5, 6, 9, &
                                               8, 10, 6, &
-                                              7, 11 /)
+                                              7, 11/)
 
     AS_ALLOCATE(vi=v_index_bool, size=nb_racc)
 
@@ -269,8 +267,6 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
         end if
     end do
 
-
-
 !
 !- OBJECT LGRF
 !
@@ -278,14 +274,10 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
     !call adalig(ligrel)
     call initel(ligrel)
 
-
 !-FIN
 
     AS_DEALLOCATE(vi=v_index_bool)
     AS_DEALLOCATE(vi=v_list_type)
-
-
-
 
     call jedema()
 

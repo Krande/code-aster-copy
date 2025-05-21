@@ -15,62 +15,112 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1501
 !
-subroutine rco3d_crep(ligrel, noma, chmlrac, cara_elem, epai)
-    !
-    implicit none
-    !
-#include "jeveux.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
+subroutine rco3d_crep(cara_elem, noma, &
+                      lismaco, nbmaco, v_epai)
 
-    character(len=19), intent(in) :: ligrel, chmlrac
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/detrsd.h"
+#include "asterc/indik8.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utmavo.h"
+#include "asterfort/utmess.h"
+
     character(len=8), intent(in) :: noma
     character(len=8), intent(in) :: cara_elem
-    real(kind=8), intent(in) :: epai
+    character(len=24), intent(in) :: lismaco
+    integer, intent(in) :: nbmaco
+    real(kind=8), pointer ::  v_epai(:)
 
+! -------------------------------------------------------
+!     CREER LE VECTEUR DES EPAISSEURS
+!     DES MAILLES DE BORD
+! -------------------------------------------------------
+!  CARA_ELEM     - IN    - K8   - : NOM DE LA SD CARA_ELEM CONTENANT
+!                                   LES CARACTÉRISTIQUES DE L'ÉLÉMENT
+!                                   CQOUE
+!  NOMA          - IN    - K8   - : NOM DU MAILLAGE
+!  LISMACO       - IN    - K24  - : NOM DE LA SD LISTE_MA DES MAILLES
+!                                   DE BORD COQUE.
+!  NBMACO        - IN    - I    - : NOMBRE DE MAILLES DANS LISMACO.
+!  V_EPAI        - IN    - R(*) - : ÉPAISSEUR(S) ASSOCIÉE(S) AUX MAILLES
+!                                   DE LISMACO. VECTEUR POUR
+!                                   ATTRIBUER UNE ÉPAISSEUR DIFFÉRENTE À
+!                                   CHAQUE MAILLE.
+! -------------------------------------------------------
 
-
-    integer, parameter :: nceld1 = 4
-    integer, parameter :: nceld2 = 4
-    integer, parameter :: nceld3 = 4
-    character(len=24) :: chmlrac_celv
-    integer :: jv_chmlrac_celv, nb_grel, i_grel
-    integer :: decal, i_liel, nb_liel, vale_indx
+    integer :: p3, p4, iret, nb_para_maxi
+    integer :: iad1, shell_ep_indx
+    real(kind=8) :: shell_ep
+    character(len=24)  :: nomavo
+    character(len=2)   :: kdim
+    integer :: ibid(1), idx, i, j, k, l, numa
     character(len=24) :: chmlrac_celd
-    integer, pointer :: v_chmlrac_celd(:) => null()
-    integer, pointer :: v_ligrel_liel(:) => null()
+    integer, pointer :: v_lmaco(:) => null()
+    real(kind=8), pointer :: v_caraelem_cesv(:) => null()
+    character(len=8), pointer :: v_caraelem_cesc(:) => null()
+    integer :: j_caraelem_cesd, j_caraelem_cesl
+    character(len=19) :: cara_elem_s
 
+    ! retrieve some informations
+    !
+    call jeveuo(lismaco, 'L', vi=v_lmaco)
+    !
+    ! - Access to elementary characteristics
+    !
+    cara_elem_s = '&&RACOD3D.CARGEOPO'
+    call carces(cara_elem//'.CARCOQUE', 'ELEM', ' ', 'V', cara_elem_s, &
+                'A', iret)
+    call jeveuo(cara_elem_s//'.CESC', 'L', vk8=v_caraelem_cesc)
+    call jeveuo(cara_elem_s//'.CESD', 'L', j_caraelem_cesd)
+    call jeveuo(cara_elem_s//'.CESL', 'L', j_caraelem_cesl)
+    call jeveuo(cara_elem_s//'.CESV', 'L', vr=v_caraelem_cesv)
 
+    nb_para_maxi = zi(j_caraelem_cesd-1+2)
+    shell_ep_indx = indik8(v_caraelem_cesc, 'EP      ', 1, nb_para_maxi)
 
-    chmlrac_celd = chmlrac//'.CELD'
-    chmlrac_celv = chmlrac//'.CELV'
-    call jeveuo(chmlrac_celd, 'L', vi=v_chmlrac_celd)
-    call jeveuo(chmlrac_celv, 'E', jv_chmlrac_celv)
-    nb_grel = v_chmlrac_celd(2)
+    !
+    nomavo = '&&ORVLMA.MAILLE_VOISINE '
+    kdim = '2D'
+    call utmavo(noma, kdim, v_lmaco, nbmaco, 'V', &
+                nomavo, 0, ibid)
+    call jeveuo(jexatr(nomavo, 'LONCUM'), 'L', p4)
+    call jeveuo(nomavo, 'L', p3)
 
-    write(*,*)  "nb grels    ", nb_grel
-
-    do i_grel = 1, nb_grel
-        decal = v_chmlrac_celd(nceld1+i_grel)
-        nb_liel = v_chmlrac_celd(decal+1)
-        call jeveuo(jexnum(ligrel//'.LIEL', i_grel), 'L', vi=v_ligrel_liel)
-
-        do i_liel = 1, nb_liel
-            vale_indx = jv_chmlrac_celv-1+v_chmlrac_celd(decal+nceld2+nceld3*(i_liel-1)+4)
-            zr(vale_indx-1+1) = epai
-            zr(vale_indx-1+2) = 0.0d0
-            zr(vale_indx-1+3) = 0.0d0
-            zr(vale_indx-1+4) = 0.0d0
-            zr(vale_indx-1+5) = 0.0d0
-            zr(vale_indx-1+6) = 0.0d0
+    do i = 1, nbmaco
+        j = zi(p4+i)-zi(p4-1+i)
+        ASSERT(j .gt. 0)
+        do k = 1, j
+            numa = zi(p3+zi(p4+i-1)-1+k-1)
+            call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, numa, 1, &
+                        1, shell_ep_indx, iad1)
+            if (iad1 .gt. 0) then
+                shell_ep = v_caraelem_cesv(iad1)
+            else
+                call utmess('F', 'CALCULEL3_100', si=numa)
+            end if
+            ! POUR LE MOMENT ON RECUPERE L'EPAISSEUR DU PREMIER ELEMENT
+            v_epai(i) = shell_ep
+            exit
         end do
-
-        write(*,*) "############ nbliel  ", nb_liel
     end do
 
-
+    ! FIN
+    call jedetr(nomavo)
+    call detrsd('CHAM_ELEM_S', cara_elem_s)
 
 end subroutine
