@@ -25,7 +25,6 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-# ELEMENTARY TREATMENT OF 3D FRICTIONLESS ELEMENT WITH DEFI_CONTACT OPERATOR
 
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
@@ -46,10 +45,8 @@ NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
-# ----------------
-# Modes locaux :
-# ----------------
-# ------------------------------------------------------------
+
+
 class RACS2T3(Element):
     """
     THE RACS2T3 CLASS ELEMENT : SEG2/TRIA3 ( EDGE / FACE )

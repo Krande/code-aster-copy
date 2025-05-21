@@ -50,7 +50,7 @@ contains
         real(kind=8), intent(in) :: coorseg1(3, 2), coorseg2(3, 2)
         real(kind=8) :: P1(3), P2(3), Q1(3), Q2(3)
         real(kind=8) :: dist
-        real(kind=8) :: u(3), v(3), w(3), a, b, c, d, e, t, s
+        real(kind=8) :: u(3), v(3), w(3), a, b, c, d, e
         real(kind=8) :: det, sc, tc
         real(kind=8) :: closestP(3), closestQ(3)
         real(kind=8) :: endpoint_distances(4)
@@ -168,11 +168,10 @@ contains
 
     end function det_jacob
 
-    function find_parametric_coordinates(p, typma3d, coor_pt_3d, nno_3d) result(res)
+    function find_parametric_coordinates(p, typma3d, coor_pt_3d) result(res)
         implicit none
         ! Inputs
         character(len=8), intent(in) :: typma3d
-        integer, intent(in) :: nno_3d
         real(kind=8), intent(in) :: p(3)
         real(kind=8), intent(in) :: coor_pt_3d(:, :)
 
@@ -180,8 +179,7 @@ contains
         real(kind=8) :: res(3)
         ! Others
         real(kind=8) :: xi(2), dxi(2), ff(8), df(3, 8)
-        integer :: iret, max_iter
-        integer :: i, j, iter
+        integer :: max_iter, iter
         real(kind=8) :: F(3), jac(3, 2), det, residual(2)
         real(kind=8) ::  tol
         real(kind=8), dimension(2, 2) :: JtJ

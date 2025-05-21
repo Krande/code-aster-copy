@@ -51,7 +51,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/rco3d_crch.h"
 #include "asterfort/rco3d_crep.h"
 #include "asterfort/rco3d_crealigrel.h"
-#include "asterfort/rco3d_addrela.h"
+#include "asterfort/rco3d_clcrela.h"
 !
     integer :: iocc
     character(len=8) :: charge
@@ -77,15 +77,15 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=19) :: ligrmo, ligrel, chmlrac
     character(len=24) :: lismaco, lismavo, lisnoco
-    character(len=8)  :: mod, noma, licmp(6)
+    character(len=8)  :: mod, noma
     integer :: nbmavo, nbmaco, nt_nodes
     character(len=8), pointer :: lgrf(:) => null()
     integer :: nb_pairs, iret
-    integer :: i, j, k, l, index, n1, elem
-    real(kind=8) :: epai, icmp(6), crig
+    integer :: i, n1
+    real(kind=8) :: epai, crig
     integer, pointer :: list_pairs(:) => null()
     character(len=8) :: lpain(2), lpaout(1)
-    character(len=24) :: lchin(2), lchout(1), valech
+    character(len=24) :: lchin(2), lchout(1)
     integer :: nbnocot, jlisnoco
     integer, allocatable :: map_noco_pair(:, :, :)
     integer, allocatable :: map_noco_nbnoco(:, :, :)
@@ -96,8 +96,8 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 
     call jemarq()
 
-    motcle(1) = 'GROUP_MA_1'
-    motcle(2) = 'GROUP_MA_2'
+    motcle(1) = 'GROUP_MA_COQUE'
+    motcle(2) = 'GROUP_MA_MASSIF'
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'GROUP_MA'
 
@@ -205,7 +205,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
                 'OUI')
 
 !-- add the linear relations
-    call rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
+    call rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
                        list_total_no_co, map_noco_pair, map_noco_nbelem, &
                        map_noco_nbnoco, lchout(1) (1:19), fonrez, lisrel)
 

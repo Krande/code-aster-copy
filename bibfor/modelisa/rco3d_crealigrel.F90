@@ -64,21 +64,21 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
 !  INPUT PARAMETERS:
 !  -----------------
 !  ligrel           - IN(OUT)- K19  - Name of the LIGREL to create
-!  noma             - IN    - K8   - Name of the mesh
-!  mod              - IN    - K8   - Name of the model
-!  nt_nodes         - IN    - I    - Total number of nodes associated with the link
-!  nbnocot          - IN    - I    - Total number of shell nodes at the interface
-!  list_total_no_co - IN    - PTR  - List of total shell nodes at the interface
-!  list_pairs       - IN    - PTR  - Array of pairs representing the shell-3D link
+!  noma             - IN     - K8   - Name of the mesh
+!  mod              - IN     - K8   - Name of the model
+!  nt_nodes         - IN     - I    - Total number of nodes associated with the link
+!  nbnocot          - IN     - I    - Total number of shell nodes at the interface
+!  list_total_no_co - IN     - PTR  - List of total shell nodes at the interface
+!  list_pairs       - IN     - PTR  - Array of pairs representing the shell-3D link
 !                                     Dimensions: (2 * nb_pairs)
-!  nb_pairs         - IN    - I    - Number of pairs in the link
+!  nb_pairs         - IN     - I    - Number of pairs in the link
 !
 !  OUTPUT PARAMETERS:
 !  ------------------
 !  map_noco_pair    - OUT   - I(*) - Mapping of each shell node to the pairs that contain the node.
 !                                     Dimensions: (9, nbnocot, nb_pairs)
-!  map_noco_nbnoco  - OUT   - I(*) - Mapping of each shell node to the number of shell nodes in the pair.
-!                                     Dimensions: (9, nbnocot, nb_pairs)
+!  map_noco_nbnoco  - OUT   - I(*) - Mapping of each shell node to the number
+!                                    of shell nodes in the pair. Dimensions: (9, nbnocot, nb_pairs)
 !  map_noco_nbelem  - OUT   - I(*) - Mapping of each shell node to the total number of pairs that
 !                                     contain the node.
 !                                     Dimensions: (9, nbnocot)
@@ -89,11 +89,9 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
     character(len=8)  :: typg_co_name, typg_vo_name
     character(len=16) :: typg_racc_name, typf_racc_name
     integer :: typg_racc_nume, typf_racc_nume
-    character(len=8), pointer :: lgrf(:) => null()
     integer :: el_co, el_vo, typg_co_nume, typg_vo_nume
     integer :: nb_nodes_co, nb_nodes_vo
-    integer :: i, j, k, l, index, n1, liel_l, nb_grel, elem, deca, jv_liel
-    real(kind=8) :: epai, icmp(6)
+    integer :: i, j, k, index, liel_l, nb_grel, elem, deca, jv_liel
     integer, pointer :: v_list_type(:) => null()
     integer, pointer :: v_mesh_typmail(:) => null()
     integer, pointer :: v_connex(:) => null()

@@ -708,9 +708,9 @@ AFFE_CHAR_MECA = OPER(
         ),
         b_coq_3d=BLOC(
             condition="""equal_to("OPTION", 'COQ_3D')""",
-            GROUP_MA_1=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
-            GROUP_MA_2=SIMP(statut="o", typ=grma),
-            CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+            GROUP_MA_COQUE=SIMP(statut="o", typ=grma),
+            GROUP_MA_MASSIF=SIMP(statut="o", typ=grma),
+            CARA_ELEM=SIMP(statut="o", typ=cara_elem),
             COEF_RIGI_DRZ=SIMP(statut="f", typ="R", defaut=1.0e-5),
         ),
         b_3d_pou_arlequin=BLOC(

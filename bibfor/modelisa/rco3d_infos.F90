@@ -96,7 +96,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
     real(kind=8) :: coor_pt_co(3, NB_NO_CO_MAX), coor_pt_3d(3, NB_NO_3D_MAX)
     real(kind=8) :: coor_gp_cartesian(3, NB_GAUSS_MAX)
     real(kind=8) :: v1(3), v2(3), v3(3)
-    real(kind=8) :: magnitude, result
+    real(kind=8) :: magnitude, eps
     integer :: i, j, k, l, idx, ndim, nbg, nno_co, nno_3d, nno, dim, dimd
     character(len=8) :: elrefa_co, elrefa_3d
 
@@ -117,6 +117,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
     coor_gp_cartesian = 0.d0
     coor_pt_3d = 0.d0
     coor_pt_co = 0.d0
+    eps = 1.0d-10
 
     skip = .true.
 
@@ -209,7 +210,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
         ! check before continue
         call provec(s, t(:, i), v3)
         ! If cross product result is zero, skip the subroutine
-        if (sqrt(sum(v3(:)**2)) .eq. 0.0) then
+        if (sqrt(sum(v3(:)**2)) .le. eps*magnitude) then
             return
         end if
         ! use this opportunity to calculate the jacobian
@@ -237,7 +238,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
         end do
         ! retrieve the parametric coordinates at the surface of the 3d element
         res = find_parametric_coordinates(coor_gp_cartesian(:, i), &
-                                          typma3d, coor_pt_3d, nno_3d)
+                                          typma3d, coor_pt_3d)
         ! if the projection exists then get the form
         !functions of the 3d part (at the gauss point i)
         if (res(3) .gt. 0.0d0) then

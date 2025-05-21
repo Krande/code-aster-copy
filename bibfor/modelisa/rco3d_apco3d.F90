@@ -25,6 +25,8 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
 !
 
 #include "jeveux.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -34,8 +36,7 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterc/r8prem.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "asterfort/utmess.h"
 
     character(len=8), intent(in) :: noma
     character(len=24), intent(in) :: lismaco, lismavo
@@ -44,12 +45,26 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
     integer, intent(out) :: nb_pairs, nt_nodes
     integer, pointer :: list_pairs(:)
 
-! Appariemment COQUE-3D
+! -------------------------------------------------------
+!     APPARIER LES MAILLES DE BORD COQUE ET MASSIF
+! -------------------------------------------------------
+!  NOMA         - IN    - K8    - : NOM DU MAILLAGE .
+!  LISMACO      - IN    - K24   - : NOM DE LA LISTE_MA CONTENANT
+!                                   LES MAILLES DE BORD COQUE.
+!  NBMACO       - IN    - I     - : NOMBRE DE MAILLES DANS LISMACO.
+!  LISMAVO      - IN    - K24   - : NOM DE LA LISTE_MA CONTENANT
+!                                   LES MAILLES DE BORD 3D (VOLUMIQUE).
+!  NBMAVO       - IN    - I     - : NOMBRE DE MAILLES DANS LISMAVO.
+!  EPAI         - IN    - R8    - : ÉPAISSEUR MAXIMAL ASSOCIÉE
+!                                   AUX MAILLES COQUE,
+!                                   UTILISÉE POUR L’APPARIEMENT.
 !
-! --------------------------------------------------------------------------------------------------
-!
-!
-! --------------------------------------------------------------------------------------------------
+!  LIST_PAIRS   - OUT   - I(*)  - : TABLEAU DES PAIRES APPARIÉES ENTRE
+!                                   MAILLES DE BORD COQUE ET MASSIF.
+!  NB_PAIRS     - OUT   - I     - : NOMBRE TOTAL DE PAIRES APPARIÉES.
+!  NT_NODES     - OUT   - I     - : NOMBRE TOTAL DE NŒUDS IMPLIQUÉS
+!                                   DANS LES APPARIEMENTS.
+! -------------------------------------------------------
 !
     character(len=24) :: desc, vale, connex, typemail
     character(len=8) :: elem_type
@@ -58,8 +73,7 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
     integer :: imaco, idconnco, nbnoco, inoco1, inoco2, jlismaco
     integer :: mesh_typmail, elem_type_nume
     aster_logical :: check
-    real(kind=8) :: xv(3), x1, y1, z1, x2, y2, z2, x3, y3, z3
-    real(kind=8) :: tab1(3), tab2(3), diam, dist
+    real(kind=8) :: dist
     real(kind=8) :: coorsegvo(3, 2), coorsegco(3, 2)
 
     call jemarq()
@@ -86,8 +100,11 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
         call jelira(jexnum(connex, imavo), 'LONMAX', nbnovo)
         do l = 1, nbmaco
             imaco = zi(jlismaco-1+l)
-            !elem_type_nume = zi(mesh_typmail-1+imaco)
-            !call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_type)
+            elem_type_nume = zi(mesh_typmail-1+imaco)
+            call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_type)
+            if ((elem_type(1:4) .ne. 'SEG2') .and. (elem_type(1:4) .ne. 'SEG3')) then
+                call utmess('F', 'CALCULEL3_101')
+            end if
             call jeveuo(jexnum(connex, imaco), 'L', idconnco)
             call jelira(jexnum(connex, imaco), 'LONMAX', nbnoco)
 

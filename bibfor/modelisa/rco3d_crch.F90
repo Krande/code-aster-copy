@@ -69,14 +69,12 @@ subroutine rco3d_crch(ligrel, noma, chmlrac, lismaco, &
     integer, parameter :: nceld1 = 4
     integer, parameter :: nceld2 = 4
     integer, parameter :: nceld3 = 4
-    integer :: p2, p3, p4, iret, nb_para_maxi
-    integer :: iad1
+    integer :: p2
     real(kind=8) :: epais
     character(len=24)  :: chmlrac_celv
-    character(len=2)   :: kdim
     integer :: jv_chmlrac_celv, nb_grel, i_grel
     integer :: decal, i_liel, nb_liel, vale_indx
-    integer :: ibid(1), idx, i, j, k, l, numa
+    integer :: idx, j, k, l
     character(len=24) :: chmlrac_celd
     integer, pointer :: v_lmaco(:) => null()
     integer, pointer :: v_chmlrac_celd(:) => null()

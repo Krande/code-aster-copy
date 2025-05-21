@@ -403,4 +403,11 @@ CREA_CHAMP ne sait pas créer de champ de type %(k1)s.
  Problème pour récupérer l'épaisseur de la coque pour la maille  %(i1)s
 """
     ),
+    101: _(
+        """
+Attention : la liaison COQ_3D ne prend actuellement en charge que les
+éléments de bord de la partie coque, c’est-à-dire les éléments de type
+SEG2 ou SEG3 uniquement.
+"""
+    ),
 }

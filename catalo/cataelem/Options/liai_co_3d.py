@@ -20,8 +20,7 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
-import cataelem.Commons.physical_quantities as PHY
+from cataelem.Tools.base_objects import Option, CondCalcul
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
@@ -31,5 +30,5 @@ LIAI_CO_3D = Option(
     para_out=(SP.PMATUNS, SP.PMATUUR),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"),)),),
     comment=""" LIAI_CO_3D: CALCUL DES MATRICES ELEMENTAIRES
-                    DE LIAISON""",
+                    DE LIAISON COQUE/3D""",
 )

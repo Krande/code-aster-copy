@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
+subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
                          list_total_no_co, map_noco_pair, map_noco_nbelem, &
                          map_noco_nbnoco, resuelem, fonrez, lisrel)
     !
@@ -67,10 +67,12 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
 !  list_total_no_co - IN    - PTR    - Array containing the indices of shell nodes.
 !                                     Dimensions: (nbnocot)
 !
-!  map_noco_pair    - IN   - I(*)    - Mapping of each shell node to the pairs that contain the node.
-!                                     Dimensions: (9, nbnocot, nb_pairs)
+!  map_noco_pair    - IN   - I(*)    - Mapping of each shell node to the pairs
+!                                      that contain the node.
+!                                      Dimensions: (9, nbnocot, nb_pairs)
 !
-!  map_noco_nbnoco  - IN   - I(*)    - Mapping of each shell node to the number of shell nodes in the pair.
+!  map_noco_nbnoco  - IN   - I(*)    - Mapping of each shell node to the number
+!                                       of shell nodes in the pair.
 !                                     Dimensions: (9, nbnocot, nb_pairs)
 !
 !  map_noco_nbelem  - IN   - I(*)    - Mapping of each shell node to the total number of pairs that
@@ -92,7 +94,7 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
     character(len=24) :: noeuma
     character(len=16) :: motfac
     character(len=8) :: betaf, dofs(6), nomnoe
-    integer :: nbterm, i, j, k, l, nbno3d
+    integer :: nbterm, i, j, k, l
     character(len=4) :: typval, typcoe
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
@@ -102,12 +104,11 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
     real(kind=8), pointer :: coer(:) => null()
     integer, pointer :: v_desc(:) => null()
     integer, pointer :: v_list_no_pair(:) => null()
-    real(kind=8), pointer :: v_resl(:) => null()
-    integer :: iret, nb_gr, nel, i_resl, ncomp, mode
+    integer :: iret, nb_gr, ncomp, mode
     integer :: jv_liel, num_pair, nno
     type(PointerContainer), allocatable :: grel_ptr(:), resu_ptr(:)
     integer :: nnco, nn3d, idx, nddl, row_index, ico, i3d
-    integer :: dofco, dof3d, idof, jdof, taille
+    integer :: dofco, dof3d, idof, jdof
     aster_logical :: found, check, lcolle
 
     call jemarq()
@@ -165,6 +166,7 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
     coer = 0.0d0
     lisno = ''
     lisddl = ''
+    lcolle = .false.
     !
     do i = 1, nb_gr
         call jeveuo(jexnum(ligrel(1:19)//'.LIEL', i), 'L', vi=grel_ptr(i)%iptr)
@@ -202,7 +204,6 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
                     row_index = (jv_liel-1)*ncomp+6*(idx-1)*nddl+(idof-1)*nddl
                     do ico = 1, nnco
                         !call jenuno(jexnum(noeuma, v_list_no_pair(ico)), nomnoe)
-                        lcolle = .false.
                         nomnoe = int_to_char8(v_list_no_pair(ico), lcolle, noma, 'NOEUD')
                         do jdof = 1, dofco
                             found = .false.
@@ -224,7 +225,6 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
                     end do
                     do i3d = nnco+1, nno-1
                         !call jenuno(jexnum(noeuma, v_list_no_pair(i3d)), nomnoe)
-                        lcolle = .false.
                         nomnoe = int_to_char8(v_list_no_pair(i3d), lcolle, noma, 'NOEUD')
                         do jdof = 1, dof3d
                             found = .false.
@@ -252,8 +252,8 @@ subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot, &
             call afrela(coer, coec, lisddl, lisno, repe_type, &
                         repe_defi, nbterm, beta, betac, betaf, &
                         typcoe, typval, 0.d0, lisrel)
-            !call imprel(motfac, nbterm, coer, lisddl, lisno, &
-            !           beta, 1.0e-16)
+            call imprel(motfac, nbterm, coer, lisddl, lisno, &
+                        beta, 1.0e-16)
             nbterm = 0
             coer = 0.0d0
             lisno = ''

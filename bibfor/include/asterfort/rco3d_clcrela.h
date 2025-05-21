@@ -19,7 +19,7 @@
 !
 !
 interface
-    subroutine rco3d_addrela(ligrel, noma, nb_pairs, nbnocot,&
+    subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot,&
         list_total_no_co, map_noco_pair, map_noco_nbelem, &
         map_noco_nbnoco, resuelem, fonrez, lisrel )
         character(len=19), intent(in) :: ligrel, resuelem, lisrel
@@ -30,5 +30,5 @@ interface
         integer, intent(in) :: map_noco_nbelem(:,:)
         integer, pointer, intent(in) :: list_total_no_co(:)
         character(len=*), intent(in) :: fonrez
-    end subroutine rco3d_addrela
+    end subroutine rco3d_clcrela
 end interface

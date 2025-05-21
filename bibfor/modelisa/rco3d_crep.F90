@@ -68,8 +68,7 @@ subroutine rco3d_crep(cara_elem, noma, &
     real(kind=8) :: shell_ep
     character(len=24)  :: nomavo
     character(len=2)   :: kdim
-    integer :: ibid(1), idx, i, j, k, l, numa
-    character(len=24) :: chmlrac_celd
+    integer :: ibid(1), i, j, k, numa
     integer, pointer :: v_lmaco(:) => null()
     real(kind=8), pointer :: v_caraelem_cesv(:) => null()
     character(len=8), pointer :: v_caraelem_cesc(:) => null()

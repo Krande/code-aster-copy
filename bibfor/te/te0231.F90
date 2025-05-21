@@ -45,8 +45,7 @@ subroutine te0231(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jv_geom, jv_cacoqu, nddl
-    integer :: nnco, nn3d, dim, index
-    integer :: i_node_co, i_node_3d, i
+    integer :: nnco, nn3d, dim
     integer :: nb_gauss, ncols, nrows
     real(kind=8) :: jac_det(NB_GAUSS_MAX), gauss_weight(NB_GAUSS_MAX)
     real(kind=8) :: gauss_coor(2, NB_GAUSS_MAX), crig
