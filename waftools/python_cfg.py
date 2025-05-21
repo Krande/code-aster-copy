@@ -74,20 +74,21 @@ def check_numpy_headers(self):
     numpy_includes = self.cmd_and_log(cmd, shell=False).strip()
     self.end_msg(numpy_includes)
     self.start_msg("Checking for numpy arrayobject.h")
-    if self.is_defined("ASTER_PLATFORM_MINGW"):
-        incs = PureWindowsPath(numpy_includes)
-        parts = list(incs.parts)
-        if incs.anchor:
-            parts[0] = incs.root
-        for i, sub in enumerate(parts):
-            if sub == "lib":
-                parts[i] = "Lib"
-        numpy_includes = PureWindowsPath(*parts).as_posix()
+    # Basile Marchand : Bad path formating on msys2
+    # if self.is_defined("ASTER_PLATFORM_MINGW"):
+    #     incs = PureWindowsPath(numpy_includes)
+    #     parts = list(incs.parts)
+    #     if incs.anchor:
+    #         parts[0] = incs.root
+    #     for i, sub in enumerate(parts):
+    #         if sub == "lib":
+    #             parts[i] = "Lib"
+    #     numpy_includes = PureWindowsPath(*parts)
     # check the given includes dirs
     self.check(
         feature="c",
         header_name="Python.h numpy/arrayobject.h",
-        includes=numpy_includes,
+        includes=[numpy_includes],
         use=["PYEXT"],
         uselib_store="NUMPY",
         errmsg="Could not find the numpy development headers",
