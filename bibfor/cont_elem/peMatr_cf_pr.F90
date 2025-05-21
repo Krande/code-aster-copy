@@ -65,10 +65,10 @@ subroutine peMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
     real(kind=8) :: dts_ns(MAX_PENA_DOFS, 2), term_g(MAX_PENA_DOFS, 3)
     real(kind=8) :: gap, gamma_c, projRmVal, dNs(MAX_PENA_DOFS, 3)
     real(kind=8) :: gamma_f
-    real(kind=8) :: dGap(MAX_PENA_DOFS), dv(MAX_PENA_DOFS, 3), dfor_pena(MAX_PENA_DOFS, 3)
+    real(kind=8) :: dGap(MAX_PENA_DOFS), dv(MAX_PENA_DOFS, 3)
     real(kind=8) :: norm_slav(3), lagr_v(3), thres
-    real(kind=8) :: dThres_du(MAX_PENA_DOFS), dThres_dl(MAX_PENA_DOFS), jump_v(MAX_PENA_DOFS, 3)
-    real(kind=8) :: DFt_du(MAX_PENA_DOFS, 3), DFt_dl(MAX_PENA_DOFS, 3)
+    real(kind=8) :: dThres_du(MAX_PENA_DOFS), jump_v(MAX_PENA_DOFS, 3)
+    real(kind=8) :: DFt_du(MAX_PENA_DOFS, 3)
     real(kind=8) :: speed(3), H, dfunc_ma(3, MAX_PENA_DOFS, 2), dZetaM(MAX_PENA_DOFS, 2)
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE), projBsVal(3)
     real(kind=8), pointer :: dfunc_dzeta(:, :, :) => null()

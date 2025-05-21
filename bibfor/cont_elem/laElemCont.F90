@@ -22,7 +22,7 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
                       dGap, projBsVal, dv, dvT, projBsVal2, lagr_c, lagr_f, lagr_f3, &
                       dThres_du, dThres_dl, lagr_v, thres, jump_v, dNs, &
                       tau_slav, lagr_g, mu_g, dts_ns, speed, dfunc_ma, dZetaM, &
-                      mu_c, mu_f, mu_f3, metricTens, d2Gap, k_diff)
+                      mu_c, mu_f, mu_f3, metricTens, d2Gap)
 !
     use contact_module
     use contact_type
@@ -53,7 +53,6 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
     real(kind=8), intent(out), optional :: mu_f3(MAX_LAGA_DOFS, 3)
     real(kind=8), intent(out), optional :: dv(MAX_LAGA_DOFS, 3), norm_slav(3), projBsVal2(2)
     real(kind=8), intent(out), optional :: dThres_du(MAX_LAGA_DOFS), dThres_dl(MAX_LAGA_DOFS)
-    character(len=8), intent(in), optional :: k_diff
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,7 +88,6 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
     real(kind=8) :: dTm_nm(MAX_LAGA_DOFS, 2)
     real(kind=8) :: dTs(MAX_LAGA_DOFS, 3, 2)
     real(kind=8) :: d2Ns_nm(MAX_LAGA_DOFS, MAX_LAGA_DOFS), dTs_nm(MAX_LAGA_DOFS, 2)
-    integer::i_dof
     aster_logical :: glob_coor
     blas_int :: b_3, b_2, b_MAX_LAGA_DOFS
 !

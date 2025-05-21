@@ -20,11 +20,10 @@
 #include "contact_module.h"
 !
 interface
-    subroutine peVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
+    subroutine peVect_cf_pr(parameters, geom, vect_cont, vect_fric)
         use contact_type
         type(ContactParameters), intent(in) :: parameters
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(inout) :: vect_cont(MAX_PENA_DOFS), vect_fric(MAX_PENA_DOFS)
-        character(len=8), intent(in), optional :: k_diff
     end subroutine peVect_cf_pr
 end interface

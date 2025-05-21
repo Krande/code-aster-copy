@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
+subroutine laVect_cf_pr(parameters, geom, vect_cont, vect_fric)
 !
     use contact_module
     use contact_type
@@ -35,7 +35,6 @@ subroutine laVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
     type(ContactParameters), intent(in) :: parameters
     type(ContactGeom), intent(in) :: geom
     real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
-    character(len=8), intent(in), optional :: k_diff
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -131,7 +130,7 @@ subroutine laVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
                         gamma_f, l_fric_qp, &
                         projBsVal=projBsVal, jump_v=jump_v, &
                         norm_slav=norm_slav, lagr_g=lagr_g, &
-                        mu_g=mu_g, thres=thres, k_diff=k_diff)
+                        mu_g=mu_g, thres=thres)
         ! if (present(k_diff)) write (6, *) '*projBsVal*', k_diff(1:3), '*', projBsVal(1:3)
 !
 ! ------ CONTACT PART (always computed)

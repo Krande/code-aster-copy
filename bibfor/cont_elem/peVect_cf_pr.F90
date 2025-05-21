@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine peVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
+subroutine peVect_cf_pr(parameters, geom, vect_cont, vect_fric)
 !
     use contact_module
     use contact_type
@@ -35,7 +35,6 @@ subroutine peVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
     type(ContactParameters), intent(in) :: parameters
     type(ContactGeom), intent(in) :: geom
     real(kind=8), intent(inout) :: vect_cont(MAX_PENA_DOFS), vect_fric(MAX_PENA_DOFS)
-    character(len=8), intent(in), optional :: k_diff
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,9 +62,9 @@ subroutine peVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2), norm_slav(3)
     real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)
-    real(kind=8) :: gap, gamma_c, projRmVal, lagr_g(3), thres
+    real(kind=8) :: gap, gamma_c, projRmVal, thres
     real(kind=8) :: gamma_f, projBsVal(3)
-    real(kind=8) :: jump_v(MAX_PENA_DOFS, 3), mu_g(MAX_PENA_DOFS, 3)
+    real(kind=8) :: jump_v(MAX_PENA_DOFS, 3)
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     blas_int :: b_1, b_nb_dofs, b_dime
     blas_int :: b_MAX_PENA_DOFS
@@ -117,7 +116,7 @@ subroutine peVect_cf_pr(parameters, geom, vect_cont, vect_fric, k_diff)
                         gamma_f, l_fric_qp, &
                         projBsVal=projBsVal, jump_v=jump_v, &
                         norm_slav=norm_slav, &
-                        thres=thres, k_diff=k_diff)
+                        thres=thres)
         ! if (present(k_diff)) write (6, *) '*projBsVal*', k_diff(1:3), '*', projBsVal(1:3)
 !
 ! ------ CONTACT PART (always computed)

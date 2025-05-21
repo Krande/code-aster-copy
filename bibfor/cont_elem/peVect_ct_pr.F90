@@ -61,8 +61,8 @@ subroutine peVect_ct_pr(parameters, geom, vect_cont, vect_fric, k_diff)
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2), gamma_f
     real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)
-    real(kind=8) :: gap, lagr_c, gamma_c, projRmVal, norm_slav(3)
-    real(kind=8) :: jump_v(MAX_PENA_DOFS, 3), mu_c(MAX_PENA_DOFS)
+    real(kind=8) :: gap, gamma_c, projRmVal, norm_slav(3)
+    real(kind=8) :: jump_v(MAX_PENA_DOFS, 3)
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     blas_int :: b_1, b_nb_dofs, b_dime
     blas_int :: b_MAX_PENA_DOFS

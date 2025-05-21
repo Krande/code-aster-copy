@@ -63,7 +63,7 @@ subroutine peMatr_diff(parameters, geom, matr_cont, matr_fric)
     real(kind=8) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
     real(kind=8) :: vect_cont_p(MAX_LAGA_DOFS), vect_fric_p(MAX_LAGA_DOFS)
     real(kind=8) :: vect_cont_m(MAX_LAGA_DOFS), vect_fric_m(MAX_LAGA_DOFS)
-    real(kind=8) :: coor_save, depl_save, pair_save, lagc_save, lagf_save
+    real(kind=8) :: coor_save, depl_save, pair_save
     real(kind=8) :: tau_slav(3, 2), delta
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     character(len=8), dimension(3) :: l_dof
@@ -113,7 +113,7 @@ subroutine peMatr_diff(parameters, geom, matr_cont, matr_fric)
 !
 ! --- Compute reference contact residual
 !
-    call peVect(parameters, geom, vect_cont, vect_fric, k_diff=ref)
+    call peVect(parameters, geom, vect_cont, vect_fric)
 !
 ! - Loop over dofs
 !
@@ -143,7 +143,7 @@ subroutine peMatr_diff(parameters, geom, matr_cont, matr_fric)
                     geom%coor_slav_pair(i_dim, i_node) = pair_save+eps
                 end if
                 ! Compute perturbed residuals
-                call peVect(parameters, geom, vect_cont_p, vect_fric_p, k_diff=l_dof(i_dim))
+                call peVect(parameters, geom, vect_cont_p, vect_fric_p)
                 ! Compute matrices
                 delta = geom%depl_slav_curr(i_dim, i_node)-depl_save
                 ! write (6, *) '*delta*', delta
@@ -162,7 +162,7 @@ subroutine peMatr_diff(parameters, geom, matr_cont, matr_fric)
                     geom%coor_slav_pair(i_dim, i_node) = pair_save+eps
                 end if
                 ! Compute perturbed residuals
-                call peVect(parameters, geom, vect_cont_p, vect_fric_p, k_diff=l_dof(i_dim))
+                call peVect(parameters, geom, vect_cont_p, vect_fric_p)
                 ! Perturb displ
                 if (abs(norm_slav(i_dim)) .gt. eps) then
                     geom%coor_slav_curr(i_dim, i_node) = coor_save+eps*norm_slav(i_dim)

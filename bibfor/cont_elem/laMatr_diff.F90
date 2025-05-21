@@ -124,7 +124,7 @@ subroutine laMatr_diff(parameters, geom, matr_cont, matr_fric)
 !
 ! --- Compute reference contact residual
 !
-    call laVect(parameters, geom, vect_cont, vect_fric, k_diff=ref)
+    call laVect(parameters, geom, vect_cont, vect_fric)
 !
 ! - Loop over dofs
 !
@@ -154,7 +154,7 @@ subroutine laMatr_diff(parameters, geom, matr_cont, matr_fric)
                     geom%coor_slav_pair(i_dim, i_node) = pair_save+eps
                 end if
                 ! Compute perturbed residuals
-                call laVect(parameters, geom, vect_cont_p, vect_fric_p, k_diff=l_dof(i_dim))
+                call laVect(parameters, geom, vect_cont_p, vect_fric_p)
                 ! Compute matrices
                 delta = geom%depl_slav_curr(i_dim, i_node)-depl_save
                 ! write (6, *) '*delta*', delta
@@ -173,7 +173,7 @@ subroutine laMatr_diff(parameters, geom, matr_cont, matr_fric)
                     geom%coor_slav_pair(i_dim, i_node) = pair_save+eps
                 end if
                 ! Compute perturbed residuals
-                call laVect(parameters, geom, vect_cont_p, vect_fric_p, k_diff=l_dof(i_dim))
+                call laVect(parameters, geom, vect_cont_p, vect_fric_p)
                 ! Perturb displ
                 if (abs(norm_slav(i_dim)) .gt. eps) then
                     geom%coor_slav_curr(i_dim, i_node) = coor_save+eps*norm_slav(i_dim)
