@@ -411,6 +411,8 @@ L_TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=30.0, PAS=0.01))
 #
 # ---------------------------------------------------------
 #
+
+# Calcul n°1: MONO-APPUI, COMB_MODE=’SRSS’
 MONO = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     TYPE_ANALYSE="MONO_APPUI",
@@ -450,6 +452,7 @@ TEST_RESU(
 #
 # --------------------------------
 #
+# Calcul n°2: MULTI-APPUI CORRELE, COMB_MODE=’SRSS’
 CORRELE = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
@@ -491,6 +494,8 @@ TEST_RESU(
     )
 )
 
+# -------------------------------------------------------------------------------
+# Calcul n°3: MULTI-APPUI CORRELE, COMB_MODE=’SRSS’, NOTA: NO1 = SRO1, NO2 = SRO2
 MULISRS = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.00,
@@ -535,6 +540,8 @@ TEST_RESU(
 )
 
 #
+# -------------------------------------------------------------------------------
+# Calcul n°4: MULTI-APPUI CORRELE, COMB_MODE='ABS', NOTA: NO1 = SRO1, NO2 = SRO2
 MULIABS = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.00,
@@ -579,7 +586,8 @@ TEST_RESU(
 )
 
 #
-
+# -------------------------------------------------------------------------------
+# Calcul n°5: MULTI-APPUI CORRELE, COMB_MODE='DPC', NOTA: NO1 = SRO1, NO2 = SRO2
 MULIDPC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.00,
@@ -621,6 +629,8 @@ TEST_RESU(
     )
 )
 
+# -------------------------------------------------------------------------------
+# Calcul n°6: MULTI-APPUI CORRELE, COMB_MODE='CQC', NOTA: NO1 = SRO1, NO2 = SRO2
 MULICQC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.05,
@@ -665,6 +675,8 @@ TEST_RESU(
 )
 
 #
+# -------------------------------------------------------------------------------
+# Calcul n°7: MULTI-APPUI CORRELE, COMB_MODE='DPC', NOTA: NO1 = SRO1, NO2 = SRO2
 MULIDSC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.05,
@@ -709,5 +721,100 @@ TEST_RESU(
 )
 
 # --------------------------------------
+# Calcul n°8: MULTI-APPUI CORRELE, COMB_MODE=’SRSS’, CUMUL_INTRA = 'QUAD'
+# NOTA: NO1 = SRO1, NO2 = SRO2
+MUL_QUAD_SRS = COMB_SISM_MODAL(
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.00,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_2", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
+        _F(NOM_APPUI="A_2", LIST_AXE=("X",), SPEC_OSCI=SPEC2),
+    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1", "A_2"), NOM="GA_1"),),
+    COMB_MODE=_F(TYPE="SRSS"),
+    CUMUL_INTRA="QUAD",
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
+)
+
+
 #
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=MUL_QUAD_SRS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788e-03,
+            VALE_REFE=5.6512973681333420e-03,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            RESULTAT=MUL_QUAD_SRS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=5.65129788e-03,
+            VALE_REFE=5.6512973681333402e-03,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# -------------------------------------------------------------------------------
+# Calcul n°9: MULTI-APPUI CORRELE, COMB_MODE=’SRSS’, CUMUL_INTRA = 'ABS'
+# NOTA: NO1 = SRO1, NO2 = SRO2
+MUL_ABS_SRS = COMB_SISM_MODAL(
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.00,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_2", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
+        _F(NOM_APPUI="A_2", LIST_AXE=("X",), SPEC_OSCI=SPEC2),
+    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1", "A_2"), NOM="GA_1"),),
+    COMB_MODE=_F(TYPE="SRSS"),
+    CUMUL_INTRA="ABS",
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
+)
+
+
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=MUL_ABS_SRS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=7.38182988e-03,
+            VALE_REFE=7.3818293207962519e-03,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            RESULTAT=MUL_ABS_SRS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=7.38182988e-03,
+            VALE_REFE=7.3818293207962501e-03,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
 FIN()

@@ -1,0 +1,699 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+DEBUT(CODE="OUI")
+#
+MAILLAG0 = LIRE_MAILLAGE(FORMAT="ASTER")
+#
+
+MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAILLAG0, CREA_POI1=(_F(NOM_GROUP_MA="MASSE", GROUP_NO="MASSE"),))
+
+DEFI_GROUP(reuse=MAILLAGE, MAILLAGE=MAILLAGE, CREA_GROUP_NO=_F(NOM="P1P4", NOEUD=("N1", "N4")))
+
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=(
+        _F(GROUP_MA=("RESK1", "RESK2", "RESK3"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA=("MASSE",), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+
+k = 1.0e5
+m = 2533
+#
+CARA = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    DISCRET=(
+        _F(GROUP_MA="RESK1", CARA="K_T_D_L", VALE=(k, 1.0, 1.0)),
+        _F(
+            GROUP_MA="RESK1",
+            CARA="M_T_L",
+            VALE=(
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+            ),
+        ),
+        _F(GROUP_MA="RESK2", CARA="K_T_D_L", VALE=(1.21 * k, 1.0, 1.0)),
+        _F(
+            GROUP_MA="RESK2",
+            CARA="M_T_L",
+            VALE=(
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+            ),
+        ),
+        _F(GROUP_MA="RESK3", CARA="K_T_D_L", VALE=(1.44 * k, 1.0, 1.0)),
+        _F(
+            GROUP_MA="RESK3",
+            CARA="M_T_L",
+            VALE=(
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+            ),
+        ),
+        _F(GROUP_MA="MASSE", CARA="M_T_D_N", VALE=(m,)),
+    ),
+)
+
+#
+
+MAT = DEFI_MATERIAU(ELAS=_F(E=1.6e11, RHO=1.3e04, NU=0.3))
+
+#
+
+CHAMPMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=MAT))
+
+#
+
+COND_LIM = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(GROUP_NO="P1", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="MASSE", DY=0.0, DZ=0.0),  # MASSE = (P2, P3, P4)
+    ),
+)
+
+#
+
+RIGIELEM = CALC_MATR_ELEM(MODELE=MODELE, OPTION="RIGI_MECA", CHARGE=COND_LIM, CARA_ELEM=CARA)
+
+#
+
+MASSELEM = CALC_MATR_ELEM(MODELE=MODELE, OPTION="MASS_MECA", CHARGE=COND_LIM, CARA_ELEM=CARA)
+
+#
+
+NUMEROTA = NUME_DDL(MATR_RIGI=RIGIELEM)
+
+#
+
+MATRRIGI = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=NUMEROTA)
+
+MATRMASS = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMEROTA)
+
+#
+
+MAS = POST_ELEM(MODELE=MODELE, CARA_ELEM=CARA, MASS_INER=_F(TOUT="OUI"))
+
+#
+
+MODES = CALC_MODES(
+    MATR_RIGI=MATRRIGI,
+    CARA_ELEM=CARA,
+    CALC_FREQ=_F(NMAX_FREQ=3),
+    MATR_MASS=MATRMASS,
+    SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
+)
+
+
+#
+MODES = NORM_MODE(reuse=MODES, MODE=MODES, NORME="TRAN")
+
+#
+MODES = CALC_CHAMP(reuse=MODES, RESULTAT=MODES, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))
+
+
+MODES = CALC_CHAMP(reuse=MODES, RESULTAT=MODES, FORCE="FORC_NODA")
+
+MODES = CALC_CHAMP(reuse=MODES, RESULTAT=MODES, FORCE="REAC_NODA")
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODES,
+            VALE_CALC=1.0000058410919896,
+            VALE_REFE=1.0,
+        ),
+        _F(
+            NUME_ORDRE=2,
+            PARA="FREQ",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODES,
+            VALE_CALC=1.100006425201189,
+            VALE_REFE=1.1,
+        ),
+        _F(
+            NUME_ORDRE=3,
+            PARA="FREQ",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODES,
+            VALE_CALC=1.2000070093103878,
+            VALE_REFE=1.2,
+        ),
+    )
+)
+
+
+# -----------------------------------------------------------------------
+#
+# CALCUL DES MODES STATIQUES POUR L'ENTRAINEMENT
+#
+# -----------------------------------------------------------------------
+#
+
+MODE_STA = MODE_STATIQUE(
+    CARA_ELEM=CARA,
+    MATR_RIGI=MATRRIGI,
+    MATR_MASS=MATRMASS,
+    MODE_STAT=_F(GROUP_NO=("P1"), AVEC_CMP=("DX",)),
+)
+
+# Réponse à un déplacement unitaire aux noeuds
+MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))
+
+
+MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, FORCE="FORC_NODA")
+
+# Calcul de réaction nodale
+MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, FORCE="REAC_NODA")
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            RESULTAT=MODE_STA,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=-8.73114914e-11,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            GROUP_NO="P2",
+            RESULTAT=MODE_STA,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=4.36557457e-11,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            GROUP_NO="P3",
+            RESULTAT=MODE_STA,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=4.36557457e-11,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            GROUP_NO="P4",
+            RESULTAT=MODE_STA,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=0.00000000e00,
+            NOEUD_CMP=("1", "DX"),
+        ),
+    )
+)
+
+#
+#
+# -----------------------------------------------------------------------
+#
+# CALCUL DES MODES STATIQUES POUR LA CORRECTION STATIQUE
+#
+# -----------------------------------------------------------------------
+#
+MODE_CO2 = MODE_STATIQUE(
+    MATR_RIGI=MATRRIGI,
+    MATR_MASS=MATRMASS,
+    CARA_ELEM=CARA,
+    PSEUDO_MODE=_F(
+        GROUP_NO=("P1",),
+        AVEC_CMP=("DX",),
+        # AVEC_CMP = ( 'DX','DY','DZ' ),
+    ),
+)
+
+
+#
+MODE_CO2 = CALC_CHAMP(reuse=MODE_CO2, RESULTAT=MODE_CO2, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))
+
+MODE_CO2 = CALC_CHAMP(reuse=MODE_CO2, RESULTAT=MODE_CO2, FORCE="FORC_NODA")
+
+
+# Calcul de réaction nodale
+MODE_CO2 = CALC_CHAMP(reuse=MODE_CO2, RESULTAT=MODE_CO2, FORCE="REAC_NODA")
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=MODE_CO2,
+            NOEUD_CMP=("1", "DX"),
+            NOM_CHAM="DEPL",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=0.00000000e00,
+        ),
+        _F(
+            RESULTAT=MODE_CO2,
+            NOEUD_CMP=("1", "DX"),
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=2.53300000e-02,
+        ),
+        _F(
+            RESULTAT=MODE_CO2,
+            NOEUD_CMP=("1", "DX"),
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=2.09338843e-02,
+        ),
+        _F(
+            RESULTAT=MODE_CO2,
+            NOEUD_CMP=("1", "DX"),
+            NOM_CHAM="DEPL",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=1.75902778e-02,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            RESULTAT=MODE_CO2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=-7.59900000e03,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            GROUP_NO="P2",
+            RESULTAT=MODE_CO2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=2.53300000e03,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            GROUP_NO="P3",
+            RESULTAT=MODE_CO2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=2.53300000e03,
+            NOEUD_CMP=("1", "DX"),
+        ),
+        _F(
+            GROUP_NO="P4",
+            RESULTAT=MODE_CO2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=2.53300000e03,
+            NOEUD_CMP=("1", "DX"),
+        ),
+    )
+)
+
+
+# -------------------------------
+#
+#   DEFINITION DU SEISME
+#
+# --------------------------------
+#
+F0 = 1.0
+
+#
+F1 = 1.5
+
+F2 = 2.0
+
+OMEGA1 = 2 * pi * F1
+
+OMEGA2 = 2 * pi * F2
+
+A1 = 0.5
+
+A2 = 0.5
+
+#
+L_FREQ = DEFI_LIST_REEL(DEBUT=0.01, INTERVALLE=_F(JUSQU_A=20.0, PAS=0.002))
+
+#
+FSRO1 = FORMULE(
+    VALE="""
+A1*(2*pi*FREQ)**2/abs(OMEGA1**2-(2*pi*FREQ)**2)""",
+    A1=A1,
+    OMEGA1=OMEGA1,
+    NOM_PARA="FREQ",
+)
+#
+FSRO2 = FORMULE(
+    VALE="""
+A2*(2*pi*FREQ)**2/abs(OMEGA2**2-(2*pi*FREQ)**2)""",
+    A2=A2,
+    OMEGA2=OMEGA2,
+    NOM_PARA="FREQ",
+)
+#
+
+SRO1 = CALC_FONC_INTERP(
+    FONCTION=FSRO1,
+    NOM_PARA="FREQ",
+    LIST_PARA=L_FREQ,
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    INTERPOL="LOG",
+)
+
+SRO2 = CALC_FONC_INTERP(
+    FONCTION=FSRO2,
+    NOM_PARA="FREQ",
+    LIST_PARA=L_FREQ,
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    INTERPOL="LOG",
+)
+
+#
+SPEC1 = DEFI_NAPPE(
+    NOM_PARA="AMOR", INTERPOL=("LIN", "LOG"), PARA=(0.00, 0.05), FONCTION=(SRO1, SRO1)
+)
+
+SPEC2 = DEFI_NAPPE(
+    NOM_PARA="AMOR", INTERPOL=("LIN", "LOG"), PARA=(0.00, 0.05), FONCTION=(SRO2, SRO2)
+)
+
+#
+L_TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=30.0, PAS=0.01))
+
+#
+# ------------------------------------------------------------------------------------------
+#       3.3.4 : Réponse globale sur base modale complète (calcul multi-appui décorrélé)
+
+# Calcul no. 1 : COMB_MODE=’SRSS’
+MUQASRS = COMB_SISM_MODAL(
+    COMB_MODE=_F(TYPE="SRSS"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQASRS,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=2.87538397e03,
+            VALE_REFE=2.8754e03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
+# Calcul no. 2 : COMB_MODE=ABS
+MUQAABS = COMB_SISM_MODAL(
+    COMB_MODE=_F(TYPE="ABS"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+
+# Check ABS
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQAABS,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=4.73841154e03,
+            VALE_REFE=4.7384e03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# Calcul no. 3 : COMB_MODE=DPC
+MUQADPC = COMB_SISM_MODAL(
+    COMB_MODE=_F(TYPE="DPC"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+# Check DPC
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQADPC,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=4.73841154e03,
+            VALE_REFE=4.7384e03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
+# Calcul no. 4 : COMB_MODE=CQC
+MUQACQC = COMB_SISM_MODAL(
+    COMB_MODE=_F(TYPE="CQC"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.05,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+# Check CQC
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQACQC,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=3.82763360e03,
+            VALE_REFE=3.8276e03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
+# Calcul no. 5 : COMB_MODE=DSC
+MUQADSC = COMB_SISM_MODAL(
+    COMB_MODE=_F(TYPE="DSC", DUREE=15.0),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.05,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+# Check DSC
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQADSC,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=4.08971428e03,
+            VALE_REFE=4.0897e03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
+# Calcul no. 6 : COMB_MODE=NRC_DSA
+# Nouvelle méthode : NRC_DSA  = DSC avec les réponses modales en valeur absolue
+MUQA_NRC_DSA = COMB_SISM_MODAL(
+    COMB_MODE=_F(TYPE="NRC_DSA", DUREE=15.0),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.05,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+# Check DSA
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_DSA,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=4.08971428e03,
+            VALE_REFE=4.08971e03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
+# Calcul no. 7 : COMB_MODE=NRC_GROUPING
+# Nouvelle méthode : NRC_GROUPING , très proche de DPC ?
+MUQA_NRC_GROUPING = COMB_SISM_MODAL(
+    COMB_MODE=_F(TYPE="NRC_GROUPING"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+# Check NRC_GROUPING
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_GROUPING,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=3.86052581e03,
+            VALE_REFE=3.8605e03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# Calcul no. 8 : COMB_MODE=NRC_TEN_PERCENT
+# Nouvelle méthode : NRC_TEN_PERCENT , très proche de DPC ?
+MUQA_NRC_10 = COMB_SISM_MODAL(
+    COMB_MODE=_F(TYPE="NRC_TEN_PERCENT"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
+    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+)
+
+# Check NRC_GROUPING
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUQA_NRC_10,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=4.22962730e03,
+            VALE_REFE=4.2296e03,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+
+FIN()

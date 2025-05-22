@@ -5,8 +5,6 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm sdld301a.comm D 1
-F comm sdld301a.com0 D 1
-F comm sdld301a.com1 D 1
-F mail sdld301a.mail D 20
+F comm sdld35a.comm D 1
+F mail sdld35a.mail D 20
 
