@@ -90,7 +90,8 @@ cata_msg = {
         """
  Commande VERI_FERRAILLAGE :
   Le point correspondant aux efforts généralisés de référence est situé en dehors du diagramme d'interaction sur au moins une facette.
-  La marge dans ce cas est fixée égale à 2.0 et les valeurs de  NRD, MRD, C0CRD et les valeurs relatives à l'état de la section sont fixées à -1.
+  La marge dans ce cas est fixée égale à 2.0. Les efforts normaux et moments résistants de rupture
+  et la distance entre le point correspondant au torseur de référence et celui correspondant au torseur résistant de rupture sont fixés à -1. Les valeurs relatives à l'état de la section sont fixées à -1.
 """
     ),
     12: _(
@@ -132,7 +133,8 @@ cata_msg = {
     18: _(
         """
  Commande POST_VERI_FERRAILLAGE :
-  Lorsque le torseur des efforts de référence coïncide avec le torseur des efforts de calcul, les grandeurs NRD, MRD et C0CRD sont fixées à -1.
+  Lorsque le torseur des efforts de référence coïncide avec le torseur des efforts de calcul, les efforts normaux et moments résistants de rupture
+  et la distance entre le point correspondant au torseur de référence et celui correspondant au torseur résistant de rupture sont fixés à -1.
 """
     ),
     19: _(

@@ -325,13 +325,13 @@ for j in range(len(theta_ref)):
 # POST_VERI_FERRAILLAGE POUR CHAQUE CAS DE CHARGEMENT
 # Extraction du champ de veri_ferraillage
 grandeur = [
-    "hauteur comprimée",
-    "epsilon beton",
-    "epsilon acier inf",
-    "epsilon acier sup",
-    "sigma beton",
-    "sigma acier inf",
-    "sigma acier sup",
+    "HAUTEUR_COMPRIMEE",
+    "EPSILON_BETON",
+    "EPSILON_ACIER_INF",
+    "EPSILON_ACIER_SUP",
+    "SIGMA_BETON",
+    "SIGMA_ACIER_INF",
+    "SIGMA_ACIER_SUP",
 ]
 COPY = FORMULE(VALE="NUMERO_MAILLE", NOM_PARA=["NUMERO_MAILLE"])
 # CHEFF1-------------------------------------------------

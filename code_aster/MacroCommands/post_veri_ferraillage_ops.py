@@ -290,13 +290,13 @@ def post_veri_ferraillage_ops(self, CHAM_VFER, **args):
             _F(PARA="NUMERO_MAILLE", LISTE_I=nom_results),
             _F(PARA="N", LISTE_R=nrd_results),
             _F(PARA="M", LISTE_R=mrd_results),
-            _F(PARA="hauteur comprimée", LISTE_R=hc_results),
-            _F(PARA="epsilon beton", LISTE_R=epsilon_beton_results),
-            _F(PARA="epsilon acier inf", LISTE_R=epsilon_acierinf_results),
-            _F(PARA="epsilon acier sup", LISTE_R=epsilon_aciersup_results),
-            _F(PARA="sigma beton", LISTE_R=sigma_beton_results),
-            _F(PARA="sigma acier inf", LISTE_R=sigma_acierinf_results),
-            _F(PARA="sigma acier sup", LISTE_R=sigma_aciersup_results),
+            _F(PARA="HAUTEUR_COMPRIMEE", LISTE_R=hc_results),
+            _F(PARA="EPSILON_BETON", LISTE_R=epsilon_beton_results),
+            _F(PARA="EPSILON_ACIER_INF", LISTE_R=epsilon_acierinf_results),
+            _F(PARA="EPSILON_ACIER_SUP", LISTE_R=epsilon_aciersup_results),
+            _F(PARA="SIGMA_BETON", LISTE_R=sigma_beton_results),
+            _F(PARA="SIGMA_ACIER_INF", LISTE_R=sigma_acierinf_results),
+            _F(PARA="SIGMA_ACIER_SUP", LISTE_R=sigma_aciersup_results),
         )
     )
 
