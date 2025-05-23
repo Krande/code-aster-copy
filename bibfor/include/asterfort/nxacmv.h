@@ -19,7 +19,7 @@
 !
 interface
     subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
-                      solver, l_stat, timeMap, tpsthe, temp_iter, &
+                      solver, l_stat, timeMap, timeParaIn, temp_iter, &
                       vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
                       cn2mbr_tran, matass, maprec, cndiri, cncine, &
                       mediri, comporTher, ds_algorom_)
@@ -32,7 +32,7 @@ interface
         character(len=24), intent(in) :: timeMap
         character(len=19), intent(in) :: varc_curr
         aster_logical, intent(in) :: l_stat
-        real(kind=8), intent(in) :: tpsthe(6)
+        real(kind=8), intent(in) :: timeParaIn(6)
         character(len=24), intent(in) :: temp_iter
         character(len=24), intent(in) :: vhydr
         character(len=24), intent(in) :: dry_prev
