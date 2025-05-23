@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laVect(parameters, geom, vect_cont, vect_fric)
+subroutine peVect(parameters, geom, vect_cont, vect_fric)
 !
     use contact_module
     use contact_type
@@ -27,17 +27,15 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 #include "asterfort/assert.h"
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
-#include "asterfort/laVect_ct_pr.h"
-#include "asterfort/laVect_ct_std.h"
-#include "asterfort/laVect_cf_pr.h"
-#include "asterfort/laVect_cf_std.h"
+#include "asterfort/peVect_ct_pr.h"
+#include "asterfort/peVect_cf_pr.h"
 #include "blas/daxpy.h"
 #include "blas/dgemv.h"
 #include "contact_module.h"
 !
     type(ContactParameters), intent(in) :: parameters
     type(ContactGeom), intent(in) :: geom
-    real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
+    real(kind=8), intent(inout) :: vect_cont(MAX_PENA_DOFS), vect_fric(MAX_PENA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,13 +62,8 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
         if (parameters%vari_cont == CONT_VARI_ROBU .or. &
             parameters%vari_cont == CONT_VARI_NONE) then
             ! Frictionless contact following Poulios & Renard's formulation
-            call laVect_ct_pr(parameters, geom, vect_cont, vect_fric)
+            call peVect_ct_pr(parameters, geom, vect_cont, vect_fric)
             ! write (6, *) 'laVect_ct_pr'
-!
-        elseif (parameters%vari_cont == CONT_VARI_CLAS) then
-            ! Frictionless contact following classical formulation
-            call laVect_ct_std(parameters, geom, vect_cont, vect_fric)
-            ! write (6, *) 'laVect_ct_std'
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -78,13 +71,9 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
     else if (parameters%vari_cont == CONT_VARI_ROBU .or. &
              parameters%vari_cont == CONT_VARI_NONE) then
         ! Frictional contact following Poulios & Renard's formulation
-        call laVect_cf_pr(parameters, geom, vect_cont, vect_fric)
+        call peVect_cf_pr(parameters, geom, vect_cont, vect_fric)
         ! write (6, *) 'laVect_cf_pr'
 !
-    elseif (parameters%vari_cont == CONT_VARI_CLAS) then
-        ! Frictional contact following classical formulation
-        call laVect_cf_std(parameters, geom, vect_cont, vect_fric)
-        ! write (6, *) 'laVect_cf_std'
     else
         ASSERT(ASTER_FALSE)
     end if

@@ -91,6 +91,44 @@ const struct contCellType contCellNits[contNitsType] = {
     { "QU9SE3", 12, "QUAD9", "SEG3", "CNM9S3", "FNM9S3" },
 };
 
+// For ALGO_CONT="PENALISATION"
+const unsigned int contPenaType = 33;
+const struct contCellType contCellPena[contPenaType] = {
+    { "SEG22", 4, "SEG2", "SEG2", "CPS2S2", "CPS2S2" },
+    { "SEG33", 6, "SEG3", "SEG3", "CPS3S3", "CPS3S3" },
+    { "SEG23", 5, "SEG2", "SEG3", "CPS2S3", "CPS2S3" },
+    { "SEG32", 5, "SEG3", "SEG2", "CPS3S2", "CPS3S2" },
+    { "TRIA33", 6, "TRIA3", "TRIA3", "CPT3T3", "CPT3T3" },
+    { "TR3TR6", 9, "TRIA3", "TRIA6", "CPT3T6", "CPT3T6" },
+    { "TR6TR3", 9, "TRIA6", "TRIA3", "CPT6T3", "CPT6T3" },
+    { "TRIA66", 12, "TRIA6", "TRIA6", "CPT6T6", "CPT6T6" },
+    { "QUAD44", 8, "QUAD4", "QUAD4", "CPQ4Q4", "CPQ4Q4" },
+    { "QU4QU8", 12, "QUAD4", "QUAD8", "CPQ4Q8", "CPQ4Q8" },
+    { "QU8QU4", 12, "QUAD8", "QUAD4", "CPQ8Q4", "CPQ8Q4" },
+    { "QUAD88", 16, "QUAD8", "QUAD8", "CPQ8Q8", "CPQ8Q8" },
+    { "QU4TR3", 7, "QUAD4", "TRIA3", "CPQ4T3", "CPQ4T3" },
+    { "TR3QU4", 7, "TRIA3", "QUAD4", "CPT3Q4", "CPT3Q4" },
+    { "TR6QU4", 10, "TRIA6", "QUAD4", "CPT6Q4", "CPT6Q4" },
+    { "QU4TR6", 10, "QUAD4", "TRIA6", "CPQ4T6", "CPQ4T6" },
+    { "TR6QU8", 14, "TRIA6", "QUAD8", "CPT6Q8", "CPT6Q8" },
+    { "QU8TR6", 14, "QUAD8", "TRIA6", "CPQ8T6", "CPQ8T6" },
+    { "TR6QU9", 15, "TRIA6", "QUAD9", "CPT6Q9", "CPT6Q9" },
+    { "QU9TR6", 15, "QUAD9", "TRIA6", "CPQ9T6", "CPQ9T6" },
+    { "QU8TR3", 11, "QUAD8", "TRIA3", "CPQ8T3", "CPQ8T3" },
+    { "TR3QU8", 11, "TRIA3", "QUAD8", "CPT3Q8", "CPT3Q8" },
+    { "QU8QU9", 17, "QUAD8", "QUAD9", "CPQ8Q9", "CPQ8Q9" },
+    { "QU9QU8", 17, "QUAD9", "QUAD8", "CPQ9Q8", "CPQ9Q8" },
+    { "QU9QU4", 13, "QUAD9", "QUAD4", "CPQ9Q4", "CPQ9Q4" },
+    { "QU4QU9", 13, "QUAD4", "QUAD9", "CPQ4Q9", "CPQ4Q9" },
+    { "QU9TR3", 12, "QUAD9", "TRIA3", "CPQ9T3", "CPQ9T3" },
+    { "TR3QU9", 12, "TRIA3", "QUAD9", "CPT3Q9", "CPT3Q9" },
+    { "QUAD99", 18, "QUAD9", "QUAD9", "CPQ9Q9", "CPQ9Q9" },
+    { "POI1", 1, "POI1", "LAG2", "CPP1L2", "CPP1L2" },
+    { "POI1", 1, "POI1", "NOLAG2", "CPP1N2", "CPP1N2" },
+    { "POI1", 1, "POI1", "LAG3", "CPP1L3", "CPP1L3" },
+    { "POI1", 1, "POI1", "NOLAG3", "CPP1N3", "CPP1N3" },
+};
+
 class ContactPairing : public DataStructure {
     /** Datastructure for pairing */
   protected:

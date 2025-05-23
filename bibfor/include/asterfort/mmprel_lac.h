@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine mmprel_lac(sdcont, mesh, model, slavElemLigr)
-        character(len=8), intent(in) :: sdcont, model, mesh
+    subroutine mmprel_lac(sdcont, mesh, slavElemLigr)
+        character(len=8), intent(in) :: sdcont, mesh
         character(len=19), intent(in) :: slavElemLigr
     end subroutine mmprel_lac
 end interface

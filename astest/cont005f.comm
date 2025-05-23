@@ -1,0 +1,87 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
+
+
+DEBUT(
+    CODE="OUI",
+    DEBUG=_F(SDVERI="NON"),
+    INFO=1,
+    IGNORE_ALARM=("CALCULEL4_9", "MODELE1_64", "MODELE1_63"),
+)
+
+lisi = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1, PAS=0.5))
+
+
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
+
+Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+Mail = MODI_MAILLAGE(
+    reuse=Mail,
+    MAILLAGE=Mail,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("Group_2", "Group_1", "Symy", "Symx", "Press_lat", "Press_sup")),
+)
+
+young = 2000
+mat1 = DEFI_MATERIAU(ELAS=_F(E=young, NU=0.0))
+
+MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+
+AFFE = AFFE_MATERIAU(MAILLAGE=Mail, MODELE=MODI, AFFE=_F(TOUT="OUI", MATER=mat1))
+
+coef = young * 10
+DEFICO = DEFI_CONT(
+    MODELE=MODI,
+    ZONE=_F(
+        APPARIEMENT="MORTAR",
+        GROUP_MA_MAIT="Group_2",
+        GROUP_MA_ESCL="Group_1",
+        COEF_CONT=coef,
+        ALGO_CONT="PENALISATION",
+    ),
+)
+
+CHAR1 = AFFE_CHAR_CINE(
+    MODELE=MODI,
+    MECA_IMPO=(_F(GROUP_MA="Symx", DX=0), _F(GROUP_MA="Symy", DY=0), _F(GROUP_MA="Base", DZ=0)),
+)
+CHAR2 = AFFE_CHAR_MECA(
+    MODELE=MODI, PRES_REP=(_F(GROUP_MA="Press_lat", PRES=7.5), _F(GROUP_MA="Press_sup", PRES=30))
+)
+
+RES = MECA_NON_LINE(
+    MODELE=MODI,
+    CHAM_MATER=AFFE,
+    EXCIT=(_F(CHARGE=CHAR1, FONC_MULT=RAMPE), _F(CHARGE=CHAR2, FONC_MULT=RAMPE)),
+    CONTACT=_F(DEFINITION=DEFICO, ALGO_RESO_GEOM="NEWTON"),
+    NEWTON=_F(REAC_ITER=1),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
+    INCREMENT=_F(LIST_INST=lisi),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=20),
+)
+RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE=("SIEF_NOEU",), CRITERES=("SIEQ_NOEU",))
+
+IMPR_RESU(FORMAT="MED", RESU=(_F(RESULTAT=RES),), UNITE=80)
+
+
+FIN()
+# CHECKSUM:9f90ac18752a4c0cdfc3c56aef286888  -:FIN CHECKSUM

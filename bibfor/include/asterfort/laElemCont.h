@@ -26,7 +26,7 @@ interface
                          norm_slav, dGap, projBsVal, dv, dvT, projBsVal2, lagr_c, lagr_f, lagr_f3, &
                           dThres_du, dThres_dl, lagr_v, thres, jump_v, dNs, &
                           tau_slav, lagr_g, mu_g, dts_ns, speed, dfunc_ma, dZetaM, &
-                          mu_c, mu_f, mu_f3, metricTens, d2Gap, k_diff)
+                          mu_c, mu_f, mu_f3, metricTens, d2Gap)
 !
         use contact_type
 !
@@ -48,7 +48,6 @@ interface
         real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: dThres_du(MAX_LAGA_DOFS), dThres_dl(MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: lagr_f3(3), mu_f3(MAX_LAGA_DOFS, 3)
-        character(len=8), intent(in), optional :: k_diff
 !
     end subroutine laElemCont
 end interface

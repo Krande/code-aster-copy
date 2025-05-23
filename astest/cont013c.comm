@@ -1,0 +1,306 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+ma = LIRE_MAILLAGE(FORMAT="MED")
+ma = DEFI_GROUP(
+    reuse=ma,
+    MAILLAGE=ma,
+    CREA_GROUP_NO=(
+        _F(NOM="N1", NOEUD="N1"),
+        _F(NOM="N2", NOEUD="N2"),
+        _F(NOM="N8", NOEUD="N8"),
+        _F(NOM="N9", NOEUD="N9"),
+    ),
+)
+
+ma = MODI_MAILLAGE(reuse=ma, MAILLAGE=ma, ORIE_PEAU=(_F(GROUP_MA_PEAU="Escl"),))
+
+ma = DEFI_GROUP(reuse=ma, MAILLAGE=ma, CREA_GROUP_NO=(_F(GROUP_MA="Escl"),))
+
+modele = AFFE_MODELE(
+    MAILLAGE=ma,
+    AFFE=_F(
+        GROUP_MA=("Escl", "Mait", "Cube", "Depl"), PHENOMENE="MECANIQUE", MODELISATION=("D_PLAN",)
+    ),
+)
+
+young = 1e9
+acier = DEFI_MATERIAU(ELAS=_F(E=young, NU=0.3, RHO=2500))
+
+affe_mat = AFFE_MATERIAU(MAILLAGE=ma, AFFE=_F(TOUT="OUI", MATER=acier))
+
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+
+def h(x):
+    if x > 0:
+        return 1.0
+    else:
+        return 0.0
+
+
+TZ = 2.0
+TX = 10.0
+dz = 3.0e-2
+dx = 1.0e-1
+DZIMP = FORMULE(
+    NOM_PARA=("INST"), VALE="-dz* INST/TZ*h(TZ-INST) -dz*h(INST-TZ+0.001)", TZ=TZ, h=h, dz=dz
+)
+DXIMP = FORMULE(NOM_PARA=("INST"), VALE="dx * INST/TX*h(INST-TZ)", TZ=TZ, h=h, dx=dx, TX=TX)
+
+DEPL = AFFE_CHAR_CINE_F(
+    MODELE=modele,
+    MECA_IMPO=(_F(GROUP_MA=("Depl",), DX=DXIMP, DY=DZIMP), _F(GROUP_MA="Mait", DX=ZERO, DY=ZERO)),
+)
+
+# -----------------------------------------------------------------------------------
+#               N O    F R I C T I O N
+# -----------------------------------------------------------------------------------
+
+coef_coulomb = 0.0
+coef = young * 20
+contact_new = DEFI_CONT(
+    MODELE=modele,
+    ZONE=_F(GROUP_MA_MAIT="Mait", GROUP_MA_ESCL="Escl", ALGO_CONT="PENALISATION", COEF_CONT=coef),
+)
+
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=TZ, NOMBRE=1), _F(JUSQU_A=TX, NOMBRE=4)))
+listinst = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(SUBD_PAS=2.0, SUBD_NIVEAU=2))
+
+
+evol = MECA_NON_LINE(
+    MODELE=modele,
+    CHAM_MATER=affe_mat,
+    EXCIT=(_F(CHARGE=DEPL),),
+    CONTACT=_F(DEFINITION=contact_new, ALGO_RESO_GEOM="NEWTON", RESI_GEOM=1e1),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    NEWTON=_F(REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=listinst),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6),
+)
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=evol, NOM_CHAM="DEPL", NOM_CMP=("DX", "DY")))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="N1",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.0961427369673783,
+        ),
+        _F(
+            GROUP_NO="N1",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.002904704045742057,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="N2",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.107084243511678,
+        ),
+        _F(
+            GROUP_NO="N2",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.008168826239646078,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="N8",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.10022310990824085,
+        ),
+        _F(
+            GROUP_NO="N8",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.004658281874816992,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="N9",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.10391201445628026,
+        ),
+        _F(
+            GROUP_NO="N9",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.006481216365129756,
+        ),
+    )
+)
+
+# -----------------------------------------------------------------------------------
+#               W I T H    F R I C T I O N
+# -----------------------------------------------------------------------------------
+
+coef_coulomb = 0.4
+coef = young * 20
+contact_new = DEFI_CONT(
+    MODELE=modele,
+    ZONE=_F(
+        GROUP_MA_MAIT="Mait",
+        GROUP_MA_ESCL="Escl",
+        ALGO_CONT="PENALISATION",
+        COEF_CONT=coef,
+        FROTTEMENT="OUI",
+        TYPE_FROT="COULOMB",
+        COULOMB=coef_coulomb,
+    ),
+)
+
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=TZ, NOMBRE=1), _F(JUSQU_A=TX, NOMBRE=4)))
+listinst = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(SUBD_PAS=2.0, SUBD_NIVEAU=2))
+
+
+evol = MECA_NON_LINE(
+    MODELE=modele,
+    CHAM_MATER=affe_mat,
+    EXCIT=(_F(CHARGE=DEPL),),
+    CONTACT=_F(DEFINITION=contact_new, ALGO_RESO_GEOM="NEWTON", RESI_GEOM=1e1),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    NEWTON=_F(REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=listinst),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6),
+)
+IMPR_RESU(FORMAT="MED", UNITE=81, RESU=_F(RESULTAT=evol, NOM_CHAM="DEPL", NOM_CMP=("DX", "DY")))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="N1",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.06021220894866337,
+        ),
+        _F(
+            GROUP_NO="N1",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.000504315417302327,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="N2",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.06568315636576544,
+        ),
+        _F(
+            GROUP_NO="N2",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.006929715303984048,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="N8",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.06123945084364445,
+        ),
+        _F(
+            GROUP_NO="N8",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.0027236636082277003,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="N9",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.06280501831469554,
+        ),
+        _F(
+            GROUP_NO="N9",
+            INST=TX,
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.004405785722428517,
+        ),
+    )
+)
+
+FIN()

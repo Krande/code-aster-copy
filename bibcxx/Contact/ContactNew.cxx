@@ -118,6 +118,7 @@ bool ContactNew::build() {
     cata[std::make_tuple( 2, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_2D";
     cata[std::make_tuple( 3, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_3D";
 
+    // Same elements for contact and friction
     cata[std::make_tuple( 2, ContactAlgo::Penalization, false )] = "CONT_PENA_SL_2D";
     cata[std::make_tuple( 3, ContactAlgo::Penalization, false )] = "CONT_PENA_SL_3D";
     cata[std::make_tuple( 2, ContactAlgo::Penalization, true )] = "CONT_PENA_SL_2D";
@@ -192,7 +193,7 @@ bool ContactNew::build() {
 
             JeveuxVectorLong list_elem = JeveuxVectorLong( jeveuxname, slavecells );
             CALL_AJELLT( ligret.c_str(), mesh->getName().c_str(), &slave_cells_i,
-                         jeveuxname.c_str(), " ", phenom.c_str(), modeli.c_str(), 0, " " );
+                         list_elem->getDataPtr(), phenom.c_str(), modeli.c_str() );
         }
     }
 

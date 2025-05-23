@@ -232,6 +232,15 @@ ASTERINTEGER ContactPairing::getContCellIndx( const ContactAlgo contAlgo,
                 }
             }
         }
+    } else if ( contAlgo == ContactAlgo::Penalization ) {
+        for ( int iContType = 0; iContType < contPenaType; iContType++ ) {
+            if ( slavCellTypeName == contCellPena[iContType].slavCellType ) {
+                if ( mastCellTypeName == contCellPena[iContType].mastCellType ) {
+                    AS_ASSERT( cellIndx == -1 )
+                    cellIndx = iContType;
+                }
+            }
+        }
     } else {
         AS_ABORT( "Not implemented" );
     };
@@ -264,6 +273,9 @@ ASTERINTEGER ContactPairing::getContCellType( const ContactAlgo contAlgo,
         } else {
             contTypeName = contCellNits[cellIndx].contElemType;
         }
+    } else if ( contAlgo == ContactAlgo::Penalization ) {
+        contTypeName = contCellPena[cellIndx].contElemType;
+
     } else {
         AS_ABORT( "Not implemented" );
     };
@@ -466,6 +478,8 @@ void ContactPairing::createVirtualElemForOrphelanNodes(
                         if ( contAlgo == ContactAlgo::Lagrangian ) {
 
                         } else if ( contAlgo == ContactAlgo::Nitsche ) {
+                            continue;
+                        } else if ( contAlgo == ContactAlgo::Penalization ) {
                             continue;
                         } else {
                             AS_ABORT( "Not implemented" );

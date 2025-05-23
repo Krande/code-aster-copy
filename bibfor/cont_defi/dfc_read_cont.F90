@@ -108,7 +108,7 @@ subroutine dfc_read_cont(sdcont, zoneKeyword, mesh, model, model_ndim, &
     call caraxi(sdcont, model, mesh, model_ndim)
 
 ! - Create virtual slave elements in model
-    call mmprel(sdcont, mesh, model, slavElemLigr)
+    call mmprel(sdcont, mesh, slavElemLigr)
 
 ! - Set value of CONTACT_INIT
     call contSetInit(sdcont, mesh, nb_cont_zone)

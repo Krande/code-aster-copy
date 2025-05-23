@@ -16,10 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laVect(parameters, geom, vect_cont, vect_fric)
+subroutine peMatr(parameters, geom, matr_cont, matr_fric)
 !
-    use contact_module
     use contact_type
+    use contact_module
+    use contact_algebra_module
 !
     implicit none
 !
@@ -27,25 +28,23 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 #include "asterfort/assert.h"
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
-#include "asterfort/laVect_ct_pr.h"
-#include "asterfort/laVect_ct_std.h"
-#include "asterfort/laVect_cf_pr.h"
-#include "asterfort/laVect_cf_std.h"
-#include "blas/daxpy.h"
-#include "blas/dgemv.h"
+#include "asterfort/laElemCont.h"
+#include "asterfort/peMatr_ct_pr.h"
+#include "asterfort/peMatr_cf_pr.h"
+#include "blas/dgemm.h"
+#include "blas/dger.h"
 #include "contact_module.h"
 !
     type(ContactParameters), intent(in) :: parameters
     type(ContactGeom), intent(in) :: geom
-    real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
+    real(kind=8), intent(inout) :: matr_cont(MAX_PENA_DOFS, MAX_PENA_DOFS)
+    real(kind=8), intent(inout) :: matr_fric(MAX_PENA_DOFS, MAX_PENA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (Lagrangian method) - Elementary computations
+! Contact (Penalization method) - Elementary computations
 !
-! Compute vector
-!
-! -----
+! Compute matrices
 !
 ! Switch between different case : frictionless contact, frictional contact following
 ! Poulios & Renard's formulation, frictional contact following classical formulation
@@ -54,37 +53,28 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
 ! In  parameters       : numerical parameters
 ! In  geom             : geometrical information
-! IO  vect_cont        : vector for contact
-! IO  vect_fric        : vector for friction
+! IO  matr_cont        : matrix (only upper part)
+! IO  matr_fric        : matrix
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
+    ! Frictionless contact
     if (.not. parameters%l_fric) then
         if (parameters%vari_cont == CONT_VARI_ROBU .or. &
             parameters%vari_cont == CONT_VARI_NONE) then
             ! Frictionless contact following Poulios & Renard's formulation
-            call laVect_ct_pr(parameters, geom, vect_cont, vect_fric)
-            ! write (6, *) 'laVect_ct_pr'
-!
-        elseif (parameters%vari_cont == CONT_VARI_CLAS) then
-            ! Frictionless contact following classical formulation
-            call laVect_ct_std(parameters, geom, vect_cont, vect_fric)
-            ! write (6, *) 'laVect_ct_std'
-        else
-            ASSERT(ASTER_FALSE)
+            call peMatr_ct_pr(parameters, geom, matr_cont, matr_fric)
         end if
 !
     else if (parameters%vari_cont == CONT_VARI_ROBU .or. &
              parameters%vari_cont == CONT_VARI_NONE) then
         ! Frictional contact following Poulios & Renard's formulation
-        call laVect_cf_pr(parameters, geom, vect_cont, vect_fric)
-        ! write (6, *) 'laVect_cf_pr'
+        call peMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
 !
     elseif (parameters%vari_cont == CONT_VARI_CLAS) then
         ! Frictional contact following classical formulation
-        call laVect_cf_std(parameters, geom, vect_cont, vect_fric)
-        ! write (6, *) 'laVect_cf_std'
+        ! Not implemented yet - finite difference must be used
+        ASSERT(ASTER_FALSE)
     else
         ASSERT(ASTER_FALSE)
     end if

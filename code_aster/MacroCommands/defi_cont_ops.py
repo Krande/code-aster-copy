@@ -133,6 +133,10 @@ def defi_cont_ops(self, **keywords):
             variante = zone["VARIANTE"]
             contParam.setVariant(_vari_cont[variante])
 
+        if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Penalization:
+            contParam.setJacobianType(_jac_type[zone["TYPE_MATR_TANG"]])
+            contParam.setVariant(_vari_cont["ROBUSTE"])
+
         if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Nitsche:
             if zone["SYME"] == "OUI":
                 contParam.setVariant(_vari_cont["SYMETRIC"])

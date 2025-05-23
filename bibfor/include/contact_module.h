@@ -21,6 +21,8 @@
 !
 #define MAX_LAGA_DOFS 66
 
+#define MAX_PENA_DOFS 66
+
 #define MAX_NITS_DOFS 108
 
 #define TOLE_BORNE 0.d0

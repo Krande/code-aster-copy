@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmprel(sdcont, mesh, model, slavElemLigr)
+subroutine mmprel(sdcont, mesh, slavElemLigr)
 !
     implicit none
 !
@@ -32,7 +32,7 @@ subroutine mmprel(sdcont, mesh, model, slavElemLigr)
 #include "asterfort/mminfl.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8), intent(in) :: sdcont, model, mesh
+    character(len=8), intent(in) :: sdcont, mesh
     character(len=19), intent(in) :: slavElemLigr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,61 +50,51 @@ subroutine mmprel(sdcont, mesh, model, slavElemLigr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_frot_zone, l_veri
+    aster_logical :: lFricZone, l_veri
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco
     integer, pointer :: v_sdcont_mailco(:) => null()
-    character(len=16) :: modeli, phenom
-    integer :: jdecme, i_zone
-    integer :: nb_cont_zone, model_ndim, nb_cont_elem, nt_elem_slav
-    integer :: i_elem_slav, elem_slav_idx, elem_slav_nume, nb_elem_slav
+    character(len=16) :: modeli
+    character(len=16), parameter :: phenom = "MECANIQUE"
+    integer :: jdecme, iContZone
+    integer :: nbContZone, model_ndim, ntElemSlav
+    integer :: iCellSlav, cellSlavNume, nbCellSlav
     aster_logical :: l_verif_all
-    character(len=24) :: list_elem
-    integer, pointer :: v_list_elem(:) => null()
+    character(len=24), parameter :: listCellJv = '&&MMPREL.LISTE_MAILLES'
+    integer, pointer :: listCell(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    list_elem = '&&MMPREL.LISTE_MAILLES'
-    call dismoi('PHENOMENE', model, 'MODELE', repk=phenom)
-!
+
 ! - Datastructure for contact definition
-!
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
     call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
-!
+
 ! - Parameters
-!
     model_ndim = cfdisi(sdcont_defi, 'NDIM')
-    nb_cont_elem = cfdisi(sdcont_defi, 'NMACO')
-    nt_elem_slav = cfdisi(sdcont_defi, 'NTMAEC')
-    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
+    ntElemSlav = cfdisi(sdcont_defi, 'NTMAEC')
+    nbContZone = cfdisi(sdcont_defi, 'NZOCO')
     l_verif_all = cfdisl(sdcont_defi, 'ALL_VERIF')
-!
+
 ! - Add elements
-!
     if (.not. l_verif_all) then
-!
 ! ----- Create list of slave elements
-!
-        call wkvect(list_elem, 'V V I', nt_elem_slav, vi=v_list_elem)
-!
+        call wkvect(listCellJv, 'V V I', ntElemSlav, vi=listCell)
+
 ! ----- Set list of slave elements
-!
-        do i_zone = 1, nb_cont_zone
-!
+        do iContZone = 1, nbContZone
 ! --------- Type of model
-!
-            l_frot_zone = mminfl(sdcont_defi, 'FROTTEMENT_ZONE', i_zone)
-            l_veri = mminfl(sdcont_defi, 'VERIF', i_zone)
+            lFricZone = mminfl(sdcont_defi, 'FROTTEMENT_ZONE', iContZone)
+            l_veri = mminfl(sdcont_defi, 'VERIF', iContZone)
             if (model_ndim .eq. 2) then
-                if (l_frot_zone) then
+                if (lFricZone) then
                     modeli = 'FRIC_SL_2D'
                 else
                     modeli = 'CONT_SL_2D'
                 end if
             else if (model_ndim .eq. 3) then
-                if (l_frot_zone) then
+                if (lFricZone) then
                     modeli = 'FRIC_SL_3D'
                 else
                     modeli = 'CONT_SL_3D'
@@ -112,23 +102,21 @@ subroutine mmprel(sdcont, mesh, model, slavElemLigr)
             else
                 ASSERT(ASTER_FALSE)
             end if
-!
+
 ! --------- Type of model
-!
             if (.not. l_veri) then
-                nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
-                jdecme = mminfi(sdcont_defi, 'JDECME', i_zone)
-                ASSERT(nb_elem_slav .le. nt_elem_slav)
-                do i_elem_slav = 1, nb_elem_slav
-                    elem_slav_idx = jdecme+i_elem_slav
-                    elem_slav_nume = v_sdcont_mailco(elem_slav_idx)
-                    v_list_elem(i_elem_slav) = elem_slav_nume
+                nbCellSlav = mminfi(sdcont_defi, 'NBMAE', iContZone)
+                jdecme = mminfi(sdcont_defi, 'JDECME', iContZone)
+                ASSERT(nbCellSlav .le. ntElemSlav)
+                do iCellSlav = 1, nbCellSlav
+                    cellSlavNume = v_sdcont_mailco(jdecme+iCellSlav)
+                    listCell(iCellSlav) = cellSlavNume
                 end do
-                call ajellt(slavElemLigr, mesh, nb_elem_slav, list_elem, ' ', &
-                            phenom, modeli, 0, ' ')
+                call ajellt(slavElemLigr, mesh, nbCellSlav, listCell, &
+                            phenom, modeli)
             end if
         end do
-        call jedetr(list_elem)
+        call jedetr(listCellJv)
     end if
 !
 end subroutine
