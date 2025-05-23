@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -266,6 +266,18 @@ CHTHB = AFFE_CHAR_THER(
 )
 
 LREEL = DEFI_LIST_REEL(VALE=0.0)
+
+# Test for issue34645 (Fortran part: using OBSERVATION for this en v17)
+TEMPSTAT = THER_NON_LINE(
+    MODELE=MOTH,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHTH), _F(CHARGE=CHTHB)),
+    TYPE_CALCUL="TRAN",
+    NEWTON=_F(REAC_ITER=1),
+    OBSERVATION=_F(NOM_CHAM="TEMP", NOM_CMP="TEMP", TOUT="OUI", EVAL_CHAM="MAX"),
+    ETAT_INIT=_F(STATIONNAIRE="OUI"),
+    INCREMENT=_F(LIST_INST=LREEL),
+)
 
 TEMPE = THER_NON_LINE(
     MODELE=MOTH,
