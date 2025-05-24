@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -257,8 +257,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 ! ----- ASTUCE POUR DETRUIRE TOUTES LES OCCURENCES (QQES SOIT LEUR
 !       ARITHMETIQUE) ASSOCIEES A UNE MATRICE SI 'DETR_MAT'
         if (action(1:8) .eq. 'DETR_MAT') prec = precs(k)
-        if ((nomats(k) .eq. matas) .and. ((nonus(k) .eq. nu) .or. (lpreco)) .and. &
-            (roucs(k) .eq. rouc) .and. (precs(k) .eq. prec)) then
+        if ((nomats(k) .eq. matas) .and. ((nonus(k) .eq. nu) .or. lpreco) .and. &
+            (roucs(k) .eq. rouc) .and. ((precs(k) .eq. prec) .or. lpreco)) then
             if (rouc .eq. 'R') then
                 if (prec .eq. 'S') then
                     smpsk => smps(k)

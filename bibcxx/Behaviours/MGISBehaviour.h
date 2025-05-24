@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -123,7 +123,7 @@ class MGISBehaviour : public DataStructure {
     void load( const MGB::Hypothesis hyp,
                const MGB::FiniteStrainBehaviourOptions::StressMeasure stress_measure,
                const MGB::FiniteStrainBehaviourOptions::TangentOperator tangent_op );
-    void setInitialState( ASTERDOUBLE dt, ASTERDOUBLE *K );
+    void setInitialState( ASTERDOUBLE rdt, ASTERDOUBLE dt, ASTERDOUBLE *K );
     int integrate();
     void setOutputs( ASTERDOUBLE *stress, ASTERDOUBLE *internal_variables, ASTERDOUBLE *K,
                      ASTERDOUBLE *rdt );

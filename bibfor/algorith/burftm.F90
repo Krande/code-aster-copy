@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine burftm(cmp, ndim, vim, epsfm)
 ! PASSAGE DES VARIABLES INTERNES AU VECTEUR DE DEFORMATIONS DE FLUAGE
 !
 ! IN  CMP : COMPOSANTES A CALCULER :
-!             'FT' : FLUAGE PROPRE + DESSICCATION
 !             'FP' : FLUAGE PROPRE UNIQUEMENT
 !             'FD' : FLUAGE DE DESSICCATION
 !     NDIM  : DIMENSION DU PROBLEME (2D OU 3D)
@@ -98,10 +97,10 @@ subroutine burftm(cmp, ndim, vim, epsfm)
     integer :: ndim, i
 !
     if (cmp(1:2) .eq. 'FP') then
-        do i = 1, 3
-            epsfm(i) = (vim(7)+vim(8))
-        end do
         if (ndim .eq. 3) then
+            do i = 1, 3
+                epsfm(i) = (vim(7)+vim(8))
+            end do
             epsfm(1) = epsfm(1)+vim(10)+vim(16)
             epsfm(2) = epsfm(2)+vim(11)+vim(17)
             epsfm(3) = epsfm(3)+vim(12)+vim(18)
@@ -109,6 +108,9 @@ subroutine burftm(cmp, ndim, vim, epsfm)
             epsfm(5) = vim(15)+vim(21)
             epsfm(6) = vim(14)+vim(20)
         else if (ndim .eq. 2) then
+            do i = 1, 3
+                epsfm(i) = (vim(5)+vim(6))
+            end do
             epsfm(1) = epsfm(1)+vim(8)+vim(12)
             epsfm(2) = epsfm(2)+vim(9)+vim(13)
             epsfm(3) = epsfm(3)+vim(10)+vim(14)
@@ -129,25 +131,6 @@ subroutine burftm(cmp, ndim, vim, epsfm)
             epsfm(2) = vim(17)
             epsfm(3) = vim(18)
             epsfm(4) = vim(19)
-            epsfm(5) = 0.
-            epsfm(6) = 0.
-        end if
-    else if (cmp(1:2) .eq. 'FT') then
-        do i = 1, 3
-            epsfm(i) = (vim(7)+vim(8))
-        end do
-        if (ndim .eq. 3) then
-            epsfm(1) = epsfm(1)+vim(10)+vim(16)+vim(22)
-            epsfm(2) = epsfm(2)+vim(11)+vim(17)+vim(23)
-            epsfm(3) = epsfm(3)+vim(12)+vim(18)+vim(24)
-            epsfm(4) = vim(13)+vim(19)+vim(25)
-            epsfm(5) = vim(15)+vim(21)+vim(27)
-            epsfm(6) = vim(14)+vim(20)+vim(26)
-        else if (ndim .eq. 2) then
-            epsfm(1) = epsfm(1)+vim(8)+vim(12)+vim(16)
-            epsfm(2) = epsfm(2)+vim(9)+vim(13)+vim(17)
-            epsfm(3) = epsfm(3)+vim(10)+vim(14)+vim(18)
-            epsfm(4) = vim(11)+vim(15)+vim(19)
             epsfm(5) = 0.
             epsfm(6) = 0.
         end if

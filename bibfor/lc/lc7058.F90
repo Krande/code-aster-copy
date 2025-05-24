@@ -96,7 +96,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! In  vim              : internal state variables at beginning of current step time
 ! In  option           : name of option to compute
 ! In  angmas           : nautical angles
-! Out sigm             : stresses at end of current step time
+! Out sigp             : stresses at end of current step time
 ! Out vip              : internal state variables at end of current step time
 ! Out dsidep           : tangent matrix
 ! Out codret           : code for error
@@ -106,11 +106,11 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     aster_logical :: lMatr, lSigm, lVari
     integer :: nstatv, j, i
     integer, parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: drot(3, 3), dstran(9)
+    real(kind=8) :: dstran(9)
     real(kind=8) :: time(2)
     real(kind=8) :: ddsdde(54)
     real(kind=8) :: stran(9)
-    real(kind=8) :: dtime, pnewdt
+    real(kind=8) :: dtime, pnewdt, rdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
     aster_logical :: l_greenlag, l_czm, l_pred
     real(kind=8) :: sigp_loc(6), vi_loc(nvi), dsidep_loc(6, 6)
@@ -180,8 +180,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Anisotropic case
 !
     if (use_orient(angmas, 3)) then
-        call matrot(angmas, drot)
-        call mgis_set_rotation_matrix(extern_addr, drot)
+        call utmess('F', 'MGIS1_2', sk=typmod(2))
     end if
 !
 ! - Type of matrix for MFront
@@ -202,7 +201,6 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Call MFront
 !
 !   TODO: sqrt(2) should be removed, same convention seems to be in used in MGIS/MFront
-    pnewdt = 1.d0
     sigp_loc = sigm
 ! sigp_loc(1:2*ndim) = sigm(1:2*ndim)
 ! sigp_loc(4:6)      = sigp_loc(4:6)*usrac2
@@ -241,9 +239,11 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! call mgis_debug(extern_addr, "Before integration:")
 !
+! - Désactivation de l'augmentation du pas de temps dans la LdC
+    rdt = 1.d0
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9) &
         .eq. 'RIGI_MECA') then
-        call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime, &
+        call mgis_integrate(extern_addr, sigp_loc, vi_loc, ddsdde, dtime, rdt, &
                             pnewdt, retcode)
         ASSERT(nstatv .le. nvi)
     end if
@@ -253,7 +253,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
         write (6, *) "sigp_loc", (sigp_loc(i), i=1, 6)
         write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
         write (6, *) "ddsdde", (ddsdde(i), i=1, ntens*ntens)
-        write (6, *) "pnewdt:", pnewdt
+        write (6, *) "pnewdt( pas utilisé par aster)", pnewdt
         write (6, *) "ntens/nstatv:", ntens, nstatv
     end if
 !
@@ -276,19 +276,14 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 !    -1: integration failed
 !     0: integration succeeded but results are unreliable
 !     1: integration succeeded and results are reliable
-!   Use 'pnewdt' to return state to caller:
-    if (pnewdt .lt. 0.0d0) then
-        if (pnewdt .lt. -0.99d0 .and. pnewdt .gt. -1.01d0) then
-            codret = 1
-        else if (pnewdt .lt. -1.99d0 .and. pnewdt .gt. -2.01d0) then
-            call utmess('F', 'MFRONT_1')
-        else if (pnewdt .lt. -2.99d0 .and. pnewdt .gt. -3.01d0) then
-            call utmess('F', 'MFRONT_2')
-        else if (pnewdt .lt. -3.99d0 .and. pnewdt .gt. -4.01d0) then
-            codret = 1
-        else
-            call utmess('F', 'MFRONT_3')
-        end if
+    if (retcode .eq. -1) then
+        codret = 1
+    elseif (retcode .eq. 0) then
+        codret = 2
+    elseif (retcode .eq. 1) then
+        codret = 0
+    else
+        ASSERT(ASTER_FALSE)
     end if
 !
     if (lSigm) sigp(1:2*ndim) = sigp_loc(1:2*ndim)
