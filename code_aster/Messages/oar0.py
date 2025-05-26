@@ -27,7 +27,7 @@ Le fichier de sortie de IMPR_OAR est manquant.
     ),
     2: _(
         """
-IMPR_OAR prend au choix soit des résultats thermomécaniques, soit des résultats mécaniques.
+IMPR_OAR prend au choix soit des résultats thermo-mécaniques, soit des résultats mécaniques.
 """
     ),
     3: _(
