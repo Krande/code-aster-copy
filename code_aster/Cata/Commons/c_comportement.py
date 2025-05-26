@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ def C_COMPORTEMENT(command):
         "DYNA_NON_LINE",
         "MECA_NON_LINE",
         "THER_NON_LINE",
+        "SECH_NON_LINE",
     )
 
     stcom = "d"
@@ -151,19 +152,20 @@ def C_COMPORTEMENT(command):
         mcfact = FACT(
             statut=stcom,
             max="**",
+            RELATION=SIMP(statut="f", typ="TXM", defaut="THER_NL", into=("THER_NL", "THER_HYDR")),
+            regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        )
+    elif command == "SECH_NON_LINE":
+        mcfact = FACT(
+            statut=stcom,
+            max="**",
             RELATION=SIMP(
                 statut="f",
                 typ="TXM",
-                defaut="THER_NL",
-                into=(
-                    "THER_NL",
-                    "THER_HYDR",
-                    "SECH_GRANGER",
-                    "SECH_MENSI",
-                    "SECH_BAZANT",
-                    "SECH_NAPPE",
-                    "SECH_RFT",
-                ),
+                # defaut="THER_NL",
+                into=("SECH_GRANGER", "SECH_MENSI", "SECH_BAZANT", "SECH_NAPPE", "SECH_RFT"),
             ),
             regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),

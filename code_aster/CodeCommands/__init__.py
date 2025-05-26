@@ -183,6 +183,7 @@ from .rest_sous_struc import REST_SOUS_STRUC
 from .rest_spec_phys import REST_SPEC_PHYS
 from .rest_spec_temp import REST_SPEC_TEMP
 from .stat_non_line import STAT_NON_LINE
+from .sech_non_line import SECH_NON_LINE
 from .test_resu import TEST_RESU
 from .test_table import TEST_TABLE
 from .ther_non_line_mo import THER_NON_LINE_MO

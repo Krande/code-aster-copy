@@ -69,7 +69,7 @@ charsec = AFFE_CHAR_THER(MODELE=MODTHER, SECH_IMPO=_F(GROUP_MA="echange", SECH=C
 #  Resolution
 # =========================================================================
 
-RESUSECH = THER_NON_LINE(
+RESUSECH = SECH_NON_LINE(
     MODELE=MODTHER,
     CHAM_MATER=CHMASECH,
     COMPORTEMENT=_F(RELATION="SECH_GRANGER"),
