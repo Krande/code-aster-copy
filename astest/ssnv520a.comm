@@ -21,7 +21,7 @@
 #  TEST DE LA LOI HYPER-ELASTIQUE-COMPRESSIBLE DE HILL 'HYPER_HILL'- (3D) - Test de compression
 # ---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 ## model
 modelINTEGR = "3D_SI"
