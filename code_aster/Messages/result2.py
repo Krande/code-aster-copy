@@ -50,6 +50,9 @@ Risques & Conseils :
          """
     ),
     9: _("""Cette structure de données n'est pas indexée par le temps."""),
+    10: _(
+        """L'index de la structure de données n'est pas disponible. Il faut allouer la structure de données avant d'y accéder."""
+    ),
     14: _("""Le NUME_DDL a été déterminé à partir de la matrice de rigidité %(k1)s."""),
     15: _("""Les NUME_DDL associés aux matrices MATR_RIGI et MATR_MASS sont différents."""),
     16: _(

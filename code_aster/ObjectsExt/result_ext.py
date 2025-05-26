@@ -492,6 +492,9 @@ class ExtendedResult:
         else:
             storageIndex = self.getIndexFromParameter(para, value, crit, prec, throw_except=False)
 
+        if storageIndex == None:
+            UTMESS("F", "RESULT2_10")
+
         if storageIndex < 0:
             storageIndex = self._createIndexFromParameter(para, value, crit, prec)
             if storageIndex < 0:

@@ -57,11 +57,19 @@ SOLUT = STAT_NON_LINE(
 
 nbIndexes = SOLUT.getNumberOfIndexes()
 
-# New result
+# Check error message
+is_ok = 0
+try:
+    pouet = CA.NonLinearResult()
+    pouet.setField(SOLUT.getField("DEPL", 0), 0)
+except CA.AsterError as err:
+    if err.id_message == "RESULT2_10":
+        is_ok = 1
+test.assertEqual(is_ok, 1)
+
+# Create new result
 SOLUN = CA.NonLinearResult()
-
 SOLUN.allocate(nbIndexes)
-
 for rank in (0, 1, 2, 2, 1):
     print("Rank: ", rank, flush=True)
     SOLUN.setModel(SOLUT.getModel(rank), rank)

@@ -415,15 +415,20 @@ class ConvergenceManager(ContextMixin):
 
         disc_comp = DiscreteComputation(self.problem)
         varc = None
-        if self.state.externVar:
-            if self.problem.getMaterialField().hasExternalStateVariableForLoad():
-                varc = disc_comp.getExternalStateVariablesForces(
-                    self.state.time_curr,
-                    self.state.externVar,
-                    self.state.getState(-1).externVar,
-                    self.state.internVar,
-                    self.state.getState(-1).stress,
-                ).getValues()
+
+        computeVarc = (
+            self.state.externVar
+            and self.problem.getMaterialField().hasExternalStateVariableForLoad()
+            and self.problem.isMechanical()
+        )
+        if computeVarc:
+            varc = disc_comp.getExternalStateVariablesForces(
+                self.state.time_curr,
+                self.state.externVar,
+                self.state.getState(-1).externVar,
+                self.state.internVar,
+                self.state.getState(-1).stress,
+            ).getValues()
 
         for [iNode, cmp], ieq in cmp2dof.items():
             f_int = 0.0
