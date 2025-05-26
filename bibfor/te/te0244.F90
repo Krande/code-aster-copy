@@ -68,7 +68,7 @@ subroutine te0244(option, nomte)
     real(kind=8) :: resi_mp(MAX_BS), resi_p(MAX_BS)
     real(kind=8) ::  deltat, theta, chal(1), diff, Kglo(3, 3)
     real(kind=8) :: beta, dbeta, tpg, dtpg(3), tpsec, flux(3)
-    integer :: kp, imate, ifon(6), itemps
+    integer :: kp, imate, icamas, ifon(6), itemps
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: lhyd, aniso
     real(kind=8), pointer :: tempi(:) => null()
@@ -107,6 +107,10 @@ subroutine te0244(option, nomte)
             aniso = ASTER_TRUE
         end if
         call ntfcma(rela_name, zi(imate), aniso, ifon)
+!       pour stopper le calcul si PCAMASS n'est pas disponible
+        if (aniso) then
+            call jevech('PCAMASS', 'L', icamas)
+        end if
     end if
 !
     resi_f = 0.d0
