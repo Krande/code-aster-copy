@@ -25,6 +25,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/assvec.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -37,6 +38,8 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/normev.h"
 #include "asterfort/raorfi.h"
 #include "asterfort/reajre.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
     integer :: lonlis, iprno(*)
@@ -52,8 +55,9 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
     character(len=24) :: lchin(6), lchout(3), valech
     real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3)
     real(kind=8) :: rayon, coori1(3), gp1(3)
-    integer :: imod, info, ifm
-    integer :: nbcoef, idec
+    integer :: imod, info, ifm, idch1, idch2
+    integer :: iwi1wo1, iwo1vi1, k
+    integer :: nbcoef, idec, ival, nbec, ino, i
     real(kind=8), pointer :: vale(:) => null()
 !
     call jemarq()
@@ -115,8 +119,15 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
     call jedetr('&&RAPOTU           .RELR')
     call reajre('&&RAPOTU', ' ', 'V')
 !
+!  #################################################################
+!
+!
 !     RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WO
 !
+!
+!  #################################################################
+!
+
     imod = 0
     call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD', &
                 ncmp=1, nomcmp='NUM', si=imod)
@@ -131,12 +142,116 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
     idec = 0
     nomddl(1) = 'WO'
     coef(1) = -2.d0
+!
     call afretu(iprno, lonlis, klisno, noepou, noma, &
                 valech, nbcoef, idec, coef, nomddl, &
                 lisrel)
 !
+!
+!  #################################################################
+!
+!   CAS PARTICULIER, POUR GERER LES RELATIONS SUR WI1 et WO1
+!
+!    Compte tenu de la relation particulière entre WI1 et VO1 d'une part
+!    et WO1 et VI1 d'autre part, la relation cinematique ne peut pas porter que sur
+!    la projection de WO1 ou WI1 sur cos(phi) ou sin(phi). Il faut aussi prendre
+!    en compte les projections de VO1 et VI1 sur cos(phi) et sin(phi).
+!
+!    Il faut donc construire le champ WI1+VO1 d'une part, et WO1-VI1 d'autre part
+!
+!  #################################################################
+!
+!   On calcul les projections sur U1, V1 et W1 - imod = 1
+    imod = 1
+    if (info .eq. 2) then
+        write (ifm, *) 'RELATIONS SUR LE MODE ', imod
+    end if
+    call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD', &
+                ncmp=1, nomcmp='NUM', si=imod)
+    call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin, &
+                lpain, 3, lchout, lpaout, 'V', &
+                'OUI')
+!
+    call jedetr('&&RAPOTU           .RELR')
+    call reajre('&&RAPOTU', lchout(3), 'V')
+    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
+    valech = 'CH_DEPL_3          .VALE'
+!
+!   On recupere les champs WO1 et WI1, stockes dans 'CH_DEPL_3          .VALE'
+!
+    call jeveuo(valech, 'L', idch1)
+    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
+    if (nbec .gt. 10) then
+        call utmess('F', 'MODELISA_94')
+    end if
+!
+!   On alloue un vecteur spécifique qui recueuilleura WI1+VO1 et WO1-VI1
+!   Et on recopie WI1 et WO1 dedans
+!
+    call wkvect('&&RACOTU.WI1WO1', 'V V R', lonlis*6, iwi1wo1)
+    do i = 1, lonlis
+        ino = char8_to_int(klisno(i))
+!           ADRESSE DE LA PREMIERE CMP DU NOEUD INO DANS LES CHAMNO
+        ival = iprno((ino-1)*(nbec+2)+1)
+        do k = 1, 6
+            zr(iwi1wo1+6*(i-1)+(k-1)) = zr(idch1+ival-1+(k-1))
+        end do
+    end do
+!
+!   On construit et on assemble les champs VO1 et VI1
+!
+    call jedetr('&&RAPOTU           .RELR')
+    call reajre('&&RAPOTU', lchout(2), 'V')
+    call assvec('V', 'CH_DEPL_2', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
+    valech = 'CH_DEPL_2          .VALE'
+!   On recupere ces champs, et on les combine avec les champs WI1 et WO1
+    call jeveuo(valech, 'L', idch1)
+    do i = 1, lonlis
+        ino = char8_to_int(klisno(i))
+!           ADRESSE DE LA PREMIERE CMP DU NOEUD INO DANS LES CHAMNO
+        ival = iprno((ino-1)*(nbec+2)+1)
+!       Construction de wi1 + vo1
+        zr(iwi1wo1+6*(i-1)+0) = zr(iwi1wo1+6*(i-1)+0)+zr(idch1+ival-1+3)
+        zr(iwi1wo1+6*(i-1)+1) = zr(iwi1wo1+6*(i-1)+1)+zr(idch1+ival-1+4)
+        zr(iwi1wo1+6*(i-1)+2) = zr(iwi1wo1+6*(i-1)+2)+zr(idch1+ival-1+5)
+!       Construction de wo1-vi1
+        zr(iwi1wo1+6*(i-1)+3) = zr(iwi1wo1+6*(i-1)+3)-zr(idch1+ival-1+0)
+        zr(iwi1wo1+6*(i-1)+4) = zr(iwi1wo1+6*(i-1)+4)-zr(idch1+ival-1+1)
+        zr(iwi1wo1+6*(i-1)+5) = zr(iwi1wo1+6*(i-1)+5)-zr(idch1+ival-1+2)
+!
+    end do
+!
+!   On "detourne" l'utilisation de idec pour traiter le cas particulier WI1
+    idec = -1
+!
+    nbcoef = 1
+    nomddl(1) = 'WI1'
+    coef(1) = -1.d0
+!
+    valech = '&&RACOTU.WI1WO1         '
+    call afretu(iprno, lonlis, klisno, noepou, noma, &
+                valech, nbcoef, idec, coef, nomddl, &
+                lisrel)
+!
+!   On "detourne" l'utilisation de idec pour traiter le cas particulier WO1
+    idec = -2
+!
+    nbcoef = 1
+    nomddl(1) = 'WO1'
+    coef(1) = -1.d0
+    call afretu(iprno, lonlis, klisno, noepou, noma, &
+                valech, nbcoef, idec, coef, nomddl, &
+                lisrel)
+
+!
+!  #################################################################
+!
+!
 !   RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE
 !   DDL UIM, UOM, VIM, VOM, WIM, WOM, M VARIANT DE 2 A NBMODE
+!
+!
+!  #################################################################
 !
     nocmp(1) = 'UI2'
     nocmp(2) = 'VI2'
@@ -151,59 +266,8 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
     nocmp(11) = 'VO3'
     nocmp(12) = 'WO3'
 !
-    imod = 1
-    if (info .eq. 2) then
-        write (ifm, *) 'RELATIONS SUR LE MODE ', imod
-    end if
-    call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD', &
-                ncmp=1, nomcmp='NUM', si=imod)
-    call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin, &
-                lpain, 3, lchout, lpaout, 'V', &
-                'OUI')
-!
-!    RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WIM
-!    OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
-!    IDEC=0 SIGNIFIE QUE ON UTILISE LES TERMES EN COS(M*PHI)
-!
-    call jedetr('&&RAPOTU           .RELR')
-    call reajre('&&RAPOTU', lchout(3), 'V')
-    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
-    valech = 'CH_DEPL_3          .VALE'
-    idec = 0
-!
-    nbcoef = 4
-    nomddl(1) = 'DX'
-    nomddl(2) = 'DY'
-    nomddl(3) = 'DZ'
-    nomddl(4) = 'WI1'
-    coef(1) = eg3(1)
-    coef(2) = eg3(2)
-    coef(3) = eg3(3)
-    coef(4) = -1.d0
-!
-    call afretu(iprno, lonlis, klisno, noepou, noma, &
-                valech, nbcoef, idec, coef, nomddl, &
-                lisrel)
-!
-!     RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WOM
-!     OU SI IMOD=1 LE DDL DY DANS REPERE LOCAL DU TUYAU ET WO1
+!     IDEC=0 SIGNIFIE QUE ON UTILISE LES TERMES EN COS(M*PHI)
 !     IDEC=3 SIGNIFIE QUE ON UTILISE LES TERMES EN SIN(M*PHI)
-!
-    idec = 3
-!
-    nbcoef = 4
-    nomddl(1) = 'DX'
-    nomddl(2) = 'DY'
-    nomddl(3) = 'DZ'
-    nomddl(4) = 'WO1'
-    coef(1) = eg2(1)
-    coef(2) = eg2(2)
-    coef(3) = eg2(3)
-    coef(4) = -1.d0
-!
-    call afretu(iprno, lonlis, klisno, noepou, noma, &
-                valech, nbcoef, idec, coef, nomddl, &
-                lisrel)
 !
     do imod = 2, nbmode
         if (info .eq. 2) then
@@ -240,6 +304,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
                     lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VOM
+!
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(2), 'V')
         call assvec('V', 'CH_DEPL_2', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
@@ -264,8 +329,6 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
                     lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WIM
-!        OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
-!        IDEC=0 SIGNIFIE QUE ON UTILISE LES TERMES EN COS(M*PHI)
 !
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(3), 'V')
@@ -282,8 +345,6 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
                     lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WOM
-!        OU SI IMOD=1 LE DDL DY DANS REPERE LOCAL DU TUYAU ET WO1
-!        IDEC=3 SIGNIFIE QUE ON UTILISE LES TERMES EN SIN(M*PHI)
 !
         idec = 3
         nbcoef = 1
@@ -297,7 +358,8 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL
 !
-    call jedetr('&&RAPOTU           .RELR')
+    call jedetr('&&RACOTU.WI1WO1         ')
+    call jedetr('&&RAPOTU           .RERR')
     call jedetr('&&RAPOTU           .RERR')
     call detrsd('CARTE', '&&RAPOTU.NUME_MODE')
     call detrsd('RESUELEM', '&&RAPOTU.COEF_UM')
