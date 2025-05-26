@@ -118,7 +118,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         for ( const auto &load : _listOfMechanicalLoadsComplex ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = load->getName();
-            if ( _listOfMechaFuncComplex[pos]->getName() != Function::emptyRealFunction()->getName() )
+            if ( _listOfMechaFuncComplex[pos]->getName() !=
+                 Function::emptyRealFunction()->getName() )
                 dict2.container["FONC_MULT"] = _listOfMechaFuncComplex[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
@@ -127,7 +128,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         for ( const auto &load : _listOfMechanicalLoadsFunction ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = load->getName();
-            if ( _listOfMechaFuncFunction[pos]->getName() != Function::emptyRealFunction()->getName() )
+            if ( _listOfMechaFuncFunction[pos]->getName() !=
+                 Function::emptyRealFunction()->getName() )
                 dict2.container["FONC_MULT"] = _listOfMechaFuncFunction[pos]->getName();
             dict2.container["TYPE_CHARGE"] = _listOfMechaFuncTyp[pos];
             ++pos;
@@ -138,7 +140,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         for ( const auto &load : _listOfParallelMechanicalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = load->getName();
-            if ( _listOfParaMechaFuncReal[pos]->getName() != Function::emptyRealFunction()->getName() )
+            if ( _listOfParaMechaFuncReal[pos]->getName() !=
+                 Function::emptyRealFunction()->getName() )
                 dict2.container["FONC_MULT"] = _listOfParaMechaFuncReal[pos]->getName();
             dict2.container["TYPE_CHARGE"] = _listOfParaMechaTyp[pos];
             ++pos;
@@ -148,7 +151,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         for ( const auto &load : _listOfParallelMechanicalLoadsFunction ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = load->getName();
-            if ( _listOfParaMechaFuncFunction[pos]->getName() != Function::emptyRealFunction()->getName() )
+            if ( _listOfParaMechaFuncFunction[pos]->getName() !=
+                 Function::emptyRealFunction()->getName() )
                 dict2.container["FONC_MULT"] = _listOfParaMechaFuncFunction[pos]->getName();
             dict2.container["TYPE_CHARGE"] = _listOfParaMechaFuncTyp[pos];
             ++pos;
@@ -189,7 +193,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         for ( const auto &load : _listOfThermalLoadsFunction ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = load->getName();
-            if ( _listOfTherFuncFunction[pos]->getName() != Function::emptyRealFunction()->getName() )
+            if ( _listOfTherFuncFunction[pos]->getName() !=
+                 Function::emptyRealFunction()->getName() )
                 dict2.container["FONC_MULT"] = _listOfTherFuncFunction[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
@@ -200,7 +205,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         for ( const auto &load : _listOfParallelThermalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = load->getName();
-            if ( _listOfParaTherFuncReal[pos]->getName() != Function::emptyRealFunction()->getName() )
+            if ( _listOfParaTherFuncReal[pos]->getName() !=
+                 Function::emptyRealFunction()->getName() )
                 dict2.container["FONC_MULT"] = _listOfParaTherFuncReal[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
@@ -209,7 +215,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         for ( const auto &load : _listOfParallelThermalLoadsFunction ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = load->getName();
-            if ( _listOfParaTherFuncFunction[pos]->getName() != Function::emptyRealFunction()->getName() )
+            if ( _listOfParaTherFuncFunction[pos]->getName() !=
+                 Function::emptyRealFunction()->getName() )
                 dict2.container["FONC_MULT"] = _listOfParaTherFuncFunction[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
@@ -237,7 +244,8 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         for ( const auto &load : _listOfAcousticLoadsComplex ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = load->getName();
-            if ( _listOfAcouFuncComplex[pos]->getName() != Function::emptyRealFunction()->getName() )
+            if ( _listOfAcouFuncComplex[pos]->getName() !=
+                 Function::emptyRealFunction()->getName() )
                 dict2.container["FONC_MULT"] = _listOfAcouFuncComplex[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );

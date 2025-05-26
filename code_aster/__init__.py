@@ -92,17 +92,18 @@ except ImportError as e:
         # It is not related to the code_aster package itself.
 
         # Try to add the directory using os.add_dll_directory
-        path_dlls = ("C:\\Windows\\System32",
-                     os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
+        path_dlls = (
+            "C:\\Windows\\System32",
+            os.path.abspath(os.path.join(os.path.dirname(__file__), "..")),
+        )
 
         for dll_path in path_dlls:
             if os.path.isdir(dll_path):
                 print(os.add_dll_directory(dll_path))
             else:
                 raise ImportError(f"Directory {dll_path} does not exist.")
-        
-        try :
+
+        try:
             import aster
             import aster_core
             import aster_fonctions
