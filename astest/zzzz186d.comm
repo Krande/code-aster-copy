@@ -197,7 +197,7 @@ IMPR_OAR(
     TABL_MECA=_F(PRESSION=tableP, FLEXION_P=tableFP, FLEXION_HP=tableHFP, TORSION=tableT),
     UNITE=11,
     TITRE="Modelisation mécanique - Modélisation d",
-    MODELE = model,
+    MODELE=model,
 )
 
 TEST_FICHIER(

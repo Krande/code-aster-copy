@@ -33,7 +33,7 @@ IMPR_OAR = MACRO(
     op=OPS("code_aster.MacroCommands.impr_oar_ops.impr_oar_ops"),
     sd_prod=None,
     fr=tr("Impression au format OAR"),
-    regles=(UN_PARMI("TABL_MECA", "TABL_THER"),PRESENT_PRESENT("TABL_THER","MODELE")),
+    regles=(UN_PARMI("TABL_MECA", "TABL_THER"), PRESENT_PRESENT("TABL_THER", "MODELE")),
     TABL_MECA=FACT(
         statut="f",
         max="**",
@@ -56,5 +56,5 @@ IMPR_OAR = MACRO(
         fr=tr("Unité logique définissant le fichier (fort.N) dans lequel on écrit"),
     ),
     TITRE=SIMP(statut="f", typ="TXM"),
-    MODELE = SIMP(statut="f",typ=modele_sdaster),
+    MODELE=SIMP(statut="f", typ=modele_sdaster),
 )

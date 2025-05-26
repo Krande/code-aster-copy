@@ -141,7 +141,7 @@ IMPR_OAR(
     TABL_THER=_F(TEMP=tableTEMP, CONTRAINTE=tableTEMPSIG),
     UNITE=10,
     TITRE="Choc thermique 150 50 - Modélisation a",
-    MODELE = MODMECA
+    MODELE=MODMECA,
 )
 
 TEST_FICHIER(
