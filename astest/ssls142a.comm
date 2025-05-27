@@ -21,12 +21,7 @@
 # quatres configurations differentes.
 # Les points testés sont Nmax, Nmin, Mmax et Mmin
 
-DEBUT(
-    CODE="OUI",
-    ERREUR=_F(ALARME="ALARME"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("CALCULEL_83", "CALCULEL_88", "CALCULEL7_28"),
-)
+DEBUT(CODE="OUI")
 
 MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
@@ -825,5 +820,118 @@ TEST_TABLE(
     LEGENDE="Mmin",
 )
 
+
+# Test POST_VERI_FERRAILLAGE mot clé NB_DIAG avec cas_diag = 7
+
+# Creation du diagramme d interaction avec option 2
+
+tab8 = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif7, NB_DIAG=1)
+
+# On teste les valeurs max et min en analytique et non-regression
+
+TEST_TABLE(
+    TABLE=tab8,
+    NOM_PARA="N",
+    TYPE_TEST="MAX",
+    VALE_CALC=12925437.278911564,
+    VALE_REFE=Nmax,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmax",
+)
+
+TEST_TABLE(
+    TABLE=tab8,
+    NOM_PARA="N",
+    TYPE_TEST="MIN",
+    VALE_CALC=-1365217.391304348,
+    VALE_REFE=Nmin,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmin",
+)
+
+TEST_TABLE(
+    TABLE=tab8,
+    NOM_PARA="M",
+    TYPE_TEST="MAX",
+    VALE_CALC=927440.4546049553,
+    VALE_REFE=Mmax,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Mmax",
+)
+
+TEST_TABLE(
+    TABLE=tab8,
+    NOM_PARA="M",
+    TYPE_TEST="MIN",
+    VALE_CALC=-927440.4546049553,
+    VALE_REFE=Mmin,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Mmin",
+)
+
+
+# Test POST_VERI_FERRAILLAGE mot clé SEUIL_MIN_MARGE avec cas_diag = 7
+
+# Creation du diagramme d interaction avec option 3
+
+tab9 = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif7, SEUIL_MIN_MARGE=1)
+
+# On teste les valeurs max et min en analytique et non-regression
+
+TEST_TABLE(
+    TABLE=tab9,
+    NOM_PARA="N",
+    TYPE_TEST="MAX",
+    VALE_CALC=12925437.278911564,
+    VALE_REFE=Nmax,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmax",
+)
+
+TEST_TABLE(
+    TABLE=tab9,
+    NOM_PARA="N",
+    TYPE_TEST="MIN",
+    VALE_CALC=-1365217.391304348,
+    VALE_REFE=Nmin,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmin",
+)
+
+TEST_TABLE(
+    TABLE=tab9,
+    NOM_PARA="M",
+    TYPE_TEST="MAX",
+    VALE_CALC=927440.4546049553,
+    VALE_REFE=Mmax,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Mmax",
+)
+
+TEST_TABLE(
+    TABLE=tab9,
+    NOM_PARA="M",
+    TYPE_TEST="MIN",
+    VALE_CALC=-927440.4546049553,
+    VALE_REFE=Mmin,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Mmin",
+)
 
 FIN()

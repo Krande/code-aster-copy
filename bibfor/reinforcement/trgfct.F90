@@ -28,6 +28,7 @@ subroutine trgfct(nb, fcttab)
     !
     implicit none
 #include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 
     !
     !     ! FACETTES POUR METHODE DE CAPRA ET MAURY
@@ -35,7 +36,7 @@ subroutine trgfct(nb, fcttab)
     !       nb FACETTES
     integer :: nb
     !       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
-    real(kind=8) :: fcttab(nb, 5)
+    real(kind=8) :: fcttab(nb, 6)
     !
     !       ANGLE DE LA FACETTE (-PI/2 <= X < +PI/2)
     real(kind=8) :: angle
@@ -48,6 +49,7 @@ subroutine trgfct(nb, fcttab)
     fcttab(1, 3) = 0d0
     fcttab(1, 4) = 0d0
     fcttab(1, 5) = -1d0
+    fcttab(1, 6) = -90.d0
     !
     !       -PI/2
     angle = -pi/2.d0
@@ -67,5 +69,6 @@ subroutine trgfct(nb, fcttab)
         fcttab(i, 3) = -2.d0*sin(angle)*cos(angle)
         fcttab(i, 4) = cos(angle)
         fcttab(i, 5) = sin(angle)
+        fcttab(i, 6) = angle*r8rddg()
 20      continue
         end subroutine

@@ -21,12 +21,7 @@
 # un chargement proportionnel aux points particuliers calculés analytiquement
 # La marge attendue est égale à  1 - coef. de proportionalité
 
-DEBUT(
-    CODE="OUI",
-    ERREUR=_F(ALARME="ALARME"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("CALCULEL_83", "CALCULEL_88", "CALCULEL7_28"),
-)
+DEBUT(CODE="OUI")
 
 MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
@@ -205,6 +200,10 @@ RESUELS = CREA_RESU(
     ),
 )
 
+lordre = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+L_ORDRE = DEFI_LIST_ENTI(VALE=lordre)
+
+
 MARGE = VERI_FERRAILLAGE(
     RESULTAT=RESUELS,
     reuse=RESUELS,
@@ -213,7 +212,7 @@ MARGE = VERI_FERRAILLAGE(
     TYPE_COMB="ELS",
     UNITE_CONTRAINTE="Pa",
     UNITE_DIMENSION="m",
-    INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
+    LIST_ORDRE=L_ORDRE,
     CHAM_FERR=FERRAILLAGE_REF1,
     AFFE=(
         _F(
@@ -227,6 +226,7 @@ MARGE = VERI_FERRAILLAGE(
             SIGC_SUP_ELS=18000000,
             FYK=500000000,
             FCK=30000000,
+            EYS=200.0e9,
             # Steel/concrete modulus ratio
             ALPHA_E=14,
         ),
@@ -319,5 +319,321 @@ for j in range(len(theta_ref)):
             CRITERE="ABSOLU",
         )
     )
+
+# TEST ETAT SECTION AVEC POST_VERI_FERRAILLAGE
+# ON calcule l'état de la section avec STBEAM2025 et on compare avec
+# POST_VERI_FERRAILLAGE POUR CHAQUE CAS DE CHARGEMENT
+# Extraction du champ de veri_ferraillage
+grandeur = [
+    "HAUTEUR_COMPRIMEE",
+    "EPSILON_BETON",
+    "EPSILON_ACIER_INF",
+    "EPSILON_ACIER_SUP",
+    "SIGMA_BETON",
+    "SIGMA_ACIER_INF",
+    "SIGMA_ACIER_SUP",
+]
+COPY = FORMULE(VALE="NUMERO_MAILLE", NOM_PARA=["NUMERO_MAILLE"])
+# CHEFF1-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=1.0, OPERATION="EXTR", RESULTAT=MARGE, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.0, 0.0e-2, -0.1e-2, -0.1e-2, 0.0e6, -200.05e6, -200.05e6]
+
+etat_POST_VER = [0.0, 0.0, -0.001, -0.001, 0.0, -200000000.0, -200000000.0]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+DETRUIRE(NOM=tab_UNIQUE)
+
+# CHEFF2-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=2.0, OPERATION="EXTR", RESULTAT=MARGE, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.0, 0.0e-2, -0.2e-2, -0.2e-2, 0.0e6, -400e6, -400e6]
+
+etat_POST_VER = [0.0, 0.0, -0.002, -0.002, 0.0, -400000000.0, -400000000.0]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+
+
+# CHEFF3-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=3.0, OPERATION="EXTR", RESULTAT=MARGE, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.162, 0.088e-2, -0.14e-2, 0.045e-2, 12.596e6, -280.02e6, 89.51e6]
+
+etat_POST_VER = [
+    0.1623384388667387,
+    0.0008818629949480334,
+    -0.0013996820319954353,
+    0.0004472829898159441,
+    12598042.784971906,
+    -279936406.3990871,
+    89456597.96318883,
+]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF4-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=4.0, OPERATION="EXTR", RESULTAT=MARGE, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.5, 0.025e-2, 0.004e-2, 0.021e-2, 3.6e6, 8.070e6, 42.36e6]
+
+etat_POST_VER = [
+    0.5,
+    0.0002519892236838007,
+    4.032732789501551e-05,
+    0.00021167267210498448,
+    3599846.052625724,
+    8065465.579003102,
+    42334534.4209969,
+]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF5-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=5.0, OPERATION="EXTR", RESULTAT=MARGE, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.0, 0.0e-2, 0.00e-2, 0.0e-2, 0.0e6, 0.00e6, 0.0e6]
+
+etat_POST_VER = [0.0, -0.0, -0.0, -0.0, -0.0, -0.0, -0.0]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF6-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=6.0, OPERATION="EXTR", RESULTAT=MARGE, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.5, 0.05e-2, 0.05e-2, 0.05e-2, 7.2e6, 100.86e6, 100.86e6]
+
+etat_POST_VER = [0.5, 0.000504, 0.000504, 0.000504, 7200000.0, 100800000.0, 100800000.0]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF7-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=7.0, OPERATION="EXTR", RESULTAT=MARGE, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.162, 0.088e-2, 0.045e-2, -0.14e-2, 12.596e6, 89.51e6, -280.02e6]
+
+etat_POST_VER = [
+    0.1623384388667387,
+    0.0008818629949480334,
+    0.0004472829898159441,
+    -0.0013996820319954353,
+    12598042.784971906,
+    89456597.96318883,
+    -279936406.3990871,
+]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF8-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=8.0, OPERATION="EXTR", RESULTAT=MARGE, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.5, 0.025e-2, 0.021e-2, 0.004e-2, 3.6e6, 42.36e6, 8.07e6]
+
+etat_POST_VER = [
+    0.5,
+    0.0002519892236838007,
+    0.00021167267210498448,
+    4.032732789501551e-05,
+    3599846.052625724,
+    42334534.4209969,
+    8065465.579003102,
+]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+
 
 FIN()

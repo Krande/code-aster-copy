@@ -196,11 +196,11 @@ subroutine w190af(modele, chmar1)
 
         else if (valv(1) .eq. 1.d0) then
 !           MOTS-CLE OBLIGATOIRES POUR UN CALCUL A L'ELS
-            if (n20 .eq. 0 .or. n7 .eq. 0) then
+            if (n20 .eq. 0 .or. n7 .eq. 0 .or. n14 .eq. 0) then
                 call utmess('F', 'VERIFERRAILLAGE_9')
             end if
             if (valv(4) .eq. 0.d0) then
-                if (n7 .eq. 0 .or. n9 .eq. 0) then
+                if (n7 .eq. 0 .or. n8 .eq. 0 .or. n9 .eq. 0) then
                     call utmess('F', 'VERIFERRAILLAGE_9')
                 end if
             end if

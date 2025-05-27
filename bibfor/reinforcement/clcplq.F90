@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -152,7 +152,7 @@ subroutine clcplq(typcmb, typco, nb, precs, &
     integer :: ierrt
 !
 !       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
-    real(kind=8) :: fcttab(nb, 5)
+    real(kind=8) :: fcttab(nb, 6)
 !       NOMBRE DE FACETTES COMPRIMEES EN PIVOT C (ELU ET ELS)
     real(kind=8) :: nb_fac_comp_elu, nb_fac_comp_els
 !       EFFORT NORMAL DANS CETTE DIRECTION

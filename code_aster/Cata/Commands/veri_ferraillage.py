@@ -45,21 +45,42 @@ VERI_FERRAILLAGE = OPER(
     # Sélection des numéros d'ordre pour lesquels on fait le calcul :
     # ====
     #
-    TOUT_ORDRE=SIMP(statut="f", typ="TXM", into=("OUI",)),
-    NUME_ORDRE=SIMP(statut="f", typ="I", validators=NoRepeat(), max="**"),
-    LIST_ORDRE=SIMP(statut="f", typ=listis_sdaster),
-    INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
-    LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
-    b_acce_reel=BLOC(
-        condition="""(exists("FREQ"))or(exists("LIST_FREQ"))or(exists("INST"))or(exists("LIST_INST"))""",
-        CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
-        b_prec_rela=BLOC(
-            condition="""(equal_to("CRITERE", 'RELATIF'))""",
-            PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+    b_resultat=BLOC(
+        condition="""exists('RESULTAT')""",
+        regles=(
+            EXCLUS(
+                "TOUT_ORDRE",
+                "NUME_ORDRE",
+                "LIST_ORDRE",
+                "INST",
+                "LIST_INST",
+                # "MODE",
+                # "LIST_MODE",
+                # "FREQ",
+                # "LIST_FREQ",
+            ),
         ),
-        b_prec_abso=BLOC(
-            condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+        TOUT_ORDRE=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        NUME_ORDRE=SIMP(statut="f", typ="I", max="**"),
+        LIST_ORDRE=SIMP(statut="f", typ=listis_sdaster),
+        INST=SIMP(statut="f", typ="R", max="**"),
+        LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
+        # MODE=SIMP(statut="f", typ="I", max="**"),
+        # LIST_MODE=SIMP(statut="f", typ=listis_sdaster),
+        # FREQ=SIMP(statut="f", typ="R", max="**"),
+        # LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
+        b_acce_reel=BLOC(
+            condition="""(exists("FREQ"))or(exists("LIST_FREQ"))or(exists("INST"))or(exists("LIST_INST"))""",
+            CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
+            b_prec_rela=BLOC(
+                condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            ),
+            b_prec_abso=BLOC(
+                condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+            ),
         ),
+        #
     ),
     #
     # ====
@@ -97,7 +118,7 @@ VERI_FERRAILLAGE = OPER(
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             TYPE_STRUCTURE=SIMP(
-                statut="f", typ="TXM", into=("1D", "2D"), fr=tr("Type de Structure 2D"), defaut="2D"
+                statut="f", typ="TXM", into=("2D",), fr=tr("Type de Structure 2D"), defaut="2D"
             ),
             C_INF=SIMP(
                 statut="o", typ="R", fr=tr("Enrobage des armatures inférieures pour la section 2D")

@@ -76,7 +76,7 @@ cata_msg = {
  Erreur utilisateur commande VERI_FERRAILLAGE / TYPE_COMB = ELS :
    Certains mots-clé de VERI_FERRAILLAGE / AFFE sont obligatoires pour un calcul à l'ELS :
      pour CODIFICATION = 'BAEL91' : N,SIGS_ELS,SIGC_INF_ELS,SIGC_SUP_ELS
-     pour CODIFICATION = 'EC2' : ALPHA_E,SIGS_ELS,SIGC_INF_ELS,SIGC_SUP_ELS,FCK et FYK
+     pour CODIFICATION = 'EC2' : ALPHA_E,SIGS_ELS,SIGC_INF_ELS,SIGC_SUP_ELS,EYS
 """
     ),
     10: _(
@@ -90,7 +90,8 @@ cata_msg = {
         """
  Commande VERI_FERRAILLAGE :
   Le point correspondant aux efforts généralisés de référence est situé en dehors du diagramme d'interaction sur au moins une facette.
-  La marge dans ce cas est fixée égale à 2.0.
+  La marge dans ce cas est fixée égale à 2.0. Les efforts normaux et moments résistants de rupture
+  et la distance entre le point correspondant au torseur de référence et celui correspondant au torseur résistant de rupture sont fixés à -1. Les valeurs relatives à l'état de la section sont fixées à -1.
 """
     ),
     12: _(
@@ -114,7 +115,32 @@ cata_msg = {
     15: _(
         """
  Commande POST_VERI_FERRAILLAGE :
-  Un seul mot-clé doit être fourni parmi : 'GROUP_MA', 'SEUIL_MIN_MARGE' ou 'NB_DIAG'."
+  Un seul mot-clé doit être fourni parmi : 'GROUP_MA', 'SEUIL_MIN_MARGE' ou 'NB_DIAG'.
+"""
+    ),
+    16: _(
+        """
+ Commande POST_VERI_FERRAILLAGE :
+  Le calcul des valeurs liées à l'état de la section n'est possible que pour les classes de béton inférieures ou égales à 50 MPa.
+"""
+    ),
+    17: _(
+        """
+ Commande POST_VERI_FERRAILLAGE :
+  La marge est négative pour le torseur d'efforts de calcul. les valeurs de l'état de la section correspondant à l'état limite seront fournies.
+"""
+    ),
+    18: _(
+        """
+ Commande POST_VERI_FERRAILLAGE :
+  Lorsque le torseur des efforts de référence coïncide avec le torseur des efforts de calcul, les efforts normaux et moments résistants de rupture
+  et la distance entre le point correspondant au torseur de référence et celui correspondant au torseur résistant de rupture sont fixés à -1.
+"""
+    ),
+    19: _(
+        """
+ Commande POST_VERI_FERRAILLAGE :
+  On ne retrouve aucune solution d'équilibre pour la section et le torseur d'effort donnés aux ELS.
 """
     ),
 }
