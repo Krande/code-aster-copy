@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,6 +99,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
     aster_logical :: ilocal
 !
     character(len=8) :: saux08
+    character(len=21) :: saux21
     character(len=64) :: saux64, nomcha, nomprf, nomloc, nomam2, nomamd
 !
     real(kind=8) :: fiinst
@@ -250,8 +251,8 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
             end if
             if (finupt .ne. finuno) then
-                saux08 = 'readMedFileToResults'
-                call utmess('F', 'MED_12', sk=saux08)
+                saux21 = 'readMedFileToResults'
+                call utmess('F', 'MED_12', sk=saux21)
             end if
             zi(jnptno+iaux*2-2) = finupt
             zi(jnptno+iaux*2-1) = finuno

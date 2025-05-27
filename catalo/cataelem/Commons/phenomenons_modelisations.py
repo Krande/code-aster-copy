@@ -3603,7 +3603,7 @@ phen.add(
             (MT.TR6QU9, EL.CPT6Q9),
             (MT.TR6TR3, EL.CPT6T3),
             (MT.TRIA33, EL.CPT3T3),
-            (MT.TRIA66, EL.CMT6T6),
+            (MT.TRIA66, EL.CPT6T6),
             (MT.POI1, EL.CPP1L3),
             (MT.POI1, EL.CPP1N3),
         ),
