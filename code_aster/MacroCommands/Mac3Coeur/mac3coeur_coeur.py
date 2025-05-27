@@ -45,7 +45,6 @@ from ...CodeCommands import (
     DEFI_COMPOR,
     DEFI_FONCTION,
     DEFI_GEOM_FIBRE,
-    DEFI_GROUP,
     DEFI_LIST_INST,
     DEFI_LIST_REEL,
     DEFI_MATERIAU,
@@ -223,6 +222,51 @@ class Coeur:
         """Retourne la géométrie du coeur."""
         raise NotImplementedError
 
+    def watergap_toaster(self, gap):
+        """Retourne la position de la lame d'eau DAMAC au format Aster."""
+
+        data = gap.split("_")
+        sz = len(data)
+        errmsg = "Water Gap position error %s." % gap
+
+        assert sz in (2, 3), errmsg
+        tag = data[0]
+        assert tag in ("RES", "CU"), errmsg
+
+        if tag == "RES":
+            ac1, ac2 = data[1][:3], data[1][3:]
+            p1 = self.position_toaster(ac1).replace("_", "")
+            p2 = self.position_toaster(ac2).replace("_", "")
+            loc = f"{tag}_{p1}{p2}"
+        else:
+            ac1, orie = data[1], data[2]
+            p1 = self.position_toaster(ac1).replace("_", "")
+            loc = f"{tag}_{p1}_{orie}"
+
+        return loc
+
+    def watergap_todamac(self, gap):
+        """Retourne la position de la lame d'eau Aster au format DAMAC."""
+        data = gap.split("_")
+        sz = len(data)
+        errmsg = "Water Gap position error %s." % gap
+
+        assert sz in (2, 3), errmsg
+        tag = data[0]
+        assert tag in ("RES", "CU"), errmsg
+
+        if tag == "RES":
+            ac1, ac2 = data[1][:2], data[1][2:]
+            p1 = self.position_todamac("%s_%s" % (ac1[0], ac1[1]))
+            p2 = self.position_todamac("%s_%s" % (ac2[0], ac2[1]))
+            loc = f"{tag}_{p1}{p2}"
+        else:
+            ac1, orie = data[1], data[2]
+            p1 = self.position_todamac("%s_%s" % (ac1[0], ac1[1]))
+            loc = f"{tag}_{p1}_{orie}"
+
+        return loc
+
     def position_toaster(self, position):
         """Retourne la position Aster correspondant à la position DAMAC."""
         raise NotImplementedError
@@ -281,8 +325,11 @@ class Coeur:
         return flat_list([ac.mcf_geom_fibre() for ac in self.collAC])
 
     def definition_geom_fibre(self):
-        _GFF = DEFI_GEOM_FIBRE(FIBRE=self.mcf_geom_fibre())
-        return _GFF
+        GFF = DEFI_GEOM_FIBRE(FIBRE=self.mcf_geom_fibre())
+        return GFF
+
+    def mcf_compor_fibre(self, GFF):
+        return flat_list([ac.mcf_compor_fibre(GFF) for ac in self.collAC])
 
     def mcf_cara_multifibre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/MULTIFIBRE."""
@@ -410,12 +457,10 @@ class Coeur:
         )
         return _F_TRAN1
 
-    def definition_cara_coeur(self, MODELE, _GFF):
+    def definition_cara_coeur(self, MODELE, GFF):
         mcm = self.mcf_cara_multifibre()
         mcr = self.mcf_cara_barre()
         mcp = self.mcf_cara_poutre()
-        mtmp = _F(GROUP_MA="DIL", SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(0.03, 0.2138))
-        mcp.append(mtmp)
         mcd = self.mcf_cara_discret()
         mtmp = _F(GROUP_MA="RES_TOT", REPERE="LOCAL", CARA="K_T_D_L", VALE=(0.0, 0.0, 0.0))
         mcd.append(mtmp)
@@ -426,7 +471,7 @@ class Coeur:
             MODELE=MODELE,
             POUTRE=mcp,
             BARRE=mcr,
-            GEOM_FIBRE=_GFF,
+            GEOM_FIBRE=GFF,
             MULTIFIBRE=mcm,
             DISCRET=mcd,
             ORIENTATION=(
@@ -579,6 +624,7 @@ class Coeur:
     def affectation_maillage(self, MA0):
 
         gno_names = MA0.getGroupsOfNodes()
+        gma_names = MA0.getGroupsOfCells()
 
         # Noeuds en liaison solide
         linked_total_nodes_names = [
@@ -629,31 +675,26 @@ class Coeur:
             else:
                 grids_middle.append(grid_name)
 
-        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
+        MA = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
 
-        dict_creic = [
-            {"GROUP_MA": "CREI_%s" % ac.pos_aster, "NOM": "CREIC_%s" % ac.pos_aster}
-            for ac in self.collAC
-        ]
+        if "GRIL_I" not in gma_names:
+            gril_i = MA.getCells(tuple(set(grids_middle)))
+            MA.setGroupOfCells("GRIL_I", gril_i)
 
-        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=dict_creic)
+        if "GRIL_E" not in gma_names:
+            gril_e = MA.getCells(tuple(set(grids_extr)))
+            MA.setGroupOfCells("GRIL_E", gril_e)
 
-        _MA = DEFI_GROUP(
-            reuse=_MA,
-            ALARME="NON",
-            MAILLAGE=_MA,
-            CREA_GROUP_MA=(
-                _F(NOM="GRIL_I", UNION=tuple(grids_middle)),
-                _F(NOM="GRIL_E", UNION=tuple(grids_extr)),
-                _F(NOM="CREIC", UNION=[i["NOM"] for i in dict_creic]),
-            ),
-            CREA_GROUP_NO=(
-                _F(GROUP_MA=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN")),
-                _F(NOM="LISPG", UNION=tuple(grids_lock)),
-            ),
-        )
+        if "LISPG" not in gno_names:
+            lispg = MA.getNodes(tuple(set(grids_lock)))
+            MA.setGroupOfNodes("LISPG", lispg)
 
-        return _MA
+        for gname in ("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN"):
+            if gname not in gno_names:
+                nodes_grp = MA.getNodesFromCells(gname)
+                MA.setGroupOfNodes(gname, nodes_grp)
+
+        return MA
 
     def check_groups(self, mesh):
         cu_groups = [i for i in mesh.getGroupsOfCells() if i.startswith("CU_")]
@@ -775,7 +816,7 @@ class Coeur:
                 ),
                 _F(GROUP_MA=("ELA", "RIG"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
                 _F(
-                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC"),
+                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI"),
                     PHENOMENE="MECANIQUE",
                     MODELISATION="DIS_T",
                 ),
@@ -1342,16 +1383,8 @@ class Coeur:
         return _CHTH_1
 
     def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT="NON", RATIO=1.0):
-        # TP_REF = 20.
 
-        if CONTACT == "OUI":
-            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9 * RATIO + 1.0e1 * (1.0 - RATIO)))
-        else:
-            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e1))
-
-        _M_BCR = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9, JEU=0.0))
-
-        mcf_affe_mater = self.mcf_coeur_mater(_M_RES, _M_BCR)
+        mcf_affe_mater = self.mcf_coeur_mater(CONTACT, RATIO)
         mcf_affe_varc = self.mcf_coeur_varc(FLUENCE, CHTH)
         # Affectation des materiau dans le coeur
         _A_MAT = AFFE_MATERIAU(
@@ -1399,58 +1432,17 @@ class Coeur:
 
         return mcf
 
-    def mcf_compor_fibre(self, GFF):
-        mcf = []
-        for ac in self.collAC:
-            _CMPC = DEFI_COMPOR(
-                GEOM_FIBRE=GFF,
-                MATER_SECT=ac.materiau["CR"],
-                MULTIFIBRE=_F(
-                    GROUP_FIBRE="CR_%s" % ac.pos_aster,
-                    MATER=ac.materiau["CR"],
-                    RELATION="GRAN_IRRA_LOG",
-                ),
-            )
-            _CMPT = DEFI_COMPOR(
-                GEOM_FIBRE=GFF,
-                MATER_SECT=ac.materiau["TG"],
-                MULTIFIBRE=_F(
-                    GROUP_FIBRE=(
-                        "LG_%s" % ac.pos_aster,
-                        "BI_%s" % ac.pos_aster,
-                        "RE_%s" % ac.pos_aster,
-                    ),
-                    MATER=ac.materiau["TG"],
-                    RELATION="GRAN_IRRA_LOG",
-                ),
-            )
-            mtmp = (
-                _F(GROUP_MA="CR_%s" % ac.pos_aster, COMPOR=_CMPC),
-                _F(GROUP_MA="TG_%s" % ac.pos_aster, COMPOR=_CMPT),
-            )
-            mcf.extend(mtmp)
+    def mcf_coeur_mater(self, CONTACT, RATIO):
 
-        return mcf
+        if CONTACT == "OUI":
+            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9 * RATIO + 1.0e1 * (1.0 - RATIO)))
+        else:
+            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e1))
 
-    def mcf_coeur_mater(self, _M_RES, _M_BCR):
-        # Definition d'un materiau bidon pour les elements de poutres
-        _MAT_BID = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.0, RHO=0.0, ALPHA=0.0))
-        _MAT_GR = DEFI_MATERIAU(ELAS=_F(E=1.0e14, NU=0.3, RHO=0.0, ALPHA=0.0))
-
-        mcf = []
+        mcf = flat_list([ac.mcf_AC_mater() for ac in self.collAC])
         mtmp = (_F(GROUP_MA="RES_TOT", MATER=_M_RES),)
         mcf.extend(mtmp)
 
-        for ac in self.collAC:
-            mcf.extend(ac.mcf_AC_mater())
-            mtmp = (
-                _F(GROUP_MA=("GT_%s_M" % ac.pos_aster, "GT_%s_E" % ac.pos_aster), MATER=_MAT_BID),
-                _F(GROUP_MA="GR_%s" % ac.pos_aster, MATER=_MAT_GR),
-                _F(GROUP_MA="DI_%s" % ac.pos_aster, MATER=ac.materiau["DIL"]),
-            )
-            mcf.extend(mtmp)
-        mtmp = (_F(GROUP_MA="CREIC", MATER=_M_BCR),)
-        mcf.extend(mtmp)
         return mcf
 
     def dilatation_cuve(

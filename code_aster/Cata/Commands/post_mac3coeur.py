@@ -53,4 +53,8 @@ POST_MAC3COEUR = MACRO(
     INST=SIMP(statut="o", typ="R", max=1),  # INSTANT
     TYPE_CALCUL=SIMP(statut="o", typ="TXM", into=("LAME", "DEFORMATION", "FORCE_CONTACT")),
     OPERATION=SIMP(statut="f", typ="TXM", into=("EXTRACTION", "ANALYSE"), defaut="EXTRACTION"),
+    b_lame=BLOC(
+        condition="""equal_to("TYPE_CALCUL", "LAME") and equal_to("OPERATION", "EXTRACTION")""",
+        FORMAT=SIMP(statut="f", typ="TXM", into=("DAMAC", "ASTER"), defaut="DAMAC"),
+    ),
 )

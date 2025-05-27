@@ -1444,6 +1444,8 @@ DEFI_MATERIAU = MACRO(
         RIGI_TAN=SIMP(statut="f", typ="R"),
         AMOR_NOR=SIMP(statut="f", typ="R"),
         AMOR_TAN=SIMP(statut="f", typ="R"),
+        KP=SIMP(statut="f", typ="R", defaut=0.0),
+        KT=SIMP(statut="f", typ="R", defaut=0.0),
         COULOMB=SIMP(statut="f", typ="R", val_min=0.0),
         DIST_1=SIMP(statut="f", typ="R", val_min=0.0),
         DIST_2=SIMP(statut="f", typ="R", val_min=0.0),
