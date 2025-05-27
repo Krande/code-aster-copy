@@ -1,0 +1,227 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+# Definition of geometric global variables
+EPAIS = 0.01
+
+RMOY = 1.0
+
+# Definition of material global variables
+E = 2.1e11
+
+NU = 0.3
+
+RHO = 7850
+
+# ---------------------------------------------------------------------
+#                        GEOMETRY AND MODEL
+# ---------------------------------------------------------------------
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+MODMECA = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="TUYAU_3M")
+)
+
+# ---------------------------------------------------------------------
+#                        BEAM ELEMENT CHARACTERISTICS
+# ---------------------------------------------------------------------
+CAREMECA = AFFE_CARA_ELEM(
+    MODELE=MODMECA,
+    POUTRE=_F(
+        GROUP_MA="LIGNE_MOY",
+        SECTION="CERCLE",
+        CARA=("R", "EP"),
+        VALE=(RMOY + EPAIS / 2, EPAIS),
+        MODI_METRIQUE="NON",
+    ),
+    ORIENTATION=_F(GROUP_NO="POINT_A", CARA="GENE_TUYAU", VALE=(0.0, 1.0, 0.0)),
+)
+
+# ---------------------------------------------------------------------
+#                        MATERIAL PROPERTIES
+# ---------------------------------------------------------------------
+MATER = DEFI_MATERIAU(ELAS=_F(E=E, NU=NU, RHO=RHO))
+
+CHMATER = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
+
+# ---------------------------------------------------------------------
+#                        BOUNDARY CONDITIONS
+# ---------------------------------------------------------------------
+BLOCAGE = AFFE_CHAR_MECA(
+    MODELE=MODMECA,
+    DDL_IMPO=_F(
+        GROUP_NO=("POINT_A", "POINT_B"), BLOCAGE=("DEPLACEMENT", "ROTATION", "TUYAU_FOURIER")
+    ),
+)
+
+# ---------------------------------------------------------------------
+#                        RESOLUTION
+# ---------------------------------------------------------------------
+ASSEMBLAGE(
+    MODELE=MODMECA,
+    CARA_ELEM=CAREMECA,
+    CHAM_MATER=CHMATER,
+    CHARGE=BLOCAGE,
+    MATR_ASSE=(
+        _F(MATRICE=CO("RIGIDITE"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASSE"), OPTION="MASS_MECA"),
+    ),
+    NUME_DDL=CO("NUMEDDL"),
+)
+
+MODES = CALC_MODES(
+    CALC_FREQ=_F(NMAX_FREQ=16), MATR_MASS=MASSE, MATR_RIGI=RIGIDITE, OPTION="PLUS_PETITE"
+)
+
+# ---------------------------------------------------------------------
+#                        VERIFICATION OF RESULTS
+# ---------------------------------------------------------------------
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=1.181031070154279e01,
+            VALE_REFE=11.996,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        _F(
+            NUME_ORDRE=2,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=1.181031070154279e01,
+            VALE_REFE=11.996,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        #
+        _F(
+            NUME_ORDRE=3,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=1.870159002045630e01,
+            VALE_REFE=19.560,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        _F(
+            NUME_ORDRE=4,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=1.870159002045630e01,
+            VALE_REFE=19.560,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        #
+        _F(
+            NUME_ORDRE=5,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=2.232328623103421e01,
+            VALE_REFE=23.280,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        _F(
+            NUME_ORDRE=6,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=2.232328623103421e01,
+            VALE_REFE=23.280,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        #
+        _F(
+            NUME_ORDRE=7,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=2.704206677384885e01,
+            VALE_REFE=28.060,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        _F(
+            NUME_ORDRE=8,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=2.704206677384885e01,
+            VALE_REFE=28.060,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        #
+        _F(
+            NUME_ORDRE=9,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=3.019513659057019e01,
+            VALE_REFE=28.297,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        _F(
+            NUME_ORDRE=10,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=3.019513659057019e01,
+            VALE_REFE=28.297,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        #
+        _F(
+            NUME_ORDRE=11,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=3.083880631111322e01,
+            VALE_REFE=31.970,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+        _F(
+            NUME_ORDRE=12,
+            PARA="FREQ",
+            RESULTAT=MODES,
+            VALE_CALC=3.083880631111322e01,
+            VALE_REFE=31.970,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=0.1,
+        ),
+    )
+)
+
+FIN()
