@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,10 +110,10 @@ DEFI_GROUP = OPER(
         b_group_ma=BLOC(
             condition="""exists("GROUP_MA")""",
             regles=(EXCLUS("POSITION", "NUME_INIT"),),
-            NUME_INIT=SIMP(statut="f", typ="I"),
+            NUME_INIT=SIMP(statut="f", typ="I", val_min=1),
             POSITION=SIMP(statut="f", typ="TXM", into=("INIT", "FIN", "MILIEU")),
             b_nume_init=BLOC(
-                condition="""exists("NUME_INIT")""", NUME_FIN=SIMP(statut="f", typ="I")
+                condition="""exists("NUME_INIT")""", NUME_FIN=SIMP(statut="f", typ="I", val_min=1)
             ),
         ),
         b_face_normale=BLOC(
@@ -243,10 +243,11 @@ DEFI_GROUP = OPER(
             b_group_no=BLOC(
                 condition="""exists("GROUP_NO")""",
                 regles=(EXCLUS("POSITION", "NUME_INIT"),),
-                NUME_INIT=SIMP(statut="f", typ="I"),
+                NUME_INIT=SIMP(statut="f", typ="I", val_min=1),
                 POSITION=SIMP(statut="f", typ="TXM", into=("INIT", "FIN", "MILIEU")),
                 b_nume_init=BLOC(
-                    condition="""exists("NUME_INIT")""", NUME_FIN=SIMP(statut="f", typ="I")
+                    condition="""exists("NUME_INIT")""",
+                    NUME_FIN=SIMP(statut="f", typ="I", val_min=1),
                 ),
             ),
             b_nom=BLOC(

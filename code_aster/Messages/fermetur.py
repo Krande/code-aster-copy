@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,11 +90,6 @@ Conseil : Vérifiez que vous avez sélectionné la bonne version de Code_Aster.
 Erreur de programmation :
     On essaie d'utiliser une routine de comportement
     qui n'est pas encore programmée.
-"""
-    ),
-    12: _(
-        """
-La bibliothèque "YACS" n'est pas installée dans cette version de Code_Aster.
 """
     ),
     13: _(
