@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ IMPR_CONCEPT = PROC(
             statut="f",
             typ="TXM",
             into=("3.3.1", "4.0.0", "4.1.0"),
-            defaut="3.3.1",
+            defaut="4.0.0",
             fr=tr("Choix de la version du fichier MED"),
         ),
     ),
