@@ -41,7 +41,7 @@ subroutine licrsd_save(list_load)
 ! --------------------------------------------------------------------------------------------------
 !
     list_load = ' '
-    noobj = '12345678'//'.1234'//'.EXCIT'//".LCHA"
+    noobj = '12345678'//'.1234'//'.EXCIT'//'.LCHA'
     call gnomsd(' ', noobj, 10, 13)
     list_load = noobj(1:19)
 !
