@@ -25,15 +25,6 @@ cata_msg = {
  Le CARA_ELEM de l'évolution sous ETAT_INIT/EVOL_NOLI est différent du CARA_ELEM courant.
  """
     ),
-    2: _(
-        """
- Lors de la recopie du champ %(k1)s donné dans ETAT_INIT de la commande
- STAT_NON_LINE certaines composantes ont du être mises à zéro.
-
- Ce problème survient lorsque le champ donné dans ETAT_INIT ne comporte
- pas assez de composantes, on complète donc par des zéros.
-"""
-    ),
     3: _(
         """
 Erreur utilisateur :
@@ -79,10 +70,8 @@ Erreur utilisateur :
     ),
     9: _(
         """
-Erreur utilisateur :
-  Vous essayez de faire un calcul en utilisant un état initial qui n'est pas défini sur
-  le même modèle que celui sur laquelle la résolution doit être menée et vous essayez
-  d'utiliser un champ aux points de Gauss.
+Vous voulez poursuivre un calcul non-linéaire et vous précisez un état initial (mot clé ETAT_INIT).
+Le champ %(k1)s fourni comme état initial a un modèle sous-jacent qui est différent du modèle pour le calcul sur les mailles communes.
 """
     ),
     23: _(

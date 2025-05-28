@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 #include "asterfort/lisltc.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
@@ -77,11 +78,11 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     character(len=19) :: vecele, chamno
     character(len=24) :: vachar
     integer :: jvacha
-    character(len=24) :: resuel
+    character(len=24) :: resuElem
     character(len=8) :: newnom, modele, typech, typsca
     integer :: ivach, nbvach
     integer :: nbvec
-    integer :: iret, ibid, ivec, ichar, ityprs
+    integer :: iret, ivec, ichar, ityprs
     character(len=4) :: tyresl
     character(len=1) :: typchn
     character(len=24), pointer :: relr(:) => null()
@@ -157,7 +158,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 ! ----- NOM DU RESU_ELEM
 !
-        resuel = relr(ivec)
+        resuElem = relr(ivec)
 !
 ! ----- PREPARATION DU NOM DU CHAM_NO
 !
@@ -167,20 +168,20 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 ! ----- ENREGISTREMENT DU NUMERO DE LA CHARGE DANS LE CHAM_NO
 !
-        call corich('L', resuel, ichout_=ichar)
+        call corich('L', resuElem, ichout_=ichar)
         call corich('E', chamno, ichin_=ichar)
 !
 ! ----- TYPE DU RESU_ELEM
 !
-        call dismoi('TYPE_CHAMP', resuel, 'CHAMP', repk=tyresl)
+        call dismoi('TYPE_CHAMP', resuElem, 'CHAMP', repk=tyresl)
         ASSERT(tyresl .eq. 'RESL' .or. tyresl .eq. 'NOEU')
 !
 ! ----- SI LE RESU_ELEM EST UN VRAI RESU_ELEM (ISSU DE CALCUL)
 !
         if (tyresl .eq. 'RESL') then
             call jedetr('&&ASVEPR           .RELR')
-            call reajre('&&ASVEPR', resuel, 'V')
-            call dismoi('TYPE_SCA', resuel, 'RESUELEM', repk=typsca)
+            call reajre('&&ASVEPR', resuElem, 'V')
+            call dismoi('TYPE_SCA', resuElem, 'RESUELEM', repk=typsca)
             if (typsca .eq. 'R') then
                 ityprs = 1
             else if (typsca .eq. 'C') then
@@ -198,9 +199,12 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
             call lisltc(lischa, ichar, typech)
             typchn = 'R'
             if (typech .eq. 'COMP') typchn = 'C'
-            call vtcreb(chamno, 'V', typchn, &
-                        nume_ddlz=numedd)
-            call vtcopy(resuel, chamno, 'F', ibid)
+            call vtcreb(chamno, 'V', typchn, nume_ddlz=numedd)
+
+            call vtcopy(resuElem, chamno, iret)
+            if (iret .ne. 0) then
+                call utmess("F", "FIELD0_16")
+            end if
         end if
 !
     end do
@@ -217,9 +221,9 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
     call jeexin(vecele//'.RELR', iret)
     do ivec = 1, nbvec
-        resuel = relr(ivec)
-        call corich('S', resuel)
-        call detrsd('CHAMP_GD', resuel)
+        resuElem = relr(ivec)
+        call corich('S', resuElem)
+        call detrsd('CHAMP_GD', resuElem)
     end do
     call jedetr(vecele//'.RELR')
     call jedetr(vecele//'.RERR')

@@ -196,7 +196,7 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
     ),
     46: _(
         """
-La MATR_ASSE et le CHAM_NO ont des numérotations différentes (%(k1)s et %(k2)s).
+La MATR_ASSE et le CHAM_NO ont des numérotations différentes.
 Si la MATR_ASSE contient des ddls LAGR, ceux-ci sont mis à zéro.
 """
     ),

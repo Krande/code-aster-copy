@@ -83,7 +83,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         if contact:
             result.setContact(contact)
 
-        if self.exception and self.exception.id_message in ("MECANONLINE5_2",):
+        if self.exception and self.exception.id_message in ("MECANONLINE5_82",):
             return
 
         feds = []

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vrrefe(objet1, objet2, ier)
-        character(len=*) :: objet1
-        character(len=*) :: objet2
-        integer :: ier
+    subroutine vrrefe(dsName1Z, dsName2Z, ier)
+        character(len=*), intent(in) :: dsName1Z, dsName2Z
+        integer, intent(out) :: ier
     end subroutine vrrefe
 end interface

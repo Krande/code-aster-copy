@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ test.assertEqual(sorted(dico_par.keys()), ["INST", "NUME_ORDRE"])
 test.assertEqual(dico_par["NUME_ORDRE"], [0, 1, 2])
 test.assertEqual(dico_par["INST"], [60.0, 80.0, 100.0])
 
-test.assertEqual(U2_2.getFieldsOnNodesRealNames(), ["DEPL"])
+test.assertEqual(U2_2.getFieldsOnNodesRealNames(), ["DEPL", "RESI_NOEU", "RESI_RELA_NOEU"])
 test.assertEqual(U2_2.getFieldsOnCellsRealNames(), ["SIEF_ELGA", "VARI_ELGA"])
 
 ranks = dico_par["NUME_ORDRE"]

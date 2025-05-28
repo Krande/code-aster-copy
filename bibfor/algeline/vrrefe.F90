@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vrrefe(objet1, objet2, ier)
+!
+subroutine vrrefe(dsName1Z, dsName2Z, ier)
+!
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/idensd.h"
@@ -28,8 +30,12 @@ subroutine vrrefe(objet1, objet2, ier)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
-    character(len=*) :: objet1, objet2
-    integer :: ier
+!
+    character(len=*), intent(in) :: dsName1Z, dsName2Z
+    integer, intent(out) :: ier
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! Verification que deux concepts ont meme domaine de definition
 !     ==> comparaison des ".REFE"
 ! les concepts doivent etre de type matr_asse_gd, cham_no
@@ -37,77 +43,80 @@ subroutine vrrefe(objet1, objet2, ier)
 !
 ! Attention : la verification est "minimum". Ce n'est pas parce que
 ! les objets .REFE sont coherents que l'organisation des champs est identiques.
-! ------------------------------------------------------------------
-! in  objet1  : ch*19 : nom du 1-er concept
-! in  objet2  : ch*19 : nom du 2-nd concept
-! out ier     : is   : code retour
+!
+! --------------------------------------------------------------------------------------------------
+!
+! in  dsName1Z  : ch*19 : nom du 1-er concept
+! in  dsName2Z  : ch*19 : nom du 2-nd concept
+! out ier       : is   : code retour
 !                = 0 pas d'erreur
 !                > 0 nombre de descripteurs differents
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     aster_logical :: ok
     integer :: ival1, ival2
-    character(len=19) :: nom1, nom2
+    character(len=19) :: dsName1, dsName2
     character(len=24) :: refe1, refe2
-    aster_logical :: refa, celk, lgene
-!-----------------------------------------------------------------------
+    aster_logical :: isMatrAsse, isFieldNode, isFieldElem, lgene
     integer :: irefe1, irefe2, iret
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-!
+
+! - Initializations
     ier = 0
-    nom1 = objet1
-    nom2 = objet2
-!
-!   si objet1 et objet2 sont des cham_no   : on compare leur .REFE
-!   si objet1 et objet2 sont des cham_elem : on compare leur .CELK
-!   si objet1 et objet2 sont des matr_asse : on compare leur .REFA
-    refa = .false.
-    celk = .false.
-    refe1 = nom1//'.REFE'
+    dsName1 = dsName1Z
+    dsName2 = dsName2Z
+
+! - Detect type of object
+    refe1 = dsName1//'.REFE'
     call jeexin(refe1, iret)
-    if (iret .gt. 0) then
-        refe2 = nom2//'.REFE'
+    isFieldNode = iret .gt. 0
+    refe1 = dsName1//'.REFA'
+    call jeexin(refe1, iret)
+    isMatrAsse = iret .gt. 0
+    refe1 = dsName1//'.CELK'
+    call jeexin(refe1, iret)
+    isFieldElem = iret .gt. 0
+
+! - Access to object
+    if (isFieldNode) then
+        refe1 = dsName1//'.REFE'
+        refe2 = dsName2//'.REFE'
+    else if (isMatrAsse) then
+        refe1 = dsName1//'.REFA'
+        refe2 = dsName2//'.REFA'
+    else if (isFieldElem) then
+        refe1 = dsName1//'.CELK'
+        refe2 = dsName2//'.CELK'
     else
-        refe1 = nom1//'.REFA'
-        call jeexin(refe1, iret)
-        if (iret .gt. 0) then
-            refe2 = nom2//'.REFA'
-            refa = .true.
-        else
-            refe1 = nom1//'.CELK'
-            call jeexin(refe1, iret)
-            if (iret .gt. 0) then
-                refe2 = nom2//'.CELK'
-                celk = .true.
-            else
-                call utmess('F', 'ALGELINE3_90')
-            end if
-        end if
+        ASSERT(ASTER_FALSE)
     end if
-!
-!   -- recuperation des longueurs des tableaux de reference ---
+
+!   -- recuperation des longueurs des tableaux de reference
     call jelira(refe1, 'LONMAX', ival1)
     call jelira(refe2, 'LONMAX', ival2)
-    if (ival1 .ne. ival2) ier = ier+abs(ival1-ival2)
-!
-!   -- recuperation des tableaux d'informations de reference ---
+    if (ival1 .ne. ival2) then
+        ier = ier+abs(ival1-ival2)
+    end if
+
+!   -- recuperation des tableaux d'informations de reference
     call jeveuo(refe1, 'L', irefe1)
     call jeveuo(refe2, 'L', irefe2)
-!
-!   -- controle des references ---
-    if (refa) then
+
+!   -- controle des references
+    if (isMatrAsse) then
         lgene = zk24(irefe1-1+10) .eq. 'GENE'
-        if (.not. lgene) then
-!         -- CAS DES MATR_ASSE :
-            if (zk24(irefe1-1+1) .ne. zk24(irefe2-1+1)) ier = ier+1
+        if (lgene) then
             if (zk24(irefe1-1+2) .ne. zk24(irefe2-1+2)) ier = ier+1
         else
-!         -- CAS DES MATR_ASSE_GENE :
+            if (zk24(irefe1-1+1) .ne. zk24(irefe2-1+1)) ier = ier+1
             if (zk24(irefe1-1+2) .ne. zk24(irefe2-1+2)) ier = ier+1
         end if
-!
-    else if (celk) then
-!       -- cas des cham_elem :
+
+    else if (isFieldElem) then
         if (zk24(irefe1) .ne. zk24(irefe2)) ier = ier+1
         if (zk24(irefe1+2) .ne. zk24(irefe2+2)) ier = ier+1
         if (zk24(irefe1+3) .ne. zk24(irefe2+3)) ier = ier+1
@@ -120,16 +129,17 @@ subroutine vrrefe(objet1, objet2, ier)
             if (zk24(irefe1+1) (1:5) .ne. 'META_') ier = ier+1
             if (zk24(irefe2+1) (1:5) .ne. 'META_') ier = ier+1
         end if
-
-        call jeveuo(nom1//'.CELD', 'L', irefe1)
-        call jeveuo(nom2//'.CELD', 'L', irefe2)
+        call jeveuo(dsName1//'.CELD', 'L', irefe1)
+        call jeveuo(dsName2//'.CELD', 'L', irefe2)
         if (zi(irefe1) .ne. zi(irefe2)) ier = ier+1
-!
-    else
-!       -- cas des cham_no :
+
+    else if (isFieldNode) then
         if (zk24(irefe1) .ne. zk24(irefe2)) ier = ier+1
         ok = idensd('NUME_EQUA', zk24(irefe1+1), zk24(irefe2+1))
         if (.not. ok) ier = ier+1
+
+    else
+        ASSERT(ASTER_FALSE)
     end if
 !
     call jedema()

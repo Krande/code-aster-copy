@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: nicolas.brie at edf.fr
 
 from ..Utilities import _
 
@@ -111,16 +110,8 @@ numéro    itération      erreur              valeur propre
         """ Nombre de valeurs propres : %(i1)d
 """
     ),
-    20: _(
-        """ On ne peut pas remplir la composante %(k1)s du noeud numéro %(k2)s
- pour le champ "%(k3)s"
-"""
-    ),
     21: _(
-        """ La combinaison linéaire de "%(k1)s" et "%(k2)s" est impossible.
- Cela est dû au fait qu'il manque des degrés de liberté dans  "%(k1)s" par
- rapport à "%(k2)s".
-"""
+        """La combinaison linéaire des vecteurs est impossible car les numérotations sont différentes."""
     ),
     22: _(
         """

@@ -569,7 +569,15 @@ class FieldOnCells : public DataField {
      * @param tmp object FieldOnCellsPtr
      */
     void checkInternalStateVariables( const ConstantFieldOnCellsChar16Ptr prevBehaviour,
-                                      const ConstantFieldOnCellsChar16Ptr currBehaviour );
+                                      const ConstantFieldOnCellsChar16Ptr currBehaviour,
+                                      const FiniteElementDescriptorPtr newFEDesc );
+
+    /**
+     * @brief Compare shape of field and project if it required
+     * @param tmp object FieldOnCellsPtr
+     */
+    ASTERINTEGER compareShape( const FieldOnCellsRealPtr fieldModel, const bool projectOnLigrel,
+                               const std::string paraName );
 
     friend class FieldBuilder;
 };

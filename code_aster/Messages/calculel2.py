@@ -20,16 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _(
-        """
-Erreur utilisateur :
- Les deux champs suivants : %(k1)s et %(k2)s
- sont associés à deux maillages différents : %(k3)s et %(k4)s
-Risques & conseils :
- Si l'un des champs est de type ETAT_INIT, il faut que son maillage
- soit le même que celui qui est associé au modèle.
-"""
-    ),
     2: _(
         """
  le CHAMP_S:  %(k1)s  est a la fois CHAM_ELEM_S et CHAM_NO_S.

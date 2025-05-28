@@ -58,7 +58,7 @@ subroutine nmetl2(model, i_field, ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    field_read_cv = '&&NMETL2.CHAMP.CONVER'
+    field_read_cv = '&&NMETL2.CHAMP.CONV'
 
 ! - Field to read ?
     if (ds_inout%l_field_acti(i_field) .and. ds_inout%field(i_field)%l_read_init) then
@@ -93,9 +93,9 @@ subroutine nmetl2(model, i_field, ds_inout)
             call nmetcv(model, init_name, &
                         fieldType, field_read, fieldInDisc, field_read_cv, disc_type)
             if (disc_type .eq. 'NOEU') then
-                call vtcopy(field_read_cv, field_algo, ' ', iret)
+                call vtcopy(field_read_cv, field_algo, iret)
                 if (iret .ne. 0) then
-                    call utmess('A', 'MECANONLINE_2', sk=fieldType)
+                    call utmess('A', 'MECANONLINE5_80', sk=fieldType)
                 end if
             else if ((disc_type .eq. 'ELGA') .or. (disc_type .eq. 'ELEM') .or. &
                      (disc_type .eq. 'ELNO')) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -323,8 +323,7 @@ subroutine crcore()
                         0, sjv=iad, styp=k8b)
         else if (iret .eq. 110) then
             call rsagsd(resu, 0)
-            call rsexch(' ', resu, nsymb, icompt, nomch, &
-                        iret)
+            call rsexch(' ', resu, nsymb, icompt, nomch, iret)
         else if (iret .eq. 100) then
             call vtcreb(nomch, 'G', 'R', nume_ddlz=numedd)
         end if
@@ -334,9 +333,11 @@ subroutine crcore()
                     nbr)
         numei = tnum(1)
         nbr0 = nbr
-        call rsexch(' ', resui, nsymb0, numei, chamno, &
-                    iret)
-        call vtcopy(chamno, chamn2, ' ', ier)
+        call rsexch(' ', resui, nsymb0, numei, chamno, iret)
+        call vtcopy(chamno, chamn2, ier)
+        if (ier .ne. 0) then
+            call utmess("A", "FIELD0_3", sk=nsymb0)
+        end if
 !
         call jeveuo(chamn2//'.VALE', 'L', jchin)
         if (lddlex) then

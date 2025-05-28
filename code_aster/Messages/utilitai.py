@@ -133,15 +133,14 @@ Erreur utilisateur dans la commande CREA_CHAMP.
     ),
     24: _(
         """
- Lors de la recopie du champ "%(k1)s" vers le champ "%(k2)s" utilisant
- le NUME_DDL "%(k3)s" certaines composantes de "%(k2)s" ont du être
+ Lors de la recopie du champ, certaines composantes ont du être
  mises à zéro.
 
- En effet, certaines parties attendues dans le champ "%(k2)s" n'étaient
- pas présentes dans "%(k1)s", elles ont donc été mises à zéros.
+ En effet, certaines parties attendues dans le champ n'étaient
+ pas présentes dans le champ initial, elles ont donc été mises à zéros.
 
- Ce problème peut survenir lorsque la numérotation du champ "%(k1)s"
- n'est pas intégralement incluse dans celle de "%(k2)s".
+ Ce problème peut survenir lorsque la numérotation du champ initial
+ n'est pas intégralement incluse dans celle du champ final
 """
     ),
     25: _(
@@ -175,10 +174,7 @@ Erreur utilisateur dans la commande CREA_RESU / TYPE_MAXI= ...
     ),
     29: _(
         """
-Erreur utilisateur :
- La structure de donnée résultat %(k1)s est associée au maillage %(k2)s
- Mais la structure de donnée NUME_DDL %(k3)s est associée au maillage %(k4)s
- Il n'y a pas de cohérence.
+ La structure de donnée résultat est associée à un maillage différent de la structure de donnée NUME_DDL.
 """
     ),
     30: _(

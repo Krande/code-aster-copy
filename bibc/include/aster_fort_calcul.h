@@ -208,9 +208,8 @@ void DEFSSSSS( VRCREF, vrcref, const char *, STRING_SIZE, const char *, STRING_S
 void DEFSSSS( VTCREB_WRAP, vtcreb_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
               const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_VTCOPY( a, b, c, d ) CALLOOOP( VTCOPY, vtcopy, a, b, c, d )
-void DEFSSSP( VTCOPY, vtcopy, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-              STRING_SIZE, ASTERINTEGER * );
+#define CALLO_VTCOPY( a, b, c ) CALLOOP( VTCOPY, vtcopy, a, b, c )
+void DEFSSP( VTCOPY, vtcopy, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER * );
 
 #define CALLO_NMDOCC( a, b, c, d, e, f ) CALLOOPOOP( NMDOCC, nmdocc, a, b, c, d, e, f )
 void DEFSSPSSP( NMDOCC, nmdocc, const char *, STRING_SIZE, const char *, STRING_SIZE,
@@ -277,9 +276,14 @@ void DEFSSSSPSPSSPPPSS( ME2MME_EVOL, me2mme_evol, const char *, STRING_SIZE, con
 void DEFSSSSP( HASBEHAVIOURFEATURE, hasbehaviourfeature, const char *, STRING_SIZE, const char *,
                STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL * );
 
-#define CALL_CHCKVARI( a, b, c, d ) CALLOOOO( CHCKAVRI, chckvari, a, b, c, d )
+#define CALL_CHCKVARI( a, b, c, d ) CALLOOOO( CHCKVARI, chckvari, a, b, c, d )
 void DEFSSSS( CHCKAVRI, chckvari, const char *, STRING_SIZE, const char *, STRING_SIZE,
               const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALL_COMPAREFIELDSHAPE( a, b, c, d, e )                                                    \
+    CALLOOPOP( COMPAREFIELDSHAPE, comparefieldshape, a, b, c, d, e )
+void DEFSSPSP( COMPAREFIELDSHAPE, comparefieldshape, const char *, STRING_SIZE, const char *,
+               STRING_SIZE, ASTERLOGICAL *, const char *, STRING_SIZE, ASTERINTEGER * );
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
                   incr_esti, disp_esti)
@@ -98,15 +97,17 @@ subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
     if (iret .gt. 0) then
         call utmess('F', 'MECANONLINE2_27', sk=result_extr, sr=time)
     end if
-!
+
 ! - Copy displacement
-!
     if (nume_inst .eq. 1) then
-        call vtcopy(disp_extr, disp_esti, 'F', iret)
+        call vtcopy(disp_extr, disp_esti, iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MECANONLINE2_29')
+        end if
     else
         call chamnoIsSame(disp_extr, disp_esti, iret)
         if (iret .gt. 0) then
-            call utmess('F', 'MECANONLINE2_28', sk=result_extr, sr=time)
+            call utmess('F', 'MECANONLINE2_28', sr=time)
         else
             call copisd('CHAMP_GD', 'V', disp_extr, disp_esti)
         end if

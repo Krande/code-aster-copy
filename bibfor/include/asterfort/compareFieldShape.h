@@ -1,9 +1,5 @@
 ! --------------------------------------------------------------------
-<<<<<<< HEAD
 ! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
-=======
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
->>>>>>> e29b759c59 ([#34577] MECA_NON_LINE: allow different behaviours along transient problem)
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +17,12 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine chckVari(comporPrevZ, comporCurrZ, variZ, ligrelCurrZ)
-        character(len=*), intent(in) :: comporPrevZ, comporCurrZ, variZ, ligrelCurrZ
-    end subroutine chckVari
+    subroutine compareFieldShape(fieldModelZ, fieldZ, &
+                                 projectOnLigrel, paraNameZ, &
+                                 iret)
+        character(len=*), intent(in) :: fieldModelZ, fieldZ
+        aster_logical, intent(in) :: projectOnLigrel
+        character(len=*), intent(in) :: paraNameZ
+        integer, intent(out) :: iret
+    end subroutine compareFieldShape
 end interface

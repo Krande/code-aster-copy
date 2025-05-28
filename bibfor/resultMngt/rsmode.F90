@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsmode(resu)
+subroutine rsmode(resultZ)
     implicit none
 #include "jeveux.h"
 #include "asterfort/copisd.h"
@@ -36,8 +36,7 @@ subroutine rsmode(resu)
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=*) :: resu
-! person_in_charge: jacques.pellet at edf.fr
+    character(len=*) :: resultZ
 !
 !     FONCTION  :
 !     SI LES CHAM_NO (DEPL_R) DE LA SD RESU NE SONT PAS NUMEROTES
@@ -45,86 +44,80 @@ subroutine rsmode(resu)
 !
 !    IN/JXVAR : RESU  NOM DU CONCEPT SD_RESULTAT
 !-----------------------------------------------------------------------
-    integer :: iret, neq, iordr, isymb, k, krang
-    integer :: nbnosy, nbordr, iexi, nbval, jliprf, nbval2
+    integer :: iret, neq, numeStore, isymb, k, iStore
+    integer :: nbnosy, nbStore, iexi, nbval, jliprf, nbval2
     character(len=1) :: kbid, typ1
-    character(len=8) :: resu8, nomgd, ma1, ma2
-    character(len=19) :: resu19
-    character(len=14) :: nu
-    character(len=16) :: nomsym
-    character(len=19) :: nume_equao, champt, nomcha, nume_equa1
-    character(len=24) :: valk(5)
-    integer, pointer :: ordr(:) => null()
+    character(len=8) :: result8, nomgd, ma1, fieldMesh
+    character(len=19) :: result19
+    character(len=14) :: numeDof
+    character(len=16) :: fieldType
+    character(len=19) :: fieldNumeEqua, champt, fieldName, numeEqua
+    integer, pointer :: listStore(:) => null()
 !-----------------------------------------------------------------------
 !
 !
     call jemarq()
-    resu19 = resu
-    resu8 = resu
-    call jeexin(resu19//'.REFD', iexi)
+    result19 = resultZ
+    result8 = resultZ
+    call jeexin(result19//'.REFD', iexi)
     if (iexi .eq. 0) goto 50
 !
-    nu = ' '
-    call dismoi('NUME_DDL', resu, 'RESU_DYNA', repk=nu, arret='C', &
-                ier=iret)
+    numeDof = ' '
+    call dismoi('NUME_DDL', resultZ, 'RESU_DYNA', repk=numeDof, arret='C', ier=iret)
 !
-    if (nu .eq. ' ') goto 50
+    if (numeDof .eq. ' ') goto 50
 !
-    nume_equa1 = nu(1:8)//'.NUME'
-    call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=ma1)
+    numeEqua = numeDof(1:8)//'.NUME'
+    call dismoi('NOM_MAILLA', numeDof, 'NUME_DDL', repk=ma1)
 !
     champt = '&&RSMODE.CHAMPT'
 !
-    call jeveuo(resu19//'.ORDR', 'L', vi=ordr)
-    call jelira(resu19//'.ORDR', 'LONUTI', nbordr)
-    call jelira(resu19//'.DESC', 'NOMUTI', nbnosy)
+    call jeveuo(result19//'.ORDR', 'L', vi=listStore)
+    call jelira(result19//'.ORDR', 'LONUTI', nbStore)
+    call jelira(result19//'.DESC', 'NOMUTI', nbnosy)
 !
     do isymb = 1, nbnosy
-        call jenuno(jexnum(resu19//'.DESC', isymb), nomsym)
+        call jenuno(jexnum(result19//'.DESC', isymb), fieldType)
 !
-        do krang = 1, nbordr
-            iordr = ordr(krang)
-            call rsexch(' ', resu, nomsym, iordr, nomcha, &
-                        iret)
-            if (iret .ne. 0) goto 30
+        do iStore = 1, nbStore
+            numeStore = listStore(iStore)
+            call rsexch(' ', resultZ, fieldType, numeStore, fieldName, iret)
+            if (iret .ne. 0) cycle
 !
-            call dismoi('NOM_GD', nomcha, 'CHAM_NO', repk=nomgd)
-            if (nomgd(1:5) .ne. 'DEPL_') goto 30
+            call dismoi('NOM_GD', fieldName, 'CHAM_NO', repk=nomgd)
+            if (nomgd(1:5) .ne. 'DEPL_') cycle
 !
-            call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=nume_equao)
-            if (nume_equao .eq. nume_equa1) goto 30
+            call dismoi('NUME_EQUA', fieldName, 'CHAM_NO', repk=fieldNumeEqua)
+            if (fieldNumeEqua .eq. numeEqua) cycle
 !
-            call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=ma2)
-            if (ma1 .ne. ma2) then
-                valk(1) = resu
-                valk(2) = ma1
-                valk(3) = nu
-                valk(4) = ma2
-                call utmess('F', 'UTILITAI_29', nk=4, valk=valk)
+            call dismoi('NOM_MAILLA', fieldName, 'CHAM_NO', repk=fieldMesh)
+            if (ma1 .ne. fieldMesh) then
+                call utmess('F', 'UTILITAI_29')
             end if
 !
 !        -- SI LE CHAMP NOMCHA N'A PAS LA BONNE NUMEROTATION,
 !           IL FAUT LA MODIFIER :
-            call jelira(nomcha//'.VALE', 'TYPE', cval=typ1)
-            call vtcreb(champt, 'V', typ1, nume_ddlz=nu, nb_equa_outz=neq)
-            call vtcopy(nomcha, champt, 'F', iret)
-            call detrsd('CHAM_NO', nomcha)
-            call copisd('CHAMP', 'G', champt, nomcha)
+            call jelira(fieldName//'.VALE', 'TYPE', cval=typ1)
+            call vtcreb(champt, 'V', typ1, nume_ddlz=numeDof, nb_equa_outz=neq)
+            call vtcopy(fieldName, champt, iret)
+            if (iret .ne. 0) then
+                call utmess("F", "FIELD0_14", sk=fieldType)
+            end if
+            call detrsd('CHAM_NO', fieldName)
+            call copisd('CHAMP', 'G', champt, fieldName)
             call detrsd('CHAM_NO', champt)
-30          continue
+
         end do
     end do
-!
-!
+
 !     -- IL FAUT ENCORE DETRUIRE LES NUME_EQUA QUI ONT ETE CREES
 !        INUTILEMENT SUE LA BASE GLOBALE (POUR SDVERI=OUI)
-    if (resu .ne. nu(1:8)) then
-        call jelstc('G', resu8//'.PRFCN', 1, 0, kbid, &
-                    nbval)
+    if (resultZ .ne. numeDof(1:8)) then
+        call jelstc('G', result8//'.PRFCN', 1, 0, kbid, nbval)
         if (nbval .lt. 0) then
             nbval = -nbval
             call wkvect('&&RSMODES.LIPRFCN', 'V V K24', nbval, jliprf)
-            call jelstc('G', resu8//'.PRFCN', 1, nbval, zk24(jliprf), &
+            call jelstc('G', result8//'.PRFCN', 1, nbval, zk24(jliprf), &
                         nbval2)
             do k = 1, nbval2
                 call detrsd('NUME_EQUA', zk24(jliprf-1+k) (1:19))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mvnume(depmoi, depdel, depplu)
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
     implicit none
+!
 #include "jeveux.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtzero.h"
+!
     character(len=19) :: depmoi, depdel, depplu
 !
 ! ----------------------------------------------------------------------
@@ -65,7 +66,10 @@ subroutine mvnume(depmoi, depdel, depplu)
     if (pfchn1 .ne. pfchn2) then
         call copisd('CHAMP_GD', 'V', depdel, depmo1)
         call vtzero(depmo1)
-        call vtcopy(depmoi, depmo1, 'F', iret)
+        call vtcopy(depmoi, depmo1, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "FIELD0_4")
+        end if
     else
         depmo1 = depmoi
     end if
