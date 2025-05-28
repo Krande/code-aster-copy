@@ -186,7 +186,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
     if (option .eq. 'REAC_NODA' .and. &
         (resultType .eq. 'EVOL_ELAS' .or. resultType .eq. 'EVOL_NOLI')) then
         call jeveuo(lisord, 'L', vi=v_list_store)
-        call medome_once(resuin, v_list_store, nbordr)
+        call medome_once(resuin, v_list_store, nbordr, list_load_=k19bid)
     end if
 !
 !
