@@ -39,7 +39,7 @@ import tempfile
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
 from ..CodeCommands import IMPR_RESU, AFFE_MODELE
-from ..Objects import FieldOnCellsReal, NonLinearResult, Table
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..MedUtils.MedConverter import field_converter
 from ..Utilities import medcoupling as medc
@@ -93,7 +93,7 @@ class PostBeremin:
     _l_proj_3D_2D = _fondfiss = _dictfondfiss = None
     _l_mesh_proj_2D = _l_name_mesh_2D = _l_mesh_group_no_2D = None
     _l_mesh_proj_2D_mc = _mesh_3D_cells_mc = _d_max_3d = None
-    _model_3D_restricted = None
+    _model_3D_zone = None
     _medfilename_temp = _unite_temp = None
     _rout_2D = None
 
@@ -139,16 +139,14 @@ class PostBeremin:
             self._model_2D = args["METHODE_2D"]["MODELISATION"]
             self._l_mesh_proj_2D_mc = []
 
+            ##Model restricted to zone
+            fed_all = self._result.getModel().getFiniteElementDescriptor()
+            fed_restricted = fed_all.restrict(self._zone_ids)
+            self._model_3D_zone = Model("model_3D_zone", fed_restricted)
+            fed_restricted.setModel(self._model_3D_zone)
+
             if args["METHODE_2D"]["UNITE_RESU"] != 0:
                 self._rout_2D = args["METHODE_2D"]["UNITE_RESU"]
-
-            self._model_3D_restricted = AFFE_MODELE(
-                MAILLAGE=self._result.getMesh().restrict(self._zone),
-                AFFE=(
-                    _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D"),
-                    _F(GROUP_MA=(self._zone), PHENOMENE="MECANIQUE", MODELISATION="3D_SI"),
-                ),
-            )
 
             ##Type of 2D mesh input ?
             if self._l_mesh_group_no_2D:
@@ -330,7 +328,6 @@ class PostBeremin:
         rsieq = CALC_CHAMP(RESULTAT=input, CRITERES="SIEQ_ELGA", **d_group_ma)
 
         if self._method_2D and not self._medfilename_temp:
-
             self._medfilename_temp = tempfile.NamedTemporaryFile(dir=".", suffix=".med").name
             self._unite_temp = DEFI_FICHIER(
                 FICHIER=self._medfilename_temp, ACTION="ASSOCIER", TYPE="LIBRE", ACCES="NEW"
@@ -500,10 +497,11 @@ class PostBeremin:
         """
 
         ##3D ComponentOnCells to 3D medcoupling array
-        sigma = FieldOnCellsReal(self._model_3D_restricted, "ELGA", "SIEF_R")
+        sigma = FieldOnCellsReal(self._model_3D_zone, "ELGA", "SIEF_R")
         sigma.setValues(0.0)
         sigma_sfield = sigma.toSimpleFieldOnCells()
         sixx = sigma_sfield.SIXX
+        sixx.restrict(self._zone_ids)
         sixx += sig1
         sigma_sfield.setComponentValues("SIXX", sixx)
         sigma_f_mc, prof = field_converter.toMCFieldAndProfileElem(
@@ -648,7 +646,6 @@ class PostBeremin:
         ]
 
         for sigma_thr, sigma_refe, pow_m in param_mater:
-
             logger.info(
                 "M = "
                 + str(pow_m)
@@ -663,7 +660,6 @@ class PostBeremin:
             previous = None
 
             for idx, time in zip(params["NUME_ORDRE"], params["INST"]):
-
                 if self._use_indiplas:
                     indip = self.get_internal_variables(idx)
 
@@ -708,7 +704,6 @@ class PostBeremin:
 
                 ##SIGMAW 2D
                 else:
-
                     ##Projectors are built only one time
                     if not self._l_proj_3D_2D:
                         self._l_proj_3D_2D = []
