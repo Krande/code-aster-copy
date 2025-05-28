@@ -497,7 +497,7 @@ def check_config(self):
         self.check_mpi_get_rank()
     cfg.update(self._extract_keys("CFGJS_"))
     cfg["FC"] = " ".join(self.env["FC"])
-    cfg["FCFLAGS"] = self.env["FCFLAGS"]
+    cfg["FCFLAGS"] = self.env["FCFLAGS"] + self.env["FCFLAGS_INT64"]
     cfg["exectool"] = {
         "valgrind": "valgrind --tool=memcheck --leak-check=full --error-limit=no --track-origins=yes",
         "gdb": osp.join(self.env.ASTERDATADIR, "exectool", "gdb_wrapper"),
