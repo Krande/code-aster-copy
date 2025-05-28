@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -49,6 +49,20 @@ class MaterialDefinition(ExecuteMacro):
                 mcfact["NV"] = len(mcfact["G"])
                 adapt_list_of_values(mcfact, "G")
                 adapt_list_of_values(mcfact, "TAU")
+
+        if "HYPER_HILL" in keywords:
+            mcfact = keywords["HYPER_HILL"]
+            # check list sizes
+            if "ALPHA" in mcfact and "BETA" in mcfact and "MU":
+                mcfact["ALPHA"] = force_list(mcfact["ALPHA"])
+                mcfact["BETA"] = force_list(mcfact["BETA"])
+                mcfact["MU"] = force_list(mcfact["MU"])
+                if len(mcfact["ALPHA"]) not in [len(mcfact["BETA"]), mcfact["MU"]]:
+                    UTMESS("F", "TABLE0_14", valk=("ALPHA", "BETA", "MU"))
+                mcfact["Nvk"] = len(mcfact["ALPHA"])
+                adapt_list_of_values(mcfact, "ALPHA")
+                adapt_list_of_values(mcfact, "BETA")
+                adapt_list_of_values(mcfact, "MU")
 
         if "TABLE" not in keywords:
             return

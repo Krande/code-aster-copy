@@ -1,0 +1,152 @@
+@DSL DefaultFiniteStrain {automatic_declaration_of_the_temperature_as_first_external_state_variable : false};
+@Behaviour HYPER_HILL ;
+@Author Thomas Helfer, Hela MENSI ;
+@Date 01/03/2025;
+@Description{
+}
+@IntegerConstant NvMax = 10 ;
+
+@MaterialProperty real Nvk;
+
+@MaterialProperty stress ALPHA1;
+@MaterialProperty stress ALPHA2;
+@MaterialProperty stress ALPHA3;
+@MaterialProperty stress ALPHA4;
+@MaterialProperty stress ALPHA5;
+@MaterialProperty stress ALPHA6;
+@MaterialProperty stress ALPHA7;
+@MaterialProperty stress ALPHA8;
+@MaterialProperty stress ALPHA9;
+@MaterialProperty stress ALPHA10;
+
+@MaterialProperty stress BETA1;
+@MaterialProperty stress BETA2;
+@MaterialProperty stress BETA3;
+@MaterialProperty stress BETA4;
+@MaterialProperty stress BETA5;
+@MaterialProperty stress BETA6;
+@MaterialProperty stress BETA7;
+@MaterialProperty stress BETA8;
+@MaterialProperty stress BETA9;
+@MaterialProperty stress BETA10;
+
+@MaterialProperty stress MU1;
+@MaterialProperty stress MU2;
+@MaterialProperty stress MU3;
+@MaterialProperty stress MU4;
+@MaterialProperty stress MU5;
+@MaterialProperty stress MU6;
+@MaterialProperty stress MU7;
+@MaterialProperty stress MU8;
+@MaterialProperty stress MU9;
+@MaterialProperty stress MU10;
+
+
+@LocalVariable StiffnessTensor dS_dC;
+
+
+@Integrator{
+  const int Nv=max(0,min((int)Nvk,NvMax));
+  real alpha[NvMax]={ALPHA1,ALPHA2,ALPHA3,ALPHA4,ALPHA5,ALPHA6,ALPHA7,ALPHA8,ALPHA9,ALPHA10,};
+  real beta[NvMax]={BETA1,BETA2,BETA3,BETA4,BETA5,BETA6,BETA7,BETA8,BETA9,BETA10,};
+  real mu[NvMax]={MU1,MU2,MU3,MU4,MU5,MU6,MU7,MU8,MU9,MU10,};
+  const auto id  = Stensor::Id();
+  const auto J   = pow(det(F1),1);
+  const auto C1   = computeRightCauchyGreenTensor(F1);
+  const auto E = computeGreenLagrangeTensor( F1 );
+  const auto C = 2*E + id;
+  /* invariants and derivatives */
+  const auto C2       = square(C);
+  const auto I1       = trace(C);
+  const auto I2       = (I1*I1-trace(C2))/2;
+
+  const auto dI3_dC   = C2-I1*C+I2*id;
+  /* volumetric part */
+  const auto dPv_dJ   = -2*mu[0]/alpha[0]*pow(J,(-alpha[0]*beta[0]-1));
+  StressStensor Sv = dPv_dJ/J*dI3_dC;
+  for(unsigned short i=1;i<Nv;++i){
+      /* volumetric part */
+    const auto dPv_dJ = -2*mu[i]/alpha[i]*pow(J,(-alpha[i]*beta[i]-1));
+    Sv  += dPv_dJ/J*dI3_dC;
+   }
+
+     // eigen values
+  Stensor n0,n1,n2;
+  tvector<3u,real> vp;
+  tmatrix<3u,3u,real> m;
+  C1.computeEigenVectors(vp,m);
+  Stensor::computeEigenTensors(n0,n1,n2,m);
+  const auto a = alpha[0]/2;
+  const tvector<3u,real> pwv = {pow(vp(0),a-2),pow(vp(1),a-2),pow(vp(2),a-2)};
+  const tvector<3u,real> dfv = {a*vp(0)*pwv(0),a*vp(1)*pwv(1),a*vp(2)*pwv(2)};
+
+  const auto df_dC = dfv(0)*n0+dfv(1)*n1+dfv(2)*n2;
+  StressStensor Si = (4*mu[0]/alpha[0]/alpha[0])*(df_dC);
+  for(unsigned short i=1;i<Nv;++i){
+      /*  Principal Stretches Termes */
+  const auto a = alpha[i]/2;
+  const tvector<3u,real> pwv = {pow(vp(0),a-2),pow(vp(1),a-2),pow(vp(2),a-2)};
+  const tvector<3u,real> dfv = {a*vp(0)*pwv(0),a*vp(1)*pwv(1),a*vp(2)*pwv(2)};
+  const auto df_dC = dfv(0)*n0+dfv(1)*n1+dfv(2)*n2;
+  Si += (4*mu[i]/alpha[i]/alpha[i])*(df_dC);
+   }
+
+
+  // The Cauchy Stress
+  sig = convertSecondPiolaKirchhoffStressToCauchyStress(Si+Sv,F1);
+  //if(computeTangentOperator_){
+    const auto d2I3_dC2 = computeDeterminantSecondDerivative(C);
+
+    /* volumetric part */
+
+
+    const auto A = mu[0]*(alpha[0]*beta[0]+2)/alpha[0]*pow(J,(-alpha[0]*beta[0]-4));
+    const auto B = (-2*mu[0]/alpha[0])*pow(J,-alpha[0]*beta[0]-2)*d2I3_dC2;
+    dS_dC = A*(dI3_dC^dI3_dC)+B ;
+
+    for(unsigned short i=1;i<Nv;++i){
+      /* volumetric part */
+    const auto A = mu[i]*(alpha[i]*beta[i]+2)/alpha[i]*pow(J,(-alpha[i]*beta[i]-4));
+    const auto B = (-2*mu[i]/alpha[i])*pow(J,-alpha[i]*beta[i]-2)*d2I3_dC2;
+    dS_dC += A*(dI3_dC^dI3_dC)+B ;
+}
+
+
+    /* Principal Stretches Termes */
+    auto df = [&a](const real x){
+      return a*pow(x,a-1);
+    };
+    auto d2f = [&a](const real x){
+      return a*(a-1)*pow(x,a-2);
+    };
+    Stensor4 d2f_dC2;
+    Stensor::computeIsotropicFunctionDerivative(d2f_dC2,df,d2f,
+						vp,m,1.e-12);
+
+
+    dS_dC +=4*mu[0]/alpha[0]/alpha[0]*(d2f_dC2);
+
+  for(unsigned short i=1;i<Nv;++i){
+    const auto a = alpha[i]/2;
+    auto df = [&a](const real x){
+      return a*pow(x,a-1);
+    };
+    auto d2f = [&a](const real x){
+      return a*(a-1)*pow(x,a-2);
+    };
+    Stensor4 d2f_dC2;
+    Stensor::computeIsotropicFunctionDerivative(d2f_dC2,df,d2f,
+						vp,m,1.e-12);
+
+
+    dS_dC +=4*mu[i]/alpha[i]/alpha[i]*(d2f_dC2);
+
+
+}
+
+
+}
+
+@TangentOperator<DS_DC>{
+  Dt = dS_dC;
+}
