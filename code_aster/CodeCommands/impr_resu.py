@@ -91,20 +91,17 @@ class ImprResu(ExecuteCommand):
                 in place.
         """
         resu_to_print = []
-        results = keywords["RESU"]
-        if isinstance(results, tuple):
-            for resu in results:
-                resu_to_print = change_syntax_dsdict(resu_to_print, resu)
-        else:
-            resu_to_print = change_syntax_dsdict(resu_to_print, results)
+        for resu in force_list(keywords["RESU"]):
+            resu_to_print.extend(_syntax_dsdict(resu))
 
         keywords["RESU"] = tuple(resu_to_print)
 
 
-def change_syntax_dsdict(list_resu, resu):
+def _syntax_dsdict(resu):
     if not isinstance(resu, dict):
         resu = resu[0]
     result = resu["RESULTAT"]
+    list_resu = []
     if issubclass(type(result), DataStructureDict):
         for key in result.keys():
             list_resu.append({"RESULTAT": result[key], "NOM_RESU_MED": key})
