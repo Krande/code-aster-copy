@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,9 +63,9 @@ subroutine speph0(nomu, table)
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
     aster_logical :: intmod, intphy, intdon
-    character(len=8) :: k8b, modmec, modsta, noeud, noma, cmp, mail
+    character(len=8) :: k8b, modmec, modsta, noeud, noma, cmp, mail, noeud0
     character(len=8) :: maillage, limocl(4), nomcmp
-    character(len=16) :: movrep, optcal, optcha, typcha, acces, typmec, nocham
+    character(len=16) :: movrep, optcal, optcha, typcha, acces, typmec, nocham, acces0
     character(len=16) :: optch1, maille, typem
     character(len=16) :: option
     character(len=24) :: cham19, typba, group
@@ -459,6 +459,15 @@ subroutine speph0(nomu, table)
                     c16b, r8b, k8b, tmod, 1, &
                     nbtrou)
         numod = tmod(1)
+        if (nbtrou .ne. 1 .and. noeud(1:1) .eq. 'N') then
+            noeud0(1:7) = noeud(2:8)
+            noeud0(8:8) = ' '
+            acces0 = noeud0//cmp
+            call rsorac(modsta, 'NOEUD_CMP', ibid, r8b, acces0, &
+                        c16b, r8b, k8b, tmod, 1, &
+                        nbtrou)
+            numod = tmod(1)
+        end if
         if (nbtrou .ne. 1) then
             valk(1) = modsta
             valk(2) = acces

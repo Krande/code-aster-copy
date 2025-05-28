@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex, &
     integer :: i1, i2, i3, i3b, i4, ibid, ilamsc
     integer :: ilamst, ilcpex, ilnoex, ilorms, jpara, n
     integer :: nmost1, nmost2, nnoeex
+    character(len=8) :: c_nume_noeud
     integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -85,10 +86,17 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex, &
     call wkvect('&&OP0131.LISTADORMOSTA', 'V V I', nnoeex, ilorms)
     do i1 = 1, nnoeex
         zi(ilorms+i1-1) = 0
+        c_nume_noeud(1:8) = ' '
+        if (zk8(ilnoex+i1-1) (1:1) .eq. 'N') then
+            c_nume_noeud(1:7) = zk8(ilnoex+i1-1) (2:8)
+            c_nume_noeud(8:8) = ' '
+        end if
         do i2 = 1, nmost2
             call rsadpa(modsta, 'L', 1, 'NOEUD_CMP', ordr(i2), &
                         0, sjv=jpara, styp=kbid)
             if ((zk8(ilnoex+i1-1)//zk8(ilcpex+i1-1)) .eq. zk16(jpara)) then
+                zi(ilorms+i1-1) = i2
+            elseif ((c_nume_noeud//zk8(ilcpex+i1-1)) .eq. zk16(jpara)) then
                 zi(ilorms+i1-1) = i2
             end if
         end do
