@@ -19,11 +19,11 @@
 
 """
 ======================================================================
-                Cas test de la commande IMPR_OAR 
+                Cas test de la commande IMPR_OAR
 
         Modélisation D - Chargement mécanique volumique
 ======================================================================
-Le maillage est en mm. 
+Le maillage est en mm.
 
 Les groupes du maillage sont :
 - faces :
@@ -197,7 +197,7 @@ IMPR_OAR(
     TABL_MECA=_F(PRESSION=tableP, FLEXION_P=tableFP, FLEXION_HP=tableHFP, TORSION=tableT),
     UNITE=11,
     TITRE="Modelisation mécanique - Modélisation d",
-    TYPE_UNIT="SI",
+    MODELE=model,
 )
 
 TEST_FICHIER(
