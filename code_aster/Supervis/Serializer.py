@@ -54,6 +54,8 @@ from ..Utilities import (
     MPI,
     ExecutionParameter,
     Options,
+    PETSc,
+    SLEPc,
     disable_fpe,
     get_caller_context,
     logger,
@@ -417,9 +419,6 @@ class AsterPickler(pickle.Pickler):
 
     dispatch_table = copyreg.dispatch_table.copy()
     for subcl in subtypes(DataStructure):
-        # if issubclass(subcl, UseCppPickling):
-        #     dispatch_table[subcl] = PicklingHelper.reducer_tuple
-        # else:
         dispatch_table[subcl] = PicklingHelper.reducer
 
 
@@ -444,6 +443,9 @@ def _filteringContext(context):
         if not name or name in ignored or re_system.search(name):
             continue
         if getattr(numpy, name, None) is obj:  # see issue29282
+            continue
+        # skip objects from: PETSc, SLEPc
+        if type(obj) in [getattr(klass, type(obj).__name__, None) for klass in (PETSc, SLEPc)]:
             continue
         # check attr needed for python<=3.6
         if hasattr(obj, "__class__") and isinstance(obj, (IOBase, MPI.Intracomm)):
