@@ -232,6 +232,17 @@ Returns:
                 float: dot product
             )",
               py::arg( "other" ) )
+        .def( "checkInternalStateVariables", &FieldOnCellsReal::checkInternalStateVariables, R"(
+            Check consistency of internal states variables with behaviour.
+            If you give previous behaviour, check is more precise (name of beahviour for instance)
+
+            Arguments:
+                prevBehaviour (ConstantFieldOnCellsChar16): previous behaviour
+                currBehaviour (ConstantFieldOnCellsChar16): current behaviour
+
+
+            )",
+              py::arg( "prevBehaviour" ), py::arg( "currBehaviour" ) )
         // .def( "restrict", &FieldOnCellsReal::restrict,
         //       R"(
         //     Return a new field restricted to the list of components and groups of cells given

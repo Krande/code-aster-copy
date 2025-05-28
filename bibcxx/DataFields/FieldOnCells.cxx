@@ -173,4 +173,25 @@ ASTERDOUBLE FieldOnCellsReal::dot( const FieldOnCellsPtr &tmp ) const {
         ret += ( *this )[pos] * ( *tmp )[pos];
     }
     return ret;
+};
+
+template <>
+void FieldOnCellsReal::checkInternalStateVariables(
+    const ConstantFieldOnCellsChar16Ptr prevBehaviour,
+    const ConstantFieldOnCellsChar16Ptr currBehaviour ) {
+
+    std::string prevBehaviourStr = " ";
+    std::string currBehaviourStr = " ";
+    std::string variStr = " ";
+    std::string FEDescStr = " ";
+
+    currBehaviourStr = currBehaviour->getName();
+    variStr = this->getName();
+    FEDescStr = getDescription()->getName();
+
+    if ( prevBehaviour != nullptr ) {
+        prevBehaviourStr = prevBehaviour->getName();
+    };
+
+    CALL_CHCKVARI( prevBehaviourStr, currBehaviourStr, variStr, FEDescStr );
 }

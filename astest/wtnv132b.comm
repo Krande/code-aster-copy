@@ -238,7 +238,7 @@ DEFLISTT = DEFI_LIST_INST(
 # On utilise une valeur de critere lache pour commencer a appliquer le
 #   poids car la precision s ameliore ensuite
 
-U[0] = STAT_NON_LINE(
+U[0] = MECA_NON_LINE(
     MODELE=MOD[0],
     CHAM_MATER=AFFMAT1,
     EXCIT=(_F(CHARGE=PHAUT), _F(CHARGE=CHPAR), _F(CHARGE=CHLAT), _F(CHARGE=PES, FONC_MULT=FOC)),
@@ -512,7 +512,7 @@ for n in range(1, nbcouche - 1):
     # On utilise une valeur de critere lache pour commencer a appliquer le
     #   poids car la precision s ameliore ensuite
 
-    U[n] = STAT_NON_LINE(
+    U[n] = MECA_NON_LINE(
         MODELE=MOD[n],
         CHAM_MATER=AFFMAT1,
         EXCIT=(_F(CHARGE=PHAUT), _F(CHARGE=CHPAR), _F(CHARGE=CHLAT), _F(CHARGE=PES, FONC_MULT=FOC)),

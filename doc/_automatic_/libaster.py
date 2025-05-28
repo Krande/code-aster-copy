@@ -2606,6 +2606,15 @@ class FieldOnCellsReal(DataField):
     def build(self, feds=[]):
         pass
 
+    def checkInternalStateVariables(self, prevBehaviour, currBehaviour):
+        """Check consistency of internal states variables with behaviour.
+        If you give previous behaviour, check is more precise (name of beahviour for instance)
+
+        Arguments:
+            prevBehaviour (ConstantFieldOnCellsChar16): previous behaviour
+            currBehaviour (ConstantFieldOnCellsChar16): current behaviour
+        """
+
     def copy(self):
         """Return a duplicated FieldOnCellsReal as a copy
 
