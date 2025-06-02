@@ -37,7 +37,7 @@ def defi_group_prod(MAILLAGE, GRILLE, **args):
             return squelette
     if GRILLE is not None:
         return grille_sdaster
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 DEFI_GROUP = OPER(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ def crea_resu_prod(TYPE_RESU, **args):
         return evol_varc
     if TYPE_RESU == "EVOL_CHAR":
         return evol_char
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 CREA_RESU = OPER(
@@ -109,7 +109,7 @@ CREA_RESU = OPER(
             "FOURIER_THER",
             "EVOL_THER",
             "EVOL_VARC",
-            "EVOL_CHAR"
+            "EVOL_CHAR",
             # pour bloc ASSE
             # "EVOL_THER "
             # pour bloc PERM_CHAM

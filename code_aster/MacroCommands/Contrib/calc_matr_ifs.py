@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,23 +20,12 @@
 
 from math import *
 
-import aster
-from ...Messages import UTMESS
-
-from ...Cata.DataStructure import CO as typCO
 from ...Cata.DataStructure import *
+from ...Cata.DataStructure import CO as typCO
 from ...Cata.Syntax import *
 from ...Cata.Syntax import _F, MACRO, SIMP
 from ...CodeCommands import *
-from ...CodeCommands import (
-    AFFE_CHAR_MECA,
-    AFFE_MATERIAU,
-    ASSE_MATRICE,
-    CALC_MATR_ELEM,
-    COMB_MATR_ASSE,
-    DEFI_MATERIAU,
-    NUME_DDL,
-)
+from ...CodeCommands import AFFE_MATERIAU, ASSE_MATRICE, CALC_MATR_ELEM, DEFI_MATERIAU, NUME_DDL
 from ...Supervis import UserMacro
 
 
@@ -55,8 +44,6 @@ def calc_matr_ifs_ops(self, **args):
     C_FLUI = args.get("C_FLUI")
     RHO_VISC = args.get("RHO_VISC")
     NU_VISC = args.get("NU_VISC")
-    CHAR_IMPE_R = args.get("CHAR_IMPE_R")
-    CHAR_IMPE_C = args.get("CHAR_IMPE_C")
     MASS_E_OUT = args.get("MASS_E")
     MASS_F_OUT = args.get("MASS_F")
     RIGI_E_OUT = args.get("RIGI_E")
@@ -230,7 +217,7 @@ def calc_matr_ifs_prod(self, **args):
         )
 
     if not NUME_DDL:
-        raise AsException("Impossible de typer les concepts resultats")
+        raise CataError("Impossible de typer les concepts resultats")
 
     if NUME_DDL.is_typco():
         self.type_sdprod(NUME_DDL, nume_ddl_sdaster)

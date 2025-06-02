@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ def proj_mesu_modal_prod(MODELE_MESURE, **args):
     if AsType(vale) == mode_meca_c:
         return mode_gene
     #     if  AsType(vale) == base_modale  : return mode_gene
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 PROJ_MESU_MODAL = OPER(

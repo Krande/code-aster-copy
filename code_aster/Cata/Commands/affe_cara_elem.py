@@ -63,7 +63,7 @@ def affe_cara_elem_prod(
             if valdefaut is not None:
                 return valdefaut
             else:
-                raise AsException("Erreur de syntaxe dans la commande")
+                raise CataError("Erreur de syntaxe dans la commande")
 
     def check(cond, message, mcf, occ, prop=None):
         """Vérifie que la condition 'cond' est ok, sinon lève une exception"""
@@ -71,7 +71,7 @@ def affe_cara_elem_prod(
             fmt = tr("Mot-clé {mcf!r}, occurrence {occ:d}, {text!s}")
             text = str(message).format(**locals())
             msg = str(fmt).format(**locals())
-            raise AsException(msg)
+            raise CataError(msg)
 
     # les messages doivent être courts pour être visibles dans eficas
     sizeErr = tr("les cardinaux de CARA et VALE sont différents.")

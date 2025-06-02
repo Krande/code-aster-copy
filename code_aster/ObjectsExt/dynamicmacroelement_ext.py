@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,6 @@ class ExtendedDynamicMacroElement:
         elif typmat == "AMOR_GENE":
             matrix = self.getGeneralizedDampingMatrix()
         else:
-            raise AsException("Le type de la matrice est incorrect")
+            raise TypeError("Le type de la matrice est incorrect")
 
         return VALE_triang2array(matrix)
