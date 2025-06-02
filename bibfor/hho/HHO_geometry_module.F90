@@ -20,6 +20,8 @@ module HHO_geometry_module
 !
     use HHO_type
     use HHO_utils_module, only: CellNameL2S
+    use compensated_ops_module, only: dot_product, norm2, addFMA, det
+
 !
     implicit none
 !
@@ -758,7 +760,7 @@ contains
         real(kind=8), dimension(8) :: basis
         real(kind=8), dimension(3, 8) :: dbasis
         real(kind=8), dimension(3, 3) :: jaco
-        integer(kind=8) :: i
+        integer(kind=8) :: i, idim
 !
         if (present(coorac)) then
 !
@@ -769,7 +771,9 @@ contains
             coorac = 0.d0
 !
             do i = 1, nbnodes
-                coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
+                do idim = 1, 3
+                    call addFMA(coorno(idim, i), basis(i), coorac(idim))
+                end do
             end do
         end if
 !
@@ -782,14 +786,14 @@ contains
 ! ---  Compute the jacobienne
             jaco = 0.d0
             do i = 1, nbnodes
-                jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
-                jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
-                jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
+                do idim = 1, 3
+                    call addFMA(coorno(1, i), dbasis(idim, i), jaco(idim, 1))
+                    call addFMA(coorno(2, i), dbasis(idim, i), jaco(idim, 2))
+                    call addFMA(coorno(3, i), dbasis(idim, i), jaco(idim, 3))
+                end do
             end do
 !
-            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2)+jaco(3, 1)&
-                    &*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3)-jaco(3, 3)*jaco(2, &
-                    &1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
+            jacob = det(jaco)
         end if
 !
     end subroutine
@@ -825,8 +829,7 @@ contains
         real(kind=8), dimension(3, 8) :: dbasis
         real(kind=8), dimension(2, 2) :: jaco
         real(kind=8), dimension(3) :: da, db, normal
-        integer(kind=8) :: i
-        blas_int :: b_incx, b_n
+        integer(kind=8) :: i, idim
 !
         if (present(coorac)) then
 !
@@ -837,7 +840,9 @@ contains
             coorac = 0.d0
 !
             do i = 1, 4
-                coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
+                do idim = 1, 3
+                    call addFMA(coorno(idim, i), basis(i), coorac(idim))
+                end do
             end do
         end if
 !
@@ -853,22 +858,24 @@ contains
             case (2)
                 jaco = 0.d0
                 do i = 1, 4
-                    jaco(1:2, 1) = jaco(1:2, 1)+coorno(1, i)*dbasis(1:2, i)
-                    jaco(1:2, 2) = jaco(1:2, 2)+coorno(2, i)*dbasis(1:2, i)
+                    do idim = 1, 2
+                        call addFMA(coorno(1, i), dbasis(idim, i), jaco(idim, 1))
+                        call addFMA(coorno(2, i), dbasis(idim, i), jaco(idim, 2))
+                    end do
                 end do
 !
-                jacob = jaco(1, 1)*jaco(2, 2)-jaco(1, 2)*jaco(2, 1)
+                jacob = det(jaco)
             case (3)
                 da = 0.d0
                 db = 0.d0
                 do i = 1, 4
-                    da(1:3) = da(1:3)+coorno(1:3, i)*dbasis(1, i)
-                    db(1:3) = db(1:3)+coorno(1:3, i)*dbasis(2, i)
+                    do idim = 1, 3
+                        call addFMA(coorno(idim, i), dbasis(1, i), da(idim))
+                        call addFMA(coorno(idim, i), dbasis(2, i), db(idim))
+                    end do
                 end do
                 call provec(da, db, normal)
-                b_n = to_blas_int(3)
-                b_incx = to_blas_int(1)
-                jacob = dnrm2(b_n, normal, b_incx)
+                jacob = norm2(normal)
             case default
                 ASSERT(ASTER_FALSE)
             end select

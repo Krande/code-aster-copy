@@ -22,6 +22,7 @@ module HHO_inertia_module
     use HHO_type
     use HHO_quadrature_module
     use HHO_geometry_module
+    use compensated_ops_module, only: norm2
 !
     implicit none
 !
