@@ -21,16 +21,108 @@ from enum import Enum, auto
 
 from . import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph, PtScotchPartitioner
 from . import MedFileAccessType, ParallelMesh
-from . import FieldCharacteristics, SimpleFieldOnNodesReal, Result
+from . import FieldCharacteristics, SimpleFieldOnNodesReal, Result, Model
 from . import SimpleFieldOnCellsReal
 from . import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
 from . import toAsterGeoType
+
+toMedGeoType = dict(zip(ASTER_TYPES, MED_TYPES))
 
 
 class MedSequenceToOrder(Enum):
     Both = auto()
     TimeStep = auto()
     Iteration = auto()
+
+
+def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None, model=None):
+    """Convert a MedField in a code_aster Field
+
+    Arguments:
+        medField (MedField): MED field to convert.
+        asterFieldName (str): Name of field (eg. "DEPL" or "SIEF_ELGA").
+        mesh (BaseMesh): support mesh of return field
+        componentToFill (list): string list of component names (eg. ["DX", "DY", "DZ"])
+        model (Model): support model (in case of ELGA, ELNO or ELEM field)
+
+    Returns:
+        DataField: code_aster data field
+    """
+    fieldValues = medField.getValues()
+    compName = medField.getComponentName()
+
+    fieldComp = componentToFill if componentToFill is not None else compName
+
+    if len(compName) != len(fieldComp):
+        raise NameError("Component numbers must be the same")
+
+    # Get characteristics (localization, quantity name) of field from aster name
+    fieldChar = FieldCharacteristics(asterFieldName)
+    loc = fieldChar.getLocalization()
+    qt = fieldChar.getQuantity()
+    opt = fieldChar.getOption()
+    param = fieldChar.getParameter()
+
+    fieldToAdd = None
+    # FieldOnNodes case
+    if loc == "NOEU":
+        sFON = SimpleFieldOnNodesReal(mesh, qt, fieldComp, True)
+        nodeNb = mesh.getNumberOfNodes()
+        cmpNb = len(compName)
+        i = 0
+        # Copy values in field
+        for iNode in range(nodeNb):
+            for iCmp in range(cmpNb):
+                sFON[iNode, iCmp] = fieldValues[i]
+                i += 1
+
+        # Convert SimpleFieldOnNodes to FieldOnNodes
+        fieldToAdd = sFON.toFieldOnNodes()
+    # FieldOnCells case
+    elif loc in ("ELGA", "ELNO", "ELEM"):
+        if model is None:
+            raise NameError("Model is mandatory when ELGA field is asked")
+        cumSizes = medField.getCumulatedSizesVector()
+        cmpNb = len(compName)
+        fieldCmps = medField.getComponentVector()
+        gPList = []
+        for iCell, curCmpNum in enumerate(fieldCmps):
+            gPNb = curCmpNum / cmpNb
+            if int(gPNb) == gPNb:
+                gPNb = int(gPNb)
+            else:
+                raise NameError("Inconsistent Gauss point number")
+            gPList.append(gPNb)
+        sFOC = SimpleFieldOnCellsReal(mesh, loc, qt, fieldComp, gPList, 1, True)
+        # Copy values in field
+        if loc == "ELNO":
+            assert len(fieldCmps) == mesh.getNumberOfCells()
+            for iCell, curCmpNum in enumerate(fieldCmps):
+                gPNb = int(curCmpNum / cmpNb)
+                j = 0
+                posInNew = cumSizes[iCell]
+                cellType = mesh.getCellType(iCell)
+                medType = toMedGeoType[cellType]
+                for iPt in range(gPNb):
+                    newPos = MYMED2ASTER_CONNECT[medType][iPt]
+                    for iCmp in range(cmpNb):
+                        sFOC.setValue(iCell, iCmp, newPos, 0, fieldValues[posInNew + j])
+                        j += 1
+        else:
+            for iCell, curCmpNum in enumerate(fieldCmps):
+                gPNb = int(curCmpNum / cmpNb)
+                j = 0
+                posInNew = cumSizes[iCell]
+                for iPt in range(gPNb):
+                    for iCmp in range(cmpNb):
+                        sFOC.setValue(iCell, iCmp, iPt, 0, fieldValues[posInNew + j])
+                        j += 1
+        fED = model.getFiniteElementDescriptor()
+        # Convert SimpleFieldOnells to FieldOnCells
+        fieldToAdd = sFOC.toFieldOnCells(fED, opt, param)
+    else:
+        raise NameError("Not yet implemented")
+    return fieldToAdd
 
 
 def splitMeshFromMedFile(
@@ -131,6 +223,8 @@ def _splitMeshAndFieldsFromMedFile(
                third element: cell balancer (if asked),
                fourth element: node balancer (if asked).
     """
+    if not isinstance(sequenceToOrder, MedSequenceToOrder):
+        raise NameError("sequenceToOrder argument must be of type MedSequenceToOrder")
 
     returnTuple = splitMeshFromMedFile(
         filename, 1, True, True, True, outMesh, nodeGrpToGather, deterministic, parallel
@@ -251,6 +345,9 @@ def _splitMedFileToResults(
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
     """
+    if model is not None and not isinstance(model, Model):
+        raise NameError("model argument must be of type Model")
+
     if not issubclass(resultType, Result):
         raise TypeError("resultType must be a child class of Result")
     result = resultType()
@@ -263,20 +360,11 @@ def _splitMedFileToResults(
     if model is not None:
         mesh = model.getMesh()
 
-    toMedGeoType = dict(zip(ASTER_TYPES, MED_TYPES))
-
     first = True
     # Loop over field dict given by user
     for medFieldName in fieldToRead:
         # Get aster name of med field
         asterFieldName = fieldToRead[medFieldName]
-
-        # Get characteristics (localization, quantity name) of field from aster name
-        fieldChar = FieldCharacteristics(asterFieldName)
-        loc = fieldChar.getLocalization()
-        qt = fieldChar.getQuantity()
-        opt = fieldChar.getOption()
-        param = fieldChar.getParameter()
 
         # Get split field
         if fields.get(medFieldName) is None:
@@ -291,68 +379,9 @@ def _splitMedFileToResults(
             first = False
         # Loop over field "time" index
         for index, curTime in curMedFieldDict["id2time"]:
-            curField = curMedFieldDict[index]
-            fieldValues = curField.getValues()
-            compName = curField.getComponentName()
-            fieldToAdd = None
-            # FieldOnNodes case
-            if loc == "NOEU":
-                sFON = SimpleFieldOnNodesReal(mesh, qt, compName, True)
-                nodeNb = mesh.getNumberOfNodes()
-                cmpNb = len(compName)
-                i = 0
-                # Copy values in field
-                for iNode in range(nodeNb):
-                    for iCmp in range(cmpNb):
-                        sFON[iNode, iCmp] = fieldValues[i]
-                        i += 1
+            medField = curMedFieldDict[index]
+            fieldToAdd = convertMedFieldToAster(medField, asterFieldName, mesh, None, model)
 
-                # Convert SimpleFieldOnNodes to FieldOnNodes
-                fieldToAdd = sFON.toFieldOnNodes()
-            # FieldOnCells case
-            elif loc in ("ELGA", "ELNO", "ELEM"):
-                if model is None:
-                    raise NameError("Model is mandatory when ELGA field is asked")
-                cumSizes = curField.getCumulatedSizesVector()
-                cmpNb = len(compName)
-                fieldCmps = curField.getComponentVector()
-                gPList = []
-                for iCell, curCmpNum in enumerate(fieldCmps):
-                    gPNb = curCmpNum / cmpNb
-                    if int(gPNb) == gPNb:
-                        gPNb = int(gPNb)
-                    else:
-                        raise NameError("Inconsistent Gauss point number")
-                    gPList.append(gPNb)
-                sFOC = SimpleFieldOnCellsReal(mesh, loc, qt, compName, gPList, 1, True)
-                # Copy values in field
-                if loc == "ELNO":
-                    assert len(fieldCmps) == mesh.getNumberOfCells()
-                    for iCell, curCmpNum in enumerate(fieldCmps):
-                        gPNb = int(curCmpNum / cmpNb)
-                        j = 0
-                        posInNew = cumSizes[iCell]
-                        cellType = mesh.getCellType(iCell)
-                        medType = toMedGeoType[cellType]
-                        for iPt in range(gPNb):
-                            newPos = MYMED2ASTER_CONNECT[medType][iPt]
-                            for iCmp in range(cmpNb):
-                                sFOC.setValue(iCell, iCmp, newPos, 0, fieldValues[posInNew + j])
-                                j += 1
-                else:
-                    for iCell, curCmpNum in enumerate(fieldCmps):
-                        gPNb = int(curCmpNum / cmpNb)
-                        j = 0
-                        posInNew = cumSizes[iCell]
-                        for iPt in range(gPNb):
-                            for iCmp in range(cmpNb):
-                                sFOC.setValue(iCell, iCmp, iPt, 0, fieldValues[posInNew + j])
-                                j += 1
-                fED = model.getFiniteElementDescriptor()
-                # Convert SimpleFieldOnells to FieldOnCells
-                fieldToAdd = sFOC.toFieldOnCells(fED, opt, param)
-            else:
-                raise NameError("Not yet implemented")
             # Add field to Result
             result.setField(fieldToAdd, asterFieldName, index)
             result.setTime(curTime, index)

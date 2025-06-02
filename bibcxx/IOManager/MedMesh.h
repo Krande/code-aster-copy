@@ -51,6 +51,8 @@ class MedMesh {
     const std::string _name = "";
     /** @brief dimension */
     med_int _dim;
+    /** @brief step number */
+    med_int _nbstep;
     /** @brief all calcultation sequences */
     std::vector< MedCalculationSequence > _sequences;
     /** @brief all families */
@@ -73,7 +75,7 @@ class MedMesh {
      * @param name mesh name
      * @param dim dimension
      */
-    MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim );
+    MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim, med_int nbstep );
 
     /**
      * @brief add a calculation sequence
@@ -82,6 +84,9 @@ class MedMesh {
      * @param dt time step value
      */
     void addSequence( int numdt, int numit, float dt ) {
+        if ( _sequences.size() >= _nbstep ) {
+            throw std::runtime_error( "Too many sequences defined for mesh " + _name );
+        }
         _sequences.emplace_back( numdt, numit, dt );
     };
 
