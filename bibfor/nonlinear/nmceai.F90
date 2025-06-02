@@ -54,19 +54,15 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
 ! OUT INDIC  : 0 CRITERE NON UTILISABLE
 !              1 CRITERE UTILISABLE
 !
-!
-!
-!
-    real(kind=8) :: sca, nodup, coef, nodup1, nodup2
+    real(kind=8) :: sca, nodup, coef
     real(kind=8) :: norm_depold
     integer :: jdu1
     integer :: neq, i
-    character(len=19) :: profch, selpil
+    character(len=19) :: selpil
     real(kind=8), pointer :: depde(:) => null()
     real(kind=8), pointer :: depol(:) => null()
     real(kind=8), pointer :: du0(:) => null()
     real(kind=8), pointer :: plsl(:) => null()
-    integer, pointer :: deeq(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,13 +81,9 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
 !
     sca = 0.d0
     nodup = 0.d0
-    nodup1 = 0.d0
-    nodup2 = 0.d0
     norm_depold = 0.d0
     f = 0.d0
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call dismoi('NUME_EQUA', depdel, 'CHAM_NO', repk=profch)
-    call jeveuo(profch(1:19)//'.DEEQ', 'L', vi=deeq)
 !
 ! --- ACCES AUX VECTEURS SOLUTIONS
 !
@@ -100,9 +92,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
     call jeveuo(deppr2(1:19)//'.VALE', 'L', jdu1)
     call jeveuo(depold(1:19)//'.VALE', 'L', vr=depol)
 !
-!
 ! --- CALCUL DE L'ANGLE
-!
 
     do i = 1, neq
         coef = plsl(i)
@@ -116,7 +106,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
         f = 0.d0
     else
         indic = 1
-        f = sca/sqrt(nodup)
+        f = sca/sqrt(nodup*norm_depold)
     end if
     f = -f
 !
