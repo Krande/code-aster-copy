@@ -17,41 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
-
 """
-This module provides pybind11 DataStructures and low level objects.
+This module provides an interface to Med files.
 """
 
-from libaster import *
-
-from .config_dependent import (
-    CommGraph,
-    ConnectionMesh,
-    IncompleteMesh,
-    MedFileAccessType,
-    MedFileReader,
-    MGISBehaviour,
-    ParallelContactNew,
-    ParallelContactPairing,
-    ParallelDOFNumbering,
-    ParallelEquationNumbering,
-    ParallelFiniteElementDescriptor,
-    ParallelFrictionNew,
-    ParallelMechanicalLoadFunction,
-    ParallelMechanicalLoadReal,
-    ParallelMesh,
-    ParallelThermalLoadFunction,
-    ParallelThermalLoadReal,
-    PtScotchPartitioner,
+from .MedMeshAndFieldsSplitter import (
+    readMedFileToResults,
+    splitMedFileToResults,
+    splitMeshAndFieldsFromMedFile,
+    splitMeshFromMedFile,
 )
-from .datastructure_py import (
-    AsFloat,
-    AsInteger,
-    ElasticResultDict,
-    NamedTuple,
-    PyDataStructure,
-    ThermalResultDict,
-    UnavailableObject,
-)
-from .Serialization import InternalStateBuilder

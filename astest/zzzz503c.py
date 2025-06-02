@@ -25,7 +25,7 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.Utilities import SharedTmpdir
 
-from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import readMedFileToResults
+from code_aster.MedUtils import readMedFileToResults
 
 CA.init("--test")
 

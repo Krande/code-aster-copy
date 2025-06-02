@@ -19,7 +19,11 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-from .MEDMeshConverter import convertMesh2MedCoupling
-from .MEDFieldConverter import toMEDFileField1TS, toMEDCouplingField
-from .MEDFieldConverter import fromMEDFileField1TSNodes, fromMEDFileField1TSCells
-from .MEDResultConverter import fromMEDFileData, toMEDFileData
+from .field_converter import (
+    fromMedFileField1TSCells,
+    fromMedFileField1TSNodes,
+    toMedCouplingField,
+    toMedFileField1TS,
+)
+from .mesh_converter import convertMesh2MedCoupling
+from .result_converter import fromMedFileData, toMedFileData

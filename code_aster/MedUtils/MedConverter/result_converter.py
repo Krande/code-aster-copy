@@ -19,10 +19,9 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-import libaster
-from ...Objects import Mesh
-from .. import medcoupling as medc
-from .MEDFieldConverter import getSymbolicNameFromMedField
+from ...Objects import Mesh, SimpleFieldOnNodesReal
+from ...Utilities import medcoupling as medc
+from .field_converter import getSymbolicNameFromMedField
 
 
 def getNumberOfTimeSteps(medresult):
@@ -45,7 +44,7 @@ def getNumberOfTimeSteps(medresult):
     return nb_time_steps[0]
 
 
-def canConvertMEDFileData(medresult):
+def canConvertMedFileData(medresult):
     """
     Check the MEDFileData to assert if it can be importer as aster result.
 
@@ -92,7 +91,7 @@ def canConvertMEDFileData(medresult):
     return True
 
 
-def fromMEDFileData(result, medresult, astermesh):
+def fromMedFileData(result, medresult, astermesh):
     """Fill a new result from an existing MED container.
 
     The import is limited to fields on nodes (Real) without profile.
@@ -108,7 +107,7 @@ def fromMEDFileData(result, medresult, astermesh):
         msg = "fromMedCouplingResult() argument must be a MEDFileData, not '{}'"
         raise TypeError(msg.format(type(medresult).__name__))
 
-    assert canConvertMEDFileData(medresult)
+    assert canConvertMedFileData(medresult)
 
     medmesh = medresult.getMeshes()[0]
     if not astermesh:
@@ -133,15 +132,13 @@ def fromMEDFileData(result, medresult, astermesh):
                     medcfield = f1ts.field(medmesh)
                     phys, scal = getSymbolicNameFromMedField(medcfield)
                     assert scal == "R"
-                    sfield = libaster.SimpleFieldOnNodesReal.fromMEDCouplingField(
-                        medcfield, astermesh
-                    )
+                    sfield = SimpleFieldOnNodesReal.fromMedCouplingField(medcfield, astermesh)
                     asterfield = sfield.toFieldOnNodes()
                     result.setField(asterfield, phys, rank)
                     result.setTime(time, rank)
 
 
-def toMEDFileData(result, medmesh=None, profile=False, prefix=""):
+def toMedFileData(result, medmesh=None, profile=False, prefix=""):
     """Export the result to a new MED container.
 
     The export is limited to fields on nodes (Real) only.
@@ -188,7 +185,7 @@ def toMEDFileData(result, medmesh=None, profile=False, prefix=""):
         fmts = medc.MEDFileFieldMultiTS()
         for rank, time in zip(ranks, times):
             asterfield = result.getField(fname, rank).toSimpleFieldOnNodes()
-            medcfield = asterfield.toMEDFileField1TS(medmesh, profile, prefix)
+            medcfield = asterfield.toMedFileField1TS(medmesh, profile, prefix)
             medcfield.setTime(rank, 0, time)
             fmts.pushBackTimeStep(medcfield)
         fields.pushField(fmts)

@@ -215,10 +215,10 @@ test.assertAlmostEqual(
 ### medcoupling conversion
 
 medmesh = resu.getMesh().createMedCouplingMesh()
-medfield = resu2.toMEDFileField1TS(medmesh)
-medcfield = resu2.toMEDCouplingField(medmesh.getMeshAtLevel(0))
+medfield = resu2.toMedFileField1TS(medmesh)
+medcfield = resu2.toMedCouplingField(medmesh.getMeshAtLevel(0))
 
-resu3 = CA.SimpleFieldOnNodesReal.fromMEDCouplingField(medcfield, monMaillage)
+resu3 = CA.SimpleFieldOnNodesReal.fromMedCouplingField(medcfield, monMaillage)
 
 with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
     medmesh.write(f.name, 2)

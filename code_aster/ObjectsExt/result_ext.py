@@ -26,10 +26,10 @@ import os.path as osp
 import subprocess
 
 import aster
-from libaster import Result
 
+from ..MedUtils.MedConverter import fromMedFileData, toMedFileData
 from ..Messages import UTMESS
-from ..Objects import DirichletBC, MechanicalLoadComplex
+from ..Objects import DirichletBC, MechanicalLoadComplex, Result
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import (
     MPI,
@@ -42,7 +42,6 @@ from ..Utilities import (
     is_number,
     logger,
 )
-from ..Utilities.MedUtils import MEDConverter
 
 
 class ResultStateBuilder(InternalStateBuilder):
@@ -566,7 +565,7 @@ class ExtendedResult:
             field ( MEDFileData ) : The result in med format ( medcoupling ).
         """
 
-        return MEDConverter.toMEDFileData(self, medmesh, profile, prefix)
+        return toMedFileData(self, medmesh, profile, prefix)
 
     @classmethod
     def fromMedCouplingResult(cls, medresult, astermesh=None):
@@ -583,6 +582,6 @@ class ExtendedResult:
         """
 
         result = cls()
-        MEDConverter.fromMEDFileData(result, medresult, astermesh)
+        fromMedFileData(result, medresult, astermesh)
 
         return result

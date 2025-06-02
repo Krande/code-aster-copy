@@ -19,12 +19,21 @@
 
 from enum import Enum, auto
 
-from . import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph, PtScotchPartitioner
-from . import MedFileAccessType, ParallelMesh
-from . import FieldCharacteristics, SimpleFieldOnNodesReal, Result, Model
-from . import SimpleFieldOnCellsReal
-from . import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
-from . import toAsterGeoType
+from ..Objects import (
+    FieldCharacteristics,
+    IncompleteMesh,
+    MedFileAccessType,
+    MedFileReader,
+    MeshBalancer,
+    MeshConnectionGraph,
+    Model,
+    ParallelMesh,
+    PtScotchPartitioner,
+    Result,
+    SimpleFieldOnCellsReal,
+    SimpleFieldOnNodesReal,
+)
+from .medtoasterconnectivity import ASTER_TYPES, MED_TYPES, MYMED2ASTER_CONNECT, toAsterGeoType
 
 toMedGeoType = None
 if ASTER_TYPES is not None and MED_TYPES is not None:
@@ -56,7 +65,7 @@ def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None,
     fieldComp = componentToFill if componentToFill is not None else compName
 
     if len(compName) != len(fieldComp):
-        raise NameError("Component numbers must be the same")
+        raise ValueError("Component numbers must be the same")
 
     # Get characteristics (localization, quantity name) of field from aster name
     fieldChar = FieldCharacteristics(asterFieldName)
@@ -83,7 +92,7 @@ def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None,
     # FieldOnCells case
     elif loc in ("ELGA", "ELNO", "ELEM"):
         if model is None:
-            raise NameError("Model is mandatory when ELGA field is asked")
+            raise KeyError("Model is mandatory when ELGA field is asked")
         cumSizes = medField.getCumulatedSizesVector()
         cmpNb = len(compName)
         fieldCmps = medField.getComponentVector()
@@ -93,7 +102,7 @@ def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None,
             if int(gPNb) == gPNb:
                 gPNb = int(gPNb)
             else:
-                raise NameError("Inconsistent Gauss point number")
+                raise ValueError("Inconsistent Gauss point number")
             gPList.append(gPNb)
         sFOC = SimpleFieldOnCellsReal(mesh, loc, qt, fieldComp, gPList, 1, True)
         # Copy values in field
@@ -123,7 +132,7 @@ def convertMedFieldToAster(medField, asterFieldName, mesh, componentToFill=None,
         # Convert SimpleFieldOnells to FieldOnCells
         fieldToAdd = sFOC.toFieldOnCells(fED, opt, param)
     else:
-        raise NameError("Not yet implemented")
+        raise NotImplementedError()
     return fieldToAdd
 
 
@@ -226,7 +235,7 @@ def _splitMeshAndFieldsFromMedFile(
                fourth element: node balancer (if asked).
     """
     if not isinstance(sequenceToOrder, MedSequenceToOrder):
-        raise NameError("sequenceToOrder argument must be of type MedSequenceToOrder")
+        raise TypeError("sequenceToOrder argument must be of type MedSequenceToOrder")
 
     returnTuple = splitMeshFromMedFile(
         filename, 1, True, True, True, outMesh, nodeGrpToGather, deterministic, parallel
@@ -252,7 +261,7 @@ def _splitMeshAndFieldsFromMedFile(
             curSeq = curField.getSequence(j)
             if sequenceToOrder == MedSequenceToOrder.Both:
                 if curSeq[0] != curSeq[1]:
-                    raise NameError(
+                    raise ValueError(
                         "Time step and iteration number must be equal in med field\n"
                         "Try to change the sequenceToOrder argument"
                     )
@@ -347,8 +356,8 @@ def _splitMedFileToResults(
     Returns:
         Result: results container (type: resultType) with mesh and all readen fields
     """
-    if model is not None and not isinstance(model, Model):
-        raise NameError("model argument must be of type Model")
+    if not isinstance(model, Model):
+        raise TypeError("model argument must be of type Model")
 
     if not issubclass(resultType, Result):
         raise TypeError("resultType must be a child class of Result")

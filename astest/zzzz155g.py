@@ -19,7 +19,7 @@
 
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+from code_aster.MedUtils import splitMeshAndFieldsFromMedFile
 
 
 # CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))

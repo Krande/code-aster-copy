@@ -301,9 +301,9 @@ class MEDCoupler:
             *SimpleField*: aster field.
         """
         if mc_field.getTypeOfField() == MEDC.ON_NODES:
-            sfield = SimpleFieldOnNodesReal.fromMEDCouplingField(mc_field, self.mesh_interf)
+            sfield = SimpleFieldOnNodesReal.fromMedCouplingField(mc_field, self.mesh_interf)
         else:
-            sfield = SimpleFieldOnCellsReal.fromMEDCouplingField(mc_field, self.mesh_interf)
+            sfield = SimpleFieldOnCellsReal.fromMedCouplingField(mc_field, self.mesh_interf)
 
         return sfield
 
@@ -346,7 +346,7 @@ class MEDCoupler:
         assert field.getMesh() == self.mesh
 
         field_interf = self.restrict_field(field, cmps)
-        pfield = field_interf.toMEDCouplingField(self.mc_interf)
+        pfield = field_interf.toMedCouplingField(self.mc_interf)
         if field_name:
             pfield.setName(field_name)
 
