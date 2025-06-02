@@ -31,7 +31,7 @@ from ..base_utils import config
 MedFileReader = MedFileAccessType = None
 MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = toAsterGeoType = None
 PtScotchPartitioner = None
-IncompleteMesh = MeshBalancer = MeshConnectionGraph = ParallelMesh = None
+IncompleteMesh = MeshBalancer = MeshConnectionGraph = ParallelMesh = Model = None
 FieldCharacteristics = SimpleFieldOnCellsReal = SimpleFieldOnNodesReal = Result = None
 
 if config.get("ASTER_HAVE_MPI"):
@@ -54,4 +54,5 @@ if config.get("ASTER_HAVE_MPI"):
         Result,
         SimpleFieldOnCellsReal,
         SimpleFieldOnNodesReal,
+        Model,
     )

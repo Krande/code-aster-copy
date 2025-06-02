@@ -33,8 +33,16 @@
 #include "ParallelUtilities/AsterMPI.h"
 
 #ifdef ASTER_HAVE_MED
-MedMesh::MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim )
-    : _name( name ), _filePtr( filePtr ), _dim( dim ) {
+MedMesh::MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim,
+                  med_int nbstep )
+    : _name( name ), _filePtr( filePtr ), _dim( dim ), _nbstep( nbstep ) {
+    for ( int j = 1; j <= _nbstep; ++j ) {
+        med_int numdt, numit;
+        med_float dt;
+        MEDmeshComputationStepInfo( _filePtr.getFileId(), _name.c_str(), j, &numdt, &numit, &dt );
+        _sequences.emplace_back( numdt, numit, dt );
+    }
+
     const auto famNumber = MEDnFamily( _filePtr.getFileId(), _name.c_str() );
     char *groupname;
     char familyname[MED_NAME_SIZE + 1] = "";
