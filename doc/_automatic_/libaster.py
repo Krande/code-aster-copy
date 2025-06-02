@@ -5037,6 +5037,9 @@ class BaseFunction(GenericFunction):
             list[float]: List of values (size = 2 * *size()*).
         """
 
+    def setAsConstant(self):
+        """To be called for a constant function."""
+
     def setInterpolation(self, type):
         """Define the type of interpolation.
 
@@ -5072,6 +5075,13 @@ class BaseFunction(GenericFunction):
             ordo (list): List of ordinates.
         """
 
+    def size(self):
+        """Return the number of points of the function.
+
+        Returns:
+            int: Number of points.
+        """
+
 
 # class Function in libaster
 
@@ -5095,19 +5105,6 @@ class Function(BaseFunction):
         1. __init__(self: libaster.Function) -> None
 
         2. __init__(self: libaster.Function, arg0: str) -> None
-        """
-
-    def setAsConstant(self):
-        """To be called for a constant function."""
-
-    def setValues(self, arg0, arg1):
-        pass
-
-    def size(self):
-        """Return the number of points of the function.
-
-        Returns:
-            int: Number of points.
         """
 
 
@@ -5141,13 +5138,6 @@ class FunctionComplex(BaseFunction):
         1. setValues(self: libaster.FunctionComplex, arg0: list[float], arg1: list[float]) -> None
 
         2. setValues(self: libaster.FunctionComplex, arg0: list[float], arg1: list[complex]) -> None
-        """
-
-    def size(self):
-        """Return the number of points of the function.
-
-        Returns:
-            int: Number of points.
         """
 
 

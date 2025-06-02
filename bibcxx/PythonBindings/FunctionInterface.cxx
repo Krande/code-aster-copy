@@ -3,7 +3,7 @@
  * @brief Interface python de Function
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,21 +33,21 @@ void exportFunctionToPython( py::module_ &mod ) {
                                                                                 "BaseFunction" )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
-        .def( "setParameterName", &Function::setParameterName, R"(
+        .def( "setParameterName", &BaseFunction::setParameterName, R"(
 Define the name of the abscissa.
 
 Arguments:
     name (str): Name of the abscissa.
         )",
               py::arg( "name" ) )
-        .def( "setResultName", &Function::setResultName, R"(
+        .def( "setResultName", &BaseFunction::setResultName, R"(
 Define the name of the ordinates.
 
 Arguments:
     name (str): Name of the ordinates.
         )",
               py::arg( "name" ) )
-        .def( "setInterpolation", &Function::setInterpolation, R"(
+        .def( "setInterpolation", &BaseFunction::setInterpolation, R"(
 Define the type of interpolation.
 
 Supported interpolation types are: "LIN" for linear, "LOG" for logarithmic and
@@ -58,7 +58,7 @@ Arguments:
         "LIN LOG"...
         )",
               py::arg( "type" ) )
-        .def( "setValues", &Function::setValues, R"(
+        .def( "setValues", &BaseFunction::setValues, R"(
 Set the values of abscissa and ordinates.
 
 If the function already exists, its size can not be changed.
@@ -68,27 +68,27 @@ Arguments:
     ordo (list): List of ordinates.
         )",
               py::arg( "absc" ), py::arg( "ordo" ) )
-        .def( "getValues", &Function::getValues, R"(
+        .def( "getValues", &BaseFunction::getValues, R"(
 Return a list of the values of the function as (x1, x2, ..., y1, y2, ...)
 
 Returns:
     list[float]: List of values (size = 2 * *size()*).
 
-        )" );
-
-    py::class_< Function, Function::FunctionPtr, BaseFunction >( mod, "Function" )
-        .def( py::init( &initFactoryPtr< Function > ) )
-        .def( py::init( &initFactoryPtr< Function, std::string > ) )
-        .def( "setValues", &Function::setValues )
-        .def( "size", &Function::size, R"(
+        )" )
+        .def( "setAsConstant", &BaseFunction::setAsConstant, R"(
+To be called for a constant function.
+        )" )
+        .def( "size", &BaseFunction::size, R"(
 Return the number of points of the function.
 
 Returns:
     int: Number of points.
-        )" )
-        .def( "setAsConstant", &Function::setAsConstant, R"(
-To be called for a constant function.
+
         )" );
+
+    py::class_< Function, Function::FunctionPtr, BaseFunction >( mod, "Function" )
+        .def( py::init( &initFactoryPtr< Function > ) )
+        .def( py::init( &initFactoryPtr< Function, std::string > ) );
 
     py::class_< FunctionComplex, FunctionComplex::FunctionComplexPtr, BaseFunction >(
         mod, "FunctionComplex" )
@@ -97,12 +97,5 @@ To be called for a constant function.
         .def( "setValues", py::overload_cast< const VectorReal &, const VectorReal & >(
                                &FunctionComplex::setValues ) )
         .def( "setValues", py::overload_cast< const VectorReal &, const VectorComplex & >(
-                               &FunctionComplex::setValues ) )
-        .def( "size", &FunctionComplex::size, R"(
-Return the number of points of the function.
-
-Returns:
-    int: Number of points.
-
-        )" );
+                               &FunctionComplex::setValues ) );
 };
