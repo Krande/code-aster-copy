@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -111,9 +111,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
     call jeveuo(deppr2(1:19)//'.VALE', 'L', jdu1)
     call jeveuo(depold(1:19)//'.VALE', 'L', vr=depol)
 !
-!
 ! --- CALCUL DE L'ANGLE
-!
     if (isxfe) then
         do i = 1, neq
             if (deeq(2*i) .gt. 0) then
@@ -157,7 +155,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
         f = 0.d0
     else
         indic = 1
-        f = sca/sqrt(nodup)
+        f = sca/sqrt(nodup*norm_depold)
     end if
     f = -f
 !
