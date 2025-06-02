@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -208,7 +208,14 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 !
     else
 ! Option ACCD*****************************************************************************
-        call wkvect('&&MODSTA.POSITION_DDR', 'V V R', neq, jddr)
+
+        do ie = 1, neq
+            if (iddl(ie) .eq. 1) then
+                imod = imod+1
+            end if
+        end do
+        call wkvect('&&MODSTA.POSITION_DDR', 'V V R', neq*imod, jddr)
+        imod = 0
         do ie = 1, neq
             if (iddl(ie) .eq. 1) then
                 imod = imod+1
@@ -216,13 +223,30 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
                             ila1o)
                 ila1o = ila1
                 if (ila1 .eq. 0 .or. ila2 .eq. 0) call utmess('F', 'ALGELINE2_4')
-                call vecini(neq, zero, zr(jddr))
-                zr(jddr+ila1-1) = un
-                zr(jddr+ila2-1) = un
-                call resoud(matfac, matpre, solveu, ' ', 1, &
-                            ' ', ' ', ' ', zr(jddr), [cbid], &
-                            ' ', .true._1, 0, iret)
-                call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1, &
+                !call vecini(neq, zero, zr(jddr))
+                zr(jddr+(imod-1)*neq+ila1-1) = un
+                zr(jddr+(imod-1)*neq+ila2-1) = un
+            end if
+        end do
+        n_last_batch = mod(imod, icmpl27)
+        if (n_last_batch == 0) then
+            nbatch = imod/icmpl27
+            n_last_batch = icmpl27
+        else
+            nbatch = imod/icmpl27+1
+        end if
+        do ib = 1, nbatch
+            if (ib == nbatch) batch_size = n_last_batch
+            if (ib /= nbatch) batch_size = icmpl27
+            call resoud(matfac, matpre, solveu, ' ', batch_size, &
+                        ' ', ' ', ' ', zr(jddr+neq*icmpl27*(ib-1)), [cbid], &
+                        ' ', .true._1, 0, iret)
+        end do
+        imod = 0
+        do ie = 1, neq
+            if (iddl(ie) .eq. 1) then
+                imod = imod+1
+                call mrmult('ZERO', lmatm, zr(jddr+neq*(imod-1)), zrmod(1, imod), 1, &
                             .true._1)
             end if
         end do
