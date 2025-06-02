@@ -161,7 +161,7 @@ def MOCK_PROJ_CHAMP(RESULTAT, METHODE, MAILLAGE_1, MAILLAGE_2, NOM_CHAM, TYPE_CH
                 field = resu_proj.getField(fld, n).toSimpleFieldOnNodes()
                 v, m = field.getValues()
                 # Index 0 since p0 was set first into the temporary mesh
-                if m[0].all() == True:
+                if m[0].all():
                     values[fld][n] = v[0].tolist()
 
         # Broadcast the collected values to all processes

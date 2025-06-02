@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -229,7 +229,7 @@ class ThycResult:
 
         # Check mesh data
         for key_mesh in mandatory_kws:
-            if not key_mesh in self._thyc_mesh:
+            if key_mesh not in self._thyc_mesh:
                 msg = "Mesh %s not found" % key_mesh
                 raise IOError(msg)
 
@@ -284,7 +284,7 @@ class ThycResult:
                     assert False
 
             # Recherches des valeurs dans les autres lignes
-            if not "*" in line.strip() and len(line.strip()) != 0:
+            if "*" not in line.strip() and len(line.strip()) != 0:
                 assert key_block is not None
 
                 if "TRANSVERSES" in line:

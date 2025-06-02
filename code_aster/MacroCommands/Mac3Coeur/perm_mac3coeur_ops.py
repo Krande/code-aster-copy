@@ -19,7 +19,6 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-import os.path as osp
 
 from ...Cata.Syntax import _F
 from ...Objects import PhysicalProblem, FieldOnCellsReal, FieldOnNodesReal

@@ -19,6 +19,8 @@
 
 """Package MateHomo"""
 
+from ...Messages import UTMESS
+
 MESH_TOL = 1.0e-10
 
 

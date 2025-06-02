@@ -41,8 +41,6 @@ def rest_homo_ops(self, **kwargs):
     resu_glob_meca = kwargs.get("EVOL_ELAS")
     resu_glob_ther = kwargs.get("EVOL_THER")
     kwaffemat = kwargs.get("AFFE")
-    verbose = kwargs.get("INFO") == 2
-    option = kwargs.get("OPTION") == "OUI"
     user_type_homo = HomoType.str2value(kwargs.get("TYPE_HOMO"))
     rmanager = RelocManager(kwargs)
 

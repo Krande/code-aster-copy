@@ -34,7 +34,7 @@ certains types d'assemblages.
 from math import pi
 from ...Utilities import logger
 from ...Cata.Syntax import _F
-from ...CodeCommands import DEFI_FONCTION, DEFI_MATERIAU, DEFI_COMPOR, DEFI_GEOM_FIBRE
+from ...CodeCommands import DEFI_FONCTION, DEFI_MATERIAU, DEFI_COMPOR
 from .mac3coeur_factory import Mac3Factory
 
 

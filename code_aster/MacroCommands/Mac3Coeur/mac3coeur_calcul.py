@@ -23,7 +23,6 @@
 This module defines the different types of calculations
 """
 
-import os.path as osp
 from functools import wraps
 from libaster import ConvergenceError
 
