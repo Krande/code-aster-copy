@@ -26,7 +26,9 @@ from . import SimpleFieldOnCellsReal
 from . import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
 from . import toAsterGeoType
 
-toMedGeoType = dict(zip(ASTER_TYPES, MED_TYPES))
+toMedGeoType = None
+if ASTER_TYPES is not None and MED_TYPES is not None:
+    toMedGeoType = dict(zip(ASTER_TYPES, MED_TYPES))
 
 
 class MedSequenceToOrder(Enum):
