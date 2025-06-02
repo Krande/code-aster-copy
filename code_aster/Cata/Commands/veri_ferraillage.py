@@ -28,7 +28,7 @@ def veri_ferraillage_prod(RESULTAT, **args):
 
     if AsType(RESULTAT) is not None:
         return AsType(RESULTAT)
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 VERI_FERRAILLAGE = OPER(

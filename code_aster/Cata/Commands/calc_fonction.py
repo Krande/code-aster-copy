@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,21 +66,21 @@ def calc_fonction_prod(
         type_vale = AsType(COMB[0]["FONCTION"])
         for mcfact in COMB:
             if AsType(mcfact["FONCTION"]) != type_vale:
-                raise AsException("CALC_FONCTION/COMB : pas de types hétérogènes nappe/fonction")
+                raise CataError("CALC_FONCTION/COMB : pas de types hétérogènes nappe/fonction")
         return type_vale
     if COMB_C is not None:
         vale = COMB_C[0]["FONCTION"]
         if AsType(vale) == nappe_sdaster:
             for mcfact in COMB_C[1:]:
                 if AsType(mcfact["FONCTION"]) != nappe_sdaster:
-                    raise AsException(
+                    raise CataError(
                         "CALC_FONCTION/COMB_C : pas de types hétérogènes nappe/fonction"
                     )
             return nappe_sdaster
         else:
             for mcfact in COMB_C:
                 if AsType(mcfact["FONCTION"]) == nappe_sdaster:
-                    raise AsException(
+                    raise CataError(
                         "CALC_FONCTION/COMB_C : pas de types hétérogènes nappe/fonction"
                     )
             return fonction_c
@@ -115,7 +115,7 @@ def calc_fonction_prod(
         type_vale = AsType(MULT[0]["FONCTION"])
         for mcfact in MULT:
             if AsType(mcfact["FONCTION"]) != type_vale:
-                raise AsException("CALC_FONCTION/MULT : pas de types hétérogènes nappe/fonction")
+                raise CataError("CALC_FONCTION/MULT : pas de types hétérogènes nappe/fonction")
         return type_vale
     if FFT is not None:
         vale = FFT[0]["FONCTION"]
@@ -141,7 +141,7 @@ def calc_fonction_prod(
         return fonction_sdaster
     if DERIVE_FREQ is not None:
         return fonction_sdaster
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 CALC_FONCTION = MACRO(

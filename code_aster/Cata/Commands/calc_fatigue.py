@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ def calc_fatigue_prod(TYPE_CALCUL, OPTION, **args):
         return cham_no_sdaster
     if TYPE_CALCUL == "FATIGUE_VIBR":
         return cham_elem
-    raise AsException("type de calcul non prevu")
+    raise CataError("type de calcul non prevu")
 
 
 CALC_FATIGUE = OPER(

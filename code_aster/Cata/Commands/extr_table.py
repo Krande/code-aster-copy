@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ def extr_table_prod(TYPE_RESU, **args):
     typ = TYPE_RESU.lower()
     if defs.get(typ) is not None:
         return defs[typ]
-    raise AsException("type de concept resultat non prevu: TYPE_RESU='{0}'".format(TYPE_RESU))
+    raise CataError("type de concept resultat non prevu: TYPE_RESU='{0}'".format(TYPE_RESU))
 
 
 EXTR_TABLE = OPER(

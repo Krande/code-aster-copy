@@ -116,9 +116,6 @@ class PROC_ETAPE(Procedure):
     pass
 
 
-# exception
-AsException = CataError
-
 # rules
 AU_MOINS_UN = AtLeastOne
 UN_PARMI = ExactlyOne

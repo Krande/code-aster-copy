@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,20 +57,20 @@ def pre_seisme_nonl_sdprod(self, RESULTAT, **args):
         if args["PRE_CALC_MISS"]:
             self.type_sdprod(RESULTAT[0]["BASE_MODALE"], mode_meca)
         else:
-            raise AsException(
+            raise CataError(
                 "Le mot-clé PRE_CALC_MISS est obligatoire pour créer un concept de type BASE_MODALE"
             )
     if RESULTAT[0]["MACR_ELEM_DYNA"]:
         if args["PRE_CALC_MISS"]:
             self.type_sdprod(RESULTAT[0]["MACR_ELEM_DYNA"], macr_elem_dyna)
         else:
-            raise AsException(
+            raise CataError(
                 "Le mot-clé PRE_CALC_MISS est obligatoire pour créer un concept de type MACR_ELEM_DYNA"
             )
     if RESULTAT[0]["CHARGE"]:
         for mcfact in RESULTAT[0]["CHARGE"]:
             if mcfact["OPTION"] == "LAPL_TEMPS" and args["PRE_CALC_MISS"]:
-                raise AsException(
+                raise CataError(
                     "Le mot-clé POST_CALC_MISS est obligatoire pour créer une charge de type LAPL_TEMPS"
                 )
             self.type_sdprod(mcfact["NOM"], char_meca)

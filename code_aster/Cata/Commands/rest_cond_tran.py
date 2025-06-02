@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ def rest_cond_tran_prod(RESULTAT, TYPE_RESU, **args):
     if AsType(RESULTAT) == evol_noli and TYPE_RESU == "EVOL_NOLI":
         return evol_noli
 
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 REST_COND_TRAN = OPER(
