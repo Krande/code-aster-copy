@@ -149,10 +149,10 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
                     sdpilo, rho, eta(2), f(2), &
                     indic)
         if (indic .eq. 0) then
-            call nmceni(numedd, depdel, deppr1, deppr2, rho, &
-                        eta(1), f(1))
-            call nmceni(numedd, depdel, deppr1, deppr2, rho, &
-                        eta(2), f(2))
+            ! on ne peut pas calculer l'angle, on prend la
+            ! racine qui augmente le chargement
+            f(1) = -1.0
+            f(2) = 0.0
         end if
         goto 500
     end if
@@ -220,6 +220,7 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
     if ((f(1) .le. f(2) .and. .not. switch) .or. (f(1) .gt. f(2) .and. switch)) then
         sel = 1
     end if
+
     etaf = eta(sel)
     pilcvg = licite(sel)
     ldccvg = ldccv(sel)
