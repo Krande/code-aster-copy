@@ -56,6 +56,7 @@ from ..Utilities import (
     Options,
     PETSc,
     SLEPc,
+    config,
     disable_fpe,
     get_caller_context,
     logger,
@@ -438,6 +439,11 @@ def _filteringContext(context):
     ignored = ("code_aster", "CA", "DETRUIRE", "FIN", "VARIABLE")
     re_system = re.compile("^__.*__$")
     ipython = "__IPYTHON__" in context or "get_ipython" in context
+    skipped_classes = []
+    if config["ASTER_HAVE_PETSC4PY"]:
+        skipped_classes.append(PETSc)
+    if config["ASTER_PETSC_HAVE_SLEPC"]:
+        skipped_classes.append(SLEPc)
     ctxt = {}
     for name, obj in context.items():
         if not name or name in ignored or re_system.search(name):
@@ -445,7 +451,7 @@ def _filteringContext(context):
         if getattr(numpy, name, None) is obj:  # see issue29282
             continue
         # skip objects from: PETSc, SLEPc
-        if type(obj) in [getattr(klass, type(obj).__name__, None) for klass in (PETSc, SLEPc)]:
+        if type(obj) in [getattr(klass, type(obj).__name__, None) for klass in skipped_classes]:
             continue
         # check attr needed for python<=3.6
         if hasattr(obj, "__class__") and isinstance(obj, (IOBase, MPI.Intracomm)):
