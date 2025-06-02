@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -150,11 +150,20 @@ EVOLNOLI = STAT_NON_LINE(
 
 EVOLNOLI = CALC_CHAMP(
     reuse=EVOLNOLI,
-    FORCE=("FORC_NODA", "REAC_NODA"),
+    FORCE=("FORC_NODA",),
     CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"),
     GROUP_MA=("CABLE"),
     RESULTAT=EVOLNOLI,
 )
+
+EVOLNOLI = CALC_CHAMP(
+    reuse=EVOLNOLI, FORCE=("REAC_NODA"), GROUP_MA=("CABLE"), RESULTAT=EVOLNOLI, NUME_ORDRE=(0, 1)
+)
+
+EVOLNOLI = CALC_CHAMP(
+    reuse=EVOLNOLI, FORCE=("REAC_NODA"), GROUP_MA=("CABLE"), RESULTAT=EVOLNOLI, NUME_ORDRE=(2)
+)
+
 PROF_TEN = CREA_TABLE(
     RESU=_F(RESULTAT=EVOLNOLI, NOM_CHAM="SIEF_NOEU", NOM_CMP="N", GROUP_MA="CABLE")
 )

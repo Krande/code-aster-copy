@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -156,8 +156,8 @@ REST = STAT_NON_LINE(
 
 REST = CALC_CHAMP(reuse=REST, CONTRAINTE=("EFGE_ELNO"), RESULTAT=REST)
 
-REST = CALC_CHAMP(reuse=REST, RESULTAT=REST, FORCE="REAC_NODA")
-
+REST = CALC_CHAMP(reuse=REST, RESULTAT=REST, FORCE="REAC_NODA", NUME_ORDRE=11)
+REST = CALC_CHAMP(reuse=REST, RESULTAT=REST, FORCE="REAC_NODA", NUME_ORDRE=21)
 
 TEST_RESU(
     RESU=(
@@ -255,6 +255,7 @@ RESM = STAT_NON_LINE(
 RESM = CALC_CHAMP(reuse=RESM, CONTRAINTE=("EFGE_ELNO"), RESULTAT=RESM)
 
 RESM = CALC_CHAMP(reuse=RESM, RESULTAT=RESM, FORCE="REAC_NODA")
+
 
 TEST_RESU(
     RESU=(

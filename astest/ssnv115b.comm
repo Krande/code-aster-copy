@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ U2 = STAT_NON_LINE(
     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06, ITER_GLOB_ELAS=200),
 )
 
-U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, LIST_INST=L_INST1, FORCE="REAC_NODA")
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, NUME_ORDRE=10, FORCE="REAC_NODA")
 
 TEST_RESU(
     RESU=(

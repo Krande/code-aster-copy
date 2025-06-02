@@ -96,7 +96,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     character(len=19) :: ligrel, chdep2, vebid, k19bid, listLoad, partsd, massgen
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
-    character(len=24) :: carac, cnchmpc, rigi
+    character(len=24) :: carac, cnchmpc
     character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), nume, chdepk, numk
     character(len=24) :: mateco, mater, vafonr, vafoni, k24b, numnew, basemo
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno, chamnk
@@ -183,7 +183,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     if (option .eq. 'REAC_NODA' .and. &
         (resultType .eq. 'EVOL_ELAS' .or. resultType .eq. 'EVOL_NOLI')) then
         call jeveuo(lisord, 'L', vi=v_list_store)
-        call medome_once(resuin, v_list_store, nbordr)
+        call medome_once(resuin, v_list_store, nbordr, list_load_=k19bid)
     end if
 !
 !
