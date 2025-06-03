@@ -28,7 +28,7 @@ Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
     2: _(
         """
 A cause des erreurs précédentes, le code s'arrête.
-  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Vous voulez "poursuivre" un calcul non-linéaire.
   Pour cela, vous précisez un état initial (mot clé ETAT_INIT).
   Pour le calcul du premier pas de temps, le champ des variables internes du début du pas est pris
   dans le concept EVOL_NOLI fourni ou par le champ VARI_ELGA.

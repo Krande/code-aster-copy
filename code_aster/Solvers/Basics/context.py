@@ -115,8 +115,6 @@ class Context:
         for attr in ("stepper", "linear_solver"):
             if not getattr(self, attr):
                 logger.warning(f"{attr!r} is not yet defined")
-        if self._type & PBT.AllMechanics and not getattr(self, "contact"):
-            logger.info("'contact' is not defined")
 
     @property
     def problem_type(self):

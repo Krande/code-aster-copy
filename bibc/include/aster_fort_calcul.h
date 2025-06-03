@@ -277,6 +277,10 @@ void DEFSSSSPSPSSPPPSS( ME2MME_EVOL, me2mme_evol, const char *, STRING_SIZE, con
 void DEFSSSSP( HASBEHAVIOURFEATURE, hasbehaviourfeature, const char *, STRING_SIZE, const char *,
                STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL * );
 
+#define CALL_CHCKVARI( a, b, c, d ) CALLOOOO( CHCKAVRI, chckvari, a, b, c, d )
+void DEFSSSS( CHCKAVRI, chckvari, const char *, STRING_SIZE, const char *, STRING_SIZE,
+              const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif

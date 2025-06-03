@@ -202,7 +202,7 @@ DEFLIST = DEFI_LIST_INST(
 # Mise en place de la premiere couche et de la seconde couche simultanement = 1ere couche
 # Etat initail du pb hydraulique
 
-U[0] = STAT_NON_LINE(
+U[0] = MECA_NON_LINE(
     MODELE=MOD[0],
     CHAM_MATER=AFFMAT[0],
     EXCIT=(_F(CHARGE=PHAUT), _F(CHARGE=CHPAR), _F(CHARGE=CHLAT), _F(CHARGE=PES)),
@@ -624,7 +624,7 @@ for n in range(1, nbcouche - 1):
         ASSE=_F(GROUP_MA=list_group_ma[: n + 1], CHAM_GD=VAR[n - 1], CUMUL="OUI", COEF_R=1.0),
     )
 
-    U[n] = STAT_NON_LINE(
+    U[n] = MECA_NON_LINE(
         MODELE=MOD[n],
         CHAM_MATER=AFFMAT[n],
         EXCIT=(

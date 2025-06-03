@@ -61,8 +61,6 @@ subroutine nmdoch(listLoadPrep, listLoadZ, jvBase)
     aster_logical :: loadIsFunc, hasMultFunc
     aster_logical :: hasDiriUndead, staticOperator
     character(len=8), pointer :: loadDble(:) => null()
-    integer :: nbFaceVite
-    character(len=8), pointer :: faceVite(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -152,16 +150,8 @@ subroutine nmdoch(listLoadPrep, listLoadZ, jvBase)
 ! - Debug
     !call listLoadDebug(listLoad)
 
-! - Some loads are prohibi
-    call detectMecaNeumLoad(listLoad, LOAD_NEUM_VITE_FACE, &
-                            nbFaceVite, faceVite)
-    if (nbFaceVite .ne. 0) then
-        call utmess('F', 'CHARGES_58')
-    end if
-
 ! - Clean
     AS_DEALLOCATE(vk8=loadDble)
-    AS_DEALLOCATE(vk8=faceVite)
     call jedema()
 !
 end subroutine
