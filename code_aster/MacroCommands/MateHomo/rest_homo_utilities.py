@@ -31,11 +31,11 @@ from ...Objects import (
 )
 from ...CodeCommands import DEFI_CONSTANTE
 from ...Messages import ASSERT, UTMESS
-from ...Utilities import SearchList, no_new_attributes, medcoupling as medc
+from ...Utilities import SearchList, no_new_attributes
 from .rest_homo_proj import MOCK_PROJ_CHAMP
 from .syme_homo_corr import BuildFullSymmetryMassif
 from .mate_homo_utilities import get_temp_def_alpha_material as get_tda
-from . import MESH_TOL, HomoType, check_mesh
+from . import HomoType, check_mesh
 
 
 class RelocManager:
@@ -188,7 +188,7 @@ class RelocManager:
         if p is None:
             self._pres_int = DEFI_CONSTANTE(VALE=0.0)
         else:
-            if not p.getProperties()[2] in ("INST", "TOUTPARA"):
+            if p.getProperties()[2] not in ("INST", "TOUTPARA"):
                 UTMESS("F", "HOMO1_20")
             self._pres_int = p
 
@@ -472,7 +472,7 @@ class RelocManager:
         ASSERT(isinstance(resu, ElasticResult))
 
         for name in ("DEPL", "EPSI_NOEU"):
-            if not name in resu.getFieldsNames():
+            if name not in resu.getFieldsNames():
                 UTMESS("F", "HOMO1_6", valk=(name, resu.getName()))
 
         resu_p0 = MOCK_PROJ_CHAMP(
@@ -516,7 +516,7 @@ class RelocManager:
         ASSERT(isinstance(resu, ThermalResult))
 
         for name in ("TEMP", "GRAT_NOEU"):
-            if not name in resu.getFieldsNames():
+            if name not in resu.getFieldsNames():
                 UTMESS("F", "HOMO1_6", valk=(name, resu.getName()))
 
         resu_p0 = MOCK_PROJ_CHAMP(

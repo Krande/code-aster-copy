@@ -20,8 +20,7 @@
 """
 Calcul de proprietés homo
 """
-from ...Cata.Syntax import _F
-from ...Messages import ASSERT, UTMESS
+from ...Messages import ASSERT
 
 from .mate_homo_utilities import setup_calcul
 from .mate_homo_mesh import prepare_mesh_syme
@@ -38,7 +37,6 @@ def mate_homo_ops(self, **kwargs):
     meshin = check_mesh(kwargs.get("MAILLAGE"))
     ls_affe = kwargs.get("AFFE")
     ls_varc = kwargs.get("VARC")
-    verbose = kwargs.get("INFO") == 2
     type_homo = kwargs.get("TYPE_HOMO")
 
     dir_plaque = kwargs.get("VECT_NORM")

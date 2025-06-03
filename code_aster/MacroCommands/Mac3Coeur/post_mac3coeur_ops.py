@@ -19,13 +19,11 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-import os.path as osp
 import numpy as np
 
 from ...Cata.Syntax import _F
 from ...CodeCommands import CREA_TABLE
 from ...Objects.table_py import Table
-from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
 from .mac3coeur_commons import MAC3_ROUND, CollectionMAC3
 

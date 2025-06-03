@@ -25,10 +25,8 @@ Module dédié à la macro MAC3COEUR.
 Définition d'une conception de coeur (ensemble d'assemblages).
 """
 
-import os
 import os.path as osp
 from ...Utilities import logger, ExecutionParameter
-from ...Objects import Mesh
 
 from ...Cata.Syntax import _F
 from ...CodeCommands import (
@@ -42,7 +40,6 @@ from ...CodeCommands import (
     CREA_CHAMP,
     CREA_MAILLAGE,
     CREA_RESU,
-    DEFI_COMPOR,
     DEFI_FONCTION,
     DEFI_GEOM_FIBRE,
     DEFI_LIST_INST,

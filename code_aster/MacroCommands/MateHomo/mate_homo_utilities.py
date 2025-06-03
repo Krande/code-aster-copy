@@ -31,11 +31,9 @@ from ...CodeCommands import (
     AFFE_CHAR_CINE,
     MECA_STATIQUE,
     POST_ELEM,
-    IMPR_RESU,
 )
 from ...Messages import ASSERT, UTMESS
 from ...Objects import Function
-from . import NameConverter
 
 DEFAULT_TEMP_REF = 20.0
 
@@ -190,14 +188,14 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
                     f_para[p] = func
                 else:
                     try:
-                        v = mater.getValueReal(key, p)
+                        mater.getValueReal(key, p)
                         UTMESS("F", "HOMO1_13", valk=p)
                     except RuntimeError:
                         pass
                 missing_in_at_least_one.append(p)
 
         for p in check_list:
-            if not p in f_para:
+            if p not in f_para:
                 UTMESS("F", "HOMO1_10", valk=(p, mater.getName(), mater.userName))
 
         for p, fp in f_para.items():
