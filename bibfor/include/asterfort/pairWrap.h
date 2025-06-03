@@ -20,7 +20,7 @@ interface
     subroutine pairWrap(method, &
                         mesh, newgeo, mastConxInvName, &
                         mastNeighName, slavNeighName, &
-                        pairTole, distRatio, verbosity, &
+                        pairTole, areaTole, distRatio, verbosity, &
                         nbCellMast, listCellMast, &
                         nbCellSlav, listCellSlav, &
                         nbNodeMast, listNodeMast, &
@@ -29,7 +29,7 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: newgeo, mastConxInvName
         character(len=24), intent(in) :: mastNeighName, slavNeighName
-        real(kind=8), intent(in) :: pairTole, distRatio
+        real(kind=8), intent(in) :: pairTole, areaTole, distRatio
         integer(kind=8), intent(in) :: verbosity
         integer(kind=8), intent(in) :: nbCellMast, listCellMast(nbCellMast)
         integer(kind=8), intent(in) :: nbCellSlav, listCellSlav(nbCellSlav)

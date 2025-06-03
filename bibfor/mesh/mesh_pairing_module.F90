@@ -80,6 +80,8 @@ module MeshPairing_module
         aster_logical :: debug = ASTER_FALSE
 ! ----- Main tolerance for pairing
         real(kind=8) :: pairTole = 0.d0
+! ----- Tolerance to remove some intersection cells
+        real(kind=8) :: areaTole = 0.d0
 ! ----- Tolerance for extension of cell
         real(kind=8) :: distRatio = 0.d0
 ! ----- Number of pairs
@@ -172,9 +174,9 @@ contains
         integer(kind=8) :: mastFindIndx, cellMastNume, cellMastIndx, cellSlavIndx, cellSlavNume
         integer(kind=8) :: nbPoinInte
         real(kind=8) :: poinInte(2, MAX_NB_INTE), poinInteReal(3, MAX_NB_INTE)
-        integer :: cellNeighNume, cellNeighIndx
-        integer, pointer :: meshMastNeigh(:) => null(), meshSlavNeigh(:) => null()
-        real(kind=8) :: areaTole, critCellArea
+        integer(kind=8) :: cellNeighNume, cellNeighIndx
+        integer(kind=8), pointer :: meshMastNeigh(:) => null(), meshSlavNeigh(:) => null()
+        real(kind=8) :: critCellArea
 !   ------------------------------------------------------------------------------------------------
 !
         pair_exist = ASTER_TRUE
@@ -184,8 +186,7 @@ contains
         mastIndxMaxi = maxval(listCellMast)
         slavIndxMaxi = maxval(listCellSlav)
         slavIndxMini = minval(listCellSlav)
-        
-        areaTole = 1d-2
+
         critCellArea = 0d0
 ! ----- Management of debug
         if (meshPairing%debug) then
@@ -385,9 +386,8 @@ contains
                         WRITE (6, *) "Intersection area: ", inteArea
                     end if
                     call getCritParamArea(cellSlavLine, critCellArea)
-                    !WRITE (6, *) "critCellArea : ", critCellArea
 ! ----------------- Add pair
-                    if (inteArea > areaTole*critCellArea .and. iret == ERR_PAIR_NONE) then
+                  if (inteArea > meshPairing%areaTole*critCellArea .and. iret == ERR_PAIR_NONE) then
 
 ! --------------------- Debug
                         if (meshPairing%debug) then
@@ -2745,8 +2745,10 @@ contains
         real(kind=8) :: inteArea
         integer(kind=8) :: nbPoinInte
         real(kind=8) :: poinInte(2, MAX_NB_INTE), poinInteReal(3, MAX_NB_INTE)
+        real(kind=8) :: critCellArea
 !   ------------------------------------------------------------------------------------------------
 !
+        critCellArea = 0d0
         if (meshPairing%debug) then
             write (6, *) "=================="
             write (6, *) "= Robust pairing ="
@@ -2821,9 +2823,9 @@ contains
                 if (meshPairing%debug) then
                     WRITE (6, *) "Intersection area: ", inteArea
                 end if
-
+                call getCritParamArea(cellSlavLine, critCellArea)
 ! ------------- Add pair
-                if (inteArea > meshPairing%pairTole .and. iret == ERR_PAIR_NONE) then
+                if (inteArea > meshPairing%areaTole*critCellArea .and. iret == ERR_PAIR_NONE) then
                     if (meshPairing%debug) then
                         call intePoinCoor(cellSlav, nbPoinInte, poinInte, poinInteReal)
                         WRITE (6, *) "Add pair: ", meshPairing%nbPair+1, &
