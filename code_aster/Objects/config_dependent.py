@@ -37,6 +37,7 @@ def add_undefined(store):
     Arguments:
         store (dict): Container object.
     """
+    # NB: keep consistency with the list imported!
     _names = (
         "CommGraph",
         "ConnectionMesh",
@@ -59,13 +60,8 @@ def add_undefined(store):
         "ParallelThermalLoadReal",
         "PtScotchPartitioner",
     )
-
     for obj in _names:
-
-        class klass(UnavailableObject):
-            pass
-
-        store[obj] = getattr(libaster, obj, klass)
+        store[obj] = getattr(libaster, obj, type(obj, (UnavailableObject,), {}))
 
 
 add_undefined(globals())

@@ -22,6 +22,7 @@ This module provides an interface to Med files.
 """
 
 from .MedMeshAndFieldsSplitter import (
+    convertMedFieldToAster,
     readMedFileToResults,
     splitMedFileToResults,
     splitMeshAndFieldsFromMedFile,

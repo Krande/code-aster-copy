@@ -31,6 +31,8 @@ from .config_dependent import (
     IncompleteMesh,
     MedFileAccessType,
     MedFileReader,
+    MeshBalancer,
+    MeshConnectionGraph,
     MGISBehaviour,
     ParallelContactNew,
     ParallelContactPairing,
