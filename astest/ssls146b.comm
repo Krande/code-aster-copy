@@ -1,0 +1,553 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(
+    CODE="OUI",
+    DEBUG=_F(SDVERI="OUI"),
+    IGNORE_ALARM=("CALCULEL7_29", "CALCULEL_81", "CALCULEL_86", "CALCULEL_87", "CALCULEL7_15"),
+)
+
+mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+mesh = MODI_MAILLAGE(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    ORIE_NORM_COQUE=_F(
+        GROUP_MA=("LEVEL_1_SLAB_1"), VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="Extremite"
+    ),
+)
+
+mesh = DEFI_GROUP(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    CREA_GROUP_MA=(
+        _F(NOM="Core", OPTION="SPHERE", GROUP_NO_CENTRE="Milieu", RAYON=0.00001),
+        _F(GROUP_MA="Core", NUME_INIT=3, NUME_FIN=3, NOM="Centre"),
+    ),
+)
+
+mesh = DEFI_GROUP(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    CREA_GROUP_MA=(_F(NOM="Base", OPTION="SPHERE", GROUP_NO_CENTRE="AppuiA", RAYON=0.00001),),
+)
+
+model = AFFE_MODELE(
+    AFFE=(
+        _F(GROUP_MA=("LEVEL_1_SLAB_1",), MODELISATION=("DKT",), PHENOMENE="MECANIQUE"),
+        _F(
+            GROUP_MA=(
+                "LEVEL_0_COLUMN_1",
+                "LEVEL_0_COLUMN_2",
+                "LEVEL_0_COLUMN_3",
+                "LEVEL_0_COLUMN_4",
+            ),
+            MODELISATION=("POU_D_E",),
+            PHENOMENE="MECANIQUE",
+        ),
+    ),
+    MAILLAGE=mesh,
+)
+
+elemprop = AFFE_CARA_ELEM(
+    COQUE=_F(EPAIS=0.3, GROUP_MA=("LEVEL_1_SLAB_1",)),
+    MODELE=model,
+    POUTRE=_F(
+        CARA=("HY", "HZ"),
+        GROUP_MA=("LEVEL_0_COLUMN_1", "LEVEL_0_COLUMN_2", "LEVEL_0_COLUMN_3", "LEVEL_0_COLUMN_4"),
+        SECTION="RECTANGLE",
+        VALE=(0.5, 0.2),
+    ),
+    ORIENTATION=_F(
+        GROUP_MA=("LEVEL_0_COLUMN_1", "LEVEL_0_COLUMN_2", "LEVEL_0_COLUMN_3", "LEVEL_0_COLUMN_4"),
+        CARA="VECT_Y",
+        VALE=(1, 0, 0),
+    ),
+)
+
+MPa = 1.0e6
+
+mater = DEFI_MATERIAU(ELAS=_F(E=30000.0 * MPa, NU=0.2, RHO=2500.0))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MODELE=model)
+
+ddl = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(GROUP_NO=("AppuiA", "AppuiB", "AppuiC", "AppuiD"), LIAISON="ENCASTRE"), MODELE=model
+)
+
+# Chargements considérés :
+# (NOTA : les valeurs sont au pif, et ne sont donc pas physiquement pertinentes)
+# PESENTEUR
+# PRESSION SUR LA DALLE
+# TRANSLATION SUR LES POTEAUX
+
+pr = 15000.0
+ft = 800000.0
+
+# 1 - ELU FONDAMENTAL - FORCE DALLE (Pr) DOMINANTE
+elu1 = AFFE_CHAR_MECA(
+    MODELE=model,
+    PESANTEUR=_F(
+        DIRECTION=(0.0, 0.0, -1.0),
+        GRAVITE=1.35 * 10.0,
+        GROUP_MA=(
+            "LEVEL_0_COLUMN_4",
+            "LEVEL_0_COLUMN_3",
+            "LEVEL_0_COLUMN_2",
+            "LEVEL_0_COLUMN_1",
+            "LEVEL_1_SLAB_1",
+        ),
+    ),
+    PRES_REP=_F(GROUP_MA=("LEVEL_1_SLAB_1",), PRES=1.5 * pr),
+    FORCE_POUTRE=_F(
+        FX=0.6 * 1.5 * ft,
+        GROUP_MA=("LEVEL_0_COLUMN_4", "LEVEL_0_COLUMN_3", "LEVEL_0_COLUMN_2", "LEVEL_0_COLUMN_1"),
+    ),
+)
+
+# 2 - ELS CARACTERISTIQUE - FORCE DALLE DOMINANTE
+els1 = AFFE_CHAR_MECA(
+    MODELE=model,
+    PESANTEUR=_F(
+        DIRECTION=(0.0, 0.0, -1.0),
+        GRAVITE=10.0,
+        GROUP_MA=(
+            "LEVEL_0_COLUMN_4",
+            "LEVEL_0_COLUMN_3",
+            "LEVEL_0_COLUMN_2",
+            "LEVEL_0_COLUMN_1",
+            "LEVEL_1_SLAB_1",
+        ),
+    ),
+    PRES_REP=_F(GROUP_MA=("LEVEL_1_SLAB_1",), PRES=pr),
+    FORCE_POUTRE=_F(
+        FX=0.6 * ft,
+        GROUP_MA=("LEVEL_0_COLUMN_4", "LEVEL_0_COLUMN_3", "LEVEL_0_COLUMN_2", "LEVEL_0_COLUMN_1"),
+    ),
+)
+
+##Calcul au BAEL : Tester différents mots-clés non encore testés dans la modélisation A
+
+reslin1 = MACRO_ELAS_MULT(
+    CARA_ELEM=elemprop,
+    CAS_CHARGE=(_F(CHAR_MECA=(elu1,), NOM_CAS="elu1"), _F(CHAR_MECA=(els1,), NOM_CAS="els1")),
+    CHAM_MATER=fieldmat,
+    CHAR_MECA_GLOBAL=(ddl,),
+    MODELE=model,
+)
+
+reslin1 = CALC_CHAMP(reuse=reslin1, CARA_ELEM=elemprop, CONTRAINTE=("EFGE_ELNO",), RESULTAT=reslin1)
+
+ferrDatSlu1 = dict(
+    TYPE_STRUCTURE="2D",
+    GROUP_MA=("LEVEL_1_SLAB_1",),
+    C_INF=0.04,
+    C_SUP=0.04,
+    FCJ=35.0 * MPa,
+    FE=500.0 * MPa,
+    EYS=210000 * MPa,
+    TYPE_DIAGRAMME="B2",
+    GAMMA_S_FOND=1.15,
+    GAMMA_C_FOND=1.5,
+    GAMMA_S_ACCI=1.0,
+    GAMMA_C_ACCI=1.2,
+    SIGS_ELS=0.8 * 500.0 * MPa,
+    SIGC_INF_ELS=0.6 * 35.0 * MPa,
+    SIGC_SUP_ELS=0.6 * 35.0 * MPa,
+    N=15,
+    ALPHA_CC=1.0,
+    FERR_SYME="NON",
+    FERR_COMP="OUI",
+    EPURE_CISA="OUI",
+    FERR_MIN="CODE",
+    RHO_ACIER=7800.0,
+    PHI_INF_X=0.025,
+    PHI_SUP_X=0.025,
+    PHI_INF_Y=0.025,
+    PHI_SUP_Y=0.025,
+)
+
+ferrDatSlu2 = dict(
+    TYPE_STRUCTURE="1D",
+    GROUP_MA=("LEVEL_0_COLUMN_1", "LEVEL_0_COLUMN_2", "LEVEL_0_COLUMN_3", "LEVEL_0_COLUMN_4"),
+    C_INF_Y=0.04,
+    C_SUP_Y=0.04,
+    C_INF_Z=0.04,
+    C_SUP_Z=0.04,
+    FCJ=35.0 * MPa,
+    FE=500.0 * MPa,
+    EYS=210000 * MPa,
+    TYPE_DIAGRAMME="B2",
+    GAMMA_S_FOND=1.15,
+    GAMMA_C_FOND=1.5,
+    GAMMA_S_ACCI=1.0,
+    GAMMA_C_ACCI=1.2,
+    SIGS_ELS=0.8 * 500.0 * MPa,
+    SIGC_INF_Y_ELS=0.6 * 35.0 * MPa,
+    SIGC_SUP_Y_ELS=0.6 * 35.0 * MPa,
+    SIGC_INF_Z_ELS=0.6 * 35.0 * MPa,
+    SIGC_SUP_Z_ELS=0.6 * 35.0 * MPa,
+    N=15,
+    ALPHA_CC=1.0,
+    FERR_COMP="OUI",
+    EPURE_CISA="OUI",
+    FERR_MIN="OUI",
+    FERR_SYME="OUI",
+    SEUIL_SYME=1.0e-03,
+    RHO_LONGI_MIN=1.0e-05,
+    RHO_TRNSV_MIN=1.0e-05,
+    RHO_ACIER=7800.0,
+    PHI_INF_Y=0.025,
+    PHI_SUP_Y=0.025,
+    PHI_INF_Z=0.025,
+    PHI_SUP_Z=0.025,
+)
+
+reslin1 = COMBINAISON_FERRAILLAGE(
+    reuse=reslin1,
+    RESULTAT=reslin1,
+    CARA_ELEM=elemprop,
+    CODIFICATION="BAEL91",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    PAS_EPAI=0.001,
+    COMBINAISON=(
+        _F(TYPE="ELU_FONDAMENTAL", NOM_CAS=("elu1")),
+        _F(TYPE="ELS_CARACTERISTIQUE", NOM_CAS=("els1")),
+    ),
+    AFFE=(_F(**ferrDatSlu1), _F(**ferrDatSlu2)),
+)
+
+# ON TESTE LES RESULTATS AU CENTRE DE LA PLAQUE (2D)
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=reslin1,
+            NOM_CAS="elu1",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="DNSXI",
+            GROUP_MA="Centre",
+            VALE_CALC=0.0028055894419587446,
+            VALE_REFE=0.0028055894419587446,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin1,
+            NOM_CAS="els1",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="DNSXI",
+            GROUP_MA="Centre",
+            VALE_CALC=0.002147281620771743,
+            VALE_REFE=0.002147281620771743,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin1,
+            NOM_CAS="COMB_DIME_ACIER",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="DNSXI",
+            GROUP_MA="Centre",
+            VALE_CALC=0.0028055894419587446,
+            VALE_REFE=0.0028055894419587446,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin1,
+            NOM_CAS="COMB_DIME_ORDRE",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="DNSXI",
+            GROUP_MA="Centre",
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+    )
+)
+
+# ON TESTE LES RESULTATS A LA BASE DU POTEAU (1D)
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=reslin1,
+            NOM_CAS="elu1",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="AZS",
+            GROUP_MA="Base",
+            VALE_CALC=0.0003638595035061293,
+            VALE_REFE=0.0003638595035061293,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin1,
+            NOM_CAS="els1",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="AZS",
+            GROUP_MA="Base",
+            VALE_CALC=0.00028204340714115103,
+            VALE_REFE=0.00028204340714115103,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin1,
+            NOM_CAS="COMB_DIME_ACIER",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="AZS",
+            GROUP_MA="Base",
+            VALE_CALC=0.0003638595035061293,
+            VALE_REFE=0.0003638595035061293,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin1,
+            NOM_CAS="COMB_DIME_ORDRE",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="AZS",
+            GROUP_MA="Base",
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+    )
+)
+
+
+##Calcul a l'EC2
+
+reslin2 = MACRO_ELAS_MULT(
+    CARA_ELEM=elemprop,
+    CAS_CHARGE=(_F(CHAR_MECA=(elu1,), NOM_CAS="elu1"), _F(CHAR_MECA=(els1,), NOM_CAS="els1")),
+    CHAM_MATER=fieldmat,
+    CHAR_MECA_GLOBAL=(ddl,),
+    MODELE=model,
+)
+
+reslin2 = CALC_CHAMP(reuse=reslin2, CARA_ELEM=elemprop, CONTRAINTE=("EFGE_ELNO",), RESULTAT=reslin2)
+
+ferrDatSlu1 = dict(
+    TYPE_STRUCTURE="2D",
+    GROUP_MA=("LEVEL_1_SLAB_1",),
+    C_INF=0.04,
+    C_SUP=0.04,
+    FCK=35.0 * MPa,
+    FYK=500.0 * MPa,
+    EYS=210000 * MPa,
+    TYPE_DIAGRAMME="B2",
+    GAMMA_S_FOND=1.15,
+    GAMMA_C_FOND=1.5,
+    GAMMA_S_ACCI=1.0,
+    GAMMA_C_ACCI=1.2,
+    SIGS_ELS=0.8 * 500.0 * MPa,
+    SIGC_INF_ELS=0.6 * 35.0 * MPa,
+    SIGC_SUP_ELS=0.6 * 35.0 * MPa,
+    SIGC_ELS_QP=0.45 * 35.0 * MPa,
+    ALPHA_E=15,
+    CLASSE_ACIER="A",
+    ALPHA_CC=1.0,
+    FERR_SYME="NON",
+    FERR_COMP="OUI",
+    EPURE_CISA="NON",
+    FERR_MIN="NON",
+    RHO_ACIER=7800.0,
+    KT=0.4,
+    PHI_INF_X=0.025,
+    PHI_SUP_X=0.025,
+    PHI_INF_Y=0.025,
+    PHI_SUP_Y=0.025,
+    UTIL_COMPR="NON",
+)
+
+ferrDatSlu2 = dict(
+    TYPE_STRUCTURE="1D",
+    GROUP_MA=("LEVEL_0_COLUMN_1", "LEVEL_0_COLUMN_2", "LEVEL_0_COLUMN_3", "LEVEL_0_COLUMN_4"),
+    C_INF_Y=0.04,
+    C_SUP_Y=0.04,
+    C_INF_Z=0.04,
+    C_SUP_Z=0.04,
+    FCK=35.0 * MPa,
+    FYK=500.0 * MPa,
+    EYS=210000 * MPa,
+    TYPE_DIAGRAMME="B2",
+    GAMMA_S_FOND=1.15,
+    GAMMA_C_FOND=1.5,
+    GAMMA_S_ACCI=1.0,
+    GAMMA_C_ACCI=1.2,
+    SIGS_ELS=0.8 * 500.0 * MPa,
+    SIGC_INF_Y_ELS=0.6 * 35.0 * MPa,
+    SIGC_SUP_Y_ELS=0.6 * 35.0 * MPa,
+    SIGC_INF_Z_ELS=0.6 * 35.0 * MPa,
+    SIGC_SUP_Z_ELS=0.6 * 35.0 * MPa,
+    SIGC_ELS_QP=0.45 * 35.0 * MPa,
+    ALPHA_E=15,
+    CLASSE_ACIER="B",
+    ALPHA_CC=1.0,
+    FERR_SYME="NON",
+    FERR_COMP="OUI",
+    EPURE_CISA="NON",
+    FERR_MIN="NON",
+    KT=0.4,
+    PHI_INF_Y=0.025,
+    PHI_SUP_Y=0.025,
+    PHI_INF_Z=0.025,
+    PHI_SUP_Z=0.025,
+    UTIL_COMPR="NON",
+    RHO_ACIER=7800.0,
+)
+
+
+reslin2 = COMBINAISON_FERRAILLAGE(
+    reuse=reslin2,
+    RESULTAT=reslin2,
+    CARA_ELEM=elemprop,
+    CODIFICATION="EC2",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    PAS_EPAI=0.001,
+    COMBINAISON=(
+        _F(TYPE="ELU_FONDAMENTAL", NOM_CAS=("elu1")),
+        _F(TYPE="ELS_CARACTERISTIQUE", NOM_CAS=("els1")),
+    ),
+    AFFE=(_F(**ferrDatSlu1), _F(**ferrDatSlu2)),
+)
+
+# ON TESTE LES RESULTATS AU CENTRE DE LA PLAQUE (2D)
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=reslin2,
+            NOM_CAS="elu1",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="DNSXI",
+            GROUP_MA="Centre",
+            VALE_CALC=0.00250780486050832,
+            VALE_REFE=0.00250780486050832,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin2,
+            NOM_CAS="els1",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="DNSXI",
+            GROUP_MA="Centre",
+            VALE_CALC=0.001938374746055508,
+            VALE_REFE=0.001938374746055508,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin2,
+            NOM_CAS="COMB_DIME_ACIER",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="DNSXI",
+            GROUP_MA="Centre",
+            VALE_CALC=0.00250780486050832,
+            VALE_REFE=0.00250780486050832,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin2,
+            NOM_CAS="COMB_DIME_ORDRE",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="DNSXI",
+            GROUP_MA="Centre",
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+    )
+)
+
+# ON TESTE LES RESULTATS A LA BASE DU POTEAU (1D)
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=reslin2,
+            NOM_CAS="elu1",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="AZS",
+            GROUP_MA="Base",
+            VALE_CALC=0.00041922866523703495,
+            VALE_REFE=0.00041922866523703495,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin2,
+            NOM_CAS="els1",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="AZS",
+            GROUP_MA="Base",
+            VALE_CALC=0.0002962884533626216,
+            VALE_REFE=0.0002962884533626216,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin2,
+            NOM_CAS="COMB_DIME_ACIER",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="AZS",
+            GROUP_MA="Base",
+            VALE_CALC=0.00041922866523703495,
+            VALE_REFE=0.00041922866523703495,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=reslin2,
+            NOM_CAS="COMB_DIME_ORDRE",
+            NOM_CHAM="FERR_ELEM",
+            CRITERE="RELATIF",
+            NOM_CMP="AZS",
+            GROUP_MA="Base",
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+        ),
+    )
+)
+
+
+FIN()

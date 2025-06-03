@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -553,17 +553,35 @@ COMBINAISON_FERRAILLAGE = MACRO(
                     "Type du diagramme Contrainte-Deformation à utiliser: B1 (Incliné) ou B2 (Horizontal)"
                 ),
             ),
-            GAMMA_S=SIMP(
+            GAMMA_S_FOND=SIMP(
                 statut="f",
                 typ="R",
-                fr=tr("Coefficient de sécurité sur la résistance de calcul des aciers à l'ELU"),
+                fr=tr(
+                    "Coefficient de sécurité sur la résistance de calcul des aciers pour la combinaison fondamentale"
+                ),
+            ),
+            GAMMA_S_ACCI=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr(
+                    "Coefficient de sécurité sur la résistance de calcul des aciers pour la combinaison accidentelle"
+                ),
+            ),
+            GAMMA_C_FOND=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr(
+                    "Coefficient de sécurité sur la résistance de calcul du béton pour la combinaison fondamentale"
+                ),
+            ),
+            GAMMA_C_ACCI=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr(
+                    "Coefficient de sécurité sur la résistance de calcul du béton pour la combinaison fondamentale"
+                ),
             ),
             FCJ=SIMP(statut="f", typ="R", fr=tr("Contrainte admissible dans le béton")),
-            GAMMA_C=SIMP(
-                statut="f",
-                typ="R",
-                fr=tr("Coefficient de sécurité sur la résistance de calcul du béton à l'ELU"),
-            ),
             ALPHA_CC=SIMP(
                 statut="f",
                 typ="R",
