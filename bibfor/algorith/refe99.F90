@@ -212,6 +212,7 @@ subroutine refe99(nomres)
         call getvid('  ', 'INTERF_DYNA', iocc=1, nbval=0, nbret=ier)
         if (ier .lt. 0) then
             call getvid('  ', 'INTERF_DYNA', iocc=1, scal=intf, nbret=ier)
+            call dismoi('NOM_NUME_DDL', intf, 'INTERF_DYNA', repk=numddl)
         end if
 !
         call getvid('RITZ', 'BASE_MODALE', iocc=ioccbase, scal=resul1, nbret=ibmo)
