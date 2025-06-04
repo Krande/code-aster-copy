@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ def crea_elem_ssd_ops(self, **args):
 
     nbande = NBANDE_OPTIONS.get(CALC_FREQ["OPTION"])
 
-    if CALC_FREQ["OPTION"]=="BANDE":
+    if CALC_FREQ["OPTION"] == "BANDE":
         nbande = len(CALC_FREQ["FREQ"]) - 1
 
     if CALC_FREQ["DIM_SOUS_ESPACE"]:
@@ -249,7 +249,7 @@ def crea_elem_ssd_ops(self, **args):
         base["NUME_REF"] = _nume_ddl
 
     _base_modale = DEFI_BASE_MODALE(**base)
-    elem = {"MATR_RIGI":_matrigi, "MATR_MASS":_matmass}
+    elem = {"MATR_RIGI": _matrigi, "MATR_MASS": _matmass}
     macr_elem = MACR_ELEM_DYNA(BASE_MODALE=_base_modale, **elem)
 
     return macr_elem

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,6 +98,7 @@ MACEL1 = CREA_ELEM_SSD(
     INTERFACE=_F(NOM="GAUCHE", TYPE="CRAIGB", MASQUE=("DX", "DY", "DRZ"), GROUP_NO="GAUCHE"),
     BASE_MODALE=_F(TYPE="RITZ", NMAX_MODE_INTF=20),
     CALC_FREQ=_F(NMAX_FREQ=6),
+    NUME_DDL=CO("NUMDDL"),
 )
 #
 # SOUS-STRUCTURE 2 ENCASTREE-APPUYEE - INTERFACE TYPE CRAIG-BAMPTON
@@ -149,6 +150,14 @@ ASSE_ELEM_SSD(
     VERIF=_F(STOP_ERREUR="OUI", PRECISION=1.0e-6, CRITERE="RELATIF"),
     METHODE="ELIMINE",
 ),
+
+V_ELEM = CALC_VECT_ELEM(CHARGE=CHARGE_1, OPTION="CHAR_MECA")
+
+V_ASSE = ASSE_VECTEUR(NUME_DDL=NUMDDL, VECT_ELEM=(V_ELEM,))
+
+FGEN = ASSE_VECT_GENE(
+    CHAR_SOUS_STRUC=_F(SOUS_STRUC="CARRE1", VECT_ASSE=V_ASSE), NUME_DDL_GENE=NUMEGE
+)
 
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
