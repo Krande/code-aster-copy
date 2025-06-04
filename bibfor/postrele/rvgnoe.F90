@@ -112,140 +112,142 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
         nbtnd = nbtnd+nbneud
     end if
 !
-    call wkvect('&OP0051.LIST.ND.TEMP', 'V V I', nbtnd, alndtp)
-    do i = 1, nbtnd, 1
-        zi(alndtp+i-1) = 0
-    end do
-!
-    if (nbneud .ne. 0) then
-        do i = 1, nbneud, 1
-            if (lnomnoe) then
-                call jenonu(jexnom(nrepnd, zk8(aneud+i-1)), numnd)
-            else
-                numnd = char8_to_int(zk8(aneud+i-1))
-            end if
-            zi(alndtp+i-1) = numnd
-        end do
-    end if
-    libre = nbneud+1
-!
-    if (nbrgpn .ne. 0) then
-        do i = 1, nbrgpn, 1
-            nomgrn = zk24(agrpn+i-1)
-            call jeexin(jexnom(nrepgn, nomgrn), ier)
-            if (ier .ne. 0) then
-                call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
-                call jeveuo(jexnom(nrepgn, nomgrn), 'L', agneud)
-                do j = 1, nbn, 1
-                    zi(alndtp+libre-1+j-1) = zi(agneud+j-1)
-                end do
-                libre = libre+nbn
-            end if
-        end do
-    end if
-!
-    AS_ALLOCATE(vi=list_n, size=libre-1)
-!
-    nbtnd = 0
-    if (nbtrou .eq. 0) then
-        list_n(1) = zi(alndtp)
-        nbtnd = nbtnd+1
-        do i = 1, libre-2, 1
-            do j = 1, nbtnd, 1
-                if (zi(alndtp+i) .eq. list_n(j)) goto 250
-            end do
-            nbtnd = nbtnd+1
-            list_n(nbtnd) = zi(alndtp+i)
-250         continue
-        end do
-        libre = nbtnd+1
-    else
-        do i = 1, nbtrou, 1
-            do j = 1, libre-1, 1
-                if (linoeu(i) .eq. zi(alndtp+j-1)) then
-                    nbtnd = nbtnd+1
-                    goto 252
-                end if
-            end do
-252         continue
-        end do
-    end if
-!
-    if (nbtnd .eq. 0) then
-        call utmess('F', 'POSTRELE_64')
-    end if
-    call wkvect(nlstnd, 'V V I', nbtnd, alstnd)
-!
-    if (nbtrou .eq. 0) then
+    if (nbtnd .ne. 0) then
+        call wkvect('&OP0051.LIST.ND.TEMP', 'V V I', nbtnd, alndtp)
         do i = 1, nbtnd, 1
-            zi(alstnd+i-1) = list_n(i)
+            zi(alndtp+i-1) = 0
         end do
-    else
-        nbtnd = libre-1
-        libre = 1
-        do i = 1, nbtnd, 1
-            numnd = zi(alndtp+i-1)
-            do j = 1, nbtrou, 1
-                if (linoeu(j) .eq. numnd) then
-                    do k = 1, libre-1, 1
-                        if (numnd .eq. zi(alstnd+k-1)) goto 302
-                    end do
-                    zi(alstnd+libre-1) = numnd
-                    libre = libre+1
+!
+        if (nbneud .ne. 0) then
+            do i = 1, nbneud, 1
+                if (lnomnoe) then
+                    call jenonu(jexnom(nrepnd, zk8(aneud+i-1)), numnd)
+                else
+                    numnd = char8_to_int(zk8(aneud+i-1))
                 end if
+                zi(alndtp+i-1) = numnd
             end do
-302         continue
-        end do
-    end if
+        end if
+        libre = nbneud+1
 !
-    AS_DEALLOCATE(vi=list_n)
-!
-! --- CAS PARTICULIER
-!
-    call getvr8('ACTION', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty, &
-                nbret=ny)
-    if (ny .ne. 0) then
-!        VERIFICATIONS PRELIMINAIRES
-        if ((nbneud .ge. 2 .and. nbrgpn .eq. 0) .or. (nbneud .eq. 0 .and. nbrgpn .eq. 1)) then
-            if (nbrgpn .eq. 1) then
-                nomgrn = zk24(agrpn+1-1)
+        if (nbrgpn .ne. 0) then
+            do i = 1, nbrgpn, 1
+                nomgrn = zk24(agrpn+i-1)
                 call jeexin(jexnom(nrepgn, nomgrn), ier)
                 if (ier .ne. 0) then
                     call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
-                    if (nbn .lt. 2) then
-                        call utmess('F', 'POSTRELE_21')
+                    call jeveuo(jexnom(nrepgn, nomgrn), 'L', agneud)
+                    do j = 1, nbn, 1
+                        zi(alndtp+libre-1+j-1) = zi(agneud+j-1)
+                    end do
+                    libre = libre+nbn
+                end if
+            end do
+        end if
+!
+        AS_ALLOCATE(vi=list_n, size=libre-1)
+!
+        nbtnd = 0
+        if (nbtrou .eq. 0) then
+            list_n(1) = zi(alndtp)
+            nbtnd = nbtnd+1
+            do i = 1, libre-2, 1
+                do j = 1, nbtnd, 1
+                    if (zi(alndtp+i) .eq. list_n(j)) goto 250
+                end do
+                nbtnd = nbtnd+1
+                list_n(nbtnd) = zi(alndtp+i)
+250             continue
+            end do
+            libre = nbtnd+1
+        else
+            do i = 1, nbtrou, 1
+                do j = 1, libre-1, 1
+                    if (linoeu(i) .eq. zi(alndtp+j-1)) then
+                        nbtnd = nbtnd+1
+                        goto 252
+                    end if
+                end do
+252             continue
+            end do
+        end if
+!
+        if (nbtnd .eq. 0) then
+            call utmess('F', 'POSTRELE_64')
+        end if
+        call wkvect(nlstnd, 'V V I', nbtnd, alstnd)
+!
+        if (nbtrou .eq. 0) then
+            do i = 1, nbtnd, 1
+                zi(alstnd+i-1) = list_n(i)
+            end do
+        else
+            nbtnd = libre-1
+            libre = 1
+            do i = 1, nbtnd, 1
+                numnd = zi(alndtp+i-1)
+                do j = 1, nbtrou, 1
+                    if (linoeu(j) .eq. numnd) then
+                        do k = 1, libre-1, 1
+                            if (numnd .eq. zi(alstnd+k-1)) goto 302
+                        end do
+                        zi(alstnd+libre-1) = numnd
+                        libre = libre+1
+                    end if
+                end do
+302             continue
+            end do
+        end if
+!
+        AS_DEALLOCATE(vi=list_n)
+!
+!     --- CAS PARTICULIER
+!
+        call getvr8('ACTION', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty, &
+                    nbret=ny)
+        if (ny .ne. 0) then
+!           VERIFICATIONS PRELIMINAIRES
+            if ((nbneud .ge. 2 .and. nbrgpn .eq. 0) .or. (nbneud .eq. 0 .and. nbrgpn .eq. 1)) then
+                if (nbrgpn .eq. 1) then
+                    nomgrn = zk24(agrpn+1-1)
+                    call jeexin(jexnom(nrepgn, nomgrn), ier)
+                    if (ier .ne. 0) then
+                        call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
+                        if (nbn .lt. 2) then
+                            call utmess('F', 'POSTRELE_21')
+                        end if
                     end if
                 end if
+            else
+                call utmess('F', 'POSTRELE_22')
             end if
-        else
-            call utmess('F', 'POSTRELE_22')
+            call jeexin('&&YAPAS '//'S1   '//'.DESC', n1)
+            if (n1 .ne. 0) call jedetr('&&YAPAS '//'S1   '//'.DESC')
+            courbe = '&&YAPAS'
+            call wkvect(courbe//'S1   '//'.DESC', 'V V R', 6, asgtu)
+!           ORIGINE
+            i1 = zi(alstnd-1+1)
+!           EXTREMITE
+            i2 = zi(alstnd-1+libre-1)
+            call jeveuo(nmaila//'.COORDO    .VALE', 'L', vr=vale)
+!           TOLERANCE
+            call getvtx(mcf, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
+            call getvr8(mcf, 'PRECISION', iocc=iocc, scal=tole, nbret=n1)
+!           VERIFICATION QUE LES POINTS SONT ALIGNES
+            call oreino(nmaila, zi(alstnd), libre-1, i1, i2, &
+                        vale, crit, tole, iera, iret)
+            if (iret .ne. 0) then
+                call utmess('F', 'POSTRELE_60')
+            end if
+            zr(asgtu-1+1) = vale(3*(i1-1)+1)
+            zr(asgtu-1+2) = vale(3*(i1-1)+2)
+            zr(asgtu-1+3) = vale(3*(i1-1)+3)
+            zr(asgtu-1+4) = vale(3*(i2-1)+1)
+            zr(asgtu-1+5) = vale(3*(i2-1)+2)
+            zr(asgtu-1+6) = vale(3*(i2-1)+3)
         end if
-        call jeexin('&&YAPAS '//'S1   '//'.DESC', n1)
-        if (n1 .ne. 0) call jedetr('&&YAPAS '//'S1   '//'.DESC')
-        courbe = '&&YAPAS'
-        call wkvect(courbe//'S1   '//'.DESC', 'V V R', 6, asgtu)
-!       ORIGINE
-        i1 = zi(alstnd-1+1)
-!       EXTREMITE
-        i2 = zi(alstnd-1+libre-1)
-        call jeveuo(nmaila//'.COORDO    .VALE', 'L', vr=vale)
-!       TOLERANCE
-        call getvtx(mcf, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
-        call getvr8(mcf, 'PRECISION', iocc=iocc, scal=tole, nbret=n1)
-!       VERIFICATION QUE LES POINTS SONT ALIGNES
-        call oreino(nmaila, zi(alstnd), libre-1, i1, i2, &
-                    vale, crit, tole, iera, iret)
-        if (iret .ne. 0) then
-            call utmess('F', 'POSTRELE_60')
-        end if
-        zr(asgtu-1+1) = vale(3*(i1-1)+1)
-        zr(asgtu-1+2) = vale(3*(i1-1)+2)
-        zr(asgtu-1+3) = vale(3*(i1-1)+3)
-        zr(asgtu-1+4) = vale(3*(i2-1)+1)
-        zr(asgtu-1+5) = vale(3*(i2-1)+2)
-        zr(asgtu-1+6) = vale(3*(i2-1)+3)
-    end if
 !
+    end if
     call jeexin('&OP0051.NOM.NOEUD', n1)
     if (n1 .ne. 0) call jedetr('&OP0051.NOM.NOEUD')
     call jeexin('&OP0051.NOM.GRP.ND', n1)
