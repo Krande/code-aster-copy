@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,8 @@ class ExtendedFunction2D:
         Returns:
             t_nappe: Python object of the function.
         """
+        if self._t_nappe:
+            return self._t_nappe
         para = self.Parametres()
         vale = self.Valeurs()
         l_fonc = []
@@ -53,7 +55,8 @@ class ExtendedFunction2D:
             }
             l_fonc.append(t_fonction(vale[1][i][0], vale[1][i][1], para_f))
             i += 1
-        return t_nappe(vale[0], l_fonc, para[0], nom=self.getName())
+        self._t_nappe = t_nappe(vale[0], l_fonc, para[0], nom=self.getName())
+        return self._t_nappe
 
     def Parametres(self):
         """Returns a dict containing the properties of the function.
