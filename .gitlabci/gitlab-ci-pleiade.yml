@@ -12,6 +12,7 @@ variables:
   GIT_SSL_NO_VERIFY: "true"
   NPROC_MAX: 12
   FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
+  WEEKLY_RUN: 5
 
 default:
   tags:
@@ -284,6 +285,9 @@ prepare_win:
   variables:
     OSNAME: win
   extends: .prepare
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
 
@@ -292,6 +296,9 @@ compile_win:
     OSNAME: win
   needs: ["prepare_win"]
   extends: .compile
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - !reference [.compile, script]
   rules:
     - if: $BUILDTYPE == "nightly"
 
@@ -300,5 +307,8 @@ verification_test_win:
     OSNAME: win
   needs: ["compile_win"]
   extends: .verification_test
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - !reference [.verification_test, script]
   rules:
     - if: $BUILDTYPE == "nightly"
