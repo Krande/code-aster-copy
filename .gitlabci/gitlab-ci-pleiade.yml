@@ -12,6 +12,7 @@ variables:
   GIT_SSL_NO_VERIFY: "true"
   NPROC_MAX: 12
   FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
+  PIXI_HOME: ${CI_PROJECT_DIR}/.pixi
   WEEKLY_RUN: 5
 
 default:
@@ -45,15 +46,20 @@ stages:
 image:
   name: ${IMAGE_URL}
 
+before_script:
+  - export PATH="${PIXI_HOME}/bin:${PATH}"
+
 .prepare:
   interruptible: true
   stage: setup
   script:
     - .gitlabci/prepare.sh
+    - .gitlabci/prepare_pixi.sh
   artifacts:
     paths:
       - devtools/*
       - data-src/*
+      - .pixi/*
     expire_in: 6 hours
   rules:
     - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
@@ -280,7 +286,7 @@ verification_test_debian-12:
   rules:
     - if: $BUILDTYPE == "nightly"
 
-# --- variant win for nightly build
+# --- variant win for weekly build
 prepare_win:
   variables:
     OSNAME: win
@@ -310,5 +316,42 @@ verification_test_win:
   script:
     - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
     - !reference [.verification_test, script]
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+# --- variant using pixi for weekly build
+prepare_pixi:
+  variables:
+    OSNAME: debian-12
+  extends: .prepare
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - !reference [.prepare, script]
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+compile_pixi:
+  variables:
+    OSNAME: debian-12
+  needs: ["prepare_pixi"]
+  extends: .compile
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - pixi run .gitlabci/compile.sh
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+verification_test_pixi:
+  variables:
+    OSNAME: debian-12
+  needs: ["compile_pixi"]
+  extends: .verification_test
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+  script:
+    - pixi run .gitlabci/test.sh
+        -L verification
+        --exclude-testlist .gitlabci/known_failures-pleiade.list
+        --resutest=results
   rules:
     - if: $BUILDTYPE == "nightly"
