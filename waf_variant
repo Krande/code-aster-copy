@@ -1,6 +1,6 @@
 #!/bin/bash
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ export WAFLOCK=.lock-${WAF_SUFFIX}${WAF_DEFAULT_VARIANT}_build
 builddir="build/${WAF_SUFFIX}"${WAF_DEFAULT_VARIANT}
 jobs=4
 
-
 # backup original arguments
 orig=("$@")
 OPTS=$(getopt --quiet -o o:j: --long out:,jobs: -n $(basename $0) -- "$@")
@@ -53,5 +52,8 @@ while true; do
     esac
     shift
 done
+
+# checking for tools updates
+.devhelper/check_updates.sh
 
 ./waf.main "${orig[@]}" --out=${builddir} --jobs=${jobs}
