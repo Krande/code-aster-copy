@@ -53,8 +53,8 @@ before_script:
   interruptible: true
   stage: setup
   script:
-    - .gitlabci/prepare.sh
     - .gitlabci/prepare_pixi.sh
+    - .gitlabci/prepare.sh
   artifacts:
     paths:
       - devtools/*
@@ -321,8 +321,10 @@ verification_test_win:
 
 # --- variant using pixi for weekly build
 prepare_pixi:
+  image:
+    name: nexus.retd.edf.fr:5075/debian-base:bookworm
   variables:
-    OSNAME: debian-12
+    OSNAME: pixi
   extends: .prepare
   script:
     - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
@@ -331,19 +333,24 @@ prepare_pixi:
     - if: $BUILDTYPE == "nightly"
 
 compile_pixi:
+  image:
+    name: nexus.retd.edf.fr:5075/debian-base:bookworm
   variables:
-    OSNAME: debian-12
+    OSNAME: pixi
   needs: ["prepare_pixi"]
   extends: .compile
   script:
     - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - pixi list --explicit
     - pixi run .gitlabci/compile.sh
   rules:
     - if: $BUILDTYPE == "nightly"
 
 verification_test_pixi:
+  image:
+    name: nexus.retd.edf.fr:5075/debian-base:bookworm
   variables:
-    OSNAME: debian-12
+    OSNAME: pixi
   needs: ["compile_pixi"]
   extends: .verification_test
   script:

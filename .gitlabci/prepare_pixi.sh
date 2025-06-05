@@ -13,3 +13,7 @@ cat << EOF > ${PIXI_HOME}/config.toml
 index-url = "https://nexus.retd.edf.fr/repository/pypi-all/simple"
 allow-insecure-host = ["nexus.retd.edf.fr"]
 EOF
+
+pixi --version
+pixi config set --global run-post-link-scripts insecure
+pixi global install git
