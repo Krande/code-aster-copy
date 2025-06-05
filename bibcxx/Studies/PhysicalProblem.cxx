@@ -45,8 +45,14 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
 
     // Add checks
     if ( _elemChara ) {
-        if ( _model != _elemChara->getModel() ) {
-            UTMESS( "A", "MECANONLINE5_74" );
+        if ( _elemChara->containsFieldOnCells() ) {
+            if ( _model != _elemChara->getModel() ) {
+                UTMESS( "A", "MECANONLINE5_74" );
+            }
+        } else {
+            if ( _model->getMesh() != _elemChara->getModel()->getMesh() ) {
+                UTMESS( "A", "MECANONLINE5_75" );
+            }
         }
     }
 
