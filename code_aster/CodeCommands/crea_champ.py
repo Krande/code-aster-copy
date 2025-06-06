@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -210,8 +210,7 @@ class FieldCreator(ExecuteCommand):
         self.remove_dependencies(keywords, "EVAL", ("CHAM_F", "CHAM_PARA"))
 
         if keywords["OPERATION"] == "EXTR":
-            # depends on "result".LIGREL
-            # self.remove_dependencies(keywords, "RESULTAT")
+            self.remove_dependencies(keywords, "RESULTAT")
             self.remove_dependencies(keywords, "FISSURE")
             self.remove_dependencies(keywords, "TABLE")
             self.remove_dependencies(keywords, "CARA_ELEM")
