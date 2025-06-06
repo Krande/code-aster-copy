@@ -49,5 +49,5 @@ THERMECA_MULT = MACRO(
         ),
         VALE_REF=SIMP(statut="f", typ="R", defaut=0.0),
     ),
-    CONVERGENCE=C_CONVERGENCE(),
+    CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
 )

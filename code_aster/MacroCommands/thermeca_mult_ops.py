@@ -31,7 +31,7 @@ def get_list_inst(champ):
     sortie : liste contenant les instants
     """
 
-    liste_instant = [champ.getTimeValue(index) for index in champ.getIndexes()]
+    liste_instant = [champ.getTime(index) for index in champ.getIndexes()]
 
     return liste_instant
 

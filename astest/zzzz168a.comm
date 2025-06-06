@@ -94,15 +94,19 @@ CHT2 = CREA_CHAMP(
 # thermal results type creation
 # homogeneous temperatures
 CRT1 = CREA_RESU(
-    AFFE=(_F(CHAM_GD=T_INIT1, INST=0.0), _F(CHAM_GD=CHT1, INST=10.0)),
-    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=T_INIT1, INST=0.0, NOM_CHAM="TEMP"),
+        _F(CHAM_GD=CHT1, INST=10.0, NOM_CHAM="TEMP"),
+    ),
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
 )
 # non homogeneous temperatures
 CRT2 = CREA_RESU(
-    AFFE=(_F(CHAM_GD=T_INIT2, INST=0.0), _F(CHAM_GD=CHT2, INST=10.0)),
-    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=T_INIT2, INST=0.0, NOM_CHAM="TEMP"),
+        _F(CHAM_GD=CHT2, INST=10.0, NOM_CHAM="TEMP"),
+    ),
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
 )

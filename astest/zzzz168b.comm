@@ -117,28 +117,32 @@ CHT2 = CREA_CHAMP(
 CRT_1 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=T_INIT1, INST=0.0), _F(CHAM_GD=CHT1, INST=10.0)),
+    AFFE=(
+        _F(CHAM_GD=T_INIT1, INST=0.0, NOM_CHAM="TEMP"),
+        _F(CHAM_GD=CHT1, INST=10.0, NOM_CHAM="TEMP"),
+    ),
 )
 
 CRT1 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=m_plate, CARA_ELEM=elem_m, EVOL_THER=CRT_1),
+    PREP_VARC=_F(MODELE=m_plate, CARA_ELEM=elem_m, EVOL_THER=CRT_1),
 )
 
 # non homogeneous temperatures
 CRT_2 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=T_INIT2, INST=0.0), _F(CHAM_GD=CHT2, INST=10.0)),
+    AFFE=(
+        _F(CHAM_GD=T_INIT2, INST=0.0, NOM_CHAM="TEMP"),
+        _F(CHAM_GD=CHT2, INST=10.0, NOM_CHAM="TEMP"),
+    ),
 )
 
 CRT2 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=m_plate, CARA_ELEM=elem_m, EVOL_THER=CRT_2),
+    PREP_VARC=_F(MODELE=m_plate, CARA_ELEM=elem_m, EVOL_THER=CRT_2),
 )
 
 # ---------------------------------------------------------------------------------------------------
