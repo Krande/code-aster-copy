@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/addGrpMa.h"
 #include "jeveux.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: ma
     integer, intent(in)          :: nbgmp
@@ -80,7 +82,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
     integer :: n7, n8, nalar, nb, nbcol
     integer :: nbgnaj, nbgrmn, nbid, nbis, nbk8, nbline, nbma
     integer :: nbmat, niv, ntrou, ntyp, num
-    aster_logical :: l_parallel_mesh, l_added_grpma
+    aster_logical :: l_parallel_mesh, l_added_grpma, lcolle
     character(len=24), pointer :: lik8(:) => null()
     character(len=8), pointer :: l_maille(:) => null()
     integer, pointer :: maille2(:) => null()
@@ -162,10 +164,15 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
             AS_ALLOCATE(vi=maille2, size=nbmat)
             nbma = 0
+            lcolle = .false.
+            call jeexin(ma//'.NOMMAI', ier)
+            if (ier .ne. 0) then
+                lcolle = .true.
+            end if
             ier = 0
             do im1 = 1, n2
                 nom1 = l_maille(im1)
-                call jenonu(jexnom(ma//'.NOMMAI', nom1), num)
+                num = char8_to_int(nom1, lcolle, ma, "MAILLE")
                 if (num .eq. 0) then
                     ier = ier+1
                     call utmess('E', 'SOUSTRUC_31', sk=nom1)
@@ -548,11 +555,16 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             if (ireste .ne. 0) nbline = nbline+1
             nbcol = maxcol
             kkk = 0
+            lcolle = .false.
+            call jeexin(ma//'.NOMMAI', ier)
+            if (ier .ne. 0) then
+                lcolle = .true.
+            end if
             do jjj = 1, nbline
                 if (ireste .ne. 0 .and. jjj .eq. nbline) nbcol = ireste
                 do iii = 1, nbcol
                     kkk = kkk+1
-                    call jenuno(jexnum(ma//'.NOMMAI', zi(jlisma-1+kkk)), noma)
+                    noma = int_to_char8(zi(jlisma-1+kkk), lcolle, ma, "MAILLE")
                     card((iii-1)*10+1:) = ' '//noma//' '
                 end do
                 write (ifm, '(A)') card(:10*nbcol)

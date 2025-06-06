@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z, &
 #include "asterfort/pacoap.h"
 #include "asterfort/pacoje.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*) :: motfaz, prefiz, nomaz, lisi1z, lisi2z, modz
     integer :: iocc
@@ -92,7 +93,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z, &
     character(len=24) :: valk(2)
     character(len=16) :: motfac
     character(len=19) :: pref19
-    character(len=24) :: coni, conr, noeuma
+    character(len=24) :: coni, conr
     character(len=24) :: prefix, lisin1, lisin2, lisou1, lisou2
 !
 ! ---------------------------------------------------------------------
@@ -108,8 +109,6 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z, &
     lisin1 = lisi1z
     lisin2 = lisi2z
     dnor = .false.
-!
-    noeuma = noma//'.NOMNOE'
 !
     if (motfac .ne. 'LIAISON_GROUP') then
         call utmess('F', 'MODELISA2_62')
@@ -225,8 +224,8 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z, &
     zi(idconi) = lonlis
 !
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(idlou1+i-1)), ino1)
-        call jenonu(jexnom(noeuma, zk8(idlou2+i-1)), ino2)
+        ino1 = char8_to_int(zk8(idlou1+i-1))
+        ino2 = char8_to_int(zk8(idlou2+i-1))
         zi(idconi+2*(i-1)+1) = ino1
         zi(idconi+2*(i-1)+2) = ino2
     end do

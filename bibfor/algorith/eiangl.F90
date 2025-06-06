@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine eiangl(ndim, nno2, angnau, ang)
     implicit none
 #include "asterc/r8dgrd.h"
     integer :: ndim, nno2
-    real(kind=8) :: angnau(3), ang(24)
+    real(kind=8) :: angnau(3), ang(merge(1, 3, ndim .eq. 2), nno2)
 !
 !--------------------------------------------------
 !  DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS
@@ -31,18 +31,9 @@ subroutine eiangl(ndim, nno2, angnau, ang)
 !  OUT :
 !        ANG : ANGLES NAUTIQUES AUX NOEUDS EN RADIAN
 !--------------------------------------------------
-    integer :: n
-!
-    if (ndim .eq. 2) then
-        do n = 1, nno2
-            ang(n) = angnau(1)*r8dgrd()
-        end do
-    else
-        do n = 1, nno2
-            ang(1+(n-1)*3) = angnau(1)*r8dgrd()
-            ang(2+(n-1)*3) = angnau(2)*r8dgrd()
-            ang(3+(n-1)*3) = angnau(3)*r8dgrd()
-        end do
-    end if
-!
+    integer::i
+    real(kind=8):: deg_2_rad
+!--------------------------------------------------
+    deg_2_rad = r8dgrd()
+    forall (i=1:size(ang, 1)) ang(i, :) = angnau(i)*deg_2_rad
 end subroutine

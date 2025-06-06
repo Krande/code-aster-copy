@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ def asse_matrice_prod(self, MATR_ELEM, **args):
         return matr_asse_temp_r
     if AsType(MATR_ELEM) == matr_elem_pres_c:
         return matr_asse_pres_c
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 ASSE_MATRICE = MACRO(

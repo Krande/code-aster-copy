@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: resu, noma, typm
     character(len=19) :: cnxinv, basnof
@@ -224,10 +225,10 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
 !
 !       NUMEROS (ABSOLUS) DU PREMIER NOEUDS SOMMETS DU SEGMENT : NA
         noeua = zk8(jnoe1-1+ina)
-        call jenonu(jexnom(noma//'.NOMNOE', noeua), na)
+        na = char8_to_int(noeua)
         if (ndim .eq. 3) then
 !       EN 3D : NB EST LE NUMERO (ABSOLU) DU DEUXIEME NOEUD SOMMETS DU SEGMENT
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe1-1+inb)), nb)
+            nb = char8_to_int(zk8(jnoe1-1+inb))
             if (iseg .eq. 1) then
                 inoext = na
                 inoseg = nb
@@ -247,7 +248,7 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
             call jeveuo(noma//'.COORDO    .VALE', 'L', vr=geom)
             do i = 1, nblev
 !               POUR CHAQUE SEGMENT, ON RECUPERE LA CONNEXITE
-                call jenonu(jexnom(noma//'.NOMMAI', mail(i)), iret)
+                iret = char8_to_int(mail(i))
                 call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', vi=connex)
 
 !               ON TESTE UNIQUEMENT UN NOEUD PAR SEGMENT (SUFFISANT)

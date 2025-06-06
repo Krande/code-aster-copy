@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine disjvp(for_discret, iret)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: imat, ivarim, jdc, irep, jtp, jtm, idepen, imatsym, ifono, iretlc, icontp, ivarip
-    integer :: iadzi, iazk24, icompo, igeom
+    integer :: iadzi, iazk24, igeom
     integer :: icarcr
     integer :: icontm, ii
     character(len=24) :: messak(5)
@@ -141,7 +141,6 @@ subroutine disjvp(for_discret, iret)
 !
     iret = 0
 !   Paramètres en entrée
-    call jevech('PCOMPOR', 'L', icompo)
     call jevech('PGEOMER', 'L', igeom)
 !   récupération du matériau
     call jevech('PMATERC', 'L', imat)

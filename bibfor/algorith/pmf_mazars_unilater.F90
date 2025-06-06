@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,8 +84,6 @@ subroutine pmf_mazars_unilater(for_pmf, nf, nbvalc, &
     character(len=16) :: rela_comp, algo, nomres(2)
     character(len=30) :: valkm(3)
     aster_logical     :: istemp, ishydr, issech, resi, rigi
-!
-    real(kind=8), parameter :: rac2 = 1.4142135623731
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nbval = 10
     integer             :: icodre(nbval)
@@ -196,7 +194,7 @@ subroutine pmf_mazars_unilater(for_pmf, nf, nbvalc, &
         ASSERT(icodre(iepst0) .eq. icodre(iepsc0))
         if (icodre(iepsd0) .eq. 0) then
             valmazars(iepst0) = valres(iepsd0)
-            valmazars(iepsc0) = valres(iepsd0)/(nu*rac2)
+            valmazars(iepsc0) = valres(iepsd0)/(nu*sqrt(2.d0))
         else
             valmazars(iepsd0) = valres(iepst0)
         end if
@@ -235,7 +233,7 @@ subroutine pmf_mazars_unilater(for_pmf, nf, nbvalc, &
             ! C'est soit iepsd0 soit iepst0 et iepsc0
             if (icodre(iepsd0) .eq. 0) then
                 valmazars(iepst0) = valres(iepsd0)
-                valmazars(iepsc0) = valres(iepsd0)/(nu*rac2)
+                valmazars(iepsc0) = valres(iepsd0)/(nu*sqrt(2.d0))
             else
                 valmazars(iepsd0) = valres(iepst0)
             end if

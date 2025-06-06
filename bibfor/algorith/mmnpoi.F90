@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine mmnpoi(noma, nommae, numnoe, iptm, nompt)
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
     character(len=8) :: noma
     character(len=8) :: nommae
     integer :: iptm, numnoe
@@ -60,7 +61,7 @@ subroutine mmnpoi(noma, nommae, numnoe, iptm, nompt)
 !
     write (for4, '(I4)') iptm
     if (numnoe .gt. 0) then
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+        nomnoe = int_to_char8(numnoe)
         nompt = 'NOEUD   '//nomnoe
     else
         write (for4, '(I4)') iptm

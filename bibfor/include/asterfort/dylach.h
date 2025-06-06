@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine dylach(nomo, mate, mateco, carele, lischa, numedd,&
-                      vediri, veneum, vevoch, vassec)
-        character(len=8) :: nomo
-        character(len=24) :: mate, mateco
-        character(len=24) :: carele
-        character(len=19) :: lischa
+    subroutine dylach(modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ, &
+                      numedd, vediri, veneum, vevoch, vassec)
+        character(len=*) :: modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ
         character(len=*) :: numedd
-        character(len=19) :: vediri
-        character(len=19) :: veneum
-        character(len=19) :: vevoch
-        character(len=19) :: vassec
+        character(len=19) :: vediri, veneum, vevoch, vassec
     end subroutine dylach
 end interface

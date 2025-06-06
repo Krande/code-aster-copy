@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
                   sddisc, hval_algo, hval_incr)
@@ -36,7 +35,6 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
 #include "asterfort/mmmcpt.h"
 #include "asterfort/mmmres.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/xmmres.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=*), intent(in) :: model_
@@ -66,7 +64,7 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_cont, l_cont_disc, l_cont_xfem, l_cont_lac
+    aster_logical :: l_cont_cont, l_cont_disc, l_cont_lac
     aster_logical :: l_cont_exiv, l_all_verif, l_cont_node
     character(len=19) :: disp_iter, disp_cumu_inst, disp_curr
     real(kind=8) :: time_curr, time_prev, time_incr
@@ -78,44 +76,34 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
 ! --------------------------------------------------------------------------------------------------
 !
     model = model_
-!
+
 ! - Contact parameters
-!
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
     l_cont_disc = cfdisl(ds_contact%sdcont_defi, 'FORMUL_DISCRETE')
-    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
     l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
     l_cont_exiv = cfdisl(ds_contact%sdcont_defi, 'EXIS_VERIF')
     l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
     l_cont_node = ds_contact%l_cont_node
-!
+
 ! - Get fields name
-!
     cnsinr = ds_contact%fields_cont_node
     cnoinr = ds_contact%field_cont_node
     cnsper = ds_contact%field_cont_perc
-!
+
 ! - Times
-!
     time_prev = diinst(sddisc, nume_inst-1)
     time_curr = diinst(sddisc, nume_inst)
     time_incr = time_curr-time_prev
-!
+
 ! - Get fields
-!
     call nmchex(hval_algo, 'SOLALG', 'DDEPLA', disp_iter)
     call nmchex(hval_algo, 'SOLALG', 'DEPDEL', disp_cumu_inst)
     call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
-!
+
 ! - Create fields
-!
     if (.not. l_all_verif) then
-!
 ! ----- Create fields
-!
-        if (l_cont_xfem) then
-            call xmmres(disp_cumu_inst, model, cnsinr, ds_contact)
-        else if (l_cont_cont) then
+        if (l_cont_cont) then
             if (l_cont_node) then
                 call mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
                             cnsinr, cnsper)
@@ -130,15 +118,13 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
             ASSERT(ASTER_FALSE)
         end if
     end if
-!
+
 ! - Create fields - No-computed contact
-!
     if (l_cont_exiv) then
         call cfmmve(mesh, ds_contact, hval_incr, time_curr)
     end if
-!
+
 ! - Transform CHAM_NO_S field
-!
     if (.not. l_cont_lac) then
         call dismoi('NUME_EQUA', cnoinr, 'CHAM_NO', repk=prno, arret='C')
         call cnscno(cnsinr, prno, 'NON', 'V', cnoinr, 'F', ibid)

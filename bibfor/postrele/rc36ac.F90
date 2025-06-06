@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbma, listma(*)
     character(len=8) :: noma
@@ -100,7 +101,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
     aster_logical :: seisme, endur
     integer :: icodre(1)
     character(len=8) :: k8b, nommat, noeud, valk(7), kbid
-    character(len=24) :: momepi, momepj, nommai, nomnoe, connex, matepi, matepj
+    character(len=24) :: momepi, momepj, connex, matepi, matepj
     real(kind=8) :: typeke, spmeca, spther
     integer, pointer :: situ_numero(:) => null()
     character(len=24), pointer :: materiau(:) => null()
@@ -123,8 +124,6 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
 !
     call infniv(ifm, niv)
 !
-    nommai = noma//'.NOMMAI         '
-    nomnoe = noma//'.NOMNOE         '
     connex = noma//'.CONNEX         '
     call jeveuo(connex, 'L', jconx1)
     call jeveuo(jexatr(connex, 'LONCUM'), 'L', jconx2)
@@ -193,8 +192,8 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
             call jeveuo(jexnum(ncncin, ino), 'L', adrm)
             call jelira(jexnum(ncncin, ino), 'LONMAX', nbm)
             if (niv .ge. 2) then
-                call jenuno(jexnum(nommai, ima), k8b)
-                call jenuno(jexnum(nomnoe, ino), noeud)
+                k8b = int_to_char8(ima)
+                noeud = int_to_char8(ino)
                 write (ifm, 1000) '===>> TRAITEMENT DU NOEUD ', noeud, &
                     ' APPARTENANT A LA MAILLE ', k8b
             end if
@@ -204,8 +203,8 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
             do icmp = 1, 3
                 iad = decin+(ipt-1)*nbcin+icmp
                 if (.not. zl(jcinl-1+iad)) then
-                    call jenuno(jexnum(nomnoe, ino), valk(1))
-                    call jenuno(jexnum(nommai, ima), valk(2))
+                    valk(1) = int_to_char8(ino)
+                    valk(2) = int_to_char8(ima)
                     if (icmp .eq. 1) then
                         valk(3) = 'C1'
                     else if (icmp .eq. 2) then
@@ -218,8 +217,8 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
                 c(icmp) = cinv(iad)
                 iad = decin+(ipt-1)*nbcin+icmp+3
                 if (.not. zl(jcinl-1+iad)) then
-                    call jenuno(jexnum(nomnoe, ino), valk(1))
-                    call jenuno(jexnum(nommai, ima), valk(2))
+                    valk(1) = int_to_char8(ino)
+                    valk(2) = int_to_char8(ima)
                     if (icmp .eq. 1) then
                         valk(3) = 'K1'
                     else if (icmp .eq. 2) then
@@ -237,8 +236,8 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
             do icmp = 2, 4
                 iad = decca+(ipt-1)*nbcca+icmp
                 if (.not. zl(jccal-1+iad)) then
-                    call jenuno(jexnum(nomnoe, ino), valk(1))
-                    call jenuno(jexnum(nommai, ima), valk(2))
+                    valk(1) = int_to_char8(ino)
+                    valk(2) = int_to_char8(ima)
                     call utmess('F', 'POSTRCCM_8', nk=2, valk=valk)
                 end if
                 cara(icmp-1) = ccav(iad)

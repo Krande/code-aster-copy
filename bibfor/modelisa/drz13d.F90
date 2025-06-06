@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,12 +28,14 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: noma
@@ -80,7 +82,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
     integer ::   jprnm
     integer :: nbec
     integer :: jlino, numnoe_m, numnoe_a
-    integer :: nb_maxi, nb_term
+    integer :: nb_maxi, nb_term, ier
     real(kind=8) :: un, x, y, z
     real(kind=8) :: vale_real
     complex(kind=8) :: vale_cplx
@@ -94,6 +96,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    aster_logical :: lcolle
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -151,14 +154,19 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
 30  continue
 !
-    call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
+    lcolle = .false.
+    call jeexin(noma//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
+    nomnoe_a = int_to_char8(numnoe_a, lcolle, noma, 'NOEUD')
     nom_noeuds(1) = nomnoe_a
 !
 ! - Loop on nodes
 !
     do i_no = 1, nb_node
         numnoe_m = zi(jlino+i_no-1)
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
+        nomnoe_m = int_to_char8(numnoe_m, lcolle, noma, 'NOEUD')
 !
         if (numnoe_m .ne. numnoe_a) then
 !

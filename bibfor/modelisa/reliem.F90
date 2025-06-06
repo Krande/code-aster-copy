@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -41,6 +42,8 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 #include "jeveux.h"
 !
     integer :: iocc, nbmocl, nbtrou
@@ -99,6 +102,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
     character(len=24) :: karg
     mpi_int :: mrank
     aster_logical :: l_parallel_mesh, l_group_ma, l_keep_prop, l_all
+    aster_logical :: lcolle, lcolle2
     integer, pointer :: maille(:) => null()
     integer, pointer :: prnm(:) => null()
     integer, pointer :: v_maex(:) => null()
@@ -122,6 +126,16 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
         l_all = ASTER_FALSE
     end if
     call infniv(ifm, niv)
+    lcolle = .false.
+    call jeexin(ma//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
+    lcolle2 = .false.
+    call jeexin(ma//'.NOMMAI', ier)
+    if (ier .ne. 0) then
+        lcolle2 = .true.
+    end if
 !
     call asmpi_info(rank=mrank)
     rank = to_aster_int(mrank)
@@ -235,7 +249,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
                 end if
-                call jenonu(jexnom(ma//'.NOMMAI', karg), ima)
+                ima = char8_to_int(karg, lcolle2, ma, "MAILLE")
                 zi4(itrma-1+ima) = 1
 !
             else if (typmcl .eq. 'GROUP_MA') then
@@ -259,7 +273,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
                 end if
-                call jenonu(jexnom(ma//'.NOMNOE', karg), ino)
+                ino = char8_to_int(karg, lcolle, ma, "NOEUD")
                 indic_noeud(ino) = 1
 !
             else if (typmcl .eq. 'GROUP_NO') then
@@ -356,7 +370,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
             do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
                     lma = lma+1
-                    call jenuno(jexnum(ma//'.NOMMAI', ima), zk8(itbma-1+lma))
+                    zk8(itbma-1+lma) = int_to_char8(ima, lcolle2, ma, "MAILLE")
                 end if
             end do
         end if
@@ -371,7 +385,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                 if (zi4(itrma-1+ima) .ne. 0) then
                     if (maille(ima) .eq. 0) then
                         ier = ier+1
-                        call jenuno(jexnum(ma//'.NOMMAI', ima), noent)
+                        noent = int_to_char8(ima, lcolle2, ma, "MAILLE")
                         write (ifm, *) ' MAILLE : ', noent
                     end if
                 end if
@@ -431,7 +445,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
             do ino = 1, nbno
                 if (indic_noeud(ino) .ne. 0) then
                     lno = lno+1
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), zk8(itbno-1+lno))
+                    zk8(itbno-1+lno) = int_to_char8(ino, lcolle, ma, "NOEUD")
                 end if
             end do
         end if
@@ -453,7 +467,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 !             LE NOEUD NE PORTE AUCUNE COMPOSANTE DE LA GRANDEUR
 !             ASSOCIEE AU PHENOMENE
                     ier = ier+1
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), noent)
+                    noent = int_to_char8(ino, lcolle, ma, "NOEUD")
                     write (ifm, *) ' NOEUD : ', noent
                 end if
 191             continue

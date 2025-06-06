@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=24) :: mate, mateco, carele
     character(len=19) :: sddyna, sddisc
@@ -195,7 +196,7 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
         call jeveuo(sddisc//'.DITR', 'L', vr=ditr)
 !
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=mail)
-        call jenuno(jexnum(mail//'.NOMMAI', nbmcfl), maicfl)
+        maicfl = int_to_char8(nbmcfl)
 !
 !
         if (ndynlo(sddyna, 'DIFF_CENT')) then

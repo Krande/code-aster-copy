@@ -67,9 +67,9 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
     call jemarq()
 !
     modmai = nomo//'.MAILLE'
-    mlgnma = noma//'.NOMMAI'
+    mlgnma = noma//'.TYPMAIL'
     call jeexin(modmai, ixma)
-    call jelira(mlgnma, 'NOMMAX', nbmail)
+    call jelira(mlgnma, 'LONMAX', nbmail)
     ASSERT(ixma .ne. 0)
     call jeveuo(modmai, 'L', jdme)
 !

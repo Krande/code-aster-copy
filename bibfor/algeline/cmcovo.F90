@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: inima, nbma, lima(nbma)
     character(len=8) :: main, maout, prefno, prefma, plan, trans
@@ -79,8 +81,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     character(len=10) :: kangl
     character(len=24) :: normno, nonuma, grpmai, grpmav
     character(len=24) :: valk(4)
-    character(len=24) :: nommav, nomnov, typmav, connev, grpnov, nodimv
-    character(len=24) :: coovav, coodsv, nommai, nomnoe, typmai
+    character(len=24) :: typmav, connev, grpnov, nodimv
+    character(len=24) :: coovav, coodsv, typmai
     character(len=24) :: connex, grpnoe, nodime, cooval, coodsc
     character(len=24) :: lisma, newma, grpnno, grpnma, nomg
     real(kind=8) :: coon1(3), coon2(3), coon3(3), coon4(3), n1n3(3), n1n2(3)
@@ -95,8 +97,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     call infniv(ifm, niv)
     logic = .false.
 !
-    nommav = main//'.NOMMAI         '
-    nomnov = main//'.NOMNOE         '
     typmav = main//'.TYPMAIL        '
     connev = main//'.CONNEX         '
     grpnov = main//'.GROUPENO       '
@@ -105,8 +105,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     coovav = main//'.COORDO    .VALE'
     coodsv = main//'.COORDO    .DESC'
 !
-    nommai = maout//'.NOMMAI         '
-    nomnoe = maout//'.NOMNOE         '
     typmai = maout//'.TYPMAIL        '
     connex = maout//'.CONNEX         '
     grpnno = maout//'.PTRNOMNOE      '
@@ -240,7 +238,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
         if (noeuds(ino) .eq. 0) cycle
         nbnuma = zi(jnbnum+ino-1)
         numa = zi(jlisma-1+27*(ino-1)+1)
-        call jenuno(jexnum(nommav, numa), ma1)
+        ma1 = int_to_char8(numa)
         zr(jnorm+3*(ino-1)) = zr(jnorn+3*(numa-1))
         zr(jnorm+3*(ino-1)+1) = zr(jnorn+3*(numa-1)+1)
         zr(jnorm+3*(ino-1)+2) = zr(jnorn+3*(numa-1)+2)
@@ -258,8 +256,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
             sinvec = sqrt(sinvec)
             angl = r8rddg()*atan2(sinvec, cosvec)
             if (abs(angl) .gt. 90.0d0) then
-                call jenuno(jexnum(nomnov, ino), nomg)
-                call jenuno(jexnum(nommav, numa), ma2)
+                nomg = int_to_char8(ino)
+                ma2 = int_to_char8(numa)
                 call codree(abs(angl), 'E', kangl)
                 valk(1) = nomg
                 valk(2) = ma1
@@ -296,22 +294,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     zi(jdimo+2) = nbmat
     zi(jdimo+5) = 3
 !
-    call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnot)
-!
-! --- ON ECRIT LES NOEUDS DE MAIN DANS MAOUT
-!
-    do ino = 1, nbnin
-        call jenuno(jexnum(nomnov, ino), nomg)
-        call jeexin(jexnom(nomnoe, nomg), iret)
-        if (iret .eq. 0) then
-            call jecroc(jexnom(nomnoe, nomg))
-        else
-            valk(1) = nomg
-            call utmess('F', 'ALGELINE4_5', sk=valk(1))
-        end if
-    end do
-!
 ! --- TRAITEMENT DES NOEUDS AJOUTES
 !
     lgno = lxlgut(prefno)
@@ -324,15 +306,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
 !
         if (lgnu+lgno .gt. 8) then
             call utmess('F', 'ALGELINE_16')
-        end if
-        nomg = prefno(1:lgno)//knume
-        call jeexin(jexnom(nomnoe, nomg), iret)
-        if (iret .eq. 0) then
-            call jecroc(jexnom(nomnoe, nomg))
-            new_noeuds(ino) = nomg
-        else
-            valk(1) = nomg
-            call utmess('F', 'ALGELINE4_5', sk=valk(1))
         end if
     end do
 !
@@ -408,9 +381,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8'), typhex)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), typpen)
 !
-    call jecreo(nommai, 'G N K8')
-    call jeecra(nommai, 'NOMMAX', nbmat)
-!
     call wkvect(typmai, 'G V I', nbmat, iatyma)
 !
 !     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
@@ -423,15 +393,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
 ! --- ON RECUPERE LES MAILLES DE MAIN DANS MAOUT
 !
     do ima = 1, nbmin
-!
-        call jenuno(jexnum(nommav, ima), nomg)
-        call jeexin(jexnom(nommai, nomg), iret)
-        if (iret .eq. 0) then
-            call jecroc(jexnom(nommai, nomg))
-        else
-            valk(1) = nomg
-            call utmess('F', 'ALGELINE4_7', sk=valk(1))
-        end if
 !
         zi(iatyma-1+ima) = zi(jtypm+ima-1)
 !
@@ -464,15 +425,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
         end if
         nomg = prefma(1:lgpref)//knume
 !
-        call jeexin(jexnom(nommai, nomg), iret)
-        if (iret .eq. 0) then
-            call jecroc(jexnom(nommai, nomg))
-        else
-            valk(1) = nomg
-            call utmess('F', 'ALGELINE4_7', sk=valk(1))
-        end if
-!
-        call jenonu(jexnom(nommai, nomg), ima2)
+        ima2 = char8_to_int(nomg)
         zi(jnewm+ima-1) = ima2
 !
         if (typm .eq. 'QUAD4') then
@@ -487,7 +440,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
             end do
             do ino = 5, 8
-                call jenonu(jexnom(nomnoe, new_noeuds(1+zi(jopt-1+ino-4)-1)), zi(jnpt-1+ino))
+                zi(jnpt-1+ino) = char8_to_int(new_noeuds(1+zi(jopt-1+ino-4)-1))
             end do
             iq4 = iq4+1
 !
@@ -504,7 +457,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
             end do
             do ino = 4, 6
-                call jenonu(jexnom(nomnoe, new_noeuds(1+zi(jopt-1+ino-3)-1)), zi(jnpt-1+ino))
+                zi(jnpt-1+ino) = char8_to_int(new_noeuds(1+zi(jopt-1+ino-3)-1))
 !
             end do
             it3 = it3+1

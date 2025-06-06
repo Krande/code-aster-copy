@@ -1,0 +1,187 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# ---------------------------------------------------------------------
+#  TEST DE LA LOI HYPER-ELASTIQUE-COMPRESSIBLE DE HILL 'HYPER_HILL'- (3D) - Test de compression
+# ---------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+## model
+modelINTEGR = "3D_SI"
+## model parameter
+
+# ordre 1
+alpha1 = [3.1740]
+mu1 = [3.936e-2]
+beta1 = [3.006e-1]
+# ordre2
+alpha2 = [3.6566, 1.1621]
+mu2 = [4.2567e-2, -8.0625e-3]
+beta2 = [1.8748e-1, -6.7408]
+# ordre 3
+alpha3 = [2.6430, 2.6065, 2.2001]
+beta3 = [-2.7454, 2.9365e-1, -3.2912]
+mu3 = [1.3552e-1, 2.8632e-2, -1.2926e-1]
+# ordre 4
+alpha4 = [2.4766, 2.4426, 2.1534, -4.0965]
+beta4 = [-4.5951, 5.5482e-1, -5.2950, -1.5711e-1]
+mu4 = [1.7462e-1, 2.1899e-2, -1.6128e-1, -8.5760e-5]
+
+alpha = [[3.1740], [3.6566, 1.1621], [2.6430, 2.6065, 2.2001], [2.4766, 2.4426, 2.1534, -4.0965]]
+
+mu = [
+    [3.936e-2],
+    [4.2567e-2, -8.0625e-3],
+    [1.3552e-1, 2.8632e-2, -1.2926e-1],
+    [1.7462e-1, 2.1899e-2, -1.6128e-1, -8.5760e-5],
+]
+
+beta = [
+    [3.006e-1],
+    [1.8748e-1, -6.7408],
+    [-2.7454, 2.9365e-1, -3.2912],
+    [-4.5951, 5.5482e-1, -5.2950, -1.5711e-1],
+]
+
+mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+mesh = CREA_MAILLAGE(MAILLAGE=mesh, LINE_QUAD=_F(TOUT="OUI"))
+
+mesh = DEFI_GROUP(
+    reuse=mesh, CREA_GROUP_NO=_F(GROUP_MA=("face_dep",), NOM=("Group_no_face")), MAILLAGE=mesh
+)
+
+
+model = AFFE_MODELE(
+    AFFE=_F(MODELISATION=modelINTEGR, PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh
+)
+
+for i in range(4):
+
+    mater = DEFI_MATERIAU(HYPER_HILL=_F(ALPHA=alpha[i], BETA=beta[i], MU=mu[i]))
+    print(mater)
+
+    fieldma1 = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MAILLAGE=mesh, MODELE=model)
+
+    listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=10),))
+    # _F(JUSQU_A=1, NOMBRE=1000,),))
+
+    depl = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1, -12.4))
+
+    CLMECA = AFFE_CHAR_MECA(
+        DDL_IMPO=(
+            _F(DX=0.0, GROUP_MA=("face_x",)),
+            _F(DY=0.0, GROUP_MA=("face_y",)),
+            _F(DZ=0.0, GROUP_MA=("face_z",)),
+        ),
+        MODELE=model,
+    )
+
+    CHMECA = AFFE_CHAR_MECA_F(DDL_IMPO=_F(DZ=depl, GROUP_MA=("face_dep",)), MODELE=model)
+
+    resnonl = STAT_NON_LINE(
+        CHAM_MATER=fieldma1,
+        EXCIT=(_F(CHARGE=CLMECA), _F(CHARGE=CHMECA)),
+        COMPORTEMENT=(
+            _F(RELATION="HYPER_HILL", DEFORMATION="GREEN_LAGRANGE", RESI_INTE_MAXI=1e-11),
+        ),
+        INCREMENT=_F(LIST_INST=listr),
+        NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=1),
+        CONVERGENCE=_F(RESI_GLOB_RELA=1e-6, ITER_GLOB_MAXI=100, ARRET="OUI"),
+        MODELE=model,
+    )
+
+    resnonl = CALC_CHAMP(
+        reuse=resnonl,
+        TOUT_ORDRE="OUI",
+        TOUT="OUI",
+        RESULTAT=resnonl,
+        CONTRAINTE=("SIEF_NOEU", "SIGM_NOEU", "SIGM_ELGA"),
+        DEFORMATION=("EPSG_NOEU", "EPSL_NOEU"),
+        CRITERES=("SIEQ_NOEU", "EPGQ_NOEU", "SIEQ_ELGA", "EPGQ_ELGA"),
+        ENERGIE=("ETOT_ELGA",),
+        FORCE=("REAC_NODA",),
+    )
+    tab_reac = POST_RELEVE_T(
+        ACTION=(
+            _F(
+                GROUP_NO="Group_no_face",
+                INTITULE="tab_reac",
+                NOM_CHAM="REAC_NODA",
+                OPERATION=("EXTRACTION",),
+                RESULTAT=resnonl,
+                RESULTANTE="DZ",
+            ),
+        )
+    )
+
+    # ----------------------------------------------------------------#
+    # TESTS PAR RAPPORT AUX RESULTAT EXPERIMENTAUX ET A CEUX d'ABAQUS #
+    # ----------------------------------------------------------------#
+    force_abaq_ord1 = -31.1164
+    force_exp = -29.68846
+    depl_abaq_ord1 = -2.56539
+    depl_exp = -4.293741
+
+    force_calc = [-31.129805167289472, -30.487820382693798, -30.22591645854905, -30.191401629952068]
+    depl_calc = [-2.5665286425245335, -4.193320724057341, -4.26576315361211, -4.088160912785412]
+
+    n = 1
+    force_ref = [force_exp]
+    depl_ref = [depl_exp]
+    prec_sig = [0.05]
+    prec_dep = 0.05
+
+    if i == 0:
+        force_ref = [force_abaq_ord1, force_exp]
+        prec_sig = [0.001, 0.05]
+        prec_dep = 0.001
+        depl_ref = depl_abaq_ord1
+        n = 2
+
+    for j in range(n):
+        TEST_TABLE(
+            VALE_CALC=force_calc[i],
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=force_ref[j],
+            PRECISION=prec_sig[j],
+            NOM_PARA="DZ",
+            TABLE=tab_reac,
+            FILTRE=_F(NOM_PARA="INST", VALE=1),
+        )
+
+    TEST_RESU(
+        RESU=(
+            _F(
+                RESULTAT=resnonl,
+                INST=1.0,
+                NOM_CHAM="DEPL",
+                NOM_CMP="DX",
+                GROUP_NO="pt_post_traitement",
+                REFERENCE="SOURCE_EXTERNE",
+                VALE_REFE=depl_ref,
+                PRECISION=prec_dep,
+                VALE_CALC=depl_calc[i],
+            ),
+        )
+    )
+
+
+FIN()

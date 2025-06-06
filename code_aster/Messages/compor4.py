@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,9 @@ Comportement - Occurrence  %(i1)d"""
     9: _("""     Nombre total de variables internes   : %(i1)d"""),
     10: _("""     Relation                             : prototype (MFRONT ou UMAT)"""),
     11: _("""     Relation                             : défini par DEFI_COMPOR"""),
-    12: _("""   Relation MULTIFIBRE (définie par DEFI_COMPOR) affectée sur %(i1)d éléments"""),
+    12: _(
+        """Une relation de type MULTIFIBRE (définie par DEFI_COMPOR) a été affectée sur %(i1)d éléments."""
+    ),
     13: _(
         """
   Il y a deux types de modélisations différents pour une même affectation du comportement MFRONT.

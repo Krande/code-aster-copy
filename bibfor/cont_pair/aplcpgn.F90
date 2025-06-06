@@ -54,6 +54,7 @@ subroutine aplcpgn(mesh, newgeo, &
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 #include "Contact_type.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
@@ -226,7 +227,7 @@ subroutine aplcpgn(mesh, newgeo, &
                         elem_slav_coor)
 
             if (debug) then
-                call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
+                elem_slav_name = int_to_char8(elem_slav_nume)
                 write (*, *) "Current slave element      : ", elem_slav_nume
                 write (6, *) " Coordinates (global frame): ", &
                     elem_slav_coor(1:3*elem_slav_nbnode)
@@ -253,7 +254,7 @@ subroutine aplcpgn(mesh, newgeo, &
                 do i_slav_neigh = 1, nb_slav_neigh
                     elem_nume = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh)
                     if (elem_nume .ne. 0) then
-                        call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+                        elem_name = int_to_char8(elem_nume)
                     else
                         elem_name = 'None'
                     end if
@@ -313,7 +314,7 @@ subroutine aplcpgn(mesh, newgeo, &
                 call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
 !
                 if (debug) then
-                    call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_name)
+                    elem_name = int_to_char8(elem_mast_nume)
                     write (*, *) "Current master element: ", elem_mast_nume
                     write (6, *) " Coordinates (global frame): "
                 end if

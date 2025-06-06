@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine te0557(option, nomte)
     integer :: ndim, nbspg, contac, ibid, iadzi, iazk24, ifisc, nfisc
     integer :: igeom, idepm, idepd, jlsn, jfisco
     integer :: jptint, jaint, jcface, jlonch, jbasec, jdonco
-    integer :: iinstm, iinstp, icompo, icarcr, jmate, jcohes
+    integer :: iinstm, iinstp, icarcr, jmate, jcohes
     integer :: jtab(7), iret, ncompv, nnol, pla(27), jv_cont, ncompp
     integer :: npgf, ipoidf, ivff, idfdef, jstno, jfisno, jheano
     integer :: ninter, nface, nptf, nnof, cface(30, 6), ncompd
@@ -70,6 +70,7 @@ subroutine te0557(option, nomte)
     aster_logical :: lelim
     real(kind=8) :: rela, vcont(560), mat(1)
     character(len=8) :: elrefp, elrefc, elc, fpg, typma
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: enr
 !
     integer :: nfimax
@@ -156,7 +157,7 @@ subroutine te0557(option, nomte)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
 
     call jevech('PSTANO', 'L', jstno)
@@ -320,7 +321,7 @@ subroutine te0557(option, nomte)
                          jcohes, jptint, igeom, jbasec, &
                          nlact, cface, zr(iinstp), &
                          zr(iinstm), zr(icarcr), fpg, ncompv, &
-                         vcont, zk16(icompo), jmate, ndim, idepm, &
+                         vcont, compor, jmate, ndim, idepm, &
                          idepd, pla, algocr, rela, jheavn, ncompn, &
                          ifiss, nfiss, nfh, jheafa, ncomph, pos)
 !

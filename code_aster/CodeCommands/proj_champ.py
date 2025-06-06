@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -20,9 +20,43 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Messages import UTMESS
-from ..Objects import FieldOnCellsReal, FullResult, MeshesMapping
+from ..Objects import (
+    FieldOnCellsReal,
+    FullResult,
+    MeshesMapping,
+    ConnectionMesh,
+    ParallelMesh,
+    SimpleFieldOnNodesReal,
+)
 from ..Supervis import ExecuteCommand
-from ..Utilities import force_list
+from ..Utilities import force_list, MPI
+
+
+def _addGroup(mcf, groups, keys):
+    for name in keys:
+        mc = mcf.get(name)
+        if mc:
+            groups.update(force_list(mc))
+
+
+def _excludeGroup(mcf, keys):
+    for name in keys:
+        if mcf.get(name):
+            raise RuntimeError("Keyword %s not accepted in parallel AFFE_CHAR_MECA" % name)
+
+
+def _getGroups(keywords):
+    """for parallel load, return all node and cells groups present in AFFE_CHAR_MECA, in order to define the connection mesh"""
+    nodeGroups = set()
+    cellGroups = set()
+    for key in list(keywords.keys()):
+        if key in ("VIS_A_VIS",):
+            for mcf in keywords[key]:
+                _addGroup(mcf, nodeGroups, ("GROUP_NO_1", "GROUP_NO_2"))
+                _addGroup(mcf, cellGroups, ("GROUP_MA_1", "GROUP_MA_2"))
+                _excludeGroup(mcf, ("NOEUD", "SANS_NOEUD", "MAILLE"))
+    # must be sorted to be identical on all procs
+    return sorted(list(nodeGroups)), sorted(list(cellGroups))
 
 
 class FieldProjector(ExecuteCommand):
@@ -50,7 +84,7 @@ class FieldProjector(ExecuteCommand):
             return
         self._result = type(chamGd)()
 
-    def exec_(self, keywords):
+    def exec_legacy(self, keywords):
         """Execute the command.
 
         Arguments:
@@ -109,6 +143,77 @@ class FieldProjector(ExecuteCommand):
         else:
             super().exec_(keywords)
 
+    def exec_(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        hpc = keywords.get("DISTRIBUTION") == "OUI"
+        if not hpc:
+            self.exec_legacy(keywords)
+        else:
+            if "CHAM_GD" in keywords:
+                maillage_1 = keywords.pop("MAILLAGE_1")
+                maillage_2 = keywords.pop("MAILLAGE_2")
+                nodeGroups, cellGroups = _getGroups(keywords)
+                if type(maillage_1) is ParallelMesh:
+                    connectionMesh_1 = ConnectionMesh(maillage_1, nodeGroups, cellGroups)
+                    pField_1 = keywords.pop("CHAM_GD")
+                    connectField_1 = pField_1.transfertToConnectionMesh(connectionMesh_1)
+                else:
+                    connectionMesh_1 = maillage_1
+                if type(maillage_2) is ParallelMesh:
+                    connectionMesh_2 = ConnectionMesh(maillage_2, nodeGroups, cellGroups)
+                else:
+                    connectionMesh_2 = maillage_2
+
+                keywords["MAILLAGE_1"] = connectionMesh_1
+                keywords["MAILLAGE_2"] = connectionMesh_2
+                keywords["CHAM_GD"] = connectField_1
+                keywords.pop("DISTRIBUTION")
+
+                resu = PROJ_CHAMP(**keywords)
+
+                keywords.pop("MAILLAGE_1")
+                keywords.pop("MAILLAGE_2")
+                keywords.pop("CHAM_GD")
+                keywords["MAILLAGE_1"] = maillage_1
+                keywords["MAILLAGE_2"] = maillage_2
+                keywords["CHAM_GD"] = pField_1
+                keywords["DISTRIBUTION"] = "OUI"
+
+                self._result = resu.transferFromConnectionToParallelMesh(maillage_2)
+
+            elif keywords["PROJECTION"] == "NON":
+
+                maillage_1 = keywords.pop("MAILLAGE_1")
+                maillage_2 = keywords.pop("MAILLAGE_2")
+                nodeGroups, cellGroups = _getGroups(keywords)
+                if type(maillage_1) is ParallelMesh:
+                    connectionMesh_1 = ConnectionMesh(maillage_1, nodeGroups, cellGroups)
+                else:
+                    connectionMesh_1 = maillage_1
+                if type(maillage_2) is ParallelMesh:
+                    if maillage_1 == maillage_2:
+                        connectionMesh_2 = connectionMesh_1
+                    else:
+                        connectionMesh_2 = ConnectionMesh(maillage_2, nodeGroups, cellGroups)
+                else:
+                    connectionMesh_2 = maillage_2
+
+                keywords["MAILLAGE_1"] = connectionMesh_1
+                keywords["MAILLAGE_2"] = connectionMesh_2
+                keywords.pop("DISTRIBUTION")
+
+                resu = PROJ_CHAMP(**keywords)
+
+                keywords["DISTRIBUTION"] = "OUI"
+                self._result = resu
+
+            else:
+                UTMESS("F", "ALGORITH7_76")
+
     def post_exec(self, keywords):
         """Execute the command.
 
@@ -148,7 +253,10 @@ class FieldProjector(ExecuteCommand):
                     mesh = keywords["MATR_PROJECTION"].getSecondMesh()
                 else:
                     mesh = None
-                self._result.build(mesh)
+                if isinstance(self._result, SimpleFieldOnNodesReal):
+                    self._result.build()
+                else:
+                    self._result.build(mesh)
         else:
             if "MAILLAGE_1" in keywords:
                 self._result.setFirstMesh(keywords["MAILLAGE_1"])

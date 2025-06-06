@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine vrcomp_chck_rela(mesh, nbCell, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: nbCell
@@ -113,7 +114,7 @@ subroutine vrcomp_chck_rela(mesh, nbCell, &
             relaCompCurr = cesvCurr(iadp)
             if (iadm .le. 0) then
                 if (verbose) then
-                    call jenuno(jexnum(mesh//'.NOMMAI', iCell), cellName)
+                    cellName = int_to_char8(iCell)
                     valk = ' '
                     valk(1) = cellName
                     call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
@@ -147,7 +148,7 @@ subroutine vrcomp_chck_rela(mesh, nbCell, &
 ! ----------------- Comportements cannot been mixed
                     if (lCellCurr .and. lCellPrev) then
                         if (verbose) then
-                            call jenuno(jexnum(mesh//'.NOMMAI', iCell), cellName)
+                            cellName = int_to_char8(iCell)
                             valk = ' '
                             valk(1) = cellName
                             call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)

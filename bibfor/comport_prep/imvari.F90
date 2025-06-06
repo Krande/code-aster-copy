@@ -45,10 +45,10 @@ subroutine imvari(compor_info)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iVari, mapZoneNume
-    integer :: nbVari, mapNbZone, nbElemZone, nt_vari
+    integer :: nbVari, mapNbZone, nbElemZone, nt_vari, nbCellPMF
     character(len=16) :: vari_excl
     character(len=16) :: rela_comp, defo_comp, type_cpla, regu_visc, post_incr
-    aster_logical :: l_excl
+    aster_logical :: l_excl, lPMF
     integer, pointer :: comporInfoInfo(:) => null()
     integer, pointer :: comporInfoZone(:) => null()
     character(len=16), pointer :: comporInfoVari(:) => null()
@@ -57,6 +57,10 @@ subroutine imvari(compor_info)
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+
+! - Initializations
+    lPMF = ASTER_FALSE
+    nbCellPMF = 0
 
 ! - Access to informations
     call jeveuo(compor_info(1:19)//'.INFO', 'L', vi=comporInfoInfo)
@@ -123,7 +127,9 @@ subroutine imvari(compor_info)
                     call utmess('I', 'COMPOR4_9', si=nbVari)
                     call utmess('I', 'COMPOR4_16')
                 else if (vari_excl .eq. '&&MULT_PMF') then
-                    call utmess('I', 'COMPOR4_12', si=nbElemZone)
+                    lPMF = ASTER_TRUE
+                    nbCellPMF = nbCellPMF+nbElemZone
+
                 else
                     ASSERT(ASTER_FALSE)
                 end if
@@ -153,6 +159,10 @@ subroutine imvari(compor_info)
     end do
 !
 99  continue
+!
+    if (lPMF) then
+        call utmess('I', 'COMPOR4_12', si=nbCellPMF)
+    end if
 !
     call jedema()
 !

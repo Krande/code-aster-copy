@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine fonnoe2(resu, noma, nomobj, nbnoff, typmp)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=6)  :: nomobj
     character(len=8)  :: resu, noma
@@ -68,7 +69,7 @@ subroutine fonnoe2(resu, noma, nomobj, nbnoff, typmp)
 !
     call jeveuo(obtrav, 'L', jjj)
     call jeveuo(jexnom(noma//'.GROUPENO', zk24(jjj)), 'L', jadr)
-    call jenuno(jexnum(noma//'.NOMNOE', zi(jadr)), noeud)
+    noeud = int_to_char8(zi(jadr))
     zk8(jnoe1) = noeud
 !
     call jelira(resu//'.FOND.NOEU', 'LONUTI', nbnoff)

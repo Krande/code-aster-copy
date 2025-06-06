@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
         character(len=*), intent(in) :: questi
         character(len=*), intent(in) :: nomob
         character(len=*), intent(in) :: typeco
-        integer, optional, intent(out) :: repi
+        integer(kind=8), optional, intent(out) :: repi
         character(len=*), optional, intent(out) :: repk
         character(len=*), optional, intent(in) :: arret
-        integer, optional, intent(out) :: ier
+        integer(kind=8), optional, intent(out) :: ier
     end subroutine dismoi
 end interface 

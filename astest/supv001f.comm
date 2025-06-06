@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 
 # person_in_charge: mathieu.courtois at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 import numpy as NP
 
 ma = LIRE_MAILLAGE(FORMAT="ASTER")
 
-np_str = NP.array(["N3", "N7"])
+np_str = NP.array(["N1", "N2"])
 list_str = [i for i in np_str]
 
 ma = DEFI_GROUP(
@@ -65,7 +65,7 @@ TEST_TABLE(
     REFERENCE="ANALYTIQUE",
     VALE_REFE_I=1,
     VALE_CALC_I=1,
-    FILTRE=_F(NOM_PARA="NPSTR", VALE_K="N7"),
+    FILTRE=_F(NOM_PARA="NPSTR", VALE_K="N2"),
 )
 
 FIN()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine te0560(option, nomte)
     integer :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
     integer :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
     integer :: icontm, ivarim
-    integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
+    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
     integer :: ivectu, icontp, ivarip, nnos, jv_ganoQ
     integer :: ivarix, iret
     integer :: jtab(7), jcret, codret
@@ -71,6 +71,7 @@ subroutine te0560(option, nomte)
     character(len=8) :: typmod(2)
     character(len=4) :: fami
     character(len=16) :: elasKeyword, defo_comp
+    character(len=16), pointer :: compor(:) => null()
     aster_logical :: lVect, lMatr, lVari, lSigm
     blas_int :: b_incx, b_incy, b_n
 !
@@ -118,15 +119,15 @@ subroutine te0560(option, nomte)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         call jevech('PCARCRI', 'L', icarcr)
 ! ----- Behaviour
-        defo_comp = zk16(icompo-1+DEFO)
+        defo_comp = compor(DEFO)
         if (defo_comp .ne. 'PETIT') then
             call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
         end if
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+        call behaviourOption(option, compor, lMatr, lVect, lVari, &
                              lSigm)
 !
         call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
@@ -176,7 +177,7 @@ subroutine te0560(option, nomte)
 !
         call nmgvno(fami, ndim, nnoQ, nnoL, npg, &
                     jv_poids, zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
-                    zr(igeom), typmod, option, zi(imate), zk16(icompo), &
+                    zr(igeom), typmod, option, zi(imate), compor, &
                     lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(ideplm), &
                     zr(ideplp), angmas, zr(icontm), zr(ivarim), zr(icontp), &
                     zr(ivarip), zr(imatuu), zr(ivectu), codret)

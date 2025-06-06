@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/permnoe.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=24) :: valk(4)
 !
@@ -86,7 +87,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe, &
     character(len=14) :: numddl
     character(len=19) :: caelem, masse
     character(len=24) :: deeq, frhoe, frhoi, fsic, fsvi, fsvk, fsvr, mlgnma
-    character(len=24) :: mlgnno, nomcha, pvite
+    character(len=24) :: nomcha, pvite
 !
 ! FONCTIONS EXTERNES
 ! ------------------
@@ -317,8 +318,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe, &
 !
 !------- 3.1.CREATION D'OBJETS DE TRAVAIL
 !
-            mlgnma = noma//'.NOMMAI'
-            call jelira(mlgnma, 'NOMMAX', nbma)
+            mlgnma = noma//'.TYPMAIL'
+            call jelira(mlgnma, 'LONMAX', nbma)
             call wkvect('&&MDCONF.TEMP.MAIL', 'V V I', nbma, imail)
 !
 !------- RECUPERATION DES DONNEES DANS LE CONCEPT TYPE_FLUI_STRU
@@ -331,8 +332,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe, &
 121         continue
             indic = igrap
             nomno0 = zk8(lfsvk+1)
-            mlgnno = noma//'.NOMNOE'
-            call jenonu(jexnom(mlgnno, nomno0), numno0)
+            numno0 = char8_to_int(nomno0)
             caelem = zk8(lfsvk+2)
             modele = zk8(lfsvk+3)
             cm1 = zr(lfsvr)

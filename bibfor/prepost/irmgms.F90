@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma, nonoe(*)
     integer :: ifc, versio
@@ -66,7 +67,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm, &
     real(kind=8) :: zero
     character(len=8) :: nomaou, nomtyp
     character(len=8) :: k8nno, k8nbma
-    character(len=24) :: typmai, nommai, nomail, valk, nomgrm
+    character(len=24) :: typmai, nomail, valk, nomgrm
     integer :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
 !
 !     --- TABLEAU DE DECOUPAGE
@@ -111,7 +112,6 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm, &
     ibid = 1
 !
     typmai = nomaou//'.TYPMAIL'
-    nommai = nomaou//'.NOMMAI'
 !
 ! --- INIT
     do i = 1, ntyele
@@ -246,7 +246,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm, &
                 end if
             end do
         end if
-        call jenuno(jexnum(nommai, ima), nomail)
+        nomail = int_to_char8(ima)
         if (lgmsh) then
             k7ma = nomail(idm:8)
         else

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,12 +27,17 @@ Le fichier de sortie de IMPR_OAR est manquant.
     ),
     2: _(
         """
-IMPR_OAR prend au choix soit des résultats thermiques, soit des résultats mécaniques.
+IMPR_OAR prend au choix soit des résultats thermo-mécaniques, soit des résultats mécaniques.
 """
     ),
     3: _(
         """
-TYPE_UNIT prend soit la valeur 'SI' soit la valeur 'MM-MPA'.
+Le modèle choisi pour l'opérande MODELE de la commande IMPR_OAR doit être un modèle de type mécanique.
+"""
+    ),
+    4: _(
+        """
+Les instants thermiques suivants n'ont pas été imprimés, faute d'instants mécaniques correspondants : %(k1)s.
 """
     ),
 }

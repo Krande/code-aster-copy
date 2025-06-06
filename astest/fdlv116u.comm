@@ -1,0 +1,357 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+maild = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+maild = DEFI_GROUP(
+    reuse=maild,
+    MAILLAGE=maild,
+    CREA_GROUP_MA=(
+        _F(UNION=("Sol", "Barrage", "Eau"), NOM="Group_All"),
+        _F(UNION=("Bord_G_Sol", "Bord_D_Sol", "Bord_Bas_Sol", "Bord_Eau_Gauche"), NOM="Bords_All"),
+    ),
+)
+
+
+maild = MODI_MAILLAGE(
+    reuse=maild,
+    MAILLAGE=maild,
+    ORIE_PEAU=(
+        _F(GROUP_MA_PEAU="Bords_All", GROUP_MA_INTERNE="Group_All"),
+        _F(GROUP_MA_PEAU="IFS_Structure_Eau", GROUP_MA_INTERNE="Eau"),
+        _F(GROUP_MA_PEAU="IFS_Sol_Eau", GROUP_MA_INTERNE="Eau"),
+    ),
+)
+
+
+betond = DEFI_MATERIAU(
+    ELAS=_F(E=22410000000.0, NU=0.2, RHO=2483.0, AMOR_ALPHA=0.0005, AMOR_BETA=0.750)
+)
+
+# paramètres mécanique dynamique du sol
+Esol = 22410000000
+Nusol = 0.2
+Msol = 2483.0
+
+# dans cette modélisation, ne pas mettre d'amortissement dans le sol car non cohérent avec le chargement par onde plane modélisé ici
+sold = DEFI_MATERIAU(ELAS=_F(E=Esol, NU=Nusol, RHO=Msol))
+
+# matériau frontière absorbante
+f_absorb = DEFI_MATERIAU(
+    ELAS=_F(
+        E=Esol,
+        NU=Nusol,
+        RHO=Msol,
+        # LONG_CARA=lcara,
+        # COEF_AMOR=beta,
+    )
+)
+
+# caractéristique meca eau
+
+Rho_Eau = 1000.0
+Cele_R = 1440.0
+EAU = DEFI_MATERIAU(FLUIDE=_F(RHO=1000.0, CELE_R=1440.0))
+
+###affectation des matériaux aux groupes de mailles adéquats
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=maild,
+    AFFE=(
+        _F(GROUP_MA="Sol", MATER=sold),
+        _F(GROUP_MA=("Bord_G_Sol", "Bord_D_Sol", "Bord_Bas_Sol"), MATER=f_absorb),
+        _F(GROUP_MA="Barrage", MATER=betond),
+        _F(GROUP_MA=("Eau", "IFS_Sol_Eau", "IFS_Structure_Eau", "Bord_Eau_Gauche"), MATER=EAU),
+    ),
+)
+
+###definition du modele avec Fluide
+MODELE2 = AFFE_MODELE(
+    MAILLAGE=maild,
+    AFFE=(
+        _F(
+            GROUP_MA=(
+                "Barrage",
+                "Sol",
+                "Bord_G_Sol",
+                "Bord_D_Sol",
+                "Bord_Bas_Sol",
+                "IFS_Structure_Eau",
+                "IFS_Sol_Eau",
+            ),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="D_PLAN",
+        ),
+        _F(
+            GROUP_MA=("Bord_G_Sol", "Bord_D_Sol", "Bord_Bas_Sol"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="D_PLAN_ABSO",
+        ),
+        _F(GROUP_MA=("Eau"), PHENOMENE="MECANIQUE", MODELISATION="2D_FLUIDE", FORMULATION="U_PSI"),
+        _F(
+            GROUP_MA=("IFS_Sol_Eau", "IFS_Structure_Eau"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="2D_FLUI_STRU",
+            FORMULATION="U_PSI",
+        ),
+        _F(
+            GROUP_MA=("Bord_Eau_Gauche",),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="2D_FLUI_ABSO",
+            FORMULATION="U_PSI",
+        ),
+    ),
+)
+
+###Conditions aux limites dont impedance pour l'absorption des ondes en bout de retenue et pression nulle en surface libre
+FZEROS = DEFI_CONSTANTE(VALE=0.0)
+
+CL2 = AFFE_CHAR_MECA_F(MODELE=MODELE2, DDL_IMPO=_F(GROUP_MA="Bord_Eau_Sup", PSI=FZEROS))
+
+
+###Calcul et assemblage des matrices de masses, raideur et amortissement
+
+rigi_ele = CALC_MATR_ELEM(MODELE=MODELE2, OPTION="RIGI_MECA", CHAM_MATER=CHMAT, CHARGE=CL2)
+
+
+mass_ele = CALC_MATR_ELEM(MODELE=MODELE2, OPTION="MASS_MECA", CHAM_MATER=CHMAT, CHARGE=CL2)
+
+amor_ele = CALC_MATR_ELEM(
+    MODELE=MODELE2,
+    OPTION="AMOR_MECA",
+    CHAM_MATER=CHMAT,
+    RIGI_MECA=rigi_ele,
+    MASS_MECA=mass_ele,
+    CHARGE=CL2,
+)
+
+nume_ddl = NUME_DDL(MATR_RIGI=rigi_ele)
+
+
+RIGI = ASSE_MATRICE(MATR_ELEM=rigi_ele, NUME_DDL=nume_ddl)
+MASSE = ASSE_MATRICE(MATR_ELEM=mass_ele, NUME_DDL=nume_ddl)
+AMOR = ASSE_MATRICE(MATR_ELEM=amor_ele, NUME_DDL=nume_ddl)
+
+# Definition Chargement
+
+import numpy as np
+
+T_max = 2.0
+Pdt = 0.01
+f = 1.5
+T_0 = 1.0
+
+T = np.arange(0.0, T_max, Pdt)
+
+n = len(T)
+
+A_r = np.zeros((n))
+
+for i in range(n):
+    A_r[i] = (1.0 - 2.0 * (np.pi * f * (T[i] - T_0)) ** 2.0) * np.e ** (
+        -((np.pi * f * (T[i] - T_0)) ** 2.0)
+    )
+
+
+Time_Real = T.tolist()
+Acce_Real = A_r.tolist()
+
+ACCE = DEFI_LIST_REEL(VALE=Acce_Real)
+LINST = DEFI_LIST_REEL(VALE=Time_Real)
+
+ACCE_T = DEFI_FONCTION(NOM_PARA="INST", VALE_PARA=LINST, VALE_FONC=ACCE)
+
+
+fc0 = 0.05
+fc = 35.0
+
+VITE_T = CALC_FONCTION(
+    INTEGRE_FREQ=_F(FONCTION=ACCE_T, FREQ_FILTRE=fc0, FREQ_COUP=fc, NIVEAU=1),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+T_max = 1.0
+
+TEMPL2A = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=T_max, PAS=Pdt))
+
+
+Vite_Int = CALC_FONCTION(
+    COMB=_F(FONCTION=VITE_T, COEF=1.0),
+    LIST_PARA=TEMPL2A,
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+from math import *
+
+# Coordonnées du point de départ de l'onde.
+
+x0 = -100.0
+y0 = -50.0
+z0 = 0.0
+
+x1 = -100.0
+y1 = 0.0
+z1 = 0.0
+
+# Angle d'incidence par rapport à la verticale de propagation de l'onde (0=vertical)
+a = 20
+a2 = radians(a)
+cosa = cos(a2)
+sina = sin(a2)
+
+
+ONDES = AFFE_CHAR_MECA_F(
+    MODELE=MODELE2,
+    ONDE_PLANE=_F(
+        DIRECTION=(sina, cosa, 0.0),
+        TYPE_ONDE="S",
+        FONC_SIGNAL=Vite_Int,
+        COOR_SOURCE=(x0, y0),
+        COOR_REFLECHI=(x1, y1),
+        GROUP_MA=("Bord_G_Sol", "Bord_D_Sol", "Bord_Bas_Sol"),
+    ),
+)
+
+ONDEP = AFFE_CHAR_MECA_F(
+    MODELE=MODELE2,
+    ONDE_PLANE=_F(
+        DIRECTION=(sina, cosa, 0.0),
+        TYPE_ONDE="P",
+        FONC_SIGNAL=Vite_Int,
+        COOR_SOURCE=(x0, y0),
+        COOR_REFLECHI=(x1, y1),
+        GROUP_MA=("Bord_G_Sol", "Bord_D_Sol", "Bord_Bas_Sol"),
+    ),
+)
+
+
+###calcul dynamique transitoire sur base physique avec dyna_vibra
+dyna = DYNA_VIBRA(
+    BASE_CALCUL="PHYS",
+    TYPE_CALCUL="TRAN",
+    MODELE=MODELE2,
+    CHAM_MATER=CHMAT,
+    MATR_MASS=MASSE,
+    MATR_RIGI=RIGI,
+    MATR_AMOR=AMOR,
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
+    INCREMENT=_F(LIST_INST=TEMPL2A),
+    EXCIT=(_F(CHARGE=ONDES), _F(CHARGE=ONDEP)),
+)
+
+
+# Extraction des accelerations en crete et en pied
+acc_Ax = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="Node_A")
+
+acc_Ay = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DY", GROUP_NO="Node_A")
+
+acc_Bx = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="Node_B")
+
+acc_By = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DY", GROUP_NO="Node_B")
+
+acc_Cx = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="Node_C")
+
+acc_Cy = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DY", GROUP_NO="Node_C")
+
+acc_Dx = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="Node_D")
+
+acc_Dy = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DY", GROUP_NO="Node_D")
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=-0.518223,
+            VALE_REFE=-0.518223,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Ax,
+        ),
+        _F(
+            VALE_CALC=2.15393,
+            VALE_REFE=2.15393,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Ay,
+        ),
+        _F(
+            VALE_CALC=0.381029,
+            VALE_REFE=0.381029,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Bx,
+        ),
+        _F(
+            VALE_CALC=2.44592,
+            VALE_REFE=2.44592,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_By,
+        ),
+        _F(
+            VALE_CALC=0.862363,
+            VALE_REFE=0.862363,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Cx,
+        ),
+        _F(
+            VALE_CALC=2.47731,
+            VALE_REFE=2.47731,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Cy,
+        ),
+        _F(
+            VALE_CALC=-0.436732,
+            VALE_REFE=-0.436732,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Dx,
+        ),
+        _F(
+            VALE_CALC=1.78682,
+            VALE_REFE=1.78682,
+            PRECISION=1.0e-6,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Dy,
+        ),
+    )
+)
+
+
+FIN()

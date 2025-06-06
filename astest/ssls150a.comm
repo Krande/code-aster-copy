@@ -1,0 +1,1074 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+# Objectif configuration 1&2: Verification analytique de la marge ELU VERI_FERRAILLAGE: On impose
+# un chargement proportionnel aux points particuliers du diagramme calculés
+#  analytiquement
+# La marge attendue est égale à  (1 - coef. de proportionnalité)
+
+
+# Objectif configuration 3: Verification avec la feuille DIPDE de la marge ELU de VERI_FERRAILLAGE:
+# On impose un chargement egal au chargement ultime obtenu avec la feuille.
+# La marge attendue est nulle
+
+# Objectif configuration 4: Verification analytique de la marge VERI_FERRAILLAGE avec le BAEL91: On impose
+# un chargement proportionnel aux points particuliers du diagramme calculés
+#  analytiquement
+# La marge attendue est égale à  (1 - coef. de proportionnalité)
+
+DEBUT(CODE="OUI")
+
+MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+MODEL = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(GROUP_MA="PLAQUE", PHENOMENE="MECANIQUE", MODELISATION="DKT")
+)
+
+# Epaisseur pour configuration 1 et 2
+CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=0.50))
+
+# Epaisseur pour configuration 3
+CARA2 = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=1.0))
+
+
+# Ferraillage de reference
+
+# dnsxi = phi20@200 = 0.00157 m2/m
+# dnsxs = phi20@200 = 0.00157 m2/m
+# dnsyi = phi20@200 = 0.00157 m2/m
+# dnsys = phi20@200 = 0.00157 m2/m
+
+
+# FERRAILLAGE DE REFERENCE POUR CONFIGURATION 1 ET 2
+FERRAILLAGE_REF1 = CREA_CHAMP(
+    AFFE=(
+        _F(
+            GROUP_MA=("PLAQUE",),
+            NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
+            VALE=(0.00157, 0.00157, 0.00157, 0.00157),
+        ),
+    ),
+    MODELE=MODEL,
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    OPTION="FERR_ELEM",
+    TYPE_CHAM="ELEM_FER2_R",
+)
+
+# FERRAILLAGE DE REFERENCE POUR CONFIGURATION 3
+FERRAILLAGE_REF2 = CREA_CHAMP(
+    AFFE=(
+        _F(
+            GROUP_MA=("PLAQUE",),
+            NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
+            VALE=(0.004021, 0.0, 0.004021, 0.0),
+        ),
+    ),
+    MODELE=MODEL,
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    OPTION="FERR_ELEM",
+    TYPE_CHAM="ELEM_FER2_R",
+)
+
+
+# traction uniforme - pivot A vertical - Marge attendue : 0.5
+CHEFF1 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, 1.3652e6 * 0.5, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
+    ),
+)
+
+# traction uniforme - pivot A vertical - Marge attendue : -1
+CHEFF2 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, 1.3652e6 * 2, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot A (acier inf) & Pivot B (beton sup) - Marge attendue : 0.3
+CHEFF3 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -1.666e6 * 0.7, 0.0, 0.0, -0.587e06 * 0.7, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B beton Sup - Epsilon acier inf EPSY - Marge attendue : 0.8
+CHEFF4 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -4.8937e6 * 0.2, 0.0, 0.0, -0.9281e6 * 0.2, 0.0, 0.0, 0.0),
+    ),
+)
+
+
+# Pivot B beton Sup - - Epsilon beton inf 0 - Marge attendue ~ 0.2
+CHEFF5 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -10.303e06 * 0.8, 0.0, 0.0, -0.483e06 * 0.8, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Compression uniforme - Pivot C - Marge attendue : 1
+CHEFF6 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -12.923e06 * 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Compression uniforme - Pivot C - Marge attendue : 0.6
+CHEFF7 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -12.923e06 * 0.4, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
+    ),
+)
+
+
+### Partie inferieure du diagramme d interaction - Symetrie
+
+# Pivot A (acier inf) & Pivot B (beton sup) - Marge attendue : 0.3
+CHEFF8 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -1.666e6 * 0.7, 0.0, 0.0, 0.587e06 * 0.7, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B beton Sup - Epsilon acier inf EPSY - Marge attendue : 0.8
+CHEFF9 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -4.8937e6 * 0.2, 0.0, 0.0, 0.9281e6 * 0.2, 0.0, 0.0, 0.0),
+    ),
+)
+
+
+# Pivot B beton Sup - - Epsilon beton inf 0 - Marge attendue ~ 0.2
+CHEFF10 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -10.303e06 * 0.8, 0.0, 0.0, 0.483e06 * 0.8, 0.0, 0.0, 0.0),
+    ),
+)
+
+# CHAMP EFFORTS POUR CONFIGURATION 3
+
+# Pivot A - marge attentdue 0
+CHEFF11 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, 0.0, 0.0, 0.0, -1.534e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B aciers tendu - Marge attendue : 0
+CHEFF12 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -5.0e6, 0.0, 0.0, -3.2309e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot B aciers comprimé - Marge attendue : 0
+CHEFF13 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -20.0e6, 0.0, 0.0, -2.2898e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# Pivot C- Marge attendue : 0
+CHEFF14 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -25.0e6, 0.0, 0.0, -0.5531e6, 0.0, 0.0, 0.0),
+    ),
+)
+
+# on cree une sd evol_elas avec des champs d'efforts imposes :
+# -------------------------------------------------------------
+
+RESUELU = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF1, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF4, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF5, INST=5.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF6, INST=6.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF7, INST=7.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF8, INST=8.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF9, INST=9.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF10, INST=10.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF11, INST=11.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF12, INST=12.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF13, INST=13.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF14, INST=14.0, MODELE=MODEL, CARA_ELEM=CARA),
+    ),
+)
+
+
+# configuration1 - Appel a la commande VERI_FERRAILLAGE AVEC CHAMP EFFORT DE REFERENCE NUL
+MARGE1 = VERI_FERRAILLAGE(
+    reuse=RESUELU,
+    RESULTAT=RESUELU,
+    CARA_ELEM=CARA,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    CHAM_FERR=FERRAILLAGE_REF1,
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
+    AFFE=(
+        # Reinf/EC2
+        _F(
+            TOUT="OUI",
+            TYPE_DIAGRAMME="B2",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            FYK=500.0e6,
+            FCK=35.0e6,
+            EYS=200.0e9,
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+
+# -----------------------------------------------------
+# Tests
+# -----------------------------------------------------
+marge_ref = [
+    [0.5],  # 1
+    [-1],  # 2
+    [0.3],  # 3
+    [0.8],  # 4
+    [0.2],  # 5
+    [1.0],  # 6
+    [0.6],  # 7
+    [0.3],  # 8
+    [0.8],  # 9
+    [0.2],  # 10
+]
+
+marge_calc = [
+    [0.5000063694267516],  # 1
+    [-0.9999745222929934],  # 2
+    [0.3030789795519139],  # 3
+    [0.8013274803450019],  # 4
+    [0.1999916338299642],  # 5
+    [1.0],  # 6
+    [0.5999896822121338],  # 7
+    [0.3030789795519139],  # 8
+    [0.8013274803450019],  # 9
+    [0.1999916338299642],  # 10
+]
+
+theta_ref = [
+    [-90.0],  # 1
+    [-90.0],  # 2
+    [-90.0],  # 3
+    [-90.0],  # 4
+    [-90.0],  # 5
+    [-90.0],  # 6
+    [-90.0],  # 7
+    [-90.0],  # 8
+    [-90.0],  # 9
+    [-90.0],  # 10
+]
+
+theta_calc = [
+    [-90.0],  # 1
+    [-90.0],  # 2
+    [-90.0],  # 3
+    [-90.0],  # 4
+    [-90.0],  # 5
+    [-90.0],  # 6
+    [-90.0],  # 7
+    [-90.0],  # 8
+    [-90.0],  # 9
+    [-90.0],  # 10
+]
+
+for j in range(len(marge_ref)):
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=RESUELU,
+            INST=j + 1.0,
+            NOM_CHAM="MARG_ELEM",
+            NOM_CMP="MARGE",
+            GROUP_MA="M1",
+            LEGENDE="ELU",
+            VALE_REFE=marge_ref[j],
+            VALE_CALC=marge_calc[j],
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.005,
+            CRITERE="ABSOLU",
+        )
+    )
+
+for j in range(len(theta_ref)):
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=RESUELU,
+            INST=j + 1.0,
+            NOM_CHAM="MARG_ELEM",
+            NOM_CMP="THETA",
+            GROUP_MA="M1",
+            LEGENDE="ELU",
+            VALE_REFE=theta_ref[j],
+            VALE_CALC=theta_calc[j],
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.1,
+            CRITERE="ABSOLU",
+        )
+    )
+
+# TEST ETAT SECTION AVEC POST_VERI_FERRAILLAGE
+# ON calcule l'état de la section avec STBEAM2025 et on compare avec
+# POST_VERI_FERRAILLAGE POUR CHAQUE CAS DE CHARGEMENT
+# Extraction du champ de veri_ferraillage
+grandeur = [
+    "HAUTEUR_COMPRIMEE",
+    "EPSILON_BETON",
+    "EPSILON_ACIER_INF",
+    "EPSILON_ACIER_SUP",
+    "SIGMA_BETON",
+    "SIGMA_ACIER_INF",
+    "SIGMA_ACIER_SUP",
+]
+COPY = FORMULE(VALE="NUMERO_MAILLE", NOM_PARA=["NUMERO_MAILLE"])
+# CHEFF1-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=1.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.0, 0.0, -0.00109, -0.00109, 0.0, -217.44e6, -217.44e6]
+
+etat_POST_VER = [
+    0.0,
+    0.0,
+    -0.0010869620459508305,
+    -0.001086923398544854,
+    0,
+    -217392409.19016612,
+    -217384679.70897081,
+]
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+DETRUIRE(NOM=tab_UNIQUE)
+
+# CHEFF2-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=2.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+COPY = FORMULE(VALE="NUMERO_MAILLE", NOM_PARA=["NUMERO_MAILLE"])
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.0, 0.0, -0.217e-2, -0.217e-2, 0.0, -434.35e6, -434.35e6]
+
+etat_POST_VER = [
+    0.0,
+    0.0,
+    -0.002173968577507126,
+    -0.002173913905540747,
+    0.0,
+    -434782608.6956522,
+    -434782608.6956522,
+]
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF3-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=3.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.158, 0.099e-2, -0.164e-2, 0.049e-2, 17.39e6, -327.92e6, 97.98e6]
+
+etat_POST_VER = [
+    0.1582308865602415,
+    0.0009908717946775563,
+    -0.0016392477907684322,
+    0.000489896635544987,
+    17393018.213799104,
+    -327849558.15368646,
+    97979327.1089974,
+]
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF4-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=4.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.253, 0.035e-2, -0.023e-2, 0.024e-2, 7.476e6, -46.37e6, 48.04e6]
+
+etat_POST_VER = [
+    0.25301444911572546,
+    0.00035124145762701627,
+    -0.0002318138292110587,
+    0.00024018330775309722,
+    7475972.402220663,
+    -46362765.84221174,
+    48036661.550619446,
+]
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF5-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=5.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.5, 0.152e-2, 0.046e-2, 0.132e-2, 21.993e6, 92.11e6, 263.76e6]
+
+etat_POST_VER = [
+    0.5,
+    0.0015206705754163032,
+    0.0004605662835213971,
+    0.001318745948388702,
+    21993085.932581525,
+    92113256.70427942,
+    263749189.67774042,
+]
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF6-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=6.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.0, 0.0e-2, 0.0e-2, 0.0e-2, 0.0e6, 0.0e6, 0.0e6]
+
+etat_POST_VER = [0.0, 0.0, -0.0, -0.0, 0.0, -0.0, -0.0]
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF7-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=7.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.5, 0.047e-2, 0.047e-2, 0.047e-2, 9.744e6, 94.74e6, 94.74e6]
+
+etat_POST_VER = [
+    0.5,
+    0.00047368690351365546,
+    0.000473654740814388,
+    0.0004736807772852236,
+    9743815.26704989,
+    94730948.1628776,
+    94736155.45704472,
+]
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF8-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=8.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.158, 0.099e-2, 0.049e-2, -0.164e-2, 17.394e6, 97.98e6, -327.92e6]
+
+etat_POST_VER = [
+    0.1582308865602415,
+    0.0009908717946775563,
+    0.000489896635544987,
+    -0.0016392477907684322,
+    17393018.213799104,
+    97979327.1089974,
+    -327849558.15368646,
+]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF9-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=9.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.253, 0.035e-2, 0.024e-2, -0.023e-2, 7.476e6, 48.04e6, -46.37e6]
+
+etat_POST_VER = [
+    0.25301444911572546,
+    0.00035124145762701627,
+    0.00024018330775309722,
+    -0.0002318138292110587,
+    7475972.402220663,
+    48036661.550619446,
+    -46362765.84221174,
+]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+# CHEFF10-------------------------------------------------
+resu_verif = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=10.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+tab = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif, GROUP_MA="M1")
+
+tab_UNIQUE = CALC_TABLE(
+    TABLE=tab,
+    ACTION=(
+        _F(OPERATION="UNIQUE", NOM_PARA=("NUMERO_MAILLE")),
+        _F(OPERATION="OPER", NOM_PARA="NUMERO_MAILLE2", FORMULE=COPY),
+    ),
+)
+
+etat_STBEAM = [0.5, 0.152e-2, 0.132e-2, 0.046e-2, 21.993e6, 263.76e6, 92.11e6]
+
+etat_POST_VER = [
+    0.0,
+    0.0015206705754163032,
+    0.001318745948388702,
+    0.0004605662835213971,
+    21993085.932581525,
+    263749189.67774042,
+    92113256.70427942,
+]
+
+
+for j in range(len(grandeur)):
+    TEST_TABLE(
+        TABLE=tab_UNIQUE,
+        NOM_PARA=grandeur[j],
+        VALE_CALC=etat_POST_VER[j],
+        VALE_REFE=etat_STBEAM[j],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        FILTRE=_F(NOM_PARA="NUMERO_MAILLE2", VALE=1.0),
+        LEGENDE=grandeur[j],
+    )
+
+DETRUIRE(NOM=tab_UNIQUE)
+
+# Configuration 2 - Appel a la commande VERI_FERRAILLAGE AVEC CHAMP EFFORT DE REFERENCE
+# De compression pure
+
+# CHAMP DE REFERENCE
+CHEFFREF = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, -12.923e06 * 0.2, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
+    ),
+)
+
+linst = [1.0, 2.0, 6.0, 7.0]
+L_INST = DEFI_LIST_REEL(VALE=linst)
+
+MARGE2 = VERI_FERRAILLAGE(
+    reuse=RESUELU,
+    RESULTAT=RESUELU,
+    CARA_ELEM=CARA,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    CHAM_FERR=FERRAILLAGE_REF1,
+    CHAM_REFE=CHEFFREF,
+    LIST_INST=L_INST,
+    AFFE=(
+        # Reinf/EC2
+        _F(
+            TOUT="OUI",
+            TYPE_DIAGRAMME="B2",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            FYK=500.0e6,
+            FCK=35.0e6,
+            EYS=200.0e9,
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+# -----------------------------------------------------
+# Tests
+# -----------------------------------------------------
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESUELU,
+        INST=1.0,
+        NOM_CHAM="MARG_ELEM",
+        NOM_CMP="MARGE",
+        GROUP_MA="M1",
+        LEGENDE="ELU",
+        VALE_REFE=0.173,
+        VALE_CALC=0.17282251903775403,
+        REFERENCE="ANALYTIQUE",
+        PRECISION=0.005,
+        CRITERE="ABSOLU",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESUELU,
+        INST=2.0,
+        NOM_CHAM="MARG_ELEM",
+        NOM_CMP="MARGE",
+        GROUP_MA="M1",
+        LEGENDE="ELU",
+        VALE_REFE=-0.345,
+        VALE_CALC=-0.3456318288792657,
+        REFERENCE="ANALYTIQUE",
+        PRECISION=0.005,
+        CRITERE="ABSOLU",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESUELU,
+        INST=6.0,
+        NOM_CHAM="MARG_ELEM",
+        NOM_CMP="MARGE",
+        GROUP_MA="M1",
+        LEGENDE="ELU",
+        VALE_REFE=0.346,
+        VALE_CALC=0.345640635010094,
+        REFERENCE="ANALYTIQUE",
+        PRECISION=0.005,
+        CRITERE="ABSOLU",
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESUELU,
+        INST=7.0,
+        NOM_CHAM="MARG_ELEM",
+        NOM_CMP="MARGE",
+        GROUP_MA="M1",
+        LEGENDE="ELU",
+        VALE_REFE=0.75,
+        VALE_CALC=0.7499919391762483,
+        REFERENCE="ANALYTIQUE",
+        PRECISION=0.005,
+        CRITERE="ABSOLU",
+    )
+)
+
+
+# configuration3- On compare avec la feuille DIPDE
+# # Appel a la commande VERI_FERRAILLAGE : Sans chref
+MARGE3 = VERI_FERRAILLAGE(
+    reuse=RESUELU,
+    RESULTAT=RESUELU,
+    CARA_ELEM=CARA2,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    CHAM_FERR=FERRAILLAGE_REF2,
+    NUME_ORDRE=(11, 12, 13, 14),
+    AFFE=(
+        # Reinf/EC2
+        _F(
+            TOUT="OUI",
+            TYPE_DIAGRAMME="B2",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            FYK=500.0e6,
+            FCK=40.0e6,
+            EYS=200.0e9,
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+# -----------------------------------------------------
+# Tests
+# -----------------------------------------------------
+D_ref = [[0.0], [0.0], [0.0], [0.0]]  # 1  # 2  # 3  # 4
+
+D_calc = [
+    [0.02100363028178942],  # 1
+    [0.0006922822587589472],  # 2
+    [0.004125664998677947],  # 3
+    [-0.0005643415314280364],  # 4
+]
+
+for j in range(len(D_ref)):
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=RESUELU,
+            INST=j + 11.0,
+            NOM_CHAM="MARG_ELEM",
+            NOM_CMP="MARGE",
+            GROUP_MA="M1",
+            LEGENDE="ELU",
+            VALE_REFE=D_ref[j],
+            VALE_CALC=D_calc[j],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.05,
+            CRITERE="ABSOLU",
+        )
+    )
+
+# configuration4 - Appel a la commande VERI_FERRAILLAGE AVEC BAEL91
+
+MARGE4 = VERI_FERRAILLAGE(
+    reuse=RESUELU,
+    RESULTAT=RESUELU,
+    CARA_ELEM=CARA,
+    CODIFICATION="BAEL91",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    CHAM_FERR=FERRAILLAGE_REF1,
+    TOUT_ORDRE="OUI",
+    AFFE=(
+        # Reinf/EC2
+        _F(
+            GROUP_MA="M1",
+            TYPE_DIAGRAMME="B2",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            FE=500.0e6,
+            FCJ=35.0e6,
+            EYS=200.0e9,
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+# -----------------------------------------------------
+# Tests
+# -----------------------------------------------------
+D_ref = [
+    [0.5],  # 1
+    [-1],  # 2
+    [0.3],  # 3
+    [0.8],  # 4
+    [0.2],  # 5
+    [1.0],  # 6
+    [0.6],  # 7
+    [0.3],  # 8
+    [0.8],  # 9
+    [0.2],  # 10
+]
+
+D_calc = [
+    [0.5000063694267516],  # 1
+    [-0.9999745222929934],  # 2
+    [0.3030789795519139],  # 3
+    [0.8013274803450019],  # 4
+    [0.1999916338299642],  # 5
+    [1.0],  # 6
+    [0.5999896822121338],  # 7
+    [0.3030789795519139],  # 8
+    [0.8013274803450019],  # 9
+    [0.1999916338299642],  # 10
+]
+
+for j in range(len(D_ref)):
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=RESUELU,
+            INST=j + 1.0,
+            NOM_CHAM="MARG_ELEM",
+            NOM_CMP="MARGE",
+            GROUP_MA="M1",
+            LEGENDE="ELU",
+            VALE_REFE=D_ref[j],
+            VALE_CALC=D_calc[j],
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.005,
+            CRITERE="ABSOLU",
+        )
+    )
+
+
+FIN()

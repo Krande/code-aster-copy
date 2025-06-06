@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 #include "asterfort/jexnum.h"
 #include "asterfort/nmvcex.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=24) :: mate, comref
     character(len=19) :: comval
@@ -165,8 +166,8 @@ subroutine nmvcmx(mate, mailla, comref, comval)
             valk(1) = cvrcvarc(icmp)
             valr(1) = valmax
             valr(2) = valmin
-            call jenuno(jexnum(mailla//'.NOMMAI', imamax), valk(3))
-            call jenuno(jexnum(mailla//'.NOMMAI', imamin), valk(4))
+            valk(3) = int_to_char8(imamax)
+            valk(4) = int_to_char8(imamin)
             if (iref .eq. 1) then
                 valk(5) = valk(1)
                 call utmess('A+', 'MECANONLINE2_95', nk=5, valk=valk, nr=2, &

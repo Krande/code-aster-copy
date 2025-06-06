@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cm2027(main, maout, nbma, lima, prefix, ndinit)
+subroutine cm2027(main, maout, nbma, lima)
 !
     use crea_maillage_module
 !
@@ -24,8 +24,8 @@ subroutine cm2027(main, maout, nbma, lima, prefix, ndinit)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-    integer :: ndinit, nbma, lima(nbma)
-    character(len=8) :: main, maout, prefix
+    integer :: nbma, lima(nbma)
+    character(len=8) :: main, maout
 !
 ! ----------------------------------------------------------------------
 !         TRANSFORMATION DES MAILLES HEXA20 HEXA27
@@ -34,8 +34,6 @@ subroutine cm2027(main, maout, nbma, lima, prefix, ndinit)
 ! IN/JXOUT  MAOUT  K8  NOM DU MAILLAGE TRANSFORME
 ! IN        NBMA    I  NOMBRE DE MAILLES A TRAITER
 ! IN        LIMA    I  NUMERO ET TYPE DES MAILLES A TRAITER
-! IN        PREFIX K8  PREFIXE DU NOM DES NOEUDS CREES (EX: N, NO, ...)
-! IN        NDINIT  I  NUMERO INITIAL DES NOEUDS CREES
 ! ----------------------------------------------------------------------
 !
 !
@@ -57,7 +55,7 @@ subroutine cm2027(main, maout, nbma, lima, prefix, ndinit)
 !
 ! - Convert cells
 !
-    call mesh_conv%convert_cells(nbma, lima, prefix, ndinit)
+    call mesh_conv%convert_cells(nbma, lima)
 !
 ! - Copy mesh
 !

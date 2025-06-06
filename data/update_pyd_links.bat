@@ -8,6 +8,11 @@ for %%A IN (aster,aster_core,aster_fonctions,libaster,med_aster) do (
     if exist "%aster_lib%\%%A.pyd" (
         del %aster_lib%\%%A.pyd
     )
-mklink /h %aster_lib%\%%A.pyd %aster_lib%\aster.dll
+    mklink /h %aster_lib%\%%A.pyd %aster_lib%\aster.dll
 )
+if exist "%aster_lib%\libAsterGC.pyd" (
+    del %aster_lib%\libAsterGC.pyd
+)
+mklink /h %aster_lib%\libAsterGC.pyd %aster_lib%\AsterGC.dll
+
 exit

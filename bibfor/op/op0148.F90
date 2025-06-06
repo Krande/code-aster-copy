@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ subroutine op0148()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, icham, icham1, icode, idep
@@ -172,8 +173,9 @@ subroutine op0148()
     iv = 1
     write (nomcha, '(A8,A5,2I3.3)') base(1:8), '.C01.', zi(inumo), iv
     call dismoi("NOM_MAILLA", nomcha, "CHAM_NO", repk=nommai)
-    nomnoe = nommai//'.NOMNOE'
-    call jelira(nomnoe, 'NOMUTI', nbp)
+    nomnoe = nommai//'.COORDO    .VALE'
+    call jelira(nomnoe, 'LONMAX', nbp)
+    nbp = nbp/3
 !
 !
 ! --- 3.RECUPERATION DU NOM DE LA TABLE ---
@@ -227,7 +229,7 @@ subroutine op0148()
     call jeveuo('&&OP0148.TEMP.NOEN', 'L', inoen)
     call wkvect('&&OP0148.TEMP.NOEI', 'V V I ', nbn, inoei)
     do in = 0, nbn-1
-        call jenonu(jexnom(nomnoe, zk8(inoen+in)), zi(inoei+in))
+        zi(inoei+in) = char8_to_int(zk8(inoen+in))
     end do
 !
 !

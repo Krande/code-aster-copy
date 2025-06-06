@@ -3,82 +3,82 @@ CODE_ASTER - 11.01.04 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
  FINSF
  %
  COOR_3D
- N01       0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
- N02       0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
- N03       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
- N04       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
- N05       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
+ N1       0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2       0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+ N3       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
+ N4       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
+ N5       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
  FINSF
  %
  SEG2    
- ELN1     N01      N02     
- ELN2     N02      N03     
- ELN3     N02      N04 
- ELN4     N02      N05 
- AMN1     N01      N02     
- AMN2     N02      N03     
- AMN3     N02      N04  
- AMN4     N02      N05  
+ ELN1     N1      N2     
+ ELN2     N2      N3     
+ ELN3     N2      N4 
+ ELN4     N2      N5 
+ AMN1     N1      N2     
+ AMN2     N2      N3     
+ AMN3     N2      N4  
+ AMN4     N2      N5  
  FINSF
  %
  GROUP_NO
  DY                      
- N02      N03      N04     N05     
+ N2      N3      N4     N5     
  FINSF
  %
  GROUP_NO
  DZ                      
- N02      N03      N04     N05
+ N2      N3      N4     N5
  FINSF
  %
  GROUP_NO
  DRX                     
- N02      N03      N04     
+ N2      N3      N4     
  FINSF
  %
  GROUP_NO
  DRY                     
- N02      N03      N04     
+ N2      N3      N4     
  FINSF
  %
  GROUP_NO
  DRZ                     
- N02      N03      N04     
+ N2      N3      N4     
  FINSF
  %
  GROUP_NO
  MASSES                  
- N02      N03      N04     
+ N2      N3      N4     
  FINSF
  %
  GROUP_NO
  ENCASTRE                
- N01     
+ N1     
  FINSF
  %
  GROUP_NO
- N01                
- N01     
+ N1                
+ N1     
  FINSF
  %
  GROUP_NO
- N02                
- N02     
+ N2                
+ N2     
  FINSF
  %
  GROUP_NO
- N03                
- N03     
+ N3                
+ N3     
  FINSF
  %
  GROUP_NO
- N04                
- N04     
+ N4                
+ N4     
  FINSF
  %
  GROUP_NO
- N05                
- N05     
+ N5                
+ N5     
  FINSF
  %
  GROUP_MA

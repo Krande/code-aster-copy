@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,10 +53,11 @@ subroutine te0322(option, nomte)
 !
     integer :: ndim, nno1, nno2, npg, nddl, ntrou
     integer :: iw, ivf1, ivf2, idf2
-    integer :: igeom, imater, icarcr, icomp, iddlm, iddld
+    integer :: igeom, imater, icarcr, iddlm, iddld
     integer :: icontm, icontp, ivect, imatr, iu(3, 16), ip(8)
     integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
     integer :: lgpg
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2), lielrf(10)
     aster_logical :: lVect, lMatr, lVari, lSigm
     integer :: codret
@@ -107,7 +108,7 @@ subroutine te0322(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imater)
     call jevech('PCARCRI', 'L', icarcr)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PDEPLMR', 'L', iddlm)
     call jevech('PDEPLPR', 'L', iddld)
     call jevech('PVARIMR', 'L', ivarim)
@@ -119,7 +120,7 @@ subroutine te0322(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icomp), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
@@ -146,7 +147,7 @@ subroutine te0322(option, nomte)
                 idf2, zr(idf2), zi(imater), option, zr(igeom), &
                 zr(iddlm), zr(iddld), iu, ip, zr(icontm), &
                 zr(icontp), zr(ivect), zr(imatr), zr(ivarim), zr(ivarip), &
-                zr(iinstm), zr(iinstp), zr(icarcr), zk16(icomp), typmod, &
+                zr(iinstm), zr(iinstp), zr(icarcr), compor, typmod, &
                 lVect, lMatr, lSigm, codret)
 !
 ! - Save return code

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,6 +55,7 @@ subroutine peeint(tableOut, model, nbocc)
 #include "asterfort/rsSelectStoringIndex.h"
 #include "asterfort/rsGetOneBehaviourFromResult.h"
 #include "asterfort/convertFieldNodeToNeutElem.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbocc
     character(len=8) :: model
@@ -409,7 +410,7 @@ subroutine peeint(tableOut, model, nbocc)
                 call getvtx(keywFact, 'MAILLE', iocc=iocc, nbval=nbCellCompute, vect=cellNames)
                 do iCellCompute = 1, nbCellCompute
                     cellName = cellNames(iCellCompute)
-                    call jenonu(jexnom(mesh//'.NOMMAI', cellName), cellNume)
+                    cellNume = char8_to_int(cellName)
                     call peecal(fieldSupp, tableOut, fieldName, &
                                 locaNameCell, cellName, &
                                 [cellNume], 1, &

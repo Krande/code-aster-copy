@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine accept(f, nbm, method, imode, jmode, &
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
+#include "asterc/r8pi.h"
 #include "asterfort/coegen.h"
 #include "asterfort/corcos.h"
 #include "asterfort/coyang.h"
@@ -47,7 +48,6 @@ subroutine accept(f, nbm, method, imode, jmode, &
     character(len=8) :: method
     character(len=24) :: val_spec
 !
-    parameter(pi=3.14159265d0)
     data(local(i), i=1, 3)/3*0.d0/
 !
 !
@@ -55,6 +55,7 @@ subroutine accept(f, nbm, method, imode, jmode, &
     call jemarq()
 !
 ! QUELQUES CONSTANTES
+    pi = r8pi()
     deuxpi = 2*pi
     omega = deuxpi*f
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax, &
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: ioc
     real(kind=8) :: valmin, valmax, vaamin, vaamax
@@ -165,10 +166,10 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax, &
     end do
 !
     if (inomax .eq. 0) call utmess('F', 'POSTRELE_18')
-    call jenuno(jexnum(ma//'.NOMNOE', inomax), nomax)
-    call jenuno(jexnum(ma//'.NOMNOE', inomin), nomin)
-    call jenuno(jexnum(ma//'.NOMNOE', inamax), noamax)
-    call jenuno(jexnum(ma//'.NOMNOE', inamin), noamin)
+    nomax = int_to_char8(inomax)
+    nomin = int_to_char8(inomin)
+    noamax = int_to_char8(inamax)
+    noamin = int_to_char8(inamin)
 !
 ! --- MENAGE
     call detrsd('CHAM_NO_S', chams1)

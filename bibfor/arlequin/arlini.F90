@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine arlini(mail, base, dime, nbno, &
     integer :: jdime, jcoor, jcods
     character(len=24) :: typmai
     integer :: jtypm
-    character(len=24) :: nomnoe, nommai, connex
+    character(len=24) :: connex
     integer :: ntgeo
 
 ! ----------------------------------------------------------------------
@@ -70,8 +70,6 @@ subroutine arlini(mail, base, dime, nbno, &
     maidim = mail(1:8)//'.DIME'
     cooval = mail(1:8)//'.COORDO    .VALE'
     coodsc = mail(1:8)//'.COORDO    .DESC'
-    nomnoe = mail(1:8)//'.NOMNOE         '
-    nommai = mail(1:8)//'.NOMMAI         '
     typmai = mail(1:8)//'.TYPMAIL        '
     connex = mail(1:8)//'.CONNEX         '
 
@@ -111,19 +109,9 @@ subroutine arlini(mail, base, dime, nbno, &
     zi(jcods+1) = -3
     zi(jcods+2) = 14
 
-! --- NOMS DES NOEUDS
-
-    call jecreo(nomnoe, base//' N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbno, ' ')
-
 ! --- TYPE DES MAILLES
 
     call wkvect(typmai, base//' V I', nbma, jtypm)
-
-! --- NOM DES MAILLES
-
-    call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', nbma, ' ')
 
 ! --- CONNECTIVITES DES MAILLES
 

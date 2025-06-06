@@ -62,6 +62,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
@@ -264,7 +265,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
 !
 !   --- 3.2 - Coordinates of the nodes
     call jeveuo(mesh1//'.COORDO    .VALE', 'L', vr=vale)
-    call jenonu(jexnom(mesh1//'.NOMNOE', no1_name), ino1)
+    ino1 = char8_to_int(no1_name)
     ind1 = 1+3*(ino1-1)
     ind2 = ind1+3
     call nlsav(sd_nl, _COOR_NO1, 3, iocc=i, rvect=vale(ind1:ind2))
@@ -272,7 +273,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
         if (mesh2 .ne. mesh1) then
             call jeveuo(mesh2//'.COORDO    .VALE', 'L', vr=vale)
         end if
-        call jenonu(jexnom(mesh2//'.NOMNOE', no2_name), ino2)
+        ino2 = char8_to_int(no2_name)
         ind1 = 1+3*(ino2-1)
         ind2 = ind1+3
         call nlsav(sd_nl, _COOR_NO2, 3, iocc=i, rvect=vale(ind1:ind2))

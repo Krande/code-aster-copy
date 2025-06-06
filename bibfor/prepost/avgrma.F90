@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr, &
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
 #include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -179,8 +180,8 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr, &
     ideb = 1
     dim = 627
     do j = 1, 18
-        gamma = (j-1)*dgam*(pi/180.0d0)
-        dphi = tab1(j)*(pi/180.0d0)
+        gamma = (j-1)*dgam*r8dgrd()
+        dphi = tab1(j)*r8dgrd()
         ngam = tab2(j)
         ifin = ngam
         phi0 = dphi/2.0d0

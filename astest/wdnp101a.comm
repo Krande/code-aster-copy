@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ R_ELA_ISO = 0.01
 import pdb
 
 # Pour des raisons de performances, on force SDVERI='NON'.
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM="CALCULEL4_9", DEBUG=_F(SDVERI="NON"))
+DEBUT(CODE="OUI", IGNORE_ALARM="CALCULEL4_9", DEBUG=_F(SDVERI="NON"))
 
 VISCOLIQ = DEFI_CONSTANTE(VALE=0.001)
 DVISCOL = DEFI_CONSTANTE(VALE=0.0)

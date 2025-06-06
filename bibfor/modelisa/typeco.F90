@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine typeco(char, noma)
 #include "asterfort/mmssfr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma, char
 !
@@ -137,7 +138,7 @@ subroutine typeco(char, noma)
                 call cfnumm(defico, posmam, nummam)
                 call mmelty(noma, nummam, alias)
                 if (alias .eq. 'PO1') then
-                    call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
+                    nommam = int_to_char8(nummam)
                     call utmess('F', 'CONTACT3_2', sk=nommam)
                 end if
             end if
@@ -152,7 +153,7 @@ subroutine typeco(char, noma)
                 call cfnumm(defico, posmae, nummae)
                 call mmelty(noma, nummae, alias)
                 if (alias .eq. 'PO1') then
-                    call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
+                    nommae = int_to_char8(nummae)
                     call utmess('F', 'CONTACT3_2', sk=nommae)
                 end if
             end if

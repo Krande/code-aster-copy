@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -258,7 +258,7 @@ RESUTHYD = THER_NON_LINE(
     INCREMENT=_F(LIST_INST=LINST),
     ETAT_INIT=_F(CHAM_NO=TEMPINIT),
     CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-5),
-    SCHEMA_TEMPS=_F(SCHEMA="HHT", THETA=0.57),
+    SCHEMA_TEMPS=_F(SCHEMA="THETA", THETA=0.57),
 )
 
 RESUDIAG = THER_NON_LINE(
@@ -269,7 +269,7 @@ RESUDIAG = THER_NON_LINE(
     INCREMENT=_F(LIST_INST=LINST),
     ETAT_INIT=_F(CHAM_NO=TEMPINIT),
     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-05),
-    SCHEMA_TEMPS=_F(SCHEMA="HHT", THETA=0.57),
+    SCHEMA_TEMPS=_F(SCHEMA="THETA", THETA=0.57),
 )
 ##IMPR_RESU(FORMAT="RESULTAT",
 ##FORMAT='MED',
@@ -509,7 +509,7 @@ FCT2 = DEFI_FONCTION(
 
 E = DEFI_FONCTION(
     NOM_PARA="HYDR",
-    VALE=(0.0, 32.0e3, 1000.0, 32.0e3),
+    VALE=(0.0, 200.0e3, 1000.0, 200.0e3),
     PROL_DROITE="CONSTANT",
     PROL_GAUCHE="CONSTANT",
 )

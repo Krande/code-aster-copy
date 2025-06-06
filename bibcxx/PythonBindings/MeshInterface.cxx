@@ -3,7 +3,7 @@
  * @brief Interface python de Mesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -220,5 +220,19 @@ Arguments:
 Returns:
     Mesh: the quadratic mesh.
         )",
-              py::arg( "info" ) = 1 );
+              py::arg( "info" ) = 1 )
+        .def( "addNodeLabels", &Mesh::addNodeLabels, R"(
+      Add node labels.
+      
+      Arguments:
+          node_labels (list) : Node labels.
+              )",
+              py::arg( "node_labels" ) )
+        .def( "addCellLabels", &Mesh::addCellLabels, R"(
+      Add cell labels.
+      
+      Arguments:
+          cell_labels (list) : Cell labels.
+              )",
+              py::arg( "cell_labels" ) );
 };

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine momaba(mailla)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: mailla
 !
@@ -50,7 +51,7 @@ subroutine momaba(mailla)
     parameter(nbmc=2)
     character(len=8) :: k8b, type
     character(len=16) :: tymocl(nbmc), motcle(nbmc)
-    character(len=24) :: connex, nommai, nomnoe, nomjv
+    character(len=24) :: connex, nomjv
     integer, pointer :: dime(:) => null()
     integer, pointer :: coninv(:) => null()
     real(kind=8), pointer :: conm(:) => null()
@@ -61,8 +62,6 @@ subroutine momaba(mailla)
     call infniv(ifm, niv)
 !
     connex = mailla//'.CONNEX'
-    nommai = mailla//'.NOMMAI'
-    nomnoe = mailla//'.NOMNOE'
     call jeveuo(mailla//'.TYPMAIL        ', 'L', jtyma)
     call jeveuo(mailla//'.COORDO    .VALE', 'E', vr=coor)
     call jeveuo(mailla//'.DIME           ', 'L', vi=dime)
@@ -105,7 +104,7 @@ subroutine momaba(mailla)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
 !
         if (niv .eq. 2) then
-            call jenuno(jexnum(nommai, zi(jnuma+i-1)), k8b)
+            k8b = int_to_char8(zi(jnuma+i-1))
             write (ifm, *) 'TRAITEMENT DE LA MAILLE ', k8b
         end if
         if (type(1:4) .eq. 'SEG3') then
@@ -163,7 +162,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call bartri(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- QUAD8, QUAD9
@@ -171,7 +170,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call barqua(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- TETRA10
@@ -179,7 +178,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call bartet(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- PENTA15, PENTA18
@@ -187,7 +186,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call barpen(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- PYRAM13
@@ -195,7 +194,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call barpyr(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- HEXA20, HEXA27
@@ -203,7 +202,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call barhex(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
                 end if
@@ -274,7 +273,7 @@ subroutine momaba(mailla)
         n1 = zi(jnuma+i-1)
         n2 = 0
         if (niv .eq. 2) then
-            call jenuno(jexnum(nomnoe, zi(jnuma+i-1)), k8b)
+            k8b = int_to_char8(zi(jnuma+i-1))
             write (ifm, *) 'TRAITEMENT DU NOEUD ', k8b
         end if
         lnmf = .true.
@@ -320,7 +319,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call bartri(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- QUAD8, QUAD9
@@ -329,7 +328,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call barqua(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- TETRA10
@@ -338,7 +337,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call bartet(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- PENTA15
@@ -347,7 +346,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call barpen(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- PYRAM13
@@ -356,7 +355,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call barpyr(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
 ! ------------- HEXA20, HEXA27
@@ -365,7 +364,7 @@ subroutine momaba(mailla)
                     lmodi = .true.
                     call barhex(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
-                        call jenuno(jexnum(nommai, numa), k8b)
+                        k8b = int_to_char8(numa)
                         write (ifm, *) '   MAILLE MODIFIEE ', k8b
                     end if
                 end if

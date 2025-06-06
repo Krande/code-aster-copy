@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*), intent(in) :: nume_ddlz
     integer, intent(in) :: i_equa
@@ -108,14 +109,14 @@ subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez, &
 ! - Physical dof
 !
     if (type_equa .eq. 'A') then
-        call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+        name_node = int_to_char8(nume_node)
         name_cmp = p_cata_nomcmp(nume_cmp)
     end if
 !
 ! - Non-Physical dof (Lagrange)
 !
     if (type_equa .eq. 'B') then
-        call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+        name_node = int_to_char8(nume_node)
         name_cmp = p_cata_nomcmp(nume_cmp)
         ASSERT(name_cmp .eq. 'LAGR')
         name_cmp_lagr = p_cata_nomcmp(nume_cmp_lagr)

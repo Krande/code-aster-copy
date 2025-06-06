@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -375,8 +375,8 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     do k = 1, ndimsi
         sigdv(k) = sigm(k)-sigmo*kron(k)
         sieqm = sieqm+sigdv(k)**2
-        sigmp(k) = (theta*deuxmu+(1.d0-theta)*deumum)/deumum*(sigm(k)- &
-                                         sigmo*kron(k))+(theta*troikp+(1.d0-theta)*troikm)/troikm* &
+        sigmp(k) = (theta*deuxmu+(1.d0-theta)*deumum)/deumum &
+                   *(sigm(k)-sigmo*kron(k))+(theta*troikp+(1.d0-theta)*troikm)/troikm* &
                    sigmo*kron(k)
     end do
     sieqm = sqrt(1.5d0*sieqm)
@@ -455,7 +455,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     end if
 !
     if (compor(1) (5:10) .eq. '_IRRA_') then
-        dp1 = exp(-ener/(tp+273.15d0))
+        dp1 = exp(-ener/(tp+r8t0()))
         dp1 = dp1*(a*ctps/(1.d0+ctps*irrap)+b)*(irrap-irram)
         coef1 = 1.d0/(1.d0+1.5d0*deuxmu*dp1)
         x = 0.d0

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 # ESSAI TRACTION UNE MAILLE QUAD8
 # MODELISATION D_PLAN
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # -------------------------------------------------
@@ -751,7 +751,7 @@ PORO_IF = DEFI_CONSTANTE(VALE=0.0005)
 D_F = DEFI_CONSTANTE(VALE=2.0)
 
 ACIER = DEFI_MATERIAU(
-    ELAS=_F(NU=0.3, E=2.0e5, ALPHA=1.0e-6),
+    ELAS=_F(NU=0.3, E=1.98e5, ALPHA=1.0e-6),
     TRACTION=_F(SIGM=SIGM_F),
     ROUSSELIER_FO=_F(PORO_INIT=PORO_IF, D=D_F, SIGM_1=SIGM_1F, BETA=0.85),
     THER=_F(LAMBDA=0.0, RHO_CP=5.26),  # Nmm/mm3/K

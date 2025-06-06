@@ -60,7 +60,7 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     else:
         # Les groupes de GROUP_MA doivent exister et leur intersection est vide
         for grp in affe_groups:
-            if not grp in mm.getGroupsOnSpecifiedLev(0):
+            if grp not in mm.getGroupsOnSpecifiedLev(0):
                 UTMESS("F", "HOMO1_4", valk=grp)
 
         intersection = mc.DataArrayInt.BuildIntersection(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ def options(self):
     group = self.add_option_group("HDF5/Med libraries options")
     group.add_option(
         "--med-libs",
-        type="string",
+        type=str,
         dest="med_libs",
         default=None,
         help="MED librairies to link against med",
@@ -54,11 +54,7 @@ def options(self):
     )
 
     group.add_option(
-        "--hdf5-libs",
-        type="string",
-        dest="hdf5_libs",
-        default=None,
-        help="HDF5 librairies to link with",
+        "--hdf5-libs", type=str, dest="hdf5_libs", default=None, help="HDF5 librairies to link with"
     )
     group.add_option(
         "--embed-hdf5",
@@ -220,7 +216,7 @@ int main(void){
     return 0;
 }"""
     self.code_checker(
-        "ASTER_HDF_HID_SIZE",
+        "ASTER_HDF5_HID_SIZE",
         self.check_cc,
         fragment,
         "Checking size of hid_t integers",
@@ -236,30 +232,37 @@ def check_med(self):
     if opts.enable_med is False:
         raise Errors.ConfigurationError("MED disabled")
 
-    if opts.med_libs is None:
-        if self.env.CC_NAME == "msvc":
-            opts.med_libs = " medC medfwrap"
-        else:
-            opts.med_libs = "med"
-
-    if opts.med_libs:
-        self.check_med_libs()
+    self.check_med_libs()
     self.check_med_headers()
     self.check_sizeof_med_int()
     self.check_sizeof_med_idt()
-    self.check_med_version()
     self.check_med_python()
 
 
 @Configure.conf
 def check_med_libs(self):
     opts = self.options
-    check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
-    if opts.embed_all or opts.embed_med:
-        check_lib = lambda lib: check_med(stlib=lib)
-    else:
-        check_lib = lambda lib: check_med(lib=lib)
-    list(map(check_lib, Utils.to_list(opts.med_libs)))
+    candidates = ["med", "medfwrap medC"]
+    if opts.med_libs is not None:
+        candidates = [opts.med_libs]
+
+    def do_check(libs):
+        check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
+        kwd = "stlib" if opts.embed_all or opts.embed_med else "lib"
+        for lib in Utils.to_list(libs):
+            check_med(**{kwd: lib})
+
+    success = False
+    while not success and candidates:
+        libsset = candidates.pop(0)
+        try:
+            self.env.stash()
+            do_check(libsset)
+            # using MEDlibraryNumVersion symbol is sufficient
+            self.check_med_version()
+            success = True
+        except Errors.ConfigurationError:
+            self.env.revert()
 
 
 @Configure.conf

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine irnono(meshNameZ, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: meshNameZ
     integer, intent(in) :: nbNode
@@ -71,7 +72,7 @@ subroutine irnono(meshNameZ, &
             call utmess('F', 'MED3_4')
         end if
         do iNode = 1, nbNode
-            call jenonu(jexnom(meshName//'.NOMNOE', nodeName(iNode)), nodeNume)
+            nodeNume = char8_to_int(nodeName(iNode))
             if (nodeNume .eq. 0) then
                 call utmess('A', 'RESULT3_6', sk=nodeName(iNode))
                 nodeName(iNode) = ' '

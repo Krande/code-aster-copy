@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,6 +83,8 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
 #include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 !
 ! ARGUMENTS
@@ -99,7 +101,6 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
     real(kind=8) :: ksi1, ksi2, zero
     complex(kind=8) :: cbid
     character(len=8) :: k8b
-    character(len=24) :: nonoma
     aster_logical :: notlin, l_excent
 !
     real(kind=8) :: ffel2d, x(2), ff(9)
@@ -145,8 +146,6 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
 !
     zero = 0.0d0
 !
-    nonoma = mailla//'.NOMNOE'
-!
     nomnoe(1) = nnoeca
     nomddl(1) = 'DEPL'
     coemur(1) = 1.0d0
@@ -158,11 +157,11 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
     if (iproj .eq. 2) then
 !
 !       pas de liaisons si les noeuds sont les mêmes
-        call jenonu(jexnom(nonoma, nnoeca), noeca)
+        noeca = char8_to_int(nnoeca)
         if (noeca .eq. noebe) goto 110
 !
         nbterm = 2
-        call jenuno(jexnum(nonoma, noebe), nomnoe(1+1))
+        nomnoe(1+1) = int_to_char8(noebe)
         nomddl(1+1) = 'DEPL'
         coemur(1+1) = -1.0d0
 !
@@ -220,8 +219,8 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
             else
                 ind = 2
             end if
-            call jenuno(jexnum(nonoma, cxma(i1)), nomnoe(1+1))
-            call jenuno(jexnum(nonoma, cxma(i2)), nomnoe(1+ind))
+            nomnoe(1+1) = int_to_char8(cxma(i1))
+            nomnoe(1+ind) = int_to_char8(cxma(i2))
             nomddl(1+1) = 'DEPL'
             nomddl(1+ind) = 'DEPL'
 !
@@ -243,7 +242,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
                 i3 = i1+nbsom
                 ind = 3
                 if (l_excent) ind = 5
-                call jenuno(jexnum(nonoma, cxma(i3)), nomnoe(1+ind))
+                nomnoe(1+ind) = int_to_char8(cxma(i3))
                 nomddl(1+ind) = 'DEPL'
 !
                 coemur(1+ind) = -ff(i3)
@@ -263,7 +262,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
             do icnx = 1, nbcnx
                 ind = icnx
                 if (l_excent) ind = 2*icnx-1
-                call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(1+ind))
+                nomnoe(1+ind) = int_to_char8(cxma(icnx))
                 nomddl(1+ind) = 'DEPL'
                 coemur(1+ind) = -ff(icnx)
 !

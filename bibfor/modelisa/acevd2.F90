@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,14 +60,13 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     character(len=1) :: foue
     character(len=8) :: nomu, car(nbcar)
     character(len=16) :: concep, cmd
-    character(len=24) :: tmpdis, mlgnno, grpma
+    character(len=24) :: tmpdis, grpma
 ! --------------------------------------------------------------------------------------------------
     character(len=24), pointer :: zjdls(:) => null()
 ! --------------------------------------------------------------------------------------------------
 !
     call getres(nomu, concep, cmd)
     tmpdis = nomu//'.DISCRET'
-    mlgnno = noma//'.NOMNOE'
     grpma = noma//'.GROUPEMA       '
 !
 !   Vérification des dimensions / modélisations

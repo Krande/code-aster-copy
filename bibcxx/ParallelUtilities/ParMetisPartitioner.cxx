@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,17 +48,17 @@ int ParMetisPartitioner::buildGraph( const MeshConnectionGraphPtr &graph ) {
 };
 
 VectorLong ParMetisPartitioner::partitionGraph() {
-    idx_t wgtflag = 0, numflag = 0, ncon = 1, npart = getMPISize(), edgecut = 0;
+    Parmetis::idx_t wgtflag = 0, numflag = 0, ncon = 1, npart = getMPISize(), edgecut = 0;
     VectorIdxT options( 4, 0 );
     VectorIdxT partition( _nbVertex + 1, -1 );
     VectorLong distributed;
     auto comm = aster_get_current_comm()->id;
     const auto nbProcs = getMPISize();
     VectorRealT tpwgts( npart, 1. / npart ), ubvec( 1, 1.05 );
-    int toReturn = ParMETIS_V3_PartKway(
+    int toReturn = Parmetis::ParMETIS_V3_PartKway(
         _vtxdist.data(), _xadj.data(), _adjncy.data(), nullptr, nullptr, &wgtflag, &numflag, &ncon,
         &npart, tpwgts.data(), ubvec.data(), options.data(), &edgecut, partition.data(), &comm );
-    if ( toReturn != METIS_OK ) {
+    if ( toReturn != Parmetis::METIS_OK ) {
         throw std::runtime_error( "Error in ParMetis partitioning" );
     }
     buildPartition( partition, distributed );
@@ -66,7 +66,7 @@ VectorLong ParMetisPartitioner::partitionGraph() {
     return distributed;
 };
 
-void ParMetisPartitioner::buildPartition( const VectorLong &partition, VectorLong &distributed ) {
+void ParMetisPartitioner::buildPartition( const VectorIdxT &partition, VectorLong &distributed ) {
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
     VectorLong toDistribute( _nbVertex, -1 );
@@ -79,7 +79,7 @@ void ParMetisPartitioner::buildPartition( const VectorLong &partition, VectorLon
     ObjectBalancer balancer;
     for ( int curProc = 0; curProc < nbProcs; ++curProc ) {
         if ( curProc != rank && sendLists[curProc].size() != 0 ) {
-            balancer.addElementarySend( curProc, sendLists[curProc] );
+            balancer.addElementarySend( (int)curProc, sendLists[curProc] );
         }
     }
     balancer.endElementarySendDefinition();

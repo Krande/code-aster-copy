@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,6 +54,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, ier, ik, ino, inord
@@ -176,7 +177,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl, &
             call isdeco(zi(lldes+2*nbnot+(i-1)*nbec+1-1), idec, nbcmp)
 !**************************************************************
             ino = zi(lldes+i-1)
-            call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
+            nomnoe = int_to_char8(ino)
             do j = 1, nbcmp
                 if (idec(j) .eq. 1) then
                     jj = -j

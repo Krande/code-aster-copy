@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine te0295(option, nomte)
 !
     integer :: icodre(4)
     integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos
-    integer :: jgano, icomp, ibalo, icour, isigi
+    integer :: jgano, ibalo, icour, isigi
     integer :: igeom, ithet, ificg, irota, ipesa, idepl, iret, ncmp
     integer :: imate, iforc, iforf, itemps, k, i, j, kk, l, ndim, ino, ipuls
     integer :: jlsn, jlst, jtab(7)
@@ -77,8 +77,9 @@ subroutine te0295(option, nomte)
 !
     character(len=4) :: fami
     character(len=8) :: nompar(4)
-    character(len=16) :: nomres(4), compor(4)
+    character(len=16) :: nomres(4)
     character(len=32) :: phenom
+    character(len=16), pointer :: compor(:) => null()
 !
     aster_logical :: lcour, fonc, lpesa, lrota, l_not_zero
 !
@@ -97,7 +98,7 @@ subroutine te0295(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PBASLOR', 'L', ibalo)
     call jevech('PCOURB', 'L', icour)
     call jevech('PLSN', 'L', jlsn)
@@ -177,10 +178,6 @@ subroutine te0295(option, nomte)
     end if
 !
 ! --- VERFICATION DU COMPORTEMENT
-!
-    do i = 1, 4
-        compor(i) = zk16(icomp+i-1)
-    end do
 !
     if ((compor(1) .ne. 'ELAS') .or. (compor(4) .eq. 'COMP_INCR')) then
         if (compor(1) .ne. 'ELAS') then

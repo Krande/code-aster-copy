@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -94,6 +94,8 @@ class MeshReader(ExecuteCommand):
         if keywords.get("INFO_MED", 0):
             # cheat code for debugging and detailed time informations
             verbose |= 4
+        if meshname is None:
+            meshname = ""
         if self._result.isParallel():
             filename = LogicalUnitFile.filename_from_unit(unit)
             self._result.readMedFile(filename, meshname, partitioned=False, verbose=verbose)

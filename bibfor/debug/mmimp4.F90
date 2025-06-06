@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi, &
 !
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
     integer :: ifm
     integer :: nummae
     character(len=8) :: noma
@@ -77,7 +78,7 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi, &
 !
 ! --- REPERAGE MAILLE ESCLAVE
 !
-    call jenuno(jexnum(noma//'.NOMMAI', nummae), nomesc)
+    nomesc = int_to_char8(nummae)
     write (ifm, 1000) nomesc
     write (ifm, 2000) iptm
 1000 format(' <CONTACT>     * LA MAILLE ESCLAVE ', a8)
@@ -123,7 +124,7 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi, &
     write (ifm, 6000) jeu, lambdc
 
 6000 format(' <CONTACT>         <> JEU:', e10.3,&
-    &        ' - LAGS_C :', e10.3)
+&        ' - LAGS_C :', e10.3)
 !
 !
 ! --- ETAT DE CONTACT FINAL

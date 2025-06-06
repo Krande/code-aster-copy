@@ -3,7 +3,7 @@
  * @brief Implementation de FieldOnCells vide car FieldOnCells est un template
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -91,7 +91,7 @@ ASTERDOUBLE FieldOnCellsReal::norm( const std::string normType ) const {
     JeveuxVectorLong CellsRank = getMesh()->getCellsOwner();
     CellsRank->updateValuePointer();
 
-    JeveuxCollectionLong collec = _dofDescription->getListOfGroupsOfElements();
+    auto collec = _dofDescription->getListOfGroupsOfElements();
     nbgrp = ( *_descriptor )[1];
 
     for ( auto i = 0; i < nbgrp; i++ ) {
@@ -173,4 +173,25 @@ ASTERDOUBLE FieldOnCellsReal::dot( const FieldOnCellsPtr &tmp ) const {
         ret += ( *this )[pos] * ( *tmp )[pos];
     }
     return ret;
+};
+
+template <>
+void FieldOnCellsReal::checkInternalStateVariables(
+    const ConstantFieldOnCellsChar16Ptr prevBehaviour,
+    const ConstantFieldOnCellsChar16Ptr currBehaviour ) {
+
+    std::string prevBehaviourStr = " ";
+    std::string currBehaviourStr = " ";
+    std::string variStr = " ";
+    std::string FEDescStr = " ";
+
+    currBehaviourStr = currBehaviour->getName();
+    variStr = this->getName();
+    FEDescStr = getDescription()->getName();
+
+    if ( prevBehaviour != nullptr ) {
+        prevBehaviourStr = prevBehaviour->getName();
+    };
+
+    CALL_CHCKVARI( prevBehaviourStr, currBehaviourStr, variStr, FEDescStr );
 }

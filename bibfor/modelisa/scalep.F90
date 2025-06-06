@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbm, nuor(nbm), imodi, nbmr, nbexcp, iaxe
     aster_logical :: ltable
@@ -59,7 +60,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm, &
     real(kind=8) :: scal(nbexcp, nbmr)
 !
     real(kind=8) :: dgrd
-    character(len=24) :: spnnoe, spvare, spvate, nnoema, chvale
+    character(len=24) :: spnnoe, spvare, spvate, chvale
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -97,7 +98,6 @@ subroutine scalep(spectr, noma, base, nuor, nbm, &
 !       - DES DIRECTIONS D'APPLICATION DE L'EXCITATION EN CHAQUE NOEUD
 !       - DE LA NATURE DE L'EXCITATION EN CHAQUE NOEUD
 !
-    nnoema = noma//'.NOMNOE'
     spnnoe = spectr//'.NNOE'
     call jeveuo(spnnoe, 'L', ispno)
 !
@@ -113,7 +113,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm, &
         call jeveuo(spvate, 'L', ispte)
 !
         do iex = 1, nbexcp
-            call jenonu(jexnom(nnoema, zk8(ispno+iex-1)), zi(inuno+iex-1))
+            zi(inuno+iex-1) = char8_to_int(zk8(ispno+iex-1))
             theta = zr(ispre+iex-1)*dgrd
             zr(iteta+2*(iex-1)) = dble(cos(theta))
             zr(iteta+2*(iex-1)+1) = dble(sin(theta))
@@ -122,7 +122,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm, &
 !
     else
 !
-        call jenonu(jexnom(nnoema, zk8(ispno)), nuno)
+        nuno = char8_to_int(zk8(ispno))
         do iex = 1, nbexcp
             zi(inuno+iex-1) = nuno
             zr(iteta+2*(iex-1)) = 1.d0

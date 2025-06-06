@@ -19,7 +19,6 @@
 
 from ..Messages import UTMESS
 from ..Objects import (
-    ConnectionMesh,
     ContactAlgo,
     ContactNew,
     ContactParameter,
@@ -44,7 +43,6 @@ def _hasFriction(zones):
     for zone in zones:
         if zone["FROTTEMENT"] == "OUI":
             return True
-
     return False
 
 
@@ -55,7 +53,7 @@ def defi_cont_ops(self, **keywords):
         keywords (dict): User's keywords.
     """
 
-    UTMESS("A", "QUALITY1_2")
+    UTMESS("A", "QUALITY1_2", valk="DEFI_CONT")
 
     model = keywords["MODELE"]
     verbosity = keywords["INFO"]
@@ -134,6 +132,10 @@ def defi_cont_ops(self, **keywords):
             contParam.setJacobianType(_jac_type[zone["TYPE_MATR_TANG"]])
             variante = zone["VARIANTE"]
             contParam.setVariant(_vari_cont[variante])
+
+        if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Penalization:
+            contParam.setJacobianType(_jac_type[zone["TYPE_MATR_TANG"]])
+            contParam.setVariant(_vari_cont["ROBUSTE"])
 
         if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Nitsche:
             if zone["SYME"] == "OUI":

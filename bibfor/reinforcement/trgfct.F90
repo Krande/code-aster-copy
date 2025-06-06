@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,54 +17,58 @@
 ! --------------------------------------------------------------------
 
 subroutine trgfct(nb, fcttab)
-!_____________________________________________________________________
-!
-!     TRGFCT
-!
-!      CALCUL DES PARAMETRES TRIGONOMÉTRIQUES POUR LES (36) FACETTES
-!
-!_____________________________________________________________________
-!
-!
+    !_____________________________________________________________________
+    !
+    !     TRGFCT
+    !
+    !      CALCUL DES PARAMETRES TRIGONOMÉTRIQUES POUR LES (36) FACETTES
+    !
+    !_____________________________________________________________________
+    !
+    !
     implicit none
-!
-!     ! FACETTES POUR METHODE DE CAPRA ET MAURY
-!
-!       nb FACETTES
+#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
+
+    !
+    !     ! FACETTES POUR METHODE DE CAPRA ET MAURY
+    !
+    !       nb FACETTES
     integer :: nb
-!       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
-    real(kind=8) :: fcttab(nb, 5)
-!
-!       ANGLE DE LA FACETTE (-PI/2 <= X < +PI/2)
+    !       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
+    real(kind=8) :: fcttab(nb, 6)
+    !
+    !       ANGLE DE LA FACETTE (-PI/2 <= X < +PI/2)
     real(kind=8) :: angle
-    real(kind=8) :: pas
+    real(kind=8) :: pas, pi
     integer :: i
-!
+    !
+    pi = r8pi()
     fcttab(1, 1) = 0d0
     fcttab(1, 2) = 1d0
     fcttab(1, 3) = 0d0
     fcttab(1, 4) = 0d0
     fcttab(1, 5) = -1d0
-!
-!       -PI/2
-    angle = (-4d0*atan2(1.d0, 1.d0))/2.d0
-    !print *,"angle = ",angle*180.0/3.141592654
-!       2PI/N
+    fcttab(1, 6) = -90.d0
+    !
+    !       -PI/2
+    angle = -pi/2.d0
+    !       2PI/N
     pas = -2.d0*angle/nb
-!
-!   POUR CHAQUE FACETTE, LES VALEURS SONT
-!     1 = COS^2
-!     2 = SIN^2
-!     3 = 2 SIN COS
-!     4 = SIN
-!     5 = COS
+    !
+    !   POUR CHAQUE FACETTE, LES VALEURS SONT
+    !     1 = COS^2
+    !     2 = SIN^2
+    !     3 = 2 SIN COS
+    !     4 = SIN
+    !     5 = COS
     do 20 i = 2, nb
         angle = angle+pas
-        !print *,"angle = ",angle*180.0/3.141592654
         fcttab(i, 1) = cos(angle)*cos(angle)
         fcttab(i, 2) = sin(angle)*sin(angle)
         fcttab(i, 3) = -2.d0*sin(angle)*cos(angle)
         fcttab(i, 4) = cos(angle)
         fcttab(i, 5) = sin(angle)
+        fcttab(i, 6) = angle*r8rddg()
 20      continue
         end subroutine

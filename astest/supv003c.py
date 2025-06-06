@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from code_aster import CA
 test = CA.TestCase()
 
 try:
-    DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION", ERREUR_F="EXCEPTION"))
+    DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION", ERREUR_F="EXCEPTION"))
 
 except CA.AsterError as exc:
     assert False, "no exception should be thrown."

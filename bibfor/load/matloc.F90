@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
 #include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -97,7 +98,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
 !
     if (nb_conn_elem .eq. 1) then
         elem_nume = zi(jadrm)
-        call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+        elem_name = int_to_char8(elem_nume)
     else
         if (nb_repe_elem .eq. 0) then
             call utmess('F', 'CHARGES2_37', sk=node_name)
@@ -118,7 +119,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
 ! - Check element type
 !
     call jenuno(jexnum('&CATA.TM.NOMTM', typmail(elem_nume)), type_elem)
-    call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+    elem_name = int_to_char8(elem_nume)
     valk(2) = node_name
     valk(1) = elem_name
     if (type_elem(1:3) .ne. 'SEG') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbCell, nbmavo, mailvo(*)
     real(kind=8) :: coor(*)
@@ -159,12 +160,12 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
                     if (indmai .lt. 0) then
                         ASSERT(indmai .eq. -1 .or. indmai .eq. -2 .or. indmai .eq. -12)
                         if (indmai .eq. -1) then
-                            call jenuno(jexnum(mail//'.NOMMAI', im1), valk(1))
+                            valk(1) = int_to_char8(im1)
                             call utmess('F', 'CALCULEL2_32', sk=valk(1))
 !                           -- C'est la maille 1 qui est degeneree => on prend la 2 :
                             zi(jm3d+iCell-1) = im2
                         else
-                            call jenuno(jexnum(mail//'.NOMMAI', im2), valk(1))
+                            valk(1) = int_to_char8(im2)
                             call utmess('F', 'CALCULEL2_32', sk=valk(1))
                         end if
 !
@@ -172,9 +173,9 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
 !
 !                       -- sinon, im2 et im1 sont de part et d'autre de cellNume
                         if (.not. coince) then
-                            call jenuno(jexnum(mail//'.NOMMAI', cellNume), valk(1))
-                            call jenuno(jexnum(mail//'.NOMMAI', im1), valk(2))
-                            call jenuno(jexnum(mail//'.NOMMAI', im2), valk(3))
+                            valk(1) = int_to_char8(cellNume)
+                            valk(2) = int_to_char8(im1)
+                            valk(3) = int_to_char8(im2)
                             call utmess('F', 'PREPOST4_97', nk=3, valk=valk)
                         else
                             ASSERT(indmai .eq. 1 .or. indmai .eq. 2)
@@ -191,7 +192,7 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
 !
 !
         if (nbm .eq. 0 .and. niv .gt. 1) then
-            call jenuno(jexnum(mail//'.NOMMAI', cellNume), nomail)
+            nomail = int_to_char8(cellNume)
             if (first) then
                 valk(1) = nomail
                 call utmess('A+', 'PREPOST6_29', sk=valk(1))

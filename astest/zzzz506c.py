@@ -22,7 +22,7 @@ from code_aster import CA
 from code_aster.Solvers import NonLinearOperator, TimeStepper
 from code_aster.Utilities import haveMPI
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = CA.TestCase()
 

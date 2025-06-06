@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/angvec.h"
 #include "asterfort/carces.h"
 #include "asterfort/cccmcr.h"
@@ -40,6 +41,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: codret
     character(len=1) :: cmperr
@@ -213,7 +215,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
                             ino, pgl, modeli, ier)
                 if (ier .eq. 3) goto 20
                 if (ier .eq. 1) then
-                    call jenuno(jexnum(nommai//'.NOMMAI', numma), nomail)
+                    nomail = int_to_char8(numma)
                     call utmess('A', 'MODELISA10_5', sk=nomail)
                 end if
 !
@@ -263,7 +265,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
                                 ino, pgl, modeli, ier)
                     if (ier .eq. 3) goto 30
                     if (ier .eq. 1) then
-                        call jenuno(jexnum(nommai//'.NOMMAI', numma2), nomail)
+                        nomail = int_to_char8(numma2)
                         call utmess('A', 'MODELISA10_5', sk=nomail)
                     end if
 !
@@ -306,7 +308,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 !
     if (lprobm) then
         if (cmperr .ne. ' ') then
-            tabres(1) = maxdif*180.0/3.14
+            tabres(1) = maxdif*r8rddg()
             call utmess(cmperr, 'UTILITAI_4', sr=tabres(1))
         end if
         codret = 1

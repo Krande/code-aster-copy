@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine ornorm(mesh, listCellNume, nbCell, reorie, norien, nconex, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: nbCell
@@ -146,7 +147,7 @@ subroutine ornorm(mesh, listCellNume, nbCell, reorie, norien, nconex, &
 ! ----- SI LA MAILLE N'EST PAS ORIENTEE ON L'ORIENTE
         if (pasori(iCell)) then
             if (niv .eq. 2) then
-                call jenuno(jexnum(mesh//'.NOMMAI', cellNume), cellName)
+                cellName = int_to_char8(cellNume)
                 call utmess('I', 'MESH3_9', sk=cellName)
             end if
             nconex = nconex+1
@@ -182,7 +183,7 @@ subroutine ornorm(mesh, listCellNume, nbCell, reorie, norien, nconex, &
                         lliste = lliste+1
                         ori2(lliste+1) = im2
                         if (reorie .and. niv .eq. 2) then
-                            call jenuno(jexnum(mesh//'.NOMMAI', cellNume), cellName)
+                            cellName = int_to_char8(cellNume)
                             if (ico .lt. 0) then
                                 call utmess('I', 'MESH3_7', sk=cellName)
                             else

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
 
 MESH = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -135,8 +135,14 @@ PRES_T = RECU_FONCTION(TABLE=RELE, PARA_X="ABSC_CURV", PARA_Y="MLAGS_F1")
 # ===========================================
 
 # champ de contraintes de Cauchy aux noeuds
-sigm = CREA_CHAMP(
-    TYPE_CHAM="NOEU_SIEF_R", OPERATION="EXTR", RESULTAT=RESU, NOM_CHAM="SIEF_NOEU", INST=1.0
+RESU = CALC_PRESSION(
+    reuse=RESU,
+    GROUP_MA=("Bottom_C", "Top_B"),
+    MAILLAGE=MESH,
+    INST=(1.0,),
+    RESULTAT=RESU,
+    GEOMETRIE="DEFORMEE",
+    INFO=1,
 )
 
 depl = CREA_CHAMP(
@@ -146,75 +152,43 @@ mdepl = CREA_CHAMP(TYPE_CHAM="NOEU_DEPL_R", OPERATION="COMB", COMB=_F(CHAM_GD=de
 
 MESH = MODI_MAILLAGE(reuse=MESH, MAILLAGE=MESH, DEFORME=_F(OPTION="TRAN", DEPL=depl))
 
-
-# normale sur la configuration finale
-NormaleF = CREA_CHAMP(
-    TYPE_CHAM="NOEU_GEOM_R", OPERATION="NORMALE", MODELE=MO, GROUP_MA=("Top_B", "Bottom_C")
-)
-
-MESH = MODI_MAILLAGE(reuse=MESH, MAILLAGE=MESH, DEFORME=_F(OPTION="TRAN", DEPL=mdepl))
-
-# pression de contact
-Pression = FORMULE(
-    VALE="-(SIXX*X*X+SIYY*Y*Y+2*SIXY*X*Y)", NOM_PARA=["SIXX", "SIYY", "SIXY", "X", "Y"]
-)
-# pression de contact tangentielle
-PresTang = FORMULE(
-    VALE="-(X*Y*(SIYY-SIXX)+(X*X-Y*Y)*SIXY)", NOM_PARA=["SIXX", "SIYY", "SIXY", "X", "Y"]
-)
-
-Pres = CREA_CHAMP(
-    TYPE_CHAM="NOEU_NEUT_F",
-    OPERATION="AFFE",
-    MAILLAGE=MESH,
-    AFFE=(
-        _F(GROUP_MA=("Top_B", "Bottom_C"), NOM_CMP="X1", VALE_F=Pression),
-        _F(GROUP_MA=("Top_B", "Bottom_C"), NOM_CMP="X2", VALE_F=PresTang),
-    ),
-)
-
-pF = CREA_CHAMP(TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=Pres, CHAM_PARA=(NormaleF, sigm))
-
-# champ de pression de contact
-p_appr_F = CREA_CHAMP(
-    TYPE_CHAM="NOEU_DEPL_R",
-    OPERATION="ASSE",
-    MODELE=MO,
-    ASSE=(
-        _F(GROUP_MA=("Top_B", "Bottom_C"), CHAM_GD=pF, NOM_CMP="X1", NOM_CMP_RESU="LAGS_C"),
-        _F(GROUP_MA=("Top_B", "Bottom_C"), CHAM_GD=pF, NOM_CMP="X2", NOM_CMP_RESU="LAGS_F1"),
-    ),
-)
-
-MESH = MODI_MAILLAGE(reuse=MESH, MAILLAGE=MESH, DEFORME=_F(OPTION="TRAN", DEPL=depl))
-
 # abscisse curviligne sur la deformee
 CALC_PSF = POST_RELEVE_T(
     ACTION=_F(
         OPERATION="EXTRACTION",
+        RESULTAT=RESU,
         INTITULE="P_S",
-        CHAM_GD=p_appr_F,
-        GROUP_NO="Bottom_n",
+        NOM_CHAM="PRES_NOEU",
         TOUT_CMP="OUI",
+        GROUP_NO="Bottom_n",
     )
 )
 
 # abscisse curviligne sur la deformee
 CALC_PMF = POST_RELEVE_T(
     ACTION=_F(
-        OPERATION="EXTRACTION", INTITULE="P_M", CHAM_GD=p_appr_F, GROUP_NO="Top_n", TOUT_CMP="OUI"
+        OPERATION="EXTRACTION",
+        RESULTAT=RESU,
+        INTITULE="P_M",
+        NOM_CHAM="PRES_NOEU",
+        TOUT_CMP="OUI",
+        GROUP_NO="Top_n",
     )
 )
 
 MESH = MODI_MAILLAGE(reuse=MESH, MAILLAGE=MESH, DEFORME=_F(OPTION="TRAN", DEPL=mdepl))
 
-PS_FONCF = RECU_FONCTION(TABLE=CALC_PSF, PARA_X="ABSC_CURV", PARA_Y="LAGS_C")
+PS_FONCF = RECU_FONCTION(TABLE=CALC_PSF, PARA_X="ABSC_CURV", PARA_Y="PRES")
 
-PS_TANG = RECU_FONCTION(TABLE=CALC_PSF, PARA_X="ABSC_CURV", PARA_Y="LAGS_F1")
+PS_FONCF = CALC_FONCTION(ABS=_F(FONCTION=PS_FONCF), NOM_PARA="ABSC")
 
-PM_FONCF = RECU_FONCTION(TABLE=CALC_PMF, PARA_X="ABSC_CURV", PARA_Y="LAGS_C")
+PS_TANG = RECU_FONCTION(TABLE=CALC_PSF, PARA_X="ABSC_CURV", PARA_Y="CISA")
 
-PM_TANG = RECU_FONCTION(TABLE=CALC_PMF, PARA_X="ABSC_CURV", PARA_Y="LAGS_F1")
+PM_FONCF = RECU_FONCTION(TABLE=CALC_PMF, PARA_X="ABSC_CURV", PARA_Y="PRES")
+
+PM_FONCF = CALC_FONCTION(ABS=_F(FONCTION=PM_FONCF), NOM_PARA="ABSC")
+
+PM_TANG = RECU_FONCTION(TABLE=CALC_PMF, PARA_X="ABSC_CURV", PARA_Y="CISA")
 
 # ===========================================
 
@@ -236,8 +210,8 @@ IMPR_FONCTION(
     ECHELLE_Y="LIN",
     GRILLE_X=1,
     GRILLE_Y=500,
-    LEGENDE_X="Densite surfacique (N/mm2)",
-    LEGENDE_Y="Abscisse curviligne (mm)",
+    LEGENDE_X="Abscisse curviligne (mm)",
+    LEGENDE_Y="Densite surfacique (N/mm2)",
 )
 
 
@@ -267,6 +241,28 @@ TEST_RESU(
             VALE_CALC=-3727.837891279944,
             VALE_REFE=-3670.2561088662001,
             PRECISION=0.016,
+        ),
+    )
+)
+
+# Verification de la force tangentielle
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="PRES_NOEU",
+            NOM_CMP="VX",
+            VALE_CALC=272.8972461688923,
+        ),
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="PRES_NOEU",
+            NOM_CMP="VY",
+            VALE_CALC=2.9322911927895867,
         ),
     )
 )

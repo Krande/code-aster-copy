@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 #include "asterfort/resuIdeasPermut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utcmp3.h"
+#include "asterfort/int_to_char8.h"
 !
     integer, intent(in) :: fileUnit
     character(len=*), intent(in) :: title, dsName
@@ -229,7 +230,7 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
     AS_ALLOCATE(vk8=cellName, size=meshCellNb)
     AS_ALLOCATE(vi=cellNbNode, size=meshCellNb)
     do iCell = 1, meshCellNb
-        call jenuno(jexnum(meshName//'.NOMMAI', iCell), cellName(iCell))
+        cellName(iCell) = int_to_char8(iCell)
         call jelira(jexnum(meshName//'.CONNEX', iCell), 'LONMAX', cellNbNode(iCell))
     end do
 !

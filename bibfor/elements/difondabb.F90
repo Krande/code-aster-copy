@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,13 +47,14 @@ subroutine difondabb(for_discret, iret)
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvlg.h"
 #include "blas/dcopy.h"
+#include "asterfort/Behaviour_type.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
     integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, jdc, irep, neq, ii, ifono, icontp, icontm, icompo, icarcr
+    integer :: imat, jdc, irep, neq, ii, ifono, icontp, icontm, icarcr
     integer :: iadzi, iazk24
 !   paramètres des fonctions bizarres
     integer :: nbpar, kpg, spt, icodma, nbrePara, nbVarloc, nbdecp
@@ -68,6 +69,7 @@ subroutine difondabb(for_discret, iret)
     character(len=8) :: k8bid, nompar, fami, poum
     character(len=24) :: messak(6)
     character(len=16) :: nomre1(nbrePara)
+    character(len=16), pointer :: compor(:) => null()
 !
 !   calculPetit : pour savoir si on lance le calcul de linéarisation
 !   PetitH      : basé sur 0.01Fz ou 0.2 Fz
@@ -86,15 +88,15 @@ subroutine difondabb(for_discret, iret)
 !
     iret = 0
 ! récupération des paramètres de comportement du calcul : pointeur icompo
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 ! vérification du bon matériau, on regarde dans irep l'indication de la matrice
     call infdis('REPK', irep, r8bid, k8bid)
 ! Seulement en 3D TR et en poi1
     if ((for_discret%nomte(1:11) .ne. 'MECA_DIS_TR') .or. (for_discret%nno .ne. 1)) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
-        messak(3) = zk16(icompo+3)
-        messak(4) = zk16(icompo)
+        messak(3) = compor(INCRELAS)
+        messak(4) = compor(RELA_NAME)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_23', nk=5, valk=messak)
@@ -103,8 +105,8 @@ subroutine difondabb(for_discret, iret)
     if (irep .ne. 2) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
-        messak(3) = zk16(icompo+3)
-        messak(4) = zk16(icompo)
+        messak(3) = compor(INCRELAS)
+        messak(4) = compor(RELA_NAME)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_5', nk=5, valk=messak)
@@ -135,8 +137,8 @@ subroutine difondabb(for_discret, iret)
     if ((lxxx .le. r8prem()) .or. (lyyy .le. r8prem())) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
-        messak(3) = zk16(icompo+3)
-        messak(4) = zk16(icompo)
+        messak(3) = compor(INCRELAS)
+        messak(4) = compor(RELA_NAME)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_44', nk=5, valk=messak)
@@ -146,8 +148,8 @@ subroutine difondabb(for_discret, iret)
     if ((valre1(7) .le. r8prem()) .and. (valre1(8) .le. r8prem())) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
-        messak(3) = zk16(icompo+3)
-        messak(4) = zk16(icompo)
+        messak(3) = compor(INCRELAS)
+        messak(4) = compor(RELA_NAME)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_45', nk=5, valk=messak)

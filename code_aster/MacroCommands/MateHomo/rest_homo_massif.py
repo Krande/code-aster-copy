@@ -119,11 +119,12 @@ def createLocalElasResult(rmanager, resuglob):
         dot_p_c11 = evol_epsip0[no][0, 0] * chi_11
         dot_p_c22 = evol_epsip0[no][1, 1] * chi_22
         dot_p_c33 = evol_epsip0[no][2, 2] * chi_33
-        dot_p_c12 = 2 * evol_epsip0[no][0, 1] * chi_12
-        dot_p_c23 = 2 * evol_epsip0[no][1, 2] * chi_23
-        dot_p_c31 = 2 * evol_epsip0[no][0, 2] * chi_31
-        dot_p_dil = (tp0 - rmanager.temp_ref) * chi_di
-        dot_p_pin = rmanager.pres_int * chi_pi
+        # Le coefficient 2.0 car la déformation imposée dans CALC_MATE_HOMO est 0.5
+        dot_p_c12 = 2.0 * evol_epsip0[no][0, 1] * chi_12
+        dot_p_c23 = 2.0 * evol_epsip0[no][1, 2] * chi_23
+        dot_p_c31 = 2.0 * evol_epsip0[no][0, 2] * chi_31
+        dot_p_dil = -1.0 * (tp0 - rmanager.temp_ref) * chi_di
+        dot_p_pin = rmanager.pres_int(time) * chi_pi
 
         dreloc = (
             evol_dp0[no]

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine iredsu(macr, fileUnit, versio)
 #include "asterfort/rslipa.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     integer, intent(in) :: fileUnit, versio
     character(len=*), intent(in) :: macr
@@ -69,7 +70,6 @@ subroutine iredsu(macr, fileUnit, versio)
     character(len=8) :: macrel, noma, noeu, cmp
     character(len=16) :: fieldType
     character(len=19) :: basemo, noch19
-    character(len=24) :: manono
     character(len=80) :: title
     real(kind=8), pointer :: mass_gene(:) => null()
     real(kind=8), pointer :: mass_jonc(:) => null()
@@ -95,7 +95,6 @@ subroutine iredsu(macr, fileUnit, versio)
     call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
     basemo = mael_refe(1) (1:19)
     noma = mael_refe(2) (1:8)
-    manono = noma//'.NOMNOE'
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
     call rslipa(basemo, 'NOEUD_CMP', '&&IREDSU.LINOEU', jnoeu, nbmodt)
 !
@@ -136,7 +135,7 @@ subroutine iredsu(macr, fileUnit, versio)
             write (fileUnit, '(A)') 'DDL JONCTION'
             do in = 1, inoeu
                 noeu = noeuds(in)
-                call jenonu(jexnom(manono, noeu), inoe)
+                inoe = char8_to_int(noeu)
                 idx = 0
                 idy = 0
                 idz = 0

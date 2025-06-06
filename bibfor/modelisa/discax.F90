@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,13 +45,15 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma
     integer :: nbn, iaxe, nuno(nbn)
     real(kind=8) :: diax(nbn)
 !
     character(len=8) :: nomnoe
-    character(len=24) :: coorma, nnoema
+    character(len=24) :: coorma
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -64,7 +66,6 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
 !
     coorma = noma//'.COORDO    .VALE'
     call jeveuo(coorma, 'L', icoma)
-    nnoema = noma//'.NOMNOE'
 !
 ! --- 2.ON RECOPIE LA DISCRETISATION (NON ORDONNEE) LUE DANS L'OBJET
 ! ---   .COORDO    .VALE DU CONCEPT MAILLAGE
@@ -73,7 +74,7 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
     call wkvect('&&DISCAX.TEMP.NNOE', 'V V K8', nbn, innoe)
     do ino = 1, nbn
         diax(ino) = zr(icoma+3*(ino-1)+iaxe-1)
-        call jenuno(jexnum(nnoema, ino), zk8(innoe+ino-1))
+        zk8(innoe+ino-1) = int_to_char8(ino)
     end do
 !
 ! --- 3.ON REORDONNE LA DISCRETISATION PAR VALEURS CROISSANTES
@@ -95,9 +96,9 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
         zk8(innoe+imin-1) = zk8(innoe+ino-1)
         diax(ino) = xmin
         zk8(innoe+ino-1) = nomnoe
-        call jenonu(jexnom(nnoema, zk8(innoe+ino-1)), nuno(ino))
+        nuno(ino) = char8_to_int(zk8(innoe+ino-1))
     end do
-    call jenonu(jexnom(nnoema, zk8(innoe+nbn-1)), nuno(nbn))
+    nuno(nbn) = char8_to_int(zk8(innoe+nbn-1))
 !
     call jedetr('&&DISCAX.TEMP.NNOE')
     call jedema()

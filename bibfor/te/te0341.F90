@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine te0341(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/terefe.h"
+#include "asterfort/Behaviour_type.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  FORC_NODA ET REFE_FORC_NODA
@@ -44,7 +45,8 @@ subroutine te0341(option, nomte)
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn
     integer :: iw, ivf1, idf1, igeom, jvSief, ivectu, ndim, ntrou
     integer :: npgn, iwn, ivf1n, idf1n, jgnn, ino, i, nddl1
-    integer :: iu(3, 3), iuc(3), im(3), isect, jvDisp, icompo
+    integer :: iu(3, 3), iuc(3), im(3), isect, jvDisp
+    character(len=16), pointer :: compor(:) => null()
     real(kind=8) :: tang(3, 3), forref, sigref, depref, a
     real(kind=8) :: geom(3, 3)
     aster_logical :: reactu
@@ -70,8 +72,8 @@ subroutine te0341(option, nomte)
 !
     reactu = .false.
     if (option .eq. 'FORC_NODA') then
-        call jevech('PCOMPOR', 'L', icompo)
-        if (zk16(icompo+2) .eq. 'PETIT_REAC') reactu = .true.
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        if (compor(DEFO) .eq. 'PETIT_REAC') reactu = .true.
     end if
     if (.not. reactu) then
         do ino = 1, nno1

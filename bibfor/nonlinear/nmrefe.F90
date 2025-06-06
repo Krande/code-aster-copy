@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -189,7 +189,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 ! - Assembly
 !
     call assmiv('V', vect_asse, 1, vect_elem, [1.d0], &
-                nume_dof, ' ', 'ZERO', 1)
+                nume_dof, 1)
 !
     AS_DEALLOCATE(vk8=list_cmp)
     AS_DEALLOCATE(vr=list_vale)

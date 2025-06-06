@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,6 +59,8 @@ subroutine lridea(fileUnit, &
 #include "asterfort/utmess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     integer, intent(in) :: fileUnit
     character(len=8), intent(in) :: resultName
@@ -110,8 +112,8 @@ subroutine lridea(fileUnit, &
     integer :: irec, valatt, ifield, fileIndx, ibid, ilu1
     integer :: i, iexp, nbnoe, nbfiel, nbnoeu, nbelem
     integer :: iret, idecal, icmp1, icmp2, inatur, kk, numode
-    integer :: nbvari, nvar
-    aster_logical :: trouve, astock, chamok, zcmplx, ldepl
+    integer :: nbvari, nvar, ier
+    aster_logical :: trouve, astock, chamok, zcmplx, ldepl, lcolle, lcolle2
     character(len=4) :: tychas, tychid
     character(len=6) :: kar
     character(len=8) :: nomgd, licmp(1000), nomno, cellName
@@ -161,6 +163,16 @@ subroutine lridea(fileUnit, &
     call dismoi('NB_MA_MAILLA', meshAst, 'MAILLAGE', repi=nbelem)
     call dismoi('NB_NO_MAILLA', meshAst, 'MAILLAGE', repi=nbnoeu)
     call jeveuo(meshAst//'.TYPMAIL', 'L', vi=typmail)
+    lcolle = .false.
+    call jeexin(meshAst//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
+    lcolle2 = .false.
+    call jeexin(meshAst//'.NOMMAI', ier)
+    if (ier .ne. 0) then
+        lcolle2 = .true.
+    end if
 !
 !- TABLEAU DE PERMUTATION POUR LES CONNECTIVITES DES MAILLES :
     call iradhs(versio)
@@ -472,11 +484,11 @@ subroutine lridea(fileUnit, &
 !
             nomno = 'NXXXXXXX'
             call codent(inoide, 'G', nomno(2:8))
-            call jenonu(jexnom(meshAst//'.NOMNOE', nomno), inoast)
+            inoast = char8_to_int(nomno, lcolle, meshAst, 'NOEUD')
 !  ON ESSAIE DE RECUPERER LE NUMERO DU NOEUD DIRECTEMENT
 !  SI ON NE LE TROUVE PAS VIA NXXXX
             if (inoast .eq. 0) then
-                call jenuno(jexnum(meshAst//'.NOMNOE', inoide), nomnob)
+                nomnob = int_to_char8(inoide, lcolle, meshAst, 'NOEUD')
                 if (nomnob .ne. nomnoa) then
                     call utmess('F', 'PREPOST3_40')
                 end if
@@ -527,7 +539,7 @@ subroutine lridea(fileUnit, &
             if (ielide .eq. -1) goto 150
             cellName = 'MXXXXXXX'
             call codent(ielide, 'G', cellName(2:8))
-            call jenonu(jexnom(meshAst//'.NOMMAI', cellName), cellNume)
+            cellNume = char8_to_int(cellName, lcolle2, meshAst, 'MAILLE')
 !  ON ESSAIE DE RECUPERER LE NUMERO DE LA MAILLE DIRECTEMENT
 !  SI ON NE LE TROUVE PAS VIA MXXXX
             if (cellNume .eq. 0) cellNume = ielide

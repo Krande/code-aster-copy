@@ -118,7 +118,7 @@ from run_aster.export import Export, File, split_export
 from run_aster.logger import DEBUG, WARNING, logger
 from run_aster.run import RunAster, create_temporary_dir, get_procid
 from run_aster.status import Status
-from run_aster.utils import RUNASTER_ROOT
+from run_aster.utils import RUNASTER_PLATFORM, RUNASTER_ROOT
 
 try:
     import debugpy
@@ -205,6 +205,14 @@ def parse_args(argv):
         help="only processor #0 is writing on stdout",
     )
     parser.add_argument(
+        "--proc0-is",
+        dest="proc0id",
+        action="store",
+        type=int,
+        default=0,
+        help="make this process to replace proc #0 (for example, it will copy the results)",
+    )
+    parser.add_argument(
         "--mpi",
         dest="rerun_mpi",
         action="store_const",
@@ -256,8 +264,13 @@ def parse_args(argv):
         "--no-comm",
         dest="no_comm",
         action="store_true",
-        help="do not execute the `.comm` files but start an interactive Python session. "
+        help="do not execute the `.comm` files but start an interactive Python session"
         "`CA.init()` is automatically called.",
+    )
+    parser.add_argument(
+        "--save_db",
+        action="store_true",
+        help="force the closure of the database results even if there is none",
     )
     parser.add_argument(
         "--gdb",
@@ -333,7 +346,8 @@ def main(argv=None):
     argv = argv or sys.argv[1:]
     args = parse_args(argv)
 
-    procid = 0
+    args.proc0id = max(0, args.proc0id)
+    procid = args.proc0id
     if CFG.get("parallel", False):
         procid = get_procid()
 
@@ -482,17 +496,21 @@ def main(argv=None):
             shutil.rmtree(expdir)
             return exitcode
 
-        if args.only_proc0 and procid > 0:
+        if args.only_proc0 and procid != args.proc0id:
             logger.setLevel(WARNING)
         opts = {}
         opts["test"] = args.test
         opts["env"] = make_env
-        sys_conf = check_compiler()
-        if sys_conf == "MSVC":
-            opts["tee"] = False
-        else:  # its unix based
-            opts["tee"] = not args.only_proc0 or procid == 0
+        if RUNASTER_PLATFORM == "linux":
+            opts["tee"] = not args.only_proc0 or procid == args.proc0id
+        else:
+            if check_compiler() == "MSVC":
+                opts["tee"] = False
+            else:
+                opts["tee"] = not args.ctest
         opts["interactive"] = args.interactive
+        opts["savedb"] = args.save_db
+        opts["proc0id"] = args.proc0id
         if args.exectool:
             wrapper = CFG.get("exectool", {}).get(args.exectool)
             if not wrapper:

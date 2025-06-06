@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
     integer :: nfiss, nbma, ndim
     character(len=8) :: fiss(nfiss)
     character(len=24) :: lismai, mesmai
@@ -79,7 +80,7 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
     integer ::   ndime, jmad, mxstac
     character(len=8) :: noma, nomafi, nomail, k8_typ_enr, vk8_typ_enr(3)
     character(len=8) :: k8_test
-    character(len=24) :: nommai, grp(nfiss, 3)
+    character(len=24) :: grp(nfiss, 3)
     integer, pointer :: temi(:) => null()
     character(len=8), pointer :: temp(:) => null()
     integer, pointer :: tmdim(:) => null()
@@ -129,7 +130,6 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
     else
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma)
     end if
-    nommai = noma//'.NOMMAI'
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
@@ -210,7 +210,7 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
                             l_mail_affe = p_mail_affe(ima) .ne. 0
                         end if
                         if (lmesh .or. l_mail_affe) then
-                            call jenuno(jexnum(nommai, ima), nomail)
+                            nomail = int_to_char8(ima)
                             nbma = nbma+1
                             temp(nbma) = nomail
                             temi(nbma) = ima

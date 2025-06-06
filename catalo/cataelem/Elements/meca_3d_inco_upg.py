@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -283,6 +283,8 @@ class MINC_HEXA20(Element):
                 (SP.PVITESS, NDEPLAR),
                 (OP.CALC_G.PDEG, LC.E1NEUTI),
                 (OP.CALC_G.PLAG, LC.CABSLAG),
+                (OP.CALC_G.PCER, LC.E1NEUTR),
+                (OP.CALC_G.PELI, LC.E2NEUTR),
             ),
             para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
@@ -309,6 +311,8 @@ class MINC_HEXA20(Element):
                 (SP.PVITESS, NDEPLAR),
                 (OP.CALC_G_F.PDEG, LC.E1NEUTI),
                 (OP.CALC_G_F.PLAG, LC.CABSLAG),
+                (OP.CALC_G_F.PCER, LC.E1NEUTR),
+                (OP.CALC_G_F.PELI, LC.E2NEUTR),
             ),
             para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
@@ -333,6 +337,8 @@ class MINC_HEXA20(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_K_G.PDEG, LC.E1NEUTI),
                 (OP.CALC_K_G.PLAG, LC.CABSLAG),
+                (OP.CALC_K_G.PCER, LC.E1NEUTR),
+                (OP.CALC_K_G.PELI, LC.E2NEUTR),
             ),
             para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
@@ -358,6 +364,8 @@ class MINC_HEXA20(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_K_G_F.PDEG, LC.E1NEUTI),
                 (OP.CALC_K_G_F.PLAG, LC.CABSLAG),
+                (OP.CALC_K_G_F.PCER, LC.E1NEUTR),
+                (OP.CALC_K_G_F.PELI, LC.E2NEUTR),
             ),
             para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),

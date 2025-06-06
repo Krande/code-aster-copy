@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,8 @@ subroutine te0518(option, nomte)
     integer :: nnoQ, nnoL, npg, ndim, nddl, neps, lgpg, jtab(7)
     integer :: iret, nnos, jv_ganoQ, jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL, jv_ganoL
     integer :: igeom, imate, itype, icontm, ivarim, icopil, iborne, ictau
-    integer :: iddlm, iddld, iddl0, iddl1, icompo
+    integer :: iddlm, iddld, iddl0, iddl1
+    character(len=16), pointer :: compor(:) => null()
     real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)
     real(kind=8) :: etamin, etamax
 !
@@ -96,7 +97,7 @@ subroutine te0518(option, nomte)
     call jevech('PDEPL1R', 'L', iddl1)
     call jevech('PCDTAU', 'L', ictau)
     call jevech('PCOPILO', 'E', icopil)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
 ! - PARAMETRES SPECIFIQUES AU PILOTAGE PAR LA LOI DE COMPORTEMENT
 !
@@ -125,7 +126,7 @@ subroutine te0518(option, nomte)
     end if
 !
     call ngpipe(typilo, npg, neps, nddl, b, &
-                ni2ldc, typmod, zi(imate), zk16(icompo), lgpg, &
+                ni2ldc, typmod, zi(imate), compor, lgpg, &
                 zr(iddlm), zr(icontm), zr(ivarim), zr(iddld), zr(iddl0), &
                 zr(iddl1), zr(ictau), etamin, etamax, zr(icopil))
 !

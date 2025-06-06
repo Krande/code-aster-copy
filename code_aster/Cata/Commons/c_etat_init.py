@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,16 +36,13 @@ def C_ETAT_INIT(command, statut):
     kwargs["VARI"] = SIMP(statut="f", typ=cham_elem)
     kwargs["STRX"] = SIMP(statut="f", typ=cham_elem)
 
-    if command == "MECA_NON_LINE":
-        kwargs["COHE"] = SIMP(statut="f", typ=cham_elem)
-
     if command == "DYNA_NON_LINE":
         kwargs["VITE"] = SIMP(statut="f", typ=cham_no_sdaster)
         kwargs["ACCE"] = SIMP(statut="f", typ=cham_no_sdaster)
 
     kwargs["EVOL_NOLI"] = SIMP(statut="f", typ=evol_noli)
 
-    fields = ["DEPL", "SIGM", "VARI", "COHE"]
+    fields = ["DEPL", "SIGM", "VARI"]
     if command == "DYNA_NON_LINE":
         fields.append("ACCE")
         fields.append("VITE")

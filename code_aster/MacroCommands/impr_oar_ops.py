@@ -24,6 +24,21 @@ import time
 from ..Utilities.version import get_version
 from ..Helpers import LogicalUnitFile
 
+ORDRE_CONTRAINTES = {
+    "PLAN": ["SIXX", "SIZZ", "SIXZ", "SIYY", "SIXY", "SIYZ"],
+    "AXIS": ["SIXX", "SIYY", "SIXY", "SIZZ", "SIXZ", "SIYZ"],
+    "3D": ["SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"],
+}
+
+ETIQUETTES = {
+    "PRESSION": "SIGM_P",
+    "TORSION": "SIGM_T",
+    "FLEXION_HP": "SIGM_HP",
+    "FLEXION_P": "SIGM_FP",
+    "TEMP": "TEMP",
+    "CONTRAINTE": "SIGM",
+}
+
 
 class OAR_EF:
     def __init__(self, **args):
@@ -38,28 +53,15 @@ class OAR_EF:
             "TEMP": None,
             "CONTRAINTE": None,
         }
-        self.etiquette = {
-            "PRESSION": "SIGM_P",
-            "TORSION": "SIGM_T",
-            "FLEXION_HP": "SIGM_HP",
-            "FLEXION_P": "SIGM_FP",
-            "TEMP": "TEMP",
-            "CONTRAINTE": "SIGM",
-        }
 
-        self.nbAzim = 0
         self.typefic = "meca"  # 2 possibilités : sortie 'meca' ou 'temp'
-        self.listeinstant_temp = None
         self.ficsortie = None
         self.ordre = None
-
+        self.modelisation = None
         self.titre = None
 
-        self.type_unit = None
-        self.type_unit_etiquette = {
-            "SI": "Modele en S.I., Impression en (m, MPa)",
-            "MM-MPA": "Modele en (mm,MPa) , Impression en (m, MPa)",
-        }
+        self.instant_ther_non_imprimes = []
+        self.instants_thermomecaniques = []
 
     def Tablenonvide(self):
         """renvoie une table non vide du dictionnaire des chargements"""
@@ -68,6 +70,17 @@ class OAR_EF:
                 table = self.charg[key]
                 break
         return table
+
+    def supprime_doublons(self, liste_entree):
+        """fonction utilitaire permettant de supprimer les doublons
+        tout en conservant l'ordre de rencontre"""
+        vu = set()
+        resultat = []
+        for item in liste_entree:
+            if item not in vu:
+                resultat.append(item)
+                vu.add(item)
+        return resultat
 
     def ajoutINST(self):
         """dans le cas d'un MACRO_LIGN_COUPE après MACRO_ELAS_MULT
@@ -80,178 +93,176 @@ class OAR_EF:
                 except:
                     self.charg[key]["INST"] = np.zeros(len(self.charg[key].values()["ABSC_CURV"]))
 
-    def ListeAzim(self):
+    @property
+    def azimuts(self):
         """renvoie la liste des azimuts à imprimer sous forme de liste
         d'intitulés"""
         table = self.Tablenonvide()
-        tablereduit = table.INST == table.values()["INST"][0]
-        intituleliste = tablereduit.values()["INTITULE"]
-        liste = [intituleliste[0]]
-        i = 0
-        for item in intituleliste:
-            if item != liste[i]:
-                i = i + 1
-                liste.append(item)
-        return liste
+        return self.supprime_doublons(table.values()["INTITULE"])
 
-    def AbscisseAzim(self, macroc, intitule):
-        """Renvoie les abscisses en m d'un intitule/azimut"""
-        if self.type_unit == "SI":
-            conversion = 1.0
-        if self.type_unit == "MM-MPA":
-            conversion = 1e-3
-        macroreduit = macroc.INST == macroc.values()["INST"][0]
-        macrocr = macroreduit.INTITULE == intitule
-        abscisse = conversion * np.array(macrocr.values()["ABSC_CURV"])
-        repere = range(1, len(abscisse) + 1)
-        join = [repere, abscisse]
-        join = np.transpose(join)
-        return join
+    @property
+    def instants_thermiques(self):
+        # determination liste des instants thermiques
+        return self.supprime_doublons(self.charg["TEMP"].values()["INST"])
 
-    def CoupeAzim(self, macroc, intitule, instant):
-        """renvoie le tableau des contraintes
+    def trouve_instants_thermomecaniques(self):
+        """Renvoie la liste des instants ayant des contraintes"""
+        for instant_ther in self.instants_thermiques:
+            if (
+                self.contraintes_azim(self.charg["CONTRAINTE"], self.azimuts[0], instant_ther)[
+                    "SIXX"
+                ].size
+                == 0
+            ):
+                self.instant_ther_non_imprimes.append(instant_ther)
+            else:
+                self.instants_thermomecaniques.append(instant_ther)
+
+    def abscisse_azim(self, azimut, source=None):
+        """Renvoie les abscisses d'un azimut (intitulé de la table aster)"""
+        if source:
+            table = source
+        else:
+            table = self.Tablenonvide()
+        table_reduite = table.INTITULE == azimut
+        return self.supprime_doublons(table_reduite.values()["ABSC_CURV"])
+
+    def contraintes_azim(self, macroc, intitule, instant):
+        """renvoie un dictionnaire des contraintes
         pour un azimut/intitule donné"""
         macroreduit = macroc.INST == instant
         macrocr = macroreduit.INTITULE == intitule
-        if self.type_unit == "SI":
-            conversion = 1e-6
-        if self.type_unit == "MM-MPA":
-            conversion = 1.0
-        cles_sig = ["SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"]
-        tableau = []
-        for cles in cles_sig:
+        contraintes = {
+            "SIXX": None,
+            "SIYY": None,
+            "SIZZ": None,
+            "SIXY": None,
+            "SIXZ": None,
+            "SIYZ": None,
+        }
+        for cles in contraintes:
             try:
-                tableau.append(conversion * np.array(macrocr.values()[cles]))
+                contraintes[cles] = np.array(macrocr.values()[cles])
             except:
                 # cas axisymétriques : certaines composantes peuvent manquer.
                 # on les remplace alors par des listes nulles.
-                tableau.append(np.zeros(len(macrocr.values()["ABSC_CURV"])))
+                contraintes[cles] = np.zeros(len(macrocr.values()["ABSC_CURV"]))
+        return contraintes
 
-        repere = range(1, len(tableau[0]) + 1)
-        tableau.insert(0, repere)
-        tableau = np.transpose(tableau)
-        return tableau
-
-    def CoupeAzim_temp(self, macroc, intitule, instant):
-        """renvoie le tableau des contraintes
-        pour un azimut/intitule donné"""
+    def temperatures_azim(self, macroc, azimut, instant):
+        """renvoie la liste des temperatures
+        pour un azimut (intitulé) à un instant donné"""
         macroreduit = macroc.INST == instant
-        macrocr = macroreduit.INTITULE == intitule
-        TEMP = np.array(macrocr.values()["TEMP"])
-        repere = range(1, len(TEMP) + 1)
-        tableau = [repere, TEMP]
-        tableau = np.transpose(tableau)
-        return tableau
+        macrocr = macroreduit.INTITULE == azimut
+        temperatures = np.array(macrocr.values()["TEMP"])
+        return temperatures
 
-    def ecrire_preambule(self, nomfichier):
+    def ecrire_preambule(self, f):
         """écriture des lignes d'introduction du fichier de sortie"""
-        with open(nomfichier, "a") as f:
-            f.write("; CODE_ASTER version " + get_version() + "\n")
-            f.write("; IMPRESSION AU FORMAT OAR \n")
-            f.write("; CREATION " + (time.strftime("LE %m/%d/%Y A %H:%M:%S")) + "\n \n")
-            if self.titre is not None:
-                f.write("; {} \n \n".format(self.titre))
-            f.write("; UNITES : " + self.type_unit_etiquette[self.type_unit])
-            f.write("\n \n")
+        f.write(f"; CODE_ASTER version {get_version()} \n")
+        if self.typefic == "meca":
+            f.write(f"; IMPRESSION AU FORMAT OAR - Modélisation mécanique \n")
+            # f.write(f"; ORDRE D'IMPRESSION DES CONTRAINTES :{', '.join(ORDRE_CONTRAINTES['3D'])} \n")
+        else:
+            f.write(
+                f"; IMPRESSION AU FORMAT OAR - Modélisation thermo-mécanique {self.modelisation} \n"
+            )
+            # f.write(f"; ORDRE D'IMPRESSION DES CONTRAINTES :{', '.join(ORDRE_CONTRAINTES[self.modelisation])} \n")
+        f.write(f'; CREATION {time.strftime("LE %m/%d/%Y A %H:%M:%S")} \n \n')
+        if self.titre is not None:
+            f.write("; {} \n \n".format(self.titre))
+        f.write("\n \n")
 
-    def ecrire_abs(self, nomfichier, tableau):
-        """écriture des abscisses"""
-        with open(nomfichier, "a") as f:
-            f.write("ABSC \n ")
-            for i in range(len(tableau)):
-                f.write("  %.6e \n " % (tableau[i][1]))
-            f.write("\n \n")
+    def ecrire_abs(self, f, liste_abscisse):
+        """écriture des abscisses à partir d'une liste d'abscisse dans un fichier de sortie"""
+        f.write("ABSC \n ")
+        for abscisse in liste_abscisse:
+            f.write("  %.6e \n " % (abscisse))
+        f.write("\n \n")
 
-    def ecrire_contr(self, nomfichier, tableau, etiquette):
+    def ecrire_contr(self, f, contraintes, etiquette):
         """écriture des contraintes - cas mécanique"""
-        with open(nomfichier, "a") as f:
-            f.write(etiquette + "\n")
-            f.write(
-                ";       SIXX            SIYY"
-                "            SIZZ            SIXY            SIXZ"
-                "            SIYZ \n"
-            )
-            for row in tableau:
-                f.write(
-                    f"{row[1]:15.4E} {row[2]:15.4E}"
-                    f" {row[3]:15.4E} {row[4]:15.4E} {row[5]:15.4E} "
-                    f"{row[6]:15.4E} \n"
-                )
-            f.write("\n")
+        f.write(etiquette + "\n")
+        # label = ORDRE_CONTRAINTES[self.modelisation]
+        label = ORDRE_CONTRAINTES["3D"]
+        header = (
+            f";       {label[0]}            {label[1]}"
+            + f"            {label[2]}            {label[3]}            {label[4]}"
+            + f"            {label[5]} \n"
+        )
+        f.write(header)
 
-    def ecrire_temp(self, nomfichier, tabl_temp, tabl_tempsig):
+        for i in range(len(contraintes[label[0]])):
+            f.write(
+                f"{contraintes[label[0]][i]:15.4E} {contraintes[label[1]][i]:15.4E}"
+                f" {contraintes[label[2]][i]:15.4E} {contraintes[label[3]][i]:15.4E} "
+                f"{contraintes[label[4]][i]:15.4E} {contraintes[label[5]][i]:15.4E} \n"
+            )
+        f.write("\n")
+
+    def ecrire_temp(self, f, temperatures, contraintes):
         """écriture des températures et contraintes - cas thermique"""
-        with open(nomfichier, "a") as f:
+        label = ORDRE_CONTRAINTES[self.modelisation]
+        f.write(
+            f"; TEMPERATURE             {label[0]}            {label[1]}"
+            + f"            {label[2]}            {label[3]}            {label[4]}"
+            + f"            {label[5]} \n"
+        )
+        for i in range(len(contraintes[label[0]])):
             f.write(
-                "; TEMPERATURE             SIXX            SIYY"
-                "            SIZZ            SIXY            SIXZ"
-                "            SIYZ \n"
+                f"    {temperatures[i]:5.1f}         "
+                f"{contraintes[label[0]][i]:15.4E} {contraintes[label[1]][i]:15.4E}"
+                f" {contraintes[label[2]][i]:15.4E} {contraintes[label[3]][i]:15.4E} "
+                f"{contraintes[label[4]][i]:15.4E} {contraintes[label[5]][i]:15.4E} \n"
             )
-            for row1, row2 in zip(tabl_temp, tabl_tempsig):
-                f.write(
-                    f"    {row1[1]:5.1f}         {row2[1]:15.4E} "
-                    f"{row2[2]:15.4E} {row2[3]:15.4E} {row2[4]:15.4E} "
-                    f"{row2[5]:15.4E} {row2[6]:15.4E} \n"
-                )
-            f.write("\n")
+        f.write("\n")
 
-    def Impression(self):
+    def impression(self):
         """Impression proprement dite du rapport de sortie"""
         self.ajoutINST()
-        listeAzim = self.ListeAzim()
-        nbAzim = len(listeAzim)
-        tablenonvide = self.Tablenonvide()
 
-        if self.typefic == "meca":
-            self.ecrire_preambule(self.ficsortie)
-            for intitule in listeAzim:
-                with open(self.ficsortie, "a") as f:
-                    f.write("; " + intitule + "\n \n")
-                tableau_abs = self.AbscisseAzim(tablenonvide, intitule)
-                self.ecrire_abs(self.ficsortie, tableau_abs)
+        with open(self.ficsortie, "a") as f:
+            self.ecrire_preambule(f)
 
-                for key in self.ordre:
-                    if self.charg[key] is not None:
-                        instant = self.charg[key].values()["INST"][0]
-                        tableau = self.CoupeAzim(self.charg[key], intitule, instant)
-                        self.ecrire_contr(self.ficsortie, tableau, self.etiquette[key])
+            if self.typefic == "meca":
+                for azimut in self.azimuts:
+                    f.write("; " + azimut + "\n \n")
+                    abscisses = self.abscisse_azim(azimut)
+                    self.ecrire_abs(f, abscisses)
 
-        if self.typefic == "temp":
-            # determination liste des instants
-            premiereabsc = self.charg["TEMP"].values()["ABSC_CURV"][0]
-            tableintro = self.charg["TEMP"].ABSC_CURV == premiereabsc
-            tableintror = tableintro.INTITULE == tableintro.values()["INTITULE"][0]
-            NUME_ORDRE = np.array(tableintror.values()["NUME_ORDRE"])
-            INST = np.array(tableintror.values()["INST"])
-            self.listeinstant_temp = INST
+                    for key in self.ordre:
+                        if self.charg[key] is not None:
+                            instant = self.charg[key].values()["INST"][-1]
+                            contraintes = self.contraintes_azim(self.charg[key], azimut, instant)
+                            self.ecrire_contr(f, contraintes, ETIQUETTES[key])
 
-            # impression du preambule et de la liste des instants
-            self.ecrire_preambule(self.ficsortie)
-            with open(self.ficsortie, "a") as f:
+            if self.typefic == "temp":
+                self.trouve_instants_thermomecaniques()
+                # impression de la liste des instants
                 f.write("; LISTE DES INSTANTS \n \n")
                 f.write("INST \n \n")
-                for instant in self.listeinstant_temp:
+                for instant in self.instants_thermomecaniques:
                     f.write("{} \n".format(instant))
-                f.write("\n \n")
-                f.write("; LISTE DES TEMPERATURES ET CONTRAINTES PAR COUPE")
-                f.write("\n \n")
+                f.write("\n \n ; LISTE DES TEMPERATURES ET CONTRAINTES PAR COUPE \n \n")
 
-            # impression
-            for intitule in listeAzim:
-                tableau_abs = self.AbscisseAzim(self.charg["TEMP"], intitule)
-                with open(self.ficsortie, "a") as f:
-                    f.write("; " + intitule + "\n \n")
-                self.ecrire_abs(self.ficsortie, tableau_abs)
-                with open(self.ficsortie, "a") as f:
+                # impression
+                for azimut in self.azimuts:
+                    tableau_abs = self.abscisse_azim(azimut, source=self.charg["TEMP"])
+                    f.write("; " + azimut + "\n \n")
+                    self.ecrire_abs(f, tableau_abs)
                     f.write("TEMP SIGM \n \n")
-                for instant in self.listeinstant_temp:
-                    with open(self.ficsortie, "a") as f:
+
+                    for instant in self.instants_thermomecaniques:
                         f.write("; INSTANT {} \n \n".format(instant))
-                    tableau_temp = self.CoupeAzim_temp(self.charg["TEMP"], intitule, instant)
-                    tableau_tempsig = self.CoupeAzim(self.charg["CONTRAINTE"], intitule, instant)
-                    self.ecrire_temp(self.ficsortie, tableau_temp, tableau_tempsig)
-                    with open(self.ficsortie, "a") as f:
+                        temperatures = self.temperatures_azim(self.charg["TEMP"], azimut, instant)
+                        contraintes_ = self.contraintes_azim(
+                            self.charg["CONTRAINTE"], azimut, instant
+                        )
+                        self.ecrire_temp(f, temperatures, contraintes_)
                         f.write("\n \n")
+
+                if self.instant_ther_non_imprimes:
+                    UTMESS("A", "OAR0_4", valk=", ".join(map(str, self.instant_ther_non_imprimes)))
 
 
 def impr_oar_ops(self, **args):
@@ -264,7 +275,6 @@ def impr_oar_ops(self, **args):
     TABL_MECA = args.get("TABL_MECA")
     TABL_THER = args.get("TABL_THER")
     resultat.titre = args.get("TITRE")
-    resultat.type_unit = "SI" if args.get("TYPE_UNIT") is None else args.get("TYPE_UNIT")
 
     try:
         unite = args["UNITE"]
@@ -277,18 +287,28 @@ def impr_oar_ops(self, **args):
     if (TABL_MECA is not None) and (TABL_THER is not None):
         UTMESS("F", "OAR0_2")
 
-    if resultat.type_unit not in ["SI", "MM-MPA"]:
-        UTMESS("F", "OAR0_3")
-
     if TABL_MECA is not None:
+        resultat.modelisation = "3D"
         resultat.ordre = TABL_MECA[0].keys()
         for key in resultat.ordre:
             resultat.charg[key] = TABL_MECA[0][key].EXTR_TABLE()
         resultat.typefic = "meca"
-        resultat.Impression()
+        resultat.impression()
 
     if TABL_THER is not None:
+        # ordre des contraintes
+        modele = args.get("MODELE")
+        if not modele.isMechanical():
+            UTMESS("F", "OAR0_3")
+        modelisation = modele.getModelisationName()
+        if "PLAN" in modelisation:
+            resultat.modelisation = "PLAN"
+        elif "AXIS" in modelisation:
+            resultat.modelisation = "AXIS"
+        else:
+            resultat.modelisation = "3D"
+
         resultat.charg["TEMP"] = TABL_THER[0]["TEMP"].EXTR_TABLE()
         resultat.charg["CONTRAINTE"] = TABL_THER[0]["CONTRAINTE"].EXTR_TABLE()
         resultat.typefic = "temp"
-        resultat.Impression()
+        resultat.impression()

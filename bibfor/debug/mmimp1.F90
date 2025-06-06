@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine mmimp1(ifm, mesh, ds_contact)
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
 #include "asterfort/mmnorm.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -119,7 +120,7 @@ subroutine mmimp1(ifm, mesh, ds_contact)
 ! ------- REPERAGE MAILLE ESCLAVE
 !
             nummae = nint(zr(jtabf+ztabf*(iptc-1)+1))
-            call jenuno(jexnum(mesh//'.NOMMAI', nummae), nommae)
+            nommae = int_to_char8(nummae)
             nnoe = zi(ilcnx1+nummae)-zi(ilcnx1-1+nummae)
 !
 ! ------- INFOS SUR MAILLE ESCLAVE
@@ -127,7 +128,7 @@ subroutine mmimp1(ifm, mesh, ds_contact)
             write (ifm, 100) nommae, i_zone, nnoe, nptm
             do inoe = 1, nnoe
                 numnoe = connex(1+zi(ilcnx1-1+nummae)-2+inoe)
-                call jenuno(jexnum(mesh//'.NOMNOE', numnoe), nomnoe)
+                nomnoe = int_to_char8(numnoe)
                 write (ifm, 101) nomnoe
             end do
 !
@@ -147,7 +148,7 @@ subroutine mmimp1(ifm, mesh, ds_contact)
 ! --------- REPERAGE MAILLE MAITRE
 !
                 nummam = nint(zr(jtabf+ztabf*(iptc-1)+2))
-                call jenuno(jexnum(mesh//'.NOMMAI', nummam), nommam)
+                nommam = int_to_char8(nummam)
 !
 ! --------- ETAT DU NOEUD
 !
@@ -209,7 +210,8 @@ subroutine mmimp1(ifm, mesh, ds_contact)
 201 format(' <CONTACT>        NORMALE   : <', e10.3, ',', e10.3, ',', e10.3, '>')
 202 format(' <CONTACT>        TANGENTES : <', e10.3, ',', e10.3, ',', e10.3, '> <', &
            e10.3, ',', e10.3, ',', e10.3, '>')
-203 format(' <CONTACT>        SE PROJETTE SUR LA MAILLE MAITRE ', a8, ' EN  <', e10.3, ',', e10.3, '>')
+203 format(' <CONTACT>        SE PROJETTE SUR LA MAILLE MAITRE ', a8, &
+           ' EN  <', e10.3, ',', e10.3, '>')
 402 format(' <CONTACT>        SEUIL_INIT : <', e10.3, '>')
 700 format(' <CONTACT>        ETAT : EN CONTACT')
 701 format(' <CONTACT>        ETAT : PAS EN CONTACT')

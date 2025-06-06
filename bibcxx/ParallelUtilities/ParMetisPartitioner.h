@@ -4,7 +4,7 @@
 /**
  * @file PtScotch.h
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,9 +32,11 @@
 
 #include "ParallelUtilities/AsterMPI.h"
 
+namespace Parmetis {
 extern "C" {
 #include "parmetis.h"
 }
+} // namespace Parmetis
 
 using VectorOfVectorsInt = std::vector< VectorInt >;
 
@@ -43,14 +45,14 @@ using VectorOfVectorsInt = std::vector< VectorInt >;
  * @brief Class used to interface ptscotch
  */
 class ParMetisPartitioner {
-    typedef std::vector< idx_t > VectorIdxT;
-    typedef std::vector< real_t > VectorRealT;
+    typedef std::vector< Parmetis::idx_t > VectorIdxT;
+    typedef std::vector< Parmetis::real_t > VectorRealT;
     /** @brief Number of vertices in graph and local minimum id */
     int _nbVertex = 0, _minId = 0;
     /** @brief Graph in Metis format */
     VectorIdxT _vtxdist, _xadj, _adjncy;
 
-    void buildPartition( const VectorLong &, VectorLong & );
+    void buildPartition( const VectorIdxT &, VectorLong & );
 
   public:
     ParMetisPartitioner();

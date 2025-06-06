@@ -90,6 +90,23 @@ def raiseAsterError(idmess="VIDE_1"):
     pass
 
 
+# class UseCppPickling in libaster
+
+
+class UseCppPickling:
+    pass
+
+    # Method resolution order:
+    #     UseCppPickling
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+
 # class PythonBool in libaster
 
 
@@ -621,6 +638,13 @@ class BaseMesh(DataStructure):
             list[list[int]]: List of, for each cell, a list of the nodes indexes.
         """
 
+    def getMinMaxEdgeSizes(self, arg0):
+        """Get minimum and maximum length of edges in group of cells
+
+        Returns:
+            tuple(real): values of min and max edges
+        """
+
     def getNodeName(self, index):
         """Return the name of the given node
 
@@ -761,6 +785,20 @@ class Mesh(BaseMesh):
         1. __init__(self: libaster.Mesh) -> None
 
         2. __init__(self: libaster.Mesh, arg0: str) -> None
+        """
+
+    def addCellLabels(self, cell_labels):
+        """Add cell labels.
+
+        Arguments:
+            cell_labels (list) : Cell labels.
+        """
+
+    def addNodeLabels(self, node_labels):
+        """Add node labels.
+
+        Arguments:
+            node_labels (list) : Node labels.
         """
 
     def convertToBiQuadratic(self, info=1):
@@ -1571,6 +1609,18 @@ class DiscreteComputation:
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
 
+    def getResidualReference(self, arg0):
+        """Return the residual reference (for RESI_REFE_RELA)
+
+        Arguments:
+              vale_by_name : dict :
+                             keys are component names
+                             values are the given reference value corresponding to component name
+
+        Returns:
+              FieldOnNodesReal: residual reference forces vector
+        """
+
     def getRotationalStiffnessMatrix(self, groupOfCells=[]):
         """Return the elementary matrices for rotational Stiffness matrix.
         Option RIGI_ROTA.
@@ -1861,6 +1911,18 @@ class EquationNumbering(DataStructure):
             dict[int, str] : dofs id for each node id and component id
         """
 
+    def getDOFs(self, sameRank=False, list_cmp=[], list_grpno=[]):
+        """Return list of DOFs
+
+        Arguments:
+            sameRank = False: Use only owned nodes / False: Use all nodes
+            list_cmp = []: Use all cmp / keep only cmp given
+            list_grpno = []: Use all nodes / keep only nodes given
+
+        Returns:
+            list[int]: list of dofs.
+        """
+
     def getDOFsWithDescription(self, *args, **kwargs):
         """Overloaded function.
 
@@ -2071,12 +2133,12 @@ class BaseDOFNumbering(DataStructure):
     def computeNumbering(self, *args, **kwargs):
         """Overloaded function.
 
-        1. computeNumbering(self: libaster.BaseDOFNumbering, arg0: Model, arg1: ListOfLoads) -> bool
+        1. computeNumbering(self: libaster.BaseDOFNumbering, model: Model, listOfLoads: ListOfLoads, verbose: bool = True) -> bool
 
-        2. computeNumbering(self: libaster.BaseDOFNumbering, arg0: list[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]]) -> bool
+        2. computeNumbering(self: libaster.BaseDOFNumbering, matrix: list[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]], verbose: bool = True) -> bool
         """
 
-    def computeRenumbering(self, arg0, arg1, arg2, arg3):
+    def computeRenumbering(self, model, listOfLoads, defiCont, vContElem, verbose=True):
         pass
 
     def getEquationNumbering(self):
@@ -2543,6 +2605,15 @@ class FieldOnCellsReal(DataField):
 
     def build(self, feds=[]):
         pass
+
+    def checkInternalStateVariables(self, prevBehaviour, currBehaviour):
+        """Check consistency of internal states variables with behaviour.
+        If you give previous behaviour, check is more precise (name of beahviour for instance)
+
+        Arguments:
+            prevBehaviour (ConstantFieldOnCellsChar16): previous behaviour
+            currBehaviour (ConstantFieldOnCellsChar16): current behaviour
+        """
 
     def copy(self):
         """Return a duplicated FieldOnCellsReal as a copy
@@ -3090,8 +3161,13 @@ class FieldOnNodesReal(DataField):
     def __isub__(self, arg0):
         pass
 
-    def __itruediv__(self, arg0):
-        pass
+    def __itruediv__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __itruediv__(self: libaster.FieldOnNodesReal, arg0: float) -> libaster.FieldOnNodesReal
+
+        2. __itruediv__(self: libaster.FieldOnNodesReal, arg0: libaster.FieldOnNodesReal) -> libaster.FieldOnNodesReal
+        """
 
     def __mul__(self, arg0):
         pass
@@ -3341,11 +3417,21 @@ class FieldOnNodesReal(DataField):
             SimpleFieldOnNodesReal: field converted
         """
 
+    def transferFromConnectionToParallelMesh(self, arg0):
+        """Transfer FieldOnNodes from a ConnectionMesh to a ParallelMesh
+
+        Arguments:
+            mesh [Mesh]: the target mesh
+
+        Returns:
+            FieldOnNodesReal: transfered field
+        """
+
     def transfertToConnectionMesh(self, arg0):
         """Transfer SimpleFieldOnNodes to a ConnectionMesh
 
         Returns:
-            SimpleFieldOnNodesReal: transfered field
+            FieldOnNodesReal: transfered field
         """
 
     def transform(self, func):
@@ -3357,6 +3443,9 @@ class FieldOnNodesReal(DataField):
         Returns:
             FieldOnNodesReal: New FieldOnNodes object with the transformed values
         """
+
+    def updateGhostValues(self):
+        """Communicates the values of the ghost DOFs on a FieldOnNodes."""
 
     def updateValuePointers(self):
         pass
@@ -4862,6 +4951,13 @@ class ListOfLoads(DataStructure):
             ListDiriBC: a list of DirichletBC
         """
 
+    def getLoadNames(self):
+        """Returns list of load's names.
+
+        Returns:
+            list[str]: list of load's names.
+        """
+
     def getMechanicalLoadsFunction(self):
         """Return list of Function mechanical loads
 
@@ -4950,6 +5046,9 @@ class BaseFunction(GenericFunction):
             list[float]: List of values (size = 2 * *size()*).
         """
 
+    def setAsConstant(self):
+        """To be called for a constant function."""
+
     def setInterpolation(self, type):
         """Define the type of interpolation.
 
@@ -4985,6 +5084,13 @@ class BaseFunction(GenericFunction):
             ordo (list): List of ordinates.
         """
 
+    def size(self):
+        """Return the number of points of the function.
+
+        Returns:
+            int: Number of points.
+        """
+
 
 # class Function in libaster
 
@@ -5008,19 +5114,6 @@ class Function(BaseFunction):
         1. __init__(self: libaster.Function) -> None
 
         2. __init__(self: libaster.Function, arg0: str) -> None
-        """
-
-    def setAsConstant(self):
-        """To be called for a constant function."""
-
-    def setValues(self, arg0, arg1):
-        pass
-
-    def size(self):
-        """Return the number of points of the function.
-
-        Returns:
-            int: Number of points.
         """
 
 
@@ -5054,13 +5147,6 @@ class FunctionComplex(BaseFunction):
         1. setValues(self: libaster.FunctionComplex, arg0: list[float], arg1: list[float]) -> None
 
         2. setValues(self: libaster.FunctionComplex, arg0: list[float], arg1: list[complex]) -> None
-        """
-
-    def size(self):
-        """Return the number of points of the function.
-
-        Returns:
-            int: Number of points.
         """
 
 
@@ -6295,16 +6381,20 @@ class PairingParameter:
 # class ContactNew in libaster
 
 
-class ContactNew(DataStructure):
+class ContactNew(DataStructure, UseCppPickling):
     pass
 
     # Method resolution order:
     #     ContactNew
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -6312,7 +6402,12 @@ class ContactNew(DataStructure):
         1. __init__(self: libaster.ContactNew, arg0: str, arg1: Model) -> None
 
         2. __init__(self: libaster.ContactNew, arg0: Model) -> None
+
+        3. __init__(self: libaster.ContactNew, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def appendContactZone(self, zone):
         """Append a new contact zone to the contact definition
@@ -6407,17 +6502,21 @@ class ContactNew(DataStructure):
 # class FrictionNew in libaster
 
 
-class FrictionNew(ContactNew):
+class FrictionNew(ContactNew, UseCppPickling):
     pass
 
     # Method resolution order:
     #     FrictionNew
     #     ContactNew
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -6425,22 +6524,31 @@ class FrictionNew(ContactNew):
         1. __init__(self: libaster.FrictionNew, arg0: str, arg1: Model) -> None
 
         2. __init__(self: libaster.FrictionNew, arg0: Model) -> None
+
+        3. __init__(self: libaster.FrictionNew, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
 
 # class ContactZone in libaster
 
 
-class ContactZone(DataStructure):
+class ContactZone(DataStructure, UseCppPickling):
     """Object to define a zone of contact."""
 
     # Method resolution order:
     #     ContactZone
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -6448,7 +6556,12 @@ class ContactZone(DataStructure):
         1. __init__(self: libaster.ContactZone, arg0: str) -> None
 
         2. __init__(self: libaster.ContactZone) -> None
+
+        3. __init__(self: libaster.ContactZone, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def build(self, arg0):
         """Build and check internal objects
@@ -6609,16 +6722,20 @@ class ContactZone(DataStructure):
 # class MeshPairing in libaster
 
 
-class MeshPairing(DataStructure):
+class MeshPairing(DataStructure, UseCppPickling):
     """Object to create a pairing operator between two meshed surfaces."""
 
     # Method resolution order:
     #     MeshPairing
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
+
+    def __getstate__(self):
+        pass
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -6626,7 +6743,12 @@ class MeshPairing(DataStructure):
         1. __init__(self: libaster.MeshPairing, arg0: str) -> None
 
         2. __init__(self: libaster.MeshPairing) -> None
+
+        3. __init__(self: libaster.MeshPairing, arg0: tuple) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def checkNormals(self, model):
         """Check orientation of normals
@@ -8364,7 +8486,7 @@ class ElementaryVectorReal(BaseElementaryVector):
                         terms (list[ElementaryTermReal]): vector of elementary term
         """
 
-    def assemble(self, arg0):
+    def assemble(self, dofNume, minimum=False):
         pass
 
     def getElementaryTerms(self):
@@ -8426,7 +8548,7 @@ class ElementaryVectorComplex(BaseElementaryVector):
                         terms (list[ElementaryTermComplex]): vector of elementary term
         """
 
-    def assemble(self, arg0):
+    def assemble(self, dofNume, minimum=False):
         pass
 
     def getElementaryTerms(self):
@@ -12744,20 +12866,6 @@ class Result(DataStructure):
             nb_index (int):  number of index to allocate
         """
 
-    def build(self, feds=[], fnds=[]):
-        """Build the result from the name of the result. It stores fields which are setted in c++ or
-        created in fortran
-
-        Arguments:
-            feds (list[FiniteElementDescriptor]) : list of additional finite element descriptor used to
-                build FieldOnCells
-            fnds (list[EquationNumberingPtr]) : list of additional field description used to
-                build FieldOnNodes
-
-        Returns:
-            bool: *True* if ok.
-        """
-
     def clear(self, *args, **kwargs):
         """Overloaded function.
 
@@ -13445,7 +13553,7 @@ class NonLinearResult(TransientResult):
     def getTangentMatrix(self):
         pass
 
-    def printMedFile(self, filename, medname="", local=True, internalVar=True):
+    def printMedFile(self, filename, medname="", local=False, internalVar=True):
         """Print the result in a MED file.
 
         Args:
@@ -14958,6 +15066,32 @@ class ParallelEquationNumbering(EquationNumbering):
             int: indexes of the DOFs owned locally.
         """
 
+    def getNodeAndComponentFromDOF(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getNodeAndComponentFromDOF(self: libaster.ParallelEquationNumbering, local: bool = True) -> list[tuple[int, str]]
+
+
+        Return the list of node id and name of component for each dofs
+
+        Arguments:
+          local (bool) = True: if True use local node index else use global index in HPC
+        Returns:
+          list[tuple[int, str]] : node id and name of component for each dofs
+
+
+        2. getNodeAndComponentFromDOF(self: libaster.ParallelEquationNumbering, dof: int, local: bool = True) -> tuple[int, str]
+
+
+        Return the node id and name of component for given DOF
+
+        Arguments:
+          dof (int): DOF index
+          local (bool) = True: if True use local node index else use global index in HPC
+        Returns:
+          tuple[int, str] : node id and name of component
+        """
+
     def getNumberOfDOFs(self, local=False):
         """Returns the number of DOFs.
 
@@ -15403,6 +15537,7 @@ class ParallelContactNew(ContactNew):
     #     ParallelContactNew
     #     ContactNew
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -15440,6 +15575,7 @@ class ParallelFrictionNew(ParallelContactNew):
     #     ParallelContactNew
     #     ContactNew
     #     DataStructure
+    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -16564,13 +16700,15 @@ class MeshBalancer:
     def __pickling_disabled__(self):
         pass
 
-    def applyBalancingStrategy(self, vector, outMesh=None):
+    def applyBalancingStrategy(self, vector, out_mesh=None, ghost_layer=1):
         """Apply balancing strategy to given mesh. User must give nodes that local process
         will own (without ghost nodes).
         This function returns a ParallelMesh with joints, ghosts and so on.
 
         Arguments:
             vector: list of nodes to get on local process
+            outMesh: out mesh (optional)
+            ghost_layer: ghost layer size (optional)
 
         Returns:
             mesh: ParallelMesh
@@ -16658,14 +16796,15 @@ class PtScotchPartitioner:
     def buildGraph(self, *args, **kwargs):
         """Overloaded function.
 
-        1. buildGraph(self: libaster.PtScotchPartitioner, vertloctab: list[int], edgeloctab: list[int]) -> int
+        1. buildGraph(self: libaster.PtScotchPartitioner, vertices: list[int], edges: list[int], weights: list[int] = []) -> int
 
 
-        Build the PtScotch graph from 2 integer vectors (PtScotch format)
+          Build the PtScotch graph from 2 integer vectors (PtScotch format)
 
-        Arguments:
-            vertloctab: Gives the position of starts of each vertex connections in edgeloctab
-            edgeloctab: Describes vertex connections (at which vertices each vertex is connected)
+          Arguments:
+              vertices (list[int]): Gives the position of starts of each vertex connections in edgeloctab
+              edges (list[int]): Describes vertex connections (at which vertices each vertex is connected)
+              weights (list[int], optional): Vertex weights
 
 
         2. buildGraph(self: libaster.PtScotchPartitioner, meshConnectionGraph: MeshConnectionGraph, nodesToGather: list[list[int]] = []) -> int
@@ -17389,6 +17528,56 @@ class MedVector:
 
     def size(self):
         """Get vector size, ie: number of elements (cells or nodes)"""
+
+
+# class MeshReader in libaster
+
+
+class MeshReader:
+    pass
+
+    # Method resolution order:
+    #     MeshReader
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def __pickling_disabled__(self):
+        pass
+
+    def readIncompleteMeshFromMedFile(self, mesh, path, mesh_name="", verbosity=0):
+        """Open med file
+
+        Arguments:
+            IncompleteMesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+            verbosity (int): verbosity (optional)
+        """
+
+    def readMeshFromMedFile(self, mesh, path, mesh_name="", verbosity=0):
+        """Open med file
+
+        Arguments:
+            Mesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+            verbosity (int): verbosity (optional)
+        """
+
+    def readParallelMeshFromMedFile(self, mesh, path, mesh_name="", verbosity=0):
+        """Open med file
+
+        Arguments:
+            ParallelMesh: return mesh to fill
+            path (Path|str): path to med file
+            mesh_name (str): mesh name (optional)
+            verbosity (int): verbosity (optional)
+        """
 
 
 # class FieldCharacteristics in libaster

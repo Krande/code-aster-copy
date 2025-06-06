@@ -64,6 +64,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 #include "asterfort/tbcarapou.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -91,7 +92,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
     character(len=16) :: concep, cmd, nunomel
     character(len=19) :: cartor
     character(len=24) :: tmpnor, tmpvor, tmpori, tmpini
-    character(len=24) :: mlgnma, mlgnno, mlgtma, mlggno, mlggma, mlgcoo, mlgcnx
+    character(len=24) :: mlgtma, mlggno, mlggma, mlgcoo, mlgcnx
     character(len=24) :: modmai, nommai
     blas_int :: b_incx, b_incy, b_n
 !
@@ -112,15 +113,13 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
     modmai = nomo//'.MAILLE'
 !
 !   RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
-    mlgnma = noma//'.NOMMAI'
-    mlgnno = noma//'.NOMNOE'
     mlgtma = noma//'.TYPMAIL'
     mlgcnx = noma//'.CONNEX'
     mlggno = noma//'.GROUPENO'
     mlggma = noma//'.GROUPEMA'
     mlgcoo = noma//'.COORDO    .VALE'
 !
-    call jelira(mlgnma, 'NOMMAX', nbmail)
+    call jelira(mlgtma, 'LONMAX', nbmail)
     call jeexin(modmai, ixma)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 ! --------------------------------------------------------------------------------------------------
@@ -206,7 +205,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
                     call jelira(jexnom(mlggma, zk24(jdls+ii-1)), 'LONUTI', nbmagr)
                     do jj = 1, nbmagr
                         nummai = zi(jdgm+jj-1)
-                        call jenuno(jexnum(mlgnma, nummai), nommai)
+                        nommai = int_to_char8(nummai)
                         call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
                         nutyma = zi(jdtm+nummai-1)
                         jad = jdori+(nummai-1)*3
@@ -234,7 +233,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
             if (nutyel .eq. ntyele(jj)) then
                 nocaor = nocaor+1
                 if (ivr(3) .eq. 2) then
-                    call jenuno(jexnum(mlgnma, nummai), nommai)
+                    nommai = int_to_char8(nummai)
                     jad = jdori+(nummai-1)*3
                     alpha = rddg*zr(jad)
                     beta = rddg*zr(jad+1)

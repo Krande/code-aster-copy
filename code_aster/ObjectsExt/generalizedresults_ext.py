@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ class ExtendedTransientGeneralizedResult:
 
         nltypes = self._type_nonl()
         if not (nltypes[inoli - 1] in ("RELA_EFFO_DEPL", "RELA_EFFO_VITE")):
-            dummy = self.INFO_NONL()
+            self.INFO_NONL()
             raise TypeError(
                 "The chosen nonlinearity index (%d) does not"
                 " correspond to a RELA_EFFO_DEPL or RELA_EFFO_VITE'"
@@ -123,8 +123,8 @@ class ExtendedTransientGeneralizedResult:
 
         nltypes = self._type_nonl()
         if not (nltypes[inoli - 1] in ("ANTI_SISM", "DIS_VISC", "DIS_ECRO_TRAC", "CHOC_ELAS_TRAC")):
-            dummy = self.INFO_NONL()
-            raise AsException(
+            self.INFO_NONL()
+            raise TypeError(
                 "The chosen nonlinearity index (%d) does not correspond to a :\n"
                 "  ANTI_SISM, DIS_VISC, DIS_ECRO_TRAC, CHOC_ELAS_TRAC nonlinearity\n",
                 "These are the only nonlinearities that calculate and save an axial force."

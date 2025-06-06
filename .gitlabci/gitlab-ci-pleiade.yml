@@ -5,12 +5,12 @@ variables:
   PREREQ_VERSION: 20240327
   OSNAME: debian-11
   IMAGE_URL: ${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
-  BUILD: mpi
+  ASTER_BUILD: mpi
+  # BUILDTYPE: ci, nightly, nightly-coverage, code-checking, docker
   BUILDTYPE: ci
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
   NPROC_MAX: 12
-  reg_debugging: '/^debugci.*/'
   FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
 
 default:
@@ -23,11 +23,15 @@ workflow:
     - if: $CI_COMMIT_REF_NAME == "main" && $CI_PIPELINE_SOURCE == "schedule"
       variables:
         REFREV: main
-    - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
+    - if: $CI_PIPELINE_SOURCE == "web"
       variables:
-        BUILD: debug
+        REFREV: main
     - if: $BUILDTYPE == "code-checking"
     - if: $BUILDTYPE == "docker"
+    - if: $BUILDTYPE == "nightly-coverage"
+      variables:
+        ASTER_BUILD: debug
+
   auto_cancel:
     on_new_commit: interruptible
 
@@ -40,7 +44,7 @@ stages:
 image:
   name: ${IMAGE_URL}
 
-prepare:
+.prepare:
   interruptible: true
   stage: setup
   script:
@@ -53,16 +57,17 @@ prepare:
   rules:
     - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
-compile:
+.compile:
   interruptible: true
   stage: build
   needs: ["prepare"]
   script:
     - .gitlabci/compile.sh
   artifacts:
+    when: always
     paths:
       - .lock*
-      - build/mpi*
+      - build/*
       - install/*
     expire_in: 6 hours
   rules:
@@ -137,7 +142,7 @@ minimal_test:
   rules:
     - if: $CI_MERGE_REQUEST_IID
 
-verification_test:
+.verification_test:
   interruptible: true
   stage: test
   tags:
@@ -169,7 +174,9 @@ verification_test:
     reports:
       junit: results/run_testcases.xml
   rules:
-    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"  && $CI_COMMIT_REF_NAME !~ $reg_debugging
+    - if: $OSNAME == "win"
+      when: never
+    - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
 
 known_failures_test:
   interruptible: true
@@ -195,27 +202,6 @@ known_failures_test:
       junit: results_failures/run_testcases.xml
   rules:
     - if: $CI_MERGE_REQUEST_IID
-
-debugging_test:
-  interruptible: true
-  stage: test
-  needs: ["prepare", "compile"]
-  script:
-    - .gitlabci/test.sh
-        --testlist .gitlabci/debugging.list
-        --resutest=results_debugging
-  allow_failure: true
-  artifacts:
-    when: always
-    paths:
-      - results_debugging/run_testcases.xml
-      - results_debugging/Testing/Temporary/*
-      - results_debugging/*
-    expire_in: 3 days
-    reports:
-      junit: results_debugging/run_testcases.xml
-  rules:
-    - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
 
 sonarqube:
   interruptible: true
@@ -245,9 +231,6 @@ sonarqube:
 
 docker:
   stage: build
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-    - if: $BUILDTYPE == "docker"
   image:
     name: nexus.retd.edf.fr/kaniko-project/executor:debug
     entrypoint: [""]
@@ -258,3 +241,64 @@ docker:
     paths:
       - artf/codeaster-main-*.dockerfile
     expire_in: 1 day
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $BUILDTYPE == "nightly"
+    - if: $BUILDTYPE == "docker"
+
+# --- default build
+prepare:
+  extends: .prepare
+
+compile:
+  extends: .compile
+
+verification_test:
+  extends: .verification_test
+
+# --- variant debian-12 for nightly build
+prepare_debian-12:
+  variables:
+    OSNAME: debian-12
+  extends: .prepare
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+compile_debian-12:
+  variables:
+    OSNAME: debian-12
+  needs: ["prepare_debian-12"]
+  extends: .compile
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+verification_test_debian-12:
+  variables:
+    OSNAME: debian-12
+  needs: ["compile_debian-12"]
+  extends: .verification_test
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+# --- variant win for nightly build
+prepare_win:
+  variables:
+    OSNAME: win
+  extends: .prepare
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+compile_win:
+  variables:
+    OSNAME: win
+  needs: ["prepare_win"]
+  extends: .compile
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+verification_test_win:
+  variables:
+    OSNAME: win
+  needs: ["compile_win"]
+  extends: .verification_test
+  rules:
+    - if: $BUILDTYPE == "nightly"

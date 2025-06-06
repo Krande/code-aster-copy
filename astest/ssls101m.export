@@ -8,3 +8,4 @@ P testlist submit verification sequential
 F comm ssls101m.comm D 1
 F datg ssls101m.datg D 16
 F mmed ssls101m.mmed D 20
+F mmed ssls101m.med D 22

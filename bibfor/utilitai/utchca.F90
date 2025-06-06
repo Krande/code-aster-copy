@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: vali, ier
     real(kind=8) :: valr
@@ -75,7 +76,7 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez, &
     end if
     ASSERT(type .eq. typsca)
 !
-    call jenonu(jexnom(ma//'.NOMMAI', nomail), numa)
+    numa = char8_to_int(nomail)
     ASSERT(numa .gt. 0)
 !
 !

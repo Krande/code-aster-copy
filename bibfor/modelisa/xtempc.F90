@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
     integer :: nfiss
     character(len=8) :: fiss(nfiss), char
     character(len=4) :: fonree
@@ -98,7 +99,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
         do ino = 1, nbno
             istan = abs(vale(ino))
             if (istan .gt. 0) then
-                call jenuno(jexnum(noma(1:8)//'.NOMNOE', ino), nomnoe(1))
+                nomnoe(1) = int_to_char8(ino)
 !
 !           MISE A ZERO DDL HEAVISIDE
                 if (istan .eq. 1) then

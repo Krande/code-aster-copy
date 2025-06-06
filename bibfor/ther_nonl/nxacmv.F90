@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 !
 subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
-                  solver, l_stat, timeMap, tpsthe, temp_iter, &
+                  solver, l_stat, timeMap, timeParaIn, temp_iter, &
                   vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
                   cn2mbr_tran, matass, maprec, cndiri, cncine, &
                   mediri, comporTher, ds_algorom_)
@@ -36,6 +36,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -58,7 +59,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: varc_curr
     aster_logical, intent(in) :: l_stat
-    real(kind=8), intent(in) :: tpsthe(6)
+    real(kind=8), intent(in) :: timeParaIn(6)
     character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: vhydr
     character(len=24), intent(in) :: dry_prev, dry_curr
@@ -80,17 +81,17 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model           : name of model
-! In  materField      : name of material characteristics (field)
-! In  caraElem        : name of elementary characteristics (field)
-! In  listLoad        : name of datastructure for list of loads
+! In  model            : name of model
+! In  materField       : name of material characteristics (field)
+! In  caraElem         : name of elementary characteristics (field)
+! In  listLoad         : name of datastructure for list of loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ibid, ierr, iret
     integer :: jtn, i_vect
     character(len=2) :: codret
-    real(kind=8) :: time_curr
+    real(kind=8) :: timeCurr
     character(len=8), parameter :: nomcmp(6) = (/'INST    ', 'DELTAT  ', &
                                                  'THETA   ', 'KHI     ', &
                                                  'R       ', 'RHO     '/)
@@ -107,6 +108,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     character(len=24) :: cnchtp
     character(len=24) :: cnchnl
     character(len=24) :: cntnti
+    real(kind=8) :: timePara(6)
     character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
     character(len=24), pointer :: v_resu_elem(:) => null()
     integer, parameter :: nb_max = 9
@@ -135,34 +137,35 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     vatntp = '&&NTACMV.VATNTP'
     vatnti = '&&NTACMV.VATNTI'
     vachtn = '&&NTACMV.VACHTN'
-    time_curr = tpsthe(1)
+    timeCurr = timeParaIn(1)
 
 ! - Access to datastructure of list of loads
     loadNameJv = listLoad(1:19)//'.LCHA'
     loadInfoJv = listLoad(1:19)//'.INFC'
     loadFuncJv = listLoad(1:19)//'.FCHA'
-!
+
 ! - Construct command variables fields
-!
-    call vrcins(model, materField, caraElem, time_curr, varc_curr, &
-                codret)
-!
-! - Update <CARTE> for time
-!
+    call vrcins(model, materField, caraElem, timeCurr, varc_curr, codret)
+
+! - Create <CARTE> for time
+    timePara = timeParaIn
+    if (l_stat) then
+        timePara(3) = -1
+    end if
     call mecact('V', timeMap, 'MODELE', ligrmo, 'INST_R', &
-                ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
+                ncmp=6, lnomcmp=nomcmp, vr=timePara)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_THER)
 !
     call vedith(model, loadNameJv, loadInfoJv, timeMap, vediri)
     call asasve(vediri, nume_dof, 'R', vadiri)
-    call ascova('D', vadiri, loadFuncJv, 'INST', time_curr, &
+    call ascova('D', vadiri, loadFuncJv, 'INST', timeCurr, &
                 'R', cndiri)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_CINE)
 !
     cncine = ' '
-    call ascavc(loadNameJv, loadInfoJv, loadFuncJv, nume_dof, time_curr, &
+    call ascavc(loadNameJv, loadInfoJv, loadFuncJv, nume_dof, timeCurr, &
                 cncine)
 !
 ! - Compute CHAR_THER_EVOLNI
@@ -184,12 +187,12 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     call vechth('STAT', &
                 model, mateco, &
                 loadNameJv, loadInfoJv, &
-                time_curr, &
+                timeCurr, &
                 vechtp, &
                 varcCurrZ_=varc_curr, timeMapZ_=timeMap, tempPrevZ_=temp_iter)
 
     call asasve(vechtp, nume_dof, 'R', vachtp)
-    call ascova('D', vachtp, loadFuncJv, 'INST', time_curr, &
+    call ascova('D', vachtp, loadFuncJv, 'INST', timeCurr, &
                 'R', cnchtp)
     if (l_stat) then
         call jedetr(vechtp)
@@ -200,7 +203,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     call vechnl(model, loadNameJv, loadInfoJv, timeMap, &
                 temp_iter, vechtn, 'V')
     call asasve(vechtn, nume_dof, 'R', vachtn)
-    call ascova('D', vachtn, ' ', 'INST', time_curr, &
+    call ascova('D', vachtn, ' ', 'INST', timeCurr, &
                 'R', cnchnl)
     if (l_stat) then
         call jedetr(vechtn)
@@ -238,11 +241,17 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
         end do
     end if
 
+! - New <CARTE> for time
+    timePara = timeParaIn
+    call detrsd("CARTE", timeMap)
+    call mecact('V', timeMap, 'MODELE', ligrmo, 'INST_R', &
+                ncmp=6, lnomcmp=nomcmp, vr=timePara)
+
 ! - Tangent matrix (non-linear) - Material and loads
     call merxth(l_stat, &
                 model, caraElem, mateco, &
                 loadNameJv, loadInfoJv, &
-                tpsthe, timeMap, &
+                timePara, timeMap, &
                 temp_iter, comporTher, varc_curr, dry_curr, &
                 merigi, 'V')
     nb_matr = 0

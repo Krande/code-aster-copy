@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,14 @@ test.assertFalse(cMesh1.hasGroupOfNodes("AFCE"))
 test.assertTrue(cMesh1.hasGroupOfCells("VTOT"))
 test.assertEqual(sum(list(cMesh1.getCells())), 38698003)
 test.assertEqual(sum(list(cMesh1.getNodesGlobalNumbering())), 150173315)
-test.assertEqual(sum(list(cMesh1.getNodesLocalNumbering())), 50102221)
+if rank == 0:
+    test.assertEqual(sum(cMesh1.getNodesLocalNumbering()), 16846196)
+elif rank == 1:
+    test.assertEqual(sum(cMesh1.getNodesLocalNumbering()), 15671069)
+elif rank == 2:
+    test.assertEqual(sum(cMesh1.getNodesLocalNumbering()), 17550294)
+else:
+    assert False
 
 
 # Test ConnectionMesh - The full mesh
@@ -72,7 +79,14 @@ test.assertEqual(sum(list(cMesh2.getCells())), 837865)
 print(len(cMesh2.getCells("AB1")))
 test.assertEqual(sum(list(cMesh2.getCells("AB1"))), 23630)
 test.assertEqual(sum(list(cMesh2.getNodesGlobalNumbering())), 5193300)
-test.assertEqual(sum(list(cMesh2.getNodesLocalNumbering())), 1851688)
+if rank == 0:
+    test.assertEqual(sum(cMesh2.getNodesLocalNumbering()), 477000)
+elif rank == 1:
+    test.assertEqual(sum(cMesh2.getNodesLocalNumbering()), 21026)
+elif rank == 2:
+    test.assertEqual(sum(cMesh2.getNodesLocalNumbering()), 1352010)
+else:
+    assert False
 
 test.printSummary()
 

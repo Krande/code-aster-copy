@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine te0431(option, nomte)
     integer :: nddl, nno, nnos, npg, ndim, i, j, j1, n, m, kpg, kk, kkd, lgpg
     integer :: cod(9)
     integer :: imatuu, ipoids, ivf, idfde, igeom, imate, icontm, ivarim
-    integer :: jgano, jtab(7), jcret, ideplm, ideplp, icompo, icarcr, iret
+    integer :: jgano, jtab(7), jcret, ideplm, ideplp, icarcr, iret
     integer :: ivectu, icontp, ivarip, ivarix, icontx
     real(kind=8) :: dff(2, 8), b(6, 8), p(3, 6), jac
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
@@ -79,6 +79,7 @@ subroutine te0431(option, nomte)
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16) :: rela_cpla, rela_comp
     type(Behaviour_Integ) :: BEHinteg
+    character(len=16), pointer :: compor(:) => null()
     character(len=8), parameter :: typmod(2) = (/"COMP1D  ", "        "/)
     blas_int :: b_incx, b_incy, b_n
 !
@@ -110,7 +111,7 @@ subroutine te0431(option, nomte)
         call jevech('PMATERC', 'L', imate)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PCARCRI', 'L', icarcr)
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PDEPLMR', 'L', ideplm)
         call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
@@ -127,11 +128,11 @@ subroutine te0431(option, nomte)
 !
     if (lNonLine) then
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+        call behaviourOption(option, compor, lMatr, lVect, lVari, &
                              lSigm)
 ! ----- Properties of behaviour
-        rela_comp = zk16(icompo-1+RELA_NAME)
-        rela_cpla = zk16(icompo-1+PLANESTRESS)
+        rela_comp = compor(RELA_NAME)
+        rela_cpla = compor(PLANESTRESS)
     end if
 
 ! - Initialisation of behaviour datastructure
@@ -200,7 +201,7 @@ subroutine te0431(option, nomte)
 ! - Set main parameters for behaviour (on cell)
     if (lNonLine) then
         call behaviourSetParaCell(ndimLdc, typmod, option, &
-                                  zk16(icompo), zr(icarcr), &
+                                  compor, zr(icarcr), &
                                   zr(iinstm), zr(iinstp), &
                                   fami, zi(imate), &
                                   BEHinteg)

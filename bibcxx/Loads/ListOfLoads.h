@@ -725,7 +725,7 @@ class ListOfLoads : public DataStructure {
      * @brief Function de récupération de la liste des charges
      * @return _list
      */
-    const JeveuxVectorChar24 &getListVector() const { return _list; };
+    JeveuxVectorChar24 getLoadNames() const { return _list; };
 
     /**
      * @brief Get all FiniteElementDescriptors

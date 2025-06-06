@@ -62,6 +62,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
     integer :: nbcar, nbval, nrd
@@ -82,7 +83,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
     character(len=8) :: nomnoe, nommai, car(nbcar), lamass, noma
     character(len=16) :: rep, repdis(nrd)
     character(len=19) :: cart(3), cartdi
-    character(len=24) :: nogp, mlgnno, mlgnma
+    character(len=24) :: nogp
 !
     aster_logical :: transl, lvale
     data repdis/'GLOBAL          ', 'LOCAL           '/
@@ -98,8 +99,6 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 !
     nbval2 = 3
 !
-    mlgnno = noma//'.NOMNOE'
-    mlgnma = noma//'.NOMMAI'
     call wkvect('&&TMPDISCRET', 'V V K24', lmax, jdls)
     call wkvect('&&TMPTABNO', 'V V K8', lmax, itbno)
     call wkvect('&&TMPRIGNO', 'V V R', 6*lmax, irgno)
@@ -186,14 +185,14 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 !                   RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
                     call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma)
                     call jeveuo(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'L', ldnm)
-                    call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
+                    nommai = int_to_char8(zi(ldgm+in))
 !                   BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
                     if (nbnma .ne. nbnoeu) then
                         call utmess('F', 'MODELISA_20', sk=nommai)
                     end if
                     do inbn = 1, nbnma
                         inoe = zi(ldnm+inbn-1)
-                        call jenuno(jexnum(mlgnno, inoe), nomnoe)
+                        nomnoe = int_to_char8(inoe)
                         do ino = 1, nbno
                             if (zk8(itbno+ino-1) .eq. nomnoe) then
                                 zk8(itbmp+ino-1) = nommai
@@ -214,7 +213,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
                 if (nc .eq. 1) then
                     do ino = 1, nbno
                         if (zk8(itbmp+ino-1) .eq. ' ') then
-                            call jenuno(jexnum(mlgnno, ino), nomnoe)
+                            nomnoe = int_to_char8(ino)
                             call utmess('F', 'MODELISA2_8', sk=nomnoe)
                         end if
                     end do

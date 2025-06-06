@@ -38,6 +38,33 @@ using VectorLongIter = VectorLong::iterator;
 ContactNew::ContactNew( const std::string name, const ModelPtr model, const std::string type )
     : DataStructure( name, 8, type ), _model( model ), _FEDesc( nullptr ), _verbosity( 1 ) {};
 
+/** @brief restricted constructor (Set) and method (Get) to support pickling */
+ContactNew::ContactNew( const py::tuple &tup )
+    : ContactNew( tup[0].cast< std::string >(), tup[1].cast< ModelPtr >() ) {
+    int i = 1;
+    _FEDesc = tup[++i].cast< FiniteElementDescriptorPtr >();
+    _zones = tup[++i].cast< std::vector< ContactZonePtr > >();
+    _verbosity = tup[++i].cast< ASTERINTEGER >();
+    // _FEDesc =
+    //     std::make_shared< FiniteElementDescriptor >( getName() + ".CONT.LIGRE", _model->getMesh()
+    //     );
+}
+py::tuple ContactNew::_getState() const {
+    return py::make_tuple( getName(), _model, _FEDesc, _zones, _verbosity );
+}
+
+FrictionNew::FrictionNew( const py::tuple &tup )
+    : FrictionNew( tup[0].cast< std::string >(), tup[1].cast< ModelPtr >() ) {
+    int i = 1;
+    _FEDesc = tup[++i].cast< FiniteElementDescriptorPtr >();
+    _zones = tup[++i].cast< std::vector< ContactZonePtr > >();
+    _verbosity = tup[++i].cast< ASTERINTEGER >();
+}
+
+py::tuple FrictionNew::_getState() const {
+    return py::make_tuple( getName(), _model, _FEDesc, _zones, _verbosity );
+}
+
 void ContactNew::appendContactZone( const ContactZonePtr zone ) {
     _zones.push_back( zone );
     _zones.back()->setVerbosity( getVerbosity() );
@@ -91,6 +118,7 @@ bool ContactNew::build() {
     cata[std::make_tuple( 2, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_2D";
     cata[std::make_tuple( 3, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_3D";
 
+    // Same elements for contact and friction
     cata[std::make_tuple( 2, ContactAlgo::Penalization, false )] = "CONT_PENA_SL_2D";
     cata[std::make_tuple( 3, ContactAlgo::Penalization, false )] = "CONT_PENA_SL_3D";
     cata[std::make_tuple( 2, ContactAlgo::Penalization, true )] = "CONT_PENA_SL_2D";
@@ -165,7 +193,7 @@ bool ContactNew::build() {
 
             JeveuxVectorLong list_elem = JeveuxVectorLong( jeveuxname, slavecells );
             CALL_AJELLT( ligret.c_str(), mesh->getName().c_str(), &slave_cells_i,
-                         jeveuxname.c_str(), " ", phenom.c_str(), modeli.c_str(), 0, " " );
+                         list_elem->getDataPtr(), phenom.c_str(), modeli.c_str() );
         }
     }
 

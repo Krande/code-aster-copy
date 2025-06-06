@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nupo, ivari, iddl, nusp
     character(len=*) :: cham19, nomma, nomail, nonoeu, nocmp1
@@ -146,7 +147,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo, &
 !
 !     3. ON VERIFIE LA MAILLE : IMA
 !     -----------------------------
-    call jenonu(jexnom(nommaz//'.NOMMAI', nomaiz), ima)
+    ima = char8_to_int(nomaiz)
     if (ima .le. 0) then
         if (.not. l_parallel_mesh) then
             valk(1) = nomaiz
@@ -166,7 +167,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo, &
         if (k8b(1:4) .ne. 'ELNO') then
             call utmess(aof, 'UTILITAI5_32', sk=chm19z)
         end if
-        call jenonu(jexnom(nommaz//'.NOMNOE', nonoez), ino)
+        ino = char8_to_int(nonoez)
         if (ino .le. 0) then
             valk(1) = nonoez
             valk(2) = nommaz

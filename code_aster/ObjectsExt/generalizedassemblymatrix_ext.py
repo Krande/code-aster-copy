@@ -24,11 +24,11 @@
 """
 
 import numpy as NP
-
 from libaster import GeneralizedAssemblyMatrixComplex, GeneralizedAssemblyMatrixReal
 
-from ..Utilities import injector, deprecated
 from ..Objects.Serialization import InternalStateBuilder
+from ..Supervis import AsterError
+from ..Utilities import deprecated, injector
 
 
 class GeneralizedAssemblyMatrixStateBuilder(InternalStateBuilder):
@@ -75,7 +75,7 @@ class BaseGeneralizedAssemblyMatrix:
 
         # On teste si la matrix existe
         if not self.exists():
-            raise AsException("L'objet matrix {0!r} n'existe pas".format(self.getName()))
+            raise AsterError("L'objet matrix {0!r} n'existe pas".format(self.getName()))
 
         if isinstance(self, (GeneralizedAssemblyMatrixReal,)):
             dtype = float
@@ -147,7 +147,7 @@ class BaseGeneralizedAssemblyMatrix:
 
         # On teste si le DESC de la matrix existe
         if not self.exists():
-            raise AsException("L'objet matrix {0!r} n'existe pas".format(self.getName()))
+            raise AsterError("L'objet matrix {0!r} n'existe pas".format(self.getName()))
 
         NP.asarray(matrix)
 
@@ -162,11 +162,11 @@ class BaseGeneralizedAssemblyMatrix:
 
         # On teste si la dimension de la matrix python est 2
         if len(NP.shape(matrix)) != 2:
-            raise AsException("La dimension de la matrix est incorrecte ")
+            raise AsterError("La dimension de la matrix est incorrecte ")
 
         # On teste si les tailles des matrixs jeveux et python sont identiques
         if tuple([dim, dim]) != NP.shape(matrix):
-            raise AsException("La taille de la matrix est incorrecte ")
+            raise AsterError("La taille de la matrix est incorrecte ")
 
         # Si le stockage est plein
         if self.isDense():

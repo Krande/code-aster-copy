@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine matimp(matz, ific, typimz)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/isParallelMatrix.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: matz, typimz
     integer :: ific
@@ -239,12 +240,12 @@ subroutine matimp(matz, ific, typimz)
                 end if
             end if
             if (nuno .gt. 0 .and. nucmp .gt. 0) then
-                call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
+                nono = int_to_char8(nuno)
                 nocmp = zk8(jcmp-1+nucmp)
                 write (ific, 1004) k, nono, nocmp, localOrGhost
             else if (nucmp .lt. 0) then
                 ASSERT(nuno .gt. 0)
-                call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
+                nono = int_to_char8(nuno)
                 nocmp = zk8(jcmp-1-nucmp)
                 if (zi(jdelg-1+k) .eq. -1) then
                     write (ific, 1005) k, nono, nocmp, localOrGhost, ' LAGR1 BLOCAGE'

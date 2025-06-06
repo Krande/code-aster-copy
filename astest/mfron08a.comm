@@ -1,0 +1,146 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Compilation of the mfront source file
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="vonMises_GradVari", UNITE_MFRONT=38)
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+MAIL = CREA_MAILLAGE(MAILLAGE=MAIL, LINE_QUAD=_F(TOUT="OUI"))
+
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
+
+### >>>>>>>>>>>>>>>>>
+### Model affectation
+### <<<<<<<<<<<<<<<<<
+
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_GRAD_VARI")
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+from math import pi
+
+E = 200e6
+nu = 0.3
+k = E / (3 * (1 - 2 * nu))
+mu = E / (2 * (1 + nu))
+s0 = 1e6
+H = -20e6
+
+ell_loc = 0.6
+C = abs(H) * (ell_loc / pi) ** 2
+PENA = abs(H)
+
+MATER_SANE = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=nu), MFRONT=_F(LISTE_COEF=(k, mu, s0, H, PENA), PENA_LAGR=PENA, C_GRAD_VARI=C)
+)
+
+MATER_IMPERFECTION = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=nu),
+    MFRONT=_F(LISTE_COEF=(k, mu, s0 * 0.95, H, PENA), PENA_LAGR=PENA, C_GRAD_VARI=C),
+)
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+MATE = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="SURF_SANE", MATER=MATER_SANE),
+        _F(GROUP_MA="SURF_IMPERFECTION", MATER=MATER_IMPERFECTION),
+    ),
+)
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+LI1 = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=40)))
+
+INST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO")
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+u_imp = 2.5e-2
+
+CL_DEPL = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    FACE_IMPO=(_F(GROUP_MA="LEFT", DX=0), _F(GROUP_MA="BOTTOM", DY=0), _F(GROUP_MA="TOP", DY=1)),
+)
+
+COEF = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, u_imp))
+
+### >>>>>>>>
+### Solution
+### <<<<<<<<
+
+RESU = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=MATE,
+    EXCIT=(_F(CHARGE=CL_DEPL, FONC_MULT=COEF)),
+    COMPORTEMENT=(_F(TOUT="OUI", RELATION="MFRONT", COMPOR_MFRONT=behaviour)),
+    INCREMENT=_F(LIST_INST=INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, PREDICTION="TANGENTE"),
+    CONVERGENCE=_F(
+        ITER_GLOB_MAXI=10, RESI_REFE_RELA=1e-3, SIGM_REFE=s0, VARI_REFE=s0 / E, LAGR_REFE=s0
+    ),
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
+
+### >>>>
+### Test
+### <<<<
+
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE="REAC_NODA")
+
+TAB = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="FORCE",
+        RESULTAT=RESU,
+        NOM_CHAM="REAC_NODA",
+        TOUT_ORDRE="OUI",
+        GROUP_NO="TOP",
+        RESULTANTE="DY",
+    )
+)
+
+TEST_TABLE(
+    VALE_CALC=953.8507783560948, NOM_PARA="DY", TABLE=TAB, FILTRE=_F(NOM_PARA="INST", VALE=1)
+)
+
+FIN()

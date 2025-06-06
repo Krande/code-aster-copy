@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine op0142()
     character(len=16) :: nomcmd, tprof, typfon
     character(len=16) :: motcleini(2), motclefin(2), typmcl(2)
     character(len=19) :: nomfon
-    character(len=24) :: cooabs, nommas, typmai, connex
+    character(len=24) :: cooabs, typmai, connex
     character(len=24) :: conseg, typseg, lisnoini, lisnofin
     character(len=8) :: typm
 !     ------------------------------------------------------------------
@@ -105,7 +105,6 @@ subroutine op0142()
 !     --- CONSTRUCTION DES OBJETS DU CONCEPT MAILLAGE ---
 !
     cooabs = nommai//'.ABSC_CURV .VALE'
-    nommas = nommai//'.NOMMAI'
     connex = nommai//'.CONNEX'
     typmai = nommai//'.TYPMAIL'
 !
@@ -140,7 +139,7 @@ subroutine op0142()
 !     --- LECTURE DES CARACTERISTIQUES DU GROUPE DE MAILLES : ADRESSE
 !                   ET NOMBRE DE MAILLES
 !
-    call jelira(nommas, 'NOMUTI', nbrma)
+    call jelira(typmai, 'LONMAX', nbrma)
     call wkvect('&&OP0142.MAILL.TEMP', 'V V I', nbrma, iagm)
     do ij = 1, nbrma
         zi(iagm+ij-1) = ij

@@ -45,6 +45,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     type(cara_elem_info) :: infdonn
     type(cara_elem_carte) :: infcarte(*)
@@ -73,7 +74,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
     character(len=9) :: cara
     character(len=16) :: rep, repdis(nrd), k16nom
     character(len=19) :: cart(3), cartdi
-    character(len=24) :: nogp, nogl, mlgnma
+    character(len=24) :: nogp, nogl
 !
 !     integer :: ixckma, ixci
 !     real(kind=8) :: r8bid
@@ -91,7 +92,6 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
 !   Pour miss3d c'est obligatoirement du 3d
     ASSERT(ndim .eq. 3)
 !
-    mlgnma = noma//'.NOMMAI'
     call wkvect('&&TMPRIGMA', 'V V R', 3*lmax, irgma)
     call wkvect('&&TMPRIGM2', 'V V R', 3*lmax, irgm2)
     call wkvect('&&TMPRIGM3', 'V V R', 3*lmax, irgm3)
@@ -160,7 +160,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
             call rigmi1(noma, nogp, ifreq, nfreq, impris, &
                         zr(irgma), zr(irgm3))
             do in = 0, nma-1
-                call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
+                nommai = int_to_char8(zi(ldgm+in))
                 zk8(itbmp+in) = nommai
             end do
             do i = 1, nbpo
@@ -203,7 +203,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
             call jeveuo(jexnom(noma//'.GROUPEMA', nogl), 'L', ldgm)
             nbli = nma
             do in = 0, nma-1
-                call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
+                nommai = int_to_char8(zi(ldgm+in))
                 zk8(itbmp+in) = nommai
             end do
             call r8inir(3, 0.d0, vale, 1)

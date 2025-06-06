@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine sscgno(ma, nbgnin)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -62,6 +63,8 @@ subroutine sscgno(ma, nbgnin)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/isParallelMesh.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     real(kind=8) :: vecori(3)
 !
@@ -69,7 +72,7 @@ subroutine sscgno(ma, nbgnin)
     character(len=8) :: alarm, typm, ndorig, ndextr
     character(len=8) :: ma, nono, k8b, kpos, nom1
     character(len=16) :: concep, cmd, option, motcle, typmcl, motfac
-    character(len=24) :: nomnoe, grpnoe, cooval, lisno, mafour
+    character(len=24) :: grpnoe, cooval, lisno, mafour
     character(len=24) :: valk(2), nogno, nogno2
     character(len=80) :: card
 !     ------------------------------------------------------------------
@@ -83,9 +86,9 @@ subroutine sscgno(ma, nbgnin)
     integer :: n2, n3, n4, n5, n6, n6a, n6b
     integer :: n7, n8, n9, nb, nbcol, nbgna2, nbgnaj
     integer :: nbgnin, nbgrmn, nbid, nbis, nbk8, nbline, nbno
-    integer :: nbnot, nbocc, niv, ntrou, num
+    integer :: nbnot, nbocc, niv, ntrou, num, ier
     aster_logical :: l_write
-    aster_logical :: l_parallel_mesh
+    aster_logical :: l_parallel_mesh, lcolle
     character(len=24), pointer :: lik8(:) => null()
     character(len=8), pointer :: l_noeud(:) => null()
     integer, pointer :: noeud2(:) => null()
@@ -98,7 +101,6 @@ subroutine sscgno(ma, nbgnin)
 !
     call getres(k8b, concep, cmd)
     lisno = '&&SSCGNO.LISTE_NOEUDS'
-    nomnoe = ma//'.NOMNOE         '
     grpnoe = ma//'.GROUPENO       '
     cooval = ma//'.COORDO    .VALE'
     call jeveuo(cooval, 'L', jvale)
@@ -468,9 +470,14 @@ subroutine sscgno(ma, nbgnin)
             AS_ALLOCATE(vi=noeud2, size=nbnot)
 !         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
             nbno = 0
+            lcolle = .false.
+            call jeexin(ma//'.NOMNOE', ier)
+            if (ier .ne. 0) then
+                lcolle = .true.
+            end if
             do im1 = 1, n2
                 nom1 = l_noeud(im1)
-                call jenonu(jexnom(nomnoe, nom1), num)
+                num = char8_to_int(nom1, lcolle, ma, "NOEUD")
                 noeud2(num) = noeud2(num)+1
                 if (noeud2(num) .eq. 2) then
                     valk(1) = nom1
@@ -589,6 +596,11 @@ subroutine sscgno(ma, nbgnin)
 !     --------------------
     if (niv .eq. 2 .and. nbgnaj .ne. 0) then
         maxcol = 8
+        lcolle = .false.
+        call jeexin(ma//'.NOMNOE', ier)
+        if (ier .ne. 0) then
+            lcolle = .true.
+        end if
         do i = 1, nbgnaj
             ii = nbgnin+i
             call jeveuo(jexnum(grpnoe, ii), 'L', iagno)
@@ -605,7 +617,7 @@ subroutine sscgno(ma, nbgnin)
                 if (ireste .ne. 0 .and. jjj .eq. nbline) nbcol = ireste
                 do iii = 1, nbcol
                     kkk = kkk+1
-                    call jenuno(jexnum(nomnoe, zi(iagno-1+kkk)), nono)
+                    nono = int_to_char8(zi(iagno-1+kkk), lcolle, ma, "NOEUD")
                     card((iii-1)*10+1:) = ' '//nono//' '
                 end do
                 write (ifm, '(A)') card(:10*nbcol)

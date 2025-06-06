@@ -32,6 +32,7 @@ subroutine deelpo(caelem, noma, numail, phie)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
     integer :: numail
     real(kind=8) :: phie
     character(len=8) :: caelem, noma
@@ -54,7 +55,7 @@ subroutine deelpo(caelem, noma, numail, phie)
 !
     character(len=8) :: nomcmp(2), nomail
     character(len=19) :: carte
-    character(len=24) :: cadesc, cavale, calima, gpmama, nomama
+    character(len=24) :: cadesc, cavale, calima, gpmama
 !
     data nomcmp/'R1      ', 'R2      '/
 !
@@ -105,8 +106,7 @@ subroutine deelpo(caelem, noma, numail, phie)
     end do
 !
     if (iasbon .eq. 0) then
-        nomama = noma//'.NOMMAI'
-        call jenuno(jexnum(nomama, numail), nomail)
+        nomail = int_to_char8(numail)
         call utmess('F', 'ALGELINE_34', sk=nomail)
     end if
 !

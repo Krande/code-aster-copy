@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -439,7 +439,6 @@ class NomChamIntoGenerator:
             ),
         },
         Phenomenon.AUTRES: {
-            "COHE_ELEM": (("nonlin", "dyna"), tr("Variables internes cohésives XFEM")),
             "COMPORTEMENT": ((), tr("Carte de comportement mécanique")),
             "COMPORTHER": ((), tr("Carte de comportement thermique")),
             "DEPL_VIBR": ((), tr("Déplacement pour mode vibratoire")),
@@ -447,6 +446,7 @@ class NomChamIntoGenerator:
             "EPSA_ELNO": ((), tr("Déformations anélastique aux noeuds par élément")),
             "EPSA_NOEU": ((), tr("Déformations anélastique aux noeuds")),
             "FERR_ELEM": (("lin",), tr("Densité de ferraillage")),
+            "MARG_ELEM": (("lin",), tr("Marge mécanique - vérification de ferraillage")),
             "FSUR_2D": ((), tr("Chargement de force surfacique en 2D")),
             "FSUR_3D": ((), tr("Chargement de force surfacique en 3D")),
             "FVOL_2D": ((), tr("Chargement de force volumique en 2D")),

@@ -73,7 +73,7 @@ class ElementaryTerm : public DataField {
         ( *_descriptor )[1] = nbGrel;
         for ( int i = 0; i < nbGrel; ++i )
             ( *_descriptor )[i + 2] = localModeId;
-        _resl->allocateSparseNumbered( nbGrel );
+        _resl->allocate( nbGrel );
     };
 
     void setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc ) {

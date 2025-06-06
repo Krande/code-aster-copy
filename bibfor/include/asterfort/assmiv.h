@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,13 @@
 !
 interface
     subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
-                      nu, vecpro, motcle, type)
-        character(len=*) :: base
+                      nu, type)
+        character(len=1) :: base
         character(len=*) :: vec
         integer :: nbvec
-        character(len=*) :: tlivec(*)
-        real(kind=8) :: licoef(*)
+        character(len=*) :: tlivec(nbvec)
+        real(kind=8) :: licoef(nbvec)
         character(len=*) :: nu
-        character(len=*) :: vecpro
-        character(len=4) :: motcle
         integer :: type
     end subroutine assmiv
 end interface

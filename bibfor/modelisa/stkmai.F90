@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine stkmai(ifl, icl, iv, rv, cv, &
                   cnl, mcl, nbm, nume, numn, &
-                  cnx, typ, fmt, irteti)
+                  cnx, typ, fmt, irteti, nommai)
     implicit none
 !       SECONDE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE MAILLE
 !       ----------------------------------------------------------------
@@ -27,7 +27,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
 !               NBM             = NB DE MOTS CLES TYPE MAILLE
 !               FMT             = NB NOEUDS A LIRE / MAILLE
 !               CNX             = NOMU.CONXV
-!               TYP             = NOMU.TYPMAIL ASSOCIE A NOMU.NOMMAI
+!               TYP             = NOMU.TYPMAIL
 !               NUME            = NUMERO DE L ELEMENT COURANT
 !               NUMN            = NUMERO DU NOEUD COURANT DANS CNX
 !       OUT     (RETURN)        = MOT CLE SUIVANT (MOT CLE NON RECONNU)
@@ -49,6 +49,8 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
 #include "asterfort/utmess.h"
+#include "asterfort/jelira.h"
+#include "asterfort/char8_to_int.h"
 !
     real(kind=8) :: rv
     integer :: nbm
@@ -56,11 +58,11 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
     integer :: deblig, fmt(nbm)
     character(len=14) :: cnl
     character(len=*) :: cv
-    character(len=24) :: cnx, typ, nom
+    character(len=24) :: cnx, typ, nom, nommai
     save b8
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadc, iadt, icl, ifl, iret
+    integer :: i, iadc, iadt, icl, ifl, iret, iret2
     integer :: irtet, irteti, iv, nume, numn
     integer :: numtcl
 !-----------------------------------------------------------------------
@@ -112,9 +114,9 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
 !
     noma = b8
     noma(1:iv) = cv(1:iv)
-    call jeexin(jexnom(typ(1:8)//'.NOMMAI', noma), iret)
+    call jeexin(jexnom(nommai, noma), iret)
     if (iret .eq. 0) then
-        call jecroc(jexnom(typ(1:8)//'.NOMMAI', noma))
+        call jecroc(jexnom(nommai, noma))
         call jecroc(jexnom(cnx, noma))
         call jeecra(jexnom(cnx, noma), 'LONMAX', fmt(numtcl))
     else

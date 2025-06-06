@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ subroutine arcseg34(nbno, coor, abscur)
 !
     implicit none
 #include "jeveux.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/assert.h"
 #include "blas/ddot.h"
 #include "asterfort/mgauss.h"
@@ -85,7 +86,7 @@ subroutine arcseg34(nbno, coor, abscur)
                &t(b_n, bc, b_incx, bc, b_incy)) &
                )
     theta = abs(asin(sintheta))
-    if ((theta*180./3.14) .lt. 1.) then
+    if ((theta*r8rddg()) .lt. 1.) then
 !       -- calcul des abscisses curvilignes :
         abscur(1) = 0.d0
         x(:) = coor(:, 3)-coor(:, 1)

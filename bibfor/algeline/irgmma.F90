@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=C0110
 !
 subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
                   nobj, nbel, versio)
@@ -53,10 +54,10 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol
     aster_logical :: logic
     character(len=1) :: base
-    character(len=8) :: k8b, nomg, typm, typm2
-    character(len=24) :: nommai, typmai, connex, nodime, nomnoe, cooval, coodsc
+    character(len=8) :: k8b, typm, typm2
+    character(len=24) :: typmai, connex, nodime, cooval, coodsc
     character(len=24) :: titre, numold
-    character(len=24) :: typmav, connev, nodimv, nomnov, coovav, coodsv
+    character(len=24) :: typmav, connev, nodimv, coovav, coodsv
     character(len=24) :: valk(2)
     integer :: ind, numel, nbcr, nbp
     integer :: nbmmax
@@ -88,15 +89,12 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
 !
     base = basz
 !
-    nomnov = nomain//'.NOMNOE         '
     typmav = nomain//'.TYPMAIL        '
     connev = nomain//'.CONNEX         '
     nodimv = nomain//'.DIME           '
     coovav = nomain//'.COORDO    .VALE'
     coodsv = nomain//'.COORDO    .DESC'
 !
-    nommai = nomaou//'.NOMMAI         '
-    nomnoe = nomaou//'.NOMNOE         '
     typmai = nomaou//'.TYPMAIL        '
     connex = nomaou//'.CONNEX         '
     nodime = nomaou//'.DIME           '
@@ -177,7 +175,6 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     call wkvect(numold, 'V V I', max(1, nbmail), jnumol)
 !
     call jedupo(nodimv, base, nodime, logic)
-    call jedupo(nomnov, base, nomnoe, logic)
     call jedupo(coovav, base, cooval, logic)
     call jedupo(coodsv, base, coodsc, logic)
 !
@@ -185,10 +182,8 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     zi(jdime+3-1) = nbmail
 !
 ! ----------------------------------------------------------------------
-!     LE '.NOMMAI' ET LE '.CONNEX'
+!     LE '.CONNEX'
 ! ----------------------------------------------------------------------
-    call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', nbmail)
 !
     call wkvect(typmai, base//' V I', nbmail, iatyma)
 !
@@ -220,11 +215,8 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
                 call codent(nbmmax, 'G', k8b)
                 call utmess('F', 'ALGELINE_65', sk=k8b)
             end if
-            nomg = 'M       '
-            call codent(imav, 'G', nomg(2:8))
-            call jecroc(jexnom(nommai, nomg))
 !
-            call jenonu(jexnom(nommai, nomg), ima2)
+            ima2 = imav
             zi(iatyma-1+ima2) = numel
 !    STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
             zi(jnumol-1+ima2) = ima

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 !
 !
 interface
-    subroutine cafelu(typco, alphacc, effm, effn, ht, bw,&
-                      enrobi, enrobs, facier, fbeton, gammas, gammac,&
-                      clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc,um,&
-                      dnsinf, dnssup, sigmsi, sigmss, ecinf, ecsup,&
+    subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
+                      enrobi, enrobs, facier, fbeton, gammas, gammac, &
+                      clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                      dnsinf, dnssup, sigmsi, sigmss, ecinf, ecsup, &
                       alpha, pivot, etat, ierr)
-        integer :: typco
+        integer(kind=8) :: typco
         real(kind=8) :: alphacc
         real(kind=8) :: effm
         real(kind=8) :: effn
@@ -36,15 +36,15 @@ interface
         real(kind=8) :: fbeton
         real(kind=8) :: gammas
         real(kind=8) :: gammac
-        integer :: clacier
+        integer(kind=8) :: clacier
         real(kind=8) :: eys
-        integer :: typdiag
-        integer :: ferrcomp
-        integer :: precs
-        integer :: ferrsyme
+        integer(kind=8) :: typdiag
+        integer(kind=8) :: ferrcomp
+        integer(kind=8) :: precs
+        integer(kind=8) :: ferrsyme
         real(kind=8) :: slsyme
-        integer :: uc
-        integer :: um
+        integer(kind=8) :: uc
+        integer(kind=8) :: um
         real(kind=8) :: dnsinf
         real(kind=8) :: dnssup
         real(kind=8) :: sigmsi
@@ -52,8 +52,8 @@ interface
         real(kind=8) :: ecinf
         real(kind=8) :: ecsup
         real(kind=8) :: alpha
-        integer :: pivot
-        integer :: etat
-        integer :: ierr
+        integer(kind=8) :: pivot
+        integer(kind=8) :: etat
+        integer(kind=8) :: ierr
     end subroutine cafelu
 end interface

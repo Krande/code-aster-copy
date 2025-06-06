@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara, motfaz
@@ -182,7 +183,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
     integer :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
     integer :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
     integer :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
-    integer :: i, nbgrma_tot, deca, nbtot
+    integer :: i, nbgrma_tot, deca, nbtot, nbMaiT
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec
     real(kind=8) :: energy_tout, energy_ma
     complex(kind=8) :: c16b
@@ -193,7 +194,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
     character(len=19) :: knum, ligrel, kins, compor, chvarc, chvref
     character(len=24) :: chgeom, chcara(18), chharm, chvari, chdepl
     character(len=24) :: vk24(2), nomgrm, chsig, lchin(14), lchout(2)
-    character(len=24) :: mlggma, mlgnma, chsigm, chdepm, chbid
+    character(len=24) :: mlggma, chsigm, chdepm, chbid
     aster_logical :: evol
     integer, pointer :: ptma(:) => null()
     integer, pointer :: desc(:) => null()
@@ -321,7 +322,6 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 80
     noma = chgeom(1:8)
-    mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
 !
     call exlim3(motfaz, 'V', modele, ligrel)
@@ -866,13 +866,13 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 ! ---    BOUCLE SUR LES MAILLES :
 !        ----------------------
                 vk8(2) = 'MAILLE'
+                call jelira(noma//'.TYPMAIL', 'LONMAX', nbMaiT)
                 do im = 1, nbmail
                     nommai = zk8(jma+im-1)
-                    call jeexin(jexnom(mlgnma, nommai), iret)
-                    if (iret .eq. 0) then
-                        call utmess('F', 'UTILITAI3_49', sk=nommai)
+                    nume = char8_to_int(nommai)
+                    if ((nume .gt. nbMaiT) .or. (nume .le. 0)) then
+                        call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
                     end if
-                    call jenonu(jexnom(mlgnma, nommai), nume)
 !
                     if (motfac .eq. 'INDIC_ENER' .or. motfac .eq. 'INDIC_SEUIL') then
 !

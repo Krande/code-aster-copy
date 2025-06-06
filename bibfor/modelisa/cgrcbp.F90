@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: iocc, nbgraj
     character(len=*) :: mofaz, nomaz
@@ -68,7 +69,7 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
     character(len=8) :: noma, prefix, nom_ddl
     character(len=16) :: motfac
     character(len=19) :: list_rela
-    character(len=24) :: grpno, nomgno, nomnoe
+    character(len=24) :: grpno, nomgno
 !
     integer, pointer :: rlnr(:) => null()
     integer, pointer :: v_nb_coef(:) => null()
@@ -87,7 +88,6 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
     noma = nomaz
     nbno_max = 0
     grpno = noma//'.GROUPENO       '
-    nomnoe = noma//'.NOMNOE         '
     nbgraj = 0
 !
     call getvid(motfac, 'CABLE_BP', iocc=iocc, scal=cabl_prec, nbret=ibid)
@@ -164,7 +164,7 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
             call jeecra(jexnom(grpno, nomgno), 'LONUTI', nbno_liai)
             call jeveuo(jexnom(grpno, nomgno), 'E', iad2)
             do j = 1, nbno_liai
-                call jenonu(jexnom(nomnoe, listno(j)), nuno)
+                nuno = char8_to_int(listno(j))
                 zi(iad2-1+j) = nuno
             end do
         end do

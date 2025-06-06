@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
     subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump,&
                       klag2, type, epsmat, ktypr,&
                       lpreco, lbloc)
-        integer :: kxmps
+        integer(kind=8) :: kxmps
         character(len=24) :: kmonit(12)
         character(len=14) :: impr
-        integer :: ifmump
+        integer(kind=8) :: ifmump
         character(len=5) :: klag2
         character(len=1) :: type
         real(kind=8) :: epsmat

@@ -30,7 +30,6 @@ subroutine nmetl2(model, i_field, ds_inout)
 #include "asterfort/nmetnc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
-#include "asterfort/xetco.h"
 !
     integer, intent(in) :: i_field
     character(len=8), intent(in) :: model
@@ -87,28 +86,25 @@ subroutine nmetl2(model, i_field, ds_inout)
 ! ----- Read initial field
 !
         if (l_field_read) then
-! --------- Discretization of input field
+! --------- Get discretization of input field
             call dismoi('TYPE_CHAMP', field_read, 'CHAMP', repk=fieldInDisc, arret='C', ier=iret)
 
 ! --------- Try to convert field (discretization) if necessary and copy it
-            if (fieldType .eq. 'COHE_ELEM') then
-                call xetco(field_read, field_algo, init_name)
-            else
-                call nmetcv(model, init_name, &
-                            fieldType, field_read, fieldInDisc, field_read_cv, disc_type)
-                if (disc_type .eq. 'NOEU') then
-                    call vtcopy(field_read_cv, field_algo, ' ', iret)
-                    if (iret .ne. 0) then
-                        call utmess('A', 'MECANONLINE_2', sk=fieldType)
-                    end if
-                else if ((disc_type .eq. 'ELGA') .or. (disc_type .eq. 'ELEM') .or. &
-                         (disc_type .eq. 'ELNO')) then
-                    call copisd('CHAMP_GD', 'V', field_read_cv, field_algo)
-                else
-                    write (6, *) 'DISCRETISATION NON TRAITEE: ', fieldInDisc
-                    ASSERT(.false.)
+            call nmetcv(model, init_name, &
+                        fieldType, field_read, fieldInDisc, field_read_cv, disc_type)
+            if (disc_type .eq. 'NOEU') then
+                call vtcopy(field_read_cv, field_algo, ' ', iret)
+                if (iret .ne. 0) then
+                    call utmess('A', 'MECANONLINE_2', sk=fieldType)
                 end if
+            else if ((disc_type .eq. 'ELGA') .or. (disc_type .eq. 'ELEM') .or. &
+                     (disc_type .eq. 'ELNO')) then
+                call copisd('CHAMP_GD', 'V', field_read_cv, field_algo)
+            else
+                write (6, *) 'DISCRETISATION NON TRAITEE: ', fieldInDisc
+                ASSERT(.false.)
             end if
+
 ! --------- New state of field
             ds_inout%field(i_field)%init_type = 'READ'
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -158,26 +158,6 @@ subroutine pjmasp(moa2, masp, corres, noca)
     zi(iadime-1+1) = nbnosp
     zi(iadime-1+3) = nbnosp
     zi(iadime-1+6) = 3
-!
-!
-!     4. CREATION DU .NOMNOE ET DU .NOMMAI DU NOUVEAU MAILLAGE
-!     ---------------------------------------------------------
-    call jecreo(masp//'.NOMNOE', 'V N K8')
-    call jeecra(masp//'.NOMNOE', 'NOMMAX', nbnosp)
-    call jecreo(masp//'.NOMMAI', 'V N K8')
-    call jeecra(masp//'.NOMMAI', 'NOMMAX', nbnosp)
-!
-!
-    nom(1:1) = 'N'
-    do k = 1, nbnosp
-        call codent(k, 'G', nom(2:8))
-        call jecroc(jexnom(masp//'.NOMNOE', nom))
-    end do
-    nom(1:1) = 'M'
-    do k = 1, nbnosp
-        call codent(k, 'G', nom(2:8))
-        call jecroc(jexnom(masp//'.NOMMAI', nom))
-    end do
 !
 !
 !

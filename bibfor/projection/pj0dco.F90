@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ subroutine pj0dco(typeSelect, &
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
@@ -205,7 +206,7 @@ subroutine pj0dco(typeSelect, &
         end do
 
         if (d2 .gt. dmax0d) then
-            call jenuno(jexnum(mesh2//'.NOMNOE', iNode2), nodeName2)
+            nodeName2 = int_to_char8(iNode2)
             call utmess('F', 'PROJECTION4_2', sk=nodeName2, nr=2, valr=[d2, dmax0d])
         end if
 

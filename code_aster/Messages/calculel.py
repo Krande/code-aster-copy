@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -96,12 +96,6 @@ Erreur de programmation lors de l'assemblage :
     17: _(
         """
  type de champ inconnu
-"""
-    ),
-    18: _(
-        """
- Vous utilisez CALC_CHAMP en reuse mais la structure de données en entrée est
- différente de celle en sortie. Ce n'est pas autorisé.
 """
     ),
     19: _(

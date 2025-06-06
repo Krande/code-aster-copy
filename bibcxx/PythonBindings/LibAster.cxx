@@ -124,6 +124,7 @@
 #include "PythonBindings/MeshEntitiesInterface.h"
 #include "PythonBindings/MeshInterface.h"
 #include "PythonBindings/MeshPairingInterface.h"
+#include "PythonBindings/MeshReaderInterface.h"
 #include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/ModalBasisInterface.h"
 #include "PythonBindings/ModeResultInterface.h"
@@ -171,6 +172,7 @@
 #include "PythonBindings/TransientResultInterface.h"
 #include "PythonBindings/TurbulentSpectrumInterface.h"
 #include "PythonBindings/UnitaryMechanicalLoadInterface.h"
+#include "PythonBindings/UseCppPicklingInterface.h"
 #include "PythonBindings/XfemCrackInterface.h"
 #include "Supervis/Exceptions.h"
 // Please keep '*Interface.h' files in alphabetical order to ease merging
@@ -198,6 +200,7 @@ PYBIND11_MODULE( libaster, mod ) {
     mod.def( "raiseAsterError", &raiseAsterError, py::arg( "idmess" ) = "VIDE_1" );
 
     // do not sort (compilation error)
+    exportUseCppPicklingToPython( mod );
     exportGenericEnumToPython( mod );
     exportDataStructureToPython( mod );
     exportDebugToPython( mod );
@@ -352,6 +355,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMedFamilyToPython( mod );
     exportMedVectorToPython( mod );
 #endif /* ASTER_HAVE_MED */
+    exportMeshReaderToPython( mod );
     exportFieldCharacteristicsToPython( mod );
     exportModelingUtilitiesToPython( mod );
     exportSyntaxSaverToPython( mod );

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi, &
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
+#include "asterc/r8t0.h"
 #include "asterfort/granac.h"
 #include "asterfort/nmasse.h"
 #include "asterfort/rcvalb.h"
@@ -184,7 +185,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi, &
 !     INCREMENT DEFORMATION IMPOSEE
     depsim = depsan+degran
 !
-    expqt = exp(-ener/(tp+273.15d0))
+    expqt = exp(-ener/(tp+r8t0()))
 !
 !     coefb=expqt*((a*ctps/(1.d0+ctps*irrap))+b+c*ctps*exp(-ctps*irrap))*(irrap-irram)
     coefb = expqt*(a*(log(1.d0+ctps*irrap)-log(1.d0+ctps*irram))+ &

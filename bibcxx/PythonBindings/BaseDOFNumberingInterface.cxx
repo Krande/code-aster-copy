@@ -3,7 +3,7 @@
  * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,18 +28,21 @@
 
 void exportBaseDOFNumberingToPython( py::module_ &mod ) {
 
-    bool ( BaseDOFNumbering::*f1 )( const ModelPtr model, const ListOfLoadsPtr listOfLoads ) =
-        &BaseDOFNumbering::computeNumbering;
-    bool ( BaseDOFNumbering::*f2 )( const std::vector< BaseDOFNumbering::MatrElem > matrix ) =
-        &BaseDOFNumbering::computeNumbering;
+    bool ( BaseDOFNumbering::*f1 )( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
+                                    const bool verbose ) = &BaseDOFNumbering::computeNumbering;
+    bool ( BaseDOFNumbering::*f2 )( const std::vector< BaseDOFNumbering::MatrElem > matrix,
+                                    const bool verbose ) = &BaseDOFNumbering::computeNumbering;
 
     py::class_< BaseDOFNumbering, BaseDOFNumbering::BaseDOFNumberingPtr, DataStructure >(
         mod, "BaseDOFNumbering" )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
-        .def( "computeNumbering", f1 )
-        .def( "computeNumbering", f2 )
-        .def( "computeRenumbering", &BaseDOFNumbering::computeRenumbering )
+        .def( "computeNumbering", f1, py::arg( "model" ), py::arg( "listOfLoads" ),
+              py::arg( "verbose" ) = true )
+        .def( "computeNumbering", f2, py::arg( "matrix" ), py::arg( "verbose" ) = true )
+        .def( "computeRenumbering", &BaseDOFNumbering::computeRenumbering, py::arg( "model" ),
+              py::arg( "listOfLoads" ), py::arg( "defiCont" ), py::arg( "vContElem" ),
+              py::arg( "verbose" ) = true )
         .def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors, R"(
 Returns the objects defining the finite elements.
 

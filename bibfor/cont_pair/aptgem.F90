@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/mmctan.h"
 #include "asterfort/mmtann.h"
 #include "asterfort/utmess.h"
@@ -171,7 +172,7 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
 ! --------- Current node
 !
             call apcond(newgeo, node_nume(i_node), node_coor)
-            call jenuno(jexnum(mesh//'.NOMNOE', node_nume(i_node)), node_name)
+            node_name = int_to_char8(node_nume(i_node))
 !
 ! --------- Compute local basis for these node
 !

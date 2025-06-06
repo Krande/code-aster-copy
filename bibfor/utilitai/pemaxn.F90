@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbcmp, nuord, nbmail, numemail(*)
     character(len=8) :: nomcmp(nbcmp), modele, lieu
@@ -82,7 +83,6 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
     character(len=7) :: chnuno
     character(len=8) :: noma, k8b, nomgd, nomva, knmin, knmax
     character(len=19) :: cesout
-    character(len=24) :: nomnoe
     aster_logical :: exist, l_pmesh
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
@@ -128,7 +128,6 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
         ASSERT(ASTER_FALSE)
     end if
 !
-    nomnoe = noma//'.NOMNOE         '
     nompar(1) = 'CHAMP_GD'
     nompar(2) = 'NUME_ORDRE'
     nompar(3) = 'INST'
@@ -199,7 +198,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
                 call codent(nulg(nmax), "G", chnuno)
                 knmax = 'N'//chnuno
             else
-                call jenuno(jexnum(nomnoe, nmax), knmax)
+                knmax = int_to_char8(nmax)
             end if
         else
             knmax = ' '
@@ -210,7 +209,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
                 call codent(nulg(nmin), "G", chnuno)
                 knmin = 'N'//chnuno
             else
-                call jenuno(jexnum(nomnoe, nmin), knmin)
+                knmin = int_to_char8(nmin)
             end if
         else
             knmin = ' '

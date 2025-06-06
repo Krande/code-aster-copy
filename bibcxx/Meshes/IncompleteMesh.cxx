@@ -3,7 +3,7 @@
  * @brief Implementation de IncompleteMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -106,12 +106,13 @@ bool IncompleteMesh::debugCheckFromBaseMesh( BaseMeshPtr &compMesh ) const {
                 break;
         }
         cumElem += size;
-        if ( !toReturn )
-            break;
-    }
+        if ( !toReturn ) {
 #ifdef ASTER_DEBUG_CXX
-    std::cout << "Differences between connectivities" << std::endl;
+            std::cout << "Differences between connectivities" << std::endl;
 #endif
+            break;
+        }
+    }
     return toReturn;
 };
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,6 +69,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 !
 ! ARGUMENTS
@@ -92,7 +94,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
     character(len=8) :: k8b, noancr(2), nocour, noprec, nosui1, nosui2, nosuiv
     character(len=8) :: novois, tyancr(2)
     character(len=8) :: presen(2)
-    character(len=24) :: conxma, grmama, nomama, nonoma, tymama
+    character(len=24) :: conxma, grmama, tymama
     character(len=24) :: valk(3), nogrno(2), nogrna(2), nogrma
     character(len=24) :: param(6), vk(5)
     character(len=8), pointer :: nomail_def(:) => null()
@@ -127,8 +129,6 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
 !
     conxma = mailla//'.CONNEX'
     grmama = mailla//'.GROUPEMA'
-    nomama = mailla//'.NOMMAI'
-    nonoma = mailla//'.NOMNOE'
     tymama = mailla//'.TYPMAIL'
     call jeveuo(tymama, 'L', jtyma)
 !
@@ -147,7 +147,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
         call getvem(mailla, 'MAILLE', 'DEFI_CABLE', 'MAILLE', icabl, &
                     nbmail, nomail_def, ibid)
         do imail = 1, nbmail
-            call jenonu(jexnom(nomama, nomail_def(imail)), zi(jnumad+imail-1))
+            zi(jnumad+imail-1) = char8_to_int(nomail_def(imail))
         end do
 !
 !.... SAISIE INDIRECTE PAR UN GROUPE DE MAILLES
@@ -182,8 +182,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
         no1 = zi(jcxma)
         no2 = zi(jcxma+1)
-        call jenuno(jexnum(nonoma, no1), nomnoe_def(1+2*(imail-1)))
-        call jenuno(jexnum(nonoma, no2), nomnoe_def(1+2*(imail-1)+1))
+        nomnoe_def(1+2*(imail-1)) = int_to_char8(no1)
+        nomnoe_def(1+2*(imail-1)+1) = int_to_char8(no2)
     end do
     ASSERT((nbse2 .eq. 0) .or. (nbse3 .eq. 0))
     quad = .false.
@@ -476,7 +476,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
                         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
                         no3 = zi(jcxma+2)
                         no1 = zi(jcxma)
-                        call jenuno(jexnum(nonoma, no1), vk(1))
+                        vk(1) = int_to_char8(no1)
                         if (sens .eq. 0) then
                             if (nomnoe_ch1(ino) .eq. vk(1)) then
                                 sens = 1
@@ -493,7 +493,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
                                 ASSERT(sens .eq. -1)
                             end if
                         end if
-                        call jenuno(jexnum(nonoma, no3), vk(1))
+                        vk(1) = int_to_char8(no3)
                         vk(2) = nogrma
                         vk(3) = nogrno(1)
                         vk(4) = nogrno(2)
@@ -548,7 +548,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
                         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
                         no3 = zi(jcxma+2)
                         no1 = zi(jcxma)
-                        call jenuno(jexnum(nonoma, no1), vk(1))
+                        vk(1) = int_to_char8(no1)
                         if (sens .eq. 0) then
                             if (nomnoe_ch1(ino) .eq. vk(1)) then
                                 sens = 1
@@ -563,7 +563,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
                                 ASSERT(sens .eq. -1)
                             end if
                         end if
-                        call jenuno(jexnum(nonoma, no3), vk(1))
+                        vk(1) = int_to_char8(no3)
                         vk(2) = nogrma
                         vk(3) = nogrno(1)
                         vk(4) = nogrno(2)

@@ -88,7 +88,16 @@ class RunAster:
 
     @classmethod
     def factory(
-        cls, export, test=False, env=False, tee=False, output=None, interactive=False, exectool=None
+        cls,
+        export,
+        test=False,
+        env=False,
+        tee=False,
+        output=None,
+        interactive=False,
+        exectool=None,
+        savedb=None,
+        proc0id=0,
     ):
         """Return a *RunAster* object from an *Export* object.
 
@@ -98,17 +107,27 @@ class RunAster:
             env (bool): to only prepare the working directory and show
                 command lines to be run,
             tee (bool): to follow execution output,
+            output (str): Path to redirect stdout.
             interactive (bool): to keep Python interpreter active.
             exectool (str): command that preceeds code_aster command line.
-            output (str): Path to redirect stdout.
+            savedb (bool): tell if the database should be saved.
+            proc0id (int): id of the process that replaces the proc #0.
         """
         class_ = RunAster
         if env:
             class_ = RunOnlyEnv
-        return class_(export, test, tee, output, interactive, exectool)
+        return class_(export, test, tee, output, interactive, exectool, savedb, proc0id)
 
     def __init__(
-        self, export, test=False, tee=False, output=None, interactive=False, exectool=None
+        self,
+        export,
+        test=False,
+        tee=False,
+        output=None,
+        interactive=False,
+        exectool=None,
+        savedb=None,
+        proc0id=0,
     ):
         self.export = export
         self.jobnum = str(os.getpid())
@@ -122,6 +141,7 @@ class RunAster:
         self._exectool = exectool
         if self.export.get("hide-command"):
             self._show_comm = False
+        self._proc0id = proc0id
         procid = 0
         if self._parallel:
             procid = get_procid()
@@ -133,7 +153,7 @@ class RunAster:
         if not export.has_param("nbsteps"):
             export.set("nbsteps", len(self.export.commfiles))
         self._last = export.get("step") + 1 == export.get("nbsteps")
-        self._savdb = bool([i for i in export.resultfiles if i.filetype == "base"])
+        self._savdb = savedb or bool([i for i in export.resultfiles if i.filetype == "base"])
 
     def execute(self, wrkdir):
         """Execution in a working directory.
@@ -171,7 +191,7 @@ class RunAster:
             self.ending_execution(status.results_saved())
             logger.info("TITLE Execution summary")
             logger.info(timer.report())
-            if self._procid == 0:
+            if self._procid == self._proc0id:
                 logger.info(FMT_DIAG.format(state=status.diag))
         timer.save("__timer__")
         return status
@@ -234,6 +254,12 @@ class RunAster:
         os.environ["PYTHONFAULTHANDLER"] = "1"
         exitcode = run_command(cmd, exitcode_file=EXITCODE_FILE)
         status = self._get_status(exitcode)
+        # workaround on windows to write the output into the '.mess' file running by ctest
+        if RUNASTER_PLATFORM == "win" and not self._tee:
+            with open(self._output, "rb") as fobj:
+                text = fobj.read().decode(errors="replace")
+            logger.info(text)
+
         msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={status.exitcode}\n\n"
         logger.info(msg)
         self._log_mess(msg)
@@ -253,7 +279,7 @@ class RunAster:
                 copy(base, os.getcwd())
             msg = f"execution failed (command file #{idx + 1}): {status.diag}"
             logger.warning(msg)
-        if self._procid == 0:
+        if self._procid == self._proc0id:
             self._log_mess(FMT_DIAG.format(state=status.diag))
         return status
 
@@ -383,7 +409,7 @@ class RunAster:
         """
         logger.info("TITLE Content of %s after execution:", os.getcwd())
         logger.info(_ls(".", "REPE_OUT"))
-        if self._procid != 0:
+        if self._procid != self._proc0id:
             return
 
         results = self.export.resultfiles
@@ -440,7 +466,7 @@ class RunOnlyEnv(RunAster):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self._procid > 0:
+        if self._procid != self._proc0id:
             logger.setLevel(WARNING)
 
     def prepare_current_directory(self):
@@ -475,7 +501,7 @@ class RunOnlyEnv(RunAster):
             timeout (float): Remaining time.
         """
         is_ok = Status(StateOptions.Ok, exitcode=0)
-        if self._procid != 0:
+        if self._procid != self._proc0id:
             return is_ok
 
         idx = self.export.get("step")

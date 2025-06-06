@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,6 @@ from functools import partial
 
 from waflib import Configure, Errors, Logs, Utils
 
-import platform
-
-
-def get_cpu_vendor():
-    """Get CPU vendor."""
-    if 'AMD' in platform.processor():
-        return 'AMD'
-    elif 'Intel' in platform.processor():
-        return 'Intel'
-    else:
-        return 'Unknown'
-
 
 def options(self):
     self.load("compiler_fc")
@@ -46,8 +34,9 @@ def configure(self):
 
     self.check_fortran()
     self.check_fortran_dummy_main()
-    self.check_fortran_compiler_flags()
+    # mangling check may fail with some FCFLAGS (-flto for example)
     self.check_fortran_mangling()
+    self.check_fortran_compiler_flags()
     if self.env.FORTRAN_MANGLING and self.env.FORTRAN_MANGLING[0] == "":
         Logs.info("No mangling detected, using no underscore")
         if self.env.CC_NAME == 'msvc':
@@ -67,17 +56,29 @@ def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
-    use = ["BIBFOR", "PETSC", "MUMPS", "MATH", "NUMPY"]
-
+    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY"]
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 
-    srcF90 = get_srcs("**/*.F90")
+    src_i8 = get_srcs("**/*.F90", excl="third_party_interf/*.F90")
+    src_ext = get_srcs("third_party_interf/*.F90")
+    # use int64 as default integer...
     self(
-        features="fc fcshlib",
+        features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
         name="asterbibfor",
         target="bibfor",
-        source=srcF90,
+        source=src_i8,
+        use=use + ["INT64"],
+        env=env.derive(),
+        install_path=env.ASTERLIBDIR,
+    )
+    # ... except for subroutines linked against external libraries
+    self(
+        features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
+        name="asterbibfor_ext",
+        target="bibfor_ext",
+        source=src_ext,
+        defines=["WITHOUT_INT64"],
         use=use,
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
@@ -90,32 +91,44 @@ MAIN = "      program main\n      end program main\n"
 
 @Configure.conf
 def check_fortran_compiler_flags(self):
+    self.check_fortran_compiler_options("-fPIC")
+    # self.check_fortran_compiler_options("-flto")
     if "gfortran" in self.env.FC_NAME.lower():
-        self.check_fortran_compiler_options("-fPIC")
         if "64" in self.env.DEST_CPU:
-            flags = ["-fdefault-%s-%i" % (name, 8) for name in ("double", "integer", "real")]
-            self.check_fortran_compiler_options(flags)
+            self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options(
+                ["-fdefault-real-8", "-fdefault-double-8"], dest="FCFLAGS_INT64"
+            )
         self.check_fortran_compiler_options("-Wimplicit-interface")
         self.check_fortran_compiler_options("-Wintrinsic-shadow")
         self.check_fortran_compiler_options("-fno-aggressive-loop-optimizations")
         # long lines after preprocessing
         self.check_fortran_compiler_options("-ffree-line-length-none")
-
     if "ifort" in self.env.FC_NAME.lower():
-        self.check_fortran_compiler_options(["/nologo"])
+        self.check_fortran_compiler_options(["-fpe0", "-traceback"])
+        if "64" in self.env.DEST_CPU:
+            self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
+            self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
+        self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
+        if env.ASTER_PLATFORM_MSVC64:
+            self.check_fortran_compiler_options(["/nologo"])
+        # all Intel specific features must use:
+        #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
+        # this marker must be specified on command line (using -D)
+        # because it must not be enabled by aslint
         self.env.append_unique("DEFINES", "ASTER_HAVE_INTEL_IFORT")
     self.start_msg("Fortran compiler flags")
     self.end_msg(self.env["FCFLAGS"])
 
 
 @Configure.conf
-def check_fortran_compiler_options(self, options):
+def check_fortran_compiler_options(self, options, dest="FCFLAGS"):
     """Check fortran compiler options"""
     if type(options) not in (list, tuple):
         options = [options]
     self.start_msg("Checking for fortran option")
     if self.check_fc(fragment=MAIN, fcflags=options, mandatory=False):
-        self.env.append_unique("FCFLAGS", options)
+        self.env.append_unique(dest, options)
         self.end_msg("yes (%s)" % " ".join(options))
     else:
         self.end_msg("no (%s)" % " ".join(options), "YELLOW")
@@ -265,12 +278,12 @@ def set_define_from_env(self, define, start_msg, error_msg, into=None, default=N
 @Configure.conf
 def check_sizeof_integer(self):
     """Check fortran integer size"""
-    fragment = "\n".join(["integer :: i", "print *, sizeof(i)", "end"])
+    fragment = "\n".join(["integer(kind=8) :: i", "print *, sizeof(i)", "end"])
     self.code_checker(
         "ASTER_INT_SIZE",
         self.check_fc,
         fragment,
-        "Checking size of default integer",
+        "Checking size of integer8 size",
         "unexpected value for sizeof(aster_int): %(size)s",
         into=(4, 8),
     )
@@ -370,6 +383,7 @@ def _test_type(size, values):
     code = r"""
     #include <stdlib.h>
     #include <stdio.h>
+    #include <stdint.h>
     #define SIZE  %s
     #define test(a) if (sizeof(a) == SIZE) { printf("%%s\n", #a); }
     int main(void){
@@ -388,7 +402,7 @@ def _test_type(size, values):
 def check_c_fortran_integer(self):
     """Check the C type equivalent to fortran integer"""
     assert self.env["ASTER_INT_SIZE"], "ASTER_INT_SIZE must be computed before"
-    into = ("int", "long", "long long")
+    into = ("int64_t", "long")
     fragment = _test_type(self.env["ASTER_INT_SIZE"], into)
     self.code_checker(
         "ASTER_C_FORTRAN_INT",
@@ -398,15 +412,13 @@ def check_c_fortran_integer(self):
         "unexpected value for C integer type: %(size)s",
         into=into,
     )
-    if self.env["ASTER_C_FORTRAN_INT"] == "long long":
-        self.define("ASTER_HAVE_LONG_LONG", 1)
 
 
 @Configure.conf
 def check_c_fortran_integer4(self):
     """Check the C type equivalent to fortran integer"""
     assert self.env["ASTER_INT4_SIZE"], "ASTER_INT4_SIZE must be computed before"
-    into = ("int", "short int", "long")
+    into = ("int32_t", "int")
     fragment = _test_type(self.env["ASTER_INT4_SIZE"], into)
     self.code_checker(
         "ASTER_C_FORTRAN_INT4",
@@ -528,8 +540,9 @@ def check_optimization_fcflags(self):
         self.end_msg("failed", "YELLOW")
     else:
         self.end_msg(res)
-    if "-fno-frontend-optimize" not in optflag:
-        self.check_fortran_compiler_options("-finline-matmul-limit=6")
+    if "gfortran" in self.env.FC_NAME.lower():
+        if "-fno-frontend-optimize" not in optflag:
+            self.check_fortran_compiler_options("-finline-matmul-limit=6")
     self.start_msg("Setting Fortran optimization flags")
     self.env.append_unique("FCFLAGS", optflag)
     self.end_msg(optflag)

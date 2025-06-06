@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@
 #define ASTER_FALSE to_aster_logical(.false.)
 !
 #ifndef ASTER_HAVE_HDF5
-#define ASTER_HDF_HID_SIZE 4
+#define ASTER_HDF5_HID_SIZE 4
 #endif
-#define hid_t integer(kind=ASTER_HDF_HID_SIZE)
-#define to_hid_t(a) int(a, ASTER_HDF_HID_SIZE)
+#define hid_t integer(kind=ASTER_HDF5_HID_SIZE)
+#define to_hid_t(a) int(a, ASTER_HDF5_HID_SIZE)
 !
 #ifndef ASTER_HAVE_MED
 #define ASTER_MED_INT_SIZE 4

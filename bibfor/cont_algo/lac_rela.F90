@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
 #include "asterfort/jeveuo.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -144,7 +145,7 @@ subroutine lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
         if (nb_node .ne. 0) then
             do i_node = 1, nb_node
                 node_nume(i_node) = v_mesh_patch(1+i_node)
-                call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(i_node)), node_name(i_node))
+                node_name(i_node) = int_to_char8(node_nume(i_node))
             end do
 
 ! --------- New relation

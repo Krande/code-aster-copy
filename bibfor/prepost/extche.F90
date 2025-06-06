@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 #include "asterfort/rvrecu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbm, nbc, nummai(*), iocc, nbnac, nnoeud(*)
     character(len=6) :: indic
@@ -257,7 +258,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 !
         do m = 1, nbm, 1
 !
-            call jenonu(jexnom(nmaila//'.NOMMAI', nmaile(m)), nummai(m))
+            nummai(m) = char8_to_int(nmaile(m))
 !
         end do
 !

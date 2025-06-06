@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 
 subroutine lcvalp(t, valp)
     implicit none
+#include "asterc/r8pi.h"
     real(kind=8), intent(in) :: t(6)
     real(kind=8), intent(out):: valp(3)
 ! --------------------------------------------------------------------------------------------------
@@ -27,12 +28,11 @@ subroutine lcvalp(t, valp)
 !  VALP   OUT VALEURS PROPRES (1:3) DANS L'ORDRE DECROISSANT
 ! --------------------------------------------------------------------------------------------------
     real(kind=8), parameter, dimension(6):: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
-    real(kind=8), parameter:: pi = 4*atan(1.d0)
-    real(kind=8), parameter:: rac2 = sqrt(2.d0)
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8) :: p, d(6), s, s3, quatj3, ratio, th
+    real(kind=8) :: p, d(6), s, s3, quatj3, ratio, th, pi
 ! --------------------------------------------------------------------------------------------------
 !
+    pi = r8pi()
 !  PREMIER INVARIANT
     p = (t(1)+t(2)+t(3))/3
 !
@@ -42,7 +42,8 @@ subroutine lcvalp(t, valp)
     s3 = s**3
 !
 !  TROISIEME INVARIANT (4 X DETERMINANT DE DEV)
-    quatj3 = 4*d(1)*d(2)*d(3)-2*d(3)*d(4)**2+2*rac2*d(4)*d(5)*d(6)-2*d(1)*d(6)**2-2*d(2)*d(5)**2
+    quatj3 = 4*d(1)*d(2)*d(3)-2*d(3)*d(4)**2+ &
+             2*sqrt(2.d0)*d(4)*d(5)*d(6)-2*d(1)*d(6)**2-2*d(2)*d(5)**2
 !
 !  ANGLE DE LODE
     if (abs(quatj3) .ge. s3) then

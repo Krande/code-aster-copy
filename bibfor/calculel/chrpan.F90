@@ -22,7 +22,7 @@ subroutine chrpan(modele, carte, option, chelem)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/angvx.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -122,8 +122,8 @@ subroutine chrpan(modele, carte, option, chelem)
         if (nvec .ne. 0) then
 !       à partir duquel on calcule les deux angles nautiques
             call angvx(vect, ang(1), ang(2))
-            ang(1) = ang(1)*180.d0/r8pi()
-            ang(2) = ang(2)*180.d0/r8pi()
+            ang(1) = ang(1)*r8rddg()
+            ang(2) = ang(2)*r8rddg()
         end if
 !
 !      Lecture de l'axe et de l'origine du repère cylindrique

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
 subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
@@ -72,14 +71,14 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
     character(len=19) :: disp_init, cnscon
     real(kind=8) :: jeusgn, tau1(3), tau2(3), norm(3), noor
     real(kind=8) :: mlagc(9), pres_cont, flag_cont
-    integer :: i_zone, i_elem_slav, i_poin_appa, i_poin_elem, i_cont_poin
-    integer :: nb_cont_zone, nb_poin_elem, nb_elem_slav, model_ndim
+    integer :: iContZone, i_elem_slav, i_poin_appa, i_poin_elem, i_cont_poin
+    integer :: nbContZone, nb_poin_elem, nb_elem_slav, model_ndim
     integer :: nb_cont_init, nb_cont_excl
     integer :: elem_slav_indx, elem_slav_nume, elem_slav_nbno
-    real(kind=8) :: vectpm(3), seuil_init, epsint, armini, ksipr1, ksipr2
+    real(kind=8) :: vectpm(3), seuil_init, contInitDist, armini, ksipr1, ksipr2
     aster_logical :: l_node_excl
     integer :: jdecme
-    integer :: cont_init, pair_type
+    integer :: contInit, pair_type
     aster_logical :: l_veri, l_gliss, l_auto_seuil
     integer :: ndexfr
     character(len=8) :: elem_slav_type
@@ -115,7 +114,7 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
 ! - Parameters
 !
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    nbContZone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
     l_reuse = isfonc(list_func_acti, 'REUSE')
 !
@@ -128,11 +127,7 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 ! - Pairing datastructure
 !
     sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
-!
-! - Tolerance for CONTACT_INIT
-!
     armini = armin(mesh)
-    epsint = 1.d-6*armini
     ds_contact%arete_min = armini
     ds_contact%arete_max = armini
 !
@@ -143,10 +138,10 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
 ! - Preparation for SEUIL_INIT
 !
-    do i_zone = 1, nb_cont_zone
-        l_auto_seuil = mminfl(ds_contact%sdcont_defi, 'SEUIL_AUTO', i_zone)
-        cont_init = mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT', i_zone)
-        if ((l_auto_seuil) .or. ((l_reuse) .and. (cont_init .eq. 2))) then
+    do iContZone = 1, nbContZone
+        l_auto_seuil = mminfl(ds_contact%sdcont_defi, 'SEUIL_AUTO', iContZone)
+        contInit = mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT', iContZone)
+        if ((l_auto_seuil) .or. ((l_reuse) .and. (contInit .eq. 2))) then
             disp_init = ds_contact%sdcont_solv(1:14)//'.INIT'
             call mmfield_prep(disp_init, cnscon, l_sort_=.true._1, nb_cmp_=1, &
                               list_cmp_=['LAGS_C  '])
@@ -157,24 +152,26 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
 ! - Loop on contact zones
 !
-    do i_zone = 1, nb_cont_zone
+    do iContZone = 1, nbContZone
 !
 ! ----- Parameters of zone
 !
-        jdecme = mminfi(ds_contact%sdcont_defi, 'JDECME', i_zone)
-        nb_elem_slav = mminfi(ds_contact%sdcont_defi, 'NBMAE', i_zone)
-        l_gliss = mminfl(ds_contact%sdcont_defi, 'GLISSIERE_ZONE', i_zone)
-        l_auto_seuil = mminfl(ds_contact%sdcont_defi, 'SEUIL_AUTO', i_zone)
-        seuil_init = mminfr(ds_contact%sdcont_defi, 'SEUIL_INIT', i_zone)
+        jdecme = mminfi(ds_contact%sdcont_defi, 'JDECME', iContZone)
+        nb_elem_slav = mminfi(ds_contact%sdcont_defi, 'NBMAE', iContZone)
+        l_gliss = mminfl(ds_contact%sdcont_defi, 'GLISSIERE_ZONE', iContZone)
+        l_auto_seuil = mminfl(ds_contact%sdcont_defi, 'SEUIL_AUTO', iContZone)
+        seuil_init = mminfr(ds_contact%sdcont_defi, 'SEUIL_INIT', iContZone)
         seuil_init = -abs(seuil_init)
-        cont_init = mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT', i_zone)
-        coef_cont = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_CONT', i_zone)
+        contInit = mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT', iContZone)
+        contInitDist = mminfr(ds_contact%sdcont_defi, 'CONTACT_INIT_DIST', iContZone)
+        contInitDist = 1.d-6*contInitDist
+        coef_cont = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_CONT', iContZone)
 !
 ! ----- No computation: no contact point
 !
-        l_veri = mminfl(ds_contact%sdcont_defi, 'VERIF', i_zone)
+        l_veri = mminfl(ds_contact%sdcont_defi, 'VERIF', iContZone)
         if (l_veri) then
-            nb_poin_elem = mminfi(ds_contact%sdcont_defi, 'NBPT', i_zone)
+            nb_poin_elem = mminfi(ds_contact%sdcont_defi, 'NBPT', iContZone)
             i_poin_appa = i_poin_appa+nb_poin_elem
             goto 25
         end if
@@ -210,7 +207,7 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
 ! --------- Get coordinates of master element
 !
-                if ((l_reuse) .and. (cont_init .eq. 2)) then
+                if ((l_reuse) .and. (contInit .eq. 2)) then
                     call mcomce(mesh, newgeo, elem_mast_nume, elem_mast_coor, elem_mast_type, &
                                 elem_mast_nbno)
                     call mcomce(mesh, newgeo, elem_slav_nume, elem_slav_coor, elem_slav_type, &
@@ -295,7 +292,7 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
 ! ------------- Get pairing info
 !
-                if ((l_reuse) .and. (cont_init .eq. 2)) then
+                if ((l_reuse) .and. (contInit .eq. 2)) then
                     ksipr1 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+4)
                     ksipr2 = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+5)
                 else
@@ -332,7 +329,7 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
 ! ------------- Option: SEUIL_INIT
 !
-                if ((l_auto_seuil) .or. ((l_reuse) .and. (cont_init .eq. 2))) then
+                if ((l_auto_seuil) .or. ((l_reuse) .and. (contInit .eq. 2))) then
                     call mmextm(ds_contact%sdcont_defi, cnscon, elem_slav_indx, mlagc)
                     call mmvalp_scal(model_ndim, elem_slav_type, elem_slav_nbno, ksipr1, ksipr2, &
                                      mlagc, pres_cont)
@@ -344,7 +341,7 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 ! ------------- Option: CONTACT_INIT
 !
                 flag_cont = 0.d0
-                if (cont_init .eq. 2) then
+                if (contInit .eq. 2) then
 ! ----------------- Only interpenetrated points
                     if (l_reuse) then
                         cont_eval = pres_cont+jeusgn*coef_cont
@@ -353,16 +350,16 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
                             nb_cont_init = nb_cont_init+1
                         end if
                     else
-                        if (jeusgn .le. epsint) then
+                        if (jeusgn .le. contInitDist) then
                             flag_cont = 1.d0
                             nb_cont_init = nb_cont_init+1
                         end if
                     end if
-                else if (cont_init .eq. 1) then
+                else if (contInit .eq. 1) then
 ! ----------------- All points
                     flag_cont = 1.d0
                     nb_cont_init = nb_cont_init+1
-                else if (cont_init .eq. 0) then
+                else if (contInit .eq. 0) then
 ! ----------------- No initial contact
                     flag_cont = 0.d0
                 else
@@ -372,10 +369,10 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 ! ------------- Option: GLISSIERE
 !
                 if (l_gliss) then
-                    if (cont_init .eq. 1) then
+                    if (contInit .eq. 1) then
                         v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18) = 1.d0
                     end if
-                    if (cont_init .eq. 2 .and. (jeusgn .le. epsint)) then
+                    if (contInit .eq. 2 .and. (jeusgn .le. contInitDist)) then
                         v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18) = 1.d0
                     end if
                 end if

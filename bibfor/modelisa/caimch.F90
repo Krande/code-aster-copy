@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine caimch(chargz)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=*) :: chargz
@@ -61,7 +62,6 @@ subroutine caimch(chargz)
     character(len=8) :: charge, nomgd
     character(len=16) :: motfac
     character(len=19) :: lisrel, cham19, numeq
-    character(len=24) :: noeuma
     real(kind=8) :: beta, coef_impo
     complex(kind=8) :: betac
     integer :: idcoec, idcoer, idddl, idimen, idirec
@@ -204,10 +204,6 @@ subroutine caimch(chargz)
 ! ---     VECTEUR DES DIMENSIONS DE CES DIRECTIONS
         call wkvect('&&CAIMCH.DIME', 'V V I', nbterm, idimen)
 !
-! ---   COLLECTION DES NOMS DES NOEUDS DU MAILLAGE
-!       ------------------------------------------
-        noeuma = noma//'.NOMNOE'
-!
 ! ---   AFFECTATION DES TABLEAUX DE TRAVAIL :
 !       -----------------------------------
         k = 0
@@ -231,7 +227,7 @@ subroutine caimch(chargz)
 !
 ! ---       RECUPERATION DU NOM DU NOEUD INO
 !
-                call jenuno(jexnum(noeuma, ino), nomnoe)
+                nomnoe = int_to_char8(ino)
 !
                 vale = vvale(iequa)
 !

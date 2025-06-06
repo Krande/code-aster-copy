@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 !
 subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
     implicit none
+#include "asterc/r8pi.h"
 #include "asterfort/trigom.h"
     integer :: nno
     real(kind=8) :: coor3d(*), coteta, siteta, coor2d(*)
@@ -41,12 +42,13 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
     real(kind=8) :: na1a2, na1a3, na1a4, pscal, ppscal, qpscal, sigama, sidlta
     real(kind=8) :: va1a3(3), va1a2(3), va1a4(3)
     real(kind=8) :: pvec1, pvec2, pvec3, qvec1, qvec2, qvec3, norme, pnorme
-    real(kind=8) :: qnorme
+    real(kind=8) :: qnorme, pi
     real(kind=8) :: gamma, delta, alpha, alpha1, alpha2
 !
 !-----------------------------------------------------------------------
     integer :: i
     real(kind=8) :: teta
+    pi = r8pi()
 !-----------------------------------------------------------------------
     if ((nno .eq. 3) .or. (nno .eq. 6) .or. (nno .eq. 7)) then
 !
@@ -150,15 +152,15 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
         sigama = pnorme/(na1a2*na1a3)
         if (sigama .gt. 1.d0) sigama = 1.d0
         gamma = trigom('ASIN', sigama)
-        if (ppscal .lt. 0.d0) gamma = 4.d0*atan2(1.d0, 1.d0)-gamma
+        if (ppscal .lt. 0.d0) gamma = pi-gamma
 !
         sidlta = qnorme/(na1a2*na1a4)
         if (sidlta .gt. 1.d0) sidlta = 1.d0
         delta = trigom('ASIN', sidlta)
-        if (qpscal .lt. 0.d0) delta = 4.d0*atan2(1.d0, 1.d0)-delta
+        if (qpscal .lt. 0.d0) delta = pi-delta
 !
         teta = trigom('ASIN', siteta)
-        if (coteta .lt. 0.d0) teta = 4.d0*atan2(1.d0, 1.d0)-teta
+        if (coteta .lt. 0.d0) teta = pi-teta
 !
         alpha1 = gamma-teta
         alpha2 = delta-teta

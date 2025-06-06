@@ -71,9 +71,9 @@ def check_young_consistency(mater):
         slope = point[len(point) // 2] / point[0]
         if abs(young - slope) > 0.01 * young:
             if valP is None:
-                UTMESS("A", "MATERIAL1_5", valr=slope)
+                UTMESS("F", "MATERIAL1_5", valr=slope)
             else:
-                UTMESS("A", "MATERIAL1_6", valr=(valP, young, slope), valk=name)
+                UTMESS("F", "MATERIAL1_6", valr=(valP, young, slope), valk=name)
 
     matNames = mater.getMaterialNames()
     if "TRACTION" not in matNames or "ELAS" not in matNames:
@@ -83,7 +83,7 @@ def check_young_consistency(mater):
     propT = trac.getProperties()
     if propT[0] not in ("FONCTION", "NAPPE"):
         # should probably be blocked in catalog
-        UTMESS("I", "MATERIAL1_10")
+        UTMESS("F", "MATERIAL1_10")
         return
 
     moduleE = mater.getFunction("ELAS", "E")
@@ -97,17 +97,21 @@ def check_young_consistency(mater):
     else:
         propE = moduleE.getProperties()
         if propT[0] == "FONCTION":
-            UTMESS("A", "MATERIAL1_8", valk=propE[2])
+            UTMESS("F", "MATERIAL1_8", valk=propE[2])
             return
         if propT[2] != propE[2]:
-            UTMESS("A", "MATERIAL1_9", valk=(propE[2], propT[2]))
+            UTMESS("F", "MATERIAL1_9", valk=(propE[2], propT[2]))
             return
         for i, para in enumerate(trac.getParameters()):
             try:
                 young = moduleE(para)
-                _check(para, propT[2], young, trac.getValues()[i])
             except AsterError:
-                UTMESS("A", "MATERIAL1_7", valk=propE[2], valr=para)
+                young = None
+
+            if young is None:
+                UTMESS("F", "MATERIAL1_7", valk=propE[2], valr=para)
+            else:
+                _check(para, propT[2], young, trac.getValues()[i])
 
 
 # internal methods

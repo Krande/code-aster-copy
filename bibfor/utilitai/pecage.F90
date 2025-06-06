@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine pecage(resu, modele, nbocc)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbocc
     character(len=*) :: resu, modele
@@ -56,7 +57,7 @@ subroutine pecage(resu, modele, nbocc)
 !
     integer :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nm, nbgrma, jgr
     integer :: ig, nbma, jad, nbmail, jma, im, nume, ndim, ns1, ns2, nbparc
-    integer :: np, ifm, niv, iorig, i, icage
+    integer :: np, ifm, niv, iorig, i, icage, nbMaiT
     parameter(mxvale=29, nbparr=48)
     real(kind=8) :: valpar(nbparr), r8b, xyp(2), orig(3), zero
     character(len=3) :: symex, symey
@@ -64,31 +65,37 @@ subroutine pecage(resu, modele, nbocc)
     character(len=24) :: valk(3)
     character(len=16) :: option
     character(len=19) :: chelem
-    character(len=24) :: lchin(15), lchout(1), ligrel, mlggma, mlgnma
+    character(len=24) :: lchin(15), lchout(1), ligrel, mlggma
     character(len=24) :: chgeom
     complex(kind=8) :: c16b
     aster_logical :: nsymx, nsymy
     real(kind=8), pointer :: trav1(:) => null()
 !     ------------------------------------------------------------------
     character(len=16), parameter :: noparr(nbparr) = &
-                 (/'LIEU            ', 'ENTITE          ', 'A_M             ', 'CDG_Y_M         ', &
-                   'CDG_Z_M         ', 'IY_G_M          ', 'IZ_G_M          ', 'IYZ_G_M         ', &
-                   'Y_MAX           ', 'Z_MAX           ', 'Y_MIN           ', 'Z_MIN           ', &
-                   'R_MAX           ', 'A               ', 'CDG_Y           ', 'CDG_Z           ', &
-                   'IY_G            ', 'IZ_G            ', 'IYZ_G           ', 'IY              ', &
-                   'IZ              ', 'ALPHA           ', 'Y_P             ', 'Z_P             ', &
-                   'IY_P            ', 'IZ_P            ', 'IYZ_P           ', 'JX              ', &
-                   'AY              ', 'AZ              ', 'EY              ', 'EZ              ', &
-                   'PCTY            ', 'PCTZ            ', 'JG              ', 'KY              ', &
-                   'KZ              ', 'IYR2_G          ', 'IZR2_G          ', 'IYR2            ', &
-                   'IZR2            ', 'IYR2_P          ', 'IZR2_P          ', 'RY              ', &
-                    'RZ              ', 'NOM_OBJET       ', 'TYPE_OBJET      ', 'NOM_SD          '/)
+                                    (/'LIEU            ', 'ENTITE          ', 'A_M             ', &
+                                      'CDG_Y_M         ', 'CDG_Z_M         ', 'IY_G_M          ', &
+                                      'IZ_G_M          ', 'IYZ_G_M         ', 'Y_MAX           ', &
+                                      'Z_MAX           ', 'Y_MIN           ', 'Z_MIN           ', &
+                                      'R_MAX           ', 'A               ', 'CDG_Y           ', &
+                                      'CDG_Z           ', 'IY_G            ', 'IZ_G            ', &
+                                      'IYZ_G           ', 'IY              ', 'IZ              ', &
+                                      'ALPHA           ', 'Y_P             ', 'Z_P             ', &
+                                      'IY_P            ', 'IZ_P            ', 'IYZ_P           ', &
+                                      'JX              ', 'AY              ', 'AZ              ', &
+                                      'EY              ', 'EZ              ', 'PCTY            ', &
+                                      'PCTZ            ', 'JG              ', 'KY              ', &
+                                      'KZ              ', 'IYR2_G          ', 'IZR2_G          ', &
+                                      'IYR2            ', 'IZR2            ', 'IYR2_P          ', &
+                                      'IZR2_P          ', 'RY              ', 'RZ              ', &
+                                      'NOM_OBJET       ', 'TYPE_OBJET      ', 'NOM_SD          '/)
     character(len=3), parameter :: typarr(nbparr) = &
-                           (/'K24', 'K8 ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'K16', 'K16', 'K8 '/)
+                                   (/'K24', 'K8 ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'K16', 'K16', 'K8 '/)
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -111,7 +118,6 @@ subroutine pecage(resu, modele, nbocc)
     orig(2) = zero
     orig(3) = zero
     noma = chgeom(1:8)
-    mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
     ndim = 3
     call dismoi('Z_CST', modele, 'MODELE', repk=k8b)
@@ -217,13 +223,13 @@ subroutine pecage(resu, modele, nbocc)
             call getvtx('CARA_GEOM', 'MAILLE', iocc=iocc, nbval=nbmail, vect=zk8(jma), &
                         nbret=nm)
             valk(2) = 'MAILLE'
+            call jelira(noma//'.TYPMAIL', 'LONMAX', nbMaiT)
             do im = 1, nbmail
-                call jeexin(jexnom(mlgnma, zk8(jma+im-1)), iret)
-                if (iret .eq. 0) then
+                nume = char8_to_int(zk8(jma+im-1))
+                if ((nume .gt. nbMaiT) .or. (nume .le. 0)) then
                     call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
                     goto 30
                 end if
-                call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)
                 call pemica(chelem, mxvale, trav1, 1, [nume], &
                             orig, iorig, icage)
                 call pecag2(ndim, nsymx, nsymy, np, xyp, &

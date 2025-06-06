@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine aptypm(mesh, elem_nume, elem_ndim, elem_nbnode, elem_type, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmtypm.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -52,6 +53,6 @@ subroutine aptypm(mesh, elem_nume, elem_ndim, elem_nbnode, elem_type, &
 ! --------------------------------------------------------------------------------------------------
 !
     call mmtypm(mesh, elem_nume, elem_nbnode, elem_type, elem_ndim)
-    call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+    elem_name = int_to_char8(elem_nume)
 !
 end subroutine

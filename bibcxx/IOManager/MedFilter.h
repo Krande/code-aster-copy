@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedFilter
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -91,7 +91,7 @@ class MedFilter {
     ~MedFilter();
 
     /** @brief get c pointer on filter */
-    const med_filter *const getPointer() const { return _filter; }
+    const med_filter *getPointer() const { return _filter; }
 };
 
 /**

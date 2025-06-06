@@ -48,7 +48,7 @@ contains
 !  output: stress PK2
 !          matrix dPK2/dC
 ! In  lCZM              : CZM model
-!  input: jumps (2 ou 3 components)
+! In  lGradVari         : Grad_Vari model
 ! In  ndim              : space dimension (2 or 3)
 ! In  neps              : size of strain tensor for finite element (Voigt)
 ! In  nsig              : size of stress tensor for finite element (Voigt)
@@ -60,12 +60,12 @@ contains
 ! Out nmatr             : size of tangent matrix for MGIS (always square)
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getMGISDime(lGreenLagr, lCZM, ndim, &
+    subroutine getMGISDime(lGreenLagr, lCZM, lGradVari, ndim, &
                            neps, nsig, nvi, ndsde, &
                            nstran, nforc, nstatv, nmatr)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        aster_logical, intent(in) :: lGreenLagr, lCZM
+        aster_logical, intent(in) :: lGreenLagr, lCZM, lGradVari
         integer, intent(in) :: ndim, neps, nsig, nvi, ndsde
         integer, intent(out) :: nstran, nforc, nstatv, nmatr
 !   ------------------------------------------------------------------------------------------------
@@ -79,6 +79,10 @@ contains
             ASSERT(neps .le. 6)
             ASSERT(nsig .le. 6)
             ASSERT(ndsde .le. 36)
+        elseif (lGradVari) then
+            ASSERT(neps .eq. 2*ndim+2+ndim)
+            ASSERT(nsig .eq. 2*ndim+2+ndim)
+            ASSERT(ndsde .eq. neps*nsig)
         else
             ASSERT(nsig .ge. 2*ndim)
             ASSERT(neps .ge. 2*ndim)
@@ -97,6 +101,8 @@ contains
             end if
         elseif (lCZM) then
             nstran = ndim
+        elseif (lGradVari) then
+            nstran = 2*ndim+1
         else
             nstran = 2*ndim
         end if
@@ -106,6 +112,8 @@ contains
             nforc = 2*ndim
         elseif (lCZM) then
             nforc = ndim
+        elseif (lGradVari) then
+            nstran = 2*ndim+1
         else
             nforc = 2*ndim
         end if

@@ -51,7 +51,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
     AS_ASSERT( nbContPair == nbInter.size() );
 
     // Acces to list of cells
-    const JeveuxCollectionLong meshConnex = contPairing->getMesh()->getConnectivity();
+    const auto meshConnex = contPairing->getMesh()->getConnectivity();
     MapLong cellsToZones = contPairing->cellsToZones();
     auto grel = fed->getListOfGroupsOfElements();
     auto nbGrel = data->getNumberOfGroupOfElements();

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z, &
 #include "asterfort/pacoor.h"
 #include "asterfort/padist.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: lisi1z, lisi2z, noma1z, noma2z, liso1z, liso2z
@@ -66,7 +67,6 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z, &
     character(len=8) :: nomno1, nomno2, nomo1, nomo2
     character(len=24) :: lisin1, lisin2, lisou1, lisou2
     character(len=24) :: valk(3)
-    character(len=24) :: noeum1, noeum2
     integer :: lonli1, lonli2, lonlis, iret, idlou1, idlou2, idlin1, idlin2
     integer :: ino1
     integer :: idlou3, idlou4, lonmax, idlinv, i1, nuno1, j2, i2, ino2, nuno2
@@ -83,8 +83,6 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z, &
     lonlis = min(lonli1, lonli2)
     noma1 = noma1z
     noma2 = noma2z
-    noeum1 = noma1//'.NOMNOE'
-    noeum2 = noma2//'.NOMNOE'
     m8blan = '        '
 !
     call jeexin(lisou1, iret)
@@ -127,13 +125,13 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z, &
     if (lonli1 .le. lonli2) then
         do i1 = 1, lonli1
             nomno1 = zk8(idlin1+i1-1)
-            call jenonu(jexnom(noeum1, nomno1), nuno1)
+            nuno1 = char8_to_int(nomno1)
             call pacoor(noma1, nuno1, 0, x1)
             dmin = r8gaem()
             j2 = 0
             do i2 = 1, lonli2
                 nomo2 = zk8(idlin2+i2-1)
-                call jenonu(jexnom(noeum2, nomo2), ino2)
+                ino2 = char8_to_int(nomo2)
                 call pacoor(noma2, ino2, 0, x2)
                 d = padist(3, x1, x2)
                 if (d .lt. dmin) then
@@ -162,13 +160,13 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z, &
     else
         do i2 = 1, lonli2
             nomno2 = zk8(idlin2+i2-1)
-            call jenonu(jexnom(noeum2, nomno2), nuno2)
+            nuno2 = char8_to_int(nomno2)
             call pacoor(noma2, nuno2, 0, x2)
             dmin = r8gaem()
             j1 = 0
             do i1 = 1, lonli1
                 nomo1 = zk8(idlin1+i1-1)
-                call jenonu(jexnom(noeum1, nomo1), ino1)
+                ino1 = char8_to_int(nomo1)
                 call pacoor(noma1, ino1, 0, x1)
 !
                 d = padist(3, x1, x2)

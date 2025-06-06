@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine checkNormals(model, slave, master)
     aster_logical, parameter :: reorie = ASTER_FALSE
     aster_logical :: l_exi, l_exi_p
     character(len=8) ::  cellTypeName, mesh
-    character(len=24) :: grmama, mailma, nogr
+    character(len=24) :: grmama, nogr
     character(len=24) :: valk(2)
     character(len=24) :: objet(nbobj)
     integer, pointer :: listCellNume(:) => null(), typmail(:) => null()
@@ -74,7 +74,6 @@ subroutine checkNormals(model, slave, master)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
     grmama = mesh//'.GROUPEMA       '
-    mailma = mesh//'.NOMMAI'
     call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
 !
 ! ---     RECUPERATION DE LA DIMENSION DU PROBLEME

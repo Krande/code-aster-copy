@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine cfapno(noma, newgeo, ds_contact, lctfd, &
 #include "asterfort/jexnum.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -117,7 +118,7 @@ subroutine cfapno(noma, newgeo, ds_contact, lctfd, &
 !
     call mmnorm(ndimg, tau1, tau2, norm, noor)
     if (noor .le. r8prem()) then
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+        nomnoe = int_to_char8(numnoe)
         call utmess('F', 'CONTACT3_26', sk=nomnoe)
     end if
 !

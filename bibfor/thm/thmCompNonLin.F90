@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine thmCompNonLin(option, ds_thm)
     real(kind=8) :: angl_naut(3)
     integer :: jv_geom, jv_matr, jv_vect, jv_sigmm, jv_varim, jv_cret
     integer :: jv_mater, jv_instm, jv_instp, jv_dispm
-    integer :: jv_dispp, jv_compor, jv_carcri, jv_varip, jv_sigmp
+    integer :: jv_dispp, jv_carcri, jv_varip, jv_sigmp
     aster_logical :: l_axi
     character(len=3) :: inte_type
     integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
@@ -72,6 +72,7 @@ subroutine thmCompNonLin(option, ds_thm)
     integer :: iCompor
     type(Behaviour_Integ) :: BEHinteg
     character(len=4), parameter :: fami = 'FPG1'
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,14 +98,14 @@ subroutine thmCompNonLin(option, ds_thm)
     call jevech('PINSTPR', 'L', jv_instp)
     call jevech('PDEPLMR', 'L', jv_dispm)
     call jevech('PDEPLPR', 'L', jv_dispp)
-    call jevech('PCOMPOR', 'L', jv_compor)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', jv_carcri)
     call jevech('PVARIMR', 'L', jv_varim)
     call jevech('PCONTMR', 'L', jv_sigmm)
 
 ! - Make copy of COMPOR map
     do iCompor = 1, COMPOR_SIZE
-        compor_copy(iCompor) = zk16(jv_compor-1+iCompor)
+        compor_copy(iCompor) = compor(iCompor)
     end do
 
 ! - Force DEFO_LDC="MECANIQUE" for THM
@@ -166,7 +167,7 @@ subroutine thmCompNonLin(option, ds_thm)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndim, typmod, option, &
-                              zk16(jv_compor), zr(jv_carcri), &
+                              compor, zr(jv_carcri), &
                               zr(jv_instm), zr(jv_instp), &
                               fami, zi(jv_mater), &
                               BEHinteg)

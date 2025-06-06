@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: char
     character(len=8) :: noma
@@ -84,7 +85,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu, &
     integer :: jmult, jnoe, jpoi, jnbgd
     integer :: jcoef, jncmp
     integer :: ino, icmp, izone
-    character(len=24) :: noeucu, noeuma
+    character(len=24) :: noeucu
     character(len=24) :: valk(2)
     integer :: jnoeu
     integer :: numnd, exist(1), nbsup
@@ -109,7 +110,6 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu, &
 ! --- INITIALISATIONS
 !
     deficu = char(1:8)//'.UNILATE'
-    noeuma = noma//'.NOMNOE'
     k8bla = ' '
     call jeveuo(multcu, 'L', jmult)
     call jeveuo(poinoe, 'L', jpoi)
@@ -175,7 +175,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu, &
 !
                 if (exist(1) .eq. 1) then
                     if (niv .ge. 2) then
-                        call jenuno(jexnum(noeuma, numnd), nomno)
+                        nomno = int_to_char8(numnd)
                         valk(1) = nomno
                         valk(2) = cmp
                         call utmess('I', 'UNILATER_58', nk=2, valk=valk)
@@ -185,7 +185,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu, &
                     ncmpg = ncmpg+1
                 else
                     nbsup = nbsup+1
-                    call jenuno(jexnum(noeuma, numnd), nomno)
+                    nomno = int_to_char8(numnd)
                     valk(1) = nomno
                     valk(2) = cmp
                     call utmess('I', 'UNILATER_75', nk=2, valk=valk)

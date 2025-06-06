@@ -29,19 +29,19 @@ import aster
 from libaster import Result
 
 from ..Messages import UTMESS
+from ..Objects import DirichletBC, MechanicalLoadComplex
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import (
     MPI,
     ExecutionParameter,
     InterpolateList,
     SearchList,
+    SharedTmpdir,
     force_list,
     injector,
     is_number,
     logger,
 )
-from ..Utilities import medcoupling as medc
-from ..Utilities import SharedTmpdir
 from ..Utilities.MedUtils import MEDConverter
 
 
@@ -307,6 +307,54 @@ class ExtendedResult:
         indexes = [idx for idx in indexes if idx >= 0]
         return indexes
 
+    def build(self, feds=[], fnds=[], excit={}):
+        """Build the result from the name of the result. It stores fields which are setted in c++ or
+        created in fortran
+
+        Arguments:
+            feds (list[FiniteElementDescriptor]) : list of additional finite element descriptor used to
+                build FieldOnCells
+            fnds (list[EquationNumbering]) : list of additional field description used to
+                build FieldOnNodes
+            excit (dict) : dict of EXCIT keywords to build ListOfLoads
+
+        Returns:
+            bool: *True* if ok.
+        """
+
+        self._build(feds, fnds)
+
+        # build list of loads
+        if excit:
+            litsLoads = self.getListOfLoads(self.getLastIndex())
+
+            loadNames = litsLoads.getLoadNames()
+
+            for dictLoad in excit:
+                charge = dictLoad["CHARGE"]
+                # some load like RELA_CINE_BP are not stored
+                if charge.getName() in loadNames:
+                    if "FONC_MULT" in dictLoad:
+                        if isinstance(charge, DirichletBC):
+                            litsLoads.addDirichletBC(charge, dictLoad["FONC_MULT"])
+                        elif charge.getType() == "CHAR_MECA" and not isinstance(
+                            charge, MechanicalLoadComplex
+                        ):
+                            litsLoads.addLoad(
+                                charge, dictLoad["FONC_MULT"], dictLoad["TYPE_CHARGE"]
+                            )
+                        else:
+                            litsLoads.addLoad(charge, dictLoad["FONC_MULT"])
+                    else:
+                        if isinstance(charge, DirichletBC):
+                            litsLoads.addDirichletBC(charge)
+                        elif charge.getType() == "CHAR_MECA" and not isinstance(
+                            charge, MechanicalLoadComplex
+                        ):
+                            litsLoads.addLoad(charge, dictLoad["TYPE_CHARGE"])
+                        else:
+                            litsLoads.addLoad(charge)
+
     def getField(
         self, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6, updatePtr=True
     ):
@@ -443,6 +491,9 @@ class ExtendedResult:
             storageIndex = value
         else:
             storageIndex = self.getIndexFromParameter(para, value, crit, prec, throw_except=False)
+
+        if storageIndex == None:
+            UTMESS("F", "RESULT2_10")
 
         if storageIndex < 0:
             storageIndex = self._createIndexFromParameter(para, value, crit, prec)

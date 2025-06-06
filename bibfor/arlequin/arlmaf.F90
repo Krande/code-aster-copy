@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine arlmaf(mail, mailar, dime, ngrma, ima, &
     integer :: cxno(27), nbno, ino, cxmax
     integer :: jgcnx, jtypm
     character(len=8) :: nomel, nommai, k8bid
-    character(len=24) :: mnomm, mconn, mtypm
+    character(len=24) :: mconn, mtypm
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,7 +76,6 @@ subroutine arlmaf(mail, mailar, dime, ngrma, ima, &
 !
 ! --- NOMS POUR ACCES AU PSEUDO MAILLAGE
 !
-    mnomm = mailar(1:8)//'.NOMMAI         '
     mconn = mailar(1:8)//'.CONNEX         '
     mtypm = mailar(1:8)//'.TYPMAIL        '
 !
@@ -99,15 +98,6 @@ subroutine arlmaf(mail, mailar, dime, ngrma, ima, &
     call jeveuo(mtypm, 'E', jtypm)
     call jelira(mtypm, 'LONMAX', cxmax, k8bid)
     zi(jtypm+imail-1) = itypma
-!
-! --- CREATION DU NOM DE LA MAILLE
-!
-    call jeexin(jexnom(mnomm, nomel), iret)
-    if (iret == 0) then
-        call jecroc(jexnom(mnomm, nomel))
-    else
-        call utmess('F', 'MODELISA7_10', 1, nomel)
-    end if
 !
 ! --- RECOPIE DE LA CONNECTIVITE
 !

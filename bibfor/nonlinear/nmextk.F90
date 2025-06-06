@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine nmextk(mesh, model, &
 #include "asterfort/utmess.h"
 #include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh, model
     character(len=16), intent(in) :: keyw_fact
@@ -168,7 +169,7 @@ subroutine nmextk(mesh, model, &
 ! --------- Current node
 !
                 node_nume = v_list_node(i_node)
-                call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume), node_name)
+                node_name = int_to_char8(node_nume)
                 do i_cmp = 1, nb_cmp
                     cmp_name = v_list_cmp(i_cmp)
                     call posddl('CHAM_NO', field, node_name, cmp_name, nuno, &
@@ -194,7 +195,7 @@ subroutine nmextk(mesh, model, &
 ! --------- Current element
 !
                 elem_nume = v_list_elem(i_elem)
-                call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), elem_name)
+                elem_name = int_to_char8(elem_nume)
 !
 ! --------- Number of points/subpoints on current element
 !

@@ -124,6 +124,13 @@ DEFI_CONT_CATA = MACRO(
                 ),
             ),
         ),
+        b_algo_cont_pena=BLOC(
+            condition="""is_in("ALGO_CONT", ("PENALISATION",))""",
+            # Managing tangent matrix for LAGRANGE
+            TYPE_MATR_TANG=SIMP(
+                statut="f", typ="TXM", defaut="ANALYTIQUE", into=("PERTURBATION", "ANALYTIQUE")
+            ),
+        ),
         # le choix du type de contact implique aussi celui de frottement
         TYPE_CONT=SIMP(
             statut="f",

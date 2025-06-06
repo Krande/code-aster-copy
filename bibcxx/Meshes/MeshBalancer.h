@@ -5,7 +5,7 @@
  * @file MeshBalancer.h
  * @brief Fichier entete de la classe MeshBalancer
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -51,6 +51,8 @@ class MeshBalancer {
     ObjectBalancerPtr _nodesBalancer, _cellsBalancer;
     /** @brief cells renumbering (in order to be sorte by type) */
     VectorLong _cellRenumbering;
+    /** @brief ghost layer size */
+    int _ghostLayer = 1;
 
     void buildBalancersAndInterfaces( VectorInt &newLocalNodesList, VectorOfVectorsLong &interfaces,
                                       VectorLong &nOwners );
@@ -66,17 +68,18 @@ class MeshBalancer {
      *        !!!! WARNING : return indexes are in C convention (starts at 0) !!!!
      */
     std::pair< VectorInt, VectorInt >
-    findNodesAndElementsInNodesNeighborhood( const VectorInt &, std::set< int > &,
-                                             VectorOfVectorsLong & );
-    VectorInt findNodesToSend( const VectorInt &nodesListIn );
+    findNodesAndElementsInNodesNeighborhood( const VectorInt &, VectorOfVectorsLong & );
+    VectorInt findNodesToSend( const SetInt &nodesListIn );
 
-    void sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &connexIn,
-                    JeveuxVectorLong &typeOut, JeveuxCollectionLong &connexOut );
+    void sortCells( JeveuxVectorLong &typeIn, JeveuxContiguousCollectionLong &connexIn,
+                    JeveuxVectorLong &typeOut, JeveuxContiguousCollectionLong &connexOut );
 
     void sortCells( VectorLong &vectIn, VectorLong &vectOut ) const;
 
-    void _enrichBalancers( VectorInt &newLocalNodesList, int iProc, int rank,
+    void _enrichBalancers( const VectorInt &newLocalNodesList, int iProc, int rank,
                            VectorOfVectorsLong &procInterfaces, VectorOfVectorsLong & );
+
+    VectorInt filterAlreadySeenNodes( const VectorInt &vec1, const SetInt &alreadySeenNodes );
 
   public:
     /**
@@ -100,7 +103,8 @@ class MeshBalancer {
      * @return ParalleMesh
      */
     ParallelMeshPtr applyBalancingStrategy( const VectorInt &list,
-                                            ParallelMeshPtr outMesh = nullptr );
+                                            ParallelMeshPtr outMesh = nullptr,
+                                            const int &ghostLayer = 1 );
 
     void buildFromBaseMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; };
 

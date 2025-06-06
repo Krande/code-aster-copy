@@ -6,14 +6,21 @@ opts=( "--prefix=./install" "--without-repo" )
 [ -f data-src/README ] && opts+=( "--with-data=data-src" )
 
 if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
-    if [ "${BUILD}" != "debug" ]; then
-        echo "ERROR: BUILD must be set as 'debug'"
+    if [ "${ASTER_BUILD}" != "debug" ]; then
+        echo "ERROR: ASTER_BUILD must be set as 'debug'"
         exit 4
     fi
     opts+=( "--coverage" )
 fi
 
-./configure "${opts[@]}"
-
 jobs=$(( ${NPROC_MAX} / 2 ))
-make install -j ${jobs}
+
+if [ "${OSNAME}" != "win" ]; then
+    ./configure "${opts[@]}"
+    make install -j ${jobs}
+else
+    ./waf_std configure --mingw-cross-compilation "${opts[@]}"
+    ./waf_std install -j ${jobs}
+
+    ./data/post_build_win.sh ./install
+fi

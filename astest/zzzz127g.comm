@@ -1,0 +1,201 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.Utilities import PETSc, SLEPc, get_shared_tmpdir
+import numpy as np
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
+
+test = CA.TestCase()
+
+mesh = LIRE_MAILLAGE(PARTITIONNEUR="PTSCOTCH")
+
+
+# mesh.plot(local=True, split=True)
+
+model = AFFE_MODELE(
+    AFFE=(
+        _F(GROUP_MA=("Sol1", "Sol2"), MODELISATION="3D", PHENOMENE="MECANIQUE"),
+        _F(
+            FORMULATION="U_P",
+            GROUP_MA=("Flu1", "Flu2"),
+            MODELISATION="3D_FLUIDE",
+            PHENOMENE="MECANIQUE",
+        ),
+        _F(
+            FORMULATION="U_P",
+            GROUP_MA=("IFS1", "IFS2"),
+            MODELISATION="FLUI_STRU",
+            PHENOMENE="MECANIQUE",
+        ),
+    ),
+    MAILLAGE=mesh,
+    INFO=2,
+)
+
+scaling = 1.0e6
+acier = DEFI_MATERIAU(
+    ELAS=_F(COEF_AMOR=1.0, E=197000000000.0 / scaling, NU=0.3, RHO=7800.0 / scaling)
+)
+
+eau = DEFI_MATERIAU(FLUIDE=_F(CELE_R=970.0, RHO=732.0 / scaling))
+
+fieldmat = AFFE_MATERIAU(
+    AFFE=(
+        _F(GROUP_MA=("Sol1", "Sol2"), MATER=(acier,)),
+        _F(GROUP_MA=("Flu1", "Flu2", "IFS1", "IFS2"), MATER=(eau,)),
+    ),
+    MODELE=model,
+)
+
+load = AFFE_CHAR_MECA(
+    INFO=1,
+    LIAISON_MAIL=_F(GROUP_MA_MAIT=("Sol1",), GROUP_MA_ESCL=("S21",), DDL=("DX", "DY", "DZ")),
+    MODELE=model,
+)
+
+matcoeff = PROJ_CHAMP(
+    PROJECTION="NON",
+    DISTRIBUTION="OUI",
+    METHODE="COLLOCATION",
+    MAILLAGE_1=mesh,
+    MAILLAGE_2=mesh,
+    VIS_A_VIS=_F(GROUP_MA_2="F21", GROUP_MA_1="Flu1"),
+)
+
+load8 = AFFE_CHAR_MECA(LIAISON_PROJ=_F(MATR_PROJECTION=matcoeff, DDL=("PRES")), MODELE=model)
+
+
+ASSEMBLAGE(
+    CHAM_MATER=fieldmat,
+    CHARGE=(load, load8),
+    MATR_ASSE=(
+        _F(MATRICE=CO("mass"), OPTION="MASS_MECA"),
+        _F(MATRICE=CO("rigi"), MODE_FOURIER=0, OPTION="RIGI_MECA"),
+    ),
+    MODELE=model,
+    NUME_DDL=CO("NUMEDDL"),
+)
+
+# Transfer the assembly matrix to PETSc
+K = rigi.toPetsc()
+M = mass.toPetsc()
+nModes = 8
+comm = K.comm
+
+# define the Eigenvalue Problem Solver
+eps = SLEPc.EPS().create(comm)
+if False:  # want to try Arpack ?
+    eps.setType(SLEPc.EPS.Type.ARPACK)
+
+eps.setOperators(K, M)
+eps.setDimensions(nModes)
+eps.setWhichEigenpairs(SLEPc.EPS.Which.TARGET_MAGNITUDE)
+eps.setTarget(0)
+# define the Spectral Transform
+st = eps.getST()
+st.setType(SLEPc.ST.Type.SINVERT)
+st.setShift(3.0)
+st.getKSP().setType("preonly")
+st.getKSP().getPC().setType("lu")
+st.getKSP().getPC().setFactorSolverType("mumps")
+
+# Build and save
+eps.setFromOptions()
+eps.solve()
+
+# Retrieve eigenvalues
+nconv = eps.getConverged()
+eps.view()
+
+Print = PETSc.Sys.Print
+
+# Prepare the results
+eigs = []
+mode = CA.FieldOnNodesReal(NUMEDDL)
+vr = mode.toPetsc()
+vi = mode.toPetsc()
+eigvecs = [None] * nconv
+
+if nconv > 0:
+    # Print the eigenvalues
+    Print()
+    Print("        k          ||Ax-kx||/||kx|| ")
+    Print("----------------- ------------------")
+    for i in range(nModes):
+        k = eps.getEigenpair(i, vr, vi)
+        error = eps.computeError(i)
+        eigvecs[i] = mode.copy()
+        if k.imag != 0.0:
+            Print(f"     Imaginary part non zero:{k.imag} This should not happen")
+            Print("     We set nevertheless the imaginary part to 0")
+        if k.real < 0.0:
+            Print(f"     Real part negative:{k.real} This should not happen")
+            Print("     We set the real part to its abs value")
+
+        Print(" %12f      %12g" % (np.sqrt(np.abs(k.real)) / 2.0 / np.pi, error))
+        eigs.append(np.sqrt(np.abs(k.real)) / 2.0 / np.pi)
+        norm_r = vr.norm(PETSc.NormType.NORM_INFINITY)
+        vr.scale(1 / norm_r)
+        eigvecs[i].fromPetsc(vr)
+    Print()
+
+# Store results in code_aster datastructure
+mc_affe = [
+    {"NOM_CHAM": "DEPL", "CHAM_GD": eigvecs[i], "NUME_MODE": i + 1, "FREQ": eigs[i]}
+    for i in range(nModes)
+]
+modes_dist = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MODE_MECA", AFFE=mc_affe)
+
+
+# Reference: zzzz127c
+freq1Refe = 9.34491e01
+freq2Refe = 5.41082e02
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=modes_dist,
+        NUME_MODE=7,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=freq1Refe,
+        VALE_CALC=93.449056119954,
+        PRECISION=1.0e-6,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=modes_dist,
+        NUME_MODE=8,
+        PARA="FREQ",
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=freq2Refe,
+        VALE_CALC=541.0818885140138,
+        PRECISION=1.0e-6,
+    )
+)
+
+
+# Reference coming from legacy test zzzz127e
+test.assertAlmostEqual(modes_dist.getField("DEPL", 7).norm("NORM_1"), 15.65046983679833, places=6)
+test.assertAlmostEqual(modes_dist.getField("DEPL", 8).norm("NORM_1"), 7.859904214187713, places=5)
+
+FIN()

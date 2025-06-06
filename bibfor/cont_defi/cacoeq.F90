@@ -36,6 +36,7 @@ subroutine cacoeq(sdcont, mesh, lLineRela, listRela)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: sdcont, mesh
     aster_logical, intent(out) :: lLineRela
@@ -156,9 +157,9 @@ subroutine cacoeq(sdcont, mesh, lLineRela, listRela)
 !
 ! ----- Name of the three nodes
 !
-        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(1)), node_name(1))
-        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(2)), node_name(2))
-        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(3)), node_name(3))
+        node_name(1) = int_to_char8(node_nume(1))
+        node_name(2) = int_to_char8(node_nume(2))
+        node_name(3) = int_to_char8(node_nume(3))
 !
 ! ----- Is node to link with the middle one belongs to SANS_GROUP_NO ?
 !

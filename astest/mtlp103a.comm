@@ -20,7 +20,7 @@
 # TEST V4.61.103
 # MAILLAGE : QUAD8
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE="OUI")
 
 ###################################################
 # SIMULATION DE LA TREMPE D'UN BARREAU CYLINDRIQUE

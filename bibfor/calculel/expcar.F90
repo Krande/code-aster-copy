@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -130,7 +130,7 @@ subroutine expcar(carte)
             numt(3*(iedit-1)+1) = nbmato+1
             if (noli(1:8) .eq. '        ') then
 !              MAILLES DU MAILLAGE:
-                call jelira(noma//'.NOMMAI', 'NOMMAX', nbma)
+                call jelira(noma//'.TYPMAIL', 'LONMAX', nbma)
                 nbmato = nbmato+nbma
             else
 !              MAILLES SUPPLEMENTAIRES D'1 LIGREL:

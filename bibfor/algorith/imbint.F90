@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ subroutine imbint(nomres, ifm)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid(1), idau, idcb, idda, idha, idmn
@@ -166,7 +167,7 @@ subroutine imbint(nomres, ifm)
             end do
             idda = idda-1
             ino = zi(lldes+ipoin-1)
-            call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
+            nomnoe = int_to_char8(ino)
             if (idda .lt. 1) then
                 write (ifm, *) 'NOEUD: ', j, flec, nomnoe, ' ', dactif, &
                     'PAS DE DDL ACTIF'
@@ -231,7 +232,7 @@ subroutine imbint(nomres, ifm)
         if (i .ge. idcb .and. i .le. ifcb) tydef = 'MODE CONTRAINT'
         if (i .ge. idha .and. i .le. ifha) tydef = 'MODE CONT-HARM'
         ino = zi(lldes+i-1)
-        call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
+        nomnoe = int_to_char8(ino)
         call isdeco(zi(lldes+nbnot*2+(i-1)*nbec+1-1), idec, nbcmp)
         do j = 1, nbcmp
             if (idec(j) .gt. 0) then

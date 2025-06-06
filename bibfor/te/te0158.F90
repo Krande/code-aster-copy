@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ subroutine te0158(option, nomte)
     if (nomte .ne. 'MECA_POU_D_EM') then
 !       CARACTERISTIQUES MATERIAUX
         call jevech('PMATERC', 'L', lmater)
-        call pmfmats(lmater, nomat)
+        call pmfmats(nomat)
 !
         call verifm(fami, npg, 1, '+', zi(lmater), epsthe, iret)
         itemp = 0

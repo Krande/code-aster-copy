@@ -80,9 +80,10 @@ module calcG_type
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcourb.h"
+#include "asterfort/char8_to_int.h"
 
 !
-    public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat, CalcG_Paramaters
+    public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -245,6 +246,12 @@ module calcG_type
         character(len=24)       :: fondNoeudNume = ' '
 ! ----- name of coordinates of nodes in the crack
         character(len=24)       :: fondNoeudCoor = '&&CALC_G.COORN'
+! ----- circular or elliptical crack
+        character(len=24)       :: form_fiss = ''
+! ----- parameters of curve crack
+        real(kind=8)            :: rayon = 0.
+        real(kind=8)            :: demi_grand_axe = 0.
+        real(kind=8)            :: demi_petit_axe = 0.
 ! ----- member function
     contains
         procedure, pass    :: initialize => initialize_theta
@@ -264,16 +271,6 @@ module calcG_type
 !
 !=================================================================================================
 !
-    type CalcG_Paramaters
-! ----- circular or elliptical crack
-        character(len=24)       :: form_fiss = ''
-! ----- parameters of curve crack
-        real(kind=8)            :: rayon = 0.
-        real(kind=8)            :: demi_grand_axe = 0.
-        real(kind=8)            :: demi_petit_axe = 0.
-    contains
-        procedure, pass    :: initialize => initialize_Parameters
-    end type CalcG_Paramaters
 !=================================================================================================
 !
     type CalcG_Table
@@ -921,30 +918,6 @@ contains
 !
 !===================================================================================================
 !
-!
-    subroutine initialize_Parameters(this)
-!
-        implicit none
-!
-        class(CalcG_Paramaters), intent(inout)  :: this
-!        type(CalcG_Stat), intent(inout)   :: cgStat
-!
-! --------------------------------------------------------------------------------------------------
-!   initialization of a CalcG_parameters type
-!   In this     : parameters type
-! --------------------------------------------------------------------------------------------------
-        integer :: ier
-!
-! --- Obtain crack parameters to take into account the second order due to crack curvature
-        call getvtx('', 'FORM_FISS', iocc=1, scal=this%form_fiss, nbret=ier)
-        if (this%form_fiss .eq. 'CERCLE') then
-            call getvr8('', 'RAYON', iocc=1, scal=this%rayon, nbret=ier)
-        else
-            call getvr8('', 'DEMI_GRAND_AXE', iocc=1, scal=this%demi_grand_axe, nbret=ier)
-            call getvr8('', 'DEMI_PETIT_AXE', iocc=1, scal=this%demi_petit_axe, nbret=ier)
-        end if
-    end subroutine
-!
 !===================================================================================================
 !
     subroutine initialize_theta(this, cgStat)
@@ -1000,7 +973,7 @@ contains
         call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
         call jeveuo(this%mesh//'.TYPMAIL', 'L', vi=typmail)
 !
-        call jenonu(jexnom(this%mesh//'.NOMMAI', zk8(jma)), nume)
+        nume = char8_to_int(zk8(jma))
 !
         call jenuno(jexnum('&CATA.TM.NOMTM', typmail(nume)), typma)
 !
@@ -1071,7 +1044,7 @@ contains
             !       temporaire à supprimer quand issue 33988 sera corrigée
             call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
             call jeveuo(this%mesh//'.TYPMAIL', 'L', vi=typmail)
-            call jenonu(jexnom(this%mesh//'.NOMMAI', zk8(jma)), nume)
+            nume = char8_to_int(zk8(jma))
             call jenuno(jexnum('&CATA.TM.NOMTM', typmail(nume)), typma)
 !
             if ((typma .eq. 'QUAD9') .or. (typma .eq. 'TRIA7')) then
@@ -1162,6 +1135,15 @@ contains
             call copisd('CHAMP_GD', 'G', thetafactorsin, this%theta_factors)
         end if
 !
+! --- Obtain crack parameters to take into account the second order due to crack curvature
+        call getvtx('', 'FORM_FISS', iocc=1, scal=this%form_fiss, nbret=ier)
+        if (this%form_fiss .eq. 'CERCLE') then
+            call getvr8('', 'RAYON', iocc=1, scal=this%rayon, nbret=ier)
+        else
+            call getvr8('', 'DEMI_GRAND_AXE', iocc=1, scal=this%demi_grand_axe, nbret=ier)
+            call getvr8('', 'DEMI_PETIT_AXE', iocc=1, scal=this%demi_petit_axe, nbret=ier)
+        end if
+
         call jedema()
 !
         call cpu_time(finish)
@@ -1810,14 +1792,14 @@ contains
 !
 ! --- First and last nodes
 !
-            call jenonu(jexnom(this%nomNoeud, fondNoeud(1)), nume)
+            nume = char8_to_int(fondNoeud(1))
             fondNoeudNume(1) = nume
             v_noeuf(1) = fondNoeud(1)
             fondNoeudCoor(1:3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
             v_absfon(1) = 0.d0
             v_basfon(1:6) = basfon(1:6)
 !
-            call jenonu(jexnom(this%nomNoeud, fondNoeud(this%nb_fondNoeud)), nume)
+            nume = char8_to_int(fondNoeud(this%nb_fondNoeud))
             fondNoeudNume(this%nb_point_fond) = nume
             v_noeuf(this%nb_point_fond) = fondNoeud(this%nb_fondNoeud)
             fondNoeudCoor(3*(this%nb_point_fond-1)+1:3*(this%nb_point_fond-1)+3) = &
@@ -1838,11 +1820,11 @@ contains
                 end do
 !         ON INTERPOLE LES COORD ENTRE CELLES DU SEGMENT [K-1,K]
                 s1 = absfon(node_nume-1)
-                call jenonu(jexnom(this%nomNoeud, fondNoeud(node_nume-1)), nume)
+                nume = char8_to_int(fondNoeud(node_nume-1))
                 coor1(1:3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
                 base1(1:6) = basfon(6*(node_nume-1-1)+1:6*(node_nume-1-1)+6)
                 s2 = absfon(node_nume)
-                call jenonu(jexnom(this%nomNoeud, fondNoeud(node_nume)), nume)
+                nume = char8_to_int(fondNoeud(node_nume))
                 coor2(1:3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
                 base2(1:6) = basfon(6*(node_nume-1)+1:6*(node_nume-1)+6)
 !
@@ -1854,7 +1836,7 @@ contains
             end do
 
             do i_node = 1, this%nb_point_fond
-                call jenonu(jexnom(this%nomNoeud, fondNoeud(i_node)), nume)
+                nume = char8_to_int(fondNoeud(i_node))
             end do
 !
 ! --- Create Local Basis
@@ -1964,7 +1946,7 @@ contains
         else
             do i_node = 1, this%nb_fondNoeud
 !               Récupération du numéro de noeud
-                call jenonu(jexnom(this%nomNoeud, fondNoeud(i_node)), nume)
+                nume = char8_to_int(fondNoeud(i_node))
                 fondNoeudNume(i_node) = nume
                 fondNoeudCoor(3*(i_node-1)+1:3*(i_node-1)+3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
             end do

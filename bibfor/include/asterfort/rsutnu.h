@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       prec, crit, ier)
         character(len=*) :: resu
         character(len=*) :: motcle
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: knum
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         real(kind=8) :: prec
         character(len=*) :: crit
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine rsutnu
 end interface

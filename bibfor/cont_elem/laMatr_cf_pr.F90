@@ -61,7 +61,7 @@ subroutine laMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
     integer :: i_qp, nb_qp, i_dof, i_zeta, i_cmp, j_dof, nbPoinInte
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2), tau_slav(3, 2)
-    real(kind=8) :: coor_qp(2, 48), weight_qp(48)
+    real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)
     real(kind=8) :: dts_ns(MAX_LAGA_DOFS, 2), dlag_ns_ns(MAX_LAGA_DOFS, 3), term_g(MAX_LAGA_DOFS, 3)
     real(kind=8) :: gap, gamma_c, projRmVal, dNs(MAX_LAGA_DOFS, 3)
     real(kind=8) :: gamma_f, lagr_dNs(MAX_LAGA_DOFS), lagr_g(3)
@@ -78,10 +78,10 @@ subroutine laMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
 ! --------------------------------------------------------------------------------------------------
 !
     b_MAX_LAGA_DOFS = to_blas_int(MAX_LAGA_DOFS)
-    b_1 = 1
-    b_3 = 3
+    b_1 = to_blas_int(1)
+    b_3 = to_blas_int(3)
     l_print = ASTER_FALSE
-    ! l_print = ASTER_TRUE
+
 !
 ! - Large arrays allocated on the heap rather than on the stack
     allocate (dfunc_dzeta(3, MAX_LAGA_DOFS, MAX_LAGA_DOFS))

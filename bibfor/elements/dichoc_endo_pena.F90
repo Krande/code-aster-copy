@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ subroutine dichoc_endo_pena(for_discret, iret)
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
+#include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
@@ -59,12 +60,13 @@ subroutine dichoc_endo_pena(for_discret, iret)
 !
     integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip
     integer :: iretlc, ifono, imatsym
-    integer :: icontp, iadzi, iazk24, icompo
+    integer :: icontp, iadzi, iazk24
 !
     real(kind=8) :: dvl(for_discret%nno*for_discret%nc), dpe(for_discret%nno*for_discret%nc)
     real(kind=8) :: dve(for_discret%nno*for_discret%nc)
     real(kind=8) :: klv(for_discret%nbt), force(3), fl(for_discret%nno*for_discret%nc), raide(6)
     real(kind=8) :: r8bid
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: k8bid
     character(len=24) :: messak(6)
 !
@@ -96,11 +98,11 @@ subroutine dichoc_endo_pena(for_discret, iret)
 !   Seulement en 3D, sur un segment, avec seulement de la translation
     if ((for_discret%nomte(1:12) .ne. 'MECA_DIS_T_L') .or. (for_discret%ndim .ne. 3) .or. &
         (for_discret%nno .ne. 2) .or. (for_discret%nc .ne. 3)) then
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', vk16=compor)
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
-        messak(3) = zk16(icompo+3)
-        messak(4) = zk16(icompo)
+        messak(3) = compor(INCRELAS)
+        messak(4) = compor(RELA_NAME)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_22', nk=5, valk=messak)

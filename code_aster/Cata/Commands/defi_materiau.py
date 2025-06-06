@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,6 +54,7 @@ DEFI_MATERIAU = MACRO(
             "ELAS_GLRC",
             "ELAS_DHRC",
         ),
+        EXCLUS("HYPER_HILL"),
         EXCLUS(
             "THER",
             "THER_FO",
@@ -149,6 +150,7 @@ DEFI_MATERIAU = MACRO(
             "ELAS_GLRC",
             "ELAS_GLRC_FO",
             "ELAS_DHRC",
+            "HYPER_HILL",
             "CABLE",
             "VERI_BORNE",
             "TRACTION",
@@ -942,6 +944,45 @@ DEFI_MATERIAU = MACRO(
         AMOR_BETA=SIMP(statut="f", typ="R"),
         AMOR_HYST=SIMP(statut="f", typ="R"),
     ),
+    HYPER_HILL=FACT(
+        statut="f",
+        # these parameters will be automatically changed as ALPHA1=, ALPHA2=..., BETA1=, BETA2=..., MU1=, MU2=...,
+        ALPHA=SIMP(statut="f", typ="R", max="**", fr=tr("Coefficients ALPHA")),
+        BETA=SIMP(statut="f", typ="R", max="**", fr=tr("Coefficients BETA")),
+        MU=SIMP(statut="f", typ="R", max="**", fr=tr("Coefficients MU")),
+        # hidden keywords
+        ALPHA1=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA2=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA3=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA4=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA5=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA6=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA7=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA8=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA9=SIMP(statut="c", defaut=1.0, typ="R"),
+        ALPHA10=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA1=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA2=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA3=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA4=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA5=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA6=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA7=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA8=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA9=SIMP(statut="c", defaut=1.0, typ="R"),
+        BETA10=SIMP(statut="c", defaut=1.0, typ="R"),
+        MU1=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU2=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU3=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU4=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU5=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU6=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU7=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU8=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU9=SIMP(statut="c", defaut=0.0, typ="R"),
+        MU10=SIMP(statut="c", defaut=0.0, typ="R"),
+        Nvk=SIMP(statut="c", typ="R"),
+    ),
     CABLE=FACT(statut="f", EC_SUR_E=SIMP(statut="f", typ="R", defaut=1.0e-4)),
     VISC_ELAS=FACT(
         statut="f",
@@ -1444,12 +1485,19 @@ DEFI_MATERIAU = MACRO(
         RIGI_TAN=SIMP(statut="f", typ="R"),
         AMOR_NOR=SIMP(statut="f", typ="R"),
         AMOR_TAN=SIMP(statut="f", typ="R"),
+        KP=SIMP(statut="f", typ="R", defaut=0.0),
+        KT=SIMP(statut="f", typ="R", defaut=0.0),
         COULOMB=SIMP(statut="f", typ="R", val_min=0.0),
         DIST_1=SIMP(statut="f", typ="R", val_min=0.0),
         DIST_2=SIMP(statut="f", typ="R", val_min=0.0),
         JEU=SIMP(statut="f", typ="R", val_min=0.0),
         INST_COMP_INIT=SIMP(statut="f", typ="R", max=2, min=2),
         CONTACT=SIMP(statut="f", typ="TXM", into=("1D", "COIN_2D"), defaut="1D", enum=(0, 1)),
+        b_coin_2d=BLOC(
+            condition="""equal_to("CONTACT", 'COIN_2D')""",
+            fr=tr("Précision sur la 'planéité' du discret, dans l'unité du maillage."),
+            PRECISION=SIMP(statut="f", typ="R"),
+        ),
     ),
     JONC_ENDO_PLAS=FACT(
         statut="f",
@@ -1502,24 +1550,20 @@ DEFI_MATERIAU = MACRO(
     ),
     ENDO_LOCA_TC=FACT(
         statut="f",
-        KAPPA=SIMP(statut="o", typ="R", val_min=0.0),
-        P=SIMP(statut="o", typ="R", val_min=(4 / (3 * pi)) ** (-2.0 / 3.0) - 2),
+        ENER_TRAC_RUPT_N=SIMP(statut="o", typ="R", val_min=0.0),
+        COEF_ECRO_TRAC=SIMP(statut="o", typ="R", val_min=(4 / (3 * pi)) ** (-2.0 / 3.0) - 2),
         FT=SIMP(statut="o", typ="R", val_min=0.0),
-        SIG0=SIMP(statut="o", typ="R", val_min=0.0),
+        SIGM_COMP_SEUIL=SIMP(statut="o", typ="R", val_min=0.0),
         FC=SIMP(statut="o", typ="R", val_min=1.0),
-        CRIT_REGU=SIMP(statut="o", typ="R", val_min=1.0),
-        REST_RIGIDITE=SIMP(statut="o", typ="R", val_min=0.0),
         TAU_REGU_VISC=SIMP(statut="f", typ="R", val_min=0.0, defaut=0.0),
     ),
     ENDO_LOCA_TC_FO=FACT(
         statut="f",
-        KAPPA=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        P=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        ENER_TRAC_RUPT_N=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        COEF_ECRO_TRAC=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         FT=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        SIG0=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        SIGM_COMP_SEUIL=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         FC=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        CRIT_REGU=SIMP(statut="o", typ="R", val_min=1.0),
-        REST_RIGIDITE=SIMP(statut="o", typ="R", val_min=0.0),
         TAU_REGU_VISC=SIMP(statut="f", typ="R", val_min=0.0, defaut=0.0),
     ),
     ENDO_FISS_EXP=FACT(
@@ -5803,7 +5847,12 @@ DEFI_MATERIAU = MACRO(
     ),
     ### END OF MFRONT OFFICIAL
     ### MFRONT
-    MFRONT=FACT(statut="f", LISTE_COEF=SIMP(statut="o", typ="R", min=2, max="**")),
+    MFRONT=FACT(
+        statut="f",
+        LISTE_COEF=SIMP(statut="o", typ="R", min=2, max="**"),
+        PENA_LAGR=SIMP(statut="f", typ="R"),
+        C_GRAD_VARI=SIMP(statut="f", typ="R"),
+    ),
     MFRONT_FO=FACT(
         statut="f", LISTE_COEF=SIMP(statut="o", typ=(fonction_sdaster, formule), min=2, max="**")
     ),

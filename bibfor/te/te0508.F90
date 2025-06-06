@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,8 @@ subroutine te0508(option, nomte)
     aster_logical :: axi, grand, inco, refe
     integer :: nnoQ, nnoL, npg, ndim, nddl, neps, itab(2)
     integer :: iret, nnos, jv_ganoQ, jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL, jv_ganoL
-    integer :: igeom, icont, ivectu, idepl, icompo
+    integer :: igeom, icont, ivectu, idepl
+    character(len=16), pointer :: compor(:) => null()
     real(kind=8) :: sigref, varref, lagref, epsref
     real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)
     real(kind=8), allocatable:: sref(:)
@@ -105,8 +106,8 @@ subroutine te0508(option, nomte)
 !
 ! - Behaviour
 !
-    call jevech('PCOMPOR', 'L', icompo)
-    defo_comp = zk16(icompo-1+DEFO)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    defo_comp = compor(DEFO)
     grand = defo_comp(1:8) .eq. 'GDEF_LOG'
 
 ! -------------------------!

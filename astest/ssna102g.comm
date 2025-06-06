@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,24 +17,27 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
 
 # --------------------------------------------------------------------
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
 # --------------------------------------------------------------------
 
 
-MA = LIRE_MAILLAGE(FORMAT="MED")
+mesh = LIRE_MAILLAGE(FORMAT="MED")
 
-MA = MODI_MAILLAGE(
-    reuse=MA,
-    MAILLAGE=MA,
+mesh = MODI_MAILLAGE(
+    reuse=mesh,
+    MAILLAGE=mesh,
     ORIE_PEAU=_F(
         GROUP_MA_PEAU=("BOTTOM_T", "SPH_B_B", "SPH_B_T", "SPH_T_B", "SPH_T_T", "TOP_B", "ENCAST")
     ),
 )
 
-MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(GROUP_MA="ENCAST"))
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_NO=_F(GROUP_MA="ENCAST"))
+
+
+edges = mesh.getMinMaxEdgeSizes("TOUT")
 
 #
 # --------------------------------------------------------------------
@@ -44,7 +47,7 @@ MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(GROUP_MA="ENCAST"))
 
 MAT = DEFI_MATERIAU(ELAS=_F(E=200000, NU=0.3))
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 #
 # --------------------------------------------------------------------
@@ -52,7 +55,9 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 # --------------------------------------------------------------------
 #
 
-MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA=("TOUT",), PHENOMENE="MECANIQUE", MODELISATION="3D"))
+MO = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(GROUP_MA=("TOUT",), PHENOMENE="MECANIQUE", MODELISATION="3D")
+)
 
 #
 # --------------------------------------------------------------------
@@ -85,6 +90,7 @@ DEPL = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(GROUP_MA="DEPLA", DZ=-2))
 # --------------------------------------------------------------------
 #
 
+
 CONT = DEFI_CONTACT(
     MODELE=MO,
     FORMULATION="CONTINUE",
@@ -93,7 +99,12 @@ CONT = DEFI_CONTACT(
     ZONE=(
         _F(GROUP_MA_MAIT="TOP_B", GROUP_MA_ESCL="SPH_T_T", CONTACT_INIT="INTERPENETRE"),
         _F(GROUP_MA_MAIT="SPH_B_T", GROUP_MA_ESCL="SPH_T_B", CONTACT_INIT="INTERPENETRE"),
-        _F(GROUP_MA_MAIT="BOTTOM_T", GROUP_MA_ESCL="SPH_B_B", CONTACT_INIT="INTERPENETRE"),
+        _F(
+            GROUP_MA_MAIT="BOTTOM_T",
+            GROUP_MA_ESCL="SPH_B_B",
+            CONTACT_INIT="INTERPENETRE",
+            DIST_MAXI=0.37101676037143860,
+        ),
     ),
 )
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -111,6 +111,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: mailla, caelem, nnoeca
     integer :: noebe, numail, nbcnx, cxma(*), itria, iproj, nbmabe, nbnobe
@@ -128,7 +129,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
     real(kind=8) :: xbetp(3), exc_max
     character(len=8) :: nomma
     character(len=19) :: carte
-    character(len=24) :: conxma, coorno, tymama, linobet2, linobet1, nomama
+    character(len=24) :: conxma, coorno, tymama, linobet2, linobet1
     character(len=24) :: lnuma, liproj, linoma
     aster_logical :: lrechelarg, lnopres
     blas_int :: b_incx, b_incy, b_n
@@ -149,7 +150,6 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
     call jeveuo(nmabet, 'L', jnumab)
     tymama = mailla//'.TYPMAIL'
     call jeveuo(tymama, 'L', jtyma)
-    nomama = mailla//'.NOMMAI'
     carte = caelem//'.CARCOQUE  '
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -532,7 +532,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
                 if (iproj .ge. 0) then
                     call recu_cara_ma(mailla, carte, numail, 'EP      ', ep_ma)
                     call recu_cara_ma(mailla, carte, numail, 'EXCENT  ', exc_ma)
-                    call jenuno(jexnum(nomama, numail), nomma)
+                    nomma = int_to_char8(numail)
                     call utmess('F', 'MODELISA5_51', nk=2, valk=[nnoeca, nomma], nr=3, &
                                 valr=[excent, exc_ma+ep_ma/2, exc_ma-ep_ma/2])
                 end if

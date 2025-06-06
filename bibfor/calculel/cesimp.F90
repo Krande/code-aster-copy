@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cesz
     integer :: unite, nbmat, nummai(*)
@@ -163,7 +164,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
     do im = 1, nbmai
         ima = im
         if (nbmat .ne. 0) ima = nummai(im)
-        call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
+        nomma = int_to_char8(ima)
         nbpt = zi(jcesd-1+5+4*(ima-1)+1)
         nbsp = zi(jcesd-1+5+4*(ima-1)+2)
         do ipt = 1, nbpt
@@ -223,7 +224,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !
                 if (typces .eq. 'ELNO') then
                     ino = connex(zi(jconx2+ima-1)+ipt-1)
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), poin)
+                    poin = int_to_char8(ino)
                 else
                     write (poin, '(I8)') ipt
                 end if

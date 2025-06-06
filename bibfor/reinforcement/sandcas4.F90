@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,6 +100,8 @@ subroutine sandcas4(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 !
     use sand_solvers_module
     implicit none
+#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/juveca.h"
@@ -163,7 +165,7 @@ subroutine sandcas4(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     real(kind=8), pointer :: RESIDU_INF(:) => null(), RESIDU_SUP(:) => null()
     real(kind=8), pointer :: AngleSUP(:) => null(), AngleINF(:) => null()
 
-    pi = 3.14159265
+    pi = r8pi()
     ierr = 0
     fcd = fbeton/gammac
     fyd = facier/gammas
@@ -318,9 +320,9 @@ subroutine sandcas4(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
             end if
 
             if (AngleSUP(indx) .ge. 0) then
-                AngleSUP(indx) = 90-(180./pi)*AngleSUP(indx)
+                AngleSUP(indx) = 90-r8rddg()*AngleSUP(indx)
             else
-                AngleSUP(indx) = -90-(180./pi)*AngleSUP(indx)
+                AngleSUP(indx) = -90-r8rddg()*AngleSUP(indx)
             end if
 
             !Calc RESIDU_INF
@@ -357,9 +359,9 @@ subroutine sandcas4(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
             end if
 
             if (AngleINF(indx) .ge. 0) then
-                AngleINF(indx) = 90-(180./pi)*AngleINF(indx)
+                AngleINF(indx) = 90-r8rddg()*AngleINF(indx)
             else
-                AngleSUP(indx) = -90-(180./pi)*AngleINF(indx)
+                AngleSUP(indx) = -90-r8rddg()*AngleINF(indx)
             end if
 
         else

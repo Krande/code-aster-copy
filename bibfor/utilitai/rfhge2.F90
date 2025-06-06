@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ subroutine rfhge2(harmge)
 #include "asterfort/zxtrac.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: harmge
 !
@@ -178,7 +179,7 @@ subroutine rfhge2(harmge)
             end if
             call jeveuo(jexnum(noma//'.GROUPENO', ign2), 'L', iagno)
             ino = zi(iagno)
-            call jenuno(jexnum(noma//'.NOMNOE', ino), noeud)
+            noeud = int_to_char8(ino)
         end if
         call posddl('NUME_DDL', nume, noeud, cmp, inoeud, &
                     iddl)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,6 +73,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa, &
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=4) :: zcst
@@ -190,7 +191,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa, &
         if (nnoa .gt. 0) then
             nunob = zi(llintb+iinob-1)
             nunobi = nldescb(nunob)
-            call jenuno(jexnum(mab//'.NOMNOE', nunobi), nonob)
+            nonob = int_to_char8(nunobi)
             if (niv .eq. 2) then
                 write (ifm, *) ' '
                 write (ifm, *) '_RELA IMPRESSION D''UNE RELATION'//&
@@ -202,7 +203,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa, &
             do inoa = 1, nnoa
                 nunoa = pjef_nu(1+idecal-1+inoa)
                 coefa = pjef_cf(1+idecal-1+inoa)
-                call jenuno(jexnum(maa//'.NOMNOE', nunoa), nonoa)
+                nonoa = int_to_char8(nunoa)
 ! boucle sur le nombre de noeud maitre present dans l'interface
                 do j = 1, nbnoa
 ! si le noeud maitre courant est present dans la liste des noeuds

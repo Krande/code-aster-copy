@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ def options(self):
     )
     group.add_option(
         "--mumps-libs",
-        type="string",
+        type=str,
         dest="mumps_libs",
         default=None,
         help="mumps librairies to use when linking",
@@ -79,9 +79,9 @@ def check_mumps(self):
         raise Errors.ConfigurationError("MUMPS disabled")
     self.check_mumps_headers()
     try:
-        self.check_mumps_version(("5.6", "5.5", "5.4"))
+        self.check_mumps_version(("5.7", "5.6", "5.5", "5.4"))
     except Errors.ConfigurationError:
-        self.check_mumps_version(("5.7",), beta=True)
+        self.check_mumps_version(("5.8",), beta=True)
     self.check_sizeof_mumps_integer()
     if opts.mumps_libs is None:
         opts.mumps_libs = "dmumps zmumps smumps cmumps mumps_common pord"

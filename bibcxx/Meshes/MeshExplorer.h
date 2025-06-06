@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshExplorer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -69,11 +69,11 @@ class CellObject {
 
 class CellsIteratorFromConnectivity {
   private:
-    const JeveuxCollectionLong _connect;
+    const JeveuxContiguousCollectionLong _connect;
     const JeveuxVectorLong _type;
 
   public:
-    CellsIteratorFromConnectivity( const JeveuxCollectionLong &connect,
+    CellsIteratorFromConnectivity( const JeveuxContiguousCollectionLong &connect,
                                    const JeveuxVectorLong &type )
         : _connect( connect ), _type( type ) {
         _connect->build();
@@ -102,10 +102,10 @@ class CellsIteratorFromConnectivity {
 
 class CellsIteratorFromFiniteElementDescriptor {
   private:
-    const JeveuxCollectionLong _connectAndType;
+    const JeveuxContiguousCollectionLong _connectAndType;
 
   public:
-    CellsIteratorFromFiniteElementDescriptor( const JeveuxCollectionLong &connect )
+    CellsIteratorFromFiniteElementDescriptor( const JeveuxContiguousCollectionLong &connect )
         : _connectAndType( connect ) {
         _connectAndType->build();
     };

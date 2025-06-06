@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -76,8 +76,9 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
     std::vector< JeveuxChar32 > allgONNames;
     AsterMPI::all_gather( gONNames, allgONNames );
 
-    for ( auto &nameOfGrp : allgONNames )
+    for ( auto &nameOfGrp : allgONNames ) {
         _setOfAllGON.insert( strip( nameOfGrp.toString() ) );
+    }
 
     if ( _globalGroupOfNodes.exists() )
         _globalGroupOfNodes->deallocate();
@@ -219,7 +220,7 @@ VectorLong ParallelMesh::getCells( const std::string name ) const {
 VectorLong ParallelMesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -244,7 +245,7 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     CALL_JEMARQ();
     VectorLong listOfNodes;
     if ( name.empty() ) {
-        listOfNodes = irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
+        listOfNodes = irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfNodes() - 1 ) );
     } else if ( !hasGroupOfNodes( name, true ) ) {
         CALL_JEDEMA();
         return VectorLong();
@@ -425,6 +426,7 @@ VectorLong ParallelMesh::getOuterCells() const {
 
 bool ParallelMesh::build() {
     _buildGlobal2LocalNodeIdsMapPtr();
+    _joints->build();
     return BaseMesh::build();
 }
 
@@ -458,7 +460,8 @@ ParallelMeshPtr ParallelMesh::convertToBiQuadratic( const ASTERINTEGER info ) {
     return mesh_out;
 };
 
-ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob ) const {
+ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob,
+                                                   const bool &stop ) const {
     if ( !_global2localNodeIdsPtr || _global2localNodeIdsPtr->empty() ) {
         raiseAsterError( "GlobalToLocalNodeIds mapping is not build" );
     }
@@ -467,18 +470,21 @@ ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob ) co
     if ( search != ( *_global2localNodeIdsPtr ).end() ) {
         return search->second;
     }
-    auto rank = getMPIRank();
-    throw std::out_of_range( "Global node number " + std::to_string( glob ) +
-                             " not found on rank " + std::to_string( rank ) );
+    if ( stop ) {
+        auto rank = getMPIRank();
+        throw std::out_of_range( "Global node number " + std::to_string( glob ) +
+                                 " not found on rank " + std::to_string( rank ) );
+    }
     return -1;
 }
 
 void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &globalNodeIds,
                                   const VectorLong &nodesOwner, const VectorLong &globalCellIds,
-                                  const VectorOfVectorsLong &joints ) {
+                                  const VectorOfVectorsLong &joints, const ASTERINTEGER &nbLayer ) {
     AS_ASSERT( joints.size() == 2 * domains.size() )
 
     _joints->setOppositeDomains( domains );
+    _joints->setNumberOfGhostLayer( nbLayer );
     ( *_globalNodeIds ) = globalNodeIds;
     ( *_nodesOwner ) = nodesOwner;
     const std::string cadre( "G" );
@@ -544,8 +550,8 @@ VectorOfVectorsLong ParallelMesh::getNodesRanks() const {
     for ( auto i = 0; i < opp_domains.size(); i++ ) {
         auto dom = opp_domains[i];
         auto nodes_send = _joints->getSendedElements( i );
-        for ( auto i = 0; i < nodes_send.size(); i += 2 ) {
-            ranks[nodes_send[i] - 1].push_back( dom );
+        for ( auto j = 0; j < nodes_send.size(); j += 2 ) {
+            ranks[nodes_send[j] - 1].push_back( dom );
         }
         auto nodes_recv = _joints->getReceivedElements( i );
     }

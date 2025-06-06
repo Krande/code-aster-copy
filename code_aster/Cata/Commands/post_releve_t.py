@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -133,7 +133,10 @@ POST_RELEVE_T = OPER(
             INVARIANT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             ELEM_PRINCIPAUX=SIMP(statut="f", typ="TXM", into=("OUI",)),
             RESULTANTE=SIMP(
-                statut="f", typ="TXM", max="**", into=("DX", "DY", "DZ", "NXX", "NYY", "NXY")
+                statut="f",
+                typ="TXM",
+                max="**",
+                into=("DX", "DY", "DZ", "NXX", "NYY", "NXY", "PRE1", "PRE2", "TEMP"),
             ),
             MOMENT=SIMP(
                 statut="f", typ="TXM", max="**", into=("DRX", "DRY", "DRZ", "MXX", "MYY", "MXY")

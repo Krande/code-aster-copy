@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,8 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
     integer ::  ino2, typpoi, jadou, itypou, k
     character(len=4) :: docu
     character(len=8) ::  nomno, nom
-    character(len=24) ::  nomnoe, cooval, coodsc
-    character(len=24) ::  dimin, dimou, connex, typmai, nommai
+    character(len=24) ::  cooval, coodsc
+    character(len=24) ::  dimin, dimou, connex, typmai
     real(kind=8), pointer :: vale(:) => null()
 !------------------------------------------------------------------------------
 
@@ -78,7 +78,6 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 
 ! -2- CREATION DU NOUVEAU MAILLAGE
 !     ============================
-    nomnoe = noma2//'.NOMNOE'
     cooval = noma2//'.COORDO    .VALE'
     coodsc = noma2//'.COORDO    .DESC'
 
@@ -89,14 +88,6 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
     call jeveuo(dimou, 'E', jdim)
     zi(jdim-1+1) = nbnoou
     zi(jdim-1+3) = 0
-
-! --- OBJET .NOMNOE
-    call jecreo(nomnoe, base//' N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnoou)
-    do ino = 1, nbnoou
-        call jenuno(jexnum(noma//'.NOMNOE', lino(ino)), nomno)
-        call jecroc(jexnom(nomnoe, nomno))
-    end do
 
 ! --- OBJET .COORDO.VALE
     call wkvect(cooval, base//' V R', nbnoou*3, jcorou)
@@ -123,18 +114,8 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 ! --- Pour qu'on puisse voire le maillage de noeuds avec salome,
 !     on ajoute des POI1 sur tous les noeuds
 !----------------------------------------------------
-    nommai = noma2//'.NOMMAI'
     connex = noma2//'.CONNEX'
     typmai = noma2//'.TYPMAIL'
-
-! --- OBJET .NOMMAI
-    call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', nbnoou)
-    nom = 'M'
-    do k = 1, nbnoou
-        call codent(k, 'G', nom(2:8))
-        call jecroc(jexnom(nommai, nom))
-    end do
 
 ! --- OBJET .TYPMAIL
     call wkvect(typmai, base//' V I', nbnoou, itypou)

@@ -53,7 +53,7 @@ fi
 # variables (: -> =, ' -> ", +export)
 export MINIO_URL=https://minio.retd.edf.fr
 export SIF=runner.sif
-export BUILD=mpi
+export ASTER_BUILD=mpi
 export GIT_SSL_NO_VERIFY="true"
 
 SINGULARITY_CMD=(

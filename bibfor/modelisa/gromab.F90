@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
 #include "asterfort/jexnum.h"
 #include "asterfort/rgcmpg.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
     character(len=8) :: mailla, caelem
     character(len=24) :: nmabet, gromai
     integer :: nbmabe
@@ -68,7 +69,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
     real(kind=8) :: ep, sqrt
     character(len=8) :: ngrand, nomai
     character(len=19) :: carte
-    character(len=24) :: coorno, connex, k24bid, mommai
+    character(len=24) :: coorno, connex, k24bid
 !
     integer :: i, j, k, iad2, inok
     integer :: jmabet, jconn, jtabco, jgmai
@@ -87,7 +88,6 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
 !
     connex = mailla//'.CONNEX'
     coorno = mailla//'.COORDO    .VALE'
-    mommai = mailla//'.NOMMAI'
     call jeveuo(coorno, 'L', jcoor)
 !
     call jeveuo(connex, 'L', jconn)
@@ -182,7 +182,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
             icode = desc(1+3+2*iasmax+nbec*(iasbon-1))
             irvep = rgcmpg(icode, irep)
             if (irvep .eq. 0) then
-                call jenuno(jexnum(mommai, ima), nomai)
+                nomai = int_to_char8(ima)
                 call utmess('F', 'MODELISA8_3', sk=nomai)
             end if
             ep = vale(1+(iasbon-1)*nbcmp+irvep-1)

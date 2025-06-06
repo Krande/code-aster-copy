@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cns1z, correz, basez, cns2z
     integer :: iret
@@ -195,7 +196,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !            L'EMISSION DE L'ALARME EST COUTEUSE, ON LA LIMITE :
             if (coetot .lt. 1.d-3 .and. kalarm .le. 6) then
                 kalarm = kalarm+1
-                call jenuno(jexnum(ma2//'.NOMNOE', ino2), nomno2)
+                nomno2 = int_to_char8(ino2)
                 nomcmp = cns1c(icmp)
                 valk(1) = nomgd
                 valk(2) = nomno2

@@ -28,7 +28,7 @@
 
 # NTA: dans ce cas test NTA1: on donne DDS =1 pour groupNO1 contenant N01 et N03
 # et DDS = 0 pour groupNO2 contenant N05
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 #
 

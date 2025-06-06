@@ -33,6 +33,7 @@ subroutine caliel(valeTypeZ, loadZ, modelZ)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nueffe.h"
+#include "asterfort/raco3d.h"
 #include "asterfort/rapo2d.h"
 #include "asterfort/rapo3d.h"
 #include "asterfort/rapoco.h"
@@ -94,6 +95,8 @@ subroutine caliel(valeTypeZ, loadZ, modelZ)
             call getvtx(factorKeyword, 'OPTION', iocc=iocc, scal=option, nbret=iop)
             if (option .eq. '3D_POU') then
                 call rapo3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+            else if (option .eq. 'COQ_3D') then
+                call raco3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
             else if (option .eq. '3D_POU_ARLEQUIN') then
                 call caarle(numeDof, iocc, lisrel, loadZ)
             else if (option .eq. '2D_POU') then
@@ -120,5 +123,6 @@ subroutine caliel(valeTypeZ, loadZ, modelZ)
         call jedetr('&&CALIEL.NUMED')
 !
     end if
+
     call jedema()
 end subroutine

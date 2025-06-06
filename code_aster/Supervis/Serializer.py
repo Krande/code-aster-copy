@@ -48,12 +48,15 @@ from io import IOBase
 import libaster
 import numpy
 
-from ..Objects import DataStructure, ResultNaming
+from ..Objects import DataStructure, ResultNaming, UseCppPickling
 from ..Utilities import (
     DEBUG,
     MPI,
     ExecutionParameter,
     Options,
+    PETSc,
+    SLEPc,
+    config,
     disable_fpe,
     get_caller_context,
     logger,
@@ -372,10 +375,14 @@ class PicklingHelper:
 
     @classmethod
     def reducer(cls, obj):
-        logger.debug("+ reducing %s '%s'...", type(obj).__name__, obj.getName())
+        use_cpp = isinstance(obj, UseCppPickling)
+        logger.debug("+ reducing (c++: %s) %s '%s'...", use_cpp, type(obj).__name__, obj.getName())
         initargs = obj.__getinitargs__()
         state = obj.__getstate__()
-        logger.debug("- saving %s %s", initargs, state._st)
+        if use_cpp:
+            initargs = (state,)
+            state = None
+        logger.debug("- saving %s %s", initargs, getattr(state, "_st", None))
         return partial(cls.builder, obj.__class__, obj.getName()), initargs, state
 
     @classmethod
@@ -432,11 +439,19 @@ def _filteringContext(context):
     ignored = ("code_aster", "CA", "DETRUIRE", "FIN", "VARIABLE")
     re_system = re.compile("^__.*__$")
     ipython = "__IPYTHON__" in context or "get_ipython" in context
+    skipped_classes = []
+    if config["ASTER_HAVE_PETSC4PY"]:
+        skipped_classes.append(PETSc)
+    if config["ASTER_PETSC_HAVE_SLEPC"]:
+        skipped_classes.append(SLEPc)
     ctxt = {}
     for name, obj in context.items():
         if not name or name in ignored or re_system.search(name):
             continue
         if getattr(numpy, name, None) is obj:  # see issue29282
+            continue
+        # skip objects from: PETSc, SLEPc
+        if type(obj) in [getattr(klass, type(obj).__name__, None) for klass in skipped_classes]:
             continue
         # check attr needed for python<=3.6
         if hasattr(obj, "__class__") and isinstance(obj, (IOBase, MPI.Intracomm)):

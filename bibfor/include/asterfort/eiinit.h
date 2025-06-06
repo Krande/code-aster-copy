@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,8 @@
 !
 !
 interface
-    subroutine eiinit(nomte, iu, il, it)
+    subroutine eiinit(nomte, iu, il)
         character(len=16) :: nomte
-        integer :: iu(3, 18)
-        integer :: il(3, 9)
-        integer :: it(18)
-    end subroutine eiinit
+        integer :: iu(:,:), il(:,:)
+    end subroutine 
 end interface

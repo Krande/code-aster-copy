@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 function cfdisi(sdcont_defi_, question_)
 !
@@ -122,9 +121,6 @@ function cfdisi(sdcont_defi_, question_)
     else if (question .eq. 'TYPE_ADAPT') then
         call jeveuo(sdcont_paraci, 'L', vi=v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(20)
-    else if (question .eq. 'EXIS_XFEM_CZM') then
-        call jeveuo(sdcont_paraci, 'L', vi=v_sdcont_paraci)
-        cfdisi = v_sdcont_paraci(21)
     else if (question .eq. 'EXIS_PENA') then
         call jeveuo(sdcont_paraci, 'L', vi=v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(22)
@@ -146,9 +142,6 @@ function cfdisi(sdcont_defi_, question_)
     else if (question .eq. 'ALGO_RESO_FROT') then
         call jeveuo(sdcont_paraci, 'L', vi=v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(28)
-    else if (question .eq. 'ELIM_ARETE_TYPE') then
-        call jeveuo(sdcont_paraci, 'L', vi=v_sdcont_paraci)
-        cfdisi = v_sdcont_paraci(29)
     else if (question .eq. 'ALGO_RESO_GEOM') then
         call jeveuo(sdcont_paraci, 'L', vi=v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(9)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma, &
         call utmess('F', 'PREPOST2_77')
     end if
     do ino = 1, nno
-        write (ifc, fmt) nonoe(ino), (coordo(3*(ino-1)+j), j=1, ndim)
+        write (ifc, fmt) "N"//nonoe(ino) (1:7), (coordo(3*(ino-1)+j), j=1, ndim)
     end do
 !
 !
@@ -133,19 +133,19 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma, &
         nbfois = nnoe/7
         nbrest = nnoe-7*nbfois
         if (nbfois .ge. 1) then
-            write (ifc, 1003) nomai(ima), (nonoe(connex(ipoin-1+i)), i=1, &
-                                           7)
+            write (ifc, 1003) "M"//nomai(ima) (1:7), &
+                ("N"//nonoe(connex(ipoin-1+i)) (1:7), i=1, 7)
             ico = 8
             do i = 2, nbfois
-                write (ifc, 1004) (nonoe(connex(ipoin-1+k)), k=ico, ico+6)
+                write (ifc, 1004) ("N"//nonoe(connex(ipoin-1+k)) (1:7), k=ico, ico+6)
                 ico = ico+7
             end do
             if (nbrest .ne. 0) then
-                write (ifc, 1004) (nonoe(connex(ipoin-1+i)), i=ico, nnoe)
+                write (ifc, 1004) ("N"//nonoe(connex(ipoin-1+i)) (1:7), i=ico, nnoe)
             end if
         else
-            write (ifc, 1003) nomai(ima), (nonoe(connex(ipoin-1+i)), i=1, &
-                                           nnoe)
+            write (ifc, 1003) "M"//nomai(ima) (1:7), &
+                ("N"//nonoe(connex(ipoin-1+i)) (1:7), i=1, nnoe)
         end if
 21      continue
     end do
@@ -164,7 +164,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma, &
         write (ifc, *) nomgr
         if (nbn .gt. 0) then
             call jeveuo(jexnum(noma//'.GROUPENO', ign), 'L', iagrno)
-            write (ifc, '(7(1X,A8))') (nonoe(zi(iagrno-1+jn)), jn=1, nbn)
+            write (ifc, '(7(1X,A8))') ("N"//nonoe(zi(iagrno-1+jn)) (1:7), jn=1, nbn)
         end if
         write (ifc, *) 'FINSF'
         write (ifc, *) '%'
@@ -186,7 +186,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma, &
                 if (lmod) then
                     if (typel(zi(iagrma-1+jm)) .eq. 0) goto 756
                 end if
-                zk8(jmai-1+ipo+1) = nomai(zi(iagrma-1+jm))
+                zk8(jmai-1+ipo+1) = "M"//nomai(zi(iagrma-1+jm)) (1:7)
                 ipo = ipo+1
 756             continue
             end do

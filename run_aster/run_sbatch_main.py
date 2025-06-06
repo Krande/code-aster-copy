@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,9 +110,39 @@ def parse_args(argv):
     parser.add_argument(
         "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
     )
-    parser.add_argument("--ctest", action="store_true", help="pass the --ctest option to run_aster")
     parser.add_argument(
         "--output", action="store", help="output file (default: <export filename>-%%j.txt)"
+    )
+    parser.add_argument(
+        "--run_aster_option",
+        dest="opts",
+        action="append",
+        default=[],
+        help="option to be passed to run_aster, can be repeated "
+        "(example: --run_aster_option='--only-proc0')",
+    )
+    parser.add_argument(
+        "--ctest",
+        dest="opts",
+        action="append_const",
+        const="--ctest",
+        help="shortcut for --run_aster_option='--ctest'",
+    )
+    parser.add_argument(
+        "--time_limit",
+        dest="time_limit",
+        type=float,
+        action="store",
+        default=None,
+        help="override the time limit in seconds",
+    )
+    parser.add_argument(
+        "--memory_limit",
+        dest="memory_limit",
+        type=float,
+        action="store",
+        default=None,
+        help="override the memory limit in MB",
     )
     parser.add_argument(
         "file", metavar="FILE.export", help="Export file (.export) defining the calculation."
@@ -164,19 +194,23 @@ def main(argv=None):
 
     # initialized with default values
     addmem = CFG.get("addmem", 0.0)
-    memory = export.get("memory_limit", 16384) + addmem
-    opts = "--ctest" if args.ctest else ""
+    memory = args.memory_limit or export.get("memory_limit", 16384)
+    memory += addmem
+    if args.time_limit:
+        args.opts.append(f"--time_limit={args.time_limit}")
+    if args.memory_limit:
+        args.opts.append(f"--memory_limit={args.memory_limit}")
     params = {
         "name": osp.splitext(osp.basename(args.file))[0],
         "mpi_nbcpu": export.get("mpi_nbcpu", 1),
         "mpi_nbnodes": nbnodes,
         "nbthreads": export.get("ncpus", 1),
-        "time_limit": export.get("time_limit", 3600),
+        "time_limit": args.time_limit or export.get("time_limit", 3600),
         "memory_limit": memory,
-        "memory_node": memory,
+        "memory_node": None,
         "options": "",
         "study": args.file,
-        "run_aster_options": opts,
+        "run_aster_options": " ".join(args.opts),
         "RUNASTER_ROOT": RUNASTER_ROOT,
         "testlist": export.get("testlist", []),
     }

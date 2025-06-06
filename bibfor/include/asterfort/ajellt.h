@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
-                      phenoz, modelz, nbno, linoz)
-        character(len=*) :: ligrez
-        character(len=*) :: nomaz
-        integer :: nbma
-        character(len=*) :: limaz
-        character(len=*) :: typelz
-        character(len=*) :: phenoz
-        character(len=*) :: modelz
-        integer :: nbno
-        character(len=*) :: linoz
+    subroutine ajellt(ligretZ, meshZ, nbCell, listCell, &
+                      phenomZ, modelisaZ)
+        character(len=*), intent(in) :: ligretZ, meshZ
+        integer, intent(in) :: nbCell
+        integer, intent(in) :: listCell(nbCell)
+        character(len=*), intent(in) :: phenomZ, modelisaZ
     end subroutine ajellt
 end interface

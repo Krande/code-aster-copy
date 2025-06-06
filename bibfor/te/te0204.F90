@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine te0204(option, nomte)
 !
@@ -133,6 +132,9 @@ subroutine te0204(option, nomte)
 ! ----- Compute vector
         tx = -nx*pres-ny*cisa
         ty = -ny*pres+nx*cisa
+! ----- Normal convention is fluid -> structure
+        tx = -tx
+        ty = -ty
         do i = 1, nno
             zr(jv_vect+ndofbynode*(i-1)-1+1) = &
                 zr(jv_vect+ndofbynode*(i-1)-1+1)+tx*zr(ivf+ldec+i-1)*poids

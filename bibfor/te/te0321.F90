@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,8 @@ subroutine te0321(option, nomte)
     character(len=16) :: metaType
     real(kind=8) :: ms0, phase_tot, phase_ucold
     integer :: nbNode, nbPhase, nbVari
-    integer :: jvComporMeta, jvMater, jvTemp, jvPhaseIn, jvPhaseOut
+    integer :: jvMater, jvTemp, jvPhaseIn, jvPhaseOut
+    character(len=16), pointer :: comporMeta(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,16 +67,16 @@ subroutine te0321(option, nomte)
 ! - Input fields
     call jevech('PMATERC', 'L', jvMater)
     call jevech('PTEMPER', 'L', jvTemp)
-    call jevech('PCOMPME', 'L', jvComporMeta)
+    call jevech('PCOMPME', 'L', vk16=comporMeta)
     call jevech('PPHASII', 'L', jvPhaseIn)
 
 ! - Output fields
     call jevech('PPHASOUT', 'E', jvPhaseOut)
 
 ! - Parameters from map
-    metaType = zk16(jvComporMeta-1+ZMETATYPE)
-    read (zk16(jvComporMeta-1+ZNBPHASE), '(I16)') nbPhase
-    read (zk16(jvComporMeta-1+ZNBVARI), '(I16)') nbVari
+    metaType = comporMeta(ZMETATYPE)
+    read (comporMeta(ZNBPHASE), '(I16)') nbPhase
+    read (comporMeta(ZNBVARI), '(I16)') nbVari
 
 ! - Check size of field
     call metaSteelCheckFieldSize(metaType, jvPhaseIn)

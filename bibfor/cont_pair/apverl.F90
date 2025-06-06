@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
 #include "asterfort/jexnum.h"
 #include "asterfort/mmnorm.h"
 #include "blas/ddot.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -131,7 +132,7 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
 !
                 node_mast_indx(1) = i_node_mast+jdecnm
                 call cfnumn(sdcont_defi, 1, node_mast_indx(1), node_mast_nume(1))
-                call jenuno(jexnum(mesh//'.NOMNOE', node_mast_nume(1)), node_mast_name)
+                node_mast_name = int_to_char8(node_mast_nume(1))
 !
 ! ------------- Get tangents
 !
@@ -158,7 +159,7 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
 !
                     call cfinvm(sdcont_defi, jdeciv, i_elem, elem_mast_indx)
                     call cfnumm(sdcont_defi, elem_mast_indx, elem_mast_nume)
-                    call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+                    elem_mast_name = int_to_char8(elem_mast_nume)
                     call cfnben(sdcont_defi, elem_mast_indx, 'CONNEX', elem_nbnode)
 !
 ! ----------------- Access to connectivity

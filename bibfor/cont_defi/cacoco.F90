@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine cacoco(sdcont, keywf, mesh)
 #include "asterfort/mminfl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -142,7 +143,7 @@ subroutine cacoco(sdcont, keywf, mesh)
 !
                 elem_slav_indx = jdecme+i_slav_elem
                 elem_slav_nume = v_sdcont_mailco(elem_slav_indx)
-                call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
+                elem_slav_name = int_to_char8(elem_slav_nume)
 !
 ! ------------- Get thickness
 !

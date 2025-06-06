@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crnlgc(numddl)
+subroutine crnlgc(nume_equa)
     implicit none
 #include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_comm.h"
@@ -57,7 +57,7 @@ subroutine crnlgc(numddl)
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
-    character(len=14) :: numddl
+    character(len=19) :: nume_equa
 
 #ifdef ASTER_HAVE_MPI
 !
@@ -89,7 +89,7 @@ subroutine crnlgc(numddl)
     aster_logical :: lligrel_cp
 !
     character(len=8) :: mesh, k8bid, nomgdr
-    character(len=19) :: nomlig, comm_name, tag_name, nume_equa, joints, meshj
+    character(len=19) :: nomlig, comm_name, tag_name, joints, meshj
     character(len=24) :: nonulg, domj, recv, send, name, gcom, pgid
     character(len=32) :: nojoie, nojoir
     character(len=24), pointer :: tco(:) => null()
@@ -118,7 +118,6 @@ subroutine crnlgc(numddl)
     DEBUG_MPI('crnlgc', rang, nbproc)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
-    nume_equa = numddl//'.NUME'
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
     nomgdr = zk24(jrefn+1) (1:8)
@@ -164,12 +163,21 @@ subroutine crnlgc(numddl)
 !
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
     call jeveuo(nume_equa//'.PRNO', 'E', idprn1)
-    call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    call jelira(nume_equa//'.PRNO', 'NMAXOC', nlili, k8bid)
+    if (nlili .eq. 1) then
+        ! si la longueur de la collection '.PRNO' est 1, on ne peut pas utiliser
+        ! l'attribut '.LONCUM'. On crée un objet temporaire contenant le
+        ! décalage pour le seul de la collection qui vaut donc 0
+        call wkvect('&&CRNLGC.IDPRN', 'V V I', 1, idprn2)
+        zi(idprn2) = 0
+    else
+        call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    end if
     call jeveuo(nume_equa//'.DEEQ', 'L', vi=v_deeq)
 
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
 !
-    call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
+    call dismoi('NUM_GD_SI', nume_equa, 'NUME_EQUA', repi=gd)
     nec = nbec(gd)
     call wkvect('&&CRNULG.NEC', 'V V I', nec, jencod)
     call wkvect('&&CRNULG.NEC2', 'V V I', nec, jenco2)
@@ -427,6 +435,7 @@ subroutine crnlgc(numddl)
     end do
 !
     call jedetc('V', '&&CRNULG', 1)
+    call jedetr('&&CRNLGC.IDPRN')
 !
 ! --- Vérification de la numérotation
 !
@@ -493,8 +502,8 @@ subroutine crnlgc(numddl)
 !
     call jedema()
 #else
-    character(len=14) :: kbid
-    kbid = numddl
+    character(len=19) :: kbid
+    kbid = nume_equa
 #endif
 !
 end subroutine

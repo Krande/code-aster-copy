@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,6 +54,7 @@ subroutine defint(mailla, nomres)
 #include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
 !
 !
@@ -293,7 +294,7 @@ subroutine defint(mailla, nomres)
             nbno = nbvan
             call wkvect('&&DEFINT.LII1', 'V V I', nbno, ialii1)
             do ii = 1, nbno
-                call jenonu(jexnom(mailla//'.NOMNOE', zk8(ltlno+ii-1)), nuno)
+                nuno = char8_to_int(zk8(ltlno+ii-1))
                 if (nuno .eq. 0) then
                     valk(1) = mailla
                     valk(2) = zk8(ltlno+ii-1)

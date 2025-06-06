@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine irmama(meshNameZ, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: meshNameZ
     integer, intent(in) :: nbCell
@@ -71,7 +72,7 @@ subroutine irmama(meshNameZ, &
             call utmess('F', 'MED3_4')
         end if
         do iCell = 1, nbCell
-            call jenonu(jexnom(meshName//'.NOMMAI', cellName(iCell)), cellNume)
+            cellNume = char8_to_int(cellName(iCell))
             if (cellNume .eq. 0) then
                 call utmess('A', 'RESULT3_9', sk=cellName(iCell))
                 cellName(iCell) = ' '

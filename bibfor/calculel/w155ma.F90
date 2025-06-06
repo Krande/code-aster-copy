@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib, &
     implicit none
 #include "jeveux.h"
 #include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/utmess.h"
@@ -138,7 +139,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib, &
 !
 !       Morceau de code extrait de te0597 (supprimée en version 11.2.1)
         pi = r8pi()
-        angle = nangl*pi/180.d0
+        angle = nangl*r8dgrd()
 !       Angle d'un secteur
         dxa = pi/nbsec
 !       On va faire V = [ v1*(an2 - angle) + v2*(angle - an1)] / dxa

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine chvepg(chel1, chel2)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
     character(len=19) :: chel1, chel2
 !
 ! ----------------------------------------------------------------------
@@ -85,7 +86,7 @@ subroutine chvepg(chel1, chel2)
         fpg1 = fapg1(ima)
         fpg2 = fapg2(ima)
         if ((fpg1 .ne. ' ') .and. (fpg2 .ne. ' ') .and. (fpg2 .ne. fpg1)) then
-            call jenuno(jexnum(noma//'.NOMMAI', ima), nommai)
+            nommai = int_to_char8(ima)
             valk(1) = nommai
             valk(2) = fpg1
             valk(3) = fpg2

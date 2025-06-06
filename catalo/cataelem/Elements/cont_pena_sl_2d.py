@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,51 +25,52 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-
-# ELEMENTARY TREATMENT OF 2D FRICTIONLESS ELEMENT WITH DEFI_CONTACT OPERATOR
-# PENALIZATION METHOD
-# ----------------
-# Modes locaux :
-# ----------------
-
+# --------------------------------------------------------------------------------------------------
+# Located components
+# --------------------------------------------------------------------------------------------------
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R, type="ELNO", diff=True, components=(("EN1", ("DX", "DY")),)
 )
 
+ECCONT = LocatedComponents(
+    phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_C",)),)
+)
 
-# ------------------------------------------------------------
+ECFROT = LocatedComponents(
+    phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_F",)),)
+)
+
+# --------------------------------------------------------------------------------------------------
 class CPS22D(Element):
-    """
-    THE CPS22D CLASS ELEMENT : SEG2/SEG2
-    DEFI_CONTACT / PENALIZATION / SEGMENT-TO-SEGMENT
-        Slave frictionless Contact Element in 2D : elementary treatments
-    Local Numerotation :
-
-    Input parameters :
-
-    Output parameters :
-    """
+    """Contact/friction - Slave elements for penalization - 2D - SEG2"""
 
     meshType = MT.SEG2
     nodes = (SetOfNodes("EN1", (1, 2)),)
-    calculs = (OP.EXISTE_DDL(te=99, para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),)),)
+    calculs = (
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
+    )
 
 
-# ------------------------------------------------------------
-
-
+# --------------------------------------------------------------------------------------------------
 class CPS32D(CPS22D):
-    """
-    THE CPS22D CLASS ELEMENT : SEG2/SEG2
-    DEFI_CONTACT / PENALIZATION / SEGMENT-TO-SEGMENT
-        Slave frictionless Contact Element in 2D : elementary treatments
-    Local Numerotation :
-
-    Input parameters :
-
-    Output parameters :
-    """
+    """Contact/friction - Slave elements for penalization - 2D - SEG3"""
 
     meshType = MT.SEG3
     nodes = (SetOfNodes("EN1", (1, 2, 3)),)
-    calculs = (OP.EXISTE_DDL(te=99, para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),)),)
+    calculs = (
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
+    )

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine te0539(option, nomte)
     integer :: jgano, nno, npg, i, imatuu, lgpg, ndim, iret, nfiss
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: icontm, ivarim
-    integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
+    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
     integer :: ivectu, icontp, ivarip, li, jcret, codret
     integer :: ivarix
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt, jheavn
@@ -74,6 +74,7 @@ subroutine te0539(option, nomte)
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
     aster_logical :: matsym, l_nonlin, l_line
     real(kind=8) :: bary(3), crit(1), sig(1), vi(1)
+    character(len=16), pointer :: ccompor(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
     blas_int :: b_incx, b_incy, b_n
@@ -145,7 +146,7 @@ subroutine te0539(option, nomte)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', vk16=ccompor)
         call jevech('PCARCRI', 'L', icarcr)
         call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                     itab=jtab)
@@ -203,14 +204,14 @@ subroutine te0539(option, nomte)
 !
 ! - Select objects to construct from option name (non-linear case)
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, ccompor, lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    type_comp = zk16(icompo-1+INCRELAS)
+    rela_comp = ccompor(RELA_NAME)
+    defo_comp = ccompor(DEFO)
+    type_comp = ccompor(INCRELAS)
     if (defo_comp .ne. 'PETIT') call utmess('F', 'XFEM_50', sk=defo_comp)
 !
 ! - Get output fields
@@ -238,7 +239,7 @@ subroutine te0539(option, nomte)
     if (type_comp .eq. 'COMP_ELAS') then
         if (lMatrPred) then
             call xnmel(nno, nfh, nfe, ddlc, ddlm, &
-                       igeom, typmod, option, zi(imate), zk16(icompo), &
+                       igeom, typmod, option, zi(imate), ccompor, &
                        lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt), &
                        zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ideplm, &
                        zr(jlsn), zr(jlst), zr(icontm), zr(ivarim), zr(imatuu), &
@@ -250,7 +251,7 @@ subroutine te0539(option, nomte)
                 zr(ideplp+li-1) = zr(ideplm+li-1)+zr(ideplp+li-1)
             end do
             call xnmel(nno, nfh, nfe, ddlc, ddlm, &
-                       igeom, typmod, option, zi(imate), zk16(icompo), &
+                       igeom, typmod, option, zi(imate), ccompor, &
                        lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt), &
                        zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ideplp, &
                        zr(jlsn), zr(jlst), zr(icontp), zr(ivarip), zr(imatuu), &
@@ -265,7 +266,7 @@ subroutine te0539(option, nomte)
         if (defo_comp .eq. 'PETIT') then
             call xnmpl(nno, nfh, nfe, ddlc, ddlm, &
                        igeom, zr(iinstm), zr(iinstp), ideplp, zr(icontm), &
-                       zr(ivarip), typmod, option, zi(imate), zk16(icompo), &
+                       zr(ivarip), typmod, option, zi(imate), ccompor, &
                        lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt), &
                        zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst), &
                        zr(icontp), zr(ivarim), zr(imatuu), ivectu, codret, &

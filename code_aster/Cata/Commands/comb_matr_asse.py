@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ def comb_matr_asse_prod(COMB_R, COMB_C, CALC_AMOR_GENE, **args):
             return matr_asse_gene_r
     elif CALC_AMOR_GENE:
         return matr_asse_gene_r
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 COMB_MATR_ASSE = OPER(

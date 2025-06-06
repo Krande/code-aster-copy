@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ test = CA.TestCase()
 pres_noeu = RESU.getField("PRES_NOEU", 8).toSimpleFieldOnNodes()
 values, mask = pres_noeu.getValues()
 test.assertEqual(values.shape, mask.shape)
-test.assertEqual(values.shape, (430, 1))
+test.assertEqual(values.shape, (430, 4))
 test.assertAlmostEqual(values[3, 0], 0.0)
 test.assertEqual(mask[3, 0], False)
 test.assertAlmostEqual(values[8, 0], 0.06897532282939933)

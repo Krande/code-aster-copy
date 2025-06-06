@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine te0512(option, nomte)
     integer :: imate, iconpg
     integer :: idtrgp, ivarmr, ivarpr, iendmg
     integer :: iepsp, jgano, ipoids, ivf, idfde
-    integer :: icompo, ibid, jtab(7), nbvari
+    integer :: ibid, jtab(7), nbvari
 !
 !
     real(kind=8) :: sigma(mxcmel), sigd(mxcmel)
@@ -100,6 +100,7 @@ subroutine te0512(option, nomte)
     real(kind=8) :: xvari1(mxcvar), xvari2(mxcvar)
     real(kind=8) :: xes, ts
 !
+    character(len=16), pointer :: compor(:) => null()
     character(len=4) :: fami
     integer :: codres(nbres), codre2(nbres2)
     character(len=16) :: nomres(nbres)
@@ -246,8 +247,8 @@ subroutine te0512(option, nomte)
     call tecach('OOO', 'PVARIPR', 'L', iret, nval=7, itab=jtab)
     nbvari = max(jtab(6), 1)*jtab(7)
     nbsig = nbvari
-    call jevech('PCOMPOR', 'L', icompo)
-    rela_comp = zk16(icompo-1+RELA_NAME)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    rela_comp = compor(RELA_NAME)
 !
     call psvari(rela_comp, nbvari, iepsp, ibid)
 !

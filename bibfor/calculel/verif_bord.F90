@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine verif_bord(modele, ligrel)
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*), intent(in) :: modele
     character(len=*), intent(in) :: ligrel
@@ -124,7 +125,7 @@ subroutine verif_bord(modele, ligrel)
             if (exinolg(nuno) .eq. 0) cycle B1
         end do
         valk(1) = modele
-        call jenuno(jexnum(noma//'.NOMMAI', numa), valk(2))
+        valk(2) = int_to_char8(numa)
         call utmess('A', 'CALCULEL4_74', nk=2, valk=valk)
     end do B1
 

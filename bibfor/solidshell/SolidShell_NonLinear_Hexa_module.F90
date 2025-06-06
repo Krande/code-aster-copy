@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -283,7 +283,7 @@ contains
             dsidep = 0.d0
             cod(kpg) = 0
             call nmcomp(behaPara%BEHInteg, elemProp%elemInte%inteFami, kpg, ksp, SSH_NDIM, &
-                        typmod, matePara%jvMater, zk16(behaPara%jvCompor), zr(behaPara%jvCarcri), &
+                        typmod, matePara%jvMater, behaPara%compor, behaPara%carcri, &
                         timePrev, timeCurr, SSH_SIZE_TENS, epsiPrev, epsiIncr, &
                         SSH_SIZE_TENS, sigmPrep, vim(1, kpg), option, matePara%mateBase, &
                         sigmPost, vip(1, kpg), SSH_SIZE_TENS*SSH_SIZE_TENS, dsidep, cod(kpg))
@@ -544,7 +544,7 @@ contains
             dtde = 0.d0
             cod(kpg) = 0
             call nmcomp(behaPara%BEHInteg, elemProp%elemInte%inteFami, kpg, ksp, SSH_NDIM, &
-                        typmod, matePara%jvMater, zk16(behaPara%jvCompor), zr(behaPara%jvCarcri), &
+                        typmod, matePara%jvMater, behaPara%compor, behaPara%carcri, &
                         timePrev, timeCurr, SSH_SIZE_TENS, kineHexa%epslPrev%vale, epslIncr, &
                         SSH_SIZE_TENS, tPrev, vim(1, kpg), option, matePara%mateBase, &
                         tCurr, vip(1, kpg), SSH_SIZE_TENS*SSH_SIZE_TENS, dtde, cod(kpg))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -258,7 +258,8 @@ subroutine modeau(melflu, noma, geom, fsvr, base, &
     call dismoi('NOM_NUME_DDL', matria, 'MATR_ASSE', repk=numddl)
     call dismoi('NB_EQUA', matria, 'MATR_ASSE', repi=neq)
 !
-    call jelira(noma//'.NOMNOE', 'NOMUTI', nbnoe)
+    call jelira(noma//'.COORDO    .VALE', 'LONMAX', nbnoe)
+    nbnoe = nbnoe/3
     call wkvect('&&MODEAU.TEMP.DPLA', 'V V R', 6*nbnoe*nbm, idpla)
     call extmod(base, numddl, nuor, nbm, zr(idpla), &
                 neq, nbnoe, iddl, 6)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
@@ -37,6 +37,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 #include "asterfort/jexnum.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 #include "blas/ddot.h"
 !
     character(len=8) :: resu, noma
@@ -112,7 +113,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
         s = vdir(1, 1)*vdir(2, 1)+vdir(1, 2)*vdir(2, 2)+vdir(1, 3)*vdir(2, 3)
 !
 !        ATTENTION, NE JAMAIS UTILISER LA FONCTION FORTRAN ACOS
-        alpha = trigom('ACOS', s)*180.d0/r8pi()
+        alpha = trigom('ACOS', s)*r8rddg()
 !
 !        CAS SYMETRIQUE
         if (syme .eq. 'OUI') then
@@ -151,7 +152,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 !
 !         BOUCLE SUR LES MAILLES DES LEVRES POUR TROUVER LE BON COTE
             do i = 1, nblev
-                call jenonu(jexnom(noma//'.NOMMAI', mail(i)), iret)
+                iret = char8_to_int(mail(i))
                 call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', iamase)
                 ityp = iatyma-1+iret
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
@@ -295,7 +296,7 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         s = ddot(b_n, vecnor, b_incx, vnprec, b_incy)
-        beta = trigom('ACOS', s)*180.d0/r8pi()
+        beta = trigom('ACOS', s)*r8rddg()
         if (abs(beta) .gt. 10.d0) then
             call utmess('A', 'RUPTURE0_61')
         end if

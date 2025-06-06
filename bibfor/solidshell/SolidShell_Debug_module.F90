@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -146,8 +146,8 @@ contains
         WRITE (SSH_DBG_UNIT, *) ' *V* relaComp      : ', behaPara%relaComp
         WRITE (SSH_DBG_UNIT, *) ' *V* defoComp      : ', behaPara%defoComp
         WRITE (SSH_DBG_UNIT, *) ' *V* typeComp      : ', behaPara%typeComp
-        ASSERT(behaPara%jvCompor .ne. 0)
-        ASSERT(behaPara%jvCarcri .ne. 0)
+        ASSERT(associated(behaPara%compor))
+        ASSERT(associated(behaPara%carcri))
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

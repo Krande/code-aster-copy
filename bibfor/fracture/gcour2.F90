@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,6 +80,7 @@ subroutine gcour2(resu, noma, nomno, coorn, nbnoeu, &
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 #include "blas/dcopy.h"
 !
     character(len=24) :: trav1, trav2, trav3, fonoeu
@@ -152,7 +153,7 @@ subroutine gcour2(resu, noma, nomno, coorn, nbnoeu, &
     numgam = '&&COURON.NUMGAMM0'
     call wkvect(numgam, 'V V I', nbnoeu, iadnum)
     do j = 1, nbnoeu
-        call jenonu(jexnom(nomno, zk8(iadrno+j-1)), zi(iadnum+j-1))
+        zi(iadnum+j-1) = char8_to_int(zk8(iadrno+j-1))
     end do
 !
 !  SI LEVRE_INF EST DEFINIE DANS LE CONCEPT FOND

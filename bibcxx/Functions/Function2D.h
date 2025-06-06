@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Function2D
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -43,6 +43,8 @@ class Function2D : public GenericFunction {
     JeveuxVectorReal _parameters;
     // Vecteur Jeveux '.VALE'
     JeveuxCollectionReal _value;
+    /** @brief Python attributes for t_nappe */
+    py::object _t_nappe;
 
   public:
     /**
@@ -62,7 +64,8 @@ class Function2D : public GenericFunction {
     Function2D( const std::string name )
         : GenericFunction( name, "NAPPE", "NAPPE" ),
           _parameters( JeveuxVectorReal( getName() + ".PARA" ) ),
-          _value( JeveuxCollectionReal( getName() + ".VALE" ) ) {};
+          _value( JeveuxCollectionReal( getName() + ".VALE" ) ),
+          _t_nappe( py::none() ) {};
 
     /**
      * @brief Return the parameters values of the function
@@ -89,6 +92,16 @@ class Function2D : public GenericFunction {
      * @brief Return the total number of points of the functions
      */
     ASTERINTEGER size() const;
+
+    /**
+     * @brief Getter for nappe property
+     */
+    const py::object &getTNappe() const { return _t_nappe; }
+
+    /**
+     * @brief Setter for nappe property
+     */
+    void setTNappe( py::object &t_nappe ) { _t_nappe = t_nappe; }
 };
 
 /**

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
     integer :: im, itypm, iseg2, iacnex, jgcnx, ino, nbse2
     integer :: numno, nbchm, isens, mi, ing, ind
     character(len=8) :: typm
-    character(len=24) :: cooabs, conseg, typseg, nommas, connex, typmai
+    character(len=24) :: cooabs, conseg, typseg, connex, typmai
 !
     integer, pointer :: grmai(:) => null()
     integer, pointer :: vois1(:) => null()
@@ -79,7 +79,6 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
 !
 !   -0.3- Initialization
     cooabs = maillage//'.ABSC_CURV .VALE'
-    nommas = maillage//'.NOMMAI'
     connex = maillage//'.CONNEX'
     typmai = maillage//'.TYPMAIL'
 !
@@ -96,7 +95,7 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
 !     --- LECTURE DES CARACTERISTIQUES DU GROUPE DE MAILLES : ADRESSE
 !                   ET NOMBRE DE MAILLES
 !
-    call jelira(nommas, 'NOMUTI', nbrma)
+    call jelira(typmai, 'LONMAX', nbrma)
     AS_ALLOCATE(nbrma, vi=grmai)
     do i = 1, nbrma
         grmai(i) = i

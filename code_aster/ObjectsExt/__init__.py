@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ from .datastructure_ext import DataStructure
 # extend DataStructures using metaclasses
 from .acousticload_ext import AcousticLoadComplex
 from .assemblymatrix_ext import AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementReal
-from .contactnew_ext import ContactNew, FrictionNew
 from .constantfieldoncells_ext import ConstantFieldOnCellsReal
 from .contact_ext import Contact
 from .dirichletbc_ext import MechanicalDirichletBC, ThermalDirichletBC, AcousticDirichletBC

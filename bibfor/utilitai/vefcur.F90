@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale, &
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbn, vec1(nbn), nbvale, vec2(nbvale)
     character(len=8) :: knom(nbvale), nomnd
@@ -43,7 +44,7 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale, &
 !
     do i = 1, nbvale
         nomnd = knom(i)
-        call jenonu(jexnom(nomnoe, nomnd), numn)
+        numn = char8_to_int(nomnd)
 !
         do jj = 1, nbn
             if (vec1(jj) .eq. numn) then

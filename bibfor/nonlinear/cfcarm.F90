@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmtypm.h"
+#include "asterfort/int_to_char8.h"
     character(len=8) :: noma, alias
     character(len=24) :: defico
     character(len=19) :: newgeo
@@ -123,7 +124,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai, &
 !
 ! --- NOM DE LA MAILLE
 !
-    call jenuno(jexnum(noma//'.NOMMAI', nummai), nommai)
+    nommai = int_to_char8(nummai)
 !
     call jedema()
 !

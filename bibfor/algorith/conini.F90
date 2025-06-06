@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,6 +80,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar, &
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: io8gco, nbgco, igco
     integer :: imigma, igma
@@ -170,7 +171,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar, &
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
 !     ------------------------------------------------------------------
-                call jenuno(jexnum(ma//'.NOMMAI', imac), kmac)
+                kmac = int_to_char8(imac)
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
 !     ------------------------------------------------------------------
@@ -242,7 +243,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar, &
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
 !     ------------------------------------------------------------------
-        call jenuno(jexnum(ma//'.NOMMAI', imar), kmar)
+        kmar = int_to_char8(imar)
         nommar(imar) = kmar
 !
 !     ------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,8 +147,6 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+2) = FAIL_ACT_CUT
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_ITER)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+2) = FAIL_ACT_ITER
-    else if (action_typek .eq. failActionKeyword(FAIL_ACT_PILOTAGE)) then
-        v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+2) = FAIL_ACT_PILOTAGE
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_ADAPT_COEF)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+2) = FAIL_ACT_ADAPT_COEF
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_CONTINUE)) then

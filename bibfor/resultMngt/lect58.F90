@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine lect58(fileUnit, &
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
@@ -56,6 +57,7 @@ subroutine lect58(fileUnit, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/ulisop.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/ulopen.h"
 !
     integer, intent(in) :: fileUnit
@@ -104,7 +106,7 @@ subroutine lect58(fileUnit, &
     character(len=24) :: vabs, vori, vcor, valmes, noojb
     character(len=80) :: ligne, repem1, rec(20)
     integer :: nbabs, itype, idir, nbnmes, ichamp, nbmesu
-    integer :: vali, iField, icham0
+    integer :: vali, iField, icham0, ier
     integer :: label, lcorr, ibid, lori
     integer :: nbrec, nbabs1, inatur, inatu1, numefield
     integer :: lvalc, lvalr, labs
@@ -113,7 +115,7 @@ subroutine lect58(fileUnit, &
     integer :: fileIndx, jcnsv, jcnsl, imes, icmp, ino, ival, jabs, ncmp
     real(kind=8) :: amin, apas, rbid, fileTime, dir(3)
     complex(kind=8) :: cval, czero, cun
-    aster_logical :: trouve, zcmplx, ficab, ficva, vucont, vudef
+    aster_logical :: trouve, zcmplx, ficab, ficva, vucont, vudef, lcolle
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -146,6 +148,11 @@ subroutine lect58(fileUnit, &
 !
 ! RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE : NBNMES
     call dismoi('NB_NO_MAILLA', meshAst, 'MAILLAGE', repi=nbnmes)
+    lcolle = .false.
+    call jeexin(meshAst//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
 !
 ! VECTEUR DES NUMEROS DES NOEUDS MESURE SELON L ORDRE FICHIER UNV
     call wkvect(vcor, 'V V I', nbnmes*6, lcorr)
@@ -321,12 +328,12 @@ subroutine lect58(fileUnit, &
         if (label .eq. 0) then
             ligne = rec(irec)
             labk8 = ligne(32:41)
-            call jenonu(jexnom(meshAst//'.NOMNOE', labk8), label)
+            label = char8_to_int(labk8, lcolle, meshAst, "NOEUD")
         else
 ! PRE_IDEAS RAJOUTE UN 'N' DEVANT LE NUMERO DU NOEUD (VOIR ECRNEU)
             call codnop(labk8, prfnoe, 1, 1)
             call codent(label, 'G', labk8(2:8))
-            call jenonu(jexnom(meshAst//'.NOMNOE', labk8), label)
+            label = char8_to_int(labk8, lcolle, meshAst, "NOEUD")
         end if
         zi(lcorr-1+nbmesu) = label
 !

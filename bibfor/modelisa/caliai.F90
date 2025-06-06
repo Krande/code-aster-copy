@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ subroutine caliai(fonree, charge, phenom)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=4), intent(in) :: fonree
@@ -67,7 +69,7 @@ subroutine caliai(fonree, charge, phenom)
     character(len=8) :: motcle, mogrou, mod, noma, nomnoe, char
     character(len=16) :: motfac, concep, oper
     character(len=19) :: lisrel
-    character(len=24) :: grouno, noeuma
+    character(len=24) :: grouno
     character(len=24) :: valk(3)
     character(len=15) :: coordo
     character(len=1) :: nompar(3)
@@ -89,6 +91,7 @@ subroutine caliai(fonree, charge, phenom)
     character(len=8), pointer :: liste2(:) => null()
     character(len=24), pointer :: v_trav(:) => null()
     real(kind=8), pointer :: vvale(:) => null()
+    aster_logical :: lcolle
 !-----------------------------------------------------------------------
     data nompar/'X', 'Y', 'Z'/
 ! ----------------------------------------------------------------------
@@ -109,7 +112,6 @@ subroutine caliai(fonree, charge, phenom)
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
     call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=noma)
 !
-    noeuma = noma//'.NOMNOE'
     grouno = noma//'.GROUPENO'
     coordo = noma//'.COORDO'
     call jeveuo(coordo//'    .VALE', 'L', vr=vvale)
@@ -133,6 +135,11 @@ subroutine caliai(fonree, charge, phenom)
 !        RELATION LINEAIRE
 !        -------------------------------------------------------
     ndim2 = ndim1
+    lcolle = .false.
+    call jeexin(noma//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
     do iocc = 1, nliai
         call getvtx(motfac, mogrou, iocc=iocc, nbval=ndim1, vect=v_trav, &
                     nbret=ngr)
@@ -152,7 +159,7 @@ subroutine caliai(fonree, charge, phenom)
         call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=v_trav, &
                     nbret=nno)
         do ino = 1, nno
-            call jenonu(jexnom(noeuma, v_trav(ino)), iret)
+            iret = char8_to_int(v_trav(ino), lcolle, noma, "NOEUD")
             if (iret .eq. 0) then
                 valk(1) = motcle
                 valk(2) = v_trav(ino)
@@ -240,7 +247,7 @@ subroutine caliai(fonree, charge, phenom)
                 do k = 1, n
                     in = zi(jgr0-1+k)
                     indnoe = indnoe+1
-                    call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
+                    nomnoe = int_to_char8(in, lcolle, noma, "NOEUD")
                     liste2(indnoe) = nomnoe
                     if (typco2 .eq. 'FONC') then
                         valpar(1) = vvale(3*(in-1)+1)
@@ -280,7 +287,7 @@ subroutine caliai(fonree, charge, phenom)
                             nbno, liste2, n)
                 if (typco2 .eq. 'FONC') then
                     do k = 1, n
-                        call jenonu(jexnom(noma//'.NOMNOE', liste2(k)), in)
+                        in = char8_to_int(liste2(k), lcolle, noma, "NOEUD")
                         valpar(1) = vvale(3*(in-1)+1)
                         valpar(2) = vvale(3*(in-1)+2)
                         valpar(3) = vvale(3*(in-1)+3)

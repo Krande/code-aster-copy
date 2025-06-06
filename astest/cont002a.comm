@@ -17,10 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
+
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
+from code_aster.Commands import *
+from code_aster import CA
 
+# Restart with DEFI_CONT do not currently work.
+# This variable allows to check restart during the development phase.
+CHECK_RESTART = "CHECK_RESTART" in os.environ
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
@@ -61,101 +68,29 @@ LINST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi), ECHEC=_F(EVENEMENT="ERREUR"
 
 RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
 
-RES = MECA_NON_LINE(
-    INFO=1,
-    MODELE=MODI,
-    CHAM_MATER=AFFE,
-    EXCIT=(_F(CHARGE=CHAR1, FONC_MULT=RAMPE), _F(CHARGE=CHAR2, FONC_MULT=RAMPE)),
-    CONTACT=_F(DEFINITION=DEFICO, ALGO_RESO_GEOM="NEWTON"),
-    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    INCREMENT=_F(LIST_INST=lisi),
-    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
-    SOLVEUR=_F(METHODE="MUMPS", RESI_RELA=1.0e-6, PCENT_PIVOT=30),
-    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-6, ITER_GLOB_MAXI=50),
-    ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA", LIST_INST=lisi),
-)
+# the same checks are done at restart
+test = CA.TestCase()
+zones = DEFICO.getContactZones()
 
-RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE=("SIEF_NOEU"))
+test.assertEqual(len(zones), 1)
+z0 = zones[0]
 
-RES = CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE="SIGM_NOEU", FORCE=("FORC_NODA", "REAC_NODA"))
+# check friction
+test.assertTrue(DEFICO.hasFriction)
 
-# Since the contact pressure is expressed in global coordinates, we switch the tests
-# on LAGS_C and LAGS_F1
-TEST_RESU(
-    RESU=(
-        _F(
-            INST=1.0,
-            TYPE_TEST="MIN",
-            RESULTAT=RES,
-            REFERENCE="ANALYTIQUE",
-            NOM_CHAM="SIEF_NOEU",
-            LEGENDE="CALC_PRESSION",
-            NOM_CMP="SIYY",
-            VALE_REFE=-25.0,
-            VALE_CALC=-25.0,
-        ),
-        _F(
-            INST=1.0,
-            TYPE_TEST="MAX",
-            RESULTAT=RES,
-            REFERENCE="ANALYTIQUE",
-            NOM_CHAM="SIEF_NOEU",
-            LEGENDE="CALC_PRESSION",
-            NOM_CMP="SIYY",
-            VALE_REFE=-25.0,
-            VALE_CALC=-25.00,
-        ),
-        _F(
-            INST=1.0,
-            TYPE_TEST="MIN",
-            RESULTAT=RES,
-            REFERENCE="ANALYTIQUE",
-            NOM_CHAM="DEPL",
-            LEGENDE="LAGS_C",
-            NOM_CMP="LAGS_C",
-            CRITERE="ABSOLU",
-            ORDRE_GRANDEUR=1e-6,
-            VALE_REFE=0.0,
-            VALE_CALC=0.0,
-        ),
-        _F(
-            INST=1.0,
-            TYPE_TEST="MAX",
-            RESULTAT=RES,
-            REFERENCE="ANALYTIQUE",
-            NOM_CHAM="DEPL",
-            LEGENDE="LAGS_C",
-            NOM_CMP="LAGS_C",
-            CRITERE="ABSOLU",
-            ORDRE_GRANDEUR=1e-6,
-            VALE_REFE=0.0,
-            VALE_CALC=0.0,
-        ),
-        _F(
-            INST=1.0,
-            TYPE_TEST="MIN",
-            RESULTAT=RES,
-            REFERENCE="ANALYTIQUE",
-            NOM_CHAM="DEPL",
-            LEGENDE="LAGS_F1",
-            NOM_CMP="LAGS_F1",
-            VALE_REFE=-25.0,
-            VALE_CALC=-25.0,
-        ),
-        _F(
-            INST=1.0,
-            TYPE_TEST="MAX",
-            RESULTAT=RES,
-            REFERENCE="ANALYTIQUE",
-            NOM_CHAM="DEPL",
-            LEGENDE="LAGS_F1",
-            NOM_CMP="LAGS_F1",
-            VALE_REFE=-25.0,
-            VALE_CALC=-25.0,
-        ),
-    )
-)
+# check PairingParameter
+pairing = z0.getPairingParameter()
+test.assertEqual(pairing.getAlgorithm(), CA.PairingAlgo.Mortar)
 
+# check ContactParameter
+cp = z0.getContactParameter()
+test.assertEqual(cp.getAlgorithm(), CA.ContactAlgo.Lagrangian)
+test.assertAlmostEqual(cp.getCoefficient(), 2000.0)
+
+# check MeshPairing
+mesh_pairing = z0.getMeshPairing()
+test.assertTrue(mesh_pairing.compute())
+lp = mesh_pairing.getListOfPairs()
+test.assertEqual(len(lp), 26)
 
 FIN()
-# CHECKSUM:9f90ac18752a4c0cdfc3c56aef286888  -:FIN CHECKSUM

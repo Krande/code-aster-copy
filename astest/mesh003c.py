@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,9 +84,20 @@ test.assertSequenceEqual(sorted(cMesh3.getCells("CUBE")), [])
 test.assertSequenceEqual(
     cMesh3.getNodesGlobalNumbering(), [3, 4, 16, 23, 27, 28, 44, 51, 77, 103, 135]
 )
-test.assertSequenceEqual(
-    sorted(cMesh3.getNodesLocalNumbering()), [4, 10, 11, 25, 31, 33, 39, 46, 51, 55, 68]
-)
+if rank == 0:
+    test.assertSequenceEqual(
+        sorted(cMesh3.getNodesLocalNumbering()), [-1, -1, -1, -1, -1, 4, 10, 11, 25, 33, 55]
+    )
+elif rank == 1:
+    test.assertSequenceEqual(
+        sorted(cMesh3.getNodesLocalNumbering()), [-1, -1, -1, -1, -1, -1, 31, 39, 46, 51, 68]
+    )
+elif rank == 2:
+    test.assertSequenceEqual(
+        sorted(cMesh3.getNodesLocalNumbering()), [-1, -1, -1, -1, -1, -1, -1, -1, -1, 57, 79]
+    )
+else:
+    assert False
 
 # Test ConnectionMesh - a part mesh
 print("cMesh4", flush=True)

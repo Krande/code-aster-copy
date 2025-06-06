@@ -5,7 +5,7 @@
  * @file Message.h
  * @brief Fichier entete de la class Messages
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,5 +34,7 @@ void UTMESS( char *typm, char *idmess );
 void UTMESS( const char *typm, const char *idmess );
 
 void UTMESS( const std::string &typm, const std::string &idmess );
+
+void UtmessCore( const std::string &typm, const std::string &idmess, const VectorString &vec );
 
 #endif /* MESSAGES_H_ */

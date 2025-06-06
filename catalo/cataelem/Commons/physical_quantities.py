@@ -1614,7 +1614,81 @@ FER2_R = PhysicalQuantity(
         "CONSTRUC",
     ),
 )
+VFER0_R = PhysicalQuantity(
+    type="R",
+    components=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
+    comment=""" VFER0_R: Champ de densités de ferraillage -
+                Grandeur en entrée de VERI_FERRAILLAGE
+""",
+)
+VFER1_R = PhysicalQuantity(
+    type="R",
+    components=(
+        "TYPCOMB",
+        "CODIF",
+        "THITER",
+        "TYPSTRU",
+        "ENROBI",
+        "ENROBS",
+        "SIGS",
+        "SIGCI",
+        "SIGCS",
+        "ALPHACC",
+        "GAMMAS",
+        "GAMMAC",
+        "FACIER",
+        "EYS",
+        "TYPDIAG",
+        "FBETON",
+        "CLACIER",
+        "UC",
+        "UM",
+        "CEQUI",
+    ),
+    comment=""" VFER1_R: Grandeur en entrée de VERI_FERRAILLAGE
+""",
+)
 
+VFER2_R = PhysicalQuantity(
+    type="R",
+    components=(
+        "MARGE",
+        "THETA",
+        "TAU_UTIL",
+        "C0C",
+        "C0CRD",
+        "DNSINF",
+        "DNSSUP",
+        "N0",
+        "M0",
+        "NED",
+        "MED",
+        "N_DIAG",
+        "M_DIAG",
+        "TYPCMB",
+        "TYPCO",
+        "CEQUI",
+        "ENROBI",
+        "ENROBS",
+        "SIGS",
+        "SIGCI",
+        "SIGCS",
+        "ALPHACC",
+        "GAMMAS",
+        "GAMMAC",
+        "FACIER",
+        "EYS",
+        "TYPDIAG",
+        "FBETON",
+        "CLACIER",
+        "UC",
+        "UM",
+        "HT",
+        "BW",
+    ),
+    comment=""" VFER2_R: Grandeur en sortie de VERI_FERRAILLAGE
+""",
+)
 
 FISS_R = PhysicalQuantity(
     type="R",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -161,15 +161,22 @@ class MESSAGE_LOGGER(metaclass=Singleton):
         # le '+' n'a pas de sens pour les messages 'I'.
         if code == "I+":
             code = "I"
+        dictmess = {}
         if code == "I":
-            msg = self._cache_txt.get(idmess)
-            if msg:
+            cached = self._cache_txt.get(idmess)
+            if cached:
+                flags, msg = cached
+                dicarg = self.build_dict_args(valk, vali, valr)
                 try:
-                    self.affiche("MESSAGE", msg % self.build_dict_args(valk, vali, valr))
-                    return
-                except:
-                    # le formattage 'brut' échoue, on passera par une
-                    # conversion complète
+                    dictmess = {
+                        "code": code,
+                        "flags": flags,
+                        "id_message": idmess,
+                        "corps_message": ufmt(msg, dicarg),
+                        "context_info": "",  # self.get_context(ctxt_msg, idmess, dicarg),
+                    }
+                except Exception:
+                    # in case of formatting error, ignore the cached value
                     pass
         if code == "A" and ExecutionParameter().option & Options.WarningAsError:
             code = "F"
@@ -179,7 +186,8 @@ class MESSAGE_LOGGER(metaclass=Singleton):
         if not self.update_counter(code, idmess):
             return
         # récupération du texte du message
-        dictmess = self.get_message(code, idmess, valk, vali, valr, exc_typ)
+        if not dictmess:
+            dictmess = self.get_message(code, idmess, valk, vali, valr, exc_typ)
 
         # on le met dans le buffer
         self.add_to_buffer(dictmess)
@@ -257,7 +265,7 @@ class MESSAGE_LOGGER(metaclass=Singleton):
             #              ou { 'message' : 'format',
             #                   'flags' : 'DECORATED | CENTER',
             #                   'context' : 'éléments de contexte' }
-            if type(cata_msg[numess]) == dict:
+            if isinstance(cata_msg[numess], dict):
                 fmt_msg = cata_msg[numess]["message"]
                 flags = eval(cata_msg[numess].get("flags", 0))
             else:
@@ -272,7 +280,7 @@ class MESSAGE_LOGGER(metaclass=Singleton):
                 "context_info": "",  # self.get_context(ctxt_msg, idmess, dicarg),
             }
             if code == "I":
-                self._cache_txt[idmess] = convert(fmt_msg)
+                self._cache_txt[idmess] = flags, convert(fmt_msg)
         except Exception as msg:
             if code == "I":
                 code = "A"

@@ -625,6 +625,18 @@ PFERRA1 = InputParameter(
 """,
 )
 
+PVFER0 = InputParameter(
+    phys=PHY.FER2_R,
+    comment=""" PVFER0 : CHAMP DE DENSITES DE FERRAILLAGE
+""",
+)
+
+PVFER1 = InputParameter(
+    phys=PHY.VFER1_R,
+    comment=""" PVFER1 : DONNEES UTILISATEUR POUR LA VERIFICATION DE FERRAILLAGE
+""",
+)
+
 PFF1D1D = InputParameter(
     phys=PHY.FORC_F,
     comment="""  PFF1D1D : CHARGE REPARTIE DE TYPE FONCTION POUR UNE MODELISATION POUTRE
@@ -1643,6 +1655,8 @@ PERRENO = OutputParameter(
 PFACY_R = OutputParameter(phys=PHY.FACY_R, type="ELGA", comment="""""")
 
 PFERRA2 = OutputParameter(phys=PHY.FER2_R, type="ELEM", comment="""""")
+
+PVFER2 = OutputParameter(phys=PHY.VFER2_R, type="ELEM", comment="""""")
 
 PFLHN = OutputParameter(phys=PHY.FLHN_R, type="ELGA", comment="""""")
 

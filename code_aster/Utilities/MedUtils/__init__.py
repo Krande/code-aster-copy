@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,16 +28,31 @@ No external import of other :py:mod:`code_aster` packages.
 from ..base_utils import config
 
 # aslint: disable=C4008
-if config.get("ASTER_HAVE_MPI") and config.get("ASTER_HAVE_MED"):
-    from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph
-    from ...Objects import MedFileAccessType
-    from ...Objects import PtScotchPartitioner
-    from ...Objects import FieldCharacteristics, SimpleFieldOnNodesReal, Result
-    from ...Objects import SimpleFieldOnCellsReal
-    from ...Objects import ParallelMesh
-    from .medtoasterconnectivity import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES, toAsterGeoType
-else:
-    MedFileReader = IncompleteMesh = MeshBalancer = MeshConnectionGraph = PtScotchPartitioner = None
-    FieldCharacteristics = SimpleFieldOnNodesReal = Result = SimpleFieldOnCellsReal = None
-    MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = MedFileAccessType = toAsterGeoType = None
-    ParallelMesh = None
+MedFileReader = MedFileAccessType = None
+MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = toAsterGeoType = None
+PtScotchPartitioner = None
+IncompleteMesh = MeshBalancer = MeshConnectionGraph = ParallelMesh = Model = None
+FieldCharacteristics = SimpleFieldOnCellsReal = SimpleFieldOnNodesReal = Result = None
+
+if config.get("ASTER_HAVE_MPI"):
+    if config.get("ASTER_HAVE_MED"):
+        from ...Objects import MedFileAccessType, MedFileReader
+        from .medtoasterconnectivity import (
+            ASTER_TYPES,
+            MED_TYPES,
+            MYMED2ASTER_CONNECT,
+            toAsterGeoType,
+        )
+    if config.get("ASTER_HAVE_PTSCOTCH"):
+        from ...Objects import PtScotchPartitioner
+    from ...Objects import (
+        FieldCharacteristics,
+        IncompleteMesh,
+        MeshBalancer,
+        MeshConnectionGraph,
+        ParallelMesh,
+        Result,
+        SimpleFieldOnCellsReal,
+        SimpleFieldOnNodesReal,
+        Model,
+    )

@@ -19,7 +19,19 @@
 
 """Package MateHomo"""
 
+from ...Messages import UTMESS
+
 MESH_TOL = 1.0e-10
+
+
+def check_mesh(mesh):
+    """
+    Check the type of mesh and raise an error if the mesh is parallel.
+    """
+    if mesh.isParallel():
+        UTMESS("F", "HOMO1_19", valk=mesh.getName())
+
+    return mesh
 
 
 class HomoType:

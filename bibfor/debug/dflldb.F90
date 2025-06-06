@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dflldb(sdlist)
 !
     implicit none
@@ -65,9 +65,8 @@ subroutine dflldb(sdlist)
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Access to datastructures
-!
     sdlist_linfor = sdlist(1:8)//'.LIST.INFOR'
     call jeveuo(sdlist_linfor, 'L', vr=v_sdlist_linfor)
     sdlist_eevenr = sdlist(1:8)//'.ECHE.EVENR'
@@ -76,9 +75,8 @@ subroutine dflldb(sdlist)
     call jeveuo(sdlist_eevenr, 'L', vr=v_sdlist_eevenr)
     call jeveuo(sdlist_eevenk, 'L', vk16=v_sdlist_eevenk)
     call jeveuo(sdlist_esubdr, 'L', vr=v_sdlist_esubdr)
-!
+
 ! - Get main parameters
-!
     step_mini = v_sdlist_linfor(2)
     step_maxi = v_sdlist_linfor(3)
     nb_pas_maxi = nint(v_sdlist_linfor(4))
@@ -86,9 +84,8 @@ subroutine dflldb(sdlist)
     nb_fail = nint(v_sdlist_linfor(9))
     nb_inst = nint(v_sdlist_linfor(8))
     nb_adap = nint(v_sdlist_linfor(10))
-!
+
 ! - Time list management
-!
     if (nint(v_sdlist_linfor(1)) .eq. 1) then
         call utmess('I', 'DISCRETISATION3_1')
     else if (nint(v_sdlist_linfor(1)) .eq. 2) then
@@ -100,9 +97,8 @@ subroutine dflldb(sdlist)
         ASSERT(.false.)
     end if
     call utmess('I', 'DISCRETISATION3_4', si=nb_inst, sr=dtmin)
-!
+
 ! - Failures
-!
     if (nb_fail .gt. 0) then
         call utmess('I', 'DISCRETISATION3_5', si=nb_fail)
         do i_fail = 1, nb_fail
@@ -135,9 +131,8 @@ subroutine dflldb(sdlist)
             else
                 ASSERT(.false.)
             end if
-!
+
 ! --------- Action
-!
             pcent_iter_plus = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+7)
             coef_maxi = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+8)
             action_type = nint(v_sdlist_eevenr(SIZE_LEEVR*(i_fail-1)+2))
@@ -152,13 +147,6 @@ subroutine dflldb(sdlist)
                     call utmess('I', 'DISCRETISATION3_41', sr=pcent_iter_plus)
                 else
                     call utmess('I', 'DISCRETISATION3_42', sr=pcent_iter_plus)
-                    call dflld2(sdlist, i_fail)
-                end if
-            else if (action_type .eq. FAIL_ACT_PILOTAGE) then
-                if (nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+1)) .eq. 0) then
-                    call utmess('I', 'DISCRETISATION3_33')
-                else if (nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+1)) .eq. 1) then
-                    call utmess('I', 'DISCRETISATION3_34')
                     call dflld2(sdlist, i_fail)
                 end if
             else if (action_type .eq. FAIL_ACT_ADAPT_COEF) then

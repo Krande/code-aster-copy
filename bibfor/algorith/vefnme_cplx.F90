@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vefnme_cplx(option, base, model, mate, carele, &
-                       compor, nh, ligrelz, varicomz, &
-                       sigmaz, strxz, deplz, vecelz)
+subroutine vefnme_cplx(option, base, &
+                       model, mate, carael, &
+                       comporZ, timePrev, timeCurr, nh, ligrelz, varicomz, &
+                       sigmaPrev, sigmaz, strxz, deplz, vecelz)
 !
     use HHO_precalc_module, only: hhoAddInputField
 !
@@ -50,12 +51,13 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=16), intent(in) :: option
     character(len=1), intent(in) :: base
     character(len=8), intent(in) :: model
-    character(len=24), intent(in) :: carele
+    real(kind=8), intent(in) :: timePrev, timeCurr
+    character(len=8), intent(in) :: carael
     character(len=24), intent(in) :: mate
     character(len=*), intent(in) :: ligrelz
     integer, intent(in) :: nh
-    character(len=19), intent(in) :: compor
-    character(len=*), intent(in) :: sigmaz
+    character(len=*), intent(in) :: comporZ
+    character(len=*), intent(in) :: sigmaz, sigmaPrev
     character(len=*), intent(in) :: varicomz
     character(len=*), intent(in) :: strxz
     character(len=*), intent(in) :: deplz
@@ -94,9 +96,9 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=19) :: lchout(nbout), lchin(nbxin)
 !
     character(len=8) :: k8bla, mesh
-    character(len=8) :: newnom, nomgd, carael
-    character(len=19) :: numhar, ligrel_local, ligrel
-    character(len=19) :: chgeom, chcara(18), vecele, veceli
+    character(len=8) :: newnom, nomgd
+    character(len=19) :: numhar, tpsmoi, tpsplu, ligrel_local, ligrel
+    character(len=19) :: chgeom, chcara(18), vecele, veceli, compor
     character(len=19) :: lchinr(nbxin), lchini(nbxin)
     character(len=16) :: optio2
     integer :: iret, inddec(nbxin), iexi, k, nbin
@@ -115,14 +117,16 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 !
 ! - Initializations
 !
-    carael = carele(1:8)
     sigma = sigmaz
     varicom = varicomz
     strx = strxz
     depl = deplz
     ligrel = ligrelz
+    compor = comporZ
     newnom = '.0000000'
     numhar = '&&VEFNME.NUME_HARM'
+    tpsmoi = '&&VEFNME.CH_INSTAM'
+    tpsplu = '&&VEFNME.CH_INSTAP'
     k8bla = ' '
     optio2 = option
     if (option .ne. 'FONL_NOEU') optio2 = 'FORC_NODA'
@@ -161,13 +165,20 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 !
 ! - <CARTE> for structural elements
 !
-    call mecara(carele(1:8), chcara)
+    call mecara(carael, chcara)
 !
 ! - <CARTE> for Fourier mode
 !
     call mecact('V', numhar, 'MAILLA', mesh, 'HARMON', &
                 ncmp=1, nomcmp='NH', si=nh)
-
+!
+! - <CARTE> for instant
+!
+    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R', &
+                ncmp=1, nomcmp='INST', sr=timePrev)
+    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R', &
+                ncmp=1, nomcmp='INST', sr=timeCurr)
+!
 ! - Init fields
     call inical(nbxin, lpain, lchin, nbout, lpaout, lchout)
     call inical(nbxin, lpain, lchin, nbout, lpaout, ch1)
@@ -186,9 +197,11 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lpain(5) = 'PCOMPOR'
     lchin(5) = compor
     lpain(6) = 'PSIEFR'
-    lchin(6) = sigma
+    lchin(6) = sigmaz
     lpain(7) = 'PDEPLAR'
     lchin(7) = depl
+    lpain(8) = 'PCONTGM'
+    lchin(8) = sigmaPrev
     lpain(9) = 'PCAARPO'
     lchin(9) = chcara(9)
     lpain(10) = 'PCADISK'
@@ -199,6 +212,10 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lchin(12) = numhar
     lpain(13) = 'PCAMASS'
     lchin(13) = chcara(12)
+    lpain(14) = 'PINSTMR'
+    lchin(14) = tpsmoi
+    lpain(15) = 'PINSTPR'
+    lchin(15) = tpsplu
     lpain(16) = 'PVARCPR'
     lchin(16) = varicom
     lpain(17) = 'PCAGEPO'

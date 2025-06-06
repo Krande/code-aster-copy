@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 #include "asterfort/utmess.h"
 #include "asterfort/taxis.h"
 #include "asterfort/modelCheckFSINormals.h"
+#include "asterfort/modelCheckFluidFormulation.h"
 #include "asterfort/modelCheckPlaneity.h"
 !
     character(len=8), intent(in) :: model
@@ -137,6 +138,8 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
     if (lCheckFSINorms) then
         call modelCheckFSINormals(model)
     end if
+! - Check that we have the same formulation in fluid modelisation
+    call modelCheckFluidFormulation(model)
 
 ! - Check planeity of plate elements
     if (lCheckPlaneity) then

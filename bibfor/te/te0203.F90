@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine te0203(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/pipefi.h"
 #include "asterfort/tecach.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=16) :: nomte, option
 !
@@ -39,7 +40,8 @@ subroutine te0203(option, nomte)
 !
 !
     integer :: igeom, imater, ideplm, ivarim, npg, jtab(7), iret, lgpg
-    integer :: iddepl, idepl0, idepl1, ictau, icompo, icopil
+    integer :: iddepl, idepl0, idepl1, ictau, icopil
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2)
 !
 !    PARAMETRES DE L'ELEMENT FINI
@@ -54,7 +56,7 @@ subroutine te0203(option, nomte)
     call jevech('PDEPL0R', 'L', idepl0)
     call jevech('PDEPL1R', 'L', idepl1)
     call jevech('PCDTAU', 'L', ictau)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
     if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
@@ -74,6 +76,6 @@ subroutine te0203(option, nomte)
 !
     call pipefi(npg, lgpg, zi(imater), zr(igeom), zr(ivarim), &
                 zr(iddepl), zr(ideplm), zr(idepl0), zr(idepl1), zr(ictau), &
-                typmod, zk16(icompo), zr(icopil))
+                typmod, compor(RELA_NAME), zr(icopil))
 !
 end subroutine

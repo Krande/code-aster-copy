@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,11 +85,6 @@ Risques & conseils :
   * Vous pouvez aussi réactualiser plus souvent le préconditionneur en diminuant la valeur du mot-clé SOLVEUR/REAC_PRECOND.
   * Si vous utilisez une commande non-linéaire (STAT_NON_LINE par exemple), diminuez la précision demandée pour la convergence (SOLVEUR/RESI_RELA).
     Prenez garde cependant car cela peut empêcher la convergence de l'algorithme non-linéaire.
-"""
-    ),
-    7: _(
-        """
- Erreur données : maille déjà existante :  %(k1)s
 """
     ),
     9: _(

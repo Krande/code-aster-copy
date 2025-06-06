@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,8 @@ subroutine xasdpl(model, celmod, prol0, chou)
     integer :: iel, kpg
     integer :: k, ifiss
     character(len=3) :: exixfm
-    character(len=4) :: tychi, phen
+    character(len=4) :: tychi
+    character(len=5) :: phen
     character(len=8) :: ma, ma2, nomgd, param
     character(len=8) :: noma, chmat, nomfis
     character(len=8), pointer :: typma(:) => null()

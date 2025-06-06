@@ -35,6 +35,7 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
 #include "asterfort/jexnum.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: ifmis
     integer :: ifreq, nfreq
@@ -45,7 +46,7 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
 ! ------------------------------------------------------------------
 !
     character(len=8) :: nommai
-    character(len=24) :: mlgnma, magrma, manoma, tabrig
+    character(len=24) :: magrma, manoma, tabrig
 !
 ! -----------------------------------------------------------------------
     integer :: i1, i2, ifr, ii, ij, im
@@ -62,7 +63,6 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
 !
     magrma = noma//'.GROUPEMA'
     manoma = noma//'.CONNEX'
-    mlgnma = noma//'.NOMMAI'
     noemax = 0
 !
 !
@@ -176,7 +176,7 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis, &
         rigma2(3*(i2-1)+1) = r1+rigma2(3*(i2-1)+1)
         rigma2(3*(i2-1)+2) = r2+rigma2(3*(i2-1)+2)
         rigma2(3*(i2-1)+3) = r3+rigma2(3*(i2-1)+3)
-        call jenuno(jexnum(mlgnma, im), nommai)
+        nommai = int_to_char8(im)
         write (ifr, 100) nommai, -r1, -r2, -r3
     end do
 !

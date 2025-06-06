@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine solide_tran_maj(load_name, disp)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -150,7 +151,7 @@ subroutine solide_tran_maj(load_name, disp)
 
         do ka = 1, dim
             nomnoe_a = dual_prdso(4*(i_link-1)+ka)
-            call jenonu(jexnom(mesh//'.NOMNOE', nomnoe_a), numnoe_a)
+            numnoe_a = char8_to_int(nomnoe_a)
             xa = mesh_coor(3*(numnoe_a-1)+1)
             ya = mesh_coor(3*(numnoe_a-1)+2)
             if (l3d) za = mesh_coor(3*(numnoe_a-1)+3)
@@ -161,7 +162,7 @@ subroutine solide_tran_maj(load_name, disp)
 
             do kb = ka+1, dim+1
                 nomnoe_b = dual_prdso(4*(i_link-1)+kb)
-                call jenonu(jexnom(mesh//'.NOMNOE', nomnoe_b), numnoe_b)
+                numnoe_b = char8_to_int(nomnoe_b)
                 xb = mesh_coor(3*(numnoe_b-1)+1)
                 yb = mesh_coor(3*(numnoe_b-1)+2)
                 if (l3d) zb = mesh_coor(3*(numnoe_b-1)+3)

@@ -19,13 +19,11 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-import os.path as osp
 import numpy as np
 
 from ...Cata.Syntax import _F
 from ...CodeCommands import CREA_TABLE
 from ...Objects.table_py import Table
-from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
 from .mac3coeur_commons import MAC3_ROUND, CollectionMAC3
 
@@ -344,6 +342,8 @@ def post_mac3coeur_ops(self, **args):
     OPERATION = args.get("OPERATION")
 
     datamac = args["TABLE"]
+    output_as_aster = args.get("FORMAT", "DAMAC") in ("ASTER",)
+
     label_type, label_calcul = datamac.EXTR_TABLE().titr.split()
     nb_grids = 8 if "900" in label_type else 10
 
@@ -376,7 +376,8 @@ def post_mac3coeur_ops(self, **args):
             )  # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
             coor_x, v1 = np.around(1000.0 * vals[:, vals[0].argsort()], MAC3_ROUND)
-            collection[name] = v1
+            position = name if output_as_aster else core_mac3.watergap_todamac(name)
+            collection[position] = v1
 
     #
     # FORCE_CONTACT
@@ -404,7 +405,8 @@ def post_mac3coeur_ops(self, **args):
             )  # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
             coor_x, force = np.around(vals[:, vals[0].argsort()], MAC3_ROUND)
-            collection[name] = force
+            position = name if output_as_aster else core_mac3.watergap_todamac(name)
+            collection[position] = force
 
     #
     # DEFORMATION

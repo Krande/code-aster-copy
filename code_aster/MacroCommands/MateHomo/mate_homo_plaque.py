@@ -351,7 +351,7 @@ def calc_tabpara_plaque(
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAPLAQUE)
     loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma, dir_plaque)
     h = dirthick[dir_plaque]
-    tda = utilities.get_temp_def_alpha(DEPLMATE)
+    tda = utilities.get_temp_def_alpha_result(DEPLMATE)
     ls_C_hom = {}
     ls_D_hom = {}
     ls_G_hom = {}
@@ -444,4 +444,4 @@ def calc_tabpara_plaque(
 
     tabpara = CREA_TABLE(LISTE=[_F(PARA=para, LISTE_R=values) for para, values in dictpara.items()])
 
-    return C_hom, D_hom, G_hom, tabpara
+    return ls_C_hom, ls_D_hom, ls_G_hom, tabpara

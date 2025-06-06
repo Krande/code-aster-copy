@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
     character(len=8) :: nomma, nomno, ttgrma, ttgrno
-    character(len=24) :: nommai, nomnoe, grpnoe, cooval, coodsc
+    character(len=24) :: grpnoe, cooval, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm, valk(2)
     aster_logical :: lvide, lpmesh, l_exi_in_grp, l_exi_in_grp_p
@@ -192,8 +192,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
 ! -2- CREATION DU NOUVEAU MAILLAGE
 !     ============================
 !
-    nommai = nomare//'.NOMMAI         '
-    nomnoe = nomare//'.NOMNOE         '
     grpnoe = nomare//'.GROUPENO'
     grpmai = nomare//'.GROUPEMA'
     ptngrn = nomare//'.PTRNOMNOE'
@@ -211,14 +209,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
     call jeveuo(dimou, 'E', jdim)
     zi(jdim-1+1) = nbnoou
     zi(jdim-1+3) = nbmaou
-!
-! --- OBJET .NOMMAI
-    call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', max(nbmaou, 1))
-    do ima = 1, nbmaou
-        call jenuno(jexnum(noma//'.NOMMAI', zi(jnuma+ima-1)), nomma)
-        call jecroc(jexnom(nommai, nomma))
-    end do
 !
 ! --- OBJET .TYPMAIL
     call wkvect(typmai, base//' V I', max(nbmaou, 1), itypou)
@@ -246,14 +236,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
         do ino = 1, nbno
             zi(jadou+ino-1) = zi(jwk1+zi(jadin+ino-1)-1)
         end do
-    end do
-!
-! --- OBJET .NOMNOE
-    call jecreo(nomnoe, base//' N K8')
-    call jeecra(nomnoe, 'NOMMAX', max(nbnoou, 1))
-    do ino = 1, nbnoou
-        call jenuno(jexnum(noma//'.NOMNOE', zi(jwk2+ino-1)), nomno)
-        call jecroc(jexnom(nomnoe, nomno))
     end do
 !
 ! --- OBJET .COORDO.VALE

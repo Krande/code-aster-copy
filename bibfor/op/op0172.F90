@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine op0172()
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
 !
     integer :: ibid, aprno, iddl, ncmp, nec, gd, nbmode
@@ -69,7 +70,7 @@ subroutine op0172()
     character(len=16) :: concep, nomcmd, valek(2)
     character(len=19) :: enerpo
     character(len=24) :: nprno, deeq, nomch1, nomob1, nomob2
-    character(len=24) :: magrno, manono, magrma, manoma, nomgr, amo_neg
+    character(len=24) :: magrno, magrma, manoma, nomgr, amo_neg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iadmo1, iamomo, ic, idam, iddeeq, idepmo
@@ -190,7 +191,6 @@ subroutine op0172()
     yg = zero
     zg = zero
     magrno = noma//'.GROUPENO'
-    manono = noma//'.NOMNOE'
     magrma = noma//'.GROUPEMA'
     manoma = noma//'.CONNEX'
     if (method .ne. 'DEPL') goto 111
@@ -294,7 +294,7 @@ subroutine op0172()
     else if (nno .ne. 0) then
         call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1, &
                     1, nomnoe, nno)
-        call jenonu(jexnom(manono, nomnoe), inoe)
+        inoe = char8_to_int(nomnoe)
         xg = vale(3*(inoe-1)+1)
         yg = vale(3*(inoe-1)+2)
         zg = vale(3*(inoe-1)+3)
@@ -530,9 +530,9 @@ subroutine op0172()
 !
 !
 1000 format(4x, 'FREQUENCE', 10x, 'ETX', 10x, 'ETY', 10x, 'ETZ', 10x, 'ERX'&
-    & , 10x, 'ERY', 10x, 'ERZ', 6x, 'ETOTALE')
+& , 10x, 'ERY', 10x, 'ERZ', 6x, 'ETOTALE')
 2000 format(4x, 'FREQUENCE', 10x, 'ETX', 10x, 'ETY', 10x, 'ETZ',&
-    & 6x, 'ETOTALE')
+& 6x, 'ETOTALE')
 1001 format(8(1x, 1pe12.5))
 1002 format(2x, 'MODE', 4x, 'FREQUENCE', 9x, 'AMOR')
 1003 format(1x, i5, 2(1x, 1pe12.5))

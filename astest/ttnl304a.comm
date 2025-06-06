@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # Thermique non linéaire plane avec propriétés orthotropes
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -77,7 +77,18 @@ CHTHG = AFFE_CHAR_CINE(MODELE=MOTH, THER_IMPO=(_F(GROUP_NO="NOE_GAU", TEMP=1.0),
 
 CHTHD = AFFE_CHAR_CINE(MODELE=MOTH, THER_IMPO=(_F(GROUP_NO="NOE_DRO", TEMP=1.0)))
 
-CHMATO = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATERO))
+TEMP20 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
+)
+
+CHMATO = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MATER=MATERO),
+    AFFE_VARC=_F(CHAM_GD=TEMP20, NOM_VARC="TEMP", VALE_REF=20.0),
+)
 
 ORIEN = AFFE_CARA_ELEM(MODELE=MOTH, MASSIF=_F(GROUP_MA="MASSIF", ANGL_REP=(30.0, 0.0, 0.0)))
 

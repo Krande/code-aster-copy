@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ subroutine romFieldElemEquaToEqua(fieldA, fieldB, equaAToB)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utchdl.h"
+#include "asterfort/int_to_char8.h"
 !
     type(ROM_DS_Field), intent(in) :: fieldA, fieldB
     integer, pointer :: equaAToB(:)
@@ -116,7 +117,7 @@ subroutine romFieldElemEquaToEqua(fieldA, fieldB, equaAToB)
         do iElem = 1, nbElem
 ! --------- Current element
             elemNume = liel(iElem)
-            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elemNume), elemName)
+            elemName = int_to_char8(elemNume)
 
 ! --------- Adress in .CELV of the first field value for the element
             addr = celd(celd(4+iGrel)+4+4*(iElem-1)+4)

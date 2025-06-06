@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: lnoeud(*), nbno, nori, next, ier, iera
     real(kind=8) :: coor(*), prec
@@ -52,12 +53,10 @@ subroutine oreino(noma, lnoeud, nbno, nori, next, &
     real(kind=8) :: xa, ya, za, xb, yb, zb, xab, yab, zab, ab2, xm, ym, zm, xam
     real(kind=8) :: yam, zam, c, c2, xv, yv, zv, v2, r8b, ecart, valr
     character(len=8) :: nomn
-    character(len=24) :: nomnoe
     character(len=24) :: valk(2)
     real(kind=8), pointer :: bary(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
-    nomnoe = noma//'.NOMNOE         '
 !
     ier = 0
 !
@@ -111,7 +110,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next, &
         r8b = sqrt(r8b)
         if (r8b .gt. prec) then
             v2 = sqrt(v2)
-            call jenuno(jexnum(nomnoe, inod), nomn)
+            nomn = int_to_char8(inod)
             if (iera .eq. 3) then
                 call utmess('A', 'SOUSTRUC_17', sk=nomn, sr=v2)
             else
@@ -124,7 +123,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next, &
         ecart = (c2-ab2)/ab2
         if (c .lt. 0.0d0 .or. c2 .gt. ab2) then
             if (ecart .gt. r8prem()) then
-                call jenuno(jexnum(nomnoe, inod), nomn)
+                nomn = int_to_char8(inod)
                 valk(1) = nomn
                 valk(2) = nomn
                 valr = c

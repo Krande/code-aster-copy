@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,10 @@
 !
 !
 interface
-    subroutine sdmail(nomu, nommai, nomnoe, cooval, coodsc,&
+    subroutine sdmail(nomu, cooval, coodsc,&
                       grpnoe, gpptnn, grpmai, gpptnm,&
                       connex, titre, typmai, adapma)
         character(len=8) :: nomu
-        character(len=24) :: nommai
-        character(len=24) :: nomnoe
         character(len=24) :: cooval
         character(len=24) :: coodsc
         character(len=24) :: grpnoe

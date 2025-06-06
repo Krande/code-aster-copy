@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,13 @@ subroutine te0416(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
     character(len=16) :: option, nomte
 !     CALCUL DES OPTIONS DES ELEMENTS DE COQUE : COQUE_3D
 !     ----------------------------------------------------------------
 !
 !
+    character(len=16), pointer :: compor(:) => null()
     integer :: ibid, iret, icompo
 !
 !
@@ -45,33 +47,33 @@ subroutine te0416(option, nomte)
     call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
     if (icompo .eq. 0) then
         call fornpd(option, nomte)
-        goto 9999
+        goto 999
     else
 
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', vk16=compor)
 
-        if (zk16(icompo+2) .eq. 'GROT_GDEP') then
+        if (compor(DEFO) .eq. 'GROT_GDEP') then
 
 !           DEFORMATION DE GREEN
 
             call forngr(option, nomte)
 !
-            goto 9999
+            goto 999
 !
-        else if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
+        else if (compor(DEFO) (1:5) .eq. 'PETIT') then
 
             call fornpd(option, nomte)
         else
 
 !----------- AUTRES MESURES DE DEFORMATIONS
 !
-            call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
+            call utmess('F', 'ELEMENTS3_93', sk=compor(DEFO))
 !
         end if
     end if
 !
 !
-9999 continue
+999 continue
 !
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine lirlig(ifl, cnl, lig, ilec)
     end if
 !
     cnl(1:14) = '(LIGNE       )'
-    call codent(nl, 'D', cnl(8:13))
+    call codent(nl, 'D', cnl(7:13))
 !
     goto 999
 !

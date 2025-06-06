@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -15,18 +15,12 @@
 /* You should have received a copy of the GNU General Public License    */
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
-
 #include "aster.h"
 
 #ifdef ASTER_HAVE_SCOTCH
-/* scotch.h may use int64_t without including <sys/types.h> */
-#include "scotch.h"
-
-#include <sys/types.h>
-
-#ifdef ASTER_PLATFORM_WINDOWS
 #include <stdint.h>
-#endif
+/* scotch.h may use int64_t without including <stdint.h> */
+#include "scotch.h"
 #endif
 
 void DEFPPPPPPPPPP( FETSCO, fetsco, ASTERINTEGER *nbmato, ASTERINTEGER *nblien,

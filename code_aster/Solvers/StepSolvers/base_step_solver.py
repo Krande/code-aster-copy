@@ -64,6 +64,7 @@ class BaseStepSolver(ABC, ContextMixin, DispatcherMixin):
         logManager.addConvTableColumn("NEWTON")
         logManager.addConvTableColumn("RESIDU RELATIF RESI_GLOB_RELA")
         logManager.addConvTableColumn("RESIDU ABSOLU RESI_GLOB_MAXI")
+        logManager.addConvTableColumn("RESIDU REFERENCE RESI_REFE_RELA")
         logManager.addConvTableColumn("RESIDU GEOMETRIQUE RESI_GEOM")
         logManager.addConvTableColumn("OPTION ASSEMBLAGE")
 

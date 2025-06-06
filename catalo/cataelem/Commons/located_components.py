@@ -436,6 +436,78 @@ CFER2_R = LocatedComponents(
     components=("DNSXI", "DNSXS", "DNSYI", "DNSYS", "DNSXT", "DNSYT", "DNSVOL", "CONSTRUC"),
 )
 
+CVFER0_R = LocatedComponents(
+    phys=PHY.FER2_R, type="ELEM", components=("DNSXI", "DNSXS", "DNSYI", "DNSYS")
+)
+
+
+CVFER1_R = LocatedComponents(
+    phys=PHY.VFER1_R,
+    type="ELEM",
+    components=(
+        "TYPCOMB",
+        "CODIF",
+        "THITER",
+        "TYPSTRU",
+        "ENROBI",
+        "ENROBS",
+        "SIGS",
+        "SIGCI",
+        "SIGCS",
+        "ALPHACC",
+        "GAMMAS",
+        "GAMMAC",
+        "FACIER",
+        "EYS",
+        "TYPDIAG",
+        "FBETON",
+        "CLACIER",
+        "UC",
+        "UM",
+        "CEQUI",
+    ),
+)
+
+CVFER2_R = LocatedComponents(
+    phys=PHY.VFER2_R,
+    type="ELEM",
+    components=(
+        "MARGE",
+        "THETA",
+        "TAU_UTIL",
+        "C0C",
+        "C0CRD",
+        "DNSINF",
+        "DNSSUP",
+        "N0",
+        "M0",
+        "NED",
+        "MED",
+        "N_DIAG",
+        "M_DIAG",
+        "TYPCMB",
+        "TYPCO",
+        "CEQUI",
+        "ENROBI",
+        "ENROBS",
+        "SIGS",
+        "SIGCI",
+        "SIGCS",
+        "ALPHACC",
+        "GAMMAS",
+        "GAMMAC",
+        "FACIER",
+        "EYS",
+        "TYPDIAG",
+        "FBETON",
+        "CLACIER",
+        "UC",
+        "UM",
+        "HT",
+        "BW",
+    ),
+)
+
 CFER3_R = LocatedComponents(
     phys=PHY.FER2_R,
     type="ELEM",

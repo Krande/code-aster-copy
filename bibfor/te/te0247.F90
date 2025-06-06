@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine te0247(option, nomte)
     character(len=*) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: igeom, icompo, imate, iorien, nd, nk
+    integer :: igeom, imate, iorien, nd, nk
     integer :: iinstm, iinstp, icarcr, icontm, ideplm, ideplp, imatuu
     integer :: ivectu, icontp, itype, nno, nc, ivarim, ivarip, itemp, i
     integer :: jcret, iretm, iretp
@@ -76,6 +76,7 @@ subroutine te0247(option, nomte)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey, xfly, xflz
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2, xjx2, xl
 !
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, defo_comp
 !
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk)
@@ -100,7 +101,7 @@ subroutine te0247(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PINSTMR', 'L', iinstm)
@@ -119,11 +120,11 @@ subroutine te0247(option, nomte)
     ASSERT((npg .eq. 2) .or. (npg .eq. 3))
 !
 ! - Properties of behaviour
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
 !
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)

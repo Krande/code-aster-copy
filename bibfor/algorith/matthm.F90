@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine matthm(ds_thm, ndim, axi, nno1, nno2, dimuel, &
 !
 #include "asterf_types.h"
 #include "asterfort/dfdm1d.h"
-#include "asterfort/eicine.h"
+#include "asterfort/ejcine_hm.h"
 !
 !.......................................................................
 !
@@ -94,9 +94,9 @@ subroutine matthm(ds_thm, ndim, axi, nno1, nno2, dimuel, &
 !
 ! - CALCUL DE LA MATRICE DE PASSAGE U GLOBAL -> SAUT DE U LOCAL
 !
-    call eicine(ndim, axi, nno1, nno2, vff1, &
-                vff2, wref, dffr2, geom, ang, &
-                wi, b)
+    call ejcine_hm(ndim, axi, nno1, nno2, vff1, &
+                   vff2, wref, dffr2, geom, ang, &
+                   wi, b)
     do i = 1, ndim
         do j = 1, ndim
             do n = 1, 2*nno1

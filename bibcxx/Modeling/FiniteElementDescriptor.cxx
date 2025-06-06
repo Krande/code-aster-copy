@@ -125,11 +125,11 @@ FiniteElementDescriptor::getListOfGroupsOfElementsExplorer() const {
     return _explorer2;
 };
 
-const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupsOfElements() const {
+const JeveuxContiguousCollectionLong &FiniteElementDescriptor::getListOfGroupsOfElements() const {
     return _listOfGroupsOfElements;
 };
 
-const JeveuxCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
+const JeveuxContiguousCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
     return _virtualCellsDescriptor;
 };
 
@@ -394,7 +394,7 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
         totalSize += grel.size();
     }
 
-    _listOfGroupsOfElements->allocateContiguousNumbered( listOfGrel.size(), totalSize );
+    _listOfGroupsOfElements->allocate( listOfGrel.size(), totalSize );
     for ( auto &grel : listOfGrel ) {
         _listOfGroupsOfElements->push_back( grel );
     }

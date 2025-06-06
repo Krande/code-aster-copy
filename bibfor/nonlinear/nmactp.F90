@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmactp(ds_print, sddisc, sderro, ds_contact, &
                   ds_conv, nbiter, numins)
@@ -43,13 +42,13 @@ subroutine nmactp(ds_print, sddisc, sderro, ds_contact, &
     integer, intent(in) :: nbiter
     integer, intent(in) :: numins
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! GESTION DES ACTIONS A LA FIN D'UN PAS DE TEMPS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for time discretization
@@ -59,25 +58,21 @@ subroutine nmactp(ds_print, sddisc, sderro, ds_contact, &
 ! IN  NBITER : NOMBRE D'ITERATIONS DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: retact, i_echec_acti, actpas, iterat, i_action
+    integer :: retact, i_echec_acti, actpas, iterat
     character(len=4) :: etinst
-    integer :: piless
-    character(len=16) :: pilcho
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     retact = 4
     actpas = 3
     iterat = nbiter-1
-!
-! --- ETAT DE LA BOUCLE EN TEMPS ?
-!
+
+! - ETAT DE LA BOUCLE EN TEMPS ?
     call nmleeb(sderro, 'INST', etinst)
-!
-! --- ACTIONS SUITE A UN EVENEMENT
-!
+
+! - ACTIONS SUITE A UN EVENEMENT
     if (etinst .eq. 'CONV') then
         retact = 0
     else if (etinst .eq. 'EVEN') then
@@ -91,55 +86,39 @@ subroutine nmactp(ds_print, sddisc, sderro, ds_contact, &
     else
         ASSERT(.false.)
     end if
-!
+
 ! --- TRAITEMENT DE L'ACTION
-!
     if (retact .eq. 0) then
-!
 ! ----- TOUT EST OK -> ON PASSE A LA SUITE
-!
         actpas = 0
-!
+
     else if (retact .eq. 1) then
-!
 ! ----- ON REFAIT LE PAS DE TEMPS
-!
         actpas = 1
-!
+
     else if (retact .eq. 2) then
-!
 ! ----- PAS D'ITERATION EN PLUS ICI
-!
-        ASSERT(.false.)
-!
+        ASSERT(ASTER_FALSE)
+
     else if (retact .eq. 3) then
-!
 ! ----- ECHEC DE L'ACTION
-!
         if (.not. ds_conv%l_stop) then
-!
 ! ------- CONVERGENCE FORCEE -> ON PASSE A LA SUITE
-!
             call utmess('A', 'MECANONLINE2_37')
             actpas = 0
         else
-!
 ! ------- ARRET DU CALCUL
-!
             actpas = 3
         end if
-!
+
     else if (retact .eq. 4) then
-!
 ! ----- ARRET DU CALCUL
-!
         actpas = 3
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
-!
-! --- CHANGEMENT DE STATUT DE LA BOUCLE
-!
+
+! - CHANGEMENT DE STATUT DE LA BOUCLE
     if (actpas .eq. 0) then
         call nmeceb(sderro, 'INST', 'CONV')
     else if (actpas .eq. 1) then
@@ -147,22 +126,7 @@ subroutine nmactp(ds_print, sddisc, sderro, ds_contact, &
     else if (actpas .eq. 3) then
         call nmeceb(sderro, 'INST', 'STOP')
     else
-        ASSERT(.false.)
-    end if
-!
-! --- PROCHAIN INSTANT: ON REINITIALISE
-!
-    if (actpas .eq. 0) then
-!
-! ----- REMISE A ZERO ESSAI_ITER_PILO
-!
-        call isacti(sddisc, FAIL_ACT_PILOTAGE, i_action)
-        if (i_action .ne. 0) then
-            piless = 1
-            pilcho = 'NATUREL'
-            call utdidt('E', sddisc, 'ECHE', 'ESSAI_ITER_PILO', vali_=piless)
-            call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', valk_=pilcho)
-        end if
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

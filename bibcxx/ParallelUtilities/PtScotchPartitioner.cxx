@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,34 +37,34 @@ PtScotchPartitioner::~PtScotchPartitioner() {
     delete _scotchStrat;
 };
 
-int PtScotchPartitioner::buildGraph( const VectorLong &vertloctab, const VectorLong &edgeloctab ) {
-    _nbVertex = vertloctab.size() - 1;
+int PtScotchPartitioner::buildGraph( const VectorLong &vertices, const VectorLong &edges,
+                                     const VectorLong &weights ) {
+    _nbVertex = vertices.size() - 1;
 
-    _vertices = vertloctab;
-    _edges = edgeloctab;
-    return SCOTCH_dgraphBuild( _graph, 0, _vertices.size() - 1, _vertices.size() - 1,
-                               _vertices.data(), 0, 0, 0, _edges.size(), _edges.size(),
-                               _edges.data(), 0, 0 );
+    _vertices = VectorScotchNum( begin( vertices ), end( vertices ) );
+    _edges = VectorScotchNum( begin( edges ), end( edges ) );
+    if ( weights.size() == 0 ) {
+        return SCOTCH_dgraphBuild( _graph, 0, _vertices.size() - 1, _vertices.size() - 1,
+                                   _vertices.data(), 0, 0, 0, _edges.size(), _edges.size(),
+                                   _edges.data(), 0, 0 );
+    } else {
+        _weights = VectorScotchNum( begin( weights ), end( weights ) );
+        return SCOTCH_dgraphBuild( _graph, 0, _vertices.size() - 1, _vertices.size() - 1,
+                                   _vertices.data(), 0, _weights.data(), 0, _edges.size(),
+                                   _edges.size(), _edges.data(), 0, 0 );
+    }
 };
 
 int PtScotchPartitioner::buildGraph( const MeshConnectionGraphPtr &graph,
                                      const VectorOfVectorsLong &nodesToGather ) {
-    auto &vert = const_cast< VectorLong & >( graph->getVertices() );
-    auto &edge = const_cast< VectorLong & >( graph->getEdges() );
-    _nbVertex = vert.size() - 1;
     _minId = graph->getRange()[0];
     if ( nodesToGather.size() == 0 ) {
-        if ( graph->getVertexWeights().size() == 0 ) {
-            return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0,
-                                       0, 0, edge.size(), edge.size(), edge.data(), 0, 0 );
-        } else {
-            auto &weights = const_cast< VectorLong & >( graph->getVertexWeights() );
-            return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0,
-                                       weights.data(), 0, edge.size(), edge.size(), edge.data(), 0,
-                                       0 );
-        }
+        return buildGraph( graph->getVertices(), graph->getEdges(), graph->getVertexWeights() );
     } else {
-        // If user aske to gather some nodes
+        // If the user asks to gather some nodes
+        auto &vert = graph->getVertices();
+        auto &edge = graph->getEdges();
+        _nbVertex = vert.size() - 1;
         _gatheredNodes = true;
         const auto nbProcs = getMPISize();
         VectorOfVectorsLong firstNodesAndWeights =
@@ -202,7 +202,8 @@ int PtScotchPartitioner::checkGraph() { return SCOTCH_dgraphCheck( _graph ); };
 VectorLong PtScotchPartitioner::partitionGraph( bool deterministic ) {
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
-    VectorLong partition( _nbVertex, -1 ), distributed;
+    VectorScotchNum partition( _nbVertex, -1 );
+    VectorLong distributed;
     if ( deterministic ) {
         _graph2 = new SCOTCH_Dgraph;
         SCOTCH_dgraphInit( _graph2, aster_get_current_comm()->id );
@@ -249,7 +250,8 @@ VectorLong PtScotchPartitioner::partitionGraph( bool deterministic ) {
     return distributed;
 };
 
-void PtScotchPartitioner::buildPartition( const VectorLong &partition, VectorLong &distributed ) {
+void PtScotchPartitioner::buildPartition( const VectorScotchNum &partition,
+                                          VectorLong &distributed ) {
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
     VectorLong toDistribute( _nbVertex, -1 );

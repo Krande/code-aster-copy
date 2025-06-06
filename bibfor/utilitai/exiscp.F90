@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: nomcmp
     character(len=8) :: char
@@ -75,7 +76,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
     character(len=8) :: nomddl(nmocl), noma, mod
     character(len=16) :: pheno
     character(len=19) :: ligrmo
-    character(len=24) :: nomnoe
     character(len=8) :: nomgd
     character(len=8), pointer :: lgrf(:) => null()
 !
@@ -143,7 +143,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 !
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
-    nomnoe = noma//'.NOMNOE'
 !
 ! --- POUR CHAQUE NOEUD, ON VERIFIE SI LE DDL EST DESSUS
 !
@@ -151,7 +150,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
         if (typend .eq. 'NUM') then
             ino = numnd(i)
         else if (typend .eq. 'NOM') then
-            call jenonu(jexnom(nomnoe, nomnd(i)), ino)
+            ino = char8_to_int(nomnd(i))
         else
             ASSERT(.false.)
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/dismoi.h"
@@ -118,7 +119,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
     character(len=16) :: operation
     integer :: jbasef, k, ier
 !
-    real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, pi(3), normij
+    real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, ppi(3), normij
     real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan
     aster_logical :: grille, fonvir, fvirtu
 !
@@ -129,8 +130,6 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
     real(kind=8) :: ni(3), ti(3), bi(3), nj(3), tj(3), bj(3), rij(3, 3), tpl(3)
     real(kind=8) :: npl(3), bpl(3), axeul(3), calfa, salfa, modvec
     real(kind=8) :: t0, t180, alfa
-    parameter(t0=0.5d0/180.d0*3.1415d0)
-    parameter(t180=179.5d0/180.d0*3.1415d0)
     aster_logical :: endpnt
 !
 !     MULTIPLE CRACK FRONTS
@@ -169,6 +168,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
     call infmaj()
     call infniv(ifm, niv)
 !
+    t0 = 0.5d0*r8dgrd()
+    t180 = 179.5d0*r8dgrd()
     radtor = rdtor
     radimp = rdimp
 !
@@ -926,30 +927,30 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
                 if (jmin .eq. 1) then
 !           Le projete est sur un segment virtuel du fond de
 !           fissure (segment1)
-                    pi(1) = xm-zr(cfv+4-1+1)
-                    pi(2) = ym-zr(cfv+4-1+2)
-                    pi(3) = zm-zr(cfv+4-1+3)
-                    zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
+                    ppi(1) = xm-zr(cfv+4-1+1)
+                    ppi(2) = ym-zr(cfv+4-1+2)
+                    ppi(3) = zm-zr(cfv+4-1+3)
+                    zr(jdisfr+i-1) = ppi(1)**2+ppi(2)**2+ppi(3)**2
                 else if (jmin .eq. (nbptff-1)) then
-                    pi(1) = xm-zr(cfv+4*(nbptff-2)-1+1)
-                    pi(2) = ym-zr(cfv+4*(nbptff-2)-1+2)
-                    pi(3) = zm-zr(cfv+4*(nbptff-2)-1+3)
-                    zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
+                    ppi(1) = xm-zr(cfv+4*(nbptff-2)-1+1)
+                    ppi(2) = ym-zr(cfv+4*(nbptff-2)-1+2)
+                    ppi(3) = zm-zr(cfv+4*(nbptff-2)-1+3)
+                    zr(jdisfr+i-1) = ppi(1)**2+ppi(2)**2+ppi(3)**2
                 else
                     do k = 1, (numfon-1)
 !            Le point est projete sur un segment virtuel de type 1
                         if ((jmin) .eq. (zi(nfv+2*k-1)-1)) then
-                            pi(1) = xm-zr(cfv-1+4*(jmin-1)+1)
-                            pi(2) = ym-zr(cfv-1+4*(jmin-1)+2)
-                            pi(3) = zm-zr(cfv-1+4*(jmin-1)+3)
-                            zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
+                            ppi(1) = xm-zr(cfv-1+4*(jmin-1)+1)
+                            ppi(2) = ym-zr(cfv-1+4*(jmin-1)+2)
+                            ppi(3) = zm-zr(cfv-1+4*(jmin-1)+3)
+                            zr(jdisfr+i-1) = ppi(1)**2+ppi(2)**2+ppi(3)**2
                             goto 61
                         else if ((jmin) .eq. (zi(nfv+2*k))) then
 !              Le point est projete sur un segment virtuel de type 3
-                            pi(1) = xm-zr(cfv-1+4*(jmin-0)+1)
-                            pi(2) = ym-zr(cfv-1+4*(jmin-0)+2)
-                            pi(3) = zm-zr(cfv-1+4*(jmin-0)+3)
-                            zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
+                            ppi(1) = xm-zr(cfv-1+4*(jmin-0)+1)
+                            ppi(2) = ym-zr(cfv-1+4*(jmin-0)+2)
+                            ppi(3) = zm-zr(cfv-1+4*(jmin-0)+3)
+                            zr(jdisfr+i-1) = ppi(1)**2+ppi(2)**2+ppi(3)**2
                         else if ((jmin) .eq. (zi(nfv+2*k-1))) then
 !              Le point est projete sur un segment virtuel de type 2
                             normkl = ( &
@@ -968,16 +969,16 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
 !
                             if (normkl .ge. normij) then
 !                   On est plus proche du fond de fissure a gauche
-                                pi(1) = xm-zr(cfv-1+4*(jmin-2)+1)
-                                pi(2) = ym-zr(cfv-1+4*(jmin-2)+2)
-                                pi(3) = zm-zr(cfv-1+4*(jmin-2)+3)
-                                zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
+                                ppi(1) = xm-zr(cfv-1+4*(jmin-2)+1)
+                                ppi(2) = ym-zr(cfv-1+4*(jmin-2)+2)
+                                ppi(3) = zm-zr(cfv-1+4*(jmin-2)+3)
+                                zr(jdisfr+i-1) = ppi(1)**2+ppi(2)**2+ppi(3)**2
                             else
 !                   On est plus proche du fond de fissure a droite
-                                pi(1) = xm-zr(cfv-1+4*(jmin+1)+1)
-                                pi(2) = ym-zr(cfv-1+4*(jmin+1)+2)
-                                pi(3) = zm-zr(cfv-1+4*(jmin+1)+3)
-                                zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
+                                ppi(1) = xm-zr(cfv-1+4*(jmin+1)+1)
+                                ppi(2) = ym-zr(cfv-1+4*(jmin+1)+2)
+                                ppi(3) = zm-zr(cfv-1+4*(jmin+1)+3)
+                                zr(jdisfr+i-1) = ppi(1)**2+ppi(2)**2+ppi(3)**2
                             end if
                             goto 61
                         end if

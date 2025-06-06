@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine caliob(load, mesh, model, valeType)
 #include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=4), intent(in) :: valeType
@@ -195,7 +196,7 @@ subroutine caliob(load, mesh, model, valeType)
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
-                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                name_node = int_to_char8(nume_node)
                 call afrela([coefr], [coefc], ddl, name_node, [geomDime], &
                             direct, 1, val_r, val_c, val_f, &
                             typcoe, valeType, 0.d0, lisrel)

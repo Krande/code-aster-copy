@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
+subroutine dilcar(option, compor, icontm, ivarim, ideplm, ideplp, &
                   igeom, imate, imatuu, ivectu, icontp, &
                   ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
 !
@@ -30,9 +30,10 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-    integer :: icompo, icontm, ivarim, ideplm, ideplp, igeom, imate, jcret
+    integer :: icontm, ivarim, ideplm, ideplp, igeom, imate, jcret
     integer :: imatuu, ivectu, icontp, ichg, ichn, ivarip, icarcr, iinstm, iinstp
     character(len=16) :: option
+    character(len=16), pointer :: compor(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +51,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
     lMatr = ASTER_FALSE
     lSigm = ASTER_FALSE
     lVari = ASTER_FALSE
-    icompo = ismaem()
     icontm = ismaem()
     ivarim = ismaem()
     ideplm = ismaem()
@@ -71,7 +71,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
 ! - Input fields
 !
     if (option(1:9) .eq. 'RIGI_MECA') then
-        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
@@ -82,7 +81,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
         call jevech('PINSTMR', 'L', iinstm)
         call jevech('PINSTPR', 'L', iinstp)
     else if (option .eq. 'RAPH_MECA') then
-        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
@@ -93,7 +91,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
         call jevech('PINSTMR', 'L', iinstm)
         call jevech('PINSTPR', 'L', iinstp)
     else if (option(1:9) .eq. 'FULL_MECA') then
-        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
@@ -104,7 +101,6 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
         call jevech('PINSTMR', 'L', iinstm)
         call jevech('PINSTPR', 'L', iinstp)
     else if (option .eq. 'FORC_NODA') then
-        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PSIEFR', 'L', icontm)
         call jevech('PGEOMER', 'L', igeom)
     else
@@ -113,8 +109,8 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
 !
 ! - Select objects to construct from option name
 !
-    call jevech('PCOMPOR', 'L', icompo)
-    call behaviourOption(option, zk16(icompo), &
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm)
 

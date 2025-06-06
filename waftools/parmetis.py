@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ def options(self):
     )
     group.add_option(
         "--parmetis-libs",
-        type="string",
+        type=str,
         dest="parmetis_libs",
         default=None,
         help="parmetis librairies to use when linking",
@@ -81,20 +81,62 @@ def check_parmetis(self):
         opts.parmetis_libs = "parmetis"
     if opts.parmetis_libs:
         self.check_parmetis_libs()
+    self.check_parmetis_idx()
+    self.check_parmetis_real()
     self.check_parmetis_version()
 
 
 @Configure.conf
 def check_parmetis_libs(self):
     opts = self.options
-    check_ = partial(
-        self.check_cc, uselib_store="PARMETIS", use="PARMETIS METIS GKLIB M", mandatory=True
-    )
+    check_ = partial(self.check_cc, uselib_store="PARMETIS", use="PARMETIS METIS M", mandatory=True)
     if opts.embed_all or opts.embed_parmetis:
         check = lambda lib: check_(stlib=lib)
     else:
         check = lambda lib: check_(lib=lib)
     list(map(check, Utils.to_list(opts.parmetis_libs)))
+
+
+@Configure.conf
+def check_parmetis_idx(self):
+    fragment = r"""
+#include <stdio.h>
+#include <parmetis.h>
+int main(void){
+    idx_t idx;
+    printf("%d", (int)sizeof(idx));
+    return 0;
+}"""
+    self.code_checker(
+        "ASTER_PARMETIS_IDX_SIZE",
+        self.check_cc,
+        fragment,
+        "Checking size of parmetis idx_t",
+        "unexpected value for sizeof(idx_t): %(size)s",
+        into=(4, 8),
+        use="PARMETIS METIS M",
+    )
+
+
+@Configure.conf
+def check_parmetis_real(self):
+    fragment = r"""
+#include <stdio.h>
+#include <parmetis.h>
+int main(void){
+    real_t real;
+    printf("%d", (int)(sizeof(real)));
+    return 0;
+}"""
+    self.code_checker(
+        "ASTER_PARMETIS_REAL_SIZE",
+        self.check_cc,
+        fragment,
+        "Checking size of parmetis real_t",
+        "unexpected value for sizeof(real_t): %(size)s",
+        into=(4, 8),
+        use="PARMETIS METIS M",
+    )
 
 
 @Configure.conf
@@ -110,11 +152,7 @@ int main(void) {
     self.start_msg("Checking parmetis version")
     try:
         ret = self.check_cc(
-            fragment=fragment,
-            use="PARMETIS METIS GKLIB M",
-            mandatory=True,
-            execute=True,
-            define_ret=True,
+            fragment=fragment, use="PARMETIS METIS M", mandatory=True, execute=True, define_ret=True
         )
         mat5 = re.search(r"PARMETISVER: *(?P<vers>[0-9]+\.[0-9]+\.\w+)", ret)
         vers = mat5 and mat5.group("vers")

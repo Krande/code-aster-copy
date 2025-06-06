@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine cagrou(load, mesh, vale_type, phenom)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -36,6 +37,7 @@ subroutine cagrou(load, mesh, vale_type, phenom)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 !  Person in charge: mickael.abbas at edf.fr
 !
@@ -82,7 +84,8 @@ subroutine cagrou(load, mesh, vale_type, phenom)
     integer :: nb_node
     character(len=24) :: list_dof
     integer :: jlidof
-    integer :: nb_dof
+    integer :: nb_dof, ier
+    aster_logical :: lcolle
 !
     data repe_type/0, 0/
     data repe_defi/0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0/
@@ -105,6 +108,11 @@ subroutine cagrou(load, mesh, vale_type, phenom)
     coef_real_unit(2) = -1.d0
     list_rela = '&&CAGROU.RLLISTE'
     list_dof = '&&CAGROU.LIST_DOF'
+    lcolle = .false.
+    call jeexin(mesh//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
 !
 ! - Initializations of types
 !
@@ -142,7 +150,7 @@ subroutine cagrou(load, mesh, vale_type, phenom)
 ! ----- First node
 !
         node_nume(1) = zi(jlino-1+1)
-        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(1)), node_name(1))
+        node_name(1) = int_to_char8(node_nume(1), lcolle, mesh, 'NOEUD')
 !
 ! ----- Loop on dof
 !
@@ -151,7 +159,7 @@ subroutine cagrou(load, mesh, vale_type, phenom)
             dof_name(2) = zk8(jlidof-1+i_dof)
             do i_no = 2, nb_node
                 node_nume(2) = zi(jlino-1+i_no)
-                call jenuno(jexnum(mesh//'.NOMNOE', node_nume(2)), node_name(2))
+                node_name(2) = int_to_char8(node_nume(2), lcolle, mesh, 'NOEUD')
                 call afrela(coef_real_unit, coef_cplx_unit, dof_name, node_name, repe_type, &
                             repe_defi, nb_term, vale_real_zero, vale_cplx_zero, vale_func_zero, &
                             coef_type, vale_type, 0.d0, list_rela)

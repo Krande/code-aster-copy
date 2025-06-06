@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,6 @@ INFO_FONCTION = MACRO(
                 validators=NoRepeat(),
                 into=(
                     "INTE_ARIAS",
-                    "POUV_DEST",
                     "INTE_SPEC",
                     "VITE_ABSO_CUMU",
                     "DUREE_PHAS_FORT",
@@ -92,7 +91,7 @@ INFO_FONCTION = MACRO(
                 AMOR_REDUIT=SIMP(statut="o", typ="R"),
             ),
             b_pesanteur=BLOC(
-                condition="""is_in('OPTION', ("TOUT", "INTE_ARIAS", "POUV_DEST", "DUREE_PHAS_FORT")) """,
+                condition="""is_in('OPTION', ("TOUT", "INTE_ARIAS", "DUREE_PHAS_FORT")) """,
                 PESANTEUR=SIMP(statut="o", typ="R"),
             ),
         ),

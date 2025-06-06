@@ -76,7 +76,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! Behaviour
 !
-! MFRONT for CZM
+! MFRONT for CZM with ELEMJOINT elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,7 +100,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! In  vim              : internal state variables at beginning of current step time
 ! In  option           : name of option to compute
 ! In  angmas           : nautical angles
-! Out sigm             : stresses at end of current step time
+! Out sigp             : stresses at end of current step time
 ! Out vip              : internal state variables at end of current step time
 ! Out dsidep           : tangent matrix
 ! Out codret           : code for error
@@ -110,15 +110,14 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     aster_logical :: lMatr, lSigm, lVari
     integer :: i, j
     integer :: nstran, nforc, nstatv, nmatr
-    aster_logical, parameter :: lGreenLagr = ASTER_FALSE
     integer, parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: drot(3, 3), dstran(3), stran(3), dsidepMGIS(36)
-    real(kind=8) :: dtime, pnewdt
+    real(kind=8) :: dstran(3), stran(3), dsidepMGIS(36)
+    real(kind=8) :: dtime, pnewdt, rdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
-    aster_logical :: lCZM
-    real(kind=8) :: sigp_loc(6), vi_loc(nvi), dsidep_loc(6, 6)
+    aster_logical :: lGreenLagr, lCZM, lGradVari
+    real(kind=8) :: sigp_loc(6), dsidep_loc(6, 6), vi_loc(nvi)
     real(kind=8) :: props(MGIS_MAX_PROPS)
-    integer :: ntens, nprops, retcode
+    integer :: nprops, retcode
     aster_logical :: dbg
 !
 ! --------------------------------------------------------------------------------------------------
@@ -146,13 +145,15 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     rela_comp = compor(RELA_NAME)
     defo_comp = compor(DEFO)
     lCZM = typmod(2) .eq. 'ELEMJOIN'
+    lGradVari = typmod(2) .eq. 'GRADVARI'
+    lGreenLagr = defo_comp .eq. 'GREEN_LAGRANGE'
     ASSERT(lCZM)
 
 ! - Pointer to MGISBehaviour
     extern_addr = compor(MGIS_ADDR)
 
 ! - Management of dimensions
-    call getMGISDime(lGreenLagr, lCZM, ndim, &
+    call getMGISDime(lGreenLagr, lCZM, lGradVari, ndim, &
                      neps, nsig, nvi, ndsde, &
                      nstran, nforc, nstatv, nmatr)
 
@@ -165,9 +166,6 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Prepare strains
     call mfrontPrepareStrain(lGreenLagr, neps, epsm, deps, stran, dstran)
 
-! - Input stresses
-    sigp_loc(1:nforc) = sigm(1:nforc)
-
 ! - Input internal state variables
     vi_loc(1:nstatv) = vim(1:nstatv)
 
@@ -176,12 +174,10 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 
 ! - Anisotropic case
     if (use_orient(angmas, 3)) then
-        call matrot(angmas, drot)
-        call mgis_set_rotation_matrix(extern_addr, drot)
+        call utmess('F', 'MGIS1_2', sk=typmod(2))
     end if
 
 ! - Type of matrix for MFront
-    pnewdt = 1.d0
     dsidepMGIS = 0.d0
     if (option .eq. 'RIGI_MECA_TANG') then
         dsidepMGIS(1) = float(MGIS_BV_INTEGRATION_CONSISTENT_TANGENT_OPERATOR)
@@ -197,26 +193,6 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
         WRITE (6, *) "Option <", option, ">"
     end if
 
-! - Debug - Inputs
-    if (dbg) then
-        write (6, *) "+++ inputs +++ ", option
-        write (6, *) "sigp_loc", (sigp_loc(i), i=1, nforc)
-        write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
-        write (6, *) "stran:", (stran(i), i=1, nstran)
-        write (6, *) "dstran:", (dstran(i), i=1, nstran)
-        write (6, *) "dtime:", dtime
-        write (6, *) "predef:", (BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(i), &
-                                 i=1, BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
-        write (6, *) "dpred:", (BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(i), &
-                                i=1, BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
-        write (6, *) "props:", (props(i), i=1, nprops)
-        write (6, *) "angl_naut:", (angmas(i), i=1, ndim)
-        write (6, *) "ntens:", ntens
-        write (6, *) "nforc:", nforc
-        write (6, *) "nstatv:", nstatv
-        write (6, *) "nmatr:", nmatr
-    end if
-
 ! - Set material properties (begin and end of current time step)
     call mgis_set_material_properties(extern_addr, s0, props, nprops)
     call mgis_set_material_properties(extern_addr, s1, props, nprops)
@@ -225,24 +201,14 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
     call mgis_set_gradients(extern_addr, s0, stran, nstran)
     call mgis_set_gradients(extern_addr, s1, stran+dstran, nstran)
 
-! - Set stresses
-    call mgis_set_thermodynamic_forces(extern_addr, s0, sigp_loc, nforc)
-
 ! - Set internal state variables
     call mgis_set_internal_state_variables(extern_addr, s0, vi_loc, nstatv)
 
-! - Set external state variables (begin and end of current time step)
-    call mgis_set_external_state_variables(extern_addr, s0, &
-                                           BEHinteg%behavESVA%behavESVAExte%scalESVAPrev, &
-                                           BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
-    call mgis_set_external_state_variables(extern_addr, s1, &
-                                           BEHinteg%behavESVA%behavESVAExte%scalESVAPrev+ &
-                                           BEHinteg%behavESVA%behavESVAExte%scalESVAIncr, &
-                                           BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
+! - Désactivation de l'augmentation du pas de temps dans la LdC
+    rdt = 1.d0
 
 ! - Call to integrator
-    ! call mgis_debug(extern_addr, "Before integration:")
-    call mgis_integrate(extern_addr, sigp_loc, vi_loc, dsidepMGIS, dtime, &
+    call mgis_integrate(extern_addr, sigp_loc, vi_loc, dsidepMGIS, dtime, rdt, &
                         pnewdt, retcode)
 
 ! - Debug - Outputs
@@ -251,40 +217,33 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
         write (6, *) "sigp_loc", (sigp_loc(i), i=1, nforc)
         write (6, *) "vi_loc", (vi_loc(i), i=1, nstatv)
         write (6, *) "dsidepMGIS", (dsidepMGIS(i), i=1, nmatr*nmatr)
-        write (6, *) "pnewdt/retcode:", pnewdt, retcode
+        write (6, *) "pnewdt( pas utilisé par aster)", pnewdt
+        write (6, *) "retcode:", retcode
     end if
 
 ! - Convert stresses (nothing to do: same convention in code_aster)
 
 ! - Convert matrix
-    if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+    if (lMatr) then
         do i = 1, ndim
             do j = 1, ndim
                 dsidep_loc(i, j) = dsidepMGIS(ndim*(i-1)+j)
             end do
         end do
     end if
-!
+
 ! - Returned code from mgis_integrate (retcode):
 !    -1: integration failed
 !     0: integration succeeded but results are unreliable
 !     1: integration succeeded and results are reliable
-!   Use 'pnewdt' to return state to caller:
-    if (retcode .lt. 0) then
+    if (retcode .eq. -1) then
         codret = 1
-    end if
-    if (pnewdt .lt. 0.0d0) then
-        if (pnewdt .lt. -0.99d0 .and. pnewdt .gt. -1.01d0) then
-            codret = 1
-        else if (pnewdt .lt. -1.99d0 .and. pnewdt .gt. -2.01d0) then
-            call utmess('F', 'MFRONT_1')
-        else if (pnewdt .lt. -2.99d0 .and. pnewdt .gt. -3.01d0) then
-            call utmess('F', 'MFRONT_2')
-        else if (pnewdt .lt. -3.99d0 .and. pnewdt .gt. -4.01d0) then
-            codret = 1
-        else
-            call utmess('F', 'MFRONT_3')
-        end if
+    elseif (retcode .eq. 0) then
+        codret = 2
+    elseif (retcode .eq. 1) then
+        codret = 0
+    else
+        ASSERT(ASTER_FALSE)
     end if
 
 ! - Copy outputs
@@ -292,10 +251,7 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
         sigp = 0.d0
         sigp(1:nforc) = sigp_loc(1:nforc)
     end if
-    if (lVari) then
-        vip = 0.d0
-        vip(1:nstatv) = vi_loc(1:nstatv)
-    end if
+
     if (lMatr) then
         dsidep = 0.d0
         do i = 1, nmatr
@@ -304,5 +260,10 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
             end do
         end do
     end if
-!
+
+    if (lVari) then
+        vip = 0.d0
+        vip(1:nstatv) = vi_loc(1:nstatv)
+    end if
+
 end subroutine

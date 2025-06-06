@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,6 +98,8 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 !______________________________________________________________________
 !
     implicit none
+#include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/sandcas1.h"
 #include "asterfort/sandcas2.h"
 #include "asterfort/sandcas3.h"
@@ -157,7 +159,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: tC, zMOY, CRdc, kBAR, rho, k1, vmin, vCALC, VRdc, AsT, ThetaB, VRdmax
     real(kind=8) :: thetaB_ITER(233), EQ_ITER(233), AsT_ITER(233)
 
-    pi = 3.14159265
+    pi = r8pi()
     fcd = fbeton/gammac
     fyd = facier/gammas
 
@@ -511,7 +513,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 
             do j = 1, 233
                 thetaB_ITER(j) = 21.8+(j-1)*0.1
-                thetaB = ThetaB_ITER(j)*pi/180.0
+                thetaB = ThetaB_ITER(j)*r8dgrd()
                 VRdmax = alphaCW*zMOY*Nu1*fcd/(Tan(ThetaB)+1/(Tan(ThetaB)))
                 EQ_ITER(j) = VRdmax-VEd
                 AsT_ITER(j) = (VEd*Tan(ThetaB))/(zMOY*fyd)
@@ -526,13 +528,13 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
             if (EQ_ITER(j) .ge. 0) then
                 COUNT_ITER = COUNT_ITER+1
                 if (COUNT_ITER .eq. 1) then
-                    ThetaB = ThetaB_ITER(j)*pi/180.0
+                    ThetaB = ThetaB_ITER(j)*r8dgrd()
                     AsT = AsT_ITER(j)
                     VRdmax = EQ_ITER(j)+VEd
                 else
                     if (AsT_ITER(j) .lt. AsT) then
                         AsT = AsT_ITER(j)
-                        ThetaB = ThetaB_ITER(j)*pi/180.0
+                        ThetaB = ThetaB_ITER(j)*r8dgrd()
                         VRdmax = EQ_ITER(j)+VEd
                     end if
                 end if

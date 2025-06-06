@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine tecael(iadzi, iazk24, noms)
 #include "asterfort/assert.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 !
     integer, intent(out) :: iadzi
     integer, intent(out) :: iazk24
@@ -92,7 +93,7 @@ subroutine tecael(iadzi, iazk24, noms)
         zi(ca_icaeli_-1+1) = ima
         zi(ca_icaeli_-1+2) = nno
         if (noms2 .eq. 1) then
-            call jenuno(jexnum(ma//'.NOMMAI', ima), nomma)
+            nomma = int_to_char8(ima)
             zk24(ca_icaelk_-1+3) = nomma
         else
             zk24(ca_icaelk_-1+3) = ' '
@@ -120,7 +121,7 @@ subroutine tecael(iadzi, iazk24, noms)
         zi(ca_icaeli_-1+2+ino) = nuno
 !
         if ((noms2 .eq. 1) .and. (nuno .gt. 0)) then
-            call jenuno(jexnum(ma//'.NOMNOE', nuno), nomno)
+            nomno = int_to_char8(nuno)
             zk24(ca_icaelk_-1+3+ino) = nomno
         else
             zk24(ca_icaelk_-1+3+ino) = ' '

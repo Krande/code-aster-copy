@@ -30,6 +30,7 @@
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 
+#include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/DataField.h"
 #include "DataFields/SimpleFieldOnCells.h"
 #include "MemoryManager/JeveuxVector.h"
@@ -60,14 +61,14 @@ class FieldOnCells : public DataField {
     JeveuxVector< ValueType > _values;
     /** @brief Finite element description */
     FiniteElementDescriptorPtr _dofDescription;
-    /** @brief Object for dynamic fields  (as VARI_ELGA) */
+    /** @brief Object for dynamic fields (as VARI_ELGA) */
     std::shared_ptr< SimpleFieldOnCells< ASTERINTEGER > > _DCEL;
 
   public:
     using FieldOnCellsPtr = std::shared_ptr< FieldOnCells >;
 
     /**
-     * @brief Constructor
+     * @brief Constructor with given name
      * @param name Jeveux name of the field
      */
     FieldOnCells( const std::string name )
@@ -81,13 +82,13 @@ class FieldOnCells : public DataField {
     /** @brief Constructor with automatic name */
     FieldOnCells() : FieldOnCells( ResultNaming::getNewResultName() ) {};
 
-    /** @brief Constructor with automatic name and FE Descriptor*/
+    /** @brief Constructor with automatic name and FE Descriptor */
     FieldOnCells( const FiniteElementDescriptorPtr FEDesc )
         : FieldOnCells( ResultNaming::getNewResultName() ) {
         setDescription( FEDesc );
     };
 
-    /** @brief Constructor with automatic name and model*/
+    /** @brief Constructor with automatic name and model */
     FieldOnCells( const ModelPtr model ) : FieldOnCells( model->getFiniteElementDescriptor() ) {};
 
     /** @brief Copy constructor */
@@ -171,17 +172,6 @@ class FieldOnCells : public DataField {
         _dofDescription = nullptr;
     };
 
-    // FieldOnCellsPtr restrict( const VectorString &cmps = {},
-    //                           const VectorString &groupsOfCells = {} ) const {
-
-    //     auto simpField = this->toSimpleFieldOnCells();
-    //     auto simpFieldRest = simpField->restrict( cmps, groupsOfCells );
-
-    //     _reference->updateValuePointer();
-
-    //     return simpFieldRest->toFieldOnCells( _dofDescription, strip( ( *_reference )[1] ) );
-    // };
-
     /**
      * @brief Check if fields are OK for +, +=, ...
      * @return true if compatible
@@ -193,17 +183,15 @@ class FieldOnCells : public DataField {
         return similar;
     }
 
-    /**
-     * @brief Get the mesh
-     */
+    /** @brief Get the mesh */
     BaseMeshPtr getMesh() const {
         if ( _dofDescription ) {
             return _dofDescription->getMesh();
         }
-
         return nullptr;
     };
 
+    /** @brief Get the model */
     ModelPtr getModel() const {
         if ( _dofDescription ) {
             return _dofDescription->getModel();
@@ -212,10 +200,12 @@ class FieldOnCells : public DataField {
         return nullptr;
     }
 
+    /** @brief Get datastructure for dynamic fields (as VARI_ELGA) */
     std::shared_ptr< SimpleFieldOnCells< ASTERINTEGER > > getExtentedInformations() const {
         return _DCEL;
     };
 
+    /** @brief Set datastructure for dynamic fields (as VARI_ELGA) */
     void
     setExtentedInformations( const std::shared_ptr< SimpleFieldOnCells< ASTERINTEGER > > dcel ) {
         if ( dcel ) {
@@ -242,16 +232,12 @@ class FieldOnCells : public DataField {
         _dofDescription = curDesc;
     };
 
-    /**
-     * @brief Get the description of finite elements
-     */
+    /** @brief Get the description of finite elements */
     FiniteElementDescriptorPtr getDescription() const { return _dofDescription; };
 
     bool exists() const { return _descriptor.exists() && _values.exists(); };
 
-    /**
-     * @brief Update field and build FiniteElementDescriptor if necessary
-     */
+    /**  @brief Update field and build FiniteElementDescriptor if necessary */
     ASTERBOOL build( std::vector< FiniteElementDescriptorPtr > FEDs =
                          std::vector< FiniteElementDescriptorPtr >() ) {
         if ( !_dofDescription ) {
@@ -385,7 +371,6 @@ class FieldOnCells : public DataField {
 
     /**
      * @brief Get values of the field
-     *
      */
     const JeveuxVector< ValueType > &getValues() const {
         _values->updateValuePointer();
@@ -394,7 +379,6 @@ class FieldOnCells : public DataField {
 
     /**
      * @brief Get descriptor of the field
-     *
      */
     JeveuxVectorLong getDescriptor() const { return _descriptor; };
 
@@ -536,10 +520,8 @@ class FieldOnCells : public DataField {
         return modeName;
     }
 
-    /**
-     * @brief Size of the FieldOnNodes
-     */
-    const ASTERINTEGER size() const { return _values->size(); }
+    /**  @brief Size of the field */
+    ASTERINTEGER size() const { return _values->size(); }
 
     // norm and dot methods
 
@@ -581,6 +563,13 @@ class FieldOnCells : public DataField {
 
         return cham_elem;
     }
+
+    /**
+     * @brief Check field for internal state variables
+     * @param tmp object FieldOnCellsPtr
+     */
+    void checkInternalStateVariables( const ConstantFieldOnCellsChar16Ptr prevBehaviour,
+                                      const ConstantFieldOnCellsChar16Ptr currBehaviour );
 
     friend class FieldBuilder;
 };

@@ -6,7 +6,7 @@
  * @brief Fichier entete permettant de decrire un fichier sur unité logique
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -66,13 +66,7 @@ class LogicalUnitFile {
     LogicalUnitFile( const std::filesystem::path &filename, const FileType type,
                      const FileAccess access )
         : _fileName( filename ), _isUsable( true ) {
-        #ifdef ASTER_PLATFORM_MSVC64
-            // Convert wide string to narrow
-            const std::string narrow = filename.string();
-            _logicalUnit = openLogicalUnitFile(narrow.c_str(), type, access);
-        #else
-            _logicalUnit = openLogicalUnitFile(filename.c_str(), type, access);
-        #endif
+        _logicalUnit = openLogicalUnitFile( filename.string().c_str(), type, access );
     };
 
     /**
@@ -93,13 +87,7 @@ class LogicalUnitFile {
             releaseLogicalUnitFile( _logicalUnit );
         _fileName = filename;
         _isUsable = true;
-        #ifdef ASTER_PLATFORM_MSVC64
-            // Convert wide string to narrow
-            const std::string narrow = filename.string();
-            _logicalUnit = openLogicalUnitFile(narrow.c_str(), type, access);
-        #else
-            _logicalUnit = openLogicalUnitFile(filename.c_str(), type, access);
-        #endif
+        _logicalUnit = openLogicalUnitFile( filename.string().c_str(), type, access );
     };
 
     /**

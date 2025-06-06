@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 # ----------------------------------------------
 #                   PARAMETRES
 # ----------------------------------------------
@@ -69,9 +69,6 @@ E = 1.0e6
 nu = 0.0
 rho = 7800.0
 
-# ACTIVATION DU CONTACT
-contact = False
-
 # COEFFICIENT DE FROTTEMENT
 COULOM = 0.0
 
@@ -79,10 +76,8 @@ COULOM = 0.0
 ALGOLAG = "VERSION1"
 
 # K1 ANALYTIQUES DU TEST DE BUI
-if not contact:
-    K1REF = 0.8862925 * A ** (3 / 2.0)
-else:
-    K1REF = 0.9648017 * A ** (3 / 2.0)
+K1REF = 0.8862925 * A ** (3 / 2.0)
+
 
 GREF = (1 - nu**2) / E * K1REF**2
 
@@ -205,22 +200,8 @@ FISS = DEFI_FISS_XFEM(
 # ----------------------------------------------
 
 
-if not contact:
-    MODELEK = MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, INFO=1)
-else:
-    MODELEK = MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, CONTACT="STANDARD", INFO=1)
-    CTXFEM = DEFI_CONTACT(
-        MODELE=MODELEK,
-        FORMULATION="XFEM",
-        # ELIM_ARETE = 'ELIM',
-        ZONE=(
-            _F(
-                INTEGRATION="NOEUD",
-                FISS_MAIT=FISS,
-                # ALGO_LAGR     = 'VERSION2',
-            ),
-        ),
-    )
+MODELEK = MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, INFO=1)
+
 
 MA_XFEM = POST_MAIL_XFEM(MODELE=MODELEK)
 
@@ -281,66 +262,14 @@ elif fonction == 1:
 #                   RESOLUTION
 # ----------------------------------------------
 
-if not contact:
-    RESU1 = MECA_STATIQUE(
-        MODELE=MODELEK,
-        CHAM_MATER=CHAMPMA1,
-        EXCIT=(_F(CHARGE=CHRIGI), _F(CHARGE=CHPRES)),
-        SOLVEUR=_F(METHODE="MULT_FRONT"),
-        INFO=1,
-    )
-else:
-    L_INS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=3.0, NOMBRE=3))
+RESU1 = MECA_STATIQUE(
+    MODELE=MODELEK,
+    CHAM_MATER=CHAMPMA1,
+    EXCIT=(_F(CHARGE=CHRIGI), _F(CHARGE=CHPRES)),
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    INFO=1,
+)
 
-    RESU1 = STAT_NON_LINE(
-        MODELE=MODELEK,
-        CHAM_MATER=CHAMPMA1,
-        CONTACT=CTXFEM,
-        EXCIT=(_F(CHARGE=CHRIGI), _F(CHARGE=CHPRES)),
-        INCREMENT=_F(LIST_INST=L_INS1, INST_FIN=1.0),
-        NEWTON=_F(REAC_ITER=1),
-        SOLVEUR=_F(METHODE="MULT_FRONT"),
-        ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
-        INFO=1,
-    )
-
-
-# ----------------------------------------------
-#         EDITION DE FICHIER XMGRACE
-# ----------------------------------------------
-
-if False and contact:
-    TABLAG = POST_RELEVE_T(
-        ACTION=_F(
-            INTITULE="DEPLE",
-            GROUP_NO="NFISSU",
-            RESULTAT=RESU1,
-            NOM_CHAM="DEPL",
-            NUME_ORDRE=1,
-            TOUT_CMP="OUI",
-            OPERATION="EXTRACTION",
-        )
-    )
-
-    # IMPR_TABLE(TABLE=TABLAG,FORMAT_R='E14.7',)
-    tab1 = TABLAG.EXTR_TABLE()
-    tab2 = tab1.COOR_X > -1.1 * cos(ALPHA)
-    tab3 = tab2.COOR_X < 1.1 * cos(ALPHA)
-    tab3.sort("COOR_X")
-    tab4 = (tab3.LAGS_C is not None).values()
-    X = tab4["COOR_X"]
-    LAGS = tab4["LAGS_C"]
-    f = open("/home/G31256/courbe_lag.dat", "w")
-    f.write("# Trace de Lag_C en fonction de x\n")
-    f.write("""@    xaxis  label "x"\n""")
-    f.write("""@    yaxis  label "LAG_C"\n""")
-    for i in range(0, len(X)):
-        f.write(str(X[i]))
-        f.write(" ")
-        f.write(str(LAGS[i]))
-        f.write(" \n")
-    f.write("&\n")
-    f.close()
 
 # ----------------------------------------------
 #           EDITION DE FICHIERS GMSH

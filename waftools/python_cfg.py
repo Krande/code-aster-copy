@@ -76,9 +76,13 @@ def check_numpy(self):
 def check_numpy_headers(self):
     if not self.env["PYTHON"]:
         self.fatal("load python tool first")
-    self.start_msg("Checking for numpy include")
+    self.start_msg("Checking for numpy includes")
     # retrieve includes dir from numpy module
-    numpy_includes = self.get_python_variables(["numpy.get_include()"], ["import numpy"])
+    cmd = self.env.PYTHON + ["-c", "\nimport numpy\nprint(numpy.get_include())"]
+    numpy_includes = self.cmd_and_log(cmd, shell=False).strip()
+    self.end_msg(numpy_includes)
+    self.start_msg("Checking for numpy arrayobject.h")
+
     extra_flags = dict()
     if platform.system() == "Windows":
         library_prefix_ = pathlib.Path(self.env.PREFIX)
@@ -88,20 +92,17 @@ def check_numpy_headers(self):
         numpy_includes.append(python_include_dir.as_posix())
         numpy_includes.append(python_libs_dir.as_posix())
         extra_flags.update(dict(linkflags=[f"/LIBPATH:{python_libs_dir}", f"/LIBPATH:{python_include_dir}"]))
-
-    Logs.info(f"{numpy_includes=}")
+        Logs.info(f"MSVC {numpy_includes=}")
 
     if self.is_defined("ASTER_PLATFORM_MINGW"):
-        incs = [PureWindowsPath(i) for i in numpy_includes]
-        numpy_includes = []
-        for path in incs:
-            parts = list(path.parts)
-            if path.anchor:
-                parts[0] = path.root
-            for i, sub in enumerate(parts):
-                if sub == "lib":
-                    parts[i] = "Lib"
-            numpy_includes.append(PureWindowsPath(*parts).as_posix())
+        incs = PureWindowsPath(numpy_includes)
+        parts = list(incs.parts)
+        if incs.anchor:
+            parts[0] = incs.root
+        for i, sub in enumerate(parts):
+            if sub == "lib":
+                parts[i] = "Lib"
+        numpy_includes = PureWindowsPath(*parts).as_posix()
     # check the given includes dirs
     self.check(
         feature="c",

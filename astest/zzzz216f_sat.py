@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,6 @@ class FakeSaturne(ExternalCoupling):
         self._params.set_values(params)
 
         nb_step = (self._params.final_time - self._params.init_time) / self._params.delta_t
-        self.MPI.COUPLING_COMM_WORLD.send(0, "NBPDTM", nb_step, self.MPI.INT)
 
         self.MPI.COUPLING_COMM_WORLD.send(0, "NBSSIT", self._params.nb_iter, self.MPI.INT)
         self.MPI.COUPLING_COMM_WORLD.send(0, "TADAPT", int(self._params.adapt_step), self.MPI.INT)
@@ -67,6 +66,7 @@ class FakeSaturne(ExternalCoupling):
         self.MPI.COUPLING_COMM_WORLD.send(0, "EPSILO", self._params.epsilon, self.MPI.DOUBLE)
 
         self.MPI.COUPLING_COMM_WORLD.send(0, "TTINIT", self._params.init_time, self.MPI.DOUBLE)
+        self.MPI.COUPLING_COMM_WORLD.send(0, "TTMAX", self._params.final_time, self.MPI.DOUBLE)
         self.MPI.COUPLING_COMM_WORLD.send(0, "PDTREF", self._params.delta_t, self.MPI.DOUBLE)
 
     def run(self, solver):

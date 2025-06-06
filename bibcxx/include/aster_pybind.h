@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -39,6 +39,8 @@ static std::shared_ptr< DSType > initFactoryPtr( Args... args ) {
 };
 
 /** @brief Defines pickling functions */
+/* If the object inherits from DataStructure, it must inherit from UseCppPickling too.
+ */
 template < typename DSType >
 static auto define_pickling() {
     return py::pickle( []( const DSType &obj ) { return obj._getState(); },
@@ -76,6 +78,28 @@ struct type_caster< JeveuxVector< T > > {
     }
 };
 
+/** @brief Converter for JeveuxVector */
+template < int lengthT >
+struct type_caster< JeveuxVector< JeveuxString< lengthT > > > {
+  public:
+    PYBIND11_TYPE_CASTER( JeveuxVector< JeveuxString< lengthT > >, const_name( "JeveuxVector" ) );
+
+    bool load( handle /* src */, bool ) { return false; }
+
+    static handle cast( const JeveuxVector< JeveuxString< lengthT > > &vect,
+                        return_value_policy /* policy */, handle /* parent */ ) {
+        py::list pylist;
+        if ( vect.exists() ) {
+            vect->updateValuePointer();
+            auto size = vect->size();
+            for ( int i = 0; i < size; ++i ) {
+                pylist.append( ( *vect )[i].rstrip() );
+            }
+        }
+        return pylist.inc_ref();
+    }
+};
+
 /** @brief Converter for JeveuxCollection */
 template < typename T >
 struct type_caster< JeveuxCollection< T > > {
@@ -86,6 +110,35 @@ struct type_caster< JeveuxCollection< T > > {
 
     static handle cast( const JeveuxCollection< T > &coll, return_value_policy /* policy */,
                         handle /* parent */ ) {
+        py::list pylist;
+        if ( !coll->build() || coll->size() < 0 ) {
+            return pylist.inc_ref();
+        }
+        for ( const auto &pair : coll ) {
+            const auto &obj = pair.second;
+            obj->updateValuePointer();
+            py::list items;
+            for ( const auto &val : obj ) {
+                items.append( val );
+            }
+            items.inc_ref();
+            pylist.append( items );
+        }
+        return pylist.inc_ref();
+    }
+};
+
+/** @brief Converter for JeveuxContiguousCollection */
+template < typename T >
+struct type_caster< JeveuxCollection< T, ASTERINTEGER, Contiguous > > {
+  public:
+    typedef JeveuxCollection< T, ASTERINTEGER, Contiguous > ContiguousCollection;
+    PYBIND11_TYPE_CASTER( ContiguousCollection, const_name( "JeveuxContiguousCollection" ) );
+
+    bool load( handle /* src */, bool ) { return false; }
+
+    static handle cast( const JeveuxCollection< T, ASTERINTEGER, Contiguous > &coll,
+                        return_value_policy /* policy */, handle /* parent */ ) {
         py::list pylist;
         if ( !coll->build() || coll->size() < 0 ) {
             return pylist.inc_ref();

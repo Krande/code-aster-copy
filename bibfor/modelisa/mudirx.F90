@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine mudirx(nbsom, geom, idim, al1, al2, &
                   axe, ang)
     implicit none
 !
-#include "asterc/r8pi.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
     integer :: idim, nbsom
     real(kind=8) :: geom(idim, nbsom), axe(3, 3), ang(2), al1, al2
@@ -53,7 +53,7 @@ subroutine mudirx(nbsom, geom, idim, al1, al2, &
     real(kind=8) :: pjxi1, pjxi2, pjxi3, s1, s2, s3, psxin, coepi
 !
 !-----------------------------------------------------------------------
-    coepi = r8pi()/180.d0
+    coepi = r8dgrd()
     if (nbsom .ne. 3 .and. nbsom .ne. 4) then
         ASSERT(.false.)
     end if

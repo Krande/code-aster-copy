@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: sdmail, nomma
     integer :: lgrma(*), nbgrma, codret
@@ -50,7 +51,7 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    character(len=24) :: nommai, grpmai
+    character(len=24) :: grpmai
     integer :: i, j, ier, num, nbg, nbmag, jgrma
 !
 !====
@@ -61,19 +62,15 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 !
     codret = 0
     nbgrma = 0
-    nommai = sdmail//'.NOMMAI         '
     grpmai = sdmail//'.GROUPEMA       '
 !
 ! 1.2. ==> VERIFICATIONS
-!
-    call jeexin(nommai, ier)
-    ASSERT(ier .ne. 0)
 !
     call jeexin(grpmai, ier)
     ASSERT(ier .ne. 0)
 !
     num = 0
-    call jenonu(jexnom(nommai, nomma), num)
+    num = char8_to_int(nomma)
     ASSERT(num .ne. 0)
 !
 !====

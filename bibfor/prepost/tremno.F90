@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -189,7 +189,6 @@ subroutine tremno(ncmp, nssche, nomsd)
 !   CONSTRUCTION DU .NUND
 !   ---------------------
 !
-!-DEL CALL JELIRA(NMAILA//'.NOMNOE','NOMMAX',NBTND,K1BID)
     call dismoi('NB_NO_MAILLA', nmaila, 'MAILLAGE', repi=nbtnd)
 !
     call jecreo('&&TREMNO.LISTE.ENTIER', 'V V I')

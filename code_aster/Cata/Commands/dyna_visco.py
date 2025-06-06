@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ def dyna_visco_prod(self, TYPE_RESU, TYPE_MODE, **args):
         else:
             return mode_meca
 
-    raise AsException("type de concept résultat non prevu")
+    raise CataError("type de concept résultat non prevu")
 
 
 DYNA_VISCO = MACRO(

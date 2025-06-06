@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
     integer ::  i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
-    real(kind=8) :: coor_qp(2, 48), weight_qp(48)
+    real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)
     real(kind=8) :: gap, stress_nn, gamma_c, projRmVal
     real(kind=8) :: stress_t(2), vT(2), gamma_f, projBsVal(2)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)

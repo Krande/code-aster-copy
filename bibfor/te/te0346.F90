@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,10 +59,11 @@ subroutine te0346(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nno, nc, i, j, jcret, npg, ipoids
-    integer :: igeom, imate, icontm, iorien, icompo, iinstp
+    integer :: igeom, imate, icontm, iorien, iinstp
     integer :: ideplm, ideplp, iinstm, ivectu, icontp, imat
     integer :: istrxm, istrxp, ldep, codret
     character(len=4) :: fami
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, defo_comp
     aster_logical :: reactu
     aster_logical :: lVect, lMatr, lVari, lSigm
@@ -96,7 +97,7 @@ subroutine te0346(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PCAORIE', 'L', iorien)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PDEPLMR', 'L', ideplm)
@@ -109,8 +110,8 @@ subroutine te0346(option, nomte)
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
 !
 ! - Some checks
 !
@@ -123,7 +124,7 @@ subroutine te0346(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari, &
+    call behaviourOption(option, compor, lMatr, lVect, lVari, &
                          lSigm, codret)
 !
 ! - Get output fields

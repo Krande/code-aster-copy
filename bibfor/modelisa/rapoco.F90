@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,9 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
+#include "asterc/r8pi.h"
 !
     integer :: iocc
     character(len=8) :: charge
@@ -94,7 +97,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=19) :: ligrmo, ligrel
     character(len=24) :: lchin(4), lchout(2), nolili, lismai, valk(2)
-    character(len=24) :: lisnoe, noeuma, vale1, grnoma, vale2, nogrno
+    character(len=24) :: lisnoe, vale1, grnoma, vale2, nogrno
     integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, iop, numnop, nliai
     integer :: vali(2), nlili, nbterm, ncara, nddla, nbma, nbno, nno, nbec
     integer :: nbcmp
@@ -104,7 +107,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     integer ::  iaprno, idch2, idch1, ilisno, inom
     real(kind=8) :: ig(6), coorig(3), axepou(3), valr(9)
     real(kind=8) :: ayz, axx, ax, ay, axz, axy, ayy, azz, az, beta, dnorme, eps
-    real(kind=8) :: un
+    real(kind=8) :: un, pi
     real(kind=8) :: xg, yg, zg, xpou, ypou, zpou, xnorm, s1, s
     complex(kind=8) :: betac, ccmp(3)
     complex(kind=8), pointer :: coec(:) => null()
@@ -126,6 +129,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     numddl = numdlz
     charge = chargz
     lisrel = lisrez
+    pi = r8pi()
 !
     motfac = 'LIAISON_ELEM'
     call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
@@ -188,7 +192,6 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
 !
-    noeuma = noma//'.NOMNOE'
     grnoma = noma//'.GROUPENO'
 !
 ! --- RECUPERATION DU TABLEAU DES COORDONNEES :
@@ -299,7 +302,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         else
             call jeveuo(jexnom(grnoma, nogrno), 'L', jgro)
             in = zi(jgro+1-1)
-            call jenuno(jexnum(noeuma, in), noepou)
+            noepou = int_to_char8(in)
         end if
     end if
 !
@@ -342,7 +345,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! ---  NUMERO DU NOEUD POUTRE A LIER :
 !      -----------------------------
-    call jenonu(jexnom(noeuma, noepou), numnop)
+    numnop = char8_to_int(noepou)
 !
 ! ---  COORDONNEES DU NOEUD POUTRE :
 !      ---------------------------
@@ -355,7 +358,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !     -----------------------------------------------------
     do i = 1, lonlis
 ! ---     NUMERO DU NOEUD COURANT DE LA LISTE
-        call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1))
 !
         dg = prnm((ino-1)*nbec+1)
         do j = 4, 6
@@ -434,10 +437,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- VERIFICATION DE L'IDENTITE GEOMETRIQUE DE G AVEC LE
 ! --- NOEUD POUTRE A RACCORDER :
 !     ------------------------
-    dnorme = sqrt( &
-             (xpou-xg)*(xpou-xg)+(ypou-yg)*(ypou-yg)+(zpou-zg)*(zpou-zg))/sqrt(s/3.1415926&
-             &5d0 &
-             )
+    dnorme = sqrt((xpou-xg)*(xpou-xg)+(ypou-yg)*(ypou-yg)+(zpou-zg)*(zpou-zg))/sqrt(s/pi)
     if (dnorme .gt. eps) then
         valr(1) = xg
         valr(2) = yg
@@ -446,7 +446,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         valr(5) = ypou
         valr(6) = zpou
         valr(7) = eps*100.0d0
-        valr(8) = sqrt(s/3.14159265d0)
+        valr(8) = sqrt(s/pi)
         valr(9) = dnorme
         valk(1) = option
         vali(1) = iocc
@@ -578,7 +578,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1))
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
         ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
@@ -605,7 +605,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 ! ---   BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1))
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
         ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
@@ -632,7 +632,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = lonlis+1
 ! --- BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1))
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
         ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
@@ -660,7 +660,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 5*lonlis+3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1))
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !
@@ -706,7 +706,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 5*lonlis+3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1))
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !
@@ -752,7 +752,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nbterm = 5*lonlis+3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
-        call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
+        ino = char8_to_int(zk8(ilisno+i-1))
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
 #include "asterfort/alcart.h"
 #include "asterfort/angvx.h"
 #include "asterfort/assert.h"
@@ -58,12 +58,11 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
     integer :: iret
     aster_logical :: lcartf
     real(kind=8) :: ang(2), epa, kappa, correc, rigi, excent
-    real(kind=8) :: vect(3), pi, xiner
+    real(kind=8) :: vect(3), xiner
     character(len=8) :: inert, korrec, epaf, excf
     character(len=19) :: cartco, cartcf
     character(len=24) :: tmpnco, tmpvco, tmpncf, tmpvcf
 !-----------------------------------------------------------------------
-    pi = r8pi()
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
     call jemarq()
@@ -163,8 +162,8 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
         zr(jdvc+2) = ang(2)
         if (nvec .ne. 0) then
             call angvx(vect, ang(1), ang(2))
-            zr(jdvc+1) = ang(1)*180.d0/pi
-            zr(jdvc+2) = ang(2)*180.d0/pi
+            zr(jdvc+1) = ang(1)*r8rddg()
+            zr(jdvc+2) = ang(2)*r8rddg()
         end if
         zr(jdvc+3) = kappa
         if (korrec .eq. 'OUI') correc = 1.d0

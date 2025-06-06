@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine taxis(noma, indic, nbma)
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma
     integer :: indic(*)
@@ -81,8 +82,8 @@ subroutine taxis(noma, indic, nbma)
             do ino = 1, nbnoma
                 numno = zi(iacnex-1+ino)-1
                 if (vale(1+3*numno) .lt. toler) then
-                    call jenuno(jexnum(noma//'.NOMNOE', numno+1), k8b)
-                    call jenuno(jexnum(noma//'.NOMMAI', ima), k8a)
+                    k8b = int_to_char8(numno+1)
+                    k8a = int_to_char8(ima)
                     valk(1) = k8b
                     valk(2) = k8a
                     valr(1) = vale(1+3*numno)

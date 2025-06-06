@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ def post_cham_xfem_prod(RESULTAT, **args):
     if AsType(RESULTAT) == evol_ther:
         return evol_ther
 
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 POST_CHAM_XFEM = OPER(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -29,8 +29,14 @@ CARAC = AFFE_CARA_ELEM(
     MODELE=MO, COQUE=_F(COQUE_NCOU=9, GROUP_MA="TOUT", EPAIS=1000.0, VECTEUR=(0.0, 1.0, 0.0))
 )
 
+YOUNG = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(20.0, 250000.0, 120.0, 200000.0))
+
+POISSON = DEFI_CONSTANTE(VALE=0.3)
+
+DILAT = DEFI_CONSTANTE(VALE=0.0001)
+
 COU_T20 = DEFI_FONCTION(
-    NOM_PARA="EPSI", PROL_DROITE="LINEAIRE", VALE=(0.010, 1000.0, 1.010, 3500.0)
+    NOM_PARA="EPSI", PROL_DROITE="LINEAIRE", VALE=(0.004, 1000.0, 1.004, 3500.0)
 )
 
 COU_T120 = DEFI_FONCTION(
@@ -45,8 +51,9 @@ COU_TRAC = DEFI_NAPPE(
     PROL_DROITE="CONSTANT",
 )
 
-ACIER_T = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, ALPHA=1.0e-4), TRACTION=_F(SIGM=COU_TRAC))
-
+ACIER_T = DEFI_MATERIAU(
+    ELAS_FO=_F(E=YOUNG, NU=POISSON, ALPHA=DILAT, TEMP_DEF_ALPHA=20.0), TRACTION=_F(SIGM=COU_TRAC)
+)
 
 L_INST = DEFI_LIST_REEL(
     DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.00, NOMBRE=1), _F(JUSQU_A=2.00, NOMBRE=20))

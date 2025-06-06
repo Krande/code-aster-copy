@@ -6,7 +6,7 @@
  * @brief Header of class FieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -68,18 +68,7 @@ class FieldBuilder {
     /**
      * @brief Add a existing EquationNumbering in FieldBuilder
      */
-    EquationNumberingPtr newEquationNumbering( const std::string &name, const BaseMeshPtr mesh ) {
-        if ( _setGlobNume.count( strip( name ) ) > 0 ) {
-            raiseAsterError( "NUME_EQUA already exists: " + name );
-        }
-
-        auto curDesc = std::make_shared< EquationNumbering >( name );
-        curDesc->setMesh( mesh );
-
-        addEquationNumbering( curDesc );
-
-        return curDesc;
-    };
+    EquationNumberingPtr newEquationNumbering( const std::string &name, const BaseMeshPtr mesh );
 
     /**
      * @brief Add a existing generalizedEquationNumbering in FieldBuilder

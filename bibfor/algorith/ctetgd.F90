@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
 #include "asterfort/jexnum.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid(1), icomp, iloci, ilocj, inod
@@ -198,7 +199,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
 
             if (xtd(j) .gt. 0.d0 .and. xg(j) .eq. 0.d0) then
                 noer = zi(lldesc+inog-1)
-                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                nomnoe = int_to_char8(noer)
                 tyd = zk8(jnocmp-1+j)
                 call utmess('E', 'ALGORITH15_3')
                 valk(1) = tyd
@@ -208,7 +209,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
             end if
             if (xtg(j) .gt. 0.d0 .and. xd(j) .eq. 0.d0) then
                 noer = zi(lldesc+inod-1)
-                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                nomnoe = int_to_char8(noer)
                 tyd = zk8(jnocmp-1+j)
                 call utmess('E', 'ALGORITH15_3')
                 valk(1) = tyd
@@ -225,7 +226,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
         do j = 7, nbcmp
             if (idecd(j) .eq. 1.d0) then
                 noer = zi(lldesc+inod-1)
-                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                nomnoe = int_to_char8(noer)
                 tyd = zk8(jnocmp-1+j)
                 valk(1) = tyd
                 valk(2) = nomnoe
@@ -234,7 +235,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
             end if
             if (idecg(j) .eq. 1.d0) then
                 noer = zi(lldesc+inog-1)
-                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                nomnoe = int_to_char8(noer)
                 tyd = zk8(jnocmp-1+j)
                 valk(1) = tyd
                 valk(2) = nomnoe

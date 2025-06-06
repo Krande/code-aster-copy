@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -209,7 +209,8 @@ subroutine jevech(nmparz, louez, itab, vl, vi, &
 !
     if (present(itab)) then
         itab = jtab
-    else if (present(vl)) then
+    end if
+    if (present(vl)) then
         call jgetptc(jtab, pc, vl=zl(1))
         call c_f_pointer(pc, vl, [lonchl])
 !
@@ -250,7 +251,7 @@ subroutine jevech(nmparz, louez, itab, vl, vi, &
         call c_f_pointer(pc, vk80, [lonchl])
 !
     else
-        ASSERT(.false.)
+        ASSERT(present(itab))
     end if
 !
 end subroutine

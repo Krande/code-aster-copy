@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,7 @@ subroutine specep(casint, nomu, spectr, base, vite, &
 #include "asterfort/scalep.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     aster_logical :: casint
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ij, nbval
@@ -76,7 +77,7 @@ subroutine specep(casint, nomu, spectr, base, vite, &
     character(len=19) :: typflu
     character(len=24) :: spvain, spvate, spvare, spnnoe
     character(len=24) :: chvale, chnumj, chtab
-    character(len=24) :: remf, fsic, chrefe, mlgnno, mlgnma, chnumi
+    character(len=24) :: remf, fsic, chrefe, mlgnma, chnumi
 !
 !-----------------------------------------------------------------------
     integer :: iaxe, ideb, idec, iex, iex1
@@ -166,10 +167,9 @@ subroutine specep(casint, nomu, spectr, base, vite, &
 !-------RECUPERATION DU DIAMETRE EXTERIEUR DE LA POUTRE, NECESSAIRE AU
 !       DIMENSIONNEMENT DE L'EXCITATION GRAPPE2
 !
-        mlgnno = noma//'.NOMNOE'
-        call jenonu(jexnom(mlgnno, nomno0), numno0)
-        mlgnma = noma//'.NOMMAI'
-        call jelira(mlgnma, 'NOMMAX', nbma)
+        numno0 = char8_to_int(nomno0)
+        mlgnma = noma//'.TYPMAIL'
+        call jelira(mlgnma, 'LONMAX', nbma)
         call wkvect('&&SPECEP.TEMP.MAIL', 'V V I', nbma, imail)
         call exmano(noma, numno0, zi(imail), nbmano)
         if (nbmano .ne. 2) then

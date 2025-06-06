@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xorima.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
     character(len=8) :: noma
@@ -254,7 +255,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
         do isefis = 1, nbsef
 !
             nseabs = zi(jdlise-1+(isefis-1)+1)
-            call jenuno(jexnum(noma//'.NOMMAI', nseabs), nomail)
+            nomail = int_to_char8(nseabs)
 !
             inose = 1
             nunose(inose) = zi(jconx1-1+zi(jconx2+nseabs-1)+inose-1)

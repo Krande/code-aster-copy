@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=C0110
 
 subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
                   prefix, ndinit)
@@ -45,6 +46,8 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbma, nummai(*), ndinit
     character(len=8) :: nomain, nomaou, prefix
@@ -56,15 +59,16 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     integer :: ino, ima2, imav, iatyma, jvg, jtypm, jdime, jopt, jnpt
     integer :: nbno, ier, jgg, im, j, lgpref, lgnd, nbmag, nbgrm, ifm, niv, iq4
     integer :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
+    integer :: nbmais
     aster_logical :: logic
     character(len=1) :: base
     character(len=24) :: valk
     character(len=8) :: typm, nima
     character(len=16) :: knume
-    character(len=24) :: nommai, typmai, connex, nodime, nomnoe, grpnoe, cooval
+    character(len=24) :: typmai, connex, nodime, grpnoe, cooval
     character(len=24) :: coodsc, grpmai, nomg
-    character(len=24) :: typmav, connev, nodimv, nomnov, grpnov, gpptnn, coovav
-    character(len=24) :: coodsv, nommav, grpmav, gpptnm
+    character(len=24) :: typmav, connev, nodimv, grpnov, gpptnn, coovav
+    character(len=24) :: coodsv, grpmav, gpptnm
     integer :: versio
     parameter(versio=1)
 !  --- TABLEAU DE DECOUPAGE
@@ -91,8 +95,6 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !
     base = basz
 !
-    nommav = nomain//'.NOMMAI         '
-    nomnov = nomain//'.NOMNOE         '
     typmav = nomain//'.TYPMAIL        '
     connev = nomain//'.CONNEX         '
     grpnov = nomain//'.GROUPENO       '
@@ -101,8 +103,6 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     coovav = nomain//'.COORDO    .VALE'
     coodsv = nomain//'.COORDO    .DESC'
 !
-    nommai = nomaou//'.NOMMAI         '
-    nomnoe = nomaou//'.NOMNOE         '
     typmai = nomaou//'.TYPMAIL        '
     connex = nomaou//'.CONNEX         '
     grpnoe = nomaou//'.GROUPENO       '
@@ -165,10 +165,10 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
         if (iq9 .ne. 0) write (ifm, 502) iq9, 'QUAD9', 6*iq9, 'TRIA3'
     end if
 !
+    nbmais = nbmail
     nbmail = nbmail+nbtri
 !
     call jedupo(nodimv, base, nodime, logic)
-    call jedupo(nomnov, base, nomnoe, logic)
     call jedupo(coovav, base, cooval, logic)
     call jedupo(coodsv, base, coodsc, logic)
 !
@@ -180,12 +180,9 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 ! 4. CREATION DE SD DU MAILLAGE RESULTAT
 !====
 !
-! 4.1. ==> CREATION DU .NOMMAI ET DU .CONNEX
+! 4.1. ==> CREATION DU .CONNEX
 !
     call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), typtri)
-!
-    call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', ival=nbmail)
 !
     call wkvect(typmai, base//' V I', nbmail, iatyma)
 !
@@ -240,7 +237,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !====
 !
     lgpref = lxlgut(prefix)
-    imav = ndinit-1
+    imav = 1
 !
     do ima = 1, nbmat
 !
@@ -251,7 +248,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !
 ! 5.0. ==> PREPARE LA MISE DES GROUPES DE MAILLES
 !
-        call jenuno(jexnum(nommav, ima), nima)
+        nima = int_to_char8(ima)
         if (igrma .ne. 0) then
 !        --- GROUP_MA CONTENANT IMA
             call ingrma(nomain, nima, zi(jlgrma), nbgm, ier)
@@ -264,17 +261,11 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 ! 5.2. ==> ON CONSERVE LA MAILLE IMA TELLE QUELLE*
 !          CAR IMA N'EST PAS DANS NUMMAI()
 !
-            call jeexin(jexnom(nommai, nima), iret)
-            if (iret .eq. 0) then
-                call jecroc(jexnom(nommai, nima))
-            else
-                valk = nima
-                call utmess('F', 'ALGELINE4_7', sk=valk)
-            end if
-!
 ! 5.2.1. ==> TYPE DE MAILLE ET CONNECTIVITE
 !
-            call jenonu(jexnom(nommai, nima), ima2)
+            ! ima2 = char8_to_int(nima)
+            ima2 = imav
+            imav = imav+1
             zi(iatyma-1+ima2) = zi(jtypm+ima-1)
 !
             call jeecra(jexnum(connex, ima2), 'LONMAX', ival=nbpt)
@@ -304,22 +295,8 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
             nbpt = 3
             nbtri = zi(jdec-1+ima)
             do i = 1, nbtri
+                ima2 = imav
                 imav = imav+1
-                call codent(imav, 'G', knume)
-                lgnd = lxlgut(knume)
-                if (lgnd+lgpref .gt. 8) then
-                    call utmess('F', 'ALGELINE_17')
-                end if
-                nomg = prefix(1:lgpref)//knume
-                call jeexin(jexnom(nommai, nomg), iret)
-                if (iret .eq. 0) then
-                    call jecroc(jexnom(nommai, nomg))
-                else
-                    valk = nomg
-                    call utmess('F', 'ALGELINE4_7', sk=valk)
-                end if
-!
-                call jenonu(jexnom(nommai, nomg), ima2)
                 zi(iatyma-1+ima2) = typtri
 !
                 call jeecra(jexnum(connex, ima2), 'LONMAX', ival=nbpt)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine CreateInOutDS_M(ds_inout)
 !
@@ -43,13 +42,12 @@ subroutine CreateInOutDS_M(ds_inout)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer, parameter :: nb_field_defi = 20
+    integer, parameter :: nb_field_defi = 17
     integer :: i_field
 ! - Name of field (type) in results datastructure (add one -> don't forget to modify rscrsd.F90)
     character(len=16), parameter :: field_type(nb_field_defi) = &
                                     (/'DEPL            ', 'SIEF_ELGA       ', 'VARI_ELGA       ', &
                                       'COMPORTEMENT    ', 'VITE            ', 'ACCE            ', &
-                                      'INDC_ELEM       ', 'SECO_ELEM       ', 'COHE_ELEM       ', &
                                       'CONT_NOEU       ', &
                                       'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ', &
                                       'FORC_NODA       ', 'STRX_ELGA       ', &
@@ -59,7 +57,6 @@ subroutine CreateInOutDS_M(ds_inout)
     character(len=8), parameter :: gran_name(nb_field_defi) = &
                                    (/'DEPL_R  ', 'SIEF_R  ', 'VARI_R  ', &
                                      'COMPOR  ', 'DEPL_R  ', 'DEPL_R  ', &
-                                     'NEUT_I  ', 'NEUT_R  ', 'NEUT_R  ', &
                                      'DEPL_R  ', &
                                      'DEPL_R  ', 'DEPL_R  ', 'DEPL_R  ', &
                                      'DEPL_R  ', 'STRX_R  ', &
@@ -69,7 +66,6 @@ subroutine CreateInOutDS_M(ds_inout)
     character(len=8), parameter :: init_keyw(nb_field_defi) = &
                                    (/'DEPL    ', 'SIGM    ', 'VARI    ', &
                                      '        ', 'VITE    ', 'ACCE    ', &
-                                     '        ', '        ', 'COHE    ', &
                                      '        ', &
                                      '        ', '        ', '        ', &
                                      '        ', 'STRX    ', &
@@ -79,7 +75,6 @@ subroutine CreateInOutDS_M(ds_inout)
     character(len=4), parameter :: disc_type(nb_field_defi) = &
                                    (/'NOEU', 'ELGA', 'ELGA', &
                                      'ELGA', 'NOEU', 'NOEU', &
-                                     'ELEM', 'ELEM', 'XXXX', &
                                      'NOEU', &
                                      'NOEU', 'NOEU', 'NOEU', &
                                      'NOEU', 'ELGA', &
@@ -89,7 +84,6 @@ subroutine CreateInOutDS_M(ds_inout)
     aster_logical, parameter :: l_read_init(nb_field_defi) = &
         (/.true._1, .true._1, .true._1, &
           .false._1, .true._1, .true._1, &
-          .true._1, .true._1, .true._1, &
           .false._1, &
           .true._1, .true._1, .true._1, &
           .false._1, .true._1, &
@@ -98,7 +92,6 @@ subroutine CreateInOutDS_M(ds_inout)
 ! - TRUE if field can been store (ARCHIVAGE)
     aster_logical, parameter :: l_store(nb_field_defi) = &
         (/.true._1, .true._1, .true._1, &
-          .true._1, .true._1, .true._1, &
           .true._1, .true._1, .true._1, &
           .true._1, &
           .true._1, .true._1, .true._1, &
@@ -109,7 +102,6 @@ subroutine CreateInOutDS_M(ds_inout)
     aster_logical, parameter :: l_obsv(nb_field_defi) = &
         (/.true._1, .true._1, .true._1, &
           .false._1, .true._1, .true._1, &
-          .false._1, .false._1, .false._1, &
           .true._1, &
           .true._1, .true._1, .true._1, &
           .true._1, .true._1, &
@@ -119,7 +111,6 @@ subroutine CreateInOutDS_M(ds_inout)
     character(len=16), parameter :: obsv_keyw(nb_field_defi) = &
                                     (/'DEPL            ', 'SIEF_ELGA       ', 'VARI_ELGA       ', &
                                       '                ', 'VITE            ', 'ACCE            ', &
-                                      '                ', '                ', '                ', &
                                       'CONT_NOEU       ', &
                                       'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ', &
                                       'FORC_NODA       ', 'STRX_ELGA       ', &
@@ -129,7 +120,6 @@ subroutine CreateInOutDS_M(ds_inout)
     character(len=24), parameter :: algo_name(nb_field_defi) = &
                                     (/'#H#VALINC#DEPMOI', '#H#VALINC#SIGMOI', '#H#VALINC#VARMOI', &
                                       'XXXXXXXXXXXXXXXX', '#H#VALINC#VITMOI', '#H#VALINC#ACCMOI', &
-                                      'XXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXX', &
                                       'XXXXXXXXXXXXXXXX', &
                                       'XXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXX', &
                                       '&&OP00XX.CNFINT ', '#H#VALINC#STRMOI', &
@@ -139,7 +129,6 @@ subroutine CreateInOutDS_M(ds_inout)
     character(len=24), parameter :: init_name(nb_field_defi) = &
                                     (/'&&CNPART.ZERO   ', '&&NMETCR.SIGMO0 ', '&&NMETCR.VARMO0 ', &
                                       'XXXXXXXXXXXXXXXX', '&&CNPART.ZERO   ', '&&CNPART.ZERO   ', &
-                                      'XXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXX', 'XXXXXXXXXXXXXXXX', &
                                       'XXXXXXXXXXXXXXXX', &
                                       '&&CNPART.ZERO   ', '&&CNPART.ZERO   ', '&&CNPART.ZERO   ', &
                                       '&&CNPART.ZERO   ', '&&NMETCR.STRMO0 ', &

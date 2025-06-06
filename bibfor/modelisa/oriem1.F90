@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
 #include "asterfort/jexnum.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
     character(len=8), intent(in) :: ma
     character(len=2), intent(in) :: kdim
@@ -134,8 +135,8 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
 !
 !   -- si numa3d est degeneree ou du cote "+", on la supprime :
     if (ps1 .ge. 0.d0) then
-        call jenuno(jexnum(ma//'.NOMMAI', numa3d), valk(1))
-        call jenuno(jexnum(ma//'.NOMMAI', numa2d), valk(2))
+        valk(1) = int_to_char8(numa3d)
+        valk(2) = int_to_char8(numa2d)
         call utmess('A', 'CALCULEL3_47', nk=2, valk=valk)
         numa3d = 0
     end if

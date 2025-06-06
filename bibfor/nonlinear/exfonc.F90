@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
                   ds_constitutive, sddyna, nlDynaDamping, &
@@ -85,9 +84,8 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Active functionnalites
-!
     l_xfem = isfonc(listFuncActi, 'XFEM')
     l_cont_cont = isfonc(listFuncActi, 'CONT_CONTINU')
     l_cont_disc = isfonc(listFuncActi, 'CONT_DISCRET')
@@ -180,7 +178,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 ! - Contact (CONTINUE)
 !
     if (l_cont_cont) then
-        if (l_pilo .and. (.not. l_xfem)) then
+        if (l_pilo) then
             call utmess('F', 'MECANONLINE3_92')
         end if
         if (l_line_search) then

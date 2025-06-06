@@ -52,7 +52,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: cartar
-    character(len=24) :: tmpnar, tmpvar, mlggma, mlgnma, mlgcnx, mlgcoo
+    character(len=24) :: tmpnar, tmpvar, mlggma, mlgcnx, mlgcoo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +92,6 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
     end if
 !
     mlggma = noma//'.GROUPEMA'
-    mlgnma = noma//'.NOMMAI'
     mlgcnx = noma//'.CONNEX'
 !
 !   construction des cartes et allocation

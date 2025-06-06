@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,12 +45,13 @@ subroutine te0543(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: typmod(2)
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, pilo
     character(len=4), parameter :: fami = 'RIGI'
     integer :: jgano, ndim, nno, nnos, npg, lgpg, jtab(7), itype
     integer :: ipoids, ivf, idfde, igeom, imate, icarcr
     integer :: icontm, ivarim, icopil, iborne, ictau
-    integer :: ideplm, iddepl, idepl0, idepl1, icompo, iret
+    integer :: ideplm, iddepl, idepl0, idepl1, iret
     real(kind=8) :: instam, instap
     type(Behaviour_Integ) :: BEHinteg
 
@@ -81,7 +82,7 @@ subroutine te0543(option, nomte)
 ! - PARAMETRES EN ENTREE
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PDEPLMR', 'L', ideplm)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVARIMR', 'L', ivarim)
@@ -92,7 +93,7 @@ subroutine te0543(option, nomte)
     call jevech('PCARCRI', 'L', icarcr)
 !
     pilo = zk16(itype)
-    rela_comp = zk16(icompo-1+RELA_NAME)
+    rela_comp = compor(RELA_NAME)
     if (pilo .eq. 'PRED_ELAS') then
         call jevech('PCDTAU', 'L', ictau)
         call jevech('PBORNPI', 'L', iborne)
@@ -109,7 +110,7 @@ subroutine te0543(option, nomte)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndim, typmod, option, &
-                              zk16(icompo), zr(icarcr), &
+                              compor, zr(icarcr), &
                               instam, instap, &
                               fami, zi(imate), &
                               BEHinteg)
@@ -129,7 +130,7 @@ subroutine te0543(option, nomte)
     call pipepe(BEHinteg, &
                 pilo, ndim, nno, npg, ipoids, &
                 ivf, idfde, zr(igeom), typmod, zi(imate), &
-                zk16(icompo), lgpg, zr(ideplm), zr(icontm), zr(ivarim), &
+                compor, lgpg, zr(ideplm), zr(icontm), zr(ivarim), &
                 zr(iddepl), zr(idepl0), zr(idepl1), zr(icopil), &
                 iborne, ictau)
 !

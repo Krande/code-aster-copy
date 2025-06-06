@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 maild = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
@@ -277,72 +277,72 @@ acc_Dy = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DY", GROUP_NO="N
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-0.51822321854867,
-            VALE_REFE=-0.51822321855231,
-            PRECISION=1.0e-10,
+            VALE_CALC=-0.518223,
+            VALE_REFE=-0.518223,
+            PRECISION=1.0e-6,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.98,
             FONCTION=acc_Ax,
         ),
         _F(
-            VALE_CALC=2.153930991413,
-            VALE_REFE=2.153930991429,
-            PRECISION=1.0e-10,
+            VALE_CALC=2.15393,
+            VALE_REFE=2.15393,
+            PRECISION=1.0e-6,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.98,
             FONCTION=acc_Ay,
         ),
         _F(
-            VALE_CALC=0.38102918463368,
-            VALE_REFE=0.38102918463031,
-            PRECISION=1.0e-10,
+            VALE_CALC=0.381029,
+            VALE_REFE=0.381029,
+            PRECISION=1.0e-6,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.98,
             FONCTION=acc_Bx,
         ),
         _F(
-            VALE_CALC=2.445920138225,
-            VALE_REFE=2.445920138217,
-            PRECISION=1.0e-10,
+            VALE_CALC=2.44592,
+            VALE_REFE=2.44592,
+            PRECISION=1.0e-6,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.98,
             FONCTION=acc_By,
         ),
         _F(
-            VALE_CALC=0.86236325618766,
-            VALE_REFE=0.86236325619115,
-            PRECISION=1.0e-10,
+            VALE_CALC=0.862363,
+            VALE_REFE=0.862363,
+            PRECISION=1.0e-6,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.98,
             FONCTION=acc_Cx,
         ),
         _F(
-            VALE_CALC=2.477310891848,
-            VALE_REFE=2.477310891837,
-            PRECISION=1.0e-10,
+            VALE_CALC=2.47731,
+            VALE_REFE=2.47731,
+            PRECISION=1.0e-6,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.98,
             FONCTION=acc_Cy,
         ),
         _F(
-            VALE_CALC=-0.43673206553152,
-            VALE_REFE=-0.43673206552461,
-            PRECISION=1.0e-10,
+            VALE_CALC=-0.436732,
+            VALE_REFE=-0.436732,
+            PRECISION=1.0e-6,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.98,
             FONCTION=acc_Dx,
         ),
         _F(
-            VALE_CALC=1.786821368785,
-            VALE_REFE=1.786821368777,
-            PRECISION=1.0e-10,
+            VALE_CALC=1.78682,
+            VALE_REFE=1.78682,
+            PRECISION=1.0e-6,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.98,

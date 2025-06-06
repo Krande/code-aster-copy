@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ from .calc_erc_dyn import CALC_ERC_DYN
 from .calc_erreur import CALC_ERREUR
 from .calc_fatigue import CALC_FATIGUE
 from .calc_ferraillage import CALC_FERRAILLAGE
+from .veri_ferraillage import VERI_FERRAILLAGE
 from .calc_flui_stru import CALC_FLUI_STRU
 from .calc_fonc_interp import CALC_FONC_INTERP
 from .calc_forc_nonl import CALC_FORC_NONL

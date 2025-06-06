@@ -16,7 +16,7 @@ usage()
     echo "  This script mocks the autotools './configure --prefix=...' command."
     echo
     echo "  It simply calls 'waf configure' using the optimized or debug configuration."
-    echo "  See BUILD variable value shown by 'make help' for the default configuration."
+    echo "  See ASTER_BUILD variable value shown by 'make help' for the default configuration."
     echo
     echo "arguments:"
     echo "  -h/--help       show this help message"

@@ -3,7 +3,7 @@
  * @brief Implementation des outils
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -67,6 +67,22 @@ std::string remove_brackets( const std::string &in_str ) {
         }
     }
     return outstr;
+}
+
+VectorString split( const std::string &toSplit ) {
+    VectorString toReturn;
+    std::stringstream ss( toSplit );
+    std::string word;
+    while ( ss >> word ) {
+        toReturn.push_back( word );
+    }
+    return toReturn;
+}
+
+std::string strToupper( std::string s ) {
+    std::transform( s.begin(), s.end(), s.begin(),
+                    []( unsigned char c ) { return std::toupper( c ); } );
+    return s;
 }
 
 // wrapper arround dismoi;

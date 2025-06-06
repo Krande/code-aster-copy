@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,31 @@ TEST_RESU(
     )
 )
 
+
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_CO,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=-2.53300000e03,
+            VALE_REFE=0 - 2533.0,
+            NOEUD_CMP=("ACCE", "X"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_CO,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=-2.53300000e03,
+            VALE_REFE=-2533.0,
+            NOEUD_CMP=("ACCE", "X"),
+        ),
+    )
+)
 # -----------------------------------------------------------------------
 
 COABS = COMB_SISM_MODAL(
@@ -101,6 +126,32 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.023027055,
             VALE_REFE=0.023023027049999999,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# REAC_NODA :
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COABS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COABS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
             NOM_CAS="TOTA",
         ),
     )
@@ -146,6 +197,32 @@ TEST_RESU(
     )
 )
 
+# REAC_NODA :
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COSRS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COSRS,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
 # -----------------------------------------------------------------------
 
 CODPC = COMB_SISM_MODAL(
@@ -181,6 +258,32 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.023027055,
             VALE_REFE=0.023023027049999999,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# REAC_NODA :
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=CODPC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=CODPC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
             NOM_CAS="TOTA",
         ),
     )
@@ -226,6 +329,31 @@ TEST_RESU(
     )
 )
 
+# REAC_NODA :
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COCQC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COCQC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
 # -----------------------------------------------------------------------
 
 CODSC = COMB_SISM_MODAL(
@@ -261,6 +389,32 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.023027055,
             VALE_REFE=0.023023027049999999,
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+# REAC_NODA :
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=CODSC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P1",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
+            NOM_CAS="TOTA",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=CODSC,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="P4",
+            NOM_CMP="DX",
+            VALE_CALC=2.30270548e03,
+            VALE_REFE=2302.70526332,
             NOM_CAS="TOTA",
         ),
     )

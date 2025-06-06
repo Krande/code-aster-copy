@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine exmano(noma, numnoe, numano, nbmano)
     character(len=8) :: noma
     integer :: numnoe, numano(*), nbmano
 !
-    character(len=24) :: mlgnma, mlgtma, mlgcnx
+    character(len=24) :: mlgtma, mlgcnx
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -53,9 +53,8 @@ subroutine exmano(noma, numnoe, numano, nbmano)
 !
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg)
 !
-    mlgnma = noma//'.NOMMAI'
-    call jelira(mlgnma, 'NOMMAX', nbmail)
     mlgtma = noma//'.TYPMAIL'
+    call jelira(mlgtma, 'LONMAX', nbmail)
     call jeveuo(mlgtma, 'L', jdtm)
     mlgcnx = noma//'.CONNEX'
 !

@@ -584,29 +584,9 @@ TYPMOD3 = Attribute(
 
 
 XFEM = Attribute(
-    value=(
-        "XH",
-        "XH1",
-        "XH2",
-        "XH2C",
-        "XH2C3",
-        "XH3",
-        "XH3C",
-        "XH3C3",
-        "XH4",
-        "XH4C",
-        "XHC",
-        "XHC3",
-        "XHT",
-        "XHTC",
-        "XT",
-        "XTC",
-    ),
+    value=("XH", "XH1", "XH2", "XH3", "XH4", "XHT", "XT"),
     comment="""
   XFEM = 'XH','XT','XHT'     : element XFEM de type Heaviside, cracktip, ou mixte
-         'XHC',XTC','XHTC'   : element XFEM de type Heaviside, cracktip, ou mixte, avec du contact
-         'XHC3'              : element XFEM de type Heaviside, cracktip, ou mixte, avec du contact  ???
-         'XH4'               : element XFEM de type Heaviside, cracktip, ou mixte, avec du contact  ???
 """,
 )
 

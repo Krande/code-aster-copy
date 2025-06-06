@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ subroutine dichoc_endo_ldc(for_discret, iret)
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/utpvgl.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/vecma.h"
 #include "blas/dcopy.h"
 !
@@ -63,13 +64,14 @@ subroutine dichoc_endo_ldc(for_discret, iret)
     integer :: ii, kk
     character(len=24) :: messak(6)
 !
-    integer :: icompo, imater, igeom, icontm, jdc, ivitp, idepen, iviten, jtm, jtp
+    integer :: imater, igeom, icontm, jdc, ivitp, idepen, iviten, jtm, jtp
     integer :: iretlc
     real(kind=8) :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
     real(kind=8) :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
     real(kind=8) :: fl(for_discret%neq)
     real(kind=8) :: raide(6), force(1)
     real(kind=8) :: r8bid
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: k8bid
     aster_logical :: rigi, resi, Prediction, Dynamique
 ! --------------------------------------------------------------------------------------------------
@@ -110,14 +112,14 @@ subroutine dichoc_endo_ldc(for_discret, iret)
     resi = (for_discret%option(1:4) .eq. 'RAPH' .or. for_discret%option(1:4) .eq. 'FULL')
     iret = 0
 ! --------------------------------------------------------------------------------------------------
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !   Seulement en 3D, sur un segment, avec seulement de la translation
     if ((for_discret%nomte(1:12) .ne. 'MECA_DIS_T_L') .or. (for_discret%ndim .ne. 3) .or. &
         (for_discret%nno .ne. 2) .or. (for_discret%nc .ne. 3)) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
-        messak(3) = zk16(icompo+3)
-        messak(4) = zk16(icompo)
+        messak(3) = compor(INCRELAS)
+        messak(4) = compor(RELA_NAME)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_22', nk=5, valk=messak)
@@ -136,8 +138,8 @@ subroutine dichoc_endo_ldc(for_discret, iret)
     if (irep .ne. 2) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
-        messak(3) = zk16(icompo+3)
-        messak(4) = zk16(icompo)
+        messak(3) = compor(INCRELAS)
+        messak(4) = compor(RELA_NAME)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_5', nk=5, valk=messak)
@@ -204,7 +206,7 @@ subroutine dichoc_endo_ldc(for_discret, iret)
 !   Le matériau n'est pas trouvé
     messak(1) = for_discret%nomte
     messak(2) = for_discret%option
-    messak(3) = zk16(icompo+3)
+    messak(3) = compor(INCRELAS)
     messak(4) = materiau
     call tecael(iadzi, iazk24)
     messak(5) = zk24(iazk24-1+3)

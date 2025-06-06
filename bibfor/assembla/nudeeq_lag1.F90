@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine nudeeq_lag1(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: mesh
@@ -199,7 +200,7 @@ subroutine nudeeq_lag1(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
         do i_cmp_chck = 1, nb_cmp_chck
             if (lnobloq((i_node-1)*nb_cmp_chck+i_cmp_chck) .gt. 2) then
                 ier = ier+1
-                call jenuno(jexnum(mesh//'.NOMNOE', i_node), nono)
+                nono = int_to_char8(i_node)
                 call jeveuo(jexnum('&CATA.GD.NOMCMP', igds), 'L', jncmp)
                 nocmp = zk8(jncmp-1+i_cmp_chck)
                 valk(1) = nono

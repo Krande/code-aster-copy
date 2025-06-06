@@ -34,6 +34,7 @@ subroutine op0119()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/r8pi.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -63,13 +64,13 @@ subroutine op0119()
 #include "asterfort/tbcarapou.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ncarfi1, ncarfi2
     parameter(ncarfi1=3, ncarfi2=7)
     real(kind=8) :: pi4
-    parameter(pi4=0.7853981633974483d+00)
 !
     integer :: nbvfibre, maxfibre1, maxfibre2, nbfibres1, nbfibres2
     integer :: iret, ifm, niv, nboccsec, nboccfib, nboccasf, ii, nbmagr, iidepnoeud, nbocctype1
@@ -86,7 +87,7 @@ subroutine op0119()
 !
     character(len=8)  :: sdgf, nomas, ksudi, nommai, nogfma
     character(len=16) :: concep, cmd, limcls(3), ltymcl(3)
-    character(len=24) :: mlgtms, mlgcnx, mlgcoo, mlgtma, mlgtno, nomgf
+    character(len=24) :: mlgtms, mlgcnx, mlgcoo, nomgf
     character(len=24) :: vnbfig, vtyfig, vcafig, vpofig, vnmfig, vmafig, vsdfig
 !
     character(len=24) :: valk(3)
@@ -117,6 +118,7 @@ subroutine op0119()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     iret = 0
+    pi4 = r8pi()/4.d0
 !
 !   récupération des arguments de la commande
     call getres(sdgf, concep, cmd)
@@ -273,8 +275,6 @@ subroutine op0119()
         mlgtms = nomas//'.TYPMAIL'
         mlgcnx = nomas//'.CONNEX'
         mlgcoo = nomas//'.COORDO    .VALE'
-        mlgtma = nomas//'.NOMMAI'
-        mlgtno = nomas//'.NOMNOE'
 !       Récupération des adresses utiles
         call jeveuo(mlgtms, 'L', jdtm)
         call jeveuo(mlgcoo, 'L', jdco)
@@ -349,7 +349,7 @@ subroutine op0119()
             zr(ipos+1) = centre(2)
             zr(ipos+2) = surf
             if (niv .eq. 2) then
-                call jenuno(jexnum(mlgtma, nummai), nommai)
+                nommai = int_to_char8(nummai)
                 if (nno .eq. 3) then
                     write (ifm, 801) iinbmailles, nommai, 'TRIA3', centre, surf
                 else

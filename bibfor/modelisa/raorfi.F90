@@ -39,6 +39,8 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig, &
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: info, ifm
     character(len=8) :: noepou, noma, cara
@@ -68,7 +70,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig, &
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nma)
     ima = 0
-    call jenonu(jexnom(noma//'.NOMNOE', noepou), inopou)
+    inopou = char8_to_int(noepou)
     do i = 1, nma
         call jeveuo(jexnum(noma//'.CONNEX', i), 'L', iconex)
         call jelira(jexnum(noma//'.CONNEX', i), 'LONMAX', nbno)
@@ -199,8 +201,8 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig, &
     call utpvlg(1, 3, pgl, el3, eg3)
 !
     if (info .eq. 2) then
-        call jenuno(jexnum(noma//'.NOMNOE', inopo1), noepo1)
-        call jenuno(jexnum(noma//'.NOMNOE', inopo2), noepo2)
+        noepo1 = int_to_char8(inopo1)
+        noepo2 = int_to_char8(inopo2)
         ifm = iunifi('MESSAGE')
         write (ifm, *) 'RAYON DE LA SECTION COQUE OU 3D ', rayon
         write (ifm, *) 'BARYCENTRE DE LA SECTION COQUE OU 3D ', coorig

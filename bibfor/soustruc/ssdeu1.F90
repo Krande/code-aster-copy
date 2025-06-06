@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*) :: motcle
     character(len=8) :: noma
@@ -89,7 +90,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
         nbno = nbno+n3
         if (motcle .eq. 'LISTE') then
             do i = 1, n3
-                call jenonu(jexnom(noma//'.NOMNOE', zk8(iawk1-1+i)), iliste(i))
+                iliste(i) = char8_to_int(zk8(iawk1-1+i))
                 if (iliste(i) .eq. 0) then
                     valk(1) = zk8(iawk1-1+i)
                     valk(2) = noma

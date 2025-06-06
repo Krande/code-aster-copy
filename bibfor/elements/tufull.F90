@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     real(kind=8) :: pgl(3, 3), omega, vtemp(nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
     real(kind=8) :: angmas(3), r1
-    integer :: nno, npg, nbcou, nbsec, icompo, ndimv, ivarix
+    integer :: nno, npg, nbcou, nbsec, ndimv, ivarix
     integer :: ipoids, ivf, nbvari, lgpg, jtab(7)
     integer :: imate, imatuu, igeom
     integer :: ivarip, ivarim, icontm, icontp, ivectu
@@ -104,6 +104,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     real(kind=8), allocatable :: varip(:)
     character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ', 'EP1'/)
     character(len=8), parameter :: typmod(2) = (/'C_PLAN  ', '        '/)
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -137,7 +138,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
@@ -151,22 +152,22 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndimLdc, typmod, option, &
-                              zk16(icompo), zr(icarcr), &
+                              compor, zr(icarcr), &
                               instm, instp, &
                               fami, zi(imate), &
                               BEHinteg)
 
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 
 ! - Properties of behaviour
-    read (zk16(icompo-1+NVAR), '(I16)') nbvari
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    type_comp = zk16(icompo-1+INCRELAS)
+    read (compor(NVAR), '(I16)') nbvari
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    type_comp = compor(INCRELAS)
     ASSERT(defo_comp .eq. 'PETIT')
 !
 !
@@ -366,7 +367,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
                 sigma = 0.d0
                 call nmcomp(BEHinteg, &
                             fami, igau, ksp, ndimLdc, typmod, &
-                            zi(imate), zk16(icompo), zr(icarcr), instm, instp, &
+                            zi(imate), compor, zr(icarcr), instm, instp, &
                             6, eps2d, deps2d, 6, sign, &
                             zr(ivarim+k2), option, angmas, &
                             sigma, varip(1+k2), 36, dsidep, cod)

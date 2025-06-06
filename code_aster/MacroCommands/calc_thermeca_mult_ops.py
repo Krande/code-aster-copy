@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,14 +208,12 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
         "INDL_ELGA": "ELGA_INDL_R",
         "EPSA_NOEU": "NOEU_EPSI_R",
         "VITE": "NOEU_DEPL_R",
-        "SECO_ELEM": "ELEM_NEUT_R",
         "SISE_ELNO": "ELNO_SIEF_R",
         "FORC_NODA": "NOEU_DEPL_R",
         "ENEL_NOEU": "NOEU_ENER_R",
         "VITE_ABSOLU": "NOEU_DEPL_R",
         "FLHN_ELGA": "ELGA_FLHN_R",
         "ECIN_ELEM": "ELEM_ENER_R",
-        "COHE_ELEM": "ELEM_NEUT_R",
         "QIZ1_ELEM": "ELEM_ERRE_R",
         "COMPORTEMENT": "CART_COMPOR",
         "THETA": "NOEU_DEPL_R",
@@ -233,7 +231,6 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
         "SIZ2_NOEU": "NOEU_SIEF_R",
         "ACCE": "NOEU_DEPL_R",
         "ETOT_ELEM": "ELEM_ENER_R",
-        "INDC_ELEM": "ELEM_NEUT_I",
         "FORC_AMOR": "NOEU_DEPL_R",
         "ENDO_NOEU": "ELNO_SIEF_R",
         "ENEL_ELEM": "ELEM_ENER_R",
@@ -250,6 +247,7 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
         "EPMG_NOEU": "NOEU_EPSI_R",
         "ERME_ELEM": "ELEM_ERRE_R",
         "FERRAILLAGE": "ELEM_FER2_R",
+        "MARG_ELEM": "ELEM_VFER2_R",
         "DERA_ELNO": "ELNO_DERA_R",
         "EPSI_ELGA": "ELGA_EPSI_R",
         "QIRE_ELNO": "ELNO_ERRE_R",

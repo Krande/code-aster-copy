@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     real(kind=8) :: tran(3), prec
     integer :: linoeu(*)
@@ -166,7 +167,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran, &
                     nbret=ibid)
         call getvtx('PERM_CHAM', 'GROUP_MA_FINAL', iocc=1, nbval=1, vect=nom_gr2, &
                     nbret=ibid)
-        call jenuno(jexnum(ma1//'.NOMMAI', ima1), noma1)
+        noma1 = int_to_char8(ima1)
         valk(1) = nom_gr1
         valk(2) = nom_gr2
         valk(3) = noma1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
@@ -61,6 +62,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=1) :: base
     character(len=8) :: nomgd, ma
@@ -74,7 +76,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
 !      ==> VARIABLES LOCALES
     integer :: ncmp, jcnsl, i
     integer :: vali(2), nblig, isp
-    integer :: nbval
+    integer :: nbval, ier
     integer :: nuno, numa, nbma, jcesd, nbssp
     integer :: jcesl, jcesc, iad
     integer :: nbcol, nbno, ksp, kpt, jcon1, jcon2
@@ -92,6 +94,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
     real(kind=8), pointer :: cnsv(:) => null()
     integer, pointer :: tbnp(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
+    aster_logical :: lcolle, lcolle2
 ! ---------------------------------------------------------------------
 !
 !
@@ -108,6 +111,16 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
     call jeveuo(ma//'.CONNEX', 'L', jcon1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jcon2)
 !
+    lcolle = .false.
+    call jeexin(ma//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
+    lcolle2 = .false.
+    call jeexin(ma//'.NOMMAI', ier)
+    if (ier .ne. 0) then
+        lcolle2 = .true.
+    end if
 !
 !     1. VERIFICATION DES PARAMETRES DE LA TABLE :
 !     --------------------------------------------
@@ -248,7 +261,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
             do ili = 1, nblig
                 if (zi(jobj2+ili-1) .eq. 1) then
                     nono = zk8(jcolno+ili-1)
-                    call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
+                    nuno = char8_to_int(nono, lcolle, ma, "NOEUD")
                     ASSERT(nuno .gt. 0)
                     cnsv(1+(nuno-1)*ncmp+icmp-1) = zr(jobj3+ili-1)
                     zl(jcnsl+(nuno-1)*ncmp+icmp-1) = .true.
@@ -271,14 +284,14 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
             end if
             do ili = 1, nblig
                 noma = zk8(jcolma+ili-1)
-                call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
+                numa = char8_to_int(noma, lcolle2, ma, "MAILLE")
                 nbno = zi(jcon2-1+numa+1)-zi(jcon2-1+numa)
                 if (lpoin) then
                     ipt = zi(jcolpt-1+ili)
                 else
                     ASSERT(lnoeu)
                     nono = zk8(jcolno-1+ili)
-                    call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
+                    nuno = char8_to_int(nono, lcolle, ma, "NOEUD")
                     ipt = indiis(zi(jcon1-1+zi(jcon2-1+numa)), nuno, 1, &
                                  nbno)
                     zi(jcolpt-1+ili) = ipt
@@ -306,7 +319,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
                 ASSERT(ksp .gt. 0)
                 nbssp = max(nbssp, ksp)
                 noma = zk8(jcolma+ili-1)
-                call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
+                numa = char8_to_int(noma, lcolle2, ma, "MAILLE")
                 ASSERT(numa .gt. 0)
                 sp_tot(numa) = max(sp_tot(numa), ksp)
             end do
@@ -323,7 +336,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
                 kpt = zi(jcolpt+ili-1)
                 ASSERT(kpt .gt. 0)
                 noma = zk8(jcolma+ili-1)
-                call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
+                numa = char8_to_int(noma, lcolle2, ma, "MAILLE")
                 pg_tot(numa) = max(pg_tot(numa), kpt)
             end do
         end if
@@ -366,7 +379,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
                 if (zi(jobj2+ili-1) .eq. 0) goto 70
 !
                 noma = zk8(jcolma+ili-1)
-                call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
+                numa = char8_to_int(noma, lcolle2, ma, "MAILLE")
 !
                 ipt = 1
                 if (lpoin) ipt = zi(jcolpt+ili-1)

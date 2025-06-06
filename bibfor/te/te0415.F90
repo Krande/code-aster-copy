@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine te0415(optioz, nomtz)
 #include "asterfort/jevete.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=*) :: optioz, nomtz
     character(len=16) :: option, nomte
@@ -32,7 +33,7 @@ subroutine te0415(optioz, nomtz)
 !          -----------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, ic, ichg, icompo
+    integer :: i, i1, ic, ichg
     integer :: ino, inp, iret
     integer :: j, j1
     integer :: jvari, k1, k2, l, lgpg
@@ -41,6 +42,7 @@ subroutine te0415(optioz, nomtz)
     integer :: nso
     real(kind=8) :: s
 !-----------------------------------------------------------------------
+    character(len=16), pointer :: compor(:) => null()
     parameter(npge=3)
     integer :: icou, jmat, jnbspi
     integer :: nb2, npgsn, jtab(7)
@@ -60,8 +62,8 @@ subroutine te0415(optioz, nomtz)
     if (option .eq. 'VARI_ELNO') then
 !
         call jevech('PVARIGR', 'L', ichg)
-        call jevech('PCOMPOR', 'L', icompo)
-        read (zk16(icompo-1+2), '(I16)') nbvari
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        read (compor(NVAR), '(I16)') nbvari
         call tecach('OOO', 'PVARIGR', 'L', iret, nval=7, &
                     itab=jtab)
         lgpg = max(jtab(6), 1)*jtab(7)

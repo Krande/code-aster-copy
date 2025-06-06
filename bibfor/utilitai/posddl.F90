@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine posddl(typesd, resu, node_name, cmp_name, node_nume, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/select_dof.h"
+#include "asterfort/char8_to_int.h"
 !
 !
     character(len=*), intent(in) :: typesd
@@ -70,7 +71,7 @@ subroutine posddl(typesd, resu, node_name, cmp_name, node_nume, &
     else
         ASSERT(.false.)
     end if
-    call jenonu(jexnom(mesh//'.NOMNOE', node_name), node_nume)
+    node_nume = char8_to_int(node_name)
 !
     if (node_nume .ne. 0) then
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,8 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
     integer :: nbma
@@ -65,7 +67,7 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
     integer :: jrdm, jnoe, ntemp
     character(len=8) :: typm
     character(len=8) :: noeud
-    character(len=24) :: conec, typp, nomnoe
+    character(len=24) :: conec, typp
     integer, pointer :: mailles_triee(:) => null()
     integer, pointer :: noeuds_extrem(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -75,7 +77,6 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
 !
     conec = nomail//'.CONNEX'
     typp = nomail//'.TYPMAIL'
-    nomnoe = nomail//'.NOMNOE'
 !
 !     RECUPERATION DES NOEUDS DESORDONNES
     call jeveuo(mafour, 'L', jmail)
@@ -103,7 +104,7 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
 !     ------------------------------------------------------------------
 !     --- ORDONNANCEMENT DES MAILLES EN PARTANT DU NOEUD ORIGINE
 !     ------------------------------------------------------------------
-    call jenonu(jexnom(nomnoe, ndorig), njonc)
+    njonc = char8_to_int(ndorig)
     n = 1
 !     ------------------------------------------------------------------
 !     CONSTRUCTION D'UN VECTEUR DE TRAVAIL LOCAL POUR
@@ -204,7 +205,7 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
 !     --- DANS LE CAS D UNE COURBE NON FERMEE
 !     ------------------------------------------------------------------
     if (ndextr .ne. ' ') then
-        call jenuno(jexnum(nomnoe, zi(jnoe-1+nbno)), noeud)
+        noeud = int_to_char8(zi(jnoe-1+nbno))
         if (noeud .ne. ndextr) then
             call utmess('F', 'ELEMENTS_77', sk=ndextr)
         end if

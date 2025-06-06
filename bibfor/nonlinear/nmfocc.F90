@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
                   ds_contact, ds_measure, hval_algo, hval_incr, ds_constitutive)
@@ -55,7 +54,7 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
 !
 ! MECA_NON_LINE - Algo
 !
-! Continue/XFEM/LAC methods - Compute second member
+! Continue/LAC methods - Compute second member
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -43,6 +43,27 @@ MeshPairing::MeshPairing( const std::string name )
       _method( PairingMethod::Fast ),
       _currentCoordinates( nullptr ) {};
 
+MeshPairing::MeshPairing( const py::tuple &tup ) : MeshPairing( tup[0].cast< std::string >() ) {
+    int i = 0;
+    setMesh( tup[++i].cast< BaseMeshPtr >() );
+    _verbosity = tup[++i].cast< ASTERINTEGER >();
+    _method = tup[++i].cast< PairingMethod >();
+    std::string slavGrp = tup[++i].cast< std::string >();
+    std::string masterGrp = tup[++i].cast< std::string >();
+    _nbPairs = tup[++i].cast< ASTERINTEGER >();
+    _pairs = tup[++i].cast< VectorLong >();
+    _nbPoinInte = tup[++i].cast< VectorLong >();
+    _poinInteSlav = tup[++i].cast< VectorReal >();
+    _slavSurf2Volu = tup[++i].cast< MapLong >();
+    setPair( slavGrp, masterGrp );
+};
+
+py::tuple MeshPairing::_getState() const {
+    return py::make_tuple( getName(), _mesh, _verbosity, _method, _slaveCellsGroup,
+                           _masterCellsGroup, _nbPairs, _pairs, _nbPoinInte, _poinInteSlav,
+                           _slavSurf2Volu );
+};
+
 void MeshPairing::setMesh( const BaseMeshPtr &mesh ) {
     _mesh = mesh;
     if ( _currentCoordinates == nullptr ) {
@@ -64,7 +85,7 @@ void MeshPairing::setPair( const std::string &groupNameSlav, const std::string &
     MeshPairing::setMasterGroupOfCells( groupNameMast );
     MeshPairing::setSlaveGroupOfCells( groupNameSlav );
 
-    this->initObjects();
+    this->build();
 };
 
 ASTERBOOL
@@ -104,6 +125,9 @@ MeshPairing::buildInverseConnectivity() {
 }
 
 ASTERBOOL MeshPairing::buildCellsNeighbors() {
+    if ( _masterNeighbors->exists() && _slaveNeighbors->exists() ) {
+        return true;
+    }
 
     ASTERINTEGER ind_max, ind_min;
 
@@ -165,6 +189,7 @@ ASTERBOOL MeshPairing::surfacesHasBeenDefined() {
 
 ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole ) {
 
+    build();
     CALL_JEMARQ();
 
     // Get and define some input parameters
@@ -387,7 +412,7 @@ std::vector< VectorReal > MeshPairing::getQuadraturePoints( const ASTERINTEGER &
 
     ASTERINTEGER nbPoinQuad = 0;
     VectorReal poinQuadReal;
-    poinQuadReal.reserve( 3 * 48 );
+    poinQuadReal.reserve( 3 * 56 );
     CALLO_QUADPOINCOORWRAP( _mesh->getName(), _currentCoordinates->getName(), getBasename(),
                             &indexPair, &nbPoinQuad, poinQuadReal.data() );
 
@@ -543,7 +568,7 @@ void MeshPairing::setExcludedSlaveGroupOfNodes( const VectorString &groupsName )
     _excludedSlaveNodes = groupsName;
 };
 
-ASTERBOOL MeshPairing::initObjects() {
+ASTERBOOL MeshPairing::build() {
     if ( getMesh()->hasGroupOfCells( _slaveCellsGroup ) ) {
         _slaveNodes = getMesh()->getNodesFromCells( _slaveCellsGroup, false, true );
         _slaveCells = getMesh()->getCells( _slaveCellsGroup );

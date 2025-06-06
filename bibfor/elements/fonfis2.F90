@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: nbnoff
 
@@ -75,7 +76,7 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
     call jeveuo(fonoeu, 'L', jnoe)
 !
 !     RECUPERATION DES COORDONNNES DE NI
-    call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe)), ni)
+    ni = char8_to_int(zk8(jnoe))
 !
     coori(1) = vale((ni-1)*3+1)
     coori(2) = vale((ni-1)*3+2)
@@ -93,8 +94,8 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
         do i = 2, nbnoff
 !
 !         NUMEROS (ABSOLUS) DES NOEUDS DU FOND: NI ET NJ
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe-1+i-1)), ni)
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe-1+i)), nj)
+            ni = char8_to_int(zk8(jnoe-1+i-1))
+            nj = char8_to_int(zk8(jnoe-1+i))
 !
 !         COORDONNEES DES NOEUDS I ET J
             coori(1) = vale((ni-1)*3+1)

@@ -79,9 +79,9 @@ subroutine te0540(option, nomte)
     real(kind=8) :: klv(dimklv), sk(dimklv)
 !
     integer :: i, jcret, npge, iposig, ipomod, jmodfb, jsigfb, iposcp, ifgp
-    integer :: igeom, imate, icontm, iorien, icompo, ivarim, iinstp, ipoids
+    integer :: igeom, imate, icontm, iorien, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
-    integer :: jacf, jtab(7), ivarmp, codret, ivf
+    integer :: jacf, ivarmp, codret, ivf
     integer :: ncomp, nbvalc, isdcom, nbasspou, maxfipoutre
     integer :: kp, istrxm, istrxp, icomax, ico
     real(kind=8) :: ey, ez, gamma, xl, gg, xjx
@@ -97,6 +97,7 @@ subroutine te0540(option, nomte)
 !
     character(len=4) :: fami
     character(len=8) :: mator
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, defo_comp, mult_comp, type_comp
 !
     real(kind=8), allocatable :: vfv(:, :), vvp(:, :), skp(:, :)
@@ -151,7 +152,7 @@ subroutine te0540(option, nomte)
 !
 !  Paramètres en entrée
 !
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PMATERC', 'L', imate)
@@ -173,14 +174,14 @@ subroutine te0540(option, nomte)
     ivarmp = ivarim
 !
 ! - Properties of behaviour
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    mult_comp = zk16(icompo-1+MULTCOMP)
-    type_comp = zk16(icompo-1+INCRELAS)
-    read (zk16(icompo-1+NVAR), '(I16)') nbvalc
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    mult_comp = compor(MULTCOMP)
+    type_comp = compor(INCRELAS)
+    read (compor(NVAR), '(I16)') nbvalc
 !
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
@@ -263,7 +264,7 @@ subroutine te0540(option, nomte)
     call moytem(fami, npg, 1, '-', temm, iret)
 !   caracteristiques elastiques (pas de temperature pour l'instant)
 !   on prend le E et NU du materiau torsion (voir op0059)
-    call pmfmats(imate, mator)
+    call pmfmats(mator)
     ASSERT(mator .ne. ' ')
     call matela(zi(imate), mator, 1, temp, e, nu)
     g = e/(2.d0*(1.d0+nu))

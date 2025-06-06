@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ subroutine conors(i1, i2, i3, macoc, nbcoc, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
 !
     integer :: i1, i2, i3
     character(len=8) :: mailla
@@ -69,7 +70,7 @@ subroutine conors(i1, i2, i3, macoc, nbcoc, &
 ! VARIABLES LOCALES
 ! -----------------
     integer :: jcoor, no, no1, no2, no3, inor
-    character(len=24) :: coorno, nonoma
+    character(len=24) :: coorno
     real(kind=8) :: x1, y1, z1, x2, y2, z2, x3, y3, z3, scal
     real(kind=8) :: xg, yg, zg, vnx, vny, vnz, vrx, vry, vrz
     real(kind=8) :: vx1, vy1, vz1, vx2, vy2, vz2
@@ -93,16 +94,15 @@ subroutine conors(i1, i2, i3, macoc, nbcoc, &
 !
     coorno = mailla//'.COORDO    .VALE'
     call jeveuo(coorno, 'L', jcoor)
-    nonoma = mailla//'.NOMNOE         '
 !
 !     DETERMINATION D'UN VECTEUR NORMAL A LA MAILLE DE FISSURE
 !
-    call jenonu(jexnom(nonoma, macoc(2+i1)), no1)
+    no1 = char8_to_int(macoc(2+i1))
     x1 = zr(jcoor+3*(no1-1)+0)
     y1 = zr(jcoor+3*(no1-1)+1)
     z1 = zr(jcoor+3*(no1-1)+2)
 !
-    call jenonu(jexnom(nonoma, macoc(2+i2)), no2)
+    no2 = char8_to_int(macoc(2+i2))
     x2 = zr(jcoor+3*(no2-1)+0)
     y2 = zr(jcoor+3*(no2-1)+1)
     z2 = zr(jcoor+3*(no2-1)+2)
@@ -115,7 +115,7 @@ subroutine conors(i1, i2, i3, macoc, nbcoc, &
         vny = vx1
         vnz = 0
     else
-        call jenonu(jexnom(nonoma, macoc(2+i3)), no3)
+        no3 = char8_to_int(macoc(2+i3))
         x3 = zr(jcoor+3*(no3-1)+0)
         y3 = zr(jcoor+3*(no3-1)+1)
         z3 = zr(jcoor+3*(no3-1)+2)
@@ -133,7 +133,7 @@ subroutine conors(i1, i2, i3, macoc, nbcoc, &
     yg = 0.d0
     zg = 0.d0
     do inor = 1, nbcor
-        call jenonu(jexnom(nonoma, macor(2+inor)), no)
+        no = char8_to_int(macor(2+inor))
         xg = xg+zr(jcoor+3*(no-1)+0)
         yg = yg+zr(jcoor+3*(no-1)+1)
         zg = zg+zr(jcoor+3*(no-1)+2)

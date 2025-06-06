@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine te0535(option, nomte)
     integer :: nno, nc, nd, nk
     parameter(nno=2, nc=6, nd=nc*nno, nk=nd*(nd+1)/2)
 !
-    integer :: igeom, icompo, imate, iorien, iret
+    integer :: igeom, imate, iorien, iret
     integer :: icarcr, icontm, ideplm, ideplp, imatuu
     integer :: ivectu, icontp, ivarim, ivarip, i
     integer :: jmodfb, jsigfb, jacf, nbvalc
@@ -102,6 +102,7 @@ subroutine te0535(option, nomte)
     aster_logical :: reactu
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=8) :: mator
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, defo_comp, mult_comp, rigi_geom
 !
     real(kind=8), pointer :: defmfib(:) => null()
@@ -158,7 +159,7 @@ subroutine te0535(option, nomte)
 !  Paramètres en entrée
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PMATERC', 'L', imate)
@@ -182,14 +183,14 @@ subroutine te0535(option, nomte)
     ivarmp = ivarim
 !
 ! - Properties of behaviour
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    mult_comp = zk16(icompo-1+MULTCOMP)
-    rigi_geom = zk16(icompo-1+RIGI_GEOM)
-    read (zk16(icompo-1+NVAR), '(I16)') nbvalc
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    mult_comp = compor(MULTCOMP)
+    rigi_geom = compor(RIGI_GEOM)
+    read (compor(NVAR), '(I16)') nbvalc
 !
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
@@ -266,7 +267,7 @@ subroutine te0535(option, nomte)
     xjx = vale_cara(3)
 !   caracteristiques elastiques (pas de temperature pour l'instant)
 !   on prend le E et NU du materiau torsion (voir op0059)
-    call pmfmats(imate, mator)
+    call pmfmats(mator)
     ASSERT(mator .ne. ' ')
     call matela(zi(imate), mator, 0, 0.d0, e, nu)
     g = e/(2.d0*(1.d0+nu))

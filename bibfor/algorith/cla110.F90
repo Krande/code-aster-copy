@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -496,8 +496,8 @@ subroutine cla110(nomres, modgen)
             zi(ltino+numno-1) = nbtmno
 !
             if (nbtmno .le. 999999) then
-                nomcou = 'NO'
-                call nomcod(nomcou, nbtmno, 3, 8)
+                nomcou = 'N'
+                call nomcod(nomcou, nbtmno, 2, 8)
             else
                 nomcou = 'N'
                 call codlet(nbtmno, 'D0', nomcou(2:8))

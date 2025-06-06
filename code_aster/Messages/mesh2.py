@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,6 @@ cata_msg = {
     2: _(
         """La commande CREA_MAILLAGE tente de créer une maille appelée %(k1)s mais cette maille existe déjà dans le maillage.
   Pour éviter cette erreur, vous pouvez changer la valeur de PREF_MAILLE ou PREF_NUME.
-  """
-    ),
-    3: _(
-        """La commande CREA_MAILLAGE tente de créer un noeud appelé %(k1)s mais ce noeud existe déjà dans le maillage.
-  Pour éviter cette erreur, vous pouvez changer la valeur de PREF_NOEUD ou PREF_NUME.
   """
     ),
     4: _(

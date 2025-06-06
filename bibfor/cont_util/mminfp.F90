@@ -452,6 +452,13 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
         else
             ASSERT(.false.)
         end if
+    else if (question .eq. 'CONTACT_INIT_DIST') then
+        if (cont_form .eq. 2) then
+            call jeveuo(sdcont_caracf, 'L', vr=v_sdcont_caracf)
+            vale_r = (v_sdcont_caracf(zcmcf*(i_zone-1)+17))
+        else
+            ASSERT(ASTER_FALSE)
+        end if
     else if (question .eq. 'COEF_MATR_FROT') then
         call jeveuo(sdcont_caradf, 'L', vr=v_sdcont_caradf)
         vale_r = v_sdcont_caradf(zcmdf*(i_zone-1)+1)

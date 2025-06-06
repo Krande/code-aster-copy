@@ -26,7 +26,7 @@ from libaster import ContactPairing, ContactComputation, CoordinatesSpace
 import numpy
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="NON"), INFO=1)
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="NON"), INFO=1)
 
 test = CA.TestCase()
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 !
 interface
-    subroutine trgfct(nb,fcttab)
-        integer :: nb
-        real(kind=8) :: fcttab(nb, 5)
-    end subroutine trgfct
+   subroutine trgfct(nb, fcttab)
+      integer :: nb
+      real(kind=8) :: fcttab(nb, 6)
+   end subroutine trgfct
 end interface

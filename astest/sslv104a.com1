@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -357,7 +357,7 @@ Norme11 = POST_ELEM(
     MODELE=MODELE,
     CHAM_GD=TEMPAA,
     CHAM_MATER=CHAMPMAT,
-    INTEGRALE=_F(MAILLE="MA1", NOM_CHAM="SIGM_ELGA", NOM_CMP="X1", TYPE_MAILLE="3D"),
+    INTEGRALE=_F(MAILLE="5", NOM_CHAM="SIGM_ELGA", NOM_CMP="X1", TYPE_MAILLE="3D"),
 )
 
 IMPR_TABLE(TABLE=Norme11)
@@ -410,7 +410,7 @@ Norme22 = POST_ELEM(
     MODELE=MODELE,
     CHAM_GD=TEMPBB,
     CHAM_MATER=CHAMPMAT,
-    INTEGRALE=_F(MAILLE="MA1", NOM_CHAM="SIGM_ELGA", NOM_CMP="X1", TYPE_MAILLE="3D"),
+    INTEGRALE=_F(MAILLE="5", NOM_CHAM="SIGM_ELGA", NOM_CMP="X1", TYPE_MAILLE="3D"),
 )
 
 IMPR_TABLE(TABLE=Norme22)
@@ -463,7 +463,7 @@ Norme25 = POST_ELEM(
     MODELE=MODELE,
     CHAM_GD=TEMPB2,
     CHAM_MATER=CHAMPMAT,
-    INTEGRALE=_F(MAILLE="MA1", NOM_CHAM="SIGM_ELNO", NOM_CMP="X1", TYPE_MAILLE="3D"),
+    INTEGRALE=_F(MAILLE="5", NOM_CHAM="SIGM_ELNO", NOM_CMP="X1", TYPE_MAILLE="3D"),
 )
 
 IMPR_TABLE(TABLE=Norme25)

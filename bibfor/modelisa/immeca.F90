@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,6 +90,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 #include "asterfort/tbajli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: mailla
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
@@ -114,7 +115,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
     complex(kind=8) :: cbid
     character(len=3) :: k3b
     character(len=8) :: nnoeca, voisin(2)
-    character(len=24) :: coorno, nomama, nonoca, nonoma, nogrna(2)
+    character(len=24) :: coorno, nonoca, nogrna(2)
     integer :: n1, ibe, jbe, jgmai
 !
     character(len=24) :: param(3), parcr
@@ -159,8 +160,6 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 
     coorno = mailla//'.COORDO    .VALE'
     call jeveuo(coorno, 'L', jcoor)
-    nomama = mailla//'.NOMMAI'
-    nonoma = mailla//'.NOMNOE'
 !
 !
 ! RECUPERATION DES MOTS-CLES
@@ -548,9 +547,9 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 !
 ! 2.2.6  MISE A JOUR DE LA SD TABLE
 ! .....
-        call jenuno(jexnum(nomama, numail), voisin(1))
+        voisin(1) = int_to_char8(numail)
         ASSERT(noebec .ne. 0)
-        call jenuno(jexnum(nonoma, noebec), voisin(2))
+        voisin(2) = int_to_char8(noebec)
         call tbajli(tablca, 3, param, [immer], [rbid], &
                     [cbid], voisin(1), ideca+inoca)
 !

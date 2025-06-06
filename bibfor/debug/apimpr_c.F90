@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine apimpr_c(ifm, mesh, ds_contact)
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -138,14 +139,14 @@ subroutine apimpr_c(ifm, mesh, ds_contact)
                 write (ifm, 401) poin_coor(1), poin_coor(2), poin_coor(3)
                 node_mast_indx = pair_enti
                 call cfnumn(ds_contact%sdcont_defi, 1, node_mast_indx(1), node_mast_nume(1))
-                call jenuno(jexnum(mesh//'.NOMNOE', node_mast_nume(1)), node_mast_name)
+                node_mast_name = int_to_char8(node_mast_nume(1))
                 write (ifm, 601) node_mast_name
                 write (ifm, 801) dist
             else if (pair_type .eq. 2) then
                 write (ifm, 401) poin_coor(1), poin_coor(2), poin_coor(3)
                 elem_mast_indx = pair_enti
                 call cfnumm(ds_contact%sdcont_defi, elem_mast_indx, elem_mast_nume)
-                call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+                elem_mast_name = int_to_char8(elem_mast_nume)
                 write (ifm, 602) elem_mast_name
                 write (ifm, 701) ksi1, ksi2
                 write (ifm, 801) dist

@@ -40,11 +40,12 @@ from ..Objects import (
     ParallelMesh,
     PythonBool,
     ResultNaming,
+    MeshReader,
 )
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, SharedTmpdir
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
-from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshFromMedFile
 from . import mesh_builder
 from .simplefieldonnodes_ext import SimpleFieldOnNodesReal
 
@@ -120,7 +121,7 @@ class ExtendedParallelMesh:
         comm.Barrier()
 
     def readMedFile(
-        self, filename, meshname=None, partitioned=False, deterministic=False, verbose=0
+        self, filename, meshname="", partitioned=False, deterministic=False, ghost=1, verbose=0
     ):
         """Read a MED file containing a mesh and eventually partition it.
 
@@ -130,15 +131,18 @@ class ExtendedParallelMesh:
             partitioned (bool): False if the mesh is not yet partitioned and have to
                 be partitioned before reading.
             deterministic (bool): True if partitioning must be deterministic
+            ghost (int): ghost layer number
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
         """
         if not partitioned:
-            self, field = splitMeshAndFieldsFromMedFile(
-                filename, outMesh=self, deterministic=deterministic
+            returnTuple = splitMeshFromMedFile(
+                filename, ghost=ghost, outMesh=self, deterministic=deterministic
             )
+            self = returnTuple[0]
             self.show(verbose & 3)
         else:
-            mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
+            mr = MeshReader()
+            mr.readParallelMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,
@@ -590,7 +594,7 @@ class ExtendedConnectionMesh:
 class ExtendedIncompleteMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
 
-    def readMedFile(self, filename, meshname=None, verbose=1):
+    def readMedFile(self, filename, meshname="", verbose=1):
         """Read a MED file containing a mesh.
 
         Arguments:
@@ -600,4 +604,5 @@ class ExtendedIncompleteMesh:
                             1 - informations about main steps
                             2 - informations about all steps
         """
-        mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
+        mr = MeshReader()
+        mr.readIncompleteMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)

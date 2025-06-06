@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,6 +97,7 @@ module te0047_type
     public :: getDiscretInformations, te0047_dscr_write
 !
     private
+#include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/infted.h"
@@ -127,6 +128,7 @@ contains
         !
         integer       :: icompo, itype, ideplm, ideplp, jtempsm, jtempsp, ii
         integer       :: imate, codret, cod_res(1), igeom
+        character(len=16), pointer :: compor(:) => null()
         real(kind=8)  :: temp_moins, temp_plus, temp_refe, val_res(1), xl2
         aster_logical :: isOk, isNonLin
         !
@@ -138,18 +140,19 @@ contains
         !
         D%neq = D%nno*D%nc
         ! Récupération des infos concernant les comportements :
-        !     rela_comp   zk16(icompo-1+RELA_NAME)   NOM_DU_COMPORTEMENT
-        !     nbvar       zk16(icompo-1+NVAR)        nbvar = read (zk16(icompo-1+NVAR),'(i16)')
-        !     defo_comp   zk16(icompo-1+DEFO)        PETIT   PETIT_REAC  GROT_GDEP
-        !     type_comp   zk16(icompo-1+INCRELAS)    COMP_ELAS   COMP_INCR
+        !     rela_comp   compor(RELA_NAME)   NOM_DU_COMPORTEMENT
+        !     nbvar       compor(NVAR)        nbvar = read (compor(NVAR),'(i16)')
+        !     defo_comp   compor(DEFO)        PETIT   PETIT_REAC  GROT_GDEP
+        !     type_comp   compor(INCRELAS)    COMP_ELAS   COMP_INCR
         !
         ! Properties of behaviour
         call tecach('ONO', 'PCOMPOR', 'L', codret, iad=icompo)
         isNonLin = codret .eq. 0
         if (isNonLin) then
-            D%rela_comp = zk16(icompo-1+RELA_NAME)
-            D%defo_comp = zk16(icompo-1+DEFO)
-            D%type_comp = zk16(icompo-1+INCRELAS)
+            call jevech('PCOMPOR', 'L', vk16=compor)
+            D%rela_comp = compor(RELA_NAME)
+            D%defo_comp = compor(DEFO)
+            D%type_comp = compor(INCRELAS)
         else
             D%rela_comp = "ELAS"
             D%defo_comp = "PETIT"
@@ -163,8 +166,19 @@ contains
         D%Dilatation = 0.0
         if ( D%nno .eq. 1 ) goto 100
         if ( D%rela_comp.eq.'ELAS' ) then
+            ! Matériau
+            !   On va chercher le matériau, s'il n'existe pas ==> pas de dilatation
+            call tecach('ONN', 'PMATERC', 'L', codret, iad=imate)
+            if ( codret .ne.0 ) goto 100
+            !   On va chercher ALPHA, s'il n'existe pas ==> pas de dilatation
+            call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'ELAS', &
+                        0, ' ', [0.0d0], 1, 'ALPHA', val_res, cod_res, 0)
+            if ( cod_res(1).ne.0 ) goto 100
+            !   Si ALPHA=0 ==> pas de dilatation.
+            if ( abs(val_res(1)) .le. r8miem() ) goto 100
+            !
             ! Température
-            !   Si la température courante ou de référence n'existe pas : pas de dilatation
+            !   Si la température courante ou de référence n'existe pas ==> pas de dilatation
             call rcvarc(' ', 'TEMP', '+',   'RIGI', 1, 1, temp_plus,  codret)
             if ( codret.ne.0 ) goto 100
             call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, 1, temp_refe,  codret)
@@ -176,13 +190,8 @@ contains
                 if ( isNonLin ) goto 100
                 call utmess( "F", "DISCRETS_67" )
             endif
-            ! Matériau
-            !   Il peut ne pas exister sur les discrets
-            call tecach('ONN', 'PMATERC', 'L', codret, iad=imate)
-            if ( codret .ne.0 ) goto 100
-            call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'ELAS', &
-                        0, ' ', [0.0d0], 1, 'ALPHA', val_res, cod_res, 0)
-            if ( cod_res(1).ne.0 ) goto 100
+            !
+            ! La longueur du discret
             call jevech('PGEOMER', 'L', igeom)
             igeom = igeom-1
             if ( D%ndim.eq.3 ) then
@@ -207,7 +216,7 @@ contains
         !   lMatr       :                   (1:9)'FULL_MECA'  (1:9)'RIGI_MECA'
         !   lPred       :                                          'RIGI_MECA_TANG'
         !   lMatrPred   :                                     (1:4)'RIGI'
-        call behaviourOption(D%option, zk16(icompo), D%lMatr, D%lVect, &
+        call behaviourOption(D%option, compor, D%lMatr, D%lVect, &
                              D%lVari, D%lSigm, codret)
         D%lMatrPred = D%option(1:4) .eq. 'RIGI'
         D%lPred = D%option .eq. 'RIGI_MECA_TANG'

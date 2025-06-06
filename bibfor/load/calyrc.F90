@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ subroutine calyrc(load, mesh, model, geomDime)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     integer, intent(in) :: geomDime
@@ -375,7 +376,7 @@ subroutine calyrc(load, mesh, model, geomDime)
                     if ((nno11 .eq. 0) .and. (nno12 .eq. 0)) goto 90
 !
                     nuno2 = ino2
-                    call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
+                    nono2 = int_to_char8(nuno2)
 !
                     nomnoe(1) = nono2
                     coef(1) = -1.d0*coef3
@@ -383,14 +384,14 @@ subroutine calyrc(load, mesh, model, geomDime)
                     do ino1 = 1, nno11
                         nuno1 = conu1(1+idcal1-1+ino1)
                         coef1 = cocf1(1+idcal1-1+ino1)
-                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
+                        nono1 = int_to_char8(nuno1)
                         nomnoe(ino1+1) = nono1
                         coef(ino1+1) = coef1*coef11
                     end do
                     do ino1 = 1, nno12
                         nuno1 = conu2(1+idcal2-1+ino1)
                         coef1 = cocf2(1+idcal2-1+ino1)
-                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
+                        nono1 = int_to_char8(nuno1)
                         nomnoe(1+nno11+ino1) = nono1
                         coef(1+nno11+ino1) = coef1*coef12
                     end do
@@ -462,7 +463,7 @@ subroutine calyrc(load, mesh, model, geomDime)
                     normal(3) = zero
 !
                     nuno2 = ino2
-                    call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
+                    nono2 = int_to_char8(nuno2)
 !
                     if (dnor) then
                         ij = 1
@@ -473,14 +474,14 @@ subroutine calyrc(load, mesh, model, geomDime)
                     do ino1 = 1, nno11
                         nuno1 = conu1(1+idcal1-1+ino1)
                         coef1 = cocf1(1+idcal1-1+ino1)
-                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
+                        nono1 = int_to_char8(nuno1)
                         nomnoe(1+ij+ino1-1) = nono1
                         coef(1+ij+ino1-1) = coef1*coef11
                     end do
                     do ino1 = 1, nno12
                         nuno1 = conu2(1+idcal2-1+ino1)
                         coef1 = cocf2(1+idcal2-1+ino1)
-                        call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
+                        nono1 = int_to_char8(nuno1)
                         nomnoe(1+nno11+ij+ino1-1) = nono1
                         coef(1+nno11+ij+ino1-1) = coef1*coef12
                     end do
@@ -565,7 +566,7 @@ subroutine calyrc(load, mesh, model, geomDime)
                 if ((nno11 .eq. 0) .and. (nno12 .eq. 0)) goto 290
 !
                 nuno2 = ino2
-                call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
+                nono2 = int_to_char8(nuno2)
 !
                 nomnoe(1) = nono2
                 coef(1) = -1.d0*coef3
@@ -573,14 +574,14 @@ subroutine calyrc(load, mesh, model, geomDime)
                 do ino1 = 1, nno11
                     nuno1 = conu1(1+idcal1-1+ino1)
                     coef1 = cocf1(1+idcal1-1+ino1)
-                    call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
+                    nono1 = int_to_char8(nuno1)
                     nomnoe(ino1+1) = nono1
                     coef(ino1+1) = coef1*coef11
                 end do
                 do ino1 = 1, nno12
                     nuno1 = conu2(1+idcal2-1+ino1)
                     coef1 = cocf2(1+idcal2-1+ino1)
-                    call jenuno(jexnum(mesh//'.NOMNOE', nuno1), nono1)
+                    nono1 = int_to_char8(nuno1)
                     nomnoe(1+nno11+ino1) = nono1
                     coef(1+nno11+ino1) = coef1*coef12
                 end do

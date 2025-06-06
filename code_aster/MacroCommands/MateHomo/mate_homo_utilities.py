@@ -31,11 +31,11 @@ from ...CodeCommands import (
     AFFE_CHAR_CINE,
     MECA_STATIQUE,
     POST_ELEM,
-    IMPR_RESU,
 )
 from ...Messages import ASSERT, UTMESS
 from ...Objects import Function
-from . import NameConverter
+
+DEFAULT_TEMP_REF = 20.0
 
 
 def create_empty_dictpara(ls_para):
@@ -55,34 +55,49 @@ def create_empty_dictpara(ls_para):
     return tabpara
 
 
-def get_temp_def_alpha(resu):
+def get_temp_def_alpha_material(mate, missing=DEFAULT_TEMP_REF):
     """
-    Retrieve the TEMP_DEF_ALPHA parameter from a Result datastructure.
+    Retrieve the TEMP_DEF_ALPHA parameter from a material datastructure.
 
-    This function searches through the provided Result datastructure (`resu`) to
-    find the TEMP_DEF_ALPHA parameter. If the parameter is found, it returns its
-    value. If the parameter is not found, the function returns a default value of
-    20. This is useful for ensuring that a valid temperature deformation alpha
-    value is always available for further calculations.
+    If not found, returns the default value of 20°C.
 
     Args:
-        resu (Result): The input result datastructure from which to retrieve the
-            TEMP_DEF_ALPHA parameter.
+        mate (Material): The input datastructure.
+        missing (float): The default value if parameter is missing.
 
     Returns:
-        float: The TEMP_DEF_ALPHA parameter if found, otherwise the default value
-            of 20.
+        float: The parameter value.
     """
 
-    temp_def_alpha = 20.0
-    mate = resu.getMaterialField()
+    temp_def_alpha = missing
+    for name in mate.getMaterialNames():
+        try:
+            temp_def_alpha = mate.getValueReal(name, "TEMP_DEF_ALPHA")
+            break
+        except RuntimeError:
+            pass
+
+    return temp_def_alpha
+
+
+def get_temp_def_alpha_result(result, missing=DEFAULT_TEMP_REF):
+    """
+    Retrieve the TEMP_DEF_ALPHA parameter from a result datastructure.
+
+    Args:
+        mate (Material): The input datastructure.
+        missing (float): The default value if parameter is missing.
+
+    Returns:
+        float: The parameter value.
+    """
+
+    temp_def_alpha = missing
+    mate = result.getMaterialField()
     for m in mate.getVectorOfMaterial():
-        for name in m.getMaterialNames():
-            try:
-                temp_def_alpha = m.getValueReal(name, "TEMP_DEF_ALPHA")
-                break
-            except RuntimeError:
-                pass
+        temp_def_alpha = get_temp_def_alpha_material(m, missing=None)
+        if temp_def_alpha is not None:
+            break
 
     return temp_def_alpha
 
@@ -160,7 +175,9 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
         }
 
         check_list = mandatory_elas if not need_ther else mandatory_elas + mandatory_ther
-        temp_def_alpha_current_mat = None
+        temp_def_alpha_current_mat = get_temp_def_alpha_material(mater, missing=None)
+        ls_temp_def_alpha.append(temp_def_alpha_current_mat)
+
         for key, lspara in parse_list.items():
             missing_in_at_least_one = []
             for p in lspara:
@@ -169,21 +186,16 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
                     if p in missing_in_at_least_one:
                         UTMESS("F", "HOMO1_12", valk=p)
                     f_para[p] = func
-                    try:
-                        temp_def_alpha_current_mat = mater.getValueReal(key, "TEMP_DEF_ALPHA")
-                        ls_temp_def_alpha.append(temp_def_alpha_current_mat)
-                    except RuntimeError:
-                        pass
                 else:
                     try:
-                        v = mater.getValueReal(key, p)
+                        mater.getValueReal(key, p)
                         UTMESS("F", "HOMO1_13", valk=p)
                     except RuntimeError:
                         pass
                 missing_in_at_least_one.append(p)
 
         for p in check_list:
-            if not p in f_para:
+            if p not in f_para:
                 UTMESS("F", "HOMO1_10", valk=(p, mater.getName(), mater.userName))
 
         for p, fp in f_para.items():
@@ -206,7 +218,7 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
             "E": f_para_temp["E"],
             "NU": f_para_temp["NU"],
             "ALPHA": f_zero,
-            "TEMP_DEF_ALPHA": 20.0,
+            "TEMP_DEF_ALPHA": DEFAULT_TEMP_REF,
         }
 
         ther_fo_kw = {"LAMBDA": f_para_temp.get("LAMBDA", f_zero), "RHO_CP": f_zero}
@@ -365,7 +377,7 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
         "NOM_VARC": "TEMP",
         "EVOL": EVOLVARC,
         "NOM_CHAM": "TEMP",
-        "VALE_REF": 20.0,
+        "VALE_REF": DEFAULT_TEMP_REF,
     }
 
     CHLOIME = AFFE_MATERIAU(

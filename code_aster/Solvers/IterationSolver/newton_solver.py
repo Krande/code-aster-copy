@@ -132,6 +132,7 @@ class NewtonSolver(BaseIterationSolver, EventSource):
                         self.current_incr - 1,
                         self._converg.get("RESI_GLOB_RELA"),
                         self._converg.get("RESI_GLOB_MAXI"),
+                        self._converg.get("RESI_REFE_RELA"),
                         self._converg.get("RESI_GEOM"),
                         matrix_type,
                     ]

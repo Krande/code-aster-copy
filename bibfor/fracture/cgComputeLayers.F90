@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine cgComputeLayers(cgField, cgTheta, cnstet, v_numc)
 #include "asterfort/jenuno.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/conare.h"
+#include "asterfort/char8_to_int.h"
 
 #include "jeveux.h"
 !
@@ -137,7 +138,7 @@ subroutine cgComputeLayers(cgField, cgTheta, cnstet, v_numc)
     call jeveuo(cgTheta%crack//'.FOND.NOEU', 'L', vk8=fondNoeud)
     AS_ALLOCATE(vi=fondNoeudNume, size=cgTheta%nb_fondNoeud)
     do i_node = 1, cgTheta%nb_fondNoeud
-        call jenonu(jexnom(cgTheta%nomNoeud, fondNoeud(i_node)), nume)
+        nume = char8_to_int(fondNoeud(i_node))
         fondNoeudNume(i_node) = nume
     end do
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #          POUR LE CALCUL DES LAMES D'EAU.
 # person_in_charge: pierre.badel at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), ERREUR=_F(ALARME="EXCEPTION"), IMPR_MACRO="NON")
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), IMPR_MACRO="NON")
 
 MA1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
@@ -63,6 +63,43 @@ TABP3 = POST_MAC3COEUR(
     OPERATION="ANALYSE",
 )
 
+TAB_LE1 = POST_MAC3COEUR(
+    RESULTAT=RESU,
+    TYPE_COEUR="TEST",
+    INST=t4,
+    TABLE=DATAMAC,
+    TYPE_CALCUL="LAME",
+    FORMAT="ASTER",
+    OPERATION="EXTRACTION",
+)
+
+TEST_TABLE(
+    VALE_CALC=1.96651739062408,
+    VALE_REFE=1.96651739062408,
+    NOM_PARA="RES_BBCB",
+    TABLE=TAB_LE1,
+    REFERENCE="AUTRE_ASTER",
+    FILTRE=_F(NOM_PARA="GRILLE", VALE_K="G1"),
+)
+
+TAB_LE2 = POST_MAC3COEUR(
+    RESULTAT=RESU,
+    TYPE_COEUR="TEST",
+    INST=t4,
+    TABLE=DATAMAC,
+    TYPE_CALCUL="LAME",
+    FORMAT="DAMAC",
+    OPERATION="EXTRACTION",
+)
+
+TEST_TABLE(
+    VALE_CALC=1.96651739062408,
+    VALE_REFE=1.96651739062408,
+    NOM_PARA="RES_B02B01",
+    TABLE=TAB_LE2,
+    REFERENCE="AUTRE_ASTER",
+    FILTRE=_F(NOM_PARA="GRILLE", VALE_K="G1"),
+)
 
 TEST_TABLE(
     TABLE=TABP1,

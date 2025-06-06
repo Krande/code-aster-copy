@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,9 @@ def assemblage_prod(self, NUME_DDL, MATR_ASSE, VECT_ASSE, **args):
         )
 
     if (not MATR_ASSE) and (not VECT_ASSE):
-        raise AsException("Aucun concept a assembler")
+        raise CataError("Aucun concept a assembler")
     if not NUME_DDL:
-        raise AsException("Impossible de typer les concepts resultats")
+        raise CataError("Impossible de typer les concepts resultats")
     if NUME_DDL.is_typco():
         self.type_sdprod(NUME_DDL, nume_ddl_sdaster)
 

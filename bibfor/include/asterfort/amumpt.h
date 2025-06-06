@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,19 +21,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine amumpt(option, kmonit, temps, rang, nbproc,&
-                      kxmps, lquali, type, ietdeb, ietrat,&
+    subroutine amumpt(option, kmonit, temps, rang, nbproc, &
+                      kxmps, lquali, type, ietdeb, ietrat, &
                       rctdeb, ldist)
-        integer :: option
+        integer(kind=4) :: option
         character(len=24) :: kmonit(12)
         real(kind=8) :: temps(6)
-        integer :: rang
-        integer :: nbproc
-        integer :: kxmps
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbproc
+        integer(kind=8) :: kxmps
         aster_logical :: lquali
         character(len=1) :: type
-        integer :: ietdeb
-        integer :: ietrat
+        integer(kind=8) :: ietdeb
+        integer(kind=8) :: ietrat
         real(kind=8) :: rctdeb
         aster_logical :: ldist
     end subroutine amumpt

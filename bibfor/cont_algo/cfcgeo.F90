@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine cfcgeo(mesh, hval_algo, ds_contact)
 #include "asterfort/mmbouc.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -154,7 +155,7 @@ subroutine cfcgeo(mesh, hval_algo, ds_contact)
     if (rea2_node .eq. 0) then
         loop_geom_node = ' '
     else
-        call jenuno(jexnum(mesh//'.NOMNOE', rea2_node), loop_geom_node)
+        loop_geom_node = int_to_char8(rea2_node)
     end if
 !
 ! - For REAC_GEOM = 'MANU'

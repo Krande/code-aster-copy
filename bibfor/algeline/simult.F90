@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,13 @@ subroutine simult()
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     real(kind=8) :: xnorm, depl(6)
     character(len=8) :: masse, modsta, mailla, nomnoe
     character(len=16) :: type, nomcmd
     character(len=19) :: resu
-    character(len=24) :: magrno, manono
+    character(len=24) :: magrno
     character(len=8) :: kbid
 !     ------------------------------------------------------------------
 !
@@ -64,7 +65,6 @@ subroutine simult()
 !-----------------------------------------------------------------------
     call jemarq()
     magrno = ' '
-    manono = ' '
     resu = ' '
     call getres(resu, type, nomcmd)
 !
@@ -109,13 +109,12 @@ subroutine simult()
     call compno(mailla, nbgr, group_no, nbno)
     call wkvect('&&SIMULT.NOEUD', 'V V K8', nbno, idno)
     magrno = mailla//'.GROUPENO'
-    manono = mailla//'.NOMNOE'
     ii = -1
     do i = 1, nbgr
         call jelira(jexnom(magrno, group_no(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
         do in = 0, nb-1
-            call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
+            nomnoe = int_to_char8(zi(ldgn+in))
             ii = ii+1
             zk8(idno+ii) = nomnoe
         end do

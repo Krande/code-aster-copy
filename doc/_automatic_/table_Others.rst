@@ -54,6 +54,7 @@
    * - :py:class:`~code_aster.Objects.MeshConnectionGraph`
    * - :py:class:`~code_aster.Objects.MeshEntity`
    * - :py:class:`~code_aster.Objects.AllMeshEntities`
+   * - :py:class:`~code_aster.Objects.MeshReader`
    * - :py:class:`~code_aster.Objects.ModelSplitingMethod`
    * - :py:class:`~code_aster.Objects.Modelings`
    * - :py:class:`~code_aster.Objects.Node`
@@ -75,6 +76,7 @@
    * - :py:class:`~code_aster.Objects.ResultNaming`
    * - :py:class:`~code_aster.Objects.StructuralForceReal`
    * - :py:class:`~code_aster.Objects.SyntaxSaver`
+   * - :py:class:`~code_aster.Objects.UseCppPickling`
    * - :py:class:`~code_aster.Objects.externVarEnumInt`
    * - :py:class:`~code_aster.Objects.AsterError`
    * - :py:class:`~code_aster.Objects.ContactError`

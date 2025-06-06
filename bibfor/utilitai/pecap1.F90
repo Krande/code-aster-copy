@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,6 +92,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 ! -----  ARGUMENTS
     integer :: ngi
@@ -258,13 +259,13 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! ---   NOM DE LA PREMIERE MAILLE  DU BORD :
 !       ----------------------------------
-            call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
+            nomail = int_to_char8(numail)
 !
 ! ---   NOM DU PREMIER NOEUD
 !       ----------------------------------
             call jeveuo(jexnum(noma//'.CONNEX', numail), 'L', vi=connex)
             nunoeu = connex(1)
-            call jenuno(jexnum(noma//'.NOMNOE', nunoeu), nomnoe)
+            nomnoe = int_to_char8(nunoeu)
 !
 ! ---   POINTEUR DANS LE TABLEAU DES NUMEROS D'EQUATIONS ASSOCIE
 ! ---   AU PREMIER NOEUD :
@@ -288,7 +289,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! ---     NOM DE LA MAILLE :
 !         ----------------
-                call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
+                nomail = int_to_char8(numail)
 !
 ! ---     NOMBRE DE CONNECTIVITES DE LA MAILLE :
 !         ------------------------------------

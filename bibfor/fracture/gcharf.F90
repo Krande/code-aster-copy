@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2, &
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=19) :: char1, char2, charg
     character(len=24) :: oldfon
@@ -133,7 +134,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2, &
         do ima = 1, nmazo
             numa = zi(p1+zi(p2+izo-1)-1+ima-1)
             zi(jzcar1+numa-1) = izo
-            call jenuno(jexnum(ma//'.NOMMAI', numa), k8b)
+            k8b = int_to_char8(numa)
         end do
     end do
 !
@@ -148,7 +149,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2, &
         do ima = 1, nmazo
             numa = zi(p1+zi(p2+izo-1)-1+ima-1)
             zi(jzcar2+numa-1) = izo
-            call jenuno(jexnum(ma//'.NOMMAI', numa), k8b)
+            k8b = int_to_char8(numa)
         end do
     end do
 !

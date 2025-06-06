@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ bloc_auto2 = BLOC(
 # Bloc pour decoupe du pas de temps
 bloc_deco = BLOC(
     fr=tr("Action de decoupe du pas temps"),
-    condition="""equal_to("ACTION", 'DECOUPE') or equal_to("ACTION", 'AUTRE_PILOTAGE')""",
+    condition="""equal_to("ACTION", 'DECOUPE')""",
     SUBD_METHODE=SIMP(
         fr=tr("Méthode de subdivision des pas de temps en cas de divergence"),
         statut="f",
@@ -232,7 +232,7 @@ DEFI_LIST_INST = OPER(
                 statut="f",
                 max=1,
                 typ="TXM",
-                into=("ARRET", "DECOUPE", "ITER_SUPPL", "AUTRE_PILOTAGE"),
+                into=("ARRET", "DECOUPE", "ITER_SUPPL"),
                 defaut="DECOUPE",
             ),
             b_deco=bloc_deco,

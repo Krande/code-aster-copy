@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
 module mesh_module
 ! ==================================================================================================
@@ -25,17 +26,20 @@ module mesh_module
     public :: checkNormalOnSkinCell, checkInclude, getCellOptionForName, createNameOfCell
     public :: getNodeOptionForName, createNameOfNode, getGroupsFromCell, getMeshDimension
     public :: getFirstNodeFromNodeGroup, getListOfCellGroup, checkCellsAreSkin
+    public :: compMinMaxEdges
+    public :: getCellsFromGroup
 ! ==================================================================================================
     private
+#include "asterc/r8gaem.h"
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "MeshTypes_type.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -48,10 +52,15 @@ module mesh_module
 #include "asterfort/lxlgut.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
+#include "asterfort/rminsp.h"
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "blas/ddot.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -235,7 +244,7 @@ contains
                     suppNodeNume(iNode) = meshConnex(nodeFirst+iNode-1)
                 end do
                 call jenuno(jexnum('&CATA.TM.NOMTM', meshCellType(suppNume)), suppCellType)
-                call jenuno(jexnum(mesh//'.NOMMAI', skinNume), cellName)
+                cellName = int_to_char8(skinNume)
 !
 ! --------- Get sign of normal from skin cell to its volumic support
                 call getSignNormalSkinToSupport(modelDime, skinNodeNume, suppNodeNume, &
@@ -579,40 +588,24 @@ contains
 !
 ! Get options from user for name of cell
 !
-! In  keywfact         : factor keyword to read parameters
-! In  iocc             : index of factor keyword
 ! Out lPrefCellName    : flag if a string was given for name of cell
 ! Out lPrefCellNume    : flag if a integer was given for name of cell
 ! Out prefCellName     : string for name of cell
 ! Out prefCellNume     : integer for name of cell
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getCellOptionForName(keywfact, iocc, lPrefCellName, lPrefCellNume, prefCellName, &
+    subroutine getCellOptionForName(lPrefCellName, lPrefCellNume, prefCellName, &
                                     prefCellNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=16), intent(in) :: keywfact
-        integer, intent(in) :: iocc
         aster_logical, intent(out) :: lPrefCellName, lPrefCellNume
         character(len=8), intent(out) :: prefCellName
         integer, intent(out) :: prefCellNume
-! - Local
-        integer :: n1
 !   ------------------------------------------------------------------------------------------------
         lPrefCellName = ASTER_FALSE
         lPrefCellNume = ASTER_FALSE
         prefCellName = ' '
         prefCellNume = -1
-        call getvtx(keywfact, 'PREF_MAILLE', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            call getvtx(keywfact, 'PREF_MAILLE', iocc=iocc, scal=prefCellName)
-            lPrefCellName = ASTER_TRUE
-        end if
-        call getvis(keywfact, 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            lPrefCellNume = ASTER_TRUE
-            call getvis(keywfact, 'PREF_NUME', iocc=iocc, scal=prefCellNume)
-        end if
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -622,18 +615,15 @@ contains
 ! Create name for cell
 !
 ! IO  cellName         : name of cell
-! In  lPrefCellName    : flag if a string was given for name of cell
-! In  lPrefCellNume    : flag if a integer was given for name of cell
 ! In  prefCellName     : string for name of cell
 ! IO  prefCellNume     : integer for name of cell
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine createNameOfCell(cellName, lPrefCellName, lPrefCellNume, prefCellName, &
+    subroutine createNameOfCell(cellName, prefCellName, &
                                 prefCellNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=8), intent(inout) :: cellName
-        aster_logical, intent(in) :: lPrefCellName, lPrefCellNume
         character(len=8), intent(in) :: prefCellName
         integer, intent(inout) :: prefCellNume
 ! - Local
@@ -641,23 +631,13 @@ contains
         character(len=8) :: knume
 !   ------------------------------------------------------------------------------------------------
         lenPrefName = lxlgut(prefCellName)
-        if (lPrefCellNume) then
-            call codent(prefCellNume, 'G', knume)
-            prefCellNume = prefCellNume+1
-            lenPrefPrev = lxlgut(knume)
-            if (lenPrefName+lenPrefPrev .gt. 8) then
-                call utmess('F', 'MESH2_1')
-            end if
-            cellName = prefCellName(1:lenPrefName)//knume
-        else if (lPrefCellName) then
-            lenPrefPrev = lxlgut(cellName)-1
-            if (lenPrefName+lenPrefPrev .gt. 8) then
-                call utmess('F', 'MESH2_1')
-            end if
-            cellName = prefCellName(1:lenPrefName)//cellName(2:8)
-        else
-            ASSERT(ASTER_FALSE)
+        call codent(prefCellNume, 'G', knume)
+        prefCellNume = prefCellNume+1
+        lenPrefPrev = lxlgut(knume)
+        if (lenPrefName+lenPrefPrev .gt. 8) then
+            call utmess('F', 'MESH2_1')
         end if
+        cellName = knume
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -666,40 +646,22 @@ contains
 !
 ! Get options from user for name of node
 !
-! In  keywfact         : factor keyword to read parameters
-! In  iocc             : index of factor keyword
-! Out lPrefNodeName    : flag if a string was given for name of node
 ! Out lPrefNodeNume    : flag if a integer was given for name of node
 ! Out prefNodeName     : string for name of node
 ! Out prefNodeNume     : integer for name of node
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getNodeOptionForName(keywfact, iocc, lPrefNodeName, lPrefNodeNume, prefNodeName, &
+    subroutine getNodeOptionForName(lPrefNodeNume, prefNodeName, &
                                     prefNodeNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=16), intent(in) :: keywfact
-        integer, intent(in) :: iocc
-        aster_logical, intent(out) :: lPrefNodeName, lPrefNodeNume
+        aster_logical, intent(out) :: lPrefNodeNume
         character(len=8), intent(out) :: prefNodeName
         integer, intent(out) :: prefNodeNume
-! - Local
-        integer :: n1
 !   ------------------------------------------------------------------------------------------------
-        lPrefNodeName = ASTER_FALSE
         lPrefNodeNume = ASTER_FALSE
         prefNodeName = ' '
         prefNodeNume = -1
-        call getvtx(keywfact, 'PREF_NOEUD', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            lPrefNodeName = ASTER_TRUE
-            call getvtx(keywfact, 'PREF_NOEUD', iocc=iocc, scal=prefNodeName)
-        end if
-        call getvis(keywfact, 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            lPrefNodeNume = ASTER_TRUE
-            call getvis(keywfact, 'PREF_NUME', iocc=iocc, scal=prefNodeNume)
-        end if
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -709,18 +671,17 @@ contains
 ! Create name for node
 !
 ! IO  nodeName         : name of node
-! In  lPrefNodeName    : flag if a string was given for name of node
 ! In  lPrefNodeNume    : flag if a integer was given for name of node
 ! In  prefNodeName     : string for name of node
 ! IO  prefNodeNume     : integer for name of node
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine createNameOfNode(nodeName, lPrefNodeName, lPrefNodeNume, prefNodeName, &
+    subroutine createNameOfNode(nodeName, lPrefNodeNume, prefNodeName, &
                                 prefNodeNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=8), intent(inout) :: nodeName
-        aster_logical, intent(in) :: lPrefNodeName, lPrefNodeNume
+        aster_logical, intent(in) :: lPrefNodeNume
         character(len=8), intent(in) :: prefNodeName
         integer, intent(inout) :: prefNodeNume
 ! - Local
@@ -735,13 +696,7 @@ contains
             if (lenPrefName+lenPrefPrev .gt. 8) then
                 call utmess('F', 'MESH2_1')
             end if
-            nodeName = prefNodeName(1:lenPrefName)//knume
-        else if (lPrefNodeName) then
-            lenPrefPrev = lxlgut(nodeName)-1
-            if (lenPrefName+lenPrefPrev .gt. 8) then
-                call utmess('F', 'MESH2_1')
-            end if
-            nodeName = prefNodeName(1:lenPrefPrev)//nodeName(2:8)
+            nodeName = knume
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -858,7 +813,7 @@ contains
         call utnono(" ", mesh, 'NOEUD', nodeGroup, nodeName, &
                     iret)
         if (iret .eq. 0) then
-            call jenonu(jexnom(mesh//'.NOMNOE', nodeName), nodeNume)
+            nodeNume = char8_to_int(nodeName)
         else if (iret .eq. 10) then
             call utmess('F', 'MESH3_1', sk=nodeGroup)
         else if (iret .eq. 1) then
@@ -965,6 +920,262 @@ contains
 !
         if (onlySkin1D .and. hasSkin2D) then
             call utmess('F', 'MESH3_92')
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compMinMaxEdges
+!
+! Compute min and max edges on all cells in mesh (default) or only in a list of cells in mesh
+!
+! In  mesh             : mesh
+! Out edgeMin          : length of smallest edge
+! Out edgeMax          : length of greatest edge
+! In  nbCell           : number of cells where to compute ()
+! Ptr listCellNume     : pointer to index of cells where to compute ()
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine compMinMaxEdges(meshZ, edgeMin, edgeMax, &
+                               nbCell_, listCellNume_)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ
+        real(kind=8), intent(out) :: edgeMin, edgeMax
+        integer, optional, intent(in) :: nbCell_
+        integer, optional, pointer :: listCellNume_(:)
+! ----- Local
+        character(len=8) :: mesh, cellTypeName
+        integer :: nbCell, nbCellMesh
+        integer :: cellNume, cellTypeNume, nodeNume
+        integer :: iNode, iCell
+        real(kind=8) :: x(MT_MAX_NBNODE_LINE), y(MT_MAX_NBNODE_LINE), z(MT_MAX_NBNODE_LINE)
+        real(kind=8) :: d1, d2, d3, d4
+        integer, pointer :: meshDime(:) => null(), meshTypeCell(:) => null()
+        integer, pointer :: meshConnex(:) => null()
+        real(kind=8), pointer :: meshNodeCoor(:) => null()
+        aster_logical :: l_pmesh, onAllMesh
+!
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        edgeMin = r8gaem()
+        edgeMax = 0.d0
+        if (present(nbCell_)) then
+            ASSERT(present(listCellNume_))
+            onAllMesh = ASTER_FALSE
+        else
+            onAllMesh = ASTER_TRUE
+        end if
+
+! ----- Access to mesh
+        call jeveuo(mesh//'.DIME', 'L', vi=meshDime)
+        call jeveuo(mesh//'.TYPMAIL', 'L', vi=meshTypeCell)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=meshNodeCoor)
+        nbCellMesh = meshDime(3)
+        l_pmesh = isParallelMesh(mesh)
+
+! ----- Set list
+        if (onAllMesh) then
+            nbCell = nbCellMesh
+        else
+            nbCell = nbCell_
+            ASSERT(nbCell .le. nbCellMesh)
+        end if
+
+        do iCell = 1, nbCell
+! --------- Current cell
+            if (onAllMesh) then
+                cellNume = iCell
+            else
+                cellNume = listCellNume_(iCell)
+            end if
+
+            ASSERT(cellNume .le. nbCellMesh)
+            cellTypeNume = meshTypeCell(cellNume)
+            call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
+            call jeveuo(jexnum(mesh//'.CONNEX', cellNume), 'L', vi=meshConnex)
+
+! --------- Compute max and min edges on this cell
+            if (cellTypeName(1:3) .eq. 'POI') then
+            else if (cellTypeName(1:3) .eq. 'SEG') then
+                do iNode = 1, 2
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                edgeMin = rminsp(edgeMin, d1, 0.d0, 0.d0, 0.d0)
+                edgeMax = max(edgeMax, d1)
+            else if (cellTypeName(1:4) .eq. 'TRIA') then
+                do iNode = 1, 3
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(1)-x(3))**2+(y(1)-y(3))**2+(z(1)-z(3))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+            else if (cellTypeName(1:4) .eq. 'QUAD') then
+                do iNode = 1, 4
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(4)-x(3))**2+(y(4)-y(3))**2+(z(4)-z(3))**2
+                d4 = (x(1)-x(4))**2+(y(1)-y(4))**2+(z(1)-z(4))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+            else if (cellTypeName(1:4) .eq. 'HEXA') then
+                do iNode = 1, 8
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(4)-x(3))**2+(y(4)-y(3))**2+(z(4)-z(3))**2
+                d4 = (x(1)-x(4))**2+(y(1)-y(4))**2+(z(1)-z(4))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+                d1 = (x(6)-x(5))**2+(y(6)-y(5))**2+(z(6)-z(5))**2
+                d2 = (x(7)-x(6))**2+(y(7)-y(6))**2+(z(7)-z(6))**2
+                d3 = (x(8)-x(7))**2+(y(8)-y(7))**2+(z(8)-z(7))**2
+                d4 = (x(5)-x(8))**2+(y(5)-y(8))**2+(z(5)-z(8))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+                d1 = (x(1)-x(5))**2+(y(1)-y(5))**2+(z(1)-z(5))**2
+                d2 = (x(2)-x(6))**2+(y(2)-y(6))**2+(z(2)-z(6))**2
+                d3 = (x(3)-x(7))**2+(y(3)-y(7))**2+(z(3)-z(7))**2
+                d4 = (x(4)-x(8))**2+(y(4)-y(8))**2+(z(4)-z(8))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+            else if (cellTypeName(1:5) .eq. 'PENTA') then
+                do iNode = 1, 6
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(1)-x(3))**2+(y(1)-y(3))**2+(z(1)-z(3))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+                d1 = (x(5)-x(4))**2+(y(5)-y(4))**2+(z(5)-z(4))**2
+                d2 = (x(6)-x(5))**2+(y(6)-y(5))**2+(z(6)-z(5))**2
+                d3 = (x(4)-x(6))**2+(y(4)-y(6))**2+(z(4)-z(6))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+                d1 = (x(1)-x(4))**2+(y(1)-y(4))**2+(z(1)-z(4))**2
+                d2 = (x(2)-x(5))**2+(y(2)-y(5))**2+(z(2)-z(5))**2
+                d3 = (x(3)-x(6))**2+(y(3)-y(6))**2+(z(3)-z(6))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+            else if (cellTypeName(1:5) .eq. 'TETRA') then
+                do iNode = 1, 4
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(1)-x(3))**2+(y(1)-y(3))**2+(z(1)-z(3))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+                d1 = (x(4)-x(1))**2+(y(4)-y(1))**2+(z(4)-z(1))**2
+                d2 = (x(4)-x(2))**2+(y(4)-y(2))**2+(z(4)-z(2))**2
+                d3 = (x(4)-x(3))**2+(y(4)-y(3))**2+(z(4)-z(3))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, 0.d0)
+                edgeMax = max(edgeMax, d1, d2, d3)
+            else if (cellTypeName(1:4) .eq. 'PYRA') then
+                do iNode = 1, 5
+                    nodeNume = meshConnex(iNode)
+                    x(iNode) = meshNodeCoor(3*(nodeNume-1)+1)
+                    y(iNode) = meshNodeCoor(3*(nodeNume-1)+2)
+                    z(iNode) = meshNodeCoor(3*(nodeNume-1)+3)
+                end do
+                d1 = (x(2)-x(1))**2+(y(2)-y(1))**2+(z(2)-z(1))**2
+                d2 = (x(3)-x(2))**2+(y(3)-y(2))**2+(z(3)-z(2))**2
+                d3 = (x(4)-x(3))**2+(y(4)-y(3))**2+(z(4)-z(3))**2
+                d4 = (x(1)-x(4))**2+(y(1)-y(4))**2+(z(1)-z(4))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+                d1 = (x(5)-x(1))**2+(y(5)-y(1))**2+(z(5)-z(1))**2
+                d2 = (x(5)-x(2))**2+(y(5)-y(2))**2+(z(5)-z(2))**2
+                d3 = (x(5)-x(3))**2+(y(5)-y(3))**2+(z(5)-z(3))**2
+                d4 = (x(5)-x(4))**2+(y(5)-y(4))**2+(z(5)-z(4))**2
+                edgeMin = rminsp(edgeMin, d1, d2, d3, d4)
+                edgeMax = max(edgeMax, d1, d2, d3, d4)
+            else
+                call utmess('F', 'MESH3_10', sk=cellTypeName)
+            end if
+
+        end do
+        if (l_pmesh) then
+            call asmpi_comm_vect("MPI_MIN", 'R', scr=edgeMin)
+            call asmpi_comm_vect("MPI_MAX", 'R', scr=edgeMax)
+        end if
+        if (edgeMin .eq. r8gaem()) then
+            edgeMin = 0.d0
+        end if
+        edgeMin = sqrt(edgeMin)
+        edgeMax = sqrt(edgeMax)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getCellsFromGroup
+!
+! Get list of cells from group
+!
+! In  mesh             : mesh
+! In  groupName        : name of group of cell
+! Out edgeMax          : length of greatest edge
+! Out nbCell           : number of cells
+! Ptr listCellNume     : pointer to index of cells
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getCellsFromGroup(meshZ, groupNameZ, nbCell, listCellNume)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ, groupNameZ
+        integer, intent(out) :: nbCell
+        integer, pointer :: listCellNume(:)
+! ----- Local
+        character(len=8) :: mesh
+        character(len=24) :: groupName
+        integer :: iexi, iret
+!
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        groupName = groupNameZ
+
+        call jeexin(mesh//'.GROUPEMA', iexi)
+        if (iexi .gt. 0) then
+            call jeexin(jexnom(mesh//'.GROUPEMA', groupName), iret)
+            if (iret .eq. 0) then
+                call utmess('F', 'MESH3_11', sk=groupName)
+            else
+                call jelira(jexnom(mesh//'.GROUPEMA', groupName), 'LONMAX', nbCell)
+                if (nbCell .ne. 0) then
+                    call jeveuo(jexnom(mesh//'.GROUPEMA', groupName), 'L', vi=listCellNume)
+                end if
+            end if
+        else
+            call utmess('F', 'MESH3_12')
         end if
 !
 !   ------------------------------------------------------------------------------------------------

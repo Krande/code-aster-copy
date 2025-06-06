@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,8 @@ subroutine chveno(valeType, meshZ, modelZ)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=4), intent(in) :: valeType
     character(len=*), intent(in) :: meshZ, modelZ
@@ -73,7 +75,7 @@ subroutine chveno(valeType, meshZ, modelZ)
     character(len=8) :: mot, mesh, model, cellTypeName, algo
     character(len=16) :: mcft(nbt), motfac, valmc(4), typmc(4)
     character(len=19) :: limamo
-    character(len=24) :: grmama, mailma, nogr, cellName
+    character(len=24) :: grmama, nogr, cellName
     character(len=24) :: valk(2)
     character(len=24), pointer :: objet(:) => null()
     integer, pointer :: listCellNume(:) => null(), typmail(:) => null()
@@ -100,7 +102,6 @@ subroutine chveno(valeType, meshZ, modelZ)
     mesh = meshZ
     model = modelZ
     grmama = mesh//'.GROUPEMA'
-    mailma = mesh//'.NOMMAI'
     limamo = '&&CHVENO.MAIL_MODEL'
 !
     call getvtx(' ', 'VERI_NORM', scal=mot, nbret=n)
@@ -181,7 +182,7 @@ subroutine chveno(valeType, meshZ, modelZ)
 !
                             do iCell = 1, nbCell
                                 cellNume = listCellNume(iCell)
-                                call jenuno(jexnum(mailma, cellNume), cellName)
+                                cellName = int_to_char8(cellNume)
 !
 ! ---               NUMERO DE LA MAILLE
 !                   ------------------
@@ -295,7 +296,7 @@ subroutine chveno(valeType, meshZ, modelZ)
                     AS_ALLOCATE(vi=listCellNume, size=nbobj)
                     do iobj = 1, nbobj
                         cellName = objet(iobj)
-                        call jenonu(jexnom(mesh//'.NOMMAI', cellName), cellNume)
+                        cellNume = char8_to_int(cellName)
                         listCellNume(iobj) = cellNume
                         if (motfac .eq. 'ZONE') then
                             call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)

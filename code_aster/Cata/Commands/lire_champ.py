@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ def lire_champ_prod(TYPE_CHAM=None, **args):
         return carte_sdaster
     if TYPE_CHAM[0:2] == "EL":
         return cham_elem
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 LIRE_CHAMP = OPER(

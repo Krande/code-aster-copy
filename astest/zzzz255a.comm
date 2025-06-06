@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: samuel.geniaut at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("XFEM2_60"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("XFEM2_60"))
 
 # ON IGNORE LE MESSAGE D'ALARME XFEM2_60 QUI DIT QUE L'OPTION TEST_MAIL A ETE
 # UTILISEE PAR L'UTILISATEUR.
@@ -101,7 +101,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="NON_DEFINI",
     PRECISION=0.050000000000000003,
-    VALE_CALC=385.499472273,
+    VALE_CALC=385.4990672814215,
     VALE_REFE=dist,
     NOM_PARA="X1",
     TYPE_TEST="MAX",
@@ -112,7 +112,7 @@ TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="NON_DEFINI",
     PRECISION=0.050000000000000003,
-    VALE_CALC=385.006084791,
+    VALE_CALC=385.00584493375595,
     VALE_REFE=dist,
     NOM_PARA="X1",
     TYPE_TEST="MIN",

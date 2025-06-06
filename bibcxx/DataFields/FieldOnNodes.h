@@ -157,14 +157,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( fed->getMesh()->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
             auto dofNume = std::make_shared< ParallelDOFNumbering >();
-            dofNume->computeNumbering( { fed }, localMode );
+            dofNume->computeNumbering( { fed }, localMode, false );
 
             _dofDescription = dofNume->getEquationNumbering();
 #endif
         } else {
             auto dofNume = std::make_shared< DOFNumbering >();
 
-            dofNume->computeNumbering( { fed }, localMode );
+            dofNume->computeNumbering( { fed }, localMode, false );
 
             _dofDescription = dofNume->getEquationNumbering();
         }
@@ -190,7 +190,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         ListOfLoadsPtr lOL = std::make_shared< ListOfLoads >( model );
 
-        dofNume->computeNumbering( model, lOL );
+        dofNume->computeNumbering( model, lOL, false );
 
         _dofDescription = dofNume->getEquationNumbering();
 
@@ -265,7 +265,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Check if fields are OK for +, +=, ...
      * @return true if compatible
      */
-    bool isSimilarTo( const FieldOnNodes< ValueType > &tmp2 ) {
+    bool isSimilarTo( const FieldOnNodes< ValueType > &tmp2 ) const {
         CALL_JEMARQ();
         bool similar = ( this->_reference->size() == tmp2._reference->size() );
         similar = ( similar && ( this->_values->size() == tmp2._values->size() ) );
@@ -331,6 +331,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes< ValueType > &operator/=( const ASTERDOUBLE &scal ) {
         ( *_values ) /= scal;
+
+        return *this;
+    };
+
+    FieldOnNodes< ValueType > operator/=( const FieldOnNodes< ValueType > &rhs ) {
+        if ( !this->isSimilarTo( rhs ) )
+            raiseAsterError( "Fields have incompatible shapes" );
+        ( *_values ) /= ( *rhs._values );
 
         return *this;
     };
@@ -446,6 +454,17 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return this;
     };
 #endif
+
+    /**
+     * @brief Communicates the values of the ghosts DOFs
+     *
+     */
+    FieldOnNodes *updateGhostValues() {
+        CALLO_VECT_ASSE_UPDATE_GHOST_VALUES( getName(), _dofDescription->getName() );
+        _values->updateValuePointer();
+
+        return this;
+    };
 
     void applyLagrangeScaling( const ValueType scaling ) {
         _values->updateValuePointer();
@@ -803,11 +822,13 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::filesystem::path &fileN
     if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
         if ( rank == 0 )
             a.openFile( fileName, Binary, New );
+        if ( getMesh()->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
-        AsterMPI::barrier();
+            AsterMPI::barrier();
 #endif /* ASTER_HAVE_MPI */
-        if ( rank != 0 )
-            a.openFile( fileName, Binary, Old );
+            if ( rank != 0 )
+                a.openFile( fileName, Binary, Old );
+        }
         retour = a.getLogicalUnit();
     }
 

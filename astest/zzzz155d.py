@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,10 +42,24 @@ def splitEntitySet(nbElemT, rank, nbProcs):
 
 from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
 from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMedFileToResults
+from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import convertMedFieldToAster
 
 filename = "zzzz155d.med"
 
 myTuple = splitMeshAndFieldsFromMedFile(filename, True)
+
+# Small example of what can be done to change component names while reading med file
+fieldList = myTuple[1]
+curMedDepl = fieldList["00000008DEPL"][1]
+# Displacement field is now a temperature field
+fieldToAdd = convertMedFieldToAster(
+    curMedDepl, "TEMP", myTuple[0], ["TEMP", "TEMP_MIL", "TEMP_INF"]
+)
+# add in a ThermalResult
+thermRes = CA.ThermalResult()
+thermRes.resize(1)
+thermRes.setField(fieldToAdd, "TEMP", 1)
+thermRes.setTime(1.0, 1)
 
 valuesDeplRef = [
     0.000000,

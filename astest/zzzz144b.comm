@@ -25,7 +25,7 @@ from code_aster.Utilities import SharedTmpdir
 
 rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 MAIL = CA.ParallelMesh()
 MAIL.readMedFile("zzzz144b/{}.med".format(rank), partitioned=True)
@@ -158,6 +158,6 @@ TEST_RESU(
     )
 )
 with SharedTmpdir("foo") as tmpdir:
-    RESU.printMedFile(osp.join(tmpdir.path, "resu_{}.med".format(rank)))
+    RESU.printMedFile(osp.join(tmpdir.path, "resu_{}.med".format(rank)), local=True)
 
 FIN()

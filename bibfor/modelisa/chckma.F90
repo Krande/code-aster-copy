@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine chckma(nomu, dtol)
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: nomu
     real(kind=8) :: dtol
@@ -62,7 +63,7 @@ subroutine chckma(nomu, dtol)
     character(len=24) :: ncncin
     real(kind=8) :: dm, dp, aplat, drap, mess_r(1)
     real(kind=8) :: xa, xb, ya, yb, za, zb
-    character(len=24) :: cooval, connex, nommai, nomnoe, nsolo, mdoubl
+    character(len=24) :: cooval, connex, nsolo, mdoubl
     integer :: nbmail, nbnoeu
     integer :: insolo, imdoub, iatyma, nmdoub
     aster_logical :: indic, alarme, erreur
@@ -70,8 +71,6 @@ subroutine chckma(nomu, dtol)
     call jemarq()
     call infniv(ifm, niv)
 !
-    nommai = nomu//'.NOMMAI         '
-    nomnoe = nomu//'.NOMNOE         '
     cooval = nomu//'.COORDO    .VALE'
     connex = nomu//'.CONNEX         '
     call dismoi('NB_MA_MAILLA', nomu, 'MAILLAGE', repi=nbmail)
@@ -105,7 +104,7 @@ subroutine chckma(nomu, dtol)
         nbm = zi(jdrvlc+ja+1-1)-zi(jdrvlc+ja-1)
         if (nbm .gt. 200) then
             nb200 = 1
-            call jenuno(jexnum(nomnoe, ja), noxa)
+            noxa = int_to_char8(ja)
             mess_k8(1) = noxa
             call utmess('A', 'MODELISA8_10', nk=1, valk=mess_k8)
         end if
@@ -114,7 +113,7 @@ subroutine chckma(nomu, dtol)
             if (numail .eq. 0) then
                 knso = knso+1
                 zi(insolo-1+knso) = ja
-                call jenuno(jexnum(nomnoe, ja), noxa)
+                noxa = int_to_char8(ja)
                 mess_k8(1) = noxa
                 call utmess('A', 'MODELISA8_11', nk=1, valk=mess_k8)
                 alarme = .true.
@@ -166,7 +165,7 @@ subroutine chckma(nomu, dtol)
 !     PLUSIEURS FOIS DANS LA CONNECTIVITE DE CELLE CI
         if (nbm0 .ne. i) then
             erreur = .true.
-            call jenuno(jexnum(nommai, ima), noxa)
+            noxa = int_to_char8(ima)
             iadtyp = iatyma-1+ima
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), tyma)
             mess_k8(1) = noxa
@@ -202,8 +201,8 @@ subroutine chckma(nomu, dtol)
                     end if
                     call jeveuo(mdoubl, 'E', imdoub)
                     zi(imdoub-1+kmdb) = tabma(i)
-                    call jenuno(jexnum(nommai, ima), noxa)
-                    call jenuno(jexnum(nommai, tabma(i)), noxb)
+                    noxa = int_to_char8(ima)
+                    noxb = int_to_char8(tabma(i))
                     iadtyp = iatyma-1+ima
                     call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), tyma)
                     mess_k8(1) = noxa
@@ -217,7 +216,7 @@ subroutine chckma(nomu, dtol)
             end do
 !
         else if (nbm0 .gt. 1) then
-            call jenuno(jexnum(nommai, ima), noxa)
+            noxa = int_to_char8(ima)
             mess_k8(1) = noxa
             call utmess('A', 'MODELISA8_14', nk=1, valk=mess_k8)
         end if
@@ -261,7 +260,7 @@ subroutine chckma(nomu, dtol)
                 drap = sqrt(dm/dp)
                 if (drap .lt. dtol) then
                     alarme = .true.
-                    call jenuno(jexnum(nommai, ima), noxa)
+                    noxa = int_to_char8(ima)
                     iadtyp = iatyma-1+ima
                     call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), tyma)
                     mess_k8(1) = noxa

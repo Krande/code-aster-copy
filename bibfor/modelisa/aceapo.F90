@@ -79,6 +79,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
 #include "asterfort/utmess.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -152,10 +154,10 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     AS_ALLOCATE(vr=vale, size=nbval)
 !
     modmai = nomo//'.MAILLE'
-    mlgnma = noma//'.NOMMAI'
+    mlgnma = noma//'.TYPMAIL'
     mlggma = noma//'.GROUPEMA'
     ier = 0
-    call jelira(mlgnma, 'NOMMAX', nbmail)
+    call jelira(mlgnma, 'LONMAX', nbmail)
     call jeexin(modmai, ixma)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !
@@ -328,7 +330,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
                 end if
                 do j = 1, nbmagr
                     nummai = zi(jdgm+j-1)
-                    call jenuno(jexnum(mlgnma, nummai), nommai)
+                    nommai = int_to_char8(nummai)
                     nutyel = zi(jdme+nummai-1)
                     do kk = 1, nbepo
                         if (nutyel .eq. ntyele(kk)) then
@@ -362,7 +364,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
         if (nm .gt. 0) then
             do ii = 1, nm
                 nommai = poutre(ii)
-                call jenonu(jexnom(mlgnma, nommai), nummai)
+                nummai = char8_to_int(nommai)
                 nutyel = zi(jdme+nummai-1)
                 do j = 1, nbepo
                     if (nutyel .eq. ntyele(j)) then
@@ -388,7 +390,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 !   Vérification des obligations et affectation des défauts
     do ii = 1, npoaff
         call jenuno(jexnum(tmpgen, ii), nommai)
-        call jenonu(jexnom(mlgnma, nommai), nummai)
+        nummai = char8_to_int(nommai)
         nutyel = zi(jdme+nummai-1)
         call affdef(tmpgen, nommai, nutyel, ntyele, tabpou, ier)
     end do
@@ -405,7 +407,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     !
     do ii = 1, npoaff
         call jenuno(jexnum(tmpgen, ii), nommai)
-        call jenonu(jexnom(mlgnma, nommai), nummai)
+        nummai = char8_to_int(nommai)
         nutyel = zi(jdme+nummai-1)
         call affgen(tmpgen, nommai, nutyel, ntyele, napcis, foncis)
     end do
@@ -481,7 +483,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 !
     do ii = 1, npoaff
         call jenuno(jexnum(tmpgen, ii), nommai)
-        call jenonu(jexnom(mlgnma, nommai), nummai)
+        nummai = char8_to_int(nommai)
         zjdlm(nummai) = -1
         call jeveuo(jexnum(tmpgen, ii), 'L', jdge)
         do j = 1, 23

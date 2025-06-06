@@ -99,16 +99,23 @@ def stop_at_end(text, last=True):
         str: Changed content.
     """
     refin = re.compile(r"^(?P<cmd>(?:FIN|CA\.close) *\()", re.M)
+    partial = r"""
+from code_aster import CA
+
+print("\n# CA.basedir is the directory containing the export file")
+print(f"CA.basedir: {CA.basedir}")
+"""
     subst = r"""
 import code
 import readline
 import rlcompleter
-from code_aster import CA
 
-readline.parse_and_bind('tab: complete')
+from code_aster import CA
 
 print("\\n# CA.basedir is the directory containing the export file")
 print(f"CA.basedir: {CA.basedir}")
+
+readline.parse_and_bind('tab: complete')
 code.interact(local=locals(),
                 banner=('Entering in interactive mode\\n'
                         'Use exit() or Ctrl-D (i.e. EOF) to continue '
@@ -122,7 +129,7 @@ code.interact(local=locals(),
             return text
         if len(spl) == 3:  # start, splitter, cmd, end
             if not spl[2][1:].strip():  # starts with ')\n'
-                return spl[0]
+                return spl[0] + partial
     text = refin.sub(subst, text)
     return text
 

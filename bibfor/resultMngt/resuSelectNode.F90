@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine resuSelectNode(meshName, meshNodeNb, &
 !
 #include "asterfort/jexnum.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: meshName
     integer, intent(in) :: nodeUserNb, meshNodeNb, nodeUserNume(*)
@@ -57,14 +58,14 @@ subroutine resuSelectNode(meshName, meshNodeNb, &
     nodeNb = 0
     if (nodeUserNb .eq. 0) then
         do iNode = 1, meshNodeNb
-            call jenuno(jexnum(meshName//'.NOMNOE', iNode), nodeName(iNode))
+            nodeName(iNode) = int_to_char8(iNode)
             nodeNume(iNode) = iNode
             nodeNb = meshNodeNb
         end do
     else
         do iNode = 1, nodeUserNb
             nodeNume(iNode) = nodeUserNume(iNode)
-            call jenuno(jexnum(meshName//'.NOMNOE', nodeNume(iNode)), nodeName(iNode))
+            nodeName(nodeNume(iNode)) = int_to_char8(iNode)
         end do
         nodeNb = nodeUserNb
     end if

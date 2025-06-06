@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine utdidt(getset, sddisc, ques_type, question, index_, &
                   valr_, vali_, valk_)
@@ -66,8 +65,6 @@ subroutine utdidt(getset, sddisc, ques_type, question, index_, &
     character(len=16), pointer :: v_sddisc_eevk(:) => null()
     character(len=24) :: sddisc_esur
     real(kind=8), pointer :: v_sddisc_esur(:) => null()
-    character(len=24) :: sddisc_epil
-    integer, pointer :: v_sddisc_epil(:) => null()
     character(len=24) :: sddisc_aevr
     real(kind=8), pointer :: v_sddisc_aevr(:) => null()
     character(len=24) :: sddisc_atpr
@@ -79,9 +76,8 @@ subroutine utdidt(getset, sddisc, ques_type, question, index_, &
 !
     ASSERT(ques_type .eq. 'LIST' .or. ques_type .eq. 'ECHE' .or. ques_type .eq. 'ADAP')
     ASSERT(getset .eq. 'L' .or. getset .eq. 'E')
-!
+
 ! - Initializations
-!
     if (getset .eq. 'L') then
         valk = ' '
         vali = 0
@@ -190,11 +186,9 @@ subroutine utdidt(getset, sddisc, ques_type, question, index_, &
         sddisc_eevr = sddisc(1:19)//'.EEVR'
         sddisc_eevk = sddisc(1:19)//'.EEVK'
         sddisc_esur = sddisc(1:19)//'.ESUR'
-        sddisc_epil = sddisc(1:19)//'.EPIL'
         call jeveuo(sddisc_eevr, getset, vr=v_sddisc_eevr)
         call jeveuo(sddisc_eevk, getset, vk16=v_sddisc_eevk)
         call jeveuo(sddisc_esur, getset, vr=v_sddisc_esur)
-        call jeveuo(sddisc_epil, getset, vi=v_sddisc_epil)
         if (present(index_)) then
             iechec = index_
         end if
@@ -345,31 +339,9 @@ subroutine utdidt(getset, sddisc, ques_type, question, index_, &
             else if (getset .eq. 'E') then
                 v_sddisc_esur(SIZE_LESUR*(iechec-1)+8) = valr
             end if
-!
-! ----- Parameters for AUTRE_PILOTAGE
-!
-        else if (question .eq. 'CHOIX_SOLU_PILO') then
-            if (getset .eq. 'L') then
-                vali = v_sddisc_epil(1)
-                if (vali .eq. 1) valk = 'NATUREL'
-                if (vali .eq. 2) valk = 'AUTRE'
-            else if (getset .eq. 'E') then
-                if (valk .eq. 'NATUREL') then
-                    v_sddisc_epil(1) = 1
-                else if (valk .eq. 'AUTRE') then
-                    v_sddisc_epil(1) = 2
-                else
-                    ASSERT(.false.)
-                end if
-            end if
-        else if (question .eq. 'ESSAI_ITER_PILO') then
-            if (getset .eq. 'L') then
-                vali = v_sddisc_epil(2)
-            else if (getset .eq. 'E') then
-                v_sddisc_epil(2) = vali
-            end if
+
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
 !
 ! - Questions about ADAPTATION

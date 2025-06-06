@@ -471,7 +471,7 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAMASSIF)
     loimel = calc_loimel_massif(DEPLMATE, ls_group_ma)
-    tda = utilities.get_temp_def_alpha(DEPLMATE)
+    tda = utilities.get_temp_def_alpha_result(DEPLMATE)
     ls_A_hom = {}
     ls_K_hom = {}
 

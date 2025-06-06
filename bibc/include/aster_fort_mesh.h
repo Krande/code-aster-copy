@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -108,14 +108,11 @@ extern void DEFSPSPPPS( CNVOIS, cnvois, const char *, STRING_SIZE, ASTERINTEGER 
 extern void DEFSSPP( CMBQBQ, cmbqbq, const char *, STRING_SIZE, const char *, STRING_SIZE,
                      ASTERINTEGER *, ASTERINTEGER * );
 
-#define CALL_AJELLT( a, b, c, d, e, f, g, h, i )                                                   \
-    CALLSSPSSSSPS( AJELLT, ajellt, a, b, c, d, e, f, g, h, i )
-#define CALLO_AJELLT( a, b, c, d, e, f, g, h, i )                                                  \
-    CALLOOPOOOOPO( AJELLT, ajellt, a, b, c, d, e, f, g, h, i )
-extern void DEFSSPSSSSPS( AJELLT, ajellt, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                          const ASTERINTEGER *, const char *, STRING_SIZE, const char *,
-                          STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                          const ASTERINTEGER *, const char *, STRING_SIZE );
+#define CALL_AJELLT( a, b, c, d, e, f ) CALLSSPPSS( AJELLT, ajellt, a, b, c, d, e, f )
+#define CALLO_AJELLT( a, b, c, d, e, f ) CALLOOPPOO( AJELLT, ajellt, a, b, c, d, e, f )
+extern void DEFSSPPSS( AJELLT, ajellt, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                       const ASTERINTEGER *, ASTERINTEGER *, const char *, STRING_SIZE,
+                       const char *, STRING_SIZE );
 
 #define CALLO_PAIRWRAP( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )                        \
     CALLPOOOOOPPPPPPPPPPO( PAIRWRAP, pairwrap, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
@@ -141,6 +138,10 @@ extern void DEFSSSPP( INTEPOINCOORWRAP, intepoincoorwrap, const char *, STRING_S
 extern void DEFSSSPPP( QUADPOINCOORWRAP, quadpoincoorwrap, const char *, STRING_SIZE, const char *,
                        STRING_SIZE, const char *, STRING_SIZE, const ASTERINTEGER *, ASTERINTEGER *,
                        ASTERDOUBLE * );
+
+#define CALLO_MINMAXEDGESWRAP( a, b, c, d ) CALLOOPP( MINMAXEDGESWRAP, minmaxedgeswrap, a, b, c, d )
+extern void DEFSSPP( MINMAXEDGESWRAP, minmaxedgeswrap, const char *, STRING_SIZE, const char *,
+                     STRING_SIZE, ASTERDOUBLE *, ASTERDOUBLE * );
 
 #ifdef __cplusplus
 }

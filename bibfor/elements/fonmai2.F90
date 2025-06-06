@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,8 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, &
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: iocc, nbnoff
     character(len=8) :: resu, nomail, typfon
@@ -70,7 +72,7 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, &
     character(len=8) :: noeud
     character(len=16) :: k16bid, nomcmd, motfac
     character(len=16) :: motcle(2), typmcl(2)
-    character(len=24) :: conec, typp, nommai, nomnoe, noeord
+    character(len=24) :: conec, typp, noeord
     character(len=24) :: mesnoe, mafour, nogrp
     integer, pointer :: maillestriees(:) => null()
 ! DEB-------------------------------------------------------------------
@@ -82,8 +84,6 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, &
 !     ------------------------------------------------------------------
     motfac = 'FOND_FISS'
     typp = nomail//'.TYPMAIL        '
-    nommai = nomail//'.NOMMAI         '
-    nomnoe = nomail//'.NOMNOE         '
     conec = nomail//'.CONNEX         '
     call jeveuo(typp, 'L', iatyma)
     call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma)), typm)
@@ -118,13 +118,13 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, &
             else if (iret .eq. 1) then
                 call utmess('F', 'RUPTURE0_45', sk=ndorig)
             end if
-            call jenonu(jexnom(nommai, nomma), numma)
+            numma = char8_to_int(nomma)
         end if
 !
         if (numma .eq. 0) then
             call utmess('F', 'RUPTURE0_42')
         else
-            call jenonu(jexnom(nomnoe, ndorig), numno)
+            numno = char8_to_int(ndorig)
             call i2extf(numma, 1, conec(1:15), typp(1:16), nig, &
                         nid)
             if ((numno .ne. nig) .and. (numno .ne. nid)) then
@@ -167,7 +167,7 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, &
 !
     call wkvect(noeord, 'G V K8', nbnoff, idlino)
     do i = 1, nbnoff
-        call jenuno(jexnum(nomail//'.NOMNOE', zi(idnono-1+i)), noeud)
+        noeud = int_to_char8(zi(idnono-1+i))
         zk8(idlino-1+i) = noeud
     end do
 !

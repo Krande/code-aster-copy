@@ -442,7 +442,13 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     _nodesOwner->allocate( totalNumberOfNodes );
 
     for ( auto i = 0; i < totalNumberOfNodes; ++i ) {
-        ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i] + 1;
+        const auto locNum = mesh->getGlobalToLocalNodeId( numNodesGathered[3 * i + 1], false );
+        // the node id local to the subdomain is stored in order to handle ghost nodes
+        if ( locNum != -1 ) {
+            ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = locNum + 1;
+        } else {
+            ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = -1;
+        }
         ( *_nodesGlobalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 1];
         ( *_nodesOwner )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 2];
         numNodesGloLoc[numNodesGathered[3 * i + 1]] = renumNodesLocNew[i];
@@ -460,18 +466,9 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         ( *values )[3 * renumNodesLocNew[i] + 2] = coordinatesGathered[3 * i + 2];
     }
 
-    /* Add nodes */
-    _nameOfNodes->allocate( totalNumberOfNodes );
-    for ( auto i = 0; i < totalNumberOfNodes; ++i ) {
-        std::stringstream sstream;
-        const ASTERINTEGER newNum = renumNodesLocNew[i];
-        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << newNum + 1;
-        _nameOfNodes->add( newNum, std::string( "N" + sstream.str() ) );
-    }
-
     /* Add group of nodes */
     if ( groupsOfNodesToFind.size() > 0 ) {
-        _groupsOfNodes->allocateSparseNamed( groupsOfNodesToFind.size() );
+        _groupsOfNodes->allocate( groupsOfNodesToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfNodesToFind ) {
             const auto &toCopy = groupsOfNodesGathered[nameOfTheGroup];
@@ -495,15 +492,11 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     AS_ASSERT( totalNumberOfCells > 0 );
     _cellsLocalNumbering->allocate( totalNumberOfCells );
     _cellsOwner->allocate( totalNumberOfCells );
-    _nameOfCells->allocate( totalNumberOfCells );
     _cellsType->allocate( totalNumberOfCells );
-    _connectivity->allocateContiguousNumbered( totalNumberOfCells, connectivitiesGathered.size() );
+    _connectivity->allocate( totalNumberOfCells, connectivitiesGathered.size() );
 
     ASTERINTEGER offset = 0;
     for ( auto i = 0; i < totalNumberOfCells; ++i ) {
-        std::stringstream sstream;
-        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i + 1;
-        _nameOfCells->add( i, std::string( "M" + sstream.str() ) );
         ( *_cellsType )[i] = connectivitiesGathered[offset++];
         ( *_cellsLocalNumbering )[i] = connectivitiesGathered[offset++] + 1;
         const auto globCellId = connectivitiesGathered[offset++];
@@ -528,7 +521,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     /* Add group of cells */
     if ( groupsOfCellsToFind.size() > 0 ) {
-        _groupsOfCells->allocateSparseNamed( groupsOfCellsToFind.size() );
+        _groupsOfCells->allocate( groupsOfCellsToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfCellsToFind ) {
             const auto &toCopy = groupsOfCellsGathered[nameOfTheGroup];

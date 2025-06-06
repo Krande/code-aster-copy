@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbtrou, ncmp
     character(len=8) :: nocmp(*)
@@ -63,7 +64,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz, &
     character(len=4) :: docu
     character(len=8) :: k8b, nomgd
     character(len=19) :: champ, chtra1, chtra2
-    character(len=24) :: litrou, nomobj
+    character(len=24) :: litrou
     character(len=24) :: valk(5)
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -114,7 +115,6 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz, &
         call jeveuo(chtra2//'.CESD', 'L', jcesd)
         call jeveuo(chtra2//'.CESK', 'L', jcesk)
         call jeveuo(chtra2//'.CESL', 'L', jcesl)
-        nomobj = zk8(jcesk-1+1)//'.NOMMAI         '
         nbent = zi(jcesd-1+1)
         call wkvect('&&UTMACH.LIST_ENT', 'V V I', nbent, jent)
         do i = 1, nbent
@@ -147,7 +147,6 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz, &
         call jeveuo(chtra2//'.CNSD', 'L', jcesd)
         call jeveuo(chtra2//'.CNSK', 'L', jcesk)
         call jeveuo(chtra2//'.CNSL', 'L', jcesl)
-        nomobj = zk8(jcesk-1+1)//'.NOMNOE         '
         nbent = zi(jcesd-1+1)
         call wkvect('&&UTMACH.LIST_ENT', 'V V I', nbent, jent)
         do i = 1, nbent
@@ -204,7 +203,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz, &
         do i = 1, nbent
             if (zi(jent+i-1) .eq. 1) then
                 nbtrou = nbtrou+1
-                call jenuno(jexnum(nomobj, zi(jent+i-1)), zk8(idlist+nbtrou-1))
+                zk8(idlist+nbtrou-1) = int_to_char8(zi(jent+i-1))
             end if
         end do
 !

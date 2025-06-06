@@ -1,0 +1,148 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### Compilation of the MFront behaviour
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="InterfaceElasCZM", UNITE_MFRONT=38)
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+ma = LIRE_MAILLAGE()
+
+MODI_MAILLAGE(reuse=ma, MAILLAGE=ma, ORIE_FISSURE=_F(GROUP_MA="ITF"))
+
+### >>>>>>>>>>>>>>>>>
+### Model affectation
+### <<<<<<<<<<<<<<<<<
+
+mo = AFFE_MODELE(
+    MAILLAGE=ma,
+    AFFE=(
+        _F(GROUP_MA=("SOLIDE", "DROITE"), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="ITF", PHENOMENE="MECANIQUE", MODELISATION="3D_INTERFACE"),
+    ),
+)
+
+orie = AFFE_CARA_ELEM(MODELE=mo, MASSIF=_F(GROUP_MA="ITF", ANGL_REP=(45, 0, 0)))
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+MPa = 1
+mm = 1
+L = 1000
+
+E = 3e4 * MPa
+nu = 0.2
+kn = 20 * MPa / mm
+kt = 40 * MPa / mm
+
+mat_vol = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu))
+
+mat_itf = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=nu), MFRONT=_F(LISTE_COEF=(kn, kt, 10 * (kn + kt)), PENA_LAGR=10 * (kn + kt))
+)
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+cm = AFFE_MATERIAU(
+    MAILLAGE=ma, AFFE=(_F(GROUP_MA="SOLIDE", MATER=mat_vol), _F(GROUP_MA="ITF", MATER=mat_itf))
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+depl = AFFE_CHAR_MECA(
+    MODELE=mo,
+    FACE_IMPO=(
+        _F(GROUP_MA="DROITE", DX=1),
+        _F(GROUP_MA="GAUCHE", DX=0),
+        _F(GROUP_MA="AVANT", DY=0),
+        _F(GROUP_MA="BAS", DZ=0),
+    ),
+)
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+uimp = 0.01 * L
+
+temps = DEFI_LIST_INST(DEFI_LIST=_F(VALE=(0, 1, 2)))
+
+rampe = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, uimp, 2, -2 * uimp))
+
+### >>>>>>>>
+### Solution
+### <<<<<<<<
+
+evol = STAT_NON_LINE(
+    MODELE=mo,
+    CHAM_MATER=cm,
+    CARA_ELEM=orie,
+    EXCIT=(_F(CHARGE=depl, FONC_MULT=rampe)),
+    INCREMENT=_F(LIST_INST=temps),
+    COMPORTEMENT=(
+        _F(GROUP_MA="SOLIDE", RELATION="ELAS"),
+        _F(GROUP_MA="ITF", RELATION="MFRONT", COMPOR_MFRONT=behaviour),
+    ),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_REFE_RELA=1e-4, SIGM_REFE=kn * uimp, DEPL_REFE=uimp),
+)
+
+### >>>>>>>>
+### Solution
+### <<<<<<<<
+
+RESU = CALC_CHAMP(reuse=evol, RESULTAT=evol, CONTRAINTE="SIEF_NOEU")
+
+
+def Solution(uimp):
+    return (1 / E * L + (1 / kn + 1 / kt) / (2 * 2**0.5)) ** (-1) * uimp
+
+
+for inst in (1, 2):
+    uimp = rampe(inst)
+    solu = Solution(uimp)
+    TEST_RESU(
+        RESU=(
+            _F(
+                RESULTAT=evol,
+                INST=inst,
+                NOM_CHAM="SIEF_NOEU",
+                NOM_CMP="SIXX",
+                GROUP_NO="PROBE",
+                REFERENCE="ANALYTIQUE",
+                VALE_CALC=0,
+                VALE_REFE=solu,
+            )
+        )
+    )
+
+FIN()

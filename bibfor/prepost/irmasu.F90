@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -175,7 +175,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma, &
         end do
 !       - RECUPERATION DU NUMERO DE NOEUDS (RECHERCHE SI MAILLAGE IDEAS)
         if (lmasu) then
-            call lxliis(nonoe(i) (2:8), ino, ier)
+            call lxliis(nonoe(i) (1:8), ino, ier)
         else
             ino = i
         end if
@@ -286,9 +286,9 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma, &
         ASSERT((icod2 .le. 10000) .and. (icod2 .ge. 0))
         if (icod1 .ne. 0 .and. icod2 .ne. 0) then
             if (lmasu) then
-                call lxliis(nomai(ima) (2:8), imas, ier)
+                call lxliis(nomai(ima) (1:8), imas, ier)
                 do j = 1, nnoe
-                    call lxliis(nonoe(nodsup(j)) (2:8), nodsup(j), ier)
+                    call lxliis(nonoe(nodsup(j)) (1:8), nodsup(j), ier)
                 end do
             else
                 imas = ima
@@ -329,7 +329,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma, &
         do jn = 1, nbn
             zi(jnogr-1+jn) = zi(iagrno-1+jn)
             if (lmasu) then
-                call lxliis(nonoe(zi(jnogr-1+jn)) (2:8), zi(jnogr-1+jn), ier)
+                call lxliis(nonoe(zi(jnogr-1+jn)) (1:8), zi(jnogr-1+jn), ier)
             end if
         end do
         write (ifc, fmt='(8I10)') (icodno, zi(jnogr-1+jn), 0, 0, jn=1, nbn)
@@ -358,7 +358,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma, &
             zi(jmagr-1+nbm2) = zi(iagrma-1+jm)
             if (lmasu) then
 !           - SI MAILLAGE IDEAS RECUPERATION DU NUMERO DE MAILLE
-                call lxliis(nomai(zi(jmagr-1+nbm2)) (2:8), zi(jmagr-1+nbm2), ier)
+                call lxliis(nomai(zi(jmagr-1+nbm2)) (1:8), zi(jmagr-1+nbm2), ier)
             end if
 756         continue
         end do

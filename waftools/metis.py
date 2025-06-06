@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ def options(self):
     )
     group.add_option(
         "--metis-libs",
-        type="string",
+        type=str,
         dest="metis_libs",
         default=None,
         help="metis librairies to use when linking",
@@ -77,6 +77,8 @@ def check_metis(self):
         raise Errors.ConfigurationError("METIS disabled")
     self.check_metis_libs()
     self.check_metis_headers()
+    self.check_metis_idx()
+    self.check_metis_real()
     self.check_metis_version()
 
 
@@ -115,6 +117,48 @@ def check_metis_headers(self):
         raise
     else:
         self.end_msg("yes")
+
+
+@Configure.conf
+def check_metis_idx(self):
+    fragment = r"""
+#include <stdio.h>
+#include <metis.h>
+int main(void){
+    idx_t idx;
+    printf("%d", (int)sizeof(idx));
+    return 0;
+}"""
+    self.code_checker(
+        "ASTER_METIS_IDX_SIZE",
+        self.check_cc,
+        fragment,
+        "Checking size of metis idx_t",
+        "unexpected value for sizeof(idx_t): %(size)s",
+        into=(4, 8),
+        use="PARMETIS METIS M",
+    )
+
+
+@Configure.conf
+def check_metis_real(self):
+    fragment = r"""
+#include <stdio.h>
+#include <metis.h>
+int main(void){
+    real_t real;
+    printf("%d", (int)(sizeof(real)));
+    return 0;
+}"""
+    self.code_checker(
+        "ASTER_METIS_REAL_SIZE",
+        self.check_cc,
+        fragment,
+        "Checking size of metis real_t",
+        "unexpected value for sizeof(real_t): %(size)s",
+        into=(4, 8),
+        use="PARMETIS METIS M",
+    )
 
 
 @Configure.conf

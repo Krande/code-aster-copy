@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,6 +84,8 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
 #include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/char8_to_int.h"
 !
 !
 ! ARGUMENTS
@@ -100,7 +102,6 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
     real(kind=8) :: ksi1, ksi2, ksi3, zero
     complex(kind=8) :: cbid
     character(len=8) :: k8b
-    character(len=24) :: nonoma
     aster_logical :: notlin
 !
     real(kind=8) :: ffel3d, ff(27), x(3)
@@ -155,8 +156,6 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
 !
     zero = 0.0d0
 !
-    nonoma = mailla//'.NOMNOE'
-!
     nomnoe(1) = nnoeca
     nomddl(1) = 'DEPL'
     coemur(1) = 1.0d0
@@ -164,7 +163,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
 ! 3.1.1 LE NOEUD DU CABLE COINCIDE TOPOLOGIQUEMENT
 !       AVEC UN DES NOEUDS DE LA MAILLE
 ! ---
-    call jenonu(jexnom(nonoma, nnoeca), noeca)
+    noeca = char8_to_int(nnoeca)
     if (noeca .eq. noebe) goto 60
 !
 ! 3.1.2 LE NOEUD DU CABLE COINCIDE GEOGRAPHIQUEMENT AVEC UN DES
@@ -173,7 +172,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
     if (immer .eq. 2) then
 !
         nbterm = 2
-        call jenuno(jexnum(nonoma, noebe), nomnoe(1+1))
+        nomnoe(1+1) = int_to_char8(noebe)
         nomddl(1+1) = 'DEPL'
         coemur(1+1) = -1.0d0
 !
@@ -184,7 +183,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
 !
         nbterm = 1+nbcnx
         do icnx = 1, nbcnx
-            call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(icnx+1))
+            nomnoe(icnx+1) = int_to_char8(cxma(icnx))
             nomddl(icnx+1) = 'DEPL'
             x(1) = ksi1
             x(2) = ksi2

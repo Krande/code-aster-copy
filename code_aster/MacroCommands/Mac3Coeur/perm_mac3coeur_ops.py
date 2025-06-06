@@ -19,7 +19,6 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-import os.path as osp
 
 from ...Cata.Syntax import _F
 from ...Objects import PhysicalProblem, FieldOnCellsReal, FieldOnNodesReal
@@ -72,8 +71,8 @@ def perm_mac3coeur_ops(self, **args):
             DEFORMATION="PETIT",
         ),
         _F(RELATION="DIS_GRICRA", GROUP_MA="ELA"),
-        _F(RELATION="DIS_CHOC", GROUP_MA=("CREIC", "RES_TOT")),
-        _F(RELATION="ELAS", GROUP_MA=("CREI", "EBOINF", "EBOSUP", "RIG", "DIL")),
+        _F(RELATION="DIS_CHOC", GROUP_MA=("CREI", "RES_TOT")),
+        _F(RELATION="ELAS", GROUP_MA=("EBOINF", "EBOSUP", "RIG", "DIL")),
         _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
     )
 

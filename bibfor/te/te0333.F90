@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,10 @@ subroutine te0333(option, nomte)
     real(kind=8) :: epsi_creep(nbsgm)
     integer :: i, ndim, nno, nbsig, idsig
     integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, itemps, imate
-    integer :: idefp, icompo, nbvari, ivari, nvi, nvif, ibid, jtab(7), iret, ibid2
+    integer :: idefp, nbvari, ivari, nvi, nvif, ibid, jtab(7), iret, ibid2
     real(kind=8) :: c1, c2, trsig
     real(kind=8) :: angl_naut(3), nharm, e, nu, zero, un, tempg, time
+    character(len=16), pointer :: compor(:) => null()
     character(len=8) :: mod3d
     integer :: elas_id
     character(len=16) :: optio2, kit_comp_1, kit_comp_2, rela_comp, elas_keyword
@@ -110,10 +111,10 @@ subroutine te0333(option, nomte)
 !
 ! - Comportment
 !
-    call jevech('PCOMPOR', 'L', icompo)
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    kit_comp_1 = zk16(icompo-1+CREEP_NAME)
-    kit_comp_2 = zk16(icompo-1+PLAS_NAME)
+    call jevech('PCOMPOR', 'L', vk16=compor)
+    rela_comp = compor(RELA_NAME)
+    kit_comp_1 = compor(CREEP_NAME)
+    kit_comp_2 = compor(PLAS_NAME)
 !
 ! - Internal variables
 !

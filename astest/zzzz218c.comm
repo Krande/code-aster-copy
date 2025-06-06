@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 # aslint: disable=W2005
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE="OUI")
 
 pr_int = 10.0e5
 pr_atmos = 1.0e5
@@ -377,7 +377,7 @@ TEST_TABLE(
 tempMat2 = T_TEMP["TEMP", 2]
 
 TEST_TABLE(
-    VALE_CALC=NONREGRE[4], NOM_PARA="TEMP", TABLE=T_TEMP, FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N1")
+    VALE_CALC=NONREGRE[4], NOM_PARA="TEMP", TABLE=T_TEMP, FILTRE=_F(NOM_PARA="NOEUD", VALE_K="1")
 )
 
 debtot2 = DEB_FIN["DEBTOT", 2]

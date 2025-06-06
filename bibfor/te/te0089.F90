@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,9 @@ subroutine te0089(option, nomte)
     real(kind=8) :: mmat(9, 9)
     real(kind=8) :: nx, ny, norm(2), ul(9)
     real(kind=8) :: poids, celer
+    character(len=16), pointer :: compor(:) => null()
     integer :: jv_geom, jv_mate, jv_matr
-    integer :: jvVect, jvDisp, jv_compo, jv_codret, jvDispm, jvDispp
+    integer :: jvVect, jvDisp, jv_codret, jvDispm, jvDispp
     integer :: ipoids, ivf, idfde
     integer :: nno, npg, ndim
     integer :: ij, i
@@ -78,13 +79,13 @@ subroutine te0089(option, nomte)
     if (option(1:9) .eq. 'FULL_MECA' .or. &
         option .eq. 'RAPH_MECA' .or. &
         option .eq. 'RIGI_MECA_TANG') then
-        call jevech('PCOMPOR', 'L', jv_compo)
+        call jevech('PCOMPOR', 'L', vk16=compor)
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(jv_compo), &
+        call behaviourOption(option, compor, &
                              lMatr, lVect, &
                              lVari, lSigm, &
                              codret)
-        rela_comp = zk16(jv_compo-1+RELA_NAME)
+        rela_comp = compor(RELA_NAME)
         if (rela_comp .ne. 'ELAS') then
             call utmess('F', 'FLUID1_1')
         end if

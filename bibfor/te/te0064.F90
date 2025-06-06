@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,8 @@ subroutine te0064(option, nomte)
     integer :: itempi
     integer :: jvPhaseIn, jvPhaseOut, jvPhasePrev
     integer :: jvMaterCode
-    integer :: jvComporMeta, itab(7), iret, jvComporMetaTemper
+    integer :: itab(7), iret, jvComporMetaTemper
+    character(len=16), pointer :: comporMeta(:) => null()
     aster_logical :: hasTemper, prevMetaIsTemper
     type(META_MaterialParameters) :: metaPara
 !
@@ -77,14 +78,14 @@ subroutine te0064(option, nomte)
     call jevech('PTEMPIR', 'L', itempi)
     call jevech('PTIMMTR', 'L', jvTime)
     call jevech('PPHASIN', 'L', jvPhaseIn)
-    call jevech('PCOMPME', 'L', jvComporMeta)
+    call jevech('PCOMPME', 'L', vk16=comporMeta)
     call jevech('PPHASOUT', 'E', jvPhaseOut)
 
 ! - Get parameters from metallurgy behaviour (without tempering)
-    metaType = zk16(jvComporMeta-1+ZMETATYPE)
-    read (zk16(jvComporMeta-1+ZNUMECOMP), '(I16)') numeComp
-    read (zk16(jvComporMeta-1+ZNBPHASE), '(I16)') nbPhase
-    read (zk16(jvComporMeta-1+ZNBVARI), '(I16)') nbVari
+    metaType = comporMeta(ZMETATYPE)
+    read (comporMeta(ZNUMECOMP), '(I16)') numeComp
+    read (comporMeta(ZNBPHASE), '(I16)') nbPhase
+    read (comporMeta(ZNBVARI), '(I16)') nbVari
 
 ! - Specific input/output fields
     hasTemper = ASTER_FALSE

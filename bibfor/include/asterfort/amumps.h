@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
     subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                       iret, impr, ifmump, prepos, pcentp)
         character(len=*) :: action
-        integer :: kxmps
+        integer(kind=8) :: kxmps
         real(kind=8) :: rsolu(*)
         character(len=19) :: vcine
-        integer :: nbsol
-        integer :: iret
+        integer(kind=8) :: nbsol
+        integer(kind=8) :: iret
         character(len=14) :: impr
-        integer :: ifmump
+        integer(kind=8) :: ifmump
         aster_logical :: prepos
-        integer :: pcentp(2)
+        integer(kind=8) :: pcentp(2)
     end subroutine amumps
 end interface

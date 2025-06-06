@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ subroutine crprol()
 #include "asterfort/tbutnu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
     integer :: ibid, ndimf, nbnoi, nbnof, nbinst, iad
@@ -254,7 +255,7 @@ subroutine crprol()
             rval = zr(jtbpdg-1+ordef)
             if (rval .lt. 0.0d0) then
                 if (pgauch .eq. 'EXCLU') then
-                    call jenuno(jexnum(nommaf//'.NOMNOE', ino), nom1)
+                    nom1 = int_to_char8(ino)
                     valk(1) = nom1
                     call utmess('F', 'ALGORITH12_71', sk=valk(1))
                 else if (pgauch .eq. 'CONSTANT') then
@@ -275,7 +276,7 @@ subroutine crprol()
                 end if
             else
                 if (pdroit .eq. 'EXCLU') then
-                    call jenuno(jexnum(nommaf//'.NOMNOE', ino), nom1)
+                    nom1 = int_to_char8(ino)
                     valk(1) = nom1
                     call utmess('F', 'ALGORITH12_72', sk=valk(1))
                 else if (pdroit .eq. 'CONSTANT') then

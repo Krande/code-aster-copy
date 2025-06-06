@@ -38,6 +38,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
     integer :: ioc, nbgr, nbno, ndim
@@ -48,7 +49,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
 !
     character(len=8) :: nomnoe, typm
     character(len=8) :: nompar(3)
-    character(len=24) :: manono, magrma, manoma, matyma
+    character(len=24) :: magrma, manoma, matyma
     real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
     integer :: appui
@@ -88,7 +89,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     iunite = 6
 !   ON RECUPERE LES POINTS D'ANCRAGE, ON ECLATE LE GROUP_NO EN NOEUDS
     call compma(noma, nbgr, ligrma, nbma)
-    manono = noma//'.NOMNOE'
     magrma = noma//'.GROUPEMA'
     manoma = noma//'.CONNEX'
     matyma = noma//'.TYPMAIL'
@@ -323,7 +323,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
             r5 = zero
             r6 = zero
         end if
-        call jenuno(jexnum(manono, ij), nomnoe)
+        nomnoe = int_to_char8(ij)
         rignoe(6*(ii-1)+1) = r1
         rignoe(6*(ii-1)+2) = r2
         rignoe(6*(ii-1)+3) = r3

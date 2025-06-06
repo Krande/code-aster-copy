@@ -2,7 +2,7 @@
 
 jobs=${NPROC_MAX}
 args=( "--clean" "--jobs=${jobs}" "$@" )
-if [ "${BUILD}" = "debug" ]; then
+if [ "${ASTER_BUILD}" = "debug" ]; then
     args+=( "--timefactor=16.0" )
 else
     args+=( "--timefactor=4.0" )
@@ -47,21 +47,30 @@ if [ "${BUILDTYPE}" = "ci" ]; then
     args+=( "--only-failed-results" )
 fi
 
-printf "\nrun_ctest arguments: ${args}\n"
+run_ctest="./install/bin/run_ctest"
+if [ "${OSNAME}" = "win" ]; then
+    export LANG=en_EN.UTF-8
+    run_ctest="wine ./install/bin/run_ctest.bat"
+fi
+
+printf "\nrun_ctest command:\n    "
+echo "${run_ctest}"
+printf "\nrun_ctest arguments:\n    "
+echo "${args[@]}"
 
 printf "\nrunning testcases #1... - $(date)\n"
-./install/bin/run_ctest "${args[@]}"
+${run_ctest} "${args[@]}"
 iret=$?
 
 if [ ${iret} -ne 0 ]; then
     printf "\nrunning testcases #2 (rerun-failed)... - $(date)\n"
-    ./install/bin/run_ctest "${args[@]}" --rerun-failed
+    ${run_ctest} "${args[@]}" --rerun-failed
     iret=$?
 fi
 
 if [ ${iret} -ne 0 ]; then
     printf "\nrunning testcases #3 (rerun-failed)... - $(date)\n"
-    ./install/bin/run_ctest "${args[@]}" --rerun-failed
+    ${run_ctest} "${args[@]}" --rerun-failed
     iret=$?
 fi
 

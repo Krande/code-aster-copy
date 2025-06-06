@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine medome_once(result, v_list_store, nb_store, nume_user_,&
                            model_, cara_elem_  , chmate_ , list_load_)
         character(len=8), intent(in) :: result
-        integer, pointer :: v_list_store(:)
-        integer, intent(in) :: nb_store
-        integer, optional, intent(in) :: nume_user_
+        integer(kind=8), pointer :: v_list_store(:)
+        integer(kind=8), intent(in) :: nb_store
+        integer(kind=8), optional, intent(in) :: nume_user_
         character(len=8), optional, intent(out) :: model_
         character(len=8), optional, intent(out) :: cara_elem_
         character(len=24), optional, intent(out) :: chmate_

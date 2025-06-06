@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: j1dn3(9, 27)
     real(kind=8) :: btild3(5, 27)
     real(kind=8) :: ksi3s2
-    integer :: icompo, nbcou
+    integer :: nbcou
     integer :: icou
     real(kind=8) :: zic, zmin, epais, coef
     real(kind=8) :: vrignc(2601), vrigni(2601)
@@ -182,6 +182,7 @@ subroutine vdpnlr(option, nomte, codret)
     type(Behaviour_Integ) :: BEHinteg
     character(len=4), parameter :: fami = "MASS"
     blas_int :: b_incx, b_incy, b_n
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -201,7 +202,7 @@ subroutine vdpnlr(option, nomte, codret)
     call jevech('PMATERC', 'L', imate)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=itab)
@@ -216,21 +217,21 @@ subroutine vdpnlr(option, nomte, codret)
 
 ! - Set main parameters for behaviour (on cell)
     call behaviourSetParaCell(ndimLdc, typmod, option, &
-                              zk16(icompo), zr(icarcr), &
+                              compor, zr(icarcr), &
                               zr(iinstm), zr(iinstp), &
                               fami, zi(imate), &
                               BEHinteg)
 
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
 
 ! - Properties of behaviour
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
-    read (zk16(icompo-1+NVAR), '(I16)') nbvari
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    read (compor(NVAR), '(I16)') nbvari
 !
 ! - Get elastic properties
 !
@@ -693,7 +694,7 @@ subroutine vdpnlr(option, nomte, codret)
                 sigma = 0.d0
                 call nmcomp(BEHinteg, &
                             fami, intsn, ksp, ndimLdc, typmod, &
-                            zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
+                            zi(imate), compor, zr(icarcr), zr(iinstm), zr(iinstp), &
                             4, eps2d, deps2d, 4, sign, &
                             zr(ivarim+k2), option, angmas, &
                             sigma, zr(ivarip+k2), 36, dsidep, cod)

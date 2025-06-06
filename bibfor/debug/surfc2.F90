@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine surfc2(sdcont, mesh)
 #include "asterfort/mminfm.h"
 #include "asterfort/mminfr.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: sdcont, mesh
 !
@@ -157,7 +158,7 @@ subroutine surfc2(sdcont, mesh)
             elem_indx = jdecme+i_elem_slav
             call mminfm(elem_indx, sdcont_defi, 'NPTM', nb_poin_inte)
             call cfnumm(sdcont_defi, elem_indx, elem_nume)
-            call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), elem_name)
+            elem_name = int_to_char8(elem_nume)
             call mminfm(elem_indx, sdcont_defi, 'NDEXFR', ndexfr)
             vali(1) = i_zone
             vali(2) = nb_poin_inte

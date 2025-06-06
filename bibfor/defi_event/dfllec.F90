@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine dfllec(sdlist, dtmin)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: factorKeyword = 'ECHEC'
     integer :: event_list(FAIL_EVT_NB)
-    character(len=16) :: keywf
     character(len=16) :: nom_cham, nom_cmp, crit_cmp
     character(len=24)  :: lst_loca
     integer:: etat_loca
@@ -82,32 +82,26 @@ subroutine dfllec(sdlist, dtmin)
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
-    keywf = 'ECHEC'
     nb_fail_read = 0
     nb_fail = 0
-    event_list(:) = 0
-!
+    event_list = 0
+
 ! - Get number of failure keywords
-!
-    call dfllne(keywf, nb_fail_read, l_fail_error)
+    call dfllne(factorKeyword, nb_fail_read, l_fail_error)
     nb_fail = nb_fail_read
-!
+
 ! - ERROR failure is required
-!
     if (.not. l_fail_error) then
         nb_fail = nb_fail+1
     end if
-!
+
 ! - Access to datastructures
-!
     sdlist_linfor = sdlist(1:8)//'.LIST.INFOR'
     call jeveuo(sdlist_linfor, 'E', vr=v_sdlist_linfor)
-!
+
 ! - Create datastructure
-!
     sdlist_eevenr = sdlist(1:8)//'.ECHE.EVENR'
     sdlist_eevenk = sdlist(1:8)//'.ECHE.EVENK'
     sdlist_loca = sdlist(1:8)//'.ECHE.LOCA'
@@ -118,15 +112,14 @@ subroutine dfllec(sdlist, dtmin)
     call wkvect(sdlist_esubdr, 'G V R', nb_fail*SIZE_LESUR, vr=v_sdlist_esubdr)
     v_sdlist_linfor(9) = nb_fail
     v_sdlist_loca(1:nb_fail*SIZE_LELOCA) = 0
-!
+
 ! - Ordering list of events
-!
     AS_ALLOCATE(vi=v_work, size=nb_fail)
     i_last = 1
     do i_event = 1, FAIL_EVT_NB
         event_curr = failEventKeyword(i_event)
         do i_fail = 1, nb_fail_read
-            call getvtx(keywf, 'EVENEMENT', iocc=i_fail, scal=event_typek)
+            call getvtx(factorKeyword, 'EVENEMENT', iocc=i_fail, scal=event_typek)
             if (event_typek .eq. event_curr) then
                 event_list(i_event) = i_fail
                 if (event_typek .eq. failEventKeyword(FAIL_EVT_INCR_QUANT)) then
@@ -136,21 +129,17 @@ subroutine dfllec(sdlist, dtmin)
             end if
         end do
     end do
-!
+
 ! - List
-!
     i_fail_save = 0
     iplus = 0
     i_last = 1
     do i_event = 1, FAIL_EVT_NB
-!
 ! ----- Current event
-!
         i_fail = event_list(i_event)
         event_curr = failEventKeyword(i_event)
-!
+
 ! ----- Event to create
-!
 157     continue
         if (i_fail .eq. 0) then
 ! --------- This event doesn't exist but it's required
@@ -175,9 +164,8 @@ subroutine dfllec(sdlist, dtmin)
                 i_fail_save = i_fail_save+1
             end if
         end if
-!
+
 ! ----- Get parameters
-!
         l_save = .false.
         if (i_fail .eq. 0) then
             if (event_curr .eq. failEventKeyword(FAIL_EVT_ERROR)) then
@@ -187,11 +175,12 @@ subroutine dfllec(sdlist, dtmin)
             end if
         else
 ! --------- Get parameters of EVENEMENT for current failure keyword
-            call dfllpe(keywf, i_fail, event_typek, &
+            call dfllpe(factorKeyword, i_fail, event_typek, &
                         vale_ref, nom_cham, nom_cmp, crit_cmp, lst_loca, &
                         etat_loca, pene_maxi, resi_glob_maxi)
+
 ! --------- Get parameters of ACTION for current failure keyword
-            call dfllac(keywf, i_fail, dtmin, event_typek, &
+            call dfllac(factorKeyword, i_fail, dtmin, event_typek, &
                         action_typek, &
                         subd_method, subd_pas_mini, &
                         subd_niveau, subd_pas, &
@@ -199,9 +188,8 @@ subroutine dfllec(sdlist, dtmin)
                         pcent_iter_plus, coef_maxi)
             l_save = .true.
         end if
-!
+
 ! ----- Save parameters in datastructure
-!
         if (l_save) then
             call dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca, &
                         v_sdlist_esubdr, i_fail_save, &
@@ -215,9 +203,8 @@ subroutine dfllec(sdlist, dtmin)
             goto 157
         end if
     end do
-!
+
 ! - Compute maximum level of time step cutting
-!
     subd_niveau_maxi = 0.d0
     do i_fail = 1, nb_fail
         subd_niveau_r = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+4)

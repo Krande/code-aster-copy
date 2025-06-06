@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine abscur(ma)
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: ma
 !-----------------------------------------------------------------------
@@ -58,7 +59,7 @@ subroutine abscur(ma)
 !
     character(len=8) :: typm, noma, nono
     character(len=24) :: mesmai, mesnoe
-    character(len=24) :: nommai, nomnoe, cooval, coodsc, grpnoe
+    character(len=24) :: cooval, coodsc, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
     character(len=16) :: motcle(3), typmcl(3)
     integer :: adrm, iseg1, iseg2, isegprev, jtmp, kseg, nbextr, nbnot
@@ -80,7 +81,7 @@ subroutine abscur(ma)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call sdmail(ma, nommai, nomnoe, cooval, coodsc, &
+    call sdmail(ma, cooval, coodsc, &
                 grpnoe, gpptnn, grpmai, gpptnm, &
                 connex, titre, typmai, adapma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnot)
@@ -174,7 +175,7 @@ subroutine abscur(ma)
             end if
         else if (icoseg(ino) .eq. 0) then
         else
-            call jenuno(jexnum(nomnoe, ino), nono)
+            nono = int_to_char8(ino)
             call utmess('F', 'INTEMAIL_36', sk=nono)
         end if
     end do
@@ -247,7 +248,7 @@ subroutine abscur(ma)
                 goto 15
             end if
         end do
-        call jenuno(jexnum(nommai, numa), noma)
+        noma = int_to_char8(numa)
         call utmess('F', 'MODELISA_3', sk=noma)
 15      continue
     end do

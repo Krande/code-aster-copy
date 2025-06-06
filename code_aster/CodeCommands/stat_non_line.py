@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -107,7 +107,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
                 feds += etat["EVOL_NOLI"].getFiniteElementDescriptors()
                 fnds += etat["EVOL_NOLI"].getEquationNumberings()
 
-        result.build(feds, fnds)
+        result.build(feds, fnds, keywords.get("EXCIT"))
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
@@ -126,6 +126,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
             "ETAT_INIT",
             ("DEPL", "SIGM", "VARI", "STRX", "COHE", "VITE", "ACCE", "EVOL_NOLI"),
         )
+        self.remove_dependencies(keywords, "EXCIT", ("CHARGE", "FONC_MULT"))
         self.remove_dependencies(keywords, "INCREMENT", "LIST_INST")
         self.remove_dependencies(keywords, "ARCHIVAGE", "LIST_INST")
 

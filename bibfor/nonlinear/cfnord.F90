@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine cfnord(noma, typent, nument, itype, vector, &
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 #include "blas/dcopy.h"
 !
     character(len=8) :: noma
@@ -88,9 +89,9 @@ subroutine cfnord(noma, typent, nument, itype, vector, &
 ! --- NOM DE L'ENTITE (NOEUD OU MAILLE)
 !
     if (typent .eq. 'MAIL') then
-        call jenuno(jexnum(noma//'.NOMMAI', nument), noment)
+        noment = int_to_char8(nument)
     else if (typent .eq. 'NOEU') then
-        call jenuno(jexnum(noma//'.NOMNOE', nument), noment)
+        noment = int_to_char8(nument)
     else
         ASSERT(.false.)
     end if

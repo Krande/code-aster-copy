@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,6 +55,8 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/utcono.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 !
 ! -----  ARGUMENTS
@@ -151,16 +153,17 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! ---     RECUPERATION DU NOM DE LA MAILLE à partrir du numero d'ordre:
 !         --------------------------------
-        call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+        nomail = int_to_char8(ima)
 !
 ! ---     RECUPERATION DES CONNECTIVITES DE LA MAILLE :
 !         -------------------------------------------
-        call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
+        ibid = char8_to_int(nomail)
+
         call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', idnoeu)
 !
 ! ---     RECUPERATION DU NOMBRE DE CONNECTIVITES DE LA MAILLE :
 !         ----------------------------------------------------
-        call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
+        ibid = char8_to_int(nomail)
         call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', nbno)
 !
 ! ---      COMPTE NOMBRE DES NOEUDS D'UN MAILLE DANS LE SPHERE :
@@ -199,7 +202,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
                 if (d2 .le. rayon*rayon) then
                     nbma = nbma+1
                     zi(idlima+nbma-1) = ima
-                    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                    nomail = int_to_char8(ima)
                     goto 10
                 end if
 ! ---            SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A TOUT OU
@@ -218,7 +221,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
             if (nbnod .eq. nbno) then
                 nbma = nbma+1
                 zi(idlima+nbma-1) = ima
-                call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                nomail = int_to_char8(ima)
                 goto 10
             end if
         end if
@@ -226,7 +229,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
             if (nbnod .ge. (nbno+1)/2) then
                 nbma = nbma+1
                 zi(idlima+nbma-1) = ima
-                call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+                nomail = int_to_char8(ima)
                 goto 10
             end if
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmfmats(icdmat, nomats)
+subroutine pmfmats(nomats)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -24,8 +24,6 @@ subroutine pmfmats(icdmat, nomats)
 !  Si l'élément n'est pas PMF, retourne : ' '
 !
 ! --------------------------------------------------------------------------------------------------
-!   in
-!       icdmat  : materiau code (zi(imate))
 !   out
 !       nomats     : nom du materiau "section"
 ! --------------------------------------------------------------------------------------------------
@@ -42,21 +40,21 @@ subroutine pmfmats(icdmat, nomats)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, intent(in) :: icdmat
     character(len=*), intent(out) :: nomats
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icompo, isdcom, nbgfmx
+    integer :: isdcom, nbgfmx
+    character(len=16), pointer :: compor(:) => null()
     integer, pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
     if (.not. lteatt('TYPMOD2', 'PMF')) then
         nomats = ' '
     else
-        call jevech('PCOMPOR', 'L', icompo)
-        call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
-        call jeveuo(zk16(icompo-1+MULTCOMP) (1:8)//'.CPRI', 'L', vi=cpri)
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        call jeveuo(compor(MULTCOMP), 'L', isdcom)
+        call jeveuo(compor(MULTCOMP) (1:8)//'.CPRI', 'L', vi=cpri)
         ! Nombre de groupe de fibre
         nbgfmx = cpri(MULTI_FIBER_NBGRFIBR)
         ! Le matériau de torsion c'est le dernier

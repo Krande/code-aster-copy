@@ -23,7 +23,7 @@ from code_aster import CA
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME", ERREUR_F="EXCEPTION"), INFO=1)
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME", ERREUR_F="EXCEPTION"), INFO=1)
 
 test = CA.TestCase()
 

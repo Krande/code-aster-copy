@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -141,7 +141,8 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
             zk24(krefe+i) = zk24(jrefe+i)
         end do
         call dismoi('NOM_MAILLA', nomch(1), 'CHAMP', repk=noma)
-        call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu)
+        call jelira(noma//'.COORDO    .VALE', 'LONMAX', nbnoeu)
+        nbnoeu = nbnoeu/3
 !
 !        --- BOUCLE SUR LES CHAMPS A RECOMBINER ---
 !

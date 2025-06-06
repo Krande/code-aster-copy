@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 #include "asterfort/jexatr.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/agdual.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: lisrez
     character(len=*), intent(in) :: chargz
@@ -97,7 +98,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     real(kind=8) :: beta
     integer :: i, icmp, iddl, idecal, ifm, igrel, gd1, gd2, nbRet
     integer :: in, indsur, inema, inema0, ino, inom, ipntrl, irela
-    integer :: iret, j, jprnm, jrlbe, jrlco
+    integer :: iret, j, jprnm, jrlbe, jrlco, ier
     integer :: jrlcof, jrldd, jrlno, idnoeu, jrlpo
     integer ::    jvale1, jvale2, jvalv1, jvalv2, kddl, nec1, nec2
     integer ::    ncmpmx1, ncmpmx2, jnocmp1, jnocmp2, jnoma1, jnoma2
@@ -106,7 +107,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     integer :: nbcmp, nec, nbnema, nbrela, nbteli, nbterm, nddla
     integer :: jliel0, jlielc, jnema0, jnemac, nbrela2, nbterm2
     character(len=3), parameter :: rapide = 'OUI'
-    aster_logical :: detr_lisrel, l_lag1, l_prealloc
+    aster_logical :: detr_lisrel, l_lag1, l_prealloc, lcolle
 
     integer :: niv, numel, nunewm, iexi, jlgns
     character(len=8), pointer :: lgrf(:) => null()
@@ -130,6 +131,11 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     ligrmo = mod(1:8)//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
+    lcolle = .false.
+    call jeexin(noma//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
     call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
 !
     l_lag1 = .false.
@@ -350,7 +356,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
         end if
         do ino = 1, nbterm
             nomnoe = zk8(idnoeu+ino-1)
-            call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
+            in = char8_to_int(nomnoe, lcolle, noma, "NOEUD")
 !
             cmp = zk8(iddl+ino-1)
 !

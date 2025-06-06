@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,6 +73,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
 !
     integer, parameter :: ndim = 3
 
@@ -363,11 +364,11 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
                             table_valk(kk+1) = nsymb
                             kk = kk+1
                         end if
-                        call jenuno(jexnum(noma//'.NOMMAI', ima), kma)
+                        kma = int_to_char8(ima)
                         table_valk(kk+1) = kma
                         kk = kk+1
                         if (tych .eq. 'ELNO') then
-                            call jenuno(jexnum(noma//'.NOMNOE', inot), kno)
+                            kno = int_to_char8(inot)
                             table_valk(kk+1) = kno
                             kk = kk+1
                         end if

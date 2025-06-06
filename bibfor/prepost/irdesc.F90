@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -185,7 +185,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec, &
                     iente = 0
                 end if
                 if (lmasu) then
-                    call lxliis(nomnoe(inno) (2:8), ino, ier)
+                    call lxliis(nomnoe(inno) (1:8), ino, ier)
                 end if
                 write (ifi, '(I10,5X,A,A)') ino, '% NOEUD ', nomnoe(inno)
                 write (ifi, '(6(1PE13.5))') (zr(irval-1+i), zr(icval-1+ &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
 #include "asterfort/vrrefe.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/int_to_char8.h"
     character(len=*) :: chin, chout
     character(len=1) :: kstop
     integer :: codret
@@ -251,7 +252,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
         if (nucp2 .gt. 0 .and. nucp2 .ne. icmp .and. .not. trav2(ieq2)) then
 
             valk(1) = zk8(jcmpgd+nucp2-1)
-            call jenuno(jexnum(mesh2//'.NOMNOE', nuno2), valk(2))
+            valk(2) = int_to_char8(nuno2)
             valk(3) = ch1
             codret = 1
 

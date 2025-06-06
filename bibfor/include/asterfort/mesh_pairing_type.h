@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@
 #define MAX_NB_INTE 8
 
 ! Maximum number of quadrature points
-#define MAX_NB_QUAD 48
+#define MAX_NB_QUAD 56
 
 ! ==================================================================================================
 !

@@ -41,8 +41,6 @@ def rest_homo_ops(self, **kwargs):
     resu_glob_meca = kwargs.get("EVOL_ELAS")
     resu_glob_ther = kwargs.get("EVOL_THER")
     kwaffemat = kwargs.get("AFFE")
-    verbose = kwargs.get("INFO") == 2
-    option = kwargs.get("OPTION") == "OUI"
     user_type_homo = HomoType.str2value(kwargs.get("TYPE_HOMO"))
     rmanager = RelocManager(kwargs)
 
@@ -65,7 +63,7 @@ def rest_homo_ops(self, **kwargs):
         mod_ther.addModelingOnMesh(Physics.Thermal, Modelings.Tridimensional)
         mod_ther.build()
 
-        fmat_ther = AFFE_MATERIAU(MODELE=mod_ther, AFFE=kwaffemat, AFFE_VARC=_F(**varckw))
+        fmat_ther = AFFE_MATERIAU(MODELE=mod_ther, AFFE=kwaffemat)
         resu_ther.setModel(mod_ther)
         resu_ther.setMaterialField(fmat_ther)
 

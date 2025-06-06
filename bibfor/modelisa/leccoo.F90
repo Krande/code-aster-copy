@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,8 +101,11 @@ subroutine leccoo(ifl, icl, iv, rv, cv, &
 7   continue
     call liritm(ifl, icl, iv, rv, cv, &
                 cnl, deblig, 1)
-    if (nbg .ge. 1) write (ifm, *) '       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
-        ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
+    if (nbg .ge. 1) then
+        write (ifm, *) '       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
+            ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
+        flush (ifm)
+    end if
 9   continue
 !
 ! - ITEM EN DEBUT DE LIGNE ?
@@ -133,8 +136,11 @@ subroutine leccoo(ifl, icl, iv, rv, cv, &
 !
         call liritm(ifl, icl, iv, rv, cv, &
                     cnl, deblig, 1)
-        if (nbg .ge. 1) write (ifm, *) '       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
-            ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
+        if (nbg .ge. 1) then
+            write (ifm, *) '       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
+                ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
+            flush (ifm)
+        end if
 !
 ! - ITEM = NOMBRE ?
 !

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -42,9 +42,9 @@
 void DEFPPP( LIHDFV, lihdfv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
              _OUT ASTERINTEGER *patch ) {
     /* Retourne la version de HDF5 */
-    int ier = 0;
     unsigned int n1 = 0, n2 = 0, n3 = 0;
 #ifdef ASTER_HAVE_HDF5
+    herr_t ier = 0;
     ier = (int)H5get_libversion( &n1, &n2, &n3 );
 #endif
     *major = (ASTERINTEGER)n1;

@@ -3,7 +3,7 @@
  * @brief Implementation de MedFileReader
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -102,14 +102,7 @@ int MedFileReader::readFile() {
             std::cout << "Mesh type must be unstructured. Mesh name: " << meshname << std::endl;
             continue;
         }
-        auto ref = _meshes.emplace_back( new MedMesh( _filePtr, meshname, spacedim ) );
-
-        for ( int j = 1; j <= nstep; ++j ) {
-            med_int numdt, numit;
-            med_float dt;
-            MEDmeshComputationStepInfo( fileId, meshname, j, &numdt, &numit, &dt );
-            ref->addSequence( numdt, numit, dt );
-        }
+        auto ref = _meshes.emplace_back( new MedMesh( _filePtr, meshname, spacedim, nstep ) );
         _mapMeshNameRank[strip( meshname )] = count;
         free( axisname );
         free( axisunit );

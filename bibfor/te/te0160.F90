@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine te0160(option, nomte)
     character(len=16) :: nomres(2)
     integer :: nno, kp, ii, jj, imatuu
     integer :: ipoids, ivf, igeom, imate, icoret
-    integer :: icompo, idepla, ideplp, idfdk, imat, iyty, ivectu, ivarip
+    integer :: idepla, ideplp, idfdk, imat, iyty, ivectu, ivarip
     integer :: jgano, kk, icontp, ndim, nelyty, nnos, nordre, npg
     real(kind=8) :: aire, coef, coef1, coef2
     real(kind=8), parameter :: demi = 0.5d0
@@ -68,6 +68,7 @@ subroutine te0160(option, nomte)
     aster_logical :: lVect, lMatr, lVari, lSigm
     integer :: codret, iret
     real(kind=8) :: valr(2)
+    character(len=16), pointer :: compor(:) => null()
     character(len=8), parameter :: valp(2) = (/'SECT', 'TENS'/)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -92,12 +93,12 @@ subroutine te0160(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PDEPLMR', 'L', idepla)
     call jevech('PDEPLPR', 'L', ideplp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
 ! - Properties of behaviour
 !
-    rela_comp = zk16(icompo-1+RELA_NAME)
-    defo_comp = zk16(icompo-1+DEFO)
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
     if (rela_comp(1:5) .ne. 'CABLE') then
         call utmess('F', 'ELEMENTS3_37', sk=rela_comp)
     end if
@@ -128,7 +129,7 @@ subroutine te0160(option, nomte)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo), &
+    call behaviourOption(option, compor, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)

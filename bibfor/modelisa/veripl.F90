@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: ma
     integer :: nbma, jconx, ima, k, iprem, numai1, numail, linuma(nbma)
@@ -102,8 +103,8 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
         cos2a = (n1n*n1n)/(nn*n1n1)
 !
         if (cos2a .lt. cos2b) then
-            call jenuno(jexnum(ma2//'.NOMMAI', numail), nomail)
-            call jenuno(jexnum(ma2//'.NOMMAI', numai1), nomai1)
+            nomail = int_to_char8(numail)
+            nomai1 = int_to_char8(numai1)
             valk(1) = nomai1
             valk(2) = nomail
             call utmess(typerr, 'MODELISA7_80', nk=2, valk=valk)

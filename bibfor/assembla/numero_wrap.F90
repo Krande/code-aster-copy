@@ -19,7 +19,7 @@
 !
 subroutine numero_wrap(numeDofZ, base, &
                        modelZ, listLoadZ, &
-                       contactZ)
+                       contactZ, verbose)
 !
     use listLoad_module
     use contactAlgo_module
@@ -29,10 +29,13 @@ subroutine numero_wrap(numeDofZ, base, &
 #include "asterfort/addModelLigrel.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/numero.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
 !
     character(len=*), intent(inout) :: numeDofZ
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: modelZ, listLoadZ, contactZ
+    aster_logical, intent(in) :: verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,6 +62,10 @@ subroutine numero_wrap(numeDofZ, base, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    if (.not. verbose) then
+        call infmue()
+    end if
+!
     nbLigr = 0
 
 ! - Add LIGREL from model
@@ -77,5 +84,7 @@ subroutine numero_wrap(numeDofZ, base, &
     call numero(numeDofZ, base, &
                 nbLigr, listLigr)
     AS_DEALLOCATE(vk24=listLigr)
+!
+    call infbav()
 !
 end subroutine

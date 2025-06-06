@@ -24,11 +24,7 @@ from math import *
 from code_aster.Commands import *
 from code_aster import CA
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    ERREUR=_F(ALARME="EXCEPTION"),
-    DEBUG=_F(SDVERI="OUI", JXVERI="OUI", JEVEUX="NON"),
-)
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI", JXVERI="OUI", JEVEUX="NON"))
 
 ############ UNITE ############
 # m

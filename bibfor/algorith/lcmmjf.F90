@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat, &
                   petith, iret)
 ! aslint: disable=W1504
     implicit none
+#include "asterc/r8t0.h"
 #include "asterc/r8miem.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
     real(kind=8) :: taus, coeft(nmat), rp, dt, alphap, dalpha, gammap, dgamma
@@ -195,7 +196,7 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat, &
                     iret = 1
                     goto 999
                 end if
-                tabs = tperd+273.15d0
+                tabs = tperd+r8t0()
 !              PROTECTION DE l'EXPONENTIELLE
                 deltgg = deltg0*(aux**q)
                 terme = -deltgg/k/tabs

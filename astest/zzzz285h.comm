@@ -1,0 +1,149 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# This test shows a simple way to do a parallel projection.
+# More specifically, we consider a field on a classic Mesh object. It is fully
+# available on any MPI process.
+# We want to project it onto another mesh, which is a ParallelMesh.
+# The projection is thus realized in a parallel manner for each subdomain
+
+import os.path as osp
+
+import numpy as np
+
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.Utilities import MPI
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="ABORT"))
+
+test = CA.TestCase()
+
+PLOT = False
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+
+# -------------------------------------------------------------------------------
+# Build the meshes
+
+# The initial parallel mesh
+ma0 = CA.ParallelMesh.buildCube(refine=3)
+# It is rotated in order to not be aligned with the axis (the projection algorithm uses an octree sort)
+ma0 = MODI_MAILLAGE(
+    reuse=ma0,
+    MAILLAGE=ma0,
+    ROTATION=(_F(POIN_1=(10.0, 0.5, 3.8), ANGLE=90, POIN_2=(0.0, 10.0, 0.0)),),
+)
+mo0 = AFFE_MODELE(MAILLAGE=ma0, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
+
+# The destination parallel mesh
+ma1 = CA.ParallelMesh.buildCube(refine=2)
+ma1 = MODI_MAILLAGE(
+    reuse=ma1,
+    MAILLAGE=ma1,
+    ROTATION=(_F(POIN_1=(10.0, 0.5, 3.8), ANGLE=90, POIN_2=(0.0, 10.0, 0.0)),),
+)
+mo1 = AFFE_MODELE(MAILLAGE=ma1, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
+
+# -------------------------------------------------------------------------------
+# Build the initial field
+
+# Extract the coords of the mesh
+coo = ma0.getCoordinatesAsSimpleFieldOnNodes()
+# Build an array as an algebraic sum the coords
+scal = coo.X + coo.Y + coo.Z
+
+# Conversion into a simple field
+tempf = CA.SimpleFieldOnNodesReal(ma0, "TEMP_R", ["TEMP"], prol_zero=True)
+tempf.setComponentValues("TEMP", scal)
+
+# Conversion into FieldOnNodes
+vec_ini = tempf.toFieldOnNodes()
+
+if PLOT:
+    vec_ini.plot()
+# -------------------------------------------------------------------------------
+# Project the field
+
+# Test1
+# The LEFT group only lives on proc #1 so that vec_proj is empty on proc #0
+vec_proj = PROJ_CHAMP(
+    METHODE="AUTO",
+    DISTRIBUTION="OUI",
+    CHAM_GD=vec_ini,
+    MAILLAGE_1=ma0,
+    MAILLAGE_2=ma1,
+    VIS_A_VIS=(_F(GROUP_MA_1="LEFT", GROUP_MA_2="LEFT"),),
+)
+if PLOT:
+    vec_proj.plot(local=True, split=True)
+
+if rank == 0:
+    test.assertEqual(len(vec_proj.getValues()), 0)
+else:
+    test.assertEqual(len(vec_proj.getValues()), 25)
+
+# Test2
+# Projection on the whole domain
+vec_proj = PROJ_CHAMP(
+    DISTRIBUTION="OUI",
+    METHODE="AUTO",
+    CHAM_GD=vec_ini,
+    MAILLAGE_1=ma0,
+    MAILLAGE_2=ma1,
+    VIS_A_VIS=(
+        _F(GROUP_MA_1="TOP", GROUP_MA_2="TOP"),
+        _F(GROUP_MA_1="BOTTOM", GROUP_MA_2="BOTTOM"),
+        _F(GROUP_MA_1="LEFT", GROUP_MA_2="LEFT"),
+        _F(GROUP_MA_1="RIGHT", GROUP_MA_2="RIGHT"),
+        _F(GROUP_MA_1="FRONT", GROUP_MA_2="FRONT"),
+        _F(GROUP_MA_1="BACK", GROUP_MA_2="BACK"),
+        _F(GROUP_MA_1="VOLUME", GROUP_MA_2="VOLUME"),
+    ),
+)
+if PLOT:
+    ma1.getOwnerField().plot(local=True, split=True)
+    vec_proj.plot(local=True, split=True)
+
+# -------------------------------------------------------------------------------
+# Verification
+
+# -------------------------------
+# Build the final field for verification
+
+# Extract the coords of the mesh
+coo = ma1.getCoordinatesAsSimpleFieldOnNodes()
+# Build an array as an algebraic sum the coords
+scal = coo.X + coo.Y + coo.Z
+
+# Conversion into a simple field
+tempf = CA.SimpleFieldOnNodesReal(ma1, "TEMP_R", ["TEMP"], prol_zero=True)
+tempf.setComponentValues("TEMP", scal)
+
+# Conversion into FieldOnNodes
+vec_ref = tempf.toFieldOnNodes()
+
+# -------------------------------
+# Compute the difference
+
+diff = (vec_proj - vec_ref).norm()
+
+test.assertAlmostEqual(diff, 0)
+
+FIN()

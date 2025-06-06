@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,8 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
 !
 ! -----  ARGUMENTS
@@ -257,21 +259,21 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! ---     RECUPERATION DU NOM DE LA MAILLE :
 !         --------------------------------
-        call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
+        nomail = int_to_char8(ima)
 !
 ! ---     RECUPERATION DES CONNECTIVITES DE LA MAILLE :
 !         -------------------------------------------
-        call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
+        ibid = char8_to_int(nomail)
         call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', idnoeu)
 !
 ! ---     RECUPERATION DU NOMBRE DE CONNECTIVITES DE LA MAILLE :
 !         ----------------------------------------------------
-        call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
+        ibid = char8_to_int(nomail)
         call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', nbno)
 !
 ! ---     RECUPERATION DU TYPE DE LA MAILLE :
 !         ---------------------------------
-        call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
+        ibid = char8_to_int(nomail)
         call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
         jtyp = iatyma-1+ibid
         ityp = zi(jtyp)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
 !
 #include "jeveux.h"
 #include "asterc/matfpe.h"
+#include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/conint.h"
@@ -73,7 +74,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     integer :: ik, lddld, linlag, lintrf, linddl, nddlin, nbvect, ltramo, lmatmo
     integer :: lclin, lwork, jwork, lphiex, lcpet, ifm, niv
     integer(kind=4) :: info, rank
-    real(kind=8) :: shift, swork(1)
+    real(kind=8) :: shift, swork(1), pi
     complex(kind=8) :: cbid
     character(len=4) :: k4bid
     character(len=8) :: modgen, sst1
@@ -86,6 +87,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     integer, pointer :: vect_num(:) => null()
     blas_int :: b_lda, b_ldb, b_lwork, b_m, b_n, b_nrhs
     cbid = dcmplx(0.d0, 0.d0)
+    pi = r8pi()
     call infniv(ifm, niv)
 !
 !---------------------------------------------------C
@@ -173,7 +175,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
 !
 !-- CALCUL DES MODES DU MODELE D'INTERFACE
     call getvr8(' ', 'SHIFT', scal=shift, nbret=ibid)
-    shift = -((shift*2.d0*3.1415927d0)**2)
+    shift = -((shift*2.d0*pi)**2)
     matmod = '&&MODEXP.MATRICE_MODES'
     vefreq = '&&MODEXP.VECTEUR_FREQ'
 !

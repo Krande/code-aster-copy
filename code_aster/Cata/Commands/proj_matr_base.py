@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ def matr_asse_gene_prod(MATR_ASSE, MATR_ASSE_GENE, **args):
         return matr_asse_gene_c
     if AsType(MATR_ASSE_GENE) == matr_asse_gene_c:
         return matr_asse_gene_c
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 PROJ_MATR_BASE = OPER(

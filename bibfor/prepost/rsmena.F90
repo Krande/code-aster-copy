@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,7 @@ subroutine rsmena(resu)
     call jecreo('&&RSMENA.DICO', 'V N K24')
     call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon = 0
+    nbnosy = 0
     do k = 1, n2
         noobj = lobj(k)
         if (noobj(20:24) .eq. '.DEEQ') then

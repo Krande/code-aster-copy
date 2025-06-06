@@ -37,14 +37,6 @@ cata_msg = {
  correction statique non prise en compte pour l'option: %(k1)s
 """
     ),
-    15: _(
-        """
- analyse spectrale :
-   la base modale utilisée est               : %(k1)s
-   le nombre de vecteurs de base est         : %(i1)d
-   la règle de combinaison modale est        : %(k2)s
-   les options de calcul demandées sont      : %(k3)s """
-    ),
     17: _(
         """
    la nature de l'excitation est             : %(k1)s """
@@ -133,10 +125,6 @@ Conseil:
  --- (*) FACTEUR DE PARTICIPATION CALCULE AVEC MOUVEMENT CORPS RIGIDE---
                               FACTEUR DE   MASSE MODALE
  MODE     FREQUENCE  DIR   PARTICIPATION(*)      EFFECTIVE
-"""
-    ),
-    49: _(
-        """ %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e    %(r3).5e
 """
     ),
     53: _(

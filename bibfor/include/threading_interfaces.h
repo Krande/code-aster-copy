@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,40 +22,28 @@
 !
 interface
 #ifdef ASTER_HAVE_OPENMP
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine omp_set_num_threads(a) bind(C, name="omp_set_num_threads")
-#else
     subroutine omp_set_num_threads(a)
-#endif
-        integer, intent(in) :: a
+        integer(kind=8), intent(in) :: a
     end subroutine
 
-#ifdef ASTER_PLATFORM_MSVC64
-    function omp_get_max_threads() bind(C, name="omp_get_max_threads")
-#else
     function omp_get_max_threads()
-#endif
-        integer :: omp_get_max_threads
+        integer(kind=8) :: omp_get_max_threads
     end function
 
-#ifdef ASTER_PLATFORM_MSVC64
-    function omp_get_thread_num() bind(C, name="omp_get_thread_num")
-#else
     function omp_get_thread_num()
-#endif
-        integer :: omp_get_thread_num
+        integer(kind=8) :: omp_get_thread_num
     end function
 #endif
 
 #ifdef ASTER_HAVE_OPENBLAS
     subroutine openblas_set_num_threads(a)
-        integer, intent(in) :: a
+        integer(kind=8), intent(in) :: a
     end subroutine
 #endif
 
 #ifdef ASTER_HAVE_MKL
     subroutine mkl_set_num_threads(a)
-        integer, intent(in) :: a
+        integer(kind=8), intent(in) :: a
     end subroutine
 #endif
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
                   sddyna, ds_errorindic, hval_algo, l_acce_zero, ds_inout, &
@@ -155,7 +154,7 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
         typpil = pltk(1)
         typsel = pltk(6)
         lpiarc = .false.
-        if (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') then
+        if (typpil .eq. 'LONG_ARC') then
             if (typsel(1:14) .eq. 'ANGL_INCR_DEPL') then
                 lpiarc = .true.
             end if

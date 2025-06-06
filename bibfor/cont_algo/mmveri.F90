@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ subroutine mmveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 #include "asterfort/mmpnoe.h"
 #include "asterfort/mmtanr.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -157,7 +158,7 @@ subroutine mmveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 ! --------- Parameters of slave element
 !
             call mmelty(mesh, elem_slav_nume, elem_slav_type, elem_slav_nbno)
-            call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
+            elem_slav_name = int_to_char8(elem_slav_nume)
             call mminfm(elem_slav_indx, ds_contact%sdcont_defi, 'NDEXFR', ndexfr)
             l_excl_frot = (ndexfr .ne. 0)
 !
@@ -183,7 +184,7 @@ subroutine mmveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 !
                 elem_mast_indx = pair_enti
                 call cfnumm(ds_contact%sdcont_defi, elem_mast_indx, elem_mast_nume)
-                call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+                elem_mast_name = int_to_char8(elem_mast_nume)
 !
 ! ------------- Index of slave node in contact datastructure
 !
@@ -212,7 +213,7 @@ subroutine mmveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
                             tau2)
                 call mmnorm(model_ndim, tau1, tau2, norm, noor)
                 if (noor .le. r8prem()) then
-                    call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+                    elem_mast_name = int_to_char8(elem_mast_nume)
                     call utmess('F', 'CONTACT3_24', sk=elem_mast_name)
                 end if
 !

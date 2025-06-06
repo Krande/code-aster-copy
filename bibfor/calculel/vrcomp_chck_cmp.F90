@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine vrcomp_chck_cmp(mesh, nbCell, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: nbCell
@@ -155,7 +156,7 @@ subroutine vrcomp_chck_cmp(mesh, nbCell, &
         if (nbSpgCurr .ne. 0 .and. nbSpgPrev .ne. 0) then
             if (nbSpgCurr .ne. nbSpgPrev) then
                 if (verbose) then
-                    call jenuno(jexnum(mesh//'.NOMMAI', iCell), cellName)
+                    cellName = int_to_char8(iCell)
                     valk = ' '
                     valk(1) = cellName
                     call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
@@ -219,7 +220,7 @@ subroutine vrcomp_chck_cmp(mesh, nbCell, &
             l_modif_vari = ASTER_TRUE
             nbVariDifferent = ASTER_TRUE
             if (verbose) then
-                call jenuno(jexnum(mesh//'.NOMMAI', iCell), cellName)
+                cellName = int_to_char8(iCell)
                 valk = ' '
                 valk(1) = cellName
                 call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)

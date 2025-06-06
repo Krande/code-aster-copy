@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -38,6 +39,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
+#include "asterfort/int_to_char8.h"
 !
     integer :: nbel, numail(*), nbnac, nnoeud(*)
     character(len=*) :: chelez, nomjv
@@ -51,7 +53,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
     integer :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
     integer :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, i, jlongr
     integer :: jpnt, ipoin, nunoe, imodel, ilong
-    integer :: ind
+    integer :: ind, ier
     real(kind=8) :: sg(6), sl(6), pgl(3, 3), pscal
     real(kind=8) :: valr
     real(kind=8) :: xnormr, epsi, axer(3), axet(3)
@@ -59,7 +61,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
-    aster_logical :: inivid
+    aster_logical :: inivid, lnommai, lnomnoe
     integer, pointer :: connex(:) => null()
     integer, pointer :: repe(:) => null()
     character(len=24), pointer :: celk(:) => null()
@@ -120,6 +122,17 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
 !
     call jeveuo(nomma//'.COORDO    .VALE', 'L', vr=vale)
 !
+    call jeexin(nomma//'.NOMNOE', ier)
+    lnomnoe = .false.
+    if (ier .ne. 0) then
+        lnomnoe = .true.
+    end if
+    call jeexin(nomma//'.NOMMAI', ier)
+    lnommai = .false.
+    if (ier .ne. 0) then
+        lnommai = .true.
+    end if
+!
     do im = 1, nbel
         imail = numail(im)
         igrel = repe(2*(imail-1)+1)
@@ -175,8 +188,16 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
                     xnormr = xnormr+axer(i)*axer(i)
                 end do
                 if (xnormr .lt. epsi) then
-                    call jenuno(jexnum(nomma//'.NOMMAI', imail), nomail)
-                    call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
+                    if (lnommai) then
+                        call jenuno(jexnum(nomma//'.NOMMAI', imail), nomail)
+                    else
+                        nomail = int_to_char8(imail)
+                    end if
+                    if (lnomnoe) then
+                        call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
+                    else
+                        nonoeu = int_to_char8(nunoe)
+                    end if
                     valk(1) = nomail
                     valk(2) = nonoeu
                     valr = vale(1+3*(nunoe-1))
@@ -194,8 +215,16 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
                 end do
                 xnormr = sqrt(xnormr)
                 if (xnormr .lt. epsi) then
-                    call jenuno(jexnum(nomma//'.NOMMAI', imail), nomail)
-                    call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
+                    if (lnommai) then
+                        call jenuno(jexnum(nomma//'.NOMMAI', imail), nomail)
+                    else
+                        nomail = int_to_char8(imail)
+                    end if
+                    if (lnomnoe) then
+                        call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
+                    else
+                        nonoeu = int_to_char8(nunoe)
+                    end if
                     valk(1) = nomail
                     valk(2) = nonoeu
                     valr = vale(1+3*(nunoe-1))

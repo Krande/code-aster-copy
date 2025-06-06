@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmpipe(modele         , ligrpi    , cartyp, careta, ds_material,&
-                      ds_constitutive, ds_contact, valinc, depdel, ddepl0,&
-                      ddepl1         , tau       , nbeffe, eta   , pilcvg,&
-                      typpil         , carele)
+    subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
+                      ds_constitutive, valinc, depdel, ddepl0, &
+                      ddepl1, tau, nbeffe, eta, pilcvg, &
+                      typpil, carele)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=19) :: ligrpi
@@ -28,7 +28,6 @@ interface
         character(len=19) :: careta
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=19) :: depdel
         character(len=19) :: ddepl0

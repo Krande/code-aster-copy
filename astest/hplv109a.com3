@@ -66,13 +66,17 @@ for quantity in ("ABSC_CURV", "DX", "DY", "DZ"):
     for i, (calc, refe) in enumerate(zip(values_resu_1[quantity], values_refe_1[quantity])):
         node_resu = values_resu_1["NOEUD"][i]
         node_refe = values_refe_1["NOEUD"][i]
-        test.assertTrue(node_resu == node_refe, msg=f"RESU1 ## NOEUD - {node_resu} == {node_refe}")
+        test.assertTrue(
+            int(node_resu) == node_refe, msg=f"RESU1 ## NOEUD - {node_resu} == {node_refe}"
+        )
         test.assertAlmostEqual(calc, refe, msg=f"RESU1 ## {quantity} - {node_resu}")
 
     for i, (calc, refe) in enumerate(zip(values_resu_2[quantity], values_refe_2[quantity])):
         node_resu = values_resu_2["NOEUD"][i]
         node_refe = values_refe_2["NOEUD"][i]
-        test.assertTrue(node_resu == node_refe, msg=f"RESU2 ## NOEUD - {node_resu} == {node_refe}")
+        test.assertTrue(
+            int(node_resu) == node_refe, msg=f"RESU2 ## NOEUD - {node_resu} == {node_refe}"
+        )
         test.assertAlmostEqual(calc, refe, msg=f"RESU2 ## {quantity} - {node_resu}")
 
 test.printSummary()

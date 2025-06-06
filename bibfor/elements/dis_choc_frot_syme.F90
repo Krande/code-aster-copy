@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8sign.h"
 #include "asterfort/diraidklv.h"
 #include "asterfort/diklvraid.h"
 #include "asterfort/in_liste_entier.h"
@@ -66,7 +67,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer, parameter :: nbre1 = 9
+    integer, parameter :: nbre1 = 12
     real(kind=8) :: valre1(nbre1)
     integer :: codre1(nbre1)
     character(len=12) :: nomre1(nbre1)
@@ -78,9 +79,9 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     integer, parameter :: EnVitesse = 1, EnPlasticite = 2
 !
     integer :: ii
-    real(kind=8) :: xl(6), xd(3), raide(6), rignor, rigtan, depxyz(3), vitxyz(3)
-    real(kind=8) :: coulom, dist12, psca, vit123(3)
-    real(kind=8) :: vitt, fort
+    real(kind=8) :: xl(6), xd(3), raide(6), raidep(6), rignor, rigtan, depxyz(3), vitxyz(3)
+    real(kind=8) :: coulom, dist12, psca, vit123(3), Precis, klvp(78), utotxyz(3)
+    real(kind=8) :: vitt, fort, kp, kt
 !
     integer :: axes(3), ContactInGlobal, TestOK, TestNOK
     real(kind=8) :: ldp(3), ldm(3), SigneAxe(3)
@@ -97,13 +98,17 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     blas_int :: b_incx, b_incy, b_n
 !
     data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', 'COULOMB', &
-        'DIST_1', 'DIST_2', 'JEU', 'CONTACT'/
+        'DIST_1', 'DIST_2', 'JEU', 'CONTACT', 'PRECISION', 'KP', 'KT'/
 ! ----------------------------------------------------------------------
 !
 !   Définition des parametres
     xl = 0.d0
     xd = 0.d0
     dist12 = 0.d0
+    Precis = r8prem()
+    utotxyz = 0.d0
+    raidep = 0.d0
+    klvp = 0.d0
 !
 !   Coordonnees dans le repere local
     if (DD%ndim .eq. 3) then
@@ -115,7 +120,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !       ==> Elles sont surchargées par celles du matériau
     call diraidklv(DD%nomte, raide, klv)
     !
-    valre1 = 0.0
+    valre1 = 0.d0
     valre1(1) = raide(1)
 !   Caractéristiques du matériau
     call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', &
@@ -125,18 +130,20 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     rigtan = valre1(2)
     coulom = valre1(5)
     ContactInGlobal = nint(valre1(9))
+    kp = valre1(11)
+    kt = valre1(12)
     if (.not. in_liste_entier(ContactInGlobal, [ReperLocal, ReperGlobal])) then
         messak(1) = 'DIS_CONTACT'
         messak(2) = 'DIS_CHOC'
         messak(3) = '"1D"|"COIN_2D"'
         call utmess('F', 'DISCRETS_35', nk=3, valk=messak)
     end if
-    !
-! Si ContactInGlobal [ReperGlobal, ReperBizarre]
-!   Prise en compte de          : RIGI_NOR, REPERE
-!   Pas de prise en compte de   : DIST_1, DIST_2, JEU, RIGI_TAN, AMOR_NOR, AMOR_TAN, COULOMB
-!       OK    =0  [ 1,                      9 ]
-!       NOOK  =1  [    2, 3, 4, 5, 6, 7, 8,   ]
+!
+!   Si ContactInGlobal [ReperGlobal, ReperBizarre]
+!       Prise en compte de          : RIGI_NOR, REPERE
+!       Pas de prise en compte de   : DIST_1, DIST_2, JEU, RIGI_TAN, AMOR_NOR, AMOR_TAN, COULOMB
+!           OK    =0  [ 1,                      9 ]
+!           NOOK  =1  [    2, 3, 4, 5, 6, 7, 8,   ]
     if (in_liste_entier(ContactInGlobal, [ReperGlobal, ReperBizarre])) then
         TestOK = codre1(1)+codre1(9)
         TestNOK = codre1(2)+codre1(3)+codre1(4)+codre1(5)+codre1(6)+codre1(7)+codre1(8)
@@ -146,93 +153,110 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             messak(3) = '"COIN_2D"'
             call utmess('F', 'DISCRETS_36', nk=3, valk=messak)
         end if
+        ! On va récupérer PRÉCISION (init à r8prem), valeur par défaut dans le catalogue
+        if (codre1(10) .eq. 0) then
+            Precis = valre1(10)
+        end if
     end if
 !
     varpl(icalc) = EnVitesse
 !   Élément avec 2 noeuds
     if (DD%nno .eq. 2) then
         dist12 = valre1(6)+valre1(7)
-! Vitesse tangente
-        vit123 = 0.0
+        ! Vitesse tangente
+        vit123 = 0.d0
         vit123(2) = dvl(2+DD%nc)-dvl(2)
         if (DD%ndim .eq. 3) then
             vit123(3) = dvl(3+DD%nc)-dvl(3)
         end if
-! ------------------------------------------------------------------------------------------
-! Détermination du plan du discret : géométrie initiale
+        !
+        ! Détermination du plan du discret : géométrie initiale
         ldm(1:3) = xg(4:6)-xg(1:3)
         axes = 0
-        SigneAxe = 0.0
+        SigneAxe = 0.d0
         if (in_liste_entier(ContactInGlobal, [ReperGlobal, ReperBizarre])) then
-! Plan du discret     : [ axes(1), axes(2) ]
-! Axe perpendiculaire : axes(3)
-            if (abs(ldm(1)) <= r8prem()) then
-! Plan YZ, vect ↑ X
+            ! Plan du discret     : [ axes(1), axes(2) ]
+            ! Axe perpendiculaire : axes(3)
+            if (abs(ldm(1)) <= Precis) then
+                ! Plan YZ, vect ↑ X
                 axes = [2, 3, 1]
-            else if (abs(ldm(2)) <= r8prem()) then
-! Plan XZ, vect ↑ Y
+            else if (abs(ldm(2)) <= Precis) then
+                ! Plan XZ, vect ↑ Y
                 axes = [1, 3, 2]
-            else if (abs(ldm(3)) <= r8prem()) then
-! Plan XY, vect ↑ Z
+            else if (abs(ldm(3)) <= Precis) then
+                ! Plan XY, vect ↑ Z
                 axes = [1, 2, 3]
             else
-! <F> Le discret n'est pas plan
+                ! <F> Le discret n'est pas plan
+                write (*, *) 'DISCRET coordinates'
+                write (*, *) '   Node 1 ', xg(1:3)
+                write (*, *) '   Node 2 ', xg(4:6)
+                write (*, *) '   Delta  ', ldm
                 messak(1) = 'DIS_CONTACT'
                 messak(2) = 'DIS_CHOC (cas symétrique)'
                 call utmess('F', 'DISCRETS_33', nk=2, valk=messak)
             end if
-            if (abs(ldm(axes(1))) <= r8prem() .or. abs(ldm(axes(2))) <= r8prem()) then
-! <F> Le discret est suivant un axe
+            if (abs(ldm(axes(1))) <= Precis .or. abs(ldm(axes(2))) <= Precis) then
+                ! <F> Le discret est suivant un axe
+                write (*, *) 'DISCRET coordinates'
+                write (*, *) '   Node 1 ', xg(1:3)
+                write (*, *) '   Node 2 ', xg(4:6)
+                write (*, *) '   Delta  ', ldm
+                write (*, *) '   Axes   ', axes
                 messak(1) = 'DIS_CONTACT'
                 messak(2) = 'DIS_CHOC (cas symétrique)'
                 call utmess('F', 'DISCRETS_34', nk=2, valk=messak)
             end if
             do ii = 1, 3
-                SigneAxe(axes(ii)) = LeSigne(ldm(axes(ii)))
+                SigneAxe(axes(ii)) = r8sign(ldm(axes(ii)))
             end do
         end if
-! Instant '-' : Longueur du discret, repère GLOBAL
+        ! Instant '-' : Longueur du discret, repère GLOBAL
         ldm(1:3) = ldm(1:3)+DD%ugm(4:6)-DD%ugm(1:3)
-! Instant '+' : Longueur du discret, repère GLOBAL
+        ! Instant '+' : Longueur du discret, repère GLOBAL
         ldp(1:3) = ldm(1:3)+DD%dug(4:6)-DD%dug(1:3)
-! ------------------------------------------------------------------------------------------
-! Longueur du discret, repère LOCAL
+        ! ------------------------------------------------------------------------------------------
+        ! Longueur du discret, repère LOCAL
         do ii = 1, DD%ndim
             xd(ii) = xl(DD%ndim+ii)-xl(ii)
         end do
-! Déplacement d'entrainement
-        depxyz = 0.0
-        depxyz(1) = (xd(1)+ulp(1+DD%nc)-ulp(1)+dpe(1+DD%nc)-dpe(1)-dist12)-r8prem()
-        depxyz(2) = (xd(2)+ulp(2+DD%nc)-ulp(2)+dpe(2+DD%nc)-dpe(2))
+        ! Déplacement d'entrainement
+        depxyz = 0.d0
+        utotxyz = 0.d0
+        utotxyz(1) = ulp(1+DD%nc)-ulp(1)+dpe(1+DD%nc)-dpe(1)
+        utotxyz(2) = ulp(2+DD%nc)-ulp(2)+dpe(2+DD%nc)-dpe(2)
+        depxyz(1) = xd(1)+utotxyz(1)-dist12-r8prem()
+        depxyz(2) = xd(2)+utotxyz(2)
         if (DD%ndim .eq. 3) then
-            depxyz(3) = xd(3)+ulp(3+DD%nc)-ulp(3)+dpe(3+DD%nc)-dpe(3)
+            utotxyz(3) = ulp(3+DD%nc)-ulp(3)+dpe(3+DD%nc)-dpe(3)
+            depxyz(3) = xd(3)+utotxyz(3)
         end if
-! Vitesse tangente
-        vitxyz = 0.0
+        ! Vitesse tangente
+        vitxyz = 0.d0
         vitxyz(2) = vit123(2)+dve(2+DD%nc)-dve(2)
         if (DD%ndim .eq. 3) then
             vitxyz(3) = vit123(3)+dve(3+DD%nc)-dve(3)
         end if
-! ------------------------------------------------------------------------------------------
-        force(1:3) = 0.0
-        forceglob = 0.0
-        raideglob = 0.0
+        ! ------------------------------------------------------------------------------------------
+        force(1:3) = 0.d0
+        forceglob = 0.d0
+        raideglob = 0.d0
         IsEnfonce = ASTER_FALSE
         if (in_liste_entier(ContactInGlobal, [ReperGlobal, ReperBizarre])) then
-            if ((ldp(axes(1))*SigneAxe(axes(1)) <= 0.0) .and. &
-                (ldp(axes(2))*SigneAxe(axes(2)) <= 0.0)) then
+            if ((ldp(axes(1))*SigneAxe(axes(1)) <= 0.d0) .and. &
+                (ldp(axes(2))*SigneAxe(axes(2)) <= 0.d0)) then
                 IsEnfonce = ASTER_TRUE
-! Les 2 ldp sont <= 0.0
-!   On garde le plus petit pour le calcul de l'effort
-!   Pas de déplacement, ni d'effort dans le plan perpendiculaire
-                ldpglob = 0.0
+                ! Les 2 ldp sont <= 0.0
+                !   On garde le plus petit pour le calcul de l'effort
+                !   Pas de déplacement, ni d'effort dans le plan perpendiculaire
+                ldpglob = 0.d0
                 if (abs(ldp(axes(1))) <= abs(ldp(axes(2)))) then
                     ldpglob(axes(1)) = ldp(axes(1))
-                    ldpglob(axes(2)) = abs(ldpglob(axes(1)))*LeSigne(ldp(axes(2)))
+                    ldpglob(axes(2)) = abs(ldpglob(axes(1)))*r8sign(ldp(axes(2)))
                     forceglob(axes(1)) = rignor*ldpglob(axes(1))
                     raideglob(axes(1)) = rignor
                 else
-                    ldpglob(axes(1)) = abs(ldp(axes(2)))*LeSigne(ldp(axes(1)))
+                    ldpglob(axes(1)) = abs(ldp(axes(2)))*r8sign(ldp(axes(1)))
                     ldpglob(axes(2)) = ldp(axes(2))
                     forceglob(axes(2)) = rignor*ldpglob(axes(2))
                     raideglob(axes(2)) = rignor
@@ -240,8 +264,8 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 call utpvgl(1, 3, DD%pgl, ldpglob, depxyz)
                 if (ContactInGlobal == ReperGlobal) then
                     call diklvraid(DD%nomte, kgv, raideglob)
-! Matrice de raideur dans le repère local
-! Force dans le repère local
+                    ! Matrice de raideur dans le repère local
+                    ! Force dans le repère local
                     if (DD%ndim .eq. 3) then
                         call utpsgl(DD%nno, DD%nc, DD%pgl, kgv, klv)
                         call utpvgl(DD%nno, DD%nc, DD%pgl, forceglob, force)
@@ -252,24 +276,24 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 end if
             end if
         else
-            if (depxyz(1) <= 0.0) IsEnfonce = ASTER_TRUE
+            if (depxyz(1) <= 0.d0) IsEnfonce = ASTER_TRUE
         end if
         if (IsEnfonce) then
             if (ContactInGlobal == ReperGlobal) then
-! Plus de calcul à faire si fait dans le repère global
+                ! Plus de calcul à faire si fait dans le repère global
                 varpl(ifx) = force(1)
                 varpl(ify) = force(2)
                 varpl(ifz) = force(3)
                 varpl(iidic) = EtatAdher
             else
                 force(1) = rignor*depxyz(1)
-                if (force(1) .gt. 0.0) force(1) = 0.0
+                if (force(1) .gt. 0.d0) force(1) = 0.d0
                 psca = varmo(ify)*vitxyz(2)+varmo(ifz)*vitxyz(3)
-                if ((psca .ge. 0.0) .and. (nint(varmo(iidic)) .eq. EtatGliss)) then
+                if ((psca .ge. 0.d0) .and. (nint(varmo(iidic)) .eq. EtatGliss)) then
                     vitt = (vitxyz(2)**2+vitxyz(3)**2)**0.5d0
-                    force(2) = 0.0
-                    force(3) = 0.0
-                    if (vitt .gt. 0.00) then
+                    force(2) = 0.d0
+                    force(3) = 0.d0
+                    if (vitt .gt. 0.d0) then
                         force(2) = -coulom*force(1)*vitxyz(2)/vitt
                         force(3) = -coulom*force(1)*vitxyz(3)/vitt
                     end if
@@ -281,9 +305,9 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                     fort = (force(2)**2+force(3)**2)**0.5d0
                     if (fort .gt. abs(coulom*force(1))) then
                         vitt = (vitxyz(2)**2+vitxyz(3)**2)**0.5d0
-                        force(2) = 0.0
-                        force(3) = 0.0
-                        if (vitt .gt. 0.0) then
+                        force(2) = 0.d0
+                        force(3) = 0.d0
+                        if (vitt .gt. 0.d0) then
                             force(2) = -coulom*force(1)*vitxyz(2)/vitt
                             force(3) = -coulom*force(1)*vitxyz(3)/vitt
                             varpl(iidic) = EtatGliss
@@ -303,18 +327,18 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 if (DD%ndim .eq. 3) then
                     force(3) = force(3)+raide(3)*(ulp(3+DD%nc)-ulp(3))
                 end if
-! Actualisation de la matrice de raideur
+                ! Actualisation de la matrice de raideur
                 raide(1) = rignor
                 call diklvraid(DD%nomte, klv, raide)
             end if
         else
-            varpl(ifx) = 0.0
-            varpl(ify) = 0.0
-            varpl(ifz) = 0.0
+            varpl(ifx) = 0.d0
+            varpl(ify) = 0.d0
+            varpl(ifz) = 0.d0
             varpl(iidic) = EtatDecol
-            varpl(idepyp) = 0.0
-            varpl(idepzp) = 0.0
-            klv(1:78) = 0.0
+            varpl(idepyp) = 0.d0
+            varpl(idepzp) = 0.d0
+            klv(1:78) = 0.d0
         end if
 !
 !   Élément avec 1 noeud
@@ -326,34 +350,38 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             call utmess('F', 'DISCRETS_35', nk=3, valk=messak)
         end if
         dist12 = valre1(8)-valre1(6)
-! Vitesse tangente
-        vit123 = 0.0
+        ! Vitesse tangente
+        vit123 = 0.d0
         vit123(2) = dvl(2)
         if (DD%ndim .eq. 3) then
             vit123(3) = dvl(3)
         end if
-        depxyz = 0.0
-        depxyz(1) = ulp(1)+dist12+dpe(1)
-        depxyz(2) = ulp(2)+dpe(2)
+        depxyz = 0.d0
+        utotxyz = 0.d0
+        utotxyz(1) = ulp(1)+dpe(1)
+        utotxyz(2) = ulp(2)+dpe(2)
+        depxyz(1) = utotxyz(1)+dist12
+        depxyz(2) = utotxyz(2)
         if (DD%ndim .eq. 3) then
-            depxyz(3) = ulp(3)+dpe(3)
+            utotxyz(3) = ulp(3)+dpe(3)
+            depxyz(3) = utotxyz(3)
         end if
-! Vitesse tangente
-        vitxyz = 0.0
+        ! Vitesse tangente
+        vitxyz = 0.d0
         vitxyz(2) = vit123(2)+dve(2)
         if (DD%ndim .eq. 3) then
             vitxyz(3) = vit123(3)+dve(3)
         end if
-        force(1:3) = 0.0
-        if (depxyz(1) .le. 0.0d0) then
+        force(1:3) = 0.d0
+        if (depxyz(1) .le. 0.d0) then
             force(1) = rignor*depxyz(1)
-            if (force(1) .gt. 0.0) force(1) = 0.0
+            if (force(1) .gt. 0.d0) force(1) = 0.d0
             psca = varmo(ify)*vitxyz(2)+varmo(ifz)*vitxyz(3)
-            if ((psca .ge. 0.0) .and. (nint(varmo(iidic)) .eq. EtatGliss)) then
+            if ((psca .ge. 0.d0) .and. (nint(varmo(iidic)) .eq. EtatGliss)) then
                 vitt = (vitxyz(2)**2+vitxyz(3)**2)**0.5d0
-                force(2) = 0.0
-                force(3) = 0.0
-                if (vitt .gt. 0.0) then
+                force(2) = 0.d0
+                force(3) = 0.d0
+                if (vitt .gt. 0.d0) then
                     force(2) = -coulom*force(1)*vitxyz(2)/vitt
                     force(3) = -coulom*force(1)*vitxyz(3)/vitt
                 end if
@@ -365,9 +393,9 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 fort = (force(2)**2+force(3)**2)**0.5d0
                 if (fort .gt. abs(coulom*force(1))) then
                     vitt = (vitxyz(2)**2+vitxyz(3)**2)**0.5d0
-                    force(2) = 0.0
-                    force(3) = 0.0
-                    if (vitt .gt. 0.0) then
+                    force(2) = 0.d0
+                    force(3) = 0.d0
+                    if (vitt .gt. 0.d0) then
                         force(2) = -coulom*force(1)*vitxyz(2)/vitt
                         force(3) = -coulom*force(1)*vitxyz(3)/vitt
                         varpl(iidic) = EtatGliss
@@ -387,53 +415,47 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             if (DD%ndim .eq. 3) then
                 force(3) = force(3)+raide(3)*ulp(3)
             end if
-! Actualisation de la matrice de raideur
+            ! Actualisation de la matrice de raideur
             raide(1) = rignor
             call diklvraid(DD%nomte, klv, raide)
         else
-            varpl(ifx) = 0.0
-            varpl(ify) = 0.0
-            varpl(ifz) = 0.0
+            varpl(ifx) = 0.d0
+            varpl(ify) = 0.d0
+            varpl(ifz) = 0.d0
             varpl(iidic) = EtatDecol
-            varpl(idepyp) = 0.0
-            varpl(idepzp) = 0.0
-            klv(1:78) = 0.0
+            varpl(idepyp) = 0.d0
+            varpl(idepzp) = 0.d0
+            klv(1:78) = 0.d0
         end if
     end if
     varpl(idepx) = depxyz(1)
     varpl(idepy) = depxyz(2)
     varpl(idepz) = depxyz(3)
-!
-!   Prédiction en dynamique, on retourne les efforts précédents
-!       Si on passe d'une formulation 'plastique' à une en 'vitesse'
-!       On le fait à la fin, la raideur doit être mise comme il faut
+    !
+    ! Prédiction en dynamique, on retourne les efforts précédents
+    !   Si on passe d'une formulation 'plastique' à une en 'vitesse'
+    !   On le fait à la fin, la raideur doit être mise comme il faut
     if (Predic) then
         if (nint(varmo(icalc)) .eq. EnPlasticite) then
-! Les efforts précédents
+            ! Les efforts précédents
             force(1) = varmo(ifx)
             force(2) = varmo(ify)
             force(3) = varmo(ifz)
-! On remet les varpl comme il faut. Elles ont peut-être été modifiées
+            ! On remet les varpl comme il faut. Elles ont peut-être été modifiées
             varpl(ifx) = varmo(ifx)
             varpl(ify) = varmo(ify)
             varpl(ifz) = varmo(ifz)
         end if
     end if
+
+! Ajout d'une contribution élastique en //
+    force(1) = force(1)+kp*utotxyz(1)
+    force(2) = force(2)+kt*utotxyz(2)
+    force(3) = force(3)+kt*utotxyz(3)
+    raidep(1) = kp
+    raidep(2) = kt
+    raidep(3) = kt
+    call diklvraid(DD%nomte, klvp, raidep)
+    klv(1:78) = klv(1:78)+klvp(1:78)
 !
-contains
-!
-    function LeSigne(xx)
-        implicit none
-#include "asterc/r8prem.h"
-        real(kind=8) :: LeSigne
-        real(kind=8), intent(in) :: xx
-!
-        if (xx >= r8prem()) then
-            LeSigne = 1.0
-        else if (xx <= -r8prem()) then
-            LeSigne = -1.0
-        else
-            LeSigne = 0.0
-        end if
-    end function LeSigne
 end subroutine

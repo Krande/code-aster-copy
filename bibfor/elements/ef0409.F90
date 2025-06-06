@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ef0409(nomte)
-! aslint: disable=W0104
+subroutine ef0409()
 !     CALCUL DE EFGE_ELNO EN NON LINEAIRE
 !     ------------------------------------------------------------------
     implicit none
@@ -31,9 +30,7 @@ subroutine ef0409(nomte)
 #include "blas/dcopy.h"
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
-    character(len=16) :: nomte
-!
-    integer :: nnos, ipoids, ivf, idfdx, jgano, jtab(7), icompo, ipg, npg
+    integer :: nnos, ipoids, ivf, idfdx, jgano, jtab(7), ipg, npg
     integer :: ichn, icontm, nno, igeom, ndim, iret
 !
 !     ---> POUR DKT MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
@@ -52,7 +49,6 @@ subroutine ef0409(nomte)
     call jevech('PEFFORR', 'E', ichn)
 !
     call jevech('PGEOMER', 'L', igeom)
-    call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
     call tecach('OOO', 'PCONTRR', 'L', iret, nval=7, &
                 itab=jtab)
     call r8inir(32, 0.d0, effint, 1)

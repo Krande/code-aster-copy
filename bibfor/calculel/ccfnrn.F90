@@ -186,7 +186,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
     if (option .eq. 'REAC_NODA' .and. &
         (resultType .eq. 'EVOL_ELAS' .or. resultType .eq. 'EVOL_NOLI')) then
         call jeveuo(lisord, 'L', vi=v_list_store)
-        call medome_once(resuin, v_list_store, nbordr)
+        call medome_once(resuin, v_list_store, nbordr, list_load_=k19bid)
     end if
 !
 !
@@ -475,7 +475,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 !
 ! separation reel imag si dyna_harmo
             call vefnme_cplx(option, 'V', model, mateco, caraElem, &
-                             compor, nh, ligrel, chvarc, sigma, &
+                             compor, time, time, nh, ligrel, chvarc, sigma, sigma, &
                              strx, chdepl, vfono)
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -238,10 +238,16 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
         end do
     end if
 !
-    AS_ALLOCATE(vk8=cmpCataName, size=ncmprf)
-    do iCmp = 1, ncmprf
-        cmpCataName(iCmp) = zk8(adsc-1+iCmp)
-    end do
+    if (ncmprf > 0) then
+        AS_ALLOCATE(vk8=cmpCataName, size=ncmprf)
+        do iCmp = 1, ncmprf
+            cmpCataName(iCmp) = zk8(adsc-1+iCmp)
+        end do
+    else
+        ! avoid leaks
+        if (nbCmp > 0) AS_DEALLOCATE(vk8=cmpUserName)
+        goto 9999
+    end if
     call utlicm(zk8(adsk+1), &
                 nbcmp, cmpUserName, &
                 ncmprf, cmpCataName, &
@@ -450,6 +456,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
     call jedetr('&&'//nompro//'.CARAC_CHAINES__')
     call jedetr(indcmp)
 !
+9999 continue
     call jedema()
 !
 end subroutine

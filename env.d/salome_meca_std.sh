@@ -3,7 +3,7 @@
 
 if [ ! -z "${ROOT_SALOME_INSTALL}" ]; then
     export DEVTOOLS_COMPUTER_ID=salome_meca
-    export BUILD=std
+    export ASTER_BUILD=std
     export ENABLE_MPI=0
 
     libpaths=$( sed -e 's/:/ /g' <<< "${LD_LIBRARY_PATH}" )
@@ -32,7 +32,7 @@ if [ ! -z "${ROOT_SALOME_INSTALL}" ]; then
         fi
     done
     export TFELHOME="${MFRONT_TESTING_ROOT_DIR}"
-    export TFELVERS="4.2.0"
+    export TFELVERS="4.2.2"
 else
     echo "SALOME environment not found, please use 'salome shell' before starting configure."
 fi

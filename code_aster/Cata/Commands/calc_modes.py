@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ def calc_modes_prod(self, TYPE_RESU, **args):
     if (AsType(vale_rigi) in (matr_asse_depl_r, matr_asse_depl_c)) & (
         AsType(vale_mass) in (matr_asse_gene_r, matr_asse_gene_c)
     ):
-        raise AsException("Matrices d'entree de types differents : physique / generalisee.")
+        raise CataError("Matrices d'entree de types differents : physique / generalisee.")
     if AsType(vale_amor) == matr_asse_depl_r:
         return mode_meca_c
     if AsType(vale_rigi) == matr_asse_depl_r:
@@ -64,7 +64,7 @@ def calc_modes_prod(self, TYPE_RESU, **args):
     if AsType(vale_rigi) == matr_asse_gene_c:
         return mode_gene
 
-    raise AsException("type de concept resultat non prevu")
+    raise CataError("type de concept resultat non prevu")
 
 
 CALC_MODES = MACRO(

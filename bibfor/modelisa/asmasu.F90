@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,66 +94,6 @@ subroutine asmasu(ma1, ma2, mag)
     nbno = zi(iadime-1+1)
     nbn1 = dim1(1)
     nbn2 = dim2(1)
-!
-!     --OBJET .NOMMAI:
-!     ----------------
-    if (nbma .gt. 0) then
-        call jecreo(mag//'.NOMMAI', 'G N K8')
-        call jeecra(mag//'.NOMMAI', 'NOMMAX', nbma)
-        if (nbm1+nbm2 .ge. 10000000) then
-            do i = 1, nbm1
-                call codlet(i, 'G', kind)
-                noma = 'M'//kind
-                call jecroc(jexnom(mag//'.NOMMAI', noma))
-            end do
-            do i = 1, nbm2
-                call codlet(nbm1+i, 'G', kind)
-                noma = 'M'//kind
-                call jecroc(jexnom(mag//'.NOMMAI', noma))
-            end do
-        else
-            do i = 1, nbm1
-                call codent(i, 'G', kind)
-                noma = 'M'//kind
-                call jecroc(jexnom(mag//'.NOMMAI', noma))
-            end do
-            do i = 1, nbm2
-                call codent(nbm1+i, 'G', kind)
-                noma = 'M'//kind
-                call jecroc(jexnom(mag//'.NOMMAI', noma))
-            end do
-        end if
-    end if
-!
-!     --OBJET .NOMNOE:
-!     ----------------
-    if (nbno .gt. 0) then
-        call jecreo(mag//'.NOMNOE', 'G N K8')
-        call jeecra(mag//'.NOMNOE', 'NOMMAX', nbno)
-        if (nbn1+nbn2 .ge. 10000000) then
-            do i = 1, nbn1
-                call codlet(i, 'G', kind)
-                nono = 'N'//kind
-                call jecroc(jexnom(mag//'.NOMNOE', nono))
-            end do
-            do i = 1, nbn2
-                call codlet(nbn1+i, 'G', kind)
-                nono = 'N'//kind
-                call jecroc(jexnom(mag//'.NOMNOE', nono))
-            end do
-        else
-            do i = 1, nbn1
-                call codent(i, 'G', kind)
-                nono = 'N'//kind
-                call jecroc(jexnom(mag//'.NOMNOE', nono))
-            end do
-            do i = 1, nbn2
-                call codent(nbn1+i, 'G', kind)
-                nono = 'N'//kind
-                call jecroc(jexnom(mag//'.NOMNOE', nono))
-            end do
-        end if
-    end if
 !
 !
 !     --OBJET .CONNEX:

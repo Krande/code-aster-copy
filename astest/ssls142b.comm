@@ -1,0 +1,384 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Objectif: on teste le diagramme ELS calculé par POST_VERI_FERRAILLAGE dans
+# trois configurations differentes
+# Les points testés sont Nmax, Nmin, Mmax et Mmin
+
+DEBUT(CODE="OUI")
+
+MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+MODEL = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(GROUP_MA="PLAQUE", PHENOMENE="MECANIQUE", MODELISATION="DKT")
+)
+
+CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=0.50))
+
+# on cree une sd evol_elas avec des champs d'efforts imposes :
+# -------------------------------------------------------------
+
+
+# Efforts de calcul nul
+CHEFF = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0),
+    ),
+)
+
+RESUELS = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA),),
+)
+
+# cas_diag_1: armature symmetrique
+# Asinf=Asup=5phi20
+# fck = 30 MPa
+# sigmabetoninf = sigmabetonsup
+# Csup=cinf
+
+# Resultats analytiques: Nmax et Mmin
+
+# PIVOT A: traction uniforme
+Nmin = -1.256e6
+
+# PIVOT C: compression uniforme
+
+Nmax = 9.79128e6
+
+
+FERRAILLAGE_REF1 = CREA_CHAMP(
+    AFFE=(
+        _F(
+            GROUP_MA=("PLAQUE",),
+            NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
+            VALE=(0.00157, 0.00157, 0.00157, 0.00157),
+        ),
+    ),
+    MODELE=MODEL,
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    OPTION="FERR_ELEM",
+    TYPE_CHAM="ELEM_FER2_R",
+)
+
+
+# # Appel a la commande VERI_FERRAILLAGE : Sans chref
+MARGE1 = VERI_FERRAILLAGE(
+    RESULTAT=RESUELS,
+    reuse=RESUELS,
+    CARA_ELEM=CARA,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    INST=(1.0),
+    CHAM_FERR=FERRAILLAGE_REF1,
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            SIGS_ELS=400000000,
+            SIGC_INF_ELS=18000000,
+            SIGC_SUP_ELS=18000000,
+            FYK=500000000,
+            FCK=30000000,
+            # Steel/concrete modulus ratio
+            ALPHA_E=14,
+            EYS=200.0e9,
+        ),
+    ),
+)
+
+
+# Extraction du champ de veri_ferraillage
+resu_verif1 = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=1.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
+)
+
+# Creation du diagramme d interaction avec option 1
+# option 1 : sur le group M1
+tab1_ELS = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif1, GROUP_MA="M1")
+
+
+# On teste les valeurs de Nmax et Nmin en analytique et non-regression
+
+TEST_TABLE(
+    TABLE=tab1_ELS,
+    NOM_PARA="N",
+    TYPE_TEST="MAX",
+    VALE_CALC=9791280.0,
+    VALE_REFE=Nmax,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-6,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmax",
+)
+
+TEST_TABLE(
+    TABLE=tab1_ELS,
+    NOM_PARA="N",
+    TYPE_TEST="MIN",
+    VALE_CALC=-1256000.0,
+    VALE_REFE=Nmin,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-6,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmin",
+)
+
+# On teste les valeurs de Mmax et Mmin en non-regression
+TEST_TABLE(
+    TABLE=tab1_ELS, NOM_PARA="M", TYPE_TEST="MAX", VALE_CALC=485465.43219512195, LEGENDE="Mmax"
+)
+
+TEST_TABLE(
+    TABLE=tab1_ELS, NOM_PARA="M", TYPE_TEST="MIN", VALE_CALC=-485463.49504352873, LEGENDE="Mmin"
+)
+
+
+# cas_diag_2: armature asymmetrique
+# Asup=5phi20
+# Asinf=5phi32
+# fck = 30 MPa
+# sigmabetoninf = sigmabetonsup
+# Csup#cinf
+
+
+# Resultats analytiques: Nmax et Mmin
+
+# PIVOT A: traction uniforme
+Nmin = -2.2364e6
+
+# PIVOT C: compression uniforme
+
+Nmax = 10.408932e6
+
+
+FERRAILLAGE_REF2 = CREA_CHAMP(
+    AFFE=(
+        _F(
+            GROUP_MA=("PLAQUE",),
+            NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
+            VALE=(0.004021, 0.00157, 0.004021, 0.00157),
+        ),
+    ),
+    MODELE=MODEL,
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    OPTION="FERR_ELEM",
+    TYPE_CHAM="ELEM_FER2_R",
+)
+
+
+# # Appel a la commande VERI_FERRAILLAGE : Sans chref
+MARGE2 = VERI_FERRAILLAGE(
+    RESULTAT=RESUELS,
+    reuse=RESUELS,
+    CARA_ELEM=CARA,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    INST=(1.0),
+    CHAM_FERR=FERRAILLAGE_REF2,
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.089,
+            #
+            SIGS_ELS=400000000,
+            SIGC_INF_ELS=18000000,
+            SIGC_SUP_ELS=18000000,
+            FYK=500000000,
+            FCK=30000000,
+            # Steel/concrete modulus ratio
+            ALPHA_E=14,
+            EYS=200.0e9,
+        ),
+    ),
+)
+
+
+# Extraction du champ de veri_ferraillage
+resu_verif2 = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=1.0, OPERATION="EXTR", RESULTAT=MARGE2, TYPE_CHAM="ELEM_VFER2_R"
+)
+
+# Creation du diagramme d interaction avec option 1
+# option 1 : sur le group M1
+tab2_ELS = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif2, GROUP_MA="M1")
+
+# On teste les valeurs de Nmax et Nmin en analytique et non-regression
+
+TEST_TABLE(
+    TABLE=tab2_ELS,
+    NOM_PARA="N",
+    TYPE_TEST="MAX",
+    VALE_CALC=10408932.0,
+    VALE_REFE=Nmax,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-6,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmax",
+)
+
+TEST_TABLE(
+    TABLE=tab2_ELS,
+    NOM_PARA="N",
+    TYPE_TEST="MIN",
+    VALE_CALC=-2236400.0,
+    VALE_REFE=Nmin,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-6,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmin",
+)
+
+# On teste les valeurs de Mmax et Mmin en non-regression
+TEST_TABLE(
+    TABLE=tab2_ELS, NOM_PARA="M", TYPE_TEST="MAX", VALE_CALC=572431.8017864684, LEGENDE="Mmax"
+)
+
+TEST_TABLE(
+    TABLE=tab2_ELS, NOM_PARA="M", TYPE_TEST="MIN", VALE_CALC=-555241.4000963047, LEGENDE="Mmin"
+)
+
+
+# cas_diag_3: SIGC_INF_ELS # SIGC_SUP_ELS
+# Asinf=Asup=5phi20
+# fckinf = 30 MPa
+# fcksup = 40 MPa
+# sigmabetoninf # sigmabetonsup
+# Csup=cinf
+
+
+# Resultats analytiques: Nmax et Mmin
+
+# PIVOT A: traction uniforme
+Nmin = -1.256e6
+
+# PIVOT C: compression uniforme
+
+Nmax = 11.42316e6
+
+FERRAILLAGE_REF3 = CREA_CHAMP(
+    AFFE=(
+        _F(
+            GROUP_MA=("PLAQUE",),
+            NOM_CMP=("DNSXI", "DNSXS", "DNSYI", "DNSYS"),
+            VALE=(0.00157, 0.00157, 0.00157, 0.00157),
+        ),
+    ),
+    MODELE=MODEL,
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    OPTION="FERR_ELEM",
+    TYPE_CHAM="ELEM_FER2_R",
+)
+
+
+# # Appel a la commande VERI_FERRAILLAGE : Sans chref
+MARGE3 = VERI_FERRAILLAGE(
+    RESULTAT=RESUELS,
+    reuse=RESUELS,
+    CARA_ELEM=CARA,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
+    INST=(1.0),
+    CHAM_FERR=FERRAILLAGE_REF3,
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            # Enrobage (2D)
+            C_SUP=0.08,
+            C_INF=0.08,
+            #
+            SIGS_ELS=400000000,
+            SIGC_INF_ELS=18000000,
+            SIGC_SUP_ELS=24000000,
+            FYK=500000000,
+            FCK=30000000,
+            # Steel/concrete modulus ratio
+            ALPHA_E=14,
+            EYS=200.0e9,
+        ),
+    ),
+)
+
+
+# Extraction du champ de veri_ferraillage
+resu_verif3 = CREA_CHAMP(
+    NOM_CHAM="MARG_ELEM", INST=1.0, OPERATION="EXTR", RESULTAT=MARGE3, TYPE_CHAM="ELEM_VFER2_R"
+)
+
+# Creation du diagramme d interaction avec option 1
+# option 1 : sur le group M1
+tab3_ELS = POST_VERI_FERRAILLAGE(CHAM_VFER=resu_verif3, GROUP_MA="M1")
+
+# On teste les valeurs de Nmax et Nmin en analytique et non-regression
+
+TEST_TABLE(
+    TABLE=tab3_ELS,
+    NOM_PARA="N",
+    TYPE_TEST="MAX",
+    VALE_CALC=11423160.0,
+    VALE_REFE=Nmax,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-6,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmax",
+)
+
+TEST_TABLE(
+    TABLE=tab3_ELS,
+    NOM_PARA="N",
+    TYPE_TEST="MIN",
+    VALE_CALC=-1256000.0,
+    VALE_REFE=Nmin,
+    CRITERE="RELATIF",
+    PRECISION=1.0e-6,
+    REFERENCE="ANALYTIQUE",
+    LEGENDE="Nmin",
+)
+
+# On teste les valeurs de Mmax et Mmin en non-regression
+TEST_TABLE(
+    TABLE=tab3_ELS, NOM_PARA="M", TYPE_TEST="MAX", VALE_CALC=647287.2429268293, LEGENDE="Mmax"
+)
+
+TEST_TABLE(
+    TABLE=tab3_ELS, NOM_PARA="M", TYPE_TEST="MIN", VALE_CALC=-485463.49504352873, LEGENDE="Mmin"
+)
+
+
+FIN()

@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -100,7 +100,7 @@ const JeveuxVectorLong ParallelDOFNumbering::getLocalToGlobalMapping() const {
     return _globalNumbering->getLocalToGlobal();
 };
 
-const ASTERINTEGER ParallelDOFNumbering::localToGlobalDOF( const ASTERINTEGER loc ) {
+ASTERINTEGER ParallelDOFNumbering::localToGlobalDOF( const ASTERINTEGER loc ) const {
     return _globalNumbering->localToGlobalDOF( loc );
 }
 
@@ -114,7 +114,7 @@ ParallelDOFNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof, const 
     return _globalNumbering->getNodeAndComponentFromDOF( dof, local );
 };
 
-const ASTERINTEGER ParallelDOFNumbering::globalToLocalDOF( const ASTERINTEGER glob ) const {
+ASTERINTEGER ParallelDOFNumbering::globalToLocalDOF( const ASTERINTEGER glob ) const {
     return _globalNumbering->globalToLocalDOF( glob );
 };
 

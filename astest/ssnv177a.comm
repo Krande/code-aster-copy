@@ -43,7 +43,7 @@ from math import pi, atan2
 from code_aster.Commands import *
 from code_aster import CA
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 

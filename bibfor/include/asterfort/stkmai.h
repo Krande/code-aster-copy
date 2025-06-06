@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine stkmai(ifl, icl, iv, rv, cv,&
                       cnl, mcl, nbm, nume, numn,&
-                      cnx, typ, fmt, irteti)
+                      cnx, typ, fmt, irteti, nommai)
         integer :: nbm
         integer :: ifl
         integer :: icl
@@ -36,5 +36,6 @@ interface
         character(len=24) :: typ
         integer :: fmt(nbm)
         integer :: irteti
+        character(len=24) :: nommai
     end subroutine stkmai
 end interface

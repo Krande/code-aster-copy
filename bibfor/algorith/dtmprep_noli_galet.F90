@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ subroutine dtmprep_noli_galet(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/char8_to_int.h"
 ! --------------------------------------------------------------------------------------------------
 !   Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
@@ -190,7 +191,7 @@ subroutine dtmprep_noli_galet(sd_dtm_, sd_nl_, icomp)
     call mdchdl(lnoeu2, i, ddlcho, ier)
 !   Coordinates of the nodes
     call jeveuo(mesh1//'.COORDO    .VALE', 'L', vr=vale)
-    call jenonu(jexnom(mesh1//'.NOMNOE', no1_name), ino1)
+    ino1 = char8_to_int(no1_name)
     ind1 = 1+3*(ino1-1)
     ind2 = ind1+3
     call nlsav(sd_nl, _COOR_NO1, 3, iocc=i, rvect=vale(ind1:ind2))
@@ -198,7 +199,7 @@ subroutine dtmprep_noli_galet(sd_dtm_, sd_nl_, icomp)
         if (mesh2 .ne. mesh1) then
             call jeveuo(mesh2//'.COORDO    .VALE', 'L', vr=vale)
         end if
-        call jenonu(jexnom(mesh2//'.NOMNOE', no2_name), ino2)
+        ino2 = char8_to_int(no2_name)
         ind1 = 1+3*(ino2-1)
         ind2 = ind1+3
         call nlsav(sd_nl, _COOR_NO2, 3, iocc=i, rvect=vale(ind1:ind2))

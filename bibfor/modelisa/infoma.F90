@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine infoma(nomu, niv_)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: nomu
     integer, optional :: niv_
@@ -38,8 +39,8 @@ subroutine infoma(nomu, niv_)
 !
     character(len=32) :: lisnoe, lismai, lisgrn, lisgrm
     character(len=32) :: comnoe, commai, comgrn, comgrm
-    character(len=24) :: conxv, grpnov, grpmav, nomnoe, titre, cooval
-    character(len=24) :: nom, nommai
+    character(len=24) :: conxv, grpnov, grpmav, titre, cooval
+    character(len=24) :: nom
     character(len=8) :: type
     integer :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor, nbma
     integer :: nbltit, iad, i, nbnoeu, nbmail, nbgrno, nbgrma
@@ -67,8 +68,6 @@ subroutine infoma(nomu, niv_)
     conxv = nomu//'.CONNEX'
     grpnov = nomu//'.GROUPENO'
     grpmav = nomu//'.GROUPEMA'
-    nomnoe = nomu//'.NOMNOE'
-    nommai = nomu//'.NOMMAI'
     titre = nomu//'           .TITR'
     cooval = nomu//'.COORDO    .VALE'
 !
@@ -180,14 +179,14 @@ subroutine infoma(nomu, niv_)
         write (ifm, 803) lisnoe
         call jeveuo(cooval, 'L', iad)
         do i = 1, nbnoeu
-            call jenuno(jexnum(nomnoe, i), nom)
+            nom = int_to_char8(i)
             idec = iad+(i-1)*3
             write (ifm, 701) i, nom, (zr(idec+j-1), j=1, nbcoor)
         end do
 !
         write (ifm, 803) lismai
         do i = 1, nbmail
-            call jenuno(jexnum(nommai, i), nom)
+            nom = int_to_char8(i)
             call jeveuo(jexnum(conxv, i), 'L', iad1)
             call jelira(jexnum(conxv, i), 'LONMAX', nbno)
             ityp = typmail(i)

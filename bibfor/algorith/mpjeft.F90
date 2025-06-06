@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ subroutine mpjeft(corres)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=16) :: corres
 !
@@ -210,7 +212,7 @@ subroutine mpjeft(corres)
         call wkvect(lisin1, 'V V K8', nbnmes, llin1)
 !
         do ino = 1, nbnmes
-            call jenuno(jexnum(noma2//'.NOMNOE', ino), zk8(llin1-1+ino))
+            zk8(llin1-1+ino) = int_to_char8(ino)
         end do
 !
 ! ALLOCATION ET REMPLISSAGE DE LA LISTE DES NOEUDS NUMERIQUES
@@ -218,7 +220,7 @@ subroutine mpjeft(corres)
         call wkvect(lisin2, 'V V K8', nbncal, llin2)
 !
         do ino = 1, nbncal
-            call jenuno(jexnum(noma1//'.NOMNOE', ino), zk8(llin2-1+ino))
+            zk8(llin2-1+ino) = int_to_char8(ino)
         end do
 !
 ! RECHERCHE DES NOEUDS EN VIS-A-VIS
@@ -233,7 +235,7 @@ subroutine mpjeft(corres)
         end if
 !
         do ino = 1, nbnmes
-            call jenonu(jexnom(noma1//'.NOMNOE', zk8(llou2-1+ino)), zi(iaconu-1+ino))
+            zi(iaconu-1+ino) = char8_to_int(zk8(llou2-1+ino))
         end do
 !
         call jedetr(lisin1)
@@ -374,12 +376,12 @@ subroutine mpjeft(corres)
 !
     kk = 0
     do i = 1, nbnmes
-        call jenuno(jexnum(noma2//'.NOMNOE', i), labk8)
+        labk8 = int_to_char8(i)
         write (ifres, 100) labk8
         nbno1 = zi(iaconb-1+i)
         do iocc = 1, nbno1
             kk = kk+1
-            call jenuno(jexnum(noma1//'.NOMNOE', zi(iaconu-1+kk)), labk8)
+            labk8 = int_to_char8(zi(iaconu-1+kk))
             coef = zr(iacocf-1+kk)
             write (ifres, 101) labk8, coef
         end do

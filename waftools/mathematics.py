@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ def options(self):
     group = self.add_option_group("Mathematics  libraries options")
     group.add_option(
         "--maths-libs",
-        type="string",
+        type=str,
         dest="maths_libs",
         default=None,
         help="Math librairies to link with like blas and lapack. "
@@ -137,20 +137,18 @@ def detect_mkl(self):
             thread = "mkl_intel_thread"
         interf = "mkl_intel" + suffix
         if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
-            scalapack = "mkl_scalapack" + suffix
-            blacs = "mkl_blacs_intelmpi" + suffix
+            # scalapack = "mkl_scalapack" + suffix
+            # blacs = "mkl_blacs_intelmpi" + suffix
+            scalapack = "scalapack"
     else:
+        if self.get_define("ASTER_HAVE_OPENMP"):
+            thread = "mkl_gnu_thread"
+        interf = "mkl_gf" + suffix
         if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
             # This needs to add all libs into LD_PRELOAD (libmpi.so + all mkl libs...)
             # scalapack = "mkl_scalapack" + suffix
             # blacs = "mkl_blacs_openmpi" + suffix
             scalapack = "scalapack"
-        if self.get_define("ASTER_HAVE_OPENMP"):
-            thread = "mkl_gnu_thread"
-        interf = "mkl_gf" + suffix
-
-    if scalapack:
-        libs.append(scalapack)
 
     if self.env.CXX_NAME == 'msvc':
         interf += "_dll"
@@ -160,6 +158,8 @@ def detect_mkl(self):
     libs.append(interf)
     libs.append(thread)
     libs.append(core)
+    if scalapack:
+        libs.append(scalapack)
     if blacs:
         libs.append(blacs)
     try:
@@ -326,14 +326,17 @@ def get_mathlib_from_numpy(self):
     """The idea is that numpy shall be linked to blas and lapack.
     So we will try to get then using ldd if available"""
     libblas = []
-    pathblas = []
     liblapack = []
-    pathlapack = []
+    if self.env.ASTER_PLATFORM_MINGW:
+        # to be rewrite for windows if needed
+        return libblas, liblapack
 
     # numpy already checked
-    pymodule_path = self.get_python_variables(
-        ["lapack_lite.__file__"], ["from numpy.linalg import lapack_lite"]
-    )[0]
+    cmd = self.env.PYTHON + [
+        "-c",
+        "\nfrom numpy.linalg import lapack_lite\nprint(lapack_lite.__file__)",
+    ]
+    pymodule_path = self.cmd_and_log(cmd).strip()
 
     self.find_program("ldd")
     ldd_env = {"LD_LIBRARY_PATH": ":".join(self.env.LIBPATH)}

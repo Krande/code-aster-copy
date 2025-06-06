@@ -37,7 +37,7 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
       _localNumbering( std::make_shared< LocalEquationNumbering >( getName() ) ) {};
 
-bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) {
+bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix, bool verbose ) {
     ASTERINTEGER nb_matr = matrix.size();
     JeveuxVectorChar24 jvListOfMatr( ResultNaming::getNewResultName() );
     jvListOfMatr->allocate( nb_matr );
@@ -61,7 +61,7 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
         }
     }
 
-    CALLO_NUME_DDL_MATR( getName(), jvListOfMatr->getName(), &nb_matr );
+    CALLO_NUME_DDL_MATR( getName(), jvListOfMatr->getName(), &nb_matr, (ASTERLOGICAL *)&verbose );
 
     for ( const auto &mat : matrix ) {
         const auto model = std::visit( ElementaryMatrixGetModel(), mat );
@@ -77,13 +77,15 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
     return true;
 };
 
-bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads ) {
+bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
+                                         bool verbose ) {
     listOfLoads->build( model );
 
     const std::string base( "GG" );
     const std::string contactDs( " " );
 
-    CALLO_NUMERO_WRAP( getName(), base, model->getName(), listOfLoads->getName(), contactDs );
+    CALLO_NUMERO_WRAP( getName(), base, model->getName(), listOfLoads->getName(), contactDs,
+                       (ASTERLOGICAL *)&verbose );
 
     const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
     this->addFiniteElementDescriptor( FEDescs );
@@ -95,13 +97,13 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
 };
 
 bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
-                                         const FiniteElementDescriptorPtr defiCont ) {
+                                         const FiniteElementDescriptorPtr defiCont, bool verbose ) {
     listOfLoads->build( model );
 
     const std::string base( "GG" );
 
     CALLO_NUMERO_WRAP( getName(), base, model->getName(), listOfLoads->getName(),
-                       defiCont->getName() );
+                       defiCont->getName(), (ASTERLOGICAL *)&verbose );
 
     const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
     this->addFiniteElementDescriptor( FEDescs );
@@ -114,13 +116,14 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
 
 bool BaseDOFNumbering::computeRenumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads,
                                            const FiniteElementDescriptorPtr defiCont,
-                                           const FiniteElementDescriptorPtr virtContElem ) {
+                                           const FiniteElementDescriptorPtr virtContElem,
+                                           bool verbose ) {
     listOfLoads->build( model );
 
     const std::string base( "GG" );
 
     CALLO_NUMER3_WRAP( this->getName(), base, model->getName(), listOfLoads->getName(),
-                       defiCont->getName(), virtContElem->getName() );
+                       defiCont->getName(), virtContElem->getName(), (ASTERLOGICAL *)&verbose );
     this->setModel( model );
 
     this->build();
@@ -129,7 +132,7 @@ bool BaseDOFNumbering::computeRenumbering( const ModelPtr model, const ListOfLoa
 };
 
 bool BaseDOFNumbering::computeNumbering( const std::vector< FiniteElementDescriptorPtr > &Feds,
-                                         const std::string &localMode ) {
+                                         const std::string &localMode, bool verbose ) {
 
     JeveuxVectorChar24 list_ligrel( "&&LIST_LIGREL" );
     list_ligrel->reserve( Feds.size() );
@@ -150,7 +153,9 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< FiniteElementDescrip
     std::string model_name = "";
     if ( model )
         model_name = model->getName();
-    CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode, model_name );
+
+    CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode, model_name,
+                             (ASTERLOGICAL *)&verbose );
     if ( model )
         setModel( model );
 

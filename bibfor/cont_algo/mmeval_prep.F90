@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ subroutine mmeval_prep(mesh, time_curr, model_ndim, ds_contact, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmnewj.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 ! aslint: disable=W1504
@@ -127,7 +128,7 @@ subroutine mmeval_prep(mesh, time_curr, model_ndim, ds_contact, &
 !
     call mmnorm(model_ndim, tau1, tau2, norm, noor)
     if (noor .le. r8prem()) then
-        call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+        elem_mast_name = int_to_char8(elem_mast_nume)
         call utmess('F', 'CONTACT3_23', sk=elem_mast_name, nr=3, valr=poin_proj_coor)
     end if
 !

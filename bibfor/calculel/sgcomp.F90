@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
 #include "asterfort/cesexi.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/int_to_char8.h"
 !
     character(len=*), intent(in) :: compor_curr
     character(len=*), intent(in) :: sigm
@@ -163,7 +164,7 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
 !
         if (nb_spg_curr .ne. 0 .and. nb_spg_prev .ne. 0) then
             if (nb_spg_curr .ne. nb_spg_prev) then
-                call jenuno(jexnum(mesh//'.NOMMAI', i_elem), name_elem)
+                name_elem = int_to_char8(i_elem)
                 vali(1) = nb_spg_prev
                 vali(2) = nb_spg_curr
                 call utmess('I', 'COMPOR2_52', sk=name_elem, ni=2, vali=vali)

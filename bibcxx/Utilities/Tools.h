@@ -6,7 +6,7 @@
  * @brief Fichier entete des outils
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -39,6 +39,10 @@ std::string toUpper( const std::string &in_str );
 std::string toLower( const std::string &in_str );
 
 std::string remove_brackets( const std::string &in_str );
+
+VectorString split( const std::string &toSplit );
+
+std::string strToupper( std::string s );
 
 // Convert integer in string for name of object
 std::string to_string( const int varInt, const int stringSize );

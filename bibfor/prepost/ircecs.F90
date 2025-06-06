@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -431,12 +431,12 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx, &
                                             do ipg = 1, nbpg
                                                 j = iachml-1+ncmpp*icoef*(ipg-1) &
                                                     +ncmpp*(ico-1)
-                                                zr(irvg-1+icms-1+isp) = zr( &
-                                                                     irvg-1+icms-1+isp)+dble(vale( &
-                                                                                j+ic+ncmpp*(is0-1)))
-                                                zr(icvg-1+icms-1+isp) = zr( &
-                                                                        icvg-1+icms-1+isp)+dimag( &
-                                                                        vale(j+ic+ncmpp*(is0-1)))
+                                                zr(irvg-1+icms-1+isp) = zr(irvg-1+icms-1+isp)+ &
+                                                                        dble(vale(j+ic+ &
+                                                                                  ncmpp*(is0-1)))
+                                                zr(icvg-1+icms-1+isp) = zr(icvg-1+icms-1+isp)+ &
+                                                                        dimag(vale(j+ic+ &
+                                                                                   ncmpp*(is0-1)))
                                             end do
                                             zr(irvg-1+icms-1+isp) = zr(irvg- &
                                                                        1+icms-1+isp)/nbpg
@@ -456,7 +456,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx, &
                             end if
                             if (impel .eq. 1) then
                                 if (lmasu) then
-                                    call lxliis(nomel(iel) (2:8), ies, ier)
+                                    call lxliis(nomel(iel) (1:8), ies, ier)
                                 else
                                     ies = iel
                                 end if

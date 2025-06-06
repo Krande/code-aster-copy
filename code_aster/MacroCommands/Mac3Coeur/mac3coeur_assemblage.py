@@ -34,7 +34,7 @@ certains types d'assemblages.
 from math import pi
 from ...Utilities import logger
 from ...Cata.Syntax import _F
-from ...CodeCommands import DEFI_FONCTION
+from ...CodeCommands import DEFI_FONCTION, DEFI_MATERIAU, DEFI_COMPOR
 from .mac3coeur_factory import Mac3Factory
 
 
@@ -386,6 +386,39 @@ class Assemblage:
         )
         return mcf
 
+    def mcf_compor_fibre(self, GFF):
+        """Retourne les mots-clés facteurs pour DEFI_COMPOR."""
+
+        _CMPC = DEFI_COMPOR(
+            GEOM_FIBRE=GFF,
+            MATER_SECT=self.materiau["CR"],
+            MULTIFIBRE=_F(
+                GROUP_FIBRE="CR_%s" % self.pos_aster,
+                MATER=self.materiau["CR"],
+                RELATION="GRAN_IRRA_LOG",
+            ),
+        )
+        _CMPT = DEFI_COMPOR(
+            GEOM_FIBRE=GFF,
+            MATER_SECT=self.materiau["TG"],
+            MULTIFIBRE=_F(
+                GROUP_FIBRE=(
+                    "LG_%s" % self.pos_aster,
+                    "BI_%s" % self.pos_aster,
+                    "RE_%s" % self.pos_aster,
+                ),
+                MATER=self.materiau["TG"],
+                RELATION="GRAN_IRRA_LOG",
+            ),
+        )
+
+        mtmp = (
+            _F(GROUP_MA="CR_%s" % self.pos_aster, COMPOR=_CMPC),
+            _F(GROUP_MA="TG_%s" % self.pos_aster, COMPOR=_CMPT),
+        )
+
+        return mtmp
+
     def liste_gma_fluence(self):
         """Retourne la liste des groupes de mailles impactees par la fluence"""
         l_gma = (
@@ -418,6 +451,11 @@ class Assemblage:
 
     def mcf_AC_mater(self):
         """Retourne les mots-clés facteurs pour AFFE_MATERIAU/AFFE."""
+
+        # Avec raideur en parallele KP et KT
+        kp = kt = 1.0e4 / self.nb_cr_mesh
+        _MAT_BCR = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9, JEU=0.0, KP=kp, KT=kt))
+
         mcf = (
             _F(GROUP_MA="CR_%s" % self.pos_aster, MATER=self.materiau["CR"]),
             _F(GROUP_MA="TG_%s" % self.pos_aster, MATER=self.materiau["TG"]),
@@ -427,6 +465,8 @@ class Assemblage:
             _F(GROUP_MA="GC_%s_B" % self.pos_aster, MATER=self.materiau["GC_EB"]),
             _F(GROUP_MA="GC_%s_T" % self.pos_aster, MATER=self.materiau["GC_EH"]),
             _F(GROUP_MA="GC_%s_M" % self.pos_aster, MATER=self.materiau["GC_ME"]),
+            _F(GROUP_MA="DI_%s" % self.pos_aster, MATER=self.materiau["DIL"]),
+            _F(GROUP_MA="CREI_%s" % self.pos_aster, MATER=_MAT_BCR),
         )
 
         return mcf
@@ -475,6 +515,13 @@ class Assemblage:
                 SECTION="RECTANGLE",
                 CARA=("H",),
                 VALE=(self.Hesup,),
+            ),
+            # dilatation
+            _F(
+                GROUP_MA="DI_%s" % self.pos_aster,
+                SECTION="RECTANGLE",
+                CARA=("HY", "HZ"),
+                VALE=(0.03, 0.2138),
             ),
         )
         return mcf
@@ -581,14 +628,8 @@ class Assemblage:
             ),
             # ressort pour blocage bas crayons
             _F(
-                GROUP_MA="CREI",
-                REPERE="GLOBAL",
-                CARA="K_T_D_L",
-                VALE=vale_K_T_D_L(1.0e4, self.nb_cr_mesh),
-            ),
-            _F(
-                GROUP_MA="CREIC",
-                REPERE="GLOBAL",
+                GROUP_MA="CREI_%s" % self.pos_aster,
+                REPERE="LOCAL",
                 CARA="K_T_D_L",
                 VALE=vale_K_T_D_L(1.0e9, self.nb_cr_mesh),
             ),

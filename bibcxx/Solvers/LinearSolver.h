@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe LinearSolver
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -82,13 +82,13 @@ class LinearSolver : public DataStructure {
      * @return string
      */
     // can not be pure virtual because of Python wrapping
-    virtual const std::string getSolverName() const { return ""; };
+    virtual std::string getSolverName() const { return ""; };
 
     /**
      * @brief Tell if the solver support HPC distributed parallelism.
      * @return bool
      */
-    virtual const bool supportParallelMesh() const { return false; };
+    virtual bool supportParallelMesh() const { return false; };
 
     /**
      * @brief Construction de la sd_solveur
@@ -168,7 +168,7 @@ class LdltSolver : public LinearSolver {
   public:
     LdltSolver( const std::string name ) : LinearSolver( name ) {};
     LdltSolver() : LinearSolver() {};
-    const std::string getSolverName() const { return "LDLT"; };
+    std::string getSolverName() const { return "LDLT"; };
 };
 
 class MultFrontSolver : public LinearSolver {
@@ -176,28 +176,28 @@ class MultFrontSolver : public LinearSolver {
     MultFrontSolver( const std::string name ) : LinearSolver( name ) {};
     MultFrontSolver() : LinearSolver() {};
 
-    const std::string getSolverName() const { return "MULT_FRONT"; };
+    std::string getSolverName() const { return "MULT_FRONT"; };
 };
 
 class MumpsSolver : public LinearSolver {
   public:
     MumpsSolver( const std::string name ) : LinearSolver( name ) {};
     MumpsSolver() : LinearSolver() {};
-    const std::string getSolverName() const { return "MUMPS"; };
-    const bool supportParallelMesh() const { return true; };
+    std::string getSolverName() const { return "MUMPS"; };
+    bool supportParallelMesh() const { return true; };
 };
 
 class PetscSolver : public LinearSolver {
   public:
     PetscSolver( const std::string name ) : LinearSolver( name ) {};
     PetscSolver() : LinearSolver() {};
-    const std::string getSolverName() const { return "PETSC"; };
-    const bool supportParallelMesh() const { return true; };
+    std::string getSolverName() const { return "PETSC"; };
+    bool supportParallelMesh() const { return true; };
     /**
      * @brief Return the PETSc options set by the user
      * @return string
      */
-    const std::string getPetscOptions() const {
+    std::string getPetscOptions() const {
         std::string opt;
         _petscOptions->updateValuePointer();
         for ( auto i = 0; i < _petscOptions->size(); i++ ) {
@@ -211,7 +211,7 @@ class GcpcSolver : public LinearSolver {
   public:
     GcpcSolver( const std::string name ) : LinearSolver( name ) {};
     GcpcSolver() : LinearSolver() {};
-    const std::string getSolverName() const { return "GCPC"; };
+    std::string getSolverName() const { return "GCPC"; };
 };
 
 /** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< MultFront > */

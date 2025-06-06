@@ -52,9 +52,8 @@ def options(self):
 
 def configure(self):
     self.load("compiler_c")
-    opts = self.options
     # preserve symbols in the dyn table for stdcalls
-    if sys.platform == "win32":
+    if self.env.CXX_NAME == 'msvc':
         import pathlib
 
         top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent
@@ -64,33 +63,30 @@ def configure(self):
 
         bibcxx_incldir = osp.join(top_dir, "bibcxx", "include")
         self.env.append_value("INCLUDES_BIBC", bibcxx_incldir)
-
     else:
-        if sys.platform != "darwin":
+        if self.env.ASTER_PLATFORM_MINGW:
+            self.add_linkflags(["-Wl,--export-all-symbols"])
+        elif sys.platform != "darwin":
             self.add_linkflags("-Wl,--export-dynamic")
         else:
             # '--export-dynamic' is '-export_dynamic' in OS X linker
             # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
             self.add_linkflags("-Wl,-export_dynamic")
 
+    # prefer memory usage over speed
+    self.add_linkflags("-Wl,--no-keep-memory")
+    # this option removes the warning about executable stack because of nested functions
+    # https://sourceware.org/bugzilla/show_bug.cgi?id=29072
+    self.add_linkflags("-Wl,--no-warn-execstack")
 
-        # prefer memory usage over speed
-        self.add_linkflags("-Wl,--no-keep-memory")
-        # this option removes the warning about executable stack because of nested functions
-        # https://sourceware.org/bugzilla/show_bug.cgi?id=29072
-        self.add_linkflags("-Wl,--no-warn-execstack")
+    self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
+    self.add_linkflags("-flto=auto", dest="LINKFLAGS")
 
-        self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
-
-        incpath = osp.join(self.path.get_src().abspath(), "include")
-        self.env.append_value("INCLUDES_BIBC", incpath)
+    incpath = osp.join(self.path.get_src().abspath(), "include")
+    self.env.append_value("INCLUDES_BIBC", incpath)
 
     if "ifort" in self.env.FC_NAME.lower():
         self.add_linkflags("-nofor-main", dest="LINKFLAGS_fcprogram")
-        if opts.embed_all or opts.embed_aster:
-            self.add_linkflags("-static-intel", dest="LINKFLAGS_fcprogram")
-            if self.get_define("ASTER_HAVE_MPI"):
-                self.add_linkflags("-static-mpi", dest="LINKFLAGS_fcprogram")
     self.check_c_compiler_flags()
 
 
@@ -147,21 +143,21 @@ def process_h(self, node):
 
 def build_libbibc(self, env):
     use = [
-        "BIBCXX",
-        "PETSC",
-        "SCOTCH",
-        "PARMETIS",
-        "METIS",
-        # "GKLIB",
-        "MED",
-        "HDF5",
-        "NUMPY",
         "PYEXT",
+        "NUMPY",
+        "BIBCXX",
+        "HDF5",
+        "MED",
+        "METIS",
+        "PARMETIS",
+        # "GKLIB",
+        "SCOTCH",
+        "PETSC",
     ]
     get_srcs = self.path.get_src().ant_glob
     # compile *.c
     self(
-        features="c cshlib",
+        features=("c cstlib" if self.env.ASTER_PLATFORM_MINGW else "c cshlib"),
         name="asterbibc",
         source=get_srcs("**/*.c", excl=[PYMAIN]),
         target="bibc",
@@ -173,10 +169,16 @@ def build_libbibc(self, env):
 
 
 def build_libaster(self, env):
-    use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx", "astergc"]
+    use = ["LIBASTER", "asterbibfor", "asterbibfor_ext", "asterbibc", "asterbibcxx", "astergc"]
     if env.BUILD_MFRONT:
         use.append("astermfront")
     # {bibfor, bibc, bibcxx}/*.o
+    if self.env.ASTER_PLATFORM_MINGW:
+        # fix circular dependencies between bibc.a and bibfor.a
+        env = env.derive()
+        env.detach()
+        env.append_value("STLIB_MARKER", "-Wl,--start-group")
+        env.append_value("SHLIB_MARKER", "-Wl,--end-group")
     self(
         features="cxx cxxshlib",
         name="asterlib",
@@ -192,7 +194,7 @@ def build_libaster(self, env):
     libaster = "libaster.so"
     if env.ASTER_PLATFORM_MINGW or env.ASTER_PLATFORM_MSVC64:
         extlib = ".pyd"
-        mods.append("libaster")
+        mods.extend(["libaster", "libAsterGC"])
         libaster = "aster.dll"
     for submodule in mods:
         src = osp.join(env.ASTERLIBDIR, submodule + extlib)
@@ -203,6 +205,8 @@ def build_libaster(self, env):
 def check_c_compiler_flags(self):
     if self.env.CXX_NAME != 'msvc':
         self.check_c_compiler_options("-fPIC")
+    # needs more tests (size and build time)
+    # self.check_c_compiler_options("-flto")
     self.start_msg("C compiler flags")
     self.end_msg(self.env["CFLAGS"])
 

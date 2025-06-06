@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 #
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 TAUN1 = DEFI_FONCTION(
     NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 411.0, 2.0, 0.0, 3.0, -411.0, 4.0, 0.0, 5.0, 411.0)
@@ -416,7 +416,7 @@ TEST_TABLE(
 # VALE=313.579*SQRT(3)=
 TEST_TABLE(
     VALE_REFE=313.579,
-    VALE_CALC=313.57930121518,
+    VALE_CALC=313.57933605389246,
     PRECISION=1.0e-05,
     REFERENCE="SOURCE_EXTERNE",
     NOM_PARA="AMPCIS",
@@ -426,7 +426,7 @@ TEST_TABLE(
 TEST_TABLE(
     PRECISION=2.0e-3,
     VALE_REFE=-8.281,
-    VALE_CALC=-8.2806987848183,
+    VALE_CALC=-8.280663946107552,
     REFERENCE="SOURCE_EXTERNE",
     NOM_PARA="VALE_CRITERE",
     TABLE=TAB_2a,

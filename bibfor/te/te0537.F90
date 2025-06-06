@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine te0537(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jcont, lorien, jdepl, imate, nno, nc, i, iret
-    integer :: ip, ipos, istrxr, ipos1, ipos2, nbfig, ig, icp, isdcom, icompo
+    integer :: ip, ipos, istrxr, ipos1, ipos2, nbfig, ig, icp, isdcom
     integer :: codres(2), ncomp
     integer :: npg, ndim, nnoel, nnos, ipoids, ivf
     integer :: jacf, jtab(7)
@@ -82,6 +82,7 @@ subroutine te0537(option, nomte)
     real(kind=8) :: b(4), gg, xi, wi, valres(2), alpha
     real(kind=8) :: klv(78), klc(12, 12), effo(12)
     character(len=8) :: materi
+    character(len=16), pointer :: compor(:) => null()
     character(len=16) :: ch16, nomres(2)
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
@@ -169,8 +170,8 @@ subroutine te0537(option, nomte)
         if (option .eq. 'SIEF_ELGA') then
 !           Si option sief_elga on continue
 !           Récupération des différents matériaux dans SDCOMP dans COMPOR
-            call jevech('PCOMPOR', 'L', icompo)
-            call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
+            call jevech('PCOMPOR', 'L', vk16=compor)
+            call jeveuo(compor(MULTCOMP), 'L', isdcom)
 !           boucle sur les groupes de fibre
             ipos1 = jcont-1
             ipos2 = ipos1+nbfibr
@@ -230,7 +231,7 @@ subroutine te0537(option, nomte)
 
 !       CARACTERISTIQUES MATERIAUX
         call jevech('PMATERC', 'L', lmater)
-        call pmfmats(lmater, nomat)
+        call pmfmats(nomat)
 !
         call verifm(fami, npg, 1, '+', zi(lmater), epsthe, iret)
         itemp = 0

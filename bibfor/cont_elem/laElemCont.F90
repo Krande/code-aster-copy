@@ -22,7 +22,7 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
                       dGap, projBsVal, dv, dvT, projBsVal2, lagr_c, lagr_f, lagr_f3, &
                       dThres_du, dThres_dl, lagr_v, thres, jump_v, dNs, &
                       tau_slav, lagr_g, mu_g, dts_ns, speed, dfunc_ma, dZetaM, &
-                      mu_c, mu_f, mu_f3, metricTens, d2Gap, k_diff)
+                      mu_c, mu_f, mu_f3, metricTens, d2Gap)
 !
     use contact_module
     use contact_type
@@ -53,7 +53,6 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
     real(kind=8), intent(out), optional :: mu_f3(MAX_LAGA_DOFS, 3)
     real(kind=8), intent(out), optional :: dv(MAX_LAGA_DOFS, 3), norm_slav(3), projBsVal2(2)
     real(kind=8), intent(out), optional :: dThres_du(MAX_LAGA_DOFS), dThres_dl(MAX_LAGA_DOFS)
-    character(len=8), intent(in), optional :: k_diff
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,7 +88,6 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
     real(kind=8) :: dTm_nm(MAX_LAGA_DOFS, 2)
     real(kind=8) :: dTs(MAX_LAGA_DOFS, 3, 2)
     real(kind=8) :: d2Ns_nm(MAX_LAGA_DOFS, MAX_LAGA_DOFS), dTs_nm(MAX_LAGA_DOFS, 2)
-    integer::i_dof
     aster_logical :: glob_coor
     blas_int :: b_3, b_2, b_MAX_LAGA_DOFS
 !
@@ -99,6 +97,10 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
     b_2 = 2
     b_3 = 3
     glob_coor = (parameters%l_fric) .and. (parameters%vari_cont == CONT_VARI_ROBU)
+    ! write (6, *) 'glob_coor=', glob_coor
+    ! write (6, *) 'parameters%l_fric=', parameters%l_fric
+    ! write (6, *) 'parameters%vari_cont=', parameters%vari_cont
+    ! write (6, *) 'CONT_VARI_ROBU=', CONT_VARI_ROBU
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -128,6 +130,10 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
 !
     lagr_c_ = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagc_slav_curr)
     gamma_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_cont)/hF
+    if (geom%nb_lagr_c == 0) then
+        ! gamma_c = parameters%coef_cont(1)/hF
+        gamma_c = evalPoly(geom%nb_node_slav, shape_func_sl, parameters%coef_cont)/hF
+    end if
 
     lagr_f_(1) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(1, :))
     lagr_f_(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(2, :))
@@ -220,6 +226,7 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
         else
             lagr_v_ = (lagr_c_*norm_slav_+matmul(tau_slav_, lagr_f_))-gamma_f*speed_
         end if
+
         if (present(lagr_v)) lagr_v = lagr_v_
 !
         projBsVal_ = projBs(parameters, lagr_v_, thres_qp, norm_slav_)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine nocart(carte, code, ncmp, groupma, mode, &
 #include "asterfort/jexnum.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/nbec.h"
+#include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: carte
     integer, intent(in) :: code
@@ -341,7 +342,7 @@ subroutine nocart(carte, code, ncmp, groupma, mode, &
         else if (mode2 .eq. 'NOM') then
 !           --  mailles nommees du maillage
             nomail = limano(i)
-            call jenonu(jexnom(ma//'.NOMMAI', nomail), numero)
+            numero = char8_to_int(nomail)
             zi(jlima-1+i) = numero
         else
             ASSERT(.false.)

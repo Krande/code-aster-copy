@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine cmcrea(main, maout, nbocc)
     character(len=8) :: knum8, prefix, nomma
     character(len=24) :: linoma, liconn, lityma, lingma, ligpma
     character(len=24) :: valk, gno1, gno2
-    character(len=24) :: dimin, dimout, nmain, nmaout, tmain, tmaout, conin
+    character(len=24) :: dimin, dimout, tmain, tmaout, conin
     character(len=24) :: conout
     character(len=24) :: gmain, gmaout, nomgma, gmaptr
 !
@@ -184,16 +184,6 @@ subroutine cmcrea(main, maout, nbocc)
     call jeveuo(dimout, 'E', jdim)
     zi(jdim-1+3) = nbmato
 !
-!    OBJET .NOMMAI
-    nmain = main//'.NOMMAI'
-    nmaout = maout//'.NOMMAI'
-    call jecreo(nmaout, 'G N K8')
-    call jeecra(nmaout, 'NOMMAX', nbmato)
-    do ma = 1, nbmain
-        call jenuno(jexnum(nmain, ma), nomma)
-        call jecroc(jexnom(nmaout, nomma))
-    end do
-!
 !    OBJET .TYPMAIL
     tmain = main//'.TYPMAIL'
     tmaout = maout//'.TYPMAIL'
@@ -240,9 +230,8 @@ subroutine cmcrea(main, maout, nbocc)
         end do
     end do
 !
-!    DUPLICATION A L'IDENTIQUE .NOMNOE, .GROUPENO, .COORDO
+!    DUPLICATION A L'IDENTIQUE .GROUPENO, .COORDO
 !    (TANT QUE D'AUTRES MOTS CLES NE SONT PAS TRAITES)
-    call jedupo(main//'.NOMNOE', 'G', maout//'.NOMNOE', false)
     call cpclma(main, maout, 'GROUPENO', 'G')
     call copisd('CHAMP_GD', 'G', main//'.COORDO', maout//'.COORDO')
 !
@@ -268,16 +257,6 @@ subroutine cmcrea(main, maout, nbocc)
             call jeveuo(zk24(jltyma-1+iOcc), 'L', jtyma)
             call jeveuo(zk24(jlconn-1+iOcc), 'L', jconn)
             do ma = 1, nbma
-!
-!          INSERTION DANS LE .NOMMAI
-                nomma = zk8(jnoma-1+ma)
-                call jeexin(jexnom(nmaout, nomma), iret)
-                if (iret .eq. 0) then
-                    call jecroc(jexnom(nmaout, nomma))
-                else
-                    valk = nomma
-                    call utmess('F', 'ALGELINE4_7', sk=valk)
-                end if
 !
 !          INSERTION DANS LE .TYPMAIL
                 zi(ityout-1+numaco+ma) = zi(jtyma-1+ma)

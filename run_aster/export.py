@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ from .settings import (
     ParameterStr,
     Store,
 )
-from .utils import RUNASTER_ROOT
+from .utils import RUNASTER_PLATFORM, RUNASTER_ROOT
 
 PARAMS_TYPE = {
     "actions": "list[str]",
@@ -457,7 +457,7 @@ class Export(Store):
                 unit = spl.pop()
                 drc = spl.pop()
                 path = " ".join(spl)
-                if ":" in path:
+                if RUNASTER_PLATFORM != "win" and ":" in path:
                     logger.warning("remote path not supported: %s", path)
                     path = path.split(":")[-1]
                 entry = File(path, filetype, unit, isdir, "D" in drc, "R" in drc, "C" in drc)

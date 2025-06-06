@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat, &
                   dgamma, dp, crit, sgns, iret)
 !
     implicit none
+#include "asterc/r8t0.h"
 #include "asterc/r8miem.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), iret, nfs, nsg
     real(kind=8) :: taus, coeft(nmat), dgamma, dp, dt, taumu, tauv
@@ -119,7 +120,7 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat, &
                 goto 999
             end if
 !          PROTECTION DE l'EXPONENTIELLE
-            tabs = tempf+273.15d0
+            tabs = tempf+r8t0()
             deltgg = deltag*(aux**q)
             terme = -deltgg/k/tabs
             if (terme .gt. 10.d0) then

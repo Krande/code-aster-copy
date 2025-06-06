@@ -27,7 +27,7 @@ import os
 import subprocess
 import tempfile
 from ..CodeCommands import CREA_MAILLAGE
-from ..Objects import Mesh, PythonBool
+from ..Objects import Mesh, PythonBool, MeshReader
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import ExecutionParameter, force_list, injector
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
@@ -342,7 +342,7 @@ class ExtendedMesh:
         self.printMedFile(filename)
         subprocess.run([ExecutionParameter().get_option(f"prog:{command}"), filename])
 
-    def readMedFile(self, filename, meshname=None, verbose=1):
+    def readMedFile(self, filename, meshname="", verbose=1):
         """Read a MED file containing a mesh.
 
         Arguments:
@@ -351,7 +351,8 @@ class ExtendedMesh:
             verbose (int): 0 - warnings, 1 - informations about main steps,
                 2 - informations about all steps
         """
-        mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
+        mr = MeshReader()
+        mr.readMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.

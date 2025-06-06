@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+#include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -127,7 +128,7 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
 !
         node_indx(1) = i_node+jdecno
         call cfnumn(sdcont_defi, 1, node_indx(1), node_nume(1))
-        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(1)), node_name)
+        node_name = int_to_char8(node_nume(1))
 !
 ! ----- Number of elements attached to node
 !
@@ -144,7 +145,7 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
 ! --------- Index and name of element
 !
             call cfnumm(sdcont_defi, elem_indx, elem_nume)
-            call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+            elem_name = int_to_char8(elem_nume)
             valk(1) = elem_name
             valk(2) = node_name
 !

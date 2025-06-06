@@ -114,7 +114,7 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 
     for ( auto &name : names ) {
         if ( hasGroupOfCells( name ) ) {
-            cells.push_back( ( *_groupsOfCells )[name]->toVector() );
+            cells.push_back( _groupsOfCells->fastAccess( name ).toVector() );
         }
     }
 
@@ -137,7 +137,7 @@ VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINT
 
     for ( auto &name : names ) {
         if ( hasGroupOfNodes( name ) ) {
-            nodes.push_back( ( *_groupsOfNodes )[name]->toVector() );
+            nodes.push_back( _groupsOfNodes->fastAccess( name ).toVector() );
         }
     }
 
@@ -244,3 +244,47 @@ MeshPtr Mesh::convertToBiQuadratic( const ASTERINTEGER info ) {
     mesh_out->build();
     return mesh_out;
 };
+
+void Mesh::addNodeLabels( const VectorString &labels ) {
+    const auto &size = labels.size();
+    if ( getNumberOfNodes() != size ) {
+        throw std::runtime_error( "Bad label size" );
+    }
+    if ( _nameOfNodes->exists() ) {
+        _nameOfNodes->deallocate();
+    }
+    _nameOfNodes->allocate( size );
+    for ( int i = 0; i < size; ++i ) {
+        _nameOfNodes->add( i + 1, labels[i] );
+    }
+}
+
+void Mesh::addCellLabels( const VectorString &labels ) {
+    const auto &size = labels.size();
+    if ( getNumberOfCells() != size ) {
+        throw std::runtime_error( "Bad label size" );
+    }
+    if ( _nameOfCells->exists() ) {
+        _nameOfCells->deallocate();
+    }
+    _nameOfCells->allocate( size );
+    for ( int i = 0; i < size; ++i ) {
+        _nameOfCells->add( i + 1, labels[i] );
+    }
+}
+
+std::string Mesh::getNodeName( const ASTERINTEGER &index ) const {
+    if ( _nameOfNodes->exists() ) {
+        return _nameOfNodes->getStringFromIndex( index );
+    } else {
+        return BaseMesh::getNodeName( index );
+    }
+}
+
+std::string Mesh::getCellName( const ASTERINTEGER &index ) const {
+    if ( _nameOfCells->exists() ) {
+        return _nameOfCells->getStringFromIndex( index );
+    } else {
+        return BaseMesh::getCellName( index );
+    }
+}

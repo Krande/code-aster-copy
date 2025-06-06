@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 M1 = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -40,23 +40,7 @@ CARAC = AFFE_CARA_ELEM(
     ),
 )
 
-COU_T20 = DEFI_FONCTION(
-    NOM_PARA="EPSI", PROL_DROITE="LINEAIRE", VALE=(0.010, 1000.0, 1.010, 3500.0)
-)
-
-COU_T120 = DEFI_FONCTION(
-    NOM_PARA="EPSI", PROL_DROITE="LINEAIRE", VALE=(0.005, 1000.0, 1.005, 3000.0)
-)
-
-COU_TRAC = DEFI_NAPPE(
-    NOM_PARA="TEMP",
-    PARA=(20.0, 120.0),
-    FONCTION=(COU_T20, COU_T120),
-    PROL_GAUCHE="CONSTANT",
-    PROL_DROITE="CONSTANT",
-)
-
-ACIER_T = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.0))
+ACIER_T = DEFI_MATERIAU(ELAS=_F(E=250000.0, NU=0.0))
 
 CHP_MATT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=ACIER_T))
 
@@ -131,7 +115,7 @@ TEST_RESU(
             RESULTAT=VT,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXX",
-            VALE_CALC=2.1000e4,
+            VALE_CALC=26250.0,
             GROUP_MA="M1",
         ),
         _F(
@@ -141,7 +125,7 @@ TEST_RESU(
             RESULTAT=VTPOS,
             NOM_CHAM="SIGM_ELNO",
             NOM_CMP="SIXX",
-            VALE_CALC=2.3100e4,
+            VALE_CALC=28875.0,
             GROUP_MA="M1",
         ),
     )

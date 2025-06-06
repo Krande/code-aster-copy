@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,6 +62,7 @@ subroutine op0018()
 #include "asterfort/wkvect.h"
 #include "asterfort/fetcrf.h"
 #include "asterfort/fetskp.h"
+#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,7 +84,7 @@ subroutine op0018()
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
     character(len=16) :: phenom, phenomRead, modeli, list_modelisa(10), keywordfact, modeli_in
     character(len=19) :: ligrel
-    character(len=24) :: mesh_name_elem, kdis
+    character(len=24) :: kdis
     character(len=32) :: phemod
     character(len=24), parameter :: list_elem = '&&OP0018.LIST_ELEM'
     integer, pointer :: p_list_elem(:) => null()
@@ -177,9 +178,8 @@ subroutine op0018()
     if (nb_affe .ne. 0) then
         keywordfact = 'AFFE'
 ! ----- Access to mesh objects
-        mesh_name_elem = mesh//'.NOMMAI'
         mesh_type_geom = mesh//'.TYPMAIL'
-        call jelira(mesh_name_elem, 'NOMMAX', nb_mesh_elem)
+        call jelira(mesh_type_geom, 'LONMAX', nb_mesh_elem)
         call jeveuo(mesh_type_geom, 'L', vi=p_mesh_type_geom)
 ! ----- Name of objects for model
         model_maille = model//'.MAILLE'
@@ -269,7 +269,7 @@ subroutine op0018()
                 if (p_wk_mail1(nume_elem) .eq. 1) then
                     if (p_model_maille(nume_elem) .eq. 0) then
                         nb_elem_naffe = nb_elem_naffe+1
-                        call jenuno(jexnum(mesh_name_elem, nume_elem), name_elem)
+                        name_elem = int_to_char8(nume_elem)
                         nume_type_geom = p_mesh_type_geom(nume_elem)
                         call jenuno(jexnum('&CATA.TM.NOMTM', nume_type_geom), name_type_geom)
                         if (niv .eq. 2) then

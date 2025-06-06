@@ -44,7 +44,7 @@ class ThermalStepSolver(BaseStepSolver):
         """
         calc_type, theta = param["TYPE_CALCUL"], None
         if calc_type == "TRAN":
-            assert param["SCHEMA_TEMPS"]["SCHEMA"] == "HHT"
+            assert param["SCHEMA_TEMPS"]["SCHEMA"] == "THETA"
             theta = param["SCHEMA_TEMPS"]["THETA"]
         return cls(theta=theta)
 

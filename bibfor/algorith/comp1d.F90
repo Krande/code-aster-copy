@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,12 +75,12 @@ subroutine comp1d(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: imate, iinstm
-    integer :: iinstp, icompo, icarcr
+    integer :: iinstp, icarcr
     integer, parameter :: ndimLdc = 2
     real(kind=8) :: dsidep(6, 6)
     real(kind=8) :: sigm(6), sigp(6), eps(6), deps(6)
     character(len=8) :: typmod(2)
-
+    character(len=16), pointer :: compor(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,14 +100,14 @@ subroutine comp1d(BEHinteg, &
     call jevech('PMATERC', 'L', imate)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     call jevech('PCARCRI', 'L', icarcr)
 
 ! - Integrator
     sigp = 0.d0
     call nmcomp(BEHinteg, &
                 fami, kpg, ksp, ndimLdc, typmod, &
-                zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
+                zi(imate), compor, zr(icarcr), zr(iinstm), zr(iinstp), &
                 6, eps, deps, 6, sigm, &
                 vim, option, angmas, &
                 sigp, vip, 36, dsidep, codret)

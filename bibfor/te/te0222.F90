@@ -39,7 +39,6 @@ subroutine te0222(option, nomte)
 !
     use Behaviour_type
     use Behaviour_module
-    use calcG_type
 !
     implicit none
 !
@@ -75,7 +74,6 @@ subroutine te0222(option, nomte)
 ! =====================================================================
 !
     type(Behaviour_Integ) :: BEHinteg
-    type(CalcG_Paramaters) :: cgTheta
 !
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     character(len=16), parameter :: nomres(4) = ['E    ', 'NU   ', 'ALPHA', 'RHO  ']
@@ -85,10 +83,10 @@ subroutine te0222(option, nomte)
     integer           :: ipoids, ivf, idfde, jgano
     integer           :: ndim, nno, nnos, npg, compt
     integer           :: ivites, iaccel, ithet, igthet, icour, ipuls
-    integer           :: icomp, igeom, idepl, imate, matcod, ideplinco
+    integer           :: igeom, idepl, imate, matcod, ideplinco
     integer           :: iforf, itemps, iepsf, iforc, iepsr
     integer           :: irota, ipesa, isigi, isigm
-    integer           :: iret, ireth, ibalo, ideg, ilag
+    integer           :: iret, ireth, ibalo, ideg, ilag, iray, ieli
     real(kind=8)      :: tcla, tthe, tfor, tini, thet, poids, f(3, 3)
     real(kind=8)      :: der(4), energi(2), divt, mu, angle, a, b
     real(kind=8)      :: epsi, valpar(4), accele(3), dsigin(6, 3)
@@ -104,9 +102,10 @@ subroutine te0222(option, nomte)
     real(kind=8)      :: dfvdm(3, 4), k3a, ka, lambda, phig, r8bid, rg, th
     real(kind=8)      :: ttrgv, ttrg, u1l(3), u2l(3), u3l(3), tgvdm(3), pfond(3), r_courb
     character(len=6)  :: epsa(6)
-    character(len=8)  :: typmod(2), nompar(4), discr
+    character(len=8)  :: typmod(2), nompar(4), discr, form_fiss
     character(len=4)  :: fami
-    character(len=16) :: nomte, option, compor(4), phenom
+    character(len=16) :: nomte, option, phenom
+    character(len=16), pointer :: compor(:) => null()
     aster_logical     :: r_courb_present
     aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero, epsaini, inco
 !
@@ -129,7 +128,6 @@ subroutine te0222(option, nomte)
 !
 !-- Initialisation des champs et paramètres
     call behaviourInit(BEHinteg)
-    call cgTheta%initialize()
 
 !-- Initialisation des paramètres
     epsi = r8prem()
@@ -160,6 +158,7 @@ subroutine te0222(option, nomte)
     typmod(1) = '3D'
     typmod(2) = ' '
     discr = ' '
+    form_fiss = ' '
 !
 !-- Nombre de composantes des tenseurs
     ncmp = 2*ndim
@@ -218,6 +217,23 @@ subroutine te0222(option, nomte)
         discr = "2D"
     end if
 !
+!   Recuperation du rayon ou ellipse si fissure courbe
+    if (ndim == 3) then
+!
+        call tecach('ONO', 'PCER', 'L', iret, iad=iray)
+!
+        if (iret == 0) then
+            form_fiss = "CERCLE"
+        end if
+
+        call tecach('ONO', 'PELI', 'L', iret, iad=ieli)
+!
+        if (iret == 0) then
+            form_fiss = "ELLIPSE"
+        end if
+
+    end if
+
 !-- Valeur de theta0(r) nulle sur element : pas de calcul
 !-- si LAGRANGE, test sur les abscisses curvilignes
     compt = 0
@@ -252,7 +268,7 @@ subroutine te0222(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icomp)
+    call jevech('PCOMPOR', 'L', vk16=compor)
     if (option == 'CALC_K_G' .or. option == 'CALC_K_G_F') then
         call jevech('PBASLOR', 'L', ibalo)
         if (ndim == 3) then
@@ -297,10 +313,6 @@ subroutine te0222(option, nomte)
         end if
     end if
 !
-!-- Loi de comportement
-    do i = 1, 4
-        compor(i) = zk16(icomp+i-1)
-    end do
     grand = compor(3) == 'GREEN_LAGRANGE'
     incr = compor(4) (1:9) == 'COMP_INCR'
     notelas = compor(1) .ne. 'ELAS'
@@ -940,19 +952,20 @@ subroutine te0222(option, nomte)
                 end do
             end if
 !
-            if (cgTheta%form_fiss .eq. 'CERCLE') then
+            if (form_fiss .eq. 'CERCLE') then
 !-------------- Cas de fissure circulaire
-                r_courb = cgTheta%rayon
+                r_courb = zr(iray)
                 r_courb_present = .true.
 
-            elseif (cgTheta%form_fiss .eq. 'ELLIPSE') then
+            elseif (form_fiss .eq. 'ELLIPSE') then
 !---------- --- Cas de fissure semi-elliptique
-                a = cgTheta%demi_grand_axe
-                b = cgTheta%demi_petit_axe
+                a = zr(ieli)
+                b = zr(ieli+1)
                 angle = atan2(a*pfond(2), b*pfond(1))
                 r_courb = sqrt(a**2*sin(angle)**2+b**2*cos(angle)**2)**3/(a*b)
                 r_courb_present = .true.
             end if
+
 !
             if (r_courb_present) then
 !---------------Calcul des Champs auxiliaires u0+u1

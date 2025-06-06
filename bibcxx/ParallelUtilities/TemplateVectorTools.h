@@ -6,7 +6,7 @@
  * @brief Header of tools to manipulate some vector in templates
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -90,7 +90,7 @@ int getTotalSize( const JeveuxVector< T > &toCopy ) {
 };
 
 template < typename T >
-int getTotalSize( const JeveuxCollectionClass< T > &toCopy ) {
+int getTotalSize( const JeveuxCollectionClass< T, ASTERINTEGER, Contiguous > &toCopy ) {
     return toCopy.totalSize();
 };
 
@@ -164,7 +164,7 @@ struct StartPosition< std::vector< std::vector< T > > > {
 };
 
 template < typename T >
-struct StartPosition< JeveuxCollectionClass< T > > {
+struct StartPosition< JeveuxCollectionClass< T, ASTERINTEGER, Contiguous > > {
     static constexpr int value = 1;
 };
 
@@ -192,8 +192,9 @@ void allocate( std::vector< T > &in, const int &size1, const int &size2 ) {
 };
 
 template < typename T >
-void allocate( JeveuxCollectionClass< T > &in, const int &size1, const int &size2 ) {
-    in.allocateContiguousNumbered( size1, size2 );
+void allocate( JeveuxCollectionClass< T, ASTERINTEGER, Contiguous > &in, const int &size1,
+               const int &size2 ) {
+    in.allocate( size1, size2 );
 };
 
 void allocate( MedVector< double > &in, const int &size1, const int &size2 );
@@ -231,7 +232,8 @@ void allocateOccurence( std::vector< std::vector< T > > &in, const int &pos, con
 };
 
 template < typename T >
-void allocateOccurence( JeveuxCollectionClass< T > &in, const int &pos, const int &size ) {
+void allocateOccurence( JeveuxCollectionClass< T, ASTERINTEGER, Contiguous > &in, const int &pos,
+                        const int &size ) {
     in.allocateObject( pos, size );
 };
 
@@ -256,7 +258,7 @@ struct ObjectTemplateType< MedVector< long int > > {
 };
 
 template <>
-struct ObjectTemplateType< JeveuxCollectionClass< ASTERINTEGER > > {
+struct ObjectTemplateType< JeveuxCollectionClass< ASTERINTEGER, ASTERINTEGER, Contiguous > > {
     typedef ASTERINTEGER value_type;
 };
 

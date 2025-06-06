@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/vectan.h"
+#include "asterfort/Behaviour_type.h"
     integer :: ncmp
     character(len=16) :: nomte
     real(kind=8) :: sigmau(ncmp, 1), sigrtg(ncmp, 1)
@@ -66,16 +67,17 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 ! --- INITIALISATIONS :
 !     ---------------
 !-----------------------------------------------------------------------
-    integer :: i, icompo, idepl, igeom, ii, in, iret
+    integer :: i, idepl, igeom, ii, in, iret
+    character(len=16), pointer :: compor(:) => null()
     integer :: lzi, lzr, nb1, nb2
 !-----------------------------------------------------------------------
     lgreen = .false.
 !
 ! --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 !     ----------------------------------------
-    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PCOMPOR', 'L', vk16=compor)
 !
-    if (zk16(icompo+2) .eq. 'GROT_GDEP') then
+    if (compor(DEFO) .eq. 'GROT_GDEP') then
         lgreen = .true.
     end if
 !

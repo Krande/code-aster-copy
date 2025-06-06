@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("RUPTURE1_42", "RUPTURE1_47"),
-)
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("RUPTURE1_42", "RUPTURE1_47"))
 
 
 # LECTURE ET MODIFICATION DU MAILLAGE POUR L'UTILISATION DE POST_GP
@@ -243,7 +239,7 @@ TEST_TABLE(
     NOM_PARA="G",
     TABLE=gtheta,
     FILTRE=(
-        _F(NOM_PARA="NOEUD", VALE_K="N6375"),
+        _F(NOM_PARA="NOEUD", VALE_K="6375"),
         _F(PRECISION=9.9999999999999995e-07, NOM_PARA="INST", VALE=3.0),
     ),
 )

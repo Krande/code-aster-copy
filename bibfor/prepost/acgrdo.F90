@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -690,7 +690,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork, &
         vanocr(19) = (etrema-etremi)/4.d0
         vanocr(20) = epspac
         vanocr(21) = raysph
-        vanocr(22) = vsige/(2.d0*1.732051d0)
+        vanocr(22) = vsige/(2.d0*sqrt(3.d0))
         vanocr(23) = vepsem/2.d0
 !
         call acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
@@ -800,7 +800,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork, &
             valpar(19) = (etrema-etremi)/4.d0
             valpar(20) = epspac
             valpar(21) = raysph
-            valpar(22) = vsige/(2.d0*1.732051d0)
+            valpar(22) = vsige/(2.d0*sqrt(3.d0))
             valpar(23) = vepsem/2.d0
 !
 !  RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
