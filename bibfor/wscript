@@ -110,7 +110,7 @@ def check_fortran_compiler_flags(self):
             self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
             self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
         self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
-        if env.ASTER_PLATFORM_MSVC64:
+        if self.env.ASTER_PLATFORM_MSVC64:
             self.check_fortran_compiler_options(["/nologo"])
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx

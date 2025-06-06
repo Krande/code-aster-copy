@@ -19,7 +19,6 @@
 
 import os
 import pathlib
-import platform
 from pathlib import PureWindowsPath
 from subprocess import PIPE, Popen
 
@@ -42,7 +41,7 @@ def configure(self):
 def check_python(self):
     self.load("python")
     self.check_python_version((3, 5, 0))
-    if platform.system() == "Windows":
+    if self.env.ASTER_PLATFORM_MSVC64:
         path = self.env["PATH"]
         include_dir = pathlib.Path(self.env.PREFIX) / "include"
         self.env["PATH"] = f"{path};{include_dir.as_posix()}"
@@ -84,15 +83,16 @@ def check_numpy_headers(self):
     self.start_msg("Checking for numpy arrayobject.h")
 
     extra_flags = dict()
-    if platform.system() == "Windows":
+    if self.env.ASTER_PLATFORM_MSVC64:
         library_prefix_ = pathlib.Path(self.env.PREFIX)
         prefix_ = library_prefix_.parent
         python_include_dir = prefix_ / "include"
         python_libs_dir = prefix_ / "libs"
-        numpy_includes.append(python_include_dir.as_posix())
-        numpy_includes.append(python_libs_dir.as_posix())
+        Logs.info(numpy_includes)
+        numpy_includes += f" {python_include_dir.as_posix()}"
+        numpy_includes += f" {python_libs_dir.as_posix()}"
         extra_flags.update(dict(linkflags=[f"/LIBPATH:{python_libs_dir}", f"/LIBPATH:{python_include_dir}"]))
-        Logs.info(f"MSVC {numpy_includes=}")
+        # Logs.info(f"MSVC {numpy_includes=}")
 
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         incs = PureWindowsPath(numpy_includes)

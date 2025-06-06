@@ -65,7 +65,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.2.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025b-h78e105d_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.0.27-py312h98912ed_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.1.5-py312h66e93f0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
       win-64:
@@ -118,7 +118,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.1.5-py312h4389bb4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
   conda:
@@ -237,7 +237,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.2.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025b-h78e105d_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.0.27-py312h98912ed_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.1.5-py312h66e93f0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
       win-64:
@@ -302,7 +302,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.1.5-py312h4389bb4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
   int32:
@@ -371,7 +371,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.2.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025b-h78e105d_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.0.27-py312h98912ed_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.1.5-py312h66e93f0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
       win-64:
@@ -438,7 +438,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.1.5-py312h4389bb4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-1.3.1-h2466b09_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
@@ -508,7 +508,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.2.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025b-h78e105d_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.0.27-py312h98912ed_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.1.5-py312h66e93f0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
       win-64:
@@ -575,7 +575,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.1.5-py312h4389bb4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-1.3.1-h2466b09_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
@@ -645,7 +645,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.2.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025b-h78e105d_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.0.27-py312h98912ed_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.1.5-py312h66e93f0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
       win-64:
@@ -712,7 +712,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.1.5-py312h4389bb4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-1.3.1-h2466b09_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
@@ -782,7 +782,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.2.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025b-h78e105d_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.0.27-py312h98912ed_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.1.5-py312h66e93f0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
       win-64:
@@ -849,7 +849,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/vc14_runtime-14.42.34438-hfd919c2_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.42.34438-h7142326_26.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/vswhere-3.1.7-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.1.5-py312h4389bb4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/yaml-0.2.5-h8ffe710_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-1.3.1-h2466b09_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
@@ -2752,20 +2752,21 @@ packages:
   license_family: MIT
   size: 219013
   timestamp: 1719460515960
-- conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.0.27-py312h98912ed_0.conda
-  sha256: a912fe03ec33ea43ea2883cdbeb0ebd15a6964a5869f6b61093cdbd8ce3fe44c
-  md5: 90b3dae9182d278840044019e5bd5153
+- conda: https://conda.anaconda.org/conda-forge/linux-64/waf-2.1.5-py312h66e93f0_0.conda
+  sha256: b96e30612d92742708dc7cfeb7bec282084cfd32168eec7c5f8d2e0a49f8d2c5
+  md5: 8a2f92063706553d084c1ccf0fbd9d93
   depends:
-  - libgcc-ng >=12
+  - __glibc >=2.17,<3.0.a0
+  - libgcc >=13
   - python >=3.12,<3.13.0a0
   - python_abi 3.12.* *_cp312
   license: BSD-3-Clause
   license_family: BSD
-  size: 114052
-  timestamp: 1710253669633
-- conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.0.27-py312he70551f_0.conda
-  sha256: 0feb52417e168c4b78ff9c568e30861eb468ce1952a28a3c18d6817526319591
-  md5: ba0df1ac6f3a9378d3711f63186b44bb
+  size: 117911
+  timestamp: 1739185316296
+- conda: https://conda.anaconda.org/conda-forge/win-64/waf-2.1.5-py312h4389bb4_0.conda
+  sha256: 59f82e200bc0af335b2011ca3ef50660875a91813fd3d86fdfcfef25fed42637
+  md5: 12f5f954c3e982c0fe5f4a589f667d71
   depends:
   - python >=3.12,<3.13.0a0
   - python_abi 3.12.* *_cp312
@@ -2774,8 +2775,8 @@ packages:
   - vc14_runtime >=14.29.30139
   license: BSD-3-Clause
   license_family: BSD
-  size: 130341
-  timestamp: 1710253942327
+  size: 142822
+  timestamp: 1739185757141
 - conda: https://conda.anaconda.org/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2
   sha256: a4e34c710eeb26945bdbdaba82d3d74f60a78f54a874ec10d373811a5d217535
   md5: 4cb3ad778ec2d5a7acbdf254eb1c42ae

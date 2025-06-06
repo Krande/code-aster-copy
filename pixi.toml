@@ -31,7 +31,7 @@ channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
 [feature.common.dependencies]
 python = "==3.12.8"
 libboost-devel = "==1.86"
-waf = "==2.0.27"
+waf = "==2.1.5"
 numpy = "1.26.*"
 pyyaml = "*"
 pytest = "*"
