@@ -110,11 +110,15 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
     integer :: i, j
     integer :: nstran, nforc, nstatv, nmatr
     integer, parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: drot(3, 3), dstran(9), stran(9), dsidepMGIS(36)
+    real(kind=8) :: drot(3, 3), dstran(neps), stran(neps)
+    real(kind=8) :: dsidepMGIS(merge(nsig, 6, nsig*neps .eq. ndsde)* &
+                               merge(neps, 6, nsig*neps .eq. ndsde))
     real(kind=8) :: dtime, pnewdt, rdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
     aster_logical :: lGreenLagr, lCZM, lGradVari
-    real(kind=8) :: sigp_loc(6), vi_loc(nvi), dsidep_loc(6, 6)
+    real(kind=8) :: sigp_loc(nsig), vi_loc(nvi)
+    real(kind=8) :: dsidep_loc(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                               merge(neps, 6, nsig*neps .eq. ndsde))
     real(kind=8) :: props(MGIS_MAX_PROPS)
     integer :: ntens, nprops, retcode
     aster_logical :: dbg
