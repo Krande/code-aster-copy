@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -71,11 +71,7 @@ class Copier(ExecuteCommand):
                 if other.hasListOfLoads(i):
                     self._result.setListOfLoads(other.getListOfLoads(i), i)
 
-        if (
-            isinstance(other, Mesh)
-            or isinstance(other, PrestressingCable)
-            or isinstance(other, Table)
-        ):
+        if isinstance(other, (Result, Mesh, PrestressingCable, Table)):
             self._result.build()
 
     def add_dependencies(self, keywords):
