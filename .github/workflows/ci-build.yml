@@ -44,7 +44,7 @@ jobs:
         with:
           pixi-version: v0.44.0
           activate-environment: conda
-          cache: true
+          cache: false
 
       - name: Build Code_Aster
         shell: bash
