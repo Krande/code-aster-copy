@@ -84,13 +84,9 @@ def check_numpy_headers(self):
 
     extra_flags = dict()
     if self.env.ASTER_PLATFORM_MSVC64:
-        library_prefix_ = pathlib.Path(self.env.PREFIX)
-        prefix_ = library_prefix_.parent
-        python_include_dir = prefix_ / "include"
-        python_libs_dir = prefix_ / "libs"
-        # Add Python include path for MSVC
-        numpy_includes += f" {python_include_dir.as_posix()}"
-        # Link against Python libs
+        # only add Python library link path for MSVC
+        env_root = pathlib.Path(self.env.PREFIX)
+        python_libs_dir = env_root / 'Library' / 'lib'
         extra_flags.update(linkflags=[f"/LIBPATH:{python_libs_dir.as_posix()}"])
 
     if self.is_defined("ASTER_PLATFORM_MINGW"):
@@ -102,11 +98,13 @@ def check_numpy_headers(self):
             if sub == "lib":
                 parts[i] = "Lib"
         numpy_includes = PureWindowsPath(*parts).as_posix()
+    # split include paths into list for proper -I flags
+    include_list = numpy_includes.split()
     # check the given includes dirs
     self.check(
         feature="c",
         header_name="Python.h numpy/arrayobject.h",
-        includes=numpy_includes,
+        includes=include_list,
         use=["PYEXT"],
         uselib_store="NUMPY",
         errmsg="Could not find the numpy development headers",
