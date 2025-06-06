@@ -934,15 +934,17 @@ void Result::printMedFile( const std::filesystem::path &fileName, std::string me
     ASTERINTEGER retour = -1;
     // In case that the print file (single and absolute path) is unique between processors,
     // it must only be created on proc 0.
-    if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
+    if ( getMesh()->isParallel() || rank == 0 ) {
         if ( rank == 0 )
             a.openFile( fileName, Binary, New );
         if ( getMesh()->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
             AsterMPI::barrier();
 #endif /* ASTER_HAVE_MPI */
-            if ( rank != 0 )
-                a.openFile( fileName, Binary, Old );
+            if ( rank != 0 ) {
+                auto mode = local ? New : Old;
+                a.openFile( fileName, Binary, mode );
+            }
         }
         retour = a.getLogicalUnit();
     }
