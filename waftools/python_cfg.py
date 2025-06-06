@@ -88,11 +88,10 @@ def check_numpy_headers(self):
         prefix_ = library_prefix_.parent
         python_include_dir = prefix_ / "include"
         python_libs_dir = prefix_ / "libs"
-        Logs.info(numpy_includes)
+        # Add Python include path for MSVC
         numpy_includes += f" {python_include_dir.as_posix()}"
-        numpy_includes += f" {python_libs_dir.as_posix()}"
-        extra_flags.update(dict(linkflags=[f"/LIBPATH:{python_libs_dir}", f"/LIBPATH:{python_include_dir}"]))
-        # Logs.info(f"MSVC {numpy_includes=}")
+        # Link against Python libs
+        extra_flags.update(linkflags=[f"/LIBPATH:{python_libs_dir.as_posix()}"])
 
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         incs = PureWindowsPath(numpy_includes)
