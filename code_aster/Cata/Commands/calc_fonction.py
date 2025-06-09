@@ -267,10 +267,10 @@ CALC_FONCTION = MACRO(
         LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
         FREQ=SIMP(statut="f", typ="R", max="**"),
         NORME=SIMP(statut="o", typ="R", fr=tr("Valeur de la norme du spectre d oscillateur")),
-        NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("DEPL", "VITE", "ACCE")),
-        b_methode=BLOC(
-            condition="""not equal_to("METHODE", 'RICE') """,
+        b_nigam=BLOC(
+            condition="""equal_to("METHODE", 'NIGAM') """,
             NATURE_FONC=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("ACCE",)),
+            NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("DEPL", "VITE", "ACCE")),
         ),
         b_rice=BLOC(
             condition="""equal_to("METHODE", 'RICE') """,
@@ -281,6 +281,26 @@ CALC_FONCTION = MACRO(
                 fr=tr("durée de la phase forte pour facteur de pic"),
             ),
             NATURE_FONC=SIMP(statut="f", typ="TXM", defaut="DSP", into=("DSP",)),
+            NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("DEPL", "VITE", "ACCE")),
+        ),
+        b_harmo=BLOC(
+            condition="""equal_to("METHODE", 'HARMO') """,
+            PSEUDO=SIMP(
+                statut="o",
+                typ="TXM",
+                defaut="OUI",
+                into=("OUI", "NON"),
+                fr=tr("type de sro: pseudo ou direct"),
+            ),
+            NATURE_FONC=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("ACCE",)),
+            b_type_abso=BLOC(
+                condition="""equal_to("PSEUDO", 'NON') """,
+                NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("DEPL", "VITE", "ACCE")),
+            ),
+            b_type_pseudo=BLOC(
+                condition="""equal_to("PSEUDO", 'OUI') """,
+                NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("DEPL", "VITE", "ACCE")),
+            ),
         ),
     ),
     DSP=FACT(

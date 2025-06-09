@@ -431,12 +431,30 @@ FONCT1c = CALC_FONCTION(CORR_ACCE=_F(FONCTION=FONCT1a, FREQ_FILTRE=fc, METHODE="
 
 F_VITE1c = CALC_FONCTION(INTEGRE=_F(FONCTION=FONCT1c))
 F_DEPL1c = CALC_FONCTION(INTEGRE=_F(FONCTION=F_VITE1c))
+
 SRO1c = CALC_FONCTION(
     SPEC_OSCI=_F(
-        FONCTION=FONCT1c, LIST_FREQ=L_FREQ1, METHODE="HARMO", NORME=9.81, AMOR_REDUIT=(amor,)
+        FONCTION=FONCT1c,
+        LIST_FREQ=L_FREQ1,
+        METHODE="HARMO",
+        PSEUDO="OUI",
+        NORME=9.81,
+        AMOR_REDUIT=(amor,),
+        NATURE="ACCE",
     )
 )
 
+SRO1d = CALC_FONCTION(
+    SPEC_OSCI=_F(
+        FONCTION=FONCT1c,
+        LIST_FREQ=L_FREQ1,
+        METHODE="HARMO",
+        PSEUDO="NON",
+        NORME=9.81,
+        AMOR_REDUIT=(amor,),
+        NATURE="ACCE",
+    )
+)
 
 TEST_FONCTION(
     VALEUR=(
@@ -463,6 +481,12 @@ TEST_FONCTION(
             NOM_PARA=("AMOR", "FREQ"),
             VALE_PARA=(0.05, 40.0),
             FONCTION=SRO1c,
+        ),
+        _F(
+            VALE_CALC=0.18987486510900,
+            NOM_PARA=("AMOR", "FREQ"),
+            VALE_PARA=(0.05, 40.0),
+            FONCTION=SRO1d,
         ),
         _F(
             VALE_CALC=0.18164568474808,

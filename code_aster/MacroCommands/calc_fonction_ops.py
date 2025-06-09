@@ -46,7 +46,14 @@ from ..Utilities import force_list
 from .defi_inte_spec_ops import tocomplex
 from .Utils import liss_enveloppe as LISS
 from .Utils.calc_coherency import calc_cohefromdata
-from .Utils.random_signal_utils import ACCE2SRO, DSP2SRO, SRO2DSP, acce_filtre_CP, f_phase_forte
+from .Utils.random_signal_utils import (
+    ACCE2SRO,
+    ACCE2SRO_ABS,
+    DSP2SRO,
+    SRO2DSP,
+    acce_filtre_CP,
+    f_phase_forte,
+)
 
 
 def calc_fonction_prod(
@@ -855,6 +862,7 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
         else:
             ASSERT(kw["NATURE"] == "ACCE")
             ideb = 2
+
         if kw["METHODE"] == "RICE":
             # appel à DSP2SRO
             ASSERT(kw["NATURE_FONC"] == "DSP")
@@ -865,19 +873,24 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
                 vale_y = spectr.vale_y / kw["NORME"]
                 l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
         elif kw["METHODE"] == "NIGAM":
-            # appel à SPEC_OSCI
+            # appel à SPEC_OSCI NIGAM
             ASSERT(kw["NATURE_FONC"] == "ACCE")
             spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y, l_freq, l_amor)
             for iamor in range(len(l_amor)):
                 vale_y = spectr[iamor, ideb, :] / kw["NORME"]
                 l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
         elif kw["METHODE"] == "HARMO":
-            # appel à ACCE2DSP
+            # appel à SPEC_OSCI ACCE2DSP ou ACCE2SRO_ABS
             ASSERT(kw["NATURE_FONC"] == "ACCE")
+
             for iamor in l_amor:
-                spectr = ACCE2SRO(f_in, iamor, l_freq, ideb)
+                if kw["PSEUDO"] == "OUI":
+                    spectr = ACCE2SRO(f_in, iamor, l_freq, ideb)
+                else:
+                    spectr = ACCE2SRO_DIR(f_in, iamor, l_freq, ideb)
                 vale_y = spectr.vale_y / kw["NORME"]
                 l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
+
         if self.typres == Function2D:
             self.resu = t_nappe(vale_para, l_fonc_f, para)
         else:
