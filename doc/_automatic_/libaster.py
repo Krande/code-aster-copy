@@ -11273,8 +11273,29 @@ class MeshesMapping(DataStructure):
         2. __init__(self: libaster.MeshesMapping, arg0: str) -> None
         """
 
+    def getCoefficients(self):
+        """Return the coefficients of the interpolation of the slave nodes on the master cells
+
+        Returns:
+            list[real] : interpolation coefficients for each slave node
+        """
+
     def getFirstMesh(self):
         pass
+
+    def getNodesIds(self):
+        """Return the ids of the master nodes for the interpolation of the slave nodes
+
+        Returns:
+            list[int] : master nodes ids for each slave node
+        """
+
+    def getNumberOfMasterNodes(self):
+        """Return the number of master nodes implied in the interpolation of the slave nodes
+
+        Returns:
+            list[int] : number of master nodes for each slave node
+        """
 
     def getSecondMesh(self):
         pass
