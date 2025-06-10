@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm zzzz509i.py D 1
+F comm zzzz509i_solv.py D 1
 F mmed forma03a.mmed D 20
 F libr forma03a.21 D 21

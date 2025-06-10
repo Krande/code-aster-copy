@@ -25,15 +25,12 @@ Simple Fields defined on nodes of elements
 """
 import numpy as np
 import numpy.ma as ma
-from libaster import SimpleFieldOnNodesComplex, SimpleFieldOnNodesReal
 
-from ..Objects import PythonBool
+from ..MedUtils.MedConverter import fromMedFileField1TSNodes, toMedCouplingField, toMedFileField1TS
+from ..Objects import PythonBool, SimpleFieldOnNodesComplex, SimpleFieldOnNodesReal
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import force_list, injector
-from ..Utilities import medcoupling as medc
 from .component import ComponentOnNodes
-from ..Utilities.MedUtils import MEDConverter
 
 
 class SFoNStateBuilder(InternalStateBuilder):
@@ -143,7 +140,7 @@ class ExtendedSimpleFieldOnNodesReal:
         return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
 
     @classmethod
-    def fromMEDCouplingField(cls, mc_field, astermesh):
+    def fromMedCouplingField(cls, mc_field, astermesh):
         """Import the field to a new MEDCoupling field. Set values in place.
 
            It assumes that the DataArray contains the list of components and
@@ -157,7 +154,7 @@ class ExtendedSimpleFieldOnNodesReal:
             field (*MEDCouplingFieldDouble*): The medcoupling field.
         """
 
-        phys, cmps, values = MEDConverter.fromMEDFileField1TSNodes(mc_field, astermesh)
+        phys, cmps, values = fromMedFileField1TSNodes(mc_field, astermesh)
 
         field = cls(astermesh)
         field.allocate(phys, cmps)
@@ -165,7 +162,7 @@ class ExtendedSimpleFieldOnNodesReal:
 
         return field
 
-    def toMEDCouplingField(self, medmesh, prefix=""):
+    def toMedCouplingField(self, medmesh, prefix=""):
         """Export the field to a new MEDCoupling field
 
         Arguments:
@@ -176,9 +173,9 @@ class ExtendedSimpleFieldOnNodesReal:
             field ( MEDCouplingFieldDouble ) : The field medcoupling format.
         """
 
-        return MEDConverter.toMEDCouplingField(self, medmesh, prefix)
+        return toMedCouplingField(self, medmesh, prefix)
 
-    def toMEDFileField1TS(self, medmesh, profile=False, prefix=""):
+    def toMedFileField1TS(self, medmesh, profile=False, prefix=""):
         """Export the field to a new MED field
 
         Arguments:
@@ -190,7 +187,7 @@ class ExtendedSimpleFieldOnNodesReal:
             field ( MEDFileField1TS ) : The field in med format ( medcoupling ).
         """
 
-        return MEDConverter.toMEDFileField1TS(self, medmesh, profile, prefix)
+        return toMedFileField1TS(self, medmesh, profile, prefix)
 
     def transfert(self, mesh, cmps=[]):
         """Tranfert the field to an other mesh. One of the mesh has to be a restriction

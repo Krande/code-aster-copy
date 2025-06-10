@@ -17,9 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: francesco.bettonte at edf.fr
+"""
+This module provides an interface to Med files.
+"""
 
-from .MEDMeshConverter import convertMesh2MedCoupling
-from .MEDFieldConverter import toMEDFileField1TS, toMEDCouplingField
-from .MEDFieldConverter import fromMEDFileField1TSNodes, fromMEDFileField1TSCells
-from .MEDResultConverter import fromMEDFileData, toMEDFileData
+from .MedMeshAndFieldsSplitter import (
+    convertMedFieldToAster,
+    readMedFileToResults,
+    splitMedFileToResults,
+    splitMeshAndFieldsFromMedFile,
+    splitMeshFromMedFile,
+)

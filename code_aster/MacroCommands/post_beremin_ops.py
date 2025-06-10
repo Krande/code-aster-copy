@@ -41,7 +41,7 @@ from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, D
 from ..CodeCommands import IMPR_RESU, AFFE_MODELE
 from ..Objects import FieldOnCellsReal, NonLinearResult, Table
 from ..Utilities import logger, disable_fpe, no_new_attributes
-from ..Utilities.MedUtils import MEDFieldConverter
+from ..MedUtils.MedConverter import field_converter
 from ..Utilities import medcoupling as medc
 from ..Messages import UTMESS
 from ..Helpers.LogicalUnit import LogicalUnitFile
@@ -207,7 +207,7 @@ class PostBeremin:
         abscurvmax = max(frontabscurv)
 
         self._dictfondfiss = {}
-        for (group_no, nom_group_no) in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
+        for group_no, nom_group_no in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
             nodes = self._result.getMesh().getNodes(group_no)
             both = set(frontnodes).intersection(nodes)
             both = list(both)
@@ -506,7 +506,7 @@ class PostBeremin:
         sixx = sigma_sfield.SIXX
         sixx += sig1
         sigma_sfield.setComponentValues("SIXX", sixx)
-        sigma_f_mc, prof = MEDFieldConverter.toMCFieldAndProfileElem(
+        sigma_f_mc, prof = field_converter.toMCFieldAndProfileElem(
             sigma_sfield, self._mesh_3D_cells_mc
         )
         sigma_a_mc = sigma_f_mc.getArray()[:, 0]

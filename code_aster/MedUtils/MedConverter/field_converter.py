@@ -21,7 +21,7 @@
 
 import libaster
 import numpy as np
-from .. import medcoupling as medc, ParaMEDMEM as PMM
+from ...Utilities import medcoupling as medc, ParaMEDMEM as PMM
 
 
 def getPhysicalQuantityFromFieldName(fname):
@@ -139,7 +139,7 @@ def toMCFieldAndProfileElem(asfield, medmesh, prefix=""):
     """
 
     if not isinstance(medmesh, (medc.MEDCouplingUMesh, PMM.MEDCouplingUMesh)):
-        msg = "toMEDCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
+        msg = "toMedCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
         raise TypeError(msg.format(type(medmesh).__name__))
 
     values, mask = asfield._cache["val"], asfield._cache["msk"]
@@ -186,7 +186,7 @@ def toMCFieldAndProfile(asfield, medmesh, prefix=""):
     return field, profile
 
 
-def toMEDCouplingField(asfield, medmesh, prefix=""):
+def toMedCouplingField(asfield, medmesh, prefix=""):
     """Export the field to a new MEDCoupling field
 
     Arguments:
@@ -203,7 +203,7 @@ def toMEDCouplingField(asfield, medmesh, prefix=""):
     return medc_field
 
 
-def toMEDFileField1TS(asfield, medmesh, profile=False, prefix=""):
+def toMedFileField1TS(asfield, medmesh, profile=False, prefix=""):
     """Export the field to a new MED field
 
     Arguments:
@@ -227,7 +227,7 @@ def toMEDFileField1TS(asfield, medmesh, profile=False, prefix=""):
     return medfield
 
 
-def fromMEDFileField1TSNodes(mc_field, astermesh):
+def fromMedFileField1TSNodes(mc_field, astermesh):
     """Export the field information to create a new aster field.
 
     Arguments:
@@ -264,7 +264,7 @@ def fromMEDFileField1TSNodes(mc_field, astermesh):
     return phys, cmps, values
 
 
-def fromMEDFileField1TSCells(mc_field, astermesh):
+def fromMedFileField1TSCells(mc_field, astermesh):
     """Export the field information to create a new aster field.
 
     Arguments:

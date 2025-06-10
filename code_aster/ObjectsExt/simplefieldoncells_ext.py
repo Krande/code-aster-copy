@@ -25,14 +25,12 @@ Simple Fields defined on cells of elements
 
 import numpy as np
 import numpy.ma as ma
-from libaster import SimpleFieldOnCellsReal
 
+from ..MedUtils.MedConverter import fromMedFileField1TSCells, toMedCouplingField
+from ..Objects import SimpleFieldOnCellsReal
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import ParaMEDMEM as PMM
 from ..Utilities import injector
-from ..Utilities import medcoupling as medc
 from .component import ComponentOnCells
-from ..Utilities.MedUtils import MEDConverter
 
 
 class SFoCStateBuilder(InternalStateBuilder):
@@ -97,7 +95,7 @@ class ExtendedSimpleFieldOnCellsReal:
             mvalues, ComponentOnCells.Description(self, self._cache["idx"], self._cache["nbpt"])
         )
 
-    def toMEDCouplingField(self, medmesh, prefix=""):
+    def toMedCouplingField(self, medmesh, prefix=""):
         """Export the field to a new MEDCoupling field
 
         Arguments:
@@ -108,7 +106,7 @@ class ExtendedSimpleFieldOnCellsReal:
             field ( MEDCouplingFieldDouble ) : The field medcoupling format.
         """
 
-        return MEDConverter.toMEDCouplingField(self, medmesh, prefix)
+        return toMedCouplingField(self, medmesh, prefix)
 
     def setComponentValues(self, component, cfvalue):
         """Assign the values of a component.
@@ -228,7 +226,7 @@ class ExtendedSimpleFieldOnCellsReal:
         return sfield
 
     @classmethod
-    def fromMEDCouplingField(cls, mc_field, astermesh):
+    def fromMedCouplingField(cls, mc_field, astermesh):
         """Import the field to a new MEDCoupling field. Set values in place.
 
             It assumes that the DataArray contains the list of components and
@@ -238,7 +236,7 @@ class ExtendedSimpleFieldOnCellsReal:
             field (*MEDCouplingFieldDouble*): The medcoupling field.
         """
 
-        phys, cmps, values = MEDConverter.fromMEDFileField1TSCells(mc_field, astermesh)
+        phys, cmps, values = fromMedFileField1TSCells(mc_field, astermesh)
 
         field = cls(astermesh)
         field.allocate("ELEM", phys, cmps, 1, 1)

@@ -27,128 +27,42 @@ Some of them are not available with a sequential version.
 Some others are only defined if a prerequisite is well configured.
 """
 
+import libaster
 from .datastructure_py import UnavailableObject
 
 
-try:
-    from libaster import Mesh, ParallelMesh
-except ImportError:
+def add_undefined(store):
+    """Add config dependent objects.
 
-    class ParallelMesh(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ConnectionMesh
-except ImportError:
-
-    class ConnectionMesh(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import CommGraph
-except ImportError:
-
-    class CommGraph(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import IncompleteMesh
-except ImportError:
-
-    class IncompleteMesh(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelFiniteElementDescriptor
-except ImportError:
-
-    class ParallelFiniteElementDescriptor(UnavailableObject):
-        pass
+    Arguments:
+        store (dict): Container object.
+    """
+    # NB: keep consistency with the list imported!
+    _names = (
+        "CommGraph",
+        "ConnectionMesh",
+        "IncompleteMesh",
+        "MedFileAccessType",
+        "MedFileReader",
+        "MeshBalancer",
+        "MeshConnectionGraph",
+        "MGISBehaviour",
+        "ParallelContactNew",
+        "ParallelContactPairing",
+        "ParallelDOFNumbering",
+        "ParallelEquationNumbering",
+        "ParallelFiniteElementDescriptor",
+        "ParallelFrictionNew",
+        "ParallelMechanicalLoadFunction",
+        "ParallelMechanicalLoadReal",
+        "ParallelMesh",
+        "ParallelThermalLoadFunction",
+        "ParallelThermalLoadReal",
+        "PtScotchPartitioner",
+    )
+    for obj in _names:
+        store[obj] = getattr(libaster, obj, type(obj, (UnavailableObject,), {}))
 
 
-try:
-    from libaster import ParallelMechanicalLoadReal
-
-except ImportError:
-
-    class ParallelMechanicalLoadReal(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelMechanicalLoadFunction
-
-except ImportError:
-
-    class ParallelMechanicalLoadFunction(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelThermalLoadReal
-
-except ImportError:
-
-    class ParallelThermalLoadReal(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelThermalLoadFunction
-
-except ImportError:
-
-    class ParallelThermalLoadFunction(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelDOFNumbering
-except ImportError:
-
-    class ParallelDOFNumbering(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelEquationNumbering
-except ImportError:
-
-    class ParallelEquationNumbering(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import MGISBehaviour
-except ImportError:
-
-    class MGISBehaviour(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelContactPairing
-except ImportError:
-
-    class ParallelContactPairing(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelContactNew
-except ImportError:
-
-    class ParallelContactNew(UnavailableObject):
-        pass
-
-
-try:
-    from libaster import ParallelFrictionNew
-except ImportError:
-
-    class ParallelFrictionNew(UnavailableObject):
-        pass
+add_undefined(globals())
+del add_undefined

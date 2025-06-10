@@ -56,8 +56,8 @@ time_end = 30.0
 time_values = DEFI_LIST_REEL(
     DEBUT=time_start, INTERVALLE=(_F(JUSQU_A=time_inter, NOMBRE=4), _F(JUSQU_A=time_end, NOMBRE=8))
 )
-times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=time_values))
-
+times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=time_values), ECHEC=_F(SUBD_NIVEAU=3))
+# with >=50, it raises FACTOR_60...
 
 with test.assertRaisesRegex(CA.AsterError, "niveaux.*subdivision.*atteint"):
     MECA_NON_LINE(

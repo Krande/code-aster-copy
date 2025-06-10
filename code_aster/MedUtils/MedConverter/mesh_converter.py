@@ -20,7 +20,7 @@
 # person_in_charge: francesco.bettonte at edf.fr
 
 import libaster
-from .. import medcoupling as medc
+from ...Utilities import medcoupling as medc
 
 
 def convertMesh2MedCoupling(asmesh, spacedim_3d=False):

@@ -25,7 +25,7 @@ from code_aster import CA
 from code_aster.CA import MPI
 import os.path as osp
 
-from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMedFileToResults
+from code_aster.MedUtils import splitMedFileToResults
 from code_aster.Utilities import SharedTmpdir
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))

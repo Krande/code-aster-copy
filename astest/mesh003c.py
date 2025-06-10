@@ -31,7 +31,7 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 print("Nb procs", MPI.ASTER_COMM_WORLD.Get_size())
 print("Rank", MPI.ASTER_COMM_WORLD.Get_rank())
 
-from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+from code_aster.MedUtils import splitMeshAndFieldsFromMedFile
 
 ret = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True)
 pMesh = ret[0]
