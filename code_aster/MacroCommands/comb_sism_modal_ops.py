@@ -28,11 +28,11 @@ from ..Objects import MultipleElasticResult
 from ..Supervis.ExecuteCommand import _get_object_repr
 
 
-def get_nodes(MAILLAGE, GROUP_NO=None):
+def get_nodes(mesh, GROUP_NO=None):
     """Get the number of nodes.
 
     Arguments:
-        MAILLAGE (Mesh): list name of nodes
+        mesh: the mesh
         GROUP_NO (list[str]): list name of groups of nodes
 
     Returns:
@@ -43,8 +43,8 @@ def get_nodes(MAILLAGE, GROUP_NO=None):
     nodes_num = []
     nodes_name = []
     if GROUP_NO is not None:
-        nodes_num = MAILLAGE.getNodes(GROUP_NO)
-        nodes_name = [MAILLAGE.getNodeName(i) for i in nodes_num]
+        nodes_num = mesh.getNodes(GROUP_NO)
+        nodes_name = [mesh.getNodeName(i) for i in nodes_num]
     return nodes_num, nodes_name
 
 
@@ -99,7 +99,7 @@ def get_spectres_mono_appui(spectre_in):
     return spectres
 
 
-def get_spectres_mult_appui(spectre_in, MAILLAGE):
+def get_spectres_mult_appui(spectre_in, mesh):
     """Get the input for SPECTRE in case of mult-appui
 
     Arguments:
@@ -163,7 +163,7 @@ def get_spectres_mult_appui(spectre_in, MAILLAGE):
     return spectres
 
 
-def get_appuis(appuis_in, MAILLAGE):
+def get_appuis(appuis_in, mesh):
     """Get the input for APPUIS in case of Multi Appui
 
     Arguments:
@@ -187,7 +187,7 @@ def get_appuis(appuis_in, MAILLAGE):
         group_no = appuis_in[i].get("GROUP_NO")
         l_group_no_all.append(group_no)
         # get information on nodes to build APPUI
-        l_nodes_num, l_nodes_name = get_nodes(MAILLAGE, GROUP_NO=group_no)
+        l_nodes_num, l_nodes_name = get_nodes(mesh, GROUP_NO=group_no)
         # save list of all node numbers
         l_nodes_num_all.append(l_nodes_num)
         # save list of all node names
@@ -276,88 +276,83 @@ def get_amor_reduit(mode_meca, l_nume_ordre, amor_reduit, list_amor, amor_gene):
     return amor_reduit
 
 
-def filter_ordre_freq(
-    l_nume_ordre,
-    l_freq,
-    l_nume_mode,
-    TOUT_ORDRE,
-    LIST_ORDRE,
-    NUME_MODE,
-    NUME_ORDRE,
-    LIST_FREQ,
-    FREQ,
-    PRECISION,
-    CRITERE,
-):
+def filter_ordre_freq(list_para, increment):
     """Filter the order of mode from mode_meca
 
     Arguments:
-    l_nume_ordre    : input of nume_ordre extracted from modal basis
-    l_freq          : list of frequencies extracted from modal basis
-    l_nume_mode     : list of nume_mode extracted from modal basis
-    TOUT_ORDRE      : input of key_input TOUT_ORDRE
-    LIST_ORDRE      : input of key_input LIST_ORDRE
-    NUME_MODE       : input of key_input NUME_MODE
-    NUME_ORDRE      : input of key_input NUME_ORDRE
-    LIST_FREQ       : input of key_input LIST_FREQ
-    FREQ            : input of key_input FREQ
-    PRECISION       : input of key_input PRECISION
-    CRITERE         : input of key_input PRECISION
+        list_para    : list_para from modal basis
+        increment    : increment keyword
 
     Returns:
-        l_nume_ordre_filtered: list of number order of filtered modes
-        l_freq_filtered: list of number of frequency of filtered modes
-        l_nume_mode_filtered: list of number of mode of filtered modes
+        freqs: ordered list of filtered frequencies 
+        nume_ordres: ordered list of filtered number order
+        nume_modes: ordered list of filtered number mode
+        gene_masses: ordered list of masse gene
     """
+    l_nume_ordre = list_para["NUME_ORDRE"]
+    l_freq = list_para["FREQ"]
+    l_nume_mode = list_para["NUME_MODE"]
+    l_gene_masses = list_para["MASS_GENE"]
+
+    tout_ordre = increment.get("TOUT_ORDRE")
+    list_ordre = increment.get("LIST_ORDRE")
+    nume_mode = increment.get("NUME_MODE")
+    nume_ordre = increment.get("NUME_ORDRE")
+    list_freq = increment.get("LIST_FREQ")
+    freq = increment.get("FREQ")
+    precision = increment.get("PRECISION")
+    critere = increment.get("CRITERE")
+
     # Gerer le cas où TOUT_ORDRE est la valeur par default si tout est à None
-    if all(
-        key is None
-        for key in (
-            TOUT_ORDRE,
-            NUME_ORDRE,
-            FREQ,
-            NUME_MODE,
-            LIST_FREQ,
-            LIST_ORDRE,
-            PRECISION,
-            CRITERE,
-        )
-    ):
-        # value by defaut
-        TOUT_ORDRE = "OUI"
+    if all(key is None for key in (tout_ordre, nume_ordre, freq, nume_mode, list_freq, list_ordre)):
+        tout_ordre = "OUI"
     # all modes in modal basis are selected
-    if TOUT_ORDRE == "OUI":
-        return l_nume_ordre, l_freq, l_nume_mode
-    # selecting mode by nume_mode
-    NUME_MODE = NUME_MODE if NUME_MODE is not None else []
-    # selecting mode by nume_ordre
-    NUME_ORDRE = NUME_ORDRE if NUME_ORDRE is not None else []
-    # selecting mode by list of nume_ordre
-    if LIST_ORDRE is not None:
-        NUME_ORDRE = LIST_ORDRE.getValues()
-    # selecting mode by list of frequencies
-    elif LIST_FREQ is not None:
-        FREQ = LIST_FREQ.getValues()
-    # filtering frequencies
-    if FREQ is not None:
-        freqs = np.array(FREQ)
-        if CRITERE == "RELATIF":
-            borne_inf, borne_sup = freqs * (1 - PRECISION), freqs * (1 + PRECISION)
-        else:
-            borne_inf, borne_sup = freqs - PRECISION, freqs + PRECISION
+    if tout_ordre == "OUI":
+        l_nume_ordre_filtered = l_nume_ordre
+        l_freq_filtered = l_freq
+        l_nume_mode_filtered = l_nume_mode
     else:
-        borne_inf, borne_sup = -1, -1
-    # filtered order modes
-    l_nume_ordre_filtered, l_freq_filtered, l_nume_mode_filtered = [], [], []
-    # Filtration des ordres
-    for nume_ordre, freq, nume_mode in zip(l_nume_ordre, l_freq, l_nume_mode):
-        is_in_interval = np.any((borne_inf <= freq) & (freq <= borne_sup))
-        if nume_ordre in NUME_ORDRE or nume_mode in NUME_MODE or is_in_interval:
-            l_nume_ordre_filtered.append(nume_ordre)
-            l_freq_filtered.append(freq)
-            l_nume_mode_filtered.append(nume_mode)
-    # return
-    return l_nume_ordre_filtered, l_freq_filtered, l_nume_mode_filtered
+        # selecting mode by nume_mode
+        nume_mode = nume_mode if nume_mode is not None else []
+        # selecting mode by nume_ordre
+        nume_ordre = nume_ordre if nume_ordre is not None else []
+        # selecting mode by list of nume_ordre
+        if list_ordre is not None:
+            nume_ordre = list_ordre.getValues()
+        # selecting mode by list of frequencies
+        elif list_freq is not None:
+            freq = list_freq.getValues()
+        # filtering frequencies
+        if freq is not None:
+            freqs = np.array(freq)
+            if critere == "RELATIF":
+                borne_inf, borne_sup = freqs * (1 - precision), freqs * (1 + precision)
+            else:
+                borne_inf, borne_sup = freqs - precision, freqs + precision
+        else:
+            borne_inf, borne_sup = -1, -1
+        # filtered order modes
+        l_nume_ordre_filtered, l_freq_filtered, l_nume_mode_filtered = [], [], []
+        # Filtration des ordres
+        for i_ordre, f, i_mode in zip(l_nume_ordre, l_freq, l_nume_mode):
+            is_in_interval = np.any((borne_inf <= f) & (f <= borne_sup))
+            if i_ordre in nume_ordre or i_mode in nume_mode or is_in_interval:
+                l_nume_ordre_filtered.append(i_ordre)
+                l_freq_filtered.append(f)
+                l_nume_mode_filtered.append(i_mode)
+    
+    # Sort frequencies in increasing order
+    _, _, argsort_freq = zip(*sorted(zip(l_freq_filtered, l_nume_ordre_filtered, count())))
+    argsort_freq = list(argsort_freq)
+    freqs = np.array(l_freq_filtered)[argsort_freq]
+    # Sorted number of order
+    nume_ordres = np.array(l_nume_ordre_filtered)[argsort_freq]
+    # Sorted number of modes
+    nume_modes = np.array(l_nume_mode_filtered)[argsort_freq]
+    # Sorted generalized masses
+    gene_masses = np.array(l_gene_masses)[argsort_freq]
+
+    return freqs, nume_ordres, nume_modes, gene_masses
 
 
 
@@ -773,7 +768,7 @@ def corr_pseudo_mode_mult(
     option,
     pseudo_mode,
     l_group_no,
-    MAILLAGE,
+    mesh,
     direction,
     amors,
     freq_coup,
@@ -789,7 +784,7 @@ def corr_pseudo_mode_mult(
         option      : option of field to combine
         pseudo_mode : pseudo_mode (mode_meca)
         l_group_no  : list of all group_no of support
-        MAILLAGE    : mesh extracted from mode_meca by mode_meca.getMesh()
+        mesh    : mesh extracted from mode_meca by mode_meca.getMesh()
         direction   : direction
         amors       : list of damping coefficients
         freq_coup   : scalar value of cutting frequency at which ZPA is read
@@ -818,7 +813,7 @@ def corr_pseudo_mode_mult(
         pass
     # searche for index (NUME_CMP) in MODE_STATIQUE / PSEUDO_MODE
     # list of node_num and node_name in group_no
-    nodes_num_per_grno, nodes_name_per_grno = get_nodes(MAILLAGE, GROUP_NO=l_group_no)
+    nodes_num_per_grno, nodes_name_per_grno = get_nodes(mesh, GROUP_NO=l_group_no)
     # list of all noeud_cmp
     l_noeud_cmp = []
     for i_node in range(len(nodes_num_per_grno)):
@@ -1059,625 +1054,130 @@ def get_depl_mult_appui(depl_mult_appui):
     # return
     return depl_mult_appuis, D_e_dirs
 
-
-def impr_vale_spec_mono(
-    output_result, type_resu, option, mode_meca, dir, R_mi_all, nume_ordres_resu
-):
-    """print out spectral value for mono_appui
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        dir             : direction
-        R_mi_all        : spectral responses of all modes
-    Returns:
-
+class Resu:
     """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_SPEC"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_SPEC")
-    # get mode to be printed out
-    tout_ordre = type_resu[index].get("TOUT_ORDRE")
-    nume_ordre = type_resu[index].get("NUME_ORDRE")
-    list_ordre = type_resu[index].get("LIST_ORDRE")
-    nume_mode = type_resu[index].get("NUME_MODE")
-    freq = type_resu[index].get("FREQ")
-    list_freq = type_resu[index].get("LIST_FREQ")
-    precision = type_resu[index].get("PRECISION")
-    critere = type_resu[index].get("CRITERE")
-    # list of parameters in mode_meca
-    list_para = mode_meca.LIST_PARA()
-    # search for modes to be printed out
-    l_nume_ordre, l_freq, l_nume_mode = filter_ordre_freq(
-        l_nume_ordre=list_para["NUME_ORDRE"],
-        l_freq=list_para["FREQ"],
-        l_nume_mode=list_para["NUME_MODE"],
-        TOUT_ORDRE=tout_ordre,
-        LIST_ORDRE=list_ordre,
-        NUME_MODE=nume_mode,
-        NUME_ORDRE=nume_ordre,
-        LIST_FREQ=list_freq,
-        FREQ=freq,
-        PRECISION=precision,
-        CRITERE=critere,
-    )
-    # Sort frequencies and num_ordre by increasing order
-    _, _, argsort_freq = zip(*sorted(zip(l_freq, l_nume_ordre, count())))
-    argsort_freq = list(argsort_freq)
-    # list of sorted numeros of order (nume_ordre)
-    nume_ordres = np.array(l_nume_ordre)[argsort_freq]
-    # list of sorted numeros of mode (nume_mode)
-    # get LIST_AXE to be printed out
-    list_axe = type_resu[index].get("LIST_AXE")
-    # check if axe to be printed out is in the list of axes to be calculated
-    if dir.replace("O", "") in list_axe:
-        # printing out spectral value for each mode and each direction
-        for i_nume_ordre in range(len(nume_ordres)):
-            nume_ordre = nume_ordres[i_nume_ordre]
-            # search for position in resu
-            i_nume_ordres_resu = (nume_ordres_resu.tolist()).index(nume_ordre)
-            # NOM_CAS
-            case_name = "SPEC_" + str(nume_ordre) + str(dir.replace("O", ""))
-            # put values in field to be printed out
-            field_output.setValues(R_mi_all[i_nume_ordres_resu])
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
-
-
-def impr_vale_qs_dire(output_result, type_resu, option, mode_meca, dir, R_c):
-    """print out quasi-static value by direction
     Args:
-        output_result   : SD output mult-elas
         type_resu       : input of TYPE_RESU
-        option          : field to be printed
         mode_meca       : input of MODE_MECA
-        dir             : direction
-        R_c             : quasi-static or correction by pseudo-mode
-    Returns:
-
+        mesh            : the mesh
     """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_QS"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_QS")
-    # output
-    if R_c is not None:
-        # get LIST_AXE
-        list_axe = type_resu[index].get("LIST_AXE")
-        # check if LIST_AXE is present
-        if list_axe is not None:
-            # print for direction "dir"
-            if dir.replace("O", "") in list_axe:
-                # NOM_CAS
-                case_name = "PART_QS_" + str(dir.replace("O", ""))
-                # put values in field name to be printed out
-                field_output.setValues(R_c)
-                # Store field
-                nbIndexes += 1
-                output_result.resize(nbIndexes)
-                output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
+    _response_by_type = {"VALE_QS": "PART_QS{}",
+                         "VALE_DIRE": "DIRE{}",
+                         "VALE_DDS": "PART_DDS{}",
+                         "VALE_INER": "PART_INER{}",
+                         "VALE_DYNA": "PART_DYNA{}",
+                         "VALE_TOTA": "TOTA{}"}
+    _newmark_by_type = {"VALE_TOTA": "NEWM_{}",
+                        "VALE_DYNA": "DYNA_NEWN_{}",
+                        "VALE_INER": "INER_NEWM_{}",
+                        "VALE_DDS": "DDS_NEWM_{}",
+                        "VALE_QS": "QS_NEWM_{}"}
+    def __init__(self, type_resu, mode_meca, mesh):
+        self._type_resu = type_resu
+        self._mode_meca = mode_meca
+        self._mesh = mesh
+        self._result = MultipleElasticResult()
+        self._nbIndexes = 0
+        self._field_by_option= {}
 
+    def _incr_index(self):
+        self._nbIndexes +=1
+        if self._nbIndexes==1:
+            self._result.allocate(self._nbIndexes)
+        else:
+            self._result.resize(self._nbIndexes)
 
-def impr_vale_dire(output_result, type_resu, option, mode_meca, dir, R_x):
-    """print out directional response
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        dir             : direction
-        R_x             : directional response
-    Returns:
+    def _setField(self, option, values, name):
+        field = self._copy_field(option)
+        field.setValues(values)
+        self._incr_index()
+        self._result.setField(field, option, value=name, para="NOM_CAS")
 
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_DIRE"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_DIRE")
-    # get LIST_AXE
-    list_axe = type_resu[index].get("LIST_AXE")
-    # check if LIST_AXE is present
-    if list_axe is not None:
-        # printing for direction "dir"
-        if dir.replace("O", "") in list_axe:
-            # NOM_CAS
-            case_name = "DIRE_" + str(dir.replace("O", ""))
-            # ut values in field to be printed out
-            field_output.setValues(R_x)
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
+    def _copy_field(self, option):
+        """Create identical field of option field"""
+        field = self._field_by_option.get(option)
+        if not field:
+            if option in ("VITE", "ACCE_ABSOLU"):
+                option2 = "DEPL"
+            else:
+                option2 = option
+            field = self._mode_meca.getField(option2, 1).copy()
+            self._field_by_option[option] = field
+        return field
 
+    def _get_type(self, vale_type):
+        """return type_resu corresponding to vale_type"""
+        for type_resu in self._type_resu:
+            if type_resu.get("TYPE")==vale_type:
+                return type_resu
 
-def impr_vale_tota(output_result, type_resu, option, mode_meca, R_xyz, R_newmark_all):
-    """print out total response
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        dir             : direction
-        R_xyz           : total response
-        R_newmark_all   : total response by NEWMARK
-    Returns:
+    def add_dire_response(self, option, direction, R, vale_type):
+        """print out directional response
+        Args:
+            option         : field to be printed
+            direction      : direction
+            R              : directional response
+            vale_type      : type of response
+        """
+        type_resu = self._get_type(vale_type)
+        if type_resu is None:
+            return
 
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_TOTA"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_TOTA")
-    # NOM_CAS
-    case_name = "TOTA"
-    # put value in field to be printed out
-    field_output.setValues(R_xyz)
-    # Store field
-    nbIndexes += 1
-    output_result.resize(nbIndexes)
-    output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # print out all combinaisons of Newmark
-    tout_newmark = type_resu[index].get("NEWMARK")
-    # check if tout_newmark is present
-    if (
-        R_newmark_all and tout_newmark is not None and tout_newmark == "OUI"
-    ):  # R_newmark_all is not empty
-        for i_newmark in range(len(R_newmark_all)):
-            # NOM_CAS
-            case_name = "NEWM_" + str(i_newmark + 1)
-            # put value in the field to be printed out
-            field_output.setValues(R_newmark_all[i_newmark])
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
+        list_axe = type_resu.get("LIST_AXE")
+        direction = direction.replace("O", "")
+        if list_axe and direction in list_axe:
+            self._setField(option, R, self._response_by_type[vale_type].format("_" + direction))
 
+    def add_response(self, option, R, R_newmark_all, vale_type):
+        """print out response
+        Args:
+            option          : field to be printed
+            R               : total response
+            R_newmark_all   : response by NEWMARK
+            vale_type       : type of response
+        """
+        type_resu = self._get_type(vale_type)
+        if type_resu is None:
+            return
 
-def impr_vale_spec_mult(
-    output_result, type_resu, option, mode_meca, dir, R_mi_j, nume_ordres_resu, APPUI=None
-):
-    """print out spectral response for each mode, direction and support (APPUI)
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        dir             : direction
-        R_mi_j          : spectral response
-        APPUI           : nom_appui
-    Returns:
+        self._setField(option, R, self._response_by_type[vale_type].format(""))
+        if type_resu.get("NEWMARK") == "OUI":
+            for i, r_newmark in enumerate(R_newmark_all):
+                self._setField(option, r_newmark, self._newmark_by_type[vale_type].format(i + 1))
 
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_SPEC"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_SPEC")
-    # search for mode to be printed out
-    tout_ordre = type_resu[index].get("TOUT_ORDRE")
-    nume_ordre = type_resu[index].get("NUME_ORDRE")
-    list_ordre = type_resu[index].get("LIST_ORDRE")
-    nume_mode = type_resu[index].get("NUME_MODE")
-    freq = type_resu[index].get("FREQ")
-    list_freq = type_resu[index].get("LIST_FREQ")
-    precision = type_resu[index].get("PRECISION")
-    critere = type_resu[index].get("CRITERE")
-    # list parameters in mode_meca
-    list_para = mode_meca.LIST_PARA()
-    # search for modes to be printed out in all modes being calculated
-    l_nume_ordre, l_freq, l_nume_mode = filter_ordre_freq(
-        l_nume_ordre=list_para["NUME_ORDRE"],
-        l_freq=list_para["FREQ"],
-        l_nume_mode=list_para["NUME_MODE"],
-        TOUT_ORDRE=tout_ordre,
-        LIST_ORDRE=list_ordre,
-        NUME_MODE=nume_mode,
-        NUME_ORDRE=nume_ordre,
-        LIST_FREQ=list_freq,
-        FREQ=freq,
-        PRECISION=precision,
-        CRITERE=critere,
-    )
-    # Sort frequencies in increasing order
-    _, _, argsort_freq = zip(*sorted(zip(l_freq, l_nume_ordre, count())))
-    argsort_freq = list(argsort_freq)
-    # Sort number of orders of modes in increasing order
-    nume_ordres = np.array(l_nume_ordre)[argsort_freq]
-    # Sort numeber of modes in increasing order
-    # get LIST_AXE
-    list_axe = type_resu[index].get("LIST_AXE")
-    # get input APPUI (not used)
-    list_appui = type_resu[index].get("LIST_APPUI")
-    tout_appui = type_resu[index].get("TOUT_APPUI")
-    # get input GROUP_APPUI (not used)
-    # print out result for each nom_appui, mode and direction
-    if (
-        APPUI is not None
-        and ((list_appui is not None and APPUI in list_appui) or tout_appui == "OUI")
-        and dir.replace("O", "") in list_axe
-    ):
-        # print out result for nom_appui = APPUI
-        for i_nume_ordre in range(len(nume_ordres)):
-            # interation for each modes to be printed
-            nume_ordre = nume_ordres[i_nume_ordre]
-            # search for position in resu
-            i_nume_ordres_resu = (nume_ordres_resu.tolist()).index(nume_ordre)
-            # NOM_CAS
-            case_name = "SPEC_" + str(nume_ordre) + str(dir.replace("O", "")) + str(APPUI)
-            # Mettre les valeurs dans ce champ
-            field_output.setValues(R_mi_j[i_nume_ordres_resu])
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
+    def add_spectral_response(self, option, direction, R, nume_ordres_resu, appui=""):
+        """print out spectral response (mono or multi appuis)
+        Args:
+            option          : field to be printed
+            direction       : direction
+            R               : spectral response
+            nume_ordres_resu: list of nume ordre in R
+            appui           : support to be given for multi_appui
+        """
+        type_resu = self._get_type("VALE_SPEC")
+        if type_resu is None:
+            return
 
+        _, nume_ordres, _, _ = filter_ordre_freq(self._mode_meca.LIST_PARA(), type_resu)
+        list_axe = type_resu.get("LIST_AXE")
+        list_appui = type_resu.get("LIST_APPUI")
+        tout_appui = type_resu.get("TOUT_APPUI")
+        direction = direction.replace("O", "")
+        if direction in list_axe and (not appui or tout_appui == "OUI" or appui in list_appui):
+            for nume_ordre in nume_ordres:
+                i_nume_ordre = (nume_ordres_resu.tolist()).index(nume_ordre)
+                self._setField(option, R[i_nume_ordre], f"SPEC_{nume_ordre}{direction}{appui}")
 
-def impr_vale_dds_dire(output_result, type_resu, option, mode_meca, dir, R_e_j):
-    """print out repsonse du to DDS by direction
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        dir             : direction
-        R_e_j           : response dut to DDS by direction
-
-    Returns:
-
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_DDS"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_DDS")
-    # get LIST_AXE
-    list_axe = type_resu[index].get("LIST_AXE")
-    # impression
-    if list_axe is not None:
-        # check if direction to be printed is presented in all directions being calculated
-        if dir.replace("O", "") in list_axe:
-            # NOM_CAS
-            case_name = "PART_DDS_" + str(dir.replace("O", ""))
-            # put value in field to be printed out
-            field_output.setValues(R_e_j)
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
-
-
-def impr_vale_iner_dire(output_result, type_resu, option, mode_meca, dir, R_e_j):
-    """print out inertial part of response by direction
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        dir             : direction
-        R_e_j           : response dut to DDS by direction
-    Returns:
-
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_INER"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_INER")
-    # get LIST_AXE
-    list_axe = type_resu[index].get("LIST_AXE")
-    # impression
-    if list_axe is not None:
-        # check if direction to be printed is presented in all directions being calculated
-        if dir.replace("O", "") in list_axe:
-            # NOM_CAS
-            case_name = "PART_INER_" + str(dir.replace("O", ""))
-            # put value in field to be printed out
-            field_output.setValues(R_e_j)
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
-
-
-def impr_vale_dyna(output_result, type_resu, option, mode_meca, R_d, Rd_newmark_all=None, dir=None):
-    """print out dynamic part of response: by direction and combined value
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        dir             : direction
-        R_d             : combined dynamic response
-    Returns:
-
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_DYNA"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_DYNA")
-    # impression
-    if dir is None:
-        # print out combined dynamic part
-        # NOM_CAS
-        case_name = "PART_DYNA"
-        # put value in field to be printed out
-        field_output.setValues(R_d)
-        # Store field
-        nbIndexes += 1
-        output_result.resize(nbIndexes)
-        output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-        # impression all combinaisons of Newmark
-        tout_newmark = type_resu[index].get("NEWMARK")
-        R_newmark_all = Rd_newmark_all
-        if (
-            R_newmark_all and tout_newmark is not None and tout_newmark == "OUI"
-        ):  # R_newmark_all is not empty
-            for i_newmark in range(len(R_newmark_all)):
-                # NOM_CAS
-                case_name = "DYNA_NEWN" + "_" + str(i_newmark + 1)
-                # put value in field to be printed out
-                field_output.setValues(R_newmark_all[i_newmark])
-                # Store field
-                nbIndexes += 1
-                output_result.resize(nbIndexes)
-                output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    else:  # if dir is present --> print NOM_CAS: PART_DYNA_X, PART_DYNA_Y et PART_DYNA_Z
-        list_axe = type_resu[index].get("LIST_AXE")
-        if dir.replace("O", "") in list_axe:
-            # NOM_CAS
-            case_name = "PART_DYNA_" + str(dir.replace("O", ""))
-            # put value in field to be printed out
-            field_output.setValues(R_d)
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
-
-
-def impr_vale_iner_tota(output_result, type_resu, option, mode_meca, R_prim, R_prim_newmark_all):
-    """print out combined inertial part of response
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        R_prim          : combined inertial response
-        R_prim_newmark_all : all combinaisons of NEWMARK
-    Returns:
-
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_INER"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_INER")
-    # NOM_CAS
-    case_name = "PART_INER"
-    # put value in field to be printed ou
-    field_output.setValues(R_prim)
-    # Store field
-    nbIndexes += 1
-    output_result.resize(nbIndexes)
-    output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # impression all combinaisons of Newmark
-    tout_newmark = type_resu[index].get("NEWMARK")
-    R_newmark_all = R_prim_newmark_all
-    if (
-        R_newmark_all and tout_newmark is not None and tout_newmark == "OUI"
-    ):  # R_newmark_all is not empty
-        for i_newmark in range(len(R_newmark_all)):
-            # NOM_CAS
-            case_name = "INER_NEWM" + "_" + str(i_newmark + 1)
-            # put value in field to be printed out
-            field_output.setValues(R_newmark_all[i_newmark])
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
-
-
-def impr_vale_dds_tota(output_result, type_resu, option, mode_meca, R_seco, R_seco_newmark_all):
-    """print out combined response due to DDS
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        R_seco          : combined response due to DDS
-        R_seco_newmark_all : all combinaisons of NEWMARK
-    Returns:
-
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_DDS"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_DDS")
-    # NOM_CAS
-    case_name = "PART_DDS"
-    # put value in field to be printed out
-    field_output.setValues(R_seco)
-    # Store field
-    nbIndexes += 1
-    output_result.resize(nbIndexes)
-    output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # impression all combinaisons Newmark
-    tout_newmark = type_resu[index].get("NEWMARK")
-    R_newmark_all = R_seco_newmark_all
-    if (
-        R_newmark_all and tout_newmark is not None and tout_newmark == "OUI"
-    ):  # R_newmark_all is not empty
-        for i_newmark in range(len(R_newmark_all)):
-            # NOM_CAS
-            case_name = "DDS_NEWM" + "_" + str(i_newmark + 1)
-            # put value in field to be printed out
-            field_output.setValues(R_newmark_all[i_newmark])
-            # Store field
-            nbIndexes += 1
-            output_result.resize(nbIndexes)
-            output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
-
-
-def impr_vale_qs_tota(output_result, type_resu, option, mode_meca, R_ps, Rps_newmark_all):
-    """print out combined response by pseudo-mode
-    Args:
-        output_result   : SD output mult-elas
-        type_resu       : input of TYPE_RESU
-        option          : field to be printed
-        mode_meca       : input of MODE_MECA
-        R_ps            : combined response by pseudo-mode
-        R_ps_newmark_all: all combinaisons of NEWMARK
-    Returns:
-
-    """
-    # size of actual mult_elas SD
-    nbIndexes = output_result.getNumberOfIndexes()
-    # Create identical field of option field
-    imode = 0
-    field_output = None
-    if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
-        field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["VITE", "ACCE_ABSOLU"]:
-        field_output = mode_meca.getField("DEPL", imode + 1).copy()
-    # search for index of input of TYPE_RESU when TYPE = "VALE_QS"
-    type_all = [type_resu[i].get("TYPE") for i in range(len(type_resu))]
-    index = type_all.index("VALE_QS")
-    # print out pseudo-mode part (quasi-static part)
-    if R_ps is not None and Rps_newmark_all is not None:
-        # NOM_CAS
-        case_name = "PART_QS"
-        # put value in field to be printed out
-        field_output.setValues(R_ps)
-        # Store field
-        nbIndexes += 1
-        output_result.resize(nbIndexes)
-        output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-        # impression all combinaisons Newmark
-        tout_newmark = type_resu[index].get("NEWMARK")
-        R_newmark_all = Rps_newmark_all
-        if (
-            R_newmark_all and tout_newmark is not None and tout_newmark == "OUI"
-        ):  # R_newmark_all is not empty
-            for i_newmark in range(len(R_newmark_all)):
-                # NOM_CAS
-                case_name = "DDS_NEWM" + "_" + str(i_newmark + 1)
-                # put value in field to be printed out
-                field_output.setValues(R_newmark_all[i_newmark])
-                # Store field
-                nbIndexes += 1
-                output_result.resize(nbIndexes)
-                output_result.setField(field_output, option, value=case_name, para="NOM_CAS")
-    # return
+    def get(self):
+        model = self._mode_meca.getModel()
+        if model:
+            self._result.setModel(model)
+        else:
+            self._result.setMesh(self._mesh)
+        cara_elem = self._mode_meca.getElementaryCharacteristics()
+        if cara_elem:
+            self._result.setElementaryCharacteristics(cara_elem)
+        return self._result
 
 
 def comb_sism_modal_ops(self, **args):
@@ -1689,92 +1189,38 @@ def comb_sism_modal_ops(self, **args):
     Returns:
         resu: result for linear modal combinaison
     """
-    # get input MODE_MECA
     mode_meca = args.get("MODE_MECA")
-    # Get input TOUT_ORDRE
-    tout_ordre = args.get("TOUT_ORDRE")
-    # Get input NUME_ORDRE
-    nume_ordre = args.get("NUME_ORDRE")
-    # Get input LIST_ORDRE
-    list_ordre = args.get("LIST_ORDRE")
-    # Get input NUME_MODE
-    nume_mode = args.get("NUME_MODE")
-    # Get input FREQ
-    freq = args.get("FREQ")
-    # Get input LIST_FREQ
-    list_freq = args.get("LIST_FREQ")
-    # Get input PRECISION
-    precision = args.get("PRECISION")
-    # Get input CRITERE
-    critere = args.get("CRITERE")
-    # Get input CRITERE
     amor_reduit = args.get("AMOR_REDUIT")
-    # Get input LIST_AMOR
     list_amor = args.get("LIST_AMOR")
-    # Get input AMOR_GENE
     amor_gene = args.get("AMOR_GENE")
-    # Get input MODE_CORR
     mode_corr = args.get("MODE_CORR")
-    # Get input PSEUDO_MODE
     pseudo_mode = args.get("PSEUDO_MODE")
-    # Get input FREQ_COUP
     freq_coup_in = args.get("FREQ_COUP")
-    # Get input TYPE_ANALYSE
     type_analyse = args.get("TYPE_ANALYSE")
-    # Get input SPECTRE
     spectre_in = args.get("SPECTRE")
-    # Get input APPUIS
     appuis_in = args.get("APPUIS")
-    # Get input comb_input
     comb_mode = args.get("COMB_MODE")
-    # Get input comb_input
     comb_direction = args.get("COMB_DIRECTION")
-    # Get input group_appui_correle
     group_appui_correle = args.get("GROUP_APPUI_CORRELE")
-    # Get input CUMUL_INTRA : Combination of the contributions of each response of support inside a group
+    # CUMUL_INTRA : Combination of the contributions of each response of support inside a group
     cumul_intra = args.get("CUMUL_INTRA")
-    # Get input CUMUL_INTER : Combination of the contributions of each group of supports
+    # CUMUL_INTER : Combination of the contributions of each group of supports
     cumul_inter = args.get("CUMUL_INTER")
-    # Get input COMB_DDS_CORRELE
     comb_dds_correle = args.get("COMB_DDS_CORRELE")
-    # Get input depl_mult_appui
     depl_mult_appui = args.get("DEPL_MULT_APPUI")
-    # Get input type_resu
     type_resu = args.get("TYPE_RESU")
-    # Get input INFO
     verbosity = args["INFO"]
     setFortranLoggingLevel(verbosity)
     # --------------------------------------------------------------------------
     # exploring mode_meca
     # --------------------------------------------------------------------------
     # mesh in mode_meca
-    MAILLAGE = mode_meca.getMesh()
+    mesh = mode_meca.getMesh()
     # list of parameters in mode_meca
     list_para = mode_meca.LIST_PARA()
     # get numeber of orders of modes to be combined
-    l_nume_ordre, l_freq, l_nume_mode = filter_ordre_freq(
-        l_nume_ordre=list_para["NUME_ORDRE"],
-        l_freq=list_para["FREQ"],
-        l_nume_mode=list_para["NUME_MODE"],
-        TOUT_ORDRE=tout_ordre,
-        LIST_ORDRE=list_ordre,
-        NUME_MODE=nume_mode,
-        NUME_ORDRE=nume_ordre,
-        LIST_FREQ=list_freq,
-        FREQ=freq,
-        PRECISION=precision,
-        CRITERE=critere,
-    )
-    # Sort frequencies in increasing order
-    _, _, argsort_freq = zip(*sorted(zip(l_freq, l_nume_ordre, count())))
-    argsort_freq = list(argsort_freq)
-    freqs = np.array(l_freq)[argsort_freq]
-    # Sorted number of order
-    nume_ordres = np.array(l_nume_ordre)[argsort_freq]
-    # Sorted number of modes
-    nume_modes = np.array(l_nume_mode)[argsort_freq]
-    # Sorted generalized masses
-    gene_masses = np.array(list_para["MASS_GENE"])[argsort_freq]
+    freqs, nume_ordres, nume_modes, gene_masses = filter_ordre_freq(list_para, args)
+
     # Get damping coefficients
     amor_reduit = get_amor_reduit(mode_meca, nume_ordres, amor_reduit, list_amor, amor_gene)
     # if number of damping coefficient is less than modes to combine
@@ -1812,7 +1258,7 @@ def comb_sism_modal_ops(self, **args):
     if type_analyse == "MONO_APPUI":
         spectres = get_spectres_mono_appui(spectre_in)
     elif type_analyse == "MULT_APPUI":
-        spectres = get_spectres_mult_appui(spectre_in, MAILLAGE)
+        spectres = get_spectres_mult_appui(spectre_in, mesh)
         # search for all directions presented by users
         dir_all_old = []
         for i_appui in range(len(spectres)):
@@ -1825,12 +1271,12 @@ def comb_sism_modal_ops(self, **args):
             if dir_standard[i_dir_standard] in dir_all_old:
                 dir_all.append(dir_standard[i_dir_standard])
     elif type_analyse == "ENVELOPPE":
-        spectres = get_spectres_mult_appui(spectre_in, MAILLAGE)
+        spectres = get_spectres_mult_appui(spectre_in, mesh)
     # Get support (APPUI)
     if type_analyse == "MULT_APPUI":
         # Get support (APPUI)
         nom_appuis_all, l_nodes_num_all, l_nodes_name_all, l_group_no_all = get_appuis(
-            appuis_in, MAILLAGE
+            appuis_in, mesh
         )
     # Get all groupes of support (group_appui)
     if type_analyse == "MULT_APPUI":
@@ -1841,11 +1287,9 @@ def comb_sism_modal_ops(self, **args):
     # --------------------------------------------------------------------------
     # Output result preparing
     # --------------------------------------------------------------------------
-    output_result = None
-    # Créer la SD résultat
-    nbIndexes = 1
-    output_result = MultipleElasticResult()
-    output_result.allocate(nbIndexes)
+
+    resu = Resu(type_resu, mode_meca, mesh)
+
     # --------------------------------------------------------------------------
     # Combinaison
     # --------------------------------------------------------------------------
@@ -1947,16 +1391,7 @@ def comb_sism_modal_ops(self, **args):
                     # Raise alarm for zero mode to be considered before cutting frequency
                     UTMESS("A", "SEISME_96", valr=freq_coup)
                 # Print output for spectral value for each mode and direction
-                if any(type_resu[i].get("TYPE") == "VALE_SPEC" for i in range(len(type_resu))):
-                    impr_vale_spec_mono(
-                        output_result,
-                        type_resu,
-                        option,
-                        mode_meca,
-                        spectre_dir,
-                        R_mi_all,
-                        nume_ordres,
-                    )
+                resu.add_spectral_response(option, spectre_dir, R_mi_all, nume_ordres)
                 # step 3: modal combinaison
                 # Get input COMB_MODE
                 R_m2, R_qs = comb_modal_response.get(R_mi)
@@ -2010,22 +1445,10 @@ def comb_sism_modal_ops(self, **args):
                 # RCCM part primaire
                 l_R_prim.append(R_prim)
                 # Print out response for mono_appui by direction
-                # VALE_DIRE
-                if any(type_resu[i].get("TYPE") == "VALE_DIRE" for i in range(len(type_resu))):
-                    impr_vale_dire(output_result, type_resu, option, mode_meca, spectre_dir, R_x)
-                # VALE_DYNA
-                if any(type_resu[i].get("TYPE") == "VALE_DYNA" for i in range(len(type_resu))):
-                    impr_vale_dyna(
-                        output_result, type_resu, option, mode_meca, R_m, None, spectre_dir
-                    )
-                # VALE_QS
-                if any(type_resu[i].get("TYPE") == "VALE_QS" for i in range(len(type_resu))):
-                    impr_vale_qs_dire(output_result, type_resu, option, mode_meca, spectre_dir, R_c)
-                # VALE_INER
-                if any([type_resu[i].get("TYPE") == "VALE_INER" for i in range(len(type_resu))]):
-                    impr_vale_iner_dire(
-                        output_result, type_resu, option, mode_meca, spectre_dir, R_prim
-                    )
+                resu.add_dire_response(option, spectre_dir, R_x, "VALE_DIRE")
+                resu.add_dire_response(option, spectre_dir, R_m, "VALE_DYNA")
+                resu.add_dire_response(option, spectre_dir, R_c, "VALE_QS")
+                resu.add_dire_response(option, spectre_dir, R_prim, "VALE_INER")
                 # save for INFO
                 l_SA[spectre_dir] = S_r_freq
             # step 7 : reponse by directional combinaison
@@ -2041,22 +1464,10 @@ def comb_sism_modal_ops(self, **args):
                 np.shape(R_prim_newmark_all)
             )
             # Print output for combined response
-            # VALE_TOTA
-            if any(type_resu[i].get("TYPE") == "VALE_TOTA" for i in range(len(type_resu))):
-                impr_vale_tota(output_result, type_resu, option, mode_meca, R_xyz, R_newmark_all)
-            # VALE_DYNA
-            if any(type_resu[i].get("TYPE") == "VALE_DYNA" for i in range(len(type_resu))):
-                impr_vale_dyna(output_result, type_resu, option, mode_meca, R_d, Rd_newmark_all)
-            # VALE_QS
-            if any(type_resu[i].get("TYPE") == "VALE_QS" for i in range(len(type_resu))):
-                impr_vale_qs_tota(
-                    output_result, type_resu, option, mode_meca, R_ps, Rps_newmark_all
-                )
-            # VALE_INER
-            if any(type_resu[i].get("TYPE") == "VALE_INER" for i in range(len(type_resu))):
-                impr_vale_iner_tota(
-                    output_result, type_resu, option, mode_meca, R_prim, R_prim_newmark_all
-                )
+            resu.add_response(option, R_xyz, R_newmark_all, "VALE_TOTA")
+            resu.add_response(option, R_d, Rd_newmark_all, "VALE_DYNA")
+            resu.add_response(option, R_ps, Rps_newmark_all, "VALE_QS")
+            resu.add_response(option, R_prim, R_prim_newmark_all, "VALE_INER")
             # Print out for INFO = 1 or 2
             if verbosity and i_option == 1:
                 # about mode_meca
@@ -2257,7 +1668,7 @@ def comb_sism_modal_ops(self, **args):
                                 option,
                                 pseudo_mode,
                                 l_group_no,
-                                MAILLAGE,
+                                mesh,
                                 direction,
                                 amors,
                                 freq_coup,
@@ -2284,19 +1695,7 @@ def comb_sism_modal_ops(self, **args):
                     l_parti[spectre_dir][nom_appui] = fact_partici
                     # Print out spectral response at each mode, direction and appui
                     # VALE_SPEC
-                    if any(
-                        [type_resu[i].get("TYPE") == "VALE_SPEC" for i in range(len(type_resu))]
-                    ):
-                        impr_vale_spec_mult(
-                            output_result,
-                            type_resu,
-                            option,
-                            mode_meca,
-                            direction,
-                            R_m_appui,
-                            nume_ordres,
-                            APPUI=nom_appui,
-                        )
+                    resu.add_spectral_response(option, direction, R_m_appui, nume_ordres, nom_appui)
                     # response due to DDS
                     if (
                         depl_mult_appui is not None
@@ -2484,29 +1883,11 @@ def comb_sism_modal_ops(self, **args):
                 l_R_prim.append(R_prim_x)
                 l_R_seco.append(R_seco_x)
                 # Print out reponse of each direction
-                # VALE_DIRE
-                if any([type_resu[i].get("TYPE") == "VALE_DIRE" for i in range(len(type_resu))]):
-                    impr_vale_dire(output_result, type_resu, option, mode_meca, direction, R_x)
-                # VALE_DYNA
-                if any(type_resu[i].get("TYPE") == "VALE_DYNA" for i in range(len(type_resu))):
-                    impr_vale_dyna(
-                        output_result, type_resu, option, mode_meca, part_d_x, None, direction
-                    )
-                # VALE_QS
-                if any([type_resu[i].get("TYPE") == "VALE_QS" for i in range(len(type_resu))]):
-                    impr_vale_qs_dire(
-                        output_result, type_resu, option, mode_meca, direction, part_s_x
-                    )
-                # VALE_DDS
-                if any([type_resu[i].get("TYPE") == "VALE_DDS" for i in range(len(type_resu))]):
-                    impr_vale_dds_dire(
-                        output_result, type_resu, option, mode_meca, direction, R_seco_x
-                    )
-                # VALE_INER
-                if any([type_resu[i].get("TYPE") == "VALE_INER" for i in range(len(type_resu))]):
-                    impr_vale_iner_dire(
-                        output_result, type_resu, option, mode_meca, direction, R_prim_x
-                    )
+                resu.add_dire_response(option, direction, R_x, "VALE_DIRE")
+                resu.add_dire_response(option, direction, part_d_x, "VALE_DYNA")
+                resu.add_dire_response(option, direction, part_s_x, "VALE_QS")
+                resu.add_dire_response(option, direction, R_seco_x, "VALE_DDS")
+                resu.add_dire_response(option, direction, R_prim_x, "VALE_INER")
             # step 9 : combinaison of all directions
             # Get input COMB_DIRECTION
             comb_direction = args["COMB_DIRECTION"]
@@ -2519,27 +1900,11 @@ def comb_sism_modal_ops(self, **args):
             R_seco, R_seco_newmark_all = comb_directions(comb_direction, l_R_seco)
             # ----------------------------------------------------------
             # Print out total response
-            # VALE_TOTA
-            if any([type_resu[i].get("TYPE") == "VALE_TOTA" for i in range(len(type_resu))]):
-                impr_vale_tota(output_result, type_resu, option, mode_meca, R_xyz, R_newmark_all)
-            # VALE_DYNA
-            if any(type_resu[i].get("TYPE") == "VALE_DYNA" for i in range(len(type_resu))):
-                impr_vale_dyna(output_result, type_resu, option, mode_meca, R_d, Rd_newmark_all)
-            # VALE_QS
-            if any(type_resu[i].get("TYPE") == "VALE_QS" for i in range(len(type_resu))):
-                impr_vale_qs_tota(
-                    output_result, type_resu, option, mode_meca, R_ps, Rps_newmark_all
-                )
-            # VALE_INER
-            if any(type_resu[i].get("TYPE") == "VALE_INER" for i in range(len(type_resu))):
-                impr_vale_iner_tota(
-                    output_result, type_resu, option, mode_meca, R_prim, R_prim_newmark_all
-                )
-            # VALE_DDS
-            if any(type_resu[i].get("TYPE") == "VALE_DDS" for i in range(len(type_resu))):
-                impr_vale_dds_tota(
-                    output_result, type_resu, option, mode_meca, R_seco, R_seco_newmark_all
-                )
+            resu.add_response(option, R_xyz, R_newmark_all, "VALE_TOTA")
+            resu.add_response(option, R_d, Rd_newmark_all, "VALE_DYNA")
+            resu.add_response(option, R_ps, Rps_newmark_all, "VALE_QS")
+            resu.add_response(option, R_prim, R_prim_newmark_all, "VALE_INER")
+            resu.add_response(option, R_seco, R_seco_newmark_all, "VALE_DDS")
             if verbosity and i_option == 1:
                 # about mode_meca
                 list_para = mode_meca.LIST_PARA()
@@ -2741,16 +2106,7 @@ def comb_sism_modal_ops(self, **args):
                     # Raise alarm for zero mode to be considered before cutting frequency
                     UTMESS("A", "SEISME_96", valr=freq_coup)
                 # Print output for spectral value for each mode and direction
-                if any(type_resu[i].get("TYPE") == "VALE_SPEC" for i in range(len(type_resu))):
-                    impr_vale_spec_mono(
-                        output_result,
-                        type_resu,
-                        option,
-                        mode_meca,
-                        spectre_dir,
-                        R_mi_all,
-                        nume_ordres,
-                    )
+                resu.add_spectral_response(option, spectre_dir, R_mi_all, nume_ordres)
                 # step 3: modal combinaison
                 # Get input COMB_MODE
                 R_m2, R_qs = comb_modal_response.get(R_mi)
@@ -2841,30 +2197,13 @@ def comb_sism_modal_ops(self, **args):
                 # RCCM part primaire
                 l_R_prim.append(R_prim)
                 # Print out response for mono_appui by direction
-                # VALE_DIRE
-                if any(type_resu[i].get("TYPE") == "VALE_DIRE" for i in range(len(type_resu))):
-                    impr_vale_dire(output_result, type_resu, option, mode_meca, spectre_dir, R_x)
-                # VALE_DYNA
-                if any(type_resu[i].get("TYPE") == "VALE_DYNA" for i in range(len(type_resu))):
-                    impr_vale_dyna(
-                        output_result, type_resu, option, mode_meca, R_m, None, spectre_dir
-                    )
-                # VALE_QS
-                if any(type_resu[i].get("TYPE") == "VALE_QS" for i in range(len(type_resu))):
-                    impr_vale_qs_dire(output_result, type_resu, option, mode_meca, spectre_dir, R_c)
-                # VALE_INER
-                direction = axis
-                if any([type_resu[i].get("TYPE") == "VALE_INER" for i in range(len(type_resu))]):
-                    impr_vale_iner_dire(
-                        output_result, type_resu, option, mode_meca, direction, R_prim
-                    )
+                resu.add_dire_response(option, spectre_dir, R_x, "VALE_DIRE")
+                resu.add_dire_response(option, spectre_dir, R_m, "VALE_DYNA" )
+                resu.add_dire_response(option, spectre_dir, R_c, "VALE_QS")
+                resu.add_dire_response(option, axis, R_prim, "VALE_INER")
                 # VALE_DDS
                 if any(type_resu[i].get("TYPE") == "VALE_DDS" for i in range(len(type_resu))):
-                    # impr_vale_dds_tota(
-                    #     output_result, type_resu, option, mode_meca, R_seco, R_seco_newmark_all
-                    # )
                     print("Pas de VALE_DDS calculée pour la méthode ENVELOPPE")
-                    pass
                 # save for INFO
                 l_SA[spectre_dir] = S_r_freq
             # step 7 : reponse by directional combinaison
@@ -2880,22 +2219,10 @@ def comb_sism_modal_ops(self, **args):
                 np.shape(R_prim_newmark_all)
             )
             # Print output for combined response
-            # VALE_TOTA
-            if any(type_resu[i].get("TYPE") == "VALE_TOTA" for i in range(len(type_resu))):
-                impr_vale_tota(output_result, type_resu, option, mode_meca, R_xyz, R_newmark_all)
-            # VALE_DYNA
-            if any(type_resu[i].get("TYPE") == "VALE_DYNA" for i in range(len(type_resu))):
-                impr_vale_dyna(output_result, type_resu, option, mode_meca, R_d, Rd_newmark_all)
-            # VALE_QS
-            if any(type_resu[i].get("TYPE") == "VALE_QS" for i in range(len(type_resu))):
-                impr_vale_qs_tota(
-                    output_result, type_resu, option, mode_meca, R_ps, Rps_newmark_all
-                )
-            # VALE_INER
-            if any(type_resu[i].get("TYPE") == "VALE_INER" for i in range(len(type_resu))):
-                impr_vale_iner_tota(
-                    output_result, type_resu, option, mode_meca, R_prim, R_prim_newmark_all
-                )
+            resu.add_response(option, R_xyz, R_newmark_all, "VALE_TOTA")
+            resu.add_response(option, R_d, Rd_newmark_all, "VALE_DYNA")
+            resu.add_response(option, R_ps, Rps_newmark_all,"VALE_QS")
+            resu.add_response(option, R_prim, R_prim_newmark_all, "VALE_INER")
             # Print out for INFO = 1 or 2
             if verbosity and i_option == 1:
                 # about mode_meca
@@ -2958,12 +2285,4 @@ def comb_sism_modal_ops(self, **args):
                 UTMESS("I", "SEISME_18", valk=comb_direction)
             # end mono_appui
     # end
-    model = mode_meca.getModel()
-    if model:
-        output_result.setModel(model)
-    else:
-        output_result.setMesh(MAILLAGE)
-    cara_elem = mode_meca.getElementaryCharacteristics()
-    if cara_elem:
-        output_result.setElementaryCharacteristics(cara_elem)
-    return output_result
+    return resu.get()
