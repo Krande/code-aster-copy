@@ -232,6 +232,9 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
             elas_fo_kw["ALPHA"] = f_para_temp["ALPHA"]
             elas_fo_kw["TEMP_DEF_ALPHA"] = temp_def_alpha_current_mat
 
+        if "RHO" in f_para_temp:
+            elas_fo_kw["RHO"] = f_para_temp["RHO"]
+
         if "RHO_CP" in f_para_temp:
             ther_fo_kw["RHO_CP"] = f_para_temp["RHO_CP"]
 
