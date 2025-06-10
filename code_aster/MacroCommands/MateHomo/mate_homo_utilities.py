@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -174,6 +174,9 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
             ASSERT(temp_def_alpha_current_mat is not None)
             elas_fo_kw["ALPHA"] = f_para_temp["ALPHA"]
             elas_fo_kw["TEMP_DEF_ALPHA"] = temp_def_alpha_current_mat
+
+        if "RHO" in f_para_temp:
+            elas_fo_kw["RHO"] = f_para_temp["RHO"]
 
         if "RHO_CP" in f_para_temp:
             ther_fo_kw["RHO_CP"] = f_para_temp["RHO_CP"]

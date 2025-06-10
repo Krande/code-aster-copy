@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,8 @@ POISSON = DEFI_CONSTANTE(VALE=0.3)
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 MATEUNI = DEFI_MATERIAU(
-    ELAS_FO=_F(E=UN, NU=POISSON, ALPHA=UN, TEMP_DEF_ALPHA=20.0), THER_FO=_F(LAMBDA=UN, RHO_CP=UN)
+    ELAS_FO=_F(E=UN, NU=POISSON, ALPHA=UN, RHO=UN, TEMP_DEF_ALPHA=20.0),
+    THER_FO=_F(LAMBDA=UN, RHO_CP=UN),
 )
 
 side = 32.54
@@ -74,6 +75,7 @@ testrefe = {
     "ALPHA_N": 1.0,
     "ALPHA_L": 1.0,
     "RHO_CP": 1.0 * ratio,
+    "RHO": 1.0 * ratio,
 }
 
 
