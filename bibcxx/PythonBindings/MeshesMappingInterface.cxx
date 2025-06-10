@@ -31,8 +31,36 @@ void exportMeshesMappingToPython( py::module_ &mod ) {
                                                                                  "MeshesMapping" )
         .def( py::init( &initFactoryPtr< MeshesMapping > ) )
         .def( py::init( &initFactoryPtr< MeshesMapping, std::string > ) )
+        // ---------------------------------------------------------------------
+        .def( "getCoefficients", &MeshesMapping::getCoefficients,
+              R"(
+            Return the coefficients of the interpolation of the slave nodes on the master cells
+
+            Returns:
+                list[real] : interpolation coefficients for each slave node
+            )" )
+        // ---------------------------------------------------------------------
+        .def( "getNodesIds", &MeshesMapping::getNodesIds,
+              R"(
+            Return the ids of the master nodes for the interpolation of the slave nodes
+
+            Returns:
+                list[int] : master nodes ids for each slave node
+            )" )
+        // ---------------------------------------------------------------------
+        .def( "getNumberOfMasterNodes", &MeshesMapping::getNumberOfMasterNodes,
+              R"(
+            Return the number of master nodes implied in the interpolation of the slave nodes
+
+            Returns:
+                list[int] : number of master nodes for each slave node
+            )" )
+        // ---------------------------------------------------------------------
         .def( "setFirstMesh", &MeshesMapping::setFirstMesh )
+        // ---------------------------------------------------------------------
         .def( "setSecondMesh", &MeshesMapping::setSecondMesh )
+        // ---------------------------------------------------------------------
         .def( "getFirstMesh", &MeshesMapping::getFirstMesh )
+        // ---------------------------------------------------------------------
         .def( "getSecondMesh", &MeshesMapping::getSecondMesh );
 };
