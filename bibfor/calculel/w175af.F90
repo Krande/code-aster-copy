@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -185,12 +185,16 @@ subroutine w175af(modele, chfer1)
     if (unitc .eq. 'Pa') valruc = 0.d0
     if (unitc .eq. 'MPa') valruc = 1.d0
     valv(39) = valruc
-    call getvtx(' ', 'UNITE_CONTRAINTE', scal=unitm, nbret=n40)
+    call getvtx(' ', 'UNITE_DIMENSION', scal=unitm, nbret=n40)
 !        UM = 0 DIMENSIONS EN m
 !        UM = 1 DIMENSIONS EN mm
-    if (unitc .eq. 'm') valruc = 0.d0
-    if (unitc .eq. 'mm') valruc = 1.d0
+    if (unitm .eq. 'm') valruc = 0.d0
+    if (unitm .eq. 'mm') valruc = 1.d0
     valv(40) = valruc
+    if ((unitc .eq. 'Pa' .and. unitm .eq. 'mm') .or. &
+        (unitc .eq. 'MPa' .and. unitm .eq. 'm')) then
+        call utmess('F', 'CALCULEL7_3')
+    end if
 
 !     3- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 !     --------------------------------------------

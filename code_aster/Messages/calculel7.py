@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,16 @@ Commande CALC_FERRAILLAGE :
         """
   option %(k1)s : pour l élément  %(k2)s  il faut ajouter dans le %(k3)s
  le nombre de composante calculées du flux
+"""
+    ),
+    3: _(
+        """
+Commande CALC_FERRAILLAGE : 
+    Il y a une incompatibilité entre les valeurs fournies aux
+    mots-clés UNITE_CONTRAINTE et UNITE_DIMENSION.
+  
+    Si UNITE_CONTRAINTE vaut 'Pa' alors UNITE_DIMENSION doit valoir 'm'.
+    Si UNITE_CONTRAINTE vaut 'MPa' alors UNITE_DIMENSION doit valoir 'mm'.
 """
     ),
     5: _(
