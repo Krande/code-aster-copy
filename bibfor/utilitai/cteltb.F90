@@ -233,8 +233,6 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
 !
 !               ON PARCOURT LES POINTS DE LA MAILLE IMA
                 do ipt = 1, nbpt
-!                   NUMERO DU POINT (DU MAILLAGE GLOBAL): INOT
-                    inot = connex(zi(jconx2-1+ima)+ipt-1)
 !                   ON PARCOURT LES SOUS-POINTS DE LA MAILLE IMA
                     cyispt: do ispt = 1, nbspt
                         kcp = 0
@@ -306,6 +304,8 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
                             kk = kk+1
                         end if
                         if (tych .eq. 'ELNO') then
+!                           NUMERO DU POINT (DU MAILLAGE GLOBAL): INOT
+                            inot = connex(zi(jconx2-1+ima)+ipt-1)
                             do j = 1, ndim
                                 table_valr(kk+1) = vale(1+3*(inot-1)+j-1)
                                 kk = kk+1
