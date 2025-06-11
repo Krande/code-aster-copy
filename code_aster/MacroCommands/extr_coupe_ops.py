@@ -22,7 +22,7 @@ import copy
 import numpy as np
 import scipy as sc
 
-from ..Commands import EXTR_CONCEPT, LIRE_RESU, MODI_REPERE, POST_RELEVE_T, PROJ_CHAMP
+from ..CodeCommands import EXTR_CONCEPT, LIRE_RESU, MODI_REPERE, POST_RELEVE_T, PROJ_CHAMP
 from ..Helpers import LogicalUnitFile
 from ..Objects import Mesh
 from ..Objects.datastructure_py import ElasticResultDict, NonLinearResultDict, ThermalResultDict

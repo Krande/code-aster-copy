@@ -17,17 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 import sys
-
-import aster
-from libaster import AsterError, projectionAlongDirection
-
-from ..Messages import UTMESS
-
-from ..Commands import LIRE_TABLE, IMPR_TABLE, CREA_TABLE
-from ..Objects.table_py import Table
+from math import cos, sin
 
 import numpy as np
-from math import cos, sin
+from libaster import projectionAlongDirection
+
+from ..CodeCommands import CREA_TABLE
+from ..Messages import UTMESS
+from ..Objects.table_py import Table
 
 
 def crea_coupe_ops(
