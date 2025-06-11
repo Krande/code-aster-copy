@@ -9,6 +9,7 @@ set_prefix() {
 set_prefix "${0}"
 
 test -z "${CI_PROJECT_ID}" || exit 0
+test -z "${CI_CODEASTER}" || exit 0
 
 mark="${devhelper}/.last-check-updates"
 markbase=$(basename "${mark}")
