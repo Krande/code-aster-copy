@@ -56,7 +56,7 @@ def get_spectres_mono_appui(spectre_in):
 
     Returns:
         Spectres: list of [directions, nappes, coefficients, cor_freqs, natures]
-        directions: list of OX, OY, OZ
+        directions: list of X, Y, Z
         nappes: list of aster objects as nappe
         coefficients: list of coefficient for each direction
         cor_freqs: list of option to correct freq as "OUI" or "NON"
@@ -72,14 +72,7 @@ def get_spectres_mono_appui(spectre_in):
         # extraction of directions
         list_axe = spectre_in[i].get("LIST_AXE")
         for axe in list_axe:
-            if axe == "X":
-                dir = "OX"
-            elif axe == "Y":
-                dir = "OY"
-            elif axe == "Z":
-                dir = "OZ"
-            # save
-            directions.append(dir)
+            directions.append(axe)
             # extraction of parameters for associated direction
             # scale factor
             coefficients.append(spectre_in[i].get("ECHELLE"))
@@ -99,7 +92,7 @@ def get_spectres_mono_appui(spectre_in):
     return spectres
 
 
-def get_spectres_mult_appui(spectre_in, mesh):
+def get_spectres_mult_appui(spectre_in):
     """Get the input for SPECTRE in case of mult-appui
 
     Arguments:
@@ -135,14 +128,7 @@ def get_spectres_mult_appui(spectre_in, mesh):
             # -- extraction
             list_axe = spectre_in[indexes[i]].get("LIST_AXE")
             for axe in list_axe:
-                if axe == "X":
-                    dir = "OX"
-                elif axe == "Y":
-                    dir = "OY"
-                elif axe == "Z":
-                    dir = "OZ"
-                # save
-                directions.append(dir)
+                directions.append(axe)
                 # get scale factor
                 coefficients.append(spectre_in[indexes[i]].get("ECHELLE"))
                 # get nappe object
@@ -724,11 +710,11 @@ def corr_pseudo_mode_mono(
     # search for index (NUME_CMP) in MODE_STATIQUE corresponding to direction
     ps_noeud_cmp = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
     ps_nume_mode = pseudo_mode.getAccessParameters()["NUME_MODE"]
-    if "OX" in spectre_dir:
+    if "X" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    X")]
-    elif "OY" in spectre_dir:
+    elif "Y" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    Y")]
-    elif "OZ" in spectre_dir:
+    elif "Z" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    Z")]
     else:
         raise Exception(
@@ -818,7 +804,7 @@ def corr_pseudo_mode_mult(
     l_noeud_cmp = []
     for i_node in range(len(nodes_num_per_grno)):
         node_name = nodes_name_per_grno[i_node]
-        noeud_cmp = node_name.ljust(8) + direction.replace("O", "D")
+        noeud_cmp = node_name.ljust(8) + "D" + direction
         l_noeud_cmp.append(noeud_cmp)
     ps_nume_modes = pseudo_mode.getAccessParameters()["NUME_MODE"]
     ps_noeud_cmps = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
@@ -909,13 +895,13 @@ def corr_pseudo_mode_enveloppe(
     ps_noeud_cmp = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
     ps_nume_mode = pseudo_mode.getAccessParameters()["NUME_MODE"]
 
-    if "OX" in spectre_dir:
+    if "X" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    X")]
         components = "DX"
-    elif "OY" in spectre_dir:
+    elif "Y" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    Y")]
         components = "DY"
-    elif "OZ" in spectre_dir:
+    elif "Z" in spectre_dir:
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index("ACCE    Z")]
         components = "DZ"
     else:
@@ -1023,16 +1009,16 @@ def get_depl_mult_appui(depl_mult_appui):
             # add D_e corresponding to nom_appui
             D_e[nom_appui] = {}
             if depl_mult_appui[i].get("DX") is not None:
-                D_e[nom_appui]["OX"] = depl_mult_appui[i].get("DX")
-                dir.append("OX")
+                D_e[nom_appui]["X"] = depl_mult_appui[i].get("DX")
+                dir.append("X")
             # axe Y
             if depl_mult_appui[i].get("DY") is not None:
-                D_e[nom_appui]["OY"] = depl_mult_appui[i].get("DY")
-                dir.append("OY")
+                D_e[nom_appui]["Y"] = depl_mult_appui[i].get("DY")
+                dir.append("Y")
             # axe Z
             if depl_mult_appui[i].get("DZ") is not None:
-                D_e[nom_appui]["OZ"] = depl_mult_appui[i].get("DZ")
-                dir.append("OZ")
+                D_e[nom_appui]["Z"] = depl_mult_appui[i].get("DZ")
+                dir.append("Z")
             # if all DX, DY and DZ are not present
             if all(depl_mult_appui[i].get(xx) is None for xx in ["DX", "DY", "DZ"]):
                 raise Exception("Aucun DDS n'est trouvé pour {0}".format(nom_appui))
@@ -1043,7 +1029,7 @@ def get_depl_mult_appui(depl_mult_appui):
         # saving
         depl_mult_appuis = [mode_stat, group_no_refe, D_e, dirs]
         # get all directions of displacements input by users
-        dir_standard = ["OX", "OY", "OZ"]
+        dir_standard = ["X", "Y", "Z"]
         D_e_dirs = []
         for i_dir_standard in range(len(dir_standard)):
             if any(dir_standard[i_dir_standard] in dir for dir in dirs):
@@ -1124,7 +1110,6 @@ class Resu:
             return
 
         list_axe = type_resu.get("LIST_AXE")
-        direction = direction.replace("O", "")
         if list_axe and direction in list_axe:
             self._setField(option, R, self._response_by_type[vale_type].format("_" + direction))
 
@@ -1162,7 +1147,6 @@ class Resu:
         list_axe = type_resu.get("LIST_AXE")
         list_appui = type_resu.get("LIST_APPUI")
         tout_appui = type_resu.get("TOUT_APPUI")
-        direction = direction.replace("O", "")
         if direction in list_axe and (not appui or tout_appui == "OUI" or appui in list_appui):
             for nume_ordre in nume_ordres:
                 i_nume_ordre = (nume_ordres_resu.tolist()).index(nume_ordre)
@@ -1258,20 +1242,19 @@ def comb_sism_modal_ops(self, **args):
     if type_analyse == "MONO_APPUI":
         spectres = get_spectres_mono_appui(spectre_in)
     elif type_analyse == "MULT_APPUI":
-        spectres = get_spectres_mult_appui(spectre_in, mesh)
+        spectres = get_spectres_mult_appui(spectre_in)
         # search for all directions presented by users
         dir_all_old = []
         for i_appui in range(len(spectres)):
             dir_all_old += spectres[i_appui][0]
         dir_all_old = list(set(dir_all_old))
         # compared to standard directions
-        dir_standard = ["OX", "OY", "OZ"]
         dir_all = []
-        for i_dir_standard in range(len(dir_standard)):
-            if dir_standard[i_dir_standard] in dir_all_old:
-                dir_all.append(dir_standard[i_dir_standard])
+        for direction in ("X", "Y", "Z"):
+            if direction in dir_all_old:
+                dir_all.append(direction)
     elif type_analyse == "ENVELOPPE":
-        spectres = get_spectres_mult_appui(spectre_in, mesh)
+        spectres = get_spectres_mult_appui(spectre_in)
     # Get support (APPUI)
     if type_analyse == "MULT_APPUI":
         # Get support (APPUI)
@@ -1349,13 +1332,13 @@ def comb_sism_modal_ops(self, **args):
                 elif spectre_nature == "ACCE":
                     pass
                 # Participation factor by direction
-                if "OX" in spectre_dir:
+                if "X" in spectre_dir:
                     fact_partici = l_fact_partici[0]
                     components = "DX"
-                elif "OY" in spectre_dir:
+                elif "Y" in spectre_dir:
                     fact_partici = l_fact_partici[1]
                     components = "DY"
-                elif "OZ" in spectre_dir:
+                elif "Z" in spectre_dir:
                     fact_partici = l_fact_partici[2]
                     components = "DZ"
                 else:
@@ -1475,14 +1458,14 @@ def comb_sism_modal_ops(self, **args):
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
                 # info for modal basis to be considered/combined
-                for direction in ["OX", "OY", "OZ"]:
-                    if "OX" in direction:
+                for direction in ["X", "Y", "Z"]:
+                    if "X" in direction:
                         fact_partici = l_fact_partici[0]
                         masse_effe = l_masse_effe[0]
-                    elif "OY" in direction:
+                    elif "Y" in direction:
                         fact_partici = l_fact_partici[1]
                         masse_effe = l_masse_effe[1]
-                    elif "OZ" in direction:
+                    elif "Z" in direction:
                         fact_partici = l_fact_partici[2]
                         masse_effe = l_masse_effe[2]
                     UTMESS("I", "SEISME_48")
@@ -1623,7 +1606,7 @@ def comb_sism_modal_ops(self, **args):
                         dofs = (
                             mode_meca.getDOFNumbering()
                             .getEquationNumbering()
-                            .getDOFs(list_cmp=[direction.replace("O", "D")], list_grpno=l_group_no)
+                            .getDOFs(list_cmp=["D"+direction], list_grpno=l_group_no)
                         )
                         for imode in nume_ordres:
                             # all values of reac_node for mode
@@ -1711,7 +1694,7 @@ def comb_sism_modal_ops(self, **args):
                         for i_node in range(len(l_nodes_num)):
                             # ("Iteration sur les nodes dans un appui")
                             node_name = l_nodes_name[i_node]
-                            noeud_cmp = node_name.ljust(8) + direction.replace("O", "D")
+                            noeud_cmp = node_name.ljust(8) + "D" + direction
                             stat_nume_modes = mode_stat.getAccessParameters()["NUME_MODE"]
                             stat_noeud_cmps = mode_stat.getAccessParameters()["NOEUD_CMP"]
                             if noeud_cmp in stat_noeud_cmps:
@@ -1801,13 +1784,13 @@ def comb_sism_modal_ops(self, **args):
                         # raise fatal error message to stop
                         UTMESS("F", "SEISME_10", valk=option)
                         # participation factor
-                        if "OX" in spectre_dir:
+                        if "X" in spectre_dir:
                             fact_partici = l_fact_partici[0]
                             components = "DX"
-                        elif "OY" in spectre_dir:
+                        elif "Y" in spectre_dir:
                             fact_partici = l_fact_partici[1]
                             components = "DY"
-                        elif "OZ" in spectre_dir:
+                        elif "Z" in spectre_dir:
                             fact_partici = l_fact_partici[2]
                             components = "DZ"
                         # unit field
@@ -1911,14 +1894,14 @@ def comb_sism_modal_ops(self, **args):
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
                 # info for modal basis to be considered/combined
-                for direction in ["OX", "OY", "OZ"]:
-                    if "OX" in direction:
+                for direction in ["X", "Y", "Z"]:
+                    if "X" in direction:
                         fact_partici = l_fact_partici[0]
                         masse_effe = l_masse_effe[0]
-                    elif "OY" in direction:
+                    elif "Y" in direction:
                         fact_partici = l_fact_partici[1]
                         masse_effe = l_masse_effe[1]
-                    elif "OZ" in direction:
+                    elif "Z" in direction:
                         fact_partici = l_fact_partici[2]
                         masse_effe = l_masse_effe[2]
                     UTMESS("I", "SEISME_48")
@@ -2064,13 +2047,13 @@ def comb_sism_modal_ops(self, **args):
                     S_r_freq = S_r_freq
                 # Participation factor by direction
                 spectre_dir = axes_retenu[i_dir]
-                if "OX" in spectre_dir:
+                if "X" in spectre_dir:
                     fact_partici = l_fact_partici[0]
                     components = "DX"
-                elif "OY" in spectre_dir:
+                elif "Y" in spectre_dir:
                     fact_partici = l_fact_partici[1]
                     components = "DY"
-                elif "OZ" in spectre_dir:
+                elif "Z" in spectre_dir:
                     fact_partici = l_fact_partici[2]
                     components = "DZ"
                 else:
@@ -2230,16 +2213,16 @@ def comb_sism_modal_ops(self, **args):
                 # shown_name
                 show_name, show_type = _get_object_repr(mode_meca)
                 # info for modal basis to be considered/combined
-                for direction in ["OX", "OY", "OZ"]:
-                    if "OX" in direction:
+                for direction in ["X", "Y", "Z"]:
+                    if "X" in direction:
                         fact_partici = l_fact_partici[0]
                         masse_effe = l_masse_effe[0]
                         masse_effe_un = l_masse_effe_un[0]
-                    elif "OY" in direction:
+                    elif "Y" in direction:
                         fact_partici = l_fact_partici[1]
                         masse_effe = l_masse_effe[1]
                         masse_effe_un = l_masse_effe_un[1]
-                    elif "OZ" in direction:
+                    elif "Z" in direction:
                         fact_partici = l_fact_partici[2]
                         masse_effe = l_masse_effe[2]
                         masse_effe_un = l_masse_effe_un[2]
