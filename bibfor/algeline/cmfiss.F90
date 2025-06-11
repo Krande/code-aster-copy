@@ -16,9 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmfiss(main, gno1, gno2, prefix, mainit, &
-                  nomgma, noma, connec, tyma, ngma, &
-                  gpma)
+subroutine cmfiss(main, gno1, gno2, nomgma, noma, &
+                  connec, tyma, ngma, gpma)
 !
 !
     implicit none
@@ -34,8 +33,7 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: mainit
-    character(len=8) :: main, prefix
+    character(len=8) :: main
     character(len=24) :: noma, connec, tyma, ngma, gpma, gno1, gno2, nomgma
 !
 ! ----------------------------------------------------------------------
@@ -62,7 +60,8 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit, &
     integer :: iret, nb1, nb2, nbmajo, tyqua4, ma
     integer :: n1, n2, n3, n4
     integer :: inoma, iconne, ityma, igpma, ingma, jcon, jgno1, jgno2
-    integer :: lgma, lgpref
+    integer :: lgma, lgpref, mainit
+    character(len=8) :: prefix
     character(len=80) :: knume
 ! ----------------------------------------------------------------------
 !
@@ -93,6 +92,8 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit, &
 ! - INITIALISATION
 !
     nbmajo = nb1-1
+    prefix = 'A'
+    mainit = 1
     lgpref = lxlgut(prefix)
     call jeveuo(jexnom(main//'.GROUPENO', gno1), 'L', jgno1)
     call jeveuo(jexnom(main//'.GROUPENO', gno2), 'L', jgno2)
@@ -117,6 +118,7 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit, &
 ! - CREATION DES MAILLES
 !
     jcon = iconne
+    write (6, *) "mainit", mainit
     do ma = 1, nbmajo
 !
 !      NOM DE LA MAILLE CREEE
