@@ -46,6 +46,7 @@ check_updates_main()
 
 do_updates()
 {
+    update_repo src
     update_repo devtools
     update_repo data
     update_repo validation
@@ -62,7 +63,7 @@ update_repo()
     fi
     printf "updating ${repo}... "
     current_branch=$(git -C ${repo} rev-parse --abbrev-ref HEAD)
-    if [ "${current_branch}" = "main" ]; then
+    if [ "${repo}" != "src" ] && [ "${current_branch}" = "main" ]; then
         printf "updating 'main'... "
         command=pull
     else
@@ -71,7 +72,7 @@ update_repo()
     fi
     git -C ${repo} ${command} origin main > /dev/null 2>&1
     echo "completed"
-    if [ "${current_branch}" != "main" ]; then
+    if [ "${repo}" != "src" ] && [ "${current_branch}" != "main" ]; then
         echo "WARNING: ${repo} is not on 'main'"
     fi
 }
