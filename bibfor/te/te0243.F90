@@ -51,7 +51,7 @@ subroutine te0243(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: nbres
+    integer :: icamas, nbres
     parameter(nbres=3)
     integer :: icodre(nbres)
     character(len=32) :: phenom
@@ -100,6 +100,10 @@ subroutine te0243(option, nomte)
             aniso = ASTER_TRUE
         end if
         call ntfcma(rela_name, zi(imate), aniso, ifon)
+!       pour stopper le calcul si PCAMASS n'est pas disponible
+        if (aniso) then
+            call jevech('PCAMASS', 'L', icamas)
+        end if
     end if
 !
     resi = 0.0

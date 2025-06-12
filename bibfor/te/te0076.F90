@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine te0076(option, nomte)
     type(FE_basis) :: FEBasis
 !
     character(len=8), parameter :: famiR = "RIGI"
-    integer :: kp, imate, itemps
+    integer :: icamas, kp, imate, itemps
     integer :: icodre(1)
     character(len=32) :: phenom
     real(kind=8) ::   time
@@ -63,6 +63,10 @@ subroutine te0076(option, nomte)
     time = zr(itemps)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
+!   pour stopper le calcul si PCAMASS n'est pas disponible
+    if (phenom .eq. 'THER_ORTH') then
+        call jevech('PCAMASS', 'L', icamas)
+    end if
 !
     valQPK = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints

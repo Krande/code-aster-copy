@@ -22,7 +22,7 @@
 # un chargement proportionnel aux points particuliers du diagramme calculés
 #  analytiquement
 # La marge attendue est égale à  (1 - coef. de proportionnalité)
-# Pour ce test UNITE_CONTRAINTE = MPa et UNITE_DIMENSION = mm
+# Pour ce test UNITE_CONTRAINTE = MPa
 
 DEBUT(CODE="OUI")
 
@@ -43,7 +43,7 @@ CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=500))
 # dnsys = phi20@200 = 1.570 mm2/mm
 
 
-# FERRAILLAGE DE REFERENCE POUR UNITE_DIMENSION = mm
+# FERRAILLAGE DE REFERENCE
 FERRAILLAGE_REF1 = CREA_CHAMP(
     AFFE=(
         _F(
@@ -213,7 +213,6 @@ MARGE1 = VERI_FERRAILLAGE(
     CODIFICATION="EC2",
     TYPE_COMB="ELU",
     UNITE_CONTRAINTE="MPa",
-    UNITE_DIMENSION="mm",
     CHAM_FERR=FERRAILLAGE_REF1,
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
