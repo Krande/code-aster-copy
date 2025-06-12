@@ -48,7 +48,7 @@ def get_nodes(mesh, GROUP_NO=None):
     return nodes_num, nodes_name
 
 
-def get_spectres_mono_appui(spectre_in):
+def get_spectre_mono_appui(spectre_in):
     """Get the input for SPECTRE for mono-appui
 
     Arguments:
@@ -62,34 +62,26 @@ def get_spectres_mono_appui(spectre_in):
         cor_freqs: list of option to correct freq as "OUI" or "NON"
         natures: list of nature of spectra
     """
+
+    if len(spectre_in) > 3:
+        raise Exception("En MONO_APPUI, Il faut renseigner au maximun trois axes globaux X, Y, Z")
+
     coefficients = []
     directions = []
     nappes = []
-    cor_freqs = []
+    corr_freqs = []
     natures = []
-    # for each key_factor
-    for i in range(len(spectre_in)):
-        # extraction of directions
-        list_axe = spectre_in[i].get("LIST_AXE")
+    for spectre in spectre_in:
+        list_axe = spectre.get("LIST_AXE")
         for axe in list_axe:
             directions.append(axe)
-            # extraction of parameters for associated direction
-            # scale factor
-            coefficients.append(spectre_in[i].get("ECHELLE"))
-            # aster object: nappe
-            nappes.append(spectre_in[i].get("SPEC_OSCI"))
-            # correction of frequency
-            cor_freqs.append(spectre_in[i].get("CORR_FREQ"))
-            # nature of spectre
-            natures.append(spectre_in[i].get("NATURE"))
-    if i > 3:
-        raise Exception(
-            "En cas MONO_APPUI, Il faut renseigner au maximun " + "trois axes globaux X, Y, Z"
-        )
-    # save
-    spectres = [directions, nappes, coefficients, cor_freqs, natures]
-    # return
-    return spectres
+            coefficients.append(spectre.get("ECHELLE"))
+            nappes.append(spectre.get("SPEC_OSCI"))
+            corr_freqs.append(spectre.get("CORR_FREQ"))
+            natures.append(spectre.get("NATURE"))
+
+    return {"directions": directions, "nappes": nappes, "coefficients": coefficients, \
+                "corr_freqs": corr_freqs, "natures":natures}
 
 
 def get_spectres_mult_appui(spectre_in):
@@ -107,45 +99,34 @@ def get_spectres_mult_appui(spectre_in):
         natures: list of nature of spectra
         nom_appui: name of support associated to the spectra
     """
-    # extraction all nom_appui in key_factor SPECTRE
-    nom_appuis_all = []
-    for i in range(len(spectre_in)):
-        nom_appuis_all.append(spectre_in[i].get("NOM_APPUI"))
-    # For each support: get all dirs, coef, nappes, cor_freqs et natures
-    l_nom_appui = list(set(nom_appuis_all))
-    # get info spectre for each support
+
+    nom_appuis_all = [spectre.get("NOM_APPUI") for spectre in spectre_in]
+
     spectres = []
-    for nom_appui in l_nom_appui:
+    for nom_appui in set(nom_appuis_all):
+        spectres_appui = [spectre_in[i] for i, x in enumerate(nom_appuis_all) if x == nom_appui]
+
+        if len(spectres_appui) > 3:
+            raise Exception("En MULT_APPUI, Il faut renseigner au maximun" \
+            "trois axes globaux X, Y, Z par APPUI")
+
         coefficients = []
         directions = []
         nappes = []
-        cor_freqs = []
+        corr_freqs = []
         natures = []
-        # serach for all indexes of key_factor corresponding the nom_appui
-        indexes = [i for i, x in enumerate(nom_appuis_all) if x == nom_appui]
-        # extraction data from coef, dir, nappe, cor_freq, nature
-        for i in range(len(indexes)):
-            # -- extraction
-            list_axe = spectre_in[indexes[i]].get("LIST_AXE")
+        for spectre in spectres_appui:
+            list_axe = spectre.get("LIST_AXE")
             for axe in list_axe:
                 directions.append(axe)
-                # get scale factor
-                coefficients.append(spectre_in[indexes[i]].get("ECHELLE"))
-                # get nappe object
-                nappes.append(spectre_in[indexes[i]].get("SPEC_OSCI"))
-                # get corr_freq option
-                cor_freqs.append(spectre_in[indexes[i]].get("CORR_FREQ"))
-                # get nature of spectrum
-                natures.append(spectre_in[indexes[i]].get("NATURE"))
-        # check if more than 3 key_factor is used for nom_appui
-        if i > 3:
-            raise Exception(
-                "En cas MULT_APPUI, Il faut renseigner au maximun "
-                + "trois axes globaux X, Y, Z par APPUI"
-            )
-        # save
-        spectres.append([directions, nappes, coefficients, cor_freqs, natures, nom_appui])
-    # return
+                coefficients.append(spectre.get("ECHELLE"))
+                nappes.append(spectre.get("SPEC_OSCI"))
+                corr_freqs.append(spectre.get("CORR_FREQ"))
+                natures.append(spectre.get("NATURE"))
+
+        spectres.append({"directions": directions, "nappes": nappes, "coefficients": coefficients, \
+                            "corr_freqs": corr_freqs, "natures": natures, "nom_appui": nom_appui})
+
     return spectres
 
 
@@ -213,19 +194,19 @@ def get_group_appuis(spectres, group_appui_correle=None):
                 nom_group_appui_all.append(group_appui_correle[i_group_appui].get("NOM"))
             # add all APPUIS to group_appui
             elif group_appui_correle[i_group_appui].get("TOUT") == "OUI":
-                group_appui_all.append([spectres[i_appui][5] for i_appui in range(len(spectres))])
+                group_appui_all.append([spectres[i_appui]["nom_appui"] for i_appui in range(len(spectres))])
                 nom_group_appui_all.append(
                     group_appui_correle[i_group_appui].get("NOM_GROUP_APPUI")
                 )
         # all APPUIS not mentionned will be regrouped in separed groupe named as nom_appui
         for i_appui in range(len(spectres)):
-            if all(spectres[i_appui][5] not in i for i in group_appui_all):
-                group_appui_all.append(spectres[i_appui][5])
-                nom_group_appui_all.append(str(spectres[i_appui][5]))
+            if all(spectres[i_appui]["nom_appui"] not in i for i in group_appui_all):
+                group_appui_all.append(spectres[i_appui]["nom_appui"])
+                nom_group_appui_all.append(str(spectres[i_appui]["nom_appui"]))
     else:  # comb_mult_appui_corr is not mentionned --> all appuis are in the same group_appui_correle
         for i_appui in range(len(spectres)):
-            group_appui_all.append(spectres[i_appui][5])
-            nom_group_appui_all.append(str(spectres[i_appui][5]))
+            group_appui_all.append(spectres[i_appui]["nom_appui"])
+            nom_group_appui_all.append(str(spectres[i_appui]["nom_appui"]))
     # return
     return group_appui_all, nom_group_appui_all
 
@@ -589,19 +570,17 @@ class CombModalResponse:
         return R_m2, R_qs
 
 
-def comb_appui_corr(COMB_MULT_APPUI_CORR, R_mi):
+def comb_appui_corr(type_comb, R_mi):
     """Combines modals responses
 
     Args:
-        COMB_MULT_APPUI_CORR: rule for combinaison of correlated supports
+        type_comb: rule for combinaison of correlated supports
         R_mi: list of all vectors corresponding to all correlated supports
 
     Returns:
         R_m : combined response
 
     """
-    # combinaison rule for correlated supports
-    type_comb = COMB_MULT_APPUI_CORR
     # preparing for combinaison
     R_m = 0
     if type_comb == "QUAD":
@@ -947,31 +926,18 @@ def get_phis(mode_meca, option, nume_ordres):
     Returns:
         phis (ndarray)
     """
-    # Run get_phis
-    # check if field exists in modal basis (mode_meca)
+
+    if option in ("VITE", "ACCE_ABSOLU"):
+        option = "DEPL"
+
     if option not in mode_meca.getFieldsNames():
-        raise Exception(
-            "Le champs '{option}' n'existe pas dans la base modale".format(option=option)
-        )
-    # preparing to get vector phi
+        raise Exception(f"Le champs '{option}' n'existe pas dans la base modale")
+
     phis = []
     if all(nume_ordre in mode_meca.getIndexes() for nume_ordre in nume_ordres):
         for imode in nume_ordres:
-            if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
-                phis.append(mode_meca.getField(option, imode).getValues())
-            elif option in [
-                "EFGE_ELNO",
-                "EGRU_ELNO",
-                "SIEF_ELGA",
-                "SIGM_ELNO",
-                "SIPO_ELNO",
-                "SIEF_ELNO",
-            ]:
-                phis.append(mode_meca.getField(option, imode).getValues())
-    # eigen-vector
-    phis = np.array(phis)
-    # return
-    return phis
+            phis.append(mode_meca.getField(option, imode).getValues())
+    return np.array(phis)
 
 
 def get_depl_mult_appui(depl_mult_appui):
@@ -1240,33 +1206,24 @@ def comb_sism_modal_ops(self, **args):
         l_masse_effe_un.append(np.array(l_masse_effe_un_par_dir))
     # Get spectres
     if type_analyse == "MONO_APPUI":
-        spectres = get_spectres_mono_appui(spectre_in)
+        spectre = get_spectre_mono_appui(spectre_in)
     elif type_analyse == "MULT_APPUI":
         spectres = get_spectres_mult_appui(spectre_in)
         # search for all directions presented by users
-        dir_all_old = []
-        for i_appui in range(len(spectres)):
-            dir_all_old += spectres[i_appui][0]
-        dir_all_old = list(set(dir_all_old))
-        # compared to standard directions
-        dir_all = []
-        for direction in ("X", "Y", "Z"):
-            if direction in dir_all_old:
-                dir_all.append(direction)
+        dir_all = set()
+        for spectre in spectres:
+            dir_all.update(spectre["directions"])
+        dir_all = [x for x in ("X", "Y", "Z") if x in dir_all]
     elif type_analyse == "ENVELOPPE":
         spectres = get_spectres_mult_appui(spectre_in)
-    # Get support (APPUI)
     if type_analyse == "MULT_APPUI":
         # Get support (APPUI)
         nom_appuis_all, l_nodes_num_all, l_nodes_name_all, l_group_no_all = get_appuis(
             appuis_in, mesh
         )
-    # Get all groupes of support (group_appui)
-    if type_analyse == "MULT_APPUI":
         group_appui_all, nom_group_appui_all = get_group_appuis(spectres, group_appui_correle)
-    # Get imposed displacement DDS
-    if type_analyse == "MULT_APPUI":
         depl_mult_appuis, D_e_dirs_all = get_depl_mult_appui(depl_mult_appui)
+
     # --------------------------------------------------------------------------
     # Output result preparing
     # --------------------------------------------------------------------------
@@ -1284,12 +1241,7 @@ def comb_sism_modal_ops(self, **args):
         i_option += 1
         if type_analyse == "MONO_APPUI":
             # step 1: Get eigen-vector to combine from mode_meca
-            if option not in ["VITE", "ACCE_ABSOLU"]:
-                phis = get_phis(mode_meca, option, nume_ordres)
-            elif option == "VITE" or option == "ACCE_ABSOLU":
-                phis = get_phis(mode_meca, "DEPL", nume_ordres)
-            else:
-                raise Exception("OPTION '{option}' n'est pas pris en compte".format(option=option))
+            phis = get_phis(mode_meca, option, nume_ordres)
             # step 2: spectral value
             l_R_x = []  # list of directional total result
             l_part_d = []  # list of directional result part dynamique
@@ -1299,15 +1251,13 @@ def comb_sism_modal_ops(self, **args):
             l_SA = {}  # list of info about read spectra at eigen-frequencies by direction
             l_pseudo = {}  # list of info about correction by pseudo mode by direction
             # iteration on direction
-            for i_dir in range(len(spectres[0])):
+            for i_dir in range(len(spectre["directions"])):
+                direction = spectre["directions"][i_dir]
                 # eigen-pulsation before corr_freq
                 w_r = 2 * np.pi * freqs
                 # Spectrum interpolation
-                [spectre_dir, spectre_nappe, spectre_coeff, spectre_corr_freq, spectre_nature] = [
-                    spectres[i][i_dir] for i in range(5)
-                ]
                 # Correction for frequency by corr_freq
-                if spectre_corr_freq == "OUI":
+                if spectre["corr_freqs"][i_dir] == "OUI":
                     correct = np.sqrt(1 - amors**2)
                 else:
                     correct = 1
@@ -1316,7 +1266,7 @@ def comb_sism_modal_ops(self, **args):
                 # Spectrale values at eigen-frequencies
                 S_r_freq = []
                 for i_freq in range(len(freqs)):
-                    S_r_freq.append(spectre_nappe(amors[i_freq], freqs[i_freq]) * spectre_coeff)
+                    S_r_freq.append(spectre["nappes"][i_dir](amors[i_freq], freqs[i_freq]) * spectre["coefficients"][i_dir])
                 # Correction by corr_freq for spectrum
                 S_r_freq *= correct
                 # Cutting frequency
@@ -1325,26 +1275,26 @@ def comb_sism_modal_ops(self, **args):
                 else:
                     freq_coup = freqs[-1]
                 #  Correction of spectrum by nature of spectrum
-                if spectre_nature == "DEPL":
+                if spectre["natures"][i_dir] == "DEPL":
                     S_r_freq = ((2 * np.pi * freqs) ** 2) * S_r_freq
-                elif spectre_nature == "VITE":
+                elif spectre["natures"][i_dir] == "VITE":
                     S_r_freq = 2 * np.pi * freqs * S_r_freq
-                elif spectre_nature == "ACCE":
+                elif spectre["natures"][i_dir] == "ACCE":
                     pass
                 # Participation factor by direction
-                if "X" in spectre_dir:
+                if direction=="X":
                     fact_partici = l_fact_partici[0]
                     components = "DX"
-                elif "Y" in spectre_dir:
+                elif direction=="Y":
                     fact_partici = l_fact_partici[1]
                     components = "DY"
-                elif "Z" in spectre_dir:
+                elif direction=="Z":
                     fact_partici = l_fact_partici[2]
                     components = "DZ"
                 else:
                     raise Exception(
                         "Direction '{spectre_dir}' ne correspond pas à aucun axe global".format(
-                            spectre_dir=spectre_dir
+                            spectre_dir=direction
                         )
                     )
                 # Spectral response
@@ -1374,7 +1324,7 @@ def comb_sism_modal_ops(self, **args):
                     # Raise alarm for zero mode to be considered before cutting frequency
                     UTMESS("A", "SEISME_96", valr=freq_coup)
                 # Print output for spectral value for each mode and direction
-                resu.add_spectral_response(option, spectre_dir, R_mi_all, nume_ordres)
+                resu.add_spectral_response(option, direction, R_mi_all, nume_ordres)
                 # step 3: modal combinaison
                 # Get input COMB_MODE
                 R_m2, R_qs = comb_modal_response.get(R_mi)
@@ -1383,7 +1333,7 @@ def comb_sism_modal_ops(self, **args):
                     # field of unit value for acce_absolu
                     acce_unitaire = mode_meca.getField("DEPL", 1).copy()
                     acce_unitaire.setValues({components: 1.0}, [])
-                    S_r_freq_coup = spectre_nappe(amors[-1], freq_coup) * spectre_coeff
+                    S_r_freq_coup = spectre["nappes"][i_dir](amors[-1], freq_coup) * spectre["coefficients"][i_dir]
                     R_tt = (acce_unitaire.getValues() - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
                     # add to combined modale responses in square
                     R_m2 += R_tt**2
@@ -1404,14 +1354,14 @@ def comb_sism_modal_ops(self, **args):
                         freq_coup,
                         pr_wr2_phi_c,
                         w_r,
-                        spectre_dir,
-                        spectre_nappe,
-                        spectre_coeff,
-                        spectre_corr_freq,
-                        spectre_nature,
+                        direction,
+                        spectre["nappes"][i_dir],
+                        spectre["coefficients"][i_dir],
+                        spectre["corr_freqs"][i_dir],
+                        spectre["natures"][i_dir],
                     )
                     # save for INFO
-                    l_pseudo[spectre_dir] = [freq_coup, S_r_freq_coup]
+                    l_pseudo[direction] = [freq_coup, S_r_freq_coup]
                 else:
                     R_c = np.zeros(np.shape(R_m2))
                     S_r_freq_coup = None
@@ -1428,12 +1378,12 @@ def comb_sism_modal_ops(self, **args):
                 # RCCM part primaire
                 l_R_prim.append(R_prim)
                 # Print out response for mono_appui by direction
-                resu.add_dire_response(option, spectre_dir, R_x, "VALE_DIRE")
-                resu.add_dire_response(option, spectre_dir, R_m, "VALE_DYNA")
-                resu.add_dire_response(option, spectre_dir, R_c, "VALE_QS")
-                resu.add_dire_response(option, spectre_dir, R_prim, "VALE_INER")
+                resu.add_dire_response(option, direction, R_x, "VALE_DIRE")
+                resu.add_dire_response(option, direction, R_m, "VALE_DYNA")
+                resu.add_dire_response(option, direction, R_c, "VALE_QS")
+                resu.add_dire_response(option, direction, R_prim, "VALE_INER")
                 # save for INFO
-                l_SA[spectre_dir] = S_r_freq
+                l_SA[direction] = S_r_freq
             # step 7 : reponse by directional combinaison
             # Get input COMB_DIRECTION
             comb_direction = args["COMB_DIRECTION"]
@@ -1443,9 +1393,9 @@ def comb_sism_modal_ops(self, **args):
             R_ps, Rps_newmark_all = comb_directions(comb_direction, l_part_s)
             # RCCM
             R_prim, R_prim_newmark_all = comb_directions(comb_direction, l_R_prim)
-            R_seco, R_seco_newmark_all = np.zeros(np.shape(R_prim)), np.zeros(
-                np.shape(R_prim_newmark_all)
-            )
+            #R_seco, R_seco_newmark_all = np.zeros(np.shape(R_prim)), np.zeros(
+            #    np.shape(R_prim_newmark_all)
+            #)
             # Print output for combined response
             resu.add_response(option, R_xyz, R_newmark_all, "VALE_TOTA")
             resu.add_response(option, R_d, Rd_newmark_all, "VALE_DYNA")
@@ -1470,41 +1420,26 @@ def comb_sism_modal_ops(self, **args):
                         masse_effe = l_masse_effe[2]
                     UTMESS("I", "SEISME_48")
                 # about spectra
-                for i_dir in range(len(spectres[0])):
-                    # Spectrum information
-                    [
-                        spectre_dir,
-                        spectre_nappe,
-                        spectre_coeff,
-                        spectre_corr_freq,
-                        spectre_nature,
-                    ] = [spectres[i][i_dir] for i in range(5)]
+                for i_dir in range(len(spectre["directions"])):
                     # nature of spectra
-                    UTMESS("I", "SEISME_17", valk=spectre_nature)
+                    UTMESS("I", "SEISME_17", valk=spectre["natures"][i_dir])
                     # info of read value on spectra
                     UTMESS("I", "SEISME_53")
                     for i_freq in range(len(freqs)):
                         dict_args = dict(
                             vali=nume_modes[i_freq],
-                            valr=(freqs[i_freq], amors[i_freq], l_SA[spectre_dir][i_freq]),
-                            valk=spectre_dir,
+                            valr=(freqs[i_freq], amors[i_freq], l_SA[spectre["directions"][i_dir]][i_freq]),
+                            valk=spectre["directions"][i_dir],
                         )
                         UTMESS("I", "SEISME_54", **dict_args)
                 # about correction by pseudo-mode
                 if mode_corr == "OUI":
-                    for i_dir in range(len(spectres[0])):
-                        [
-                            spectre_dir,
-                            spectre_nappe,
-                            spectre_coeff,
-                            spectre_corr_freq,
-                            spectre_nature,
-                        ] = [spectres[i][i_dir] for i in range(5)]
+                    for i_dir in range(len(spectre["directions"])):
                         # cutting frequency et ZPA
                         UTMESS("I", "SEISME_56")
                         dict_args = dict(
-                            valr=(l_pseudo[spectre_dir][0], l_pseudo[spectre_dir][1]),
-                            valk=(spectre_dir, "mono_appui"),
+                            valr=(l_pseudo[spectre["directions"][i_dir]][0], l_pseudo[spectre["directions"][i_dir]][1]),
+                            valk=(spectre["directions"][i_dir], "mono_appui"),
                         )
                         UTMESS("I", "SEISME_57", **dict_args)
                 # about combinaison of response due to DDS
@@ -1516,12 +1451,7 @@ def comb_sism_modal_ops(self, **args):
         elif type_analyse == "MULT_APPUI":
             # Run combinaison for mult_appui
             # step 1: Get eigen-vector by option to calculated
-            if option not in ["VITE", "ACCE_ABSOLU"]:
-                phis = get_phis(mode_meca, option, nume_ordres)
-            elif option == "VITE" or option == "ACCE_ABSOLU":
-                phis = get_phis(mode_meca, "DEPL", nume_ordres)
-            else:
-                raise Exception("OPTION '{option}' n'est pas pris en compte".format(option=option))
+            phis = get_phis(mode_meca, option, nume_ordres)
             # step 2: spectral value
             l_R_x = []  # list of directional total result
             l_part_d = []  # list of directional result part dyn
@@ -1546,26 +1476,17 @@ def comb_sism_modal_ops(self, **args):
                 # Iteration on appuis
                 nb_appui = len(nom_appuis_all)
                 R_appuis = []  # list reponse tous appuis
-                for i_appui in range(nb_appui):
-                    nom_appui = spectres[i_appui][5]
+                for spectre in spectres:
+                    nom_appui = spectre["nom_appui"]
                     # ("iteration on support:", nom_appui)
                     # Reponse oscillator et pseudo-mode
-                    if direction in spectres[i_appui][0]:
+                    if direction in spectre["directions"]:
                         # "check of direction %s found in all spectra of support %s"
-                        index_dir = spectres[i_appui][0].index(direction)
-                        # Extraction info at appui
-                        nom_appui = spectres[i_appui][5]
-                        [
-                            spectre_dir,
-                            spectre_nappe,
-                            spectre_coeff,
-                            spectre_corr_freq,
-                            spectre_nature,
-                        ] = [spectres[i_appui][i][index_dir] for i in range(5)]
+                        i_dir = spectre["directions"].index(direction)
                         # Pulsation before correction by corr_freq
                         w_r = 2 * np.pi * freqs
                         # Correction of spectrum by corr_freq
-                        if spectre_corr_freq == "OUI":
+                        if spectre["corr_freqs"][i_dir] == "OUI":
                             # pulsation propre amortie
                             w_r *= np.sqrt(1 - amors**2)
                             correct = np.sqrt(1 - amors**2)
@@ -1576,7 +1497,7 @@ def comb_sism_modal_ops(self, **args):
                         S_r_freq = []
                         for i_freq in range(len(freqs)):
                             S_r_freq.append(
-                                spectre_nappe(amors[i_freq], freqs[i_freq]) * spectre_coeff
+                                spectre["nappes"][i_dir](amors[i_freq], freqs[i_freq]) * spectre["coefficients"][i_dir]
                             )
                         # correction by corr_freq
                         S_r_freq *= correct
@@ -1586,11 +1507,11 @@ def comb_sism_modal_ops(self, **args):
                         else:
                             freq_coup = freqs[-1]
                         # Correction of spectrum by nature
-                        if spectre_nature == "DEPL":
+                        if spectre["natures"][i_dir] == "DEPL":
                             S_r_freq *= (2 * np.pi * freqs) ** 2
-                        elif spectre_nature == "VITE":
+                        elif spectre["natures"][i_dir] == "VITE":
                             S_r_freq *= 2 * np.pi * freqs
-                        elif spectre_nature == "ACCE":
+                        elif spectre["natures"][i_dir] == "ACCE":
                             S_r_freq *= 1
                         # iteration on node in appui
                         l_nodes_num = l_nodes_num_all[nom_appuis_all.index(nom_appui)]
@@ -1599,7 +1520,7 @@ def comb_sism_modal_ops(self, **args):
                         R_m_noeuds = []  # stockage reponse oscillateur de tous noeuds
                         R_c_noeuds = []  # stockage reponse pseudo-mode de tous noeuds
                         # save for INFO
-                        l_SA[spectre_dir][nom_appui] = S_r_freq
+                        l_SA[direction][nom_appui] = S_r_freq
                         # modal spectral response
                         # preparing a list of reac_noda for all modes and all group_no
                         reac_noda = []
@@ -1657,13 +1578,13 @@ def comb_sism_modal_ops(self, **args):
                                 freq_coup,
                                 pr_wr2_phi_c,
                                 w_r,
-                                spectre_nappe,
-                                spectre_coeff,
-                                spectre_corr_freq,
-                                spectre_nature,
+                                spectre["nappes"][i_dir],
+                                spectre["coefficients"][i_dir],
+                                spectre["corr_freqs"][i_dir],
+                                spectre["natures"][i_dir],
                             )
                             # save for INFO
-                            l_pseudo[spectre_dir][nom_appui] = [freq_coup, S_r_freq_coup]
+                            l_pseudo[direction][nom_appui] = [freq_coup, S_r_freq_coup]
                         else:
                             R_c_noeud = np.zeros(np.shape(phis[0]))
                         # saving all pseudo-modes at all nodes of considerd appui
@@ -1675,7 +1596,7 @@ def comb_sism_modal_ops(self, **args):
                         R_m_appui = np.zeros((len(w_r), len(phis[0])))
                         R_c_appui = np.zeros(np.shape(phis[0]))
                     # save for INFO
-                    l_parti[spectre_dir][nom_appui] = fact_partici
+                    l_parti[direction][nom_appui] = fact_partici
                     # Print out spectral response at each mode, direction and appui
                     # VALE_SPEC
                     resu.add_spectral_response(option, direction, R_m_appui, nume_ordres, nom_appui)
@@ -1783,14 +1704,19 @@ def comb_sism_modal_ops(self, **args):
                     if option == "ACCE_ABSOLU":
                         # raise fatal error message to stop
                         UTMESS("F", "SEISME_10", valk=option)
+                        spectre = spectres[0]
+                        if direction in spectre["directions"]:
+                            i_dir = spectre["directions"].index(direction)
+                        else:
+                            raise NotImplementedError()
                         # participation factor
-                        if "X" in spectre_dir:
+                        if direction=="X":
                             fact_partici = l_fact_partici[0]
                             components = "DX"
-                        elif "Y" in spectre_dir:
+                        elif direction=="Y":
                             fact_partici = l_fact_partici[1]
                             components = "DY"
-                        elif "Z" in spectre_dir:
+                        elif direction=="Z":
                             fact_partici = l_fact_partici[2]
                             components = "DZ"
                         # unit field
@@ -1801,14 +1727,7 @@ def comb_sism_modal_ops(self, **args):
                         pr_wr2_phi = pr_wr2_phi_all[freqs <= freq_coup]
                         # i_appui=0 : only first support to be considered
                         index_dir = spectres[0][0].index(direction)
-                        [
-                            spectre_dir,
-                            spectre_nappe,
-                            spectre_coeff,
-                            spectre_corr_freq,
-                            spectre_nature,
-                        ] = [spectres[0][i][index_dir] for i in range(5)]
-                        S_r_freq_coup = spectre_nappe(amors[-1], freq_coup) * spectre_coeff
+                        S_r_freq_coup = spectre["nappes"][i_dir](amors[-1], freq_coup) * spectre["coefficients"][i_dir]
                         R_tt = (
                             acce_unitaire.getValues() - np.sum(pr_wr2_phi, axis=0)
                         ) * S_r_freq_coup
@@ -1908,33 +1827,25 @@ def comb_sism_modal_ops(self, **args):
                 # about spectra
                 for i_dir in range(max(len(dir_all), len(D_e_dirs_all))):
                     direction = dir_all[i_dir]
-                    for i_appui in range(nb_appui):
-                        nom_appui = spectres[i_appui][5]
-                        if direction in spectres[i_appui][0]:
-                            index_dir = spectres[i_appui][0].index(direction)
-                            # Extraction info at appui
-                            [
-                                spectre_dir,
-                                spectre_nappe,
-                                spectre_coeff,
-                                spectre_corr_freq,
-                                spectre_nature,
-                            ] = [spectres[i_appui][i][index_dir] for i in range(5)]
+                    for spectre in spectres:
+                        nom_appui = spectre["nom_appui"]
+                        if direction in spectre["directions"]:
+                            i_dir = spectre["directions"].index(direction)
                             # nature of spectra
-                            UTMESS("I", "SEISME_17", valk=spectre_nature)
+                            UTMESS("I", "SEISME_17", valk=spectre["natures"][i_dir])
                             # info of read value on spectra
                             UTMESS("I", "SEISME_97")
                             for i_freq in range(len(freqs)):
                                 valr = (
                                     freqs[i_freq],
                                     amors[i_freq],
-                                    l_SA[spectre_dir][nom_appui][i_freq],
-                                    l_parti[spectre_dir][nom_appui][i_freq],
+                                    l_SA[direction][nom_appui][i_freq],
+                                    l_parti[direction][nom_appui][i_freq],
                                 )
                                 karg = dict(
                                     vali=nume_modes[i_freq],
                                     valr=valr,
-                                    valk=(spectre_dir, nom_appui),
+                                    valk=(direction, nom_appui),
                                 )
                                 UTMESS("I", "SEISME_98", **karg)
                             # about correction by pseudo-mode
@@ -1943,10 +1854,10 @@ def comb_sism_modal_ops(self, **args):
                                 UTMESS("I", "SEISME_56")
                                 dict_args = dict(
                                     valr=(
-                                        l_pseudo[spectre_dir][nom_appui][0],
-                                        l_pseudo[spectre_dir][nom_appui][1],
+                                        l_pseudo[direction][nom_appui][0],
+                                        l_pseudo[direction][nom_appui][1],
                                     ),
-                                    valk=(spectre_dir, nom_appui),
+                                    valk=(direction, nom_appui),
                                 )
                                 UTMESS("I", "SEISME_57", **dict_args)
                 # about combinaison of response due to DDS
@@ -1957,12 +1868,7 @@ def comb_sism_modal_ops(self, **args):
         # end mult_appui
         if type_analyse == "ENVELOPPE":
             # step 1: Get eigen-vector to combine from mode_meca
-            if option not in ["VITE", "ACCE_ABSOLU"]:
-                phis = get_phis(mode_meca, option, nume_ordres)
-            elif option == "VITE" or option == "ACCE_ABSOLU":
-                phis = get_phis(mode_meca, "DEPL", nume_ordres)
-            else:
-                raise Exception("OPTION '{option}' n'est pas pris en compte".format(option=option))
+            phis = get_phis(mode_meca, option, nume_ordres)
             # step 2: spectral value
             l_R_x = []  # list of directional total result
             l_part_d = []  # list of directional result part dynamique
@@ -1973,16 +1879,16 @@ def comb_sism_modal_ops(self, **args):
             l_pseudo = {}  # list of info about correction by pseudo mode by direction
             # ----------------------------------------
             # Preparing for type analysis = enveloppe :
-            l_axis = []
-            l_corr_freq = []
-            l_spec_nat = []
-            for i_spec in range(len(spectres)):
-                l_axis += spectres[i_spec][0]
-                l_corr_freq += spectres[i_spec][3]
-                l_spec_nat += spectres[i_spec][4]
-            axes_retenu = sorted(set(l_axis))
-            is_corr_freq = sorted(set(l_corr_freq))
-            spec_nat = sorted(set(l_spec_nat))  # spectre nature
+            directions = set()
+            corr_freq = set()
+            spec_nat = set()
+            for spectre in spectres:
+                directions.update(spectre["directions"])
+                corr_freq.update(spectre["corr_freqs"])
+                spec_nat.update(spectre["natures"])
+            directions = sorted(directions)
+            is_corr_freq = sorted(corr_freq)
+            spec_nat = sorted(spec_nat)
 
             corr_freq_overall = "NON"
             # correction in frequencies is taken into account if correction is required for all supports:
@@ -1990,22 +1896,21 @@ def comb_sism_modal_ops(self, **args):
                 corr_freq_overall = is_corr_freq[0]
 
             # iteration on direction
-            for i_dir in range(len(axes_retenu)):
+            for direction in directions:
                 # eigen-pulsation before corr_freq
                 w_r = 2 * np.pi * freqs
                 # ------------------------------------
                 # ENVELOPE : Selection of maximal value of spectrum :
                 val_spec_allgr = []
-                axis = axes_retenu[i_dir]
-                for i_spec, spec in enumerate(spectres):
-                    if axis in spec[0]:
-                        i_axis = spec[0].index(axis)
+                for i_spec, spectre in enumerate(spectres):
+                    if direction in spectre["directions"]:
+                        i_dir = spectre["directions"].index(direction)
                         # corr = np.ones(len(freqs))  # = unité - correction for frequencies
                         # if spec[3][i_axis] == 'OUI':
                         #     corr = np.sqrt(1 - amors**2)
                         val_spec = []  # value of spectre for each support group
                         for i_freq, freq in enumerate(freqs):
-                            val_spec.append(spec[1][i_axis](amors[i_freq], freq) * spec[2][i_axis])
+                            val_spec.append(spectre["nappes"][i_dir](amors[i_freq], freq) * spectre["coefficients"][i_dir])
                         val_spec_allgr.append(val_spec)
                 val_spec_allgr = np.array(val_spec_allgr)
                 S_r_freq = np.max(val_spec_allgr, axis=0)
@@ -2046,20 +1951,19 @@ def comb_sism_modal_ops(self, **args):
                 elif spectre_nature is "ACCE":
                     S_r_freq = S_r_freq
                 # Participation factor by direction
-                spectre_dir = axes_retenu[i_dir]
-                if "X" in spectre_dir:
+                if direction=="X":
                     fact_partici = l_fact_partici[0]
                     components = "DX"
-                elif "Y" in spectre_dir:
+                elif  direction=="Y":
                     fact_partici = l_fact_partici[1]
                     components = "DY"
-                elif "Z" in spectre_dir:
+                elif direction=="Z":
                     fact_partici = l_fact_partici[2]
                     components = "DZ"
                 else:
                     raise Exception(
-                        "Direction '{spectre_dir}' ne correspond pas à aucun axe global".format(
-                            spectre_dir=spectre_dir
+                        "Direction '{direction}' ne correspond pas à aucun axe global".format(
+                            direction=direction
                         )
                     )
                 # Spectral response
@@ -2089,7 +1993,7 @@ def comb_sism_modal_ops(self, **args):
                     # Raise alarm for zero mode to be considered before cutting frequency
                     UTMESS("A", "SEISME_96", valr=freq_coup)
                 # Print output for spectral value for each mode and direction
-                resu.add_spectral_response(option, spectre_dir, R_mi_all, nume_ordres)
+                resu.add_spectral_response(option, direction, R_mi_all, nume_ordres)
                 # step 3: modal combinaison
                 # Get input COMB_MODE
                 R_m2, R_qs = comb_modal_response.get(R_mi)
@@ -2103,11 +2007,11 @@ def comb_sism_modal_ops(self, **args):
                     # ENVELOPE :
                     # Searching for the envelope of the ZPA value at the cutting frequency
                     spec_freq_coup_allgr = []
-                    for i_spec, spec in enumerate(spectres):
-                        if axis in spec[0]:
-                            i_axis = spec[0].index(axis)
+                    for spectre in spectres:
+                        if direction in spectre["directions"]:
+                            i_dir = spectre["directions"].index(direction)
                             spec_freq_coup_allgr.append(
-                                spec[1][i_axis](amors[-1], freq_coup) * spec[2][i_axis]
+                                spectre["coefficients"][i_dir](amors[-1], freq_coup) * spec["corr_freqs"][i_dir]
                             )
                     # maximal values of ZPA at the cutting frequency
                     S_r_freq_coup = max(spec_freq_coup_allgr)
@@ -2127,11 +2031,11 @@ def comb_sism_modal_ops(self, **args):
 
                     # Searching for the envelope of the ZPA value at the cutting frequency
                     spec_freq_coup_allgr = []
-                    for i_spec, spec in enumerate(spectres):
-                        if axis in spec[0]:
-                            i_axis = spec[0].index(axis)
+                    for spectre in spectres:
+                        if direction in spectre["directions"]:
+                            i_dir = spectre["directions"].index(direction)
                             spec_freq_coup_allgr.append(
-                                spec[1][i_axis](amors[-1], freq_coup) * spec[2][i_axis]
+                                spectre["coefficients"][i_dir](amors[-1], freq_coup) * spec["corr_freqs"][i_dir]
                             )
                     # maximal values of ZPA at the cutting frequency
                     S_r_freq_coup = max(spec_freq_coup_allgr)
@@ -2163,7 +2067,7 @@ def comb_sism_modal_ops(self, **args):
                     #     spectre_nature,
                     # )
                     # save for INFO
-                    l_pseudo[spectre_dir] = [freq_coup, S_r_freq_coup]
+                    l_pseudo[direction] = [freq_coup, S_r_freq_coup]
                 else:
                     R_c = np.zeros(np.shape(R_m2))
                     S_r_freq_coup = None
@@ -2180,15 +2084,15 @@ def comb_sism_modal_ops(self, **args):
                 # RCCM part primaire
                 l_R_prim.append(R_prim)
                 # Print out response for mono_appui by direction
-                resu.add_dire_response(option, spectre_dir, R_x, "VALE_DIRE")
-                resu.add_dire_response(option, spectre_dir, R_m, "VALE_DYNA" )
-                resu.add_dire_response(option, spectre_dir, R_c, "VALE_QS")
-                resu.add_dire_response(option, axis, R_prim, "VALE_INER")
+                resu.add_dire_response(option, direction, R_x, "VALE_DIRE")
+                resu.add_dire_response(option, direction, R_m, "VALE_DYNA" )
+                resu.add_dire_response(option, direction, R_c, "VALE_QS")
+                resu.add_dire_response(option, direction, R_prim, "VALE_INER")
                 # VALE_DDS
                 if any(type_resu[i].get("TYPE") == "VALE_DDS" for i in range(len(type_resu))):
                     print("Pas de VALE_DDS calculée pour la méthode ENVELOPPE")
                 # save for INFO
-                l_SA[spectre_dir] = S_r_freq
+                l_SA[direction] = S_r_freq
             # step 7 : reponse by directional combinaison
             # Get input COMB_DIRECTION
             comb_direction = args["COMB_DIRECTION"]
@@ -2228,39 +2132,22 @@ def comb_sism_modal_ops(self, **args):
                         masse_effe_un = l_masse_effe_un[2]
                     UTMESS("I", "SEISME_48")
                 # about spectra
-                for i_dir in range(len(axes_retenu)):
-                    # Spectrum information
-                    # [
-                    #     spectre_dir,
-                    #     spectre_nappe,
-                    #     spectre_coeff,
-                    #     spectre_corr_freq,
-                    #     spectre_nature,
-                    # ] = [spectres[i][i_dir] for i in range(5)]
-                    spectre_dir = axes_retenu[i_dir]
+                for directions in directions:
                     # nature of spectra
                     UTMESS("I", "SEISME_17", valk=spectre_nature)
                     # info of read value on spectra
                     UTMESS("I", "SEISME_53")
                     for i_freq in range(len(freqs)):
                         vali = nume_modes[i_freq]
-                        valr = (freqs[i_freq], amors[i_freq], l_SA[spectre_dir][i_freq])
-                        UTMESS("I", "SEISME_54", vali=vali, valr=valr, valk=spectre_dir)
+                        valr = (freqs[i_freq], amors[i_freq], l_SA[directions][i_freq])
+                        UTMESS("I", "SEISME_54", vali=vali, valr=valr, valk=direction)
                 # about correction by pseudo-mode
                 if mode_corr == "OUI":
-                    # for i_dir in range(len(spectres[0])):
-                    #     [
-                    #         spectre_dir,
-                    #         spectre_nappe,
-                    #         spectre_coeff,
-                    #         spectre_corr_freq,
-                    #         spectre_nature,
-                    #     ] = [spectres[i][i_dir] for i in range(5)]
-                    spectre_dir = axes_retenu[i_dir]
+                    direction = directions[i_dir]
                     # cutting frequency et ZPA
                     UTMESS("I", "SEISME_56")
-                    valr = (l_pseudo[spectre_dir][0], l_pseudo[spectre_dir][1])
-                    UTMESS("I", "SEISME_57", valr=valr, valk=(spectre_dir, "ENVELOPPE"))
+                    valr = (l_pseudo[direction][0], l_pseudo[direction][1])
+                    UTMESS("I", "SEISME_57", valr=valr, valk=(direction, "ENVELOPPE"))
                 # about combinaison of response due to DDS
                 if comb_dds_correle:
                     UTMESS("I", "SEISME_19", valk=comb_dds_correle)
