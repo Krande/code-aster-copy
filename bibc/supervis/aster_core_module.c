@@ -152,6 +152,7 @@ void DEFP( RDTMAX, rdtmax, _IN ASTERDOUBLE *tsub ) {
         MYABORT( "erreur dans RDTMAX" );
     // reset du cache
     _reset_tpmax();
+    Py_DECREF( res );
     return;
 }
 
