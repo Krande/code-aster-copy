@@ -314,6 +314,9 @@ class NonLinearOperator(ContextMixin):
                 self.state.primal_curr = init_state.get("DEPL").copyUsingDescription(
                     nume_equa, False
                 )
+                list_of_loads = self.problem.getListOfLoads()
+                if list_of_loads.hasDifferentialLoads():
+                    list_of_loads.setDifferentialDisplacement(self.state.primal_curr)
                 _msginit("DEPL")
 
             if "SIGM" in init_state:

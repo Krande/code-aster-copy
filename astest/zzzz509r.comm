@@ -1,0 +1,155 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.Commands import *
+from code_aster.Objects import *
+from code_aster import CA
+import numpy as np
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+test = CA.TestCase()
+
+MA = CA.Mesh.buildCube(refine=1)
+nodes_load = MA.getNodesFromCells("TOP")
+MA.setGroupOfNodes("TOP", nodes_load)
+
+ACIER = DEFI_MATERIAU(ELAS=_F(E=210000e6, NU=0.3))
+
+MOD = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=("3D")))
+
+MAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=(_F(TOUT="OUI", MATER=ACIER)))
+
+CH_SYME = AFFE_CHAR_CINE(
+    MODELE=MOD,
+    MECA_IMPO=(
+        _F(GROUP_MA=("LEFT"), DY=0.0),
+        _F(GROUP_MA=("BACK"), DX=0.0),
+        _F(GROUP_MA=("BOTTOM"), DZ=0.0),
+    ),
+)
+
+DZLOAD = 10.0
+# Le test utilise une liste contenant un seul pas de temps, avec un chargement nul à l’instant initial.
+# De cette manière, le champ à l’instant 1 correspond directement à l’incrément de déplacement.
+# Cela permet de mettre en place une comparaison cohérente entre :
+# * AFFE_CHAR_MECA(CHAM_NO_IMPO)
+# * AFFE_CHAR_CINE(EVOL_IMPO)
+
+TIMELINE = DEFI_LIST_REEL(VALE=(0.0, 1.0))
+
+LOAD_REFE = AFFE_CHAR_MECA(MODELE=MOD, DDL_IMPO=_F(GROUP_MA="TOP", DZ=DZLOAD))
+MU_REFE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
+
+# Cas REFERENCE. On retrouve sur TOP la CL imposée.
+RESU_REFE = MECA_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=LOAD_REFE, FONC_MULT=MU_REFE)),
+    INCREMENT=_F(LIST_INST=TIMELINE),
+)
+
+DEPL_FINAL_REFE = RESU_REFE.getField("DEPL", para="INST", value=1.0)
+
+values_depl_refe = DEPL_FINAL_REFE.toSimpleFieldOnNodes().getValues()[0]
+check_load1 = values_depl_refe[nodes_load].T[2].mean()
+test.assertAlmostEqual(check_load1, DZLOAD, msg="REFERENCE.")
+
+# Extraction des CL sur le groupe TOP et construction des conditions aux limites.
+CL_CIN = PROJ_CHAMP(
+    RESULTAT=RESU_REFE,
+    MAILLAGE_1=MA,
+    MAILLAGE_2=MA,
+    METHODE="COLLOCATION",
+    NOM_CHAM=("DEPL",),
+    TYPE_CHAM="NOEU",
+    VIS_A_VIS=(_F(CAS_FIGURE="3D", TOUT_1="OUI", GROUP_MA_2=("TOP",)),),
+)
+
+# Construction de 2 chargements identiques.
+CMD_CINE = AFFE_CHAR_CINE(EVOL_IMPO=CL_CIN, MODELE=MOD, NOM_CMP=("DZ",))
+
+DEPL_INCR = CL_CIN.getField("DEPL", para="INST", value=1.0).restrict(cmps=("DZ"))
+CMD_MECA = AFFE_CHAR_MECA(MODELE=MOD, CHAMNO_IMPO=(_F(CHAM_NO=DEPL_INCR, COEF_IMPO=1.0),))
+
+# Cas CHAMNO_IMPO charge FIXE sans champ initial. On retrouve DZLOAD.
+RESU_FIXE1 = MECA_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=CMD_MECA)),
+    INCREMENT=_F(LIST_INST=TIMELINE),
+)
+
+DEPL_FINAL_FIXE1 = RESU_FIXE1.getField("DEPL", para="INST", value=1.0)
+
+values_depl_fixe1 = DEPL_FINAL_FIXE1.toSimpleFieldOnNodes().getValues()[0]
+check_load_fixe1 = values_depl_fixe1[nodes_load].T[2].mean()
+test.assertAlmostEqual(check_load_fixe1, DZLOAD, msg="CHAMNO_IMPO - FIXE_CSTE without ETAT_INIT")
+
+# Cas EVOL_IMPO charge FIXE sans champ initial. On retrouve DZLOAD.
+RESU_FIXE2 = MECA_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=CMD_CINE)),
+    INCREMENT=_F(LIST_INST=TIMELINE),
+)
+
+DEPL_FINAL_FIXE2 = RESU_FIXE2.getField("DEPL", para="INST", value=1.0)
+
+values_depl_fixe2 = DEPL_FINAL_FIXE2.toSimpleFieldOnNodes().getValues()[0]
+check_load_fixe2 = values_depl_fixe2[nodes_load].T[2].mean()
+test.assertAlmostEqual(check_load_fixe2, DZLOAD, msg="EVOL_IMPO - FIXE_CSTE without ETAT_INIT")
+
+# Cas CHAMNO_IMPO charge DIDI avec champ initial. On retrouve 2 * DZLOAD.
+RESU_DIDI1 = MECA_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=CMD_MECA, FONC_MULT=MU_REFE, TYPE_CHARGE="DIDI")),
+    INCREMENT=_F(LIST_INST=TIMELINE),
+    ETAT_INIT=_F(DEPL=DEPL_FINAL_REFE),
+)
+
+DEPL_FINAL_DIDI1 = RESU_DIDI1.getField("DEPL", para="INST", value=1.0)
+
+values_depl_didi1 = DEPL_FINAL_DIDI1.toSimpleFieldOnNodes().getValues()[0]
+check_load_didi1 = values_depl_didi1[nodes_load].T[2].mean()
+test.assertAlmostEqual(check_load_didi1, 2.0 * DZLOAD, msg="CHAMNO_IMPO - DIDI with ETAT_INIT")
+
+# Cas EVOL_IMPO charge DIDI avec champ initial. On retrouve 2 * DZLOAD.
+issue34815_fixed = False
+if issue34815_fixed:
+    RESU_DIDI2 = MECA_NON_LINE(
+        MODELE=MOD,
+        CHAM_MATER=MAT,
+        EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=CMD_CINE, TYPE_CHARGE="DIDI")),
+        INCREMENT=_F(LIST_INST=TIMELINE),
+        ETAT_INIT=_F(DEPL=DEPL_FINAL_REFE),
+    )
+
+    DEPL_FINAL_DIDI2 = RESU_DIDI2.getField(
+        "DEPL", para="INST", value=1.0, crit="ABSOLU", prec=1.0e-15
+    )
+
+    values_depl_didi2 = DEPL_FINAL_DIDI2.toSimpleFieldOnNodes().getValues()[0]
+    check_load_didi2 = values_depl_didi2[nodes_load].T[2].mean()
+    test.assertAlmostEqual(check_load_didi2, 2.0 * DZLOAD, msg="EVOL_IMPO - DIDI with ETAT_INIT")
+
+test.printSummary()
+
+FIN()

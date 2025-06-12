@@ -1,0 +1,134 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.Commands import *
+from code_aster import CA
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+test = CA.TestCase()
+
+MA = CA.Mesh.buildCube(refine=1)
+nodes_load = MA.getNodesFromCells("TOP")
+
+ACIER = DEFI_MATERIAU(ELAS=_F(E=210000e6, NU=0.3))
+
+MOD = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=("3D")))
+
+MAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=(_F(TOUT="OUI", MATER=ACIER)))
+
+CH_SYME = AFFE_CHAR_MECA(
+    MODELE=MOD,
+    DDL_IMPO=(
+        _F(GROUP_MA=("LEFT"), DY=0.0),
+        _F(GROUP_MA=("BACK"), DX=0.0),
+        _F(GROUP_MA=("BOTTOM"), DZ=0.0),
+    ),
+)
+
+TIMELINE = DEFI_LIST_REEL(VALE=(0, 0.4, 1.0))
+
+
+MU2 = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.4, 0.0, 1.0, 1.0), PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU"
+)
+
+DZLOAD = 10.0
+
+LOAD_INC1 = AFFE_CHAR_MECA(MODELE=MOD, DDL_IMPO=_F(GROUP_MA="TOP", DZ=DZLOAD * 0.4))
+MU1 = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 0.4, 1.0), PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU"
+)
+
+LOAD_INC2 = AFFE_CHAR_MECA(MODELE=MOD, DDL_IMPO=_F(GROUP_MA="TOP", DZ=DZLOAD * 0.6))
+MU2 = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.4, 0.0, 1.0, 1.0), PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU"
+)
+
+# TEST1
+
+EI_DEPL0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0, 0.0, 0.0)),
+)
+
+RESU1 = MECA_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=LOAD_INC1, FONC_MULT=MU1, TYPE_CHARGE="DIDI")),
+    INCREMENT=_F(LIST_INST=TIMELINE, INST_FIN=0.4),
+    ARCHIVAGE=_F(LIST_INST=TIMELINE),
+    ETAT_INIT=_F(DEPL=EI_DEPL0),
+)
+
+EI_DEPL1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RESU1, NOM_CHAM="DEPL", INST=0.4
+)
+
+RESU1 = MECA_NON_LINE(
+    reuse=RESU1,
+    RESULTAT=RESU1,
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=LOAD_INC2, FONC_MULT=MU2, TYPE_CHARGE="DIDI")),
+    INCREMENT=_F(LIST_INST=TIMELINE, INST_INIT=0.4, INST_FIN=1.0),
+    ARCHIVAGE=_F(LIST_INST=TIMELINE),
+    ETAT_INIT=_F(DEPL=EI_DEPL1),
+)
+
+EF_DEPL1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RESU1, NOM_CHAM="DEPL", INST=1.0
+)
+values_depl1 = EF_DEPL1.toSimpleFieldOnNodes().getValues()[0]
+check_load1 = values_depl1[nodes_load].T[2].mean()
+test.assertAlmostEqual(check_load1, DZLOAD, msg="ETAT_INIT is a DEPL field.")
+
+# TEST2
+
+RESU2 = MECA_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=LOAD_INC1, FONC_MULT=MU1, TYPE_CHARGE="FIXE_CSTE")),
+    INCREMENT=_F(LIST_INST=TIMELINE, INST_FIN=0.4),
+    ARCHIVAGE=_F(LIST_INST=TIMELINE),
+)
+
+RESU2 = MECA_NON_LINE(
+    reuse=RESU2,
+    RESULTAT=RESU2,
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=LOAD_INC2, FONC_MULT=MU2, TYPE_CHARGE="DIDI")),
+    INCREMENT=_F(LIST_INST=TIMELINE, INST_INIT=0.4, INST_FIN=1.0),
+    ARCHIVAGE=_F(LIST_INST=TIMELINE),
+    ETAT_INIT=_F(EVOL_NOLI=RESU2),
+)
+
+EF_DEPL2 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RESU2, NOM_CHAM="DEPL", INST=1.0
+)
+values_depl2 = EF_DEPL2.toSimpleFieldOnNodes().getValues()[0]
+check_load2 = values_depl2[nodes_load].T[2].mean()
+test.assertAlmostEqual(check_load2, DZLOAD, msg="ETAT_INIT is a EVOL_NOLI result.")
+
+test.printSummary()
+
+FIN()
