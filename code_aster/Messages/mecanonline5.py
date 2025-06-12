@@ -369,4 +369,10 @@ A cause des erreurs précédentes, le code s'arrête.
 Le calcul peut s'arrêter plus tard si certaines informations ne sont pas cohérentes.
 """
     ),
+    75: _(
+        """
+  Vous voulez "poursuivre" un calcul non-linéaire. Le maillage sous-jacent à CARA_ELEM est différent du maillage pour le calcul.
+Le calcul peut s'arrêter plus tard si certaines informations ne sont pas cohérentes.
+"""
+    ),
 }

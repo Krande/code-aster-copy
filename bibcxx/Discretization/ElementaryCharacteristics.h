@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryCharacteristics
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -124,6 +124,13 @@ class ElementaryCharacteristics : public DataStructure {
     FieldOnCellsLongPtr getNumberOfSubpoints() { return _CANBSP; };
     FieldOnCellsRealPtr getFibers() { return _CAFIBR; };
     ConstantFieldOnCellsRealPtr getDiscreteParameters() { return _CARDINFO; };
+
+    bool containsFieldOnCells() const {
+        if ( _CANBSP->exists() || _CAFIBR->exists() ) {
+            return true;
+        }
+        return false;
+    }
 };
 
 /** @typedef ElementaryCharacteristicsPtr */

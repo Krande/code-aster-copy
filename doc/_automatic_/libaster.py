@@ -2405,6 +2405,9 @@ class ElementaryCharacteristics(DataStructure):
         2. __init__(self: libaster.ElementaryCharacteristics, arg0: str, arg1: Model) -> None
         """
 
+    def containsFieldOnCells(self):
+        """Return True if ElementaryCharacteristics contains FieldOnCells"""
+
     def getMesh(self):
         pass
 
