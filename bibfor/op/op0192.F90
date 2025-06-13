@@ -78,7 +78,7 @@ subroutine op0192()
     real(kind=8) :: inst
     real(kind=8) :: storeEpsi
     character(len=1) :: saux01
-    character(len=8) :: fieldNameAst, meshAst, nomo, fieldQuantity
+    character(len=8) :: fieldNameAst, meshAst, nomo, fieldQuantity, nonu
     character(len=19) :: fieldNameTemp
     character(len=8) :: typech, param, storeCrit, saux08
     character(len=3) :: prolz
@@ -251,6 +251,15 @@ subroutine op0192()
         iinst = 0
     end if
 !
+! 2.8. ==> NOM DU NUME_DDL
+!
+    call getvid(' ', 'NUME_DDL', scal=nonu, nbret=iaux)
+!
+    if (iaux .eq. 0) then
+        nonu = ' '
+    end if
+!
+!
 !====
 ! 3. APPEL DE LA LECTURE AU FORMAT MED
 !====
@@ -306,7 +315,8 @@ subroutine op0192()
                     fieldQuantity, entityType, cmpNb, cmpAstName, cmpMedName, &
                     prolz, iinst, numpt, numord, inst, &
                     storeCrit, storeEpsi, fileUnit, option, param, &
-                    zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), codret, 'V')
+                    zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), codret, 'V', &
+                    nonu)
 !
         call copisd('CHAMP_GD', 'G', fieldNameTemp, fieldNameAst)
         if (fieldSupport(1:2) .eq. 'NO') then
