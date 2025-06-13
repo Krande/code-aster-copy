@@ -90,23 +90,6 @@ def raiseAsterError(idmess="VIDE_1"):
     pass
 
 
-# class UseCppPickling in libaster
-
-
-class UseCppPickling:
-    pass
-
-    # Method resolution order:
-    #     UseCppPickling
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-
-    # Methods defined here:
-
-    def __init__(self):
-        pass
-
-
 # class PythonBool in libaster
 
 
@@ -273,6 +256,24 @@ class DataStructure:
     @property
     def userName(self):
         """str: Name of the user variable that holds this object."""
+
+
+# class DSWithCppPickling in libaster
+
+
+class DSWithCppPickling(DataStructure):
+    pass
+
+    # Method resolution order:
+    #     DSWithCppPickling
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, /, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
 
 # built-in function debugJeveuxContent in libaster
@@ -6396,13 +6397,13 @@ class PairingParameter:
 # class ContactNew in libaster
 
 
-class ContactNew(DataStructure, UseCppPickling):
+class ContactNew(DSWithCppPickling):
     pass
 
     # Method resolution order:
     #     ContactNew
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -6517,14 +6518,14 @@ class ContactNew(DataStructure, UseCppPickling):
 # class FrictionNew in libaster
 
 
-class FrictionNew(ContactNew, UseCppPickling):
+class FrictionNew(ContactNew):
     pass
 
     # Method resolution order:
     #     FrictionNew
     #     ContactNew
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -6550,13 +6551,13 @@ class FrictionNew(ContactNew, UseCppPickling):
 # class ContactZone in libaster
 
 
-class ContactZone(DataStructure, UseCppPickling):
+class ContactZone(DSWithCppPickling):
     """Object to define a zone of contact."""
 
     # Method resolution order:
     #     ContactZone
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -6737,13 +6738,13 @@ class ContactZone(DataStructure, UseCppPickling):
 # class MeshPairing in libaster
 
 
-class MeshPairing(DataStructure, UseCppPickling):
+class MeshPairing(DSWithCppPickling):
     """Object to create a pairing operator between two meshed surfaces."""
 
     # Method resolution order:
     #     MeshPairing
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -15572,8 +15573,8 @@ class ParallelContactNew(ContactNew):
     # Method resolution order:
     #     ParallelContactNew
     #     ContactNew
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -15610,8 +15611,8 @@ class ParallelFrictionNew(ParallelContactNew):
     #     ParallelFrictionNew
     #     ParallelContactNew
     #     ContactNew
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 

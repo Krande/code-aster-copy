@@ -75,6 +75,8 @@
      - ``mode_cycl``
    * - :py:class:`~code_aster.Objects.DOFNumbering`
      - ``nume_ddl_sdaster``
+   * - :py:class:`~code_aster.Objects.DSWithCppPickling`
+     - 
    * - :py:class:`~code_aster.Objects.DataField`
      - ``cham_gd_sdaster``
    * - :py:class:`~code_aster.Objects.DirichletBC`
