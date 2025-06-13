@@ -36,7 +36,7 @@
 using VectorLongIter = VectorLong::iterator;
 
 ContactNew::ContactNew( const std::string name, const ModelPtr model, const std::string type )
-    : DataStructure( name, 8, type ), _model( model ), _FEDesc( nullptr ), _verbosity( 1 ) {};
+    : DSWithCppPickling( name, 8, type ), _model( model ), _FEDesc( nullptr ), _verbosity( 1 ) {};
 
 /** @brief restricted constructor (Set) and method (Get) to support pickling */
 ContactNew::ContactNew( const py::tuple &tup )
