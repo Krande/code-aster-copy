@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -124,7 +124,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
     character(len=8) :: saux08
     character(len=9) :: saux09
-    character(len=80) :: nomfam
+    character(len=64) :: nomfam
     aster_logical :: lfamtr
     real(kind=8) :: start_time, end_time, start1, end1, start2, end2
     mpi_int :: mrank, msize, world, taille, one4
