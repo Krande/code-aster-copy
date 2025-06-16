@@ -322,6 +322,9 @@ class mfront2cxx(Task.Task):
             mfrdir.get_src().abspath(),
             self.inputs[0].abspath(),
         )
+        if self.env.ASTER_PLATFORM_MSYS2:
+            # Temporary workaround for MSYS2 
+            cmd = cmd + " --debug" 
         # self.generator.bld.cmd_and_log(cmd, cwd=wrkdir, quiet=Context.STDOUT)
         self.exec_command(cmd, cwd=wrkdir)
 
