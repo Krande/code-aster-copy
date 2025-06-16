@@ -198,13 +198,12 @@ subroutine op0171()
     call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=tempev, nbret=n1)
     if (n1 .gt. 0) then
         call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=num, nbret=n2)
-        if (n2 .le. 0) then
-            ASSERT(.false.)
-        else
-            call rsexch('F', tempev, 'TEMP', num, tempin, &
-                        iret)
+        ASSERT(n2 .gt. 0)
+        call rsexch('F', tempev, 'TEMP', num, tempin, iret)
+        call vtcopy(tempin, vtemp, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "FIELD0_6", sk='TEMP')
         end if
-        call vtcopy(tempin, vtemp, 'F', iret)
     end if
 ! ======================================================================
 !

@@ -232,15 +232,19 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
 ! - VERIFICATION COMPATIBILITE PILOTAGE
 !
     if (l_stin_evol .and. lpiarc) then
-        call rsexch(' ', stin_evol, 'DEPL', init_nume, champ1, &
-                    iret)
-        call rsexch(' ', stin_evol, 'DEPL', init_nume-1, champ2, &
-                    iret)
+        call rsexch(' ', stin_evol, 'DEPL', init_nume, champ1, iret)
+        call rsexch(' ', stin_evol, 'DEPL', init_nume-1, champ2, iret)
         if (iret .ne. 0) then
             call utmess('F', 'MECANONLINE4_47', sk=stin_evol)
         end if
-        call vtcopy(champ1, dep1, 'F', iret)
-        call vtcopy(champ2, dep2, 'F', iret)
+        call vtcopy(champ1, dep1, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "FIELD0_9")
+        end if
+        call vtcopy(champ2, dep2, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "FIELD0_9")
+        end if
         call jeveuo(dep1(1:19)//'.VALE', 'L', vr=vdep1)
         call jeveuo(dep2(1:19)//'.VALE', 'L', vr=vdep2)
         call jeveuo(depold(1:19)//'.VALE', 'E', vr=depol)

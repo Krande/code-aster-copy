@@ -2609,13 +2609,26 @@ class FieldOnCellsReal(DataField):
     def build(self, feds=[]):
         pass
 
-    def checkInternalStateVariables(self, prevBehaviour, currBehaviour):
+    def checkInternalStateVariables(self, prevBehaviour, currBehaviour, newFEDesc):
         """Check consistency of internal states variables with behaviour.
         If you give previous behaviour, check is more precise (name of beahviour for instance)
 
         Arguments:
             prevBehaviour (ConstantFieldOnCellsChar16): previous behaviour
             currBehaviour (ConstantFieldOnCellsChar16): current behaviour
+            newFEDesc (FiniteElementDescriptorPtr): new finite element descriptor
+        """
+
+    def compareShape(self, fieldModel, projectOnLigrel, paraName):
+        """Compare structure of field with another one and project on new model if require
+
+        Arguments:
+            fieldModel (FieldOnCellsRealPtr): field as model
+            projectOnLigrel (bool) : project field on new model (from model field)
+            paraName (string) : name of parameter to complete the new values in field
+
+        Returns:
+            iret (integer) : error code
         """
 
     def copy(self):
@@ -3215,15 +3228,14 @@ class FieldOnNodesReal(DataField):
     def copy(self):
         pass
 
-    def copyUsingDescription(self, desc, raiseError=True):
+    def copyUsingDescription(self, desc, warn=True):
         """Return a new field using the description.
         Be careful, Lagrange DOFs are set to zero. Moreover, components that are
         not present in the field are also set to zero in the output field.
 
         Arguments:
             desc [EquationNumbering]: description of equations
-            raiseError [bool]: If set to true, raises an error if the copy fails.
-            Otherwise, nothing happens. Defaults to true.
+            warn [bool]: If set to true, raises a warning if values are set to zero
 
         Returns:
             FieldOnNodesReal: field using new description.

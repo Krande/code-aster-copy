@@ -17,8 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine stressChck(stressRefeZ, stressZ, iret)
-        character(len=*), intent(in) :: stressRefeZ, stressZ
+    subroutine stressChck(stressModelZ, stressZ, projectOnLigrel, iret)
+        character(len=*), intent(in) :: stressModelZ, stressZ
+        aster_logical, intent(in) :: projectOnLigrel
         integer, intent(out) :: iret
     end subroutine stressChck
 end interface

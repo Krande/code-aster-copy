@@ -549,6 +549,7 @@ class PhysicalState:
     def _states_difference(one, two):
         """Delta between states as returned by py:method:`as_dict`."""
         ret = {}
+
         for field in one.getFields():
             first_field = one.fields_prev[field] + one._prim_step[field]
             second_field = two.fields_prev[field] + two._prim_step[field]

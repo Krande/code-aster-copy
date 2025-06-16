@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,11 +85,10 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
+#include "asterf_types.h"
 #include "asterfort/ascavc.h"
+#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dlarch.h"
@@ -114,12 +113,14 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+#include "jeveux.h"
     integer :: nbexci, nondp, nmodam, iinteg, neq
     integer :: istoc, iarchi, imat(3), nchar, nveca, liad(*)
     integer :: iforc2, archiv, nbtyar, mltap(nbexci)
@@ -326,9 +327,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                             ibid)
             end if
             if (ibid .gt. 0) then
-                call rsexch('F', listresu(iresu), 'DEPL', item2(1), cham19, &
-                            iret)
-                call vtcopy(cham19, chamno, 'F', iret)
+                call rsexch('F', listresu(iresu), 'DEPL', item2(1), cham19, iret)
+                call vtcopy(cham19, chamno, iret)
+                if (iret .ne. 0) then
+                    call utmess("F", "FIELD0_14", sk='DEPL')
+                end if
                 call jeveuo(chamno//'.VALE', 'L', lvale)
 !
             else
@@ -338,14 +341,14 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 !        --- INTERPOLATION LINEAIRE ---
                 do i = 1, nbinst-1
 !
-                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i, &
-                                0, sjv=ltps0, styp=k8bid)
-                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i+1, &
-                                0, sjv=ltps1, styp=k8bid)
+                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i, 0, sjv=ltps0)
+                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i+1, 0, sjv=ltps1)
                     if (i .eq. 1 .and. temps .lt. zr(ltps0)) then
-                        call rsexch('F', listresu(iresu), 'DEPL', i, cham19, &
-                                    iret)
-                        call vtcopy(cham19, chamno, 'F', iret)
+                        call rsexch('F', listresu(iresu), 'DEPL', i, cham19, iret)
+                        call vtcopy(cham19, chamno, iret)
+                        if (iret .ne. 0) then
+                            call utmess("F", "FIELD0_14", sk='DEPL')
+                        end if
                         call jeveuo(chamno//'.VALE', 'L', lvale)
                         goto 213
                     end if
@@ -353,11 +356,16 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                         alpha = (temps-zr(ltps0))/(zr(ltps1)-zr(ltps0))
                         call rsexch('F', listresu(iresu), 'DEPL', i, cham19, &
                                     iret)
-                        call vtcopy(cham19, chamno, 'F', iret)
+                        call vtcopy(cham19, chamno, iret)
+                        if (iret .ne. 0) then
+                            call utmess("F", "FIELD0_14", sk='DEPL')
+                        end if
                         call jeveuo(chamno//'.VALE', 'L', vr=nlval1)
-                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19, &
-                                    iret)
-                        call vtcopy(cham19, chamn2, 'F', iret)
+                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19, iret)
+                        call vtcopy(cham19, chamn2, iret)
+                        if (iret .ne. 0) then
+                            call utmess("F", "FIELD0_14", sk='DEPL')
+                        end if
                         call jeveuo(chamn2//'.VALE', 'L', vr=nlval2)
                         b_n = to_blas_int(neq)
                         b_incx = to_blas_int(1)
@@ -374,9 +382,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                         goto 213
                     end if
                     if (i .eq. nbinst-1 .and. temps .ge. zr(ltps1)) then
-                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19, &
-                                    iret)
-                        call vtcopy(cham19, chamno, 'F', iret)
+                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19, iret)
+                        call vtcopy(cham19, chamno, iret)
+                        if (iret .ne. 0) then
+                            call utmess("F", "FIELD0_14", sk='DEPL')
+                        end if
                         call jeveuo(chamno//'.VALE', 'L', lvale)
                         goto 213
                     end if
@@ -511,7 +521,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
         alarm = 1
 !
         if (lmodst) then
-!
             typa(1) = 'DEPL_ABSOLU'
             typa(2) = 'VITE_ABSOLU'
             typa(3) = 'ACCE_ABSOLU'
@@ -527,14 +536,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                         alarm, temps, nbtyar, typa, masse, &
                         depla, vitea, accea, fexte(neq+1), famor(neq+1), &
                         fliai(neq+1))
-!
         end if
-!
         call dlarch(result, neq, istoc, iarchi, ' ', &
                     alarm, temps, nbtyar, typear, masse, &
                     dep0, vit0, acc0, fexte(neq+1), famor(neq+1), &
                     fliai(neq+1))
-!
     end if
 !
     call nmarpc(ds_energy, numrep, temps)

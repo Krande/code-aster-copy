@@ -253,7 +253,7 @@ class NonLinearOperator(ContextMixin):
 
                 self.state.primal_curr = resu.getField(
                     "DEPL", para=para, value=value
-                ).copyUsingDescription(nume_equa, False)
+                ).copyUsingDescription(nume_equa, True)
                 _msginit("DEPL", resu.userName)
 
                 if self.state.pb_type == PBT.MecaDyna:
@@ -268,12 +268,24 @@ class NonLinearOperator(ContextMixin):
                     _msginit("ACCE", resu.userName)
 
                 self.state.stress = _extract_resu_field_and_check_model(
-                    self, resu=resu, para=para, val=value, name_field="SIEF_ELGA", model=model
+                    self,
+                    resu=resu,
+                    para=para,
+                    val=value,
+                    name_field="SIEF_ELGA",
+                    model=model,
+                    fieldModel=self.state.stress,
                 )
                 _msginit("SIEF_ELGA", resu.userName)
 
                 self.state.internVar = _extract_resu_field_and_check_model(
-                    self, resu=resu, para=para, val=value, name_field="VARI_ELGA", model=model
+                    self,
+                    resu=resu,
+                    para=para,
+                    val=value,
+                    name_field="VARI_ELGA",
+                    model=model,
+                    fieldModel=self.state.internVar,
                 )
                 _msginit("VARI_ELGA", resu.userName)
 
@@ -316,7 +328,11 @@ class NonLinearOperator(ContextMixin):
 
             if "VARI" in init_state:
                 self.state.internVar = _get_field_and_check_model(
-                    self, state=init_state, name_field="VARI", model=model
+                    self,
+                    state=init_state,
+                    name_field="VARI",
+                    model=model,
+                    fieldModel=self.state.internVar,
                 )
                 _msginit("VARI_ELGA")
 
@@ -485,27 +501,39 @@ def _extract_param(init_state, resu):
     return para, value
 
 
-def _raise_elga_error():
+def _raise_elga_error(name_field):
     """Raise an error to make sure that initial_state model and
     field model are the same."""
-    UTMESS("F", "MECANONLINE_9")
+    UTMESS("F", "MECANONLINE_9", sk=name_field)
 
 
-def _extract_resu_field_and_check_model(self, resu, para, val, name_field, model):
+def _extract_resu_field_and_check_model(self, resu, para, val, name_field, model, fieldModel):
     """Extract the field from the result, then check that the model
     of the field is the same as the model given in parameter.
 
-    Returns the extracted field if the model is the same"""
+    Returns:
+        FieldOnCells: the extracted field if the model is the same
+    """
     field = resu.getField(name_field, para=para, value=val)
 
-    if name_field == "VARI":
+    error = 0
+    if name_field == "VARI_ELGA":
         comporPrev = resu.getField("COMPORTEMENT", para=para, value=val)
         comporCurr = self.problem.getBehaviourProperty().getBehaviourField()
-        field.checkInternalStateVariables(comporPrev, comporCurr)
+        newFEDesc = self.problem.getModel().getFiniteElementDescriptor()
+        field.checkInternalStateVariables(comporPrev, comporCurr, newFEDesc)
+        error = field.compareShape(fieldModel, True, "PVARI_R")
+    if error != 0:
+        _raise_elga_error(name_field)
 
-    if model is field.getModel():
-        return field
-    _raise_elga_error()
+    error = 0
+    if name_field == "SIEF_ELGA":
+        error = field.compareShape(fieldModel, True, "PSIEF_R")
+
+    if error != 0:
+        _raise_elga_error(name_field)
+
+    return field
 
 
 def _get_field_and_check_model(self, state, name_field, model, fieldModel=None):
@@ -517,6 +545,8 @@ def _get_field_and_check_model(self, state, name_field, model, fieldModel=None):
     Returns the field if the model is the same
     """
     field = state.get(name_field)
+    error = 0
+
     if isinstance(field, ConstantFieldOnCellsReal):
         simpleFieldModel = fieldModel.toSimpleFieldOnCells()
         simpleField = field.toSimpleFieldOnCells(simpleFieldModel)
@@ -527,8 +557,18 @@ def _get_field_and_check_model(self, state, name_field, model, fieldModel=None):
     if name_field == "VARI":
         comporPrev = None
         comporCurr = self.problem.getBehaviourProperty().getBehaviourField()
-        field.checkInternalStateVariables(comporPrev, comporCurr)
+        newFEDesc = self.problem.getModel().getFiniteElementDescriptor()
+        field.checkInternalStateVariables(comporPrev, comporCurr, newFEDesc)
+        error = field.compareShape(fieldModel, True, "PVARI_R")
 
-    if model is field.getModel():
-        return field
-    _raise_elga_error()
+    if error != 0:
+        _raise_elga_error(name_field)
+
+    error = 0
+    if name_field == "SIGM":
+        error = field.compareShape(fieldModel, True, "PSIEF_R")
+
+    if error != 0:
+        _raise_elga_error(name_field)
+
+    return field

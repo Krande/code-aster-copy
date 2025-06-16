@@ -178,7 +178,8 @@ ASTERDOUBLE FieldOnCellsReal::dot( const FieldOnCellsPtr &tmp ) const {
 template <>
 void FieldOnCellsReal::checkInternalStateVariables(
     const ConstantFieldOnCellsChar16Ptr prevBehaviour,
-    const ConstantFieldOnCellsChar16Ptr currBehaviour ) {
+    const ConstantFieldOnCellsChar16Ptr currBehaviour,
+    const FiniteElementDescriptorPtr newFEDesc ) {
 
     std::string prevBehaviourStr = " ";
     std::string currBehaviourStr = " ";
@@ -187,11 +188,27 @@ void FieldOnCellsReal::checkInternalStateVariables(
 
     currBehaviourStr = currBehaviour->getName();
     variStr = this->getName();
-    FEDescStr = getDescription()->getName();
+    FEDescStr = newFEDesc->getName();
 
     if ( prevBehaviour != nullptr ) {
         prevBehaviourStr = prevBehaviour->getName();
     };
 
     CALL_CHCKVARI( prevBehaviourStr, currBehaviourStr, variStr, FEDescStr );
+}
+
+template <>
+ASTERINTEGER FieldOnCellsReal::compareShape( const FieldOnCellsRealPtr fieldModel,
+                                             const bool projectOnLigrel,
+                                             const std::string paraName ) {
+
+    ASTERINTEGER iret = 0;
+    std::string fieldModelStr = ljust( strip( fieldModel->getName() ), 24, ' ' );
+    std::string fieldStr = ljust( strip( this->getName() ), 24, ' ' );
+    std::string paraNameStr = ljust( strip( paraName ), 24, ' ' );
+
+    CALL_COMPAREFIELDSHAPE( fieldModelStr, fieldStr, (ASTERLOGICAL *)&projectOnLigrel, paraNameStr,
+                            &iret );
+
+    return iret;
 }

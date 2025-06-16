@@ -124,13 +124,9 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
 !  -------- Check stresses
             if (fieldType .eq. 'SIEF_ELGA') then
                 if (l_state_init) then
-                    call stressChck(fieldRefe, field_algo, iret)
+                    call stressChck(fieldRefe, field_algo, ASTER_TRUE, iret)
                     if (iret .eq. 1) then
-                        call utmess('F', 'MECANONLINE5_57')
-                    end if
-                    call sgcomp(compor, field_algo, modelLigrel, iret)
-                    if (iret .eq. 1) then
-                        call utmess('F', 'MECANONLINE5_58')
+                        call utmess('A', 'MECANONLINE5_81')
                     end if
                 end if
             end if
@@ -160,7 +156,7 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
                                     lModiVari_=lModiVari)
                     end if
                     if (iret .eq. 1) then
-                        call utmess('F', 'MECANONLINE5_2')
+                        call utmess('F', 'MECANONLINE5_82')
                     end if
                     if (lModiVari) then
                         call vrcom2(compor, field_algo, modelLigrel, ASTER_FALSE)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine copy_field_with_numbering(fieldin, fieldout, mesh, nume_equa, &
 !_______________________________________________________________________
 !
     character(len=1) :: type_sca
-    character(len=24) :: crefe(2), valk(3)
+    character(len=24) :: crefe(2)
     integer:: iret, neq
 
     if (present(nequa)) then
@@ -73,13 +73,10 @@ subroutine copy_field_with_numbering(fieldin, fieldout, mesh, nume_equa, &
     if (type_sca == 'R') then
         call vtzero(fieldout)
     end if
-    call vtcopy(fieldin, fieldout, ' ', iret)
+    call vtcopy(fieldin, fieldout, iret)
 !
     if (iret .ne. 0) then
-        valk(1) = fieldin
-        valk(2) = fieldout
-        valk(3) = crefe(2) (1:8)
-        call utmess('A', 'UTILITAI_24', nk=3, valk=valk)
+        call utmess('A', 'UTILITAI_24')
     end if
 
 end subroutine

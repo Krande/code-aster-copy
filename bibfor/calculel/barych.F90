@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,11 +96,9 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
                 end do
             end if
         else
-            call vtcopy(ch2, ch, ' ', ier)
+            call vtcopy(ch2, ch, ier)
             if (ier .ne. 0) then
-                valk(1) = ch1
-                valk(2) = ch2
-                call utmess('F', 'ALGELINE7_21', nk=2, valk=valk)
+                call utmess('F', 'ALGELINE7_21')
             end if
             call jeveuo(ch//'.VALE', 'E', jvale)
             call jeveuo(ch1//'.VALE', 'L', jvale1)

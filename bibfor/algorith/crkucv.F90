@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -236,12 +236,18 @@ subroutine crkucv()
         call rsorac(resui, typabs, ibid, tps, k8b, cbid, prec, criter, tnum, 1, nbr)
         numei = tnum(1)
         call rsexch(' ', resui, 'VITE', numei, chamno, iret)
-        call vtcopy(chamno, chamn2, ' ', ier)
+        call vtcopy(chamno, chamn2, ier)
+        if (ier .ne. 0) then
+            call utmess("A", "FIELD0_3", sk='VITE')
+        end if
         call jeveuo(chamn2//'.VALE', 'L', jchin)
         call mrmult('ZERO', lmat, zr(jchin), zr(jchout), 1, .true._1)
         if (nr .ne. 0) then
             call rsexch(' ', resui, 'DEPL', numei, chamno, iret)
-            call vtcopy(chamno, chamn2, ' ', ier)
+            call vtcopy(chamno, chamn2, ier)
+            if (ier .ne. 0) then
+                call utmess("A", "FIELD0_3", sk='DEPL')
+            end if
             call jeveuo(chamn2//'.VALE', 'L', jchin)
             call mrmult('CUMU', lma2, zr(jchin), zr(jchout), 1, .true._1)
         end if

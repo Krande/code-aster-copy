@@ -83,9 +83,9 @@ subroutine nmetl1(i_field, ds_inout)
 ! ----- Copy field
         if (ievol .eq. 0) then
             if (disc_type .eq. 'NOEU') then
-                call vtcopy(field_resu, field_algo, ' ', iret)
+                call vtcopy(field_resu, field_algo, iret)
                 if (iret .ne. 0) then
-                    call utmess('A', 'MECANONLINE_2', sk=fieldType)
+                    call utmess('A', 'MECANONLINE5_80', sk=fieldType)
                 end if
             elseif ((disc_type .eq. 'ELGA') .or. &
                     (disc_type .eq. 'ELNO') .or. &
