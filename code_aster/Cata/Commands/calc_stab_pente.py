@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -255,6 +255,7 @@ CALC_STAB_PENTE = MACRO(
         # Cas de surface non-circulaire
         b_noncirc=BLOC(
             condition="""(equal_to("METHODE_LEM", "MORGENSTERN_PRICE")or(equal_to("METHODE_LEM", "SPENCER")))""",
+            INIT_ALEA=SIMP(statut="f", typ="I"),
             ALGO_EFWA=FACT(
                 statut="d",
                 max=1,

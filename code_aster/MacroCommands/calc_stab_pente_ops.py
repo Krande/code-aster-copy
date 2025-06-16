@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 import numpy as np
 import tempfile
 from typing import List, Dict, Callable
+from datetime import datetime
 from ..Messages import UTMESS
 from ..Cata.Syntax import _F
 from ..Supervis import CO
@@ -2419,6 +2420,8 @@ class Surf_Non_Circ_Solver(LEM_Solver):
         self.kw_efwa = args["ALGO_EFWA"]
         # niveau d'impression
         self.impr_detail = args.get("INFO_TABLE") == 2
+        # germe pour les tirages aléatoires
+        self.seed = args.get("INIT_ALEA")
 
     def bilan_last_tranche(
         self, poids, width, alpha, mat_prop, ptot, char_ext: Dict, spencer=True, ang_dir=None
@@ -2827,6 +2830,12 @@ class Efwa_Optimizer:
 
         if self.N < 1:
             UTMESS("F", "CALCSTABPENTE_20")
+
+        if not self.lem_solver.seed:
+            now = datetime.now()
+            self.lem_solver.seed = now.microsecond
+            UTMESS("I", "SEISME_83", vali=self.lem_solver.seed)
+        np.random.seed(self.lem_solver.seed)
 
     def get_tab_init(self):
         return self.tab_init

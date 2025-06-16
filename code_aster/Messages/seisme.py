@@ -180,7 +180,6 @@ Il faut renseigner le spectre à un sigma jusque 0.1 Hz pour SPEC_FRACTILE.
     ),
     83: _(
         """
--------Tirages aléatoires:         ----------------------------
         Le germe pour les tirages aléatoires vaut %(i1)d.
 """
     ),
