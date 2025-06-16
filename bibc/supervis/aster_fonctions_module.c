@@ -18,7 +18,7 @@
 
 #include "aster.h"
 
-#ifndef ASTER_PLATFORM_MINGW
+#ifndef ASTER_PLATFORM_MSYS2
 #define CODEASTER_IMPORT_ARRAY 1
 #endif
 
@@ -148,7 +148,7 @@ static struct PyModuleDef aster_fonctions_def = {
 PyObject *PyInit_aster_fonctions( void ) {
     PyObject *aster_fonctions = PyModule_Create( &aster_fonctions_def );
 
-#ifndef ASTER_PLATFORM_MINGW
+#ifndef ASTER_PLATFORM_MSYS2
     import_array();
 #endif
     return aster_fonctions;

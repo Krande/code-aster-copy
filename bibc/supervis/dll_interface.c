@@ -22,7 +22,7 @@
 #include "definition_pt.h"
 #include "dll_register.h"
 
-#ifdef ASTER_PLATFORM_MINGW64
+#ifdef ASTER_PLATFORM_MSYS2
 #include <windows.h>
 #define dlopen( libname, flag ) LoadLibrary( libname )
 #define dlsym( handle, symbol ) GetProcAddress( (HMODULE)( handle ), (LPCSTR)( symbol ) )

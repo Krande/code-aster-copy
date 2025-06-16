@@ -75,15 +75,15 @@ def check_numpy_headers(self):
     self.end_msg(numpy_includes)
     self.start_msg("Checking for numpy arrayobject.h")
     # Basile Marchand : Bad path formating on msys2
-    # if self.is_defined("ASTER_PLATFORM_MINGW"):
-    #     incs = PureWindowsPath(numpy_includes)
-    #     parts = list(incs.parts)
-    #     if incs.anchor:
-    #         parts[0] = incs.root
-    #     for i, sub in enumerate(parts):
-    #         if sub == "lib":
-    #             parts[i] = "Lib"
-    #     numpy_includes = PureWindowsPath(*parts)
+    if self.is_defined("ASTER_PLATFORM_MINGW") and not self.is_defined("ASTER_PLATFORM_MSYS2"):
+        incs = PureWindowsPath(numpy_includes)
+        parts = list(incs.parts)
+        if incs.anchor:
+            parts[0] = incs.root
+        for i, sub in enumerate(parts):
+            if sub == "lib":
+                parts[i] = "Lib"
+        numpy_includes = PureWindowsPath(*parts)
     # check the given includes dirs
     self.check(
         feature="c",
