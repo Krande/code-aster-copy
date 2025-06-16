@@ -91,9 +91,9 @@ def get_depl_mult_appui(depl_mult_appui):
         depl_mult_appuis[nom_appui]["X"] = mult_appui.get("DX")
         depl_mult_appuis[nom_appui]["Y"] = mult_appui.get("DY")
         depl_mult_appuis[nom_appui]["Z"] = mult_appui.get("DZ")
-        if all([depl_mult_appuis[nom_appui][direction] is None for direction in ("X", "Y", "Z")]):
-            # FIXME: UTMESS
-            raise Exception(f"Aucun DDS n'est trouvé pour {nom_appui}")
+        assert any(
+            depl_mult_appuis[nom_appui][direction] is not None for direction in ("X", "Y", "Z")
+        )
 
     return depl_mult_appuis
 
@@ -122,8 +122,7 @@ def get_appuis(appuis_in, mesh):
     for appui in appuis.values():
         all_nodes += appui["nodes"]
     if len(all_nodes) != len(set(all_nodes)):
-        # FIXME : UTMESS
-        raise Exception("Il y a au moins un noeud appartenant a deux appuis")
+        UTMESS("F", "SEISME_60")
 
     return appuis
 
@@ -300,16 +299,13 @@ class CombModalResponse:
 
         if self._type_comb == "GUPTA":
             if type_analyse != "MONO_APPUI":
-                # FIXME : UTMESS
-                raise Exception("Pour la combinaison type Gupta n'existe qu'en cas de mono-appui")
+                UTMESS("F", "SEISME_59")
             self._freq1, self._freq2 = comb_mode["FREQ_1"], comb_mode["FREQ_2"]
             self._alpha_r = None
 
         elif self._type_comb in ("DSC", "NRC_DSA"):
             self._duree = comb_mode["DUREE"]
-            if self._duree is None:
-                # FIXME : UTMESS
-                raise Exception("Il faut renseigner DUREE")
+            assert self._duree is not None
 
         elif self._type_comb == "NRC_GROUPING":
             self._groups = None
@@ -356,8 +352,7 @@ class CombModalResponse:
             H: matrix of correlation between modes for DSC rule
         """
         if np.any(amors == 0) or np.any(amors > 1):
-            # FIXME UTMESS
-            raise Exception("Impossible de faire TYPE_COMB DSC avec des amortissements nuls ou > 1")
+            UTMESS("F", "SEISME_61")
         nbmode = len(freqs)
         H = np.zeros((nbmode, nbmode))
         omega = 2 * np.pi * freqs
@@ -403,14 +398,6 @@ class CombModalResponse:
         if self._alpha_r is None:
             f1 = min(self._freq1, self._freq2)
             f2 = max(self._freq1, self._freq2)
-            # check if f1 < f2
-            if f1 > f2:
-                # FIXME : UTMESS
-                raise Exception(
-                    "Pour la combinaison type Gupta '{f1}' doit être inférieure à '{f2}'".format(
-                        f1=f1, f2=f2
-                    )
-                )
             self._alpha_r = np.expand_dims(np.log(self._freqs / f1) / np.log(f2 / f1), axis=1)
             self._alpha_r[self._freqs < f1] = 0
             self._alpha_r[self._freqs > f2] = 1
@@ -517,7 +504,7 @@ class CombModalResponse:
 
             R_m2 = sum_rk_sq + sum_rl_rm
         else:
-            raise Exception(f"Le TYPE '{self._type_comb}' n'est pas reconnu")
+            assert False
 
         if self._type_comb == "GUPTA":
             R_qs = np.sum(R_mi * self.alpha_r, axis=0)
@@ -753,8 +740,7 @@ class BaseRunner:
             option = "DEPL"
 
         if option not in mode_meca.getFieldsNames():
-            # FIXME UTMESS
-            raise Exception(f"Le champs '{option}' n'existe pas dans la base modale")
+            UTMESS("F", "SEISME_62", valk=option)
 
         phis = []
         if all(nume_ordre in mode_meca.getIndexes() for nume_ordre in nume_ordres):
@@ -803,8 +789,7 @@ class BaseRunner:
 
         index_pseudo_mode = ps_nume_mode[ps_noeud_cmp.index(f"ACCE    {direction}")]
         if index_pseudo_mode is None:
-            # FIXME : UTMESS
-            raise Exception(f"Direction '{direction}' n'existe pas dans la base pseudo-modale")
+            UTMESS("F", "SEISME_63", valk=direction)
 
         # get field in mode_statique
         if self._option == "VITE":  # on accepte que VITE = DEPL * omega (pseudo-vitesse relative)
@@ -830,10 +815,7 @@ class BaseRunner:
         # some checks
         if self._analyse == "mono_appui":
             if max([len(spectres[direction]) for direction in ("X", "Y", "Z")]) > 1:
-                # FIXME : UTMESS
-                raise Exception(
-                    "En MONO_APPUI, il faut renseigner maximun trois axes globaux X, Y, Z"
-                )
+                UTMESS("F", "SEISME_64")
         elif self._analyse == "ENVELOPPE":
             natures = []
             corr_freqs = []
@@ -841,11 +823,9 @@ class BaseRunner:
                 natures.extend([spectre["nature"] for spectre in spectres[direction]])
                 corr_freqs.extend([spectre["corr_freq"] for spectre in spectres[direction]])
             if not all(nature == natures[0] for nature in natures):
-                # FIXME : UTMESS
-                raise Exception("all NATURE must be the same")
+                UTMESS("F", "SEISME_65", valk="NATURE")
             if not all(corr_freq == corr_freqs[0] for corr_freq in corr_freqs):
-                # FIXME : UTMESS
-                raise Exception("all CORR_FREQ must be the same")
+                UTMESS("F", "SEISME_65", valk="CORR_FREQ")
         else:
             assert False
 
@@ -1150,11 +1130,7 @@ class MultiAppuiRunner(BaseRunner):
             else:
                 R_c_noeud = (phi_ps.getValues() - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
         else:
-            # noued_cmp is not calculated in pseudo-mode --> need to be done
-            # FIXME: UTMESS
-            raise Exception(
-                f"NOEUD_CMP: {noeud_cmp} n'existe pas dans la base MODE_STATIQUE - mot-clé PSEUDO_MODE"
-            )
+            UTMESS("F", "SEISME_66", valk=(noeud_cmp, "PSEUDO_MODE"))
 
         return R_c_noeud
 
@@ -1307,20 +1283,14 @@ class MultiAppuiRunner(BaseRunner):
                             stat_nume_mode = stat_nume_modes[stat_noeud_cmps.index(noeud_cmp)]
                             # Get static mode
                             if self._option in ("VITE", "ACCE_ABSOLU"):
-                                # FIXME : UTMESS
-                                raise Exception(
-                                    f"Il est inutile de calculer la réponse d'entrainement pour {self._option}"
-                                )
+                                UTMESS("F", "SEISME_67", valk=self._option)
 
                             phi_stat = mode_stat.getField(self._option, stat_nume_mode).getValues()
                             # Reponse due to DDS at node
                             R_e_noeud = np.array(phi_stat) * coef
                         else:
                             # noeud_cmp is not found --> raise fatal erreur
-                            # FIXME : UTMESS
-                            raise Exception(
-                                f"NOEUD_CMP: {noeud_cmp} n'existe pas dans la base mode_statique"
-                            )
+                            UTMESS("F", "SEISME_66", valk=(noeud_cmp, "MODE_STAT"))
                         # save responses DDS at all nodes in considered APPUI
                         R_e_noeuds.append(R_e_noeud)
                     # save en array
