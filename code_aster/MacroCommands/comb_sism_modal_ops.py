@@ -48,11 +48,11 @@ def get_nodes(mesh, group_no):
 
 
 def get_spectres(spectre_in):
-    """get input form key_factor SPECTRE
+    """Get input form key_factor SPECTRE
     Args:
          input of key_factor SPECTRE by users
     Returns:
-        spectres dict of dict giving spectras for each direction
+        spectres (dict[str, list]): gives spectras for each direction as a list
     """
     spectres = {"X": [], "Y": [], "Z": []}
     for spectre in spectre_in:
@@ -72,11 +72,11 @@ def get_spectres(spectre_in):
 
 
 def get_depl_mult_appui(depl_mult_appui):
-    """get input form key_factor DEPL_MULT_APPUI
+    """Get input from key_factor DEPL_MULT_APPUI
     Args:
          input of key_factor DEPL_MULT_APPUI by users
     Returns:
-        depl_mult_appuis dict of dict giving property for each appui
+        depl_mult_appuis (dict[str, dict]): gives property for each appui as a dict
     """
     depl_mult_appuis = {}
     if depl_mult_appui is None:
@@ -105,7 +105,7 @@ def get_appuis(appuis_in, mesh):
         appuis_in: input for key_factor APPUIS
 
     Returns:
-        appuis : dict of dict giving property for each appui
+        appuis (dict[str, dict]): gives property for each appui as a dict
     """
     appuis = {}
     for appui in appuis_in:
@@ -135,7 +135,7 @@ def get_group_appuis(spectres, group_appui_correle=None):
         group_appui_correle: input for operande GROUP_APPUI_CORRELE
 
     Returns:
-        group_appuis
+        group_appuis (list[dict[str, list]]): groups of appuis
     """
     # preparing for group_appui_correle
     group_appuis = {}
@@ -176,10 +176,10 @@ def filter_ordre_freq(list_para, increment):
         increment    : increment keyword
 
     Returns:
-        freqs: ordered list of filtered frequencies
-        nume_ordres: ordered list of filtered number order
-        nume_modes: ordered list of filtered number mode
-        gene_masses: ordered list of masse gene
+        freqs (ndarray): ordered list of filtered frequencies
+        nume_ordres (ndarray): ordered list of filtered number order
+        nume_modes (ndarray): ordered list of filtered number mode
+        gene_masses (ndarray): ordered list of masse gene
     """
     l_nume_ordre = list_para["NUME_ORDRE"]
     l_freq = list_para["FREQ"]
@@ -249,13 +249,13 @@ def get_amor_reduit(list_para, nume_ordres, amor_reduit, list_amor, amor_gene):
 
     Arguments:
         list_para: list para of mode_meca
-        nume_ordres: list of all numeros of orders
-        amor_reduit: a damping coefficient mentionned by users
-        list_amor : list of damping coefficients by users
-        amor_gene : generalized damping matrix by users
+        nume_ordres: list of orders for which the dampings must be calculated
+        amor_reduit: list of damping coefficient, user input
+        list_amor : list of damping coefficients, user input
+        amor_gene : generalized damping matrix, user input
 
     Returns:
-        amors : a scalar or a liste of damping coefficients
+        amors (ndarray): list of damping coefficients
     """
     # get values of damping coefficient
     if list_amor is not None:
@@ -282,7 +282,7 @@ def get_amor_reduit(list_para, nume_ordres, amor_reduit, list_amor, amor_gene):
 
 
 class CombModalResponse:
-    """Combines modals responses
+    """Manage how to combine modals responses according to strategy defined by user
     Args:
         comb_mode: input for key_factor COMB_MODE
         type_analyse: input for key TYPE_ANALYSE (MONO_APPUI or MULT_APPUI)
@@ -299,8 +299,10 @@ class CombModalResponse:
 
         if self._type_comb == "GUPTA":
             if type_analyse != "MONO_APPUI":
-                UTMESS("F", "SEISME_59")
+                UTMESS("F", "SEISME_58")
             self._freq1, self._freq2 = comb_mode["FREQ_1"], comb_mode["FREQ_2"]
+            if self._freq1 > self._freq2:
+                UTMESS("F", "SEISME_59")
             self._alpha_r = None
 
         elif self._type_comb in ("DSC", "NRC_DSA"):
@@ -319,7 +321,7 @@ class CombModalResponse:
             freqs           : list of frequencies
 
         Returns:
-            H: matrix of correlation between modes for CQC rule
+            H (ndarray): matrix of correlation between modes for CQC rule
         """
         nbmode = len(freqs)
         H = np.zeros((nbmode, nbmode))
@@ -349,7 +351,7 @@ class CombModalResponse:
             s               : duration in second
 
         Returns:
-            H: matrix of correlation between modes for DSC rule
+            H (ndarray): matrix of correlation between modes for DSC rule
         """
         if np.any(amors == 0) or np.any(amors > 1):
             UTMESS("F", "SEISME_61")
@@ -375,7 +377,7 @@ class CombModalResponse:
             freqs           : list of frequencies
 
         Returns:
-            H: matrix of correlation between modes for NRC_TEN_PERCENT rule
+            H (ndarray): matrix of correlation between modes for NRC_TEN_PERCENT rule
         """
 
         nbmode = len(freqs)
@@ -395,16 +397,18 @@ class CombModalResponse:
 
     @property
     def alpha_r(self):
+        """Quasi-static factor"""
         if self._alpha_r is None:
-            f1 = min(self._freq1, self._freq2)
-            f2 = max(self._freq1, self._freq2)
-            self._alpha_r = np.expand_dims(np.log(self._freqs / f1) / np.log(f2 / f1), axis=1)
-            self._alpha_r[self._freqs < f1] = 0
-            self._alpha_r[self._freqs > f2] = 1
+            self._alpha_r = np.expand_dims(
+                np.log(self._freqs / self._freq1) / np.log(self._freq2 / self._freq1), axis=1
+            )
+            self._alpha_r[self._freqs < self._freq1] = 0
+            self._alpha_r[self._freqs > self._freq2] = 1
         return self._alpha_r
 
     @property
     def H(self):
+        """Matrix of correlation"""
         if self._H is None:
             if self._type_comb in ("CQC", "GUPTA"):
                 self._H = self.cqc_array(self._amors, self._freqs)
@@ -445,11 +449,11 @@ class CombModalResponse:
     def get(self, R_mi):
         """
         Args:
-            R_mi: list of all vectors corresponding to all modal responses (mode by mode)
+            R_mi (ndarray): list of all vectors corresponding to all modal responses (mode by mode)
 
         Returns:
-            R_qs : quasi-statique combined response (for Gupta rule only)
-            R_m2 : dynamic combined response of all oscillators in square
+            R_m2 (ndarray): dynamic combined response of all oscillators in square
+            R_qs (ndarray): quasi-statique combined response (for Gupta rule only)
         """
 
         if self._type_comb == "SRSS":
@@ -516,6 +520,7 @@ class CombModalResponse:
 
 class Resu:
     """
+    Manage the MULT_ELAS output result: a facility to add fields
     Args:
         type_resu       : input of TYPE_RESU
         mode_meca       : input of MODE_MECA
@@ -547,6 +552,7 @@ class Resu:
         self._field_by_option = {}
 
     def _incr_index(self):
+        # FIXME : est-ce toujours utile ?
         self._nbIndexes += 1
         if self._nbIndexes == 1:
             self._result.allocate(self._nbIndexes)
@@ -554,13 +560,24 @@ class Resu:
             self._result.resize(self._nbIndexes)
 
     def _setField(self, option, values, name):
+        """Add field to result
+        Args:
+            option (str): field name
+            values (ndarray): field values
+            name (str) : access parameter name
+        """
         field = self._copy_field(option)
         field.setValues(values)
         self._incr_index()
         self._result.setField(field, option, value=name, para="NOM_CAS")
 
     def _copy_field(self, option):
-        """Create identical field of option field"""
+        """Create a working copy field for the given option by extracting it from mode_meca
+        Args:
+            option (str): field name to get from mode_meca
+        Returns:
+            field (field): the working copy field
+        """
         field = self._field_by_option.get(option)
         if not field:
             if option in ("VITE", "ACCE_ABSOLU"):
@@ -572,18 +589,24 @@ class Resu:
         return field
 
     def _get_type(self, vale_type):
-        """return type_resu corresponding to vale_type"""
+        """Return type_resu corresponding to vale_type, if found in user input
+        Args:
+            vale_type (str): type of response
+        Returns:
+            type_resu (str): return type_resu
+        """
         for type_resu in self._type_resu:
             if type_resu.get("TYPE") == vale_type:
                 return type_resu
+        return None
 
     def add_dire_response(self, option, direction, R, vale_type):
-        """print out directional response
+        """Add directional response field in output result, if requested by user
         Args:
-            option         : field to be printed
-            direction      : direction
-            R              : directional response
-            vale_type      : type of response
+            option (str)   : name of field to be added
+            direction (str): direction X, Y or Z
+            R (ndarray)    : directional response
+            vale_type (str): type of response
         """
         type_resu = self._get_type(vale_type)
         if type_resu is None:
@@ -594,12 +617,12 @@ class Resu:
             self._setField(option, R, self._response_by_type[vale_type].format("_" + direction))
 
     def add_response(self, option, R, R_newmark_all, vale_type):
-        """print out response
+        """Add response field in output result, if requested by user
         Args:
-            option          : field to be printed
-            R               : total response
-            R_newmark_all   : response by NEWMARK
-            vale_type       : type of response
+            option (str)           : name of field to be added
+            R (ndarray)            : response
+            R_newmark_all (ndarray): response by NEWMARK
+            vale_type (str)        : type of response
         """
         type_resu = self._get_type(vale_type)
         if type_resu is None:
@@ -611,13 +634,13 @@ class Resu:
                 self._setField(option, r_newmark, self._newmark_by_type[vale_type].format(i + 1))
 
     def add_spectral_response(self, option, direction, R, nume_ordres_resu, appui=""):
-        """print out spectral response (mono or multi appuis)
+        """Add spectral response (mono or multi appuis) in output result, if requested by user
         Args:
-            option          : field to be printed
-            direction       : direction
-            R               : spectral response
-            nume_ordres_resu: list of nume ordre in R
-            appui           : support to be given for multi_appui
+            option (str)              : name of field to be printed
+            direction (str)           : direction X, Y or Z
+            R (ndarray)               : spectral response
+            nume_ordres_resu (ndarray): nume ordres corresponding to raws of R
+            appui (str)               : name of support, to be given for MULTI_APPUI
         """
         type_resu = self._get_type("VALE_SPEC")
         if type_resu is None:
@@ -627,12 +650,17 @@ class Resu:
         list_axe = type_resu.get("LIST_AXE")
         list_appui = type_resu.get("LIST_APPUI")
         tout_appui = type_resu.get("TOUT_APPUI")
+        nume_ordres_resu = nume_ordres_resu.tolist()
         if direction in list_axe and (not appui or tout_appui == "OUI" or appui in list_appui):
             for nume_ordre in nume_ordres:
-                i_nume_ordre = (nume_ordres_resu.tolist()).index(nume_ordre)
-                self._setField(option, R[i_nume_ordre], f"SPEC_{nume_ordre}{direction}{appui}")
+                i_ordre = nume_ordres_resu.index(nume_ordre)
+                self._setField(option, R[i_ordre], f"SPEC_{nume_ordre}{direction}{appui}")
 
     def get(self):
+        """Update and return the result
+        Returns:
+            result (MultipleElasticResult): the result
+        """
         model = self._mode_meca.getModel()
         if model:
             self._result.setModel(model)
@@ -645,7 +673,7 @@ class Resu:
 
 
 class BaseRunner:
-    """runner base class containing common routines"""
+    """Runner base class containing common routines"""
 
     def __init__(self, mode_meca, option, nume_ordres, freqs, amors, freq_coup_in, mode_corr):
         self._mode_meca = mode_meca
@@ -727,7 +755,7 @@ class BaseRunner:
 
     @staticmethod
     def _get_phis(mode_meca, option, nume_ordres):
-        """get eigen-vector
+        """Get eigen-vector
         Args:
             mode_meca  : modale basis
             option     : fields to get, except for (VITE, ACCE_ABSOLU)
@@ -749,7 +777,7 @@ class BaseRunner:
         return np.array(phis)
 
     def _s_r_freq_cut(self, spectre):
-        """value of ZPA at the cutting frequency
+        """Value of ZPA at the cutting frequency
 
         Args:
             spectre : spectrum parameters
@@ -770,14 +798,14 @@ class BaseRunner:
         return s_r_freq_cut
 
     def _corr_pseudo_mode(self, pr_wr2_phi, w_r, direction, pseudo_mode, s_r_freq_cut):
-        """correction by pseudo-mode/mode statique
+        """Correction by pseudo-mode/mode statique, for TYPE_ANALYSE = 'MONO_APPUI' and 'ENVELOPPE'
 
         Args:
-            pr_wr2_phi  : list of produit rho*phi/omega^2
-            w_r         : list of omega = 2*pi*freq
-            direction   : X, Y or Z
-            pseudo_mode : pseudo mode for static correction
-            s_r_freq_cut : value of ZPA at the cutting frequency
+            pr_wr2_phi (ndarray)    : list of produit rho*phi/omega^2
+            w_r (ndarray)           : list of omega = 2*pi*freq
+            direction (str)         : X, Y or Z
+            pseudo_mode (ModeResult): pseudo mode for static correction
+            s_r_freq_cut (ndarray)  : value of ZPA at the cutting frequency
 
         Returns:
             R_c (ndarray): response by correction of pseudo-mode
@@ -809,11 +837,17 @@ class BaseRunner:
         return R_c
 
     def compute(self, comb_modal_response, spectres, mode_corr, pseudo_mode, d_fact_partici):
-        # step 2: spectral value
-        # iteration on direction
+        """Compute responses for TYPE_ANALYSE = 'MONO_APPUI' and 'ENVELOPPE'
+        Args:
+            comb_modal_response (CombModalResponse): instance to combine modals responses
+            spectres (dict[str, list]): list of spectras, by direction
+            mode_corr (str): static correction, user input
+            pseudo_mode (ModeResult): pseudo modes, user input
+            d_fact_partici (dict[str, ndarray]): given participation factors, by direction
+        """
 
         # some checks
-        if self._analyse == "mono_appui":
+        if self._analyse == "MONO_APPUI":
             if max([len(spectres[direction]) for direction in ("X", "Y", "Z")]) > 1:
                 UTMESS("F", "SEISME_64")
         elif self._analyse == "ENVELOPPE":
@@ -832,7 +866,7 @@ class BaseRunner:
         self._directions = [direction for direction in ("X", "Y", "Z") if spectres[direction]]
         for direction in self._directions:
 
-            if self._analyse == "mono_appui":
+            if self._analyse == "MONO_APPUI":
                 spectre = spectres[direction][0]
                 # Spectrale values at eigen-frequencies
                 nappe = spectre["nappe"]
@@ -947,8 +981,13 @@ class BaseRunner:
             self._R_prim[direction] = R_prim
 
     def combine(self, resu, comb_direction):
+        """Combine responses and add to output result
+        Args:
+            resu (Resu): instance of output result
+            comb_direction (str): type of combination
+        """
         for direction in self._directions:
-            if self._analyse == "multi_appui":
+            if self._analyse == "MULTI_APPUI":
                 for nom_appui, R_m_appui in self._R_mi[direction].items():
                     # Print out spectral response at each mode, direction and appui
                     resu.add_spectral_response(
@@ -962,7 +1001,7 @@ class BaseRunner:
             resu.add_dire_response(self._option, direction, self._part_d[direction], "VALE_DYNA")
             resu.add_dire_response(self._option, direction, self._part_s[direction], "VALE_QS")
             resu.add_dire_response(self._option, direction, self._R_prim[direction], "VALE_INER")
-            if self._analyse == "multi_appui":
+            if self._analyse == "MULTI_APPUI":
                 resu.add_dire_response(self._option, direction, self._R_seco[direction], "VALE_DDS")
 
         # step 7 : reponse by directional combinaison
@@ -978,7 +1017,7 @@ class BaseRunner:
         resu.add_response(self._option, R_ps, Rps_newmark_all, "VALE_QS")
         resu.add_response(self._option, R_prim, R_prim_newmark_all, "VALE_INER")
 
-        if self._analyse == "multi_appui":
+        if self._analyse == "MULTI_APPUI":
             # RCCM
             R_seco, R_seco_newmark_all = self._comb_directions(
                 comb_direction, self._R_seco.values()
@@ -998,7 +1037,7 @@ class BaseRunner:
                     # nature of spectra
                     UTMESS("I", "SEISME_17", valk=spectre["nature"])
                     # info of read value on spectra
-                    if self._analyse == "multi_appui":
+                    if self._analyse == "MULTI_APPUI":
                         UTMESS("I", "SEISME_97")
                         for i_freq in range(len(self._freqs)):
                             vali = nume_modes[i_freq]
@@ -1025,7 +1064,7 @@ class BaseRunner:
                     if mode_corr == "OUI":
                         # cutting frequency et ZPA
                         UTMESS("I", "SEISME_56")
-                        if self._analyse == "multi_appui":
+                        if self._analyse == "MULTI_APPUI":
                             valr = (self._freq_coup, self._pseudo[direction][nom_appui])
                         else:
                             valr = (self._freq_coup, self._pseudo[direction])
@@ -1039,21 +1078,21 @@ class BaseRunner:
 
 
 class MonoAppuiRunner(BaseRunner):
-    """runner for mono_appui strategy"""
+    """Runner for MONO_APPUI strategy"""
 
-    _analyse = "mono_appui"
+    _analyse = "MONO_APPUI"
 
 
 class EnveloppeRunner(BaseRunner):
-    """runner for enveloppe strategy"""
+    """Runner for ENVELOPPE strategy"""
 
     _analyse = "ENVELOPPE"
 
 
 class MultiAppuiRunner(BaseRunner):
-    """runner for multi_appui strategy"""
+    """Runner for MULTI_APPUI strategy"""
 
-    _analyse = "multi_appui"
+    _analyse = "MULTI_APPUI"
 
     def __init__(self, mode_meca, option, nume_ordres, freqs, amors, freq_coup_in, mode_corr):
         super().__init__(mode_meca, option, nume_ordres, freqs, amors, freq_coup_in, mode_corr)
@@ -1064,10 +1103,11 @@ class MultiAppuiRunner(BaseRunner):
         """Combines modals responses
 
         Args:
-            R_mi: list of all vectors corresponding to all correlated supports
+            type_comb (str): combination strategy
+            R_mi (ndarray): list of all vectors corresponding to all correlated supports
 
         Returns:
-            R_m : combined response
+            R_m (ndarray): combined response
         """
 
         R_m = 0
@@ -1081,17 +1121,17 @@ class MultiAppuiRunner(BaseRunner):
         return R_m
 
     def _corr_pseudo_mode(
-        self, pr_wr2_phi, w_r, pseudo_mode, direction, s_r_freq_cut, l_group_no, mesh
+        self, pr_wr2_phi, w_r, direction, pseudo_mode, s_r_freq_cut, l_group_no, mesh
     ):
-        """correction par pseudo-mode/mode statique pour multi_appui
+        """Correction by pseudo-mode/mode statique, for MULTI_APPUI
         Args:
-            pr_wr2_phi  : list of produit rho*phi/omega^2
-            w_r         : list of omega = 2*pi*freq
-            pseudo_mode : pseudo_mode (mode_meca)
-            direction   : direction
-            s_r_freq_cut : value of ZPA at the cutting frequency
-            l_group_no  : list of all group_no of support
-            mesh    : mesh extracted from mode_meca by mode_meca.getMesh()
+            pr_wr2_phi (ndarray)    : list of produit rho*phi/omega^2
+            w_r (ndarray)           : list of omega = 2*pi*freq
+            direction (str)         : X, Y or Z
+            pseudo_mode (ModeResult): pseudo mode for static correction
+            s_r_freq_cut (ndarray)  : value of ZPA at the cutting frequency
+            l_group_no list[str]    : list of all group_no of support
+            mesh (Mesh)             : mesh extracted from mode_meca
 
         Returns:
             R_c (ndarray): response by correction by pseudo-mode
@@ -1149,7 +1189,21 @@ class MultiAppuiRunner(BaseRunner):
         group_appuis,
         mesh,
     ):
-
+        """Compute responses for TYPE_ANALYSE = 'MULTI_APPUI'
+        Args:
+            comb_modal_response (CombModalResponse): instance to combine modal responses
+            spectres (dict[str, list]): list of spectras, by direction
+            mode_corr (str): static correction, user input
+            pseudo_mode (ModeResult): pseudo modes, user input
+            gene_masses (ndarray): list of generalized masses, to compute participation factors
+            cumul_intra (str) : combination of contributions of each response of support inside a group
+            cumul_inter (str) : combination of contributions of each group of supports
+            comb_dds_correle (str) : combination of contributions for correlated support
+            depl_mult_appuis (dict[str, dict]): suport properties
+            appuis (dict[str, dict]): supports, by direction
+            group_appuis (list[dict[str, list]]): groups of supports
+            mesh (Mesh): mesh extracted from mode_meca
+        """
         # search for all directions presented by users
         self._directions = [direction for direction in ("X", "Y", "Z") if spectres[direction]]
 
@@ -1172,22 +1226,20 @@ class MultiAppuiRunner(BaseRunner):
                 # Reponse oscillator et pseudo-mode
                 # Pulsation before correction by corr_freq
                 w_r = 2 * np.pi * self._freqs
+
+                # Spectrum interpolation
+                nappe = spectre["nappe"]
+                coeff = spectre["coefficient"]
+                S_r_freq = [
+                    nappe(amor, freq) * coeff for amor, freq in zip(self._amors, self._freqs)
+                ]
+
                 # Correction of spectrum by corr_freq
                 if spectre["corr_freq"] == "OUI":
                     # pulsation propre amortie
                     correct = np.sqrt(1 - self._amors**2)
                     w_r *= correct
-                else:
-                    correct = 1
-                # Spectrum interpolation
-                S_r_freq = []
-                for i_freq in range(len(self._freqs)):
-                    S_r_freq.append(
-                        spectre["nappe"](self._amors[i_freq], self._freqs[i_freq])
-                        * spectre["coefficient"]
-                    )
-                # correction by corr_freq
-                S_r_freq *= correct
+                    S_r_freq *= correct
 
                 # Correction of spectrum by nature
                 if spectre["nature"] == "DEPL":
@@ -1249,7 +1301,7 @@ class MultiAppuiRunner(BaseRunner):
                 if mode_corr == "OUI":
                     s_r_freq_cut = self._s_r_freq_cut(spectre)
                     R_c_noeud = self._corr_pseudo_mode(
-                        pr_wr2_phi_c, w_r, pseudo_mode, direction, s_r_freq_cut, l_group_no, mesh
+                        pr_wr2_phi_c, w_r, direction, pseudo_mode, s_r_freq_cut, l_group_no, mesh
                     )
                     # save for INFO
                     self._pseudo[direction][nom_appui] = s_r_freq_cut
@@ -1428,9 +1480,7 @@ def comb_sism_modal_ops(self, **args):
     comb_mode = args.get("COMB_MODE")
     comb_direction = args.get("COMB_DIRECTION")
     group_appui_correle = args.get("GROUP_APPUI_CORRELE")
-    # CUMUL_INTRA : Combination of the contributions of each response of support inside a group
     cumul_intra = args.get("CUMUL_INTRA")
-    # CUMUL_INTER : Combination of the contributions of each group of supports
     cumul_inter = args.get("CUMUL_INTER")
     comb_dds_correle = args.get("COMB_DDS_CORRELE")
     depl_mult_appui = args.get("DEPL_MULT_APPUI")
@@ -1469,7 +1519,6 @@ def comb_sism_modal_ops(self, **args):
 
     # Output result preparing
     resu = Resu(type_resu, mode_meca, mesh)
-
 
     # Combinaison
     comb_modal_response = CombModalResponse(comb_mode, type_analyse, amors, freqs)
@@ -1514,7 +1563,6 @@ def comb_sism_modal_ops(self, **args):
             runner.prints(
                 verbosity, spectres, mode_corr, comb_dds_correle, comb_direction, nume_modes
             )
-        verbosity = False
-
+        verbosity = 0
 
     return resu.get()

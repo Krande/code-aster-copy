@@ -147,6 +147,10 @@ Conseil:
         """         %(k1)s    %(r1)12.5e    %(r2)12.5e    %(k2)s
 """
     ),
+    58: _(
+        """"Pour la combinaison modale COMB_MODE de TYPE = 'GUPTA', FREQ_1 doit être inférieure à FREQ_2.
+"""
+    ),
     59: _(
         """La combinaison modale COMB_MODE de TYPE = 'GUPTA' est uniquement disponible en MONO_APPUI.
 """
