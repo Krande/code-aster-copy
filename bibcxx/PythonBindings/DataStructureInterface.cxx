@@ -128,4 +128,9 @@ Update the *DataStructure* attributes from the *Jeveux* objects.
 Returns:
     bool: *True* if all went ok, *False* otherwise.
         )" );
+
+    py::class_< DSWithCppPickling, DSWithCppPicklingPtr, DataStructure >( mod,
+                                                                          "DSWithCppPickling" );
+    // fake initFactoryPtr: created by subclasses
+    // fake initFactoryPtr: created by subclasses
 };

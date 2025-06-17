@@ -30,7 +30,7 @@
 #include "Utilities/Tools.h"
 
 ContactZone::ContactZone( const std::string name )
-    : DataStructure( name, 8, "CHAR_CONT_ZONE" ),
+    : DSWithCppPickling( name, 8, "CHAR_CONT_ZONE" ),
       _model( nullptr ),
       _verbosity( 1 ),
       _checkNormal( true ),

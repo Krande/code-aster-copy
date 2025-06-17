@@ -76,7 +76,6 @@
    * - :py:class:`~code_aster.Objects.ResultNaming`
    * - :py:class:`~code_aster.Objects.StructuralForceReal`
    * - :py:class:`~code_aster.Objects.SyntaxSaver`
-   * - :py:class:`~code_aster.Objects.UseCppPickling`
    * - :py:class:`~code_aster.Objects.externVarEnumInt`
    * - :py:class:`~code_aster.Objects.AsterError`
    * - :py:class:`~code_aster.Objects.ContactError`

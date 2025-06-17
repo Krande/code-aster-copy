@@ -601,15 +601,6 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.UseCppPickling` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.UseCppPickling
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.externVarEnumInt` object
 ********************************************************************************
 

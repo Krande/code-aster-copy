@@ -26,7 +26,7 @@
 
 void exportContactNewToPython( py::module_ &mod ) {
 
-    py::class_< ContactNew, ContactNewPtr, DataStructure, UseCppPickling >( mod, "ContactNew" )
+    py::class_< ContactNew, ContactNewPtr, DSWithCppPickling >( mod, "ContactNew" )
         .def( py::init( &initFactoryPtr< ContactNew, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ContactNew, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ContactNew, const py::tuple & > ) )
@@ -110,7 +110,7 @@ bool: enable or disable  the use of smoothing.
 bool: true if parallel contact.
         )" );
 
-    py::class_< FrictionNew, FrictionNewPtr, ContactNew, UseCppPickling >( mod, "FrictionNew" )
+    py::class_< FrictionNew, FrictionNewPtr, ContactNew >( mod, "FrictionNew" )
         .def( py::init( &initFactoryPtr< FrictionNew, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FrictionNew, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FrictionNew, const py::tuple & > ) )

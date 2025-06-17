@@ -29,7 +29,7 @@
 #include "Utilities/Tools.h"
 
 MeshPairing::MeshPairing( const std::string name )
-    : DataStructure( name, 13, "MESH_PAIRING" ),
+    : DSWithCppPickling( name, 13, "MESH_PAIRING" ),
       _mesh( nullptr ),
       _masterInverseConnectivity( JeveuxCollectionLong( getName() + ".CM" ) ),
       _slaveInverseConnectivity( JeveuxCollectionLong( getName() + ".CS" ) ),
