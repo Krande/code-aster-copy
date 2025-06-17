@@ -2,7 +2,7 @@
 
 
 class AsterError(Exception):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     AsterError
@@ -17,7 +17,7 @@ class AsterError(Exception):
 
 
 class ConvergenceError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     ConvergenceError
@@ -31,7 +31,7 @@ class ConvergenceError(AsterError):
 
 
 class IntegrationError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     IntegrationError
@@ -45,7 +45,7 @@ class IntegrationError(AsterError):
 
 
 class SolverError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     SolverError
@@ -59,7 +59,7 @@ class SolverError(AsterError):
 
 
 class ContactError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     ContactError
@@ -73,7 +73,7 @@ class ContactError(AsterError):
 
 
 class TimeLimitError(AsterError):
-    """Common base class for all non-exit exceptions."""
+    pass
 
     # Method resolution order:
     #     TimeLimitError
@@ -140,7 +140,7 @@ class PythonBool:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -177,7 +177,7 @@ class DataStructure:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def addDependency(self, ds):
@@ -328,7 +328,7 @@ class PhysicalQuantityManager:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     # ----------------------------------------------------------------------
@@ -354,7 +354,7 @@ class Node:
     def __getstate__(self):
         pass
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __setitem__(self, arg0, arg1):
@@ -443,7 +443,7 @@ class EntityType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -516,7 +516,7 @@ class AllMeshEntities(MeshEntity):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -534,7 +534,7 @@ class BaseMesh(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
@@ -1899,7 +1899,7 @@ class MorseStorage(MatrixStorage):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getDiagonalPositions(self):
@@ -1923,7 +1923,7 @@ class BaseDOFNumbering(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def computeNumbering(self, *args, **kwargs):
@@ -4194,7 +4194,7 @@ class GenericFunction(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getProperties(self):
@@ -4439,7 +4439,7 @@ class BaseFunction(GenericFunction):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getValues(self):
@@ -4942,7 +4942,7 @@ class ContactAlgo:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5010,7 +5010,7 @@ class ContactVariant:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5080,7 +5080,7 @@ class ContactType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5146,7 +5146,7 @@ class FrictionAlgo:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5214,7 +5214,7 @@ class FrictionType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5284,7 +5284,7 @@ class PairingAlgo:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -5348,7 +5348,7 @@ class InitialState:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -6979,7 +6979,7 @@ class BaseElementaryMatrix(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getElementaryCharacteristics(self):
@@ -7460,7 +7460,7 @@ class GeneralizedAssemblyMatrix(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def exists(self):
@@ -7641,7 +7641,7 @@ class GeneralizedAssemblyVector(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -7765,7 +7765,7 @@ class LinearSolver(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
@@ -7987,7 +7987,7 @@ class GenericModalBasis(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -8083,7 +8083,7 @@ class InterfaceType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -8180,7 +8180,7 @@ class DirichletBC(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def build(self):
@@ -8495,7 +8495,7 @@ class Loads:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -9183,7 +9183,7 @@ class PhysicalQuantityComponent:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -10436,7 +10436,7 @@ class ModelSplitingMethod:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -10504,7 +10504,7 @@ class GraphPartitioner:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -10748,7 +10748,7 @@ class Physics:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -10816,7 +10816,7 @@ class Modelings:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -12065,7 +12065,7 @@ class Glossary:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getComponent(self, arg0):
@@ -12343,7 +12343,7 @@ class GeneralizedResultReal(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -12361,7 +12361,7 @@ class GeneralizedResultComplex(DataStructure):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
 
@@ -13572,7 +13572,7 @@ class ResultNaming:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     # ----------------------------------------------------------------------
@@ -13608,7 +13608,7 @@ class ListOfFloats(DataStructure):
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def size(self):
@@ -13644,7 +13644,7 @@ class ListOfIntegers(DataStructure):
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def size(self):
@@ -13840,7 +13840,7 @@ class ExternalVariableTraits:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getExternVarTypeStr(self):
@@ -13891,7 +13891,7 @@ class externVarEnumInt:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -14681,7 +14681,7 @@ class MedFileAccessType:
         pass
 
     # ----------------------------------------------------------------------
-    # Data descriptors defined here:
+    # Readonly properties defined here:
 
     @property
     def __members__(self):
@@ -14817,7 +14817,7 @@ class MedField:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):
@@ -14914,7 +14914,7 @@ class MedMesh:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):
@@ -15109,7 +15109,7 @@ class MedFamily:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def __pickling_disabled__(self):
