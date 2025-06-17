@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
     integer :: nbtyp, nnotyp(MT_NTYMAX)
     integer :: renumd(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
     integer :: modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
-    integer :: sequenceNb, major, minor, rel
+    integer :: sequenceNb, major, minor, rel, iver
     med_idt :: fid, ifimed
     integer :: iret
     integer :: iSequence, iStore, ipas
@@ -170,6 +170,7 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
 !
     call as_med_open(fid, fileName, edlect, iret)
     call as_mfinvr(fid, major, minor, rel, iret)
+    iver = major*100+minor*10+rel
     fieldNameMed = fieldNameMed_
     if (major .lt. 3) then
         fieldNameMed(33:64) = '                                '
@@ -207,7 +208,14 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
         call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                     modnum, nuanom, numnoa)
         if (fieldSupport(1:4) .eq. 'ELNO') then
-            typent = ednoma
+!         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
+!         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
+            if (iver .lt. 233) then
+                typent = edmail
+                call utmess('A', 'MED_53', sk=fieldNameMed)
+            else
+                typent = ednoma
+            end if
         else
             typent = edmail
         end if
@@ -224,25 +232,6 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
                 goto 240
             end if
         end do
-!
-!         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
-!         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
-        if (fieldSupport .eq. 'ELNO') then
-            typent = edmail
-            call utmess('A', 'MED_53', sk=fieldNameMed)
-            do letype = 1, nbtyp
-                iaux = renumd(letype)
-                typgom = typgeo(iaux)
-                ifimed = 0
-                call mdchin(fileName, ifimed, fieldNameMed, typent, typgom, &
-                            prefix, sequenceNb, iret)
-                if (sequenceNb .ne. 0) then
-                    call jeveuo(prefix//'.INST', 'L', ipas)
-                    call jeveuo(prefix//'.NUME', 'L', inum)
-                    goto 240
-                end if
-            end do
-        end if
 !
     end if
 240 continue
