@@ -1,0 +1,349 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Comparaison CALC_FERRAILLAGE vs. Feuille_DIPDE (SECTION_ARMATURES)
+# Cas ou fck>50 MPA
+
+DEBUT(CODE="OUI")
+
+MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+MODEL = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(GROUP_MA="PoutreAB", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E")
+)
+
+# TEST 1 :
+# scenario accidentel, Béton C55/67, Acier HA 500
+# Flexion simple, M = 359.3 t.m
+
+CARA1 = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    POUTRE=_F(CARA=("HY", "HZ"), GROUP_MA=("PoutreAB",), SECTION="RECTANGLE", VALE=(0.8, 1.0)),
+)
+
+
+CHEFF1 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PoutreAB",
+        NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"),
+        VALE=(0.0, 0.0, 0.0, 0.0, -359.3 * 10000, 0.0),
+    ),
+)
+
+RESUELU1 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF1, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA1),),
+)
+
+
+RESUELU1 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELU1,
+    CARA_ELEM=CARA1,
+    reuse=RESUELU1,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    NUME_ORDRE=(1.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="1D",
+            C_SUP_Y=0.05,
+            C_INF_Y=0.05,
+            C_SUP_Z=0.05,
+            C_INF_Z=0.05,
+            FYK=500.0e6,
+            FCK=55.0e6,
+            EYS=210.0e9,
+            TYPE_DIAGRAMME="B2",
+            GAMMA_S=1.0,
+            GAMMA_C=1.2,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+
+RES1 = RESUELU1.getField("FERR_ELEM", 1)
+As = RES1.getValuesWithDescription("AZI")[0]
+print("Ferraillage :", As)
+
+
+D_ref = [81.71e-04]
+D_calc = 0.008040046756301123
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESUELU1,
+        INST=1,
+        NOM_CHAM="FERR_ELEM",
+        NOM_CMP="AZI",
+        GROUP_MA="M1",
+        LEGENDE="TEST1",
+        VALE_REFE=D_ref,
+        VALE_CALC=D_calc,
+        REFERENCE="SOURCE_EXTERNE",
+        PRECISION=4e-4,
+        CRITERE="ABSOLU",
+    )
+)
+
+# TEST 2 NOTE DIPDE - calcul du ferraillage :
+# scenario accidentel, Béton 55/67, Acier HA 500
+# Flexion simple, M = 100.0 t.m
+
+CARA2 = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    POUTRE=_F(CARA=("HY", "HZ"), GROUP_MA=("PoutreAB",), SECTION="RECTANGLE", VALE=(0.8, 1.0)),
+)
+
+CHEFF2 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PoutreAB",
+        NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"),
+        VALE=(0.0, 0.0, 0.0, 0.0, -100.0 * 10000, 0.0),
+    ),
+)
+
+RESUELU2 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA2),),
+)
+
+
+RESUELU2 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELU2,
+    CARA_ELEM=CARA2,
+    reuse=RESUELU2,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    NUME_ORDRE=(1.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="1D",
+            C_SUP_Y=0.05,
+            C_INF_Y=0.05,
+            C_SUP_Z=0.05,
+            C_INF_Z=0.05,
+            FYK=500.0e6,
+            FCK=55.0e6,
+            EYS=210.0e9,
+            TYPE_DIAGRAMME="B2",
+            GAMMA_S=1.0,
+            GAMMA_C=1.2,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+
+RES2 = RESUELU2.getField("FERR_ELEM", 1)
+As = RES2.getValuesWithDescription("AZI")[0]
+print("Ferraillage :", As)
+
+D_ref = [21.73e-04]
+D_calc = 0.0021389404964851227
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESUELU2,
+        INST=1,
+        NOM_CHAM="FERR_ELEM",
+        NOM_CMP="AZI",
+        GROUP_MA="M1",
+        LEGENDE="TEST2",
+        VALE_REFE=D_ref,
+        VALE_CALC=D_calc,
+        REFERENCE="SOURCE_EXTERNE",
+        PRECISION=5e-4,
+        CRITERE="ABSOLU",
+    )
+)
+
+# TEST 3 NOTE DIPDE - calcul du ferraillage :
+# scenario ELU, Béton C25/30, Acier HA 400
+# Flexion simple, M = 37.0 t.m
+
+CARA3 = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    POUTRE=_F(CARA=("HY", "HZ"), GROUP_MA=("PoutreAB",), SECTION="RECTANGLE", VALE=(0.3, 0.59)),
+)
+
+CHEFF3 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PoutreAB",
+        NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"),
+        VALE=(0.0, 0.0, 0.0, 0.0, -37 * 10000, 0.0),
+    ),
+)
+
+RESUELU3 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA3),),
+)
+
+
+RESUELU3 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELU3,
+    CARA_ELEM=CARA3,
+    reuse=RESUELU3,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    NUME_ORDRE=(1.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="1D",
+            C_SUP_Y=0.05,
+            C_INF_Y=0.05,
+            C_SUP_Z=0.05,
+            C_INF_Z=0.05,
+            FYK=400.0e6,
+            FCK=55.0e6,
+            EYS=200.0e9,
+            TYPE_DIAGRAMME="B2",
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+
+RES3 = RESUELU3.getField("FERR_ELEM", 1)
+As = RES3.getValuesWithDescription("AZI")[0]
+print("Ferraillage :", As)
+
+
+D_ref = [21.38e-04]
+D_calc = 0.0021026726614733746
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESUELU3,
+        INST=1,
+        NOM_CHAM="FERR_ELEM",
+        NOM_CMP="AZI",
+        GROUP_MA="M1",
+        LEGENDE="TEST3",
+        VALE_REFE=D_ref,
+        VALE_CALC=D_calc,
+        REFERENCE="SOURCE_EXTERNE",
+        PRECISION=5e-4,
+        CRITERE="ABSOLU",
+    )
+)
+
+# TEST 6 NOTE DIPDE - calcul du ferraillage :
+# scenario ELU, Béton C25/30, Acier HA 400
+# Flexion composé, M = 42.2 t.m, N = 31.7 t
+
+CARA6 = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    POUTRE=_F(CARA=("HY", "HZ"), GROUP_MA=("PoutreAB",), SECTION="RECTANGLE", VALE=(0.3, 0.6)),
+)
+
+CHEFF6 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PoutreAB",
+        NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"),
+        VALE=(-31.7 * 10000, 0.0, 0.0, 0.0, -42.2 * 10000, 0.0),
+    ),
+)
+
+RESUELU6 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF6, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA6),),
+)
+
+
+RESUELU6 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELU6,
+    CARA_ELEM=CARA6,
+    reuse=RESUELU6,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    NUME_ORDRE=(1.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="1D",
+            C_SUP_Y=0.04,
+            C_INF_Y=0.06,
+            C_SUP_Z=0.04,
+            C_INF_Z=0.06,
+            FYK=400.0e6,
+            FCK=55.0e6,
+            EYS=200.0e9,
+            TYPE_DIAGRAMME="B2",
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
+        ),
+    ),
+)
+
+
+RES6 = RESUELU6.getField("FERR_ELEM", 1)
+Asi = RES6.getValuesWithDescription("AZI")[0]
+Ass = RES6.getValuesWithDescription("AZS")[0]
+print("Ferraillage :", Asi)
+
+
+D_ref = [20.55e-04]
+D_calc = 0.0019939041292794716
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESUELU6,
+        INST=1,
+        NOM_CHAM="FERR_ELEM",
+        NOM_CMP="AZI",
+        GROUP_MA="M1",
+        LEGENDE="TEST6",
+        VALE_REFE=D_ref,
+        VALE_CALC=D_calc,
+        REFERENCE="SOURCE_EXTERNE",
+        PRECISION=5e-4,
+        CRITERE="ABSOLU",
+    )
+)
+
+
+FIN()
