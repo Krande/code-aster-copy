@@ -652,6 +652,7 @@ class ExecuteMacro(ExecuteCommand):
 
     # class attributes
     _last_cleanup = 0
+    _last_cleanup_date = time.time()
 
     _sdprods = _result_names = _add_results = None
 
@@ -695,10 +696,13 @@ class ExecuteMacro(ExecuteCommand):
 
     def cleanup(self):
         """Clean-up function."""
+        if time.time() - ExecuteMacro._last_cleanup_date < 1.0:
+            return
         if ExecuteCommand.level > 1:
             if self._counter < ExecuteMacro._last_cleanup + 250:
                 return
         ExecuteMacro._last_cleanup = self._counter
+        ExecuteMacro._last_cleanup_date = time.time()
         # wrapper to collect after each macro-command
         timer = ExecutionParameter().timer
         timer.Start(" . cleanup", num=1.9e6)
