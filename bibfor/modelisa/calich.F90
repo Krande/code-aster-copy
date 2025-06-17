@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine calich(chargz, phenom)
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -65,10 +65,10 @@ subroutine calich(chargz, phenom)
 ! -------------------------------------------------------
 !
     character(len=4) :: tych, typval, typcoe
-    character(len=8) :: chamno, noma, nomcmp, nomnoe, betaf
+    character(len=8) :: noma, nomcmp, nomnoe, betaf
     character(len=8) :: charge, nomgd
     character(len=16) :: motfac
-    character(len=19) :: lisrel, cham19, numeq
+    character(len=19) :: lisrel, chamno, numeq
     character(len=24) :: noeuma
     complex(kind=8) :: betac
 !
@@ -106,7 +106,6 @@ subroutine calich(chargz, phenom)
     betac = (0.0d0, 0.0d0)
     betaf = '&FOZERO'
 !
-    cham19 = '                   '
     charge = chargz
 !
 ! --- TYPE DES VALEURS AU SECOND MEMBRE DE LA RELATION
@@ -132,11 +131,9 @@ subroutine calich(chargz, phenom)
             call utmess('F', 'CHARGES2_10')
         end if
 !
-        cham19(1:8) = chamno
-!
 ! ---   VERIFICATION DE L'EXISTENCE DU CHAMNO
 !       -------------------------------------
-        call jeexin(cham19//'.VALE', iret)
+        call exisd("CHAM_NO", chamno, iret)
         if (iret .eq. 0) then
             call utmess('F', 'CHARGES2_11')
         end if
@@ -188,7 +185,7 @@ subroutine calich(chargz, phenom)
 !
 ! ---   RECUPERATION DU .VALE DU CHAM_NO
 !       --------------------------------
-        call jeveuo(cham19//'.VALE', 'E', vr=vvale)
+        call jeveuo(chamno//'.VALE', 'E', vr=vvale)
 !
 ! ---   RECUPERATION DU .DEEQ DU NUME_EQUA
 !       ----------------------------------
