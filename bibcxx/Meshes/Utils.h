@@ -1,8 +1,9 @@
-#ifndef MESHUTILSINTERFACE_H_
-#define MESHUTILSINTERFACE_H_
+#ifndef UTILS_H_
+#define UTILS_H_
+
 /**
- * @file MeshUtilsInterface.h
- * @brief Utilities related to mesh but does not need the object
+ * @file Utils.h
+ * @brief Fichier entete des utilitaires liés au maillage
  * @section LICENCE
  *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
@@ -22,9 +23,16 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* person_in_charge: yannis.el-gharbi at framatome.com */
+
 #include "astercxx.h"
 
-#include "aster_pybind.h"
+#include <tuple>
 
-void exportMeshUtilsToPython( py::module &mod );
-#endif /* MESHUTILSINTERFACE_H_ */
+std::tuple< int, float, float, float >
+projectionAlongDirection( const std::string type_elem, const ASTERINTEGER &nb_node,
+                          const ASTERINTEGER &nb_dim, const VectorReal elem_coord,
+                          const VectorReal pt_coor, const ASTERINTEGER &iter_maxi,
+                          const ASTERDOUBLE &tole_maxi, const VectorReal proj_dire );
+
+#endif /* UTILS_H_ */

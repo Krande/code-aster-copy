@@ -42,17 +42,17 @@ cata_msg = {
         """La coupe %(k1)s que vous essayez de générer est de longueur nulle. Peut-être que vous avez spécifié deux fois la même surface d'entrée et de sortie. Il se pourrait aussi que ces surfaces ne soient pas disjointes."""
     ),
     9: _(
-        """La surface nommée "%(k1)s" utilisée dans le mot clé REVO n'appartient pas au maillage considéré."""
+        """La surface nommée "%(k1)s" utilisée dans le mot clé REVOLUTION n'appartient pas au maillage considéré."""
     ),
     10: _(
-        """La coupe appelée "%(k1)s" utilisée dans le mot clé REVO n'a pas été trouvé dans le tableau d'entrée."""
+        """La coupe appelée "%(k1)s" utilisée dans le mot clé REVOLUTION n'a pas été trouvé dans le tableau d'entrée."""
     ),
     11: _(
-        """Le groupe appelé "%(k1)s" utilisé dans le mot clé REVO n'a pas été trouvé dans le tableau d'entrée."""
+        """Le groupe appelé "%(k1)s" utilisé dans le mot clé REVOLUTION n'a pas été trouvé dans le tableau d'entrée."""
     ),
     12: _(
-        """Le nom de coupe %(k1)s générée par le mot clé REVO, est présent plusieurs fois dans le tableau de sortie."""
+        """Le nom de coupe %(k1)s générée par le mot clé REVOLUTION, est présent plusieurs fois dans le tableau de sortie."""
     ),
-    13: _("""0° n'est pas un angle valide pour l'opérande %(k1)s du mot clé REVO."""),
+    13: _("""0° n'est pas un angle valide pour l'opérande %(k1)s du mot clé REVOLUTION."""),
     14: _("""Il n'y a pas assez de point sur la coupe %(k1)s. Il en faut au minimum 2."""),
 }

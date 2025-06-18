@@ -18,7 +18,7 @@
 
 subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
                   iter_maxi, tole_maxi, proj_dire, ksi1, ksi2, &
-                  tang_1, tang_2, error, beta, dist_, ksi1_init, ksi2_init)
+                  tang_1, tang_2, error, dist_, ksi1_init, ksi2_init, beta_)
 !
     implicit none
 !
@@ -40,12 +40,13 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
     real(kind=8), intent(in) :: proj_dire(3)
     real(kind=8), intent(out) :: ksi1
     real(kind=8), intent(out) :: ksi2
-    real(kind=8), intent(out) :: beta
+
     real(kind=8), intent(out) :: tang_1(3)
     real(kind=8), intent(out) :: tang_2(3)
     integer(kind=8), intent(out) :: error
     real(kind=8), optional, intent(out) :: dist_
     real(kind=8), optional, intent(in) :: ksi1_init, ksi2_init
+    real(kind=8), optional, intent(out) :: beta_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,7 +85,7 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
     real(kind=8) :: matrix(3, 3)
     real(kind=8) :: residu(3)
     real(kind=8) :: dksi1, dksi2, dbeta
-    real(kind=8) :: det, test, refe
+    real(kind=8) :: det, test, refe, beta
     real(kind=8) :: tole_rela, tole_abso, tole_newt
     real(kind=8) :: dist, dist_mini, ksi1_mini, ksi2_mini, beta_mini
 !
@@ -108,6 +109,10 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
     if (present(ksi1_init)) then
         ksi1 = ksi1_init
         ksi2 = ksi2_init
+    end if
+
+    if (present(beta_)) then
+        beta_ = beta
     end if
 !
 ! - Newton loop
@@ -216,6 +221,11 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
     ksi1 = ksi1+dksi1
     ksi2 = ksi2+dksi2
     beta = beta+dbeta
+
+    if (present(beta_)) then
+        beta_ = beta
+    end if
+!
 !
 ! - Save values if Newton avoids
 !

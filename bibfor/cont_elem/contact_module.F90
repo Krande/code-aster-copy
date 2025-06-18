@@ -81,7 +81,6 @@ contains
         real(kind=8) :: coor_qp_sl_re(3), tau1_mast(3), tau2_mast(3), coor_qp_ma_re(3)
         real(kind=8) :: coor_qp_sl_re_aux(3)
         real(kind=8) :: ksi_line(2)
-        real(kind=8) :: beta
         character(len=8) :: elem_mast_line_code
         aster_logical :: debug
 !
@@ -124,23 +123,23 @@ contains
 !
 !
 ! ----- Projection on master element
-        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
-                    geom%coor_mast_pair, coor_qp_sl_re, 100, proj_tole, norm_slav, &
-                    ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret, beta)
+        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%coor_mast_pair, &
+                    coor_qp_sl_re, 100, proj_tole, norm_slav, ksi_line(1), &
+                    ksi_line(2), tau1_mast, tau2_mast, iret)
         if (iret == 1) then
 !
 ! ----- Try with linearization
 !
             call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, geom%elem_dime, &
                         geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav, &
-                        ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1, beta)
-
+                        ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
+!
             call reerel(elem_mast_line_code, elem_mast_line_nbnode, 3, geom%coor_mast_pair, &
                         ksi_line, coor_qp_sl_re_aux)
 !
             call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
                         geom%coor_mast_pair, coor_qp_sl_re_aux, 75, proj_tole, norm_slav, &
-                        ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1, beta)
+                        ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
         end if
 !
 !

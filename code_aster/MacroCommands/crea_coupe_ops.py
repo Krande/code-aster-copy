@@ -28,7 +28,7 @@ from ..Objects.table_py import Table
 
 
 def crea_coupe_ops(
-    self, COUPE, MAILLAGE, NOM_AUTO, PREFIXE=None, PREM_NUME=None, PAS_NUME=None, REVO=None
+    self, COUPE, MAILLAGE, NOM_AUTO, PREFIXE=None, NUME_INIT=None, PAS=None, REVOLUTION=None
 ):
     """Execute the command.
 
@@ -37,9 +37,9 @@ def crea_coupe_ops(
         MAILLAGE(sd_maillage)   : input mesh
         NOM_AUTO(bool)          : automatic naming of paths
         PREFIXE(str)            : common prefix of the path names
-        PREM_NUME(int)          : first id of the name of the path
-        PAS_NUME(int)           : progression in the numerotation between two successive paths
-        REVO(list)              : structure contenant les paramètres pour obtenir des coupes en révolution
+        NUME_INIT(int)          : first id of the name of the path
+        PAS(int)                : progression in the numerotation between two successive paths
+        REVOLUTION(list)        : structure contenant les paramètres pour obtenir des coupes en révolution
 
     Returns:
         sd_table which descibes paths that begin/end on the skin of the mesh
@@ -47,13 +47,13 @@ def crea_coupe_ops(
     table_coupes_py = COUPE.EXTR_TABLE()
     table_coupes = TableCoupes(table_coupes_py)
     table_coupes.change_names(
-        auto_name=NOM_AUTO, prefix=PREFIXE, first_num=PREM_NUME, progression=PAS_NUME
+        auto_name=NOM_AUTO, prefix=PREFIXE, first_num=NUME_INIT, progression=PAS
     )
     table_coupes.check_integrity()
     table_coupes._check_group_maill(MAILLAGE)
-    if REVO:
-        table_coupes.check_parameters_revol(REVO, MAILLAGE)
-        table_coupes.create_coupes_revol(REVO)
+    if REVOLUTION:
+        table_coupes.check_parameters_revol(REVOLUTION, MAILLAGE)
+        table_coupes.create_coupes_revol(REVOLUTION)
         table_coupes.check_path_name(msg="REVO")
     table_coupes.update_position_on_structure_skin(MAILLAGE)
     dic_table = table_coupes.dict_CREA_TABLE()
@@ -193,17 +193,6 @@ class TableCoupes(Table):
         connectivity = mesh.getConnectivity()
         dim = mesh.getDimension()
         coordinates = np.reshape(np.array(mesh.getCoordinates().getValues()), (-1, DIMENSION))
-        # if dim < TableCoupes.DIMENSION:
-        #    coordinates = np.append(coordinates, np.zeros(
-        #        (np.shape(coordinates)[0], TableCoupes.DIMENSION-dim)), axis=1)
-        # nb_dim = 3
-        # Check if the mesh is planar along one of basis axis
-        # if np.sum(coordinates[:, 2]-coordinates[0, 2]) < 1.E-9*(np.max(coordinates, axis=None)-np.min(coordinates, axis=None)):
-        #    nb_dim = 2
-        # if np.sum(coordinates[:, 1]-coordinates[0, 1]) < 1.E-9*(np.max(coordinates, axis=None)-np.min(coordinates, axis=None)):
-        #    nb_dim = 2
-        # if np.sum(coordinates[:, 0]-coordinates[0, 0]) < 1.E-9*(np.max(coordinates, axis=None)-np.min(coordinates, axis=None)):
-        #    nb_dim = 2
 
         #######HACK#########
 
@@ -304,7 +293,16 @@ class TableCoupes(Table):
                 UTMESS("F", "COUPE_8", valk=path_name)
 
     def get_direction(self, line_num):
-        """Method for retrieving the projection direction of a path"""
+        """Method for retrieving the projection direction of a path
+
+        Args:
+            line_num (int): id of the path
+
+        Returns:
+            list[float]: vector of the direction
+            float: length of the path
+
+        """
         line = self.rows[line_num]
         point_id = TableCoupes.FIRST_POINT_ID
         points_in = [
@@ -339,9 +337,16 @@ class TableCoupes(Table):
                 UTMESS("F", "COUPE_2", valk=["de sortie", surf_out, path_name])
 
     def _check_if_on_element(self, elem_type, ksi, eta):
-        """
-        Check if the projected point is inside the found element
+        """Check if the projected point is inside the found element
         thanks to parametric coordinates
+
+        Args:
+            elem_type (str): element type (i.e. QU8, TR3, SE2)
+            ksi (float): first coordinate in the reference element
+            eta (float): second coordinate in the reference element
+
+        Returns:
+            bool: flag that say if the coordinates are inside the element
         """
         on_element = True
         if "SE" in elem_type:
@@ -360,6 +365,11 @@ class TableCoupes(Table):
         return on_element
 
     def create_coupes_revol(self, revol_list):
+        """Function that creates paths by revolution
+
+        Args:
+            revol_list (dict): dictionary containing the keywords given by the user
+        """
         points_ids = [
             TableCoupes.FIRST_POINT_ID,
             TableCoupes.SECOND_POINT_ID,
@@ -372,7 +382,7 @@ class TableCoupes(Table):
         coupes_dico = {i: [] for i in range(len(self.rows))}
 
         for revol in revol_list:
-            filtre, filter_key = self._get_filter(revol["NOM_COUPE"], revol["GROUPE_COUPE"])
+            filtre, filter_key = self._get_filter(revol["NOM_COUPE"], revol["GROUP_COUPE"])
 
             if revol["ANGLE_AUTO"] == "OUI":
                 nombre_intervalles = (
@@ -382,7 +392,7 @@ class TableCoupes(Table):
                     revol["ANGLE_MAX"] / nombre_intervalles * i for i in range(revol["NOMBRE"])
                 ][1:]
             else:
-                angles = revol["LISTE_ANGLE"]
+                angles = revol["ANGLE"]
 
             axe = revol["AXE"] / np.linalg.norm(revol["AXE"])
 
@@ -425,6 +435,15 @@ class TableCoupes(Table):
                 index += 1
 
     def _get_filter(self, name_filter, group_filter):
+        """[summary]
+
+        Args:
+            name_filter ([type]): [description]
+            group_filter ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         if name_filter is None and group_filter is None:
             return None, None
         if name_filter:
@@ -433,6 +452,12 @@ class TableCoupes(Table):
             return group_filter, str(self.para[TableCoupes.GROUPS_ID])
 
     def check_parameters_revol(self, revol_list, mesh):
+        """Function that checks if parameters of the REVOLUTION keywords are coherent
+
+        Args:
+            revol_list (dict): dictionary containing the keywords given by the user
+            mesh (libaster.Mesh): the mesh of the structure
+        """
         group_mail_list = mesh.getGroupsOfCells()
         missing_name, missing_group = None, None
         name_list = [str(line[self.para[TableCoupes.NAMES_ID]]) for line in self.rows]
@@ -455,8 +480,8 @@ class TableCoupes(Table):
                 missing_name = [n for n in revol["NOM_COUPE"] if n not in name_list]
                 if missing_name:
                     UTMESS("F", "COUPE_10", valk=missing_name[0])
-            elif revol["GROUPE_COUPE"]:
-                missing_group = [n for n in revol["GROUPE_COUPE"] if n not in group_list]
+            elif revol["GROUP_COUPE"]:
+                missing_group = [n for n in revol["GROUP_COUPE"] if n not in group_list]
                 if missing_group:
                     UTMESS("F", "COUPE_11", valk=missing_group[0])
 
@@ -481,13 +506,8 @@ def _check_if_not_null_jacobian(coords, vect, dim, tole=1.0e-9):
 
 def _compute_elem_size(node_coords, dim):
     """
-    <<<<<<< HEAD
-        Compute the element size as the maximal distance between all points un a given list sorted
-        [x1, y1, z1, x2, y2, z2, ..., xn, yn, zn]
-    =======
-            Compute the element size as the maximal distance between all points in a given list sorted
-            [x1, y1, z1, x2, y2, z2, ..., xn, yn, zn]
-    >>>>>>> 94ff0c3b39 ([#33807] CREA_COUPE bug fix: node numbering, multiple intersections)
+    Compute the element size as the maximal distance between all points un a given list sorted
+    [x1, y1, z1, x2, y2, z2, ..., xn, yn, zn]
     """
     elem_size = 0.0
     node_coords = np.reshape(np.array(node_coords), (-1, dim))

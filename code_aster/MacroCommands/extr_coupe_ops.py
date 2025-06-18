@@ -20,48 +20,63 @@
 import copy
 
 import numpy as np
-import scipy as sc
+from scipy import interpolate
+from scipy.stats import norm
 
-from ..CodeCommands import EXTR_CONCEPT, LIRE_RESU, MODI_REPERE, POST_RELEVE_T, PROJ_CHAMP
+from ..CodeCommands import LIRE_RESU, MODI_REPERE, POST_RELEVE_T, PROJ_CHAMP
 from ..Helpers import LogicalUnitFile
-from ..Objects import Mesh
-from ..Objects.datastructure_py import ElasticResultDict, NonLinearResultDict, ThermalResultDict
+from ..Objects import Mesh, ElasticResult, NonLinearResult, ThermalResult, TransientResult
+from ..Objects.datastructure_py import (
+    DataStructureDict,
+    ThermalResultDict,
+    NonLinearResultDict,
+    ElasticResultDict,
+)
 from ..Utilities import medcoupling as mc
 from .crea_coupe_ops import TableCoupes
+
 
 DIM_MESH = 3
 DIM_SPACE = 1
 EPSILON = 0.0000001
+CORR_TYPE_CLASS = {
+    "EVOL_ELAS": ElasticResult,
+    "EVOL_NOLI": NonLinearResult,
+    "EVOL_THER": ThermalResult,
+    "EVOL": TransientResult,
+}
 
 
 def extr_coupe_ops(
     self,
     RESULTAT,
-    COUPES,
+    COUPE,
     REPERE,
     LINEARISATION,
     REPARTITION=None,
     NOM_CHAM=None,
-    FONCTION=None,
-    PARAM=None,
+    FORMULE=None,
+    MOYENNE=None,
+    ECART_TYPE=None,
 ):
     """Execute the command
 
     Aguments:
         RESULTAT (sd_resutls) : resutls from global model
-        COUPES (sd_table) : table with path description
+        COUPE (sd_table) : table with path description
         NOM_CHAM [string] : list of field to project
         REPERE (string) : define if coordinal system is local or global
         LINEARISATION (string) : define if stress are linearise
         REPARTITION (string) : define space discretisation
-        FONCTION (sd_formula) : define user space discretisation
-        PARAM [float] : define for normal discretisation
+        FORMULE (sd_formula) : define user space discretisation
+        MOYENNE [float] : define mean of normal distribution
+        ECART_TYPE [float] : define std deviation of normal distribution
 
     Retruns :
         resu_coupe : sd_resutls with fields from RESULTAT on path
     """
 
-    table_coupe = COUPES.EXTR_TABLE()
+    table_coupe = COUPE.EXTR_TABLE()
     path_group = {}
 
     proj_champ = {}
@@ -104,9 +119,9 @@ def extr_coupe_ops(
     if REPARTITION == "UNIFORME":
         function_param[REPARTITION] = None
     elif REPARTITION == "GAUSSIENNE":
-        function_param[REPARTITION] = [PARAM[0], PARAM[1]]
+        function_param[REPARTITION] = [MOYENNE, ECART_TYPE]
     elif REPARTITION == "UTILISATEUR":
-        function_param[REPARTITION] = FONCTION
+        function_param[REPARTITION] = FORMULE
     elif LINEARISATION == "OUI":
         function_param["UNIFORME"] = None
 
@@ -138,7 +153,7 @@ def extr_coupe_ops(
             resu_coupe = NonLinearResultDict("resu1")
 
         for result_name in RESULTAT.keys():
-            result = EXTR_CONCEPT(DICT=RESULTAT, NOM=result_name)
+            result = RESULTAT[result_name]
             global_mesh = result.getMesh()
             proj_champ["MAILLAGE_1"] = global_mesh
             proj_champ["RESULTAT"] = result
@@ -177,10 +192,10 @@ def extr_coupe_ops(
 
         if compo_results:
             for result_name in resu_coupe.keys():
-                result = EXTR_CONCEPT(DICT=resu_coupe, NOM=result_name)
+                result = resu_coupe[result_name]
                 resu_coupe[result_name] = line_coupe(result, path_name, mesh_line, aster_mesh_line)
         else:
-            resu_coupe[result_name] = line_coupe(resu_coupe, path_name, mesh_line, aster_mesh_line)
+            resu_coupe = line_coupe(resu_coupe, path_name, mesh_line, aster_mesh_line)
 
     return resu_coupe
 
@@ -214,12 +229,10 @@ def modify_coordinate_system(
 
     fieldNames = resu_coupe.getFieldsNames()
     for name in fieldNames:
-        field = resu_coupe.getFieldOnNodesReal(name, 1)
+        field = resu_coupe._getFieldOnNodesReal(name, 1)
         field_cmp = field.getComponents()
         order_cmp = reorder_cmp(field_cmp)
-        modi_repere["MODI_CHAM"].append(
-            _F(TYPE_CHAM=typeCham[len(field_cmp)], NOM_CMP=order_cmp, NOM_CHAM=name)
-        )
+        modi_repere["MODI_CHAM"].append(_F(TYPE_CHAM=typeCham[len(field_cmp)], NOM_CHAM=name))
 
     if dim == 2:
         for iPath in range(len(table_coupe.rows)):
@@ -343,12 +356,12 @@ def line_coupe(resu, path_name, mc_mesh, mesh_aster):
             sigm_out = np.zeros((nb_cmp, nb_path))
 
             for iCmp in range(nb_cmp):
-                sigm_in[iCmp] = sigm_noeu.EXTR_COMP(
-                    field_cmp[field_name][iCmp], lgno=["NODES_IN"]
-                ).valeurs
-                sigm_out[iCmp] = sigm_noeu.EXTR_COMP(
-                    field_cmp[field_name][iCmp], lgno=["NODES_OUT"]
-                ).valeurs
+                sigm_in[iCmp], _ = sigm_noeu.getValuesWithDescription(
+                    field_cmp[field_name][iCmp], groups=["NODES_IN"]
+                )
+                sigm_out[iCmp], _ = sigm_noeu.getValuesWithDescription(
+                    field_cmp[field_name][iCmp], groups=["NODES_OUT"]
+                )
 
             iPath = 0
             sigm = []
@@ -364,7 +377,7 @@ def line_coupe(resu, path_name, mc_mesh, mesh_aster):
             field = mc.MEDCouplingFieldDouble(mc.ON_NODES, mc.ONE_TIME)
             field.setName("Line-" + field_name)
             field.setMesh(mesh_field)
-            ctime = resu.getTimeValue(no)
+            ctime = resu.getTime(no)
             field.setTime(ctime, no, no)
             fieldArray = mc.DataArrayDouble(sigm, mesh_field.getNumberOfNodes(), nb_cmp)
             fieldArray.setName(field_name + "_" + str(no))
@@ -414,19 +427,28 @@ def convert_med_to_aster(fields, mesh_aster, type_resu, fields_names, mc_mesh):
     data_file.setFields(fields)
     data_file.setMeshes(med_file_mesh)
 
-    nomfich = LogicalUnitFile.filename_from_unit(20)
+    ################# TO DO ########################
+    #### implementation with fromMedCouplingResult does not work. The following error occurs
+    #### medcoupling.InterpKernelException: MEDFileAnyTypeField1TS::loadArrays : the structure does not come from a file !
+
+    # result_class = CORR_TYPE_CLASS[type_resu]
+
+    # resu_coupe = result_class.fromMedCouplingResult(data_file, mesh_aster)
+    ################################################
+    unit = LogicalUnitFile.new_free(typ=1)
+    nomfich = LogicalUnitFile.filename_from_unit(unit.unit)
     data_file.write(nomfich, 2)
 
     resu_coupe = LIRE_RESU(
         FORMAT="MED",
-        UNITE=20,
+        UNITE=unit.unit,
         TYPE_RESU=type_resu,
         TOUT_ORDRE="OUI",
         MAILLAGE=mesh_aster,
         **lire_resu
     )
 
-    LogicalUnitFile.release_from_number(20)
+    unit.release()
 
     return resu_coupe
 
@@ -463,7 +485,7 @@ def create_meshes_path(path_name, point_in, point_out, nb_point, line, function,
             nodalConnPerCell += [mc.NORM_SEG2, i, i + 1]
         if line == "OUI":
             coords += compute_coords_line(point_in[j], point_out[j])
-        elif "UNIFORME" in function.keys():
+        elif "UNIFORME" in function.keys() or nb_point[j] == 2:
             coords += compute_coords(point_in[j], point_out[j], nb_point[j])
         else:
             coords += compute_coords_func(point_in[j], point_out[j], nb_point[j], function)
@@ -594,7 +616,7 @@ def compute_coords_func(point_in, point_out, nb_point, function):
     p_first = np.array(point_in).reshape((1, 3))
     p_last = np.array(point_out).reshape((1, 3))
 
-    inter = sc.interpolate.interp1d(y, x, fill_value="extrapolate", bounds_error=False)
+    inter = interpolate.interp1d(y, x, fill_value="extrapolate", bounds_error=False)
 
     list_point = (p_first * (1 - inter(x.reshape(nb_point - 1, 1)))) + (
         p_last * inter(x.reshape(nb_point - 1, 1))
@@ -692,6 +714,6 @@ def f_gauss(x, nu, sig):
        value (float) : value computing
     """
 
-    value = (1 / (sig * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - nu) / sig) ** 2)
+    value = norm.pdf(x, loc=nu, scale=sig)
 
     return value

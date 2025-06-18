@@ -36,7 +36,6 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt, &
     aster_logical :: dirapp
     real(kind=8) :: dir(3)
     real(kind=8) :: ksi1, ksi2
-    real(kind=8) :: beta
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: toleou
     integer(kind=8) :: iproj
@@ -84,7 +83,7 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt, &
     if (dirapp) then
         call mmnewd(alias, nno, ndim, coorma, coorpt, &
                     itemax, epsmax, dir, ksi1, ksi2, &
-                    tau1, tau2, niverr, beta)
+                    tau1, tau2, niverr)
     else
         call mmnewt(alias, nno, ndim, coorma, coorpt, &
                     itemax, epsmax, ksi1, ksi2, tau1, &

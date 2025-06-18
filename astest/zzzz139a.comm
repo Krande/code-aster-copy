@@ -34,40 +34,63 @@ mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="Plaque_Quad", UNITE=20)
 mail = DEFI_GROUP(CREA_GROUP_MA=_F(NOM="droite_haut", UNION=("droite", "haut")), MAILLAGE=mail)
 table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
 coupes = CREA_COUPE(
-    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
 )
 keyw = TableCoupes.ALL_KEYWORDS[:6]
 result = [
-    [7.6821, 6.40173, 0.0, 100.0, 100 - 100 / 6, 0.0],
+    [7.682074, 6.40173, 0.0, 100.0, 100 - 100 / 6, 0.0],
     [25 + 10 * 50 / 130, 0.0, 0.0, 75 + 50 * 30 / 130, 150.0, 0.0],
     [0.0, 50 + 10 * 50 / 140, 0.0, 100.0, 100 - 30 * 50 / 140, 0.0],
 ]
 for ipath in range(3):
     num = 1000 + ipath * 100
     for key, res in zip(keyw, result[ipath]):
-        TEST_TABLE(
-            REFERENCE="AUTRE_ASTER",
-            VALE_REFE=1.0e-12 + res,
-            VALE_CALC=1.0e-12 + res,
-            NOM_PARA=key,
-            TABLE=coupes,
-            FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
-            PRECISION=0.001,
-            TOLE_MACHINE=1e-04,
-            CRITERE="ABSOLU",
-        )
+        if abs(res) < 1e-15:
+            TEST_TABLE(
+                CRITERE="ABSOLU",
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+            )
 
-        TEST_TABLE(
-            REFERENCE="AUTRE_ASTER",
-            VALE_REFE=1.0e-12 + res,
-            VALE_CALC=1.0e-12 + res,
-            NOM_PARA=key,
-            TABLE=coupes,
-            FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
-            PRECISION=0.001,
-            TOLE_MACHINE=1e-04,
-            CRITERE="ABSOLU",
-        )
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+                CRITERE="ABSOLU",
+            )
+        else:
+            TEST_TABLE(
+                CRITERE="RELATIF",
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+            )
+
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                CRITERE="RELATIF",
+            )
 
 # test REVO
 coupes = CREA_COUPE(
@@ -75,9 +98,9 @@ coupes = CREA_COUPE(
     MAILLAGE=mail,
     NOM_AUTO="OUI",
     PREFIXE="section",
-    PAS_NUME=100,
-    PREM_NUME=1000,
-    REVO=_F(
+    PAS=100,
+    NUME_INIT=1000,
+    REVOLUTION=_F(
         AXE=(0, 0, 1),
         CENTRE=(0, 0, 0),
         NOMBRE=7,
@@ -92,8 +115,8 @@ keyw = TableCoupes.ALL_KEYWORDS[:9]
 result = [
     [10.0, 0.0, 0.0, 100.0, 0.0, 0.0, 53.9, 10.8, 21.7],  # P1 - 0°  # P2 - 0°  # P3 - 0°
     [
-        9.6591,
-        2.5881,
+        9.659066,
+        2.588139,
         0.0,  # P1 - 15°
         100.0,
         100.0 * tan(radians(15)),
@@ -104,7 +127,7 @@ result = [
     ],  # P3 - 15°
     [
         8.6602,
-        5.0000,
+        4.999969,
         0.0,  # P1 - 30°
         100.0,
         100.0 * tan(radians(30)),
@@ -114,8 +137,8 @@ result = [
         21.7,
     ],  # P3 - 30°
     [
-        7.0711,
-        7.0711,
+        7.0710671,
+        7.0710671,
         0.0,  # P1 - 45°
         100.0,
         100.0 * tan(radians(45)),
@@ -125,8 +148,8 @@ result = [
         21.7,
     ],  # P3 - 45°
     [
-        5.0000,
-        8.6602,
+        4.999964,
+        8.660191,
         0.0,  # P1 - 60°
         150.0 / tan(radians(60)),
         150.0,
@@ -136,8 +159,8 @@ result = [
         21.7,
     ],  # P3 - 60°
     [
-        2.5881,
-        9.6591,
+        2.5881403,
+        9.659071,
         0.0,  # P1 - 75°
         150.0 / tan(radians(75)),
         150.0,
@@ -166,45 +189,69 @@ for i, angle in enumerate(angles):
         prefixe = f"PLAN{int(angle)}-"
 
     for key, res in zip(keyw, result[i]):
-        TEST_TABLE(
-            REFERENCE="AUTRE_ASTER",
-            VALE_REFE=1.0e-12 + res,
-            VALE_CALC=1.0e-12 + res,
-            NOM_PARA=key,
-            TABLE=coupes,
-            FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
-            PRECISION=0.001,
-            TOLE_MACHINE=1e-04,
-            CRITERE="ABSOLU",
-        )
+        if abs(res) < 1e-15:
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+                CRITERE="ABSOLU",
+            )
+        else:
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+                PRECISION=0.001,
+                CRITERE="RELATIF",
+            )
 
 
 mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="Plaque_Lin", UNITE=20)
 mail = DEFI_GROUP(CREA_GROUP_MA=_F(NOM="droite_haut", UNION=("droite", "haut")), MAILLAGE=mail)
 table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
 coupes = CREA_COUPE(
-    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
 )
 keyw = TableCoupes.ALL_KEYWORDS[:6]
 result = [
-    [7.6204, 6.3503, 0.0, 100.0, 100 - 100 / 6, 0.0],
+    [7.620411, 6.350342, 0.0, 100.0, 100 - 100 / 6, 0.0],
     [25 + 10 * 50 / 130, 0.0, 0.0, 75 + 50 * 30 / 130, 150.0, 0.0],
     [0.0, 50 + 10 * 50 / 140, 0.0, 100.0, 100 - 30 * 50 / 140, 0.0],
 ]
 for ipath in range(3):
     num = 1000 + ipath * 100
     for key, res in zip(keyw, result[ipath]):
-        TEST_TABLE(
-            REFERENCE="AUTRE_ASTER",
-            VALE_REFE=1.0e-12 + res,
-            VALE_CALC=1.0e-12 + res,
-            NOM_PARA=key,
-            TABLE=coupes,
-            FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
-            PRECISION=0.001,
-            TOLE_MACHINE=1e-04,
-            CRITERE="ABSOLU",
-        )
+        if abs(res) < 1e-15:
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+                CRITERE="ABSOLU",
+            )
+        else:
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                CRITERE="RELATIF",
+            )
 
 # test REVO
 coupes = CREA_COUPE(
@@ -212,9 +259,9 @@ coupes = CREA_COUPE(
     MAILLAGE=mail,
     NOM_AUTO="OUI",
     PREFIXE="section",
-    PAS_NUME=100,
-    PREM_NUME=1000,
-    REVO=_F(
+    PAS=100,
+    NUME_INIT=1000,
+    REVOLUTION=_F(
         AXE=(0, 0, 1),
         CENTRE=(0, 0, 0),
         NOMBRE=7,
@@ -230,7 +277,7 @@ result = [
     [10.0, 0.0, 0.0, 100.0, 0.0, 0.0, 53.9, 10.8, 21.7],  # P1 - 0°  # P2 - 0°  # P3 - 0°
     [
         9.5837,
-        2.5679,
+        2.567945,
         0.0,  # P1 - 15°
         100.0,
         100.0 * tan(radians(15)),
@@ -240,8 +287,8 @@ result = [
         21.7,
     ],  # P3 - 15°
     [
-        8.5660,
-        4.9456,
+        8.5660115,
+        4.945589,
         0.0,  # P1 - 30°
         100.0,
         100.0 * tan(radians(30)),
@@ -251,8 +298,8 @@ result = [
         21.7,
     ],  # P3 - 30°
     [
-        6.9826,
-        6.9826,
+        6.9825843,
+        6.9825843,
         0.0,  # P1 - 45°
         100.0,
         100.0 * tan(radians(45)),
@@ -262,8 +309,8 @@ result = [
         21.7,
     ],  # P3 - 45°
     [
-        4.9491,
-        8.5721,
+        4.9491134,
+        8.5721158,
         0.0,  # P1 - 60°
         150.0 / tan(radians(60)),
         150.0,
@@ -273,7 +320,7 @@ result = [
         21.7,
     ],  # P3 - 60°
     [
-        2.5692,
+        2.569175,
         9.5883,
         0,  # P1 - 75°
         150.0 / tan(radians(75)),
@@ -302,17 +349,29 @@ for i, angle in enumerate(angles):
     else:
         prefixe = f"PLAN{int(angle)}-"
     for key, res in zip(keyw, result[i]):
-        TEST_TABLE(
-            REFERENCE="AUTRE_ASTER",
-            VALE_REFE=1.0e-12 + res,
-            VALE_CALC=1.0e-12 + res,
-            NOM_PARA=key,
-            TABLE=coupes,
-            FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
-            PRECISION=0.001,
-            TOLE_MACHINE=1e-04,
-            CRITERE="ABSOLU",
-        )
+        if abs(res) < 1e-15:
+            TEST_TABLE(
+                CRITERE="ABSOLU",
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+            )
+        else:
+            TEST_TABLE(
+                CRITERE="RELATIF",
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+                PRECISION=0.001,
+            )
 
 
 FIN()

@@ -38,7 +38,7 @@ is_ok = 0
 table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
 try:
     coupes = CREA_COUPE(
-        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
     )
 except AsterError as err:
     if err.id_message == "COUPE_1":
@@ -48,7 +48,7 @@ table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=11)
 is_ok = 0
 try:
     coupes = CREA_COUPE(
-        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
     )
 except AsterError as err:
     if err.id_message == "COUPE_2":
@@ -58,7 +58,7 @@ table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=12)
 is_ok = 0
 try:
     coupes = CREA_COUPE(
-        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
     )
 except AsterError as err:
     if err.id_message == "COUPE_3":
@@ -68,7 +68,7 @@ table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=13)
 is_ok = 0
 try:
     coupes = CREA_COUPE(
-        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
     )
 except AsterError as err:
     if err.id_message == "COUPE_5":
@@ -78,7 +78,7 @@ table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=14)
 is_ok = 0
 try:
     coupes = CREA_COUPE(
-        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
     )
 except AsterError as err:
     if err.id_message == "COUPE_6":
@@ -108,17 +108,17 @@ try:
         MAILLAGE=mail,
         NOM_AUTO="OUI",
         PREFIXE="section",
-        PAS_NUME=100,
-        PREM_NUME=1000,
-        REVO=_F(
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
             AXE=(1, 1, 0),
             CENTRE=(0.1757, 3.4243, 0.0),
             ANGLE_AUTO="NON",
-            LISTE_ANGLE=[15, 30, 45],
+            ANGLE=[15, 30, 45],
             PREFIXE="PLAN",
             GROUP_MA_ORIG="SURFINTE",
             GROUP_MA_EXTR="SURFEXT",
-            GROUPE_COUPE="P_1",
+            GROUP_COUPE="P_1",
         ),
     )
 except AsterError as err:
@@ -133,13 +133,13 @@ try:
         MAILLAGE=mail,
         NOM_AUTO="OUI",
         PREFIXE="section",
-        PAS_NUME=100,
-        PREM_NUME=1000,
-        REVO=_F(
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
             AXE=(1, 1, 0),
             CENTRE=(0.1757, 3.4243, 0.0),
             ANGLE_AUTO="NON",
-            LISTE_ANGLE=[15, 30, 45],
+            ANGLE=[15, 30, 45],
             PREFIXE="PLAN",
             GROUP_MA_ORIG="SURFINT",
             GROUP_MA_EXTR="SURFEXT",
@@ -158,17 +158,17 @@ try:
         MAILLAGE=mail,
         NOM_AUTO="OUI",
         PREFIXE="section",
-        PAS_NUME=100,
-        PREM_NUME=1000,
-        REVO=_F(
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
             AXE=(1, 1, 0),
             CENTRE=(0.1757, 3.4243, 0.0),
             ANGLE_AUTO="NON",
-            LISTE_ANGLE=[15, 30, 45],
+            ANGLE=[15, 30, 45],
             PREFIXE="PLAN",
             GROUP_MA_ORIG="SURFINT",
             GROUP_MA_EXTR="SURFEXT",
-            GROUPE_COUPE="P_3",
+            GROUP_COUPE="P_3",
         ),
     )
 except AsterError as err:
@@ -183,17 +183,17 @@ try:
         MAILLAGE=mail,
         NOM_AUTO="OUI",
         PREFIXE="section",
-        PAS_NUME=100,
-        PREM_NUME=1000,
-        REVO=_F(
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
             AXE=(1, 1, 0),
             CENTRE=(0.1757, 3.4243, 0.0),
             ANGLE_AUTO="NON",
-            LISTE_ANGLE=[0, 15, 30, 45],
+            ANGLE=[0, 15, 30, 45],
             PREFIXE="PLAN",
             GROUP_MA_ORIG="SURFINT",
             GROUP_MA_EXTR="SURFEXT",
-            GROUPE_COUPE="P_3",
+            GROUP_COUPE="P_3",
         ),
     )
 except AsterError as err:
@@ -208,17 +208,17 @@ try:
         MAILLAGE=mail,
         NOM_AUTO="OUI",
         PREFIXE="section",
-        PAS_NUME=100,
-        PREM_NUME=1000,
-        REVO=_F(
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
             AXE=(1, 1, 0),
             CENTRE=(0.1757, 3.4243, 0.0),
             ANGLE_AUTO="NON",
-            LISTE_ANGLE=[0, 15, 30, 45],
+            ANGLE=[0, 15, 30, 45],
             PREFIXE="PLAN",
             GROUP_MA_ORIG="SURFINT",
             GROUP_MA_EXTR="SURFEXT",
-            GROUPE_COUPE="P_3",
+            GROUP_COUPE="P_3",
         ),
     )
 except AsterError as err:

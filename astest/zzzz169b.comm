@@ -43,16 +43,8 @@ field_mat = AFFE_MATERIAU(MODELE=model, AFFE=_F(TOUT="OUI", MATER=mat))
 inst = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=29, PAS=1),))
 
 # Fonction d'evolution de la pression en fonction du temps
-absc = list(range(30))
-ordo = []
-for i in range(30):
-    if i < 15:
-        ordo.append(15 - i)
-    else:
-        ordo.append(i - 15)
 
-
-pression = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=absc, ORDONNEE=ordo)
+pression = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 15.0, 15.0, 0.0, 30.0, 15.0))
 
 
 function = FORMULE(NOM_PARA="X", VALE="cos(4*3.141592*X)")
@@ -78,7 +70,7 @@ resu = CALC_CHAMP(reuse=resu, RESULTAT=resu, CONTRAINTE="SIGM_NOEU")
 
 
 resu_glob_1 = EXTR_COUPE(
-    RESULTAT=resu, COUPES=table_coupe, REPERE="GLOBAL", LINEARISATION="NON", REPARTITION="UNIFORME"
+    RESULTAT=resu, COUPE=table_coupe, REPERE="GLOBAL", LINEARISATION="NON", REPARTITION="UNIFORME"
 )
 
 
@@ -198,7 +190,6 @@ TEST_RESU(
         CRITERE="ABSOLU",
         GROUP_NO=("Test_no"),
         NOM_CMP="DX",
-        TOLE_MACHINE=1e-05,
         VALE_CALC=0.0,
         ORDRE_GRANDEUR=1e-9,
     )
@@ -212,11 +203,12 @@ TEST_RESU(
 
 resu_local_1 = EXTR_COUPE(
     RESULTAT=resu,
-    COUPES=table_coupe,
+    COUPE=table_coupe,
     REPERE="LOCAL",
     LINEARISATION="NON",
     REPARTITION="GAUSSIENNE",
-    PARAM=(0.5, 0.3),
+    MOYENNE=0.5,
+    ECART_TYPE=0.3,
 )
 
 
@@ -317,7 +309,6 @@ TEST_RESU(
         CRITERE="ABSOLU",
         GROUP_NO=("Test_no"),
         NOM_CMP="DX",
-        TOLE_MACHINE=1e-05,
         VALE_CALC=0.0,
         ORDRE_GRANDEUR=1e-9,
     )
@@ -328,7 +319,7 @@ TEST_RESU(
 # Extraction 3D avec linearisation des champs
 #########################################################################################
 
-resu_line_1 = EXTR_COUPE(RESULTAT=resu, COUPES=table_coupe, REPERE="GLOBAL", LINEARISATION="OUI")
+resu_line_1 = EXTR_COUPE(RESULTAT=resu, COUPE=table_coupe, REPERE="GLOBAL", LINEARISATION="OUI")
 
 
 mesh_line_1 = resu_line_1.getMesh()
@@ -452,7 +443,7 @@ line_1 = POST_RELEVE_T(
 TEST_TABLE(
     TABLE=line_1,
     NOM_PARA="SIXX",
-    FILTRE=_F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="N2"),
+    FILTRE=_F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2"),
     VALE_CALC=value_ref_1,
 )
 
@@ -464,12 +455,12 @@ TEST_TABLE(
 
 resu_glob_2 = EXTR_COUPE(
     RESULTAT=resu,
-    COUPES=table_coupe,
+    COUPE=table_coupe,
     REPERE="GLOBAL",
     LINEARISATION="NON",
     NOM_CHAM=("DEPL", "SIGM_NOEU"),
     REPARTITION="UTILISATEUR",
-    FONCTION=function,
+    FORMULE=function,
 )
 
 
@@ -561,7 +552,6 @@ TEST_RESU(
         CRITERE="ABSOLU",
         GROUP_NO=("Test_no"),
         NOM_CMP="DX",
-        TOLE_MACHINE=1e-05,
         VALE_CALC=0.0,
         ORDRE_GRANDEUR=1e-9,
     )
@@ -575,12 +565,13 @@ TEST_RESU(
 
 resu_local_2 = EXTR_COUPE(
     RESULTAT=resu,
-    COUPES=table_coupe,
+    COUPE=table_coupe,
     REPERE="LOCAL",
     NOM_CHAM="SIGM_NOEU",
     LINEARISATION="NON",
     REPARTITION="GAUSSIENNE",
-    PARAM=(0.5, 0.3),
+    MOYENNE=0.5,
+    ECART_TYPE=0.3,
 )
 
 
@@ -689,7 +680,6 @@ TEST_RESU(
         CRITERE="ABSOLU",
         GROUP_NO=("Test_no"),
         NOM_CMP="SIYY",
-        TOLE_MACHINE=1e-05,
         VALE_CALC=0.0,
         ORDRE_GRANDEUR=1e-9,
     )
@@ -702,7 +692,7 @@ TEST_RESU(
 
 resu_line_2 = EXTR_COUPE(
     RESULTAT=resu,
-    COUPES=table_coupe,
+    COUPE=table_coupe,
     REPERE="LOCAL",
     NOM_CHAM=("SIGM_NOEU", "DEPL"),
     LINEARISATION="OUI",
@@ -813,7 +803,7 @@ line_2 = POST_RELEVE_T(
 TEST_TABLE(
     TABLE=line_2,
     NOM_PARA="SIYZ",
-    FILTRE=_F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="N4"),
+    FILTRE=_F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="4"),
     VALE_CALC=value_ref_2,
 )
 

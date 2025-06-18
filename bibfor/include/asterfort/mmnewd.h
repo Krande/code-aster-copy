@@ -21,7 +21,7 @@
 interface
     subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
                       iter_maxi, tole_maxi, proj_dire, ksi1     , ksi2   ,&
-                      tang_1   , tang_2   , error, beta, dist_, ksi1_init, ksi2_init)
+                      tang_1   , tang_2   , error,  dist_, ksi1_init, ksi2_init, beta)
         character(len=8), intent(in) :: type_elem
         integer(kind=8), intent(in) :: nb_node
         integer(kind=8), intent(in) :: nb_dim
@@ -32,11 +32,12 @@ interface
         real(kind=8), intent(in) :: proj_dire(3)
         real(kind=8), intent(out) :: ksi1
         real(kind=8), intent(out) :: ksi2
-        real(kind=8), intent(out) :: beta
         real(kind=8), intent(out) :: tang_1(3)
         real(kind=8), intent(out) :: tang_2(3)
         integer(kind=8), intent(out) :: error
         real(kind=8), optional, intent(out) :: dist_
         real(kind=8), optional, intent(in) :: ksi1_init, ksi2_init
+        real(kind=8), optional, intent(out) :: beta
     end subroutine mmnewd
 end interface
+

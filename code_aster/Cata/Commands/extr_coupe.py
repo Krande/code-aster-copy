@@ -26,11 +26,8 @@ EXTR_COUPE = MACRO(
     op=OPS("code_aster.MacroCommands.extr_coupe_ops.extr_coupe_ops"),
     sd_prod=cham_gd_sdaster,
     fr=tr("Extraction de résultats sur un ensemble de coupes"),
-    RESULTAT=SIMP(
-        statut="o",
-        typ=(evol_elas, evol_noli, evol_ther, evol_elas_dict, evol_ther_dict, evol_noli_dict),
-    ),
-    COUPES=SIMP(statut="o", typ=table_sdaster),
+    RESULTAT=SIMP(statut="o", typ=(evol_elas, evol_noli, evol_ther, ds_dict)),
+    COUPE=SIMP(statut="o", typ=table_sdaster),
     NOM_CHAM=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max="**", into=C_NOM_CHAM_INTO()),
     REPERE=SIMP(statut="f", typ="TXM", defaut="GLOBAL", into=("GLOBAL", "LOCAL")),
     LINEARISATION=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
@@ -41,11 +38,16 @@ EXTR_COUPE = MACRO(
         ),
         b_repartition_utilisateur=BLOC(
             condition="""equal_to("REPARTITION", 'UTILISATEUR')""",
-            FONCTION=SIMP(statut="o", typ=formule),
+            FORMULE=SIMP(
+                statut="o",
+                typ=formule,
+                fr=tr("fonction définie sur l'intervalle [0,1] qui indique la densité de points."),
+            ),
         ),  # fin bloc_repartition_utilisateur
         b_repartition_gaussien=BLOC(
             condition="""equal_to("REPARTITION", 'GAUSSIENNE')""",
-            PARAM=SIMP(statut="o", typ="R", min=2, max=2),
+            MOYENNE=SIMP(statut="o", typ="R"),
+            ECART_TYPE=SIMP(statut="o", typ="R"),
         ),  # fin bloc_repartition_gaussien
     ),  # fin bloc_linearisation
 )  # fin MACRO

@@ -62,7 +62,6 @@ subroutine aprtpm(pair_tole, elem_dime, &
     real(kind=8) :: node_real(3), ksi(2), ksi_ma(2)
     real(kind=8) :: norm(3)
     real(kind=8) :: dff(2, 9)
-    real(kind=8) :: beta
     integer(kind=8) :: iret_
     real(kind=8) :: tria_coor_es(2, 3)
     integer(kind=8) :: i_tria, i_gauss, nb_tria, nb_gauss, i_node, i_dime
@@ -126,7 +125,7 @@ subroutine aprtpm(pair_tole, elem_dime, &
         call mmnewd(elem_mast_code, elem_mast_nbnode, elem_dime, elem_mast_coor, &
                     node_real, 100, pair_tole, norm, &
                     ksi_ma(1), ksi_ma(2), tau1, tau2, &
-                    iret_, beta)
+                    iret_)
         if (iret_ .eq. 1) then
             iret = 1
             go to 99
@@ -214,7 +213,7 @@ subroutine aprtpm(pair_tole, elem_dime, &
             call mmnewd(elem_mast_code, elem_mast_nbnode, elem_dime, elem_mast_coor, &
                         gauss_coou, 200, pair_tole, dire_norm, &
                         ksi1, ksi2, tau1, tau2, &
-                        iret_, beta)
+                        iret_)
             if (iret_ .eq. 1) then
                 iret = 1
                 go to 99

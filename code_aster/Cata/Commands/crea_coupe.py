@@ -16,16 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-from email.policy import default
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
-from ...SD.sd_table import sd_table
+
 
 CREA_COUPE = MACRO(
     nom="CREA_COUPE",
     op=OPS("code_aster.MacroCommands.crea_coupe_ops.crea_coupe_ops"),
-    sd_prod=sd_table,
+    sd_prod=table_sdaster,
     fr=tr(
         """Création d'une table de coupes avec
                           des noeuds projetés sur la peau du maillage"""
@@ -39,17 +38,17 @@ CREA_COUPE = MACRO(
         PREFIXE=SIMP(
             statut="f", typ="TXM", defaut="", fr=tr("préfixe à ajouter au début du nom des coupes")
         ),
-        PREM_NUME=SIMP(
+        NUME_INIT=SIMP(
             statut="f", typ="I", defaut=1, fr=tr("numéro à partir duquel la numérotation commence")
         ),
-        PAS_NUME=SIMP(
+        PAS=SIMP(
             statut="f",
             typ="I",
             defaut=1,
             fr=tr("incrément de numérotation entre deux coupes successives"),
         ),
     ),  # fin bloc b_nom_auto
-    REVO=FACT(
+    REVOLUTION=FACT(
         statut="f",
         max="**",
         fr=tr(
@@ -67,15 +66,15 @@ CREA_COUPE = MACRO(
         ),  # fin bloc b_angle_auto_oui
         b_angle_auto_non=BLOC(
             condition="""(equal_to("ANGLE_AUTO", 'NON'))""",
-            LISTE_ANGLE=SIMP(statut="o", typ="R", max="**", val_min=-360, val_max=360),
+            ANGLE=SIMP(statut="o", typ="R", max="**", val_min=-360, val_max=360),
         ),  # fin bloc b_angle_auto_non
         GROUP_MA_ORIG=SIMP(statut="o", typ=grma, max=1),
         GROUP_MA_EXTR=SIMP(statut="o", typ=grma, max=1),
-        regles=(EXCLUS("NOM_COUPE", "GROUPE_COUPE"),),
+        regles=(EXCLUS("NOM_COUPE", "GROUP_COUPE"),),
         NOM_COUPE=SIMP(
             statut="f", typ="TXM", max="**", fr=tr("liste contentant les noms des coupes à traiter")
         ),
-        GROUPE_COUPE=SIMP(
+        GROUP_COUPE=SIMP(
             statut="f",
             typ="TXM",
             max="**",
