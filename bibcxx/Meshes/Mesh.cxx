@@ -111,10 +111,11 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 
     std::vector< VectorLong > cells;
     cells.reserve( names.size() );
+    _groupsOfCells->updateValuePointer();
 
     for ( auto &name : names ) {
         if ( hasGroupOfCells( name ) ) {
-            cells.push_back( _groupsOfCells->fastAccess( name ).toVector() );
+            cells.push_back( ( *_groupsOfCells )[name]->toVector() );
         }
     }
 
@@ -134,10 +135,11 @@ VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINT
 
     std::vector< VectorLong > nodes;
     nodes.reserve( names.size() );
+    _groupsOfNodes->updateValuePointer();
 
     for ( auto &name : names ) {
         if ( hasGroupOfNodes( name ) ) {
-            nodes.push_back( _groupsOfNodes->fastAccess( name ).toVector() );
+            nodes.push_back( ( *_groupsOfNodes )[name]->toVector() );
         }
     }
 

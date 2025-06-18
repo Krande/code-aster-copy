@@ -227,8 +227,7 @@ const std::vector< VectorLong > BaseMesh::getConnectivityZeroBased() const {
         return result;
     }
     result.reserve( _connectivity->size() );
-    for ( const auto &pair : _connectivity ) {
-        const auto &obj = pair.second;
+    for ( const auto &obj : _connectivity ) {
         obj->updateValuePointer();
         VectorLong items;
         items.reserve( obj->size() );
@@ -246,8 +245,7 @@ const std::vector< VectorLong > BaseMesh::getMedConnectivityZeroBased() const {
         return result;
     }
     result.reserve( connectivity->size() );
-    for ( const auto &pair : connectivity ) {
-        const auto &obj = pair.second;
+    for ( const auto &obj : connectivity ) {
         obj->updateValuePointer();
         VectorLong items;
         items.reserve( obj->size() );
@@ -356,8 +354,8 @@ bool BaseMesh::isSkin( const std::string groupName ) const {
 }
 
 bool BaseMesh::build() {
-    _groupsOfNodes->build( true );
-    _groupsOfCells->build( true );
+    _groupsOfNodes->build();
+    _groupsOfCells->build();
     _patch->build();
     _connectivity->build();
     return update_tables();
@@ -473,6 +471,7 @@ const std::map< int, std::set< int > > &BaseMesh::buildReverseConnectivity() {
         return _reverseConnex;
     auto &meshConn = getConnectivity();
     meshConn->build();
+    meshConn->updateValuePointer();
     const auto size = meshConn->size();
     for ( int elemId = 1; elemId <= size; ++elemId ) {
         auto &curCell = *( ( *meshConn )[elemId] );

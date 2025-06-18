@@ -259,7 +259,8 @@ ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
         _calculationParameter->build( true );
     }
 
-    for ( const auto &[i, item] : *_calculationParameter ) {
+    int i = 1;
+    for ( const auto &item : *_calculationParameter ) {
         item->updateValuePointer();
         auto typevar = strip( ( *item )[3].toString() );
 
@@ -280,6 +281,7 @@ ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
                 return ( *_rspr )[nmax * internalIndex + ivar - 1];
             }
         }
+        ++i;
     }
     UTMESS( "F", "RESULT2_9" );
     return 0.0;
@@ -300,7 +302,8 @@ void Result::_listOfParameters() {
 
     _calculationParameter->updateValuePointer();
 
-    for ( const auto &[i, item] : *_calculationParameter ) {
+    int i = 1;
+    for ( const auto &item : *_calculationParameter ) {
         item->updateValuePointer();
         auto objectSuffix = strip( ( *item )[0].toString() );
         auto paraName = strip( _accessVariables->getStringFromIndex( i ) );
@@ -319,6 +322,7 @@ void Result::_listOfParameters() {
             AS_ABORT( "Unknown type" );
         }
         _dictParameters.insert( std::make_pair( paraName, paraType ) );
+        ++i;
     }
 }
 
@@ -1004,7 +1008,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     }
 
     ASTERINTEGER cmpt = 1;
-    for ( const auto &[key, obj] : _namesOfFields ) {
+    for ( const auto &obj : _namesOfFields ) {
         obj->updateValuePointer();
         auto nomSymb = strip( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
         AS_ASSERT( nbIndexes <= obj->size() );
