@@ -138,7 +138,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     mpi_int, pointer :: v_displ2(:) => null()
 
 !
-! --------------------------------------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
 !
     if (typent .eq. tygeno) then
@@ -151,7 +151,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 
     if (infmed .gt. 1) then
         call cpu_time(start_time)
-     write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE : '
+        write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES FAMILLES DE ' &
+            //saux08//' MED EN PARALLELE : '
     end if
 !
 !     NATT = NOMBRE D'ATTRIBUTS DANS UNE FAMILLE : JAMAIS. ELLES NE SONT
@@ -361,8 +362,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !
             call cpu_time(end2)
             if (infmed .gt. 1) then
-                write (ifm, *) '<', nompro, '> ** Création des noms de familles en ', end2-start2, &
-                    ' sec'
+                write (ifm, *) '<', nompro, '> ** Création des ' &
+                    //'noms de familles en ', end2-start2, ' sec'
             end if
             call cpu_time(start1)
 !
@@ -589,8 +590,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !
     if (infmed .gt. 1) then
         call cpu_time(end_time)
-   write (ifm, *) '<', nompro, '> FIN ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE EN ', &
-            end_time-start_time, "sec."
+        write (ifm, *) '<', nompro, '> FIN ECRITURE DES FAMILLES DE ' &
+            //saux08//' MED EN PARALLELE EN ', end_time-start_time, "sec."
     end if
 !
 end subroutine
