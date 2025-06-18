@@ -69,11 +69,11 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     character(len=*) :: nomamd
     character(len=8) :: nosdfu
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 !     ECRITURE DU MAILLAGE - FORMAT MED - LES FAMILLES - 2
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 !     L'ENSEMBLE DES FAMILLES EST L'INTERSECTION DE L'ENSEMBLE
 !     DES GROUPES : UN NOEUD/MAILLE APPARAIT AU PLUS DANS 1 FAMILLE
@@ -108,7 +108,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !   NIVINF : NIVEAU DES INFORMATIONS GENERALES
 !   IFM    : UNITE LOGIQUE DU FICHIER DE MESSAGE
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMMF3'
     integer, parameter :: edmail = 0, ednoeu = 3, tygeno = 0
@@ -138,7 +138,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     mpi_int, pointer :: v_displ2(:) => null()
 
 !
-! ------------------------------------------------------------------------------------------------
+! ----------------------------------------------------------------------------------------------
 !
 !
     if (typent .eq. tygeno) then
@@ -393,7 +393,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
             call wkvect('&&IRMMF2.NOMGFAG', 'V V K80', nbgr_tot, vk80=v_nomgfag)
             ! Allgather des groupes
             taille = to_mpi_int(numgrp)
-            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count2, v_displ2, world)
+            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count2, &
+                                         v_displ2, world)
 !
             call cpu_time(end1)
             if (infmed .gt. 1) then
