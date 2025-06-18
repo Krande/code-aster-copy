@@ -185,6 +185,9 @@ VERI_FERRAILLAGE = OPER(
             regles=(UN_PARMI("TOUT", "GROUP_MA"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            TYPE_STRUCTURE=SIMP(
+                statut="f", typ="TXM", into=("2D",), fr=tr("Type de Structure 2D"), defaut="2D"
+            ),
             C_INF=SIMP(
                 statut="o", typ="R", fr=tr("Enrobage des armatures inférieures pour la section 2D")
             ),
