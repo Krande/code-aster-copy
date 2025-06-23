@@ -118,7 +118,6 @@ subroutine cmfiss(main, gno1, gno2, nomgma, noma, &
 ! - CREATION DES MAILLES
 !
     jcon = iconne
-    write (6, *) "mainit", mainit
     do ma = 1, nbmajo
 !
 !      NOM DE LA MAILLE CREEE
