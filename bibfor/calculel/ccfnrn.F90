@@ -97,8 +97,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
     character(len=24) :: carac, cnchmpc
-    character(len=24) :: vafono, vreno, vareno, sigma, sigmaPrev, chdepl,
-    valk(3), nume, chdepk, numk
+    character(len=24) :: vafono, vreno, vareno, chdepl, valk(3), nume, chdepk, numk
+    character(len=24) :: sigmaPrev, sigma
     character(len=24) :: mateco, mater, vafonr, vafoni, k24b, numnew, basemo
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno, chamnk
     character(len=24) :: strx, vldist, vcnoch, vcham, lisori
