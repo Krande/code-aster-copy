@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
                   jv_poids, jv_poids2, &
                   jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
                   nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
-                  congem, b, r, vectu)
+                  congem, congep, b, r, vectu)
 !
     use THM_type
 !
@@ -51,7 +51,7 @@ subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
     integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
     integer, intent(in) :: nddls, nddlm
     integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-    real(kind=8), intent(inout) :: congem(1:npi*dimcon)
+    real(kind=8), intent(inout) :: congem(1:npi*dimcon), congep(1:npi*dimcon)
     real(kind=8), intent(inout) :: b(dimdef, dimuel)
     real(kind=8), intent(inout) :: r(1:dimdef+1)
     real(kind=8), intent(out) :: vectu(dimuel)
@@ -97,6 +97,8 @@ subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
 ! In  nddl_p2          : number of dof for second hydraulic quantity
 ! In  nddl_2nd         : number of dof for second gradient quantity
 ! IO  congem           : generalized stresses at the beginning of time step
+!                    => output sqrt(2) on SIG_XY, SIG_XZ, SIG_YZ
+! IO  congep           : generalized stresses at the end of time step
 !                    => output sqrt(2) on SIG_XY, SIG_XZ, SIG_YZ
 ! IO  b                : [B] matrix for generalized strains
 ! IO  r                : stress vector
@@ -145,7 +147,7 @@ subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
         call fonoda(ds_thm, jv_mater, ndim, fnoevo, &
                     mecani, press1, press2, tempe, second, &
                     dimdef, dimcon, deltat, congem((kpi-1)*dimcon+1), &
-                    r)
+                    congep((kpi-1)*dimcon+1), r)
 ! ----- Compute residual = [B]^T.{R}
         do i = 1, dimuel
             do n = 1, dimdef

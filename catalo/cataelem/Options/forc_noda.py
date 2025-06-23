@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,9 @@ PCAORIE = InputParameter(
 
 
 PCONTMR = InputParameter(phys=PHY.SIEF_R, comment="""  PCONTMR : CONTRAINTES INSTANT PRECEDENT """)
+
+
+PCONTPR = InputParameter(phys=PHY.SIEF_R, comment="""  PCONTPR : CONTRAINTES INSTANT ACTUEL """)
 
 
 PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : TEMPERATURE INSTANT ACTUEL """)
@@ -108,6 +111,7 @@ FORC_NODA = Option(
         PCNSETO,
         PCOMPOR,
         PCONTMR,
+        PCONTPR,
         SP.PDEPLMR,
         SP.PDEPLPR,
         SP.PFIBRES,

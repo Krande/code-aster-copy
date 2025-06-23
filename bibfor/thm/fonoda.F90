@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine fonoda(ds_thm, &
                   jv_mater, ndim, fnoevo, &
                   mecani, press1, press2, tempe, second, &
-                  dimdef, dimcon, dt, congem, &
+                  dimdef, dimcon, dt, congem, congep, &
                   r)
 !
     use THM_type
@@ -36,7 +36,7 @@ subroutine fonoda(ds_thm, &
     integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     integer, intent(in) :: dimdef, dimcon
     real(kind=8), intent(in) :: dt
-    real(kind=8), intent(inout) :: congem(dimcon)
+    real(kind=8), intent(inout) :: congem(dimcon), congep(dimcon)
     real(kind=8), intent(out) :: r(dimdef+1)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -148,31 +148,35 @@ subroutine fonoda(ds_thm, &
     if (fnoevo) then
 ! ----- {R(t)} from hydraulic (first)
         if (ds_thm%ds_elem%l_dof_pre1) then
+            r(addep1) = r(addep1)-congep(adcp11)+congem(adcp11)
+            if (nbpha1 .gt. 1) then
+                r(addep1) = r(addep1)-congep(adcp12)+congem(adcp12)
+            end if
             do i_dim = 1, ndim
-                r(addep1+i_dim) = r(addep1+i_dim)+dt*congem(adcp11+i_dim)
+                r(addep1+i_dim) = r(addep1+i_dim)+dt*congep(adcp11+i_dim)
             end do
             if (nbpha1 .gt. 1) then
                 do i_dim = 1, ndim
-                    r(addep1+i_dim) = r(addep1+i_dim)+dt*congem(adcp12+i_dim)
+                    r(addep1+i_dim) = r(addep1+i_dim)+dt*congep(adcp12+i_dim)
                 end do
             end if
             if (ds_thm%ds_elem%l_dof_ther) then
                 do i_dim = 1, ndim
-                    r(addete) = r(addete)+dt*congem(adcp11+i_dim)*gravity(i_dim)
+                    r(addete) = r(addete)+dt*congep(adcp11+i_dim)*gravity(i_dim)
                 end do
                 if (nbpha1 .gt. 1) then
                     do i_dim = 1, ndim
-                        r(addete) = r(addete)+dt*congem(adcp12+i_dim)*gravity(i_dim)
+                        r(addete) = r(addete)+dt*congep(adcp12+i_dim)*gravity(i_dim)
                     end do
                 end if
                 do i_dim = 1, ndim
                     r(addete+i_dim) = r(addete+i_dim)+ &
-                                      dt*congem(adcp11+ndim+1)*congem(adcp11+i_dim)
+                                      dt*congep(adcp11+ndim+1)*congep(adcp11+i_dim)
                 end do
                 if (nbpha1 .gt. 1) then
                     do i_dim = 1, ndim
                         r(addete+i_dim) = r(addete+i_dim)+ &
-                                          dt*congem(adcp12+ndim+1)*congem(adcp12+i_dim)
+                                          dt*congep(adcp12+ndim+1)*congep(adcp12+i_dim)
                     end do
                 end if
 !
@@ -180,39 +184,44 @@ subroutine fonoda(ds_thm, &
         end if
 ! ----- {R(t)} from hydraulic (second)
         if (ds_thm%ds_elem%l_dof_pre2) then
+            r(addep2) = r(addep2)-congep(adcp21)+congem(adcp21)
+            if (nbpha2 .gt. 1) then
+                r(addep2) = r(addep2)-congep(adcp22)+congem(adcp22)
+            end if
             do i_dim = 1, ndim
-                r(addep2+i_dim) = r(addep2+i_dim)+dt*congem(adcp21+i_dim)
+                r(addep2+i_dim) = r(addep2+i_dim)+dt*congep(adcp21+i_dim)
             end do
             if (nbpha2 .gt. 1) then
                 do i_dim = 1, ndim
-                    r(addep2+i_dim) = r(addep2+i_dim)+dt*congem(adcp22+i_dim)
+                    r(addep2+i_dim) = r(addep2+i_dim)+dt*congep(adcp22+i_dim)
                 end do
             end if
             if (ds_thm%ds_elem%l_dof_ther) then
                 do i_dim = 1, ndim
-                    r(addete) = r(addete)+dt*congem(adcp21+i_dim)*gravity(i_dim)
+                    r(addete) = r(addete)+dt*congep(adcp21+i_dim)*gravity(i_dim)
                 end do
                 if (nbpha2 .gt. 1) then
                     do i_dim = 1, ndim
-                        r(addete) = r(addete)+dt*congem(adcp22+i_dim)*gravity(i_dim)
+                        r(addete) = r(addete)+dt*congep(adcp22+i_dim)*gravity(i_dim)
                     end do
                 end if
                 do i_dim = 1, ndim
                     r(addete+i_dim) = r(addete+i_dim)+ &
-                                      dt*congem(adcp21+ndim+1)*congem(adcp21+i_dim)
+                                      dt*congep(adcp21+ndim+1)*congep(adcp21+i_dim)
                 end do
                 if (nbpha2 .gt. 1) then
                     do i_dim = 1, ndim
                         r(addete+i_dim) = r(addete+i_dim)+ &
-                                          dt*congem(adcp22+ndim+1)*congem(adcp22+i_dim)
+                                          dt*congep(adcp22+ndim+1)*congep(adcp22+i_dim)
                     end do
                 end if
             end if
         end if
 ! ----- {R(t)} from thermic
         if (ds_thm%ds_elem%l_dof_ther) then
+            r(dimdef+1) = r(dimdef+1)-(congep(adcote)-congem(adcote))
             do i_dim = 1, ndim
-                r(addete+i_dim) = r(addete+i_dim)+dt*congem(adcote+i_dim)
+                r(addete+i_dim) = r(addete+i_dim)+dt*congep(adcote+i_dim)
             end do
         end if
     end if

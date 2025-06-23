@@ -97,14 +97,14 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
     character(len=24) :: carac, cnchmpc
-    character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), nume, chdepk, numk
+   character(len=24) :: vafono, vreno, vareno, sigma, sigmaPrev, chdepl, valk(3), nume, chdepk, numk
     character(len=24) :: mateco, mater, vafonr, vafoni, k24b, numnew, basemo
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno, chamnk
     character(len=24) :: strx, vldist, vcnoch, vcham, lisori
     character(len=24) :: bidon, chacce, modele, kstr, modnew
     aster_logical :: exitim, lstr, lstr2, ldist, dbg_ob, dbgv_ob, ltest, lsdpar, lcpu, lbid
     aster_logical :: lPilo1, lPilo2, l_pmesh, l_complex
-    real(kind=8) :: etan, time, partps(3), omega2, coef(3), raux
+    real(kind=8) :: etan, time, timePrev, partps(3), omega2, coef(3), raux
     real(kind=8) :: rctfin, rctdeb, rctfini, rctdebi, freq
     real(kind=8), pointer :: cgmp(:) => null()
     real(kind=8), pointer :: chmp(:) => null()
@@ -499,15 +499,22 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
             end if
 !
 ! Initialisation
-            partps(1) = time
+            if (i .eq. 1) then
+                sigmaPrev = sigma
+                timePrev = time
+            end if
+
+            partps(1) = timePrev
             partps(2) = time
             partps(3) = 0.D0
-!
-!
-! separation reel imag si dyna_harmo
+
             call vefnme_cplx(option, 'V', modele, mateco, carac, &
                              compor, partps, nh, ligrel, chvarc, &
-                             sigma, strx, chdepl, chdep2, vfono)
+                             sigmaPrev, sigma, strx, chdepl, chdep2, vfono)
+
+            sigmaPrev = sigma
+            timePrev = time
+
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
             if (resultType .ne. 'DYNA_HARMO' .and. .not. l_complex) then
                 call asasve(vfono(1), nume, 'R', vafono)
