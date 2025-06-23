@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -2093,6 +2093,14 @@ void DEFPSS( LCKITREAD, lckitread, _IN ASTERINTEGER *nbkit, _IN char *lkit, STRI
     Py_XDECREF( res );
     Py_XDECREF( tup_lkit );
     Py_XDECREF( catalc );
+}
+
+void DEFPS( INT_TO_STRING_CONVERSION, int_to_string_conversion, ASTERINTEGER *value, char *out,
+            STRING_SIZE sout ) {
+    char tmp[9];
+    sprintf( tmp, "%-8d", *value );
+    CopyCStrToFStr( out, tmp, 8 );
+    return;
 }
 
 /* ----------   FIN catalogue de loi de comportement   -------------- */

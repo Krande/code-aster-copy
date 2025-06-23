@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,11 +69,11 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     character(len=*) :: nomamd
     character(len=8) :: nosdfu
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 !     ECRITURE DU MAILLAGE - FORMAT MED - LES FAMILLES - 2
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 !     L'ENSEMBLE DES FAMILLES EST L'INTERSECTION DE L'ENSEMBLE
 !     DES GROUPES : UN NOEUD/MAILLE APPARAIT AU PLUS DANS 1 FAMILLE
@@ -108,7 +108,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !   NIVINF : NIVEAU DES INFORMATIONS GENERALES
 !   IFM    : UNITE LOGIQUE DU FICHIER DE MESSAGE
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMMF3'
     integer, parameter :: edmail = 0, ednoeu = 3, tygeno = 0
@@ -124,7 +124,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
     character(len=8) :: saux08
     character(len=9) :: saux09
-    character(len=80) :: nomfam
+    character(len=64) :: nomfam
     aster_logical :: lfamtr
     real(kind=8) :: start_time, end_time, start1, end1, start2, end2
     mpi_int :: mrank, msize, world, taille, one4
@@ -138,7 +138,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     mpi_int, pointer :: v_displ2(:) => null()
 
 !
-! --------------------------------------------------------------------------------------------------
+! ----------------------------------------------------------------------------------------------
 !
 !
     if (typent .eq. tygeno) then
@@ -151,7 +151,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 
     if (infmed .gt. 1) then
         call cpu_time(start_time)
-     write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE : '
+        write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES FAMILLES DE ' &
+            //saux08//' MED EN PARALLELE : '
     end if
 !
 !     NATT = NOMBRE D'ATTRIBUTS DANS UNE FAMILLE : JAMAIS. ELLES NE SONT
@@ -361,8 +362,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !
             call cpu_time(end2)
             if (infmed .gt. 1) then
-                write (ifm, *) '<', nompro, '> ** Création des noms de familles en ', end2-start2, &
-                    ' sec'
+                write (ifm, *) '<', nompro, '> ** Création des ' &
+                    //'noms de familles en ', end2-start2, ' sec'
             end if
             call cpu_time(start1)
 !
@@ -392,7 +393,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
             call wkvect('&&IRMMF2.NOMGFAG', 'V V K80', nbgr_tot, vk80=v_nomgfag)
             ! Allgather des groupes
             taille = to_mpi_int(numgrp)
-            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count2, v_displ2, world)
+            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count2, &
+                                         v_displ2, world)
 !
             call cpu_time(end1)
             if (infmed .gt. 1) then
@@ -589,8 +591,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !
     if (infmed .gt. 1) then
         call cpu_time(end_time)
-   write (ifm, *) '<', nompro, '> FIN ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE EN ', &
-            end_time-start_time, "sec."
+        write (ifm, *) '<', nompro, '> FIN ECRITURE DES FAMILLES DE ' &
+            //saux08//' MED EN PARALLELE EN ', end_time-start_time, "sec."
     end if
 !
 end subroutine

@@ -130,14 +130,12 @@ subroutine cmcrea(main, maout, nbocc)
 ! ----------------------------------------------------------------------
 !
     do iOcc = 1, nbocc
-        call getvtx(keywfact, 'PREF_MAILLE', iocc=iOcc, scal=prefix, nbret=ib)
-        call getvis(keywfact, 'PREF_NUME', iocc=iOcc, scal=numare, nbret=ib)
         call getvtx(keywfact, 'GROUP_NO_1', iocc=iOcc, scal=gno1, nbret=ib)
         call getvtx(keywfact, 'GROUP_NO_2', iocc=iOcc, scal=gno2, nbret=ib)
         call getvtx(keywfact, 'NOM', iocc=iOcc, scal=nomgma, nbret=ib)
 !
-        call cmfiss(main, gno1, gno2, prefix, numare, &
-                    nomgma, zk24(jlnoma-1+iOcc), zk24(jlconn-1+iOcc), zk24(jltyma-1+iOcc), &
+        call cmfiss(main, gno1, gno2, nomgma, zk24(jlnoma-1+iOcc), &
+                    zk24(jlconn-1+iOcc), zk24(jltyma-1+iOcc), &
                     zk24(jlngma-1+iOcc), zk24(jlgpma-1+iOcc))
     end do
 !
