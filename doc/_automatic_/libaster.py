@@ -14999,6 +14999,13 @@ class ParallelMesh(BaseMesh):
             bool: *True* if exists, *False* otherwise.
         """
 
+    def isQuadratic(self):
+        """To know if the mesh contains quadratic cells
+
+        Returns:
+            bool: *True* if the mesh contains quadratic cells, *False* otherwise.
+        """
+
     def setGroupOfCells(self, group_name, cell_ids):
         """Set new group of cells in the mesh
 

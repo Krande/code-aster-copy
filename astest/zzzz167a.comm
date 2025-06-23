@@ -142,11 +142,10 @@ resu_classique = CALC_THER_MULT(
     MODELE=mod_th,
     CHAM_MATER=fiel1,
     CHAR_THER_GLOBAL=CL,
-    LIST_INST=times,
     PARM_THETA=1,
     CAS_CHARGE=(
-        _F(TYPE_CHARGE="CLASSIQUE", EXCIT=(CLTH_1), NOM_CAS="CAS_1"),
-        _F(TYPE_CHARGE="CLASSIQUE", EXCIT=(CLTH_2), NOM_CAS="CAS_2"),
+        _F(EXCIT=(CLTH_1), NOM_CAS="CAS_1", LIST_INST=times),
+        _F(EXCIT=(CLTH_2), NOM_CAS="CAS_2", LIST_INST=times),
     ),
 )
 
@@ -156,23 +155,10 @@ resu_choc = CALC_THER_MULT(
     MODELE=mod_th,
     CHAM_MATER=fiel1,
     CHAR_THER_GLOBAL=CL,
-    LIST_INST=times,
     PARM_THETA=1,
     CAS_CHARGE=(
-        _F(
-            TYPE_CHARGE="CHOC_UNIT",
-            COEF_H=1e-3,
-            DUREE_CHOC=0.001,
-            GROUP_MA=("STOP"),
-            NOM_CAS="CAS_1",
-        ),
-        _F(
-            TYPE_CHARGE="CHOC_UNIT",
-            COEF_H=1e-2,
-            DUREE_CHOC=0.009,
-            GROUP_MA=("SY1"),
-            NOM_CAS="CAS_2",
-        ),
+        _F(COEF_H=1e-3, DUREE_CHOC=0.001, LIST_INST=times, GROUP_MA=("STOP"), NOM_CAS="CAS_1"),
+        _F(COEF_H=1e-2, DUREE_CHOC=0.009, LIST_INST=times, GROUP_MA=("SY1"), NOM_CAS="CAS_2"),
     ),
 )
 
@@ -181,23 +167,10 @@ resu_choc_param = CALC_THER_MULT(
     MODELE=mod_th,
     CHAM_MATER=fiel1,
     CHAR_THER_GLOBAL=CL,
-    LIST_INST=times,
     PARM_THETA=0.5,
     CAS_CHARGE=(
-        _F(
-            TYPE_CHARGE="CHOC_UNIT",
-            COEF_H=1e-3,
-            DUREE_CHOC=0.001,
-            GROUP_MA=("STOP",),
-            NOM_CAS="CAS_3",
-        ),
-        _F(
-            TYPE_CHARGE="CHOC_UNIT",
-            COEF_H=1e-2,
-            DUREE_CHOC=0.009,
-            GROUP_MA=("SY1",),
-            NOM_CAS="CAS_4",
-        ),
+        _F(COEF_H=1e-3, DUREE_CHOC=0.001, GROUP_MA=("STOP",), NOM_CAS="CAS_3", LIST_INST=times),
+        _F(COEF_H=1e-2, DUREE_CHOC=0.009, LIST_INST=times, GROUP_MA=("SY1",), NOM_CAS="CAS_4"),
     ),
 )
 
@@ -207,24 +180,9 @@ resu_choc_times = CALC_THER_MULT(
     CHAM_MATER=fiel1,
     CHAR_THER_GLOBAL=CL,
     PARM_THETA=1,
-    LIST_INST=times,
     CAS_CHARGE=(
-        _F(
-            TYPE_CHARGE="CHOC_UNIT",
-            COEF_H=1e-3,
-            DUREE_CHOC=0.001,
-            GROUP_MA=("STOP"),
-            NOM_CAS="CAS_1",
-            LIST_INST=times2,
-        ),
-        _F(
-            TYPE_CHARGE="CHOC_UNIT",
-            COEF_H=1e-2,
-            DUREE_CHOC=0.009,
-            GROUP_MA=("SY1"),
-            NOM_CAS="CAS_2",
-            LIST_INST=times2,
-        ),
+        _F(COEF_H=1e-3, DUREE_CHOC=0.001, GROUP_MA=("STOP"), NOM_CAS="CAS_1", LIST_INST=times2),
+        _F(COEF_H=1e-2, DUREE_CHOC=0.009, GROUP_MA=("SY1"), NOM_CAS="CAS_2", LIST_INST=times2),
     ),
 )
 

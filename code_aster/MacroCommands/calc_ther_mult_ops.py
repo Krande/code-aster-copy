@@ -17,9 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Commands import (
-    IMPR_RESU,
-    AFFE_MODELE,
+from ..CodeCommands import (
     THER_NON_LINE,
     PROJ_CHAMP,
     DEFI_FONCTION,
@@ -43,11 +41,17 @@ def calc_ther_mult_ops(self, **args):
     CHAM_MATER = args.get("CHAM_MATER")
     CHAR_THER_GLOBAL = args.get("CHAR_THER_GLOBAL")
     # Timestepping
-    LIST_INST = args.get("LIST_INST")
+    # LIST_INST = args.get("LIST_INST")
     # Thermal resolution parameter
     PARM_THETA = args.get("PARM_THETA")
     # Thermal loading case
     CAS_CHARGE = args.get("CAS_CHARGE")
+
+    CONVERGENCE = args.get("CONVERGENCE")
+
+    SOLVEUR = args.get("SOLVEUR")
+
+    NEWTON = args.get("NEWTON")
 
     # ------------------------------------------------
     #        Resolution
@@ -55,7 +59,7 @@ def calc_ther_mult_ops(self, **args):
     # ------------------------------------ Mesh verification ---------------------------------
     # if mesh is quadratic, raise an alarm about the possibility of getting false results
     mesh = MODELE.getMesh()
-    if mesh.isQuadratic() == True:
+    if mesh.isQuadratic():
         UTMESS("A", "CALCTHERMULT_1", valk=mesh.getName())
 
     # ------------------------------------ CHOC_UNIT group_ma verification ---------------------------------
@@ -84,30 +88,34 @@ def calc_ther_mult_ops(self, **args):
         chgt_cas[cas["NOM_CAS"]] = []
 
         # common thermal load
-        if CHAR_THER_GLOBAL != None:
+        if CHAR_THER_GLOBAL is not None:
             for charge in CHAR_THER_GLOBAL:
                 chgt_cas[cas["NOM_CAS"]].append({"CHARGE": charge})
 
         # TYPE_CHARGE = "CLASSIQUE"
-        if cas["TYPE_CHARGE"] == "CLASSIQUE":
+        # if cas["TYPE_CHARGE"] == "CLASSIQUE":
+        # Classical loading
+        if cas["EXCIT"] is not None:
             chgt_cas[cas["NOM_CAS"]].append({"CHARGE": cas["EXCIT"]})
 
-            # thermal resolution
-            ther_dict[cas["NOM_CAS"]] = THER_NON_LINE(
-                CHAM_MATER=CHAM_MATER,
-                CARA_ELEM=CARA_ELEM,
-                EXCIT=(chgt_cas[cas["NOM_CAS"]]),
-                INCREMENT=_F(LIST_INST=LIST_INST),
-                CONVERGENCE=_F(RESI_GLOB_MAXI=1e-9),
-                PARM_THETA=PARM_THETA,
-                MODELE=MODELE,
-            )
+            # # thermal resolution
+            # ther_dict[cas["NOM_CAS"]] = THER_NON_LINE(
+            #     CHAM_MATER=CHAM_MATER,
+            #     CARA_ELEM=CARA_ELEM,
+            #     EXCIT=(chgt_cas[cas["NOM_CAS"]]),
+            #     INCREMENT=_F(LIST_INST=LIST_INST),
+            #     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-9),
+            #     PARM_THETA=PARM_THETA,
+            #     MODELE=MODELE,
+            # )
 
         # TYPE_CHARGE = "CHOC_UNIT"
-        if cas["TYPE_CHARGE"] == "CHOC_UNIT":
+        # Unit shock loading
+        # if cas["TYPE_CHARGE"] == "CHOC_UNIT":
+        if cas["COEF_H"] is not None:
             # if LIST_INST for the case is empty, use the common LIST_INST
-            if cas["LIST_INST"] == None:
-                cas["LIST_INST"] = LIST_INST
+            # if cas["LIST_INST"] is not None:
+            #    cas["LIST_INST"] = LIST_INST
             # function and loading creation
             fonction_choc = DEFI_FONCTION(
                 NOM_PARA="INST", VALE=(0.0, 0.0, cas["DUREE_CHOC"], 1.0), PROL_DROITE="CONSTANT"
@@ -122,10 +130,7 @@ def calc_ther_mult_ops(self, **args):
 
             # on other group_ma temperature has to be zero
             for other_cas in CAS_CHARGE:
-                if (
-                    other_cas["TYPE_CHARGE"] == "CHOC_UNIT"
-                    and other_cas["NOM_CAS"] != cas["NOM_CAS"]
-                ):
+                if other_cas["COEF_H"] is not None and other_cas["NOM_CAS"] != cas["NOM_CAS"]:
                     coefh = DEFI_CONSTANTE(VALE=other_cas["COEF_H"])
                     fkw = AFFE_CHAR_THER_F(
                         MODELE=MODELE,
@@ -137,13 +142,17 @@ def calc_ther_mult_ops(self, **args):
                     chgt_cas[cas["NOM_CAS"]].append({"CHARGE": fkw})
 
             # thermal resolution
-            ther_dict[cas["NOM_CAS"]] = THER_NON_LINE(
-                CHAM_MATER=CHAM_MATER,
-                CARA_ELEM=CARA_ELEM,
-                EXCIT=(chgt_cas[cas["NOM_CAS"]]),
-                INCREMENT=_F(LIST_INST=cas["LIST_INST"]),
-                ETAT_INIT=_F(VALE=0),
-                PARM_THETA=PARM_THETA,
-                MODELE=MODELE,
-            )
+        ther_dict[cas["NOM_CAS"]] = THER_NON_LINE(
+            CHAM_MATER=CHAM_MATER,
+            CARA_ELEM=CARA_ELEM,
+            EXCIT=(chgt_cas[cas["NOM_CAS"]]),
+            INCREMENT=_F(LIST_INST=cas["LIST_INST"]),
+            ETAT_INIT=_F(VALE=0),
+            PARM_THETA=PARM_THETA,
+            MODELE=MODELE,
+            CONVERGENCE=CONVERGENCE,
+            SOLVEUR=SOLVEUR,
+            NEWTON=NEWTON,
+            METHODE="NEWTON",
+        )
     return ther_dict

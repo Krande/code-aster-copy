@@ -26,7 +26,7 @@ CALC_THER_MULT = MACRO(
     nom="CALC_THER_MULT",
     op=OPS("code_aster.MacroCommands.calc_ther_mult_ops.calc_ther_mult_ops"),
     sd_prod=evol_ther,
-    fr=tr("Calculer les réponses thermiques linéaires pour de multiple cas " "de chargements"),
+    fr=tr("Calculer les réponses thermiques linéaires pour de multiple cas de chargements"),
     reentrant="n",
     #  Model:
     #  ----------------------------------------------
@@ -38,9 +38,9 @@ CALC_THER_MULT = MACRO(
     CHAR_THER_GLOBAL=SIMP(
         statut="f", typ=(char_ther, char_cine_ther), validators=NoRepeat(), max="**"
     ),
-    #  Timestepping:
+    #  General Timestepping:
     #  ----------------------------------------------
-    LIST_INST=SIMP(statut="o", typ=(listr8_sdaster, list_inst)),
+    # LIST_INST=SIMP(statut="o", typ=(listr8_sdaster, list_inst)),
     #  Resolution parameters:
     #  --------------------------------------------------
     PARM_THETA=SIMP(statut="f", typ="R", defaut=1, val_min=0.0, val_max=1.0),
@@ -49,21 +49,21 @@ CALC_THER_MULT = MACRO(
     CAS_CHARGE=FACT(
         statut="o",
         max="**",
-        TYPE_CHARGE=SIMP(
-            statut="f", typ="TXM", defaut="CLASSIQUE", into=("CLASSIQUE", "CHOC_UNIT")
-        ),
-        b_CLASSIQUE=BLOC(
-            condition="""equal_to('TYPE_CHARGE','CLASSIQUE')""",
-            EXCIT=SIMP(statut="o", typ=(char_ther, char_cine_ther)),
-            NOM_CAS=SIMP(statut="o", typ="TXM"),
-        ),
-        b_CHOC_UNIT=BLOC(
-            condition="""equal_to('TYPE_CHARGE','CHOC_UNIT')""",
-            COEF_H=SIMP(statut="o", typ="R", max=1),
-            GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
-            NOM_CAS=SIMP(statut="o", typ="TXM"),
-            DUREE_CHOC=SIMP(statut="f", typ="R", defaut=1e-6),
-            LIST_INST=SIMP(statut="f", typ=(listr8_sdaster, list_inst)),
-        ),
+        COEF_H=SIMP(statut="f", typ="R"),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        DUREE_CHOC=SIMP(statut="f", typ="R"),
+        NOM_CAS=SIMP(statut="o", typ="TXM"),
+        LIST_INST=SIMP(statut="o", typ=(listr8_sdaster, list_inst)),
+        EXCIT=SIMP(statut="f", typ=(char_ther, char_cine_ther)),
+        regles=(UN_PARMI("EXCIT", "COEF_H"), ENSEMBLE("COEF_H", "DUREE_CHOC", "GROUP_MA")),
+    ),
+    CONVERGENCE=C_CONVERGENCE("THER_NON_LINE"),
+    SOLVEUR=C_SOLVEUR("THER_NON_LINE"),
+    NEWTON=FACT(
+        statut="d",
+        REAC_ITER=SIMP(statut="f", typ="I", defaut=0, val_min=0),
+        REAC_INCR=SIMP(statut="f", typ="I", defaut=1, val_min=0),
+        PREDICTION=SIMP(statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE",)),
+        MATRICE=SIMP(statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE",)),
     ),
 )
