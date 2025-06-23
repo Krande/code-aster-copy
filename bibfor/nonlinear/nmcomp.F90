@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,C1505,W1306
+! aslint: disable=W1504,C1505,W1306,W0413
 !
 subroutine nmcomp(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
@@ -30,7 +30,7 @@ subroutine nmcomp(BEHinteg, &
     implicit none
 !
 #include "asterc/r8vide.h"
-#include "asterc/r8gaem.h"
+#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
@@ -284,7 +284,7 @@ subroutine nmcomp(BEHinteg, &
                 else if (abs(dsidep_cp(3, 3)) .gt. abs(sigp(3))) then
                     invert = ASTER_TRUE
                 else
-                    invert = abs(dsidep_cp(3, 3))/abs(sigp(3)) .gt. 1.d0/r8gaem()
+                    invert = abs(dsidep_cp(3, 3))/abs(sigp(3)) .gt. r8prem()
                 end if
 
                 if (invert) then
@@ -329,7 +329,7 @@ subroutine nmcomp(BEHinteg, &
             else if (abs(dsidep(3, 3)) .gt. c_min) then
                 invert = ASTER_TRUE
             else
-                invert = abs(dsidep(3, 3))/c_min .gt. 1.d0/r8gaem()
+                invert = abs(dsidep(3, 3))/c_min .gt. r8prem()
             end if
 
             if (invert) then
