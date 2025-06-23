@@ -351,9 +351,12 @@ SRO_NGA = DEFI_FONCTION(
 
 L_FREQ1 = DEFI_LIST_REEL(DEBUT=35.0, INTERVALLE=(_F(JUSQU_A=45, PAS=1.0),))
 
+
 L_FREQ2 = DEFI_LIST_REEL(
     DEBUT=0.1, INTERVALLE=(_F(JUSQU_A=1.0, PAS=0.01), _F(JUSQU_A=60.0, PAS=0.1))
 )
+
+L_FREQ3 = DEFI_LIST_REEL(DEBUT=5.0, INTERVALLE=(_F(JUSQU_A=20.0, PAS=5.0),))
 
 amor = 0.05
 TSM = 10.00
@@ -502,6 +505,103 @@ TEST_FONCTION(
         ),
     )
 )
+
+SRO2c = CALC_FONCTION(
+    SPEC_OSCI=_F(
+        FONCTION=FONCT1c,
+        LIST_FREQ=L_FREQ3,
+        METHODE="HARMO",
+        PSEUDO="OUI",
+        NORME=9.81,
+        AMOR_REDUIT=(amor,),
+        NATURE="VITE",
+    )
+)
+
+SRO2d = CALC_FONCTION(
+    SPEC_OSCI=_F(
+        FONCTION=FONCT1c,
+        LIST_FREQ=L_FREQ3,
+        METHODE="HARMO",
+        PSEUDO="NON",
+        NORME=9.81,
+        AMOR_REDUIT=(amor,),
+        NATURE="VITE",
+    )
+)
+
+
+SRO3b = CALC_FONCTION(
+    SPEC_OSCI=_F(
+        FONCTION=FONCT1c,
+        LIST_FREQ=L_FREQ3,
+        METHODE="NIGAM",
+        NORME=9.81,
+        AMOR_REDUIT=(amor,),
+        NATURE="DEPL",
+    )
+)
+
+
+SRO3c = CALC_FONCTION(
+    SPEC_OSCI=_F(
+        FONCTION=FONCT1c,
+        LIST_FREQ=L_FREQ3,
+        METHODE="HARMO",
+        PSEUDO="OUI",
+        NORME=9.81,
+        AMOR_REDUIT=(amor,),
+        NATURE="DEPL",
+    )
+)
+
+SRO3d = CALC_FONCTION(
+    SPEC_OSCI=_F(
+        FONCTION=FONCT1c,
+        LIST_FREQ=L_FREQ3,
+        METHODE="HARMO",
+        PSEUDO="NON",
+        NORME=9.81,
+        AMOR_REDUIT=(amor,),
+        NATURE="DEPL",
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=5.619647596799e-03,
+            NOM_PARA=("AMOR", "FREQ"),
+            VALE_PARA=(0.05, 10.0),
+            FONCTION=SRO2c,
+        ),
+        _F(
+            VALE_CALC=4.251862964159e-03,
+            NOM_PARA=("AMOR", "FREQ"),
+            VALE_PARA=(0.05, 10.0),
+            FONCTION=SRO2d,
+        ),
+        _F(
+            VALE_CALC=8.755771066517e-05,
+            NOM_PARA=("AMOR", "FREQ"),
+            VALE_PARA=(0.05, 10.0),
+            FONCTION=SRO3b,
+        ),
+        _F(
+            VALE_CALC=8.943946934650e-05,
+            NOM_PARA=("AMOR", "FREQ"),
+            VALE_PARA=(0.05, 10.0),
+            FONCTION=SRO3c,
+        ),
+        _F(
+            VALE_CALC=8.943946934650e-05,
+            NOM_PARA=("AMOR", "FREQ"),
+            VALE_PARA=(0.05, 10.0),
+            FONCTION=SRO3d,
+        ),
+    )
+)
+
 
 # on verifie que la sd produit est bien une fonction avec TYPE_RESU="FONCTION"
 TA_SRO1a = CREA_TABLE(FONCTION=_F(FONCTION=SRO1aa))

@@ -48,7 +48,7 @@ from .Utils import liss_enveloppe as LISS
 from .Utils.calc_coherency import calc_cohefromdata
 from .Utils.random_signal_utils import (
     ACCE2SRO,
-    ACCE2SRO_ABS,
+    ACCE2SRO_DIR,
     DSP2SRO,
     SRO2DSP,
     acce_filtre_CP,
