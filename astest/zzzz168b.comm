@@ -147,17 +147,17 @@ CRT2 = CREA_RESU(
 
 # ---------------------------------------------------------------------------------------------------
 # FIRST TEST : 1 material field with 1 material
-# THERMECA_MULT with 2 thermal fields
+# CALC_MECA_MULT with 2 thermal fields
 
-TEST1 = THERMECA_MULT(
+TEST1 = CALC_MECA_MULT(
     MODELE=m_plate,
     CHAM_MATER=fiel_f1,
     CARA_ELEM=elem_m,
     CHAR_MECA_GLOBAL=BLOC,
     LIST_INST=times,
-    CAS_CHARGE_THER=(
-        _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
-        _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
 )
 
@@ -234,7 +234,7 @@ REF1_fc2 = CREA_CHAMP(
 # ---------------------------------------------------------------------------------------------------
 # TEST_TABLE
 
-# Table creation : diff in norm between sequential results and THERMECA_MULT results
+# Table creation : diff in norm between sequential results and CALC_MECA_MULT results
 TAB_TEST = CREA_TABLE(
     LISTE=_F(
         LISTE_R=((TEST1_fc1 - REF1_fc1).norm("NORM_2"), (TEST1_fc2 - REF1_fc2).norm("NORM_2")),

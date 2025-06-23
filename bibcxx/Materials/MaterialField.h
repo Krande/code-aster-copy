@@ -138,9 +138,6 @@ class MaterialField : public DataStructure {
     MaterialField( const BaseMeshPtr &mesh )
         : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
 
-    /** @brief Copy Constructor */
-    MaterialField( const MaterialField &other );
-
     /** @brief Constructor */
     MaterialField( const std::string &, const BaseMeshPtr & );
 
@@ -185,7 +182,7 @@ class MaterialField : public DataStructure {
     MaterialPtr getMaterialOnCell( const std::string cellName ) const;
 
     /** @brief Get mesh */
-    BaseMeshPtr getMesh() const {
+    BaseMeshPtr getMesh() {
         if ( _mesh->isEmpty() )
             throw std::runtime_error( "mesh of current model is empty" );
         return _mesh;

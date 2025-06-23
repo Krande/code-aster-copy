@@ -50,21 +50,6 @@ MaterialField::MaterialField( const BaseMeshPtr &mesh, MaterialFieldPtr mater )
     _behaviourOnMeshEntities = mater->_behaviourOnMeshEntities;
     _extStateVariablesOnMeshEntities = mater->_extStateVariablesOnMeshEntities;
 };
-MaterialField::MaterialField( const MaterialField &other )
-    : _mesh( other.getMesh() ),
-      _model( other.getModel() ),
-      DataStructure( ResultNaming::getNewResultName(), 8, "CHAM_MATER" ),
-      _champ_mat( other._champ_mat ),
-      _compor( other._compor ),
-      _cvrcNom( other._cvrcGd ),
-      _cvrcGd( other._cvrcGd ),
-      _cvrcVarc( other._cvrcVarc ),
-      _cvrcCmp( other._cvrcCmp ),
-      _materialsOnMeshEntities( other._materialsOnMeshEntities ),
-      _behaviourOnMeshEntities( other._behaviourOnMeshEntities ),
-      _extStateVariablesOnMeshEntities( other._extStateVariablesOnMeshEntities ),
-      _mapCvrcCard1( other._mapCvrcCard1 ),
-      _mapCvrcCard2( other._mapCvrcCard2 ) {};
 
 listOfMaterials MaterialField::getVectorOfMaterial() const {
     listOfMaterials toReturn;

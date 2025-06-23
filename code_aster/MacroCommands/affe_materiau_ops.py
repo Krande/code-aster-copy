@@ -17,12 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-from libaster import (
-    deleteTemporaryObjects,
-    setFortranLoggingLevel,
-    resetFortranLoggingLevel,
-    MaterialField,
-)
+from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
 
 from ..Cata.Syntax import _F
 from ..Messages import UTMESS
@@ -242,13 +237,3 @@ def _addMaterial(material, fkw):
             raise RuntimeError("MAILLE is no more supported")
         else:
             raise TypeError("At least {0} or {1} is required".format("TOUT", "GROUP_MA"))
-
-
-def MaterialWithAddedExternalStateVariable(mater, fkw, mesh):
-    # Realise a deep copy with constructor
-    new_mater = MaterialField(mater)
-    if new_mater.hasExternalStateVariable():
-        raise RuntimeError("ExternalStateVariable already existing")
-    else:
-        _addExternalStateVariables(new_mater, fkw, mesh)
-    return new_mater

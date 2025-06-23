@@ -113,15 +113,15 @@ CRT2 = CREA_RESU(
 
 # ---------------------------------------------------------------------------------------------------
 # FIRST TEST : 1 material field with 1 material
-# THERMECA_MULT with 2 thermal fields
-TEST1 = THERMECA_MULT(
+# CALC_MECA_MULT with 2 thermal fields
+TEST1 = CALC_MECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f1,
     CHAR_MECA_GLOBAL=BLOC,
     LIST_INST=times,
-    CAS_CHARGE_THER=(
-        _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
-        _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
     CONVERGENCE=_F(RESI_GLOB_RELA=1e-5, ITER_GLOB_MAXI=80),
 )
@@ -182,15 +182,15 @@ REF1_fc2 = CREA_CHAMP(
 
 # ---------------------------------------------------------------------------------------------------
 # SECOND TEST : 1 material field with 2 materials
-# THERMECA_MULT with 2 thermal fields
-TEST2 = THERMECA_MULT(
+# CALC_MECA_MULT with 2 thermal fields
+TEST2 = CALC_MECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f2,
     CHAR_MECA_GLOBAL=BLOC,
     LIST_INST=times,
-    CAS_CHARGE_THER=(
-        _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
-        _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
 )
 # Reference cases for the 2 thermal field (STAT_NON_LINE)
@@ -254,15 +254,15 @@ REF2_fc2 = CREA_CHAMP(
 
 # ---------------------------------------------------------------------------------------------------
 # THIRD TEST: 1 material field : use of "TOUT" + 2 materials (subsitution)
-# THERMECA_MULT with 2 thermal fields
-TEST3 = THERMECA_MULT(
+# CALC_MECA_MULT with 2 thermal fields
+TEST3 = CALC_MECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f3,
     CHAR_MECA_GLOBAL=BLOC,
     LIST_INST=times,
-    CAS_CHARGE_THER=(
-        _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
-        _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
 )
 # Reference cases for the 2 thermal field (STAT_NON_LINE)
@@ -321,14 +321,14 @@ REF3_fc2 = CREA_CHAMP(
 
 # ---------------------------------------------------------------------------------------------------
 # FOURTH TEST: 1 material field with 1 material, LIST_INST empty
-# THERMECA_MULT with 2 thermal fields
-TEST4 = THERMECA_MULT(
+# CALC_MECA_MULT with 2 thermal fields
+TEST4 = CALC_MECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f1,
     CHAR_MECA_GLOBAL=BLOC,
-    CAS_CHARGE_THER=(
-        _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
-        _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
 )
 
@@ -353,7 +353,7 @@ TEST4_fc2 = CREA_CHAMP(
 
 # ---------------------------------------------------------------------------------------------------
 # FIFTH TEST: compatibility with evol_ther_dict (CALC_THER_MULT)
-# THERMECA_MULT chained with CALC_THER_MULT
+# CALC_MECA_MULT chained with CALC_THER_MULT
 
 # -----CALC_THER_MULT
 # Thermal model
@@ -373,28 +373,13 @@ calc_ther_mult = CALC_THER_MULT(
     MODELE=mod_th,
     CHAM_MATER=fiel1,
     CHAR_THER_GLOBAL=CL,
-    LIST_INST=times,
     PARM_THETA=1,
     CAS_CHARGE=(
-        _F(
-            TYPE_CHARGE="CHOC_UNIT",
-            COEF_H=1e-3,
-            DUREE_CHOC=0.001,
-            GROUP_MA=("SY0"),
-            NOM_CAS="CAS_1",
-        ),
-        _F(
-            TYPE_CHARGE="CHOC_UNIT",
-            COEF_H=1e-2,
-            DUREE_CHOC=0.009,
-            GROUP_MA=("SY1"),
-            NOM_CAS="CAS_2",
-        ),
+        _F(COEF_H=1e-3, DUREE_CHOC=0.001, LIST_INST=times, GROUP_MA=("SY0"), NOM_CAS="CAS_1"),
+        _F(COEF_H=1e-2, DUREE_CHOC=0.009, LIST_INST=times, GROUP_MA=("SY1"), NOM_CAS="CAS_2"),
     ),
 )
 
-# import pdb
-# pdb.set_trace()
 
 extr_51 = EXTR_CONCEPT(NOM="CAS_1", DICT=calc_ther_mult)
 extr_52 = EXTR_CONCEPT(NOM="CAS_2", DICT=calc_ther_mult)
@@ -428,11 +413,11 @@ REF5_C2 = STAT_NON_LINE(
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=80),
 )
 
-TEST5 = THERMECA_MULT(
+TEST5 = CALC_MECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f1,
     CHAR_MECA_GLOBAL=BLOC,
-    CAS_CHARGE_THER=(_F(EVOL=calc_ther_mult, VALE_REF=0.0),),
+    CAS_CHARGE=(_F(EVOL_THER=calc_ther_mult, VALE_REF=0.0),),
 )
 
 # Verification process
@@ -463,7 +448,7 @@ REF5_fc2 = CREA_CHAMP(
 # ---------------------------------------------------------------------------------------------------
 # TEST_TABLE
 
-# Table creation : diff in norm between sequential results and THERMECA_MULT results
+# Table creation : diff in norm between sequential results and CALC_MECA_MULT results
 TAB_TEST = CREA_TABLE(
     LISTE=_F(
         LISTE_R=(
