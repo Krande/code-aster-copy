@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -177,7 +177,7 @@ TEST_RESU(
             RESULTAT=REST,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXX",
-            VALE_CALC=1.4996013222191e08,
+            VALE_CALC=149960106.55122676,
             VALE_REFE=1.50000000e8,
             PRECISION=1.0e-3,
             GROUP_MA="M2",
@@ -189,7 +189,7 @@ TEST_RESU(
             RESULTAT=REST,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=94724.718548869,
+            VALE_CALC=94724.71849621,
             VALE_REFE=9.4715199999999997e4,
             PRECISION=0.010999999999999999,
         ),
@@ -200,7 +200,7 @@ TEST_RESU(
             RESULTAT=REST,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=95683.308382063,
+            VALE_CALC=95683.3083324607,
             VALE_REFE=9.5650e4,
             PRECISION=0.010999999999999999,
         ),
@@ -285,7 +285,7 @@ TEST_RESU(
             RESULTAT=RESM,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DRZ",
-            VALE_CALC=4640.7620683374,
+            VALE_CALC=4640.551153453034,
             VALE_REFE=4642.1700000000001,
         ),
         _F(
@@ -295,7 +295,7 @@ TEST_RESU(
             RESULTAT=RESM,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DRZ",
-            VALE_CALC=5783.1289089705,
+            VALE_CALC=5783.277042530461,
             VALE_REFE=5782.4200000000001,
             PRECISION=5.0000000000000001e-3,
         ),

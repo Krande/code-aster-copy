@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -152,6 +152,7 @@ void DEFP( RDTMAX, rdtmax, _IN ASTERDOUBLE *tsub ) {
         MYABORT( "erreur dans RDTMAX" );
     // reset du cache
     _reset_tpmax();
+    Py_DECREF( res );
     return;
 }
 

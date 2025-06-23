@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -466,6 +466,7 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 !
 ! ------------- Save status
 !
+
                 v_sdcont_tabfin(ztabf*(i_cont_poin-1)+23) = indi_cont_curr
                 if (l_frot_zone) then
                     v_sdcont_tabfin(ztabf*(i_cont_poin-1)+24) = indi_frot_curr
@@ -474,6 +475,8 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 ! ------------- Print status
 !
                 if (niv .ge. 2) then
+                    indi_cont_prev = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+23))
+                    indi_frot_prev = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+24))
                     call mmimp4(ifm, mesh, elem_slav_nume, i_poin_elem, indi_cont_prev, &
                                 indi_cont_curr, indi_frot_prev, indi_frot_curr, l_frot, &
                                 l_glis, gap, lagr_cont_poin)

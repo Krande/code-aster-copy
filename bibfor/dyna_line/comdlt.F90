@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -244,8 +244,18 @@ subroutine comdlt()
         tfin = zr(jinst+nbpas-1)
         ASSERT(nbpas .gt. 1)
         dt = (tfin-tinit)/real(nbpas-1)
+
+        call getvis('INCREMENT', 'NUME_FIN', iocc=1, scal=iordr, nbret=iret)
+        if (iret .ne. 0) then
+            if (iordr .ge. nbpas) goto 99
+            tfin = zr(jinst+iordr)
+        else
+            call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=iret)
+        end if
     end if
+99  continue
 !
+
 ! -- Check
 !
     if (dt .le. 0.0) then
