@@ -72,7 +72,7 @@ subroutine calimc(chargz)
     character(len=4) :: typval, typcoe
     character(len=8) :: nomcmp, nomnoe, betaf, nmcmp2, nmnoe2
     character(len=6) :: typlia
-    character(len=8) :: charge
+    character(len=8) :: charge, mod
     character(len=16) :: motfac
     character(len=19) :: lisrel
     character(len=14) :: numddl
@@ -103,6 +103,8 @@ subroutine calimc(chargz)
     character(len=24), pointer :: mael_refe(:) => null()
     integer, pointer :: lino(:) => null()
     aster_logical :: lcolle
+    character(len=19) :: ligrmo
+    character(len=8), pointer :: lgrf(:) => null()
 !-----------------------------------------------------------------------
     data liscmp/'DX      ', 'DY      ', 'DZ      ',&
      &               'DRX     ', 'DRY     ', 'DRZ     '/
@@ -143,6 +145,18 @@ subroutine calimc(chargz)
 !
     lisrel = '&CALIMC.RLLISTE'
 !
+! --- mailllage
+!
+    call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
+    ligrmo = mod(1:8)//'.MODELE'
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    mailla = lgrf(1)
+    lcolle = .false.
+    call jeexin(mailla//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
+!
 ! --- BOUCLE SUR LES OCCURENCES DU MOT-FACTEUR LIAISON_MACREL :
 !     -------------------------------------------------------
     do iocc = 1, nliai
@@ -153,12 +167,6 @@ subroutine calimc(chargz)
                     cbid, rbid, k8b, nbmode, 1, &
                     ibid)
         call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numedd)
-        call dismoi('NOM_MAILLA', numedd(1:14), 'NUME_DDL', repk=mailla)
-        lcolle = .false.
-        call jeexin(mailla//'.NOMNOE', ier)
-        if (ier .ne. 0) then
-            lcolle = .true.
-        end if
         call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=lintf)
 ! On recupere le nbre de noeuds presents dans interf_dyna
         call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)

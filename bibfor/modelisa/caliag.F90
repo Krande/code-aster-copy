@@ -69,7 +69,7 @@ subroutine caliag(fonrez, chargz, phenom)
 ! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, k, iret, iocc, ifm, niv, nmocl
+    integer :: i, j, k, iret, iocc, ifm, niv, nmocl, ier
     integer :: vali(2)
 !-----------------------------------------------------------------------
     integer :: icmpz, idco1, idco2, idconi, idconr, iddl1
@@ -82,7 +82,7 @@ subroutine caliag(fonrez, chargz, phenom)
     parameter(nmocl=300)
     real(kind=8) :: beta
     complex(kind=8) :: betac
-    aster_logical :: dnor
+    aster_logical :: dnor, lcolle
     character(len=4) :: fonree, typcoe
     character(len=7) :: typcha
     character(len=8) :: nomno1, nomno2, charge, nomg, noma, mod, nomdep
@@ -125,6 +125,12 @@ subroutine caliag(fonrez, chargz, phenom)
     ligrmo = mod(1:8)//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
+
+    lcolle = .false.
+    call jeexin(noma//'.NOMNOE', ier)
+    if (ier .ne. 0) then
+        lcolle = .true.
+    end if
 !
     mcgrex = 'SANS_GROUP_NO'
     mcex = 'SANS_NOEUD'
@@ -370,7 +376,7 @@ subroutine caliag(fonrez, chargz, phenom)
             idg2 = jprnm-1+(ino2-1)*nbec+1
 !
             if (iexcm1 .eq. 0) then
-                nomno1 = int_to_char8(ino1)
+                nomno1 = int_to_char8(ino1, lcolle, noma, "NOEUD")
                 call utmess('F', 'CHARGES2_33', sk=nomno1)
             end if
             nbnor(2*(j-1)+1) = 3
@@ -379,7 +385,7 @@ subroutine caliag(fonrez, chargz, phenom)
             end if
 !
             if (iexcm2 .eq. 0) then
-                nomno2 = int_to_char8(ino2)
+                nomno2 = int_to_char8(ino2, lcolle, noma, "NOEUD")
                 call utmess('F', 'CHARGES2_33', sk=nomno2)
             end if
             nbnor(2*(j-1)+2) = 3
@@ -396,7 +402,7 @@ subroutine caliag(fonrez, chargz, phenom)
 ! --- PREMIER NOEUD DE LA RELATION ---
 !
             ino1 = zi(idconi+2*(j-1)+1)
-            nomno1 = int_to_char8(ino1)
+            nomno1 = int_to_char8(ino1, lcolle, noma, "NOEUD")
             cmp = zk8(iddl1)
             if (cmp .eq. 'DNOR') then
                 call jeveuo(jexnum(conr, iocc), 'L', idconr)
@@ -421,7 +427,7 @@ subroutine caliag(fonrez, chargz, phenom)
 ! --- DEUXIEME NOEUD DE LA RELATION ---
 !
             ino2 = zi(idconi+2*(j-1)+2)
-            nomno2 = int_to_char8(ino2)
+            nomno2 = int_to_char8(ino2, lcolle, noma, "NOEUD")
             cmp = zk8(iddl2)
             if (cmp .eq. 'DNOR') then
                 call jeveuo(jexnum(conr, iocc), 'L', idconr)
@@ -466,9 +472,9 @@ subroutine caliag(fonrez, chargz, phenom)
             call utmess('I', 'CHARGES2_35', si=iocc)
             do j = 1, nbno
                 ino1 = zi(idconi+2*(j-1)+1)
-                nomno1 = int_to_char8(ino1)
+                nomno1 = int_to_char8(ino1, lcolle, noma, "NOEUD")
                 ino2 = zi(idconi+2*(j-1)+2)
-                nomno2 = int_to_char8(ino2)
+                nomno2 = int_to_char8(ino2, lcolle, noma, "NOEUD")
                 valk(1) = nomno1
                 valk(2) = nomno2
                 call utmess('I', 'CHARGES2_36', nk=2, valk=valk)
