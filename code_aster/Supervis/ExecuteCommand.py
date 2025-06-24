@@ -154,7 +154,7 @@ class ExecuteCommand:
     # class attributes
     command_name = command_op = command_cata = None
     level = 0
-    hook = None
+    hook = []
 
     _cata = _op = _result = _counter = _caller = _exc = None
     _tuplmode = None
@@ -259,7 +259,7 @@ class ExecuteCommand:
             func (function): Function with signature: *ExecuteCommand*, *dict*
                 of keywords.
         """
-        ExecuteCommand.hook = func
+        ExecuteCommand.hook.append(func)
 
     @classmethod
     def show_syntax(cls):
@@ -534,8 +534,8 @@ class ExecuteCommand:
                 self.add_dependencies(keywords)
             if not self._exc and ExecutionParameter().get_option("sdveri"):
                 self.check_ds()
-            if self.hook:
-                self.hook(keywords)
+            for func in self.hook:
+                func(self, keywords)
         finally:
             self.cleanup()
             self.print_result()
@@ -616,6 +616,21 @@ class ExecuteCommand:
             identifier = "txt{0}".format(self._caller["lineno"])
         self._caller["identifier"] = identifier
 
+    @classmethod
+    def debugPrintAll(cls):
+        """Call ``debugPrint()`` after each command.
+
+        Use ``ExecuteCommand.debugPrintAll()`` in a testcase to make each
+        command to dump its result content.
+        """
+
+        def _debugPrintAll(cmd, dummy):
+            if not isinstance(cmd.result, DataStructure):
+                return
+            cmd.result.debugPrint(unit=10000 + cmd._counter)
+
+        cls.register_hook(_debugPrintAll)
+
 
 def check_jeveux():
     """Check that the memory manager (Jeveux) is up."""
@@ -695,7 +710,13 @@ class ExecuteMacro(ExecuteCommand):
         self._print_stats()
 
     def cleanup(self):
-        """Clean-up function."""
+        """Clean-up function.
+
+        Force deletion of removed objects after each macro-command.
+        Some macro-commands may directly call ``gc.collect()`` if they create
+        a lot of objects or if there is a risk to recreate an object with the
+        same name (example: NonLinearOperator).
+        """
         if time.time() - ExecuteMacro._last_cleanup_date < 1.0:
             return
         if ExecuteCommand.level > 1:
@@ -703,7 +724,6 @@ class ExecuteMacro(ExecuteCommand):
                 return
         ExecuteMacro._last_cleanup = self._counter
         ExecuteMacro._last_cleanup_date = time.time()
-        # wrapper to collect after each macro-command
         timer = ExecutionParameter().timer
         timer.Start(" . cleanup", num=1.9e6)
         gc.collect()
