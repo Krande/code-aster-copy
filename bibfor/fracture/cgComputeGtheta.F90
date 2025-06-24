@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -363,7 +363,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             nchin = nchin+1
         end if
 !
-        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI') then
+        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI' &
+            .or. cgStudy%option .eq. 'KJ' .or. cgStudy%option .eq. 'KJ_EPSI') then
             if (cgStudy%vitesse .ne. ' ') then
                 lpain(nchin+1) = 'PVITESS'
                 lchin(nchin+1) = cgStudy%vitesse
@@ -373,8 +374,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             end if
         end if
 !
-!       Recuperation des contraintes du resultat pour option G
-        if (cgStudy%option .eq. 'G') then
+!       Recuperation des contraintes du resultat pour option G et KJ
+        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'KJ') then
             call rsexch(' ', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
 !
             if (iret .ne. 0) then
@@ -521,7 +522,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g2th, g2s)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g3th, g3s)
 !
-           if (cgTheta%milieu .and. cgTheta%nb_point_fond .eq. 0 .and. cgTheta%nnof/2-1 .gt. 0) then
+            if (cgTheta%milieu .and. cgTheta%nb_point_fond .eq. 0 &
+                .and. cgTheta%nnof/2-1 .gt. 0) then
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, gs)
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k1s)
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k2s)

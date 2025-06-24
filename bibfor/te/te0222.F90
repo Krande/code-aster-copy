@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -646,6 +646,7 @@ subroutine te0222(option, nomte)
                         eps, sigl, energi)
             call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret == 0) then
+                ! Option G / KJ : on écrase les contraintes élastiques recalculées
                 call jevech('PCONTGR', 'L', isigm)
                 do i = 1, 3
                     sigl(i) = zr(isigm+ncmp*(kp-1)+i-1)
