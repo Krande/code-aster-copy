@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,8 +97,8 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     integer :: nocc, iret, nb_subs_stat, nb_sst
     integer :: i_cont_form
     aster_logical :: l_deborst, l_frot, l_dis_choc, l_all_verif, l_refe, l_comp, lAnnealing
-    aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont, l_pena
-    integer :: ixfem
+    aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont, l_pena, l_rela, l_maxi
+    integer(kind=8) :: ixfem
     aster_logical :: l_load_undead, l_load_elim, l_load_didi
     character(len=8) :: k8bid, repk
     character(len=16) :: command, k16bid
@@ -201,6 +201,20 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     call GetResi(ds_conv, type='RESI_COMP_RELA', l_resi_test_=l_comp)
     if (l_comp) then
         list_func_acti(35) = 1
+    end if
+!
+! - Global relative criterion RESI_GLOB_RELA
+!
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', l_resi_test_=l_rela)
+    if (l_rela) then
+        list_func_acti(70) = 1
+    end if
+!
+! - Global maximal criterion RESI_GLOB_MAXI
+!
+    call GetResi(ds_conv, type='RESI_GLOB_MAXI', l_resi_test_=l_maxi)
+    if (l_maxi) then
+        list_func_acti(71) = 1
     end if
 !
 ! - X-FEM

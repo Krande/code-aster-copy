@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,6 +80,8 @@ function isfonc(list_func_acti, func_name_z)
 !       EXI_STRX           :  ELEMENTS UTILISANT STRX (PMF)
 !       RESI_REFE          :  CONVERGENCE PAR RESIDU DE REFERENCE
 !       RESI_COMP          :  CONVERGENCE NORME PAR FORCE NODALE CMP
+!       RESI_RELA          :  CONVERGENCE PAR RESIDU DE RELATIF GLOBAL
+!       RESI_MAXI          :  CONVERGENCE PAR RESIDU DE MAXIMAL GLOBAL
 !       DIRI_CINE          :  PRESENCE DE CHARGEMENTS DE DIRICHLET
 !                             DE TYPE ELIMINATION (AFFE_CHAR_CINE)
 !       NEUM_UNDEAD        :  undead Neumann load
@@ -110,7 +112,7 @@ function isfonc(list_func_acti, func_name_z)
 !       HROM               :  hyper-reduced order model
 !       HROM_CORR_EF       :  hyper-reduced order model with EF correction
 !
-! DERNIER NUMERO UTILISE: 69
+! DERNIER NUMERO UTILISE: 71
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -178,6 +180,10 @@ function isfonc(list_func_acti, func_name_z)
         isfonc = list_func_acti(8) .eq. 1
     else if (func_name .eq. 'RESI_COMP') then
         isfonc = list_func_acti(35) .eq. 1
+    else if (func_name .eq. 'RESI_RELA') then
+        isfonc = list_func_acti(70) .eq. 1
+    else if (func_name .eq. 'RESI_MAXI') then
+        isfonc = list_func_acti(71) .eq. 1
     else if (func_name .eq. 'DIRI_CINE') then
         isfonc = list_func_acti(36) .eq. 1
     else if (func_name .eq. 'NEUM_UNDEAD') then
