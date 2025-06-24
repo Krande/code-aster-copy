@@ -205,7 +205,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lpain(5) = 'PCOMPOR'
     lchin(5) = compor
     lpain(6) = 'PCONTMR'
-    lchin(6) = sigmaPrev
+    lchin(6) = sigma
     lpain(7) = 'PDEPLMR'
     lchin(7) = depl
     lpain(8) = 'PDEPLPR'
@@ -232,8 +232,8 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lchin(18) = chcara(16)
     lpain(19) = 'PFIBRES'
     lchin(19) = chcara(17)
-    lpain(33) = 'PCONTPR'
-    lchin(33) = sigma
+    lpain(33) = 'PCONTGM'
+    lchin(33) = sigmaPrev
 !
 ! --- CADRE X-FEM
 !

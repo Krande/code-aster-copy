@@ -61,6 +61,8 @@ subroutine fonoda(ds_thm, &
 ! In  dt               : time increment
 ! IO  congem           : generalized stresses at the beginning of time step
 !                    => output sqrt(2) on SIG_XY, SIG_XZ, SIG_YZ
+! IO  congep           : generalized stresses at the end of time step
+!                    => output sqrt(2) on SIG_XY, SIG_XZ, SIG_YZ
 ! Out r                : stress vector
 !
 ! --------------------------------------------------------------------------------------------------
@@ -106,8 +108,8 @@ subroutine fonoda(ds_thm, &
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         do i_dim = 4, 6
-            congem(adcome+6+i_dim-1) = congem(adcome+6+i_dim-1)*rac2
-            congem(adcome+i_dim-1) = congem(adcome+i_dim-1)*rac2
+            congep(adcome+6+i_dim-1) = congep(adcome+6+i_dim-1)*rac2
+            congep(adcome+i_dim-1) = congep(adcome+i_dim-1)*rac2
         end do
     end if
 !
@@ -116,30 +118,30 @@ subroutine fonoda(ds_thm, &
     if (ds_thm%ds_elem%l_dof_meca) then
 ! ----- {R} from mechanic
         do i_dim = 1, 6
-            r(addeme+ndim+i_dim-1) = r(addeme+ndim+i_dim-1)+congem(adcome-1+i_dim)
+            r(addeme+ndim+i_dim-1) = r(addeme+ndim+i_dim-1)+congep(adcome-1+i_dim)
         end do
         do i_dim = 1, 6
-            r(addeme+ndim-1+i_dim) = r(addeme+ndim-1+i_dim)+congem(adcome+6+i_dim-1)
+            r(addeme+ndim-1+i_dim) = r(addeme+ndim-1+i_dim)+congep(adcome+6+i_dim-1)
         end do
 ! ----- {R} from hydraulic (first)
         if (ds_thm%ds_elem%l_dof_pre1) then
             do i_dim = 1, ndim
-                r(addeme+i_dim-1) = r(addeme+i_dim-1)-gravity(i_dim)*congem(adcp11)
+                r(addeme+i_dim-1) = r(addeme+i_dim-1)-gravity(i_dim)*congep(adcp11)
             end do
             if (nbpha1 .gt. 1) then
                 do i_dim = 1, ndim
-                    r(addeme+i_dim-1) = r(addeme+i_dim-1)-gravity(i_dim)*congem(adcp12)
+                    r(addeme+i_dim-1) = r(addeme+i_dim-1)-gravity(i_dim)*congep(adcp12)
                 end do
             end if
         end if
 ! ----- {R} from hydraulic (second)
         if (ds_thm%ds_elem%l_dof_pre2) then
             do i_dim = 1, ndim
-                r(addeme+i_dim-1) = r(addeme+i_dim-1)-gravity(i_dim)*congem(adcp21)
+                r(addeme+i_dim-1) = r(addeme+i_dim-1)-gravity(i_dim)*congep(adcp21)
             end do
             if (nbpha2 .gt. 1) then
                 do i_dim = 1, ndim
-                    r(addeme+i_dim-1) = r(addeme+i_dim-1)-gravity(i_dim)*congem(adcp22)
+                    r(addeme+i_dim-1) = r(addeme+i_dim-1)-gravity(i_dim)*congep(adcp22)
                 end do
             end if
         end if
@@ -228,7 +230,7 @@ subroutine fonoda(ds_thm, &
 ! - Second gradient terms
     if (ds_thm%ds_elem%l_dof_2nd) then
         do i_dim = 1, ndim+3
-            r(adde2nd-1+i_dim) = r(adde2nd-1+i_dim)+congem(adco2nd-1+i_dim)
+            r(adde2nd-1+i_dim) = r(adde2nd-1+i_dim)+congep(adco2nd-1+i_dim)
         end do
     end if
 !

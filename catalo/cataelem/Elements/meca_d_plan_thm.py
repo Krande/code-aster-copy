@@ -309,7 +309,7 @@ class THM_DPQ8(Element):
             te=600,
             para_in=(
                 (OP.FORC_NODA.PCONTMR, ECONTPG),
-                (OP.FORC_NODA.PCONTPR, ECONTPG),
+                (SP.PCONTGM, ECONTPG),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),

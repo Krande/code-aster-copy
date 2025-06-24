@@ -51,8 +51,8 @@ subroutine thmCompForcNoda(ds_thm)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe, elref2
-    integer :: jv_geom, jv_mater, jv_sigm, jv_vect, jv_instm, jv_instp, jv_contp
-    integer :: iret_instm, iret_instp, iret_contp
+    integer :: jv_geom, jv_mater, jv_sigm, jv_vect, jv_instm, jv_instp, jv_contgm
+    integer :: iretm, iretp, iretr
     aster_logical :: fnoevo
     integer :: nno, nnos, nnom
     integer :: npi, npi2, npg
@@ -92,19 +92,15 @@ subroutine thmCompForcNoda(ds_thm)
 !
 ! - Is transient computation (STAT_NON_LINE or CALC_CHAMP ?)
 !
-    call tecach('NNN', 'PINSTMR', 'L', iret_instm, iad=jv_instm)
-    call tecach('NNN', 'PINSTPR', 'L', iret_instp, iad=jv_instp)
-    call tecach('NNN', 'PCONTPR', 'L', iret_contp, iad=jv_contp)
-    if (iret_instm .eq. 0 .and. iret_instp .eq. 0 .and. iret_contp .eq. 0) then
+    call tecach('ONO', 'PINSTMR', 'L', iretm, iad=jv_instm)
+    call tecach('ONO', 'PINSTPR', 'L', iretp, iad=jv_instp)
+    if (iretm .eq. 0 .and. iretp .eq. 0) then
         dt = zr(jv_instp)-zr(jv_instm)
         fnoevo = .true.
     else
         dt = 0.d0
         fnoevo = .false.
     end if
-
-    print *, fnoevo
-
 !
 ! - Input/ouput fields
 !
@@ -112,6 +108,10 @@ subroutine thmCompForcNoda(ds_thm)
     call jevech('PMATERC', 'L', jv_mater)
     call jevech('PCONTMR', 'L', jv_sigm)
     call jevech('PVECTUR', 'E', jv_vect)
+    call tecach('NNN', 'PCONTGM', 'L', iretr, iad=jv_contgm)
+    if (iretr .ne. 0) then
+        jv_contgm = jv_sigm
+    end if
 !
 ! - Get reference elements
 !
@@ -150,6 +150,6 @@ subroutine thmCompForcNoda(ds_thm)
                 jv_poids, jv_poids2, &
                 jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
                 nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
-                zr(jv_sigm), zr(jv_contp), b, r, zr(jv_vect))
+                zr(jv_contgm), zr(jv_sigm), b, r, zr(jv_vect))
 !
 end subroutine

@@ -39,9 +39,6 @@ PCAORIE = InputParameter(
 PCONTMR = InputParameter(phys=PHY.SIEF_R, comment="""  PCONTMR : CONTRAINTES INSTANT PRECEDENT """)
 
 
-PCONTPR = InputParameter(phys=PHY.SIEF_R, comment="""  PCONTPR : CONTRAINTES INSTANT ACTUEL """)
-
-
 PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : TEMPERATURE INSTANT ACTUEL """)
 
 
@@ -111,7 +108,7 @@ FORC_NODA = Option(
         PCNSETO,
         PCOMPOR,
         PCONTMR,
-        PCONTPR,
+        SP.PCONTGM,
         SP.PDEPLMR,
         SP.PDEPLPR,
         SP.PFIBRES,
