@@ -125,8 +125,8 @@ subroutine nmcrga(sderro)
                                       '         ', '         ', '         ', &
                                       '         ', '         ', '         ', &
                                       '         ', '         ', '         ', &
-                                      '         ', '         ', '         ', &
-                                      '         ', '         ', '         ', &
+                                      '         ', 'RESI_RELA', 'RESI_MAXI', &
+                                      'RESI_REFE', 'RESI_COMP', '         ', &
                                       'LDLT_SP  ', '         ', '         ', &
                                       '         '/)
 !
@@ -151,8 +151,8 @@ subroutine nmcrga(sderro)
     integer(kind=8) :: iEvent
     character(len=24) :: eventECONJv, eventECOVJv, eventENIVJv, eventEFCTJv, eventEMSGJv
     character(len=24) :: eventCONVJv, eventEEVTJv, eventENOMJv, eventEACTJv
-  integer(kind=8), pointer :: eventEACT(:) => null(), eventECOV(:) => null(), eventCONV(:) => null()
-    integer(kind=8), pointer :: eventEEVT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null(), eventECOV(:) => null()
+    integer(kind=8), pointer :: eventEEVT(:) => null(), eventCONV(:) => null()
     character(len=16), pointer :: eventENOM(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()
     character(len=24), pointer :: eventEMSG(:) => null(), eventEFCT(:) => null()
