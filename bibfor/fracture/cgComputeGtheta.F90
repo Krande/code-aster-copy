@@ -417,7 +417,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             nchin = nchin+1
         end if
 !
-        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI') then
+        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI' &
+            .or. cgStudy%option .eq. 'KJ' .or. cgStudy%option .eq. 'KJ_EPSI') then
             if (cgStudy%vitesse .ne. ' ') then
                 lpain(nchin+1) = 'PVITESS'
                 lchin(nchin+1) = cgStudy%vitesse
@@ -427,8 +428,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             end if
         end if
 !
-!       Recuperation des contraintes du resultat pour option G
-        if (cgStudy%option .eq. 'G') then
+!       Recuperation des contraintes du resultat pour option G et KJ
+        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'KJ') then
             call rsexch(' ', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
 !
             if (iret .ne. 0) then
