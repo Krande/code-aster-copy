@@ -47,7 +47,7 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
     integer(kind=8) :: ipas, nbnew
     character(len=24) :: tpsdin
-    integer :: jnivtp, nivini
+    integer(kind=8) :: jnivtp, nivini
 !
 ! ----------------------------------------------------------------------
 !

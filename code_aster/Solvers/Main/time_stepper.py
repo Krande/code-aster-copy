@@ -466,7 +466,7 @@ class TimeStepper(Observer):
     def register_default_error_event(self):
         """Register a default action for Error event if there is no one."""
         if not [act for act in self._actions if isinstance(act.event, TimeStepper.Error)]:
-            self._maxLevel = 4
+            self._maxLevel = 3
             self.register_event(TimeStepper.Split(TimeStepper.Error(), nbSubSteps=4))
         elif self._maxLevel < 0:
             # AutoSplit and no other Split defined: only use minStep
