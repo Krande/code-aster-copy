@@ -111,7 +111,6 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 
     std::vector< VectorLong > cells;
     cells.reserve( names.size() );
-    _groupsOfCells->updateValuePointer();
 
     for ( auto &name : names ) {
         if ( hasGroupOfCells( name ) ) {
@@ -135,7 +134,6 @@ VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINT
 
     std::vector< VectorLong > nodes;
     nodes.reserve( names.size() );
-    _groupsOfNodes->updateValuePointer();
 
     for ( auto &name : names ) {
         if ( hasGroupOfNodes( name ) ) {

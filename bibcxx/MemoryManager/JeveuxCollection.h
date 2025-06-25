@@ -722,11 +722,11 @@ bool JeveuxCollectionClass< ValueType, AccessType, MemoryType >::build( bool for
     _objectCount = 0;
     for ( ASTERINTEGER i = 1; i <= _capacity; ++i ) {
         if ( contains( i ) ) {
-            _listObjects.push_back( JeveuxCollObjValType( *this, i, _isNamed ) );
+            const auto &ref = _listObjects.emplace_back( *this, i, _isNamed );
             ++_objectCount;
 
             if ( _isNamed ) {
-                _mapNumObject[_listObjects[i - 1]->getStringName()] = i;
+                _mapNumObject[ref->getStringName()] = i;
             }
         }
     }

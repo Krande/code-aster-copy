@@ -354,8 +354,8 @@ bool BaseMesh::isSkin( const std::string groupName ) const {
 }
 
 bool BaseMesh::build() {
-    _groupsOfNodes->build();
-    _groupsOfCells->build();
+    _groupsOfNodes->build( true );
+    _groupsOfCells->build( true );
     _patch->build();
     _connectivity->build();
     return update_tables();
