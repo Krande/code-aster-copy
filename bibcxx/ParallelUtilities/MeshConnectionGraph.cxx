@@ -3,7 +3,7 @@
  * @brief Implementation de MeshConnectionGraph
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,6 +33,7 @@
 void buildFastConnectivity( const BaseMeshPtr &mesh, VectorOfVectorsLong &connex ) {
     const auto &jvConnex = mesh->getConnectivity();
     jvConnex->build();
+    jvConnex->updateValuePointer();
     const auto size = jvConnex->size();
     connex = VectorOfVectorsLong( size );
     for ( int i = 1; i <= size; ++i ) {

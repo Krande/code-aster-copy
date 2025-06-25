@@ -281,6 +281,7 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         curMeshId = 0;
     }
     const auto curMesh = fr.getMesh( curMeshId );
+    UtmessCore( "I", "MED_10", { curMesh->getName() } );
     const auto seq = curMesh->getSequence( 0 );
     const auto nodeNbAndStart = curMesh->getSplitNodeNumberAtSequence( seq[0], seq[1] );
 
@@ -416,7 +417,7 @@ void MeshReader::_readMesh( BaseMeshPtr toReturn, MedFileReader &fr, const std::
         // Collection allocation
         for ( int cellId = 0; cellId < cellNb; ++cellId ) {
             if ( nbNodesForGeoT != 0 ) {
-                connectivity->fastAllocateObject( cumElem + cellId, nbNodesForGeoT );
+                connectivity->allocateObject( cumElem + cellId, nbNodesForGeoT );
             }
         }
         // Get contiguous collection start
