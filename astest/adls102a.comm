@@ -181,6 +181,34 @@ DYNA = DYNA_VIBRA(
     ARCHIVAGE=_F(CHAM_EXCLU=("ACCE",)),
 )
 
+TAB = CREA_TABLE(RESU=(_F(RESULTAT=DYNA, NOM_CHAM="DEPL", NOM_CMP=("PRES"), GROUP_MA="FSI_Piston")))
+
+TEST_TABLE(
+    TABLE=TAB,
+    FILTRE=(
+        _F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=0.02015),
+        _F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2826"),  # node at the middle
+    ),
+    NOM_PARA="PRES",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=-7760713.173947111,
+    VALE_REFE=-7.9073e06,
+    PRECISION=0.05,
+)
+
+TEST_TABLE(
+    TABLE=TAB,
+    FILTRE=(
+        _F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=0.02605),
+        _F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2826"),
+    ),
+    NOM_PARA="PRES",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=-9123879.376106396,
+    VALE_REFE=-9.0154e06,
+    PRECISION=0.05,
+)
+
 #
 # EXTRACTIONS ET TESTS:
 # ----------------------
@@ -312,6 +340,96 @@ TEST_RESU(
             PRECISION=1.0e-3,
         ),
     )
+)
+
+# -----------------------------------------------------------
+# Load on solid and BC on fluid
+wallin_height = 0.5
+wallin_force = AFFE_CHAR_MECA(
+    MODELE=model, FORCE_NODALE=_F(GROUP_NO="Node_Wall_In", FX=-waveDepres * wallin_height)
+)
+
+wallin_loadElem = CALC_VECT_ELEM(
+    OPTION="CHAR_MECA",
+    CHARGE=(wallin_force, viteFace),
+    CHAM_MATER=materField,
+    CARA_ELEM=elemPropDiag,
+)
+
+wallin_loadAsse = ASSE_VECTEUR(VECT_ELEM=wallin_loadElem, NUME_DDL=numeDof)
+
+# CALCULATION OF THE TRANSIENT RESPONSE
+DYNA2 = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="PHYS",
+    CHAM_MATER=materField,
+    EXCIT=_F(VECT_ASSE=wallin_loadAsse, COEF_MULT=1.0),
+    MATR_MASS=massAsse,
+    MATR_RIGI=rigiAsse,
+    MATR_AMOR=dampAsse,
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
+    INCREMENT=_F(LIST_INST=TEMPCAL),
+    ARCHIVAGE=_F(CHAM_EXCLU=("ACCE",)),
+)
+
+TAB2 = CREA_TABLE(
+    RESU=(_F(RESULTAT=DYNA2, NOM_CHAM="DEPL", NOM_CMP=("PRES"), GROUP_MA="FSI_Piston"))
+)
+
+#
+# EXTRACTIONS AND TESTS
+#
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="Node_Piston",
+            INST=0.02015,
+            RESULTAT=DYNA2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=-1.3530e-3,
+            VALE_CALC=-0.0013536119562145713,
+            PRECISION=5.0e-2,
+        ),
+        _F(
+            GROUP_NO="Node_Piston",
+            INST=0.02605,
+            RESULTAT=DYNA2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=-4.210e-4,
+            VALE_CALC=-0.0004207105143995735,
+            PRECISION=5.0e-2,
+        ),
+    )
+)
+
+TEST_TABLE(
+    TABLE=TAB2,
+    FILTRE=(
+        _F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=0.02015),
+        _F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2826"),  # node at the middle
+    ),
+    NOM_PARA="PRES",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=-7760713.175804421,
+    VALE_REFE=-7.9073e06,
+    PRECISION=0.05,
+)
+
+TEST_TABLE(
+    TABLE=TAB2,
+    FILTRE=(
+        _F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=0.02605),
+        _F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2826"),
+    ),
+    NOM_PARA="PRES",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=-9123879.376292128,
+    VALE_REFE=-9.0154e06,
+    PRECISION=0.05,
 )
 
 #
