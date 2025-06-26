@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxBidirectionnalMap
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -194,9 +194,9 @@ class NamesMap {
         return *this;
     };
 
-    const NamesMapPtr &operator->(void)const { return _namesMapPtr; };
+    const NamesMapPtr &operator->( void ) const { return _namesMapPtr; };
 
-    NamesMapClass< ValueType > &operator*(void)const { return *_namesMapPtr; };
+    NamesMapClass< ValueType > &operator*( void ) const { return *_namesMapPtr; };
 
     bool exists() const {
         if ( _namesMapPtr == nullptr )

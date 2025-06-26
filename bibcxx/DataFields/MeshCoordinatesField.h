@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshCoordinatesField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -199,7 +199,7 @@ class MeshCoordinatesField : public DataField {
      * @brief Get _valuesList as NumPy array
      */
     py::object toNumpy() {
-        npy_intp dims[2] = {_valuesList->size() / 3, 3};
+        npy_intp dims[2] = { _valuesList->size() / 3, 3 };
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< JeveuxVectorReal >::value,
                                                       _valuesList->getDataPtr() );
         AS_ASSERT( values != NULL );
@@ -215,9 +215,9 @@ class MeshCoordinatesField : public DataField {
      * @return la valeur du tableau Jeveux a la position i
      */
     std::array< ASTERDOUBLE, 3 > operator[]( const ASTERINTEGER &node_id ) const {
-        return {_valuesList->operator[]( 3 * node_id + 0 ),
-                _valuesList->operator[]( 3 * node_id + 1 ),
-                _valuesList->operator[]( 3 * node_id + 2 )};
+        return { _valuesList->operator[]( 3 * node_id + 0 ),
+                 _valuesList->operator[]( 3 * node_id + 1 ),
+                 _valuesList->operator[]( 3 * node_id + 2 ) };
     };
 
     /**

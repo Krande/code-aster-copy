@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -134,7 +134,7 @@ class MedField {
     /** @brief Get sequence from id */
     std::vector< med_int > getSequence( int index ) const {
         const auto &curSeq = _sequences[index].getNumDtNumIt();
-        return {curSeq.first, curSeq.second};
+        return { curSeq.first, curSeq.second };
     };
 
     /** @brief Get time from id */
