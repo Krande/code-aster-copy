@@ -31,6 +31,7 @@ scipy = ">=1.15.2,<2"
 hdf5 = ">=1.14,<2"
 libmed = {version = "4.1.*", build = "mpi_openmpi*"}
 libptscotch = ">7"
+medcoupling = ">=9.12.0,<10"
 mfront = "<5.0"
 mgis = "<3.0"
 mumps-mpi = ">5.4,<5.9"
@@ -51,9 +52,7 @@ ruff = ">=0.11.1,<0.12"
 sphinx = "<7"
 # external tools
 gmsh = ">=4.13.1,<5"
-medcoupling = ">=9.12.0,<10"
-
-[feature.dbg.dependencies]
+# debugging tools (excluded from a future 'prod' environment?)
 debugpy = "*"
 py-spy = ">=0.4.0,<0.5"
 
@@ -66,5 +65,4 @@ sphinx-rtd-theme = "*"
 builddoc = {cmd = "python -m sphinx -T -b html -d ../build/mpidebug/doc/doctrees -D language=en . ", cwd = "doc"}
 
 [environments]
-dbg = ["dbg"]
 rtd = {features = ["rtd"], no-default-feature = true}

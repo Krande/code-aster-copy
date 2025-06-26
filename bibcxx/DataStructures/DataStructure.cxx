@@ -187,8 +187,10 @@ void DataStructure::debugPrint( int logicalUnit, bool synchro ) const {
 #ifdef ASTER_HAVE_MPI
     int rank = getMPIRank();
     int nbProcs = getMPISize();
-    if ( !synchro )
-        rank = nbProcs = 0;
+    if ( !synchro ) {
+        rank = 0;
+        nbProcs = 1;
+    }
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
         if ( iProc == rank ) {
 #endif /* ASTER_HAVE_MPI */

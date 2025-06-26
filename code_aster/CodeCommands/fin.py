@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,12 @@ A call to the function :py:func:`~code_aster.Supervis.Serializer.saveObjects`
 is equivalent.
 """
 
+import gc
 import sys
+
 import libaster
 
-from ..Supervis import ExecuteCommand, saveObjects, FinalizeOptions
+from ..Supervis import ExecuteCommand, FinalizeOptions, saveObjects
 from ..Utilities import ExecutionParameter, Options, haveMPI, logger
 
 
@@ -69,6 +71,8 @@ class Closer(ExecuteCommand):
         """
         if cls._is_finalized or not libaster.jeveux_status():
             return
+        # it seems a good idea to force pending deletions
+        gc.collect()
         super().run(**keywords)
 
     def exec_(self, keywords):
